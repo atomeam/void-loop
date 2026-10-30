@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1032,
+ "counted": 1034,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -637,7 +637,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 28
+   "tests": 29
   },
   {
    "file": "lib/void-seal.js",
@@ -966,7 +966,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/generators.js",
@@ -1663,6 +1663,13 @@
   },
   {
    "file": "lib/eclipse.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/emoji-combos.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -6140,6 +6147,12 @@
    "imports": [],
    "importedBy": [
     "functions/api/approval.js"
+   ]
+  },
+  "lib/emoji-combos.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/emoji-combos.js"
    ]
   },
   "lib/emoji.js": {
@@ -12127,6 +12140,12 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/emoji-combos.js": {
+   "imports": [
+    "lib/emoji-combos.js"
+   ],
+   "importedBy": []
   },
   "skills/emoji.js": {
    "imports": [
