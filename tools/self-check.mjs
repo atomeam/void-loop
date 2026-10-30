@@ -4,7 +4,7 @@
 //   ... --json out.json                           also write the report;  --post   hand it to /api/selfcheck (VOID_OWNER_TOKEN), for the status card
 // Each page is opened once, the way a person would: what it answered, its script errors, the files and APIs of its own that failed, whether it
 // showed any text, its background (the design is deep space, never a white page), the "Use with" row that ties a tool to the others
-// (lib/toolkit.js), and wording Verse retired. Then every link of its own that the pages point at is asked for once. The judging is
+// (lib/toolkit.js, or a studio's own nav.siblings), and wording Verse retired. Then every link of its own that the pages point at is asked for once. The judging is
 // lib/selfcheck.js (pure, tested). It only reads: every request that is not a GET is answered here with an empty 204 and never leaves the
 // browser, and the visit counter is never called, so nothing is posted, bought, counted or kept. Its traffic says who it is.
 import { writeFileSync, existsSync, appendFileSync } from 'node:fs';
@@ -49,7 +49,7 @@ async function openPage(browser, site, path) {
     Object.assign(seen, await page.evaluate(() => {
       const b = document.body, bg = (el) => el ? getComputedStyle(el).backgroundColor : '';
       const solid = (c) => c && !/rgba\([^)]*,\s*0\)|transparent/.test(c);
-      return { text: b ? b.innerText.slice(0, 4000) : '', controls: document.querySelectorAll('input:not([type=hidden]),textarea,select,button,canvas,video,img,svg').length, bg: solid(bg(b)) ? bg(b) : bg(document.documentElement), toolRow: !!document.querySelector('.tk-row, #related a'),
+      return { text: b ? b.innerText.slice(0, 4000) : '', controls: document.querySelectorAll('input:not([type=hidden]),textarea,select,button,canvas,video,img,svg').length, bg: solid(bg(b)) ? bg(b) : bg(document.documentElement), toolRow: !!document.querySelector('.tk-row, #related a, nav.siblings a'),
         hrefs: [...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && !/^(#|mailto:|tel:|javascript:)/i.test(h)).slice(0, 400) };
     }));
   } catch (e) { seen.status = seen.status || 0; seen.errors.push('did not finish loading: ' + String(e && e.message || e).split('\n')[0]); }
