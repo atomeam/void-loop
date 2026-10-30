@@ -2705,8 +2705,30 @@ say('nothing selected to remove');
       }
       if (j.desc) { el.dataset.cardDesc = String(j.desc).slice(0, 160); el.dataset.cardExtract = String(j.answer).slice(0, 160); if (j.series) el.dataset.cardSeries = String(j.series).slice(0, 60); keepCard(el); } // the kind the source says it is types the card (lib/card-kinds.js)
       addCopy(el, false);
+      if (!page) recallNote(el, text, j.answer);
       say('');
       return 'answer';
+    }
+    // the conversation orb (lib/brain-dialogue.js): the brain keeps this ask and its answer on this device; a repeat says when it was asked
+    // and what Verse said then, and whether the answer is the same now; a follow-up names the ask it follows. Owner, 2026-10-30: "turn a
+    // repeated question from a failure into an upgrade". Only the visitor's own earlier asks and answers, from this device.
+    function whenSaid(at) {
+      const d = new Date(at), n = new Date(), day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(), gap = Math.round((day(n) - day(d)) / 86400000);
+      return gap <= 0 ? 'earlier today' : gap === 1 ? 'yesterday' : gap < 7 ? 'on ' + d.toLocaleDateString('en-US', { weekday: 'long' }) : 'on ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    function recallNote(el, text, answer) {
+      const h = window.verseBrainHost; if (!h || !h.answered) return;
+      let r = null; try { r = h.answered(text, answer); } catch (_) { r = null; }
+      if (!r || !r.kind || !r.prior) return;
+      const p = r.prior, n = document.createElement('div'); n.className = 'sub recall'; n.dataset.recall = r.kind;
+      n.style.cssText = 'margin:0 0 8px;padding:6px 10px;border-left:2px solid #5fb8c9;color:#9fc4cc;font-size:13px';
+      if (r.kind === 'repeat') {
+        n.textContent = 'You asked this ' + whenSaid(p.at) + '.' + (p.answer ? ' I said: \u201c' + p.answer.slice(0, 140) + (p.answer.length > 140 ? '\u2026' : '') + '\u201d ' + (r.same ? 'My answer is the same now.' : 'Since then my answer changed; this is the new one.') : ' I had no answer for it then.');
+      } else {
+        n.append('Following on from your ask ' + whenSaid(p.at) + ': ');
+        const a = document.createElement('a'); a.href = '#'; a.dataset.ask = p.ask; a.textContent = '\u201c' + p.ask.slice(0, 80) + '\u201d'; n.append(a);
+      }
+      const h2e = el.querySelector('h2'); if (h2e) { let after = h2e; while (after.nextElementSibling && after.nextElementSibling.classList.contains('sub')) after = after.nextElementSibling; after.after(n); } else el.prepend(n);
     }
     // Will engine: Verse says what it wants to become next (chosen by Verse from everything that exists).
     function wantsWill(lower) {

@@ -76,10 +76,10 @@ test('evolution beats random search given the same number of scored programs, on
   assert.ok(mean > 0.02 && wins >= 2 * losses, 'evolution ahead by ' + mean.toFixed(3) + ', ' + wins + ' wins, ' + losses + ' losses');
 });
 
-test('the painter runs in the brain: one of twenty-two organs, it rewrites its look, marks the workspace, and the self says so', () => {
+test('the painter runs in the brain: one of twenty-three organs, it rewrites its look, marks the workspace, and the self says so', () => {
   const b = B.createBrain(5); B.tell(b, 'river stone light');
   for (let t = 0; t < 400; t++) { const a = t * 0.03; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.5 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('painter') && B.ORGAN_IDS.length === 22);
+  assert.ok(B.ORGAN_IDS.includes('painter') && B.ORGAN_IDS.length === 23);
   assert.ok(b.painter.gen >= 5, 'the painter ran ' + b.painter.gen + ' generations');
   assert.ok(b.board.paint && b.board.paint.hues.length === P.PX * P.PY);
   assert.ok(b.painter.best >= b.painter.first, 'its look scores no worse than where it started');

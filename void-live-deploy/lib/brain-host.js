@@ -10,6 +10,8 @@
 //             tick, so about 1% of the main thread; the open card runs it at full speed
 //   keeps     what it learned, on this device: every 30 seconds after a change, and when the page hides; and which ideas were lit
 //             (lib/brain-glow.js), so a reload keeps the words it was just told as bright as they were, dimmed by the time away
+//   recalls   each ask and the answer Verse showed for it (lib/brain-dialogue.js, the conversation orb): a repeat says when it was asked
+//             and what Verse said then, a follow-up names the ask it follows (answered); kept with the rest, cleared by Forget
 //   bridges   other Verse pages in this browser reach it (lib/brain-bridge.js hostBrain, window.verseBrain); every page tells it which
 //             page the visitor opened (lib/brain-everywhere.js), kept as the pages it saw (host.pages, the newest PAGES_MAX)
 //   watches   Verse's own health every 15 minutes while the page is visible (lib/brain-watch.js): runs on main, open pull requests
@@ -25,6 +27,7 @@ import { hostBrain } from './brain-bridge.js';
 import * as Route from './brain-route.js';
 import * as Watch from './brain-watch.js';
 import { SEEN_KEY, SEEN_MAX, takeAll } from './brain-everywhere.js';
+import * as Dl from './brain-dialogue.js';
 
 export const TICK_MS = 500, TICK_MS_PHONE = 1000, SAVE_MS = 30000, PAGES_MAX = 24;
 
@@ -48,13 +51,22 @@ export function startHost(opts = {}) {
   const bind = (b) => { if (host.kept) B.loadKnowledge(b, host.kept); if (host.verse) B.knowVerse(b, host.verse); return b; };
 
   /** the visitor asked Verse something: the brain learns it as a goal and as the next ask after the last one. */
-  host.hear = (text) => {
+  host.hear = (text, when) => {
     const t = String(text == null ? '' : text).trim(); if (!t) return null;
-    const b = host.brain, h = B.heardAsk(b, t), r = B.ask(b, t);
+    const b = host.brain, at = Number.isFinite(when) ? when : now(), d = Dl.heard(b.dialogue, t, at), h = B.heardAsk(b, t), r = B.ask(b, t); b.dialogue.now = Math.max(b.dialogue.now || 0, at);
     host.heardHere.push(t); if (host.heardHere.length > 24) host.heardHere.shift();
     host.changed = true; host.glowing = true; emit('ask', { text: t, hit: h.hit, guess: h.guess, words: r.words || [] });
-    return { ...h, answer: r.answer || null, words: r.words || [] };
+    return { ...h, answer: r.answer || null, words: r.words || [], recalled: d ? { kind: d.kind, ask: d.entry.ask, at: d.entry.at } : null };
   };
+  /** the answer engine showed `answer` for `ask` (void.html showAnswer): it is kept with the ask. Returns what the card can say about this
+   *  visitor's history with it ({ kind: 'repeat' | 'follow' | null, prior: { ask, at, answer }, same }), or null when the ask was not heard. */
+  host.answered = (ask, answer) => {
+    const b = host.brain, at = now(), r = Dl.answered(b.dialogue, ask, answer, at); b.dialogue.now = at;
+    if (r) { host.changed = true; emit('answered', { kind: r.kind }); }
+    return r;
+  };
+  /** the conversation orb's counts (lib/brain-dialogue.js dialogueStats), now. */
+  host.dialogue = () => Dl.dialogueStats(host.brain.dialogue, now());
   /** more than one skill can answer `text`: the brain picks (lib/brain-route.js). names: the skills that match, in the page's order.
    *  Returns { pick, first, changed, why, id } or null when there is no choice. The page tells it what happened with judge(id, good). */
   const routes = () => host.brain.routes || (host.brain.routes = Route.createRoutes());
@@ -127,7 +139,7 @@ export function startHost(opts = {}) {
     host.changed = false; host.kept = JSON.parse(JSON.stringify(B.knowledgeOf(host.brain))); const ok = !!(await store.keep(host.kept)); await glow; return ok;
   };
   /** Forget on the card: what it kept is gone, and nothing is kept again until it hears something new. */
-  host.forgot = () => { host.kept = null; host.changed = false; host.glow = null; host.glowing = false; host.glowSaved = ''; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; host.brain.routes = Route.createRoutes(); };
+  host.forgot = () => { host.kept = null; host.changed = false; host.glow = null; host.glowing = false; host.glowSaved = ''; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; host.brain.routes = Route.createRoutes(); Dl.forgetDialogue(host.brain.dialogue); };
 
   // what it kept on this device comes back before the asks heard meanwhile are learned, so they are added to it
   const early = Array.isArray(opts.early) ? opts.early.slice() : [];
@@ -140,7 +152,7 @@ export function startHost(opts = {}) {
     // asks typed on tool pages since it last ran (lib/toolkit.js keeps them on this device): it hears each, and logs where the page sent it
     const ls = win && (() => { try { return win.localStorage; } catch (_) { return null; } })();
     if (ls) { let q = []; try { q = JSON.parse(ls.getItem(Route.HEARD_KEY) || '[]'); ls.removeItem(Route.HEARD_KEY); } catch (_) { q = []; }
-      for (const a of (Array.isArray(q) ? q : []).slice(-Route.HEARD_MAX)) if (a && typeof a.text === 'string' && a.text.trim() && !/^\s*(?:unlock\s*)+\S{16,}/i.test(a.text)) { host.hear(a.text); Route.heard(routes(), a.text, a.from, a.to, Number(a.at) || Date.now()); }
+      for (const a of (Array.isArray(q) ? q : []).slice(-Route.HEARD_MAX)) if (a && typeof a.text === 'string' && a.text.trim() && !/^\s*(?:unlock\s*)+\S{16,}/i.test(a.text)) { host.hear(a.text, Number(a.at) || undefined); Route.heard(routes(), a.text, a.from, a.to, Number(a.at) || Date.now()); }
       // the pages opened while no brain ran (lib/brain-everywhere.js): ideas, not goals
       for (const a of takeAll(ls, SEEN_KEY, SEEN_MAX)) { B.tell(host.brain, a.text); host.sawPage(a.text, a.from, Number(a.at) || Date.now()); } }
   });
@@ -151,7 +163,7 @@ export function startHost(opts = {}) {
   const tick = () => {
     const b = host.brain; if (doc && doc.visibilityState === 'hidden') return;
     if (b.ticks !== seen) { seen = b.ticks; return; }
-    B.stepBrain(b, { over: false }); seen = b.ticks; if (bridge) bridge.publish();
+    b.dialogue.now = now(); B.stepBrain(b, { over: false }); seen = b.ticks; if (bridge) bridge.publish();
   };
   const idle = (win && win.requestIdleCallback) ? () => win.requestIdleCallback(tick, { timeout: 400 }) : tick;
   if (opts.ticking !== false) { timer = setInterval(idle, phone ? TICK_MS_PHONE : TICK_MS); saver = setInterval(() => { host.save().catch(() => {}); }, SAVE_MS); }

@@ -138,7 +138,7 @@ const read = () => {
     host && host.routeStats ? ['Routes', (() => { const r = host.routeStats(); return r.picks + ' picks on Verse · ' + r.changed + ' not the page\'s first · ' + r.good + ' kept · ' + r.bad + ' left'; })()] : null,
   ]);
   did();
-  const P = s.painter, G = s.grower, F = s.formula, C = s.current, R = s.grains, L = s.pool, T = s.trace, D = s.gardener, H = b.ear.guessed ? s.hearing : null;
+  const P = s.painter, G = s.grower, F = s.formula, C = s.current, R = s.grains, L = s.pool, T = s.trace, Q = s.dialogue, D = s.gardener, H = b.ear.guessed ? s.hearing : null;
   const tiles = D ? Object.values(D.classes).reduce((a, v) => a + v, 0) : 0;
   dl(liveGains, [
     P && P.score != null ? ['Painter', 'scores ' + P.score + (P.first != null ? ' (first ' + P.first + ', best ' + P.best + ')' : '') + ' · gen ' + P.gen] : null,
@@ -147,6 +147,7 @@ const read = () => {
     C && C.gain != null ? ['Current', 'gain ' + C.gain + 'x over ' + C.lives + (C.lives === 1 ? ' life' : ' lives')] : null,
     R && R.gain != null ? ['Grains', 'gain ' + R.gain + 'x over ' + R.lives + (R.lives === 1 ? ' life' : ' lives')] : null,
     L && L.gain != null ? ['Pool', 'gain ' + L.gain + 'x over ' + L.lives + (L.lives === 1 ? ' life' : ' lives')] : null,
+    Q && Q.asks ? ['Dialogue', Q.asks + (Q.asks === 1 ? ' ask' : ' asks') + ' kept here · ' + Q.repeats + (Q.repeats === 1 ? ' repeat' : ' repeats') + ' · ' + Q.follows + (Q.follows === 1 ? ' follow-up' : ' follow-ups') + (Q.kept ? ' · ' + Q.kept + ' kept on ' + Q.days + (Q.days === 1 ? ' day' : ' days') : '')] : null,
     T && T.gain != null ? ['Trace', 'gain ' + T.gain + 'x over ' + T.lives + (T.lives === 1 ? ' life' : ' lives') + (T.hold != null ? ' · holds ' + T.hold : '')] : null,
     D && D.blinks ? ['Gardener', D.inBand + ' of ' + tiles + ' patches at the edge of chaos'] : null,
     H ? ['Hearing', Math.round(H.hit * 100) + '% of next notes right over ' + H.notes] : null,
