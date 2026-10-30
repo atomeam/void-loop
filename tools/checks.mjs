@@ -172,6 +172,7 @@ for (const [name, file] of [
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
