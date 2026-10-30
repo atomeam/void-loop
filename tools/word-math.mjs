@@ -5,7 +5,7 @@
 import fs from 'node:fs'; import vm from 'node:vm'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const PAGE = path.join(root, 'void-live-deploy/void.html'), GOLDEN = path.join(root, 'tools/word-math.golden.json');
-const TABLES = ['TIME_S', 'unitOf', 'numberWords', 'KA', 'cupSrc', 'CUP_GRAMS', 'gcdOf', 'SOUND', 'LUMENS', 'DRINKS', 'WATER_POINTS', 'RICE', 'RICE_SERVE', 'COFFEE', 'MEAT', 'NFL_FIELD', 'IFAB_FIELD', 'POOL', 'HOOP', 'STRIDE', 'ITU_HD', 'ITU_UHD', 'DCI_FORMATS', 'SIZE_FACTS', 'CALC_HOLIDAYS', 'CALC_MONTHS', 'ABBR', 'CALC_UNITS', 'MORE_UNITS'];
+const TABLES = ['TIME_S', 'unitOf', 'numberWords', 'KA', 'cupSrc', 'CUP_GRAMS', 'gcdOf', 'SOUND', 'LUMENS', 'DRINKS', 'WATER_POINTS', 'RICE', 'RICE_SERVE', 'COFFEE', 'MEAT', 'NFL_FIELD', 'IFAB_FIELD', 'POOL', 'HOOP', 'STRIDE', 'ITU_HD', 'ITU_UHD', 'DCI_FORMATS', 'SODA_CAN', 'SIZE_FACTS', 'CALC_HOLIDAYS', 'CALC_MONTHS', 'ABBR', 'CALC_UNITS', 'MORE_UNITS'];
 export const PARTS = ['wmPercentsAndUnits', 'wmEverydayCounts', 'wmUnitQuestions', 'wmClockAndDates', 'wmGeometry', 'wmMoney', 'wmDataUnits', 'wmExpression'];
 export function load(file = PAGE, now = null) {
   const L = fs.readFileSync(file, 'utf8').split('\n'), defs = [];
