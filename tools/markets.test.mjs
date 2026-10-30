@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { capsRows, scanRows, screen, resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES, COINS } from '../void-live-deploy/lib/markets.js';
-import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP, parseSpark, overlay } from '../void-live-deploy/functions/api/markets.js';
+import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP, parseSpark, overlay, coarse } from '../void-live-deploy/functions/api/markets.js';
 import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 
@@ -46,6 +46,7 @@ test('the close on a fixed day: the last row on or before it (a weekend gives Fr
 });
 test('numbers for the screen', () => {
   assert.equal(fmtPrice(250.42), '250.42'); assert.equal(fmtPrice(1234.5), '1,234.50'); assert.equal(fmtPrice(0.000123), '0.000123'); assert.equal(fmtPrice(null), '–');
+  assert.equal(fmtPrice(0.00000469), '0.00000469', 'under a cent: four digits that mean something, not 0.000005'); assert.equal(fmtPrice(0.0759), '0.0759');
   assert.equal(fmtBig(1.4e12), '1.4T'); assert.equal(fmtBig(39480700), '39.48M'); assert.equal(fmtBig(512), '512'); assert.equal(fmtMove(8.5, 4.7222), '+8.50 (+4.72%)'); assert.equal(fmtMove(-1, -0.5), '−1.00 (−0.50%)');
   assert.equal(fmtDay(Date.UTC(2024, 11, 31)), '31 Dec 2024'); assert.equal(thin([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]], 3).map((p) => p[0]).join(), '1,3,5');
   const c = chartPath([[0, 1], [10, 3], [20, 2]], 100, 50, 0); assert.equal(c.xy.length, 3); assert.equal(c.xy[0][0], 0); assert.equal(c.xy[2][0], 100); assert.equal(c.xy[1][1], 0, 'the highest point is at the top');
@@ -156,6 +157,10 @@ test('the coin table when CoinGecko does not answer: the snapshot with Yahoo pri
   assert.equal(overlay([{ sym: 'X', price: 50, athPct: -10, cap: 1 }], { 'X-USD': { price: 60, prev: 55, closes: [60] } }).coins[0].athPct, 0, 'above the old high: at the high');
   const gone = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env: {}, fetchFn: fake({ down: ['api.coingecko.com'] }) });
   assert.equal(gone.status, 503, 'no snapshot and no live list: said so');
+  { const o = overlay([{ sym: 'SHIB', price: 0.0000047, pct24: -1, pct7: -5, spark: [1, 2, 3], cap: 1 }], { 'SHIB-USD': { price: 0.00000469, prev: 0.000005, closes: [0.000005, 0.000005, 0.00000469] } });
+    assert.equal(o.live, 1); assert.equal(o.coins[0].price, 0.00000469, 'the live price is taken'); assert.equal(o.coins[0].pct24, -1, 'a close rounded to one digit measures no move: the snapshot\'s stays');
+    assert.equal(o.coins[0].pct7, -5); assert.deepEqual(o.coins[0].spark, [1, 2, 3]); }
+  assert.ok(coarse(0.000005) && coarse(0.000012) && !coarse(0.00000469) && !coarse(1) && !coarse(0.5) && !coarse(0), 'coarse: under a tenth of a cent with fewer than three digits');
   assert.deepEqual(overlay([{ sym: 'X', price: 0, cap: 1 }], { 'X-USD': { price: 5, prev: 4, closes: [5] } }).live, 0); assert.deepEqual(parseSpark(null), {});
   assert.equal(parseSpark({ 'X-USD': { close: [90, 100], chartPreviousClose: 50 } })['X-USD'].prev, 90); assert.equal(parseSpark({ 'X-USD': { close: [100], chartPreviousClose: 95 } })['X-USD'].prev, 95, 'one close: the close before the range is all there is');
 });
