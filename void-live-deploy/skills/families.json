@@ -80,7 +80,7 @@
     {
      "name": "color",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -937,7 +937,7 @@
     {
      "name": "sky",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 11 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -1411,7 +1411,7 @@
     {
      "name": "util",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 71 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
