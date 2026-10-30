@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1086,
+ "counted": 1089,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 71,
+   "dependants": 72,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 23,
    "direct": 0,
-   "dependants": 84,
+   "dependants": 85,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 23,
    "direct": 1,
-   "dependants": 84,
+   "dependants": 85,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 23,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 84,
    "tests": 5
   },
   {
@@ -90,7 +90,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 2
   },
   {
@@ -125,49 +125,49 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 65,
+   "dependants": 66,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 57,
+   "dependants": 58,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 56,
+   "dependants": 57,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 3
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 4
   },
   {
    "file": "lib/autopsy.js",
    "skills": 15,
    "direct": 5,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 6
   },
   {
@@ -195,7 +195,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 3
   },
   {
@@ -216,56 +216,56 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 1
   },
   {
@@ -559,28 +559,28 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 84,
-   "tests": 1
+   "dependants": 86,
+   "tests": 2
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
@@ -748,21 +748,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 84,
+   "dependants": 86,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 85,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 82,
+   "dependants": 83,
    "tests": 9
   },
   {
@@ -778,6 +778,13 @@
    "direct": 1,
    "dependants": 7,
    "tests": 1
+  },
+  {
+   "file": "lib/local-ask.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 0
   },
   {
    "file": "lib/share.js",
@@ -799,13 +806,6 @@
    "direct": 1,
    "dependants": 6,
    "tests": 1
-  },
-  {
-   "file": "lib/local-ask.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 0
   },
   {
    "file": "lib/selfcheck.js",
@@ -979,42 +979,42 @@
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 2
   },
   {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 1
   },
   {
    "file": "lib/markets.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 5
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 6
   },
   {
@@ -1238,49 +1238,49 @@
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 2
   },
   {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
@@ -1431,6 +1431,13 @@
    "tests": 2
   },
   {
+   "file": "lib/appraise-photo.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
    "file": "lib/boards.js",
    "skills": 1,
    "direct": 0,
@@ -1471,13 +1478,6 @@
    "direct": 0,
    "dependants": 6,
    "tests": 3
-  },
-  {
-   "file": "lib/appraise-photo.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
   },
   {
    "file": "lib/avi.js",
@@ -1627,6 +1627,13 @@
    "tests": 3
   },
   {
+   "file": "lib/local-media.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 3
+  },
+  {
    "file": "lib/notes.js",
    "skills": 1,
    "direct": 1,
@@ -1705,13 +1712,6 @@
   },
   {
    "file": "lib/imgfit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 2
-  },
-  {
-   "file": "lib/local-media.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -1991,6 +1991,13 @@
    "tests": 2
   },
   {
+   "file": "lib/ground.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/health-habits.js",
    "skills": 1,
    "direct": 1,
@@ -2239,252 +2246,252 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 86,
+   "dependants": 87,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 85,
-   "tests": 30
+   "dependants": 86,
+   "tests": 31
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 12
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 46,
+   "dependants": 47,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 45,
+   "dependants": 46,
    "tests": 9
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 3
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 7
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 0
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 7
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 3
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 2
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
@@ -2524,6 +2531,13 @@
   },
   {
    "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/watch-along.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
@@ -3083,13 +3097,6 @@
    "tests": 1
   },
   {
-   "file": "lib/ground.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/jobs-ui.js",
    "skills": 0,
    "direct": 0,
@@ -3228,6 +3235,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/paste-kind.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/pdf-ui.js",
@@ -3460,6 +3474,7 @@
     "lib/free-pics.js",
     "lib/answer-edge.js",
     "lib/note-ask.js",
+    "lib/telemetry.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -3479,6 +3494,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ],
@@ -3494,11 +3510,13 @@
   "functions/api/appraise.js": {
    "imports": [
     "lib/models.js",
-    "lib/appraise-photo.js"
+    "lib/appraise-photo.js",
+    "lib/watch-along.js"
    ],
    "importedBy": [
     "functions/api/recipeimport.js",
-    "functions/api/translate.js"
+    "functions/api/translate.js",
+    "functions/api/watchalong.js"
    ],
    "reachedBy": [
     "functions/api/sing.js"
@@ -3861,6 +3879,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -4300,6 +4319,17 @@
    ],
    "importedBy": []
   },
+  "functions/api/watchalong.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "functions/api/appraise.js",
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/local-media.js",
+    "lib/watch-along.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/weather.js": {
    "imports": [
     "functions/api/answer.js",
@@ -4485,6 +4515,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
@@ -4526,6 +4557,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -4559,6 +4591,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -4572,7 +4605,8 @@
    "reachedBy": [
     "functions/api/recipeimport.js",
     "functions/api/sing.js",
-    "functions/api/translate.js"
+    "functions/api/translate.js",
+    "functions/api/watchalong.js"
    ]
   },
   "lib/appraise.js": {
@@ -4696,6 +4730,7 @@
     "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -4913,6 +4948,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
@@ -5013,6 +5049,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -5123,6 +5160,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -5727,6 +5765,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "skills/formulas.js"
@@ -5815,6 +5854,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -5956,6 +5996,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
@@ -6074,6 +6115,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -6133,6 +6175,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -6215,6 +6258,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -6249,6 +6293,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -6291,6 +6336,7 @@
     "functions/api/sportsearch.js",
     "functions/api/support.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/mcp.js",
@@ -6379,6 +6425,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js",
@@ -6488,6 +6535,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -6599,6 +6647,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -6705,6 +6754,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -6768,6 +6818,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/clef.js"
@@ -7302,6 +7353,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -7404,7 +7456,9 @@
   },
   "lib/ground.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/recipe.js"
+   ]
   },
   "lib/guard.js": {
    "imports": [
@@ -7458,6 +7512,7 @@
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
+    "functions/api/watchalong.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
     "functions/team/_middleware.js",
@@ -7537,6 +7592,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -7741,6 +7797,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -7875,6 +7932,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -7956,6 +8014,7 @@
     "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -8066,6 +8125,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -8133,6 +8193,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -8279,6 +8340,7 @@
    ],
    "reachedBy": [
     "functions/api/local.js",
+    "functions/api/watchalong.js",
     "skills/local-stations.js",
     "skills/open-tool.js",
     "skills/toolkit.js"
@@ -8290,6 +8352,7 @@
    ],
    "importedBy": [
     "functions/api/local.js",
+    "functions/api/watchalong.js",
     "skills/local-stations.js"
    ]
   },
@@ -8347,6 +8410,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8383,6 +8447,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8473,6 +8538,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8539,6 +8605,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8583,6 +8650,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8622,6 +8690,7 @@
     "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -8764,6 +8833,7 @@
     "functions/api/tower-self.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/will.js",
     "lib/approval-core.js",
     "lib/clef.js",
@@ -8919,6 +8989,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8958,6 +9029,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -8999,6 +9071,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9031,6 +9104,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
@@ -9059,7 +9133,8 @@
    ],
    "importedBy": [
     "functions/api/answer.js",
-    "lib/automation-fix.js"
+    "lib/automation-fix.js",
+    "lib/paste-kind.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
@@ -9110,6 +9185,7 @@
     "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/films/rss.js",
@@ -9273,6 +9349,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9361,6 +9438,7 @@
     "functions/api/visit.js",
     "functions/api/voice-reply.js",
     "functions/api/watch.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
@@ -9447,6 +9525,7 @@
     "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/watch.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
@@ -9532,6 +9611,13 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/paste-kind.js": {
+   "imports": [
+    "lib/telemetry.js",
+    "lib/note-ask.js"
+   ],
+   "importedBy": []
+  },
   "lib/patch-guard.js": {
    "imports": [],
    "importedBy": [
@@ -9559,6 +9645,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9590,6 +9677,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9624,6 +9712,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
@@ -9699,6 +9788,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/built-detail.js"
@@ -9792,6 +9882,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9851,6 +9942,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -9900,6 +9992,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/jobs-ui.js",
@@ -9957,6 +10050,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -10040,6 +10134,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -10336,6 +10431,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js"
@@ -10404,6 +10500,7 @@
     "functions/api/tally.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -10517,6 +10614,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -10551,6 +10649,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -10585,6 +10684,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -10646,6 +10746,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/mcp.js",
@@ -10695,6 +10796,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -10773,6 +10875,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -10901,6 +11004,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/bench-asks.js",
@@ -10941,6 +11045,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js"
    ]
   },
@@ -11111,6 +11216,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -11174,6 +11280,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -11305,6 +11412,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -11605,6 +11713,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -11719,6 +11828,7 @@
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
@@ -11760,6 +11870,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "skills/shop.js"
@@ -11795,6 +11906,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/rap-listen.js",
@@ -11864,6 +11976,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
     "lib/duel-rules.js",
@@ -11967,13 +12080,14 @@
   "lib/telemetry.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/answer.js",
     "lib/automation-fix.js",
+    "lib/paste-kind.js",
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
     "functions/api/actions.js",
-    "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12020,6 +12134,7 @@
     "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/films/rss.js",
@@ -12440,6 +12555,7 @@
     "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/films/rss.js",
@@ -12460,6 +12576,7 @@
     "lib/memory-scope.js",
     "lib/own-card.js",
     "lib/paid-access.js",
+    "lib/paste-kind.js",
     "lib/privacy.js",
     "lib/probe-asks.js",
     "lib/propose-fix.js",
@@ -12566,6 +12683,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]
@@ -12619,6 +12737,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
@@ -12648,6 +12767,18 @@
    ],
    "reachedBy": [
     "skills/cartoon.js"
+   ]
+  },
+  "lib/watch-along.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/appraise.js",
+    "functions/api/watchalong.js"
+   ],
+   "reachedBy": [
+    "functions/api/recipeimport.js",
+    "functions/api/sing.js",
+    "functions/api/translate.js"
    ]
   },
   "lib/watch.js": {
@@ -12701,6 +12832,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -12775,6 +12907,7 @@
     "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/watch.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/team/join/[code].js",
@@ -12864,6 +12997,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
@@ -14199,6 +14333,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -14256,6 +14391,7 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
@@ -15692,7 +15828,8 @@
    "imports": [
     "lib/card-mini.js",
     "skills/swaps.js",
-    "lib/recipes.js"
+    "lib/recipes.js",
+    "lib/ground.js"
    ],
    "importedBy": []
   },
@@ -16447,6 +16584,7 @@
     "functions/api/sing.js",
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
+    "functions/api/watchalong.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
    ]

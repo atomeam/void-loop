@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T17:38:34Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T17:33:13Z",
+   "subject": "Regenerate deps.json and self.json after merging main"
+  },
+  {
    "at": "2026-10-30T17:31:58Z",
    "subject": "brain: the Dialogue row reads a missing count as 0, never undefined"
   },
@@ -558,12 +566,28 @@
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
+   "at": "2026-10-30T17:23:00Z",
+   "subject": "video-gen: live checks every 6 hours, and the card says when Verse last tested the video model"
+  },
+  {
    "at": "2026-10-30T17:17:10Z",
    "subject": "reinvest: today's plan for Verse's money"
   },
   {
+   "at": "2026-10-30T17:15:58Z",
+   "subject": "Refuse a recipe card about another dish instead of showing it"
+  },
+  {
+   "at": "2026-10-30T17:15:21Z",
+   "subject": "Card notes are no near miss of the self skill"
+  },
+  {
    "at": "2026-10-30T17:13:03Z",
    "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-10-30T17:12:29Z",
+   "subject": "Read a paste as a report, an ask or unclear, never a guess"
   },
   {
    "at": "2026-10-30T17:09:40Z",
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T16:49:26Z",
    "subject": "Load game and sky helpers on first use, not with the routing order"
-  },
-  {
-   "at": "2026-10-30T16:49:17Z",
-   "subject": "Verse mints, uses and retires its own Cloudflare keys"
-  },
-  {
-   "at": "2026-10-30T16:48:19Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T16:48:11Z",
-   "subject": "Open a stage tool only when the message asks for it"
-  },
-  {
-   "at": "2026-10-30T16:45:07Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T16:44:46Z",
-   "subject": "Incident: the browser suite failed on 3bf3d447 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T16:43:37Z",
-   "subject": "Distance reads \"is nyc → london\": lead words off, short city names, the arrow form; a Verse fix is a fix only when its card answers"
   }
  ],
  "builders": {

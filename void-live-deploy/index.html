@@ -6252,6 +6252,9 @@ say('nothing selected to remove');
     function scoreHint(h, q) {
       const hl = h.toLowerCase();
       if (hl === q) return -1;
+      // a one-word hint the typed letters begin is the thing itself ("tim" -> "timer"): first, above the longer asks that begin the same
+      // way, so seven examples starting "tim" never crowd it out of the five lines (main's verify, 2026-10-30: "hints while typing" red)
+      if (hl.startsWith(q) && !/\s/.test(hl.trim())) return 4;
       if (hl.startsWith(q)) return 3;
       if (hl.split(/\s+/).some((w) => w.startsWith(q))) return 2;
       const words = q.split(/\s+/).filter(Boolean);

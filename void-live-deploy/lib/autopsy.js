@@ -60,6 +60,35 @@ export function skillOfCheck(check, names, pages) {
 }
 const PAGE_OWNERS = [[/\bthe self card\b/i, 'growth'], [/\b(?:open the book|the book'?s|show the router rules)\b/i, 'guide']];
 
+/**
+ * Who owns a check that no skill name or example ask places: the part of Verse its title names, its family, and the files a builder opens
+ * first, read from the browser suite's own check (tools/test_void.mjs: what it imports, loads or visits). A row names a skill only when the
+ * check exercises that skill; otherwise it names the part ("the router") and its family. Matched on the check's title (titleOf), whole words.
+ * Owner's review, 2026-10-30: the router's failing checks were all "unmapped", and "Open first" listed what the commit touched (drum kits,
+ * rap tests) instead of the router's own files. Paths are under void-live-deploy/; tools/autopsy.test.mjs checks that each one exists.
+ */
+export const CHECK_OWNERS = Object.freeze([
+  { re: /^router\b/, family: 'self', owner: 'the router', files: ['lib/router.js', 'functions/api/routes.js', 'lib/guard.js'] },
+  { re: /^(?:identity|connected)\b/, skill: 'tower', files: ['lib/tower.js', 'identity/index.html'] },
+  { re: /^money gpa near misses\b/, family: 'numbers', owner: 'the skill loader', files: ['void.html', 'skills/calc.js', 'skills/loan.js', 'skills/grades.js'] },
+  { re: /^local tv radio\b/, skill: 'local-stations', files: ['local/app.js', 'local/index.html', 'skills/local-stations.js'] },
+  { re: /^photo resizer\b/, skill: 'imgfit', files: ['resize-image/index.html', 'skills/imgfit.js'] },
+  { re: /^confirm line\b/, skill: 'approve-card', files: ['lib/approval-core.js', 'lib/approval-gate.js', 'functions/api/answer.js'] },
+  { re: /^paid\b/, skill: 'store', files: ['lib/paid-access.js', 'functions/api/answer.js'] },
+  { re: /^webmcp\b/, family: 'self', owner: 'WebMCP', files: ['index.html', 'functions/api/miss.js'] },
+  { re: /^refusal object\b/, family: 'self', owner: 'the refusal object', files: ['lib/refusal.js', 'lib/near-miss.js'] },
+  { re: /^shared verse\b/, skill: 'share', files: ['lib/share-client.js', 'lib/share.js'] },
+  { re: /^voice\b/, skill: 'growth', files: ['lib/voice.js', 'functions/api/reflect.js', 'lib/self-blocks.js'] },
+  { re: /^field minds\b/, skill: 'agent-fluid-memory-orbs', files: ['lib/field-kit.js', 'lib/field-stage.js', 'skills/agent-fluid-memory-orbs.js'] },
+  { re: /^defences\b/, family: 'self', owner: 'the defences', files: ['functions/api/_middleware.js', 'functions/api/miss.js'] },
+  { re: /^look what i made\b/, skill: 'showcase', files: ['skills/showcase.js'] },
+  { re: /^self grounding\b/, skill: 'know', files: ['functions/api/answer.js', 'lib/ground.js'] },
+  { re: /^semantic validator\b/, family: 'self', owner: 'the semantic validator', files: ['lib/ground.js', 'skills/recipe.js'] },
+  { re: /^what you told me\b/, skill: 'memory', files: ['skills/memory.js', 'functions/api/answer.js'] },
+]);
+/** the CHECK_OWNERS row of a check, or null. Pure. */
+export const ownerOfCheck = (check) => { const t = titleOf(check); return CHECK_OWNERS.find((o) => o.re.test(t)) || null; };
+
 /** the "Go against Verse" log (asked by Verse: "Connect the 'Go against Verse' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
  *  of the Go games against Verse (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
  *  offered back as the ask that replays one. Matched by words in the check's name; nothing is guessed. Pure. */
@@ -101,10 +130,14 @@ export function signatureLine(g) {
 export function autopsy(incidentsJson, fam, guide, focus = '') {
   const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
   const counts = new Map(), un = new Map(), goLog = [], suite = { timeouts: 0, ended: 0, incidents: 0 };
+  const byId = new Map(); for (const v of map.values()) if (!byId.has(v.id)) byId.set(v.id, v);
   let placed = inc.map((i, k) => ({ ...i, signature: signatureOf(inc, k), checks: i.checks.map((text) => {
     if (isSuiteMeta(text)) return { text, skill: null, family: null, name: null, meta: true };
     const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-Verse check belongs to the go skill (its name is too short to match by words)
-    return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
+    if (f) return { text, skill, family: f.id, name: f.name };
+    // no skill name or example: the check's owner row (CHECK_OWNERS), a skill when the row names one in the families, else the part and its family
+    const o = ownerOfCheck(text), of = o && (o.skill ? map.get(o.skill) : byId.get(o.family)) || null;
+    return of ? { text, skill: o.skill || null, owner: o.skill ? null : o.owner, files: o.files, family: of.id, name: of.name } : { text, skill: null, family: null, name: null };
   }) }));
   if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);
   for (const i of placed) {
@@ -117,7 +150,7 @@ export function autopsy(incidentsJson, fam, guide, focus = '') {
     if (isGoLog(c.text)) goLog.push({ sha: i.sha, at: i.at, text: c.text });
     if (c.family) counts.set(c.family, { id: c.family, name: c.name, count: (counts.get(c.family) || { count: 0 }).count + 1 }); else un.set(c.text, (un.get(c.text) || 0) + 1);
   }
-  placed = placed.map((i) => { const checks = i.checks.map(({ text, skill, family, meta }) => (meta ? { text, skill, family, meta: true } : { text, skill, family })); return { ...i, checks, suspects: suspectsOf(i.touched, checks) }; });
+  placed = placed.map((i) => { const checks = i.checks.map(({ text, skill, family, meta, owner, files }) => (meta ? { text, skill, family, meta: true } : { text, skill, family, ...(owner ? { owner } : {}), ...(files ? { files } : {}) })); return { ...i, checks, suspects: suspectsOf(i.touched, checks) }; });
   return {
     total: inc.length, failing: placed.reduce((n, i) => n + i.checks.filter((c) => !c.meta).length, 0), recent: placed.slice(0, RECENT), focus: want, goLog, suite,
     families: [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
@@ -159,7 +192,7 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
-      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + remedyHtml(i, esc) + '</li>').join('') + '</ul>'
+      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill || c.owner) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + remedyHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
 /** how many red suites incidents.json keeps (tools/incident-log.mjs KEEP): a week with that many may hold more that fell off the end */
@@ -207,16 +240,19 @@ export function stabilityLine(g, esc = escHtml) {
 /**
  * the remediation draft of one incident (asked by Verse: "Add a 'remediation-draft' field to the incident-autopsy output that proposes a
  * code fix for the reported error"): a fix plan built from the record only, never a model's guess at code: the failing checks to re-run
- * alone, the files to open first (a changed skill file with a failing check, then the failing skills' own files, then what the commit
- * touched), how to undo the likely file if it fails again, and the commit to read. Code the page cannot check is not proposed. Pure.
+ * alone (one run per check title), the files to open first (a changed skill file with a failing check, then the failing checks' own
+ * files from their skill or CHECK_OWNERS row), how to undo the likely file if it fails again, and the commit to read. Code the page cannot check is not proposed. Pure.
  */
 export function remediationOf(i) {
   const checks = (i && i.checks || []).filter((c) => c && !c.meta), sha = String(i && i.sha || ''), s8 = sha.slice(0, 8);
   const likely = (i && i.suspects || []).filter((x) => x.likely).map((x) => x.file);
-  const own = [...new Set(checks.map((c) => c.skill).filter(Boolean))].map((k) => 'void-live-deploy/skills/' + k + '.js');
-  const open = [...new Set([...likely, ...own, ...(likely.length || own.length ? [] : (i && i.touched || []))])].slice(0, 5);
+  // the failing checks' own files: an owner row's files, else the skill's file. What the commit merely touched is not offered: a commit that
+  // changed drum kits is no reason to open them for a router failure (owner's review, 2026-10-30); its skill files are on the culprit line.
+  const own = checks.flatMap((c) => (Array.isArray(c.files) && c.files.length ? c.files : c.skill ? ['skills/' + c.skill + '.js'] : [])).map((f) => 'void-live-deploy/' + f);
+  const open = [...new Set([...likely, ...own])].slice(0, 5);
+  const titles = [...new Set(checks.map((c) => titleOf(c.text)).filter(Boolean))]; // one run per title: --only "router" runs every router check
   const steps = [];
-  if (checks.length) steps.push('Re-run only what failed: ' + checks.slice(0, 3).map((c) => 'node tools/test_void.mjs --only "' + titleOf(c.text) + '"').join(' ; '));
+  if (titles.length) steps.push('Re-run only what failed: ' + titles.slice(0, 3).map((t) => 'node tools/test_void.mjs --only "' + t + '"').join(' ; ') + (titles.length > 3 ? ' (and ' + (titles.length - 3) + ' more)' : ''));
   else if ((i && i.checks || []).some((c) => c && c.meta)) steps.push('Only the runner stalled here; re-run the suite on main before changing any skill.');
   if (open.length) steps.push('Open first: ' + open.map((f) => f.replace(/^void-live-deploy\//, '')).join(', ') + '.');
   if (likely.length && s8) steps.push('If it still fails, put ' + likely[0].replace(/^void-live-deploy\//, '') + ' back as it was before ' + s8 + ' (git checkout ' + s8 + '~1 -- ' + likely[0] + '), re-run, and open a PR with the fix.');
@@ -225,7 +261,7 @@ export function remediationOf(i) {
 }
 /** the brief a builder agent gets from the root-cause button: the incident, its failing checks and the draft, one plain text. Pure. */
 export function builderBrief(i) {
-  const checks = (i && i.checks || []).map((c) => '- ' + c.text + (c.meta ? ' (the suite itself)' : c.skill ? ' (' + c.skill + ')' : ' (unmapped)'));
+  const checks = (i && i.checks || []).map((c) => '- ' + c.text + (c.meta ? ' (the suite itself)' : c.skill || c.owner ? ' (' + (c.skill || c.owner) + ')' : ' (unmapped)'));
   return ['Incident ' + String(i && i.sha || '').slice(0, 8) + ' (' + String(i && i.at || '').slice(0, 16).replace('T', ' ') + ' UTC, ' + (i && i.suite || 'browser suite') + ')', 'Failing checks:', ...checks, 'Remediation draft:', ...remediationOf(i).map((x, k) => k + 1 + '. ' + x)].join('\n');
 }
 export function culpritHtml(i, esc) {
