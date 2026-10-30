@@ -2,7 +2,7 @@
 // drawn on a canvas (turned, resized, blurred, brightened, put on a background, with a text or a picture on it) and coded by the browser's own
 // encoder (WebCodecs VideoEncoder: H.264 or VP9 for MP4 and MOV, VP9 or VP8 for WebM and MKV). The sound is read whole, edited with the sound
 // edits of /lib/converter.js (cut, speed, volume, join, mix) and coded with AudioEncoder (AAC where the browser has it, else Opus).
-// /lib/video-mux.js writes the file. Pictures, a GIF, the pages of a PDF or a sound with a picture become a video the same way, with no
+// /lib/video-mux.js writes the file. Stabilize plays the video twice: once to follow its shake (/lib/stabilize.js), once to write it. Pictures, a GIF, the pages of a PDF or a sound with a picture become a video the same way, with no
 // playing. Where the browser has no VideoEncoder, MediaRecorder records the playing video instead (plain conversion only), and the notes say
 // so. An AVI holds the H.264 pictures and the sound as 16-bit PCM (/lib/avi.js). A 3GP holds H.264 and AAC only, so it has no sound where the browser has no AAC encoder. An FLV holds the H.264 pictures and AAC sound, or 16-bit PCM
 // at 44.1 kHz where the browser has no AAC encoder (/lib/flv.js). Browser only. Nothing is uploaded.
@@ -11,6 +11,7 @@ import { flv, PCM_RATE } from './flv.js';
 import { mp4, webm, webmWithDuration, avcCodecs, bitrateOf, evenSize } from './video-mux.js';
 import { cut, speed as speedOf, gain as gainOf, merge, mix, resample } from './converter.js';
 import { blend, KINDS as TRANSITION_KINDS, TRANSITIONS } from './transition.js';
+import { gray, motion, plan, fixAt, workSize, IDENT, LEVELS } from './stabilize.js';
 
 const wait = (el, ev, ms = 30000) => new Promise((res, rej) => { const tm = setTimeout(() => rej(new Error('the video did not open in time.')), ms); el.addEventListener(ev, () => { clearTimeout(tm); res(); }, { once: true }); el.addEventListener('error', () => { clearTimeout(tm); rej(new Error('this browser cannot play this video, so Verse cannot read it.')); }, { once: true }); });
 const supported = async (C, cfg) => { try { return !!(await C.isConfigSupported(cfg)).supported; } catch (_) { return false; } };
@@ -447,6 +448,54 @@ export async function writeSplit(files, opts = {}) {
     if (sound && r.notes.some((x) => /^no sound: /.test(x))) r.notes = r.notes.filter((x) => x !== notes[heard]);
     return r;
   } finally { for (const s of sides) s.src.stop(); for (const v of vids) { v.pause(); URL.revokeObjectURL(v.src); v.removeAttribute('src'); v.load(); } }
+}
+
+// ---- stabilize: the video plays twice, once to follow its shake and once to write it without -------------------------------------------
+/** a video with its shake taken out (lib/stabilize.js). opts.level: 1-5 (Stable to Most Stable); with container, quality, onProgress as
+ *  writeVideo. The first play follows how each picture moves on a small gray copy; the second draws each picture turned and moved onto the
+ *  smooth path, zoomed in to hide the edges. The sound stays as it was. Returns what writeVideo returns. */
+export async function writeStabilize(file, opts = {}) {
+  const container = CONTAINERS.includes(opts.container) ? opts.container : 'mp4', say = opts.onProgress || (() => {}), level = LEVELS[opts.level] ? +opts.level : 3, L = LEVELS[level];
+  if (!canEncode()) throw new Error('this browser has no video encoder (WebCodecs), so Verse cannot stabilize video here. Chrome, Edge and Safari 17 or later have one.');
+  const v = document.createElement('video'); let src = null;
+  v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = URL.createObjectURL(file);
+  try {
+    await wait(v, 'loadeddata'); if (!v.videoWidth) throw new Error('this file has no picture: it is a sound. Pick a video.');
+    const sw = v.videoWidth, sh = v.videoHeight, dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 0, { step } = await frameStep(v, 0);
+    // 1. the first play: each picture made small and gray, and its move from the one before
+    const [gw, gh] = workSize(sw, sh), small = new OffscreenCanvas(gw, gh).getContext('2d', { willReadFrequently: true });
+    const times = [], moves = []; let prev = null, weak = 0;
+    src = pictures(v, step);
+    for (;;) {
+      const nx = await src.peek(); if (!nx) break; const x = src.take();
+      small.drawImage(x.f, 0, 0, gw, gh); x.f.close(); const g = gray(small.getImageData(0, 0, gw, gh).data, gw, gh);
+      if (prev) { const r = motion(prev, g, gw, gh); moves.push(r.m); if (r.blocks < 6) weak++; } else moves.push(IDENT);
+      times.push(x.t); prev = g; say(Math.min(0.49, dur ? 0.5 * x.t / dur : 0));
+    }
+    let skipped = src.skipped; src.stop(); src = null;
+    if (!times.length) throw new Error('no picture came out of this video.');
+    const p = plan(times, moves, gw, gh, level);
+    // 2. the second play: each picture drawn with its correction, about the centre, and the one zoom
+    const fps = Math.max(1, Math.min(120, 1 / step)), { width: W, height: H } = sizeOf(sw, sh, opts), E = await encoder(container, W, H, opts.quality, fps);
+    const kx = W / gw, ky = H / gh, z = p.zoom, t0 = times[0];
+    src = pictures(v, step);
+    for (;;) {
+      const nx = await src.peek(); if (!nx) break; const x = src.take(), m = fixAt(times, p.fix, x.t);
+      E.x.setTransform(1, 0, 0, 1, 0, 0); E.x.fillStyle = '#000'; E.x.fillRect(0, 0, W, H);
+      E.x.setTransform(z * m.a, z * m.b, -z * m.b, z * m.a, W / 2 + z * m.tx * kx, H / 2 + z * m.ty * ky);
+      E.x.drawImage(x.f, -W / 2, -H / 2, W, H); x.f.close();
+      E.push(Math.round((x.t - t0) * 1e6)); say(Math.min(0.99, 0.5 + (dur ? 0.5 * x.t / dur : 0)));
+      if (E.enc.encodeQueueSize > 4) while (E.enc.encodeQueueSize > 1) await new Promise((r) => E.enc.addEventListener('dequeue', r, { once: true }));
+    }
+    skipped += src.skipped; src.stop(); src = null; E.x.setTransform(1, 0, 0, 1, 0, 0);
+    const notes = [L.name + ': the camera\'s path averaged over ' + L.sigma + ' s either way (a Gaussian), each picture turned and moved onto it',
+      z > 1.0005 ? 'zoomed in ' + ((z - 1) * 100).toFixed(1) + '% to hide the edges the corrections move into view' : 'no zoom was needed: the corrections are small enough to stay inside the picture'];
+    if (p.cut) notes.push(p.cut + ' picture' + (p.cut === 1 ? '' : 's') + ' shook more than a ' + ((L.zoom - 1) * 100).toFixed(0) + '% zoom can hide, so ' + (p.cut === 1 ? 'its' : 'their') + ' correction is smaller (a higher level allows more zoom)');
+    if (weak) notes.push(weak + ' picture' + (weak === 1 ? '' : 's') + ' had too little detail to follow well (a plain or dark part), so ' + (weak === 1 ? 'its' : 'their') + ' move is a rough one');
+    if (skipped) notes.push(skipped + ' picture' + (skipped === 1 ? '' : 's') + ' went by before this device could draw ' + (skipped === 1 ? 'it' : 'them') + ', so ' + (skipped === 1 ? 'it is' : 'they are') + ' not in the new video');
+    const sound = await soundOf48(file);
+    return await finish(container, E, sound, notes, say);
+  } finally { if (src) src.stop(); v.pause(); URL.revokeObjectURL(v.src); v.removeAttribute('src'); v.load(); }
 }
 
 // no VideoEncoder: record the playing video with MediaRecorder (the browser picks the codecs; it takes as long as the video)
