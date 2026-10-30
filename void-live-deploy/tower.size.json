@@ -8622,6 +8622,7 @@
   "processchecker.com": {
    "bytes": 868246,
    "controls": 13,
+   "family": "tools",
    "scripts": 11,
    "styles": 10,
    "nodes": 122,

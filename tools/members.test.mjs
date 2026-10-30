@@ -6,6 +6,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/members.js';
 import { checkIdea, perks, stateText, queueIdea, DAILY, LIVE } from '../void-live-deploy/lib/members.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
+import { ensureStoreTables } from '../void-live-deploy/lib/store-db.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -40,12 +41,15 @@ test('an idea that adds passes; one that takes away, spams or carries a key is t
   assert.match(checkIdea('Remove the fan fiction page please').why, /add/i, 'a subtracting idea is told members add');
 });
 
-test('visitors see the perks with no sign-in; the member lab rows follow the go-live switch', async () => {
+test('visitors see the perks with no sign-in; helping build Verse is always listed, and says it opens soon until go-live', async () => {
   const DB = d1();
   const j = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/members'), env: { DB } })).json();
   assert.equal(j.signedIn, false); assert.equal(j.live, LIVE);
   assert.ok(j.perks.length >= 4); assert.match(j.buy, /^https:\/\/moonbeam846\.gumroad\.com\/l\/yinmj$/);
-  assert.equal(perks(true).length, perks(false).length + 2);
+  assert.equal(perks(true).length, perks(false).length);
+  assert.match(perks(false).find((p) => p.id === 'build').title, /help build verse/i);
+  assert.match(perks(false).find((p) => p.id === 'build').text, /Opens soon\.$/);
+  assert.doesNotMatch(perks(true).find((p) => p.id === 'build').text, /Opens soon/);
 });
 
 test('only a signed-in paid member can send; a free account gets 402 with the way to join', async () => {
@@ -101,4 +105,24 @@ test('sends at the same moment cannot pass the daily limit: the count is checked
   assert.equal(all.filter(Boolean).length, DAILY);
   assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_member_ideas').get().n, DAILY);
   assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, DAILY, 'no queue job without its idea row');
+});
+
+// The owner bought their own membership while signed in to Gumroad as the creator: Gumroad sends that as a test ping. It was recorded
+// before such a ping was trusted, so the purchase is applied when their Verse next loads /members/ (functions/api/gumroad.js relinkRecorded).
+test('a recorded purchase from before today\'s rules unlocks its own Verse on the next load, and nobody else\'s', async () => {
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==';
+  const raw = (extra) => new URLSearchParams({ sale_id: 'own-1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-own', test: 'true', resource_name: 'sale', 'url_params[void]': USER, ...extra }).toString();
+  const rec = (DB, id, r, voidId = USER) => DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES (?, 'sale', 'own-1', 'sub-own', 'yinmj', ?, 0, 'not trusted: test ping', ?, ?)").run(id, voidId, r, new Date().toISOString());
+  const DB = d1(); await signIn(DB, null); await ensureStoreTables({ DB });
+  rec(DB, 'sale:own-1:t', raw({}));
+  const j = await get(DB);
+  assert.equal(j.tier, 'paid', 'the owner\'s own purchase unlocks their Verse');
+  assert.equal(DB.raw.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').get(USER).tier, 'paid');
+  assert.equal(DB.raw.prepare("SELECT verified FROM void_sales WHERE id = 'sale:own-1:t'").get().verified, 1);
+  // another seller's ping, a cancelled one, or a ping for someone else's Verse unlocks nothing
+  for (const [r, cancel, voidId] of [[raw({ seller_id: 'zzOtherSellerZZzzzzzzz==' }), false, USER], [raw({}), true, USER], [raw({}), false, 'someone-else-verse-id']]) {
+    const D2 = d1(); await signIn(D2, null); await ensureStoreTables({ DB: D2 }); rec(D2, 'sale:own-1:t', r, voidId);
+    if (cancel) D2.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('cancellation:sub-own:x', 'cancellation', NULL, 'sub-own', 'yinmj', NULL, 0, 'x', 'resource_name=cancellation', ?)").run(new Date().toISOString());
+    assert.equal((await get(D2)).tier, 'free');
+  }
 });
