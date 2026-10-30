@@ -9,13 +9,13 @@ import { splitPlace, SKY_LINK } from '../lib/skyask.js';
 
 // the eclipse table (lib/eclipses.js), the almanac and the place lookup load with the first eclipse answer, not with the routing order
 // (lib/load-later.js, owner 2026-10-30); nextEclipses and eclipseLine read them, so a caller awaits ready first
-let A, LUNAR, SOLAR, dayWord, inWords, fmtTime, compassWord, whereAmI, findPlace;
+let A, LUNAR, SOLAR, dayWord, inWords, fmtTime, compassWord, whereAmI, findPlace; // void-review: ok (filled when the helpers load, below)
 export const ready = loadLater(() => Promise.all([
   import('../lib/astro.js'),
   import('../lib/eclipses.js'),
   import('../lib/skyfacts.js'),
   import('../lib/where.js'),
-]).then(([a, e, f, w]) => { A = a; ({ LUNAR, SOLAR } = e); ({ dayWord, inWords, fmtTime, compassWord } = f); ({ whereAmI, findPlace } = w); }));
+]).then(([a, e, f, w]) => { A = a; ({ LUNAR, SOLAR } = e); ({ dayWord, inWords, fmtTime, compassWord } = f); ({ whereAmI, findPlace } = w); })); // void-review: ok (the names are declared on the let line above)
 
 // { which: 'any' | 'solar' | 'lunar', kind?: 'total' | 'annular' | 'partial' | 'penumbral', place, year? } or null
 export function eclipseAsk(text) {

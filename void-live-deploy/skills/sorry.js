@@ -8,12 +8,12 @@
 import { loadLater } from '../lib/load-later.js';
 
 // the rules, the 3D lift and the card flip load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
-let lift3d, flip, COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove;
+let lift3d, flip, COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove; // void-review: ok (filled when the helpers load, below)
 export const ready = loadLater(() => Promise.all([
   import('./sorry-rules.js'),
   import('./lift3d.js'),
   import('./sfx.js'),
-]).then(([r, l, x]) => { ({ COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove } = r); ({ lift3d } = l); ({ flip } = x); }));
+]).then(([r, l, x]) => { ({ COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove } = r); ({ lift3d } = l); ({ flip } = x); })); // void-review: ok (the names are declared on the let line above)
 
 export function sorryOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?.]+$/, '').replace(/\s+/g, ' ');

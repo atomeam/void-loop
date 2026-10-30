@@ -8,12 +8,12 @@ import PARODY from '../lib/parody.js';
 
 // the side card, the level picker and the arcade ladder (the parody table stays: match() reads it)
 // load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
-let grip, sideCard, LEVELS, getLevel, setLevel, LADDER_GAMES, ARCADE_ASKS, arcadeRow, loadLadder;
+let grip, sideCard, LEVELS, getLevel, setLevel, LADDER_GAMES, ARCADE_ASKS, arcadeRow, loadLadder; // void-review: ok (filled when the helpers load, below)
 export const ready = loadLater(() => Promise.all([
   import('./side-card.js'),
   import('./game-level.js'),
   import('../lib/ladder.js'),
-]).then(([c, g, d]) => { ({ grip, sideCard } = c); ({ LEVELS, getLevel, setLevel } = g); ({ GAMES: LADDER_GAMES, ASKS: ARCADE_ASKS, arcadeRow, load: loadLadder } = d); }));
+]).then(([c, g, d]) => { ({ grip, sideCard } = c); ({ LEVELS, getLevel, setLevel } = g); ({ GAMES: LADDER_GAMES, ASKS: ARCADE_ASKS, arcadeRow, load: loadLadder } = d); })); // void-review: ok (the names are declared on the let line above)
 
 // Verse's parody of any classic game (asked by Verse: a searchable games matrix and a "parody-forge" card), folded into the game rack.
 // From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.

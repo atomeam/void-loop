@@ -10,13 +10,13 @@ import { loadLater } from '../lib/load-later.js';
 
 // the rules, the marbles' look, the 3D lift and the rules line
 // load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
-let R, marbleLook, lift3d, rulesLine, SPAN;
+let R, marbleLook, lift3d, rulesLine, SPAN; // void-review: ok (filled when the helpers load, below)
 export const ready = loadLater(() => Promise.all([
   import('./ringer-rules.js'),
   import('./figures.js'),
   import('./lift3d.js'),
   import('./game-rules-line.js'),
-]).then(([r, f, l, x]) => { R = r; SPAN = R.RING + 0.05; ({ marbleLook } = f); ({ lift3d } = l); ({ rulesLine } = x); }));
+]).then(([r, f, l, x]) => { R = r; SPAN = R.RING + 0.05; ({ marbleLook } = f); ({ lift3d } = l); ({ rulesLine } = x); })); // void-review: ok (the names are declared on the let line above)
 
 export function ringerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
