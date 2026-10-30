@@ -7042,5 +7042,10 @@
   {"ask": "base converter", "want": "skill:open-tool"},
   {"ask": "apple stock price", "want": "skill:stocks"},
   {"ask": "what is tesla's stock price", "want": "skill:stocks"},
-  {"ask": "how is the s&p 500 today", "want": "skill:stocks"}
+  {"ask": "how is the s&p 500 today", "want": "skill:stocks"},
+  {"ask": "animate a cat chasing yarn", "want": "skill:video-gen"},
+  {"ask": "animate waves on a beach at sunset", "want": "skill:video-gen"},
+  {"ask": "is it better to rent or buy a house", "want": "skill:rentbuy"},
+  {"ask": "rent vs buy", "want": "skill:rentbuy"},
+  {"ask": "how heavy can my suitcase be", "want": "skill:baggage"}
 ]
