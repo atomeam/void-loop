@@ -116,17 +116,18 @@ export function smooth(curve, sigma = 1.5) {
 
 /** the tempo of an onset curve in beats a minute, folded into 60 to 120 (a trap beat at 140 is felt at 70, the way Verse writes it), with how
  *  sure the estimate is (0 to 1): { bpm, confidence }. The smoothed curve is autocorrelated over the lags of 55 to 180 BPM; each lag counts with
- *  its double and its half, so the tempo, not a multiple of it, wins. confidence is how far the best lag stands above the next best tempo that is
+ *  its double, its half and the bar of four beats it makes, so the tempo, not a multiple of it, wins, and a syncopated pattern (drill's kicks five 16ths
+ *  apart) does not pass for the beat: only the true beat repeats with the bar. confidence is how far the best lag stands above the next best tempo that is
  *  not a multiple of it. Pure. */
 export function tempoOf(curve, hop) {
   const n = curve.length; if (n < 8) return { bpm: 0, confidence: 0 };
   const sm = smooth(curve); let mean = 0; for (let i = 0; i < n; i++) mean += sm[i]; mean /= n;
   const c = Float32Array.from(sm, (v) => v - mean), ac = (lag) => { let s = 0; for (let i = lag; i < n; i++) s += c[i] * c[i - lag]; return s / (n - lag); };
-  const lagOf = (bpm) => 60 / bpm / hop, l0 = Math.floor(lagOf(180)), lHi = Math.ceil(lagOf(55)), l1 = Math.min(n - 2, lHi * 2 + 1);
+  const lagOf = (bpm) => 60 / bpm / hop, l0 = Math.floor(lagOf(180)), lHi = Math.ceil(lagOf(55)), l1 = Math.min(n - 2, lHi * 4 + 1);
   const r = new Float32Array(l1 + 2); for (let l = 1; l <= l1 + 1; l++) r[l] = ac(l);
   const at = (l) => { const i = Math.floor(l), f = l - i; return i + 1 < r.length ? r[i] * (1 - f) + r[i + 1] * f : 0; };
   const score = []; let best = 0, bestL = 0;
-  for (let l = l0; l <= Math.min(lHi, l1); l++) { const s = r[l] + 0.5 * at(l * 2) + 0.25 * at(l / 2); score.push([l, s]); if (s > best) { best = s; bestL = l; } }
+  for (let l = l0; l <= Math.min(lHi, l1); l++) { const s = r[l] + 0.5 * at(l * 2) + 0.25 * at(l / 2) + 0.5 * at(l * 4); score.push([l, s]); if (s > best) { best = s; bestL = l; } }
   if (!bestL || best <= 0) return { bpm: 0, confidence: 0 };
   const y0 = r[bestL - 1] || 0, y1 = r[bestL], y2 = r[bestL + 1] || 0, den = y0 - 2 * y1 + y2, lag = bestL + (den < 0 ? 0.5 * (y0 - y2) / den : 0);
   let bpm = 60 / (lag * hop); while (bpm >= 120.5) bpm /= 2; while (bpm < 59.5) bpm *= 2;

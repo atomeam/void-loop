@@ -1,10 +1,12 @@
-// The rap beat (owner, 2026-10-30: "the beats are terrible"): hip-hop production made in the browser for each style of lib/rap.js, from the
-// composed piece beatFor() gives (lib/compose.js: its chords, bass line, melody and drum steps). No sample is used, nothing is copied: every
-// sound is synthesised here with Web Audio.
-//   - drums: a kick with a pitch drop and a click, saturated; a snare with a body and a snap, or a three-burst clap for trap, drill and melodic;
-//     closed and open hats with accents, humanised, and trap rolls (32nds and triplets) at the end of a measure; a crash where the rap starts
-//   - bass: a sliding 808 (sine with a soft clip, so a phone speaker hears its harmonics) on the kicks for trap, drill and melodic; a round
-//     sub bass for boom bap and conscious
+// The rap beat (owner, 2026-10-30: "the beats are terrible", then "needs real beats and music drums needs to sound like perfect studio
+// quality"): hip-hop production made in the browser for each style of lib/rap.js, from the composed piece beatFor() gives (lib/compose.js: its
+// chords, bass line, melody and drum steps).
+//   - drums: real recordings when a kit is loaded (lib/rap-kit.js: an acoustic kit in velocity layers for boom bap and conscious, a real TR-808
+//     for trap, drill and melodic, real hand claps layered on the 808 clap); without one, synthesised: a kick with a pitch drop and a click, a
+//     snare with a body and a snap or a three-burst clap. Closed and open hats with accents, humanised, and trap rolls (32nds and triplets) at
+//     the end of a measure; a crash where the rap starts
+//   - bass: a sliding 808 on the kicks for trap, drill and melodic (the real 808's tuned bass drum played at the note's pitch when the kit is
+//     loaded, else a sine; either one soft clipped, so a phone speaker hears its harmonics); a round sub bass for boom bap and conscious
 //   - music: seventh chords on an electric piano with tremolo, tape wobble and vinyl crackle (boom bap, conscious); a dark pad with a bell or a
 //     pluck (trap, drill); a wide pad with a plucked arpeggio (melodic)
 //   - the mix: swing on the off 16ths (boom bap most), the music ducked under each kick, a reverb send, then a bus compressor, a soft clip and
@@ -12,6 +14,7 @@
 // beatEvents() is pure (the times, sounds and velocities, tested in tools/rap-sound.test.mjs); produce() builds the sound on any
 // BaseAudioContext (an OfflineAudioContext renders it to a buffer, lib/rap-song.js).
 import { hz, SCALES } from './compose.js';
+import { hitsOf } from './rap-kit.js';
 
 /** how late the off 16th of each pair is played: 0.5 is straight, 0.58 is the swing of a 90s boom bap groove */
 export const SWING = Object.freeze({ 'boom bap': 0.58, conscious: 0.56, melodic: 0.54, trap: 0.5, drill: 0.5 });
@@ -104,8 +107,9 @@ function crackle(ctx, seconds, seed) {
 export function clipCurve(drive = 1.5, n = 2048) { const c = new Float32Array(n), k = Math.tanh(drive); for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1; c[i] = Math.tanh(drive * x) / k; } return c; }
 const env = (g, t, peak, atk, dec, floor = 0.0001) => { g.gain.setValueAtTime(floor, t); g.gain.linearRampToValueAtTime(peak, t + atk); g.gain.exponentialRampToValueAtTime(floor, t + atk + dec); };
 
-/** build the beat on `ctx` from t0 into `dest`: the whole song's beat, `measures` long (intro and outro included). Returns { seconds, kicks }. */
-export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destination } = {}) {
+/** build the beat on `ctx` from t0 into `dest`: the whole song's beat, `measures` long (intro and outro included). `kit` is a loaded kit
+ *  (lib/rap-kit.js loadKit): its recordings play the drums and the 808; without it they are synthesised. Returns { seconds, kicks, sampled }. */
+export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destination, kit = null } = {}) {
   const style = beat.rapStyle || 'boom bap', plan = beatEvents(beat, { measures }), nz = noise(ctx, 2, beat.seed), lofi = style === 'boom bap' || style === 'conscious';
   const node = (type, props = {}) => { const n = type === 'gain' ? ctx.createGain() : type === 'filter' ? ctx.createBiquadFilter() : type === 'shaper' ? ctx.createWaveShaper() : type === 'comp' ? ctx.createDynamicsCompressor() : type === 'pan' ? (ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain()) : ctx.createConvolver(); for (const [k, v] of Object.entries(props)) { if (n[k] && typeof n[k] === 'object' && 'value' in n[k]) n[k].value = v; else n[k] = v; } return n; };
   // the master: bus compressor, soft clip, limiter
@@ -135,8 +139,29 @@ export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destinati
   if (lofi) { const v = ctx.createBufferSource(); v.buffer = crackle(ctx, 3, beat.seed); v.loop = true; const hp = node('filter', { type: 'bandpass', frequency: 2400, Q: 0.6 }), g = node('gain', { gain: 0.5 }); v.connect(hp); hp.connect(g); g.connect(master); v.start(t0); v.stop(t0 + total); }
   const osc = (type, f, t, stop, detune = 0) => { const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); if (detune) o.detune.value = detune; o.start(t); o.stop(stop); return o; };
   const burst = (t, dur, f, type, q, gain, dst, rate = 1) => { const s = ctx.createBufferSource(); s.buffer = nz; s.playbackRate.value = rate; const fl = node('filter', { type, frequency: f, Q: q }), g = node('gain'); env(g, t, gain, 0.001, dur); s.connect(fl); fl.connect(g); g.connect(dst); s.start(t, dur > 0.4 ? 0 : (t * 7.13) % 1.2, dur + 0.05); return g; };
+  // the recorded drums and 808: each take through its own path, so a real kick is not driven as hard as a synthesised one
+  const SAMPLED = new Set(['kick', 'snare', 'clap', 'hat', 'ohat', 'crash', '808']), hits = kit ? hitsOf(plan.events, kit.name).filter((h) => kit.buffers.has(h.path)) : [];
+  const sampled = hits.length > 0;
+  if (sampled) {
+    const kickEq = node('filter', { type: 'lowshelf', frequency: 90, gain: kit.name === 'kit' ? 4 : 1 }), kickClick = node('filter', { type: 'peaking', frequency: 3800, Q: 0.9, gain: kit.name === 'kit' ? 3 : 0 }), kickSat = node('shaper', { curve: clipCurve(1.2) });
+    kickEq.connect(kickClick); kickClick.connect(kickSat); kickSat.connect(drums);
+    const route = { kick: kickEq, bass: bassClip };
+    for (const h of hits) {
+      const t = t0 + h.t, s = ctx.createBufferSource(), g = node('gain', { gain: h.gain }); s.buffer = kit.buffers.get(h.path);
+      if (h.voice === 'bass') {
+        if (h.from) { s.playbackRate.setValueAtTime(h.from, t); s.playbackRate.exponentialRampToValueAtTime(h.rate, t + 0.12); } else s.playbackRate.setValueAtTime(h.rate, t);
+        g.gain.setValueAtTime(h.gain, t); g.gain.setValueAtTime(h.gain, t + h.dur * 0.85); g.gain.exponentialRampToValueAtTime(0.0001, t + h.dur + 0.08);
+        s.connect(g); g.connect(bassClip); s.start(t); s.stop(t + h.dur + 0.1); continue;
+      }
+      s.connect(g);
+      if (route[h.voice]) g.connect(route[h.voice]);
+      else { const p = node('pan', { pan: h.pan }); g.connect(p); p.connect(drums); if (h.voice !== 'hat' && h.voice !== 'ohat') send(g, h.voice === 'crash' ? 0.3 : 0.2); }
+      s.start(t);
+    }
+  }
   for (const e of plan.events) {
     const t = t0 + e.t;
+    if (sampled && SAMPLED.has(e.kind)) continue;
     if (e.kind === 'kick') {
       const o = osc('sine', style === 'boom bap' || style === 'conscious' ? 150 : 175, t, t + 0.5), g = node('gain');
       o.frequency.exponentialRampToValueAtTime(52, t + 0.055); o.frequency.exponentialRampToValueAtTime(44, t + 0.3);
@@ -190,5 +215,5 @@ export function produce(ctx, beat, { measures = 10, t0 = 0, dest = ctx.destinati
       env(g, t, 0.06 * e.vel, 0.002, 0.4); o.connect(lp); lp.connect(g); g.connect(keysBus);
     }
   }
-  return { seconds: total, kicks: plan.kicks, plan };
+  return { seconds: total, kicks: plan.kicks, plan, sampled };
 }
