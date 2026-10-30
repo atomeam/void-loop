@@ -150,3 +150,25 @@ test('run: a page view lists for that page and links it; by salary keeps the pai
     assert.ok(api.pages[0].innerHTML.includes('href="/jobs/alerts/"'), api.pages[0].innerHTML);
   });
 });
+
+test('run: a role the feeds hold few of offers the same remote search on LinkedIn Jobs and Himalayas; a full list and a place do not (2026-10-30)', async () => {
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('remote jobs for python', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('These feeds hold few python jobs right now. The same remote search on the big job boards: <a href="https://www.linkedin.com/jobs/search/?keywords=python&amp;f_WT=2" target="_blank" rel="noopener">LinkedIn Jobs</a> · <a href="https://himalayas.app/jobs?q=python" target="_blank" rel="noopener">Himalayas</a>'), h);
+    assert.ok(!h.includes('>Indeed<'), 'Indeed reads l=remote in a way that is not confirmed');
+  });
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('find me work as a beekeeper', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('No remote listings matched') && h.includes('https://himalayas.app/jobs?q=beekeeper'), 'none in the feeds: the boards are the next place to look');
+  });
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('find remote jobs', api), 'work');
+    assert.ok(!api.pages[0].innerHTML.includes('These feeds hold few'), 'no role asked, nothing to search for');
+  });
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('python jobs in europe', api), 'work');
+    const h = api.pages[0].innerHTML; assert.ok(!h.includes('These feeds hold few') && h.includes('The same search for europe'), 'a place keeps its own line');
+  });
+});
