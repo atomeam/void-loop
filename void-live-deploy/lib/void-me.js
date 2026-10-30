@@ -3,6 +3,7 @@
 // If they can't be made, every call answers 503: no sign-in, no sync, nothing half-written.
 import { randomB64u, sha256, b64u } from './webauthn.js';
 import { PAGE_TABLE } from './pages.js';
+import { ownerAccount } from './guard.js';
 
 export const RP_NAME = 'Verse';
 export const CHALLENGE_TTL_MS = 5 * 60e3;
@@ -40,16 +41,7 @@ export async function tierOf(env, userId) {
     const row = await env.DB.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').bind(userId).first();
     if (row && row.tier === 'paid') return 'paid';
   } catch (_) { /* fall through to the owner check */ }
-  return (await isOwner(env, userId)) ? 'paid' : 'free';
-}
-// True only when this account holds an owner-bound passkey. Any read error is false.
-export async function isOwner(env, userId) {
-  if (!userId) return false;
-  try {
-    // void-review: ok (bound parameter)
-    const row = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first();
-    return !!(row && row.y);
-  } catch (_) { return false; }
+  return (await ownerAccount(env, userId)) ? 'paid' : 'free';
 }
 const made = new WeakMap();
 export function ensureTables(env) {
