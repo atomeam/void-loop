@@ -4,7 +4,7 @@
  * "generate a uuid", "random uuid", "make a guid"
  */
 export function isUuid(text) {
-  return /^(?:please\s+)?(?:(?:generate|make|create|give\s+me)\s+(?:a\s+|another\s+)?(?:random\s+|new\s+)?(?:uuid|guid)|(?:random|another|new)\s+(?:uuid|guid)|(?:uuid|guid)\s+please)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:generate|make|create|give\s+me)\s+(?:a\s+|another\s+)?(?:random\s+|new\s+)?(?:uuid|guid)|(?:random|another)\s+(?:uuid|guid)|(?:uuid|guid)\s+please)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 // crypto.randomUUID where the browser has it (every current one); the template with crypto bytes, then Math.random, as the fallbacks
@@ -34,7 +34,7 @@ async function run(text, api) {
 
 export default {
   name: 'uuid',
-  // "generate a uuid" and "make a guid" reach util first (its uuid card, rank 460); this one takes the asks util leaves: random, another, please
+  // "generate a uuid", "make a guid" and "new guid" are util's (its uuid card, rank 460; issue #1695); this one takes the asks util leaves: random, another, please
   examples: ['random uuid', 'another uuid', 'random guid', 'uuid please'],
   nearMisses: ['what is a uuid', 'uuid of a file', 'change my uuid'],
   match(lower, text) { return isUuid(text); },

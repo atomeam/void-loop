@@ -14,6 +14,7 @@ const BY = GENERATORS.map((x) => [stem(x.en), x]);
 export function textgenOf(text) {
   const l = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   if (/^(?:random |text |writing |name )?generators$/.test(l)) return GENERATORS[0];
+  if (/^(?:an? |some )?random colou?rs?$/.test(l)) return null; // one colour is the color skill's (issue #1695); the prefix rule below would read "colour" as "colour palette names"
   const m = /^(?:(?:give me|make me|make|show me|generate|i need)\s+)?(?:an? |some |\d{1,2} )?(?:random )?(.{3,40}?)(?: generator)?$/.exec(l);
   if (!m) return null;
   const asked = /(?:generator$|name$|^(?:give me|make|show me|generate|i need|random)\b)/.test(l); // a bare "band names" stays an encyclopedia ask
@@ -38,7 +39,7 @@ function run(text, api) {
 export default {
   name: 'textgen',
   examples: ['fantasy name generator', 'band name generator', 'random generators', 'give me a story prompt'],
-  nearMisses: ['random number', 'password generator', 'qr code generator', 'band names', 'what is a haiku'],
+  nearMisses: ['random colour', 'random number', 'password generator', 'qr code generator', 'band names', 'what is a haiku'],
   match(lower, text) { return !!textgenOf(text || lower); },
   run
 };
