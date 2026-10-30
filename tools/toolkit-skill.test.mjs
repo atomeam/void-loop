@@ -27,9 +27,12 @@ test('the card: one link per tool page, the count in the title, /tools/ as the p
 test('the card and the Tools page list the same pages: the card once missed the eleven the page lists by hand', () => {
   const html = readFileSync(new URL('../void-live-deploy/tools/index.html', import.meta.url), 'utf8');
   const main = html.slice(html.indexOf('<main'), html.indexOf('<nav id="related"'));
-  const page = new Set([...main.matchAll(/<li><a href="(\/[^"]*)"/g)].map((m) => m[1]));
+  const page = new Set([...main.matchAll(/<li(?: [^>]*)?><a href="(\/[^"]*)"/g)].map((m) => m[1]));
   const onCard = new Set([...card('all tools').el.innerHTML.matchAll(/<a href="([^"]*)"/g)].map((m) => m[1]));
   assert.ok(page.size > 80, 'the page lists its tools: ' + page.size);
   assert.deepEqual([...page].filter((h) => !onCard.has(h)), [], 'on /tools/ but not on the card');
-  assert.deepEqual([...onCard].filter((h) => !page.has(h)), [], 'on the card but not on /tools/');
+  // /tools/ lists a tool Verse built twice under one name once (tools/seo-pages.mjs moreTools); the card may keep both addresses
+  const pageNames = new Set([...main.matchAll(/<li(?: [^>]*)?><a href="\/[^"]*">([^<]*)</g)].map((m) => m[1].toLowerCase()));
+  const cardNames = new Map([...card('all tools').el.innerHTML.matchAll(/<a href="([^"]*)"[^>]*>([^<]*)</g)].map((m) => [m[1], m[2].toLowerCase()]));
+  assert.deepEqual([...onCard].filter((h) => !page.has(h) && !pageNames.has(cardNames.get(h))), [], 'on the card but not on /tools/');
 });
