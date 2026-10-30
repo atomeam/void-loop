@@ -89,8 +89,8 @@ export const WIKIDATA = 'https://query.wikidata.org/sparql?format=json&query=';
 /** the SPARQL that finds the films with this English label. The title goes through cleanTitle (no quote or backslash can reach the literal). Pure. */
 export function wikidataQuery(title) {
   const t = cleanTitle(title).replace(/["\\]/g, '');
-  // void-review: ok (SPARQL, not SQL: t passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end the literal)
-  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.'
+  // SPARQL, not SQL: t passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end the literal
+  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
     + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } } GROUP BY ?f LIMIT 10';
 }
 /** the Wikidata row that is this movie: the year within one when it is known, else the most recent film of that name; or null. Pure. */
