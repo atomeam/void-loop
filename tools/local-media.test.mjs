@@ -10,7 +10,8 @@ import skill from '../void-live-deploy/skills/local-stations.js';
 
 test('a stream plays here only from https on the standard port and a host name; an http one is tried as https only without a port', () => {
   assert.equal(L.playableStream('https://wrti-live.streamguys1.com/classical-mp3'), true);
-  for (const bad of ['http://stream.example.com/a', 'https://23.239.31.26/aande/index.m3u8', 'https://cdn.example.com:8443/a.m3u8', 'https://localhost/a', 'https://user:pw@cdn.example.com/a', 'https://[::1]/a', 'nope', ''])
+  const signed = 'https://cdn.example.com/live/' + ['eyJ' + 'hbGciOiJIUzI1', 'eyJ' + 'zdWIiOiJwYXRo', 'abcdefghij'].join('.') + '/index.m3u8';
+  for (const bad of [signed, 'http://stream.example.com/a', 'https://23.239.31.26/aande/index.m3u8', 'https://cdn.example.com:8443/a.m3u8', 'https://localhost/a', 'https://user:pw@cdn.example.com/a', 'https://[::1]/a', 'nope', ''])
     assert.equal(L.playableStream(bad), false, bad);
   assert.equal(L.httpsOf('http://stream.laut.fm/80sexitos'), 'https://stream.laut.fm/80sexitos');
   assert.equal(L.httpsOf('http://s9.citrus3.com:8054/stream'), null, 'an Icecast port has no https twin');

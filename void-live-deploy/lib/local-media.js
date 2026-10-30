@@ -11,6 +11,7 @@ const IPV4 = /^\d{1,3}(?:\.\d{1,3}){3}$/;
 export function playableStream(raw) {
   let u; try { u = new URL(String(raw || '')); } catch (_) { return false; }
   if (u.protocol !== 'https:' || u.port && u.port !== '443' || u.username || u.password) return false;
+  if (/eyJ[\w-]{8,}\.[\w-]{8,}\./.test(u.href)) return false; // a signed playback token (a JWT) expires and is not ours to republish
   const h = u.hostname.toLowerCase();
   return !!h && !IPV4.test(h) && !h.includes(':') && !h.startsWith('[') && h.includes('.') && !/(?:^|\.)(?:localhost|local|internal|lan|home)$/.test(h);
 }
