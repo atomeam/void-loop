@@ -79,7 +79,7 @@ test('end to end against a fake queue and a stub lap: the job is read, the lap g
 });
 
 test('the job log keeps the whole why, one line, with key-like runs masked', () => {
-  const why = 'no model answered (verse 429, workers-ai 401, github-models 200 text/html 1234B not JSON)\n and more';
+  const why = 'no model answered (verse 429, workers-ai 401, openrouter 200 text/html 1234B not JSON)\n and more';
   assert.equal(fullWhy({ why }), why.replace(/\s+/g, ' '));
   assert.ok(fullWhy({ why }).length > 90, 'longer than the queue note');
   assert.equal(fullWhy({ why: 'token ' + 'a'.repeat(40) + ' refused' }), 'token [masked] refused');
