@@ -15,7 +15,7 @@
 //   subscription_restarted, dispute_won                        -> 'paid' again, only for an account a verified sale already linked
 // Pings are unsigned, so the key in the URL is always required; one sale links to one Verse only (void_accounts.sale_id is unique).
 // After each ping the running total is recomputed (lib/earnings.js) and any milestone crossed is recorded once (void_milestones).
-import { sameSecret } from '../../lib/guard.js';
+import { sameSecret, ownerAccount } from '../../lib/guard.js';
 import { unlockFor, sellerMatches } from '../../lib/gumroad.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
@@ -181,8 +181,7 @@ export async function claimSale(env, voidId, ref, email) {
 export async function linkOwnerTest(env, voidId) {
   if (!voidId) return null;
   await ensureStoreTables(env); await ensureTables(env);
-  const isOwner = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(voidId).first().catch(() => null);
-  if (!isOwner) return null;
+  if (!(await ownerAccount(env, voidId))) return null; // the shared owner check (lib/guard.js)
   const rows = (await env.DB.prepare("SELECT s.id, s.raw FROM void_sales s WHERE s.resource = 'sale' AND s.void_id IS NULL AND s.raw LIKE '%test=true%' AND NOT EXISTS (SELECT 1 FROM void_accounts a WHERE a.sale_id = s.sale_id) AND NOT EXISTS (SELECT 1 FROM void_sales d WHERE d.resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (d.sale_id = s.sale_id OR (s.subscription_id IS NOT NULL AND d.subscription_id = s.subscription_id))) ORDER BY s.at DESC LIMIT 5").all()).results || [];
   for (const r of rows) {
     const p = parsePing(r.raw), unlock = unlockFor(p);
