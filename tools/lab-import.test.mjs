@@ -32,6 +32,8 @@ test('clip cuts at a sentence or a word, never with an ellipsis, and strips mark
   const c = clip(long, 120); assert.ok(c.length <= 120 && c.endsWith('.') && !/…|\.\.\./.test(c));
   assert.ok(!/…|\.\.\./.test(clip('word '.repeat(80), 100)) && clip('word '.repeat(80), 100).length <= 100);
   assert.equal(clip('a **bold** `code` [link](http://x) end'), 'a bold code link end');
+  assert.equal(clip('Adapts the field in real time,'), 'Adapts the field in real time.', 'a wrapped SPEC line ends with a full stop');
+  for (const t of ['Open index.html directly (no build, no network). Chrome or Edge with WebGPU gets a 12,000-particle compute world; Firefox and Safari get the canvas fallback with the same rules and fewer particles.', 'one, '.repeat(60)]) assert.match(clip(t), /[^,;:]$/, t.slice(0, 30));
 });
 
 test('needsOf reads WebGPU and WebXR use off the source', () => {
