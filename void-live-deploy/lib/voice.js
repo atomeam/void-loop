@@ -163,6 +163,25 @@ export function followThrough(entries, ledger, links = []) {
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
 }
+/** Every ask the evidence says was built, newest first: [{ ask, at, ref, what, times, depth }], at being the time of the ledger entry
+ *  that built it. followThrough's built list only holds asks still in the live voice window, so once those asks roll off the
+ *  window (or are all still open) it is empty, and the wants card said "0 in the last 7 days" on a week of builds (owner,
+ *  2026-10-30). So this adds the rest of the same evidence: each link a builder wrote (void.asks.json: the ask's words and the
+ *  entry's time) and each ledger line that names an ask in words. Never a guess: a row needs a ledger entry at its time. One
+ *  entry that answers two wordings of one ask counts once. f: followThrough's result. Pure. */
+export function builtAsks(f, ledger, links = []) {
+  const byAt = new Map(); for (const x of Array.isArray(ledger) ? ledger : []) if (x && typeof x.what === 'string' && x.at) byAt.set(String(x.at), x);
+  const rows = [];
+  const add = (ask, at, times = 1) => {
+    const x = byAt.get(String(at || '')), w = String(ask || '').trim();
+    if (!x || !w || rows.some((r) => r.at === x.at && (r.ask.toLowerCase() === w.toLowerCase() || sameAsk(r.ask, w)))) return;
+    rows.push({ ask: w, at: x.at, ref: x.ref || null, what: String(x.what), times: +times || 1, depth: depthOf(x.kind) });
+  };
+  for (const g of (f && Array.isArray(f.built) ? f.built : [])) add(g.ask, g.builtAt, g.times);
+  for (const k of Array.isArray(links) ? links : []) if (k && typeof k.words === 'string') add(k.words, k.ledgerAt);
+  for (const x of byAt.values()) if (x.asked && !/^ask-\d/.test(String(x.asked))) add(String(x.asked), x.at);
+  return rows.sort((a, b) => String(b.at).localeCompare(String(a.at)));
+}
 /** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other
  *  (asked by Verse, 2026-10-29; the self card said "3 waiting" beside "237 of 244 asks": 7 not built). The all-time totals
  *  (void.asks.json `totals`, written at deploy from the whole voice log by tools/asks-link.mjs) carry the asks still open as of

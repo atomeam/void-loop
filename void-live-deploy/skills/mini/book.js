@@ -1,5 +1,5 @@
 /**
- * The Verse Book as a real book (owner, 2026-10-16: "the Verse book should be an actual 3D book with a cover and turnable pages").
+ * book: The Book of Verse as a real book (owner, 2026-10-16: "the Verse book should be an actual 3D book with a cover and turnable pages").
  * A hardcover lying on the desk: tap the cover and it swings open on its spine; the pages are leaves that really turn, bending as
  * they go, with the stack thinning on one side and thickening on the other. Every face is a sheet of skills/guide.json laid out
  * by lib/book-face.js (the same pages the flat book shows). data: { book (skills/guide.json), cur (the page the spread holds),

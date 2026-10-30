@@ -1,5 +1,5 @@
 {
- "note": "The Verse Book: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site's own data. Do not edit by hand.",
+ "note": "The Book of Verse: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site's own data. Do not edit by hand.",
  "chapters": [
   {
    "id": "front",
@@ -204,7 +204,7 @@
   {
    "kind": "cover",
    "chapter": "front",
-   "title": "The Verse Book",
+   "title": "The Book of Verse",
    "line": "Everything Verse can do, one page each, nothing left out.",
    "n": 1
   },
@@ -6500,8 +6500,8 @@
    "line": "The book: everything Verse can do, one page each, read like a Skyrim book",
    "examples": [
     "open the book",
-    "the guide",
-    "show me everything you can do"
+    "open the book of verse",
+    "the guide"
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
@@ -7503,7 +7503,7 @@
    "chapter": "minis",
    "name": "book",
    "title": "Book",
-   "line": "The Verse Book as a real book",
+   "line": "The Book of Verse as a real book",
    "card": "Book",
    "examples": [
     "who wrote pride and prejudice",

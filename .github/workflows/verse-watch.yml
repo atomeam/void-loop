@@ -1,0 +1,33 @@
+# Verse watches TV and listens to the radio on its own, to learn (owner, 2026-10-30: "make it so verse can watch tv or listen to the
+# radio on its own to learn if it wants to"). Every hour Verse is shown a few free stations from /local/'s own lists and Radio Browser,
+# chooses one or none, and keeps short notes in its own words (tools/watch.py, /api/watchalong). For TV this runner reads about 75
+# seconds of the stream with ffmpeg for its captions and one still, in a temporary folder that the script deletes. Nothing of the stream
+# is kept or committed. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.
+name: Verse watch
+
+on:
+  schedule:
+    - cron: '37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verse-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: ffmpeg
+        run: command -v ffmpeg || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
+      - name: Watch or listen, and learn
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then echo "VOID_OWNER_TOKEN is not set: Verse did not watch" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          set -o pipefail; python3 tools/watch.py 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"

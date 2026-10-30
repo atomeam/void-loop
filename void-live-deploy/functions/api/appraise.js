@@ -6,6 +6,7 @@
 // binding (a deploy without the model), 502 when the model does not answer, 400 for anything that is not a small image.
 import { models, VISION_FALLBACK } from '../../lib/models.js';
 import { valueFrom, appraisalText, isPersonAsk, complimentFor, VISION_PROMPT, bullionOf } from '../../lib/appraise-photo.js';
+import { heardFor, heardLine } from '../../lib/watch-along.js';
 
 export const MAX_IMAGE_CHARS = 1100000; // base64 characters, about 800 KB: the page sends a 768 px JPEG, far under this
 const IMAGE = /^data:image\/(?:png|jpeg|jpg|webp);base64,([A-Za-z0-9+/]+=*)$/;
@@ -51,6 +52,17 @@ export async function spotQuote(fetchImpl = fetch, now = Date.now()) {
 }
 const json = (body, status = 200) => Response.json(body, { status });
 
+// what Verse heard on TV about things like this (owner, 2026-10-30: Antiques Roadshow "should be learning to help its appraisal"): the
+// appraisal notes Verse wrote while watching (functions/api/watchalong.js), at most 2 that share at least 2 content words with what the
+// photo shows, each named with its show, station and day. They sit under the valuation as what was heard; they never change its number.
+export async function heardOnTv(env, desc) {
+  if (!env || !env.DB) return [];
+  try {
+    const r = await env.DB.prepare("SELECT day, station, show, topic, note FROM void_watch_notes WHERE kind = 'appraisal' ORDER BY at DESC LIMIT 400").all();
+    return heardFor(desc, (r && r.results) || []);
+  } catch (_) { return []; } // no notes table yet: Verse has not watched anything
+}
+
 export async function onRequestPost({ request, env }) {
   let body;
   try { body = await request.json(); } catch (_) { return json({ error: 'send JSON: { image, note }' }, 400); }
@@ -63,5 +75,6 @@ export async function onRequestPost({ request, env }) {
   try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 200) }, 502); }
   const spot = bullionOf(seen + ' ' + note) ? await spotQuote().catch(() => null) : null;
   const value = valueFrom(seen, note, spot);
-  return json({ seen: value.person ? '' : seen, value, text: appraisalText(value) });
+  const heard = value.person ? [] : await heardOnTv(env, seen + ' ' + note);
+  return json({ seen: value.person ? '' : seen, value, text: appraisalText(value), heard: heard.map(heardLine) });
 }
