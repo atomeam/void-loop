@@ -180,7 +180,7 @@
       status('No headline matches “' + q + '”. Below: stories from the past week on Hacker News.');
     }
     function week(q) {
-      if (q && q !== weekQ) { weekQ = q; weekHits = []; fetch(W.weekUrl(q)).then((r) => r.json()).then((j) => { if (weekQ !== q) return; weekHits = W.weekItems(j); drawWeek(st.q === q ? q : ''); }).catch(() => {}); }
+      if (q && q !== weekQ) { weekQ = q; weekHits = []; fetch(W.weekUrl(q)).then((r) => r.json()).then((j) => { if (weekQ !== q) return; weekHits = W.weekItems(j, q); drawWeek(st.q === q ? q : ''); }).catch(() => {}); }
       drawWeek(q);
     }
     function draw() {

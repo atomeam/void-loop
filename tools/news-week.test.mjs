@@ -36,7 +36,30 @@ test('weekItems: a story posted twice shows once, by link or by title', () => {
     { title: 'Ask HN: lander?', objectID: '4' }, { title: 'Ask HN: other?', objectID: '5' },
     { title: 'Rocket', url: 'https://r.example', objectID: '6' }] });
   assert.deepEqual(got.map((d) => d.title), ['Lander lands', 'Ask HN: lander?', 'Ask HN: other?', 'Rocket']);
-  assert.equal(new URL(weekUrl('x')).searchParams.get('hitsPerPage'), '20', 'asks for 20, so 10 remain after reposts go');
+  assert.equal(new URL(weekUrl('x')).searchParams.get('hitsPerPage'), '30', 'asks for 30, so 10 remain after reposts and off-topic stories go');
+});
+
+test('weekItems: with a topic, only stories whose title or link names it (2026-10-30: "nasa" listed Nasscad and Synology NAS)', () => {
+  const hits = [
+    { title: "SpaceX no longer needs NASA", url: 'https://arstechnica.com/space/x', objectID: '1' },
+    { title: 'Show HN: Nasscad, local-first 3D CAD', url: 'https://www.nasscad.com/v4', objectID: '2' },
+    { title: 'Ransomware attacks on Synology NAS', url: 'https://old.reddit.com/r/synology/x', objectID: '3' },
+    { title: 'Hunting red leaves with satellites', url: 'https://science.nasa.gov/earth/red-leaves', objectID: '4' },
+    { title: "NASA's new lander plan", url: 'https://ex.example/l', objectID: '5' },
+    { title: 'Ask HN: does nasa hire remote?', objectID: '6' }, { title: 'Ask HN: anything about space?', objectID: '7' }];
+  assert.deepEqual(weekItems({ hits }, 'nasa').map((d) => d.objectID || d.title), ["SpaceX no longer needs NASA", 'Hunting red leaves with satellites', "NASA's new lander plan", 'Ask HN: does nasa hire remote?']);
+  assert.equal(weekItems({ hits }).length, 7, 'no topic, no filter');
+  // every word of the topic, small words aside; a word may grow ("election" finds "Elections")
+  const two = [{ title: 'Elections in Brazil', url: 'https://b.example', objectID: '1' }, { title: 'Brazil beats Peru', url: 'https://c.example', objectID: '2' }];
+  assert.deepEqual(weekItems({ hits: two }, 'the election in brazil').map((d) => d.title), ['Elections in Brazil']);
+  assert.deepEqual(weekItems({ hits: two }, 'c++').map((d) => d.title), ['Elections in Brazil', 'Brazil beats Peru'], 'a topic with no word of 2 letters filters nothing');
+  assert.deepEqual(weekItems({ hits: [{ title: 'A (b) [c]', url: 'https://x.example' }] }, '(b'), [{ title: 'A (b) [c]', url: 'https://x.example', points: 0 }], 'regex characters are plain text');
+});
+
+test('both readers pass the topic', () => {
+  const skill = fs.readFileSync(new URL('../void-live-deploy/skills/news.js', import.meta.url), 'utf8');
+  const page = fs.readFileSync(new URL('../void-live-deploy/news/index.html', import.meta.url), 'utf8');
+  assert.match(skill, /weekItems\(j, topic\)/); assert.match(page, /W\.weekItems\(j, q\)/);
 });
 
 test('the stage card and the News page both use it', () => {
