@@ -20,6 +20,11 @@ test('the asks: from and to, either wording, flights, and the ones it refuses', 
   assert.deepEqual(placesOf('Lyon to Turin distance'), { a: 'Lyon', b: 'Turin' });
   assert.deepEqual(placesOf('how many km from Lyon to Turin?'), { a: 'Lyon', b: 'Turin' });
   assert.deepEqual(placesOf('how long is the flight from London to New York'), { a: 'London', b: 'New York', flight: true });
+  // the flights card ask "flight distance" alone opens the flights page (lib/flight-sites.js); with two places it is this skill's, with the flight time
+  assert.deepEqual(placesOf('flight distance from London to Paris'), { a: 'London', b: 'Paris', flight: true });
+  assert.deepEqual(placesOf('air distance New York to Tokyo'), { a: 'New York', b: 'Tokyo', flight: true });
+  assert.deepEqual(placesOf("what's the flight distance between Lyon and Turin?"), { a: 'Lyon', b: 'Turin', flight: true });
+  assert.equal(placesOf('flight distance'), null); assert.equal(placesOf('flight distance london'), null);
   assert.equal(placesOf('how far is the moon'), null); assert.equal(placesOf('distance learning'), null);
   for (const e of distance.examples) assert.ok(distance.match(e.toLowerCase(), e), e);
   for (const n of distance.nearMisses) assert.ok(!distance.match(n.toLowerCase(), n), n);

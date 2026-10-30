@@ -16,6 +16,9 @@ export function placesOf(text) {
   if (k) return { a: k[1].trim(), b: k[2].trim() };
   const f = t.match(/^how\s+long\s+(?:is\s+(?:the|a)\s+flight|does\s+it\s+take\s+to\s+fly)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how long is the flight from London to New York"
   if (f) return { a: f[1].trim(), b: f[2].trim(), flight: true };
+  // "flight distance from London to Paris", "air distance New York to Tokyo": the same crow-flies distance, with the flight time
+  const g = t.match(/^(?:what(?:'s| is)\s+the\s+)?(?:flight|flying|air)\s+distance\s+(?:(?:from|frm|between)\s+)?(.+?)\s+(?:to|and)\s+(.+)$/i);
+  if (g) return { a: g[1].trim(), b: g[2].trim(), flight: true };
   return null;
 }
 // a rough nonstop flight time: about 800 km/h cruising plus half an hour for climb and descent
