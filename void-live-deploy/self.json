@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:47:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:47:19Z",
+   "subject": "Brain map: never freeze after a resize"
+  },
+  {
    "at": "2026-10-30T07:46:52Z",
    "subject": "Local TV and radio: refresh the generated files after merging main"
   },
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T07:27:45Z",
    "subject": "Verse fixes its meteors skill: learn to handle \"is there a meteor shower soon\""
-  },
-  {
-   "at": "2026-10-30T07:26:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:25:43Z",
-   "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
   }
  ],
  "builders": {
