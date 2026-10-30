@@ -5,7 +5,7 @@ import http from 'node:http';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { taskText, startHere, lastJson, settle, runJob, GUIDE } from './verse-job.mjs';
+import { taskText, startHere, lastJson, settle, runJob, GUIDE, fullWhy } from './verse-job.mjs';
 import { ROUTES } from './conductor-core.mjs';
 
 const job = (o = {}) => ({ id: 'j1', target: 'feature:dark mode', state: 'building', note: 'claimed by conductor', ask: 'add a dark mode to /notes/', at: '2026-10-20T00:00:00Z', updated: '2026-10-29T01:00:00Z', ...o });
@@ -76,4 +76,13 @@ test('end to end against a fake queue and a stub lap: the job is read, the lap g
     r = await runJob('nope', { env }); assert.match(r.error, /not open/);
     r = await runJob('j1', { env: { ...env, VOID_OWNER_TOKEN: '' } }); assert.match(r.error, /VOID_OWNER_TOKEN/);
   } finally { server.close(); }
+});
+
+test('the job log keeps the whole why, one line, with key-like runs masked', () => {
+  const why = 'no model answered (verse 429, workers-ai 401, github-models 200 text/html 1234B not JSON)\n and more';
+  assert.equal(fullWhy({ why }), why.replace(/\s+/g, ' '));
+  assert.ok(fullWhy({ why }).length > 90, 'longer than the queue note');
+  assert.equal(fullWhy({ why: 'token ' + 'a'.repeat(40) + ' refused' }), 'token [masked] refused');
+  assert.equal(fullWhy({ why: 'x'.repeat(5000).replace(/x/g, 'ab ') }).length, 600);
+  assert.equal(fullWhy(null), '');
 });
