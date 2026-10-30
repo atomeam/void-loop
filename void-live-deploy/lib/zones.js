@@ -38,10 +38,13 @@ export function timeAsk(main, places = []) {
 const key = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
 
 /** a city, zone id or zone abbreviation typed by a person -> { name, tz }, or null: "tokyo", "Asia/Tokyo", "san francisco", "EST", "são paulo". */
+const realZone = (tz) => { try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return true; } catch (_) { return false; } };
 export function findPlace(text, zones = allZones()) {
   const raw = String(text || '').trim(); if (!raw) return null;
   const k = key(raw.replace(/^(?:the\s+)?time\s+in\s+/i, '').replace(/\s+time$/i, ''));
   const exact = zones.find((z) => z.toLowerCase() === raw.toLowerCase()); if (exact) return { name: cityOf(exact), tz: exact };
+  const named = /^(.+?)@([A-Za-z_]+(?:\/[A-Za-z0-9_+-]+)*)$/.exec(raw); // "Kyoto@Asia/Tokyo", from a card's link (skills/worldtime.js timePage): its own name, in that zone
+  if (named && (zones.includes(named[2]) || realZone(named[2]))) return { name: named[1].trim(), tz: named[2] }; // a geocoder's zone may be an alias the list leaves out (Asia/Ho_Chi_Minh)
   if (ALIAS[k]) return { name: title(k), tz: ALIAS[k] };
   const byCity = zones.find((z) => key(cityOf(z)) === k); if (byCity) return { name: cityOf(byCity), tz: byCity };
   const z = zoneOf(k); if (z) return { name: z.name, tz: z.timezone };
