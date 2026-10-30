@@ -164,6 +164,20 @@ export const JOURNEYS = {
     if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
     await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
   },
+  'save a painting as a PDF: the PDF page opens its images-to-PDF tool with the painting in the list': async (p, check) => {
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the paint page opened with its picture');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save your painting as a PDF' }).click()]);
+    await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
+    const tab = await p.locator('[role=tab][aria-selected=true]').textContent(), u = new URL(p.url());
+    if (tab !== 'Images to PDF') throw new Error('the PDF page opened the "' + tab + '" tool, not Images to PDF');
+    if (u.searchParams.has('img') || u.searchParams.get('tool') !== 'img2pdf') throw new Error('the PDF page left its address as ' + u.search + ', not ?tool=img2pdf');
+    await check('the PDF page opened Images to PDF with ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
+    await p.locator('button.go', { hasText: 'Images to PDF' }).click();
+    await p.waitForSelector('a.dl', { timeout: 20000 });
+    const head = await p.evaluate(async () => { const b = new Uint8Array(await (await fetch(document.querySelector('a.dl').href)).arrayBuffer()); return String.fromCharCode(...b.slice(0, 5)) + ' ' + b.length; });
+    if (!head.startsWith('%PDF-')) throw new Error('the download is not a PDF: it starts "' + head + '"');
+    await check('the PDF page made a ' + head.split(' ')[1] + '-byte PDF of the painting');
+  },
 };
 
 async function run() {
