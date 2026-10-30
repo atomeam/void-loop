@@ -11,7 +11,8 @@
 //   node tools/propose-fix.mjs --job <id>              that job
 //   node tools/propose-fix.mjs --ask "…" --skill words  no queue: propose for this ask and skill (always --dry)
 //   node tools/propose-fix.mjs --dry                   propose, apply and test, but leave the queue note alone
-//   --brain claude   Claude proposes instead of Verse's own model (tools/claude-brain.mjs; ANTHROPIC_API_KEY, one call, capped)
+//   --brain claude   Claude proposes instead of Verse's own model (tools/claude-brain.mjs; ANTHROPIC_API_KEY, one call a try, capped)
+//   --tries <n>   proposals the forge may make before it gives up on the collision check (default SETTLE_TRIES, 2 for claude)
 //   --out <dir>   where the patch (propose-fix.patch) and the result (propose-fix.json) are written (default: the temp folder)
 // Exit 0 when it ran (passed or failed cleanly), 3 when there is no job, the site could not be reached or Verse proposed nothing.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -19,12 +20,44 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
-import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf, MAX_SOURCE } from '../void-live-deploy/lib/propose-fix.js';
+import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf, settleNote, MAX_SOURCE } from '../void-live-deploy/lib/propose-fix.js';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 export const STEPS = ['collisions', 'lets go', 'unit test', 'void review', 'benchmark', 'answers']; // 'lets go' runs for a routing correction only, 'answers' for a learned ask only
 export const stepsFor = (mode) => STEPS.filter((s) => (mode === 'narrow' ? s !== 'answers' : s !== 'lets go'));
+// the forge settles its own overlaps (2026-10-30: 95 of 136 probe fixes died at "collisions"): a proposal the collision check rejects goes back
+// to the model with what the check said (lib/propose-fix.js settleNote), up to this many proposals in all
+export const SETTLE_TRIES = 3;
+
+/** the collision check's own lines about what broke (tools/skills-check.mjs output), trimmed. Pure. */
+export const collisionLines = (out) => String(out || '').split('\n').map((l) => l.trim()).filter((l) => l && /->|collision|reaches|near miss|suite |does not list/i.test(l));
+
+/** where the ask lands with the edited skill file: { takes, by, loadError }. takes: the edited match() takes the ask; by: the first skill in
+ * routing order (names, skills/index.json) whose match takes it, the edited module standing in for `skill`; loadError: the edited file did
+ * not load. dir: the skills folder. Reads files, writes none. */
+export async function landing(file, skill, ask, names, dir) {
+  const lower = String(ask).toLowerCase(), fresh = (f) => import(pathToFileURL(f).href + '?v=' + Date.now() + Math.random()).then((m) => m.default);
+  let mine;
+  try { mine = await fresh(file); } catch (e) { return { takes: false, by: null, loadError: String(e && e.message || e).slice(0, 200) }; }
+  let takes = false; try { takes = !!mine.match(lower, ask); } catch (_) { takes = false; }
+  let by = null;
+  for (const n of names || []) {
+    let m = null;
+    if (n === skill) m = mine; else { try { m = (await import(pathToFileURL(join(dir, n + '.js')).href)).default; } catch (_) { m = null; } }
+    let hit = false; try { hit = !!(m && m.match(lower, ask)); } catch (_) { hit = false; }
+    if (hit) { by = n; break; }
+  }
+  return { takes, by, loadError: '' };
+}
+
+/** the routing correction the forge queues when its fix is right but an earlier skill takes the ask first: a 'stop answering' job for that
+ * skill, which jobAsk reads as narrow mode (the skill that took it lets go, so the ask reaches the one it belongs to). Pure. */
+export function letGoJob(by, skill, ask) {
+  const slug = String(ask).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return { ask: 'stop answering "' + ask + '"', target: ('route:' + by + '-' + slug).slice(0, 40),
+    note: 'the probe forge found this ask belongs to ' + skill + ' (wrong skill:' + by + ') (wanted skill:' + skill + '): ' + by + ' comes earlier in the routing order and takes it first' };
+}
 
 /** The job to work on: the oldest open probe: job (or a miss: job the router says a skill should have caught: its lane is propose-fix), or the one named; null when there is none. */
 export function pickJob(queue, id = '', hasSkill = (name) => existsSync(join(root, 'void-live-deploy', 'skills', name + '.js'))) {
@@ -121,28 +154,50 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const file = join(root, 'void-live-deploy', 'skills', miss.skill + '.js');
   if (!existsSync(file)) await bail('no skill file for ' + miss.skill);
   const source = readFileSync(file, 'utf8');
-  let proposal;
-  const brain = opt('--brain') === 'claude' ? 'claude' : 'v01d';
-  try {
+  const brain = opt('--brain') === 'claude' ? 'claude' : 'v01d', narrow = miss.mode === 'narrow';
+  const tries = Math.max(1, Math.min(5, parseInt(opt('--tries') || '', 10) || (brain === 'claude' ? 2 : SETTLE_TRIES)));
+  const skillsDir = join(root, 'void-live-deploy', 'skills'), names = JSON.parse(readFileSync(join(skillsDir, 'index.json'), 'utf8'));
+  const propose = async (tried) => {
     if (brain === 'claude') {
       if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is not set in this environment');
       const { proposeWithClaude } = await import('./claude-brain.mjs');
-      proposal = await proposeWithClaude({ ask: miss.ask, skill: miss.skill, source, mode: miss.mode, said: miss.mode === 'narrow' ? (job && job.note) || '' : '' });
-      delete process.env.ANTHROPIC_API_KEY; // the checks below run the edited skill: none of them gets the key
-    } else proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source: sourceWindow(source), ...(miss.mode === 'narrow' ? { mode: 'narrow', said: job && job.note } : {}) });
-  } catch (e) { await bail((brain === 'claude' ? 'Claude' : 'Verse') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); }
-  const next = applyEdits(source, proposal.edits);
+      return proposeWithClaude({ ask: miss.ask, skill: miss.skill, source, mode: miss.mode, said: narrow ? (job && job.note) || '' : '', tried });
+    }
+    return api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source: sourceWindow(source), ...(narrow ? { mode: 'narrow', said: job && job.note } : {}), ...(tried ? { tried } : {}) });
+  };
+  // propose, apply, and let the collision check judge; a try that does not settle goes back to the model with what the check said
+  let proposal = null, next = null, tried = '', col = null, land = null, lines = [], n = 0;
+  for (; n < tries; n++) {
+    let p;
+    try { p = await propose(tried); } catch (e) { if (proposal) break; await bail((brain === 'claude' ? 'Claude' : 'Verse') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); }
+    const nx = applyEdits(source, (p && p.edits) || []);
+    proposal = p; next = nx;
+    if (!nx) { tried = settleNote(miss.skill, miss.ask, { applied: false }); console.error('propose-fix: try ' + (n + 1) + ': ' + tried); continue; }
+    writeFileSync(file, nx);
+    land = narrow ? null : await landing(file, miss.skill, miss.ask, names, skillsDir);
+    col = run(process.execPath, [join(here, 'skills-check.mjs')]); lines = collisionLines(col.stdout + col.stderr);
+    writeFileSync(file, source);
+    const settled = col.status === 0 && (!land || (!land.loadError && land.takes && land.by === miss.skill));
+    if (settled) { n++; break; }
+    tried = settleNote(miss.skill, miss.ask, { applied: true, loadError: land && land.loadError, takes: land ? land.takes : true, by: land && land.by, lines });
+    console.error('propose-fix: try ' + (n + 1) + ' did not settle: ' + tried);
+    if (land && land.takes && land.by && land.by !== miss.skill && col.status === 0) { n++; break; } // only the earlier skill can let go: no new try helps
+  }
+  delete process.env.ANTHROPIC_API_KEY; // the checks below run the edited skill: none of them gets the key
+  if (!proposal) await bail('no proposal');
   if (!next) await bail('the edits do not apply to the file as it stands');
   const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
-    title: titleFor(miss, ''), passed: false, failed: '', detail: '' };
+    title: titleFor(miss, ''), passed: false, failed: '', detail: '', tries: n, collisions: lines.slice(0, 12), lands: land ? (land.loadError ? 'did not load' : land.by || 'nothing') : null };
   let committed = false;
   writeFileSync(file, next);
   const stop = (step, detail) => { result.failed = step; result.detail = String(detail || '').replace(/\s+/g, ' ').trim().slice(0, 160); };
   try {
-    const col = run(process.execPath, [join(here, 'skills-check.mjs')]);
-    if (col.status !== 0) stop('collisions', (col.stdout + col.stderr).split('\n').filter((l) => /->|collision|reaches|near miss/i.test(l)).length + ' collision line(s)');
+    if (land && land.loadError) stop('collisions', 'the edited file did not load: ' + land.loadError);
+    else if (land && land.takes && land.by && land.by !== miss.skill && col.status === 0) { stop('collisions', 'the ask reaches ' + land.by + ' first; a routing correction for ' + land.by + ' is queued'); result.letGo = letGoJob(land.by, miss.skill, miss.ask); }
+    else if (land && !land.takes) stop('collisions', 'match() still rejects the ask (it reaches ' + (land.by || 'nothing') + ')');
+    else if (col.status !== 0) stop('collisions', lines.length + ' collision line(s): ' + lines.slice(0, 2).join(' | '));
     // a routing correction: the edited skill itself must now let the ask go (its own match(), loaded fresh from the edited file)
-    if (!result.failed && miss.mode === 'narrow') {
+    if (!result.failed && narrow) {
       const why = await letsGo(file, miss.ask); if (why) stop('lets go', why);
     }
     const unit = join(here, miss.skill + '.test.mjs');
@@ -172,13 +227,21 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const diff = committed ? run('git', ['diff', 'HEAD~1', 'HEAD', '--', 'void-live-deploy/skills/' + miss.skill + '.js']) : run('git', ['diff', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
   if (result.passed) writeFileSync(join(outDir, 'propose-fix.patch'), diff.stdout);
   // the tree is left as it was either way; the patch carries the change to the write job
-  if (committed) run('git', ['reset', '-q', '--hard', 'HEAD~1']); else run('git', ['checkout', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
+  // only the proposal's own commit and the skill file are undone: a hard reset here once wiped a builder's uncommitted work (2026-10-30)
+  const rel = 'void-live-deploy/skills/' + miss.skill + '.js';
+  if (committed) run('git', ['reset', '-q', '--soft', 'HEAD~1']);
+  run('git', ['reset', '-q', '--', rel]); run('git', ['checkout', '--', rel]);
   writeFileSync(join(outDir, 'propose-fix.json'), JSON.stringify(result, null, 1));
   // the job leaves the open list either way (2026-10-19: a failed job stayed queued, so every run took the same one again and the open
   // limit kept new misses out; nothing grew for days): done when its pull request is up, failed with the step that stopped it otherwise
   if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, state: stateFor(result), note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
+  // the fix was right but an earlier skill takes the ask: queue that skill's routing correction, so the next run makes it let go
+  if (result.letGo && job && !dry) {
+    try { const r = await api('/api/queue', 'POST', { ask: result.letGo.ask, target: result.letGo.target }), it = r && r.item; if (it && !it.note) await api('/api/queue', 'PATCH', { id: it.id, note: result.letGo.note }); result.letGo.queued = !!it; }
+    catch (e) { console.error('propose-fix: the routing correction was not queued: ' + e.message); }
+  }
   // one record in Verse's probe ledger (lib/probe-log.js): the skill, the line changes, Verse's confidence and what came of it, never the ask
   if (job && !dry) { try { await api('/api/probe-log', 'POST', { kind: 'fix', skill: result.skill, edits: result.edits, confidence: result.confidence, passed: result.passed, failed: result.failed }); } catch (e) { console.error('propose-fix: the probe ledger was not written: ' + e.message); } }
-  console.log('### Verse proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| Verse\'s confidence | ' + (result.confidence ?? '—') + ' |\n| risk | ' + result.risk.level + ' (' + result.risk.why + ') |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| why, in Verse\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
+  console.log('### Verse proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| Verse\'s confidence | ' + (result.confidence ?? '—') + ' |\n| risk | ' + result.risk.level + ' (' + result.risk.why + ') |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| tries | ' + result.tries + ' |\n| why, in Verse\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |' + (result.collisions.length && !result.passed ? '\n\nWhat the collision check said:\n' + result.collisions.map((l) => '- ' + l).join('\n') : ''));
   process.exit(0);
 }
