@@ -6,7 +6,7 @@ import util, { utilOf } from '../void-live-deploy/skills/util.js';
 import formulas, { filled } from '../void-live-deploy/skills/formulas.js';
 
 test('the UUID card by its tool names', () => {
-  for (const a of ['uuid', 'guid', 'uuid generator', 'UUID Generator', 'guid generator', 'random uuid', 'a random guid', 'uuid v4', 'uuid v4 generator', 'uuid4', 'online uuid generator', 'generate a uuid', 'generate random uuid', 'create a guid'])
+  for (const a of ['uuid', 'guid', 'uuid generator', 'UUID Generator', 'guid generator', 'uuid v4', 'uuid v4 generator', 'uuid4', 'online uuid generator', 'generate a uuid', 'create a guid'])
     assert.deepEqual(utilOf(a), { kind: 'uuid' }, a);
   for (const a of ['what is a uuid', 'uuid vs guid', 'uuid format', 'how long is a uuid', 'uuid python'])
     assert.equal(utilOf(a), null, a);

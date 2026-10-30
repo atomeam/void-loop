@@ -91,8 +91,8 @@ export function utilOf(text) {
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
   if (m) return { kind: 'count', s: m[1].replace(/^(?:the\s+)?(?:word|name|phrase)\s+(?=\S)/i, '').replace(/^["“]|["”]$/g, ''), chars: true };
-  // "uuid", "generate a uuid", "uuid generator", "random guid", "uuid v4 generator", "online uuid generator"
-  if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:random\s+)?(?:uuid|guid|unique\s+id)(?:\s*v?4)?$|^(?:an?\s+)?(?:(?:random|online|free)\s+)?(?:uuid|guid)(?:\s*v?4)?(?:\s+(?:generator|maker|tool))?$/i.test(t)) return { kind: 'uuid' };
+  // "uuid", "generate a uuid", "uuid generator", "uuid v4 generator", "online uuid generator"; "random uuid" and "generate a random guid" are the uuid skill's
+  if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)(?:\s*v?4)?$|^(?:an?\s+)?(?:(?:online|free)\s+)?(?:uuid|guid)(?:\s*v?4)?(?:\s+(?:generator|maker|tool))?$/i.test(t)) return { kind: 'uuid' };
   m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
   // "nato alphabet for hello", "spell hello in nato", "morse code for sos", "hello in binary"
