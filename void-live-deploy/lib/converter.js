@@ -60,7 +60,7 @@ export const CATALOG = Object.freeze([
   tool('Audio', 'Compress MP3', 'no', { note: NO }),
   tool('Audio', 'Cut MP3', 'here', { run: 'cut', from: 'sound', note: 'Keeps an MP3 from one second to another, and the result is an MP3. The sound is not coded again, so it loses nothing; with the LAME tag most MP3s have, the cut is exact to the sample, and with none it is on the frame lines, 26 ms apart. The tag (title, artist, cover) stays. Any other sound is cut too, and saved as the format you pick.' }),
   tool('Audio', 'Extract Audio from Video', 'here', { run: 'extract-audio', from: 'video', note: 'The sound of a video your browser can play, as a WAV.' }),
-  tool('Audio', 'Increase MP3 Volume', 'part', { run: 'gain', from: 'sound', note: 'Louder or quieter by a number of decibels, with a count of clipped samples; the result is a WAV, not an MP3.' }),
+  tool('Audio', 'Increase MP3 Volume', 'here', { run: 'gain', from: 'sound', note: 'Makes an MP3 louder or quieter, and the result is an MP3. The sound is not coded again, so it loses nothing: each piece of the MP3 keeps its data and gets a new level number, in steps of 1.5 dB, as MP3Gain does. Verse counts the samples that go past the top. The tag (title, artist, cover) stays. Any other sound is changed too, and saved as the format you pick.' }),
   tool('Audio', 'Merge Audio', 'here', { run: 'merge', from: 'sound', many: true, note: 'Plays 2 or more sounds one after another, in the order you pick them, as one WAV.' }),
   tool('Audio', 'Mix Audio', 'here', { run: 'mix', from: 'sound', many: true, note: 'Plays 2 or more sounds at the same time, as one WAV; it turns the mix down if it would clip, and says so.' }),
   vid('Audio', 'Remove Audio from Video', 'mute', 'The same video with no sound.'),

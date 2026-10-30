@@ -5,7 +5,7 @@ import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
 import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write.js';
 import { flac, opusFile } from '/lib/audio-write.js';
-import { addCover, cutMp3 } from '/lib/mp3-edit.js';
+import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
@@ -77,7 +77,7 @@ function opts() {
   if (VIDEO_OUT.includes(to)) o.append(QUALITY());
   if (run === 'cut') o.append(field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), SOUND_AS('Save as (an MP3 stays an MP3)'));
   if (run === 'speed') o.append(field('Times as fast', num('factor', 1.5, 'any', 0.25, 4)), SOUND_AS());
-  if (run === 'gain') o.append(field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40)), SOUND_AS());
+  if (run === 'gain') o.append(field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40)), SOUND_AS('Save as (an MP3 stays an MP3)'));
   if (run === 'silence') o.append(field('Quiet under (dB)', num('thr', -45, 'any', -90, -10)), field('Longer than (ms)', num('minms', 400, '50', 50)), SOUND_AS());
   if (run === 'crossfade') o.append(field('Crossfade (seconds)', num('xfade', 2, 'any', 0, 30)), SOUND_AS());
   if (run === 'merge' || run === 'mix' || run === 'extract-audio') o.append(SOUND_AS());
@@ -259,6 +259,12 @@ async function go() {
         const { f } = list[i]; say('Working on ' + (i + 1) + ' of ' + list.length + ': ' + f.name);
         try {
           if (t.run === 'cut' && list[i].fmt === 'mp3') { const r = cutMp3(await bytesOf(f), val('from', 0), $('upto').value); add({ name: outName(f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: r.notes }); continue; }
+          if (t.run === 'gain' && list[i].fmt === 'mp3') {
+            const r = gainMp3(await bytesOf(f), val('db', 6)); let over = 0;
+            // the same sound, decoded, times the new level: the samples past the top are the ones a player clips
+            if (r.factor > 1) for (const c of (await soundOf(f)).channels) for (let k = 0; k < c.length; k++) if (Math.abs(c[k]) * r.factor > 1) over++;
+            add({ name: outName(f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: [...r.notes, r.factor > 1 ? (over ? over + ' samples go past the top, and a player clips them: try fewer dB' : 'no sample goes past the top') : 'quieter, so nothing clips'] }); continue;
+          }
           const s = await soundOf(f), r = t.run === 'cut' ? cut(s, val('from', 0), $('upto').value) : t.run === 'speed' ? speed(s, val('factor', 1.5)) : t.run === 'gain' ? gain(s, val('db', 6)) : t.run === 'silence' ? removeSilence(s, val('thr', -45), val('minms', 400)) : { ...s, notes: [] };
           const o = await soundFile(r, as); add({ name: outName(f.name, as, taken), ext: as, bytes: o.bytes, notes: [...r.notes, soundNote(r), ...o.notes] });
         } catch (e) { fail(f, e); }
