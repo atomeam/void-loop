@@ -8555,7 +8555,7 @@ try {
   // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
   // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
   // says how many are new since the book was last opened here (localStorage, never required)
-  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "show these on the stage" closes the book and asks each change for real
+  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "play all N on the stage" (only for asks that answered live) closes the book and asks each change for real
   if (want("the book: a day in What's new plays on the stage as a walkthrough")) { const W = await fresh();
     const day = new Date().toISOString().slice(0, 10);
     await W.ctx.route(/\/void\.growth\.json/, (r) => r.fulfill(json([{ at: day + 'T09:00:00Z', by: 'claude', kind: 'grow', what: 'a clock on the stage', try: 'make a clock' }, { at: day + 'T10:00:00Z', by: 'claude', kind: 'grow', what: 'sticky notes', show: 'sticky notes', try: 'add a sticky that says hi' }])));
@@ -8568,12 +8568,13 @@ try {
     const bar = await until(async () => W.p.evaluate(() => { const b = document.getElementById('showcase-bar'); return b ? b.textContent : null; }), 8000).catch(() => null);
     const clock = await until(async () => (await W.state()).some((x) => x.kind === 'clock'), 8000).catch(() => false);
     const closed = await until(async () => !(await W.p.$('#vtome')), 4000).then(() => true).catch(() => false);
-    check("the book: a day in What's new carries \"show these on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
+    check("the book: a day in What's new carries \"play all 2 on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
       !!link && closed && /^1 of 2 · What.s new, /.test(bar || '') && !!clock && !W.errors.length, JSON.stringify({ link: !!link, closed, bar, clock, e: W.errors }));
     await W.ctx.close(); }
   if (want("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge")) {
-    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js');
-    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36), withTry = top.find((e) => e.try);
+    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js'), { playable } = await import('../void-live-deploy/skills/showcase.js');
+    // the same lines the book makes: the showcase's ask for an entry with no try of its own, days in this machine's zone (the browser's too)
+    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36, (e) => (playable(e) || {}).ask), withTry = top.find((e) => e.try && e.try.charAt(0) !== '/');
     const N = await fresh();
     await N.p.evaluate(() => { try { localStorage.setItem('a2m.void.book.seen.v1', '2026-01-01T00:00:00Z'); } catch (_) {} });
     await N.ask('open the book', 900); await until(async () => !!(await N.p.$('#vtome .tome.shut .newbadge')) || !!(await N.p.$('#vtome .tome.opened')), 8000);
@@ -8590,8 +8591,8 @@ try {
     const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
     let ranOk = true;
     if (withTry) { // a try-it ask closes the book and runs
-      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
-      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit'); await until(async () => !(await N.p.$('#vtome')), 4000);
+      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit[data-ask]')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
+      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit[data-ask]', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit[data-ask]'); await until(async () => !(await N.p.$('#vtome')), 4000);
       ranOk = !!ask && !(await N.p.$('#vtome'));
     }
     check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",

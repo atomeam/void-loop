@@ -717,6 +717,13 @@
    "tests": 1
   },
   {
+   "file": "lib/book-news.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
    "file": "lib/tower.js",
    "skills": 3,
    "direct": 2,
@@ -729,13 +736,6 @@
    "direct": 2,
    "dependants": 4,
    "tests": 1
-  },
-  {
-   "file": "lib/book-news.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 2
   },
   {
    "file": "lib/field-vector.js",
@@ -4496,6 +4496,7 @@
   "lib/book-news.js": {
    "imports": [],
    "importedBy": [
+    "lib/tome.js",
     "skills/guide.js"
    ],
    "reachedBy": [
@@ -10066,7 +10067,8 @@
    "imports": [
     "lib/guide.js",
     "lib/card-art.js",
-    "lib/rule-registry.js"
+    "lib/rule-registry.js",
+    "lib/book-news.js"
    ],
    "importedBy": [
     "skills/guide.js"
