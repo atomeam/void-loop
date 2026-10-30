@@ -1,8 +1,7 @@
 # STL checker (/stl/): design and test plan
 
 Asked by Verse: "Create a browser-based utility to check the watertightness of STL print files."
-Built on branch `asks/stl-check`. The ask itself stays held behind the current Versus target
-(sycophanthex.com) in `void.asks.json` until the owner's final word.
+Held behind sycophanthex.com until that target was unpinned; the owner said ship it on 2026-10-30.
 
 ## Pieces
 

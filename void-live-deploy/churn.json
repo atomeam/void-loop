@@ -1,12 +1,12 @@
 {
- "at": "2026-10-30T02:15:14.045Z",
+ "at": "2026-10-30T02:16:05.841Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 107
+   "changes": 108
   },
   {
    "file": "tools/tower-probes.mjs",
@@ -22,7 +22,7 @@
   },
   {
    "file": "tools/families.mjs",
-   "changes": 49
+   "changes": 51
   },
   {
    "file": "tools/tower-gate.mjs",
@@ -45,16 +45,28 @@
    "changes": 43
   },
   {
+   "file": "tools/bench.json",
+   "changes": 35
+  },
+  {
    "file": "domains/tower-self.json",
    "changes": 31
   },
   {
-   "file": "tools/bench.json",
-   "changes": 29
+   "file": "tools/card-cycle.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 30
   },
   {
    "file": "tools/tower.test.mjs",
    "changes": 29
+  },
+  {
+   "file": "domains/conductor.json",
+   "changes": 27
   },
   {
    "file": "void-live-deploy/lib/card-frame.js",
@@ -69,14 +81,6 @@
    "changes": 26
   },
   {
-   "file": "tools/card-cycle.json",
-   "changes": 25
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 25
-  },
-  {
    "file": "void-live-deploy/fanfic/index.html",
    "changes": 25
   },
@@ -89,12 +93,20 @@
    "changes": 23
   },
   {
+   "file": "domains/growth-inbox.md",
+   "changes": 23
+  },
+  {
    "file": "tools/fanfic.test.mjs",
    "changes": 23
   },
   {
    "file": "void-live-deploy/fanfic/app.js",
    "changes": 23
+  },
+  {
+   "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 21
   },
   {
    "file": "void-live-deploy/lib/art-rules.js",
@@ -109,16 +121,16 @@
    "changes": 19
   },
   {
-   "file": "domains/growth-inbox.md",
-   "changes": 19
-  },
-  {
    "file": "void-live-deploy/calendar/index.html",
    "changes": 19
   },
   {
-   "file": "void-live-deploy/skills/verse-brain.js",
-   "changes": 19
+   "file": "tools/bench.mjs",
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/tower.size.json",
+   "changes": 18
   },
   {
    "file": "void-live-deploy/color/index.html",
@@ -131,10 +143,6 @@
   {
    "file": "void-live-deploy/lib/similar-index.js",
    "changes": 17
-  },
-  {
-   "file": "domains/conductor.json",
-   "changes": 16
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
@@ -189,6 +197,10 @@
    "changes": 15
   },
   {
+   "file": "void-live-deploy/lib/brain.js",
+   "changes": 15
+  },
+  {
    "file": "void-live-deploy/lib/calendar.js",
    "changes": 15
   },
@@ -229,10 +241,6 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/tower.size.json",
-   "changes": 14
-  },
-  {
    "file": "void-live-deploy/translate/index.html",
    "changes": 14
   },
@@ -245,11 +253,11 @@
    "changes": 13
   },
   {
-   "file": "tools/card-art-route.test.mjs",
+   "file": "tools/brain.test.mjs",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/lib/brain.js",
+   "file": "tools/card-art-route.test.mjs",
    "changes": 13
   },
   {

@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T17:22:11Z",
-   "subject": "STL branch: preload its modules; the local link check skips live-only routes"
+   "at": "2026-10-30T02:11:17Z",
+   "subject": "Bench: date-calc and is-it answer the date asks, with the dates checked"
   },
   {
-   "at": "2026-10-29T17:08:21Z",
-   "subject": "Map: name the edge cache live check (tool and workflow from #1580), so map-coverage is green on main"
+   "at": "2026-10-30T02:07:32Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-29T17:08:07Z",
-   "subject": "Send \"random band name\" to the name generators, not to fake people"
+   "at": "2026-10-30T01:25:43Z",
+   "subject": "Incidents closed: shard(s) 4 passed on 27c3e3ff (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T17:08:07Z",
-   "subject": "Browser suite: the paid lines read MultiVerse after #1567"
+   "at": "2026-10-30T01:12:05Z",
+   "subject": "Incident: the browser suite failed on a10b9bff (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T17:06:53Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T01:08:56Z",
+   "subject": "Verse loop: task, Queue job mvpi0lbh (versus: cpantesters.org): Versus: cpante"
   },
   {
-   "at": "2026-10-29T17:06:26Z",
-   "subject": "Main green: 5 browser checks that the reply section, the MultiVerse rename and the pinned target made red"
+   "at": "2026-10-30T01:06:04Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-29T17:02:54Z",
-   "subject": "guide.json: follows the families.json refresh"
+   "at": "2026-10-30T00:59:40Z",
+   "subject": "Test: the velocity check's today asks stay inside the UTC day"
   },
   {
-   "at": "2026-10-29T17:01:01Z",
-   "subject": "families.json: the tower skill has 9 browser-suite mentions after #1594"
+   "at": "2026-10-30T00:57:00Z",
+   "subject": "Better at hangman and yesno: 5 more ways of asking answered right — new phrases: “hangman” now opens hangman; “play hangman” now opens…"
   },
   {
-   "at": "2026-10-29T17:00:21Z",
-   "subject": "Country borders: a neighbour counts when it is a country or a sovereign state"
+   "at": "2026-10-30T00:51:50Z",
+   "subject": "Incident: the browser suite failed on 58ac85bc (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T17:00:09Z",
-   "subject": "Edge cache live check: a repeat ask must be a HIT, personal and signed asks never"
+   "at": "2026-10-30T00:46:26Z",
+   "subject": "Verse fixes its converter skill: learn to handle \"mp4 to mp3\""
   },
   {
-   "at": "2026-10-29T16:56:05Z",
-   "subject": "Versus check: a pinned target's score line says \"now assimilating\""
+   "at": "2026-10-30T00:36:04Z",
+   "subject": "Bench: the kept first-run results are keyed without the day"
   },
   {
-   "at": "2026-10-29T16:53:48Z",
-   "subject": "Incident: the browser suite failed on cd360ad0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T00:33:53Z",
+   "subject": "Incident: the browser suite failed on 9055d19c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T16:48:09Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T00:21:55Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 4b5b234374735c0c62061e7bad472389be027f03 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-29T16:44:13Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T00:18:05Z",
+   "subject": "Verse loop: task, Queue job mvpi0joe (versus: emojitracker.com): Versus: emoji"
   },
   {
-   "at": "2026-10-29T16:43:02Z",
-   "subject": "Better at random, agent fluid memory orbs and ascii: 6 more ways of asking answered right — new phrases: “2d6” now opens random; “3d8” now…"
+   "at": "2026-10-30T00:14:11Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-29T16:41:15Z",
-   "subject": "Breath card: no \"-1 rounds done\" on the first frame"
+   "at": "2026-10-29T23:57:20Z",
+   "subject": "Incident: the browser suite failed on ec492c32 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T16:40:55Z",
-   "subject": "converter: a whole one-line skill summary, and mark the unit-kind links as not keys"
+   "at": "2026-10-29T23:54:23Z",
+   "subject": "The book: a page for hangman (it was in no family, so the book checks failed on main)"
   },
   {
-   "at": "2026-10-29T16:39:39Z",
-   "subject": "brain-gardener: check collapse on a brain that collapses when only watched"
+   "at": "2026-10-29T23:52:27Z",
+   "subject": "Bench: one tab for each slot again (reverts f240133 for tools/bench.mjs only)"
   },
   {
-   "at": "2026-10-29T16:34:49Z",
-   "subject": "converter: assimilate onlineconverter.com as /converter/"
+   "at": "2026-10-29T23:43:10Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-29T16:31:30Z",
-   "subject": "Keep every proven skill's flavor line unique once the lore runs out; regenerate parity and hand-off gaps"
+   "at": "2026-10-29T23:32:02Z",
+   "subject": "Incident: the browser suite failed on bab0789c (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
