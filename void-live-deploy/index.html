@@ -4665,12 +4665,13 @@ say('nothing selected to remove');
       const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
       return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
     }
-    async function firstSkill(lower0, text, deadline) {
+    async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
       let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
-      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
+      if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
+      if (all) return [];
       for (const slot of skillSlots) {
         // past the deadline a skill still loading is passed over at once: a zero timer per slot cost 4 ms or more each (nested timers),
         // a second or more across a couple of hundred slots on a busy page
@@ -4755,8 +4756,25 @@ say('nothing selected to remove');
     let skillAliases = {};
     fetch('/skills/aliases.json').then((r) => r.ok ? r.json() : {}).then((j) => { skillAliases = j && typeof j === 'object' ? j : {}; }).catch(() => {});
     const aliasOf = (lower) => { const k = String(lower || '').trim().replace(/[\s?!.]+$/, ''); return Object.prototype.hasOwnProperty.call(skillAliases, k) ? String(skillAliases[k]) : ''; };
+    // Verse Brain routes the ask (lib/brain-route.js; owner, 2026-10-30: "give the brain more to do and more power in the site"): when more
+    // than one skill can answer, the brain picks, from what the page would pick, what happened after its past picks on this device, and
+    // what it is thinking about. What happens next teaches it: a card still up 20 s later was kept; one closed by then, undone, or followed
+    // by the same ask in other words was left. Its picks, with why, are on /brain/, where each lesson can be undone.
+    let routeWatch = null;
+    const routeWords = (t) => new Set(String(t || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3));
+    function settleRoute(why, next) {
+      const w = routeWatch; if (!w) return; routeWatch = null; clearTimeout(w.t);
+      const h = window.verseBrainHost; if (!h || !h.judge) return;
+      if (why === 'time') h.judge(w.id, vpageEl === w.el);
+      else if (why === 'undo') h.judge(w.id, false);
+      else if (why === 'ask') { const a = routeWords(w.text); if ([...routeWords(next)].some((x) => a.has(x))) h.judge(w.id, false); } // the same ask in other words: it was not what they wanted; a new subject teaches nothing
+    }
+    function watchRoute(id, el, text) { settleRoute(); routeWatch = { id, el, text, t: setTimeout(() => settleRoute('time'), 20000) }; }
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
-      const skill = await firstSkill(lower0, text, deadline);
+      let skill = await firstSkill(lower0, text, deadline), routed = null;
+      if (skill && skillsLoaded && window.verseBrainHost && window.verseBrainHost.route) {
+        try { const all = await firstSkill(lower0, text, deadline, true); if (all.length > 1) { routed = window.verseBrainHost.route(text, all.map((sk) => sk.name)); const p = routed && all.find((sk) => sk.name === routed.pick); if (p) skill = p; } } catch (_) { routed = null; }
+      }
       {
         if (skill) {
           const api = {
@@ -4783,6 +4801,7 @@ say('nothing selected to remove');
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src !== 'none') graphNote(who, text, vpageEl && vpageEl !== cardBefore ? vpageEl : null);
           if (src === 'none') reportMiss(text, 'skill:' + who);
+          if (routed) { if (src !== 'none' && vpageEl && vpageEl !== cardBefore) watchRoute(routed.id, vpageEl, text); else if (src === 'none' && window.verseBrainHost) window.verseBrainHost.judge(routed.id, false); }
           return true;
         }
       }
@@ -4796,6 +4815,7 @@ say('nothing selected to remove');
       try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
     function undoLast() {
+      settleRoute('undo'); // undoing the card the brain picked teaches it that pick was wrong
       let snap = null;
       try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) {}
       const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY), nowAgenda = localStorage.getItem(AGENDA_KEY);
@@ -5918,6 +5938,7 @@ say('nothing selected to remove');
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
       { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
