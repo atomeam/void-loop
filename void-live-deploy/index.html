@@ -5943,7 +5943,10 @@ say('nothing selected to remove');
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
-      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void')); // a taught wording runs as the ask it means
+      const alias = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()); // a taught wording runs as the ask it means
+      const text = alias || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void'));
+      // the old name read as the new one is logged as typed, as a typo is ("tell V01D what it got wrong" is that ask, not "tell Verse ...")
+      if (!alias && text !== fixed) typoFix = { from: typed, to: text };
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} ownerLinkNow(); say('unlocked'); showBoard(); return; } return handle('unlock'); } }

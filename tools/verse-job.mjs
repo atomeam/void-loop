@@ -111,6 +111,12 @@ export async function runJob(id, { dry = false, force = false, env = process.env
   return { job, report, patch };
 }
 
+/** the lap's whole why for the job log: one line, at most 600 characters, any run of 32 or more key characters masked. Pure. */
+export function fullWhy(report) {
+  const w = String((report && report.why) || '').replace(/\s+/g, ' ').trim();
+  return w ? w.replace(/[A-Za-z0-9_\-]{32,}/g, '[masked]').slice(0, 600) : '';
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), id = args.find((a) => !a.startsWith('--'));
   if (!id) { console.error('usage: node tools/verse-job.mjs <job id> [--dry] [--force]'); process.exit(2); }
@@ -118,6 +124,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (r.error) console.log('::warning title=verse-job::' + r.error);
     const line = JSON.stringify({ id, kind: r.job && kindOf(r.job.target), outcome: r.report && r.report.outcome, state: r.patch && r.patch.state, note: r.patch && r.patch.note, error: r.error });
     console.log(line);
+    // the queue note keeps 90 characters; the job log keeps the whole why, so a cut note can be read in full (long key-like runs masked)
+    const full = fullWhy(r.report);
+    if (full) console.log('::notice title=verse-job why::' + full);
     if (process.env.GITHUB_STEP_SUMMARY) { try { import('node:fs').then((fs) => fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### verse-job\n\n```\n' + line + '\n```\n')); } catch (_) { /* the summary is optional */ } }
     process.exit(0);
   });
