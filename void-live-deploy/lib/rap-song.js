@@ -8,7 +8,7 @@
 import { beatFor, timingOf, lengthOf } from './rap.js';
 import { produce, impulseOf } from './rap-beat.js';
 import { loadKit, kitFor } from './rap-kit.js';
-import { buildVocal, fetchVoice } from './rap-voice.js';
+import { buildVocal, fetchVoice, shadowsOf } from './rap-voice.js';
 import { master, isPlain, TUNE0 } from './rap-ears.js';
 
 export const RATE = 48000;
@@ -70,8 +70,17 @@ async function renderVocal(v, plan, OAC) {
   level.connect(dl); dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(dret); dret.connect(out);
   const room = ctx.createConvolver(); room.buffer = impulseOf(ctx, 0.9, 4, plan.beat.seed ^ 5); const rret = mk('g', { gain: 0.12 }); level.connect(room); room.connect(rret); rret.connect(out);
   const main = buf(v.main); main.connect(hp); main.start(0);
-  // the double: the rhyme words again, a little late on each side
-  for (const [pan, lag] of [[-0.35, 0.015], [0.35, 0.024]]) { const d = buf(v.dub), p = mk('p', { pan }), g = mk('g', { gain: 0.5 }), late = mk('d', { delayTime: lag }); d.connect(late); late.connect(g); g.connect(p); p.connect(hp); d.start(0); }
+  // Verse's haunting signature: the lead an octave down, dark and close under every word; the lead an octave up, only in a long dark hall,
+  // so a ghost sings each line back from far off; and that hall on the lead itself, low and wide
+  const { low, halo } = shadowsOf(v.main, RATE);
+  const hall = ctx.createConvolver(); hall.buffer = impulseOf(ctx, 3.2, 2.2, plan.beat.seed ^ 11);
+  const pre = mk('d', { delayTime: 0.045 }), dark = mk('f', { type: 'lowpass', frequency: 3800, Q: 0.5 }), hret = mk('g', { gain: 0.16 });
+  pre.connect(hall); hall.connect(dark); dark.connect(hret); hret.connect(out);
+  const hsend = mk('g', { gain: 0.5 }); level.connect(hsend); hsend.connect(pre);
+  { const s = buf(low), lp = mk('f', { type: 'lowpass', frequency: 1600, Q: 0.6 }), g = mk('g', { gain: 0.22 }); s.connect(lp); lp.connect(g); g.connect(hp); s.start(0); }
+  { const s = buf(halo), thin = mk('f', { type: 'highpass', frequency: 2600, Q: 0.6 }), g = mk('g', { gain: 0.35 }); s.connect(thin); thin.connect(g); g.connect(pre); s.start(0); }
+  // the double: the rhyme words again, a little late on each side, each lag drifting slowly (a chorus) so the two never lock
+  for (const [pan, lag] of [[-0.35, 0.015], [0.35, 0.024]]) { const d = buf(v.dub), p = mk('p', { pan }), g = mk('g', { gain: 0.5 }), late = mk('d', { delayTime: lag }); if (ctx.createOscillator) { const lfo = ctx.createOscillator(), depth = mk('g', { gain: 0.004 }); lfo.frequency.value = pan < 0 ? 0.23 : 0.31; lfo.connect(depth); depth.connect(late.delayTime); lfo.start(0); } d.connect(late); late.connect(g); g.connect(p); p.connect(hp); d.start(0); }
   // the ad-lib track: thinner, quieter and off to the right, behind the lead the way a hype voice sits on a record
   if (v.adlib) { const a = buf(v.adlib), thin = mk('f', { type: 'highpass', frequency: 260, Q: 0.7 }), g = mk('g', { gain: 0.55 }), p = mk('p', { pan: 0.55 }); a.connect(thin); thin.connect(g); g.connect(p); p.connect(hp); a.start(0); }
   const b = await ctx.startRendering();
