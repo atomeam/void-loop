@@ -11232,7 +11232,9 @@ try {
   const realFetch = globalThis.fetch;
   // the fetched source holds what the stand-in models' cited sentences say: since #1410 (f92c2d219, lib/answer-honesty.js supportedOnly) a [1]
   // whose sentence the source's text does not hold is dropped with its source, so a source that said nothing of the answer would leave neither
-  const EXTRACT = 'A sourced extract: a short answer, a paid answer.';
+  // the page holds the fake models' names, so their "Gemma: ..." and "DeepSeek: ..." replies read as backed by it: a reading labelled with a word
+  // its page lacks is renamed to the page's title (lib/answer-honesty.js titledReadings, on a guess), and these checks are about the route
+  const EXTRACT = 'A sourced extract (gemma, deepseek): a short answer, a paid answer.'; // lower case: the open-web answer is still checked for no model's Name
   let wikiDelay = 0;
   const wiki = async (u) => {
     if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));
