@@ -3,7 +3,7 @@
 // GET  (Bearer session)     -> + { signedIn, tier, left, ideas }                              the member's own ideas and where each stands
 // POST (Bearer session) { do: 'claim', order, email } -> { ok, tier } | 4xx with the reason   links a purchase made with no ?void= (gumroad.js claimSale)
 // POST (Bearer session) { idea } -> { ok, id, left } | 401 not signed in | 402 not paid | 400 the check's sentence | 429 limit | 503 not open yet
-// The tier is read from void_accounts (only /api/gumroad writes it, after Gumroad confirms the sale); the page's word is never trusted.
+// The tier is read from void_accounts (only /api/gumroad writes it, after Gumroad confirms the sale); the page's word is never trusted. The owner's account is always 'paid' (lib/void-me.js tierOf).
 import { ensureTables, bad, good, session, tierOf, brake } from '../../lib/void-me.js';
 import { LIVE, BUY, DAILY, MONTHLY, perks, checkIdea, ensureIdeas, usage, queueIdea, mine, wall } from '../../lib/members.js';
 import { relinkRecorded, claimSale, linkOwnerTest } from './gumroad.js';
