@@ -3,10 +3,17 @@
  * when it rises and sets, and the next full and new moon, for where you are (or "in Oslo"). lib/astro.js, no network but the place lookup.
  * The lesson skill (skills/moon.js, "explain moon phases") is a different thing and keeps its own asks.
  */
-import * as A from '../lib/astro.js';
-import { events, fmtTime, dayWord, inWords, pct, compassWord } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
 import { splitPlace, moonSvg, SKY_LINK } from '../lib/skyask.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first moon answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); moonAnswer and nextPhaseAnswer read them, so a caller awaits ready first
+let A, events, fmtTime, dayWord, inWords, pct, compassWord, whereAmI, findPlace;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ events, fmtTime, dayWord, inWords, pct, compassWord } = f); ({ whereAmI, findPlace } = w); }));
 
 const PHASE = { full: 'full', new: 'new', 'first quarter': 'first quarter', 'last quarter': 'last quarter' };
 // what is asked: { kind: 'tonight' | 'next', phase?, place? } or null
@@ -40,6 +47,7 @@ export function nextPhaseAnswer(date, place, phase) {
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = moonAsk(text) || { kind: 'tonight' };
   const el = showPage((p) => { p.innerHTML = '<h2>The moon</h2><div class="sub">…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'moontonight';
   if (!place) { el.innerHTML = `<h2>The moon</h2><p>${ask.place ? `I couldn't find "${esc(ask.place)}".` : 'I need a place for this: try "moon tonight in Oslo", or open the sky and set your location.'}</p>${SKY_LINK}`; return ask.place ? 'none' : 'moontonight'; }
@@ -62,4 +70,5 @@ export default {
   nearMisses: ['how far is the moon', 'moon river', 'fly me to the moon', 'explain moon phases', 'how do moon phases work', 'why does the moon have phases', 'moon landing', 'sailor moon', 'new moon movie', 'when is the next blue moon in the film'],
   match(lower, text) { return !!moonAsk(text); },
   run,
+  ready,
 };

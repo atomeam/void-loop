@@ -5,9 +5,11 @@
  * with its own tracks, its own loudness, and the pad and lead ducked on every kick so the kick hits through them (sidechain, in the gain
  * automation itself). The same ask gives the same song. Made in the visitor's browser with Web Audio: no model, no server, no cost. With the
  * real instruments loaded (compose.js instrumentsFor; owner, 2026-10-30: "drums needs to sound like perfect studio quality") the drums are the
- * recorded acoustic kit and the pad is the recorded grand piano, both public domain; without them both are synthesised. No real singer's voice
- * or recording of a song is imitated; the guitar is detuned sawtooth pairs through a tanh waveshaper and a cabinet filter
- * (about 3.2 kHz low-pass with a bump near 100 Hz).
+ * recorded acoustic kit and the pad is the recorded grand piano, both public domain, and (lib/rap-strings.js, CC0) the bass is a recorded bass
+ * guitar and the guitar and lead are a recorded electric guitar, played clean and driven through a simulated amp: a tanh waveshaper and a
+ * cabinet filter (about 3.2 kHz low-pass with a bump near 100 Hz). The chugs are real palm mutes, two takes in turn, each part played twice
+ * a few milliseconds apart (double tracked, as heavy guitars are). Whatever does not load is synthesised: the guitar as detuned sawtooth
+ * pairs through the same amp. No real singer's voice or recording of a song is imitated.
  * The piece has the same shape lib/compose.js makes (chords, bass, melody, drums as step arrays, bpm, bars) plus
  * `sections`, `guitar`, `pad` and `drums.crash`, so the piano roll, the notes text and the player's playhead work on it unchanged.
  * Tests: tools/arrange.test.mjs (the shape, in Node) and the browser section "music: a heavy ask" (renders it and measures each section's loudness).
@@ -15,6 +17,7 @@
 import { SCALES, hashOf, noteName, hz, wordsOf, wavBytes } from './compose.js';
 import { chordOf, takeOf as pianoTake } from './rap-piano.js';
 import { takeOf as drumTake } from './rap-kit.js';
+import { bassTake, guitarTake, mutedOf } from './rap-strings.js';
 
 /** the asks that want a heavy, shaped song rather than the default loop. Pure. */
 export const HEAVY = /\b(heavy|metal|rock|punk|hardcore|screamo|industrial|aggressive|angry|rage|intense|brutal|breakdown|riff|mosh|thrash|djent|grunge)\b/i;
@@ -99,7 +102,7 @@ export function sectionsSvg(p, W = 320, y0 = 150) {
 const curve = (k) => { const c = new Float32Array(2048); for (let i = 0; i < c.length; i++) { const x = (i / (c.length - 1)) * 2 - 1; c[i] = Math.tanh(k * x); } return c; };
 
 /** play the song on a context (real or offline) from t0 seconds; returns the seconds it lasts. */
-export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = {}) {
+export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null, strings = null } = {}) {
   const sp = 60 / p.bpm / 4, tension = (step) => { const s = p.sections.find((x) => step >= x.fromStep && step < x.fromStep + x.steps) || p.sections[0]; return 0.3 + 0.7 * s.tension; };
   // master: a limiter-like compressor so the loud sections never clip; the contrast between sections stays in the notes' own gains
   const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -8; comp.knee.value = 6; comp.ratio.value = 10; comp.attack.value = 0.003; comp.release.value = 0.12;
@@ -114,6 +117,12 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = 
   const bump = ctx.createBiquadFilter(); bump.type = 'peaking'; bump.frequency.value = 100; bump.Q.value = 1.2; bump.gain.value = 5;
   const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 60; const gOut = ctx.createGain(); gOut.gain.value = 0.3;
   drive.connect(shaper); shaper.connect(cab); cab.connect(bump); bump.connect(hp); hp.connect(gOut); gOut.connect(out);
+  const amp = !!(strings && strings.buffers && strings.buffers.size);
+  // with the recordings: the real bass gets more of its own top (the string's attack), and the climax lead has its own lighter drive on the soft bus
+  const bassReal = ctx.createBiquadFilter(); bassReal.type = 'lowpass'; bassReal.frequency.value = 1800; bassReal.connect(out);
+  const leadDrive = ctx.createGain(); leadDrive.gain.value = 2.5; const leadShaper = ctx.createWaveShaper(); leadShaper.curve = curve(3); try { leadShaper.oversample = '4x'; } catch (_) { /* a context without oversampling */ }
+  const leadCab = ctx.createBiquadFilter(); leadCab.type = 'lowpass'; leadCab.frequency.value = 3600; const leadHp = ctx.createBiquadFilter(); leadHp.type = 'highpass'; leadHp.frequency.value = 120;
+  const leadOut = ctx.createGain(); leadOut.gain.value = 0.22; leadDrive.connect(leadShaper); leadShaper.connect(leadCab); leadCab.connect(leadHp); leadHp.connect(leadOut); leadOut.connect(soft);
   const nb = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * 1.5)), ctx.sampleRate), nd = nb.getChannelData(0), r = rng(p.seed ^ 0x9e3779b9); for (let i = 0; i < nd.length; i++) nd[i] = r() * 2 - 1;
   const tone = (dest, type, midi, step, len, gain, atk = 0.01, rel = 0.12, cents = 0) => {
     const t = t0 + step * sp, d = len * sp, o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = hz(midi); if (cents) o.detune.value = cents;
@@ -138,11 +147,29 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = 
       const k = pianoTake(n.midi, n.vel), buf = piano.buffers.get(k.path); if (buf) sample(buf, n.t, k.rate, 0.3 * k.gain, soft, n.t + Math.min(n.dur, 2.6));
     }
   } else for (const n of p.pad) tone(soft, 'sine', n.midi, n.step, n.len, 0.05, 0.08, 0.3);
-  for (const n of p.melody) { const lead = p.sections.find((s) => n.step >= s.fromStep && n.step < s.fromStep + s.steps); tone(lp, lead && lead.id === 'climax' ? 'sawtooth' : 'triangle', n.midi, n.step, n.len, (lead && lead.id === 'climax' ? 0.07 : lead && lead.id === 'bridge' ? 0.1 : 0.15) * tension(n.step), 0.015, 0.15); }
-  for (const n of p.bass) tone(bassLp, 'sawtooth', n.midi, n.step, n.len * 0.9, (n.soft ? 0.09 : 0.22) * tension(n.step), n.soft ? 0.05 : 0.005, 0.06);
-  for (const n of p.guitar) { // two detuned sawtooths a note (about 12 cents either side), and the fifth under an open chord
-    const g = 0.13 * tension(n.step), len = n.open ? n.len : 0.8;
-    for (const c of [-12, 12]) { tone(drive, 'sawtooth', n.midi, n.step, len, g, 0.004, 0.03, c); if (n.open) tone(drive, 'sawtooth', n.midi + 7, n.step, len, g * 0.8, 0.004, 0.03, c); }
+  const strum = (midi, at, len, gain, dest, opts) => { const k = guitarTake(midi, opts), buf = strings.buffers.get(k.path); if (buf) sample(buf, at, k.rate, gain * k.gain, dest, at + len); };
+  for (const n of p.melody) {
+    const lead = p.sections.find((s) => n.step >= s.fromStep && n.step < s.fromStep + s.steps), climax = lead && lead.id === 'climax';
+    // the lead on the real guitar: clean in the intro and the bridge, driven in the climax
+    if (amp) strum(n.midi, t0 + n.step * sp, n.len * sp, climax ? 0.5 * tension(n.step) : (lead && lead.id === 'bridge' ? 0.3 : 0.45) * tension(n.step), climax ? leadDrive : lp);
+    else tone(lp, climax ? 'sawtooth' : 'triangle', n.midi, n.step, n.len, (climax ? 0.07 : lead && lead.id === 'bridge' ? 0.1 : 0.15) * tension(n.step), 0.015, 0.15);
+  }
+  for (const n of p.bass) {
+    if (amp) { const k = bassTake(n.midi, n.soft ? 0.45 : 0.9), buf = strings.buffers.get(k.path), at = t0 + n.step * sp; if (buf) sample(buf, at, k.rate, tension(n.step) * k.gain, bassReal, at + n.len * 0.9 * sp); }
+    else tone(bassLp, 'sawtooth', n.midi, n.step, n.len * 0.9, (n.soft ? 0.09 : 0.22) * tension(n.step), n.soft ? 0.05 : 0.005, 0.06);
+  }
+  let chug = 0;
+  for (const n of p.guitar) {
+    const g = (amp ? 0.45 : 0.13) * tension(n.step), len = n.open ? n.len : 0.8;
+    if (amp) { // the real guitar into the amp: a chug is a palm mute (two takes in turn), an open hit rings root, fifth and octave; each played twice, 9 ms apart and a few cents off (double tracked)
+      const at = t0 + n.step * sp, notes = mutedOf(n) ? [n.midi] : [n.midi, n.midi + 7, n.midi + 12], m = mutedOf(n) ? chug++ : 0;
+      for (const [dt, dr] of [[0, 1], [0.009, 1.003]]) for (const [i, midi] of notes.entries()) {
+        const k = guitarTake(midi, { muted: mutedOf(n), n: m + (dt ? 1 : 0) }), buf = strings.buffers.get(k.path);
+        if (buf) sample(buf, at + dt, k.rate * dr, g * k.gain * (i ? 0.8 : 1), drive, at + dt + len * sp);
+      }
+    } else for (const c of [-12, 12]) { // two detuned sawtooths a note (about 12 cents either side), and the fifth under an open chord
+      tone(drive, 'sawtooth', n.midi, n.step, len, g, 0.004, 0.03, c); if (n.open) tone(drive, 'sawtooth', n.midi + 7, n.step, len, g * 0.8, 0.004, 0.03, c);
+    }
   }
   const dr = p.drums;
   if (drumKit) { // the recorded kit: the velocity follows the section's tension, so the breakdown and climax hit harder than the drop
@@ -163,21 +190,24 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = 
     const sec = p.sections.find((x) => s >= x.fromStep && s < x.fromStep + x.steps); if (!sec || !sec.duck) continue;
     const t = t0 + s * sp, low = 1 - sec.duck; soft.gain.setValueAtTime(1, t); soft.gain.linearRampToValueAtTime(low, t + 0.01); soft.gain.linearRampToValueAtTime(1, t + 0.13);
   }
-  return p.steps * sp + (keys || drumKit ? 2.4 : 1.2);
+  return p.steps * sp + (keys || drumKit || amp ? 2.4 : 1.2);
 }
 /** a plain sentence about what played in a heavy song, from what loaded. Pure. */
-export function arrangedLine(p, { piano = null, kit = null } = {}) {
-  const k = !!(kit && kit.name === 'kit'), pi = !!piano;
-  if (k && pi) return 'The drums are a real recorded kit and the pad is a real grand piano; the guitar, bass and lead are synthesised.';
-  if (k) return 'The drums are a real recorded kit; the piano did not load, so the pad, guitar, bass and lead are synthesised.';
-  if (pi) return 'The pad is a real grand piano; the recorded drums did not load, so they are synthesised with the guitar, bass and lead.';
-  return 'The recordings did not load, so every part is synthesised.';
+export function arrangedLine(p, { piano = null, kit = null, strings = null } = {}) {
+  const st = !!(strings && strings.buffers && strings.buffers.size);
+  const parts = [['drums', 'the drums are a real recorded kit', !!(kit && kit.name === 'kit')], ['pad', 'the pad is a real grand piano', !!piano],
+    ['bass', 'the bass is a real bass guitar', st], ['guitar and lead', 'the guitar and lead are a real electric guitar through a simulated amp', st]];
+  const real = parts.filter((x) => x[2]).map((x) => x[1]), synth = parts.filter((x) => !x[2]).map((x) => x[0]);
+  if (!real.length) return 'The recordings did not load, so every part is synthesised.';
+  const list = (a) => a.length < 3 ? a.join(' and ') : a.slice(0, -1).join(', ') + ', and ' + a[a.length - 1];
+  const s = list(real) + (synth.length ? '; the ' + list(synth) + (synth.length > 1 || synth[0] === 'drums' || synth[0] === 'guitar and lead' ? ' are' : ' is') + ' synthesised' : '') + '.';
+  return s[0].toUpperCase() + s.slice(1);
 }
 
 /** render the song to samples in the browser (OfflineAudioContext, 22.05 kHz mono): { samples, rate }, or null with no offline audio. */
 export async function renderArranged(p, OAC = typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : (typeof webkitOfflineAudioContext !== 'undefined' ? webkitOfflineAudioContext : null), instruments = {}) {
   if (!OAC) return null;
-  const real = instruments.piano || instruments.kit, rate = 22050, ctx = new OAC(1, Math.ceil((p.steps * (60 / p.bpm / 4) + (real ? 2.6 : 1.4)) * rate), rate); scheduleArranged(ctx, p, 0, instruments);
+  const real = instruments.piano || instruments.kit || instruments.strings, rate = 22050, ctx = new OAC(1, Math.ceil((p.steps * (60 / p.bpm / 4) + (real ? 2.6 : 1.4)) * rate), rate); scheduleArranged(ctx, p, 0, instruments);
   const buf = await ctx.startRendering(); return { samples: buf.getChannelData(0), rate };
 }
 /** the song as WAV bytes, or null. */

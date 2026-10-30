@@ -17,8 +17,14 @@
  *
  * Positions: 'b' base, 0..55 a track hole, 'c' the centre, 'h0'..'h3' home (h3 is the deepest).
  */
-import { lift3d } from './lift3d.js';
-import { rattle } from './sfx.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the 3D lift and the dice rattle load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let lift3d, rattle;
+export const ready = loadLater(() => Promise.all([
+  import('./lift3d.js'),
+  import('./sfx.js'),
+]).then(([l, x]) => { ({ lift3d } = l); ({ rattle } = x); }));
 
 export const COLORS = ['red', 'blue', 'green', 'yellow'];
 export const HEX = { red: '#d93a3f', blue: '#2f6fd8', green: '#2c9c5a', yellow: '#e9b52a' };
@@ -388,6 +394,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!aggravationOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'aggravation');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'aggravation'; }
   api.summon('aggravation', { state: createState(), center: true });
@@ -408,7 +415,8 @@ export default {
   nearMisses: ['connect 4', 'dots and boxes', 'marbles', 'mancala'],
   match(lower, text) { return !!aggravationOf(text); },
   run,
-  stageKinds: { aggravation: { mount } },
+  ready,
+  stageKinds: { aggravation: { mount: ready.mount(mount) } },
   suite() {
     const s0 = createState({ opponents: 3 });
     const at = (marbles, turn = 0, dice = null) => ({ ...createState({ opponents: 3 }), marbles, turn, dice });

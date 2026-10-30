@@ -47,6 +47,7 @@ import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
 import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
 import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading, setupFacts, noteFinish } from '../../lib/note-ask.js';
+import { telemetryOf } from '../../lib/telemetry.js';
 import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
@@ -648,7 +649,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   }
   answer = dropLimits(answer);
   if (!answer && note) answer = noteReading(ask, notePage, noteFacts);
-  else if (note || isPaste(ask)) answer = noteFinish(answer, ask, note ? noteFacts : setupFacts(ask)); // the cut line and the real secret names, whatever the model gave
+  else if (note || isPaste(ask)) answer = noteFinish(answer, ask, note ? noteFacts : telemetryOf(ask) ? [] : setupFacts(ask)); // the cut line and the real secret names, whatever the model gave; a status report is never answered with secret names (docs/RULES.md, 2026-10-30)
   if (!answer) { log({ model, outcome: outcome + '; only limits lines' }); return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, route: route.kind, ...nearOut }); }
   log({ model });
   // no claimed write and no filler (lib/answer-honesty.js); then only the sources the answer cited, and whose fetched text holds the

@@ -4,10 +4,17 @@
  * when in the year it stands highest in the evening. lib/astro.js plus the star table (loaded only when this is asked). To name a star you
  * can see, open the sky and tap it.
  */
-import * as A from '../lib/astro.js';
-import { compassWord, skyNow } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
 import { splitPlace, SKY_LINK } from '../lib/skyask.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first constellation answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); the async answers await them, and seasonOf reads them, so its caller awaits ready first
+let A, compassWord, skyNow, whereAmI, findPlace;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ compassWord, skyNow } = f); ({ whereAmI, findPlace } = w); }));
 
 // the 88 names (the same as lib/stars.js CONSTELLATIONS, which tools/constellation.test.mjs checks), kept here so matching an ask loads no star table
 export const NAMES = { And: 'Andromeda', Ant: 'Antlia', Aps: 'Apus', Aqr: 'Aquarius', Aql: 'Aquila', Ara: 'Ara', Ari: 'Aries', Aur: 'Auriga', Boo: 'Boötes', Cae: 'Caelum', Cam: 'Camelopardalis', Cnc: 'Cancer', CVn: 'Canes Venatici', CMa: 'Canis Major', CMi: 'Canis Minor', Cap: 'Capricornus', Car: 'Carina', Cas: 'Cassiopeia', Cen: 'Centaurus', Cep: 'Cepheus', Cet: 'Cetus', Cha: 'Chamaeleon', Cir: 'Circinus', Col: 'Columba', Com: 'Coma Berenices', CrA: 'Corona Australis', CrB: 'Corona Borealis', Crv: 'Corvus', Crt: 'Crater', Cru: 'Crux', Cyg: 'Cygnus', Del: 'Delphinus', Dor: 'Dorado', Dra: 'Draco', Equ: 'Equuleus', Eri: 'Eridanus', For: 'Fornax', Gem: 'Gemini', Gru: 'Grus', Her: 'Hercules', Hor: 'Horologium', Hya: 'Hydra', Hyi: 'Hydrus', Ind: 'Indus', Lac: 'Lacerta', Leo: 'Leo', LMi: 'Leo Minor', Lep: 'Lepus', Lib: 'Libra', Lup: 'Lupus', Lyn: 'Lynx', Lyr: 'Lyra', Men: 'Mensa', Mic: 'Microscopium', Mon: 'Monoceros', Mus: 'Musca', Nor: 'Norma', Oct: 'Octans', Oph: 'Ophiuchus', Ori: 'Orion', Pav: 'Pavo', Peg: 'Pegasus', Per: 'Perseus', Phe: 'Phoenix', Pic: 'Pictor', Psc: 'Pisces', PsA: 'Piscis Austrinus', Pup: 'Puppis', Pyx: 'Pyxis', Ret: 'Reticulum', Sge: 'Sagitta', Sgr: 'Sagittarius', Sco: 'Scorpius', Scl: 'Sculptor', Sct: 'Scutum', Ser: 'Serpens', Sex: 'Sextans', Tau: 'Taurus', Tel: 'Telescopium', Tri: 'Triangulum', TrA: 'Triangulum Australe', Tuc: 'Tucana', UMa: 'Ursa Major', UMi: 'Ursa Minor', Vel: 'Vela', Vir: 'Virgo', Vol: 'Volans', Vul: 'Vulpecula' };
@@ -46,6 +53,7 @@ export function reachOf(lat, dec) {
 }
 
 export async function listAnswer(date, place) {
+  await ready();
   const { STARS, CONSTELLATIONS } = await import('../lib/stars.js'), n = skyNow(date, place.lat, place.lon), lines = [];
   if (n.sun.alt > -6) return { lines: [`It is ${n.light} where you are, so no constellation is showing yet. Come back after dark, or open the sky to see where they will be.`], rows: [] };
   const by = {};
@@ -57,6 +65,7 @@ export async function listAnswer(date, place) {
 }
 
 export async function oneAnswer(date, place, abbr) {
+  await ready();
   const c = await centre(abbr), name = NAMES[abbr]; if (!c) return { lines: [`I don't have ${name}.`] };
   const reach = reachOf(place.lat, c.dec), h = A.starHor(c.ra, c.dec, date, place.lat, place.lon), n = skyNow(date, place.lat, place.lon), s = seasonOf(c.ra, date.getUTCFullYear()), lines = [];
   const bright = c.stars.slice().sort((a, b) => a[2] - b[2]).slice(0, 3).map((x) => x[3]).join(', ');
@@ -73,6 +82,7 @@ export async function oneAnswer(date, place, abbr) {
 // a named constellation when the place is not known: what does not depend on it (its bright stars, which latitudes ever see it, and
 // when in the year it is highest in the evening), so "where is Orion" without a location still answers about Orion
 export async function anywhereAnswer(date, abbr) {
+  await ready();
   const c = await centre(abbr), name = NAMES[abbr]; if (!c) return { lines: [`I don't have ${name}.`] };
   const s = seasonOf(c.ra, date.getUTCFullYear()), lines = [], bright = c.stars.slice().sort((a, b) => a[2] - b[2]).slice(0, 3).map((x) => x[3]).join(', ');
   if (bright) lines.push(`${name}: look for ${bright}.`);
@@ -93,6 +103,7 @@ const title = (text, abbr) => { const a = askedAs(text, abbr); return NAMES[abbr
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = constAsk(text) || { kind: 'list' };
   const el = showPage((p) => { p.innerHTML = '<h2>Constellations</h2><div class="sub">…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'constellation';
   if (!place && ask.kind === 'one') { const a = await anywhereAnswer(new Date(), ask.abbr); if (!api._pageStill(el)) return 'constellation'; el.innerHTML = `<h2>${esc(title(text, ask.abbr))}</h2>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}${SKY_LINK}`; say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'constellation' }); return 'constellation'; }
@@ -111,4 +122,5 @@ export default {
   nearMisses: ['orion pictures', 'orion car insurance', 'cassiopeia the movie', 'constellation brands stock', 'constellation energy', 'what is a constellation', 'is the big dipper a constellation', 'orion nebula distance', 'taurus personality traits', 'leo horoscope today'],
   match(lower, text) { return !!constAsk(text); },
   run,
+  ready,
 };

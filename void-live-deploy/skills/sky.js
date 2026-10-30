@@ -5,9 +5,16 @@
  * api.world(card, factory) hands the skill a canvas behind the stage for as long as the card is open, and the stage goes back to the void
  * when the card closes. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import * as A from '../lib/astro.js';
-import { skyNow, planetsToSee, events, fmtTime, dayWord, inWords, compassWord, lightName, pct } from '../lib/skyfacts.js';
-import { whereAmI, findPlace, savePlace, latLonText } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first sky card, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); nowLines and cardHtml read them, so a caller awaits ready first
+let A, skyNow, planetsToSee, events, fmtTime, dayWord, inWords, compassWord, lightName, pct, whereAmI, findPlace, savePlace, latLonText;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ skyNow, planetsToSee, events, fmtTime, dayWord, inWords, compassWord, lightName, pct } = f); ({ whereAmI, findPlace, savePlace, latLonText } = w); }));
 
 const PLACE = '(.+?)';
 // "sky", "the night sky", "show me the sky tonight", "what's in the sky", "sky over Tokyo": a place may follow
@@ -84,6 +91,7 @@ async function run(text, api) {
   const { showPage, esc, say, loopLog } = api;
   const ask = skyOf(text) || { place: null };
   const el = showPage((p) => { p.classList.add('skyc'); p.innerHTML = '<h2>Sky</h2><div class="sub">finding where you are…</div>'; });
+  await ready();
   let place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'sky';
   if (!place) {
@@ -141,4 +149,5 @@ export default {
   nearMisses: ['why is the sky blue', 'sky news', 'sky sports', 'sky blue', 'skyrim', 'is the sky clear tonight', 'sky ticket', 'the sky is falling', 'weather sky', 'stars', 'dancing with the stars'],
   match(lower, text) { return !!skyOf(text); },
   run,
+  ready,
 };

@@ -5,10 +5,17 @@
  * The rules live in skills/checkers-rules.js (forced captures, multi-jumps, crowning, a king moves both ways).
  * Where WebGL can't run the same game shows as a flat board of buttons, so the card always works.
  */
-import { levelPick } from './game-level.js';
-import { grip, sideCard } from './side-card.js';
-import * as K from './checkers-rules.js';
-import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
+import { loadLater } from '../lib/load-later.js';
+
+// the rules, the level, the side card and the match history (a finished game goes on this device's record, asked by Verse)
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let levelPick, grip, sideCard, K, finish, minutesSince;
+export const ready = loadLater(() => Promise.all([
+  import('./checkers-rules.js'),
+  import('./game-level.js'),
+  import('./side-card.js'),
+  import('../lib/match-history.js'),
+]).then(([k, g, c, h]) => { K = k; ({ levelPick } = g); ({ grip, sideCard } = c); ({ finish, minutesSince } = h); }));
 
 export function checkersOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -154,6 +161,7 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const q = checkersOf(text);
   if (!q) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'checkers');
   if (existing) { if (q.fresh) existing.state = freshState(); api.stage.render(); return 'checkers'; }
   const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 420) : 560;
@@ -170,5 +178,6 @@ export default {
   nearMisses: ['checkers rules', 'who invented checkers', 'play chess', 'chinese checkers', 'fact checkers', 'checkers restaurant'],
   match(lower, text) { return !!checkersOf(text); },
   run,
-  stageKinds: { checkers: { mount } },
+  ready,
+  stageKinds: { checkers: { mount: ready.mount(mount) } },
 };

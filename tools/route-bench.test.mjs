@@ -228,3 +228,22 @@ test('the will proposes teaching the skill a close none nearly was, unless that 
   assert.deepEqual(c.map((x) => x.title), ['teach my weather skill "is it going to pour on my picnic saturday"'], 'the timer ask is one the timer skill already answers (tools/covered.mjs)');
   assert.match(c[0].why, /came within 0\.04 of my weather skill .* \(asked 3 times\)/);
 });
+
+// owner, 2026-10-30 ("What I want to become" card): the top want was "teach my self skill" for a note about Verse's own card, asked
+// 4 times, which the question path answers on purpose as Verse (lib/self-context.js isOwnCardNote). These are the 4 asks as the
+// router logged them (lower case, cut at 200): none may come back as a near-miss want. A real wording a skill missed still does.
+const SELF_NOTE = 'this card is the first one that speaks as itself and refuses a false claim. some parts are still off, and i sent them to the ⏎ gemma answer';
+test('a note about my own card is no near miss of the self skill (the 4 asks of 2026-10-30)', async () => {
+  const { spawnSync } = await import('node:child_process'); const { mkdtempSync, writeFileSync } = await import('node:fs');
+  const { join } = await import('node:path'); const { tmpdir } = await import('node:os');
+  const asks = [SELF_NOTE, 'that card is wrong. it cites a source that says nothing about my question and calls itself fetched, sourced and dated.',
+    'closer, but it still says "the card" about its own card, and it gives no list of what is fixed and what is still open.',
+    'your last answer card leaves out pr #1406 and dates the gemma switch oct 25'];
+  const covered = JSON.parse(spawnSync('node', [new URL('./covered.mjs', import.meta.url).pathname], { input: JSON.stringify([...asks, 'what is artificial intelligence', 'my credit card was charged twice, is that wrong']), encoding: 'utf8', timeout: 60000 }).stdout);
+  assert.deepEqual(covered, [true, true, true, true, false, false], 'card notes are handled; a plain question and a bank card are not');
+  const f = join(mkdtempSync(join(tmpdir(), 'routes-')), 'routes.json');
+  writeFileSync(f, JSON.stringify({ total: 8, fallback: 0, skills: {}, close: { self: asks.map((ask) => ({ ask, count: 4, score: 0.62 })), weather: [{ ask: 'is it going to pour on my picnic saturday', count: 3, score: 0.66 }] } }));
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname, '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
+  const c = JSON.parse(py.stdout || '[]').filter((x) => x.source === 'router near miss');
+  assert.deepEqual(c.map((x) => x.title), ['teach my weather skill "is it going to pour on my picnic saturday"']);
+});
