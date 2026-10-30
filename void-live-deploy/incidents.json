@@ -2,6 +2,36 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T19:59:40.651Z",
+   "sha": "90dcaf6e31395eaf00a6e12cb40cd6cc9d5b4876",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41090097093",
+   "suite": "browser suite on main",
+   "checks": [
+    "hints while typing",
+    "money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes the loan ask"
+   ],
+   "touched": [
+    "tools/telemetry-live.test.mjs",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry-live.js",
+    "void-live-deploy/lib/telemetry.js",
+    "docs/HANDOFF-GAPS.md",
+    "tools/automation-fix.test.mjs",
+    "tools/handoff-e2e.mjs",
+    "tools/keeper.test.mjs",
+    "tools/note-ask.test.mjs",
+    "tools/paste-rule.test.mjs",
+    "tools/verse-secrets.mjs",
+    "tools/zones.test.mjs",
+    "void-live-deploy/functions/api/answer.js",
+    "void-live-deploy/lib/automation-fix.js",
+    "void-live-deploy/lib/job-regions.js"
+   ],
+   "shards": [
+    2
+   ]
+  },
+  {
    "at": "2026-10-30T19:02:16.898Z",
    "sha": "e28d7d217319ef4e952613dc99f6aa61d8ff730a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41072999631",
@@ -953,41 +983,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 945
-  },
-  {
-   "at": "2026-10-29T03:00:57.820Z",
-   "sha": "be4734c87089267653dcaaad708f2a572488ee15",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40806232662",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "tower: wordcounter.net on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
-    "tower: a saved or copied tower card says the fight (wordcounter.net: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/art-floor.json",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    "domains/verse-loop.pause",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tower.evidence.json",
-    "void-live-deploy/tower.shots/is-it.jpg"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 956
   }
  ]
 }
