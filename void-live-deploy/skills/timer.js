@@ -1,62 +1,58 @@
 /**
  * timer skill — a simple countdown timer on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "set a timer for 5 minutes", "start a 10 second timer", "timer".
+ * "start a timer", "5 minute timer", "countdown 30 seconds", "timer".
+ * Empty surface stays empty: the card appears only when summoned.
  */
 export function isTimer(text) {
-  return /^(?:please\s+)?(?:(?:set|start|make|open)\s+(?:a\s+)?)?(?:\d+\s+(?:second|minute|min|sec)s?\s+)?timer(?:\s+(?:for\s+)?\d+\s+(?:second|minute|min|sec)s?)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''))
-    || /^(?:please\s+)?(?:set|start)\s+a\s+timer(?:\s+for\s+\d+\s+(?:second|minute|min|sec)s?)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  return /^(?:please\s+)?(?:(?:start|set|make|begin|run)\s+(?:a\s+)?(?:\d+\s+(?:minute|min|second|sec|hour|hr)s?\s+)?timer|(?:\d+\s+(?:minute|min|second|sec|hour|hr)s?\s+)?timer|(?:countdown|count\s+down)\s+(?:for\s+)?\d+\s+(?:minute|min|second|sec|hour|hr)s?)$/i.test(t);
 }
 
 function parseDuration(text) {
-  const m = /(\d+)\s*(second|minute|min|sec)s?/i.exec(text || '');
-  if (!m) return 60;
-  const n = +m[1];
-  return /min/i.test(m[2]) ? n * 60 : n;
+  const t = String(text || '').toLowerCase();
+  let ms = 5 * 60 * 1000; // default 5 min
+  const m = /(\d+)\s*(minute|min|second|sec|hour|hr)/i.exec(t);
+  if (m) {
+    const n = +m[1];
+    const unit = m[2][0];
+    if (unit === 's') ms = n * 1000;
+    else if (unit === 'h') ms = n * 3600 * 1000;
+    else ms = n * 60 * 1000;
+  }
+  return Math.max(1000, Math.min(ms, 24 * 3600 * 1000));
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  let seconds = parseDuration(text);
-  let left = seconds;
-  let interval;
-  const update = (p) => {
-    const m = Math.floor(left / 60), s = left % 60;
-    const time = m + ':' + String(s).padStart(2, '0');
-    p.innerHTML = '<h2>Timer</h2><p style="font-size:48px;font-weight:300;text-align:center;font-family:monospace">' + esc(time) + '</p><div style="text-align:center"><button id="timer-pause" class="g-btn">' + (interval ? 'Pause' : 'Start') + '</button> <button id="timer-reset" class="g-btn">Reset</button></div><div class="sub">say “timer for 5 minutes” for another</div>';
-    const pause = p.querySelector('#timer-pause'), reset = p.querySelector('#timer-reset');
-    pause.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (interval) { clearInterval(interval); interval = null; }
-      else {
-        interval = setInterval(() => {
-          left--;
-          if (left <= 0) { clearInterval(interval); interval = null; left = 0; }
-          update(p);
-        }, 1000);
-      }
-      update(p);
-    });
-    reset.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (interval) clearInterval(interval);
-      interval = null;
-      left = seconds;
-      update(p);
-    });
+  const duration = parseDuration(text);
+  const end = Date.now() + duration;
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Timer</h2><p id="t" style="font-size:48px;font-weight:300;text-align:center;font-variant-numeric:tabular-nums">—</p><div class="sub">say “stop timer” or close the card</div>';
+  });
+  const tick = () => {
+    if (!api._pageStill(el)) return;
+    const left = Math.max(0, end - Date.now());
+    const s = Math.floor(left / 1000);
+    const mm = String(Math.floor(s / 60)).padStart(2, '0');
+    const ss = String(s % 60).padStart(2, '0');
+    const display = el.querySelector('#t');
+    if (display) display.textContent = mm + ':' + ss;
+    if (left > 0) setTimeout(tick, 250);
+    else if (display) display.textContent = '00:00';
   };
-  showPage((p) => { update(p); });
+  tick();
   return 'timer';
 }
 
 export default {
   name: 'timer',
-  examples: ['timer', 'set a timer', 'start a timer for 5 minutes', '10 second timer'],
-  nearMisses: ['what time is it', 'countdown to new year', 'stopwatch'],
+  examples: ['start a timer', '5 minute timer', 'countdown 30 seconds', 'timer', 'set a 10 min timer'],
+  nearMisses: ['what time is it', 'days until new year', 'stopwatch', 'how long is a timer'],
   match(lower, text) { return isTimer(text); },
   run,
   suite() {
-    const ok = isTimer('timer') && isTimer('set a timer for 5 minutes') && !isTimer('what time is it');
+    const ok = isTimer('start a timer') && isTimer('5 minute timer') && isTimer('countdown 30 seconds') && !isTimer('what time is it');
     return { ok, got: 'match works' };
   }
 };
