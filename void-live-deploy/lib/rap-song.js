@@ -2,7 +2,7 @@
 // start making music videos for its songs"). Two stems, made in this browser at 48 kHz: the beat (lib/rap-beat.js produce(): drums with swing,
 // 808 or sub bass, chords, a mix bus) and Verse's voice (each bar said by the site's own text-to-speech route, /api/rapvoice, then cut into
 // syllables and put on the beat's grid by lib/rap-voice.js). The vocal goes through its own chain: a high-pass, a presence lift, a compressor,
-// an eighth-note delay and a short room, with the rhyme word doubled left and right. The stems play live (the page mixes them, the Beat slider
+// an eighth-note delay and a short room, with the rhyme word doubled left and right and the ad-libs on their own thinner track to the right. The stems play live (the page mixes them, the Beat slider
 // sets the beat's level), save as one stereo WAV, and are the sound of the music video (lib/rap-video.js). Nothing about the visitor is sent:
 // only the rap's own bars go to the voice route, one at a time.
 import { beatFor, timingOf, lengthOf } from './rap.js';
@@ -62,6 +62,8 @@ async function renderVocal(v, plan, OAC) {
   const main = buf(v.main); main.connect(hp); main.start(0);
   // the double: the rhyme words again, a little late on each side
   for (const [pan, lag] of [[-0.35, 0.015], [0.35, 0.024]]) { const d = buf(v.dub), p = mk('p', { pan }), g = mk('g', { gain: 0.5 }), late = mk('d', { delayTime: lag }); d.connect(late); late.connect(g); g.connect(p); p.connect(hp); d.start(0); }
+  // the ad-lib track: thinner, quieter and off to the right, behind the lead the way a hype voice sits on a record
+  if (v.adlib) { const a = buf(v.adlib), thin = mk('f', { type: 'highpass', frequency: 260, Q: 0.7 }), g = mk('g', { gain: 0.55 }), p = mk('p', { pan: 0.55 }); a.connect(thin); thin.connect(g); g.connect(p); p.connect(hp); a.start(0); }
   const b = await ctx.startRendering();
   return [b.getChannelData(0), b.getChannelData(1)];
 }
@@ -71,8 +73,8 @@ export async function renderVoice(plan, { win = globalThis, fetchFn = (u) => win
   const OAC = OACof(win); if (!OAC) return { stem: null, words: [], bars: [], voiced: 0, note: 'this browser cannot decode sound' };
   const dec = new OAC(1, 1, RATE);
   const decode = async (bytes) => (await dec.decodeAudioData(bytes)).getChannelData(0);
-  const { clips, note } = await fetchVoice(plan.timing.map((b) => b.text), { fetchFn, decode, onProgress });
-  const v = buildVocal(clips, plan.timing, plan.beat, flow, RATE, plan.seconds);
+  const { clips, adlibClips, note } = await fetchVoice(plan.timing.map((b) => b.text), { fetchFn, decode, onProgress });
+  const v = buildVocal(clips, plan.timing, plan.beat, flow, RATE, plan.seconds, adlibClips);
   if (!v.voiced) return { stem: null, words: [], bars: [], voiced: 0, note: note || 'no bars came back' };
   return { stem: await renderVocal(v, plan, OAC), words: v.words, bars: v.bars, voiced: v.voiced, note };
 }

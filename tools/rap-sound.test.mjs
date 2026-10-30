@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { settingsOf, beatFor, timingOf, fromLink, voiceText, STYLES } from '../void-live-deploy/lib/rap.js';
 import { beatEvents, seventhOf, stepTime, SWING } from '../void-live-deploy/lib/rap-beat.js';
-import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf } from '../void-live-deploy/lib/rap-voice.js';
+import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf, splitBar } from '../void-live-deploy/lib/rap-voice.js';
 import { planOf, mixStems, wavStereo, evenWords, RATE } from '../void-live-deploy/lib/rap-song.js';
 import { fft, bandsOf, kickPulse, frameState, linesOf } from '../void-live-deploy/lib/rap-video.js';
 import { RAP_LINK } from './tower-probes.mjs';
@@ -98,11 +98,32 @@ test('a whole vocal is built on the beat: each bar starts on its measure, the rh
   assert.equal(evenWords(plan.timing).length, plan.timing.reduce((n, b) => n + b.text.split(/\s+/).filter(Boolean).length, 0));
 });
 
+test('ad-libs come off the main line: what is rapped, what is shouted behind it, and where each lands', () => {
+  const a = splitBar('Pull up to the spot [skrrt] and the night is mine (yeah, yeah)');
+  assert.equal(a.main, 'Pull up to the spot and the night is mine');
+  assert.deepEqual(a.adlibs, [{ text: 'skrrt', at: 5 }, { text: 'yeah, yeah', at: 10 }], 'one inside the bar lands with the word after it, one at the end after the last word');
+  assert.deepEqual(a.tokens.map((t) => t.adlib), [-1, -1, -1, -1, -1, 0, -1, -1, -1, -1, -1, 1, 1]);
+  assert.deepEqual(splitBar('[yeah yeah yeah]').adlibs, [], 'a bar that is all ad-lib is rapped as it is'); assert.equal(splitBar('[yeah yeah yeah]').main, '[yeah yeah yeah]');
+  assert.deepEqual(splitBar('no ad-libs here').adlibs, []); assert.deepEqual(splitBar('a bar [!!]').adlibs, [], 'an ad-lib with nothing to say is not one');
+  // on the beat: the ad-lib is on its own track, not in the main vocal, after the rhyme, and its words are lit in order with the rest
+  const s = settingsOf({ topic: 'pizza', style: 'trap' }), r = { title: 'T', sections: [{ name: 'Verse 1', bars: Array.from({ length: 8 }, (_, i) => (i === 2 ? 'Pull up to the spot and the night is mine [skrrt]' : SAMPLE.sections[0].bars[i])) }] };
+  const plan = planOf(r, s), rate = 16000, clips = plan.timing.map((b) => bursts(Math.max(2, Math.min(10, voiceText(splitBar(b.text).main).split(' ').length)), rate));
+  const lib = bursts(1, rate), v = buildVocal(clips, plan.timing, plan.beat, 'steady', rate, plan.seconds, plan.timing.map((_, i) => (i === 2 ? [lib] : [])));
+  const sum = (x, from, to) => { let q = 0; for (let i = Math.max(0, Math.round(from * rate)); i < Math.min(x.length, Math.round(to * rate)); i++) q += Math.abs(x[i]); return q; };
+  const b2 = plan.timing[2], last = v.bars.find((b) => b.bar === 2).at.slice(-1)[0];
+  assert.ok(sum(v.adlib, 0, plan.seconds) > 0, 'the ad-lib is on its track'); assert.equal(sum(v.adlib, 0, b2.at), 0, 'and nowhere before its bar');
+  assert.equal(sum(v.adlib, b2.at, last + 1e-3), 0, 'it comes after the rhyme lands');
+  const w2 = v.words.filter((w) => w.bar === 2); assert.equal(w2.length, 11, 'every word as written has a time'); assert.ok(w2.every((w, i) => i === 0 || w.at >= w2[i - 1].at), 'in order');
+});
+
 test('the voice is fetched bar by bar, and a resting voice stops the asking', async () => {
   const asked = [];
-  const ok = await fetchVoice(['first bar here', 'second (yeah) bar', ''], { fetchFn: async (u) => { asked.push(u); return new Response(new Uint8Array([1, 2, 3])); }, decode: async (b) => new Float32Array(b.byteLength), concurrency: 1 });
-  assert.equal(asked.length, 2, 'an empty bar is not asked'); assert.match(asked[1], /^\/api\/rapvoice\?t=second%20yeah%20bar$/);
-  assert.equal(ok.clips[0].length, 3); assert.equal(ok.clips[2], null); assert.equal(ok.note, '2 of 3 bars came back');
+  const ok = await fetchVoice(['first bar here', 'second (yeah) bar', '', 'third bar [yeah]'], { fetchFn: async (u) => { asked.push(u); return new Response(new Uint8Array([1, 2, 3])); }, decode: async (b) => new Float32Array(b.byteLength), concurrency: 1 });
+  // an ad-lib is not said inside the bar: it is asked on its own, once for the whole song however often it comes
+  assert.equal(asked.length, 4, 'an empty bar is not asked, a repeated ad-lib is asked once');
+  assert.match(asked[1], /^\/api\/rapvoice\?t=second%20bar$/); assert.match(asked[2], /^\/api\/rapvoice\?t=yeah$/); assert.match(asked[3], /^\/api\/rapvoice\?t=third%20bar$/);
+  assert.equal(ok.clips[0].length, 3); assert.equal(ok.clips[2], null); assert.equal(ok.note, '3 of 4 bars came back');
+  assert.equal(ok.adlibClips[1].length, 1); assert.equal(ok.adlibClips[3][0], ok.adlibClips[1][0], 'the same ad-lib, the same sound'); assert.equal(ok.adlibClips[0].length, 0);
   let n = 0;
   const off = await fetchVoice(['a b', 'c d', 'e f', 'g h'], { fetchFn: async () => { n++; return Response.json({ note: 'voice resting' }, { status: 503 }); }, decode: async () => new Float32Array(1), concurrency: 1 });
   assert.equal(n, 1, 'one refusal is enough'); assert.equal(off.note, 'voice resting');
