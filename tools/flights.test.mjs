@@ -187,6 +187,7 @@ test('the leg links: the landing moment in both cities with their zones, the wea
   const { placeFromLink } = await import('../void-live-deploy/lib/local-media.js'), lo = u(l.local);
   assert.equal(lo.pathname, '/local/'); assert.deepEqual(placeFromLink(lo.search), { city: 'Kahului Maui', region: '', regionCode: '', country: 'US', lat: 20.9, lon: -156.43 }, 'the stations are found at the arrival airport, with no name to look up');
   assert.equal(C.legLinks(a, { ...b, cc: '' }, f).local, '', 'no country, no local link');
+  assert.equal(C.legLinks(a, { ...b, cc: 'gb' }, f).jobs, '/jobs/?cc=GB'); assert.equal(C.legLinks(a, { ...b, cc: '' }, f).jobs, '', 'no country, no jobs link');
   for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar', 'Radio and TV where it lands']) assert.ok(DE[s], 'German for ' + s);
 });
 

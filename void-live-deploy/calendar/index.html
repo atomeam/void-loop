@@ -657,7 +657,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       { label: de ? 'Wetter am Tag' : 'Weather that day', href: () => { // the place of the day's first event with one, while the day is in the 7 days /weather/ forecasts
         const ahead = Math.round((C.startOfDay(state.cursor) - C.startOfDay(now())) / 864e5), o = ahead >= 0 && ahead < 7 ? C.onDay(shown(), C.dayKey(state.cursor)).find((x) => x.location) : null;
         return o ? '/weather/?place=' + encodeURIComponent(o.location) : null; } },
-      { label: de ? 'Flüge am Tag' : 'Flights that day', href: () => { const day = C.dayKey(state.cursor); return day >= C.dayKey(now()) ? '/flights/?d=' + day : null; } }], { card: () => A.cardAskOf(C.dayKey(state.cursor)) }); // the card opens on the day shown
+      { label: de ? 'Flüge am Tag' : 'Flights that day', href: () => { const day = C.dayKey(state.cursor); return day >= C.dayKey(now()) ? '/flights/?d=' + day : null; } },
+      /* the days /scores/ reads (lib/scores.js dateOk); it keeps the visitor's own league */ { label: de ? 'Spiele am Tag' : 'Matches that day', href: () => { const day = C.dayKey(state.cursor); return day >= '2000-01-01' && day <= C.dayKey(C.addDays(now(), 400)) ? '/scores/?date=' + day : null; } }], { card: () => A.cardAskOf(C.dayKey(state.cursor)) }); // the card opens on the day shown
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

@@ -41,6 +41,14 @@ test('search: keyword, place, region, tag, type, salary, visa, days and sort', (
   const q = C.toQuery({ q: 'react', region: 'europe', visa: true, sort: 'salary' }); assert.equal(q, 'q=react&region=europe&visa=1&sort=salary'); assert.deepEqual(C.fromQuery('?' + q), { ...C.EMPTY, q: 'react', region: 'europe', visa: true, sort: 'salary' });
   assert.equal(C.fromQuery('?region=mars&src=evil&min=-5').region, ''); assert.equal(C.fromQuery('?src=evil').src, '');
 });
+test('a country code from another page opens the remote jobs open there', () => {
+  assert.equal(C.regionOfCountry('GB'), 'uk'); assert.equal(C.regionOfCountry('us'), 'usa'); assert.equal(C.regionOfCountry('PT'), 'europe');
+  assert.equal(C.regionOfCountry('AT'), 'europe', 'a listing open in Germany is not open in Austria'); assert.equal(C.regionOfCountry('JP'), 'asia');
+  for (const bad of ['XX', 'GBR', '', null, '1A']) assert.equal(C.regionOfCountry(bad), '');
+  for (const r of ['uk', 'usa', 'europe', 'asia', 'africa', 'latam', 'oceania', 'emea', 'canada', 'germany']) assert.ok(r in C.REGIONS, r);
+  assert.equal(C.fromQuery('?cc=GB').region, 'uk'); assert.equal(C.fromQuery('?region=europe&cc=US').region, 'europe', 'a region the link names wins');
+  assert.equal(C.fromQuery('?cc=XX').region, ''); assert.equal(C.toQuery(C.fromQuery('?cc=GB')), 'region=uk');
+});
 test('alerts: a saved search counts what is new since it was last seen', () => {
   const r = C.newSince(all(), { s: { q: '' }, seen: '2026-10-25T12:00:00.000Z' }); assert.equal(r.all.length, 3); assert.deepEqual(r.fresh.map((j) => j.company), ['Beta']);
 });
