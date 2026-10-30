@@ -80,6 +80,8 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
         // the recorded drums: decoded once per page, so a second play starts at once
         const kit = whole ? null : await drumsFor(beat, ac, { win });
         if (my !== token || !ac) return;
+        // say which drums play, so a kit that did not load is never passed off as the real one
+        const drums = whole ? '' : kit ? (kit.name === '808' ? ' Real TR-808 drums.' : ' A real recorded drum kit.') : ' The recorded drums did not load, so my synth drums play.';
         const out = ac.createGain(); out.gain.value = 1; out.connect(ac.destination);
         beatGain = ac.createGain(); beatGain.gain.value = volume(); beatGain.connect(out);
         const t0 = ac.currentTime + 0.2;
@@ -89,8 +91,8 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
         const speak = !vox && mode === 'voice' && synth && typeof win.SpeechSynthesisUtterance === 'function';
         if (mode === 'voice' && !vox && !speak) onSay('This browser has no voice to rap with, so the beat plays and the bars light up: rap it yourself.');
         else if (own && !vox) onSay('My own voice is not answering right now (' + (note || 'no bars came back') + '), so this browser\'s voice raps it.');
-        else if (own && note) onSay('One measure to count in, then I rap. Some bars have no voice: ' + note + '.');
-        else onSay(mode === 'voice' ? 'One measure to count in, then I rap.' : 'Your turn: one measure to count in, then each bar lights up on its measure.');
+        else if (own && note) onSay('One measure to count in, then I rap.' + drums + ' Some bars have no voice: ' + note + '.');
+        else onSay((mode === 'voice' ? 'One measure to count in, then I rap.' : 'Your turn: one measure to count in, then each bar lights up on its measure.') + drums);
         onBar(-1);
         const at = (sec, fn) => timers.push(setTimeout(fn, Math.max(0, (t0 + sec - ac.currentTime) * 1000)));
         const bv = own ? null : pick;
