@@ -4770,9 +4770,15 @@ say('nothing selected to remove');
       const h = window.verseBrainHost; if (!h || !h.judge) return;
       if (why === 'time') h.judge(w.id, vpageEl === w.el);
       else if (why === 'undo') h.judge(w.id, false);
-      else if (why === 'ask') { const a = routeWords(w.text); if ([...routeWords(next)].some((x) => a.has(x))) h.judge(w.id, false); } // the same ask in other words: it was not what they wanted; a new subject teaches nothing
+      else if (why === 'ask') {
+        // the same ask in other words, that the page would send to another skill: it was not what they wanted. A new subject teaches nothing,
+        // and neither does the next ask for the same skill ("my period started on <date>" three times is a log, not a complaint: 2026-10-30,
+        // one shared word turned the second date into a calendar event)
+        const a = routeWords(w.text); if (![...routeWords(next)].some((x) => a.has(x))) return;
+        firstSkill(String(next || '').toLowerCase(), next, Date.now()).then((sk) => { if (!sk || sk.name !== w.pick) h.judge(w.id, false); }).catch(() => {});
+      }
     }
-    function watchRoute(id, el, text) { settleRoute(); routeWatch = { id, el, text, t: setTimeout(() => settleRoute('time'), 20000) }; }
+    function watchRoute(id, el, text, pick) { settleRoute(); routeWatch = { id, el, text, pick, t: setTimeout(() => settleRoute('time'), 20000) }; }
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
       let skill = await firstSkill(lower0, text, deadline), routed = null;
       if (skill && skillsLoaded && window.verseBrainHost && window.verseBrainHost.route) {
@@ -4804,7 +4810,7 @@ say('nothing selected to remove');
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src !== 'none') graphNote(who, text, vpageEl && vpageEl !== cardBefore ? vpageEl : null);
           if (src === 'none') reportMiss(text, 'skill:' + who);
-          if (routed) { if (src !== 'none' && vpageEl && vpageEl !== cardBefore) watchRoute(routed.id, vpageEl, text); else if (src === 'none' && window.verseBrainHost) window.verseBrainHost.judge(routed.id, false); }
+          if (routed) { if (src !== 'none' && vpageEl && vpageEl !== cardBefore) watchRoute(routed.id, vpageEl, text, routed.pick); else if (src === 'none' && window.verseBrainHost) window.verseBrainHost.judge(routed.id, false); }
           return true;
         }
       }

@@ -28,7 +28,9 @@ export function learnedOf(R, words, skill) {
 export function route(R, ask, cands, focus = [], at = Date.now()) {
   const names = [...new Set((cands || []).map(String).filter(Boolean))].slice(0, MAX_CANDS);
   if (names.length < 2) return null;
-  const words = wordsOf(ask), hot = new Set((focus || []).map((x) => String(x).toLowerCase()));
+  // attention is what it was thinking about before this ask: the ask's own words (it hears each ask as a goal before the page routes
+  // it) are not, or "find milk on the stage" would go to stage-find over note-tools for the word "stage" alone (2026-10-30, shard 1)
+  const words = wordsOf(ask), own = new Set(cleanWords(ask)), hot = new Set((focus || []).map((x) => String(x).toLowerCase()).filter((x) => !own.has(x)));
   const scores = names.map((name, i) => {
     const learned = learnedOf(R, words, name), parts = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
     const attention = parts.some((p) => hot.has(p)) ? ATTENTION : 0;
