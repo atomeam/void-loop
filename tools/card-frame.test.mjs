@@ -151,6 +151,15 @@ test('a unit answer opens the unit converter on that ask, not the plain calculat
   assert.match(src, /const um = lower\.match\(CALC_UNIT_RE\);\n\s+if \(um && !hit\) \{\n\s+el\.dataset\.page = '\/convert\/\?q=' \+ encodeURIComponent\(um\[0\]\.trim\(\)\);/);
 });
 
+test('a currency answer opens its pair on Markets, not the plain calculator (2026-10-30: "100 usd to eur" linked to /calculator/, which has no rates)', async () => {
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  assert.deepEqual(pageOfCard('calc', '/markets/?s=USDEUR'), ['/markets/?s=USDEUR', 'Markets']);
+  const { resolve: market } = await import('../void-live-deploy/lib/markets.js');
+  assert.equal(market('USDEUR').sym, 'USD/EUR', 'Markets reads the pair the card sends');
+  const src = readFileSync(resolve(root, '../../void.html'), 'utf8');
+  assert.match(src, /const \{ amount, from, to \} = cm;\n\s+if \(from !== to\) el\.dataset\.page = '\/markets\/\?s=' \+ from \+ to;/);
+});
+
 test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
   const css = CARD_CSS.join ? CARD_CSS.join('') : String(CARD_CSS);
   assert.match(css, /\.vpage\.vcard>img\[data-vc-art-src\]\{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none\}/);

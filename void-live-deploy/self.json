@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T11:54:28Z",
+   "subject": "Refresh deps and the parity docs whose lines moved"
+  },
+  {
+   "at": "2026-10-30T11:53:34Z",
+   "subject": "Currency answers open their pair on Markets"
+  },
+  {
+   "at": "2026-10-30T11:46:19Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T11:44:42Z",
    "subject": "Subject eval: 54 of 54 live"
   },
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T11:20:07Z",
    "subject": "Better at local stations and open tool: 6 more ways of asking answered right — new phrases: “local radio” now opens local-stations; “radio…"
-  },
-  {
-   "at": "2026-10-30T11:19:37Z",
-   "subject": "video: open the clip with rel=noopener noreferrer"
-  },
-  {
-   "at": "2026-10-30T11:15:55Z",
-   "subject": "Unit answers open the unit converter on the same ask"
-  },
-  {
-   "at": "2026-10-30T11:13:08Z",
-   "subject": "baggage: add the skill to the Sky and earth family and refresh the book"
   }
  ],
  "builders": {
