@@ -49,6 +49,13 @@
   .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
   nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
   footer { font-size: 13px; color: var(--soft); margin-top: 22px; } footer a { color: inherit; }
+  #watch { margin: 10px 0 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  #watch h2 { margin: 0 0 2px; font-size: 16px; } #watch .hint { margin: 2px 0 8px; }
+  #watch-log { max-height: 280px; overflow-y: auto; font-size: 15px; } #watch-log p { margin: 6px 0; overflow-wrap: anywhere; } #watch-log b { color: var(--accent); font-weight: 600; } #watch-log .w-you b { color: var(--soft); }
+  #watch-log .wait, #watch-log .note { color: var(--soft); }
+  #watch-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; } #watch-form input { flex: 1 1 200px; font: inherit; color: inherit; background: var(--bg); border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; min-width: 0; }
+  #watch label.learn { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--soft); margin-top: 10px; } #watch label.learn input { margin-top: 3px; accent-color: var(--accent); }
+  #watch-learned { margin: 6px 0 0; padding-left: 18px; font-size: 14px; } #watch-learned small { color: var(--soft); }
   [hidden] { display: none !important; }
   @media (max-width: 520px) { #bar input[type=range] { display: none; } }
 </style>
@@ -69,6 +76,14 @@
     <button type="button" role="tab" id="tab-tv" aria-controls="tv" aria-selected="false">TV</button>
   </div>
   <div id="screen" hidden><video id="video" controls playsinline aria-label="TV player"></video></div>
+  <section id="watch" aria-labelledby="watch-h" hidden>
+    <h2 id="watch-h">Watch with Verse <small id="watch-name" class="hint"></small></h2>
+    <p class="hint" id="watch-hears" role="status"></p>
+    <div id="watch-log" aria-live="polite"></div>
+    <form id="watch-form"><input id="watch-q" type="text" autocomplete="off" maxlength="300" aria-label="Ask Verse about what is on" placeholder="Ask Verse about what is on"><button class="go" type="submit">Ask</button><button type="button" id="watch-whats-on">What is on?</button></form>
+    <label class="learn"><input type="checkbox" id="watch-learn" checked><span>Verse learns from this while it plays: it writes short notes in its own words (what things are worth, facts, ideas for apps). It never keeps the stream, the captions or a picture.</span></label>
+    <div id="watch-learned-box" hidden><p class="hint">What Verse learned lately, newest first:</p><ul id="watch-learned"></ul></div>
+  </section>
   <section id="radio" role="tabpanel" aria-labelledby="tab-radio">
     <div id="mine" hidden><h2>Your stations</h2><ul class="list" id="mine-list"></ul></div>
     <h2 id="radio-head">Radio stations near you</h2>
@@ -85,7 +100,7 @@
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/local/?place=Boston">Radio in Boston</a><a href="/local/?place=Philadelphia&amp;tab=tv">TV in Philadelphia</a><a href="/local/?place=Chicago">Radio in Chicago</a><a href="/local/?place=Los%20Angeles&amp;tab=tv">TV in Los Angeles</a><a href="/local/?place=London">Radio in London</a></nav>
 <!-- /asks -->
   <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/weather/">Weather</a> <a href="/news/">News</a> <a href="/podcasts/">Podcasts</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
-  <footer>Radio from <a href="https://www.radio-browser.info/" rel="noopener">Radio Browser</a>, the open community directory whose servers check every station daily. TV from the open <a href="https://github.com/iptv-org/database" rel="noopener">iptv-org database</a> of channels and the areas they broadcast to, with the streams its <a href="https://github.com/iptv-org/iptv" rel="noopener">playlists</a> list that a browser can play from their own servers; town places from GeoNames. Verse does not copy, store or relay any stream. Your place is worked out from your connection, rounded to about 10 km, and is not kept; your saved stations stay on this device.</footer>
+  <footer>Radio from <a href="https://www.radio-browser.info/" rel="noopener">Radio Browser</a>, the open community directory whose servers check every station daily. TV from the open <a href="https://github.com/iptv-org/database" rel="noopener">iptv-org database</a> of channels and the areas they broadcast to, with the streams its <a href="https://github.com/iptv-org/iptv" rel="noopener">playlists</a> list that a browser can play from their own servers; town places from GeoNames. Verse does not copy, store or relay any stream; when you watch with Verse it reads the captions, a still you ask it to look at, or a few seconds of radio for that answer, and keeps only the short notes it writes. Your place is worked out from your connection, rounded to about 10 km, and is not kept; your saved stations stay on this device.</footer>
 </main>
 <div id="bar" hidden>
   <button type="button" id="toggle" class="go" aria-label="Pause">Pause</button>
@@ -95,5 +110,6 @@
 </div>
 <audio id="audio" preload="none"></audio>
 <script type="module" src="/local/app.js"></script>
+<script type="module" src="/local/watch.js"></script>
 </body>
 </html>

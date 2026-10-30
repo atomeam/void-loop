@@ -6,7 +6,8 @@ import { tvNear, groupTv, placeName, linkOf, httpsOf, placeFromLink, flightsLink
 import { mountRelated } from '/lib/toolkit.js';
 
 const $ = (id) => document.getElementById(id);
-const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.3/hls.light.min.mjs';
+// TV plays through the full hls.js build, the one that reads the stations' closed captions (CEA-608), so Verse can follow what is said (local/watch.js)
+const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.3/hls.light.min.mjs', HLS_CAPTIONS = '/vendor/hls.js-1.7.3/hls.min.mjs';
 const audio = $('audio'), video = $('video');
 let place = null, from = '', tab = 'radio', radio = [], tv = [], tvIndex = null, hls = null, current = null, watchdog = 0;
 
@@ -131,10 +132,11 @@ function setNow(st) {
   $('toggle').textContent = st === 'playing' || st === 'loading' ? 'Pause' : 'Play'; $('toggle').setAttribute('aria-label', $('toggle').textContent);
   const site = $('now-site'); site.hidden = !current.site; if (current.site) site.href = current.site;
   markPlaying();
+  document.dispatchEvent(new CustomEvent('local:now', { detail: { station: current.station, state: st, media: current.media, name: current.name } })); // watch with Verse (local/watch.js)
 }
 async function attach(media, url, isHls, onFail) {
   if (!isHls || (media.canPlayType('application/vnd.apple.mpegurl') && !window.MediaSource)) { media.src = url; return; }
-  let Hls; try { ({ default: Hls } = await import(HLS)); } catch (_) { media.src = url; return; }
+  let Hls; try { ({ default: Hls } = await import(media === video ? HLS_CAPTIONS : HLS)); } catch (_) { media.src = url; return; }
   if (!Hls.isSupported()) { media.src = url; return; }
   hls = new Hls({ enableWorker: true, lowLatencyMode: false, maxBufferLength: 20 });
   hls.on(Hls.Events.ERROR, (_, d) => { if (d && d.fatal) onFail(); });
@@ -155,11 +157,11 @@ function begin(media, item, urls) {
   go();
 }
 function playRadio(r) {
-  stop(); current = { kind: 'radio', id: r.id, name: r.name, sub: [r.codec, r.kbps ? r.kbps + ' kbps' : ''].filter(Boolean).join(' '), site: r.home || r.stream, media: audio };
+  stop(); current = { kind: 'radio', id: r.id, name: r.name, sub: [r.codec, r.kbps ? r.kbps + ' kbps' : ''].filter(Boolean).join(' '), site: r.home || r.stream, media: audio, station: { kind: 'radio', id: r.id, name: r.name } };
   begin(audio, r, [r.play]);
 }
 function playTv(g, s) {
-  stop(); current = { kind: 'tv', id: g.t, name: g.t + (s.n ? ' · ' + s.n : ''), sub: s.n, site: s.w, media: video };
+  stop(); current = { kind: 'tv', id: g.t, name: g.t + (s.n ? ' · ' + s.n : ''), sub: s.n, site: s.w, media: video, station: { kind: 'tv', cc: g.cc || (place && place.country) || '', id: s.id, name: g.t, network: s.n || '' } };
   const urls = s.s.map(httpsOf).filter(Boolean); if (!urls.length) { setNow('failed'); return; }
   begin(video, { hls: true }, urls);
   $('screen').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
