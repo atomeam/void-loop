@@ -550,6 +550,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:35:26Z",
+   "subject": "Stage links from /emojis/ and /g/ open real cards; /g/ footer link opens the README"
+  },
+  {
+   "at": "2026-10-30T05:33:47Z",
+   "subject": "Tower gate: password strength measured against their live sites"
+  },
+  {
+   "at": "2026-10-30T05:33:37Z",
+   "subject": "Bench: the V01D ask logged as typed, the 8 ball row checks the question on the ball, \"how much\" is a buy only for a price"
+  },
+  {
+   "at": "2026-10-30T05:32:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:29:24Z",
    "subject": "quote: the motivational ask reads Perseverance or Courage, not Effort"
   },
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T05:20:11Z",
    "subject": "Team chat: Verse answers an agent that waits on the owner for a go-ahead"
-  },
-  {
-   "at": "2026-10-30T05:19:32Z",
-   "subject": "team-live: check the push signature without importing the site's lib"
-  },
-  {
-   "at": "2026-10-30T05:19:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:19:07Z",
-   "subject": "quote: a motivational or \"about X\" ask gets a quote from Wikiquote's page on that theme"
-  },
-  {
-   "at": "2026-10-30T05:18:55Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -866,11 +866,11 @@
   "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "howsecureismypassword.net",
    "ndscalc.ru",
-   "emojicombos.com"
+   "emojicombos.com",
+   "thunit.com"
   ],
-  "beaten": 0,
+  "beaten": 1,
   "total": 1269
  }
 }
