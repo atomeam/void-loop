@@ -254,6 +254,13 @@ test('words: the asks date-calc takes and what it hands on', () => {
   assert.deepEqual(ask('every 2 weeks starting 2026-10-19 for 2 times').list, ['2026-10-19', '2026-11-02']);
   assert.equal(rowOf(ask('days until 2026-12-25'), 'Days to go'), '68');
   assert.equal(rowOf(ask('days since 2026-01-01'), 'Days since'), '290');
+  // whole words, no "1 weeks" and no "0 weeks"
+  assert.equal(rowOf(ask('days until 2026-10-26'), 'Weeks and days'), '1 week 1 day');
+  assert.equal(rowOf(ask('days until 2026-10-21'), 'Weeks and days'), '3 days');
+  assert.equal(rowOf(ask('days until 2026-10-25'), 'Weeks and days'), '1 week');
+  assert.equal(rowOf(ask('days since 2026-10-10'), 'Weeks and days'), '1 week 1 day');
+  assert.equal(rowOf(ask('weeks between 2026-10-01 and 2026-10-04'), 'Weeks'), '3 days');
+  assert.equal(rowOf(ask('months between 2026-01-01 and 2026-02-01'), 'Months'), '1 month');
   assert.equal(rowOf(ask('next birthday 1990-05-03'), 'Next birthday'), 'Thursday, May 3, 2027'.replace('Thursday', 'Monday'));
   assert.equal(rowOf(ask('my anniversary on june 12 2018'), 'Years'), '9');
   assert.equal(rowOf(ask('exact age born 1990-05-03'), 'Years, months, days'), '36 y 5 m 15 d');
