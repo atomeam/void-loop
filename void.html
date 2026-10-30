@@ -6317,7 +6317,9 @@ say('nothing selected to remove');
         const pg = document.querySelector('.vpage.on');
         if (pg && pg !== pageBefore) {
           text = (pg.innerText || '').replace(/\s+\n/g, '\n').trim();
-          if (text && !/…\s*$/.test(text.split('\n')[1] || '') && !/…$/.test(text)) break;
+          // still pending while a line under the title ends in "…": the card's kind label ("Answer · from Verse") sits between the
+          // title and the body, so the body is the third line, not the second (2026-10-29: under load the agent got "…" back as the answer)
+          if (text && !text.split('\n').slice(1, 4).some((l) => /…\s*$/.test(l)) && !/…$/.test(text)) break;
         }
         if (!pg && JSON.stringify(things) !== before) break;
         await new Promise((r) => setTimeout(r, 150));

@@ -18,6 +18,8 @@ export const TECHNIQUES = [
   ['codec retina', /codec[ -]retina/, 'gardener'],
   ['l-system grammar', /l[ -]system (?:spatial|generative|expansion|grammar)|lindenmayer/, 'grower'], // "branches away from ... L-systems" in other specs is not the idea
   ['expression tree', /expression[ -]tree[ -](?:spatial|evo)|symbolic regression/, 'formula'], // F458's list of "recent clusters" names expression trees, not its idea
+  ['lattice boltzmann', /lattice[ -]boltzmann|\blbm\b/, 'current'], // F308's wind tunnel is in LEFT, a physics toy for a different job
+  ['granular contact genes', /discrete[ -]element|granular discrete|webgpu granular/, 'grains'], // F456; later drafts name its "granular broadcast" only as a cluster they branch away from
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],

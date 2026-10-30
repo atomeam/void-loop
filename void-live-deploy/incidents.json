@@ -2,6 +2,219 @@
  "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T01:12:04.984Z",
+   "sha": "a10b9bff5d8cc35857aa0ad6a39dc170da098f4c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40981022214",
+   "suite": "browser suite on main",
+   "checks": [
+    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/TAGTEAM.md",
+    "void-live-deploy/lib/tower.js"
+   ],
+   "shards": [
+    4
+   ]
+  },
+  {
+   "at": "2026-10-30T00:51:50.499Z",
+   "sha": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "suite": "browser suite on main",
+   "checks": [
+    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/TAGTEAM.md",
+    "void-live-deploy/lib/tower.js"
+   ],
+   "shards": [
+    4
+   ],
+   "passed": [
+    4
+   ],
+   "closedAt": "2026-10-30T01:25:42.905Z",
+   "closedBy": "27c3e3ff6ccaf6a5a3e348abd3163b545e691206",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40983379923",
+   "minutes": 34
+  },
+  {
+   "at": "2026-10-29T23:57:20.209Z",
+   "sha": "ec492c32266a9ede0563647ce2ea5f5d4d15143a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40971221543",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/bench-load.mjs",
+    "tools/bench-load.test.mjs",
+    "tools/bench.mjs"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 55
+  },
+  {
+   "at": "2026-10-29T23:32:01.931Z",
+   "sha": "bab0789cac270d16f05c1d704dcca1b619d22cfc",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40970724915",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 80
+  },
+  {
+   "at": "2026-10-29T22:55:26.510Z",
+   "sha": "5be6183250fd98a87a0dc03c23d169aaeafeaf23",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40964677306",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "domains/growth-inbox.md",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/wordladder.js",
+    "tools/bench.mjs"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 116
+  },
+  {
+   "at": "2026-10-29T21:28:00.526Z",
+   "sha": "d2158693f177b2c177a57f2e3ff2bd5269cf9211",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40954083189",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/void.growth.json",
+    "tools/bench.mjs",
+    "void-live-deploy/incidents.json"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 204
+  },
+  {
+   "at": "2026-10-29T20:59:39.335Z",
+   "sha": "d52321f2e0390999e3562488721b750d3efe9fb2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40950633954",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/bench.mjs"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 232
+  },
+  {
+   "at": "2026-10-29T20:34:05.810Z",
+   "sha": "158ab096449a2d62da8a160dff47537b1773d8ad",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/40944261443",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/bench.mjs"
+   ],
+   "shards": [
+    1,
+    2
+   ],
+   "passed": [
+    1,
+    2
+   ],
+   "closedAt": "2026-10-30T00:51:50.542Z",
+   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
+   "minutes": 258
+  },
+  {
    "at": "2026-10-29T16:53:46.677Z",
    "sha": "cd360ad03ae234e9eab1902f6425585d427fd745",
    "run": "https://github.com/atomeam/void-loop/actions/runs/40911797802",
@@ -31,7 +244,16 @@
     1,
     2,
     4
-   ]
+   ],
+   "passed": [
+    1,
+    2,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 123
   },
   {
    "at": "2026-10-29T13:05:55.568Z",
@@ -61,8 +283,15 @@
     "void-live-deploy/skills/yesno.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 351
   },
   {
    "at": "2026-10-29T10:48:24.159Z",
@@ -83,8 +312,15 @@
     "void-live-deploy/lib/fanfic.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 488
   },
   {
    "at": "2026-10-29T10:20:59.516Z",
@@ -114,8 +350,15 @@
     "void-live-deploy/void.html"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 516
   },
   {
    "at": "2026-10-29T09:57:59.260Z",
@@ -134,8 +377,15 @@
     "void-live-deploy/lib/fanfic.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 539
   },
   {
    "at": "2026-10-29T05:00:37.748Z",
@@ -179,8 +429,15 @@
     "void-live-deploy/void.asks.json"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 836
   },
   {
    "at": "2026-10-29T04:47:44.038Z",
@@ -198,8 +455,15 @@
     "void-live-deploy/skills/tower.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 849
   },
   {
    "at": "2026-10-29T03:47:37.470Z",
@@ -232,8 +496,15 @@
     "void-live-deploy/skills/tower.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 909
   },
   {
    "at": "2026-10-29T03:12:00.329Z",
@@ -260,8 +531,15 @@
     "void-live-deploy/skills/deps.json"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 945
   },
   {
    "at": "2026-10-29T03:00:57.820Z",
@@ -288,8 +566,15 @@
     "void-live-deploy/tower.shots/is-it.jpg"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 956
   },
   {
    "at": "2026-10-29T02:51:44.116Z",
@@ -322,8 +607,15 @@
     "domains/verse-loop.pause"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 965
   },
   {
    "at": "2026-10-29T02:50:53.571Z",
@@ -341,8 +633,15 @@
     "tools/verse-coder.test.mjs"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 966
   },
   {
    "at": "2026-10-29T02:45:34.486Z",
@@ -371,8 +670,15 @@
     "docs/PARITY/unitconverters.net.md"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 971
   },
   {
    "at": "2026-10-29T02:38:25.025Z",
@@ -399,8 +705,15 @@
     "void-live-deploy/self.json"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 978
   },
   {
    "at": "2026-10-29T02:22:19.449Z",
@@ -439,8 +752,15 @@
     "void-live-deploy/skills/what.json"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 994
   },
   {
    "at": "2026-10-29T02:21:33.551Z",
@@ -464,8 +784,15 @@
     "void-live-deploy/skills/tower.js"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 995
   },
   {
    "at": "2026-10-29T01:19:06.114Z",
@@ -497,8 +824,15 @@
     "void-live-deploy/void.growth.json"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1058
   },
   {
    "at": "2026-10-29T00:22:17.969Z",
@@ -535,8 +869,15 @@
     "tools/verse-loop.test.mjs"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1114
   },
   {
    "at": "2026-10-28T21:53:58.480Z",
@@ -583,8 +924,15 @@
     "void-live-deploy/flights/airports/index.html"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1263
   },
   {
    "at": "2026-10-28T20:17:01.690Z",
@@ -621,8 +969,15 @@
     "void-live-deploy/tournaments/index.html"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1360
   },
   {
    "at": "2026-10-28T19:19:43.828Z",
@@ -660,8 +1015,15 @@
     "domains/void.growth.md"
    ],
    "passed": [
-    3
-   ]
+    1,
+    2,
+    3,
+    4
+   ],
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1417
   },
   {
    "at": "2026-10-28T18:50:59.431Z",
@@ -698,316 +1060,15 @@
     "void-live-deploy/identity/index.html"
    ],
    "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T17:45:14.601Z",
-   "sha": "b60840bd01211e0b9ff4462f9e84870b243010fc",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40729081313",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+    1,
+    2,
+    3,
+    4
    ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/convergence.md",
-    "docs/wishlist.md",
-    "domains/handoff.md",
-    "domains/lists.metrics.json",
-    "domains/void.agents.log.md",
-    "domains/void.decisions.json",
-    "tools/asks-link.json",
-    "tools/families.mjs",
-    "tools/kv-writes.test.mjs",
-    "tools/skills-unlisted.mjs",
-    "tools/sky-world-family.test.mjs",
-    "tools/weather-busy.test.mjs",
-    "void-live-deploy/lib/similar-index.js",
-    "void-live-deploy/self.json"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T06:57:41.812Z",
-   "sha": "ed55bcc220267523f27453970c7b656a8193d59b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40642403266",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence"
-   ],
-   "touched": [
-    "tools/flights.test.mjs",
-    "tools/lane-pages.test.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/hosting/index.html",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/incidents.json"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T06:34:50.756Z",
-   "sha": "d59a7acf6ee076b3f21b51f4a384dbc60e4d71ba",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40641015087",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
-    "stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon"
-   ],
-   "touched": [
-    "tools/families.mjs",
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/books/index.html",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/obituaries/index.html",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/hosting.js",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0500-hosting",
-    "void-live-deploy/sw.js"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T06:11:49.758Z",
-   "sha": "4285494655d7f7d41fc30f431486aa345dcb484d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40638172432",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/lib/tower.js"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T05:11:04.901Z",
-   "sha": "ca9af6d8851a0935caf7f5f2694a5b1273829915",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40633406969",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/cpan/index.html",
-    "void-live-deploy/identity/index.html",
-    "void-live-deploy/skills/automations.js",
-    "void-live-deploy/sw.js"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T04:44:21.587Z",
-   "sha": "5562c8b000be01549214c773e013413a2d1dcef5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40631448337",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "article: \"who is X\" opens the person, not the brand that ranks first; a loose match says \"Closest match I found\" in one line, a close one does not",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "suite ran to the end",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built"
-   ],
-   "touched": [
-    "void-live-deploy/identity/index.html",
-    "void-live-deploy/lib/tower.js"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T04:18:06.336Z",
-   "sha": "27f0b36fe1889ce25ea812f9a5bb0fa343396cd6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40627583699",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested"
-   ],
-   "touched": [
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/identity/index.html",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/sw.js"
-   ],
-   "passed": [
-    3
-   ]
-  },
-  {
-   "at": "2026-10-28T03:52:28.826Z",
-   "sha": "93f4f3b4e640805d0a45c3b0c7c50cadd00cc4b5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40624997003",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/tower.evidence.json"
-   ],
-   "passed": [
-    3
-   ]
+   "closedAt": "2026-10-29T18:56:38.082Z",
+   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
+   "minutes": 1446
   }
  ]
 }

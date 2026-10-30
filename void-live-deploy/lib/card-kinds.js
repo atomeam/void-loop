@@ -49,6 +49,9 @@ export function newInSub(description, header) {
   const [kinds, ...rest] = h.split(' \u2014 '), detail = rest.join(' '), hasWord = (w) => new RegExp('(?:^|[^a-z0-9])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:$|[^a-z0-9])').test(detail);
   let t = d.replace(/\b(?:directed |written |created |produced |composed |performed |sung |recorded |painted |founded |developed )?by ([A-Z][^,;()]{2,40})/g, (m, name) => (detail.includes(name.trim().toLowerCase()) ? ' ' : m));
   t = t.replace(/\b(1[5-9]\d\d|20\d\d)\b/g, (m) => (hasWord(m) ? ' ' : m));
+  // a year the header holds leaves its parenthesis behind: "(born 1963)" goes whole, not "(born )"; "(1795–1821)" keeps the
+  // year the header lacks as "(died 1821)", not "( –1821)" (2026-10-29: Michael Jordan's card read "American basketball player (born )")
+  t = t.replace(/\(\s*(?:born|b\.)\s*\)/gi, ' ').replace(/\(\s*[\u2013-]\s*(\d{3,4})\s*\)/g, '(died $1)').replace(/\(\s*[\u2013-]?\s*\)/g, ' ');
   for (const k of kinds.split(' \u00b7 ').map((x) => x.trim()).filter(Boolean)) t = t.replace(new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b', 'gi'), ' ');
   const left = t.replace(/\b(?:a|an|the|of|and|in|by|directed|written|from|is|was)\b/gi, ' ').replace(/[\s,;:.\u2013\u2014-]+/g, ' ').trim();
   if (!/[A-Za-z]{2}/.test(left)) return '';

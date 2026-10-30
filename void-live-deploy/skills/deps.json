@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 991,
+ "counted": 995,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 64,
+   "dependants": 66,
    "tests": 8
   },
   {
@@ -1098,7 +1098,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 15,
    "tests": 1
   },
   {
@@ -1130,6 +1130,13 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-current.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-formula.js",
    "skills": 1,
    "direct": 0,
@@ -1138,6 +1145,13 @@
   },
   {
    "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-grains.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
@@ -1309,7 +1323,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 11
+   "tests": 13
   },
   {
    "file": "lib/fakeuser.js",
@@ -4490,6 +4504,21 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/brain-current.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
+   ]
+  },
   "lib/brain-field.js": {
    "imports": [
     "lib/brain-workspace.js",
@@ -4515,6 +4544,21 @@
    ]
   },
   "lib/brain-gardener.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-grains.js": {
    "imports": [
     "lib/field-kit.js",
     "lib/brain-workspace.js"
@@ -4579,7 +4623,9 @@
     "lib/brain-painter.js",
     "lib/brain-gardener.js",
     "lib/brain-grower.js",
-    "lib/brain-formula.js"
+    "lib/brain-formula.js",
+    "lib/brain-current.js",
+    "lib/brain-grains.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
@@ -4603,6 +4649,8 @@
     "lib/brain-gardener.js",
     "lib/brain-grower.js",
     "lib/brain-formula.js",
+    "lib/brain-current.js",
+    "lib/brain-grains.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -4658,9 +4706,11 @@
    ],
    "importedBy": [
     "lib/brain-creature.js",
+    "lib/brain-current.js",
     "lib/brain-field.js",
     "lib/brain-formula.js",
     "lib/brain-gardener.js",
+    "lib/brain-grains.js",
     "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
@@ -4686,7 +4736,9 @@
     "lib/brain-painter.js",
     "lib/brain-gardener.js",
     "lib/brain-grower.js",
-    "lib/brain-formula.js"
+    "lib/brain-formula.js",
+    "lib/brain-current.js",
+    "lib/brain-grains.js"
    ],
    "importedBy": [
     "lib/brain-host.js",
@@ -5795,8 +5847,10 @@
    "imports": [],
    "importedBy": [
     "lib/brain-creature.js",
+    "lib/brain-current.js",
     "lib/brain-formula.js",
     "lib/brain-gardener.js",
+    "lib/brain-grains.js",
     "lib/brain-grower.js",
     "lib/brain-hearing.js",
     "lib/brain-mind.js",
@@ -11205,6 +11259,10 @@
     "skills/games.js"
    ]
   },
+  "skills/emoji.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/error-garden.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -11771,6 +11829,10 @@
     "skills/tilt-arena-mode.js",
     "skills/tilt-arena.js"
    ]
+  },
+  "skills/hangman.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/health-habits.js": {
    "imports": [
@@ -14096,7 +14158,8 @@
     "lib/shared-field.js",
     "lib/brain-field.js",
     "lib/brain-hearing.js",
-    "lib/brain-painter.js"
+    "lib/brain-painter.js",
+    "lib/brain-current.js"
    ],
    "importedBy": []
   },

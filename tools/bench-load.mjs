@@ -73,3 +73,14 @@ export function nextLatency(result, floor) {
   if (Number.isFinite(cur) && !legacy && (cur <= p95 || !comparable(was, result.pages))) return null;
   return { ...(floor && floor.latency), [env]: { p50: result.latency.p50, p95, n: result.latency.n, cores: result.cores, pages: result.pages, sha: result.sha, at: result.at } };
 }
+
+// The asks to run again when the bench is run a second time after an inconclusive run (the CI step runs it once more,
+// .github/actions/void-test). A full second run did not fit in the 40 min limit (2026-10-29: 31 min for the first), so the second
+// run takes the first run's results and runs again only the asks it missed; an ask that was right in the first run stays right.
+// `prior` is what the first run kept: { key, run, out }. The indices to run again, or null when `prior` is not that run's
+// (another key, another CI run, other asks): then everything runs. Pure.
+export function againOf(prior, asks, { key, run } = {}) {
+  if (!prior || !key || !run || prior.key !== key || prior.run !== run || !Array.isArray(prior.out) || !Array.isArray(asks)) return null;
+  if (prior.out.length !== asks.length || prior.out.some((x, i) => !x || typeof x.right !== 'boolean' || x.ask !== asks[i].ask)) return null;
+  return prior.out.map((x, i) => (x.right ? -1 : i)).filter((i) => i >= 0);
+}

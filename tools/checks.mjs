@@ -314,7 +314,7 @@ for (const [name, file] of [
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, eighteen organs, attention, imagination, the mind layers, kept knowledge
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
   ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
@@ -323,6 +323,8 @@ for (const [name, file] of [
   ['brain-gardener', 'brain-gardener.test.mjs'], // F215's codec retina gardener: its coder tells still from noise, it keeps more patches at the edge of chaos than the same brain watching, its gardening is kept
   ['brain-grower', 'brain-grower.test.mjs'], // F453's L-system plant: valid grammars, evolution beats random search on held brain states, it bends toward attention, feeds the tissue, is kept
   ['brain-formula', 'brain-formula.test.mjs'], // F451's evolved formula of the tissue: valid trees, tested skill above "nothing changes", evolution beats random search, it feeds the tissue, is kept
+  ['brain-current', 'brain-current.test.mjs'], // F447's lattice-Boltzmann flow and evolved swimmers: mass and momentum kept, evolution beats random search and drifters, your drag stirs it, it is kept
+  ['brain-grains', 'brain-grains.test.mjs'], // F456's granular grains: genes passed on touch from the nearer lander beat random passing and none, it runs in the brain, it is kept
   ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256

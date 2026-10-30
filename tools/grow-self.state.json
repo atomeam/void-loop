@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40914036034",
-  "at": "2026-10-29T16:42:42Z",
-  "what": "Verse hardened itself: 6 benchmark ask(s) for random, agent-fluid-memory-orbs, ascii.  Why these: tab (no benchmark ask, evidence tier: checked, 21 failed runs name it); password (no benchmark ask, evidence tier: checked, 11 failed runs name it); random (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); agent-fluid-memory-orbs (no benchmark ask, evidence tier: tested); ascii (no benchmark ask, evidence tier: tested). New phrases: “2d6” now opens random; “3d8” now opens random; “memory orbs” now opens agent-fluid-memory-orbs; “fluid memory orbs” now opens agent-fluid-memory-orbs; “char codes of world” now opens ascii; “what is the ascii of A” now opens ascii. Did not route: put in the page; draft for me; random password; another password.",
-  "try": "2d6",
+  "run": "40982733164",
+  "at": "2026-10-30T00:56:41Z",
+  "what": "Verse hardened itself: 5 benchmark ask(s) for hangman, yesno.  Why these: tab (no benchmark ask, evidence tier: checked, 13 failed runs name it); eightball (no benchmark ask, evidence tier: checked); hangman (no benchmark ask, evidence tier: tested); yesno (no benchmark ask, evidence tier: tested); coin (only 1 benchmark ask, 5 failed runs name it); color (only 2 benchmark asks, evidence tier: checked). New phrases: “hangman” now opens hangman; “play hangman” now opens hangman; “start hangman” now opens hangman; “should I go” now opens yesno; “yesno” now opens yesno. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
+  "try": "hangman",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-29T14:39:29Z",
-    "try": "1337 speak for world",
-    "closedAt": "2026-10-29T16:42:01Z"
+    "at": "2026-10-29T22:53:23Z",
+    "try": "mp4 to mp3",
+    "closedAt": "2026-10-30T00:56:24Z"
   }
 }

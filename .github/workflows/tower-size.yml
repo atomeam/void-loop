@@ -9,6 +9,9 @@ on:
       max:
         description: "sites to read this run"
         default: "120"
+      only:
+        description: "read only these sites again (comma-separated hosts), for a retry"
+        default: ""
   schedule:
     - cron: '23 4 * * *'
 concurrency:
@@ -47,9 +50,11 @@ jobs:
       - name: Weigh the sites
         env:
           MAX: ${{ inputs.max || '120' }}
+          ONLY: ${{ inputs.only || '' }}
         run: |
           case "$MAX" in ''|*[!0-9]*) MAX=120 ;; esac
-          node tools/tower-size.mjs --max "$MAX"
+          case "$ONLY" in *[!a-z0-9.,-]*) echo "only takes hosts: $ONLY"; exit 1 ;; esac
+          if [ -n "$ONLY" ]; then node tools/tower-size.mjs --only "$ONLY" --minutes 35; else node tools/tower-size.mjs --max "$MAX" --minutes 35; fi
           node tools/tower-target.mjs
       - name: Commit the weights
         env:

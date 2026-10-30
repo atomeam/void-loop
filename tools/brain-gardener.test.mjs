@@ -70,7 +70,7 @@ test('in the brain it keeps more patches at the edge of chaos than the same brai
   seeds.forEach((s, i) => assert.ok(on[i].inBand > off[i].inBand, 'seed ' + s + ': ' + on[i].inBand + ' vs ' + off[i].inBand));
   assert.ok(mean(on) > mean(off) + 3, mean(on) + ' vs ' + mean(off));
   const b = on[0].b, self = B.selfSays(b).find((l) => /^Gardener:/.test(l)) || '';
-  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 18);
+  assert.ok(B.ORGAN_IDS.includes('gardener') && B.ORGAN_IDS.length === 20);
   assert.ok(b.runs.gardener > 100, 'runs ' + b.runs.gardener);
   assert.match(self, /^Gardener: \d+ of 16 patches at the edge of chaos \(\d+ too still, \d+ too wild\); it tended them \d+ times?\./);
   assert.ok(b.gardener.thoughts > 0 && Object.values(G.gardenerOf(b.gardener).acts).reduce((a, v) => a + v, 0) > 0);
