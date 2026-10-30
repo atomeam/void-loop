@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 998,
+ "counted": 1000,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2502,6 +2502,13 @@
    "tests": 1
   },
   {
+   "file": "lib/video-mux.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
@@ -2927,6 +2934,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/video-write.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/wordcount.js",
@@ -10245,6 +10259,18 @@
     "functions/api/v01d-fixes.js",
     "skills/v01d-fixes.js"
    ]
+  },
+  "lib/video-mux.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ]
+  },
+  "lib/video-write.js": {
+   "imports": [
+    "lib/video-mux.js"
+   ],
+   "importedBy": []
   },
   "lib/video.js": {
    "imports": [],
