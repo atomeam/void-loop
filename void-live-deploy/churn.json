@@ -1,96 +1,44 @@
 {
- "at": "2026-10-30T03:47:08.460Z",
+ "at": "2026-10-30T06:06:56.278Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 109
+   "changes": 49
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 89
-  },
-  {
-   "file": "void-live-deploy/sw.js",
-   "changes": 75
-  },
-  {
-   "file": "domains/handoff.md",
-   "changes": 70
-  },
-  {
-   "file": "tools/families.mjs",
-   "changes": 52
-  },
-  {
-   "file": "tools/tower-gate.mjs",
-   "changes": 49
-  },
-  {
-   "file": "void-live-deploy/skills/tower.js",
-   "changes": 49
-  },
-  {
-   "file": "void-live-deploy/lib/seo.js",
-   "changes": 47
-  },
-  {
-   "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 45
-  },
-  {
-   "file": "tools/tower-gate.test.mjs",
-   "changes": 43
-  },
-  {
-   "file": "tools/bench.json",
-   "changes": 40
-  },
-  {
-   "file": "domains/tower-self.json",
-   "changes": 34
-  },
-  {
-   "file": "tools/card-cycle.json",
-   "changes": 31
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 31
-  },
-  {
-   "file": "tools/tower.test.mjs",
-   "changes": 29
+   "changes": 32
   },
   {
    "file": "domains/conductor.json",
+   "changes": 31
+  },
+  {
+   "file": "domains/tower-self.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/bench.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/families.mjs",
+   "changes": 30
+  },
+  {
+   "file": "void-live-deploy/sw.js",
    "changes": 28
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 28
-  },
-  {
-   "file": "void-live-deploy/lib/guard.js",
-   "changes": 27
-  },
-  {
-   "file": "tools/openapi-check.mjs",
-   "changes": 26
   },
   {
    "file": "void-live-deploy/fanfic/index.html",
    "changes": 26
   },
   {
-   "file": "tools/toolkit.test.mjs",
+   "file": "void-live-deploy/skills/verse-brain.js",
    "changes": 24
-  },
-  {
-   "file": ".github/workflows/tower-gate.yml",
-   "changes": 23
   },
   {
    "file": "domains/growth-inbox.md",
@@ -105,19 +53,31 @@
    "changes": 23
   },
   {
-   "file": "void-live-deploy/skills/verse-brain.js",
+   "file": "void-live-deploy/tower.size.json",
    "changes": 22
   },
   {
-   "file": "void-live-deploy/random/index.html",
+   "file": "domains/handoff.md",
    "changes": 21
   },
   {
-   "file": "void-live-deploy/lib/art-rules.js",
+   "file": "tools/toolkit.test.mjs",
    "changes": 20
   },
   {
-   "file": "docs/RULES.md",
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 20
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 19
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 19
+  },
+  {
+   "file": "docs/PARITY/lichess.md",
    "changes": 19
   },
   {
@@ -125,56 +85,8 @@
    "changes": 19
   },
   {
-   "file": "void-live-deploy/calendar/index.html",
-   "changes": 19
-  },
-  {
-   "file": "void-live-deploy/tower.size.json",
-   "changes": 19
-  },
-  {
-   "file": "void-live-deploy/color/index.html",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/generators/index.html",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/void.asks.json",
-   "changes": 18
-  },
-  {
-   "file": "void-live-deploy/lib/similar-index.js",
+   "file": "void-live-deploy/lib/brain.js",
    "changes": 17
-  },
-  {
-   "file": "void-live-deploy/tools/index.html",
-   "changes": 17
-  },
-  {
-   "file": "tools/real-pages.mjs",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter-2/index.html",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/convert/unit-converter/index.html",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/functions/api/answer.js",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/functions/api/card-art.js",
-   "changes": 16
-  },
-  {
-   "file": "void-live-deploy/identity/index.html",
-   "changes": 16
   },
   {
    "file": "void-live-deploy/lib/fanfic-de.js",
@@ -185,99 +97,67 @@
    "changes": 16
   },
   {
-   "file": "docs/PARITY/github.md",
+   "file": "void-live-deploy/lib/seo.js",
+   "changes": 16
+  },
+  {
+   "file": "void-live-deploy/tools/index.html",
+   "changes": 16
+  },
+  {
+   "file": "tools/card-cycle.json",
    "changes": 15
   },
   {
-   "file": "docs/PARITY/hugging-face.md",
+   "file": "tools/grow-self.state.json",
    "changes": 15
+  },
+  {
+   "file": "docs/PARITY/README.md",
+   "changes": 14
   },
   {
    "file": "docs/TAGTEAM.md",
-   "changes": 15
-  },
-  {
-   "file": "tools/skill-matchers.test.mjs",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/base-converter/index.html",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/base64/index.html",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/conquered/index.html",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/lib/brain.js",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/lib/calendar.js",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/resize-image/index.html",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/time/index.html",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/wheel/index.html",
-   "changes": 15
-  },
-  {
-   "file": "docs/HANDOFF-GAPS.md",
-   "changes": 14
-  },
-  {
-   "file": "docs/PARITY/lichess.md",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/compare/index.html",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/password-strength/index.html",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/recipes/index.html",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/skills/coin.js",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/translate/index.html",
    "changes": 14
   },
   {
    "file": "tools/brain.test.mjs",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/lib/brain-mind.js",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/lib/brain-organs.js",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/skills/tower.js",
+   "changes": 14
+  },
+  {
+   "file": "docs/HANDOFF-GAPS.md",
    "changes": 13
   },
   {
-   "file": "tools/card-art-route.test.mjs",
+   "file": "tools/real-pages.mjs",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/random-user/index.html",
+   "file": "tools/team.test.mjs",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/weather/index.html",
+   "file": "tools/tower.test.mjs",
    "changes": 13
   },
   {
-   "file": "void-live-deploy/word-count/index.html",
+   "file": "void-live-deploy/identity/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/lib/similar-index.js",
    "changes": 13
   }
  ]

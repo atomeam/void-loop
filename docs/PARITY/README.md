@@ -112,7 +112,6 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
 | 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet) | partial | onlineconverter.com |
-| 1 | /converter/ | Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair | partial | onlineconverter.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
@@ -124,3 +123,4 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |
