@@ -5793,7 +5793,8 @@ say('nothing selected to remove');
     }
     // Chance: "flip a coin", "roll a dice" / "roll 2 dice" / "roll a d20", "pick a random number between 1 and 100". crypto.getRandomValues.
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
-    const coinSkill = () => !!(typeof skillsLoaded !== 'undefined' && skillsLoaded && learnedSkills.some((sk) => sk.name === 'coin'));
+    const skillHere = (name) => !!(typeof skillsLoaded !== 'undefined' && skillsLoaded && learnedSkills.some((sk) => sk.name === name));
+    const coinSkill = () => skillHere('coin');
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
       // folded in from helper/random-num, helper/coin-flip and helper/magic-8ball (2026-10-22, the Game Box): "roll 1 to 6", "pick 1 to 10", "coin flip for dinner", "what does the 8 ball say"
@@ -5820,7 +5821,8 @@ say('nothing selected to remove');
       m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
       if (m && !coinSkill()) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+letter$/.test(l)) { const c = String.fromCharCode(65 + rnd(26)); return { title: 'Random letter', big: c, note: 'A to Z, each equally likely' }; }
-      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it' }; }
+      // a bare "random color" is the color skill's (skills/color.js shows the swatch, issue #1695): owner marks it, and the caller hands it over once the skills load
+      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it', owner: /^random\s+colou?r$/.test(l) ? 'color' : null }; }
       if (/^(?:yes\s+or\s+no|should\s+i\s+do\s+it|decide\s+for\s+me)$/.test(l)) return { title: 'Yes or no', big: rnd(2) ? 'Yes' : 'No', note: 'a fair coin decided' };
       if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
       if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Verse’s throw: what was yours?' }; }
@@ -5905,6 +5907,8 @@ say('nothing selected to remove');
       if (wantsToday(l)) { showToday(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'today' }); return true; }
       if (wantsTimeNow(l)) { showTimeNow(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timenow' }); return true; }
       { const c = chanceOf(l);
+        // an ask a skill owns (c.owner) goes to that skill when it loads; the chance line answers only without it
+        if (c && c.owner) { await skillsReady; if (skillHere(c.owner)) return runLearnedSkills(text, l); }
         // the Magic 8 Ball is a ball in the void (skills/eightball.js): asking again shakes the same ball for a new answer
         // each ask is an event: the question, a shake, the answer chosen from the 20, shown on the ball, kept in its history
         if (c && c.eight) { await skillsReady; if (stageKinds.eightball) { const ball = Object.values(things).find((t) => t.kind === 'eightball');

@@ -38,3 +38,8 @@ test('an ask that names no generator draws nothing', () => {
   let called = false;
   assert.equal(sk.run('band names', { showPage: () => { called = true; }, esc }), 'none'); assert.equal(called, false);
 });
+
+test('one colour is the color skill\'s, not the palette-names generator (issue #1695)', () => {
+  for (const a of ['random colour', 'random color', 'a random colour', 'random colours']) assert.equal(textgenOf(a), null, a);
+  assert.equal(textgenOf('band name generator').id, 'band-names');
+});
