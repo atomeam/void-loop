@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 4,
+  "tested": 2,
   "checked": 6,
-  "proven": 374
+  "proven": 376
  },
  "families": [
   {
@@ -1303,9 +1303,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 22
+    "proven": 23
    },
    "skills": [
     {
@@ -1330,10 +1330,12 @@
     },
     {
      "name": "open-tool",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     },
     {
      "name": "calc",
@@ -1636,9 +1638,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 42
+    "proven": 43
    },
    "sources": {
     "read": 27,
@@ -1646,10 +1648,8 @@
     "second": 15,
     "answered": 0,
     "points": 1.48,
-    "one_live_from_proven": [
-     "local-stations"
-    ],
-    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
+    "one_live_from_proven": [],
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average)."
    },
    "skills": [
     {
@@ -1917,10 +1917,12 @@
     },
     {
      "name": "local-stations",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30",
      "source": {
       "sites": [
        "open-meteo.com"
@@ -1929,8 +1931,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: open-meteo.com; named on the card; no second source; no kept live answer yet. One kept live answer from open-meteo.com would make it proven"
+      "words": "source 1 of 3: open-meteo.com; named on the card; no second source; no kept live answer yet"
      }
     },
     {
