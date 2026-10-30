@@ -5,7 +5,7 @@
  * with its size. The pages tool is the visual one: thumbnails of every page of every file, each turned, deleted or moved by pointer, drag or keyboard.
  */
 import { tools, loadJs, renderPage, parsePages, sizeText, zip, compressByPictures, pagesToImages, toPdfImage, imageKind } from './pdf-tools.js';
-import { wantsImage, receiveImage } from './image-handoff.js';
+import { wantsImage, receiveImage, sendImage } from './image-handoff.js';
 
 const h = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);
@@ -91,6 +91,15 @@ export function mountPdf(root, cfg) {
   let cleanup = () => {}, alsoMode = false, cleanups = [];
   const build = (id) => { cleanup = () => {}; const nodes = PANELS[id](); cleanups.push(cleanup); return nodes; };
 
+  // a page made into a picture goes on to the other picture pages (lib/image-handoff.js): the press keeps it on this device and opens the next page with it
+  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
+  function sendRow(imgs, mime) {
+    const pick = imgs.length > 1 ? h('select', { 'aria-label': 'Which page to send' }, imgs.map((x, i) => h('option', { value: i }, 'Page ' + ((x.name.match(/(\d+)\.\w+$/) || [])[1] || i + 1)))) : null;
+    const go = (href) => (e) => { e.preventDefault(); const x = imgs[pick ? +pick.value : 0];
+      sendImage(href.split('?')[0], () => new Blob([x.bytes], { type: mime }), { name: x.name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the picture for the next page.', true); }); };
+    return h('p', { class: 'result send' }, h('span', {}, imgs.length > 1 ? 'Open a page in another tool: ' : 'Open the page in another tool: '), pick, ...SEND.flatMap(([label, href], i) => [i ? ' · ' : ' ', h('a', { href, onclick: go(href) }, label)]));
+  }
+
   const PANELS = {
     merge() {
       const p = picker({ accept: 'application/pdf,.pdf', multi: true, label: 'Choose PDFs to merge', pagesBox: true, onChange: () => { go.disabled = p.files.length < 2; } });
@@ -149,6 +158,7 @@ export function mountPdf(root, cfg) {
         const f = p.files[0], imgs = await pagesToImages(f.bytes, { type: type.value, dpi: +dpi.value, spec: spec.value }, (i, n) => status('Page ' + i + ' of ' + n));
         if (!imgs.length) throw new Error('No such pages'); for (const x of imgs.slice(0, 12)) offer(x.name, x.bytes, type.value); if (imgs.length > 12) results.append(h('p', { class: 'note' }, '…and ' + (imgs.length - 12) + ' more, in the ZIP.'));
         if (imgs.length > 1) offer(baseOf(f.name) + '-pages.zip', zip(imgs), 'application/zip', imgs.length + ' pictures'); status('Done.');
+        results.append(sendRow(imgs, type.value));
       }) }, 'PDF to images');
       cleanup = p.destroy; return [p.el, field('Picture type', type), field('Quality', dpi), field('Pages', spec), go];
     },
