@@ -1379,7 +1379,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 5,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/video-mux.js",
