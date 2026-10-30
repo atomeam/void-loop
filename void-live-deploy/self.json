@@ -550,8 +550,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:06:53Z",
+   "subject": "Put the visit counter back on 4 pages, and file the studios skill"
+  },
+  {
+   "at": "2026-10-30T06:02:57Z",
+   "subject": "Verse review: the page and its two deploy copies must match before a PR merges"
+  },
+  {
+   "at": "2026-10-30T06:01:19Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:01:06Z",
+   "subject": "Tower studios answer their own stage asks"
+  },
+  {
    "at": "2026-10-30T06:01:01Z",
    "subject": "News: swap the refused CBC feeds for CBS News"
+  },
+  {
+   "at": "2026-10-30T06:00:10Z",
+   "subject": "converter: Remove Noise from Audio on the device"
   },
   {
    "at": "2026-10-30T05:55:44Z",
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T05:47:31Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:47:14Z",
-   "subject": "Tools card lists every tool the Tools page lists"
-  },
-  {
-   "at": "2026-10-30T05:47:12Z",
-   "subject": "Team chat: next --wait for agents in a tool shell; work refuses to print jobs into a file nobody reads"
-  },
-  {
-   "at": "2026-10-30T05:45:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:44:26Z",
-   "subject": "podcast-search: takes \"any good podcasts about space\", and 5 real asks join the benchmark"
-  },
-  {
-   "at": "2026-10-30T05:43:24Z",
-   "subject": "Store: the changelog list shows the name Verse, not V01D"
   }
  ],
  "builders": {

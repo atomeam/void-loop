@@ -316,6 +316,7 @@
  "stigmergy-board": "\"leave a trail on <topic>\": click cells to leave weighted marks",
  "stl-check": "\"check my stl file\", \"is my stl watertight\", \"stl checker\"",
  "store": "\"what can I buy\" -> Verse's store, from the same catalog the /store page and /api/store use",
+ "studios": "The studios the tower floors built and /obituaries/ answer on the stage with a card that opens the studio",
  "study-cards": "Flashcards with spaced repeat, a quiz from a list, a language drill, a definition card, a code snippet card…",
  "sudden-death": "One countdown over the stage, and at zero one thing is gone",
  "suntimes": "\"sunrise and sunset\", \"when is sunset\", \"what time does the sun rise in Tokyo\", \"how long is the day\": the…",
