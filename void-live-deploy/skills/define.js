@@ -68,7 +68,7 @@ async function runEtymology(word, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(word) + '</h2><div class="sub">…</div>'; });
   const page = 'https://en.wiktionary.org/wiki/' + encodeURIComponent(word.replace(/ /g, '_'));
-  const get = (q) => fetch(WIKT + encodeURIComponent(word.replace(/ /g, '_')) + q).then((r) => { if (!r.ok) throw 0; return r.json(); });
+  const get = (q) => (api.fetch || fetch)(WIKT + encodeURIComponent(word.replace(/ /g, '_')) + q).then((r) => { if (!r.ok) throw 0; return r.json(); });
   let e = null, reached = false;
   try {
     const s = await get('&prop=sections'); reached = true;
@@ -98,7 +98,7 @@ async function run(text, api) {
   const page = 'https://en.wiktionary.org/wiki/' + encodeURIComponent(word.replace(/ /g, '_'));
   let j = null;
   let reached = false; // the dictionary answered at all (a 404 is an answer: no such word); a network failure is not
-  try { const r = await fetch(url); reached = r.ok || r.status === 404; if (r.ok) j = await r.json(); } catch (_) {}
+  try { const r = await (api.fetch || fetch)(url); reached = r.ok || r.status === 404; if (r.ok) j = await r.json(); } catch (_) {}
   if (!api._pageStill(el)) return 'define';
   let senses = (j && (j.en || j[Object.keys(j)[0]])) || [];
   senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3),

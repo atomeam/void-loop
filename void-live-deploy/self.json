@@ -536,6 +536,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:13:14Z",
+   "subject": "Baggage gets a daily live check against the airline pages"
+  },
+  {
+   "at": "2026-10-30T18:07:29Z",
+   "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
+  },
+  {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
   },
@@ -606,14 +614,6 @@
   {
    "at": "2026-10-30T17:09:39Z",
    "subject": "Fix card headings: end at a whole sentence, not mid-word"
-  },
-  {
-   "at": "2026-10-30T17:01:25Z",
-   "subject": "Real bass guitar and electric guitar for Verse's band songs"
-  },
-  {
-   "at": "2026-10-30T17:00:17Z",
-   "subject": "Boards: post a picture handed over by paint, photo tools, the resizer or the image maker"
   }
  ],
  "builders": {

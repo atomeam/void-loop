@@ -82,13 +82,13 @@ export function themeQuotes(html) {
   return out;
 }
 const pageUrl = (title, anchor) => 'https://en.wikiquote.org/wiki/' + encodeURIComponent(title.replace(/ /g, '_')).replace(/%2F/g, '/').replace(/%3A/g, ':').replace(/%2C/g, ',') + (anchor ? '#' + encodeURIComponent(anchor) : '');
-async function json(u) { const r = await fetch(u); if (!r.ok) throw new Error('wikiquote ' + r.status); return r.json(); }
-async function fromTheme(name, rand = Math.random) {
+async function json(u, get = fetch) { const r = await get(u); if (!r.ok) throw new Error('wikiquote ' + r.status); return r.json(); }
+async function fromTheme(name, rand = Math.random, get = fetch) {
   try {
-    const p = (await json(SECT + encodeURIComponent(name))).parse;
+    const p = (await json(SECT + encodeURIComponent(name), get)).parse;
     if (!p || !p.title) return null;
     for (let i = 0; i < 2; i++) { // a section can hold no quote in the usual shape; one more try, then the quote of the day
-      const sec = pickSection(p.sections, rand), j = await json(WQ + encodeURIComponent(p.title) + (sec ? '&section=' + encodeURIComponent(sec.index) : '')); // void-review: ok (at most 2 tries, stops at the first quote)
+      const sec = pickSection(p.sections, rand), j = await json(WQ + encodeURIComponent(p.title) + (sec ? '&section=' + encodeURIComponent(sec.index) : ''), get); // void-review: ok (at most 2 tries, stops at the first quote)
       const list = themeQuotes(j && j.parse && j.parse.text);
       if (list.length) return { ...list[Math.floor(rand() * list.length)], page: pageUrl(p.title, sec && sec.anchor), label: 'Wikiquote, ' + p.title };
       if (!sec) break;
@@ -98,17 +98,17 @@ async function fromTheme(name, rand = Math.random) {
 }
 
 async function run(text, api) {
-  const { showPage, esc } = api;
+  const { showPage, esc } = api, get = api.fetch || fetch; // api.fetch: the server's run for an MCP client names itself to Wikiquote (lib/mcp-run.js)
   const el = showPage((p) => { p.innerHTML = '<h2>A quote</h2><div class="sub">…</div>'; });
   const theme = themeOf(text), today = isDayQuote(text);
-  let got = theme ? await fromTheme(theme) : null;
+  let got = theme ? await fromTheme(theme, Math.random, get) : null;
   if (today) for (const title of [...new Set([dayTitle(new Date()), dayTitle(new Date(), false)])]) { // the asker's day, then Wikiquote's own (UTC) day
     if (got) break;
-    try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, quote of the day for ' + title.split('/')[1], today: true }; } } catch (_) {} // void-review: ok (at most 2 tries, stops at the first quote)
+    try { const r = await get(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, quote of the day for ' + title.split('/')[1], today: true }; } } catch (_) {} // void-review: ok (at most 2 tries, stops at the first quote)
   }
   for (let i = 0; i < 3 && !got; i++) { // a day with no page, or a page in another shape, is skipped for another day
     const title = qotdTitle();
-    try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, ' + title.split('/')[1], day: true }; } } catch (_) {} // void-review: ok (a retry that stops at the first quote, not one request per item)
+    try { const r = await get(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, ' + title.split('/')[1], day: true }; } } catch (_) {} // void-review: ok (a retry that stops at the first quote, not one request per item)
   }
   if (!api._pageStill(el)) return got ? 'quote' : 'none';
   if (!got) {
