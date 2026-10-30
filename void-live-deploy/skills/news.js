@@ -36,7 +36,7 @@ async function liveCard(api, el, name, every, draw) {
 }
 async function runTech(api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; p.dataset.page = pageOfNews(null); });
+  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; if (p.dataset) p.dataset.page = pageOfNews(null); });
   el._title = 'Tech news'; el._feed = 'tech news feed';
   return liveCard(api, el, 'news', 10 * 60e3, async () => {
     const j = await fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10').then((r) => r.json());
@@ -55,7 +55,7 @@ export function topicNewsOf(text) {
 }
 async function runTopic(topic, api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page) p.dataset.page = page; });
+  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page && p.dataset) p.dataset.page = page; });
   el._title = 'News about ' + topic; el._feed = 'news search';
   return liveCard(api, el, 'news', 30 * 60e3, async () => {
     const since = Math.floor(Date.now() / 1000) - 7 * 86400;
