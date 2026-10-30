@@ -67,9 +67,12 @@ document.addEventListener('keydown', (e) => {
 
 // the live numbers and what it says, read from the brain itself
 const fmt = (v, d = 3) => (v == null || !Number.isFinite(+v) ? null : (+v).toFixed(d));
+const node = (tag, text) => { const n = document.createElement(tag); n.textContent = text; return n; };
 const dl = (el, rows) => {
-  const html = rows.filter((r) => r && r[1] != null).map(([k, v]) => '<dt>' + k + '</dt><dd>' + String(v).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]) + '</dd>').join('');
-  if (el.dataset.html !== html) { el.innerHTML = html || '<dt>None yet</dt><dd>each organ is shown once it has a score</dd>'; el.dataset.html = html; }
+  const kept = rows.filter((r) => r && r[1] != null), sig = JSON.stringify(kept);
+  if (el.dataset.sig === sig) return; el.dataset.sig = sig;
+  const pairs = kept.length ? kept : [['None yet', 'each organ is shown once it has a score']];
+  el.replaceChildren(...pairs.flatMap(([k, v]) => [node('dt', k), node('dd', String(v))]));
 };
 const liveNow = $('#liveNow'), liveGains = $('#liveGains'), says = $('#says'), pulse = $('#pulse');
 const read = () => {
@@ -96,8 +99,8 @@ const read = () => {
     H ? ['Hearing', Math.round(H.hit * 100) + '% of next notes right over ' + H.notes] : null,
     s.creature.trials ? ['Creature', 'generation ' + s.creature.generations + ' · ' + s.creature.trials + (s.creature.trials === 1 ? ' trial' : ' trials')] : null,
   ]);
-  const lines = B.selfSays(b), html = lines.map((t) => '<li>' + t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]) + '</li>').join('');
-  if (says.dataset.html !== html) { says.innerHTML = html; says.dataset.html = html; }
+  const lines = B.selfSays(b), sig = JSON.stringify(lines);
+  if (says.dataset.sig !== sig) { says.replaceChildren(...lines.map((t) => node('li', t))); says.dataset.sig = sig; }
   says.dataset.lines = String(lines.length);
   pulse.style.opacity = String(0.45 + Math.min(0.55, (b.reservoir.errAvg || 0) * 4));
 };
