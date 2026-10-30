@@ -88,6 +88,12 @@ test('a coin: price, 24 hour range, volume and market cap from CoinGecko, a year
   assert.equal(q.source, 'CoinGecko'); assert.equal(q.price, 70000); assert.equal(q.prev, 68600); assert.equal(q.dayHigh, 71000); assert.equal(q.cap, 1.4e12); assert.equal(q.volume, 3e10); assert.equal(q.points.length, 48); assert.ok(q.hi52 > q.lo52);
   const long = await lookQuote(resolve('btc'), '5y', null, fake(), NOW); assert.match(long.note, /one year/);
 });
+test('a coin when CoinGecko does not answer: Yahoo\'s chart gives the price, named as the coin and said to be from Yahoo; both down is honestly nothing', async () => {
+  const y = { chart: { result: [{ meta: { currency: 'USD', longName: 'Bitcoin USD', regularMarketPrice: 70100, chartPreviousClose: 69000 }, timestamp: Array.from({ length: 300 }, (_, i) => Math.floor((NOW - (300 - i) * DAYMS) / 1000)), indicators: { quote: [{ close: Array.from({ length: 300 }, (_, i) => 40000 + i * 100) }] } }] } };
+  const q = await lookQuote(resolve('btc'), '1y', null, fake({ down: ['api.coingecko.com'], yahoo: y }), NOW);
+  assert.equal(q.ok, true); assert.match(q.source, /Yahoo/); assert.equal(q.name, 'Bitcoin'); assert.equal(q.kind, 'crypto'); assert.ok(q.price > 0);
+  const none = await lookQuote(resolve('btc'), '1y', null, fake({ down: ['api.coingecko.com', 'query1.finance.yahoo.com'] }), NOW); assert.equal(none.ok, false);
+});
 test('a currency pair: ECB rates, daily, one day shown as five; the rate on a fixed day', async () => {
   const q = await lookQuote(resolve('eurusd'), '1d', '2024-12-31', fake(), NOW);
   assert.equal(q.source.includes('ECB'), true); assert.equal(q.range, '5d'); assert.match(q.note, /once a day/); assert.equal(q.volume, null); assert.equal(q.kind, 'fx'); assert.equal(q.closeOn.close, 0.9652);
