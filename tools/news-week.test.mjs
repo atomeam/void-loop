@@ -83,3 +83,8 @@ test('the News page script parses: a misplaced line once stopped every headline 
     });
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('a story with one point says 1 point, not 1 points', async () => {
+  const { pointsText } = await import('../void-live-deploy/skills/news.js');
+  assert.deepEqual([1, 14, 0, null, -3, 2.7].map(pointsText), ['1 point', '14 points', '0 points', '0 points', '0 points', '2 points']);
+});

@@ -228,9 +228,10 @@ export function lookup(stats, name) {
   const f = stats && stats.deps && stats.deps.files, d = f && f['skills/' + name + '.js'];
   return { skill, page, book, deps: d ? { imports: (d.imports || []).filter((x) => !/\/mini\//.test(x)), importedBy: d.importedBy || [] } : null };
 }
-/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), or null. Pure. */
+/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026") or a card says its data is from
+ *  ("ECB rate of Thu, Oct 29, 2026"), or null. A card with no date keeps freshness 1, so the date it prints must count. Pure. */
 export function editedDaysAgo(text, now = Date.now()) {
-  const m = /last edited ([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
+  const m = /(?:last edited|rate of|as of|updated|published|dated) (?:[A-Z][a-z]{2,8}, )?([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
   const months = { Jan: 0, January: 0, Feb: 1, February: 1, Mar: 2, March: 2, Apr: 3, April: 3, May: 4, Jun: 5, June: 5, Jul: 6, July: 6, Aug: 7, August: 7, Sep: 8, September: 8, Oct: 9, October: 9, Nov: 10, November: 10, Dec: 11, December: 11 };
   const month = months[m[1]];
   const t = month == null ? NaN : Date.UTC(Number(m[3]), month, Number(m[2])); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
@@ -279,7 +280,7 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent) });
   // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
   const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
   if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);
