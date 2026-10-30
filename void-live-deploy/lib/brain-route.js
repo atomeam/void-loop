@@ -24,16 +24,18 @@ export function learnedOf(R, words, skill) {
 }
 
 /** choose among `cands` (skill names in the page's order; the first is what the page would pick). focus: words the brain attends to
- *  now. Returns { pick, first, changed, scores: [{ name, score }], why, id } and logs the action; null when there is no choice. */
-export function route(R, ask, cands, focus = [], at = Date.now()) {
+ *  now. skills: skill names it attends to now (lib/brain-watch.js focusOf: the skills that answer for a break that stands); they are
+ *  names, not words of the ask, so the ask's own words never drop them, and a name counts whole ("team-chat"). Returns { pick, first, changed, scores: [{ name, score }], why, id } and logs the action; null when there is no choice. */
+export function route(R, ask, cands, focus = [], at = Date.now(), skills = []) {
   const names = [...new Set((cands || []).map(String).filter(Boolean))].slice(0, MAX_CANDS);
   if (names.length < 2) return null;
   // attention is what it was thinking about before this ask: the ask's own words (it hears each ask as a goal before the page routes
   // it) are not, or "find milk on the stage" would go to stage-find over note-tools for the word "stage" alone (2026-10-30, shard 1)
   const words = wordsOf(ask), own = new Set(cleanWords(ask)), hot = new Set((focus || []).map((x) => String(x).toLowerCase()).filter((x) => !own.has(x)));
+  const hotSkills = new Set((skills || []).map((x) => String(x).toLowerCase()));
   const scores = names.map((name, i) => {
     const learned = learnedOf(R, words, name), parts = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
-    const attention = parts.some((p) => hot.has(p)) ? ATTENTION : 0;
+    const attention = parts.some((p) => hot.has(p)) || hotSkills.has(name.toLowerCase()) ? ATTENTION : 0;
     return { name, score: Math.round((-HEAD_START * i + learned + attention) * 1000) / 1000, learned: Math.round(learned * 1000) / 1000, attention };
   });
   let best = scores[0]; for (const s of scores) if (s.score > best.score) best = s; // a tie keeps the page's order
