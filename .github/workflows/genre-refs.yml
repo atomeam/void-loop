@@ -1,0 +1,78 @@
+# Real songs to hold Verse's songs against (owner, 2026-10-30: "teach it to listen to other rap and compare for itself", music in every genre).
+# tools/genre-refs.mjs searches the Internet Archive's netlabel collection for Creative Commons tracks of each kind of song Verse writes (no
+# NonCommercial licence, one track a creator), decodes the middle minute with ffmpeg, measures it with Verse's own ears (lib/rap-ears.js) and writes
+# the measurements and the credits, never the audio, to void-live-deploy/data/genre-refs.json. The song card's "Compare with real songs" scores a
+# song against that file (lib/genre-score.js). No secret and no model; the PR is labelled like Verse's other bot PRs and merges on Verse's review.
+name: Verse genre references
+
+on:
+  schedule:
+    - cron: '23 9 * * 1' # Mondays, 5:23 AM New York (EDT): the netlabels' most downloaded tracks move slowly
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "genres to measure, comma separated (heavy,beat,happy,rainy,dark,epic,lullaby); empty for all"
+        type: string
+        default: ''
+      per:
+        description: "tracks to measure a genre"
+        type: string
+        default: '8'
+
+concurrency:
+  group: void-genre-refs
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Checks
+        run: node --test tools/genre-score.test.mjs
+      - name: Measure real tracks
+        env:
+          ONLY: ${{ inputs.only }}
+          PER: ${{ inputs.per }}
+        run: |
+          [[ "$ONLY" =~ ^[a-z,]*$ && "$PER" =~ ^[0-9]*$ ]] || { echo "only takes genre ids and commas, per a number"; exit 1; }
+          flags=""; [ -n "$ONLY" ] && flags="--only $ONLY"; [ -n "$PER" ] && flags="$flags --per $PER"
+          node tools/genre-refs.mjs $flags | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Check the file it wrote
+        run: node --test tools/genre-score.test.mjs
+      - name: Open a pull request
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -n "$(git status --porcelain -- void-live-deploy/data/genre-refs.json)" ] || { echo "no change in the references"; exit 0; }
+          tracks=$(node -p "Object.values(JSON.parse(require('fs').readFileSync('void-live-deploy/data/genre-refs.json','utf8')).genres).reduce((n, g) => n + g.tracks.length, 0)")
+          genres=$(node -p "Object.keys(JSON.parse(require('fs').readFileSync('void-live-deploy/data/genre-refs.json','utf8')).genres).length")
+          title="Music: $tracks real Creative Commons tracks measured across $genres genres"
+          branch="music/genre-refs-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -- void-live-deploy/data/genre-refs.json
+          git commit -q -m "$title" -m "Measured by tools/genre-refs.mjs in .github/workflows/genre-refs.yml: Internet Archive netlabels, Creative Commons without NonCommercial, measurements and credits only."
+          git push -q origin "$branch"
+          gh label create "made by Verse" --color 5c5cff --description "a change Verse's own tools made and the repo's checks passed" --force >/dev/null 2>&1 || true
+          url=$(gh pr create --base main --head "$branch" --label "made by Verse" --label "automerge" --title "$title" --body "Real tracks from the Internet Archive's netlabels, measured with Verse's own ears (tempo, swing, timing, density, loudness, dynamics, bands, width). Only the numbers and each track's credit are kept; no audio is stored or served. The song card's Compare with real songs scores a song against these. Tool: tools/genre-refs.mjs.")
+          echo "### Genre references PR: $url" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
+          gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true
