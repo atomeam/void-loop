@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T11:13:08Z",
-   "subject": "baggage: add the skill to the Sky and earth family and refresh the book"
+   "at": "2026-10-30T11:44:42Z",
+   "subject": "Subject eval: 54 of 54 live"
   },
   {
-   "at": "2026-10-30T11:12:56Z",
-   "subject": "baggage: a card with the usual bag limits, read from two airlines' own pages"
+   "at": "2026-10-30T11:41:21Z",
+   "subject": "Refresh 3 parity docs that point at a moved line of the stage"
   },
   {
-   "at": "2026-10-30T11:12:20Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T11:41:21Z",
+   "subject": "The payoff card says what the loan skill adds"
   },
   {
-   "at": "2026-10-30T11:04:23Z",
+   "at": "2026-10-30T11:39:55Z",
+   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
+  },
+  {
+   "at": "2026-10-30T11:34:52Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T11:02:34Z",
-   "subject": "parity: line numbers after the BMI parser change"
+   "at": "2026-10-30T11:34:11Z",
+   "subject": "News about a topic shows each story once, and names its real source"
   },
   {
-   "at": "2026-10-30T11:02:26Z",
-   "subject": "Main green: the validator check asks for a dish with no built-in recipe; perf3d runs on shard 4"
+   "at": "2026-10-30T11:33:46Z",
+   "subject": "Time page: a zone with no city shows the real moon phase, not dashes"
   },
   {
-   "at": "2026-10-30T11:02:06Z",
-   "subject": "guide: count the 2 new BMI bench asks"
+   "at": "2026-10-30T11:32:19Z",
+   "subject": "guide: refresh after the families tiers"
   },
   {
-   "at": "2026-10-30T11:01:27Z",
-   "subject": "families: count the 2 new BMI bench asks"
+   "at": "2026-10-30T11:31:50Z",
+   "subject": "File the recipe card under Body and mind, next to food"
   },
   {
-   "at": "2026-10-30T10:58:41Z",
-   "subject": "calc: BMI from plain asks, height or weight first"
+   "at": "2026-10-30T11:31:27Z",
+   "subject": "families: refresh the tiers, stale on main"
   },
   {
-   "at": "2026-10-30T10:58:36Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T11:30:48Z",
+   "subject": "baggage: a full summary line, no cut-off in what.json"
   },
   {
-   "at": "2026-10-30T10:53:48Z",
-   "subject": "Full-page link keeps what the card shows"
+   "at": "2026-10-30T11:27:20Z",
+   "subject": "yesno: a should-i ask with two choices goes to the answer, not a coin"
   },
   {
-   "at": "2026-10-30T10:49:00Z",
-   "subject": "Autopilot: each deploy ships a dated snapshot of Verse's own commits and deploys"
+   "at": "2026-10-30T11:26:43Z",
+   "subject": "Traffic: who visited a-to-mind.com, counts only"
   },
   {
-   "at": "2026-10-30T10:48:38Z",
-   "subject": "File the remote jobs skill under Out in the world, not Time"
+   "at": "2026-10-30T11:25:10Z",
+   "subject": "Incident: the browser suite failed on d16874e2 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T10:45:50Z",
-   "subject": "Heavy songs play: start each recording before scheduling its stop"
+   "at": "2026-10-30T11:24:47Z",
+   "subject": "review: count a.rel = 'noopener' in script as a rel, so the blank-no-opener style point stops flagging fixed links"
   },
   {
-   "at": "2026-10-30T10:45:46Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T11:23:36Z",
+   "subject": "work: role-less job asks open remote jobs (find remote jobs, find me a job, job search)"
   },
   {
-   "at": "2026-10-30T10:42:31Z",
-   "subject": "Loan payoff card: note that every value is escaped"
+   "at": "2026-10-30T11:20:07Z",
+   "subject": "Better at local stations and open tool: 6 more ways of asking answered right — new phrases: “local radio” now opens local-stations; “radio…"
   },
   {
-   "at": "2026-10-30T10:42:06Z",
-   "subject": "Loan: answer how long a monthly payment takes to pay off a balance"
+   "at": "2026-10-30T11:19:37Z",
+   "subject": "video: open the clip with rel=noopener noreferrer"
   },
   {
-   "at": "2026-10-30T10:41:32Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T11:15:55Z",
+   "subject": "Unit answers open the unit converter on the same ask"
   },
   {
-   "at": "2026-10-30T10:41:01Z",
-   "subject": "Incident: the browser suite failed on c6ffa7bd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T10:40:39Z",
-   "subject": "words: an anagram card says the service failed, not that no word fits"
+   "at": "2026-10-30T11:13:08Z",
+   "subject": "baggage: add the skill to the Sky and earth family and refresh the book"
   }
  ],
  "builders": {
@@ -858,8 +858,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-10-29T11:33Z",
+  "line": "People this week: 46 (309 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-30T11:26Z",
   "source": "verse"
  },
  "tower": {
