@@ -6980,6 +6980,7 @@
   {"ask": "triadic palette from #ff8800", "want": "skill:palette"},
   {"ask": "generate a color scheme", "want": "skill:palette"},
   {"ask": "should i", "want": "skill:yesno"},
+  {"ask": "should i rent or buy", "want": "answer"},
   {"ask": "shuffle these: apple banana cherry", "want": "skill:shuffle"},
   {"ask": "randomize my list red green blue", "want": "skill:shuffle"},
   {"ask": "shuffle: north south east west", "want": "skill:shuffle"},
