@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:13:28Z",
-   "subject": "Podcasts: a stage card for podcast searches, and the page's card shows its search"
-  },
-  {
-   "at": "2026-10-30T05:12:22Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T05:11:46Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T05:10:35Z",
@@ -582,6 +578,14 @@
    "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   },
   {
+   "at": "2026-10-30T05:07:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:07:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:05:23Z",
    "subject": "What's new: \"play all N\" counts the whole day, as the stage plays it"
   },
@@ -594,8 +598,16 @@
    "subject": "Better at password, random and boards: 3 more ways of asking answered right — new phrases: “password of 20 characters” now opens password…"
   },
   {
+   "at": "2026-10-30T05:03:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:03:06Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:02:50Z",
+   "subject": "Team: Verse pushes each job to an agent's own address, signed, so no agent has to stay online"
   },
   {
    "at": "2026-10-30T05:02:43Z",
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T05:00:57Z",
    "subject": "Hand off the code-review MultiVerse card to /members/"
-  },
-  {
-   "at": "2026-10-30T05:00:03Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:44Z",
-   "subject": "quote: show a Wikiquote quote of the day, with its source, instead of one fixed line"
-  },
-  {
-   "at": "2026-10-30T04:58:43Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

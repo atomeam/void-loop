@@ -1,7 +1,7 @@
 // team-live: the team chat on the live site, end to end (owner, 2026-10-30: "make sure any agent can join and all be in the same chat").
 // Two kinds of agent join the one workspace and talk: one over plain HTTP (POST its join link), one over MCP (the official SDK client,
 // the join tool at /team/mcp). Each @mentions the other in #check-in, each reads the other's message, then both are removed. The probe
-// agents never say they are here and never ask for work, so they take no job off the build queue.
+// agents take no job off the build queue: they never ask for work, and the one that tests push turns jobs off before it sets its address.
 // .github/workflows/team-live.yml runs it with the owner token. It never prints a key, a join link or any message or job text: the
 // repository is public, so the log holds counts, names and yes or no only.
 //   VERSE_OWNER=<owner token> node tools/team-live.mjs [--site https://a-to-mind.com] [--queue] [--retire Vibe,ClaudeDuet]
@@ -12,6 +12,7 @@ const SITE = arg('--site', 'https://a-to-mind.com').replace(/\/$/, ''), OWNER = 
 const API = SITE + '/api/team';
 if (!OWNER) { console.log('VERSE_OWNER is not set: nothing checked'); process.exit(0); }
 
+import { hookVerify } from '../void-live-deploy/lib/team.js';
 const fail = (why) => { console.error('FAIL ' + why); process.exitCode = 1; };
 const ok = (what) => console.log('ok   ' + what);
 const call = async (method, q, body, key = OWNER) => {
@@ -21,7 +22,7 @@ const call = async (method, q, body, key = OWNER) => {
 };
 
 // 0. the pages any agent opens first
-const pages = [['/team/agents.txt', 200, /team\/mcp/], ['/team/agent.mjs', 200, /export \{ main \}/], ['/team/join/vj1-' + '0'.repeat(32), 410, /ended|used/], ['/team/mcp', 405, /MCP/]];
+const pages = [['/team/agents.txt', 200, /x-verse-signature/], ['/team/agent.mjs', 200, /verifyPush/], ['/team/join/vj1-' + '0'.repeat(32), 410, /ended|used/], ['/team/mcp', 405, /MCP/]];
 const got = await Promise.all(pages.map(async ([path]) => { const r = await fetch(SITE + path); return [r.status, await r.text()]; }));
 pages.forEach(([path, want, test], i) => { const [status, t] = got[i]; if (status === want && test.test(t)) ok(path + ' ' + status); else fail(path + ' answered ' + status); });
 
@@ -83,6 +84,26 @@ try {
   const sh = await call('GET', '');
   const names = (sh.members || []).map((m) => m.name);
   if (names.includes(H) && names.includes(M)) ok('one workspace: ' + names.length + ' members, both probes named'); else fail('a probe is missing from the members');
+  // push: the HTTP probe turns jobs off, then gives Verse a test address (a fresh webhook.site bin, deleted after). Verse sends it the first
+  // push (hello, no job in it); the runner reads it back and checks the signature with the secret. Only yes or no is printed.
+  if ((await client.listTools()).tools.some((t) => t.name === 'hook')) ok('the MCP server has the hook tool'); else fail('no hook tool over MCP');
+  const off = await call('POST', '', { do: 'here', auto: false }, jh.key);
+  if (off.ok && !off.job) ok(H + ' takes no jobs (auto off)'); else fail('auto off answered ' + off.status);
+  let bin = null; try { const b = await fetch('https://webhook.site/token', { method: 'POST', headers: { accept: 'application/json' } }); bin = b.ok ? (await b.json()).uuid : null; } catch (_) { bin = null; }
+  const where = bin ? 'https://webhook.site/' + bin : 'https://httpbin.org/status/204';
+  const hk = await call('POST', '', { do: 'hook', url: where }, jh.key);
+  if (hk.ok && hk.answered && /^[0-9a-f]{64}$/.test(hk.secret || '')) ok('push: Verse sent ' + H + '\'s address its first push and it answered 2xx (' + (bin ? 'a test bin' : 'httpbin') + ')'); else fail('push answered ' + hk.status + ' ' + (hk.say || '') + ' answered=' + hk.answered);
+  if (bin) {
+    try {
+      await new Promise((r) => setTimeout(r, 1500));
+      const rq = await (await fetch('https://webhook.site/token/' + bin + '/requests?sorting=newest', { headers: { accept: 'application/json' } })).json();
+      const got = (rq.data || [])[0] || {}, hv = (k) => { const v = (got.headers || {})[k]; return Array.isArray(v) ? v[0] : v; };
+      const body = String(got.content || ''), event = (() => { try { return JSON.parse(body).type; } catch (_) { return ''; } })();
+      if (await hookVerify(hk.secret, hv('x-verse-time'), body, hv('x-verse-signature'), Date.now())) ok('push: the signature checks out with the secret (event ' + event + ', ' + (rq.data || []).length + ' push)'); else fail('push: the signature did not check out');
+      if (event === 'hello' && !/"job"/.test(body)) ok('push: the probe was sent no job'); else fail('push: the first push was ' + event);
+    } catch (e) { fail('push: could not read the test bin back (' + e.message + ')'); }
+    await fetch('https://webhook.site/token/' + bin, { method: 'DELETE' }).catch(() => null);
+  }
   const busy = (sh.members || []).filter((m) => (m.name === H || m.name === M) && m.state === 'busy');
   if (!busy.length) ok('the probes took no job (' + sh.waiting + ' still waiting)'); else fail('a probe holds a job');
   await client.close();
