@@ -49,6 +49,9 @@ test('the kinds an agent takes are the coder\'s, weighted as the conductor weigh
   assert.ok(!T.TEAM_KINDS.includes('member') && !T.TEAM_KINDS.includes('miss') && !T.TEAM_KINDS.includes('probe'));
   assert.deepEqual(T.rank(JOBS.map((j) => ({ ...j, state: 'queued' })), T0).map((j) => j.id), ['j2', 'j5', 'j1'], 'heal, then the will, then a feature');
   assert.deepEqual(T.rank(JOBS.map((j) => ({ ...j, state: 'queued' })), T0, ['j2']).map((j) => j.id), ['j5', 'j1'], 'a job it gave back goes to someone else');
+  const asks = [{ id: 'team-42', ask: 'the owner asked late', target: 'feature:team-42', at: '2026-10-29T23:00:00Z' }, { id: 'team-7', ask: 'the owner asked first', target: 'feature:team-7', at: '2026-10-29T20:00:00Z' }, { id: 'team-x', ask: 'not a #work post', target: 'feature:team-x', at: '2026-10-29T00:00:00Z' }];
+  assert.deepEqual(T.rank([...JOBS, ...asks].map((j) => ({ ...j, state: 'queued' })), T0).map((j) => j.id), ['team-7', 'team-42', 'j2', 'j5', 'j1', 'team-x'], 'the owner\'s #work asks go first, oldest first, before heal and the will');
+  assert.deepEqual(T.rank([{ ...asks[0], state: 'queued', note: 'tries 3' }, { ...JOBS[1], state: 'queued' }], T0).map((j) => j.id), ['j2'], 'an owner ask set aside after 3 tries does not block the queue');
   assert.equal(LIMITS.team.rpm > 0 && LIMITS.team.body >= 8000, true, 'the guard has a line for /api/team');
 });
 

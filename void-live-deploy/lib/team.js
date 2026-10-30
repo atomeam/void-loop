@@ -45,11 +45,14 @@ export function score(job, now) {
   const k = kindOf(job.target), days = Math.max(0, (now - msOf(job.at)) / 864e5);
   return (WEIGHT[k] ?? 30) + Math.min(30, 2 * days) - (k === 'will' ? 5 : 25) * triesOf(job.note);
 }
-/** the queued jobs an agent may take, best first; skip: job ids this agent gave back or failed (it gets another) */
+/** an ask the owner posted in #work (enqueue in functions/api/team.js gives it the id team-<message> and the target feature:team-<message>) */
+export const ownerAsk = (job) => /^team-\d+$/.test(String(job && job.id || '')) && String(job.target || '') === 'feature:' + job.id;
+/** the queued jobs an agent may take, best first: the owner's #work asks before every background job, oldest first, then the rest by worth;
+ *  skip: job ids this agent gave back or failed (it gets another) */
 export function rank(jobs, now, skip = []) {
   const no = new Set(skip);
   return (jobs || []).filter((j) => j && j.state === 'queued' && TEAM_KINDS.includes(kindOf(j.target)) && !no.has(j.id) && triesOf(j.note) < MAX_TRIES)
-    .map((j) => ({ j, s: score(j, now) })).sort((a, b) => b.s - a.s || msOf(a.j.at) - msOf(b.j.at)).map((x) => x.j);
+    .map((j) => ({ j, o: ownerAsk(j) ? 1 : 0, s: score(j, now) })).sort((a, b) => b.o - a.o || (a.o ? 0 : b.s - a.s) || msOf(a.j.at) - msOf(b.j.at)).map((x) => x.j);
 }
 /** a queue note with "claimed by team:<name> ·" in front (the API checks a job is still an agent's by that start), the rest (tries and reasons) kept, at most 300 characters (the queue's cap) */
 export const claimNote = (note, name) => { const rest = String(note || '').replace(/^claimed by [^·]*·?\s*/i, '').trim(); return ('claimed by team:' + name + ' ·' + (rest ? ' ' + rest : '')).slice(0, 300); };
