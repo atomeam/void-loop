@@ -2348,6 +2348,13 @@
    "tests": 0
   },
   {
+   "file": "lib/job-guide.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
@@ -2387,7 +2394,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/translate-langs.js",
@@ -2857,13 +2864,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
-  },
-  {
-   "file": "lib/job-guide.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
   },
   {
    "file": "lib/jobs-ui.js",
@@ -3917,7 +3917,8 @@
     "lib/guard.js",
     "lib/void-me.js",
     "lib/automation-fix.js",
-    "lib/team.js"
+    "lib/team.js",
+    "lib/job-guide.js"
    ],
    "importedBy": [
     "functions/team/join/[code].js",
@@ -7139,7 +7140,14 @@
   },
   "lib/job-guide.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "reachedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
+   ]
   },
   "lib/job-sites.js": {
    "imports": [],
@@ -10800,7 +10808,9 @@
    ]
   },
   "lib/team.js": {
-   "imports": [],
+   "imports": [
+    "lib/job-guide.js"
+   ],
    "importedBy": [
     "functions/api/team.js",
     "functions/team/join/[code].js",

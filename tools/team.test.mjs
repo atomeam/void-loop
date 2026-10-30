@@ -162,6 +162,7 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
   assert.equal(ok.state, 'done'); assert.equal(ok.job.job, 'j2'); assert.equal(ok.link, 'https://github.com/atomeam/void-loop/pull/7');
   assert.equal(job(env, 'j2').state, 'done'); assert.match(job(env, 'j2').note, /pull\/7/);
   assert.equal(ok.next.job, 'j5', 'handed the next at once');
+  assert.match(ok.next.brief || '', /^The spec: [\s\S]*\nDeliver: /, 'the hand-out carries the job\'s brief (lib/job-guide.js)');
   const bad = await workOnce(o, { run: 'node -e "console.error(\'no mirror source\'); process.exit(3)"', log });
   assert.equal(bad.state, 'given back'); assert.equal(bad.job.job, 'j5'); assert.equal(bad.job.kind, 'will', 'a job handed out earlier is read back off its thread');
   assert.equal(job(env, 'j5').state, 'queued'); assert.match(job(env, 'j5').note, /^tries 1 · exit 3: no mirror source/);
