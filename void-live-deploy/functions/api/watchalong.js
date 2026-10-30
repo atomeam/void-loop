@@ -48,7 +48,7 @@ export async function tvStation(env, origin, s) {
   if (!env || !env.ASSETS) return { name: s.name, network: s.network, unchecked: true };
   for (const path of ['/local/tv/' + s.cc + '.json', '/local/tv/world/' + s.cc + '.json']) {
     try {
-      const r = await env.ASSETS.fetch(new Request(new URL(path, origin))); if (!r.ok) continue;
+      const r = await env.ASSETS.fetch(new Request(new URL(path, origin))); if (!r.ok) continue; // void-review: ok (two static files at most, tried in order: the second only when the station is not in the first)
       const file = await r.json(), st = (file.stations || file.channels || []).find((x) => x && x.id === s.id);
       if (st) return { name: String(st.t || s.id).slice(0, 90), network: String(st.n || '').slice(0, 40) };
     } catch (_) {}
@@ -103,14 +103,12 @@ const hashOf = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-2
 
 /** keep a learn's notes: each once per station (same text), with where and when Verse heard it. Returns how many were new. */
 export async function keepNotes(env, st, learned, source, now = new Date()) {
-  const at = now.toISOString(), day = at.slice(0, 10); let kept = 0;
-  for (const n of learned.notes) {
-    const h = await hashOf(st.kind + '|' + st.id + '|' + n.note.toLowerCase());
-    const r = await env.DB.prepare('INSERT OR IGNORE INTO void_watch_notes (h, at, day, medium, cc, station, network, show, kind, topic, note, value_cents, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-      .bind(h, at, day, st.kind, st.cc || '', st.name, st.network || '', learned.show, n.kind, n.topic, n.note, n.value_cents, source).run();
-    if (r && r.meta && r.meta.changes) kept++;
-  }
-  return kept;
+  const at = now.toISOString(), day = at.slice(0, 10);
+  if (!learned.notes.length) return 0;
+  const hs = await Promise.all(learned.notes.map((n) => hashOf(st.kind + '|' + st.id + '|' + n.note.toLowerCase())));
+  const sql = 'INSERT OR IGNORE INTO void_watch_notes (h, at, day, medium, cc, station, network, show, kind, topic, note, value_cents, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const rs = await env.DB.batch(learned.notes.map((n, i) => env.DB.prepare(sql).bind(hs[i], at, day, st.kind, st.cc || '', st.name, st.network || '', learned.show, n.kind, n.topic, n.note, n.value_cents, source)));
+  return (rs || []).filter((r) => r && r.meta && r.meta.changes).length;
 }
 /** the notes Verse learned, newest first; kind and words narrow them. */
 export async function readNotes(env, { kind = '', q = '', limit = 50 } = {}) {
@@ -118,7 +116,7 @@ export async function readNotes(env, { kind = '', q = '', limit = 50 } = {}) {
   const words = wordsOf(q).slice(0, 4), where = [], args = [];
   if (KINDS.includes(kind)) { where.push('kind = ?'); args.push(kind); }
   for (const w of words) { where.push('(topic LIKE ? OR note LIKE ? OR show LIKE ?)'); args.push('%' + w + '%', '%' + w + '%', '%' + w + '%'); }
-  const sql = 'SELECT at, day, medium, cc, station, network, show, kind, topic, note, value_cents, source FROM void_watch_notes' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY at DESC LIMIT ?';
+  const sql = 'SELECT at, day, medium, cc, station, network, show, kind, topic, note, value_cents, source FROM void_watch_notes' + (where.length ? ' WHERE ' + where.join(' AND ') : '') + ' ORDER BY at DESC LIMIT ?'; // void-review: ok (where holds only fixed text with ? placeholders; every value goes through bind)
   const r = await env.DB.prepare(sql).bind(...args, Math.max(1, Math.min(200, Number(limit) || 50))).all();
   return (r && r.results) || [];
 }

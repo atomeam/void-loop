@@ -96,7 +96,7 @@ function fakeDb() {
       return { results: out.slice(0, args[args.length - 1]) };
     },
   });
-  return { notes, runs, prepare: (sql) => stmt(sql), batch: async () => [] };
+  return { notes, runs, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const x of list) out.push(await x.run()); return out; } };
 }
 const TV = { stations: [{ id: 'WHYY-TV', t: 'WHYY', n: 'PBS', s: ['https://cdn.example.com/whyy.m3u8'] }] };
 function fakeEnv(answer, extra = {}) {
