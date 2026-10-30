@@ -888,21 +888,21 @@
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 4
   },
   {
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 18,
-   "tests": 1
+   "dependants": 19,
+   "tests": 2
   },
   {
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 14,
+   "dependants": 15,
    "tests": 3
   },
   {
@@ -1060,6 +1060,13 @@
    "tests": 2
   },
   {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 2
+  },
+  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
@@ -1072,13 +1079,6 @@
    "direct": 0,
    "dependants": 23,
    "tests": 1
-  },
-  {
-   "file": "lib/actions.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 2
   },
   {
    "file": "lib/rap.js",
@@ -1889,7 +1889,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 70,
+   "dependants": 71,
    "tests": 28
   },
   {
@@ -1945,7 +1945,7 @@
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 0
   },
   {
@@ -2194,6 +2194,13 @@
    "tests": 1
   },
   {
+   "file": "lib/sale-jobs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/seo-audit.js",
    "skills": 0,
    "direct": 0,
@@ -2258,13 +2265,6 @@
   },
   {
    "file": "lib/pdf-tools.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -3257,7 +3257,9 @@
     "lib/earnings.js",
     "lib/sale-jobs.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/members.js"
+   ]
   },
   "functions/api/handoff.js": {
    "imports": [
@@ -3359,7 +3361,8 @@
   "functions/api/members.js": {
    "imports": [
     "lib/void-me.js",
-    "lib/members.js"
+    "lib/members.js",
+    "functions/api/gumroad.js"
    ],
    "importedBy": []
   },
@@ -3832,6 +3835,7 @@
     "functions/api/automations/tick.js",
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
+    "functions/api/members.js",
     "functions/api/miss.js",
     "lib/refusal.js",
     "skills/miss-jobs.js"
@@ -5707,6 +5711,7 @@
     "functions/api/image.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
@@ -6360,6 +6365,7 @@
     "functions/api/hook/[id].js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -6454,6 +6460,7 @@
     "functions/api/films.js",
     "functions/api/handoff.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/miss.js",
     "functions/api/review.js",
     "functions/api/support.js",
@@ -8235,6 +8242,7 @@
     "functions/api/gumroad.js",
     "functions/api/handoff.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/films/rss.js",
@@ -8844,6 +8852,9 @@
    "importedBy": [
     "functions/api/gumroad.js",
     "functions/api/handoff.js"
+   ],
+   "reachedBy": [
+    "functions/api/members.js"
    ]
   },
   "lib/scene-advance.js": {
@@ -9618,6 +9629,7 @@
     "functions/api/films.js",
     "functions/api/handoff.js",
     "functions/api/mcp.js",
+    "functions/api/members.js",
     "functions/api/review.js",
     "functions/api/support.js",
     "functions/api/team.js",
