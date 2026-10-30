@@ -2017,11 +2017,12 @@ function wantsClearStage(lower) {
         || /\b(24\s*-?\s*h(our)?s?|24h|military|12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm|bold|seconds|date)\b/.test(lower);
     }
 
-    function findTargetThing(kind) {
+    function findTargetThing(kind, mayMake = true) {
       let th = (selectedId && things[selectedId] && things[selectedId].kind === kind && things[selectedId])
         || Object.values(things).find((t) => t.kind === kind);
       if (th) return th;
-      if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
+      // a built-in that moved to skills/ (cleanup step 6); made new only for an ask that makes one (lib/ask-text.js asksToMake)
+      if (mayMake && stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi);
       return null;
     }
 
@@ -2099,7 +2100,7 @@ function wantsClearStage(lower) {
     }
 
     const ALTER_WORDS = new Set(('a an the it its to be is in on at of and or please now just more less very bit little lot too much make turn set change paint color colour this that these those me my one all every each everything everywhere selected thing things stage screen page text font background shape shapes box circle square dot line card cards '
-      + 'blue red green yellow white black purple orange pink gray grey gold cyan teal clock time bigger smaller larger huge tiny big small bold seconds date top bottom left right center centre middle corner side up down').split(' '));
+      + 'blue red green yellow white black purple orange pink gray grey gold cyan teal clock time bigger smaller larger huge tiny big small bold seconds date top bottom left right center centre middle corner side up down are').split(' '));
     function onlyStageWords(lower) {
       const kinds = new Set(Object.keys(stageKinds).flatMap((k) => [k, k + 's']));
       return lower.replace(/#[0-9a-f]{3,6}\b/g, ' ').split(/[^a-z0-9]+/).filter(Boolean).every((w) => ALTER_WORDS.has(w) || kinds.has(w) || /^\d+(?:h|hr)?$/.test(w));
@@ -2126,6 +2127,13 @@ function wantsClearStage(lower) {
       }
       let ok = false;
       let detail = '';
+      // a tool opens only when the message asks for it (owner, 2026-10-30: "when clock is mentioned in any message it opens the clock
+      // only on verse"; lib/ask-text.js): a sentence about a tool ("my clock is broken", "I set a timer earlier but it never rang") and
+      // a paste that names one are answered, never put on the stage; "around the clock" and "5 o'clock" name no clock
+      const terse = onlyStageWords(lower);
+      if (askText && !askText.asksTheStage(text, terse)) return { ok: false, detail: 'not a stage ask' };
+      const mayMake = !askText || askText.asksToMake(text, terse);
+      const toolWords = askText ? askText.withoutIdioms(lower) : lower;
 
 // clear entire stage
       if (wantsClearStage(lower)) {
@@ -2160,7 +2168,7 @@ say('nothing selected to remove');
 
       // batch targeting: "make all timers blue", "resize every clock",
       // "move all shapes to the top left", "make everything blue"
-      const batchKindList = batchKinds(lower);
+      const batchKindList = batchKinds(toolWords);
       if (wantsBatchAlter(lower, batchKindList)) {
         let batchChanged = 0;
         let batchFirstId = null;
@@ -2182,12 +2190,12 @@ say('nothing selected to remove');
 
       // multi-object targeting: "make the timer blue", "make the counter big",
       // "make the calc green", "move the notepad to the top right"
-      const targetKindName = resolveTargetKind(lower)
+      const targetKindName = resolveTargetKind(toolWords)
         || (selectedId && things[selectedId] && hasAlterProperty(lower) && /\b(it|this)\b/.test(lower)
           ? things[selectedId].kind
           : null);
       if (targetKindName && hasAlterProperty(lower) && !/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel)\b/.test(lower)) {
-        const tThing = findTargetThing(targetKindName);
+        const tThing = findTargetThing(targetKindName, mayMake);
         if (tThing && applyTargetAlters(tThing, targetKindName, lower)) {
           selectedId = tThing.id;
           save(); render();
@@ -2275,18 +2283,18 @@ say('nothing selected to remove');
 
       // remove clock, then create one (skills/clock.js, cleanup step 6), at the places in this order they always had
       if (stageKinds.clock && typeof stageKinds.clock.askRemove === 'function') {
-        const cr = stageKinds.clock.askRemove(lower, text, stageApi);
+        const cr = stageKinds.clock.askRemove(toolWords, text, stageApi);
         if (cr === 'no clock') return { ok: false, detail: 'no clock' };
         if (cr) return { ok: true, detail: cr };
-        const cc = stageKinds.clock.ask(lower, text, stageApi);
+        const cc = stageKinds.clock.ask(toolWords, text, stageApi);
         if (cc) return { ok: true, detail: cc };
       }
 
       // alter clock — create-then-apply when none exists yet
-      if (stageKinds.clock && (wantsAlter(lower) || /\bclock\b/.test(lower) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock'))) {
+      if (stageKinds.clock && (wantsAlter(lower) || /\bclock\b/.test(toolWords) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock'))) {
         // if sticky is selected and alter has no clock word, skip unless color/size typical of clock
         const sel = selectedId && things[selectedId];
-        if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(lower) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
+        if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(toolWords) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
           const scol = stageKinds.sticky && stageKinds.sticky.colorOf ? stageKinds.sticky.colorOf(lower) : null;
           if (scol) {
             sel.color = scol;
@@ -2294,10 +2302,12 @@ say('nothing selected to remove');
             return { ok: true, detail: 'sticky-altered' };
           }
         }
-        const c = stageKinds.clock.ensure(stageApi); // prefer create-then-apply (skills/clock.js)
-        selectedId = c.id;
-        ok = applyTargetAlters(c, 'clock', lower);
-        if (ok) {
+        // create-then-apply (skills/clock.js), and only for an ask that makes one with a change that applies to it: "my clock is
+        // broken" and "around the clock" put a clock nobody asked for on the stage (owner, 2026-10-30)
+        let c = Object.values(things).find((t) => t && t.kind === 'clock');
+        if (!c && mayMake && applyTargetAlters({ kind: 'clock', x: 0, y: 0, size: 56, color: '#e8e8e8', format: '12h', seconds: true, bold: false }, 'clock', lower)) c = stageKinds.clock.ensure(stageApi);
+        if (c && applyTargetAlters(c, 'clock', lower)) {
+          selectedId = c.id;
           save(); render();
           return { ok: true, detail: 'altered' };
         }
@@ -5662,7 +5672,7 @@ say('nothing selected to remove');
     // the four libs and every module they import, all asked for at once: imported level by level, each level queued behind the skill files
     // the lanes had in flight (approval-core -> keep-going -> automations -> watch; on a busy page the gated check waited 3.3 s for the fourth level)
     // ask-libs: tools/preload.mjs /lib/approval-core.js /lib/gumroad.js /lib/automation-fix.js /lib/code-review.js
-    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/code-review.js'];
+    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/note-ask.js', '/lib/verse-secrets.js', '/lib/code-review.js'];
     const warmLibs = () => {
       for (const p of ASK_LIB_GRAPH) import(p).catch(() => null);
       const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);

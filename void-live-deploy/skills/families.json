@@ -604,9 +604,12 @@
      "name": "coin",
      "tier": "proven",
      "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
+     "failing": [
+      "coin toss"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0,
      "promoted": "2026-10-29",
      "streak": 6
     },
@@ -696,12 +699,9 @@
      "name": "monopoly",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
-     "failing": [
-      "play the landlord's game"
-     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0.8
+     "success_rate": 1
     },
     {
      "name": "battleship",
@@ -964,12 +964,9 @@
      "name": "baggage",
      "tier": "tested",
      "why": "3 real asks in the benchmark",
-     "failing": [
-      "how much luggage weight allowed"
-     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0.667,
+     "success_rate": 1,
      "streak": 1
     },
     {
@@ -1356,9 +1353,14 @@
      "name": "calc",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
+     "failing": [
+      "1 cup of sugar in grams",
+      "how long to pay off 100 at 200 a month at 20%",
+      "egg timer"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.996,
      "streak": 12
     },
     {
@@ -1431,9 +1433,14 @@
      "name": "stocks",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "apple stock price",
+      "what is tesla's stock price",
+      "how is the s&p 500 today"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0,
      "streak": 1
     },
     {
@@ -2004,9 +2011,14 @@
      "name": "quote",
      "tier": "proven",
      "why": "a self-test, 7 real asks in the benchmark",
+     "failing": [
+      "inspirational quote",
+      "random quote",
+      "tell me a quote"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0,
      "streak": 7,
      "source": {
       "sites": [
@@ -2044,9 +2056,14 @@
      "name": "proverb",
      "tier": "proven",
      "why": "a self-test, 4 real asks in the benchmark",
+     "failing": [
+      "tell me a proverb",
+      "random proverb",
+      "give me a proverb"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0,
      "promoted": "2026-10-29",
      "streak": 2,
      "source": {
@@ -2499,9 +2516,12 @@
      "name": "sticky",
      "tier": "proven",
      "why": "a self-test, 15 browser-suite mentions, 4 real asks in the benchmark",
+     "failing": [
+      "take a note: buy batteries"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.75,
      "streak": 12
     },
     {
@@ -2575,9 +2595,12 @@
      "name": "notepad",
      "tier": "proven",
      "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
+     "failing": [
+      "take a note: buy batteries"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "streak": 12
     },
     {
@@ -2866,9 +2889,12 @@
      "name": "echo-disagrees",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
+     "failing": [
+      "what would the echo say should i learn to code"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.667,
      "promoted": "2026-10-30",
      "streak": 11
     },
