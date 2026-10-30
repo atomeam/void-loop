@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1074,
+ "counted": 1076,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -455,7 +455,7 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/success-pulse.js",
@@ -2331,7 +2331,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 23,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/character.js",
@@ -2384,6 +2384,13 @@
   },
   {
    "file": "lib/news-report.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/note-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 23,
@@ -3389,6 +3396,7 @@
     "lib/card-kinds.js",
     "lib/free-pics.js",
     "lib/answer-edge.js",
+    "lib/note-ask.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -8791,6 +8799,36 @@
     "functions/api/probe-asks.js",
     "lib/refusal.js",
     "skills/miss-jobs.js"
+   ]
+  },
+  "lib/note-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/note-extras.js": {
@@ -15164,6 +15202,10 @@
     "skills/mind-field-mode.js",
     "skills/mind-field.js"
    ]
+  },
+  "skills/reverse.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/rides.js": {
    "imports": [

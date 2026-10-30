@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T14:10:42Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T15:59:16Z",
+   "subject": "Cite the Better Sleep Council for the bed size answers"
   },
   {
-   "at": "2026-10-30T14:02:26Z",
-   "subject": "Scores: mark the early fetch's catch as intended for Verse's review"
+   "at": "2026-10-30T15:55:51Z",
+   "subject": "Mark the safe card markup and keep the util summary whole"
   },
   {
-   "at": "2026-10-30T14:00:33Z",
-   "subject": "Tower gate: every floor measured against its live site (3 slices)"
+   "at": "2026-10-30T15:54:39Z",
+   "subject": "Read a pasted note as a note, never answer with a stock AI refusal, keep long asks whole"
   },
   {
-   "at": "2026-10-30T13:59:40Z",
-   "subject": "Hand-offs: gradient to PDF, calendar to scores, flights and local to remote jobs"
+   "at": "2026-10-30T15:52:28Z",
+   "subject": "Carry the time page's city to its weather and its local radio and TV"
   },
   {
-   "at": "2026-10-30T13:59:16Z",
+   "at": "2026-10-30T15:51:12Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T13:56:44Z",
-   "subject": "\"binary to decimal 1010\" converts, not an article"
+   "at": "2026-10-30T15:47:59Z",
+   "subject": "A diff checker and Markdown to HTML"
   },
   {
-   "at": "2026-10-30T13:54:57Z",
-   "subject": "Tool names people type open the tool page, not an article"
+   "at": "2026-10-30T15:47:53Z",
+   "subject": "Born dates read right, and pick a random name"
   },
   {
-   "at": "2026-10-30T13:54:38Z",
-   "subject": "Kitchen weights and turkey times: King Arthur and USDA rows, with source and read date"
+   "at": "2026-10-30T15:47:44Z",
+   "subject": "Show a game's start in other cities from the scores page"
   },
   {
-   "at": "2026-10-30T13:54:34Z",
-   "subject": "Give the reverse skill its own order file so the index keeps it after a merge"
+   "at": "2026-10-30T15:46:21Z",
+   "subject": "Cite FDA, NIST and Coca-Cola HBC for the soda can answer"
   },
   {
-   "at": "2026-10-30T13:53:24Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T15:45:23Z",
+   "subject": "Hand the random people's names to the random picker and the prize odds"
   },
   {
-   "at": "2026-10-30T13:52:51Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T15:42:09Z",
+   "subject": "Cite ITU and DCI for screen resolutions; 2K is the DCI size"
   },
   {
-   "at": "2026-10-30T13:52:32Z",
-   "subject": "Gradient page: its links follow a picture it reads at once"
+   "at": "2026-10-30T15:41:23Z",
+   "subject": "Add a game to Verse's own calendar from the scores page"
   },
   {
-   "at": "2026-10-30T13:48:24Z",
-   "subject": "Pictures into a PDF: paint and image hand a picture to /pdf/'s images-to-PDF tool"
+   "at": "2026-10-30T15:35:05Z",
+   "subject": "Hand the resized copy on to the photo tools, PDF, paint and gradient pages"
   },
   {
-   "at": "2026-10-30T13:46:52Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T15:33:24Z",
+   "subject": "Cite USDA FSIS for the boiling point at altitude"
   },
   {
-   "at": "2026-10-30T13:46:49Z",
-   "subject": "Stock and index asks get a quote card that opens Markets"
+   "at": "2026-10-30T15:29:12Z",
+   "subject": "Cite the stride source for steps per mile"
   },
   {
-   "at": "2026-10-30T13:44:48Z",
-   "subject": "Verse fixes its constellation skill: learn to handle \"can u see cassiopeia tonight\""
+   "at": "2026-10-30T15:28:56Z",
+   "subject": "Password asks said another way make a password card"
   },
   {
-   "at": "2026-10-30T13:43:42Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-10-30T15:27:41Z",
+   "subject": "Verse fixes its distance skill: learn to handle \"how far is nyc to london\""
   },
   {
-   "at": "2026-10-30T13:43:07Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-30T15:25:03Z",
+   "subject": "Hand-off types: /fantasy/ takes a player sheet, not names"
   },
   {
-   "at": "2026-10-30T13:42:52Z",
-   "subject": "Gradients as pictures: send a gradient to paint, photos and resize; read a picture's colours from image and paint"
+   "at": "2026-10-30T15:23:51Z",
+   "subject": "Photos: hand the edit to the resize page"
   },
   {
-   "at": "2026-10-30T13:42:05Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
+   "at": "2026-10-30T15:23:22Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   }
  ],
  "builders": {
