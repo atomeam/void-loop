@@ -1,10 +1,12 @@
 /**
  * palindrome skill — check if a word or phrase is a palindrome
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "is racecar a palindrome", "check palindrome for a man a plan a canal panama".
+ * "is racecar a palindrome", "palindrome check".
+ * Empty surface stays empty; the result is an outcome page.
  */
 export function isPalindromeAsk(text) {
-  return /^(?:please\\s+)?(?:is\\s+)?(?:check\\s+if\\s+)?(?:the\\s+)?(?:word\\s+|phrase\\s+)?[a-z\\s]+\\s+(?:is\\s+)?a\\s+palindrome|(?:palindrome\\s+(?:check\\s+)?(?:for|of)\\s+[a-z\\s]+)(?:\\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
+  return /^(?:please\s+)?(?:is\s+.+\s+a\s+palindrome|palindrome(?:\s+check)?(?:\s+of\s+.+)?)$/i.test(t);
 }
 
 function isPal(s) {
@@ -14,21 +16,23 @@ function isPal(s) {
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const m = /(?:is\\s+|check\\s+if\\s+|palindrome\\s+(?:for|of)\\s+)([a-z\\s]+)/i.exec(text || '');
-  const phrase = m ? m[1].trim() : 'racecar';
-  const yes = isPal(phrase);
-  showPage((p) => { p.innerHTML = '<h2>Palindrome</h2><p style="font-size:24px;text-align:center">"' + esc(phrase) + '" ' + (yes ? 'is' : 'is not') + ' a palindrome.</p><div class="sub">say “is racecar a palindrome”</div>'; });
+  const m = text.match(/is\s+(.+?)\s+a\s+palindrome/i) || text.match(/palindrome(?:\s+check)?(?:\s+of\s+)?(.+)/i);
+  const word = m ? m[1].trim() : 'racecar';
+  const ok = isPal(word);
+  showPage((p) => {
+    p.innerHTML = '<h2>Palindrome</h2><p>' + esc(word) + ' is ' + (ok ? '' : 'not ') + 'a palindrome.</p>';
+  });
   return 'palindrome';
 }
 
 export default {
   name: 'palindrome',
-  examples: ['is racecar a palindrome', 'check if a man a plan a canal panama is a palindrome', 'palindrome of level'],
-  nearMisses: ['what is a palindrome', 'palindrome poem', 'buy a palindrome'],
+  examples: ['is racecar a palindrome', 'palindrome check of level'],
+  nearMisses: ['what is a palindrome', 'palindrome puzzle'],
   match(lower, text) { return isPalindromeAsk(text); },
   run,
   suite() {
-    const ok = isPalindromeAsk('is racecar a palindrome') && isPalindromeAsk('palindrome of level') && !isPalindromeAsk('what is a palindrome');
+    const ok = isPalindromeAsk('is racecar a palindrome') && isPalindromeAsk('palindrome check') && !isPalindromeAsk('what is a palindrome');
     return { ok, got: 'match works' };
   }
 };
