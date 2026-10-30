@@ -290,3 +290,32 @@ test('mcp: seo_audit, readability and colour_contrast answer from the libraries 
   assert.equal(c.structuredContent.ratio, 21); assert.equal(c.structuredContent.aaa, true);
   assert.ok((await call('colour_contrast', { text: 'nope', background: 'white' })).isError);
 });
+
+test('mcp: the Server Card (SEP-2127) at /api/mcp/server-card matches the v1 schema, server.json and the live endpoint, and lists no tools', async () => {
+  const { serverCard, CARD_SCHEMA, SERVER } = await import('../void-live-deploy/lib/mcp.js');
+  const { onRequestGet: cardGet } = await import('../void-live-deploy/functions/api/mcp/server-card.js');
+  const res = cardGet();
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get('content-type'), /^application\/json/);
+  const card = await res.json();
+  assert.deepEqual(card, serverCard());
+  assert.equal(card.$schema, CARD_SCHEMA);
+  assert.equal(CARD_SCHEMA, 'https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json');
+  assert.match(card.name, /^[^/]+\/[^/]+$/, 'exactly one slash between namespace and name');
+  assert.ok(card.name.length >= 3 && card.name.length <= 200);
+  assert.ok(card.description.length >= 1 && card.description.length <= 100, 'description is 1 to 100 characters');
+  assert.ok(card.title.length >= 1 && card.title.length <= 100);
+  assert.match(card.version, /^\d+\.\d+\.\d+$/);
+  assert.equal(card.version, SERVER.version, 'the card version is the one initialize reports');
+  const registry = JSON.parse(readFileSync(new URL('../server.json', import.meta.url), 'utf8'));
+  assert.equal(card.name, registry.name, 'the same identity as the registry entry');
+  assert.deepEqual(card.repository, registry.repository);
+  assert.equal(card.remotes.length, 1);
+  assert.equal(card.remotes[0].type, 'streamable-http');
+  assert.equal(card.remotes[0].url, registry.remotes[0].url, 'the endpoint the registry names');
+  assert.deepEqual(card.remotes[0].supportedProtocolVersions, [PROTOCOL]);
+  for (const k of ['tools', 'resources', 'prompts', 'capabilities']) assert.ok(!(k in card), 'a card carries no ' + k);
+  const allowed = new Set(['$schema', 'name', 'version', 'description', 'title', 'websiteUrl', 'repository', 'icons', 'remotes', '_meta']);
+  for (const k of Object.keys(card)) assert.ok(allowed.has(k), 'not a Server Card field: ' + k);
+  assert.ok(readFileSync(new URL('../void-live-deploy/icon-512.png', import.meta.url)).length > 0, 'the icon is a file the site serves');
+});

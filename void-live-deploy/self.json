@@ -327,22 +327,8 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "The growth inbox, deeper",
    "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
-   "waits": "the owner"
   },
   {
    "state": "open",
@@ -550,6 +536,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:11:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:06:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -624,10 +614,6 @@
   {
    "at": "2026-10-30T17:17:10Z",
    "subject": "reinvest: today's plan for Verse's money"
-  },
-  {
-   "at": "2026-10-30T17:16:07Z",
-   "subject": "Incident autopsy: map every check to its family and owning files"
   }
  ],
  "builders": {
