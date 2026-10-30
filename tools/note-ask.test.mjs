@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { isNote, isChatLog, setupFacts, noteFinish, talksLimits, dropLimits, noteRule, noteReading, relatedPage, PAGES, NO_LIMITS_RULE } from '../void-live-deploy/lib/note-ask.js';
+import { isNote, isChatLog, setupFacts, secretAsk, noteFinish, talksLimits, dropLimits, noteRule, noteReading, relatedPage, PAGES, NO_LIMITS_RULE } from '../void-live-deploy/lib/note-ask.js';
 import SECRETS from '../void-live-deploy/lib/verse-secrets.js';
 import { scan, render } from './verse-secrets.mjs';
 import { FILLER_RULE, ASK_MAX } from '../void-live-deploy/lib/answer-honesty.js';
@@ -164,4 +164,17 @@ test('the answer route finishes every note answer with noteFinish', () => {
   assert.match(src, /const noteFacts = note \? setupFacts\(ask\) : \[\]/);
   assert.match(src, /noteRule\(notePage, noteFacts\)/);
   assert.match(src, /if \(!answer && note\) answer = noteReading\(ask, notePage, noteFacts\);\n\s*else if \(note \|\| isPaste\(ask\)\) answer = noteFinish\(answer, ask, note \? noteFacts : telemetryOf\(ask\) \? \[\] : setupFacts\(ask\)\);/); // a pasted status report gets no secret names (tools/paste-kind.test.mjs)
+});
+
+test('a typed question about a secret name is answered from the names Verse reads, not looked up (live, 2026-10-30: Modal became a fashion model)', () => {
+  const modal = secretAsk('what is the Modal secret called?');
+  assert.ok(modal.length === 1 && modal[0].includes('MODAL_TOKEN_ID') && modal[0].includes('MODAL_TOKEN_SECRET'), modal.join(' '));
+  assert.ok(!/MODAL_TOKEN\b(?!_)/.test(modal[0]), 'no guessed MODAL_TOKEN');
+  assert.ok(secretAsk('which Gumroad keys does Verse need?').length === 1);
+  assert.ok(secretAsk('What are the Stripe secret names').length === 1);
+  for (const ask of ['what is a secret santa called?', 'the Modal secret is set', 'make a clock', 'what is a modal window?', 'tell me a secret', 'what is the Modal secret called?\nand the Stripe one?'])
+    assert.deepEqual(secretAsk(ask), [], ask);
+  const page = read('../void.html');
+  assert.match(page, /N\.secretAsk\(typed\)/, 'the page answers it before any lookup');
+  assert.ok(page.indexOf('N.secretAsk(typed)') < page.indexOf('pk.pasteKind(typed)'), 'and before the paste and skill routes');
 });

@@ -114,6 +114,17 @@ export function setupFacts(ask, secrets = SECRETS) {
   return out;
 }
 
+// a typed question about the name of a secret, a token or a key (live, 2026-10-30: "what is the Modal secret called?" went to Wikipedia, which
+// suggested "model secret called" and showed a person card about a fashion model). It is answered from the names Verse's code reads, as a note is.
+const NAME_ASK = /\b(?:called|named|name|names|which|what)\b/i;
+/** the setup facts for a typed question about a service's secret, token or key name; [] for anything else (a paste, a note, a long ask). Pure. */
+export function secretAsk(ask, secrets = SECRETS) {
+  const t = String(ask || '').trim();
+  if (!t || t.length > 160 || /[\n⏎]/.test(t) || !SETUP.test(t) || !NAME_ASK.test(t)) return [];
+  if (!/\?\s*$/.test(t) && !ASKING.test(t)) return [];
+  return setupFacts(t, secrets);
+}
+
 /** what the model is told for a note: read it as a note, in its own words, and point to the related page when there is one */
 export function noteRule(page, facts = []) {
   return 'The ask is a note written to someone, or a copied chat, not a question to you and not a broken automation. In two to four sentences, using its own words, say what it says, what step it asks for and whose step that is. The "you" in the note is the person it was written to, not you. If it stops mid-sentence, say it is cut off there and do not guess the rest. Never say you did a step, and never mention what you can or cannot do.'
