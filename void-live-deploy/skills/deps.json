@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1004,
+ "counted": 1005,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1931,8 +1931,8 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 72,
-   "tests": 28
+   "dependants": 76,
+   "tests": 29
   },
   {
    "file": "lib/models.js",
@@ -1960,7 +1960,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 38,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/code-review.js",
@@ -2794,6 +2794,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/owner-link.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/page-picture.js",
@@ -6450,7 +6457,8 @@
     "functions/c/[clip].js",
     "lib/automations-run.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/void-me.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -6464,12 +6472,15 @@
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/mine.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/publish.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
+    "functions/api/share/index.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/fanfic/rss.js",
@@ -7801,6 +7812,10 @@
    "importedBy": [
     "skills/own-parts.js"
    ]
+  },
+  "lib/owner-link.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/pack5-ui.js": {
    "imports": [],
@@ -10422,7 +10437,8 @@
   "lib/void-me.js": {
    "imports": [
     "lib/webauthn.js",
-    "lib/pages.js"
+    "lib/pages.js",
+    "lib/guard.js"
    ],
    "importedBy": [
     "functions/api/film-review.js",

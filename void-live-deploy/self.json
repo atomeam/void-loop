@@ -550,6 +550,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:12:55Z",
+   "subject": "PR guard: the shared tool-page chain must match the browser suite's list before merge"
+  },
+  {
+   "at": "2026-10-30T04:10:49Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T04:09:53Z",
+   "subject": "One owner across Verse: the owner's signed-in account is the owner on every page"
+  },
+  {
+   "at": "2026-10-30T04:08:21Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T04:07:55Z",
    "subject": "Confirm line: pin what #1444 changed in the approval gate, and what it did not"
   },
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T03:51:25Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T03:51:07Z",
-   "subject": "Memory orbs show Verse's real memories"
-  },
-  {
-   "at": "2026-10-30T03:50:16Z",
-   "subject": "Metronome related line: mark BPM label text as a review false positive, as on /music/"
-  },
-  {
-   "at": "2026-10-30T03:49:47Z",
-   "subject": "Verse Brain full screen: gains tiles wear warm, shorter strip labels"
-  },
-  {
-   "at": "2026-10-30T03:49:31Z",
-   "subject": "Promote 11 more skills to proven on evidence, link the shipped STL and promotion asks"
   }
  ],
  "builders": {
