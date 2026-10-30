@@ -160,7 +160,7 @@ function payoffCard(q, api) {
   const href = '/calculators/?calc=payoff-time&P=' + encodeURIComponent(q.principal) + '&rate=' + encodeURIComponent(q.apr) + '&pay=' + encodeURIComponent(q.pay);
   const title = q.kind.charAt(0).toUpperCase() + q.kind.slice(1);
   showPage((el) => {
-    el.dataset.page = '/calculators/';
+    el.dataset.page = href; // the card's full-page link opens the payoff calculator on these numbers, not the plain page
     let html = '<h2>' + esc(title) + ' payoff</h2>'
       + '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% a year, paying ' + esc(moneyFmt(q.pay)) + ' a month</div>';
     if (o.never) {
