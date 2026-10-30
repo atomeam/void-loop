@@ -31,7 +31,7 @@ function readState() {
   if (q.has('from')) state.from = code(q.get('from')); if (q.has('to')) state.to = code(q.get('to')); if (q.has('via')) state.via = code(q.get('via')); if (q.has('d')) state.depart = C.isoDate(q.get('d')); if (q.has('r')) state.ret = C.isoDate(q.get('r'));
   if (q.has('ow')) state.oneWay = q.get('ow') === '1'; if (q.has('ad')) state.ad = Math.min(9, Math.max(1, +q.get('ad') || 1)); if (q.has('ch')) state.ch = Math.min(8, Math.max(0, +q.get('ch') || 0)); if (q.has('cab') && C.CABINS[q.get('cab')]) state.cab = q.get('cab'); if (/^\d{2}:\d{2}$/.test(q.get('t') || '')) state.time = q.get('t');
   if (state.depart && state.depart < today()) { state.depart = ''; state.ret = ''; }
-  state.fromq = (q.get('fromq') || '').slice(0, 60); state.toq = (q.get('toq') || '').slice(0, 60);
+  state.fromq = (q.get('fromq') || '').slice(0, 60); state.toq = (q.get('toq') || '').slice(0, 60); { const m = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/.exec(q.get('tonear') || ''); state.tonear = m ? [+m[1], +m[2]] : null; if (state.tonear && !q.has('to')) state.to = ''; } // a place another page found (/local/): the airport near it, once the list is in
 }
 const ap = (code) => (idx && code ? idx.byIata.get(code) : null);
 const apName = (a) => (a ? a.city + ' (' + a.iata + ')' : '');
@@ -311,7 +311,7 @@ PANELS.trip = () => {
 
 // ---------- the page ----------
 function loadIndex() {
-  return fetch('/flights/airports.json').then((r) => r.json()).then((d) => { idx = C.makeIndex(d); document.documentElement.dataset.flightsReady = '1'; for (const k of ['from', 'to']) { const w = state[k + 'q']; if (w) { const r = C.searchAirports(idx, w, 1)[0]; if (r) state[k] = r.iata; state[k + 'q'] = ''; } } if (state.from || state.to) emit(); for (const f of subs) f(); }).catch(() => { const n = document.getElementById('fl-err'); if (n) n.hidden = false; });
+  return fetch('/flights/airports.json').then((r) => r.json()).then((d) => { idx = C.makeIndex(d); document.documentElement.dataset.flightsReady = '1'; for (const k of ['from', 'to']) { const w = state[k + 'q']; if (w) { const r = C.searchAirports(idx, w, 1)[0]; if (r) state[k] = r.iata; state[k + 'q'] = ''; } } if (state.tonear) { const a = state.to ? null : C.airportNear(idx, state.tonear[0], state.tonear[1]); if (a) state.to = a.iata; state.tonear = null; } if (state.from || state.to) emit(); for (const f of subs) f(); }).catch(() => { const n = document.getElementById('fl-err'); if (n) n.hidden = false; });
 }
 // the page keeps itself, its code and the airport list in the service worker's cache (sw.js CACHE, 'void-shell-v2': keep the two names the same), so a reload with the
 // network cut shows the whole page even when the worker took over a moment ago and has not fetched the page yet (the worker answers a page from this cache by its path)

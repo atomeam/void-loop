@@ -434,6 +434,7 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
         const dd = el('dd'), go = [], at = !o.allDay && !o.task ? C.parseLocal(o.start) : null, tz = baseOf(o).tz;
         if (at && Number.isFinite(at.getTime())) go.push(['detTime', "/time/?at=" + encodeURIComponent(at.toISOString().replace(/\.000Z$/, 'Z')) + (tz ? '&cities=' + encodeURIComponent(C.tzCity(tz)) : ''), de ? 'Diese Uhrzeit in anderen Städten' : 'This time in other cities']);
         if (o.location) go.push(['detWeather', "/weather/?place=" + encodeURIComponent(o.location), (de ? 'Wetter in ' : 'Weather in ') + o.location]);
+        { const day = String(o.start || '').slice(0, 10); if (/^\d{4}-\d{2}-\d{2}$/.test(day) && day >= C.dayKey(now())) go.push(['detFlights', '/flights/?d=' + day, de ? 'Flüge an diesem Tag' : 'Flights on this day']); } // the date only: a place in an event is often an address, never an airport
         go.forEach(([id, href, label], i) => { const a = el('a', '', label); a.id = id; a.href = href; if (i) dd.append(' · '); dd.append(a); });
         if (go.length) dl.append(el('dt', '', de ? 'Weiter' : 'Open in'), dd);
       }
@@ -655,7 +656,8 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
     mountRelated($('related'), '/calendar/', [{ label: de ? 'Timer bis zum Termin' : 'Countdown to the next event', href: () => { const t = now(), o = C.agenda(store.events, C.fmtLocal(t), C.fmtLocal(C.addDays(t, 60))).find((x) => !x.allDay && C.parseLocal(x.start) > t); return o ? '/stopwatch/?t=' + encodeURIComponent(Math.max(1, Math.round((C.parseLocal(o.start) - t) / 60000)) + ' minutes') : null; } }, // no timed event ahead: the link reads as off, never a made-up countdown
       { label: de ? 'Wetter am Tag' : 'Weather that day', href: () => { // the place of the day's first event with one, while the day is in the 7 days /weather/ forecasts
         const ahead = Math.round((C.startOfDay(state.cursor) - C.startOfDay(now())) / 864e5), o = ahead >= 0 && ahead < 7 ? C.onDay(shown(), C.dayKey(state.cursor)).find((x) => x.location) : null;
-        return o ? '/weather/?place=' + encodeURIComponent(o.location) : null; } }], { card: () => A.cardAskOf(C.dayKey(state.cursor)) }); // the card opens on the day shown
+        return o ? '/weather/?place=' + encodeURIComponent(o.location) : null; } },
+      { label: de ? 'Flüge am Tag' : 'Flights that day', href: () => { const day = C.dayKey(state.cursor); return day >= C.dayKey(now()) ? '/flights/?d=' + day : null; } }], { card: () => A.cardAskOf(C.dayKey(state.cursor)) }); // the card opens on the day shown
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

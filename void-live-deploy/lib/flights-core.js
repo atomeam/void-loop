@@ -53,6 +53,14 @@ export const airportOf = (idx, code) => { const c = String(code || '').trim().to
 export function nearby(idx, a, radiusKm = 150, limit = 8) {
   return idx.list.filter((b) => b.iata !== a.iata).map((b) => ({ a: b, km: distanceKm(a, b) })).filter((x) => x.km <= radiusKm).sort((x, y) => x.km - y.km).slice(0, limit);
 }
+/** the airport to fly to for a point on the map (a place another page found): the nearest large airport within km, else the nearest
+ *  medium one, never a small field; null when none is that close, so the page asks instead of guessing. */
+export function airportNear(idx, lat, lon, km = 120) {
+  const p = { lat: +lat, lon: +lon }; if (!Number.isFinite(p.lat) || !Number.isFinite(p.lon) || Math.abs(p.lat) > 90 || Math.abs(p.lon) > 180) return null;
+  let best = null, bestKm = 0;
+  for (const b of idx.list) { if (b.size < 1) continue; const d = distanceKm(p, b); if (d > km) continue; if (!best || b.size > best.size || (b.size === best.size && d < bestKm)) { best = b; bestKm = d; } }
+  return best;
+}
 /** every airport that shares a metropolitan code with this one, as airports (not itself). */
 export const sameCity = (idx, a) => { const out = []; for (const [m, cs] of Object.entries(METRO)) if (cs.includes(a.iata)) for (const c of cs) if (c !== a.iata && idx.byIata.get(c)) out.push(idx.byIata.get(c)); return out; };
 

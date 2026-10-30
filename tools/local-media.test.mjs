@@ -130,3 +130,8 @@ test('a place handed over in the link (a flight\'s arrival airport): the exact p
   for (const bad of ['?place=London', '?place=London&ll=51.5,-0.1', '?place=London&ll=51.5&cc=GB', '?place=London&ll=91,0&cc=GB', '?place=London&ll=51.5,x&cc=GB', '?place=London&ll=,&cc=GB', '?ll=51.5,-0.1&cc=GB', '?place=London&ll=51.5,-0.1&cc=GBR'])
     assert.equal(L.placeFromLink(bad), null, bad);
 });
+
+test('flights to the place shown: its point in the link for /flights/ to pick the airport, or nothing without one', () => {
+  assert.equal(L.flightsLink({ city: 'London', lat: 51.50735, lon: -0.12776 }), '/flights/?tonear=51.5074,-0.1278');
+  for (const bad of [null, {}, { city: 'London' }, { lat: 51.5 }, { lat: 'x', lon: 0 }, { lat: 91, lon: 0 }, { lat: 0, lon: 181 }]) assert.equal(L.flightsLink(bad), null, JSON.stringify(bad));
+});
