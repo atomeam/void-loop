@@ -1,5 +1,5 @@
 // A QR code encoder, made here so a code never needs the network (owner, 2026-10-18: the spectators card shows its link as a QR code for phones;
-// "make a qr code for ..." in skills/util.js still asks goqr.me). Byte mode (UTF-8), versions 1 to 40, error correction L, M, Q or H, the mask with
+// "make a qr code for ..." in skills/util.js draws with it too, since 2026-10-30). Byte mode (UTF-8), versions 1 to 40, error correction L, M, Q or H, the mask with
 // the lowest penalty, as ISO/IEC 18004 lays it out. Pure: qrMatrix()
 // gives the modules, qrSvg() an SVG made of numbers only. A text past what version 40 holds gives null, never a broken code.
 
