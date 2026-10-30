@@ -9376,7 +9376,7 @@ try {
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
-  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
+  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); { const hs = await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); check('hints while typing', hs.some((h) => /timer/.test(h)), JSON.stringify(hs)); }
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
   await t.ctx.close();
 

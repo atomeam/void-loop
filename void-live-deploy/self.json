@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,68 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T17:39:22Z",
+   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
+  },
+  {
+   "at": "2026-10-30T17:38:34Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T17:31:32Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T17:23:00Z",
+   "subject": "video-gen: live checks every 6 hours, and the card says when Verse last tested the video model"
+  },
+  {
+   "at": "2026-10-30T17:17:10Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-30T17:15:58Z",
+   "subject": "Refuse a recipe card about another dish instead of showing it"
+  },
+  {
+   "at": "2026-10-30T17:15:21Z",
+   "subject": "Card notes are no near miss of the self skill"
+  },
+  {
+   "at": "2026-10-30T17:13:03Z",
+   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-10-30T17:12:29Z",
+   "subject": "Read a paste as a report, an ask or unclear, never a guess"
+  },
+  {
+   "at": "2026-10-30T17:09:40Z",
+   "subject": "Show the Adds line whole and end the stuck GitHub check"
+  },
+  {
+   "at": "2026-10-30T17:09:40Z",
+   "subject": "Regenerate preload lists in the 3 page copies"
+  },
+  {
+   "at": "2026-10-30T17:09:39Z",
+   "subject": "Fix card headings: end at a whole sentence, not mid-word"
+  },
+  {
+   "at": "2026-10-30T17:01:25Z",
+   "subject": "Real bass guitar and electric guitar for Verse's band songs"
+  },
+  {
+   "at": "2026-10-30T16:52:53Z",
+   "subject": "YAML to JSON and JSON to YAML: a converter card in the util skill"
+  },
+  {
    "at": "2026-10-30T16:51:10Z",
    "subject": "Mark the helper names the review takes for undeclared"
+  },
+  {
+   "at": "2026-10-30T16:51:08Z",
+   "subject": "Main green: a guard limit for /api/sing and the MAP line for verse-secrets.mjs"
   },
   {
    "at": "2026-10-30T16:50:06Z",
@@ -562,72 +622,12 @@
    "subject": "Load game and sky helpers on first use, not with the routing order"
   },
   {
-   "at": "2026-10-30T16:48:19Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+   "at": "2026-10-30T16:49:24Z",
+   "subject": "Name the real Modal secrets now that the sing workflow reads them"
   },
   {
-   "at": "2026-10-30T16:45:07Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T16:44:46Z",
-   "subject": "Incident: the browser suite failed on 3bf3d447 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T16:43:01Z",
-   "subject": "Scores: a game's flights link opens the flights page on its ground's city and day"
-  },
-  {
-   "at": "2026-10-30T16:35:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T16:35:15Z",
-   "subject": "Read a pasted status report as a report, not a broken automation"
-  },
-  {
-   "at": "2026-10-30T16:33:19Z",
-   "subject": "Scores page: the weather at the game's ground"
-  },
-  {
-   "at": "2026-10-30T16:32:55Z",
-   "subject": "Spotter: 2 check(s) healed with no revert after d0f883ca9412accf1ff4900e1c34f6c97683773e (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-30T16:29:12Z",
-   "subject": "Let long recent asks wrap in the hints list, not end in a cut"
-  },
-  {
-   "at": "2026-10-30T16:29:11Z",
-   "subject": "Dev tools: a JWT decoder, HTML entities and an XML formatter"
-  },
-  {
-   "at": "2026-10-30T16:29:05Z",
-   "subject": "Leave \"random uuid\" asks to the uuid skill"
-  },
-  {
-   "at": "2026-10-30T16:29:05Z",
-   "subject": "Open the UUID card for \"uuid generator\" and convert \"timestamp converter 1700000000\""
-  },
-  {
-   "at": "2026-10-30T16:28:45Z",
-   "subject": "End a long card title at a whole sentence, never mid-word"
-  },
-  {
-   "at": "2026-10-30T16:28:30Z",
-   "subject": "Time page: flights to the city asked for, on the event's day when it is ahead"
-  },
-  {
-   "at": "2026-10-30T16:27:43Z",
-   "subject": "openapi-check: mark /api/sing as Verse's own (member-only, owner's Modal)"
-  },
-  {
-   "at": "2026-10-30T16:26:00Z",
-   "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
-  },
-  {
-   "at": "2026-10-30T16:24:34Z",
-   "subject": "Read pasted chats and reports, never a keys refusal or a guessed secret name"
+   "at": "2026-10-30T16:49:17Z",
+   "subject": "Verse mints, uses and retires its own Cloudflare keys"
   }
  ],
  "builders": {
