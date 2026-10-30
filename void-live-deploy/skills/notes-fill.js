@@ -67,7 +67,7 @@ function run(text, api) {
 
 export default {
   name: 'notes-fill',
-  examples: ['add a note: buy milk', 'add eggs to my shopping list', 'what did I write about Lisbon', 'start a meeting note'],
+  examples: ['add a note: buy milk', 'take a note: call the vet', 'add eggs to my shopping list', 'what did I write about Lisbon', 'start a meeting note'],
   nearMisses: ['add dentist tomorrow to my calendar', 'what is the weather', 'tick tock', 'notepad: buy bread'],
   match,
   run
