@@ -96,6 +96,8 @@ function over(x, W, H, o, t) {
   }
   x.restore();
 }
+// the same drawing for a still picture (the converter's Watermark Image)
+export { over as drawOver };
 
 // ---- the encoder --------------------------------------------------------------------------------------------------------------------------
 async function encoder(container, W, H, quality, fps) {

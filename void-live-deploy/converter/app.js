@@ -3,7 +3,7 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
-import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write.js';
+import { writeVideo, writeStill, soundOf48, encodeSound, drawOver } from '/lib/video-write.js';
 import { flac, opusFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
@@ -14,9 +14,9 @@ const make = (tag, props = {}, ...kids) => { const e = document.createElement(ta
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip' };
+const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip' };
 // how many files a tool needs, and what to say about them
-const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'] };
+const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
@@ -88,6 +88,7 @@ function opts() {
   if (run === 'epub-compress' || run === 'cbz-compress') o.append(field('Picture quality (10-100)', num('equal', 75, '1', 10, 100)), field('Largest picture side (pixels, 0: keep the size)', num('emax', 1600, '1', 0)));
   if (run === 'gif-speed') o.append(field('Times as fast', num('factor', 2, 'any', 0.1, 10)));
   if (run === 'frame') o.append(field('At second', num('at', 1, 'any', 0)));
+  if (run === 'watermark-image') o.append(field('Mark', pick('wmk', [['words', 'Your words'], ['picture', 'The smallest picture you pick']], 'words')), field('Words', txt('words', '', 'Your name')), field('Corner', pick('corner', [['br', 'Bottom right'], ['bl', 'Bottom left'], ['tr', 'Top right'], ['tl', 'Top left']], 'br')), field('Size (% of the width)', num('pw', 15, 'any', 1, 60)), field('Seen (%: 100 is solid)', num('alpha', 60, '1', 5, 100)), field('JPG and WebP quality (10-100)', num('qual', 90, '1', 10, 100)));
   if (run === 'merge-images') o.append(field('Put them', pick('dir', [['row', 'side by side'], ['column', 'one above the other']], 'row')));
   if (run === 'video') videoOpts(t.vop, o);
   if (run === 'pdf-image') o.append(field('Page', num('page', 1, '1', 1)), field('From the left (%)', num('px', 5, 'any', 0, 100)), field('From the top (%)', num('py', 5, 'any', 0, 100)), field('Width (% of the page)', num('pw', 30, 'any', 1, 100)));
@@ -301,6 +302,25 @@ async function go() {
       const out = make('canvas', { width: W, height: H }), x = out.getContext('2d'); let at = 0;
       for (const c of cs) { if (row) { x.drawImage(c, at, Math.round((H - c.height) / 2)); at += c.width; } else { x.drawImage(c, Math.round((W - c.width) / 2), at); at += c.height; } }
       add({ name: outName(base(list[0].f.name) + ' joined.png', 'png', taken), ext: 'png', bytes: new Uint8Array(await (await blobOf(out, 'image/png')).arrayBuffer()), notes: [cs.length + ' pictures ' + (row ? 'side by side' : 'one above the other'), W + ' x ' + H + ' pixels'] });
+    } else if (t.run === 'watermark-image') {
+      const useP = $('wmk').value === 'picture', words = $('words').value.trim(), pics = [];
+      for (const x of list) if (kindOf(x.fmt) === 'picture') pics.push(x); else fail(x.f, new Error('this is not a picture.'));
+      if (!useP && !words) throw new Error('write the words of the watermark, or set Mark to the smallest picture you pick.');
+      if (useP && pics.length < 2) throw new Error('pick the pictures to mark and the mark itself: 2 pictures or more.');
+      say('Reading ' + pics.length + ' picture' + (pics.length === 1 ? '' : 's')); const cs = []; for (const x of pics) cs.push({ ...x, c: await canvasOf(x.f).catch((e) => { throw new Error(x.f.name + ': ' + e.message); }) });
+      const mark = useP ? cs.reduce((a, b) => (b.c.width * b.c.height < a.c.width * a.c.height ? b : a)) : null;
+      const size = Math.max(1, Math.min(60, val('pw', 15))), alpha = Math.max(5, Math.min(100, val('alpha', 60))), corner = $('corner').value, q = Math.max(10, Math.min(100, val('qual', 90))) / 100;
+      const where = { br: 'bottom right', bl: 'bottom left', tr: 'top right', tl: 'top left' }[corner];
+      for (const p of cs) {
+        if (p === mark) continue;
+        try {
+          if (p.fmt === 'gif' && gifSpeed(await bytesOf(p.f), 1).frames > 1) throw new Error('an animated GIF: Verse puts a mark on still pictures only.');
+          const to = PICTURE_OUT.includes(p.fmt) && p.fmt !== 'pdf' ? p.fmt : 'png', out = make('canvas', { width: p.c.width, height: p.c.height }), x = out.getContext('2d');
+          x.drawImage(p.c, 0, 0);
+          drawOver(x, out.width, out.height, mark ? { pic: mark.c, corner, size, alpha: alpha / 100 } : { text: words, corner, size: size / 4, alpha: alpha / 100 }, 0);
+          add({ name: outName(base(p.f.name) + ' watermarked.' + to, to, taken), ext: to, bytes: await pictureFile(out, to, q), notes: [(mark ? mark.f.name + ' as the mark, ' + size + '% of the width' : 'the words "' + words + '"') + ', ' + where + ', ' + alpha + '% seen', out.width + ' x ' + out.height + ' pixels' + (to === p.fmt ? '' : ', written as a PNG')] });
+        } catch (e) { fail(p.f, e); }
+      }
     } else if (t.run === 'video') { await runVideo(t, list, taken, add, fail, say);
     } else if (t.run === 'mp3-image') {
       const m = list.find((x) => x.fmt === 'mp3'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
