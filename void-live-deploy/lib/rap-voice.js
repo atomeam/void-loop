@@ -106,7 +106,7 @@ export function splitBar(bar) {
  *  adlib (the ad-lib track), words: [{ bar, i (the word's place in the bar as written), at }], bars: [{ bar, at: [syllable starts] }], voiced }. Pure. */
 export function buildVocal(clips, timing, beat, flow, rate, seconds, adlibClips = []) {
   const len = Math.ceil(seconds * rate), main = new Float32Array(len), dub = new Float32Array(len), adlib = new Float32Array(len), words = [], bars = [];
-  const slotSec = 60 / beat.bpm / 4, swing = SWING[beat.rapStyle] || 0.5, dbl = flow === 'double', end = dbl ? 4 : 12, speed = SPEED[flow] || SPEED.steady;
+  const slotSec = 60 / beat.bpm / 4, swing = beat.swing ?? (SWING[beat.rapStyle] || 0.5), dbl = flow === 'double', end = dbl ? 4 : 12, speed = SPEED[flow] || SPEED.steady;
   const snares = new Set((beat.drums.snare || []).map((s) => s % 16));
   let voiced = 0;
   timing.forEach((b, bi) => {

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1041,
+ "counted": 1043,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 70,
+   "dependants": 69,
    "tests": 8
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 76,
+   "dependants": 77,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 22,
    "direct": 1,
-   "dependants": 76,
+   "dependants": 77,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 75,
+   "dependants": 76,
    "tests": 5
   },
   {
@@ -545,7 +545,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 80,
+   "dependants": 79,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 78,
+   "dependants": 77,
    "tests": 9
   },
   {
@@ -888,7 +888,7 @@
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 2
   },
   {
@@ -1126,8 +1126,15 @@
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
+  },
+  {
+   "file": "lib/rap.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 27,
+   "tests": 3
   },
   {
    "file": "lib/calc-units.js",
@@ -1140,13 +1147,6 @@
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 26,
-   "tests": 2
-  },
-  {
-   "file": "lib/rap.js",
-   "skills": 1,
-   "direct": 1,
    "dependants": 26,
    "tests": 2
   },
@@ -1189,7 +1189,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 19,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -1291,13 +1291,6 @@
    "tests": 1
   },
   {
-   "file": "lib/brain-trace.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-watch.js",
    "skills": 1,
    "direct": 0,
@@ -1333,6 +1326,20 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-beat.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap-fft.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 0
+  },
+  {
    "file": "lib/translate-docs.js",
    "skills": 1,
    "direct": 0,
@@ -1340,7 +1347,14 @@
    "tests": 3
   },
   {
-   "file": "lib/rap-beat.js",
+   "file": "lib/rap-ears.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap-voice.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
@@ -1382,18 +1396,18 @@
    "tests": 2
   },
   {
-   "file": "lib/rap-voice.js",
+   "file": "lib/rap-song.js",
    "skills": 1,
    "direct": 0,
    "dependants": 4,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/brain.js",
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 19
+   "tests": 18
   },
   {
    "file": "lib/fanfic.js",
@@ -1441,13 +1455,6 @@
    "file": "lib/podcasts.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/rap-song.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 3,
    "tests": 1
   },
@@ -2446,13 +2453,6 @@
    "tests": 1
   },
   {
-   "file": "lib/members.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -2566,6 +2566,13 @@
   },
   {
    "file": "lib/lap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3055,6 +3062,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-listen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/rating-note.js",
    "skills": 0,
    "direct": 0,
@@ -3171,8 +3185,7 @@
   "functions/[handle].js": {
    "imports": [
     "lib/pages.js",
-    "lib/void-me.js",
-    "lib/members.js"
+    "lib/void-me.js"
    ],
    "importedBy": []
   },
@@ -4386,6 +4399,7 @@
     "lib/comments-ui.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -4551,7 +4565,6 @@
     "lib/voice.js"
    ],
    "reachedBy": [
-    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -5005,7 +5018,6 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
-    "lib/brain-trace.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
    ],
@@ -5036,7 +5048,6 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
-    "lib/brain-trace.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -5125,23 +5136,6 @@
     "skills/verse-brain.js"
    ]
   },
-  "lib/brain-trace.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-watch.js": {
    "imports": [],
    "importedBy": [
@@ -5174,7 +5168,6 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
-    "lib/brain-trace.js",
     "lib/brain.js",
     "skills/verse-brain.js"
    ],
@@ -5199,8 +5192,7 @@
     "lib/brain-formula.js",
     "lib/brain-current.js",
     "lib/brain-grains.js",
-    "lib/brain-pool.js",
-    "lib/brain-trace.js"
+    "lib/brain-pool.js"
    ],
    "importedBy": [
     "lib/brain-glow.js",
@@ -5900,6 +5892,7 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -6398,7 +6391,6 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
-    "lib/brain-trace.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
     "lib/council-law.js",
@@ -7355,6 +7347,7 @@
     "lib/daily-photo.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -7789,7 +7782,6 @@
     "lib/automation-fix.js"
    ],
    "importedBy": [
-    "functions/[handle].js",
     "functions/api/members.js"
    ]
   },
@@ -7914,6 +7906,7 @@
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/image-gen.js",
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -9243,6 +9236,7 @@
     "lib/compose.js"
    ],
    "importedBy": [
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -9252,13 +9246,50 @@
     "skills/rap.js"
    ]
   },
+  "lib/rap-ears.js": {
+   "imports": [
+    "lib/rap-fft.js"
+   ],
+   "importedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-song.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-fft.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/rap-ears.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-listen.js": {
+   "imports": [
+    "lib/rap-ears.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js"
+   ],
+   "importedBy": []
+  },
   "lib/rap-song.js": {
    "imports": [
     "lib/rap.js",
     "lib/rap-beat.js",
-    "lib/rap-voice.js"
+    "lib/rap-voice.js",
+    "lib/rap-ears.js"
    ],
    "importedBy": [
+    "lib/rap-listen.js",
     "lib/rap-stage.js",
     "lib/rap-video.js"
    ],
@@ -9283,6 +9314,7 @@
     "lib/video-write.js",
     "lib/rap.js",
     "lib/rap-song.js",
+    "lib/rap-fft.js",
     "lib/rap-beat.js",
     "lib/rap-voice.js"
    ],
@@ -9303,6 +9335,7 @@
     "lib/rap-video.js"
    ],
    "reachedBy": [
+    "lib/rap-listen.js",
     "lib/rap-stage.js",
     "skills/rap.js"
    ]
@@ -9340,7 +9373,8 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/rap-listen.js"
    ]
   },
   "lib/rating-note.js": {
@@ -10718,6 +10752,7 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
     "lib/rap-video.js",
@@ -10872,7 +10907,6 @@
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
-    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
