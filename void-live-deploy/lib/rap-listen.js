@@ -7,7 +7,7 @@
 // Make the video all use it; Write the next one to match writes a new rap in the flow the reference suggests. What Verse has heard is kept in
 // this browser only, as numbers (no sound, no file name beyond what the visitor sees), so it can compare against the average of everything it
 // has heard. Every word on the panel is set with textContent.
-import { listen, windowOf, compare, tuneFor, averageOf, TUNE0, isPlain } from './rap-ears.js';
+import { listen, windowOf, compare, tuneFor, averageOf, fitMix, mixWhy, TUNE0, isPlain } from './rap-ears.js';
 import { SWING } from './rap-beat.js';
 import { RATE } from './rap-song.js';
 
@@ -23,19 +23,27 @@ function keepHeard(win, list) { try { const s = store(win); if (s) s.setItem(KEY
 /** a profile of the song Verse made (its mastered mix), heard the way it hears any track. null when the browser cannot render it. */
 export async function hearSong(song) { const m = await song.mix(true); if (!m) return null; const w = windowOf(m[0].length / RATE); return listen(m[0], m[1], RATE, w); }
 
+/** the master for a take, found by ear against the reference (rap-ears fitMix on the take's unmastered mix). null when the take has no
+ *  unmastered mix to read (no offline audio). */
+export async function fitSong(song, ref) { if (!song.raw) return null; const m = await song.raw(true); if (!m) return null; return fitMix(m[0], m[1], RATE, ref, song.tune || TUNE0).tune; }
+
 /** the take's own tempo and swing, from its plan (what tuneFor moves from). Pure. */
 export const baseOf = (song) => ({ bpm: song.plan.beat.bpm, swing: song.plan.beat.swing ?? (SWING[song.plan.beat.rapStyle] ?? 0.5) });
 
 /** the learning loop: measure take0 against ref, then up to `tries` retuned takes, each from the last one's gaps, while the score climbs.
  *  `hear(song)` measures a take (hearSong in the page, a stand-in in the tests). Returns { before, best, takes: [{ song, own, cmp, why }] }. */
-export async function learn(take0, ref, { hear = hearSong, tries = 3, onStep = () => {} } = {}) {
+export async function learn(take0, ref, { hear = hearSong, fit = fitSong, tries = 3, onStep = () => {} } = {}) {
   const own0 = await hear(take0); if (!own0) return null;
   const first = { song: take0, own: own0, cmp: compare(own0, ref), why: [] }, takes = [first]; let best = first, last = first;
   for (let i = 0; i < tries; i++) {
-    const { tune, why } = tuneFor(last.cmp.rows, last.song.tune || TUNE0, baseOf(last.song));
+    let { tune, why, grid } = tuneFor(last.cmp.rows, last.song.tune || TUNE0, baseOf(last.song));
     if (isPlain(tune) || JSON.stringify(tune) === JSON.stringify({ ...TUNE0, ...(last.song.tune || {}) })) break;
     onStep(i + 1, why);
-    const song = take0.retune(tune), own = await hear(song); if (!own) break;
+    let song = take0.retune(tune);
+    // then the master by ear: read the new take's mix against the track pass by pass (no new rendering), and keep the closest master
+    const fitted = fit ? await fit(song, ref) : null;
+    if (fitted) { tune = { ...tune, ...fitted, bpm: tune.bpm, swing: tune.swing }; song = song.retune(tune); why = [...(grid || []), ...mixWhy(tune)]; }
+    const own = await hear(song); if (!own) break;
     const t = { song, own, cmp: compare(own, ref), why }; takes.push(t);
     if (t.cmp.score > best.cmp.score) best = t;
     if (t.cmp.score <= last.cmp.score) break; // no better than the last take: stop rather than wander
