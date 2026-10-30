@@ -12,7 +12,7 @@ import { fromItunes } from '../lib/podcasts.js';
 /** the topic of a podcast search, or null. Pure. */
 export function podcastTopicOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:(?:please\s+)?(?:search|find|browse|show\s+me|recommend|suggest)\s+(?:for\s+|me\s+)?)?(?:(?:a|an|some|the)\s+)?(?:(?:best|top|good|great|popular|new)\s+)?podcasts?\s+(?:about|on|for)\s+(.{2,40})$/i)
+  const m = t.match(/^(?:(?:please\s+)?(?:search|find|browse|show\s+me|recommend|suggest)\s+(?:for\s+|me\s+)?)?(?:(?:a|an|some|any|the)\s+)?(?:(?:best|top|good|great|popular|new)\s+)?podcasts?\s+(?:about|on|for)\s+(.{2,40})$/i)
     || t.match(/^(?:search|find)\s+(?:for\s+)?podcasts?\s+(?!about\b|on\b|for\b)(.{2,40})$/i);
   const topic = m ? m[1].trim() : '';
   return topic.length >= 2 && /[a-z0-9]/i.test(topic) ? topic : null;

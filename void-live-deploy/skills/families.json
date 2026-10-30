@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 2,
+  "tested": 1,
   "checked": 5,
-  "proven": 371
+  "proven": 372
  },
  "families": [
   {
@@ -1615,9 +1615,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 41
+    "proven": 42
    },
    "sources": {
     "read": 25,
@@ -1625,10 +1625,8 @@
     "second": 14,
     "answered": 0,
     "points": 1.48,
-    "one_live_from_proven": [
-     "podcast-search"
-    ],
-    "words": "Source reliability: 25 skills answer from outside sources; 23 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.48 of 3 on average). One kept live answer each would make 1 more proven: podcast-search."
+    "one_live_from_proven": [],
+    "words": "Source reliability: 25 skills answer from outside sources; 23 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.48 of 3 on average)."
    },
    "skills": [
     {
@@ -1875,10 +1873,12 @@
     },
     {
      "name": "podcast-search",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30",
      "source": {
       "sites": [
        "apple.com",
@@ -1889,8 +1889,7 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: apple.com, applemarketingtools.com, fyyd.de; named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+      "words": "source 2 of 3: apple.com, applemarketingtools.com, fyyd.de; named on the card; a second source; no kept live answer yet"
      }
     },
     {
