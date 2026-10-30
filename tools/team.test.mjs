@@ -184,3 +184,33 @@ test('the owner is an account: the owner account\'s signed-in session is the own
   assert.equal((await get(env, '?me', LAPSED)).me, null, 'a session past its end is nobody');
   assert.equal((await API.onRequestPost({ env, request: req('POST', '', { do: 'invite', name: 'Scout' }, OWNS), now: T0 })).status, 201, 'the owner account invites');
 });
+
+test('the owner asks for work in #work: the post goes on the build queue and an agent is handed it in that same thread', async () => {
+  const env = world([]);
+  const inv = await post(env, { do: 'invite', name: 'Scout' }, OWNER);
+  assert.equal((await post(env, { do: 'here' }, inv.key)).state, 'idle', 'nothing queued yet');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'add a moon phase to /weather/' }, OWNER, T0 + 1000);
+  assert.equal(ask.status, 201); assert.equal(ask.job, 'team-' + ask.id);
+  const q = job(env, ask.job);
+  assert.deepEqual([q.ask, q.target, q.state], ['add a moon phase to /weather/', 'feature:team-' + ask.id, 'queued']);
+  assert.equal((await post(env, { do: 'post', c: 'general', body: 'just chat' }, OWNER, T0 + 1100)).job, undefined, 'only #work');
+  assert.equal((await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'and keep it small' }, OWNER, T0 + 1200)).job, undefined, 'a reply is not a new job');
+  assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, 1);
+  const agentPost = await post(env, { do: 'post', c: 'work', body: 'an agent talking' }, inv.key, T0 + 3000);
+  assert.equal(agentPost.job, undefined, 'an agent\'s post is never a job');
+
+  const here = await post(env, { do: 'here' }, inv.key, T0 + 5000);
+  assert.equal(here.job.job, ask.job); assert.equal(here.job.thread, ask.id, 'handed out in the owner\'s own thread');
+  const th = await get(env, '?t=' + ask.id, OWNER, T0 + 6000);
+  assert.equal(th.root.body, 'add a moon phase to /weather/');
+  assert.match(th.replies[0].body, /^On the build queue/); assert.match(th.replies.at(-1).body, /^@Scout your next job \(feature/);
+  await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/9998' }, inv.key, T0 + 9000);
+  assert.equal(job(env, ask.job).state, 'done');
+  assert.match((await get(env, '?t=' + ask.id, OWNER, T0 + 9500)).replies.at(-1).body, /^Done\. https:\/\/github\.com/);
+
+  const long = await post(env, { do: 'post', c: 'work', body: 'x'.repeat(600) }, OWNER, T0 + 10000);
+  assert.ok(job(env, long.job).ask.length <= 200 && job(env, long.job).ask.endsWith('(the whole ask: #work thread ' + long.id + ')'), 'the queue keeps its 200 character ask; the thread keeps the rest');
+  const bare = world(); bare.DB.raw.exec('DROP TABLE void_queue');
+  assert.equal((await post(bare, { do: 'post', c: 'work', body: 'no queue here' }, OWNER)).job, undefined, 'no build queue, no job, and the post still goes');
+});
+

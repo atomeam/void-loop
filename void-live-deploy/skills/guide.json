@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 3,
-    "proven": 55
+    "proven": 56
    },
    "from": 6,
    "to": 65
@@ -1307,8 +1307,10 @@
     "is my stl watertight",
     "stl checker"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things.",
+   "glow": 100,
    "n": 63
   },
   {
@@ -6161,8 +6163,8 @@
     "stage: an atmospheric study"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 1 real ask in the benchmark",
-   "flavor": "Proven 1 times over by those who asked, and kept among the stage. Let the stage be the proof.",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. This is the page of backdrop.",
    "glow": 100,
    "n": 334
   },

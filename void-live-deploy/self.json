@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T17:44:01Z",
+  "at": "2026-10-25T17:49:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T00:07:42Z",
-   "subject": "Verse loop: task, Queue job mvpi0j4s (versus: heycolor.com): Versus: heycolor."
+   "at": "2026-10-30T02:51:41Z",
+   "subject": "Verse loop: task, Queue job mvpur47q (versus: uptimer.dev): Versus: uptimer.de"
   },
   {
-   "at": "2026-10-29T23:57:20Z",
-   "subject": "Incident: the browser suite failed on ec492c32 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T02:48:52Z",
+   "subject": "relinkRecorded: one query, no query per loop turn (Verse's review)"
   },
   {
-   "at": "2026-10-29T23:54:23Z",
-   "subject": "The book: a page for hangman (it was in no family, so the book checks failed on main)"
+   "at": "2026-10-30T02:47:58Z",
+   "subject": "Self card: a site's ask is built only by a ledger line that names the site"
   },
   {
-   "at": "2026-10-29T23:52:27Z",
-   "subject": "Bench: one tab for each slot again (reverts f240133 for tools/bench.mjs only)"
+   "at": "2026-10-30T02:47:21Z",
+   "subject": "MultiVerse: the creator's own purchase unlocks their Verse; the page lists helping build Verse"
   },
   {
-   "at": "2026-10-29T23:43:10Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T02:44:16Z",
+   "subject": "Eat: a town the ask names is kept; no restaurant from another state"
   },
   {
-   "at": "2026-10-29T23:32:02Z",
-   "subject": "Incident: the browser suite failed on bab0789c (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T02:42:20Z",
+   "subject": "Verse loop: task, Queue job mvpur3sa (versus: processchecker.com): Versus: pro"
   },
   {
-   "at": "2026-10-29T23:27:44Z",
-   "subject": "Revert \"Merge pull request #1632 from atomeam/helper/wordladder\""
+   "at": "2026-10-30T02:40:10Z",
+   "subject": "Stage: \"check my stl file\" opens the STL checker, not code review"
   },
   {
-   "at": "2026-10-29T23:08:45Z",
-   "subject": "Bench: the second run after an inconclusive one runs again only its misses"
+   "at": "2026-10-30T02:39:39Z",
+   "subject": "Team chat: the owner's signed-in account is the owner on /team/"
   },
   {
-   "at": "2026-10-29T22:55:26Z",
-   "subject": "Incident: the browser suite failed on 5be61832 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T02:37:48Z",
+   "subject": "Incident: the browser suite failed on 83797004 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T22:53:41Z",
-   "subject": "Better at converter, rap, team chat and 1 more: 12 more ways of asking answered right — new phrases: “mp4 to mp3” now opens converter…"
+   "at": "2026-10-30T02:36:25Z",
+   "subject": "Bench: the sky asks accept the sky skills' own names, and the eat asks get a map stand-in"
   },
   {
-   "at": "2026-10-29T22:41:49Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 5be6183250fd98a87a0dc03c23d169aaeafeaf23 (tools/flakes.json)"
+   "at": "2026-10-30T02:30:14Z",
+   "subject": "Refresh generated files: families, deps, guide, self, asks links, churn, sitemap"
   },
   {
-   "at": "2026-10-29T22:41:32Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T02:28:13Z",
+   "subject": "Self card: the bars' least proven family everywhere, site-named asks need site evidence, no doubled ledger lines, no review prompts on the…"
   },
   {
-   "at": "2026-10-29T22:41:05Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
+   "at": "2026-10-30T02:26:15Z",
+   "subject": "Services card names MultiVerse and links its page, not \"your own custom Verse\""
   },
   {
-   "at": "2026-10-29T22:36:04Z",
-   "subject": "Revert \"Merge pull request #1630 from atomeam/fix/bench-one-tab\""
+   "at": "2026-10-30T02:24:21Z",
+   "subject": "Regenerate churn after the merge"
   },
   {
-   "at": "2026-10-29T22:14:41Z",
-   "subject": "Bench: an 800 by 540 window, so software drawing costs less"
+   "at": "2026-10-30T02:24:17Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T22:12:17Z",
-   "subject": "Add word ladder skill and mark inbox row building"
+   "at": "2026-10-30T02:23:50Z",
+   "subject": "voice test: its own held list, so lifting a real hold keeps it green"
   },
   {
-   "at": "2026-10-29T22:03:37Z",
-   "subject": "Bench: no GPU process, so the page is drawn in software"
+   "at": "2026-10-30T02:20:46Z",
+   "subject": "Verse loop: task, Queue job mvpur3cd (versus: font.im): Versus: font.im (Googl"
   },
   {
-   "at": "2026-10-29T21:53:29Z",
-   "subject": "Bench: one tab for each slot, so an ask does not start a new renderer"
+   "at": "2026-10-30T02:16:29Z",
+   "subject": "Base converter: \"what is 101010 in decimal\" reads 0s and 1s as binary"
   },
   {
-   "at": "2026-10-29T21:40:40Z",
-   "subject": "Bench: the machine's CPU per ask by process kind on the pace line"
+   "at": "2026-10-30T02:16:20Z",
+   "subject": "STL checker: lift the hold, the owner said ship it"
   },
   {
-   "at": "2026-10-29T21:39:57Z",
-   "subject": "Revert \"Merge pull request #1625 from atomeam/verse/harden-20261029-205013-40952300273\""
+   "at": "2026-10-30T02:11:17Z",
+   "subject": "Bench: date-calc and is-it answer the date asks, with the dates checked"
   }
  ],
  "builders": {
@@ -871,6 +871,6 @@
    "ndscalc.ru"
   ],
   "beaten": 0,
-  "total": 1269
+  "total": 1270
  }
 }
