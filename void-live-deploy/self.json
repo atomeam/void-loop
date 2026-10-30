@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T02:23:50Z",
+   "subject": "voice test: its own held list, so lifting a real hold keeps it green"
+  },
+  {
+   "at": "2026-10-30T02:16:29Z",
+   "subject": "Base converter: \"what is 101010 in decimal\" reads 0s and 1s as binary"
+  },
+  {
+   "at": "2026-10-30T02:16:20Z",
+   "subject": "STL checker: lift the hold, the owner said ship it"
+  },
+  {
    "at": "2026-10-30T02:11:17Z",
    "subject": "Bench: date-calc and is-it answer the date asks, with the dates checked"
   },
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-29T23:54:23Z",
    "subject": "The book: a page for hangman (it was in no family, so the book checks failed on main)"
-  },
-  {
-   "at": "2026-10-29T23:52:27Z",
-   "subject": "Bench: one tab for each slot again (reverts f240133 for tools/bench.mjs only)"
-  },
-  {
-   "at": "2026-10-29T23:43:10Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-29T23:32:02Z",
-   "subject": "Incident: the browser suite failed on bab0789c (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
