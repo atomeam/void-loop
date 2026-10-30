@@ -2680,7 +2680,7 @@
     "what's next"
    ],
    "tier": "proven",
-   "why": "12 browser-suite mentions, 14 real asks in the benchmark",
+   "why": "a self-test, 12 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the time. It has not failed a reader yet.",
    "glow": 100,
    "n": 135

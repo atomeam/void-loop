@@ -8,6 +8,7 @@ import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
 import { sameAsk as sameAskCard } from './self-blocks.js';
+import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -128,6 +129,11 @@ const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x
  *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
 export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '')) ? 'root' : kind === 'grow' ? 'surface' : null);
+// an ask that names a site (onlineconverter.com) is built only by evidence that names that site: the owner's review (2026-10-30) found
+// "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" marked built by a ledger line about sycophanthex.com whose builder
+// had asked "a LANE_PAGES entry for any new tower" in nearly the same words. Pure.
+const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site)\b/gi;
+export const sitesIn = (ask, evidence) => { const e = String(evidence || '').toLowerCase(); return (String(ask || '').match(SITE) || []).every((d) => e.includes(d.toLowerCase())); };
 export function followThrough(entries, ledger, links = []) {
   const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
   const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
@@ -148,7 +154,7 @@ export function followThrough(entries, ledger, links = []) {
   for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e });
   const built = [], open = [];
   for (const g of groups) {
-    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
+    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => (k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) && sitesIn(g.ask, k.words + ' ' + k.x.what)) || {}).x;
     (hit ? built : open).push(hit ? { ...g, what: String(hit.what), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
@@ -195,11 +201,11 @@ export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   if (!F.length) return '';
   const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
-  const weakest = F.slice().sort((a, b) => (a.count.proven / a.skills.length) - (b.count.proven / b.skills.length))[0];
+  const weakest = weakestFamily(fam);
   const least = F.flatMap((f) => f.skills.filter((s) => s.tier === 'experiment' || s.tier === 'tested').map((s) => s.name)).slice(0, 8);
   return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
     + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
-    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + weakest.name
+    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + (weakest ? weakest.name + ' (' + weakest.proven + ' of ' + weakest.total + ' proven, the lowest proven share; the family bars mark it weakest)' : 'none')
     + '. Some of my least-checked skills: ' + least.join(', ') + '.'
     + staleLine(fam, now);
 }
@@ -245,9 +251,12 @@ export async function readVoice(env) {
 }
 
 // a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Verse actually said
-export function voiceFacts(entries) {
-  const e = (entries || [])[0];
+export function voiceFacts(entries, fam = null) {
+  let e = (entries || [])[0];
   if (!e) return '';
+  // a readout that named the wrong family as least proven is not repeated to the next answer (owner's review, 2026-10-30)
+  const ww = wrongWeakest(e.weakest, fam); if (ww) e = { ...e, weakest: weakestSentence(ww.is) };
+  const wt = wrongWeakest(e.thoughts, fam); if (wt) e = { ...e, thoughts: String(e.thoughts).replace(wt.sentence, weakestSentence(wt.is)) };
   const asks = currentAsks(entries, 3).map((a) => a.ask).join('; ');
   return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + [e.thoughts, e.better, e.weakest].filter(Boolean).join(' ')
     + (asks ? ' My current asks: ' + asks : '');

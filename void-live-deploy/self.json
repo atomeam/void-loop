@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T14:29:35Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,16 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T02:23:50Z",
-   "subject": "voice test: its own held list, so lifting a real hold keeps it green"
+   "at": "2026-10-30T02:30:14Z",
+   "subject": "Refresh generated files: families, deps, guide, self, asks links, churn, sitemap"
+  },
+  {
+   "at": "2026-10-30T02:28:13Z",
+   "subject": "Self card: the bars' least proven family everywhere, site-named asks need site evidence, no doubled ledger lines, no review prompts on the…"
   },
   {
    "at": "2026-10-30T02:16:29Z",
    "subject": "Base converter: \"what is 101010 in decimal\" reads 0s and 1s as binary"
-  },
-  {
-   "at": "2026-10-30T02:16:20Z",
-   "subject": "STL checker: lift the hold, the owner said ship it"
   },
   {
    "at": "2026-10-30T02:11:17Z",
