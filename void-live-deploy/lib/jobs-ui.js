@@ -119,7 +119,7 @@ const PANELS = {
       if (!al.length) { const li = document.createElement('li'); li.className = 'soft'; li.textContent = t('No saved searches yet: search, then press Save this search as an alert.'); ul.append(li); return; }
       for (const a of al) { const r = C.newSince(jobs, a), li = document.createElement('li'); li.className = 'alert';
         li.innerHTML = '<b>' + esc(C.searchName(a.s)) + '</b> <span class="soft">' + esc(num(r.all.length) + ' ' + t('jobs')) + '</span>' + (jobs.length ? ' <span class="new">' + esc(num(r.fresh.length) + ' ' + t('new since your last visit')) + '</span>' : '')
-          + '<div class="row"><button type="button" class="open">' + esc(t('Open')) + '</button><a class="btn" href="/api/jobs?format=rss&' + esc(C.toQuery(a.s)) + '" target="_blank" rel="noopener">RSS</a><button type="button" class="del">' + esc(t('Remove')) + '</button></div>';
+          + '<div class="row"><button type="button" class="open">' + esc(t('Open')) + '</button><a class="btn" href="/api/jobs?format=rss' + (C.toQuery(a.s) ? '&' + esc(C.toQuery(a.s)) : '') + '" target="_blank" rel="noopener">RSS</a><button type="button" class="del">' + esc(t('Remove')) + '</button></div>';
         $(li, '.open').addEventListener('click', () => { pendingFresh = new Set(r.fresh.map((j) => j.id)); a.seen = r.newest || a.seen; keep({ alerts: al }); setSearch({ ...C.EMPTY, ...a.s }); const x = document.getElementById('jb-search'); if (x) x.scrollIntoView({ block: 'start' }); });
         $(li, '.del').addEventListener('click', () => { keep({ alerts: al.filter((x) => x !== a) }); draw(); });
         ul.append(li); }
