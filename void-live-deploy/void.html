@@ -5591,7 +5591,12 @@ say('nothing selected to remove');
     // a paste of any size (owner, 2026-10-15: "I thought we fixed it so that we can paste any sized message"): the title ends
     // with … at a word, the server gets the start and the end of a long paste (errors sit at the end of a log) inside its 20 kB,
     // and the card folds away everything that was given, so it never looks cut off
-    const clipLine = (t, n) => { const l = String(t || '').split('\n')[0].trim(); if (l.length <= n) return l; const c = l.slice(0, n), sp = c.lastIndexOf(' ');
+    // a long first line ends at its last whole sentence when one ends past 40% of the room, and needs no ellipsis then (owner, 2026-10-30: a
+    // pasted status note's heading stopped at "The store…"); with no sentence end in reach it ends at a word, with an ellipsis
+    const clipLine = (t, n) => { const l = String(t || '').split('\n')[0].trim(); if (l.length <= n) return l;
+      const ends = [...l.slice(0, n + 1).matchAll(/[.!?\u3002\uff01\uff1f]["'\u201d\u2019)\]]*(?=\s|$)/g)].map((m) => m.index + m[0].length).filter((i) => i <= n);
+      if (ends.length && ends[ends.length - 1] > n * 0.4) return l.slice(0, ends[ends.length - 1]);
+      const c = l.slice(0, n), sp = c.lastIndexOf(' ');
       return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[\s,;:.\u2013-]+$/, '') + '\u2026'; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
     const PASTE_BYTES = 18500;
     function fitPaste(ask, details) {
