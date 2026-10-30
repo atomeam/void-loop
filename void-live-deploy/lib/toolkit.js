@@ -283,12 +283,28 @@ const ROUTES = [
   [new RegExp('^(?:convert )?' + NUM + '\\s*[a-zµ°/²³]+\\s+(?:to|in|into|as)\\s+[a-zµ°/²³]+$', 'i'), (m, t) => '/convert/?q=' + encodeURIComponent(t)],
   [/^(?:what is |what's |calculate |calc )?[-\d.(][\d\s.,+\-*×÷/^%()!πe]*(?:\s*(?:of|percent of)\s*[\d.]+)?$/i, (m, t) => '/calculator/?q=' + encodeURIComponent(t.replace(/^(?:what is |what's |calculate |calc )/i, ''))],
 ];
-/** where an ask goes: the tool's link with the ask in it, or the stage for anything else. Pure. */
+// a tool's own name opens that tool (2026-10-30: 'word count' on the ask bar opened Wikipedia's article on the stage, and 'pdf', 'photo tools' and
+// 'code review' a stage answer, not the page): its name as /tools/ lists it, or its address in words ('/word-count/' is 'word count'), with an
+// 'open' or 'the' before it or 'tool' or 'page' after it. A plain word the stage answers itself stays with the stage, whose card links the page:
+// 'verse brain' (skills/verse-brain.js), 'news' (the headlines card), 'time' (the clock), 'flip' (the coin), 'rap' (a rap), and words that say too little.
+const STAGE_KEEPS = new Set(['verse brain', 'brain', 'news', 'time', 'random', 'flip', 'rap', 'color', 'convert', 'music', 'image', 'team', 'identity', 'fix']);
+const plainName = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+let toolNames = null;
+function toolNamed(t) {
+  if (!toolNames) {
+    toolNames = new Map();
+    for (const [p, label] of allTools()) for (const k of [plainName(label), plainName(p)]) if (k.length > 2 && !toolNames.has(k)) toolNames.set(k, p);
+  }
+  const n = plainName(t).replace(/^(?:open |show |go to )?(?:the |my |a |an )?/, '');
+  for (const k of [n, n.replace(/ (?:tool|page|app)$/, '')]) if (!STAGE_KEEPS.has(k) && toolNames.has(k)) return toolNames.get(k);
+  return null;
+}
+/** where an ask goes: the tool's link with the ask in it, the tool a name names, or the stage for anything else. Pure. */
 export function routeAsk(text) {
   const t = String(text || '').replace(/\s+/g, ' ').replace(/[?!.]+$/, '').trim();
   if (!t) return '';
   for (const [re, to] of ROUTES) { const m = re.exec(t); if (m) return to(m, t); }
-  return '/?q=' + encodeURIComponent(t);
+  return toolNamed(t) || '/?q=' + encodeURIComponent(t);
 }
 
 /** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. card, when a page
