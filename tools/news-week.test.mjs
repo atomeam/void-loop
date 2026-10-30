@@ -28,6 +28,17 @@ test('weekItems: titles only, at most 10, https links or the story page', () => 
   assert.deepEqual(weekItems(null), []); assert.deepEqual(weekItems({ hits: 'x' }), []);
 });
 
+test('weekItems: a story posted twice shows once, by link or by title', () => {
+  const got = weekItems({ hits: [
+    { title: 'Lander lands', url: 'https://ex.example/lander', points: 9, objectID: '1' },
+    { title: 'Lander lands safely', url: 'https://www.ex.example/lander/?utm=x', points: 3, objectID: '2' },
+    { title: 'lander  LANDS', url: 'https://other.example/y', objectID: '3' },
+    { title: 'Ask HN: lander?', objectID: '4' }, { title: 'Ask HN: other?', objectID: '5' },
+    { title: 'Rocket', url: 'https://r.example', objectID: '6' }] });
+  assert.deepEqual(got.map((d) => d.title), ['Lander lands', 'Ask HN: lander?', 'Ask HN: other?', 'Rocket']);
+  assert.equal(new URL(weekUrl('x')).searchParams.get('hitsPerPage'), '20', 'asks for 20, so 10 remain after reposts go');
+});
+
 test('the stage card and the News page both use it', () => {
   const skill = fs.readFileSync(new URL('../void-live-deploy/skills/news.js', import.meta.url), 'utf8');
   const page = fs.readFileSync(new URL('../void-live-deploy/news/index.html', import.meta.url), 'utf8');
