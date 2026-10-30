@@ -18,6 +18,7 @@ const narrow = () => matchMedia('(max-width: 720px)').matches;
 const th = { id: 'brain-full', kind: 'verse-brain', x: 0, y: 0 };
 const stageApi = { bindDrag() {}, stage: slot, ask: (t) => { location.assign('/?q=' + encodeURIComponent(t)); }, things: () => ({}), save() {}, render() {} };
 const f = mountField(th, stageApi, idea);
+window.verseBrainField = th; // brain/map.js reads the same brain (th.state.b) to draw its organs as they fire
 const card = f.el, frame = card.querySelector('.ff-frame'), cv = frame.querySelector('canvas');
 card.style.left = card.style.top = ''; card.style.width = '100%';
 frame.style.borderRadius = '0'; field.insertBefore(frame, you);
