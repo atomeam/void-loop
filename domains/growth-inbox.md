@@ -74,4 +74,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent |
 | building | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent; helper/palindrome |
 | building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
-| building | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent; helper/wordladder |
+| open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
