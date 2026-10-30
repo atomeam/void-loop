@@ -68,8 +68,8 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /photos/iloveimg/ | A public API | missing | iloveimg.com |
 | 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
 | 1 | /flights/airports/ | A public API | missing | aruljohn.com |
-| 1 | /bpm/ | A public API | missing | anotherproducer.com |
 | 1 | /hosting/ | A public API | missing | thunit.com |
+| 1 | /bpm/ | A public API | missing | anotherproducer.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
 | 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /pdf/editor/ | A public API | missing | sejda.com |
