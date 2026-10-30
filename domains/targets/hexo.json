@@ -1,0 +1,16 @@
+{
+ "site": "hexo.io",
+ "kind": "static site generator and blog framework (Node.js): Markdown in, a fast site out, with plugins and themes",
+ "chosen": "2026-10-30",
+ "why": "target picked by the build queue: a developer-facing static site generator. Void's notch is a site that builds itself from what you say, with no command line.",
+ "source": ["https://hexo.io", "https://hexo.io/docs/"],
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts.",
+ "features": [
+  { "id": "speed", "theirs": "incredible generating speed powered by Node.js; hundreds of files in seconds", "plus_one": "a site that rebuilds only what changed, instantly, as you type", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "markdown", "theirs": "all features of GitHub Flavored Markdown, including most Octopress plugins", "plus_one": "Markdown plus live preview of the rendered page, with the same words on the stage", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "deploy", "theirs": "one-command deployment to GitHub Pages, Heroku or other platforms", "plus_one": "publish by saying 'put this live', with the address shown before it goes", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "plugins", "theirs": "powerful APIs for limitless extensibility; plugins for most template engines (EJS, Pug, Nunjucks) and existing NPM packages (Babel, PostCSS, Less/Sass)", "plus_one": "plugins you describe in words and Void writes and tests for you", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "themes", "theirs": "456 themes to choose from, or create your own with any compatible template engine", "plus_one": "a theme you describe (\"warm, serif, lots of air\") and Void builds and tunes it", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "i18n", "theirs": "multi-language support (English, Chinese, Russian, Korean, Portuguese, Thai, Japanese, Spanish)", "plus_one": "a site that translates itself and keeps the layout intact in every language", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." }
+ ]
+}
