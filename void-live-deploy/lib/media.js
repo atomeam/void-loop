@@ -23,8 +23,12 @@ export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   if (!m) { const sm = t.match(new RegExp('^(?:please\\s+)?(?:pick|choose|suggest|recommend|find)\\s+(?:me\\s+|us\\s+)?(?:a\\s+|an\\s+|some\\s+|the\\s+)?(?:good\\s+|great\\s+|nice\\s+)?(?:tv\\s+)?(?:shows?|series)(?:\\s+to\\s+watch)?' + tail + '$')); if (sm) return { kind: 'show', chosen: false }; }
   m = t.match(new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?|what\\s+(?:should|shall)\\s+(?:i|we)\\s+(?:do\\s+)?)?(?:something|anything)?\\s*(?:to\\s+)?(watch|listen\\s+to|hear)' + tail + '$'));
   if (m && /^(?:pick|choose|suggest|recommend|find|give)|something|anything|^what/.test(t)) return { kind: VERB[m[1].replace(/\s+to$/, '').replace('hear', 'listen')] || null, chosen: false };
-  m = t.match(new RegExp('^(?:please\\s+)?what\\s+should\\s+(?:i|we)\\s+(watch|listen\\s+to)' + tail + '$'));
+  const on = '(?:\\s+on\\s+(?:netflix|hulu|prime(?:\\s+video)?|disney\\+?|max|hbo(?:\\s+max)?|apple\\s+tv\\+?|peacock|paramount\\+?|youtube|spotify|tv))?';
+  m = t.match(new RegExp('^(?:please\\s+)?what\\s+should\\s+(?:i|we)\\s+(watch|listen\\s+to)' + on + tail + '$'));
   if (m) return { kind: VERB[m[1].replace(/\s+to$/, '')], chosen: false };
+  // "good movies to watch tonight", "some good songs to listen to": a pick asked by what it is, with no verb in front
+  m = t.match(new RegExp('^(?:some\\s+|any\\s+)?(?:good|great|best|fun|new)\\s+(\\w+)\\s+to\\s+(?:watch|stream|listen\\s+to|hear)' + on + tail + '$'));
+  if (m) for (const k of Object.keys(NOUN)) if (NOUN[k].test(m[1])) return { kind: k, chosen: false };
   if (new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?)?(?:something|anything)' + tail + '$').test(t) && /^(?:pick|choose|suggest|recommend|find|give)/.test(t)) {
     const ks = Object.keys(KINDS); return { kind: ks[((day % ks.length) + ks.length) % ks.length], chosen: true };
   }

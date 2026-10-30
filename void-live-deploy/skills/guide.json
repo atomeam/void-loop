@@ -15,9 +15,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 3,
-    "proven": 55
+    "proven": 56
    },
    "from": 6,
    "to": 65
@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 4,
-    "proven": 38
+    "checked": 3,
+    "proven": 39
    },
    "from": 182,
    "to": 224
@@ -1307,8 +1307,10 @@
     "is my stl watertight",
     "stl checker"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things.",
+   "glow": 100,
    "n": 63
   },
   {
@@ -3597,7 +3599,7 @@
     "movie card for Nosferatu (1922)"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
+   "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
    "n": 186
@@ -3750,8 +3752,8 @@
     "headlines"
    ],
    "tier": "proven",
-   "why": "a self-test, 9 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 9 real askings. Let the stage be the proof.",
+   "why": "a self-test, 11 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 11 real askings. Let the stage be the proof.",
    "glow": 100,
    "n": 195
   },
@@ -3768,7 +3770,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 9 real asks in the benchmark",
-   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "flavor": "Earned, not claimed, over 9 real askings. Let the stage be the proof.",
    "glow": 100,
    "n": 196
   },
@@ -3784,7 +3786,7 @@
     "inspirational quote"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
+   "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. Turn the page when you are done.",
    "glow": 100,
    "n": 197
@@ -3800,8 +3802,9 @@
     "fun fact",
     "random fact"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it.",
    "glow": 100,
    "n": 198
   },
@@ -3834,7 +3837,7 @@
     "8 ball"
    ],
    "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "why": "a self-test, 2 real asks in the benchmark",
    "glow": 100,
    "n": 200
   },
@@ -3850,7 +3853,7 @@
     "recipes with chicken"
    ],
    "tier": "proven",
-   "why": "1 browser-suite mention, 9 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 201
@@ -3901,7 +3904,7 @@
     "pick something to watch"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
+   "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. It has not failed a reader yet.",
    "glow": 100,
    "n": 204
@@ -3935,8 +3938,8 @@
     "when did breaking bad end"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Ask, and see.",
+   "why": "a self-test, 4 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 4 real askings stand behind this page. Ask, and see.",
    "glow": 100,
    "n": 206
   },
@@ -4170,7 +4173,7 @@
     "encode in morse sos"
    ],
    "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "why": "a self-test, 2 real asks in the benchmark",
    "glow": 100,
    "n": 220
   },
@@ -4204,7 +4207,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",
-   "flavor": "Proven 4 times over by those who asked, and kept among the words and the world. Let the stage be the proof.",
+   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Let the stage be the proof.",
    "glow": 100,
    "n": 222
   },
@@ -4321,7 +4324,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the out in the world, this one is trusted enough to be taught. Ask, and see.",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Ask, and see.",
    "glow": 100,
    "n": 229
   },
@@ -6161,8 +6164,8 @@
     "stage: an atmospheric study"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 1 real ask in the benchmark",
-   "flavor": "Proven 1 times over by those who asked, and kept among the stage. Let the stage be the proof.",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. This is the page of backdrop.",
    "glow": 100,
    "n": 334
   },

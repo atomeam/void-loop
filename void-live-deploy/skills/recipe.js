@@ -5,15 +5,17 @@
  */
 import { bandMini } from '../lib/card-mini.js';
 import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
+// what "make" and "cook" take that is not food ("how do i make money", "what can i make with my time")
+const NOT_FOOD = /\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i;
 export function dishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   let m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
   if (m) return { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
   // "how do i make guacamole", "how to cook rice", "how to bake banana bread"; not money, friends, a website…
   m = t.match(/^(?:how\s+(?:do\s+(?:i|you)|to|can\s+i|should\s+i)|best\s+way\s+to)\s+(?:make|cook|bake|prepare)\s+(?:a\s+|an\s+|some\s+|the\s+)?([a-z][a-z' -]{1,30})$/i);
-  if (m && !/\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i.test(m[1])) return { dish: m[1].trim(), by: 'name' };
+  if (m && !NOT_FOOD.test(m[1])) return { dish: m[1].trim(), by: 'name' };
   m = t.match(/^(?:recipes?|what\s+can\s+i\s+(?:make|cook))\s+with\s+(.{2,30})$/i);
-  if (m) return { dish: m[1].trim(), by: 'ingredient' };
+  if (m && !NOT_FOOD.test(m[1])) return { dish: m[1].trim(), by: 'ingredient' };
   return null;
 }
 async function run(text, api) {
@@ -54,6 +56,6 @@ export default {
   examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole', 'best way to make pasta carbonara'],
   nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza', 'how do i make money', 'how to make friends'],
   // a question about recipes ("what is a recipe") is not a request for one
-  match(lower, text) { return !!dishOf(text) && !swapAsk(text) && !/\bdisaster\b|\bsuccess\b/i.test(text) && !/^(?:what|who|why|when|where|is|are|define|meaning)\b/i.test(String(text).trim()); },
+  match(lower, text) { return !!dishOf(text) && !swapAsk(text) && !/\bdisaster\b|\bsuccess\b/i.test(text) && !/^(?:what(?!\s+can\s+i\s+(?:make|cook)\s+with\b)|who|why|when|where|is|are|define|meaning)\b/i.test(String(text).trim()); },
   run
 };
