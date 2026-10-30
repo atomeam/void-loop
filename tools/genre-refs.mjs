@@ -83,7 +83,7 @@ export async function measure(g, { per = 8, log = () => {} } = {}) {
     if (!licenseOk(Array.isArray(d.licenseurl) ? d.licenseurl[0] : d.licenseurl) || (who && seen.has(who))) continue;
     try {
       const meta = await json(IA + '/metadata/' + encodeURIComponent(d.identifier)), f = pickFile(meta.files); if (!f) continue;
-      const r = await fetch(IA + '/download/' + encodeURIComponent(d.identifier) + '/' + f.name.split('/').map(encodeURIComponent).join('/')); if (!r.ok) continue;
+      const r = await fetch(IA + '/download/' + encodeURIComponent(d.identifier) + '/' + f.name.split('/').map(encodeURIComponent).join('/')); if (!r.ok) continue; // void-review: ok, one track at a time on purpose: it stops at per, and archive.org asks for polite, sequential downloads
       const file = path.join(tmp, 'track.mp3'); fs.writeFileSync(file, Buffer.from(await r.arrayBuffer()));
       const pcm = decode(file); fs.rmSync(file, { force: true }); if (!pcm) continue;
       const profile = profileOf(pcm); if (!profile) continue; // a track with no steady beat keeps its other measures
