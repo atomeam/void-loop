@@ -6983,5 +6983,10 @@
   {"ask": "today's misses as jobs", "want": "skill:miss-jobs"},
   {"ask": "password of 20 characters", "want": "skill:password"},
   {"ask": "d20", "want": "skill:random"},
-  {"ask": "image boards", "want": "skill:boards"}
+  {"ask": "image boards", "want": "skill:boards"},
+  {"ask": "search podcasts for true crime", "want": "skill:podcast-search"},
+  {"ask": "podcasts about history", "want": "skill:podcast-search"},
+  {"ask": "find a podcast about cooking", "want": "skill:podcast-search"},
+  {"ask": "best podcasts about science", "want": "skill:podcast-search"},
+  {"ask": "any good podcasts about space", "want": "skill:podcast-search"}
 ]

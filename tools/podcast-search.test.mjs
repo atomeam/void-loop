@@ -11,7 +11,7 @@ const page = () => { const el = { dataset: {}, innerHTML: '' }; return { el, api
 async function withFetch(answer, body) { const was = globalThis.fetch, seen = []; globalThis.fetch = async (u) => { seen.push(String(u)); const j = answer(String(u)); if (j instanceof Error) throw j; return { json: async () => j }; }; try { await body(seen); } finally { globalThis.fetch = was; } }
 
 test('the asks it takes, with their topic, and the ones it leaves to other skills', () => {
-  for (const [ask, topic] of [['podcasts about history', 'history'], ['find a podcast about cooking', 'cooking'], ['search podcasts for true crime', 'true crime'], ['best podcasts about science', 'science'], ['Podcasts on Stoicism?', 'Stoicism'], ['search podcasts serial', 'serial'], ['recommend some podcasts about the roman empire', 'the roman empire']])
+  for (const [ask, topic] of [['podcasts about history', 'history'], ['find a podcast about cooking', 'cooking'], ['search podcasts for true crime', 'true crime'], ['best podcasts about science', 'science'], ['Podcasts on Stoicism?', 'Stoicism'], ['search podcasts serial', 'serial'], ['recommend some podcasts about the roman empire', 'the roman empire'], ['any good podcasts about space', 'space']])
     assert.equal(podcastTopicOf(ask), topic, ask);
   for (const ask of [...S.nearMisses, 'search podcasts', 'top podcasts', 'podcast', 'podcasts about', 'podcasts about ?', 'what is a podcast about', 'history podcasts are boring']) assert.equal(podcastTopicOf(ask), null, ask);
   for (const ask of S.examples) assert.ok(S.match(ask.toLowerCase(), ask), ask);

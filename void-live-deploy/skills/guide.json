@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 41
+    "proven": 42
    },
    "from": 183,
    "to": 226
@@ -3793,8 +3793,10 @@
     "find a podcast about cooking",
     "search podcasts for true crime"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 5 real asks in the benchmark",
+   "flavor": "Among the words and the world it is the one a traveller is told to ask for first.",
+   "glow": 100,
    "n": 197
   },
   {
