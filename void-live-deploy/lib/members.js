@@ -7,8 +7,8 @@
 // test or a score (tools/add-only.mjs). Visitors keep everything free; nothing here is ever needed to use Verse.
 import { redact } from './automation-fix.js';
 
-// Off until the owner says go: the API answers 'opens soon' and the page shows the perks without the form. One line flips it.
-export const LIVE = false;
+// On since the owner's go (2026-10-30), after a pilot idea from /members/?pilot reached the build queue. false puts back 'opens soon'.
+export const LIVE = true;
 export const DAILY = 3; // ideas a member may send a day
 export const MONTHLY = 30; // and a month
 export const MIN_CHARS = 20, MAX_CHARS = 1200, MAX_LINKS = 2;

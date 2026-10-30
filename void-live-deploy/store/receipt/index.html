@@ -73,6 +73,8 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 import { cartLines, cartTotals, usdCents, cartUrl, catalogCsv, searchProducts, kindsOf, sortProducts, DELIVERY_STEPS, deliveryDone } from '/lib/store.js';
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const TIP = 'https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&utm_medium=store-pwyw&utm_campaign=v01d-store';
+// MultiVerse joins on /members/, the one page that signs you in first and carries your Verse's id to the checkout (members/members.js)
+const MEMBERSHIP = 'void-monthly';
 const ICON = { membership: '✦', license: '⌘', service: '🛠', support: '♥', download: '⬢' };
 const usd = (c) => '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100));
 // pay a share, get that share (docs/store.md): the slider only explains; what unlocks is decided by the server from the paid amount
@@ -120,8 +122,8 @@ function renderGrid() {
   $('#offlinenote').hidden = !offline;
   $('#grid').innerHTML = list.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by Verse' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
     <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span><span class="avail">${p.soon ? 'Coming soon' : 'Available now'}</span>
-    ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
-    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
+    ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : p.id === MEMBERSHIP ? '<a class="btn" href="/members/">Join MultiVerse</a>' : `<button data-add="${p.id}">Add to cart</button>`}</div>
+    ${p.buy && !p.soon && p.id !== MEMBERSHIP ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
 }
 document.addEventListener('input', (e) => {
   const id = e.target.dataset && e.target.dataset.slide; if (!id) return; const p = products.find((x) => x.id === id), pay = +e.target.value;

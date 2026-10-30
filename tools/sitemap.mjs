@@ -24,6 +24,7 @@ const KEPT = [
   ['/cheat-codes/', 'weekly', '0.8', [D + 'cheat-codes/index.html']],
   ['/store/', 'weekly', '0.9', [D + 'store/index.html']],
   ['/code-review/', 'weekly', '0.9', [D + 'code-review/index.html']],
+  ['/members/', 'weekly', '0.9', [D + 'members/index.html']],
   ['/llms.txt', 'weekly', '0.5', [D + 'llms.txt']],
   ['/one-time-fix/', 'weekly', '0.8', [D + 'one-time-fix/index.html']],
   ['/keep-it-running/', 'weekly', '0.8', [D + 'keep-it-running/index.html']],
