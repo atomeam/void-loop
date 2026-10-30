@@ -3239,6 +3239,7 @@ say('nothing selected to remove');
     const NFL_FIELD = [['NFL rulebook, Rule 1 (2024)', 'https://operations.nfl.com/media/24emxacq/2024-nfl-rulebook.pdf']];
     const IFAB_FIELD = [['IFAB Laws of the Game, Law 1: the field of play', 'https://www.theifab.com/laws/latest/the-field-of-play/']];
     const POOL = [['WA Government sports dimensions guide: swimming', 'https://dlgsc.wa.gov.au/sport-and-recreation/sports-dimensions-guide/swimming'], ['AP (via KSAT): Paris pool depth and the World Aquatics minimum', 'https://www.ksat.com/sports/2024/07/31/no-world-records-have-been-set-at-the-olympic-pool-is-it-too-shallow/']];
+    const STRIDE = [['University of Iowa Student Health: Taking Strides FAQs', 'https://studenthealth.uiowa.edu/assets/Taking-Strides-FAQs.pdf']];
     const HOOP = [['NBA rulebook, Rule 1: court dimensions and equipment', 'https://official.nba.com/rule-no-1-court-dimensions-equipment'], ['FIBA official basketball rules 2026: equipment', 'https://assets.fiba.basketball/image/upload/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf']];
     const SIZE_FACTS = [
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
@@ -3533,7 +3534,7 @@ say('nothing selected to remove');
       // little body and health facts: body temperature from MedlinePlus, the pound-of-fat figure from Mayo Clinic (both read 2026-10-30); steps a mile has no source yet
       if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the generally accepted average; some studies put normal at 97–99 °F (36.1–37.2 °C), lowest early in the morning; above 100.4 °F (38 °C) is usually a fever', src: [['MedlinePlus: body temperature norms', 'https://medlineplus.gov/ency/article/001982.htm']], read: '2026-10-30' };
       if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the commonly accepted figure for a pound of fat (500 fewer a day is about a pound a week); a pound lost is fat, muscle and water, and metabolism changes the sum, so it is a rough guide', src: [['Mayo Clinic News Network: calories and weight loss', 'https://newsnetwork.mayoclinic.org/discussion/its-complicated-calories-and-other-factors-affect-weight-loss/']], read: '2026-10-30' };
-      if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:a|one)\s+mile$/.test(t)) return { value: 'about 2,000–2,500', note: 'walking; it depends on stride length (taller people take fewer); running is about 1,400–1,700' };
+      if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:(?:a|one)\s+)?mile$/.test(t)) return { value: 'a little over 2,000', note: 'walking, at the average stride of about 2.5 ft (5,280 ft ÷ 2.5 ft is about 2,100); a longer stride takes fewer steps', src: STRIDE, read: '2026-10-30' };
       if (/^how\s+many\s+(?:work(?:ing)?\s+hours|hours\s+of\s+work)\s+(?:are\s+)?in\s+a\s+year$/.test(t)) return { value: '2,080', note: '40 hours a week × 52 weeks, before holidays and time off' };
       // fever and other temperatures: "102 f fever in celsius"
       m = t.match(/^(-?\d+(?:\.\d+)?)\s*°?\s*(f|c|fahrenheit|celsius)\s+(?:fever|temperature|temp|body\s+temp(?:erature)?)\s+(?:in|to)\s+(celsius|c|fahrenheit|f)$/);
@@ -3864,10 +3865,10 @@ say('nothing selected to remove');
       if (!m) { const w = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for\s+|at\s+|if\s+i\s+weigh\s+)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)\s*(?:and\s+|,\s*|at\s+)?(?:i(?:'?m|\s+am)\s+)?(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?(?:\s+tall)?$/); if (w) m = [w[0], w[2], w[3], w[1]]; }
       if (m) { const inches = +m[1] * 12 + +(m[2] || 0), lb = +m[3], v = 703 * lb / (inches * inches), r = Math.round(v * 10) / 10, band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range';
         return { value: String(r), note: 'BMI for ' + m[1] + ' ft ' + (m[2] || 0) + ' in and ' + lb + ' lb: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; }
-      // steps to distance (an average stride of 2.5 ft: about 2,100 steps a mile)
+      // steps to distance (the average stride of 2.5 ft that STRIDE gives: about 2,100 steps a mile)
       m = t.match(/^(?:convert\s+|how\s+(?:many\s+miles|far)\s+(?:is|are)\s+)?(\d[\d,]*)\s+steps(?:\s+(?:in|to|into)\s+(miles|km|kilometers))?$/);
       if (m && (m[2] || /how/.test(t))) { const st = +m[1].replace(/,/g, ''), mi = st * 2.5 / 5280, km = mi * 1.609344, u = m[2] && /k/.test(m[2]) ? 'km' : 'miles';
-        return { value: (u === 'km' ? km : mi).toFixed(1) + ' ' + u, note: st.toLocaleString() + ' steps at an average 2.5 ft stride (yours may differ)' }; }
+        return { value: (u === 'km' ? km : mi).toFixed(1) + ' ' + u, note: st.toLocaleString() + ' steps at an average 2.5 ft stride (yours may differ)', src: STRIDE, read: '2026-10-30' }; }
       // heart-rate zones by age (the 220 − age estimate)
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?(?:target\s+|max(?:imum)?\s+)?heart\s+rate(?:\s+zones?)?\s+(?:at|for|if\s+i'?m)\s+(?:age\s+)?(\d{1,3})(?:\s+years?\s+old)?$/);
       if (m) { const mx = 220 - +m[1], z = (a, b) => Math.round(mx * a) + '–' + Math.round(mx * b);
