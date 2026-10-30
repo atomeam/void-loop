@@ -41,7 +41,9 @@ export function builtByFamily(ledger, fam, limit = 40) {
     const text = x.what.toLowerCase(), named = new Set((Array.isArray(x.phrases) ? x.phrases : []).map((p) => p.skill));
     const hit = named.size ? skills.filter((s) => named.has(s.name)) : skills.filter((s) => s.re.test(text));
     if (!hit.length) { across.push(item(x)); continue; }
-    for (const s of hit) { const k = s.fam.id + '|' + s.name; if (!by.has(k)) by.set(k, { fam: s.fam, name: s.name, items: [] }); by.get(k).items.push(item(x, s.name)); }
+    // one change is listed once under its skill: two hardening runs that started before either merged both logged the same phrases
+    // (owner's review, 2026-10-30: converter, rap, uuid and team-chat each showed one "New phrases" line twice on 2026-10-29); the newest stays
+    for (const s of hit) { const k = s.fam.id + '|' + s.name; if (!by.has(k)) by.set(k, { fam: s.fam, name: s.name, items: [] }); const it = item(x, s.name); if (!by.get(k).items.some((o) => o.what === it.what)) by.get(k).items.push(it); }
   }
   const families = F.map((f) => {
     const sk = [...by.values()].filter((v) => v.fam === f).map((v) => ({ name: v.name, items: v.items.slice(0, limit) }))

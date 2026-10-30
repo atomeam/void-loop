@@ -53,8 +53,12 @@ export function skillOfCheck(check, names, pages) {
   const byExample = new Map();
   for (const p of Array.isArray(pages) ? pages : []) if (p && p.name && Array.isArray(p.examples)) for (const e of p.examples) { const k = norm(e); if (k) byExample.set(k, byExample.has(k) && byExample.get(k) !== p.name ? '' : p.name); }
   for (const m of String(check || '').matchAll(/"([^"]{3,80})"/g)) { const s = byExample.get(norm(m[1])); if (s) return s; }
+  // 3) the page a check names in its own words, for checks titled by a batch ("void asks batch 4: ... on the self card"): the self card is
+  // the growth skill's, the book is the guide's (owner's review, 2026-10-30: such a check stayed "unmapped" across four red runs)
+  for (const [re, n] of PAGE_OWNERS) if (re.test(String(check || '')) && [...names].includes(n)) return n;
   return null;
 }
+const PAGE_OWNERS = [[/\bthe self card\b/i, 'growth'], [/\b(?:open the book|the book'?s|show the router rules)\b/i, 'guide']];
 
 /** the "Go against Verse" log (asked by Verse: "Connect the 'Go against Verse' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
  *  of the Go games against Verse (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and

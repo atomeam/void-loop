@@ -277,6 +277,12 @@ export const SPECS = {
   '/scores/': async (t) => { await t.p.waitForTimeout(4000); t.ok(!/couldn.t|error|unavailable/i.test(await t.text('#out')), 'scores load: ' + (await t.text('#out')).slice(0, 60)); await t.share('#share'); },
   '/sports/': async (t) => { await t.clickText('Basketball'); await t.p.waitForTimeout(800); t.ok(/NBA|basketball/i.test(await t.text('#out')), 'basketball opens its leagues'); await t.share('#share'); },
   '/stopwatch/': async (t) => { await t.click('#swgo'); await t.p.waitForTimeout(1200); await t.click('#swgo'); t.ok(/0?0?:?0?1[.:]\d/.test(await t.p.locator('main').innerText()) || /1\.\d\d/.test(await t.p.locator('main').innerText()), 'about a second passes on the stopwatch'); await t.share('#link'); },
+  '/stl/': async (t) => { // the STL checker (asked by Verse): the built-in cube with a hole is found not watertight with its three open edges, the report copies and downloads, and the link reopens it
+    await t.click('#sHole'); const v = await t.waitText('#verdict', /watertight/i, 15000); t.ok(/^Not watertight: 3 open edges around 1 hole/.test(v), 'a cube with a hole: ' + v.slice(0, 60));
+    await t.click('#sCube'); t.ok(/^Watertight: ready for the slicer/.test(await t.waitText('#verdict', /ready/, 8000)), 'a closed cube is ready for the slicer');
+    await t.click('#sHole'); await t.waitText('#verdict', /Not watertight/, 8000); await t.copies('#copy', 'Open edges: 3'); await t.download('#dlTxt', /\.txt$/i); await t.download('#dlMend', /-mended\.stl$/i);
+    await t.share('#link', async (p2) => { await p2.waitForFunction(() => /Not watertight/.test(document.getElementById('verdict').textContent), null, { timeout: 8000 }); return true; });
+  },
   '/store/': async (t) => { await t.fill('#q', 'board'); await t.p.waitForTimeout(400); t.ok(/Big Board/i.test(await t.p.locator('main').innerText()), 'a store search finds The Big Board'); },
   '/time/': async (t) => {
     await t.fill('#d1', '2026-10-28'); await t.fill('#d2', '2026-11-27'); await t.p.waitForTimeout(200); t.ok(/^30 days \(4 weeks and 2 days\) · 22 weekdays/.test(await t.text('#dout')), 'Oct 28 to Nov 27 2026 is 30 days, 22 weekdays');
@@ -413,7 +419,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       },
       links: async () => {
         const hrefs = [...new Set(await p.locator('main a[href^="/"], article a[href^="/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').split('#')[0]).filter((h) => h && !h.startsWith('/api/'))))].slice(0, 12);
-        let dead = []; for (const h of hrefs) { const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
+        let dead = []; for (const h of hrefs) { if (origin !== LIVE && EXTRA.includes(h)) continue; /* a live-only route has no file here */ const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
         ok(dead.length === 0, hrefs.length + ' same-site links resolve' + (dead.length ? ' (dead: ' + dead.join(', ') + ')' : ''));
       },
     };
