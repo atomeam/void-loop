@@ -4631,9 +4631,10 @@ try {
     const played = await until(() => L.p.evaluate(() => document.querySelector('#radio-list li:first-child').dataset.state === 'playing' && !document.getElementById('audio').paused), 8000);
     const bar = await L.p.evaluate(() => ({ name: document.getElementById('now-name').textContent, shown: !document.getElementById('bar').hidden }));
     await L.p.click('#tab-tv'); const tv = await until(() => L.p.evaluate(() => { const li = [...document.querySelectorAll('#tv-list li')]; return li.length ? { n: li.length, t: li.slice(0, 40).map((x) => x.innerText).join(' | ') } : null; }), 8000);
+    // the connection's point is rounded to a tenth before it leaves the server (placeFromCf), so 39.95,-75.16 asks for 40,-75.2 and never for the exact point
     check('local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia',
       /Philadelphia/.test(page.where) && page.rows.length === 2 && page.play === 1 && page.site && page.related && !!played && bar.shown && /WXPN Test/.test(bar.name)
-        && !!tv && tv.n >= 5 && /WTXF|Fox|PhillyCAM|WPVI|KYW/.test(tv.t) && asked[0] === '/api/local' && asked.some((a) => /lat=39\.95&lon=-75\.16&cc=US/.test(a)) && !L.errors.length,
+        && !!tv && tv.n >= 5 && /WTXF|Fox|PhillyCAM|WPVI|KYW/.test(tv.t) && asked[0] === '/api/local' && asked.some((a) => /lat=40&lon=-75\.2&cc=US/.test(a)) && !asked.some((a) => /lat=39\.95/.test(a)) && !L.errors.length,
       JSON.stringify({ page, played, bar, tv: tv && { n: tv.n, t: tv.t.slice(0, 200) }, asked, e: L.errors }));
     await L.p.goto(base + 'local/?place=Philadelphia&tab=tv'); const typed = await until(() => L.p.evaluate(() => !document.getElementById('tv').hidden && document.querySelectorAll('#tv-list li').length > 0 && /Philadelphia/.test(document.getElementById('where').textContent)), 8000);
     check('local tv radio: a link to /local/?place=Philadelphia&tab=tv opens on that place with the TV tab open', !!typed && asked.some((a) => /place=Philadelphia/.test(a)), JSON.stringify({ asked, e: L.errors }));
