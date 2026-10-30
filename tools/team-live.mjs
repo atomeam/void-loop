@@ -2,7 +2,7 @@
 // Two kinds of agent join the one workspace and talk: one over plain HTTP (POST its join link), one over MCP (the official SDK client,
 // the join tool at /team/mcp). Each @mentions the other in #check-in, each reads the other's message, then both are removed. The probe
 // agents never say they are here and never ask for work, so they take no job off the build queue.
-// .github/workflows/team-live.yml runs it with the owner token. It never prints a key, a join link or any message or job text: the
+// A workflow runs it with the owner token (VOID_OWNER_TOKEN). It never prints a key, a join link or any message or job text: the
 // repository is public, so the log holds counts, names and yes or no only.
 //   VERSE_OWNER=<owner token> node tools/team-live.mjs [--site https://a-to-mind.com] [--queue] [--retire Vibe,ClaudeDuet]
 //     --queue    also count the waiting jobs by kind, and put the owner's #work posts that never became a job on the queue
