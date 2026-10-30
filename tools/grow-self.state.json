@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "41006145158",
-  "at": "2026-10-30T05:03:21Z",
-  "what": "Verse hardened itself: 3 benchmark ask(s) for password, random, boards.  Why these: tab (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); coin (only 1 benchmark ask, 3 failed runs name it); password (only 2 benchmark asks, 1 failed run name it); random (only 2 benchmark asks, 1 failed run name it); boards (only 2 benchmark asks). New phrases: “password of 20 characters” now opens password; “d20” now opens random; “image boards” now opens boards. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
-  "try": "password of 20 characters",
+  "run": "41017985240",
+  "at": "2026-10-30T07:06:49Z",
+  "what": "Verse hardened itself: 4 benchmark ask(s) for emoji, flights, scores.  Why these: tab (no benchmark ask, evidence tier: checked, 11 failed runs name it); eightball (no benchmark ask, evidence tier: checked); coin (only 1 benchmark ask, 3 failed runs name it); emoji (only 1 benchmark ask); flights (only 2 benchmark asks); scores (only 2 benchmark asks). New phrases: “random emoji” now opens emoji; “give me an emoji” now opens emoji; “flight time london new york” now opens flights; “bundesliga results” now opens scores. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
+  "try": "random emoji",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-30T03:00:00Z",
-    "try": "set the stage to a retro server room",
-    "closedAt": "2026-10-30T05:03:03Z"
+    "at": "2026-10-30T05:03:21Z",
+    "try": "password of 20 characters",
+    "closedAt": "2026-10-30T07:06:34Z"
   }
 }

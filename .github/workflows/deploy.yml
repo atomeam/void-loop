@@ -297,9 +297,9 @@ jobs:
       group: void-members-paid-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
+      # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
+      # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22

@@ -199,3 +199,35 @@ test('Built by @name: the member\'s page lists their idea once Verse built it, w
   assert.equal(await card(), null, 'no Built by card on a page whose owner has no built ideas');
   await free.close();
 });
+
+test('a published page on a phone: every card fits the screen width, one under the other, none on top of another', async () => {
+  const cards = [1, 2, 3, 4].map((n) => ({ name: 'Card ' + n, ask: '', text: 'Card number ' + n + ' of a member page, with enough words to wrap onto a second line on a phone.' }));
+  DB.raw.prepare('INSERT OR REPLACE INTO void_pages (handle, user_id, data, updated) VALUES (?, ?, ?, ?)').run('e2e_member', USER, JSON.stringify({ look: { bg: '#050505', glow: '#0b0b10', stars: 'off', fx: 'off' }, cards }), new Date().toISOString());
+  const free = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }); await free.route('**/*', serve);
+  const p = await free.newPage();
+  await p.goto(ORIGIN + '/@e2e_member'); await p.waitForFunction(() => [...document.querySelectorAll('#stage > .thing h2')].length >= 5, null, { timeout: 15000 }); await p.waitForTimeout(600);
+  const boxes = await p.evaluate(() => [...document.querySelectorAll('#stage > .thing')].map((el) => { const r = el.getBoundingClientRect(); return { name: el.querySelector('h2')?.textContent, l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom) }; }));
+  assert.deepEqual(boxes.map((b) => b.name), ['Card 1', 'Card 2', 'Card 3', 'Card 4', 'Built by @e2e_member'], 'the cards in their order, the Built by card last');
+  for (const b of boxes) assert.ok(b.l >= 0 && b.r <= 390, b.name + ' sits inside the 390 px screen: ' + JSON.stringify(b));
+  for (let i = 1; i < boxes.length; i++) assert.ok(boxes[i].t >= boxes[i - 1].b, boxes[i].name + ' starts below ' + boxes[i - 1].name + ': ' + JSON.stringify([boxes[i - 1], boxes[i]]));
+  const last = await p.evaluate(() => { const st = document.getElementById('stage'), el = [...st.querySelectorAll(':scope > .thing')].pop(); st.scrollTop = st.scrollHeight;
+    const r = el.getBoundingClientRect(), s = st.getBoundingClientRect(), bar = document.getElementById('row').getBoundingClientRect(); return { top: r.top >= s.top, clear: r.bottom <= bar.top }; });
+  assert.deepEqual(last, { top: true, clear: true }, 'the stage scrolls down until the last card sits whole above the ask bar');
+  if (process.env.VOID_SHOT) await p.screenshot({ path: process.env.VOID_SHOT });
+  await free.close();
+});
+
+test('a published page shares as its own: the served /@name head names the page and its cards, not the Verse home card', async () => {
+  const data = JSON.stringify({ look: { bg: '#050505', glow: '#0b0b10', stars: 'off', fx: 'off' }, cards: [{ name: 'Hello', ask: '', text: 'A test page.' }, { name: 'Notes "to self"', ask: '', text: 'x' }] });
+  DB.raw.prepare('UPDATE void_pages SET data = ? WHERE handle = ?').run(data, 'e2e_member');
+  const free = await context(FREE_TOKEN, FREE_USER), p = await free.newPage();
+  await p.goto(ORIGIN + '/@e2e_member'); await p.waitForFunction(() => window.__VOID_PAGE__ && window.__VOID_PAGE__.handle === 'e2e_member');
+  const head = await p.evaluate(() => { const m = (s, a = 'content') => { const e = document.querySelector(s); return e && e.getAttribute(a); };
+    return { title: document.title, canonical: m('link[rel=canonical]', 'href'), url: m('meta[property="og:url"]'), og: m('meta[property="og:title"]'), tw: m('meta[name="twitter:title"]'),
+      desc: m('meta[property="og:description"]'), twd: m('meta[name="twitter:description"]'), d: m('meta[name="description"]'), image: m('meta[property="og:image"]') }; });
+  const desc = '2 cards: Hello, Notes "to self". A published Verse on A-to-Mind.';
+  assert.deepEqual(head, { title: '@e2e_member · Verse', canonical: 'https://a-to-mind.com/@e2e_member', url: 'https://a-to-mind.com/@e2e_member', og: '@e2e_member’s Verse', tw: '@e2e_member’s Verse',
+    desc, twd: desc, d: desc, image: 'https://a-to-mind.com/og.png' });
+  await p.goto(ORIGIN + '/'); assert.equal(await p.title(), 'Verse · A-to-Mind', 'the home page keeps its own title');
+  await free.close();
+});

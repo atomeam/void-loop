@@ -88,3 +88,24 @@ test('every English string of the screen has its German', () => {
   for (const v of [...Object.values(C.SORTS), ...Object.values(C.TYPES), ...Object.values(C.STAGES), ...Object.values(C.REGIONS)]) if (!DE[v]) missing.push(v);
   assert.deepEqual(missing, []);
 });
+test('a job reads as tracked only while the tracker holds its title, company and link', () => {
+  const j = { title: 'Product Designer', company: 'Acme', url: 'https://example.com/jobs/1' };
+  assert.equal(C.isTracked([], j), false); assert.equal(C.isTracked(undefined, j), false);
+  const apps = [C.cleanApp({ ...j, stage: 'saved' })];
+  assert.equal(C.isTracked(apps, j), true);
+  assert.equal(C.isTracked(apps, { ...j, url: 'https://example.com/jobs/2' }), false);
+  assert.equal(C.isTracked(apps.filter(() => false), j), false);
+  assert.equal(C.isTracked(apps, { title: '' }), false);
+  const src = fs.readFileSync(new URL('../void-live-deploy/lib/jobs-ui.js', import.meta.url), 'utf8');
+  assert.match(src, /'\.rm'\)\.addEventListener\('click', \(\) => \{[^}]*\}\); emitSaved\(\); \}\)/, 'Remove in the tracker tells the cards');
+});
+test('Himalayas category slugs read as words, cut at a word, and old hyphenated tags still match', () => {
+  assert.equal(C.slugWords('SaaS-Sales-Specialist'), 'SaaS Sales Specialist');
+  assert.equal(C.slugWords('Vice-President-of-Data-Strategy'), 'Vice President of Data Strategy');
+  assert.equal(C.slugWords('Director-Of-Advanced-Analytics-and-Precision-Medicine'), 'Director of Advanced Analytics', 'cut at a word, no joining word at the end');
+  assert.equal(C.slugWords('E-learning'), 'E-learning'); assert.equal(C.slugWords('Education & E-learning'), 'Education & E-learning');
+  const j = C.normalise('himalayas', { jobs: [{ ...HIMALAYAS.jobs[0], categories: ['Accounting-Analyst'], parentCategories: [] }] })[0];
+  assert.equal(j.cat, 'Accounting Analyst'); assert.deepEqual(j.tags, ['Accounting Analyst']);
+  assert.equal(C.checkJob({ ...j, cat: 'Accounting-Analyst', tags: ['Accounting-Analyst'] }).cat, 'Accounting Analyst', 'a listing stored before the fix reads as words too');
+  assert.equal(C.search([j], { tag: 'Accounting-Analyst' }).length, 1, 'an alert saved with the hyphenated tag still finds the job');
+});

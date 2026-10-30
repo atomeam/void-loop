@@ -67,7 +67,7 @@
   <p class="note">The small line under each move is its chart (a year for stocks and indices, seven days for coins). Press ☆ beside a symbol to keep it on your watchlist, on this device (the watchlist is on the <a href="/markets/">quotes page</a>). “Below high” is the distance under the 52-week high for stocks and indices, and under the all-time high for coins. “Volume ×” is today’s volume over the 30-day average and is only known for stocks and indices.</p>
   <div class="row"><button type="button" id="share">Share link</button></div>
   <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
-  <p class="srcs">Shares and indices come from Stooq (Yahoo Finance’s public chart feed fills in when it is down), coins from CoinGecko; all may be delayed. Not financial advice.</p>
+  <p class="srcs">Shares and indices come from Stooq (Yahoo Finance’s public chart feed fills in when it is down), coins from CoinGecko (when it does not answer, Yahoo Finance’s public prices over CoinGecko’s daily snapshot, as the line above the table says); all may be delayed. Not financial advice.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
@@ -98,6 +98,8 @@
       all = j.rows; total = Date.parse(j.at); lastTag = '';
       // the live answer can come back without its coins (CoinGecko busy): the snapshot's coins stay, said to be a snapshot, so the coin rows never vanish
       if (have && !all.some((r) => r.group === 'coins')) { all = all.concat(M.scanRows([], snap.scan)); draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live'); return; }
+      // CoinGecko busy, the API's coins are the snapshot with Yahoo's prices over some of them (coinFeed): said so
+      if (j.coinFeed) { const f = j.coinFeed, n = j.universe && j.universe.coins; draw(' · coin prices ' + (f.live ? 'live from Yahoo Finance for ' + f.live + ' of ' + n + ' coins, the rest from' : 'from') + ' the snapshot of ' + f.snapshot + ' UTC' + (f.live ? '' : ', not live')); return; }
       draw(''); return;
     }
     if (have) { draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices could not be loaded just now'); return; }
