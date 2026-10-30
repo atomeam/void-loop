@@ -86,11 +86,12 @@ async function bench(env, b) {
       try { const j = await judge(env, pic.img, ref.prompt, ref.checks); Object.assign(row, { score: scoreOf(j, [pic.w, pic.h], dims), match: j.match, flaws: j.flaws, look: j.look, worst: j.worst, checks: j.checks }); }
       catch (e) { row.judgeError = why(e); }
       if (b.images) row.img = pic.img;
-      if (row.score !== undefined) await env.DB.prepare('INSERT INTO void_studio_runs (day, model, bench, size, score, match, flaws, look, w, h, ms, neurons, worst) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-        .bind(day, p.model, p.bench, size, row.score, row.match, row.flaws, row.look, row.w || 0, row.h || 0, row.ms, p.neurons, row.worst || '').run().catch(() => {});
     } catch (e) { row.error = why(e); }
     runs.push(row);
   }
+  const judged = runs.filter((r) => r.score !== undefined); // kept as one batch, after the paintings
+  if (judged.length) await env.DB.batch(judged.map((r) => env.DB.prepare('INSERT INTO void_studio_runs (day, model, bench, size, score, match, flaws, look, w, h, ms, neurons, worst) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(day, r.model, r.bench, size, r.score, r.match, r.flaws, r.look, r.w || 0, r.h || 0, r.ms, r.neurons, r.worst || ''))).catch(() => {});
   return { ok: true, size, cap, planned: plan.length, neurons, runs };
 }
 
