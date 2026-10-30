@@ -5911,6 +5911,8 @@ say('nothing selected to remove');
       [/independence\s+day|(?:the\s+)?4th\s+of\s+july|fourth\s+of\s+july/, 'Independence Day (US)', (y) => new Date(y, 6, 4)], [/labou?r\s+day/, 'Labor Day (US)', (y) => nthWeekday(y, 8, 1, 1)],
       [/memorial\s+day/, 'Memorial Day (US)', (y) => lastWeekday(y, 4, 1)], [/st\.?\s*patrick'?s?(\s+day)?/, 'St Patrick\'s Day', (y) => new Date(y, 2, 17)],
     ];
+    // the holiday's own day on the Calendar page, where the person can add a reminder for it ("YYYY-MM-DD" in local time, as lib/calendar.js parseLocal reads it)
+    const holidayPage = (d) => '/calendar/?d=' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '&view=day';
     function holidayOf(l) {
       const m = l.replace(/[?.!]+$/, '').match(/^(?:when\s+is|what\s+(?:day|date)\s+is)\s+(.+?)(?:\s+(?:this|next)\s+year|\s+\d{4})?$/);
       if (!m) return null;
@@ -5962,13 +5964,14 @@ say('nothing selected to remove');
         el.querySelector('.sw-laps').innerHTML = sp.map((d, i) => '<li' + (d === lo ? ' style="color:#3fbf6a"' : d === hi ? ' style="color:#e0584a"' : '') + '>' + fmt(d) + (i ? ' <span style="color:#8a8a8a">(' + (d - sp[i - 1] >= 0 ? '+' : '\u2212') + fmt(Math.abs(d - sp[i - 1])) + ')</span>' : '') + ' <span style="color:#8a8a8a">· ' + fmt(laps[i]) + (d === lo ? ' · fastest' : d === hi ? ' · slowest' : '') + '</span></li>').join(''); });
       el.querySelector('.sw-reset').addEventListener('click', () => { acc = 0; t0 = performance.now(); laps = []; el.querySelector('.sw-laps').innerHTML = ''; el.querySelector('.sw').textContent = '0:00.0'; });
     }
-    const bigPage = (title, big, note) => showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
+    // page: the full page the card links to (lib/card-frame.js pageOfCard), e.g. a holiday's day on the Calendar
+    const bigPage = (title, big, note, page) => showPage((p) => { if (page) p.dataset.page = page; p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
       { const w = l.replace(/[?.!]+$/, '').match(/^how\s+many\s+(days|weeks|months)\s+(?:until|till|til|to|before)\s+(.+)$/), h = w && holidayOf('when is ' + w[2]);
         if (h) { const n = w[1] === 'days' ? h.days : w[1] === 'weeks' ? Math.round(h.days / 7 * 10) / 10 : Math.round(h.days / 30.44 * 10) / 10;
-          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
-      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
       { const a = ageOf(l); if (a) { bigPage('Age', a.big, a.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'age' }); return true; } }
       { const u = untilOf(l); if (u) { bigPage('Time until', u.big, u.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timeuntil' }); return true; } }
       if (/^(?:start|open|make|give\s+me)\s+(?:me\s+)?a\s+stop\s?watch$|^stop\s?watch$/.test(l.replace(/[?.!]+$/, ''))) { showStopwatch(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'stopwatch' }); return true; }
