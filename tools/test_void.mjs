@@ -8732,7 +8732,7 @@ try {
     await B.ask('open the book', 900);
     const open = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) ? l : null; }, 8000);
     check('the book: "open the book" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
-      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Verse Book/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
+      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
       JSON.stringify({ open: open && { ...open, text: open.text.slice(0, 80) }, members: members.length }));
     await B.p.keyboard.press('ArrowRight');
     const mid = await B.p.evaluate(() => !!document.querySelector('#vtome .tome-leaf')); // a leaf is in the air
@@ -8760,7 +8760,7 @@ try {
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
     const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
     check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph',
-      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Verse Book/.test(landed.heads || ''),
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Book of Verse/.test(landed.heads || ''),
       JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
     // a proven skill's page opens with a line of lore (asked by Verse: flavor text for every proven skill), each page's its own
     const lore = await B.p.evaluate(() => { const b = window.__voidBook; const first = b.chapters.find((c) => c.id === 'make'); const byPage = new Map(); for (let k = first.from; k <= first.to; k++) { b.go(k); for (const pg of document.querySelectorAll('#vtome .tome-page[data-page]')) { const e = pg.querySelector('.tome-epigraph'); if (e) byPage.set(pg.dataset.page, e.textContent); } } const lines = [...byPage.values()]; return { n: lines.length, distinct: new Set(lines).size, sample: lines[0] }; });
@@ -9378,7 +9378,7 @@ try {
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
-  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
+  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); { const hs = await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); check('hints while typing', hs.some((h) => /timer/.test(h)), JSON.stringify(hs)); }
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
   await t.ctx.close();
 

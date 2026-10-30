@@ -140,7 +140,7 @@
   // until then the link keeps the example card, and tk:card points it at the size once the module is in
   let rc = null;
   // the resized copy, already open on the next picture page: a press keeps one copy on this device and opens the page
-  mountRelated(document.getElementById('related'), '/resize-image/', [['Edit the resized photo', '/photos/?img=handoff'], ['Add it to a PDF', '/pdf/?img=handoff'], ['Paint it by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff']].map(([label, path]) => ({ label, href: () => (made ? path : null),
+  mountRelated(document.getElementById('related'), '/resize-image/', [['Edit the resized photo', '/photos/?img=handoff'], ['Add it to a PDF', '/pdf/?img=handoff'], ['Paint it by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Translate the words in it', '/translate/?img=handoff'], ['Post it on a board', '/boards/?img=handoff']].map(([label, path]) => ({ label, href: () => (made ? path : null),
     go: () => { const got = made; if (!got) return false; sendImage(path, () => new Blob([got.bytes], { type: 'image/jpeg' }), { name: got.name, fromPage: '/resize-image/' }).then((ok) => { if (!ok) $('note').textContent = 'This browser could not keep the picture for the next page.'; }); return false; } })), { card: () => rc ? rc.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) : '' });
   const TOUCH = ['pointerdown', 'pointerover', 'keydown', 'focusin', 'input', 'change'];
   const loadCard = () => { for (const ev of TOUCH) removeEventListener(ev, loadCard, true); import('/lib/resize-card.js').then((m) => { rc = m; document.dispatchEvent(new Event('tk:card')); }).catch(() => {}); };

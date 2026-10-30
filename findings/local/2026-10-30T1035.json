@@ -1,0 +1,18 @@
+{
+ "attempt": "live",
+ "occasion": 1,
+ "at": "2026-10-30T10:35:00Z",
+ "family": "media",
+ "skill": "local-stations",
+ "service": "a-to-mind.com/local/ (Radio Browser radio, iptv-org TV, streams from each station's own server)",
+ "ask": "local radio and TV in Philadelphia",
+ "request": "https://a-to-mind.com/local/?place=Philadelphia",
+ "ok": true,
+ "answer": {
+  "place": "Philadelphia, Pennsylvania",
+  "radio": { "listed": 60, "playable": 44, "played": "WRTI Classical", "player": "Live · MP3 128 kbps" },
+  "tv": { "listed": 41, "playable": 8, "played": "WTXF-TV · Fox", "player": "Live · Fox", "picture": "FOX 29 live video on screen" }
+ },
+ "artifact": "screenshot of the TV player showing FOX 29 live, taken in the remote browser (project files, local-media-probe)",
+ "error": ""
+}

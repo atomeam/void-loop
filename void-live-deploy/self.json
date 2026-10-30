@@ -542,13 +542,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T17:38:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T17:31:32Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T16:49:24Z",
    "subject": "Name the real Modal secrets now that the sing workflow reads them"
-  },
-  {
-   "at": "2026-10-30T16:49:17Z",
-   "subject": "Verse mints, uses and retires its own Cloudflare keys"
   }
  ],
  "builders": {

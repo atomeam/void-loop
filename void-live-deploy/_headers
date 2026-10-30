@@ -56,6 +56,9 @@
 /manifest.webmanifest
   Content-Type: application/manifest+json
 
+/converter/manifest.webmanifest
+  Content-Type: application/manifest+json
+
 /opensearch.xml
   Content-Type: application/opensearchdescription+xml
 
