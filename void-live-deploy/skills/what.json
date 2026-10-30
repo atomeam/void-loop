@@ -357,7 +357,7 @@
  "triangulate": "\"triangulate: should I open source the void-loop\": forces three distinct perspectives to simultaneously…",
  "type-filter": "Hide every card on the stage but one kind",
  "unkeepable": "Something that cannot be kept",
- "util": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes, a…",
+ "util": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, hashes, diffs, Markdown",
  "uuid": "Generate a random UUID",
  "uv": "The UV index for a place now and today's highest, with sun advice",
  "v01d-fixes": "The owner previews the fixes Verse's own model opened",

@@ -1,5 +1,5 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes, a diff checker, Markdown to HTML
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, hashes, diffs, Markdown
  * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes, lib/textdiff.js
@@ -196,7 +196,7 @@ async function run(text, api) {
   } else if (q.kind === 'diffmaker') {
     // every character counts: a space, a blank line or a changed case is a difference (lib/textdiff.js)
     const box = (cls, label) => '<label style="display:block;font-size:13px;color:#8a8a8a">' + label + '<textarea class="' + cls + '" rows="5" maxlength="200000" aria-label="' + label + ' text" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea></label>';
-    el = showPage((p) => { p.innerHTML = '<h2>Diff checker</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">' + box('util-a', 'Original') + box('util-b', 'Changed') + '</div>'
+    el = showPage((p) => { p.innerHTML = '<h2>Diff checker</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">' + box('util-a', 'Original') + box('util-b', 'Changed') + '</div>' // void-review: ok (static markup; box() takes fixed labels, and typed text goes to textarea values only)
       + '<p class="util-say" aria-live="polite" style="margin:8px 0 4px">Paste a text on each side</p>'
       + '<pre class="util-diff" style="margin:0;max-height:260px;overflow:auto;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word"></pre>'
       + '<p style="color:#8a8a8a">Line by line: removed lines are red with −, added lines green with +. Compared in your browser and never sent anywhere.</p>'; });
@@ -215,13 +215,13 @@ async function run(text, api) {
     };
     for (const t of [A, B]) if (t) t.addEventListener('input', paint);
   } else if (q.kind === 'mdmaker') {
-    el = showPage((p) => { p.innerHTML = '<h2>Markdown to HTML</h2><textarea class="util-in" rows="6" maxlength="200000" placeholder="# A heading&#10;&#10;Some **bold** text and a [link](https://a-to-mind.com)" aria-label="Markdown" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>'
+    el = showPage((p) => { p.innerHTML = '<h2>Markdown to HTML</h2><textarea class="util-in" rows="6" maxlength="200000" placeholder="# A heading&#10;&#10;Some **bold** text and a [link](https://a-to-mind.com)" aria-label="Markdown" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
       + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">Preview</div><div class="util-md" style="max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2px 10px"></div>'
       + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">HTML</div><pre class="util-out" style="margin:0;max-height:160px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
       + '<p style="color:#8a8a8a">Headings, bold, italic, links, images, lists, quotes, code and rules. Tables and raw HTML are not converted: HTML you type shows as text. Converted in your browser and never sent anywhere.</p>'; });
     const box = el && el.querySelector && el.querySelector('.util-in'), view = el && el.querySelector && el.querySelector('.util-md'), out = el && el.querySelector && el.querySelector('.util-out');
     // the preview is the converter's own HTML: every text is escaped and a link keeps only an http, https, mailto or relative address (lib/markdown.js)
-    const paint = () => { if (!box || !view || !out) return; const h = mdToHtml(box.value); view.innerHTML = h; out.textContent = h; };
+    const paint = () => { if (!box || !view || !out) return; const h = mdToHtml(box.value); view.innerHTML = h; out.textContent = h; }; // void-review: ok (mdToHtml escapes every text and keeps only http, https, mailto or relative addresses)
     if (box) box.addEventListener('input', paint);
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
