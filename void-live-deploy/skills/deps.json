@@ -1309,14 +1309,14 @@
    "skills": 1,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/rap-piano.js",
    "skills": 1,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/writing-aids.js",
@@ -2128,7 +2128,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 55,
-   "tests": 11
+   "tests": 12
   },
   {
    "file": "lib/pages.js",
@@ -2398,6 +2398,13 @@
   },
   {
    "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/studio.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
@@ -2696,13 +2703,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
-  },
-  {
-   "file": "lib/studio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/team-mcp.js",
@@ -3623,6 +3623,7 @@
     "lib/models.js",
     "lib/art-rules.js",
     "functions/api/card-art.js",
+    "functions/api/studio.js",
     "lib/image-gen.js"
    ],
    "importedBy": [
@@ -3990,7 +3991,14 @@
     "lib/studio.js",
     "lib/image-gen.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/image.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js"
+   ]
   },
   "functions/api/support.js": {
    "imports": [
@@ -11013,6 +11021,12 @@
    ],
    "importedBy": [
     "functions/api/studio.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js"
    ]
   },
   "lib/study-cards.js": {
