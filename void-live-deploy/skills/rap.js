@@ -11,7 +11,8 @@
 import { rapAskOf, settingsOf, linkOf } from '../lib/rap.js';
 import { mountRap } from '../lib/rap-stage.js';
 
-const CSS = '.rp-card .rp-meta,.rp-card .rp-msg{color:var(--ink-3,#9a97ab);font-size:13px;margin:6px 0}.rp-card .rp-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}'
+// a word longer than a phone screen breaks inside the card instead of pushing it past the edge (2026-10-30)
+const CSS = '.rp-card{overflow-wrap:anywhere}.rp-card .rp-t{min-width:0}.rp-card .rp-meta,.rp-card .rp-msg{color:var(--ink-3,#9a97ab);font-size:13px;margin:6px 0}.rp-card .rp-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}'
   + '.rp-card .rp-btn,.rp-card .rp-voice,.rp-card a.rp-btn{font:inherit;font-size:14px;min-height:40px;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}'
   + '.rp-card .rp-btn.go{background:#a58bff;color:#120f1d;border-color:#a58bff;font-weight:600}.rp-card .rp-vol{accent-color:#a58bff;min-width:90px}.rp-card .rp-sec{margin:12px 0 4px}.rp-card .rp-name{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#a58bff;margin:0 0 4px}'
   + '.rp-card .rp-bars{list-style:none;margin:0;padding:0}.rp-card .rp-bar{display:flex;gap:10px;align-items:baseline;padding:3px 6px;border-radius:8px;font-size:17px;line-height:1.45;transition:background .12s}.rp-card .rp-bar.on{background:rgba(165,139,255,.2)}'

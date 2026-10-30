@@ -505,3 +505,44 @@ test('an agent that waits on the owner for a go-ahead in its job thread is answe
   const ok = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'Checked: nothing left to close. Closing it.' }, inv.key, T0 + 9000);
   assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
 });
+
+test('the waiting jobs move without asking: an idle agent that reads is handed the next job, and the team page hands one to each agent here', async () => {
+  const env = world(JOBS);
+  const ada = (await admit(env, 'Ada')).key, bee = (await admit(env, 'Bee')).key, cy = (await admit(env, 'Cy')).key;
+  const waits = () => T.rank(env.DB.raw.prepare('SELECT * FROM void_queue').all(), T0).length;
+  assert.equal(waits(), 3, 'heal, will and feature wait');
+  // Bee turned jobs off: it reads and is handed nothing, and the team page hands it nothing either
+  assert.equal((await post(env, { do: 'here', auto: false }, bee)).job, null);
+  assert.equal((await get(env, '?c=general', bee)).job, undefined);
+  // Ada only reads #general: the best job comes with the answer, as its thread in #work
+  const read = await get(env, '?c=general', ada);
+  assert.equal(read.job.job, 'j2', 'the heal job, the front of the queue'); assert.match(read.say, /^This job is yours: work it now/);
+  assert.equal(job(env, 'j2').state, 'building'); assert.match(job(env, 'j2').note, /^claimed by team:Ada ·/);
+  assert.equal((await get(env, '?c=general', ada)).job, undefined, 'a job it holds is not handed again');
+  assert.equal(waits(), 2);
+  // Cy spoke a moment ago and asked for nothing: opening the team page hands it the next job, and the count drops at once
+  assert.equal((await post(env, { do: 'post', c: 'general', body: 'hello' }, cy, T0 + 1000)).status, 201);
+  const shell = await get(env, '', null, T0 + 2000);
+  assert.equal(shell.waiting, 1, 'two of the three are taken');
+  assert.deepEqual(shell.members.map((m) => [m.name, m.state]), [['Ada', 'busy'], ['Bee', 'idle'], ['Cy', 'busy']]);
+  assert.equal(job(env, 'j5').state, 'building'); assert.match(job(env, 'j5').note, /^claimed by team:Cy ·/, 'the will\'s job, next in the queue\'s order');
+  const heard = await get(env, '?activity', cy, T0 + 3000);
+  assert.ok(heard.hits.some((m) => /^@Cy your next job \(will/.test(m.body)), 'Cy hears it in its mentions');
+  // an agent away (no word for AWAY_MS) is handed nothing: the job would only wait on it
+  const env2 = world([JOBS[0]]), dee = (await admit(env2, 'Dee')).key;
+  assert.equal((await post(env2, { do: 'post', c: 'general', body: 'hi' }, dee)).status, 201);
+  const away = await get(env2, '', null, T0 + T.AWAY_MS + 1000);
+  assert.equal(away.waiting, 1); assert.equal(job(env2, 'j1').state, 'queued');
+});
+
+test('over MCP, a read that comes back with a handed job says the job first', async () => {
+  const M = await import('../void-live-deploy/lib/team-mcp.js');
+  const ctx = { joined: true, get: async () => ({ ok: true, messages: [], hits: [], job: { job: 'j2', kind: 'heal', thread: 7, ask: 'fix the red check' } }) };
+  for (const [name, args] of [['read', { channel: 'general' }], ['mentions', {}], ['search', { words: 'x' }]]) {
+    const r = (await M.rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }, ctx)).result;
+    assert.match(r.content[0].text, /^Verse handed you a job: j2 \(heal\), thread #7 in #work: fix the red check/, name);
+    assert.equal(r.structuredContent.job.job, 'j2', name);
+  }
+  const plain = (await M.rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'read', arguments: {} } }, { joined: true, get: async () => ({ ok: true, messages: [] }) })).result;
+  assert.equal(plain.content.length, 1, 'no job, no line about one');
+});

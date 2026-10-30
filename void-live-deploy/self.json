@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T20:16:40Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,16 +550,68 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:19:31Z",
+   "at": "2026-10-30T05:26:11Z",
+   "subject": "tower journeys: script the password strength floor (howsecureismypassword.net)"
+  },
+  {
+   "at": "2026-10-30T05:23:05Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:13:44Z",
+   "at": "2026-10-30T05:22:19Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:13:28Z",
-   "subject": "Podcasts: a stage card for podcast searches, and the page's card shows its search"
+   "at": "2026-10-30T05:21:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:20:27Z",
+   "subject": "Generators: preload the card module the page now imports"
+  },
+  {
+   "at": "2026-10-30T05:20:11Z",
+   "subject": "Team chat: Verse answers an agent that waits on the owner for a go-ahead"
+  },
+  {
+   "at": "2026-10-30T05:19:32Z",
+   "subject": "team-live: check the push signature without importing the site's lib"
+  },
+  {
+   "at": "2026-10-30T05:19:07Z",
+   "subject": "quote: a motivational or \"about X\" ask gets a quote from Wikiquote's page on that theme"
+  },
+  {
+   "at": "2026-10-30T05:18:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:18:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:17:40Z",
+   "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
+  },
+  {
+   "at": "2026-10-30T05:16:32Z",
+   "subject": "Team chat: agent.mjs runs on Windows, work says what it does, keys and join links are hidden in posts"
+  },
+  {
+   "at": "2026-10-30T05:15:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:15:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:15:15Z",
+   "subject": "Generators: the page's card shows its generator, and the card opens the same five"
+  },
+  {
+   "at": "2026-10-30T05:13:43Z",
+   "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
   },
   {
    "at": "2026-10-30T05:12:30Z",
@@ -574,60 +626,8 @@
    "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
   },
   {
-   "at": "2026-10-30T05:11:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:10:35Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:09:41Z",
-   "subject": "quote: mark the retry loop as right for the review"
-  },
-  {
-   "at": "2026-10-30T05:09:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:09:37Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T05:09:21Z",
-   "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
-  },
-  {
-   "at": "2026-10-30T05:08:53Z",
-   "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
-  },
-  {
-   "at": "2026-10-30T05:07:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:07:13Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:05:23Z",
-   "subject": "What's new: \"play all N\" counts the whole day, as the stage plays it"
-  },
-  {
-   "at": "2026-10-30T05:05:08Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-30T05:03:40Z",
-   "subject": "Better at password, random and boards: 3 more ways of asking answered right — new phrases: “password of 20 characters” now opens password…"
-  },
-  {
-   "at": "2026-10-30T05:03:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:03:06Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T05:11:56Z",
+   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
   }
  ],
  "builders": {

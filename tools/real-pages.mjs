@@ -44,6 +44,16 @@ const article = (minWords = 120) => async (t) => {
   const words = (await t.p.locator('body').innerText()).split(/\s+/).length; t.ok(words >= minWords, words + ' words of real content');
   await t.links();
 };
+// what does not fit a phone screen inside a part of the page: the page scrolling sideways, an element past either edge (one word longer than the
+// screen is added to the first bar so the wrapping is tested, not assumed), and a button or select under 40 px tall to tap (2026-10-30)
+const phoneFit = (p, sel) => p.evaluate((s) => {
+  const w = innerWidth, root = document.querySelector(s); if (!root) return 'there is no ' + s;
+  const t0 = root.querySelector('.rp-t'); if (t0) t0.textContent += ' a-to-mind.com/rap/?topic=acatwhorunsthenightshiftandnevertakesabreak';
+  const name = (e) => e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className ? '.' + e.className.trim().split(/\s+/).join('.') : '');
+  const past = [...root.querySelectorAll('*')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 1 || r.left < -1); }).map(name);
+  const small = [...root.querySelectorAll('button, select, a.rp-btn')].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 40).map((e) => (e.textContent || e.id || name(e)).trim().slice(0, 24));
+  return [document.documentElement.scrollWidth > w + 1 ? 'the page scrolls sideways (' + document.documentElement.scrollWidth + ' px)' : '', past.length ? past.length + ' past the edge: ' + past.slice(0, 4).join(' ') : '', small.length ? 'under 40 px to tap: ' + small.slice(0, 4).join(', ') : ''].filter(Boolean).join('; ');
+}, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
   '/calculators/': async (t) => {
@@ -223,7 +233,17 @@ export const SPECS = {
     const got = await t.waitText('#rap', /verse 1[\s\S]*hook[\s\S]*verse 2/i, 60000); t.ok(/verse 1[\s\S]*hook[\s\S]*verse 2/i.test(got), 'a rap with two verses and a hook is written for the topic');
     t.ok(/\d+ bars in \d parts · \d+ of \d+ bars end on a rhyme/.test(await t.text('#rap')), 'the bars and rhymes are counted');
     await t.clickText('Rap it yourself'); await t.p.waitForTimeout(3500); t.ok((await t.p.locator('.rp-bar.on').count()) === 1, 'a bar lights up on its measure over the beat'); await t.clickText('Stop');
-    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1'); await t.share('#share');
+    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1');
+    // phone width (2026-10-30): at 375 px the rap and its controls stay on the screen and big enough to tap, a word longer than the screen included
+    await t.p.setViewportSize({ width: 375, height: 812 }); await t.p.waitForTimeout(300);
+    const narrow = await phoneFit(t.p, '#out'); t.ok(!narrow, 'at 375 px the rap fits the screen' + (narrow ? ': ' + narrow : ''));
+    await t.p.setViewportSize({ width: 1200, height: 900 }); await t.share('#share');
+    // the stage's rap card at phone width: asked on the chat, it is written, and its bars and buttons stay on the screen
+    await t.p.setViewportSize({ width: 375, height: 812 }); await t.p.goto(new URL('/', t.p.url()).href);
+    await t.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 25000 }).catch(() => {});
+    await t.fill('#input', 'rap about a cat who runs the night shift'); await t.p.keyboard.press('Enter');
+    const card = await t.p.waitForSelector('.rp-card .rp-bar', { timeout: 60000 }).then(() => true, () => false); t.ok(card, 'the stage writes a rap card for the ask at phone width');
+    if (card) { const s = await phoneFit(t.p, '.rp-card'); t.ok(!s, 'at 375 px the stage\'s rap card fits the screen' + (s ? ': ' + s : '')); }
   },
   // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
   '/learn-to-draw/': async (t) => {
