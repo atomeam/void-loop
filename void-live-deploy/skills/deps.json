@@ -1190,7 +1190,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 27,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/proposal.js",
