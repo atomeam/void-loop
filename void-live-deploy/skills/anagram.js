@@ -1,53 +1,42 @@
 /**
  * anagram skill — scramble a word or check if two words are anagrams
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "anagram of cat", "are listen and silent anagrams".
- * Empty surface stays empty; the result is an outcome page.
+ * "anagram of listen", "are silent and listen anagrams".
  */
 export function isAnagram(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
-  return /^(?:please\s+)?(?:anagram(?:s)?\s+(?:of\s+)?\w+|are\s+\w+\s+and\s+\w+\s+anagrams?)$/i.test(t);
+  return /^(?:please\s+)?(?:(?:make\s+)?anagram(?:\s+of\s+[a-z]+)?|are\s+[a-z]+\s+and\s+[a-z]+\s+anagrams?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function scramble(word) {
-  const a = word.split('');
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a.join('');
+  return word.split('').sort(() => Math.random() - 0.5).join('');
 }
 function isAnag(a, b) {
-  const norm = (s) => s.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-  return norm(a) === norm(b) && a !== b;
+  return a.toLowerCase().split('').sort().join('') === b.toLowerCase().split('').sort().join('');
 }
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const t = text.toLowerCase();
-  const check = t.match(/are\s+(\w+)\s+and\s+(\w+)\s+anagrams?/);
-  if (check) {
-    const ok = isAnag(check[1], check[2]);
-    showPage((p) => { p.innerHTML = '<h2>Anagram</h2><p>' + esc(check[1]) + ' and ' + esc(check[2]) + ' are ' + (ok ? '' : 'not ') + 'anagrams.</p>'; });
-    return 'anagram';
+  const m = /(?:of\s+|are\s+)([a-z]+)(?:\s+and\s+([a-z]+))?/i.exec(text || '');
+  let html = '';
+  if (m && m[2]) {
+    html = '<p style="font-size:24px;text-align:center">' + esc(m[1]) + ' and ' + esc(m[2]) + ' are ' + (isAnag(m[1], m[2]) ? '' : 'not ') + 'anagrams.</p>';
+  } else if (m) {
+    html = '<p style="font-size:28px;text-align:center">' + esc(scramble(m[1])) + '</p><div class="sub">from ' + esc(m[1]) + '</div>';
+  } else {
+    html = '<p style="font-size:24px;text-align:center">' + esc(scramble('listen')) + '</p><div class="sub">example from listen</div>';
   }
-  const of = t.match(/anagram(?:s)?\s+(?:of\s+)?(\w+)/);
-  if (of) {
-    const sc = scramble(of[1]);
-    showPage((p) => { p.innerHTML = '<h2>Anagram</h2><p>Anagram of ' + esc(of[1]) + ': <strong>' + esc(sc) + '</strong></p><div class="sub">say it again for another</div>'; });
-    return 'anagram';
-  }
-  return 'none';
+  showPage((p) => { p.innerHTML = '<h2>Anagram</h2>' + html + '<div class="sub">say “anagram of cat” or “are cat and act anagrams”</div>'; });
+  return 'anagram';
 }
 
 export default {
   name: 'anagram',
-  examples: ['anagram of cat', 'are listen and silent anagrams'],
-  nearMisses: ['what is an anagram', 'anagram puzzle'],
+  examples: ['anagram of listen', 'are silent and listen anagrams', 'anagram'],
+  nearMisses: ['what is an anagram', 'anagram solver', 'buy anagram'],
   match(lower, text) { return isAnagram(text); },
   run,
   suite() {
-    const ok = isAnagram('anagram of cat') && isAnagram('are listen and silent anagrams') && !isAnagram('what is an anagram');
+    const ok = isAnagram('anagram of listen') && isAnagram('are silent and listen anagrams') && !isAnagram('what is an anagram');
     return { ok, got: 'match works' };
   }
 };
