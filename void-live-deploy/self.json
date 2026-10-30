@@ -327,22 +327,8 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "The growth inbox, deeper",
    "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
-   "waits": "the owner"
   },
   {
    "state": "open",
@@ -542,7 +528,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T17:15:32Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,60 +536,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T18:07:11Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T18:13:14Z",
+   "subject": "Baggage gets a daily live check against the airline pages"
+  },
+  {
+   "at": "2026-10-30T18:07:29Z",
+   "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
   },
   {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
   },
   {
-   "at": "2026-10-30T17:56:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP skill tools run each skill's own code on the server"
-  },
-  {
-   "at": "2026-10-30T17:49:25Z",
-   "subject": "Money near misses: formulas leaves the page's own compound interest ask"
-  },
-  {
    "at": "2026-10-30T17:48:01Z",
    "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   },
   {
-   "at": "2026-10-30T17:46:38Z",
-   "subject": "Regenerate deps.json and families.json"
-  },
-  {
-   "at": "2026-10-30T17:44:53Z",
-   "subject": "A pasted progress list is no failure on the report card"
-  },
-  {
-   "at": "2026-10-30T17:44:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T17:39:22Z",
-   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
-  },
-  {
    "at": "2026-10-30T17:38:34Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T17:33:31Z",
-   "subject": "helper-pr: check the branch merged with main before opening a PR"
-  },
-  {
-   "at": "2026-10-30T17:31:42Z",
-   "subject": "Watch with Verse: keep a learn's notes in one batch; mark the two reviewed lines"
   },
   {
    "at": "2026-10-30T17:31:32Z",
@@ -628,6 +578,42 @@
   {
    "at": "2026-10-30T17:17:10Z",
    "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-30T17:16:07Z",
+   "subject": "Incident autopsy: map every check to its family and owning files"
+  },
+  {
+   "at": "2026-10-30T17:15:58Z",
+   "subject": "Refuse a recipe card about another dish instead of showing it"
+  },
+  {
+   "at": "2026-10-30T17:15:21Z",
+   "subject": "Card notes are no near miss of the self skill"
+  },
+  {
+   "at": "2026-10-30T17:13:03Z",
+   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-10-30T17:12:29Z",
+   "subject": "Read a paste as a report, an ask or unclear, never a guess"
+  },
+  {
+   "at": "2026-10-30T17:11:33Z",
+   "subject": "Wants card: count asks built this week from every link and ledger line, not only the live window"
+  },
+  {
+   "at": "2026-10-30T17:09:40Z",
+   "subject": "Show the Adds line whole and end the stuck GitHub check"
+  },
+  {
+   "at": "2026-10-30T17:09:40Z",
+   "subject": "Regenerate preload lists in the 3 page copies"
+  },
+  {
+   "at": "2026-10-30T17:09:39Z",
+   "subject": "Fix card headings: end at a whole sentence, not mid-word"
   }
  ],
  "builders": {

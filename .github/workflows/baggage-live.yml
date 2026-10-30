@@ -1,0 +1,66 @@
+# The baggage card against the airlines' own pages (tools/baggage-live.mjs): once a day, from GitHub's network, read the pages the
+# card cites (skills/baggage.js SOURCES: aa.com and britishairways.com, no key, no account) and check that every figure the card
+# states is still written there. The record is kept as an artifact (findings/baggage/<date>T<hhmm>.json, attempt "live", the
+# occasion number) with one `finding` line in the growth ledger pointing at it, committed to main the way rides-live.yml does.
+# Success is every page answering with every figure AND the finding landing on main; the job is red otherwise, so a figure the
+# airline changed shows up the day it changes. Nothing a person typed is sent, nothing secret is used.
+name: Baggage live
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 13 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: baggage-live
+  cancel-in-progress: false
+
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the cited pages once and write the finding
+        id: call
+        run: |
+          set +e
+          node tools/baggage-live.mjs > baggage-live.out; code=$?
+          set -e
+          cat baggage-live.out
+          sed -n '/^### baggage, live/,$p' baggage-live.out >> "$GITHUB_STEP_SUMMARY"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Commit the artifact and the ledger line to main
+        if: always()
+        run: |
+          if [ -z "$(git status --porcelain findings/baggage void-live-deploy/void.growth.json)" ]; then echo "nothing was written (the service could not be reached)"; exit 1; fi
+          node tools/grow.mjs --check
+          mkdir -p /tmp/baggage && cp -r findings/baggage/. /tmp/baggage/ && cp void-live-deploy/void.growth.json /tmp/baggage-ledger.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -f -B main origin/main
+            # the ledger line goes on top of whatever main has now: the newest entry from this run, appended again
+            line=$(node -e 'const l=require("/tmp/baggage-ledger.json"); console.log(JSON.stringify(l[l.length-1]))')
+            mkdir -p findings/baggage && cp -n /tmp/baggage/*.json findings/baggage/
+            node --input-type=module -e 'import fs from "node:fs"; import { appendTo, LEDGER } from "./tools/grow.mjs"; const e = JSON.parse(process.argv[1]), s = fs.readFileSync(LEDGER, "utf8"); if (!s.includes(JSON.stringify(e))) fs.writeFileSync(LEDGER, appendTo(s, e));' "$line"
+            node tools/grow.mjs --check
+            git add findings/baggage void-live-deploy/void.growth.json
+            git commit -q -m "Finding: baggage checked against the live airline pages (findings/baggage)" || { echo "nothing new to commit"; exit 0; }
+            if git push -q origin main; then echo "pushed the finding to main"; exit 0; fi
+            sleep $((i * 5))
+          done
+          echo "::error title=Finding not recorded::could not push the baggage finding to main"; exit 1
+      - name: Red when a page did not answer or a figure is gone
+        if: steps.call.outputs.code != '0'
+        run: |
+          echo "::error title=Baggage figures not confirmed::a cited page did not answer or a figure the card states is gone (exit ${{ steps.call.outputs.code }}); the finding records which"
+          exit 1
