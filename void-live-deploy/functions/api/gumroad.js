@@ -106,22 +106,21 @@ export async function onRequestPost({ request, env }) {
 export async function relinkRecorded(env, voidId) {
   if (!voidId) return null;
   await ensureStoreTables(env);
-  const rows = (await env.DB.prepare("SELECT id, raw FROM void_sales WHERE void_id = ? AND resource = 'sale' AND verified = 0 ORDER BY at DESC LIMIT 5").bind(voidId).all()).results || [];
+  const rows = (await env.DB.prepare("SELECT s.id, s.raw FROM void_sales s WHERE s.void_id = ? AND s.resource = 'sale' AND s.verified = 0 AND NOT EXISTS (SELECT 1 FROM void_sales d WHERE d.resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (d.sale_id = s.sale_id OR (s.subscription_id IS NOT NULL AND d.subscription_id = s.subscription_id))) ORDER BY s.at DESC LIMIT 5").bind(voidId).all()).results || [];
+  let hit = null;
   for (const r of rows) {
     const p = parsePing(r.raw);
     const unlock = unlockFor(p);
     if (!unlock || !p.sale_id || String(p.refunded) === 'true') continue;
-    const ended = await env.DB.prepare("SELECT 1 AS x FROM void_sales WHERE resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (sale_id = ? OR subscription_id = ?) LIMIT 1").bind(p.sale_id, p.subscription_id || '-').first();
-    if (ended) continue;
     const v = await verifySale(env, p, unlock);
-    if (!v.ok) continue;
-    const now = new Date().toISOString();
-    try {
-      await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
-        .bind(voidId, unlock.tier, p.sale_id, v.subscription_id, now).run();
-    } catch (_) { continue; } // that sale is already linked to another Verse
-    await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (applied later)', r.id).run();
-    return unlock.tier;
+    if (v.ok) { hit = { id: r.id, p, unlock, v }; break; }
   }
-  return null;
+  if (!hit) return null;
+  const now = new Date().toISOString();
+  try {
+    await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
+      .bind(voidId, hit.unlock.tier, hit.p.sale_id, hit.v.subscription_id, now).run();
+  } catch (_) { return null; } // that sale is already linked to another Verse
+  await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ? WHERE id = ?').bind('tier ' + hit.unlock.tier + ' (applied later)', hit.id).run();
+  return hit.unlock.tier;
 }
