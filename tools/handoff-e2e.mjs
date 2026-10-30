@@ -163,6 +163,10 @@ export const JOURNEYS = {
     const stops = await p.locator('#stops .stop').count();
     if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
     await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
+    // its own links follow at once, with no hover or press first: the colour page link opens the first stop read from the painting
+    const first = new URL(p.url()).hash.split('-')[1].slice(0, 6), link = await p.locator('#related a', { hasText: 'Open its first colour' }).getAttribute('href');
+    if (link !== '/color/?c=' + first) throw new Error('the gradient page read the painting, but its colour link still opens ' + link + ', not /color/?c=' + first);
+    await check('the gradient page links its first colour #' + first + ' right away');
   },
   'save a painting as a PDF: the PDF page opens its images-to-PDF tool with the painting in the list': async (p, check) => {
     await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the paint page opened with its picture');
