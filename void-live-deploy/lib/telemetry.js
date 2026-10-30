@@ -23,17 +23,18 @@ export function signalsOf(text) { return SIGNALS.filter(([, re]) => re.test(text
 const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|my|our|let me|now|next|then|so|also|first|took|pushed|committed|merged|shipped|opened|made|fixed|added|wrote|it\s+(?:then|also|now)|[a-z]+ing)\b|^(?:criterion|reviewed|found|remainder)\s*:/i; // "my report quoted a timeout" and the closing check's own Found: line are the builder's, not the build's
 // "red" is a failure only as a state ("is red", "went red", "red on main", "red since", "red:"), not as a name ("red checks grow in the garden"),
 // and "failing" only as a state too ("still failing", "is failing", "3 failing", "failing:"), not as a word before a noun ("each failing check")
-const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|\bred\s*[:,.]/i;
+const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|(?<!\bthe\s)\bred\s*[:,.]/i; // "right about the red." names it, it is no state
 
 // a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
-const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
+// and a red the report bounds in time ("Main was red from about 05:44Z to 05:48Z", "was red for 4 minutes", "went red briefly") is over (2026-10-30 card)
+const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b|\b(?:was|were|went|turned)\s+red\s+(?:(?:from|between)\b[^.]{0,30}\b(?:to|and|until)\b|for\s+(?:about\s+)?\d+\s*(?:s|sec|seconds?|m|min|minutes?|h|hours?)\b|briefly\b)/i;
 // a failure the builder caused on purpose to prove a check bites ("with the mutation it fails, as expected", "without the refusal, the check fails",
 // "with the line taken out, the new check fails") is the check working, not something failing (2026-10-18 card: two such lines read as failures)
 const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that|it)(?:\s+[\w-]+){0,2}\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
 // a failure that has not happened is not still failing: a condition ("If either PR goes red or hits a conflict, fix it first.") or a "would" ("A failing
 // check would automatically revert the commit that broke it.") came back on a card as two of "3 things still failing" (2026-10-19)
 // and a plan's designed outcome ("The laptop task then fails loudly instead of overwriting the card.", "Step 2 makes it fail harmlessly either way.") the same day
-const HYPOTHETICAL = /^(?:if|when|whenever|should|unless|in case)\b|\b(?:would|will|then|makes?\s+(?:it|them|this|that))\s+(?:\w+\s+)?(?:revert|fails?|break|block|stop)\b|\bfails?\s+(?:loudly|harmlessly|safely|closed|gracefully|fast)\b|\bif\s+(?:either|any|the|a|one)\b[^.]{0,60}\b(?:red|fail|fails|conflicts?)\b/i;
+const HYPOTHETICAL = /^(?:if|when|whenever|should|unless|in case)\b|\b(?:would|will|then|makes?\s+(?:it|them|this|that))\s+(?:\w+\s+)?(?:revert|fails?|break|block|stop)\b|\bfails?\s+(?:loudly|harmlessly|safely|closed|gracefully|fast)\b|\bif\s+(?:either|any|the|a|one)\b[^.]{0,60}\b(?:red|fail|fails|conflicts?)\b|\b(?:a|an|any|each|every)\s+(?:[\w-]+\s+){0,2}that\s+fails?\b/i; // "reverts a commit that fails it" says what the suite does, not that something failed (2026-10-30)
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {
@@ -82,7 +83,8 @@ export function summaryOf(t) {
     for (const w of t.read.waits) out.push('Waiting: ' + w);
     if (t.read.next) out.push('Next step: ' + t.read.next);
   }
-  out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed' : 'Nothing in it names a failure');
+  // the report's word, not the state: the live lines above say what is true now (2026-10-30: the card said four were still failing over a green main)
+  out.push(t.failures.length ? 'It names ' + t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' as failing' : 'Nothing in it names a failure');
   return out;
 }
 
@@ -96,10 +98,14 @@ export function isBuildersReport(text) {
 // A pasted status report (owner, 2026-10-29): plain sentences on what shipped, what is held and what to do next, with no error quoted. Verse
 // answered one with the broken-automation fix card ("That thread didn't start" read as trouble, "job loop" as the thing). It is a report to
 // read back: what changed, what waits, and the one next step. A text that says something of its own is broken is never one.
-const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live)|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b)/i;
+const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live|finished|done)|no result yet|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b|on\s+auto-?merge\b|will\s+check\b|after\s+it\s+(?:deploys|merges|ships|lands|goes\s+live)\b|(?:gave|handed)\s+(?:\w+\s+){0,3}back\b|no\s+spec(?:ification)?s?\b)/i;
 const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b)/i;
 const CHANGED = /\b(?:merged|is (?:now )?live|went live|shipped|deployed|released|landed|adds|added|fixed|finished|done|turned on|switched on|published)\b/i;
 const BROKEN = /\b(?:stopped\s+(?:working|firing|running)|is(?:n't| not)\s+working|does(?:n't| not)\s+work|not working|keeps?\s+failing|won't\s+(?:run|start|fire|load)|broke\b|crash(?:es|ed)?)\b/i;
+// a report's own closing checks ("[HYGIENE CHECK]", "Remainder: unverified", "Decision: keep") and a pasted time stamp ("Today 2:15 AM") are about the
+// report, not about the work: the 2026-10-30 card read them back as "Changed:" lines, joined by the ⏎ a copied chat puts between lines
+const CLOSING = /^\[?(?:HYGIENE|ASPIRATION)\s+CHECK\]?$|^(?:criterion|reviewed|found|remainder|request names|change reaches|outside|decision)\s*:/i;
+const STAMP = /^(?:(?:today|yesterday|(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)\s+)?(?:at\s+)?\d{1,2}:\d{2}(?:\s*[ap]\.?m\.?)?$/i;
 const kindOf = (s) => (NEXT.test(s) ? 'next' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null);
 const plain = (s) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, '').replace(/^\s*(?:>|[-+]\s|\d+[.)]\s)\s*/, '').replace(/\s+/g, ' ').trim(); // keeps "#1470"
 const tidy = (s) => s.replace(/^(?:also|and|then|plus|so)\s*,?\s+/i, '').replace(/[,;\s]+$/, '').replace(/[^.!]$/, '$&.').replace(/^./, (c) => c.toUpperCase());
@@ -107,23 +113,32 @@ const tidy = (s) => s.replace(/^(?:also|and|then|plus|so)\s*,?\s+/i, '').replace
 /** a pasted status report read back as { changed, waits, next }, or null when the text is not one (a question, an instruction, a
  *  complaint that something is broken, or too short to be a report). Pure. */
 export function statusReadOf(raw) {
-  const lines = String(raw || '').split(/\n+/).map(plain).filter(Boolean), text = lines.join(' ');
+  const lines = String(raw || '').split(/\n+|\s*⏎\s*/).map(plain).filter((l) => l && !CLOSING.test(l) && !STAMP.test(l)), text = lines.join(' ');
   if (text.length < MIN_CHARS || text.length > 20000 || BROKEN.test(text) || !lines.length) return null;
   if (/\?\s*$/.test(lines[0]) || /^(?:why|how|what|who|can|could|please|fix|help|explain)\b/i.test(lines[0])) return null;
   const sentences = lines.flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z"'(])/)).map((x) => x.trim()).filter((x) => x.length > 3);
   if (sentences.length < 3) return null;
-  const read = { changed: [], waits: [], next: null };
+  const read = { changed: [], waits: [], next: null }, open = [];
   for (const s of sentences) {
     // "the cleaner is live, and the fix is set to ship after the reset" is two items; split only when both halves read as one
     const halves = s.split(/,\s+and\s+/);
     const parts = halves.length === 2 && kindOf(halves[0]) && kindOf(halves[1]) ? halves : [s];
+    const nums = s.match(/#\d+/g) || [];
     for (const p of parts) {
       const k = kindOf(p);
       if (k === 'next') read.next = read.next || tidy(p);
-      else if (k) read[k].push(tidy(p));
+      else if (k === 'waits') { read.waits.push(tidy(p)); open.push({ text: tidy(p), nums }); }
+      else if (k) {
+        read.changed.push(tidy(p));
+        // a later line that says the same #PR is done closes what an earlier line left open ("#1775 is on automerge" then "#1775, deployed")
+        const done = p.match(/#\d+/g) || [];
+        for (const o of open) if (o.nums.some((n) => done.includes(n))) read.waits = read.waits.filter((w) => w !== o.text);
+      }
     }
   }
-  return read.changed.length && read.waits.length ? read : null;
+  // a wait that a later line closed still made it a report (owner, 2026-10-30: a report with two verified fixes, a fix "on automerge" and 2 jobs
+  // "given back" was answered as a broken automation, because neither was read as open)
+  return read.changed.length && open.length ? read : null;
 }
 /** true for a pasted status report (see statusReadOf). lib/automation-fix.js intentOf asks this, so a report is never a fix ask. Pure. */
 export function isStatusReport(text) { return !!statusReadOf(text); }
