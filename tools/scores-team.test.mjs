@@ -23,7 +23,7 @@ test('team asks are read, league asks and other scores are not', () => {
   assert.deepEqual(teamScoreAsk('did the yankees win yesterday?'), { team: 'yankees', day: 'yesterday' });
   assert.deepEqual(teamScoreAsk('the lakers score tonight'), { team: 'lakers', day: 'today' });
   assert.deepEqual(teamScoreAsk('chiefs score'), { team: 'chiefs', day: '' });
-  for (const a of ['what is my credit score', 'what is the score', 'nba scores', 'premier league table', 'sat score', 'what was the final score']) assert.equal(teamScoreAsk(a), null, a);
+  for (const a of ['what is my credit score', 'what is the score', 'nba scores', 'premier league table', 'sat score', 'what was the final score', 'cricket scores', 'football scores today', 'world cup scores']) assert.equal(teamScoreAsk(a), null, a);
 });
 
 test('teamGame finds the team by a whole word of its name, short name or abbreviation, and skips races', () => {

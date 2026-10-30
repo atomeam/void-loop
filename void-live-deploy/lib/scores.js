@@ -311,7 +311,7 @@ export function scoresAsk(text) {
 }
 
 // "lakers score last night", "how did the arsenal do yesterday", "did the yankees win": one team's game (2026-10-30: these fell to an article).
-const NOT_TEAM = /^(?:my|your|our|their|his|her|the|a|an|what|whats|credit|fico|test|sat|act|gre|gmat|lsat|mcat|quiz|exam|final|game|high|top|best|live|bowling|golf|wordle|chess|match|team|sports?|tennis)$/i;
+const NOT_TEAM = /^(?:my|your|our|their|his|her|the|a|an|what|whats|credit|fico|test|sat|act|gre|gmat|lsat|mcat|quiz|exam|final|game|high|top|best|live|bowling|golf|wordle|chess|match|team|sports?|tennis|cricket|football|soccer|basketball|baseball|hockey|rugby|darts|boxing|ufc|mma|nascar|college|ncaa|world|cup|olympic|olympics)$/i;
 /** an ask for one team's game -> { team, day: 'yesterday' | 'today' | '' } | null; never a league ("nba scores" is scoresAsk's) and never a credit or test score. Pure. */
 export function teamScoreAsk(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
