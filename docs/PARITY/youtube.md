@@ -12,7 +12,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
-| A public API | Developers | have | its live page (2026-10-28): "Copyright Contact us Creators Advertise Developers Terms Privacy Policy & Safety How YouTube works Test new fe" | void-live-deploy//index.html:1746 `const r = await fetch('/api/actions', { method: 'POST', headers: { 'content-type':` |
+| A public API | Developers | have | its live page (2026-10-28): "Copyright Contact us Creators Advertise Developers Terms Privacy Policy & Safety How YouTube works Test new fe" | void-live-deploy//index.html:1758 `const r = await fetch('/api/actions', { method: 'POST', headers: { 'content-type':` |
 | Creators | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Policy & Safety | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | How YouTube works | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

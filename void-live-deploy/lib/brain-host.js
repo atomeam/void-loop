@@ -10,7 +10,8 @@
 //             tick, so about 1% of the main thread; the open card runs it at full speed
 //   keeps     what it learned, on this device: every 30 seconds after a change, and when the page hides; and which ideas were lit
 //             (lib/brain-glow.js), so a reload keeps the words it was just told as bright as they were, dimmed by the time away
-//   bridges   other Verse pages in this browser reach it (lib/brain-bridge.js hostBrain, window.verseBrain)
+//   bridges   other Verse pages in this browser reach it (lib/brain-bridge.js hostBrain, window.verseBrain); every page tells it which
+//             page the visitor opened (lib/brain-everywhere.js), kept as the pages it saw (host.pages, the newest PAGES_MAX)
 //   watches   Verse's own health every 15 minutes while the page is visible (lib/brain-watch.js): runs on main, open pull requests
 //             and issues, read from GitHub's public API and /incidents.json; a break is an action in its log and pulls its attention.
 //             The same look reads what Verse decided (/api/will: its top want, the site it is assimilating, its last run) and its team
@@ -23,8 +24,9 @@ import * as Glow from './brain-glow.js';
 import { hostBrain } from './brain-bridge.js';
 import * as Route from './brain-route.js';
 import * as Watch from './brain-watch.js';
+import { SEEN_KEY, SEEN_MAX, takeAll } from './brain-everywhere.js';
 
-export const TICK_MS = 500, TICK_MS_PHONE = 1000, SAVE_MS = 30000;
+export const TICK_MS = 500, TICK_MS_PHONE = 1000, SAVE_MS = 30000, PAGES_MAX = 24;
 
 /** the page's one host: the running one, or a new one. void.html calls it in idle time, the Verse Brain card when it opens (whichever comes
  *  first starts it). opts: { doc, win, seed, early: [{ text, at }] asks the page heard before (only those before the host started are
@@ -41,7 +43,7 @@ export function startHost(opts = {}) {
   const doc = opts.doc || (typeof document !== 'undefined' ? document : null), win = opts.win || (typeof window !== 'undefined' ? window : null);
   const store = opts.store || { loadKept, keep, loadGlow, keepGlow }, now = () => (opts.now ? opts.now() : Date.now()), phone = !!(win && typeof win.matchMedia === 'function' && win.matchMedia('(pointer: coarse)').matches);
   const fresh = (seed) => B.createBrain(seed || ((Date.now() & 0xffff) || 1), { phone });
-  const host = { brain: fresh(opts.seed), adopted: false, changed: false, kept: null, verse: null, listeners: new Set(), alive: true, startedAt: Date.now(), restored: [], heardHere: [], told: false, glow: null, lit: [], glowing: false, glowSaved: '' };
+  const host = { brain: fresh(opts.seed), adopted: false, changed: false, kept: null, verse: null, listeners: new Set(), alive: true, startedAt: Date.now(), restored: [], heardHere: [], pages: [], told: false, glow: null, lit: [], glowing: false, glowSaved: '' };
   const emit = (type, detail) => { for (const f of host.listeners) { try { f(type, detail); } catch (_) { /* a listener's own problem */ } } };
   const bind = (b) => { if (host.kept) B.loadKnowledge(b, host.kept); if (host.verse) B.knowVerse(b, host.verse); return b; };
 
@@ -107,6 +109,12 @@ export function startHost(opts = {}) {
   host.onlyHere = () => !host.told;
   host.warm = (b) => { if (host.glow) Glow.loadGlow(b, host.glow, now()); for (const t of host.heardHere) B.ask(b, t); host.told = true; };
   host.on = (fn) => { host.listeners.add(fn); return () => host.listeners.delete(fn); };
+  /** a page the visitor opened (its name and path): its words become ideas, and it is kept with the pages it saw, newest last. */
+  host.sawPage = (text, page, at = Date.now()) => {
+    const t = String(text == null ? '' : text).trim().slice(0, 120); if (!t) return false;
+    host.pages.push({ text: t, page: String(page || '').slice(0, 80), at }); if (host.pages.length > PAGES_MAX) host.pages.shift();
+    host.changed = true; emit('seen', { text: t, page }); return true;
+  };
   /** keep which ideas are lit, when it changed (or always, with force: the page is hiding, so the time it was kept is now). */
   host.saveGlow = async (force) => {
     if (!host.glowing || !store.keepGlow) return false;
@@ -132,7 +140,9 @@ export function startHost(opts = {}) {
     // asks typed on tool pages since it last ran (lib/toolkit.js keeps them on this device): it hears each, and logs where the page sent it
     const ls = win && (() => { try { return win.localStorage; } catch (_) { return null; } })();
     if (ls) { let q = []; try { q = JSON.parse(ls.getItem(Route.HEARD_KEY) || '[]'); ls.removeItem(Route.HEARD_KEY); } catch (_) { q = []; }
-      for (const a of (Array.isArray(q) ? q : []).slice(-Route.HEARD_MAX)) if (a && typeof a.text === 'string' && a.text.trim() && !/^\s*(?:unlock\s*)+\S{16,}/i.test(a.text)) { host.hear(a.text); Route.heard(routes(), a.text, a.from, a.to, Number(a.at) || Date.now()); } }
+      for (const a of (Array.isArray(q) ? q : []).slice(-Route.HEARD_MAX)) if (a && typeof a.text === 'string' && a.text.trim() && !/^\s*(?:unlock\s*)+\S{16,}/i.test(a.text)) { host.hear(a.text); Route.heard(routes(), a.text, a.from, a.to, Number(a.at) || Date.now()); }
+      // the pages opened while no brain ran (lib/brain-everywhere.js): ideas, not goals
+      for (const a of takeAll(ls, SEEN_KEY, SEEN_MAX)) { B.tell(host.brain, a.text); host.sawPage(a.text, a.from, Number(a.at) || Date.now()); } }
   });
   if (opts.self) Promise.resolve(opts.self).then((j) => { if (j) { host.verse = j; B.knowVerse(host.brain, j); } }).catch(() => {});
 
@@ -152,7 +162,7 @@ export function startHost(opts = {}) {
   const onHide = () => { if (!doc || doc.visibilityState === 'hidden') host.save(true).catch(() => {}); };
   if (doc) { doc.addEventListener('void:ask', onAsk); doc.addEventListener('visibilitychange', onHide); }
   if (win && win.addEventListener) win.addEventListener('pagehide', onHide);
-  if (opts.bridge !== false) bridge = hostBrain(B, () => host.brain, { onWords: (t, from) => { host.changed = true; host.told = true; host.glowing = true; emit('words', { text: t, from }); } });
+  if (opts.bridge !== false) bridge = hostBrain(B, () => host.brain, { onWords: (t, from) => { host.changed = true; host.told = true; host.glowing = true; emit('words', { text: t, from }); }, onSeen: (t, page) => host.sawPage(t, page) });
   host.publish = (force) => (bridge ? bridge.publish(force) : null);
   host.stop = () => {
     host.alive = false; if (win && win.verseBrainHost === host) delete win.verseBrainHost; clearInterval(timer); clearInterval(saver); clearInterval(watcher); clearTimeout(firstLook); if (bridge) bridge.close();
