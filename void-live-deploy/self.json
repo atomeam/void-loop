@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:01:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T03:59:56Z",
+   "subject": "Movie pick: ask a new lookup address, keep \"not verified\" an hour"
+  },
+  {
    "at": "2026-10-30T03:57:27Z",
    "subject": "MultiVerse: the owner is always a member"
   },
@@ -564,6 +572,10 @@
   {
    "at": "2026-10-30T03:54:11Z",
    "subject": "Movie lookup: the void-review marker on the line it covers"
+  },
+  {
+   "at": "2026-10-30T03:51:25Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T03:51:25Z",
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T03:32:55Z",
    "subject": "Movie pick: Wikidata verifies films when iTunes refuses, and a refusal is no longer cached as \"not verified\""
-  },
-  {
-   "at": "2026-10-30T03:32:55Z",
-   "subject": "What's new in the book reads for visitors, by their own day"
-  },
-  {
-   "at": "2026-10-30T03:32:51Z",
-   "subject": "Verse loop: task, Queue job mvqf0d75 (versus: communitydragon.org): Versus: co"
-  },
-  {
-   "at": "2026-10-30T03:32:50Z",
-   "subject": "MultiVerse owner link: mark the one-at-a-time writes in the loop for Verse's review"
   }
  ],
  "builders": {
