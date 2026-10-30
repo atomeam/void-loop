@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T02:30:14Z",
+   "subject": "Refresh generated files: families, deps, guide, self, asks links, churn, sitemap"
+  },
+  {
    "at": "2026-10-30T02:28:13Z",
    "subject": "Self card: the bars' least proven family everywhere, site-named asks need site evidence, no doubled ledger lines, no review prompts on the…"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-29T23:54:23Z",
    "subject": "The book: a page for hangman (it was in no family, so the book checks failed on main)"
-  },
-  {
-   "at": "2026-10-29T23:52:27Z",
-   "subject": "Bench: one tab for each slot again (reverts f240133 for tools/bench.mjs only)"
   }
  ],
  "builders": {
@@ -871,6 +871,6 @@
    "ndscalc.ru"
   ],
   "beaten": 0,
-  "total": 1268
+  "total": 1269
  }
 }

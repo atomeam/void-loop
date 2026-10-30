@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 994,
+ "counted": 996,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1788,6 +1788,13 @@
    "tests": 2
   },
   {
+   "file": "lib/stl-check.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/study-cards.js",
    "skills": 1,
    "direct": 1,
@@ -1855,7 +1862,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 14
+   "tests": 15
   },
   {
    "file": "lib/tower-rank.js",
@@ -9574,6 +9581,12 @@
     "skills/stigmergy-board.js"
    ]
   },
+  "lib/stl-check.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/stl-check.js"
+   ]
+  },
   "lib/stopwatch.js": {
    "imports": [],
    "importedBy": []
@@ -13821,6 +13834,12 @@
   "skills/stigmergy-board.js": {
    "imports": [
     "lib/stigmergy-law.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stl-check.js": {
+   "imports": [
+    "lib/stl-check.js"
    ],
    "importedBy": []
   },
