@@ -21,10 +21,11 @@ const UA = 'Mozilla/5.0 (compatible; VerseBot/1.0; +https://a-to-mind.com/)', DA
 const readJson = (p, d) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (_) { return d; } };
 
 /** the sites to read this run: unmeasured first, then a weighed row with no controls count yet (the queue ranks on controls, then bytes), then, when
- *  this run renders pages, a row whose controls were counted only from raw html, then the oldest rows past their 30 days; never a no-rival site; at
+ *  this run renders pages, a row whose controls were counted only from raw html, then a row not yet checked for a bot wall or a country picker
+ *  (no shell field), then the oldest rows past their 30 days; never a no-rival site; at
  *  most max. Pure. */
 export function planSizes({ sites, file = {}, now = Date.now(), max = 120, rendered = false }) {
-  const rows = file.sites || {}, due = (s) => { const r = rows[s.host]; return !r ? 0 : !r.refused && !Number.isFinite(+r.controls) ? 1 : rendered && !r.refused && !['rendered', 'unrendered'].includes(r.counted) ? 1.5 : now - Date.parse(r.at || 0) > FRESH_DAYS * DAY ? 2 : null; };
+  const rows = file.sites || {}, due = (s) => { const r = rows[s.host]; return !r ? 0 : !r.refused && !Number.isFinite(+r.controls) ? 1 : rendered && !r.refused && !['rendered', 'unrendered'].includes(r.counted) ? 1.5 : rendered && r.counted === 'rendered' && !r.shell ? 1.6 : now - Date.parse(r.at || 0) > FRESH_DAYS * DAY ? 2 : null; };
   return sites.filter((s) => s.host && !noRivalUrl('https://' + s.host + '/')).map((s) => ({ s, d: due(s) })).filter((x) => x.d !== null).sort((a, b) => a.d - b.d).slice(0, max).map((x) => x.s);
 }
 const get = async (url, max = 3e6) => { const r = await fetch(url, { headers: { 'user-agent': UA, accept: '*/*' }, redirect: 'follow', signal: AbortSignal.timeout(12000) }); const buf = Buffer.from(await r.arrayBuffer()).subarray(0, max); return { ok: r.ok, status: r.status, buf, type: r.headers.get('content-type') || '', url: r.url }; };
@@ -44,9 +45,22 @@ export function isTool(html) {
   const real = /<(textarea|select|canvas)\b/i.test(t) || /<input\b(?![^>]*type=["']?(?:search|hidden|password|email|submit|checkbox)["']?)(?![^>]*name=["']?(?:q|s|search|query|user|username|login|email|pass)["']?)/i.test(t) || /<button\b/i.test(t);
   return real && content < 3;
 }
-/** the controls of a page after its scripts ran: one page of the run's one browser, images, media and fonts not fetched, the html read once the
- *  network is quiet (at most 6 s after it loaded). Null when the page will not render. */
-export async function renderedControls(browser, url) {
+// a bot check or a country picker is a door in front of the site, not the site (owner review, 2026-10-30): serverdiscounter.com's 3 controls were the
+// links of an Anubis "Making sure you're not a bot!" page, wheeloutlet.com's 6 a "Select your country" splash. The check is never worked or waited out.
+export const WALL_RE = /\b(making sure you'?re not a bot|i'?m not a robot|are you a robot|verify (?:that )?you are (?:a )?human|checking (?:your browser|if the site connection is secure)|just a moment|attention required|security check|ddos protection by)\b/i;
+export const GATEWAY_RE = /\b(?:select|choose|pick) (?:your |a )?(?:country|region|language|location)\b/i;
+/** what a home page is when it is a door, not the site: 'wall' (a bot check), 'gateway' (a country, region or language picker with under 20 controls),
+ *  else 'none'. Read from the page's title and the start of its visible text, and the address the page ended on. Pure. */
+export function shellOf({ html = '', url = '', controls = null } = {}) {
+  const t = String(html), title = ((t.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || '').trim();
+  const text = (title + ' ' + t.replace(/<(script|style|noscript|template|head)\b[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ')).replace(/\s+/g, ' ').trim().slice(0, 800);
+  if (/\/\.within\.website\//.test(String(url)) || WALL_RE.test(text)) return 'wall';
+  if (GATEWAY_RE.test(text) && Number.isFinite(+controls) && controls !== null && +controls < 20) return 'gateway';
+  return 'none';
+}
+/** a page after its scripts ran: { controls, html, url }, from one page of the run's one browser, images, media and fonts not fetched, the html read
+ *  once the network is quiet (at most 6 s after it loaded). Null when the page will not render. */
+export async function renderedPage(browser, url) {
   let ctx = null;
   try {
     ctx = await browser.newContext({ userAgent: UA, javaScriptEnabled: true });
@@ -56,10 +70,12 @@ export async function renderedControls(browser, url) {
     const loaded = await page.goto(url, { waitUntil: 'load', timeout: 20000 }).then(() => true, () => false);
     if (loaded) await page.waitForLoadState('networkidle', { timeout: 6000 }).catch(() => {});
     else if (!/^https?:/.test(page.url())) return null;
-    const n = controlsOf(await page.content()).total;
-    return loaded || n > 0 ? n : null;
+    const html = await page.content(), n = controlsOf(html).total;
+    return loaded || n > 0 ? { controls: n, html, url: page.url() } : null;
   } catch (_) { return null; } finally { if (ctx) await ctx.close().catch(() => {}); }
 }
+/** the controls of a page after its scripts ran (renderedPage's count), or null when the page will not render. */
+export const renderedControls = async (browser, url) => { const p = await renderedPage(browser, url); return p ? p.controls : null; };
 /** the run's one browser, when this machine has one (VOID_TEST_BROWSER or the sandbox path), else null: the raw count stands. */
 export async function openBrowser() {
   const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
@@ -81,8 +97,9 @@ export async function readSite(host, { browser = null } = {}) {
     const assets = []; for (const u of found) { try { const a = await get(u); if (a.ok) assets.push({ url: u, bytes: a.buf.length }); } catch (_) { /* skipped */ } }
     let sm = null; try { const s = await get(origin + '/sitemap.xml', 2e6); if (s.ok) sm = (s.buf.toString('utf8').match(/<loc>/g) || []).length || null; } catch (_) { /* none */ }
     const m = measure({ html, htmlBytes: home.buf.length, assets, sitemapUrls: sm, host });
-    const seen = browser ? await renderedControls(browser, home.url) : null, counted = seen !== null ? { controls: seen, htmlControls: m.controls, counted: 'rendered' } : { counted: browser ? 'unrendered' : 'html' }; // unrendered: the browser tried and the page would not render, so it waits its 30 days
-    return { ...m, ...counted, weight: weightOf(m), at: new Date().toISOString().slice(0, 10) };
+    const seen = browser ? await renderedPage(browser, home.url) : null, counted = seen ? { controls: seen.controls, htmlControls: m.controls, counted: 'rendered' } : { counted: browser ? 'unrendered' : 'html' }; // unrendered: the browser tried and the page would not render, so it waits its 30 days
+    const shell = seen ? shellOf(seen) : shellOf({ html, url: home.url, controls: m.controls }); // the page as the browser left it, else the raw html
+    return { ...m, ...counted, shell, weight: weightOf(m), at: new Date().toISOString().slice(0, 10) };
   } catch (_) { return null; }
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -91,7 +108,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const sites = FLOORS.map((f) => ({ id: f.id, host: hostOf(f.url) })).concat(frontierOf(fr).map((x) => ({ id: x.host, host: x.host })));
   const browser = await openBrowser();
   const list = only ? sites.filter((s) => only.split(',').includes(s.host)) : planSizes({ sites, file, max: Number(opt('--max', 120)), rendered: !!browser });
-  const out = { about: 'How big each Versus site really is, measured by tools/tower-size.mjs: the interactive elements on its home page (controls: links, inputs, buttons, selects; counted on the rendered page when counted is rendered, with htmlControls the raw-html count, else on the raw html), transfer bytes of its home page plus its own scripts and styles, script and element counts, routes (sitemap urls, else internal links). The queue ranks the fewest controls first, the fewer bytes on a tie. weight = bytes + 2000 per script + 10 per element + 500 per route (lib/tower-weight.js). Keyed by host.', sites: { ...(file.sites || {}) } };
+  const out = { about: 'How big each Versus site really is, measured by tools/tower-size.mjs: the interactive elements on its home page (controls: links, inputs, buttons, selects; counted on the rendered page when counted is rendered, with htmlControls the raw-html count, else on the raw html), transfer bytes of its home page plus its own scripts and styles, script and element counts, routes (sitemap urls, else internal links). shell is wall (a bot check) or gateway (a country or language picker) when the home page is a door, not the site, else none. The queue ranks the fewest controls first, the fewer bytes on a tie, on rendered rows that are not a door; the rest stand behind. weight = bytes + 2000 per script + 10 per element + 500 per route (lib/tower-weight.js). Keyed by host.', sites: { ...(file.sites || {}) } };
   let n = 0, late = 0; const queue = [...list], stop = Date.now() + Math.max(1, Number(opt('--minutes', 35)) || 35) * 6e4;
   // a known site that timed out or would not render keeps its row, marked unrendered, and waits its 30 days
   // one browser, at most 3 pages in it at once (AGENTS.md: never 2 heavy browser jobs at once; the workflow's concurrency group keeps this the only one)
