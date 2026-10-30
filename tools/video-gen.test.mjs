@@ -21,10 +21,10 @@ function d1() {
   return { prepare: (sql) => stmt(sql), batch: async (list) => Promise.all(list.map((s) => s.run())), raw: db };
 }
 const CLIP = 'https://clips.example/a.mp4';
-// the partner model: 'ok' answers like p-video does ({ state, result: { video } }); 'credits' throws the live error of 2026-10-30
+// the partner model: 'ok' answers like p-video does ({ state, result: { video } }); 'slow' does the same after 20 ms, so parallel asks overlap; 'credits' throws the live error of 2026-10-30
 function world(ai = 'ok', extra = {}) {
   store.clear(); resetGuard(); clip.resetReady(); resetStudio(); const calls = [];
-  const AI = { run: async (model, input) => { calls.push({ model, input }); if (ai === 'credits') throw new Error('2021: Insufficient AI Gateway credits'); if (ai === 'empty') return { state: 'Completed' }; return { state: 'Completed', result: { video: CLIP } }; } };
+  const AI = { run: async (model, input) => { calls.push({ model, input }); if (ai === 'credits') throw new Error('2021: Insufficient AI Gateway credits'); if (ai === 'empty') return { state: 'Completed' }; if (ai === 'slow') await new Promise((r) => setTimeout(r, 20)); return { state: 'Completed', result: { video: CLIP } }; } };
   return { env: { DB: d1(), AI, SALT: 'test-salt', ...extra }, calls }; // secret-scan: ok (a made-up salt for the test)
 }
 const host = (type = 'video/mp4') => async () => new Response('x', { status: 200, headers: { 'content-type': type } });
@@ -102,6 +102,17 @@ test('the public limits: words checked first, two a minute per connection, the m
   gone.env.DB.raw.prepare('INSERT INTO void_clip_state VALUES (?, 1, ?, ?)').run('video', 'ok', Date.now());
   assert.equal((await post(gone.env, { prompt: 'a cat' })).why, 'credits');
   assert.equal((await get(gone.env)).on, false, 'credits running out turns the page off until the next test');
+});
+
+test('parallel asks cannot pass the day\'s dollars together: one statement checks and books them', async () => {
+  // $0.03 fits one 5 second draft ($0.025) and not two; five asks at once from five connections get one clip
+  const { env, calls } = world('slow', { PUBLIC_VIDEO_DAILY_USD: '0.03' }); await get(env); await get(env);
+  const before = calls.length;
+  const rs = await Promise.all([0, 1, 2, 3, 4].map((i) => post(env, { prompt: 'a cat ' + i, seconds: 5 }, '198.51.100.' + (20 + i))));
+  assert.equal(rs.filter((r) => r.state === 'video').length, 1); assert.equal(rs.filter((r) => r.why === 'cap').length, 4);
+  assert.equal(calls.length, before + 1, 'the model is asked once, not five times');
+  const row = env.DB.raw.prepare("SELECT usd FROM void_studio_spend WHERE who = 'public'").get();
+  assert.ok(Number(row.usd) <= 0.03 + 1e-9, 'the booked dollars stay inside the cap');
 });
 
 test('the first frame is only a picture /api/image made today or yesterday, found by its words and seed', async () => {

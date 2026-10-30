@@ -79,10 +79,13 @@ export function summaryOf(t) {
   if (t.passed) out.push('Passed ' + t.passed.ok + ' of ' + t.passed.of);
   if (t.read) {
     for (const c of t.read.changed) out.push('Changed: ' + c);
+    for (const b of t.read.blocked) out.push('Blocked: ' + b);
     for (const w of t.read.waits) out.push('Waiting: ' + w);
     if (t.read.next) out.push('Next step: ' + t.read.next);
   }
-  out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed' : 'Nothing in it names a failure');
+  const nb = t.read ? t.read.blocked.length : 0;
+  out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed'
+    : nb ? nb + ' thing' + (nb === 1 ? ' is' : 's are') + ' blocked, and nothing in it names a failure' : 'Nothing in it names a failure');
   return out;
 }
 
@@ -97,22 +100,28 @@ export function isBuildersReport(text) {
 // answered one with the broken-automation fix card ("That thread didn't start" read as trouble, "job loop" as the thing). It is a report to
 // read back: what changed, what waits, and the one next step. A text that says something of its own is broken is never one.
 const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live)|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b)/i;
-const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b)/i;
+const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b|the\s+(?:one|only|last)\s+(?:step|thing)\s+left\b)/i;
+// a thing the report says is blocked ("Video is blocked.") is a blocker to show, not a wait; "a check blocked it" stays a wait (2026-10-30 card: "Video is blocked"
+// came back under Waiting, over "Nothing in it names a failure")
+const BLOCKED = /^(?:[\w'’/.-]+\s+){0,5}(?:is|are|stays?|remains?)\s+(?:still\s+)?blocked\b|\bstill\s+blocked\b|^blocked\s*:/i;
 const CHANGED = /\b(?:merged|is (?:now )?live|went live|shipped|deployed|released|landed|adds|added|fixed|finished|done|turned on|switched on|published)\b/i;
 const BROKEN = /\b(?:stopped\s+(?:working|firing|running)|is(?:n't| not)\s+working|does(?:n't| not)\s+work|not working|keeps?\s+failing|won't\s+(?:run|start|fire|load)|broke\b|crash(?:es|ed)?)\b/i;
-const kindOf = (s) => (NEXT.test(s) ? 'next' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null);
+const kindOf = (s) => (/\?\s*$/.test(s) ? null : NEXT.test(s) ? 'next' : BLOCKED.test(s) ? 'blocked' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null); // a question is not a fact
+// a pasted chat keeps its own stamps ("Today 7:34 AM", "Yesterday", "Oct 29, 4:10 PM"): a time line is the chat's, not the report's
+const STAMP = /^(?:(?:today|yesterday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun)\b|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+\d{1,2}\b)(?:,?\s*\d{4})?(?:\s*(?:at\s+)?,?\s*\d{1,2}:\d{2}\s*(?:[ap]\.?m\.?)?)?$|^\d{1,2}:\d{2}\s*(?:[ap]\.?m\.?)?$/i;
 const plain = (s) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, '').replace(/^\s*(?:>|[-+]\s|\d+[.)]\s)\s*/, '').replace(/\s+/g, ' ').trim(); // keeps "#1470"
 const tidy = (s) => s.replace(/^(?:also|and|then|plus|so)\s*,?\s+/i, '').replace(/[,;\s]+$/, '').replace(/[^.!]$/, '$&.').replace(/^./, (c) => c.toUpperCase());
 
 /** a pasted status report read back as { changed, waits, next }, or null when the text is not one (a question, an instruction, a
  *  complaint that something is broken, or too short to be a report). Pure. */
 export function statusReadOf(raw) {
-  const lines = String(raw || '').split(/\n+/).map(plain).filter(Boolean), text = lines.join(' ');
+  // ⏎ is how a copied chat marks its line breaks: each one ends a line, as a newline does
+  const lines = String(raw || '').split(/\n+|\s*⏎\s*/).map(plain).filter((l) => l && !STAMP.test(l)), text = lines.join(' ');
   if (text.length < MIN_CHARS || text.length > 20000 || BROKEN.test(text) || !lines.length) return null;
   if (/\?\s*$/.test(lines[0]) || /^(?:why|how|what|who|can|could|please|fix|help|explain)\b/i.test(lines[0])) return null;
   const sentences = lines.flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z"'(])/)).map((x) => x.trim()).filter((x) => x.length > 3);
   if (sentences.length < 3) return null;
-  const read = { changed: [], waits: [], next: null };
+  const read = { changed: [], waits: [], blocked: [], next: null };
   for (const s of sentences) {
     // "the cleaner is live, and the fix is set to ship after the reset" is two items; split only when both halves read as one
     const halves = s.split(/,\s+and\s+/);
@@ -123,7 +132,7 @@ export function statusReadOf(raw) {
       else if (k) read[k].push(tidy(p));
     }
   }
-  return read.changed.length && read.waits.length ? read : null;
+  return read.changed.length && (read.waits.length || read.blocked.length) ? read : null;
 }
 /** true for a pasted status report (see statusReadOf). lib/automation-fix.js intentOf asks this, so a report is never a fix ask. Pure. */
 export function isStatusReport(text) { return !!statusReadOf(text); }

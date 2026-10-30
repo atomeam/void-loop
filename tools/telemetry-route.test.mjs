@@ -125,6 +125,7 @@ test('a pasted status report is read back as what changed, what waits and the ne
   assert.deepEqual(statusReadOf(PASTED_STATUS), {
     changed: ["Verse's own job loop merged #1470 by itself.", 'It adds a /prizes/ row for crypto rewards and gambling, marked core.', 'The sprite sheet cleaner is live.'],
     waits: ["That thread didn't start.", 'A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.', "Nobody chose that, so it's worth a look.", "The fix for the will's coder is set to ship after the 8 PM run limit resets."],
+    blocked: [],
     next: 'If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.',
   });
   const t = telemetryOf(PASTED_STATUS);
@@ -135,6 +136,31 @@ test('a pasted status report is read back as what changed, what waits and the ne
   assert.ok(lines.includes("Waiting: That thread didn't start."));
   assert.ok(lines.includes('Next step: If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.'));
   assert.ok(!lines.some((l) => /broken|automation|troubleshoot/i.test(l)));
+});
+
+// The report the owner pasted into Verse on 2026-10-30, rebuilt from the card it made: a copied chat, with its ⏎ line marks, an old question
+// and the chat's own "Today 7:34 AM" stamp. The card filed the stamp and the question under "Changed", "Video is blocked" under "Waiting",
+// and still said "Nothing in it names a failure".
+export const PASTED_CHAT = "The image page on a-to-mind.com is live and now picks its model from Verse's own scores.\nA 5 second draft clip costs about 3 cents. ⏎ Should I build the video page once you add AI Gateway credits? ⏎ Today 7:34 AM ⏎ The video page is live at a-to-mind.com/video/.\nIt says \"video turns on when credits are added\".\nVerse runs a test every few hours and turns the page on by itself after the first real clip. ⏎ The clip link fix and the fix to Verse's code review are merged and live. ⏎ The one step left is yours: add AI Gateway credits in your Cloudflare account.\nI checked today's test pictures by eye. klein-4b scores best, and the test runs again every day. ⏎ Video is blocked.";
+
+test('a copied chat is read line by line: its stamps and old questions are dropped, and a thing that is blocked is shown as blocked (the 2026-10-30 card)', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const r = statusReadOf(PASTED_CHAT);
+  assert.ok(r);
+  assert.deepEqual(r.blocked, ['Video is blocked.']);
+  assert.equal(r.next, 'The one step left is yours: add AI Gateway credits in your Cloudflare account.');
+  assert.ok(r.changed.includes('The video page is live at a-to-mind.com/video/.'));
+  assert.ok(r.changed.includes("The clip link fix and the fix to Verse's code review are merged and live."));
+  const all = [...r.changed, ...r.waits, ...r.blocked, r.next].join('\n');
+  assert.doesNotMatch(all, /⏎|Today 7:34|\?/, 'no chat mark, stamp or question is read as a fact');
+  const lines = summaryOf(telemetryOf(PASTED_CHAT));
+  assert.ok(lines.includes('Blocked: Video is blocked.'));
+  assert.ok(lines.includes('1 thing is blocked, and nothing in it names a failure'));
+  assert.ok(!lines.some((l) => /^Nothing in it names a failure/.test(l)), 'the plain "nothing failing" line is not shown over a blocker');
+  // "a check blocked it" is still a wait, and a line that only starts like a day is not a stamp
+  assert.deepEqual(statusReadOf('The new header on the home page is live for everyone. A safety check blocked the deploy of the footer for now. Monitor: the menu fix shipped this morning. The footer is set to ship after the run limit resets tonight.'), {
+    changed: ['The new header on the home page is live for everyone.', 'Monitor: the menu fix shipped this morning.'],
+    waits: ['A safety check blocked the deploy of the footer for now.', 'The footer is set to ship after the run limit resets tonight.'], blocked: [], next: null });
 });
 
 test('a status read needs both a change and a wait, and never takes a complaint that something is broken', async () => {
