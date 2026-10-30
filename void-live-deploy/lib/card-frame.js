@@ -229,9 +229,11 @@ export function lookup(stats, name) {
   const f = stats && stats.deps && stats.deps.files, d = f && f['skills/' + name + '.js'];
   return { skill, page, book, deps: d ? { imports: (d.imports || []).filter((x) => !/\/mini\//.test(x)), importedBy: d.importedBy || [] } : null };
 }
-/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026") or a card says its data is from
- *  ("ECB rate of Thu, Oct 29, 2026"), or null. A card with no date keeps freshness 1, so the date it prints must count. Pure. */
+/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), a card says its data is from
+ *  ("ECB rate of Thu, Oct 29, 2026") or a kept card says its values were read ("read 2026-10-30"), or null. A card with no date keeps freshness 1, so the date it prints must count. Pure. */
 export function editedDaysAgo(text, now = Date.now()) {
+  const iso = /\bread (\d{4})-(\d{2})-(\d{2})\b/.exec(String(text || '')); // a kept card's "read 2026-10-30": the day its values were read from the pages it names
+  if (iso) { const t = Date.UTC(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3])); if (Number.isFinite(t)) return Math.max(0, (now - t) / 864e5); }
   const m = /(?:last edited|rate of|as of|updated|published|dated) (?:[A-Z][a-z]{2,8}, )?([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
   const months = { Jan: 0, January: 0, Feb: 1, February: 1, Mar: 2, March: 2, Apr: 3, April: 3, May: 4, Jun: 5, June: 5, Jul: 6, July: 6, Aug: 7, August: 7, Sep: 8, September: 8, Oct: 9, October: 9, Nov: 10, November: 10, Dec: 11, December: 11 };
   const month = months[m[1]];

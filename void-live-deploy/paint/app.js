@@ -2,6 +2,7 @@
 // numbered areas, tap an area to fill it, smooth zoom and pan (wheel, pinch, buttons, keys), the chosen number's areas highlighted, hints
 // that fly to an area, progress kept on this device after every tap, a reveal and a replay when the picture is done, and your own photo
 // turned into a sheet here in the browser. Nothing is uploaded. Every id and line tools/test_void.mjs and the paint probe read is kept.
+import { receiveImage, sendImage, canvasBlob } from '/lib/image-handoff.js';
 const $ = (id) => document.getElementById(id);
 const cv = $('c'), ctx = cv.getContext('2d'), say = (t) => { $('say').textContent = t; };
 const S = 4;                 // the sheet is drawn at 4 canvas pixels per picture pixel, so numbers and outlines stay sharp when zoomed
@@ -290,14 +291,27 @@ $('rpng').onclick = () => $('png').click();
 $('rnext').onclick = () => { $('reveal').hidden = true; const list = PICTURES.filter((t) => !(progressOf(t.id) || {}).finished && t.id !== state.tpl.id); const t = list[0] || PICTURES[0]; open(t); };
 
 // ---------- export, share, gallery ----------
-$('png').onclick = () => {
+// the painting as it stands: the paper under any area not yet filled, the filled colours over it
+function paintingCanvas() {
   const out = document.createElement('canvas'); out.width = state.tpl.w * S; out.height = state.tpl.h * S;
   const g = out.getContext('2d'); g.fillStyle = '#fcfbf7'; g.fillRect(0, 0, out.width, out.height);
   if (state.done.size < state.areas.length) g.drawImage(state.paper, 0, 0);
   g.imageSmoothingEnabled = false; g.drawImage(state.painted, 0, 0, out.width, out.height);
-  const a = document.createElement('a'); a.href = out.toDataURL('image/png'); a.download = (state.tpl.id || 'painting') + '.png'; a.click();
+  return out;
+}
+$('png').onclick = () => {
+  const a = document.createElement('a'); a.href = paintingCanvas().toDataURL('image/png'); a.download = (state.tpl.id || 'painting') + '.png'; a.click();
   say('PNG downloaded.');
 };
+// the painting into the photo pages, already open there (lib/image-handoff.js): a press keeps one PNG on this device and opens the page
+{ const row = $('related'), label = row && row.querySelector('.tk-label');
+  for (const [text, path] of [['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
+    const a = document.createElement('a'); a.href = path; a.textContent = text; a.className = 'tk-hand';
+    a.addEventListener('click', (e) => { e.preventDefault(); if (!state.tpl || !state.painted) return;
+      sendImage(path, () => canvasBlob(paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
+        .then((ok) => { if (!ok) say('Your painting could not be kept for the next page in this browser.'); }); });
+    if (label) label.after(' ', a); }
+}
 $('share').onclick = () => {
   const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done;
   history.replaceState(null, '', q);
@@ -431,8 +445,9 @@ function photoSheet(img, k) {
   const runs = []; let prev = -1, cnt = 0; for (const v0 of lab) { const v = map.get(v0); if (v === prev) cnt++; else { if (prev >= 0) runs.push([prev, cnt]); prev = v; cnt = 1; } } runs.push([prev, cnt]);
   return { w: S2, h: S2, palette, rle: runs };
 }
-$('up').onchange = async (e) => {
-  const file = e.target.files?.[0]; if (!file) return;
+$('up').onchange = (e) => { const file = e.target.files?.[0]; if (file) paintFile(file); };
+// a photo becomes a sheet: chosen here, or handed over by another page (lib/image-handoff.js, ?img=handoff)
+function paintFile(file) {
   say('Cutting your photo into numbered areas…');
   const img = new Image();
   img.onload = () => {
@@ -446,9 +461,11 @@ $('up').onchange = async (e) => {
   };
   img.onerror = () => say('That file could not be read as a picture.');
   img.src = URL.createObjectURL(file);
-};
+}
 
 async function boot() {
+  // the address as it came in: opening a picture below rewrites it to ?p=…, which would drop a handed-over ?img=handoff
+  const arrived = { search: location.search, pathname: location.pathname, hash: location.hash };
   let index;
   try { const r = await fetch('/paint/templates/index.json'); index = await r.json(); }
   catch (_) { index = { categories: ['Masterpieces'], pictures: [{ id: 'wave', name: 'The Great Wave', cat: 'Masterpieces', file: '/paint/templates/wave.json' }, { id: 'starry', name: 'The Starry Night', cat: 'Masterpieces', file: '/paint/templates/starry.json' }] }; }
@@ -461,6 +478,7 @@ async function boot() {
   const link = params.has('done') ? (params.get('done') || '').split(',').filter((s) => s !== '').map(Number) : null;
   await open(first, link);
   if (link && link.length) keep();
+  await receiveImage((file) => paintFile(file), arrived);
 }
 boot().catch((err) => { $('count').textContent = 'The paintings did not load.'; say(String(err.message || err)); });
 if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)

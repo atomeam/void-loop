@@ -1,4 +1,5 @@
   import { mountRelated } from '/lib/toolkit.js';
+  import { receiveImage } from '/lib/image-handoff.js';
   const boot = async () => {
   const E = await import('/lib/photo-edit.js'), { stripMeta } = await import('/lib/safety.js');
   const $ = (id) => document.getElementById(id), qa = (s, r = document) => [...r.querySelectorAll(s)];
@@ -165,6 +166,8 @@
   tr(); fbox.firstChild.textContent = say('none');
   window.__photos = { items: () => items, show };
   document.documentElement.dataset.photos = 'ready';
+  // a picture handed over by another page (lib/image-handoff.js, ?img=handoff) opens as if it was chosen here
+  await receiveImage((f) => add([f]));
   };
   mountRelated(document.getElementById('related'), '/photos/');
   // the editor loads after the first paint, so the page itself is instant

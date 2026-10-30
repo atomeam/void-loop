@@ -1,7 +1,18 @@
 {
-  "at": "2026-10-29T13:46:26.767Z",
+  "at": "2026-10-30T13:43:42.256Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261029-2241-2",
+      "ask": "Provide a list of the 20 checked and 43 tested skills that can be promoted to proven status.",
+      "target": "voice:ask-20261029-2241-2"
+    },
+    {
+      "id": "ask-20261029-2241-1",
+      "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
+      "target": "voice:ask-20261029-2241-1"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
