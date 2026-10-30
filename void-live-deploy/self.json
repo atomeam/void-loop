@@ -550,6 +550,46 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T11:13:08Z",
+   "subject": "baggage: add the skill to the Sky and earth family and refresh the book"
+  },
+  {
+   "at": "2026-10-30T11:12:56Z",
+   "subject": "baggage: a card with the usual bag limits, read from two airlines' own pages"
+  },
+  {
+   "at": "2026-10-30T11:12:20Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T11:04:23Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T11:02:34Z",
+   "subject": "parity: line numbers after the BMI parser change"
+  },
+  {
+   "at": "2026-10-30T11:02:26Z",
+   "subject": "Main green: the validator check asks for a dish with no built-in recipe; perf3d runs on shard 4"
+  },
+  {
+   "at": "2026-10-30T11:02:06Z",
+   "subject": "guide: count the 2 new BMI bench asks"
+  },
+  {
+   "at": "2026-10-30T11:01:27Z",
+   "subject": "families: count the 2 new BMI bench asks"
+  },
+  {
+   "at": "2026-10-30T10:58:41Z",
+   "subject": "calc: BMI from plain asks, height or weight first"
+  },
+  {
+   "at": "2026-10-30T10:58:36Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T10:53:48Z",
    "subject": "Full-page link keeps what the card shows"
   },
@@ -588,46 +628,6 @@
   {
    "at": "2026-10-30T10:40:39Z",
    "subject": "words: an anagram card says the service failed, not that no word fits"
-  },
-  {
-   "at": "2026-10-30T10:36:54Z",
-   "subject": "fact: the card line names the Wikipedia topic facts too"
-  },
-  {
-   "at": "2026-10-30T10:34:47Z",
-   "subject": "Jobs: drop a salary that cannot be one instead of showing it as a year's pay"
-  },
-  {
-   "at": "2026-10-30T10:31:31Z",
-   "subject": "Open a tool by name: skip pages a skill already owns, and file it under Numbers"
-  },
-  {
-   "at": "2026-10-30T10:30:00Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T10:27:16Z",
-   "subject": "Open a tool page by its name: 'word counter', 'open the piano'"
-  },
-  {
-   "at": "2026-10-30T10:25:40Z",
-   "subject": "Verse fixes its constellation skill: learn to handle \"star patterns tonight\""
-  },
-  {
-   "at": "2026-10-30T10:24:32Z",
-   "subject": "Notes: 'take a note: X' and 'new note X' write a note"
-  },
-  {
-   "at": "2026-10-30T10:23:04Z",
-   "subject": "Recipe card: a dish TheMealDB finds is scaled, and its page link opens it"
-  },
-  {
-   "at": "2026-10-30T10:21:36Z",
-   "subject": "study-cards: \"make flashcards for spanish verbs\" makes a real deck"
-  },
-  {
-   "at": "2026-10-30T10:21:29Z",
-   "subject": "Heavy songs hit with the real drum kit and the grand piano pad"
   }
  ],
  "builders": {

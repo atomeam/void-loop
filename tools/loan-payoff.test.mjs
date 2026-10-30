@@ -36,3 +36,12 @@ test('payoff agrees with the payoff-time calculator of /calculators/', () => {
     assert.equal(r.outputs.find((x) => x.k === 'interest').text, '$' + o.interest.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), P + ' at ' + rate);
   }
 });
+
+test('the payoff card opens the payoff calculator on its numbers, and so does the frame\'s full-page link', async () => {
+  const { default: loan } = await import('../void-live-deploy/skills/loan.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  let el = null; const api = { esc: (s) => String(s), showPage: (f) => { el = { dataset: {} }; f(el); return el; }, _pageStill: () => true };
+  await loan.run('how long to pay off 1000 at 4.5% paying 200 a month', api);
+  assert.equal(el.dataset.page, '/calculators/?calc=payoff-time&P=1000&rate=4.5&pay=200');
+  assert.match(el.innerHTML, /href="\/calculators\/\?calc=payoff-time&P=1000&rate=4\.5&pay=200"/);
+  assert.equal(pageOfCard(loan.name, el.dataset.page)[0], el.dataset.page);
+});

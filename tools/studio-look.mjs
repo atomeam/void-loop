@@ -5,6 +5,7 @@
 //   node tools/studio-look.mjs bench [--models a,b] [--prompts fox,sign] [--size 512] [--cap 3000]
 //   node tools/studio-look.mjs video --prompt "..." [--model p-video] [--seconds 5] [--draft true] [--image out/fox/klein-4b.jpg]
 //   node tools/studio-look.mjs board
+//   node tools/studio-look.mjs clip      (no key: what /api/clip says about video, and whether /video/ is served with its state line and hand-off tag)
 // Video: the clip is downloaded, four frames are taken out with ffmpeg, Verse's judge scores each (op judge), how much they change is measured
 // here (mean pixel change on small grey frames), whether they stay one scene is asked (op steady), and the clip's score is lib/studio.js
 // videoScoreOf. Env: READ_TOKEN (the owner key), SITE (default https://a-to-mind.com), OUT (default out). Never prints the key.
@@ -60,4 +61,9 @@ if (op === 'board') {
     console.log('video score', meta.score, 'motion', meta.motion, 'steady', meta.steady);
   }
   fs.writeFileSync(path.join(OUT, 'video.json'), JSON.stringify(meta, null, 2));
-} else { console.error('op is bench, video or board'); process.exit(2); }
+} else if (op === 'clip') {
+  const api = await fetch(SITE + '/api/clip', { cache: 'no-store' }).then(async (x) => ({ status: x.status, ...(await x.json().catch(() => ({}))) }));
+  const page = await fetch(SITE + '/video/', { cache: 'no-store' }); const html = await page.text();
+  const r = { api, page: { status: page.status, state: html.includes('id="state"'), make: html.includes('id="make"'), handoff: /<meta name="verse-handoff"/.test(html), bytes: html.length } };
+  fs.writeFileSync(path.join(OUT, 'clip.json'), JSON.stringify(r, null, 2)); console.log(JSON.stringify(r, null, 2));
+} else { console.error('op is bench, video, clip or board'); process.exit(2); }

@@ -292,6 +292,7 @@ export const SPECS = {
     await t.download('#download', /\.json$/i); await t.share('#share', async (p) => /Lee Park/.test(await p.locator('#profileout').innerText()));
   },
   '/image/': async (t) => { t.ok((await t.p.locator('#prompt').count()) === 1 && (await t.p.locator('#make').count()) === 1, 'the picture form is there (making one spends the owner\'s model, so it is not run here)'); },
+  '/video/': async (t) => { t.ok((await t.p.locator('#prompt').count()) === 1 && (await t.p.locator('#make').count()) === 1 && (await t.p.locator('#state').count()) === 1, 'the clip form and its on/off line are there (a clip spends credits, so none is made here)'); },
   '/markets/': async (t) => { await t.fill('#q', 'AAPL'); await t.click('#go'); const m = await t.waitText('main', /Apple Inc\.[\s\S]*?\d+\.\d\d|could not|not reach|unavailable|try again/i, 20000);
     t.ok(/Apple Inc\.[\s\S]{0,80}\d+\.\d\d/.test(m) && /as of/.test(m), 'AAPL has a live, dated price: ' + ((m.match(/Apple Inc\.[\s\S]{0,60}/) || [m.slice(0, 60)])[0]).replace(/\s+/g, ' ')); await t.share('#share'); },
   '/markets/caps/': async (t) => { await t.p.waitForTimeout(3000); t.ok(/Bitcoin|BTC/i.test(await t.p.locator('main').innerText()), 'the coin table lists Bitcoin'); },
