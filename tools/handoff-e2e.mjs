@@ -77,6 +77,15 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#detWeather').click()]); await p.waitForSelector('#q');
     if ((await p.locator('#q').inputValue()) !== 'Berlin') throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not Berlin');
     await check('the weather page opened on Berlin');
+    // the day's own links: "Weather that day" carries the place of an event on a day the forecast reaches, and the countdown counts to it
+    const soon = await p.evaluate(() => { const d = new Date(Date.now() + 864e5), z = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); });
+    await p.goto(ORIGIN + '/calendar/?e=' + Buffer.from(JSON.stringify({ ...ev, title: 'Lunch in Lisbon', start: soon + 'T12:30', end: soon + 'T13:30', location: 'Lisbon' })).toString('base64url'), { waitUntil: 'load' });
+    await p.locator('#invAdd').click(); await p.waitForSelector('#detWeather');
+    const rel = (label) => p.locator('#related a', { hasText: label }).first().getAttribute('href');
+    const wx = await rel('Weather that day'), cd = await rel('Countdown to the next event');
+    if (new URL(wx, ORIGIN).searchParams.get('place') !== 'Lisbon') throw new Error('"Weather that day" on ' + soon + ' goes to "' + wx + '", not the weather in Lisbon');
+    if (!/^\/stopwatch\/\?t=\d+%20minutes$/.test(cd)) throw new Error('"Countdown to the next event" goes to "' + cd + '"');
+    await check('"Weather that day" on ' + soon + ' carries Lisbon and the countdown counts to the event');
   },
 };
 
