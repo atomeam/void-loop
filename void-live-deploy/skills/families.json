@@ -578,7 +578,7 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 3,
     "proven": 34
    },
@@ -901,6 +901,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "promoted": "2026-10-30"
+    },
+    {
+     "name": "wordladder",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests"
     }
    ]
   },
