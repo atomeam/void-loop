@@ -37,6 +37,27 @@ async function get(fetchFn, url) {
   const t = await r.text(); if (t.length > 4000000) throw new Error('too large');
   return JSON.parse(t);
 }
+const d8 = (d) => d.replace(/-/g, '');
+/** ESPN's games from one day to another, both YYYY-MM-DD. ESPN stopped answering a range (dates=from-to) in October 2026 with a 400 ("Failed
+ *  to get events endpoint") while a single day and a whole month still answer (seen on production by the self-check, tools/self-check.mjs:
+ *  /scores/ in week view had no games). So the range is asked first, and when it fails a week is asked day by day (at most 7 calls) and a longer
+ *  span month by month (the form view's 6 weeks: 2 or 3 calls), keeping only the games inside it, each game once, in start order. */
+export async function board(fetchFn, base, from, to) {
+  const url = (dates) => base + '/scoreboard?limit=400&dates=' + dates;
+  if (from === to) return readScoreboard(await get(fetchFn, url(d8(from))));
+  try { return readScoreboard(await get(fetchFn, url(d8(from) + '-' + d8(to)))); } catch (_) {}
+  const parts = [];
+  if (to <= shiftDay(from, 6)) for (let d = from; d <= to; d = shiftDay(d, 1)) parts.push(d8(d));
+  else for (let m = from.slice(0, 7); m <= to.slice(0, 7); m = shiftDay(m + '-28', 4).slice(0, 7)) parts.push(m.replace('-', ''));
+  const got = await Promise.allSettled(parts.map((p) => get(fetchFn, url(p))));
+  if (!got.some((r) => r.status === 'fulfilled')) throw new Error('no day answered');
+  const seen = new Set(), games = [];
+  for (const r of got) if (r.status === 'fulfilled') for (const g of readScoreboard(r.value)) {
+    const day = String(g.start || '').slice(0, 10);
+    if (seen.has(g.id) || (parts[0].length === 6 && day && (day < from || day > to))) continue; seen.add(g.id); games.push(g);
+  }
+  return games.sort((a, b) => String(a.start).localeCompare(String(b.start))).slice(0, 80);
+}
 /** the answer to one ask from the sources: { ok: true, ...data, source } or { ok: false }. Never throws. */
 export async function lookScores(ask, fetchFn = fetch, now = Date.now()) {
   const { league, view } = ask;
@@ -51,9 +72,8 @@ export async function lookScores(ask, fetchFn = fetch, now = Date.now()) {
     if (view === 'standings') return { ok: true, ...readStandings(await get(fetchFn, ESPN_V2 + league.path + '/standings'), league.grp), source: 'espn' };
     if (view === 'game') return { ok: true, ...readSummary(await get(fetchFn, base + '/summary?event=' + ask.id)), source: 'espn' };
     if (view === 'team') return { ok: true, games: readScoreboard(await get(fetchFn, base + '/teams/' + ask.id + '/schedule')), source: 'espn' };
-    if (view === 'form') { const gs = readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + shiftDay(ask.day, -42).replace(/-/g, '') + '-' + ask.day.replace(/-/g, ''))); return { ok: true, form: formOf(gs), elo: eloOf(gs), source: 'espn' }; }
-    const dates = ask.span > 1 ? ask.day.replace(/-/g, '') + '-' + shiftDay(ask.day, ask.span - 1).replace(/-/g, '') : ask.day.replace(/-/g, '');
-    try { return { ok: true, games: readScoreboard(await get(fetchFn, base + '/scoreboard?limit=400&dates=' + dates)), source: 'espn' }; }
+    if (view === 'form') { const gs = await board(fetchFn, base, shiftDay(ask.day, -42), ask.day); return { ok: true, form: formOf(gs), elo: eloOf(gs), source: 'espn' }; }
+    try { return { ok: true, games: await board(fetchFn, base, ask.day, shiftDay(ask.day, ask.span - 1)), source: 'espn' }; }
     catch (e) {
       if (league.alt !== 'openliga') throw e;
       // the Bundesliga's community database answers when ESPN does not (its games on that UTC day; the season is the year it started in)

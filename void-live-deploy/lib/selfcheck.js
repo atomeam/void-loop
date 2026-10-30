@@ -27,14 +27,15 @@ const WORDING = [[/\bfight(?:s|ing)?\b/i, 'says "fight": Verse assimilates'], [/
 const clip = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, WHY_MAX);
 const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/lab\//.test(path);
 
-/** What one page was seen to do wrong: [{ kind, why }]. seen: { path, status, errors[], failed[{ url, status }], text, bg, toolRow, deadLinks[] }
+/** What one page was seen to do wrong: [{ kind, why }]. seen: { path, status, errors[], failed[{ url, status }], text, controls, bg, toolRow, deadLinks[] }
  *  as tools/self-check.mjs read it from the rendered page. Pure. */
 export function pageProblems(seen) {
   const s = seen || {}, out = [], add = (kind, why) => out.push({ kind, why: clip(why) });
   if (!(s.status >= 200 && s.status < 400)) { add('status', 'answers ' + (s.status || 'nothing')); return out; }
   for (const e of (s.errors || []).slice(0, 2)) add('script', e);
   for (const f of (s.failed || []).slice(0, 3)) add('request', (f.status || 'no answer') + ' ' + f.url);
-  if (String(s.text || '').replace(/\s+/g, '').length < 20) add('empty', 'under 20 characters of text after it loaded');
+  // a page made of a box to type in, a canvas or a picture is not empty (the front page is one prompt: "Command the Verse")
+  if (String(s.text || '').replace(/\s+/g, '').length < 20 && !(s.controls > 0)) add('empty', 'under 20 characters of text and nothing to type in, press or see after it loaded');
   const l = luminance(s.bg); if (l !== null && l > 0.5) add('light', 'background ' + s.bg);
   for (const u of (s.deadLinks || []).slice(0, 3)) add('link', u.status + ' ' + u.url);
   for (const [re, why] of WORDING) { const m = String(s.text || '').match(new RegExp('.{0,40}' + re.source + '.{0,40}', re.flags)); if (m) add('wording', why + ': "' + m[0].trim() + '"'); }

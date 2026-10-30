@@ -11,7 +11,7 @@ const T = (s) => new RegExp(s, 'i'); // every pattern is a constant string in th
 const ACCOUNT = ['account', 'Accounts', 'An account that keeps your things on every device', T('sign ?in|log ?in|create (an |your )?account'), T('\\bsync(ed|s|ing)?\\b|on every device|\\bsign in\\b'), T('localStorage'), []];
 const APPS = ['apps', 'Apps', 'Phone apps (iOS or Android)', T('app store|google play|play\\.google|apps\\.apple|download (the|our) app'), T('manifest\\.webmanifest|install (it|verse|this) as an app|serviceWorker'), null, []];
 const OFFLINE = ['offline', 'Apps', 'Works offline', T('offline'), T('offline|serviceWorker'), null, []];
-const DARK = ['dark', 'Settings', 'Dark mode', T('dark (mode|theme)'), T('prefers-color-scheme: ?dark|dark mode|data-theme'), null, []];
+const DARK = ['dark', 'Settings', 'Dark mode', T('dark (mode|theme)'), T('(?:prefers-)?color-scheme: ?dark|dark mode|data-theme'), null, []];
 const LANG = ['ui-lang', 'Settings', 'The site in other languages', T('hreflang|choose (your )?language|select language'), T('data-w=|navigator\\.language|hreflang'), null, []];
 const SHARE = ['share', 'Sharing', 'Share a link to what you made or found', T('share'), T('share link|copy (a |the )?link|navigator\\.share|Share this'), null, []];
 const API = ['api', 'Developers', 'A public API', T('\\bapi\\b|developers?|cloud translation'), T('openapi\\.json|fetch\\([\'"]/api/'), null, []];
