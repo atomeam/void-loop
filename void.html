@@ -1283,6 +1283,11 @@
     function load() {
       if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
         things = {}; (PAGE.cards || []).forEach((c, i) => { const id = 'page' + i; things[id] = { id, kind: 'kept', x: 40 + (i % 3) * 340, y: 40 + Math.floor(i / 3) * 260, name: c.name, ask: c.ask, html: '<h2>' + esc(c.name || '') + '</h2><p>' + esc(c.text || '') + '</p>' }; });
+        if (Array.isArray(PAGE.built) && PAGE.built.length) { // Built by @name: the owner's ideas Verse built (members perk); a link only to a Verse pull request
+          const i = (PAGE.cards || []).length, name = 'Built by @' + PAGE.handle;
+          const li = PAGE.built.map((b) => '<li>' + esc(b.text || '') + (/^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(b.pr || '') ? ' <a href="' + b.pr + '" target="_blank" rel="noopener">see the change</a>' : '') + '</li>').join('');
+          things.pagebuilt = { id: 'pagebuilt', kind: 'kept', x: 40 + (i % 3) * 340, y: 40 + Math.floor(i / 3) * 260, name, ask: '', html: '<h2>' + esc(name) + '</h2><ul>' + li + '</ul>' };
+        }
         return;
       }
       try {

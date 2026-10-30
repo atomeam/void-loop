@@ -26,6 +26,7 @@ export const PERKS = Object.freeze([
   { id: 'review', title: 'Code Review Pro', text: 'A Verse key for the AI closer read on your pull requests, with a daily allowance.' },
   { id: 'films', title: 'Review Verse\'s films', text: 'Rate each new Verse film on the films page and leave a note. The owner reads every one.' },
   { id: 'mark', title: 'The MultiVerse mark', text: 'Your stage and your published page show the MultiVerse mark in the corner. It opens this page.' },
+  { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
 ]);
 export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
@@ -100,6 +101,14 @@ export function stateText(state, note) {
 export async function mine(env, userId) {
   const { results } = await env.DB.prepare('SELECT i.id, i.text, i.at, q.state, q.note FROM void_member_ideas i LEFT JOIN void_queue q ON q.id = i.job WHERE i.user_id = ? ORDER BY i.at DESC LIMIT 50').bind(userId).all();
   return (results || []).map((r) => ({ id: r.id, text: r.text, at: r.at, ...stateText(r.state, r.note) }));
+}
+
+/** Built by @name: the shipped ideas of one published page's owner, newest first, for that page (members perk, 2026-10-30). */
+export async function builtBy(env, handle, limit = 6) {
+  try {
+    const { results } = await env.DB.prepare("SELECT i.text, q.updated AS at, q.note FROM void_pages p JOIN void_member_ideas i ON i.user_id = p.user_id JOIN void_queue q ON q.id = i.job WHERE p.handle = ? AND q.state IN ('done','live') ORDER BY q.updated DESC LIMIT ?").bind(handle, limit).all();
+    return (results || []).map((r) => ({ text: String(r.text).slice(0, 200), at: r.at, pr: stateText('done', r.note).pr }));
+  } catch (_) { return []; }
 }
 
 /** Built by members: shipped ideas, newest first, credited to the member's published @name when they have one. */
