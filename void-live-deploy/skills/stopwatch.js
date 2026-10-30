@@ -1,40 +1,31 @@
 /**
  * stopwatch skill — a simple stopwatch on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "stopwatch", "start stopwatch".
- * Empty surface stays empty; the stopwatch is an outcome page.
+ * "stopwatch", "start stopwatch", "time me".
  */
 export function isStopwatch(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
-  return /^(?:please\s+)?(?:(?:start|run)\s+(?:a\s+)?stopwatch|stopwatch(?:\s+please)?)$/i.test(t);
+  return /^(?:please\s+)?(?:(?:start\s+)?stopwatch|time\s+me|stop\s+watch)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
   const { showPage } = api;
-  let start = Date.now(), running = true;
-  const el = showPage((p) => {
-    p.innerHTML = '<h2>Stopwatch</h2><p id="sw" style="font-size:48px;font-weight:300;text-align:center">0:00</p><div class="sub">say “stopwatch” to restart</div>';
-  });
-  const tick = () => {
-    if (!api._pageStill(el) || !running) return;
-    const elapsed = Math.floor((Date.now() - start) / 1000);
-    const display = Math.floor(elapsed/60) + ':' + String(elapsed%60).padStart(2,'0');
-    const p = el.querySelector('#sw');
-    if (p) p.textContent = display;
-    setTimeout(tick, 1000);
-  };
-  setTimeout(tick, 1000);
+  const el = showPage((p) => { p.innerHTML = '<h2>Stopwatch</h2><p id="sw" style="font-size:48px;text-align:center;font-weight:300">0.0</p><div class="sub">say “stopwatch” to start</div>'; });
+  let start = Date.now(), id = setInterval(() => {
+    if (!api._pageStill(el)) { clearInterval(id); return; }
+    const t = el.querySelector('#sw');
+    if (t) t.textContent = ((Date.now() - start) / 1000).toFixed(1);
+  }, 100);
   return 'stopwatch';
 }
 
 export default {
   name: 'stopwatch',
-  examples: ['stopwatch', 'start stopwatch'],
-  nearMisses: ['what is a stopwatch', 'stop the watch'],
+  examples: ['stopwatch', 'start stopwatch', 'time me'],
+  nearMisses: ['what is a stopwatch', 'stop the watch', 'watch the time'],
   match(lower, text) { return isStopwatch(text); },
   run,
   suite() {
-    const ok = isStopwatch('stopwatch') && isStopwatch('start stopwatch') && !isStopwatch('what is a stopwatch');
+    const ok = isStopwatch('stopwatch') && isStopwatch('time me') && !isStopwatch('what is a stopwatch');
     return { ok, got: 'match works' };
   }
 };
