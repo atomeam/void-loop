@@ -91,4 +91,38 @@ export const SAYS = Object.freeze({
   slow: ['One moment: a few pictures a minute at most.', 'Einen Moment: höchstens ein paar Bilder pro Minute.'],
   busy: ['The painter is resting right now. Try again in a minute.', 'Der Maler ruht gerade. Versuch es gleich noch mal.'],
   off: ['The painter is resting: pictures are off for now.', 'Der Maler ruht: Bilder sind gerade aus.'],
+  gone: ['That picture is no longer kept here. Paint it again with the same seed, then change it.', 'Dieses Bild ist hier nicht mehr gespeichert. Mal es noch mal mit gleichem Seed, dann ändere es.'],
+  badpic: ['That picture could not be read for a change. Try again.', 'Das Bild ließ sich für eine Änderung nicht lesen. Versuch es noch mal.'],
 });
+
+// "Change it" (2026-10-30, the owner: "assimilate their tech into verse ... same with image and video"): a picture Verse painted here, changed by
+// one typed line, the way image apps edit a picture they made. FLUX.2 klein-4b takes reference pictures as input_image_0..3, each smaller than
+// 512x512 (Cloudflare changelog, 2026-01-15), and the server cannot shrink a 1024 picture inside its CPU limit, so the page shrinks the picture it
+// shows to EDIT_MAX on its longest side and sends that copy with the picture's own reference (functions/api/image.js changeOf).
+export const CHANGE_MAX = 300, EDIT_MAX = 504, EDIT_BYTES = 160000;
+/** the reference copy's size for a picture of [w, h]: the longest side EDIT_MAX, the other in proportion. Pure. */
+export const editSizeOf = ([w, h]) => { const s = EDIT_MAX / Math.max(w, h); return [Math.round(w * s), Math.round(h * s)]; };
+/** a JPEG's or a PNG's own width and height, read from its header with no decode: { type, w, h }, or null when it is neither. Pure. */
+export function imageSizeOf(b) {
+  if (!b || b.length < 24) return null;
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 && String.fromCharCode(b[12], b[13], b[14], b[15]) === 'IHDR') {
+    const u = (i) => ((b[i] << 24) >>> 0) + (b[i + 1] << 16) + (b[i + 2] << 8) + b[i + 3];
+    return { type: 'image/png', w: u(16), h: u(20) };
+  }
+  if (b[0] !== 0xff || b[1] !== 0xd8) return null;
+  for (let i = 2; i + 9 < b.length;) {
+    if (b[i] !== 0xff) return null;
+    const m = b[i + 1];
+    if (m === 0xff) { i++; continue; }
+    if (m === 0xd9 || m === 0xda) return null; // the end, or the picture data, before any frame header
+    if ((m >= 0xd0 && m <= 0xd7) || m === 0x01) { i += 2; continue; }
+    if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { type: 'image/jpeg', w: (b[i + 7] << 8) + b[i + 8], h: (b[i + 5] << 8) + b[i + 6] };
+    i += 2 + ((b[i + 2] << 8) + b[i + 3]);
+  }
+  return null;
+}
+/** whether a reference copy of `dims` may stand for a picture of [w, h]: smaller than 512x512 (the model's limit), at least 256 on its longest
+ *  side, and the picture's own proportions within 3 percent. Pure. */
+export const fitsEdit = (dims, [w, h]) => !!dims && dims.w < 512 && dims.h < 512 && Math.max(dims.w, dims.h) >= 256 && Math.abs(dims.w / dims.h - w / h) <= 0.03 * (w / h);
+/** the painter's words for a change: the typed line, keep the rest of image 0, and the always-on safe words. Pure. */
+export const changePromptOf = (change) => [cleanLine(change, CHANGE_MAX), 'keep everything else in image 0 the same: the same scene, layout, subject, colours and style', 'safe for work, fully clothed'].join(', ');
