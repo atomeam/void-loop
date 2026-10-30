@@ -206,6 +206,12 @@ export function cleanRap(r) {
   const n = sections.reduce((a, s) => a + s.bars.length, 0);
   return n >= 8 ? { title: UNCLEAN.test(r.title) ? '' : r.title, sections } : null;
 }
+/** a bar as the voice says it (functions/api/rapvoice.js): ad-libs keep their words but lose their brackets, quotes are plain, anything but letters,
+ *  digits and plain punctuation goes; '' for an empty bar or one the clean rule refuses. Pure. */
+export function voiceText(bar) {
+  const t = String(bar || '').slice(0, LINE_MAX).replace(/[\u2018\u2019\u02bc]/g, "'").replace(/[\u201c\u201d"]/g, '').replace(/[\[\]()]/g, ' ').replace(/[^A-Za-z0-9',.!?& -]+/g, ' ').replace(/&/g, ' and ').replace(/\s+/g, ' ').replace(/ ([,.!?])/g, '$1').trim();
+  return t && /[A-Za-z]/.test(t) && !UNCLEAN.test(t) ? t : '';
+}
 export const RAP_SAYS = Object.freeze({
   unsuitable: 'That is not something I will rap about here.',
   person: 'I rap about made-up people and things, not real people by name.',

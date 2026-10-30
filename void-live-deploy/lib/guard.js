@@ -18,6 +18,7 @@ export const LIMITS = {
   'fanfic-hits': { rpm: 60, body: 0 }, // /fanfic/ read counts (functions/api/fanfic-hits.js): a POST has no body; one count per visitor, story and day, 30 a minute per connection in the route
   boards: { rpm: 600, body: 4700000 }, // the boards (functions/api/boards/[[path]].js): a catalog page loads up to 150 thumbnails; a post carries one picture of up to 4 MB and its thumbnail; posting, reporting and making boards are rate-limited per hashed address in the route itself, behind a bot check
   calshare: { rpm: 60, body: 200000 }, // a whole calendar shared by link (functions/api/calshare.js): one document of up to 1,000 events; 30 a minute and daily ceilings in the route itself
+  rapvoice: { rpm: 200, body: 0 }, // GET only: one bar of a rap in, Verse's voice saying it out (functions/api/rapvoice.js), edge-cached a week; a rap asks for every bar at once, so 200 a minute here and 120 new bars a minute and 2,500 a day in all in the route
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)
