@@ -1631,13 +1631,13 @@
    "sources": {
     "read": 27,
     "named": 25,
-    "second": 14,
+    "second": 15,
     "answered": 0,
-    "points": 1.44,
+    "points": 1.48,
     "one_live_from_proven": [
      "local-stations"
     ],
-    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.44 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
    },
    "skills": [
     {
@@ -1970,13 +1970,14 @@
      "streak": 5,
      "source": {
       "sites": [
-       "jsph.pl"
+       "jsph.pl",
+       "wikipedia.org"
       ],
       "named": true,
-      "second": false,
+      "second": true,
       "answered": false,
-      "points": 1,
-      "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet"
+      "points": 2,
+      "words": "source 2 of 3: jsph.pl, wikipedia.org; named on the card; a second source; no kept live answer yet"
      }
     },
     {
