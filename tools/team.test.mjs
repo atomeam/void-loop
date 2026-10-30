@@ -49,6 +49,9 @@ test('the kinds an agent takes are the coder\'s, weighted as the conductor weigh
   assert.ok(!T.TEAM_KINDS.includes('member') && !T.TEAM_KINDS.includes('miss') && !T.TEAM_KINDS.includes('probe'));
   assert.deepEqual(T.rank(JOBS.map((j) => ({ ...j, state: 'queued' })), T0).map((j) => j.id), ['j2', 'j5', 'j1'], 'heal, then the will, then a feature');
   assert.deepEqual(T.rank(JOBS.map((j) => ({ ...j, state: 'queued' })), T0, ['j2']).map((j) => j.id), ['j5', 'j1'], 'a job it gave back goes to someone else');
+  const asks = [{ id: 'team-42', ask: 'the owner asked late', target: 'feature:team-42', at: '2026-10-29T23:00:00Z' }, { id: 'team-7', ask: 'the owner asked first', target: 'feature:team-7', at: '2026-10-29T20:00:00Z' }, { id: 'team-x', ask: 'not a #work post', target: 'feature:team-x', at: '2026-10-29T00:00:00Z' }];
+  assert.deepEqual(T.rank([...JOBS, ...asks].map((j) => ({ ...j, state: 'queued' })), T0).map((j) => j.id), ['team-7', 'team-42', 'j2', 'j5', 'j1', 'team-x'], 'the owner\'s #work asks go first, oldest first, before heal and the will');
+  assert.deepEqual(T.rank([{ ...asks[0], state: 'queued', note: 'tries 3' }, { ...JOBS[1], state: 'queued' }], T0).map((j) => j.id), ['j2'], 'an owner ask set aside after 3 tries does not block the queue');
   assert.equal(LIMITS.team.rpm > 0 && LIMITS.team.body >= 8000, true, 'the guard has a line for /api/team');
 });
 
@@ -314,4 +317,42 @@ test('the owner\'s #work post from before #work asks were jobs goes on the queue
   const q = await post(env, { do: 'queue' }, OWNER, T0 + 1000);
   assert.equal(q.queued.length, 1); assert.equal(job(env, q.queued[0].job).state, 'queued'); assert.match(job(env, q.queued[0].job).ask, /moon phase/);
   assert.equal((await post(env, { do: 'queue' }, OWNER, T0 + 2000)).queued.length, 0, 'once');
+});
+
+test('a body a shell mangled is still read: PowerShell\'s {\\"do\\":\\"here\\"}, Windows PowerShell 5\'s {do:here}, a form; nothing else', () => {
+  assert.deepEqual(T.looseBody('{"do":"here"}'), { do: 'here' });
+  assert.deepEqual(T.looseBody('{\\"do\\":\\"here\\"}'), { do: 'here' }, 'curl.exe in PowerShell sends the backslashes (Beam, 2026-10-30)');
+  assert.deepEqual(T.looseBody('﻿{\\"do\\":\\"post\\",\\"c\\":\\"work\\",\\"thread\\":1,\\"body\\":\\"on it\\"}'), { do: 'post', c: 'work', thread: 1, body: 'on it' });
+  assert.deepEqual(T.looseBody('{do:here}'), { do: 'here' }, 'Windows PowerShell 5 drops the quotes');
+  assert.deepEqual(T.looseBody('{do:post,c:work,thread:7,body:fixed it, the tests pass}'), { do: 'post', c: 'work', thread: 7, body: 'fixed it, the tests pass' }, 'a comma in the body stays in the body');
+  assert.deepEqual(T.looseBody('{do:here,auto:false}'), { do: 'here', auto: false });
+  assert.deepEqual(T.looseBody('do=done&ok=true&note=all%20green'), { do: 'done', ok: true, note: 'all green' });
+  assert.deepEqual(T.looseBody(JSON.stringify(JSON.stringify({ do: 'next' }))), { do: 'next' }, 'JSON sent as a JSON string');
+  for (const junk of ['', 'hello', '[1,2]', '{nothing here}', '42', 'null', '{"do":']) assert.equal(T.looseBody(junk), null, junk);
+});
+
+test('a thread is named by its number or by the job it is for; "here" says plainly to work the job; an agent changes its own key', async () => {
+  assert.deepEqual([T.threadRef('12'), T.threadRef('#12'), T.threadRef(12), T.threadRef('team-1'), T.threadRef('0'), T.threadRef('a b'), T.threadRef('')], [{ id: 12 }, { id: 12 }, { id: 12 }, { job: 'team-1' }, null, null, null]);
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);
+  const raw = async (text, key, now) => { const r = await API.onRequestPost({ env, request: new Request('https://verse.test/api/team', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: text }), now }); return { status: r.status, ...(await r.json()) }; };
+  const here = await raw('{\\"do\\":\\"here\\"}', inv.key, T0 + 2000);
+  assert.equal(here.status, 200, here.say); assert.equal(here.job.job, ask.job);
+  assert.equal(here.thread, ask.id, 'the thread number is in the answer');
+  assert.match(here.say, /work it now/); assert.match(here.say, /Do not stop to ask the owner/); assert.match(here.say, new RegExp('\\?t=' + ask.id));
+  const byJob = await get(env, '?t=' + ask.job, inv.key, T0 + 3000);
+  assert.equal(byJob.status, 200, byJob.say); assert.equal(byJob.root.id, ask.id, '?t=team-1 reads the job\'s thread');
+  assert.equal((await get(env, '?t=team-999', inv.key, T0 + 3000)).status, 400, 'a job with no thread');
+  const reply = await post(env, { do: 'post', c: 'work', thread: ask.job, body: 'on it' }, inv.key, T0 + 4000);
+  assert.equal(reply.status, 201, reply.say);
+  assert.equal((await get(env, '?t=' + ask.id, inv.key, T0 + 5000)).replies.at(-1).body, 'on it', 'a reply by job id lands in the job\'s thread');
+  assert.equal((await raw('not json at all', inv.key, T0 + 6000)).status, 400);
+
+  const re = await post(env, { do: 'rekey' }, inv.key, T0 + 7000);
+  assert.equal(re.status, 201, re.say); assert.match(re.key, T.KEY_RE); assert.notEqual(re.key, inv.key);
+  assert.equal((await get(env, '?me', inv.key, T0 + 8000)).me, null, 'the old key stopped at once');
+  const me = await get(env, '?me', re.key, T0 + 8000);
+  assert.equal(me.me.name, 'Beam'); assert.equal(me.me.job, ask.job, 'and the job is still Beam\'s');
+  assert.equal((await post(env, { do: 'rekey' }, OWNER, T0 + 9000)).status, 403, 'the owner has no agent key to change');
 });

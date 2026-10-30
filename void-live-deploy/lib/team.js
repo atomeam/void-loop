@@ -45,11 +45,14 @@ export function score(job, now) {
   const k = kindOf(job.target), days = Math.max(0, (now - msOf(job.at)) / 864e5);
   return (WEIGHT[k] ?? 30) + Math.min(30, 2 * days) - (k === 'will' ? 5 : 25) * triesOf(job.note);
 }
-/** the queued jobs an agent may take, best first; skip: job ids this agent gave back or failed (it gets another) */
+/** an ask the owner posted in #work (enqueue in functions/api/team.js gives it the id team-<message> and the target feature:team-<message>) */
+export const ownerAsk = (job) => /^team-\d+$/.test(String(job && job.id || '')) && String(job.target || '') === 'feature:' + job.id;
+/** the queued jobs an agent may take, best first: the owner's #work asks before every background job, oldest first, then the rest by worth;
+ *  skip: job ids this agent gave back or failed (it gets another) */
 export function rank(jobs, now, skip = []) {
   const no = new Set(skip);
   return (jobs || []).filter((j) => j && j.state === 'queued' && TEAM_KINDS.includes(kindOf(j.target)) && !no.has(j.id) && triesOf(j.note) < MAX_TRIES)
-    .map((j) => ({ j, s: score(j, now) })).sort((a, b) => b.s - a.s || msOf(a.j.at) - msOf(b.j.at)).map((x) => x.j);
+    .map((j) => ({ j, o: ownerAsk(j) ? 1 : 0, s: score(j, now) })).sort((a, b) => b.o - a.o || (a.o ? 0 : b.s - a.s) || msOf(a.j.at) - msOf(b.j.at)).map((x) => x.j);
 }
 /** a queue note with "claimed by team:<name> ·" in front (the API checks a job is still an agent's by that start), the rest (tries and reasons) kept, at most 300 characters (the queue's cap) */
 export const claimNote = (note, name) => { const rest = String(note || '').replace(/^claimed by [^·]*·?\s*/i, '').trim(); return ('claimed by team:' + name + ' ·' + (rest ? ' ' + rest : '')).slice(0, 300); };
@@ -136,3 +139,50 @@ export const inviteSay = (name) => 'Give ' + name + ' this link. It works once, 
 export const joinedSay = (name) => 'You are ' + name + ' in Verse\'s team chat, the same chat as the owner and every other agent. This key is shown once:'
   + ' keep it in your own environment (VERSE_TEAM_KEY) and send it as Authorization: Bearer <key>. Never paste it into a chat or a log.'
   + ' How to read, post and take jobs: https://a-to-mind.com/team/agents.txt';
+
+// A POST body is JSON. Some shells mangle it on the way: PowerShell keeps the backslashes of {\"do\":\"here\"} (curl.exe then sends them),
+// and Windows PowerShell 5 drops the quotes ({do:here}). Beam's join log, 2026-10-30: curl.exe with escaped JSON got "send JSON".
+// So a body that is not JSON is read again, loosely: once with \" made ", then as {key:value, ...} with the field names this API knows,
+// then as a form (do=here&c=work). -> the object, or null. Pure; the text is cut to 16,000 characters first.
+export const FIELDS = Object.freeze(['do', 'code', 'via', 'name', 'about', 'again', 'c', 'body', 'thread', 'id', 'emoji', 'auto', 'ok', 'note', 'link', 'failed']);
+const scalar = (v) => { const s = v.trim().replace(/^(["'])([\s\S]*)\1$/, '$2'); return s === 'true' ? true : s === 'false' ? false : s === 'null' ? null : /^-?\d{1,15}$/.test(s) ? Number(s) : s; };
+const isObj = (o) => !!o && typeof o === 'object' && !Array.isArray(o);
+export function looseBody(text) {
+  let s = String(text == null ? '' : text).slice(0, 16000).replace(/^﻿/, '').trim();
+  if (!s) return null;
+  const tryJson = (t) => { try { const o = JSON.parse(t); return isObj(o) ? o : typeof o === 'string' ? tryJson(o) : null; } catch (_) { return null; } };
+  let o = tryJson(s); if (o) return o;
+  if (/\\"/.test(s)) { o = tryJson(s.replace(/\\"/g, '"')); if (o) return o; s = s.replace(/\\"/g, '"'); }
+  if (/^\{[\s\S]*\}$/.test(s)) { // {do:post,c:work,body:hi there} : split only where a known field name starts a pair
+    const inner = s.slice(1, -1), at = new RegExp('(?:^|,)\\s*["\']?(' + FIELDS.join('|') + ')["\']?\\s*:', 'g'), keys = [];
+    for (let m; (m = at.exec(inner));) keys.push({ k: m[1], from: m.index, val: at.lastIndex });
+    if (!keys.length || keys[0].from !== 0) return null;
+    o = {};
+    keys.forEach((x, i) => { o[x.k] = scalar(inner.slice(x.val, i + 1 < keys.length ? keys[i + 1].from : inner.length)); });
+    return o;
+  }
+  if (/^[\w]+=/.test(s) && !/\s/.test(s.split('&')[0])) { // a form: do=here&c=work
+    const sp = new URLSearchParams(s); o = {};
+    for (const [k, v] of sp) if (FIELDS.includes(k)) o[k] = scalar(v);
+    return Object.keys(o).length ? o : null;
+  }
+  return null;
+}
+
+/** a thread named by an agent: its id (12, "12", "#12") or the job it is for ("team-1"). -> { id } | { job } | null. Pure. */
+export function threadRef(v) {
+  const s = String(v == null ? '' : v).trim();
+  if (/^#?\d{1,12}$/.test(s)) { const id = Number(s.replace('#', '')); return id > 0 ? { id } : null; }
+  if (/^[A-Za-z0-9][\w.:-]{0,79}$/.test(s)) return { job: s };
+  return null;
+}
+
+/** what an agent is told with its job: work it now, here is how. Pure. (Beam's log, 2026-10-30: it stopped to ask the owner what to do.) */
+export function workSay(job) {
+  if (!job) return null;
+  const t = job.thread;
+  return 'This job is yours: work it now. Do not stop to ask the owner what to do; the ask is the instruction, and the thread has the rest.'
+    + ' Read it: GET /api/team?t=' + t + '. Post progress there: {"do":"post","c":"work","thread":' + t + ',"body":"..."}.'
+    + ' Say {"do":"here"} at least every 30 minutes while you work. Close it: {"do":"done","ok":true,"link":"<pull request>","note":"..."},'
+    + ' or give it back: {"do":"done","ok":false,"note":"why"}.';
+}
