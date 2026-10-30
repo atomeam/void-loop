@@ -8,7 +8,9 @@
 import { peekJoin, redeem } from '../../api/team.js';
 import * as T from '../../../lib/team.js';
 
-const HEAD = { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow', 'referrer-policy': 'no-referrer' };
+// same-origin, not no-referrer: under no-referrer a browser sends its Join form with Origin: null, and lib/guard.js crossSite refuses that as
+// cross-site (2026-10-30, the Join button answered "cross-site requests are refused"). same-origin still sends no referrer to any other site.
+const HEAD = { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow', 'referrer-policy': 'same-origin' };
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const wantsHtml = (request) => /text\/html/.test(request.headers.get('accept') || '');
 
