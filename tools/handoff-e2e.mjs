@@ -133,6 +133,22 @@ export const JOURNEYS = {
     if ((new URL(p.url()).searchParams.get('list') || '').split('\n').length !== 8) throw new Error('the random page dropped the list from its address (' + p.url() + '), so a reload or a copied link loses it');
     await check('the random page opened with the 8 players of the draft board, Cy Dee first, and keeps them in its link');
   },
+  'paint a picture, resize it, edit it in the photo tools, and paint a kept picture as a new sheet': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); await check('the paint page opened with its picture');
+    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
+    if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the picture again');
+    await check('the resize page opened the painting and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
+    await open();
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit your painting in photo tools' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
+    await check('the photo tools opened the painting: ' + (await p.locator('#line').textContent()));
+    // the picture kept a moment ago is what a press on the picture page keeps too: opening paint with ?img=handoff cuts it into a sheet
+    await p.goto(ORIGIN + '/paint/?img=handoff', { waitUntil: 'load' });
+    await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
+    await check('the paint page cut the kept picture into a new colouring sheet');
+  },
 };
 
 async function run() {
