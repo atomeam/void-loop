@@ -2490,10 +2490,13 @@ say('nothing selected to remove');
     // Read an answer page out: its title becomes the region's name, and its title and first lines go to the polite live
     // region. Pages that fill in later (weather, news) are read again once they settle.
     function srAnnounce(el) {
-      const say = () => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
-        const h = el.querySelector('h2'), t = (el.innerText || '').replace(/\s+/g, ' ').trim();
+      // the card's own words, as copy text reads them (lib/card-share.js readCard), not its frame: the type line, the badges, the copy and
+      // save buttons and the reply box are left out (2026-10-30: it read "Answer from Verse … copy card save card share" before the weather)
+      const say = () => { if (vpageEl !== el) return; import('/lib/card-share.js').catch(() => null).then((sh) => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
+        const h = el.querySelector('h2'), d = sh && sh.readCard ? sh.readCard(el) : null;
+        const t = (d ? [d.t, d.b].filter(Boolean).join('. ') : el.innerText || '').replace(/\s+/g, ' ').trim();
         if (h) el.setAttribute('aria-label', h.textContent.trim());
-        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
+        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }); }; // ellipsis-ok: drawn picture or short label, the full text is on the card
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
