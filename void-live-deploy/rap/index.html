@@ -54,6 +54,8 @@
   #out h2 { font-weight: 400; font-size: 26px; letter-spacing: -.02em; margin: 0 0 2px; }
   .rp-meta, .rp-msg { color: var(--ink-3); font-size: 13px; margin: 6px 0; }
   .rp-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  /* a row or a button set hidden stays hidden, whatever display its class gives it */
+  [hidden] { display: none !important; }
   .rp-btn, .rp-voice { min-height: 44px; }
   .rp-vl { font-size: 13px; color: var(--ink-3); }
   .rp-vol { accent-color: rgb(var(--key)); padding: 0; background: none; border: 0; min-width: 110px; }

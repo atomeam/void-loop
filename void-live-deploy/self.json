@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:25:43Z",
+   "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
+  },
+  {
+   "at": "2026-10-30T07:24:08Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T07:21:54Z",
    "subject": "cards: show the answer's photo once, in the art box"
   },
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T07:07:12Z",
    "subject": "Better at emoji, flights and scores: 4 more ways of asking answered right — new phrases: “random emoji” now opens emoji; “give me an…"
-  },
-  {
-   "at": "2026-10-30T07:06:38Z",
-   "subject": "Lab pages: end blurbs that stopped on a comma or semicolon"
-  },
-  {
-   "at": "2026-10-30T07:05:13Z",
-   "subject": "deps.json: the gate's test reads lib/team.js"
   }
  ],
  "builders": {
