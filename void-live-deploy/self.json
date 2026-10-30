@@ -550,6 +550,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:02:50Z",
+   "subject": "Team: Verse pushes each job to an agent's own address, signed, so no agent has to stay online"
+  },
+  {
+   "at": "2026-10-30T05:00:57Z",
+   "subject": "Hand off the code-review MultiVerse card to /members/"
+  },
+  {
+   "at": "2026-10-30T05:00:03Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T04:58:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:56:02Z",
+   "subject": "Team join page: the Join button works (same-origin referrer policy, so the form sends its real Origin)"
+  },
+  {
+   "at": "2026-10-30T04:56:02Z",
+   "subject": "team-live: write the check's lines as one annotation too, so they can be read without the log"
+  },
+  {
    "at": "2026-10-30T04:53:12Z",
    "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
   },
@@ -568,6 +592,10 @@
   {
    "at": "2026-10-30T04:50:39Z",
    "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
+  },
+  {
+   "at": "2026-10-30T04:49:53Z",
+   "subject": "converter: write FLAC, OGG and OPUS sound on the device"
   },
   {
    "at": "2026-10-30T04:49:43Z",
@@ -600,34 +628,6 @@
   {
    "at": "2026-10-30T04:38:56Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:38:52Z",
-   "subject": "One owner: the owner's stage account is the owner (id from the owner's own message)"
-  },
-  {
-   "at": "2026-10-30T04:38:49Z",
-   "subject": "Team live: the workflow that runs tools/team-live.mjs by hand (two agents in one chat, the queue counts, old keys stopped)"
-  },
-  {
-   "at": "2026-10-30T04:38:43Z",
-   "subject": "Verse Brain keeps the words just told when it is full"
-  },
-  {
-   "at": "2026-10-30T04:38:17Z",
-   "subject": "One owner: /team/ shows this account's Verse id from the server too, with a Copy button"
-  },
-  {
-   "at": "2026-10-30T04:37:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:36:18Z",
-   "subject": "Book holds still at 1920 and the claims list saves before the clip check"
-  },
-  {
-   "at": "2026-10-30T04:36:04Z",
-   "subject": "families.json after the 5 new benchmark asks"
   }
  ],
  "builders": {
