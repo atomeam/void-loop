@@ -82,7 +82,7 @@ test('the stage card: a calculator asked by name, the library by "formula calcul
   assert.ok(formulas.match('bmr calculator', 'bmr calculator'), 'a calculator no other skill answers is still taken');
   let html = '', page = ''; const api = { esc: (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]), showPage: (f) => { const el = { dataset: {} }; f(el); html = el.innerHTML; page = el.dataset.page; return el; } };
   return formulas.run('pipe surface area calculator', api).then((name) => {
-    assert.equal(name, 'formulas'); assert.equal(page, '/calculators/'); assert.match(html, /5\.23599 ft²/); assert.match(html, /href="\/calculators\/\?calc=pipe-surface-area"/);
+    assert.equal(name, 'formulas'); assert.equal(page, '/calculators/?calc=pipe-surface-area'); assert.match(html, /5\.23599 ft²/); assert.match(html, /href="\/calculators\/\?calc=pipe-surface-area"/);
   });
 });
 

@@ -37,7 +37,7 @@ export const isLibrary = (text) => LIBRARY.test(fold(text).trim().replace(/[?.!]
 function card(calc, api) {
   const { showPage, esc } = api, r = run(calc), href = '/calculators/?calc=' + encodeURIComponent(calc.id);
   showPage((p) => {
-    p.dataset.page = '/calculators/';
+    p.dataset.page = href; // the full-page link opens this calculator, not the list of all of them
     p.innerHTML = '<h2>' + esc(calc.name) + '</h2><div class="sub">' + esc(calc.cat + ' · ' + calc.formula) + '</div>'
       + '<ul>' + r.inputs.map((i) => '<li><b>' + esc(i.label) + '</b> ' + esc(i.raw + (i.unit ? ' ' + i.unit : '')) + '</li>').join('') + '</ul>'
       + r.outputs.map((o, n) => '<div style="' + (n ? 'font-size:18px;margin:2px 0' : 'font-size:40px;font-weight:300;line-height:1.15;margin:6px 0 4px') + '">' + (n ? '<b>' + esc(o.label) + '</b> ' : '') + esc(r.error ? r.error : o.text) + '</div>').join('')
