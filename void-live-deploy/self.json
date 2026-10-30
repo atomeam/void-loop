@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:09:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:09:37Z",
+   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
+  },
+  {
+   "at": "2026-10-30T05:09:21Z",
+   "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
+  },
+  {
    "at": "2026-10-30T05:08:53Z",
    "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   },
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T04:51:00Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:50:39Z",
-   "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
-  },
-  {
-   "at": "2026-10-30T04:49:53Z",
-   "subject": "converter: write FLAC, OGG and OPUS sound on the device"
-  },
-  {
-   "at": "2026-10-30T04:49:43Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
@@ -867,8 +867,8 @@
   "since": "2026-10-29",
   "next": [
    "howsecureismypassword.net",
-   "generatorguru.com",
-   "coinflip.tech"
+   "ndscalc.ru",
+   "emojicombos.com"
   ],
   "beaten": 0,
   "total": 1269
