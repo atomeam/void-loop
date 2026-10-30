@@ -218,3 +218,11 @@ test('a holiday card opens its day on the Calendar (2026-10-30: live, "how many 
   assert.equal((src.match(/\(h\.days === 1 \? '' : 's'\), holidayPage\(h\.d\)\);/g) || []).length, 2);
   assert.match(src, /const bigPage = \(title, big, note, page\) => showPage\(\(p\) => \{ if \(page\) p\.dataset\.page = page;/);
 });
+
+test('a kept card read today is fresh (2026-10-30: the boiled-egg card, read that day, showed resistance 1, the mark for a year old)', () => {
+  const now = Date.UTC(2026, 9, 30, 13);
+  const d = editedDaysAgo('Source: American Egg Board · read 2026-10-30 · as of 1:14 PM', now);
+  assert.ok(d >= 0 && d < 1, String(d));
+  assert.equal(Math.floor(editedDaysAgo('Source: aa.com · read 2026-09-30', now)), 30);
+  assert.equal(cardOf({ kind: 'Answer', sources: 3, ageDays: d, kept: true }).toughness, 9, 'read today counts as edited today');
+});
