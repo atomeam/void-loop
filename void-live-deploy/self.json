@@ -536,15 +536,11 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T18:30:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T18:19:54Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T18:19:22Z",
+   "at": "2026-10-30T18:18:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -554,6 +550,10 @@
   {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-30T18:16:58Z",
+   "subject": "Image: \"Change it\" changes a picture Verse painted with one typed line"
   },
   {
    "at": "2026-10-30T18:15:33Z",
@@ -584,18 +584,6 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T18:11:00Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:10:00Z",
-   "subject": "Music: mark the sequential archive.org downloads as intended"
-  },
-  {
-   "at": "2026-10-30T18:09:54Z",
-   "subject": "Music: score each song against real songs of its kind"
-  },
-  {
    "at": "2026-10-30T18:07:29Z",
    "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
   },
@@ -614,6 +602,18 @@
   {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
+  },
+  {
+   "at": "2026-10-30T17:58:38Z",
+   "subject": "Five benchmark rows match the answers other laps sourced today, and a title search answers with that book"
+  },
+  {
+   "at": "2026-10-30T17:56:28Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T17:51:38Z",
+   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
   }
  ],
  "builders": {
