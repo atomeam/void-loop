@@ -542,13 +542,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-30T04:04:48Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T07:39:21Z",
+   "subject": "The studio: a bench that paints the reference prompts with every image model and judges each picture"
+  },
+  {
+   "at": "2026-10-30T07:36:50Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T07:36:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T07:36:05Z",
    "subject": "Keep both brain-map and brain-trace checks after the merge"
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T07:18:41Z",
    "subject": "markets: 24h move from yesterday's close, screener coins fall back to snapshot + Yahoo, honest sources"
-  },
-  {
-   "at": "2026-10-30T07:18:06Z",
-   "subject": "Regenerate families, deps and guide for the words asks"
-  },
-  {
-   "at": "2026-10-30T07:18:06Z",
-   "subject": "Words asks: fun facts reach the fact skill, quote of the day, jokes on a topic, 8 ball and saying phrasing"
-  },
-  {
-   "at": "2026-10-30T07:17:03Z",
-   "subject": "jobs: keep both new tests after the merge with main"
   }
  ],
  "builders": {
