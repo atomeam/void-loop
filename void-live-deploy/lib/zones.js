@@ -27,12 +27,14 @@ const fallbackZones = ['UTC', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 
 export const allZones = () => { try { return Intl.supportedValuesOf('timeZone'); } catch (_) { return fallbackZones; } };
 /** the city part of a zone id, as people write it: "America/Argentina/Buenos_Aires" -> "Buenos Aires". Pure. */
 export const cityOf = (tz) => String(tz).split('/').pop().replace(/_/g, ' ');
+/** a clock's place as a city another page can look up: its own name ("Kyoto"), its zone's city for a short form ("NYC" -> "New York") or for
+ *  the visitor's own clock ("Your time (Chicago)" -> "Chicago"), and '' for a bare offset or UTC, which is no place. Pure. */
+export const cityName = (p) => (p && p.tz && p.tz.includes('/') && !/^Etc\//.test(p.tz) ? (p.you || /^[A-Z]{2,4}$/.test(p.name || '') || !p.name ? cityOf(p.tz) : p.name) : '');
 /** the stage card for the clocks open: "time in <city>" for the city asked for, else "world clock for <cities>" (up to 8). A city keeps
  *  its name ("Mumbai"), but a short form ("NYC") is said as its zone's city ("New York") for the stage's geocoder; UTC offsets have none. Pure. */
 export function timeAsk(main, places = []) {
-  const city = (p) => (p && p.tz && p.tz.includes('/') && !/^Etc\//.test(p.tz) ? (/^[A-Z]{2,4}$/.test(p.name || '') || !p.name ? cityOf(p.tz) : p.name) : '');
-  if (main) { const c = city(main); if (c) return 'time in ' + c; }
-  const names = [...new Set(places.map(city).filter(Boolean))].slice(0, 8);
+  if (main) { const c = cityName(main); if (c) return 'time in ' + c; }
+  const names = [...new Set(places.map(cityName).filter(Boolean))].slice(0, 8);
   return names.length ? 'world clock for ' + names.join(', ') : 'world clock';
 }
 const key = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
