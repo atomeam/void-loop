@@ -6,7 +6,7 @@
 export function placesOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:what(?:'s| is)\s+the\s+)?distance\s+(?:from|frm|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i) // "distance frm Lyon to Turin"
-    || t.match(/^how\s+far\s+(?:is\s+it\s+)?(?:from|frm)\s+(.+?)\s+to\s+(.+)$/i);
+    || t.match(/^how\s+far\s+(?:is\s+it\s+)?(?:(?:from|frm)\s+)?(.+?)\s+to\s+(.+)$/i);
   if (m) return { a: m[1].trim(), b: m[2].trim() };
   const n = t.match(/^how\s+far\s+(?:away\s+)?is\s+(.+?)\s+(?:from|frm)\s+(.+)$/i); // the separator mistyped
   if (n) return { a: n[2].trim(), b: n[1].trim() };
@@ -63,7 +63,7 @@ async function run(text, api) {
 }
 export default {
   name: 'distance',
-  examples: ['distance from London to Paris', 'how far is Tokyo from Osaka', 'how far from New York to Boston'],
+  examples: ['distance from London to Paris', 'how far is Tokyo from Osaka', 'how far from New York to Boston', 'how far is nyc to london'],
   nearMisses: ['how far is the moon', 'distance learning', 'map of Paris', 'time difference between London and Tokyo'],
   match(lower, text) { const p = placesOf(text); return !!p && !/\b(moon|sun|mars|space|stars?)\b/i.test(p.a + ' ' + p.b); },
   run
