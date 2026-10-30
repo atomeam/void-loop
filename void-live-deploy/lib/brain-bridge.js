@@ -8,6 +8,7 @@
 //   host -> pages  { type: 'state', from, at, focus: { x, y, region }, thinking, action, gesture, expect, utility, metrics, words, related, self }
 //   pages -> host  { type: 'words', text }   become concepts (lib/brain.js tell), at most MAX_TEXT characters
 //                  { type: 'reward' }        "good" for what the brain did last
+//                  { type: 'seen', text, page } the page the visitor opened (its name): ideas, not a goal (lib/brain-everywhere.js)
 //                  { type: 'hello' }         asks the host to post its state now
 export const CHANNEL = 'verse-brain', MAX_TEXT = 200, EVERY_MS = 400;
 
@@ -27,8 +28,8 @@ export function summaryOf(B, b) {
 
 /** host a running brain: returns { publish(force), received, close() }. getBrain() is called each time (a Reset makes a new brain).
  *  onWords(text, from) runs after words from another page became concepts (so the card can show them). */
-export function hostBrain(B, getBrain, { onWords = null, onReward = null, id = 'brain-' + Math.random().toString(36).slice(2, 8) } = {}) {
-  const ch = open(), received = { words: 0, rewards: 0 };
+export function hostBrain(B, getBrain, { onWords = null, onReward = null, onSeen = null, id = 'brain-' + Math.random().toString(36).slice(2, 8) } = {}) {
+  const ch = open(), received = { words: 0, rewards: 0, seen: 0 };
   let last = 0;
   const publish = (force = false) => {
     const now = Date.now(); if (!force && now - last < EVERY_MS) return null; last = now;
@@ -40,6 +41,7 @@ export function hostBrain(B, getBrain, { onWords = null, onReward = null, id = '
     const b = getBrain(); if (!b || !m || typeof m !== 'object') return null;
     if (m.type === 'words') { const t = clean(m.text); if (!t) return null; const r = B.ask ? B.ask(b, t) : B.tell(b, t); if (r.answer) return r; received.words++; if (onWords) onWords(t, from); publish(true); return r; }
     if (m.type === 'reward') { B.reward(b); received.rewards++; if (onReward) onReward(from); return true; }
+    if (m.type === 'seen') { const t = clean(m.text); if (!t) return null; B.tell(b, t); received.seen++; if (onSeen) onSeen(t, clean(m.page).slice(0, 80), from); return true; }
     if (m.type === 'hello') return publish(true);
     return null;
   };
@@ -61,6 +63,8 @@ export function connectBrain() {
   return {
     tell: (text) => { const t = clean(text); return t ? send({ type: 'words', text: t }) : false; },
     reward: () => send({ type: 'reward' }),
+    seen: (text, page) => { const t = clean(text); return t ? send({ type: 'seen', text: t, page: clean(page) }) : false; },
+    hello: () => send({ type: 'hello' }),
     on: (fn) => { fns.add(fn); if (state) fn(state); return () => fns.delete(fn); },
     get state() { return state; }, get live() { return !!state && Date.now() - heard < 3000; }, get available() { return !!ch; },
     close() { fns.clear(); if (ch) { try { ch.close(); } catch (_) { /* gone */ } } }

@@ -18,3 +18,5 @@
     var u = new URL(e.name), p = u.pathname; if (u.origin != location.origin || !/\.m?js$/.test(p) || p == '/visit.js' || !p.indexOf('/vendor/') || s[p]) return;
     s[p] = 1; fetch(u.href, { cache: 'no-cache' }).catch(function () {}); }); }, 2000); }); // void-review: ok (offline)
 })();
+// Verse Brain on every page: lib/brain-everywhere.js (window.verseBrain), after load
+addEventListener('load', function () { setTimeout(function () { var s = document.createElement('script'); s.type = 'module'; s.src = '/lib/brain-everywhere.js'; document.head.appendChild(s); }, 1500); });
