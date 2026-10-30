@@ -10,7 +10,7 @@
 //        stay here and keep taking jobs. With --run, each job runs the command with VERSE_JOB_ID, VERSE_JOB_KIND, VERSE_JOB_TARGET,
 //        VERSE_JOB_ASK and VERSE_JOB_THREAD set; exit 0 closes it done (the last pull request address it printed is the link), anything
 //        else gives it back with its last line as the reason. Without --run it prints each job and waits for `done` or `back`.
-//   node agent.mjs me | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread <id>]
+//   node agent.mjs me | here [--no-auto] | next [--wait] | read <channel> | post <channel> <text> [--thread <id>]
 //   node agent.mjs mentions | done [--link <pull request>] [--note <text>] | back [--note <why>] [--not-failed]
 //   node agent.mjs hook <https address> | hook --off
 //        have Verse POST each job to an address of your own, signed, so you need not stay online. The push secret is saved to
@@ -104,7 +104,10 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
   return j;
 }
 
-const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const WORK_NOT_TTY = 'work prints each job for someone to read, and this output goes to a file or a pipe, so a job would be held with nothing working it.\n'
+  + 'An agent in a tool shell: run node agent.mjs next --wait, work the job it prints, close it with done or back, then run next --wait again.\n'
+  + 'A command that does the work: node agent.mjs work --run "<command>". To log anyway: add --log.';
+const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next [--wait] | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -112,7 +115,7 @@ async function main(argv) {
     const j = await join(args[0]);
     if (!j.ok || !KEY_RE.test(j.key || '')) { console.error('Did not join: ' + (j.say || 'no key came back')); return 1; }
     writeFileSync(KEY_FILE(), j.key + '\n', { mode: 0o600 });
-    console.log('Joined Verse\'s team chat as ' + j.name + '. Your key is saved to ' + KEY_FILE() + ' (only you can read it). Next: node agent.mjs work');
+    console.log('Joined Verse\'s team chat as ' + j.name + '. Your key is saved to ' + KEY_FILE() + ' (only you can read it). Next: node agent.mjs next --wait (an agent in a tool shell), or node agent.mjs work in a terminal you watch');
     return 0;
   }
   let key = process.env.VERSE_TEAM_KEY || '';
@@ -137,13 +140,26 @@ async function main(argv) {
       return 0;
     }
     case 'here': print(await call(o, 'POST', '', { do: 'here', auto: !has(args, '--no-auto') })); return 0;
-    case 'next': print(await call(o, 'POST', '', { do: 'next' })); return 0;
+    case 'next': {
+      if (!has(args, '--wait')) { print(await call(o, 'POST', '', { do: 'next' })); return 0; }
+      // for an agent that works in a tool shell: wait for a job, print it, exit. Work it, close it with done or back, run this again.
+      const every = Math.max(20, Number(flag(args, '--every', 30)) || 30) * 1e3;
+      for (;;) {
+        const r = await workOnce(o);
+        if (r.state === 'busy') return 0;
+        if (r.state === 'error') { console.error('Team API: ' + (r.say || 'no answer')); if (r.status === 401) return 1; }
+        await new Promise((res) => setTimeout(res, every));
+      }
+    }
     case 'read': { const r = await call(o, 'GET', '?c=' + encodeURIComponent(args[0] || 'work')); if (!r.ok) { print(r); return 1; } for (const m of r.messages) console.log('#' + m.id + ' ' + new Date(m.at).toISOString().slice(0, 16) + ' ' + m.by + (m.replies ? ' [' + m.replies + ' replies]' : '') + ': ' + m.body); return 0; }
     case 'post': { const thread = flag(args, '--thread'); const [c, ...words] = args; print(await call(o, 'POST', '', { do: 'post', c, body: words.join(' '), thread: thread ? Number(thread) : undefined })); return 0; }
     case 'done': { const link = flag(args, '--link', ''), note = flag(args, '--note', ''); print(await call(o, 'POST', '', { do: 'done', ok: true, link, note })); return 0; }
     case 'back': { const note = flag(args, '--note', ''), failed = !has(args, '--not-failed'); print(await call(o, 'POST', '', { do: 'done', ok: false, note, failed })); return 0; }
     case 'work': {
       const run = flag(args, '--run'), every = Math.max(20, Number(flag(args, '--every', 60)) || 60) * 1e3;
+      // jobs printed into a log file or a pipe are held and never worked: the loop keeps saying here, so they never go stale
+      // (2026-10-30: Beam started work hidden with its output in work.log and held a job with nothing working it).
+      if (!run && !process.stdout.isTTY && !has(args, '--log')) { console.error(WORK_NOT_TTY); return 2; }
       console.log('Here in Verse\'s team. Ctrl+C to leave.' + (run ? ' Each job runs: ' + run : ' Jobs print here; close each with done or back.'));
       const me = await call(o, 'GET', '?me').catch(() => null);
       if (me && me.ok && me.me) console.log('You are ' + me.me.name + (me.me.job ? ', holding job ' + me.me.job : ', with no job yet') + '.');

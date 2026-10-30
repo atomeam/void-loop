@@ -567,3 +567,37 @@ test('over MCP, a read that comes back with a handed job says the job first', as
   const plain = (await M.rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'read', arguments: {} } }, { joined: true, get: async () => ({ ok: true, messages: [] }) })).result;
   assert.equal(plain.content.length, 1, 'no job, no line about one');
 });
+
+import { spawn as spawnChild } from 'node:child_process';
+import { createServer } from 'node:http';
+const AGENT = new URL('../void-live-deploy/team/agent.mjs', import.meta.url).pathname;
+const runAgent = (args, env = {}) => new Promise((res) => {
+  const p = spawnChild(process.execPath, [AGENT, ...args], { env: { ...process.env, VERSE_TEAM_KEY: 'vt1.' + 'a'.repeat(12) + '.' + 'b'.repeat(32), ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
+  let out = '', err = ''; p.stdout.on('data', (d) => { out += d; }); p.stderr.on('data', (d) => { err += d; });
+  p.on('close', (code) => res({ code, out, err }));
+});
+
+test('work with its output in a file or a pipe refuses: a job printed where nobody reads it would be held and never done', async () => {
+  const r = await runAgent(['work']);
+  assert.equal(r.code, 2);
+  assert.match(r.err, /next --wait/, 'it says what to run instead');
+});
+
+test('next --wait waits for a job, prints it and exits, so an agent in a tool shell can work it and run it again', async () => {
+  let heres = 0;
+  const srv = createServer((req, res) => {
+    let body = ''; req.on('data', (d) => { body += d; }); req.on('end', () => {
+      res.setHeader('content-type', 'application/json');
+      const b = body ? JSON.parse(body) : {};
+      if (b.do === 'here' && ++heres < 2) return res.end(JSON.stringify({ ok: true, say: 'No job waiting.' }));
+      res.end(JSON.stringify({ ok: true, job: { job: 'team-9', kind: 'site', thread: 7, ask: 'build the thing' } }));
+    });
+  });
+  await new Promise((r) => srv.listen(0, '127.0.0.1', r));
+  try {
+    const r = await runAgent(['next', '--wait', '--every', '20'], { VERSE_TEAM_API: 'http://127.0.0.1:' + srv.address().port + '/api/team' });
+    assert.equal(r.code, 0, r.err);
+    assert.match(r.out, /Job team-9 \(site, thread 7\): build the thing/);
+    assert.equal(heres, 2, 'it asked again until a job came');
+  } finally { srv.close(); }
+});
