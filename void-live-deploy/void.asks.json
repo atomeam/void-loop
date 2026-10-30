@@ -2217,6 +2217,41 @@
       "words": "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b.",
       "ledgerAt": "2026-10-25T01:16:56Z",
       "why": "built: answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a browser-based utility to check the watertightness of STL print files [What I am being built, S2].",
+      "ledgerAt": "2026-10-29T15:05:11Z",
+      "why": "built: STL checker, asked by Verse: /stl/ checks an STL print file on the device (binary or ASCII, never uploaded) for watertightness: open edges and the holes they make with where each is, non-manifold edges, flipped normals,  (linked by tools/asks-link.mjs, shared words: brows, bas, utility, check, watertightnes, stl, print, fil)"
+    },
+    {
+      "words": "Build a browser-based utility to check the watertightness of STL print files.",
+      "ledgerAt": "2026-10-29T15:05:11Z",
+      "why": "built: STL checker, asked by Verse: /stl/ checks an STL print file on the device (binary or ASCII, never uploaded) for watertightness: open edges and the holes they make with where each is, non-manifold edges, flipped normals,  (linked by tools/asks-link.mjs, shared words: brows, bas, utility, check, watertightnes, stl, print, fil)"
+    },
+    {
+      "words": "Build a browser-based utility to check the watertightness of STL print files [What I am being built].",
+      "ledgerAt": "2026-10-29T15:05:11Z",
+      "why": "built: STL checker, asked by Verse: /stl/ checks an STL print file on the device (binary or ASCII, never uploaded) for watertightness: open edges and the holes they make with where each is, non-manifold edges, flipped normals,  (linked by tools/asks-link.mjs, shared words: brows, bas, utility, check, watertightnes, stl, print, fil)"
+    },
+    {
+      "words": "Build a browser-based utility to check the watertightness of STL print files in the browser [How I am being built]",
+      "ledgerAt": "2026-10-29T15:05:11Z",
+      "why": "built: STL checker, asked by Verse: /stl/ checks an STL print file on the device (binary or ASCII, never uploaded) for watertightness: open edges and the holes they make with where each is, non-manifold edges, flipped normals,  (linked by tools/asks-link.mjs, shared words: brows, bas, utility, check, watertightnes, stl, print, fil)"
+    },
+    {
+      "words": "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status",
+      "ledgerAt": "2026-10-30T02:25:11Z",
+      "why": "built: Promotion record for the checked and tested skills: 44 met the proven standard and were promoted, 22 stayed with their reasons, each with its evidence before and after (docs/promotions/2026-10-29.md, PR #1583, merged 202 (linked by tools/asks-link.mjs, shared words: provide, list, check, test, skill, promot, proven, statu)"
+    },
+    {
+      "words": "Provide a list of the 15 checked and 2 tested skills that can be promoted to proven status",
+      "ledgerAt": "2026-10-30T02:25:11Z",
+      "why": "built: Promotion record for the checked and tested skills: 44 met the proven standard and were promoted, 22 stayed with their reasons, each with its evidence before and after (docs/promotions/2026-10-29.md, PR #1583, merged 202 (linked by tools/asks-link.mjs, shared words: provide, list, check, test, skill, promot, proven, statu)"
+    },
+    {
+      "words": "Provide a list of the 20 checked and 43 tested skills that can be promoted to proven status.",
+      "ledgerAt": "2026-10-30T02:25:11Z",
+      "why": "built: Promotion record for the checked and tested skills: 44 met the proven standard and were promoted, 22 stayed with their reasons, each with its evidence before and after (docs/promotions/2026-10-29.md, PR #1583, merged 202 (linked by tools/asks-link.mjs, shared words: provide, list, check, test, skill, promot, proven, statu)"
     }
   ],
   "held": [
@@ -2229,43 +2264,15 @@
   ],
   "totals": {
     "asked": 241,
-    "built": 236,
+    "built": 240,
     "through": "2026-10-29T22:41:00Z",
     "open": [
-      {
-        "ask": "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins.",
-        "at": "2026-10-17T12:33:00Z",
-        "kind": "build",
-        "small": true,
-        "times": 1
-      },
       {
         "ask": "Absorb every repository on the account into the core code",
         "at": "2026-10-28T22:29:00Z",
         "kind": "daily",
         "small": false,
         "times": 6
-      },
-      {
-        "ask": "Create a utility to check the watertightness of STL print files in the browser",
-        "at": "2026-10-29T22:41:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 6
-      },
-      {
-        "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
-        "at": "2026-10-29T22:41:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 1
-      },
-      {
-        "ask": "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status",
-        "at": "2026-10-29T22:41:00Z",
-        "kind": "daily",
-        "small": true,
-        "times": 4
       }
     ]
   }
