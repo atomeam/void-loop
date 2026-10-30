@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T07:16:13Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+   "at": "2026-10-30T07:34:06Z",
+   "subject": "Team gate: read only the compare status, and run after each deploy"
   },
   {
-   "at": "2026-10-30T07:15:15Z",
-   "subject": "Verse Brain on every page: window.verseBrain reads and writes the one brain"
+   "at": "2026-10-30T07:34:04Z",
+   "subject": "Markets: tiny coin prices keep their digits; the stage asks Wikipedia once"
   },
   {
-   "at": "2026-10-30T07:13:51Z",
-   "subject": "A published page fits a phone: every card in reach, one under the other"
+   "at": "2026-10-30T07:31:56Z",
+   "subject": "rap voice: warp the speech between beat anchors instead of chopping syllables, keep the quiet end of each last word, retry a busy voice"
   },
   {
-   "at": "2026-10-30T07:13:27Z",
-   "subject": "members-paid tests the merged PR; two ideas in one millisecond no longer clash"
+   "at": "2026-10-30T07:31:15Z",
+   "subject": "/tools/: a find box, and every tool can open on the bench"
   },
   {
-   "at": "2026-10-30T07:11:33Z",
+   "at": "2026-10-30T07:31:11Z",
+   "subject": "Tower gate: onlineconverter.com,emoji combos,calendar: calendar.online measured against their live sites"
+  },
+  {
+   "at": "2026-10-30T07:28:02Z",
+   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
+  },
+  {
+   "at": "2026-10-30T07:27:45Z",
+   "subject": "Verse fixes its meteors skill: learn to handle \"is there a meteor shower soon\""
+  },
+  {
+   "at": "2026-10-30T07:26:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T07:10:59Z",
-   "subject": "Jobs: Himalayas categories read as words, not slugs"
+   "at": "2026-10-30T07:25:43Z",
+   "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
   },
   {
-   "at": "2026-10-30T07:10:15Z",
-   "subject": "converter: 3GP writer (H.264 pictures, AAC sound where the browser codes it)"
+   "at": "2026-10-30T07:25:20Z",
+   "subject": "SEO table matches the live /converter/ and /rap/ pages, so a refresh no longer rolls them back"
   },
   {
-   "at": "2026-10-30T07:07:33Z",
-   "subject": "converter: FLV writer (H.264 pictures, AAC or 16-bit PCM sound)"
-  },
-  {
-   "at": "2026-10-30T07:07:12Z",
-   "subject": "Better at emoji, flights and scores: 4 more ways of asking answered right — new phrases: “random emoji” now opens emoji; “give me an…"
-  },
-  {
-   "at": "2026-10-30T07:06:38Z",
-   "subject": "Lab pages: end blurbs that stopped on a comma or semicolon"
-  },
-  {
-   "at": "2026-10-30T07:05:13Z",
-   "subject": "deps.json: the gate's test reads lib/team.js"
-  },
-  {
-   "at": "2026-10-30T07:03:24Z",
+   "at": "2026-10-30T07:24:08Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T07:03:04Z",
-   "subject": "Reduced motion: the 3D calendar opens at rest and holds still"
+   "at": "2026-10-30T07:21:54Z",
+   "subject": "cards: show the answer's photo once, in the art box"
   },
   {
-   "at": "2026-10-30T07:01:28Z",
-   "subject": "Coin table keeps answering, Wikipedia cached at the edge, plain status card words"
+   "at": "2026-10-30T07:21:32Z",
+   "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
   },
   {
-   "at": "2026-10-30T06:59:00Z",
-   "subject": "converter: AVI writer (H.264 pictures, 16-bit PCM sound)"
+   "at": "2026-10-30T07:21:10Z",
+   "subject": "Local TV and radio: escape the card heading and time out the iptv-org clones"
   },
   {
-   "at": "2026-10-30T06:56:27Z",
-   "subject": "Unit converter page: end its cut-off sentence; /tools/ lists a tool built twice once"
+   "at": "2026-10-30T07:21:06Z",
+   "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
   },
   {
-   "at": "2026-10-30T06:56:01Z",
-   "subject": "Team gate: read the live pages at once, and time out gh"
+   "at": "2026-10-30T07:18:45Z",
+   "subject": "Local TV and radio: fix the quote that stopped /local/app.js from parsing"
   },
   {
-   "at": "2026-10-30T06:55:24Z",
-   "subject": "Team jobs are done only when the merged PR did the job"
+   "at": "2026-10-30T07:18:41Z",
+   "subject": "markets: 24h move from yesterday's close, screener coins fall back to snapshot + Yahoo, honest sources"
   },
   {
-   "at": "2026-10-30T06:55:05Z",
-   "subject": "Copy the stage change to void.html"
+   "at": "2026-10-30T07:18:06Z",
+   "subject": "Regenerate families, deps and guide for the words asks"
   },
   {
-   "at": "2026-10-30T06:54:20Z",
-   "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
+   "at": "2026-10-30T07:18:06Z",
+   "subject": "Words asks: fun facts reach the fact skill, quote of the day, jokes on a topic, 8 ball and saying phrasing"
+  },
+  {
+   "at": "2026-10-30T07:17:03Z",
+   "subject": "jobs: keep both new tests after the merge with main"
   }
  ],
  "builders": {
