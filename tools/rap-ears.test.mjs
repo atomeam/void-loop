@@ -37,6 +37,19 @@ test('a trap beat at 140 is heard at 70, the way Verse writes it', () => {
   assert.ok(Math.abs(p.bpm - 70) <= 1.5, 'heard ' + p.bpm);
 });
 
+test('a drill pattern (kicks five 16ths apart, snare on 3) is heard at its beat, not at the kicks\' spacing', () => {
+  const bpm = 72, s16 = 60 / bpm / 4, n = 20 * RATE, x = new Float32Array(n), rnd = rngOf(3);
+  const add = (t, len, fn) => { const a = Math.round(t * RATE), m = Math.round(len * RATE); for (let i = 0; i < m && a + i < n; i++) x[a + i] += fn(i / RATE, i / m); };
+  for (let bar = 0; bar * 16 * s16 < 20; bar++) {
+    const b = bar * 16 * s16;
+    for (const k of [0, 5, 10, 13]) add(b + k * s16, 0.1, (u, p) => 0.5 * Math.sin(2 * Math.PI * 55 * u) * Math.exp(-p * 4));
+    for (const k of [8]) add(b + k * s16, 0.1, (u, p) => 0.3 * rnd() * Math.exp(-p * 5));
+    for (const k of [0, 3, 6, 8, 11, 14]) add(b + k * s16, 0.02, (u, p) => 0.08 * rnd() * (1 - p));
+  }
+  const p = listen(x, x, RATE);
+  assert.ok(Math.abs(p.bpm - bpm) <= 1.5, 'heard ' + p.bpm);
+});
+
 test('the ears hear how much the off 16ths swing', () => {
   const straight = listen(...drums({ swing: 0.5 }), RATE), swung = listen(...drums({ swing: 0.6 }), RATE);
   assert.ok(Math.abs(straight.swing - 0.5) <= 0.03, 'straight heard as ' + straight.swing);
