@@ -2,7 +2,8 @@
 //   node tools/autopilot.test.mjs
 import assert from 'node:assert/strict';
 import { kindOf, summarize, startedByHour, incidentsIn, mergedPr } from '../void-live-deploy/lib/autopilot.js';
-import { readAutopilot } from '../void-live-deploy/functions/api/autopilot.js';
+import { readAutopilot, fillFromSnapshot, onRequestGet } from '../void-live-deploy/functions/api/autopilot.js';
+import { snapshot } from './autopilot-snapshot.mjs';
 
 let n = 0; const t = (name, f) => { f(); n++; };
 const BOT = '41898282+github-actions[bot]@users.noreply.github.com';
@@ -59,4 +60,24 @@ assert.equal(ok.ownCount, 1); assert.equal(ok.deploys, 7); assert.equal(ok.condu
 assert.deepEqual(ok.conductor.heldWhy, ['coder used up']); assert.deepEqual(ok.sources, { commits: 'ok', deploys: 'ok', conductor: 'ok' }); n++;
 const bad = await readAutopilot({}, 7, fake([['deploy.yml/runs', 500]]), now);
 assert.equal(bad.ownCount, undefined); assert.equal(bad.deploys, undefined); assert.match(bad.sources.commits, /HTTP 404/); assert.match(bad.sources.deploys, /HTTP 500/); n++;
+
+// the deploy's snapshot: GitHub refused Cloudflare, so the deploy's own read of the same records is used, and dated
+const snap = await snapshot({ GITHUB_TOKEN: 't' }, fake([
+  ['author=41898282', [c('b1', 'Better at recipes', '2026-10-30T09:00:00Z')]], ['author=verse-loop', []], ['deploy.yml/runs', { total_count: 5 }],
+]), now);
+assert.equal(snap.at, '2026-10-30T10:00:00.000Z'); assert.equal(snap.windows[1].ownCount, 1); assert.equal(snap.windows[7].deploys, 5); assert.equal(snap.windows[1].conductor, undefined); n++;
+const filled = fillFromSnapshot(structuredClone(bad), snap, 7);
+assert.equal(filled.ownCount, 1); assert.equal(filled.deploys, 5); assert.deepEqual([filled.sources.commits, filled.sources.deploys], ['snapshot', 'snapshot']); assert.equal(filled.snapshotAt, snap.at); n++;
+const failedSnap = { at: snap.at, windows: { 1: { sources: { commits: 'HTTP 403', deploys: 'HTTP 403' } } } };
+const kept = fillFromSnapshot(structuredClone(bad), failedSnap, 1);
+assert.equal(kept.ownCount, undefined); assert.equal(kept.snapshotAt, undefined); n++; // a snapshot that did not read GitHub fills nothing in
+
+// the endpoint: with no token and a snapshot, GitHub is not asked at all; the conductor is still read live
+globalThis.caches = { default: { match: async () => null, put: async () => {} } };
+let askedGithub = false;
+const assets = { fetch: async () => Response.json(snap) };
+const res = await onRequestGet({ request: new Request('https://a-to-mind.com/api/autopilot?days=1'), env: { ASSETS: assets },
+  fetchFn: async (url) => { if (url.startsWith('https://api.github.com')) askedGithub = true; return url.includes('conductor.json') ? Response.json({ updated: '2026-10-30T09:59:00Z', last24h: { started: 3 }, ticks: [] }) : new Response('no', { status: 403 }); } });
+const body = await res.json();
+assert.equal(askedGithub, false); assert.equal(body.ownCount, 1); assert.equal(body.sources.conductor, 'ok'); assert.equal(body.sources.commits, 'snapshot'); n++;
 console.log('autopilot: ' + n + ' passed');

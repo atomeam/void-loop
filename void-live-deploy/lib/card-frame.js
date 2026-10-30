@@ -246,6 +246,14 @@ export const pageOfCard = (name, page) => {
   const i = page ? page.indexOf('?') : -1, base = i < 0 ? page : page.slice(0, i);
   return page && PAGE_PATHS[base] && (i < 0 || PAGE_QUERY.test(page.slice(i))) ? [page, PAGE_PATHS[base]] : PAGE_OF[name] || null;
 };
+/** a card with no data-page that links to its own skill's page with a plain query ('/translate/?q=good%20morning&to=fr') opens that page on
+ *  what it shows, not on its default: the first such href, or '' (also when the card links to the plain page too). hrefs: the card's own link targets. Pure. */
+export const ownPageOf = (name, hrefs) => {
+  const home = PAGE_OF[name] && PAGE_OF[name][0];
+  if (!home || (hrefs || []).includes(home)) return ''; // a card that links to its plain page as well chose that one (the STL card's sample cube is an extra)
+  for (const h of hrefs || []) { const i = String(h || '').indexOf('?'); if (i > 0 && h.slice(0, i) === home && PAGE_QUERY.test(h.slice(i))) return h; }
+  return '';
+};
 /** the link to a skill's full page, or '' when it has none. Pure. */
 export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
 
@@ -261,7 +269,10 @@ export function keep(el, esc, stats) {
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
   const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  if (pageOfCard(name, el.dataset.page) && !el.querySelector(':scope > .vc-page')) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, el.dataset.page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
+  // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
+  const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
+  if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);
+  if (want && !drawn) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
   // the frame follows the subject's kind, read from the fetched description (lib/subject-kinds.js): a theme, badges from the answer's own facts, and a
   // "not affiliated" line on a card about someone else's work
   const kindTitle = c.kindName ? c.kindName.charAt(0).toUpperCase() + c.kindName.slice(1) : '';

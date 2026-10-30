@@ -59,9 +59,10 @@ async function load() {
   $('t-deploys').nextElementSibling.textContent = 'deploys to a-to-mind.com (' + (days === 1 ? '24 h' : '7 days') + ')';
   const [ap, coder, inc] = await Promise.allSettled([get('/api/autopilot?days=' + days), get('/api/coder'), get('/incidents.json')]);
   const d = ap.status === 'fulfilled' ? ap.value : null, src = (d && d.sources) || {};
-  tile('t-own', d && src.commits === 'ok' ? d.ownCount : null, 'GitHub did not answer: ' + (src.commits || 'no reply'));
-  tile('t-deploys', d && src.deploys === 'ok' ? d.deploys : null);
-  tile('t-reverts', d && src.commits === 'ok' ? ((d.kinds || {}).revert || 0) : null);
+  const read = (k) => src[k] === 'ok' || src[k] === 'snapshot';
+  tile('t-own', d && read('commits') ? d.ownCount : null, 'GitHub did not answer: ' + (src.commits || 'no reply'));
+  tile('t-deploys', d && read('deploys') ? d.deploys : null);
+  tile('t-reverts', d && read('commits') ? ((d.kinds || {}).revert || 0) : null);
   tile('t-started', d && d.conductor && d.conductor.last24h ? d.conductor.last24h.started : null);
   const since = Date.now() - days * 86400e3;
   if (inc.status === 'fulfilled') { const i = incidentsIn(inc.value.incidents, since); tile('t-open', i.open); $('t-open').nextElementSibling.textContent = 'open incidents on main' + (i.healed ? ' (' + i.healed + ' healed, median ' + i.medianMinutes + ' min)' : ''); } else tile('t-open', null);
@@ -75,9 +76,9 @@ async function load() {
     }
     for (const why of d.conductor.heldWhy || []) { const s = document.createElement('span'); s.className = 'chip'; s.textContent = 'Held: ' + why; held.append(s); }
   } else { $('bars').textContent = ''; $('held').replaceChildren(el('span', 'err', 'The conductor\'s record did not answer: ' + (src.conductor || 'no reply') + '.')); }
-  if (d && src.commits === 'ok') { feed(d); if (d.complete === false) $('feed').append(line('cut', 'note', 'The window held more commits than one read takes; the newest are shown.')); }
+  if (d && read('commits')) { feed(d); if (d.complete === false) $('feed').append(line('cut', 'note', 'The window held more commits than one read takes; the newest are shown.')); }
   else $('feed').replaceChildren(line('n/a', 'err', 'Main\'s history did not answer just now (' + (src.commits || (ap.reason && ap.reason.message) || 'no reply') + '). Nothing is shown instead of a guess.'));
-  $('asof').textContent = d ? 'Read ' + ago(d.read) + (d.cached ? ' (cached up to 10 min)' : '') : '';
+  $('asof').textContent = d ? 'Read ' + ago(d.read) + (d.cached ? ' (cached up to 10 min)' : '') + (d.snapshotAt ? '; main\'s history as of the deploy ' + ago(d.snapshotAt) : '') : '';
 }
 
 for (const b of document.querySelectorAll('[data-days]')) b.addEventListener('click', () => {

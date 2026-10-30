@@ -542,21 +542,13 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-30T04:36:42Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
-  {
-   "at": "2026-10-30T10:42:31Z",
-   "subject": "Loan payoff card: note that every value is escaped"
-  },
-  {
-   "at": "2026-10-30T10:42:06Z",
-   "subject": "Loan: answer how long a monthly payment takes to pay off a balance"
-  },
   {
    "at": "2026-10-30T10:41:32Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
@@ -628,6 +620,14 @@
   {
    "at": "2026-10-30T10:15:28Z",
    "subject": "Every song Verse makes plays a real grand piano and real drums"
+  },
+  {
+   "at": "2026-10-30T10:12:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T10:11:34Z",
+   "subject": "Autopilot: a live page of what Verse did on its own"
   }
  ],
  "builders": {
