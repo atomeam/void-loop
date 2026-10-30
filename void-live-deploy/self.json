@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:25:55Z",
+   "subject": "One owner: the owner can name their own account; /team/ shows the account id"
+  },
+  {
+   "at": "2026-10-30T04:24:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T04:23:14Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T04:10:49Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T04:09:53Z",
-   "subject": "Every page stays deep space in a light-mode browser"
-  },
-  {
-   "at": "2026-10-30T04:09:53Z",
-   "subject": "One owner across Verse: the owner's signed-in account is the owner on every page"
   }
  ],
  "builders": {

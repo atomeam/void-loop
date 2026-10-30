@@ -76,3 +76,22 @@ test("'owner-bind-account': only the key binds a signed-in account, and then eve
   assert.deepEqual([r.j.owner, r.j.bound], [true, 1]);
   assert.equal(await ownerOk(req(member), env), true, 'that account is the owner now');
 });
+
+test('an account the owner named (env.OWNER_ACCOUNTS) is the owner with no passkey bound; a bad or other id is not', async () => {
+  const { env, member } = await world();
+  assert.equal(await ownerOk(req(member), env), false);
+  env.OWNER_ACCOUNTS = ' x , member-acct-0000000001 ';
+  assert.equal(await ownerOk(req(member), env), false, 'member-acct is not named');
+  const w = await world();
+  w.env.OWNER_ACCOUNTS = 'member-acct';
+  assert.equal(await ownerAccount(w.env, 'member-acct'), false, 'too short to be an account id');
+  const id = 'Abc_DEF-ghij0123456789';
+  w.env.DB.raw.prepare('INSERT INTO void_passkeys (id, user_id) VALUES (?, ?)').run('named-key', id);
+  const s = await newSession(w.env, id); await s.stmt.run();
+  assert.equal(await ownerOk(req(s.token), w.env), false, 'not named yet');
+  w.env.OWNER_ACCOUNTS = 'other-acct-00000000000,' + id;
+  assert.equal(await ownerOk(req(s.token), w.env), true, 'named: a live session of it is the owner');
+  assert.equal(await ownerOk(req(w.member), w.env), false, 'other accounts still are not');
+  w.env.DB.raw.prepare('UPDATE void_sessions SET expires = 1').run();
+  assert.equal(await ownerOk(req(s.token), w.env), false, 'only a live session counts');
+});
