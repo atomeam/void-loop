@@ -57,11 +57,15 @@ export function inferTypes(html, src = '') {
 }
 
 /** the routes this page already hands data to: a link to another page that carries something (?x= or #...), or the verse_handoff ring */
-export function builtFrom(route, html, src, routes) {
+export function builtFrom(route, html, src, routes, builders = {}) {
   const all = String(html) + '\n' + String(src), to = new Set();
   for (const m of all.matchAll(/["'`](\/[a-z0-9-]+(?:\/[a-z0-9-]+)*\/)(?:\?[a-z_]+=|#)/gi)) if (m[1] !== route && routes.includes(m[1])) to.add(m[1]);
+  for (const [fn, page] of Object.entries(builders)) if (page !== route && routes.includes(page) && new RegExp('\\b' + fn + '\\(').test(all)) to.add(page);
   return [...to];
 }
+/** lib/handoff.js's link builders and the page each one opens with the list in it (wheelLink: '/wheel/#...'), so a page that calls
+ *  wheelLink(names) counts as connected to /wheel/ the way a written '/wheel/#' link does. Pure. */
+export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/)[#?]/g)].map((m) => [m[1], m[2]]));
 
 /** a page that is one of its family's variants (/photos/squoosh/ beside /photos/) is not ranked on its own unless it has its own tag */
 const variant = (p) => p.route.split('/').length > 3 && !p.declared;
@@ -99,12 +103,13 @@ function ownSources(dir, routes) {
 /** the whole scan: { pages: [{ route, declared, in, out, readsLink, built }], gaps: [{ from, to, shared, score }] ranked, built: n, undeclared } */
 export function scan(dir = site, types = legacy()) {
   const routes = pages(dir).filter((r) => !SKIP.test(r)), own = ownSources(dir, routes), rows = [], undeclared = [];
+  const hand = rd(path.join(dir, 'lib', 'handoff.js')), builders = buildersOf(hand);
   for (const r of routes) {
     const html = rd(path.join(dir, r, 'index.html')), src = own[r], tag = parseDecl(declOf(html)), d = tag || parseDecl(types[r]);
     if (!d) { undeclared.push(r); continue; }
-    rows.push({ route: r, declared: !!tag, in: d.in, out: d.out, readsLink: /URLSearchParams|location\.(?:search|hash)/.test(html + src), built: builtFrom(r, html, src, routes) });
+    rows.push({ route: r, declared: !!tag, in: d.in, out: d.out, readsLink: /URLSearchParams|location\.(?:search|hash)/.test(html + src), built: builtFrom(r, html, src, routes, builders) });
   }
-  const hand = rd(path.join(dir, 'lib', 'handoff.js')), ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/)'/g) || []).map((x) => x.slice(2, -1)) : [];
+  const ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/)'/g) || []).map((x) => x.slice(2, -1)) : [];
   const done = (a, b) => (ring.includes(a.route) && ring.includes(b.route)) || a.built.includes(b.route);
   const gaps = [], built = [];
   for (const a of rows) for (const b of rows) { if (a === b || a.route.split('/')[1] === b.route.split('/')[1] || variant(a) || variant(b)) continue;

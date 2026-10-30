@@ -108,6 +108,20 @@ export const JOURNEYS = {
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
   },
+  'pick two players on the fantasy page, spin them on the wheel, and pick one of the draft board at random': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/fantasy/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); await p.locator('#example').click(); await p.waitForSelector('.pick button'); await check('the fantasy page opened the example sheet');
+    for (const n of ['Cy Dee', 'Ann Lee']) await p.locator('.pick button', { hasText: n }).first().click();
+    await Promise.all([p.waitForURL(/\/wheel\/#/), p.locator('#related a', { hasText: 'Spin these players on the wheel' }).click()]); await p.waitForSelector('#entries');
+    const wheel = (await p.locator('#entries').inputValue()).split('\n').map((x) => x.trim()).filter(Boolean);
+    if (wheel.join('|') !== 'Cy Dee|Ann Lee') throw new Error('the wheel opened with "' + wheel.join(', ') + '", not the two picked players');
+    await check('the wheel opened with Cy Dee and Ann Lee');
+    await open(); await p.locator('#example').click(); await p.waitForSelector('.pick button');
+    await Promise.all([p.waitForURL(/\/random\/\?list=/), p.locator('#related a', { hasText: 'Pick one of these players at random' }).click()]); await p.waitForSelector('#list');
+    const list = (await p.locator('#list').inputValue()).split('\n');
+    if (list.length !== 8 || list[0] !== 'Cy Dee') throw new Error('the random page opened with ' + list.length + ' names starting "' + list[0] + '", not the 8 players of the board best first');
+    await check('the random page opened with the 8 players of the draft board, Cy Dee first');
+  },
 };
 
 async function run() {

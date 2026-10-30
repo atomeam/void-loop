@@ -1,7 +1,7 @@
 // The fantasy page's pure half: sheets read from CSV, TSV and JSON, player against player, start or sit, trades, boards, and stats derived from box scores
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { numOf, cells, parseSheet, lowerIsBetter, compare, startSit, tradeValue, board, entriesFrom, deriveStats } from '../void-live-deploy/lib/fantasy.js';
+import { numOf, cells, parseSheet, lowerIsBetter, compare, startSit, tradeValue, board, namesToSend, entriesFrom, deriveStats } from '../void-live-deploy/lib/fantasy.js';
 import { readSummary } from '../void-live-deploy/lib/scores.js';
 
 const CSV = 'Player,Pos,Team,Proj,Floor,Ceiling,ADP\nAnn Lee,RB,AAA,15.5,9,24,3\n"Bob, Jr.",WR,BBB,14.2,10,20,5\nCy Dee,QB,CCC,"11",,,12\nAnn Lee,RB,AAA,99,1,1,1';
@@ -37,4 +37,12 @@ test('stats are derived from box scores: games, averages, the last n and home an
   const d = deriveStats(e, 'YDS', 2)[0]; assert.equal(d.games, 3); assert.equal(d.avg, 73.33); assert.equal(d.last, 60); assert.equal(d.home, 85); assert.equal(d.away, 50); assert.equal(d.trend, -13.33);
   assert.equal(deriveStats(e, 'FPTS', 1)[0].avg, 18.33); assert.deepEqual(deriveStats(e, 'NOPE'), []); assert.deepEqual(entriesFrom({}, 'nfl', '2025-10-01'), []);
   assert.equal(entriesFrom(readSummary({}), 'nba', 'x').length, 0);
+});
+
+test('the players sent on to the picking pages: the picks on this tab, or the top of the board', () => {
+  const sh = parseSheet('Player,Proj,ADP\nAnn,15,3\nBob,14,5\nCy,21,8\nDee,9,22');
+  assert.deepEqual(namesToSend(sh, ['Bob', 'Ann', 'Bob'], 'Proj'), ['Bob', 'Ann']);
+  assert.deepEqual(namesToSend(sh, ['Bob'], 'Proj'), ['Cy', 'Ann', 'Bob', 'Dee']);
+  assert.deepEqual(namesToSend(sh, [], 'ADP', 2), ['Ann', 'Bob']);
+  assert.deepEqual(namesToSend(null, ['Ann', 'Bob'], 'Proj'), []);
 });
