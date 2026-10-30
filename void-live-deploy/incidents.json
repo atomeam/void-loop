@@ -1,6 +1,36 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
+  {
+   "at": "2026-10-30T20:30:31.188Z",
+   "sha": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing"
+   ],
+   "touched": [
+    "domains/void.frontier.md",
+    "tools/guide.test.mjs",
+    "tools/report-to-growth.mjs",
+    "tools/report-to-growth.test.mjs",
+    "tools/self-context.mjs",
+    "tools/what-skills.mjs",
+    "tools/what-skills.test.mjs",
+    "void-live-deploy/lib/guide.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
+   ],
+   "shards": [
+    1,
+    3
+   ]
+  },
   {
    "at": "2026-10-30T20:24:12.933Z",
    "sha": "6358005835b363df7b3a15113df6c10191a54609",
@@ -55,6 +85,9 @@
     1,
     2,
     3
+   ],
+   "passed": [
+    2
    ]
   },
   {
@@ -85,7 +118,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 31
   },
   {
    "at": "2026-10-30T19:02:16.898Z",
@@ -105,7 +145,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 88
   },
   {
    "at": "2026-10-30T16:44:46.167Z",
@@ -134,7 +181,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 226
   },
   {
    "at": "2026-10-30T15:08:02.597Z",
@@ -163,7 +217,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 322
   },
   {
    "at": "2026-10-30T13:37:55.692Z",
@@ -196,8 +257,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 413
   },
   {
    "at": "2026-10-30T12:13:24.946Z",
@@ -226,8 +292,13 @@
     3
    ],
    "passed": [
+    2,
     3
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 497
   },
   {
    "at": "2026-10-30T11:25:10.005Z",
@@ -308,8 +379,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 589
   },
   {
    "at": "2026-10-30T10:20:05.008Z",
@@ -346,7 +422,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 610
   },
   {
    "at": "2026-10-30T08:34:27.681Z",
@@ -381,8 +464,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 716
   },
   {
    "at": "2026-10-30T08:23:36.059Z",
@@ -423,8 +511,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 727
   },
   {
    "at": "2026-10-30T08:21:32.007Z",
@@ -466,8 +559,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 729
   },
   {
    "at": "2026-10-30T02:37:47.980Z",
@@ -937,32 +1035,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 836
-  },
-  {
-   "at": "2026-10-29T04:47:44.038Z",
-   "sha": "0297c5ea8a0265f2fd3135bf8ca2355776746125",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40818858320",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/tower.test.mjs",
-    "void-live-deploy/functions/api/will.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/skills/tower.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 849
   }
  ]
 }
