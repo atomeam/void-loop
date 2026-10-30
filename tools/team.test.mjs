@@ -101,11 +101,15 @@ test('the owner invites; the agent is handed the best job as a #work thread, ans
 
   assert.equal((await post(env, { do: 'post', c: 'work', thread: here.job.thread, body: 'on it: the red check is the bench' }, inv.key, T0 + 2000)).status, 201);
   assert.equal((await post(env, { do: 'post', c: 'work', body: 'too soon' }, inv.key, T0 + 2500)).status, 429, 'one message a second');
+  const bare = await post(env, { do: 'done', ok: true, note: 'all done' }, inv.key, T0 + 4000);
+  assert.equal(bare.status, 400, 'a background job never closes without its pull request (Beam closed three with target notes only)');
+  assert.match(job(env, 'j2').note, /^claimed by team:Scout ·/, 'still Scout\'s');
   const done = await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/9999', note: 'merged' }, inv.key, T0 + 5000);
-  assert.equal(job(env, 'j2').state, 'done'); assert.match(job(env, 'j2').note, /^done by team:Scout · https:\/\/github\.com\/atomeam\/void-loop\/pull\/9999/);
+  assert.equal(job(env, 'j2').state, 'building', 'handed in, not done: tools/team-gate.mjs checks the merged PR first');
+  assert.match(job(env, 'j2').note, /^review by team:Scout · PR: https:\/\/github\.com\/atomeam\/void-loop\/pull\/9999 · merged$/);
   assert.equal(done.next.job, 'j5', 'kept busy: the will\'s job next');
   const th = await get(env, '?t=' + here.job.thread, OWNER);
-  assert.deepEqual(th.replies.map((r) => r.body), ['on it: the red check is the bench', 'Done. https://github.com/atomeam/void-loop/pull/9999\nmerged']);
+  assert.deepEqual(th.replies.map((r) => r.body), ['on it: the red check is the bench', 'Handed in: https://github.com/atomeam/void-loop/pull/9999. Verse checks it after the merge.\nmerged']);
   assert.equal(th.root.replies, 2);
   const shell = await get(env, '', null, T0 + 6000);
   assert.deepEqual(shell.members.map((m) => [m.name, m.state, m.done]), [['Scout', 'busy', 1]]);
@@ -160,7 +164,7 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
   const o = { api: 'mem:', key, fetch: fake }, log = () => {};
   const ok = await workOnce(o, { run: 'node -e "console.log(process.env.VERSE_JOB_KIND + \' \' + process.env.VERSE_JOB_ID); console.log(\'https://github.com/atomeam/void-loop/pull/7\')"', log });
   assert.equal(ok.state, 'done'); assert.equal(ok.job.job, 'j2'); assert.equal(ok.link, 'https://github.com/atomeam/void-loop/pull/7');
-  assert.equal(job(env, 'j2').state, 'done'); assert.match(job(env, 'j2').note, /pull\/7/);
+  assert.equal(job(env, 'j2').state, 'building'); assert.match(job(env, 'j2').note, /^review by team:Runner · PR: .*pull\/7/);
   assert.equal(ok.next.job, 'j5', 'handed the next at once');
   assert.match(ok.next.brief || '', /^The spec: [\s\S]*\nDeliver: /, 'the hand-out carries the job\'s brief (lib/job-guide.js)');
   const bad = await workOnce(o, { run: 'node -e "console.error(\'no mirror source\'); process.exit(3)"', log });
@@ -168,6 +172,9 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
   assert.equal(job(env, 'j5').state, 'queued'); assert.match(job(env, 'j5').note, /^tries 1 · exit 3: no mirror source/);
   const idle = await workOnce({ ...o }, { log });
   assert.equal(idle.state, 'busy', 'without a command it holds the next job and prints it'); assert.equal(idle.job.job, 'j1');
+  const quiet = await workOnce(o, { run: 'node -e "console.log(\'all looks fine\')"', log });
+  assert.equal(quiet.state, 'given back', 'a run that ends well with no pull request does not close the job');
+  assert.match(job(env, quiet.job.job).note, /^tries 1 · no pull request: all looks fine/);
 });
 
 test('the team chat card on the stage (skills/team-chat.js): takes the team-chat asks, not plain chat, and lists agents busy first', () => {
@@ -218,8 +225,8 @@ test('the owner asks for work in #work: the post goes on the build queue and an 
   assert.equal(th.root.body, 'add a moon phase to /weather/');
   assert.match(th.replies[0].body, /^On the build queue/); assert.match(th.replies.at(-1).body, /^@Scout your next job \(feature/);
   await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/9998' }, inv.key, T0 + 9000);
-  assert.equal(job(env, ask.job).state, 'done');
-  assert.match((await get(env, '?t=' + ask.id, OWNER, T0 + 9500)).replies.at(-1).body, /^Done\. https:\/\/github\.com/);
+  assert.equal(job(env, ask.job).state, 'building', 'a PR is checked after its merge, the owner\'s ask too');
+  assert.match((await get(env, '?t=' + ask.id, OWNER, T0 + 9500)).replies.at(-1).body, /^Handed in: https:\/\/github\.com/);
 
   const long = await post(env, { do: 'post', c: 'work', body: 'x'.repeat(600) }, OWNER, T0 + 10000);
   assert.ok(job(env, long.job).ask.length <= 200 && job(env, long.job).ask.endsWith('(the whole ask: #work thread ' + long.id + ')'), 'the queue keeps its 200 character ask; the thread keeps the rest');
