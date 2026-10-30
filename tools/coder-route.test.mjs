@@ -47,3 +47,18 @@ test('the hourly cap fails closed with a 429; no model, no database or a silent 
   const down = await onRequestPost({ request: req({ messages: MSG }), env: { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => { throw new Error('3040: capacity'); } } } });
   assert.equal(down.status, 503); assert.match(await down.text(), /busy/);
 });
+
+test('GET is the coder\'s budget as counts: it takes no place, and says when room comes back', async () => {
+  const { onRequestGet, budgetOf } = await import('../void-live-deploy/functions/api/coder.js');
+  const env = { READ_TOKEN: TOKEN, DB: d1(), AI: { run: async () => ({ response: 'ok' }) } };
+  let b = await (await onRequestGet({ env })).json();
+  assert.equal(b.day.used, 0); assert.equal(b.hour.used, 0); assert.equal(b.room, true); assert.equal(b.until, null); assert.equal(b.model, models('coder'));
+  await onRequestPost({ request: req({ messages: MSG }), env });
+  b = await (await onRequestGet({ env })).json(); await onRequestGet({ env });
+  assert.equal(b.day.used, 1, 'a call counts once'); assert.equal((await (await onRequestGet({ env })).json()).day.used, 1, 'reading the budget takes no place');
+  const now = Date.parse('2026-10-30T07:37:00Z');
+  assert.deepEqual(budgetOf(3, CODER_LIMITS.perDay, now), { hour: { used: 3, cap: CODER_LIMITS.perHour }, day: { used: CODER_LIMITS.perDay, cap: CODER_LIMITS.perDay }, room: false, until: '2026-10-31T00:00:00.000Z' });
+  assert.equal(budgetOf(CODER_LIMITS.perHour, 10, now).until, '2026-10-30T08:00:00.000Z', 'a full hour comes back at the next hour');
+  assert.equal(budgetOf(null, 10, now).room, null, 'no database: unknown, not empty');
+  assert.equal((await (await onRequestGet({ env: {} })).json()).room, null);
+});
