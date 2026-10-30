@@ -177,7 +177,7 @@ test('a unit answer read by word maths links to the unit converter too (2026-10-
   assert.equal(page('what is 70 f in c'), '/convert/?q=' + encodeURIComponent('70 f in c'));
   assert.equal(page('3/4 cup in ml'), '', 'a fraction is not handed over as its last number');
   assert.equal(page('2.5 kg to lb'), '/convert/?q=' + encodeURIComponent('2.5 kg to lb'));
-  assert.ok(src.indexOf("el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());") < src.indexOf("setV(wm.value, wm.note)"), 'the link is set before the card is drawn');
+  assert.ok(src.indexOf("el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());") < src.indexOf("setV(wm.value, wm.note, wsrc)"), 'the link is set before the card is drawn');
 });
 
 test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
