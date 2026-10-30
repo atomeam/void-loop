@@ -6,8 +6,11 @@
 //   sale                        -> set void_accounts.tier = 'paid' for the passkey account in url_params[void] (the page adds ?void=<id>)
 //                                  once the sale is trusted: with GUMROAD_ACCESS_TOKEN set, it's read back from Gumroad's API
 //                                  (view_sales); without a token, the ping itself is trusted only when it came with the right ?k=,
-//                                  carries Atom's seller_id (lib/gumroad.js SELLER_IDS), is for
-//                                  the membership that unlocks paid Verse, and isn't a test ping
+//                                  carries Atom's seller_id (lib/gumroad.js SELLER_IDS) and is for
+//                                  the membership that unlocks paid Verse. A test ping counts here: Gumroad makes one only when
+//                                  the creator buys their own product (owner, 2026-10-30: "i joined and still got this page only"),
+//                                  so it unlocks the owner's own Verse; it is still never money (lib/earnings.js) or a job.
+//   later                       -> a recorded sale the rules above now trust is applied when its Verse next loads (relinkRecorded)
 //   refund, dispute, cancellation, subscription_ended          -> back to 'free' (found by subscription_id or sale_id)
 //   subscription_restarted, dispute_won                        -> 'paid' again, only for an account a verified sale already linked
 // Pings are unsigned, so the key in the URL is always required; one sale links to one Verse only (void_accounts.sale_id is unique).
@@ -27,10 +30,9 @@ export { parsePing };
 
 async function verifySale(env, p, unlock) {
   if (!env.GUMROAD_ACCESS_TOKEN) { // no API token: the keyed ping is trusted on its own, but only from Atom's seller account
-    if (String(p.test) === 'true') return { ok: false, why: 'not trusted: test ping' };
     if (!sellerMatches(p, env.GUMROAD_SELLER_ID)) return { ok: false, why: 'not trusted: different seller' };
     if (String(p.disputed) === 'true' || String(p.chargebacked) === 'true') return { ok: false, why: 'not trusted: disputed' };
-    return { ok: true, subscription_id: p.subscription_id || null, how: 'keyed ping' };
+    return { ok: true, subscription_id: p.subscription_id || null, how: String(p.test) === 'true' ? 'owner test purchase' : 'keyed ping' };
   }
   let j = null;
   try {
@@ -96,4 +98,29 @@ export async function onRequestPost({ request, env }) {
     try { crossed = await recordMilestones(env, await readEarnings(env)); } catch (_) {}
     return reply(200, { ok: true, effect, ...(service ? { service } : {}), ...(crossed.length ? { milestones: crossed } : {}) });
   } catch (_) { return reply(503, { ok: false, error: 'not recorded, Gumroad will retry' }); }
+}
+
+// A sale recorded for this Verse that was not trusted then (a ping from before a rule changed) is applied now, under today's rules.
+// Only keyed pings are ever recorded, so this is the same as the ping arriving again; a sale with a later refund, dispute, cancellation
+// or end on record is left alone, as is one already linked to another Verse. -> the tier set, or null. Called by /api/members.
+export async function relinkRecorded(env, voidId) {
+  if (!voidId) return null;
+  await ensureStoreTables(env);
+  const rows = (await env.DB.prepare("SELECT s.id, s.raw FROM void_sales s WHERE s.void_id = ? AND s.resource = 'sale' AND s.verified = 0 AND NOT EXISTS (SELECT 1 FROM void_sales d WHERE d.resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (d.sale_id = s.sale_id OR (s.subscription_id IS NOT NULL AND d.subscription_id = s.subscription_id))) ORDER BY s.at DESC LIMIT 5").bind(voidId).all()).results || [];
+  let hit = null;
+  for (const r of rows) {
+    const p = parsePing(r.raw);
+    const unlock = unlockFor(p);
+    if (!unlock || !p.sale_id || String(p.refunded) === 'true') continue;
+    const v = await verifySale(env, p, unlock);
+    if (v.ok) { hit = { id: r.id, p, unlock, v }; break; }
+  }
+  if (!hit) return null;
+  const now = new Date().toISOString();
+  try {
+    await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
+      .bind(voidId, hit.unlock.tier, hit.p.sale_id, hit.v.subscription_id, now).run();
+  } catch (_) { return null; } // that sale is already linked to another Verse
+  await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ? WHERE id = ?').bind('tier ' + hit.unlock.tier + ' (applied later)', hit.id).run();
+  return hit.unlock.tier;
 }

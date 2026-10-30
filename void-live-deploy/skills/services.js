@@ -43,7 +43,8 @@ export function cardHtml(esc, catalog) {
   const lis = SERVICES.map((p) => '<li>' + rowHtml(p, esc, liveRowFor(p, catalog)) + '</li>').join('');
   return '<h2>What Verse sells</h2><ul>' + lis + '</ul>'
     + '<p class="sub">Also: <a href="https://a-to-mind.com/code-review/" target="_blank" rel="noopener">Verse Code Review Pro</a>,'
-    + ' and your own custom Verse for $49 a month. A fix starts when you reply to your receipt with what broke.</p>';
+    + ' and <a href="https://a-to-mind.com/members/" target="_blank" rel="noopener">MultiVerse</a>, a Verse of your own, for $49 a month.'
+    + ' A fix starts when you reply to your receipt with what broke.</p>';
 }
 
 async function run(text, api) {

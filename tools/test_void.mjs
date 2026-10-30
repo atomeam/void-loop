@@ -9929,19 +9929,19 @@ try {
     [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
   // No GUMROAD_ACCESS_TOKEN (Atom doesn't pass one): a keyed ping from Atom's seller account for the paid membership is trusted.
   const kEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123' };
-  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE';
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE', VK4 = 'FFFFFFFFFFFFFFFFFFFFFF';
   const kSale = (id, extra = {}) => vmSale(id, { seller_id: SELLER, subscription_id: 'sub-k' + id, 'url_params[void]': VK1, ...extra });
   const kGood = await ping(kSale('k1'), { env: kEnv });
   const kWrongSeller = await ping(kSale('k2', { seller_id: 'zzOtherSellerZZzzzzzzz==', 'url_params[void]': VK2 }), { env: kEnv });
   const kNoSeller = await ping(kSale('k3', { seller_id: '', 'url_params[void]': VK2 }), { env: kEnv });
-  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK2 }), { env: kEnv });
+  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK4 }), { env: kEnv }); // only the creator can make one: their own Verse
   const kNoKey = await ping(kSale('k5', { 'url_params[void]': VK2 }), { env: kEnv, key: '' });
   const kReuse = await ping(kSale('k1', { 'url_params[void]': VK3, sale_timestamp: '2026-09-28T03:00:00Z' }), { env: kEnv });
   const kOther = await ping({ sale_id: 'k6', seller_id: SELLER, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'GTQsNJR9Nsd66O5QVhI4MA==', product_permalink: 'https://moonbeam846.gumroad.com/l/gqsgib', price: '2500', 'url_params[void]': VK2, resource_name: 'sale' }, { env: kEnv });
   const kPinned = await ping(kSale('k7', { 'url_params[void]': VK2 }), { env: { ...kEnv, GUMROAD_SELLER_ID: 'someone-else==' } });
   const kCancel = await ping({ subscription_id: 'sub-kk1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', resource_name: 'cancellation', cancelled_at: '2026-10-01T00:00:00Z' }, { env: kEnv });
-  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid; wrong or missing seller, test ping or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
-    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && /test ping/.test(kTest.body.effect) && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
+  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid (the creator\'s own test purchase too); wrong or missing seller or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
+    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && kTest.body.effect === 'tier paid' && kEnv.DB.accounts.get(VK4).tier === 'paid' && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
     && !kEnv.DB.accounts.has(VK2) && !kEnv.DB.accounts.has(VK3) && kEnv.DB.sales.has('sale:k2:2026-09-28T01:00:00Z') && !kEnv.DB.sales.has('sale:k5:2026-09-28T01:00:00Z') && kCancel.body.effect === 'tier free (cancellation)' && kEnv.DB.accounts.get(VK1).tier === 'free',
     [kGood.body.effect, kWrongSeller.body.effect, kNoSeller.body.effect, kTest.body.effect, kNoKey.status, kReuse.body.effect, kOther.body.effect, kPinned.body.effect, kCancel.body.effect].join(' | '));
 

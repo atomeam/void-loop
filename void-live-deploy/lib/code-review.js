@@ -18,8 +18,8 @@ const ASKS = [
   /\b(?:any|find(?:\s+the)?|spot(?:\s+the)?)\s+bugs?\s+in\s+(?:my|this|the|these)\b/i,
   /\b(?:be\s+my|act\s+as\s+(?:a|my)|you\s+are\s+my)\s+code\s+reviewer\b/i,
 ];
-// "check my zip code", "review the dress code": a code that isn't program code
-const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b/i;
+// "check my zip code", "review the dress code": a code that isn't program code; an STL or 3MF print file isn't either
+const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b|\b(?:stl|3mf)\b/i; // "check my stl file" is a print file for /stl/, not program code
 
 export function isReviewAsk(text) {
   const s = String(text || '').trim();

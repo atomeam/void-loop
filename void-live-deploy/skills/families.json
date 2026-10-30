@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 3,
-  "checked": 15,
-  "proven": 357
+  "tested": 2,
+  "checked": 16,
+  "proven": 358
  },
  "families": [
   {
@@ -25,7 +25,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 3,
     "proven": 55
    },
@@ -543,6 +543,13 @@
      "streak": 10
     },
     {
+     "name": "stl-check",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "term-orbits",
      "tier": "proven",
      "why": "a self-test, 3 real asks in the benchmark",
@@ -569,9 +576,9 @@
    "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 2,
-    "proven": 33
+    "tested": 0,
+    "checked": 3,
+    "proven": 34
    },
    "skills": [
     {
@@ -595,10 +602,12 @@
     },
     {
      "name": "yesno",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30",
      "streak": 1
     },
     {
@@ -884,10 +893,12 @@
     },
     {
      "name": "hangman",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test"
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     }
    ]
   },
@@ -1087,7 +1098,7 @@
     {
      "name": "is-it",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 10 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1160,9 +1171,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "12 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 12 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1251,7 +1262,7 @@
     {
      "name": "date-calc",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 14 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1282,7 +1293,7 @@
     {
      "name": "baseconv",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 9 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
