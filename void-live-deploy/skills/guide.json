@@ -448,8 +448,8 @@
     "give me a color"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Ask, and see.",
+   "why": "a self-test, 5 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 5 real askings stand behind this page. Ask, and see.",
    "glow": 100,
    "n": 12
   },
@@ -2220,8 +2220,8 @@
     "show me the sky"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 10 real askings. Say the words below and it answers.",
+   "why": "a self-test, 2 browser-suite mentions, 11 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 11 real askings. Say the words below and it answers.",
    "glow": 100,
    "n": 108
   },
@@ -2654,9 +2654,9 @@
     "days until january 1"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 22 askings, each one answered. So it is written.",
-   "glow": 90.9,
+   "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 20 askings, each one answered. So it is written.",
+   "glow": 100,
    "n": 133
   },
   {
@@ -2756,9 +2756,9 @@
     "holidays in france"
    ],
    "tier": "proven",
-   "why": "a self-test, 19 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 19 askings, each one answered. The void remembers each asking.",
-   "glow": 94.7,
+   "why": "a self-test, 18 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 18 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 139
   },
   {
@@ -3127,7 +3127,7 @@
     "what color is #ff8800"
    ],
    "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 71 real asks in the benchmark",
    "flavor": "Of all the numbers and money, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 160
@@ -3945,7 +3945,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 5 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 5 real askings stand behind this page. Ask, and see.",
+   "flavor": "Of all the words and the world, this one is trusted enough to be taught. Ask, and see.",
    "glow": 100,
    "n": 206
   },
@@ -4349,7 +4349,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the out in the world, this one is trusted enough to be taught. Ask, and see.",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Ask, and see.",
    "glow": 100,
    "n": 230
   },

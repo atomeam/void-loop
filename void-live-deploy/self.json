@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,56 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:50:39Z",
+   "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
+  },
+  {
+   "at": "2026-10-30T04:49:43Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-30T04:46:43Z",
+   "subject": "Team: the owner's #work posts go before every other job, oldest first"
+  },
+  {
+   "at": "2026-10-30T04:44:32Z",
+   "subject": "sw: page code goes back marked no-cache, so a returning tab runs the new deploy"
+  },
+  {
+   "at": "2026-10-30T04:40:49Z",
+   "subject": "define: answer word-origin asks from Wiktionary's Etymology section"
+  },
+  {
+   "at": "2026-10-30T04:40:18Z",
+   "subject": "Verse Brain writes what Verse changed in the last day, from its ledger"
+  },
+  {
+   "at": "2026-10-30T04:39:14Z",
+   "subject": "Tower gate: onlineconverter.com,password strength,hosting measured against their live sites"
+  },
+  {
+   "at": "2026-10-30T04:39:11Z",
+   "subject": "Bench: 120-minute limit so the daily run finishes; calc owns the season countdowns (#1695)"
+  },
+  {
+   "at": "2026-10-30T04:38:56Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:38:52Z",
+   "subject": "One owner: the owner's stage account is the owner (id from the owner's own message)"
+  },
+  {
+   "at": "2026-10-30T04:38:49Z",
+   "subject": "Team live: the workflow that runs tools/team-live.mjs by hand (two agents in one chat, the queue counts, old keys stopped)"
+  },
+  {
    "at": "2026-10-30T04:38:43Z",
    "subject": "Verse Brain keeps the words just told when it is full"
+  },
+  {
+   "at": "2026-10-30T04:38:17Z",
+   "subject": "One owner: /team/ shows this account's Verse id from the server too, with a Copy button"
   },
   {
    "at": "2026-10-30T04:37:28Z",
@@ -560,6 +608,10 @@
   {
    "at": "2026-10-30T04:36:18Z",
    "subject": "Book holds still at 1920 and the claims list saves before the clip check"
+  },
+  {
+   "at": "2026-10-30T04:36:04Z",
+   "subject": "families.json after the 5 new benchmark asks"
   },
   {
    "at": "2026-10-30T04:35:59Z",
@@ -576,58 +628,6 @@
   {
    "at": "2026-10-30T04:33:09Z",
    "subject": "Use with row on /is-it/ pages; the services pages and articles are not tools"
-  },
-  {
-   "at": "2026-10-30T04:32:23Z",
-   "subject": "Verse Brain reads what Verse decided: its will and its team"
-  },
-  {
-   "at": "2026-10-30T04:32:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:31:26Z",
-   "subject": "Deep space on every page, and the breaks the self-check found"
-  },
-  {
-   "at": "2026-10-30T04:30:32Z",
-   "subject": "self.json: regenerated after the merge"
-  },
-  {
-   "at": "2026-10-30T04:28:10Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:27:53Z",
-   "subject": "Recipes card shows the recipe open on the page"
-  },
-  {
-   "at": "2026-10-30T04:27:26Z",
-   "subject": "map: the team live check (tools/team-live.mjs, team-live.yml)"
-  },
-  {
-   "at": "2026-10-30T04:26:57Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-30T04:26:42Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:25:55Z",
-   "subject": "One owner: the owner can name their own account; /team/ shows the account id"
-  },
-  {
-   "at": "2026-10-30T04:25:46Z",
-   "subject": "Keep main's self.json"
-  },
-  {
-   "at": "2026-10-30T04:25:34Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:24:38Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -871,6 +871,6 @@
    "emojicombos.com"
   ],
   "beaten": 0,
-  "total": 1270
+  "total": 1269
  }
 }
