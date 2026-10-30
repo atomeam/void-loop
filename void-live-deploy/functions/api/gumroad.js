@@ -191,10 +191,10 @@ export async function linkOwnerTest(env, voidId) {
     if (!v.ok) continue;
     const now = new Date().toISOString();
     try {
-      await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
+      await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated') // void-review: ok (one write tried at a time on purpose: the loop stops at the first sale that links, at most 5 tries)
         .bind(voidId, unlock.tier, p.sale_id, v.subscription_id, now).run();
     } catch (_) { continue; }
-    await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (owner test purchase, linked to the owner)', voidId, r.id).run();
+    await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (owner test purchase, linked to the owner)', voidId, r.id).run(); // void-review: ok (runs once: the loop returns right after it)
     return unlock.tier;
   }
   return null;
