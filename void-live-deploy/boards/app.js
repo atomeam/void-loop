@@ -14,7 +14,7 @@
     const auth = owner ? { authorization: 'Bearer ' + owner } : {};
     // the owner's signed-in account brings an owner session (lib/owner-link.js); later calls carry it
     import('/lib/owner-link.js').then((m) => m.ownerLink()).then((t) => { if (t && t !== owner) { owner = t; auth.authorization = 'Bearer ' + t; } }).catch(() => {});
-    const api = async (qs, init = {}) => { const r = await fetch(API + qs, { ...init, headers: { ...auth, ...(init.headers || {}) } }); let j = {}; try { j = await r.json(); } catch (_) {} return { status: r.status, ...j }; };
+    const api = async (qs, init = {}) => { let r; try { r = await fetch(API + qs, { ...init, headers: { ...auth, ...(init.headers || {}) } }); } catch (_) { return { status: 0, ok: false, say: 'The boards could not be reached. Check the connection and try again.' }; } let j = {}; try { j = await r.json(); } catch (_) {} return { status: r.status, ...j }; };
     const ago = (t) => { const s = Math.max(0, (Date.now() - t) / 1000); return s < 60 ? 'just now' : s < 3600 ? Math.floor(s / 60) + ' min ago' : s < 86400 ? Math.floor(s / 3600) + ' h ago' : Math.floor(s / 86400) + ' d ago'; };
     const when = (t) => new Date(t).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     const size = (n) => (n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
@@ -209,7 +209,7 @@
       const by = { active: (a, b) => b.last - a.last, new: (a, b) => b.created - a.created, posts: (a, b) => b.posts - a.posts, code: (a, b) => a.code.localeCompare(b.code) }[sort] || ((a, b) => b.last - a.last);
       list.sort(by); const ul = $('boards'); ul.replaceChildren();
       $('none').hidden = !!list.length; $('boardsH').textContent = list.length ? 'The boards (' + list.length + ')' : 'The boards';
-      if (!r.ok && r.status) { $('none').hidden = false; $('none').querySelector('p').textContent = r.say || 'The boards could not be read just now.'; }
+      if (!r.ok && (r.status || r.say)) { $('none').hidden = false; $('none').querySelector('p').textContent = r.say || 'The boards could not be read just now.'; }
       const have = new Map((r.boards || []).map((x) => [x.code, x])); // a general board that exists opens; one that does not yet opens the form, filled in
       for (const a of document.querySelectorAll('#starters a')) if (have.has(a.dataset.code)) a.href = link(a.dataset.code);
       for (const x of list) { const li = el('li'), m = el('div', 'main'), a = el('a', 'title', '/' + x.code + '/ · ' + x.title); a.href = link(x.code);
