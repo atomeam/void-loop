@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T04:35:59Z",
+   "subject": "team-live: fetch the 4 agent pages at once"
+  },
+  {
+   "at": "2026-10-30T04:35:43Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:33:32Z",
+   "subject": "/team/: the live check's workflow moves to its own PR (a new workflow file needs the owner's approval to run)"
+  },
+  {
    "at": "2026-10-30T04:33:09Z",
    "subject": "Use with row on /is-it/ pages; the services pages and articles are not tools"
   },
@@ -558,8 +570,16 @@
    "subject": "Verse Brain reads what Verse decided: its will and its team"
   },
   {
+   "at": "2026-10-30T04:32:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T04:31:26Z",
    "subject": "Deep space on every page, and the breaks the self-check found"
+  },
+  {
+   "at": "2026-10-30T04:30:32Z",
+   "subject": "self.json: regenerated after the merge"
   },
   {
    "at": "2026-10-30T04:28:10Z",
@@ -568,6 +588,10 @@
   {
    "at": "2026-10-30T04:27:53Z",
    "subject": "Recipes card shows the recipe open on the page"
+  },
+  {
+   "at": "2026-10-30T04:27:26Z",
+   "subject": "map: the team live check (tools/team-live.mjs, team-live.yml)"
   },
   {
    "at": "2026-10-30T04:26:57Z",
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T04:22:22Z",
    "subject": "Versus queue: rank only rendered rows that are the site itself"
-  },
-  {
-   "at": "2026-10-30T04:22:18Z",
-   "subject": "Verse fixes its meteors skill: learn to handle \"meteor shower dates\""
-  },
-  {
-   "at": "2026-10-30T04:22:12Z",
-   "subject": "openapi-check names /api/selfcheck as Verse's own"
-  },
-  {
-   "at": "2026-10-30T04:21:45Z",
-   "subject": "Growth entry: link PR #1691"
-  },
-  {
-   "at": "2026-10-30T04:21:32Z",
-   "subject": "Join card: a rate limit for /api/joins, the community line after the will's line"
-  },
-  {
-   "at": "2026-10-30T04:20:58Z",
-   "subject": "deps.json: count functions/api/holidays.js"
-  },
-  {
-   "at": "2026-10-30T04:19:05Z",
-   "subject": "converter: write MOV and MKV, and 15 video edits on the device"
   }
  ],
  "builders": {
