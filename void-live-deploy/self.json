@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T12:07:49Z",
-   "subject": "rentbuy: a headline that fits the card"
+   "at": "2026-10-30T12:48:38Z",
+   "subject": "QR code card: draw the code here so the card never crops it"
   },
   {
-   "at": "2026-10-30T12:01:29Z",
-   "subject": "calculators page: preload lib/rentbuy.js"
+   "at": "2026-10-30T12:39:16Z",
+   "subject": "Fantasy: send the picked players (or the draft board) to the wheel, random pick, prize odds and a tournament"
   },
   {
-   "at": "2026-10-30T11:55:05Z",
-   "subject": "rentbuy: rent or buy worked out on the visitor's own numbers, with no opinion"
+   "at": "2026-10-30T12:37:35Z",
+   "subject": "Jobs asks with a place keep the place and open the page's view"
   },
   {
-   "at": "2026-10-30T11:44:42Z",
-   "subject": "Subject eval: 54 of 54 live"
+   "at": "2026-10-30T12:32:52Z",
+   "subject": "converter: write DNG (linear DNG 1.4) from any picture"
   },
   {
-   "at": "2026-10-30T11:41:21Z",
-   "subject": "Refresh 3 parity docs that point at a moved line of the stage"
-  },
-  {
-   "at": "2026-10-30T11:41:21Z",
-   "subject": "The payoff card says what the loan skill adds"
-  },
-  {
-   "at": "2026-10-30T11:39:55Z",
-   "subject": "Coin snapshot: the top 50 coins and the screener's coins, as of today"
-  },
-  {
-   "at": "2026-10-30T11:34:52Z",
+   "at": "2026-10-30T12:32:01Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T11:34:11Z",
-   "subject": "News about a topic shows each story once, and names its real source"
+   "at": "2026-10-30T12:31:27Z",
+   "subject": "Flights: a link to the local radio and TV where the flight lands"
   },
   {
-   "at": "2026-10-30T11:33:46Z",
-   "subject": "Time page: a zone with no city shows the real moon phase, not dashes"
+   "at": "2026-10-30T12:30:18Z",
+   "subject": "Jobs pages open a real jobs card on the stage"
   },
   {
-   "at": "2026-10-30T11:32:19Z",
-   "subject": "guide: refresh after the families tiers"
+   "at": "2026-10-30T12:22:03Z",
+   "subject": "A dated answer reads as fresh, and one point is one point"
   },
   {
-   "at": "2026-10-30T11:31:27Z",
-   "subject": "families: refresh the tiers, stale on main"
+   "at": "2026-10-30T12:19:10Z",
+   "subject": "Hand-off scan sees links built in a page's own modules"
   },
   {
-   "at": "2026-10-30T11:30:48Z",
-   "subject": "baggage: a full summary line, no cut-off in what.json"
+   "at": "2026-10-30T12:18:21Z",
+   "subject": "Regenerate the google-search parity doc"
   },
   {
-   "at": "2026-10-30T11:27:20Z",
-   "subject": "yesno: a should-i ask with two choices goes to the answer, not a coin"
+   "at": "2026-10-30T12:15:48Z",
+   "subject": "Card lines end at a whole clause, and one job is one job"
   },
   {
-   "at": "2026-10-30T11:26:43Z",
-   "subject": "Traffic: who visited a-to-mind.com, counts only"
+   "at": "2026-10-30T12:14:36Z",
+   "subject": "Unit answers from word maths open the unit converter too"
   },
   {
-   "at": "2026-10-30T11:25:10Z",
-   "subject": "Incident: the browser suite failed on d16874e2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T12:13:25Z",
+   "subject": "Incident: the browser suite failed on 37a65964 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T11:24:47Z",
-   "subject": "review: count a.rel = 'noopener' in script as a rel, so the blank-no-opener style point stops flagging fixed links"
+   "at": "2026-10-30T12:12:11Z",
+   "subject": "Cards say what weather, translate and 7 more skills add, in plain words"
   },
   {
-   "at": "2026-10-30T11:23:36Z",
-   "subject": "work: role-less job asks open remote jobs (find remote jobs, find me a job, job search)"
+   "at": "2026-10-30T12:08:50Z",
+   "subject": "rentbuy: a headline that fits the card"
   },
   {
-   "at": "2026-10-30T11:20:07Z",
-   "subject": "Better at local stations and open tool: 6 more ways of asking answered right — new phrases: “local radio” now opens local-stations; “radio…"
+   "at": "2026-10-30T12:08:50Z",
+   "subject": "calculators page: preload lib/rentbuy.js"
   },
   {
-   "at": "2026-10-30T11:19:37Z",
-   "subject": "video: open the clip with rel=noopener noreferrer"
+   "at": "2026-10-30T12:08:50Z",
+   "subject": "rentbuy: rent or buy worked out on the visitor's own numbers, with no opinion"
+  },
+  {
+   "at": "2026-10-30T12:08:49Z",
+   "subject": "Refresh the weather.gov parity line for the new forecast fields"
+  },
+  {
+   "at": "2026-10-30T12:07:53Z",
+   "subject": "Weather: show how much rain the forecast expects next to the chance of rain"
+  },
+  {
+   "at": "2026-10-30T12:07:49Z",
+   "subject": "rentbuy: a headline that fits the card"
   }
  ],
  "builders": {
