@@ -25,6 +25,14 @@ cv.tabIndex = 0; cv.setAttribute('aria-label', 'Verse Brain, the whole screen: m
 const det = card.querySelector('details.vb-organs'); if (det && !narrow()) det.open = true;
 document.body.dataset.ready = '1';
 
+// the bar and the numbers are docked above and below the field (2026-10-30: the numbers box and the title sat over its labels): their heights
+// are --top and --hud, so the field is every pixel they leave, and nothing on the page covers a thing the brain holds
+const bar = $('#bar'), live = $('#live'), numBtn = $('#numBtn'), rootStyle = document.documentElement.style;
+const dock = () => { rootStyle.setProperty('--top', bar.offsetHeight + 'px'); rootStyle.setProperty('--hud', (live.hidden ? 0 : live.offsetHeight) + 'px'); };
+dock();
+if (typeof ResizeObserver === 'function') { const ro = new ResizeObserver(() => dock()); ro.observe(bar); ro.observe(live); } else addEventListener('resize', dock);
+numBtn.addEventListener('click', () => { live.hidden = !live.hidden; numBtn.setAttribute('aria-expanded', String(!live.hidden)); numBtn.textContent = live.hidden ? 'Show numbers' : 'Hide numbers'; dock(); });
+
 // the field fills the screen, sharp at the device's pixel ratio, and follows the window's size
 let size = null;
 const fit = () => { const r = field.getBoundingClientRect(); size = f.resize(r.width, r.height); field.dataset.w = String(size.W); field.dataset.h = String(size.H); field.dataset.dpr = String(size.dpr); };
@@ -72,7 +80,7 @@ const dl = (el, rows) => {
   const kept = rows.filter((r) => r && r[1] != null), sig = JSON.stringify(kept);
   if (el.dataset.sig === sig) return; el.dataset.sig = sig;
   const pairs = kept.length ? kept : [['None yet', 'each organ is shown once it has a score']];
-  el.replaceChildren(...pairs.flatMap(([k, v]) => [node('dt', k), node('dd', String(v))]));
+  el.replaceChildren(...pairs.map(([k, v]) => { const d = document.createElement('div'); d.append(node('dt', k), node('dd', String(v))); return d; })); // one tile a number
 };
 const liveNow = $('#liveNow'), liveGains = $('#liveGains'), says = $('#says'), pulse = $('#pulse');
 const read = () => {
