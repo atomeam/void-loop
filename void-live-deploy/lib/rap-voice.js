@@ -101,6 +101,14 @@ export function splitBar(bar) {
   return { main: tokens.filter((k) => k.adlib < 0).map((k) => k.w).join(' '), adlibs: said, tokens: tokens.map((k) => ({ w: k.w, adlib: k.adlib < 0 ? -1 : keep[k.adlib] })) };
 }
 
+/** where a spoken bar really ends: the last moment its loudness is above 1.5% of its peak, and 80 ms more. The cut for syllables stops at 6%,
+ *  which drops the quiet end of a last word (an "s", a "t", a breath out) and is heard as the voice cutting off. Never before `from`. Pure. */
+export function endOf(x, rate, from = 0) {
+  const { env, hop } = envelopeOf(x, rate); let peak = 0; for (let i = 0; i < env.length; i++) if (env[i] > peak) peak = env[i];
+  let b = env.length - 1; while (b > 0 && env[b] < peak * 0.015) b--;
+  return Math.min(x.length, Math.max(from, (b + 1) * hop + Math.round(rate * 0.08)));
+}
+
 /** the rap's vocal: every spoken bar (clips[i], mono at `rate`, or null) cut, placed and stretched onto the beat at timing[i] (lib/rap.js timingOf),
  *  and its ad-libs (adlibClips[i][j], said on their own, splitBar order) on their own track. Returns { main, dub (the doubled rhyme words),
  *  adlib (the ad-lib track), words: [{ bar, i (the word's place in the bar as written), at }], bars: [{ bar, at: [syllable starts] }], voiced }. Pure. */
@@ -114,19 +122,32 @@ export function buildVocal(clips, timing, beat, flow, rate, seconds, adlibClips 
     const sp = splitBar(b.text), text = voiceText(sp.main), want = Math.max(1, Math.min(32, barSyllables(text))), cut = chunksOf(clip, rate, want); if (!cut) return;
     const level = rms(clip.subarray(cut[0], cut[cut.length - 1])), lift = level > 1e-4 ? Math.min(8, 0.12 / level) : 1;
     const k = cut.length - 1, nat = cut.slice(0, k).map((c) => (c - cut[0]) / rate), slots = placeBar(nat, { end, slotSec, speed });
-    const at = slots.map((s) => b.at + s * slotSec + swingOf(s, slotSec, swing)), offset = dbl ? (b.bar % 2) * 8 : 0;
-    const f = k > 1 && nat[k - 1] > 0 ? Math.max(0.5, Math.min(1.5, (at[k - 1] - at[0]) / nat[k - 1])) : 1;
-    for (let i = 0; i < k; i++) {
-      const src = clip.subarray(cut[i], cut[i + 1]), natLen = src.length / rate, last = i === k - 1;
-      const room = last ? Math.min(natLen * f + 0.05, b.at + b.len + 0.25 - at[i]) : at[i + 1] - at[i];
-      let y = stretch(src, Math.max(0.6, Math.min(1.3, room / Math.max(1e-3, natLen))), rate);
-      const fit = Math.max(1, Math.round(room * rate)); if (y.length > fit) y = y.subarray(0, fit);
-      const abs = (offset + Math.round(slots[i])) % 16, weight = last ? 1.3 : snares.has(abs) && Number.isInteger(slots[i]) ? 1.22 : abs % 4 === 0 && Number.isInteger(slots[i]) ? 1.12 : 1;
-      const fin = Math.min(y.length, Math.round(rate * 0.003)), fout = Math.min(y.length, Math.round(rate * 0.008)), o = Math.round(at[i] * rate);
+    const grid = slots.map((s) => b.at + s * slotSec + swingOf(s, slotSec, swing)), offset = dbl ? (b.bar % 2) * 8 : 0;
+    const f = k > 1 && nat[k - 1] > 0 ? Math.max(0.5, Math.min(1.5, (grid[k - 1] - grid[0]) / nat[k - 1])) : 1;
+    // The voice is warped, not chopped: the syllables that land on a beat (and the first and the rhyme) are anchors on the grid, and the
+    // speech between two anchors is stretched as one piece to fill the gap. No syllable is cut short, every join is a crossfade of the same
+    // continuous speech, and the bar's last word rings out to its natural end (owner, 2026-10-30: "the voice cuts off").
+    const anchors = [0]; for (let i = 1; i < k - 1; i++) if (Number.isInteger(slots[i]) && slots[i] % 4 === 0 && grid[i] - grid[anchors[anchors.length - 1]] >= slotSec * 1.5) anchors.push(i); if (k > 1) anchors.push(k - 1);
+    const E = Math.round(rate * 0.008), at = new Array(k).fill(0), tailEnd = endOf(clip, rate, cut[k]);
+    const room = Math.max(0.12, b.at + b.len + 0.3 - grid[k - 1]), segs = [];
+    for (let q = 0; q < anchors.length; q++) {
+      const a = anchors[q], last = q === anchors.length - 1, s0 = cut[a], s1 = last ? tailEnd : cut[anchors[q + 1]], srcLen = (s1 - s0) / rate;
+      const want = last ? Math.min(srcLen * Math.max(0.85, Math.min(1.15, f)), room) : grid[anchors[q + 1]] - grid[a];
+      const ratio = Math.max(0.55, Math.min(1.8, want / Math.max(1e-3, srcLen)));
+      for (let i = a; i < (last ? k : anchors[q + 1]); i++) at[i] = grid[a] + (cut[i] - s0) / rate * ratio;
+      segs.push({ a, last, s0, s1, ratio });
+    }
+    const gainAt = (t) => { let i = 0; while (i < k - 1 && at[i + 1] <= t) i++; const abs = (offset + Math.round(slots[i])) % 16; return i === k - 1 ? 1.3 : snares.has(abs) && Number.isInteger(slots[i]) ? 1.22 : abs % 4 === 0 && Number.isInteger(slots[i]) ? 1.12 : 1; };
+    for (const sg of segs) {
+      const pre = sg.a === 0 ? 0 : Math.min(E, sg.s0), post = sg.last ? 0 : Math.min(E, clip.length - sg.s1);
+      const y = stretch(clip.subarray(sg.s0 - pre, sg.s1 + post), sg.ratio, rate), lead = Math.round(pre * sg.ratio), o = Math.round(grid[sg.a] * rate) - lead;
+      const fin = sg.a === 0 ? Math.min(y.length, Math.round(rate * 0.003)) : Math.max(1, 2 * lead), fout = sg.last ? Math.min(y.length, Math.round(rate * 0.04)) : Math.max(1, 2 * Math.round(post * sg.ratio));
+      const fadeIn = (j) => (j < fin ? 0.5 - 0.5 * Math.cos(Math.PI * j / fin) : 1), fadeOut = (j) => (j >= y.length - fout ? 0.5 - 0.5 * Math.cos(Math.PI * (y.length - j) / fout) : 1);
+      const rhymeFrom = Math.round(at[k - 1] * rate);
       for (let j = 0; j < y.length && o + j < len; j++) {
         if (o + j < 0) continue;
-        const e = (j < fin ? j / fin : 1) * (j >= y.length - fout ? (y.length - j) / fout : 1), v = y[j] * lift * weight * e;
-        main[o + j] += v; if (last) dub[o + j] += v;
+        const v = y[j] * lift * gainAt((o + j) / rate) * fadeIn(j) * fadeOut(j);
+        main[o + j] += v; if (o + j >= rhymeFrom) dub[o + j] += v;
       }
     }
     // each word lights when its first syllable starts: the word's place among the bar's syllables, spread over the syllables found
@@ -154,12 +175,21 @@ export function buildVocal(clips, timing, beat, flow, rate, seconds, adlibClips 
 /** ask the route for every bar's voice and decode it: { clips (mono Float32Arrays at the decoder's rate, null where a bar has none), adlibClips
  *  (per bar, its ad-libs in splitBar order, each asked once per song however often it comes), note }. decode(bytes) -> Float32Array. Stops at
  *  the first answer that says the voice is off or resting, so a rap never asks 30 times for nothing. */
-export async function fetchVoice(texts, { fetchFn = fetch, decode, onProgress = () => {}, concurrency = 4 } = {}) {
-  const clips = texts.map(() => null), adlibClips = texts.map(() => []), libs = new Map(); let next = 0, done = 0, stop = null;
+export async function fetchVoice(texts, { fetchFn = fetch, decode, onProgress = () => {}, concurrency = 4, wait = (ms) => new Promise((r) => setTimeout(r, ms)), tries = 3 } = {}) {
+  const clips = texts.map(() => null), adlibClips = texts.map(() => []), libs = new Map(); let next = 0, done = 0, stop = null, busy = null;
+  // a busy model or a full minute is asked again, after a pause; only a voice that is off or resting for the day stops the asking, so one
+  // hiccup halfway through never leaves the rest of the song silent
   const ask = async (t) => {
-    const r = await fetchFn(VOICE_URL + '?t=' + encodeURIComponent(t));
-    if (!r.ok) { const j = await r.json().catch(() => ({})); if (r.status === 503 || r.status === 429) stop = (j && j.note) || 'voice busy'; return null; }
-    return decode(await r.arrayBuffer());
+    for (let n = 0; n < tries && !stop; n++) {
+      if (n) await wait(600 * 2 ** (n - 1));
+      const r = await fetchFn(VOICE_URL + '?t=' + encodeURIComponent(t));
+      if (r.ok) return decode(await r.arrayBuffer());
+      const j = await r.json().catch(() => ({})), note = (j && j.note) || 'voice busy';
+      if (r.status === 503 && /off|resting/.test(note)) { stop = note; return null; }
+      if (r.status !== 503 && r.status !== 429) return null;
+      if (n === tries - 1) busy = note;
+    }
+    return null;
   };
   const one = async (i) => {
     const sp = splitBar(texts[i]), t = voiceText(sp.main); if (!t) return;
@@ -173,5 +203,5 @@ export async function fetchVoice(texts, { fetchFn = fetch, decode, onProgress = 
   const worker = async () => { while (!stop && next < texts.length) { const i = next++; try { await one(i); } catch (_) { /* that bar stays silent */ } done++; onProgress(done, texts.length); } };
   await Promise.all(Array.from({ length: Math.min(concurrency, texts.length) }, worker));
   const got = clips.filter(Boolean).length;
-  return { clips, adlibClips, note: stop && !got ? stop : got < texts.length ? (got ? got + ' of ' + texts.length + ' bars came back' : 'no bars came back') : '' };
+  return { clips, adlibClips, note: (stop || busy) && !got ? stop || busy : got < texts.length ? (got ? got + ' of ' + texts.length + ' bars came back' : 'no bars came back') : '' };
 }

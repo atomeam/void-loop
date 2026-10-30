@@ -38,7 +38,7 @@ export const TECHNIQUES = [
   ['physarum', /physarum|slime/, 'swarm'],
   ['softbody', /soft-?body|spring-?mass|mass-spring|cloth|membrane|\bchain\b|verlet|muscle/, 'membrane'],
   ['reaction-diffusion', /reaction[ -]diffusion|gray-?scott|\brd\b|autopoiesis|catalyst/, 'tissue'],
-  ['neural cellular automata', /\bnca\b|cellular automat/, 'tissue'],
+  ['neural cellular automata', /\bnca\b|cellular automat/, 'trace'], // the NCA drafts' rule tuned to hold where the focus was (lib/brain-trace.js)
   ['lattice field', /lattice|density field|memory field|deposit|causal (?:energy|density|memory)/, 'tissue'],
   ['attention', /attention|transformer/, 'attention'],
   ['imagined futures', /imagin|rollout|what if/, 'imagination'],

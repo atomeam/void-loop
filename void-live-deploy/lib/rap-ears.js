@@ -20,6 +20,7 @@ export function biquad(type, f, rate, { q = Math.SQRT1_2, gain = 0 } = {}) {
   const w = 2 * Math.PI * Math.min(f, rate * 0.45) / rate, c = Math.cos(w), s = Math.sin(w), A = Math.pow(10, gain / 40), al = s / (2 * q);
   let b0, b1, b2, a0, a1, a2;
   if (type === 'highpass') { b0 = (1 + c) / 2; b1 = -(1 + c); b2 = (1 + c) / 2; a0 = 1 + al; a1 = -2 * c; a2 = 1 - al; }
+  else if (type === 'peaking') { b0 = 1 + al * A; b1 = -2 * c; b2 = 1 - al * A; a0 = 1 + al / A; a1 = -2 * c; a2 = 1 - al / A; }
   else {
     const sq = 2 * Math.sqrt(A) * al, sign = type === 'lowshelf' ? -1 : 1;
     b0 = A * ((A + 1) + sign * (A - 1) * c + sq); b1 = -2 * sign * A * ((A - 1) + sign * (A + 1) * c); b2 = A * ((A + 1) + sign * (A - 1) * c - sq);
@@ -77,6 +78,21 @@ export function spectraOf(x, rate) {
   for (let f = 0; f < n; f++) flux.all[f] = flux.low[f] / ml + flux.mid[f] / mm + flux.high[f] / mh;
   const bands = {}; BANDS.forEach(([name], b) => { bands[name] = total > 0 ? round(db(energy[b] / total), 1) : -120; });
   return { flux, bands, hop: HOP / rate, frames: n };
+}
+
+/** the dB share of each of BANDS in the whole energy, as spectraOf measures it, from every `stride`th frame only: a quick read of a mix's
+ *  balance for fitMix, which reads it several times. Pure. */
+export function bandsOf(x, rate, stride = 4) {
+  const n = Math.max(0, Math.floor((x.length - FRAME) / HOP) + 1), half = FRAME / 2, win = new Float32Array(FRAME), re = new Float64Array(FRAME), im = new Float64Array(FRAME);
+  for (let i = 0; i < FRAME; i++) win[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (FRAME - 1));
+  const bin = (f) => Math.max(1, Math.min(half - 1, Math.round(f * FRAME / rate))), edges = BANDS.map(([, a, b]) => [bin(a), bin(b)]), energy = BANDS.map(() => 0); let total = 0;
+  for (let f = 0; f < n; f += stride) {
+    const o = f * HOP; for (let i = 0; i < FRAME; i++) { re[i] = x[o + i] * win[i]; im[i] = 0; }
+    fft(re, im);
+    for (let k = 1; k < half; k++) { const p = re[k] * re[k] + im[k] * im[k]; total += p; for (let b = 0; b < edges.length; b++) if (k >= edges[b][0] && k < edges[b][1]) energy[b] += p; }
+  }
+  const out = {}; BANDS.forEach(([name], b) => { out[name] = total > 0 ? round(db(energy[b] / total), 1) : -120; });
+  return out;
 }
 
 /** where an onset curve peaks: the times (seconds) of the frames above a moving threshold, at least `gap` seconds apart. Pure. */
@@ -210,35 +226,71 @@ export function averageOf(profiles) {
   out.seconds = ps.reduce((p, q) => p + (q.seconds || 0), 0); return out;
 }
 
-export const TUNE0 = Object.freeze({ bpm: null, swing: null, gain: 0, low: 0, presence: 0, air: 0, width: 0 });
+export const TUNE0 = Object.freeze({ bpm: null, swing: null, gain: 0, sub: 0, low: 0, mid: 0, presence: 0, air: 0, width: 0 });
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+// the master's bands: which tune field moves which measured band, and what the band is called in a plain line
+const MIXBANDS = Object.freeze([['sub', 'sub bass'], ['low', 'low end'], ['mid', 'middle'], ['presence', 'presence, where the voice cuts through'], ['air', 'air on top']]);
+const signed = (v) => (v > 0 ? '+' : '') + v;
 
-/** the next take's changes from the gaps of a comparison (compare(own, ref).rows) on top of the take's own `tune` (TUNE0 for a first take):
- *  { tune: { bpm, swing, gain, low, presence, air, width (dB) }, flow: 'double' | 'laid' | null (how to write the next one), why: [plain lines] }.
- *  `base` is the take's own tempo and swing (the plan's), for the moves of a first take. Pure. */
-export function tuneFor(rows, tune = TUNE0, base = {}) {
-  const t = { ...TUNE0, ...tune }, why = [], row = (k) => rows.find((r) => r.key === k && r.diff != null);
-  const r = row('bpm'); if (r && Math.abs(r.diff) >= 1) { t.bpm = clamp(Math.round(r.ref), 60, 120); why.push('Tempo to ' + t.bpm + ' BPM, the reference\'s (it was ' + Math.round(base.bpm || r.own) + ').'); }
-  const s = row('swing'); if (s && Math.abs(s.diff) >= 0.01) { const cur = t.swing ?? base.swing ?? 0.5; t.swing = round(clamp(cur - s.diff, 0.5, 0.68), 3); why.push(s.diff > 0 ? 'Straighter 16ths (swing ' + t.swing + ').' : 'More swing on the off 16ths (' + t.swing + ').'); }
-  const l = row('lufs'); if (l && Math.abs(l.diff) >= 0.5) { t.gain = round(clamp(t.gain - l.diff, -12, 14), 1); why.push(l.diff < 0 ? 'Louder master, ' + Math.abs(l.diff).toFixed(1) + ' dB up to the reference.' : 'Quieter master, ' + l.diff.toFixed(1) + ' dB down.'); }
-  const eq = (key, field, name) => { const e = row(key); if (e && Math.abs(e.diff) >= 1) { t[field] = round(clamp(t[field] - e.diff * 0.8, -8, 8), 1); why.push((e.diff < 0 ? 'More ' : 'Less ') + name + ' (' + (t[field] > 0 ? '+' : '') + t[field] + ' dB).'); } };
-  const lowRow = row('bands.low'), subRow = row('bands.sub');
-  if (lowRow || subRow) { const d = ((lowRow ? lowRow.diff : 0) + (subRow ? subRow.diff : 0)) / ((lowRow ? 1 : 0) + (subRow ? 1 : 0)); if (Math.abs(d) >= 1) { t.low = round(clamp(t.low - d * 0.8, -8, 8), 1); why.push((d < 0 ? 'More ' : 'Less ') + 'low end and sub (' + (t.low > 0 ? '+' : '') + t.low + ' dB).'); } }
-  eq('bands.presence', 'presence', 'presence, where the voice cuts through');
-  eq('bands.air', 'air', 'air on top');
-  const w = row('width'); if (w && Math.abs(w.diff) >= 1.5) { t.width = round(clamp(t.width - w.diff * 0.7, -12, 8), 1); why.push(w.diff < 0 ? 'A wider stereo image.' : 'A narrower stereo image.'); }
-  const d = row('density'); let flow = null;
-  if (d && d.ref > d.own * 1.3 && d.diff < -1) { flow = 'double'; why.push('The reference is busier (' + d.ref + ' onsets a second in the voice band against ' + d.own + '): write the next one in double time.'); }
-  else if (d && d.ref < d.own * 0.75 && d.diff > 1) { flow = 'laid'; why.push('The reference leaves more space (' + d.ref + ' onsets a second against ' + d.own + '): write the next one laid back.'); }
-  return { tune: t, flow, why };
+/** the plain lines for what a tune does to the master. Pure. */
+export function mixWhy(tune) {
+  const t = { ...TUNE0, ...tune }, why = [];
+  if (Math.abs(t.gain) >= 0.5) why.push((t.gain > 0 ? 'Louder' : 'Quieter') + ' master (' + signed(t.gain) + ' dB).');
+  for (const [k, name] of MIXBANDS) if (Math.abs(t[k]) >= 0.5) why.push((t[k] > 0 ? 'More ' : 'Less ') + name + ' (' + signed(t[k]) + ' dB).');
+  if (Math.abs(t.width) >= 0.5) why.push((t.width > 0 ? 'A wider' : 'A narrower') + ' stereo image (' + signed(t.width) + ' dB of side).');
+  return why;
 }
 
-/** a mix mastered by a tune: shelves for the low end (120 Hz), presence (3 kHz) and air (9 kHz), the side signal for width, the gain, then a
+/** the next take's changes from the gaps of a comparison (compare(own, ref).rows) on top of the take's own `tune` (TUNE0 for a first take):
+ *  { tune: { bpm, swing, gain, sub, low, mid, presence, air, width (dB) }, flow: 'double' | 'laid' | null (how to write the next one),
+ *  why: [plain lines], grid: [the lines about tempo, swing and flow alone] }. `base` is the take's own tempo and swing (the plan's), for the
+ *  moves of a first take. Each band moves on its own gap. Pure. */
+export function tuneFor(rows, tune = TUNE0, base = {}) {
+  const t = { ...TUNE0, ...tune }, grid = [], mix = [], row = (k) => rows.find((r) => r.key === k && r.diff != null);
+  const r = row('bpm'); if (r && Math.abs(r.diff) >= 1) { t.bpm = clamp(Math.round(r.ref), 60, 120); grid.push('Tempo to ' + t.bpm + ' BPM, the reference\'s (it was ' + Math.round(base.bpm || r.own) + ').'); }
+  const s = row('swing'); if (s && Math.abs(s.diff) >= 0.01) { const cur = t.swing ?? base.swing ?? 0.5; t.swing = round(clamp(cur - s.diff, 0.5, 0.68), 3); grid.push(s.diff > 0 ? 'Straighter 16ths (swing ' + t.swing + ').' : 'More swing on the off 16ths (' + t.swing + ').'); }
+  const l = row('lufs'); if (l && Math.abs(l.diff) >= 0.5) { t.gain = round(clamp(t.gain - l.diff, -12, 14), 1); mix.push(l.diff < 0 ? 'Louder master, ' + Math.abs(l.diff).toFixed(1) + ' dB up to the reference.' : 'Quieter master, ' + l.diff.toFixed(1) + ' dB down.'); }
+  for (const [k, name] of MIXBANDS) { const e = row('bands.' + k); if (e && Math.abs(e.diff) >= 1) { t[k] = round(clamp(t[k] - e.diff * 0.8, -15, 12), 1); mix.push((e.diff < 0 ? 'More ' : 'Less ') + name + ' (' + signed(t[k]) + ' dB).'); } }
+  const w = row('width'); if (w && Math.abs(w.diff) >= 1.5) { t.width = round(clamp(t.width - w.diff * 0.7, -12, 12), 1); mix.push(w.diff < 0 ? 'A wider stereo image.' : 'A narrower stereo image.'); }
+  const d = row('density'); let flow = null;
+  if (d && d.ref > d.own * 1.3 && d.diff < -1) { flow = 'double'; grid.push('The reference is busier (' + d.ref + ' onsets a second in the voice band against ' + d.own + '): write the next one in double time.'); }
+  else if (d && d.ref < d.own * 0.75 && d.diff > 1) { flow = 'laid'; grid.push('The reference leaves more space (' + d.ref + ' onsets a second against ' + d.own + '): write the next one laid back.'); }
+  return { tune: t, flow, why: [...grid, ...mix], grid };
+}
+
+/** what fitMix reads in a mix, quickly: { lufs, peak, plr, bands, width }. Pure. */
+export function mixOf(L, R, rate) { return { ...loudnessOf(L, R, rate), bands: bandsOf(monoOf(L, R), rate), width: widthOf(L, R) }; }
+
+/** the master that brings a mix closest to a reference, found by ear: master it, read it (mixOf), move the level, each band and the width by
+ *  what is still off, and again, keeping the best (by compare) of up to `steps` passes. Only the master fields of `tune` move; its tempo and
+ *  swing are kept. The middle of a long mix is read (windowOf). Returns { tune, score, before, passes }. Pure. */
+export function fitMix(L, R, rate, ref, tune = TUNE0, { steps = 6 } = {}) {
+  const w = windowOf(L.length / rate), a = Math.floor(w.from * rate), b = Math.floor(w.to * rate), l0 = L.subarray(a, b), r0 = (R || L).subarray(a, b);
+  const read = (t) => { const [l, r] = master(l0, r0, rate, t); return compare(mixOf(l, r, rate), ref); };
+  let t = { ...TUNE0, ...tune }, cmp = read(t), best = { tune: { ...t }, score: cmp.score }, before = cmp.score, worse = 0, passes = 0;
+  for (let i = 0; i < steps; i++) {
+    const row = (k) => cmp.rows.find((x) => x.key === k && x.diff != null), moves = {};
+    for (const [k] of MIXBANDS) { const e = row('bands.' + k); if (e) moves[k] = -e.diff * 0.8; }
+    // the bands are shares of the whole: a move they all make together only changes the level, so take it out and leave that to the gain
+    const ks = Object.keys(moves), mean = ks.length ? ks.reduce((p, k) => p + moves[k], 0) / ks.length : 0;
+    const next = { ...t };
+    for (const k of ks) next[k] = round(clamp(t[k] + moves[k] - mean, -15, 12), 1);
+    const lu = row('lufs'); if (lu) next.gain = round(clamp(t.gain - lu.diff, -15, 14), 1);
+    const wd = row('width'); if (wd) next.width = round(clamp(t.width - wd.diff * 0.9, -12, 12), 1);
+    if (JSON.stringify(next) === JSON.stringify(t)) break;
+    t = next; cmp = read(t); passes++;
+    if (cmp.score > best.score) { best = { tune: { ...t }, score: cmp.score }; worse = 0; } else if (++worse >= 2) break;
+  }
+  return { tune: best.tune, score: best.score, before, passes };
+}
+
+/** a mix mastered by a tune: a shelf for the sub (60 Hz), bells for the low end (125 Hz) and the middle (800 Hz), shelves for presence (3 kHz)
+ *  and air (9 kHz), the side signal for width, the gain, then a
  *  peak limiter (5 ms look-ahead, 80 ms release, ceiling 0.97) so a louder master never clips. [L, R] in, new [L, R] out. Pure. */
 export function master(L, R, rate, tune = TUNE0) {
   const t = { ...TUNE0, ...tune }; let l = L, r = R;
-  const eq = (type, f, gain) => { if (!gain) return; const c = biquad(type, f, rate, { gain }); l = filtered(l, c); r = filtered(r, c); };
-  eq('lowshelf', 120, t.low); eq('highshelf', 3000, t.presence); eq('highshelf', 9000, t.air);
+  const eq = (type, f, gain, q = Math.SQRT1_2) => { if (!gain) return; const c = biquad(type, f, rate, { gain, q }); l = filtered(l, c); r = filtered(r, c); };
+  eq('lowshelf', 60, t.sub); eq('peaking', 125, t.low, 0.8); eq('peaking', 800, t.mid, 0.6); eq('highshelf', 3000, t.presence); eq('highshelf', 9000, t.air);
   const n = Math.min(l.length, r.length), side = Math.pow(10, (t.width || 0) / 20), g = Math.pow(10, (t.gain || 0) / 20), oL = new Float32Array(n), oR = new Float32Array(n);
   for (let i = 0; i < n; i++) { const m = (l[i] + r[i]) / 2, s = (l[i] - r[i]) / 2 * side; oL[i] = (m + s) * g; oR[i] = (m - s) * g; }
   const ceil = 0.97, look = Math.max(1, Math.round(0.005 * rate)), rel = Math.exp(-1 / (0.08 * rate)), need = new Float32Array(n);

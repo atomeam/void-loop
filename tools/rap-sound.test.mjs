@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { settingsOf, beatFor, timingOf, fromLink, voiceText, STYLES } from '../void-live-deploy/lib/rap.js';
 import { beatEvents, seventhOf, stepTime, SWING } from '../void-live-deploy/lib/rap-beat.js';
-import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf, splitBar } from '../void-live-deploy/lib/rap-voice.js';
+import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf, splitBar, endOf } from '../void-live-deploy/lib/rap-voice.js';
 import { planOf, mixStems, wavStereo, evenWords, RATE } from '../void-live-deploy/lib/rap-song.js';
 import { fft, bandsOf, kickPulse, frameState, linesOf } from '../void-live-deploy/lib/rap-video.js';
 import { RAP_LINK } from './tower-probes.mjs';
@@ -96,6 +96,56 @@ test('a whole vocal is built on the beat: each bar starts on its measure, the rh
   const t3 = plan.timing[3]; assert.equal(sum(v.main, t3.at + 0.3, t3.at + t3.len - 0.3), 0, 'the silent bar');
   assert.ok(v.words.every((w, i) => i === 0 || w.bar !== v.words[i - 1].bar || w.at >= v.words[i - 1].at), 'words in order within a bar');
   assert.equal(evenWords(plan.timing).length, plan.timing.reduce((n, b) => n + b.text.split(/\s+/).filter(Boolean).length, 0));
+});
+
+test('the voice is warped, never chopped: speech with no silence in it keeps no silence on the beat, and the rhyme rings out whole', () => {
+  // the owner heard the voice cut off: a long syllable squeezed into a 16th was cut short. A spoken bar with no pause in it (a vowel whose
+  // loudness dips to a fifth between syllables) must come out with no hole in it, and the last word must keep its length.
+  const s = settingsOf({ topic: 'pizza' }), plan = planOf(SAMPLE, s), rate = 16000;
+  const said = (n, syl = 0.28) => { const m = Math.round(n * syl * rate), x = new Float32Array(m + Math.round(0.2 * rate)); for (let i = 0; i < m; i++) { const ph = (i / rate) / syl; x[i + Math.round(0.1 * rate)] = 0.4 * (0.2 + 0.8 * Math.sin(Math.PI * (ph % 1))) * Math.sin(2 * Math.PI * 180 * i / rate); } return x; };
+  const clips = plan.timing.map((b) => said(Math.max(3, Math.min(12, voiceText(b.text).split(' ').length + 2))));
+  const v = buildVocal(clips, plan.timing, plan.beat, 'steady', rate, plan.seconds);
+  for (const b of v.bars) {
+    const from = Math.round((b.at[0] + 0.025) * rate), to = Math.round(b.at[b.at.length - 1] * rate); let hole = 0, run = 0;
+    for (let i = from; i < to; i++) { run = Math.abs(v.main[i]) < 1e-4 && Math.abs(v.main[i + 1] || 0) < 1e-4 ? run + 1 : 0; hole = Math.max(hole, run); }
+    assert.ok(hole / rate < 0.012, 'bar ' + b.bar + ' has a ' + (hole / rate * 1000).toFixed(0) + ' ms hole');
+    // the rhyme: from where it lands, the voice keeps going for most of a syllable, not cut at the next 16th
+    const r0 = Math.round(b.at[b.at.length - 1] * rate); let lastLoud = r0; for (let i = r0; i < Math.min(v.main.length, r0 + rate); i++) if (Math.abs(v.main[i]) > 0.01) lastLoud = i;
+    assert.ok((lastLoud - r0) / rate > 0.28 * 0.8, 'bar ' + b.bar + ': the rhyme rings ' + ((lastLoud - r0) / rate).toFixed(2) + ' s');
+  }
+});
+
+test('a packed bar keeps every syllable whole: the end of each one is still heard', () => {
+  // each spoken syllable starts at 180 Hz and ends at 600 Hz, with no pause, so a syllable cut short loses its 600 Hz end. A bar of 14 quick
+  // syllables lands on 32nds; the voice must keep the ends of its syllables, not clip them at the next note.
+  const s = settingsOf({ topic: 'pizza' }), plan = planOf(SAMPLE, s), rate = 16000, syl = 0.2, head = 0.12;
+  const said = (n) => { const m = Math.round(n * syl * rate), lead = Math.round(0.1 * rate), x = new Float32Array(m + 2 * lead); for (let i = 0; i < m; i++) { const t = i / rate, ph = (t % syl) / syl, hz = (t % syl) < head ? 180 : 600; x[i + lead] = 0.4 * (0.25 + 0.75 * Math.sin(Math.PI * ph)) * Math.sin(2 * Math.PI * hz * t); } return x; };
+  const tone = (x, hz, from, to) => { let e = 0; const F = Math.round(rate * 0.02); for (let a = from; a + F <= to; a += F) { let c = 0, q = 0; for (let i = a; i < a + F; i++) { const w = 2 * Math.PI * hz * i / rate; c += x[i] * Math.cos(w); q += x[i] * Math.sin(w); } e += c * c + q * q; } return e; }; // the tone's power in 20 ms frames, summed, so the phase of each piece does not matter
+  const one = said(14), ref = tone(one, 600, 0, one.length) / tone(one, 180, 0, one.length);
+  const timing = plan.timing.slice(0, 4).map((b) => ({ ...b, text: 'one two three four five six seven eight nine ten eleven twelve thirteen fourteen' }));
+  const v = buildVocal(timing.map(() => said(14)), timing, plan.beat, 'steady', rate, plan.seconds);
+  for (const b of v.bars) {
+    const from = Math.round(b.at[0] * rate), to = Math.min(v.main.length, Math.round((b.at[b.at.length - 1] + 0.4) * rate)), got = tone(v.main, 600, from, to) / tone(v.main, 180, from, to);
+    assert.ok(got > ref * 0.75, 'bar ' + b.bar + ': the ends of the syllables keep ' + (got / ref * 100).toFixed(0) + '% of their share');
+  }
+});
+
+test('the quiet end of a last word is kept: an "s" at 3% of the peak still sounds', () => {
+  const rate = 16000, x = new Float32Array(Math.round(0.8 * rate));
+  for (let i = 0; i < 0.4 * rate; i++) x[i + 1600] = 0.5 * Math.sin(2 * Math.PI * 180 * i / rate); // the vowel
+  const rnd = (() => { let a = 9; return () => ((a = (a * 1664525 + 1013904223) >>> 0) / 2 ** 32) * 2 - 1; })();
+  for (let i = 0; i < 0.12 * rate; i++) x[i + 1600 + 0.4 * rate] = 0.015 * rnd(); // the "s" after it, 3% of the vowel
+  const cut = chunksOf(x, rate, 1), end = endOf(x, rate, cut[cut.length - 1]);
+  assert.ok((end - 1600) / rate >= 0.52, 'the "s" is kept: the word ends at ' + ((end - 1600) / rate).toFixed(2) + ' s');
+  assert.ok(end >= cut[cut.length - 1]);
+});
+
+test('a busy voice is asked again; one hiccup never silences the rest of the song', async () => {
+  let n = 0; const calls = [];
+  const out = await fetchVoice(['a b', 'c d', 'e f'], { fetchFn: async (u) => { calls.push(u); n++; return n === 2 ? Response.json({ note: 'voice busy' }, { status: 503 }) : new Response(new Uint8Array([1, 2])); }, decode: async (b) => new Float32Array(b.byteLength), concurrency: 1, wait: async () => {} });
+  assert.equal(calls.length, 4, 'the busy bar was asked twice'); assert.ok(out.clips.every((c) => c && c.length === 2), 'every bar came back'); assert.equal(out.note, '');
+  const gone = await fetchVoice(['a b', 'c d'], { fetchFn: async () => Response.json({ note: 'voice busy' }, { status: 503 }), decode: async () => new Float32Array(1), concurrency: 1, wait: async () => {} });
+  assert.equal(gone.note, 'voice busy', 'a model down for good says so');
 });
 
 test('ad-libs come off the main line: what is rapped, what is shouted behind it, and where each lands', () => {

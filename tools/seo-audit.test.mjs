@@ -59,6 +59,10 @@ test('the related row in the HTML is the same links the script draws, and the se
   assert.equal(withRelated('<main></main>', '/word-count/'), null);
   const more = moreTools('<a href="/color/">c</a>'); assert.ok(!more.includes('"/color/"') && more.includes('"/code-review/"') && more.includes('"/photos/"'));
   const single = moreTools(''); assert.equal((single.match(/>Unit converter: every unit at once, exact</g) || []).length, 1, 'a tool built twice for two sites is listed once');
+  // every row has the same "Open here" button as the hand-written rows (2026-10-30: 70 tools could only be left, not opened beside the others),
+  // and the searches people make for it, for the page's find box
+  assert.equal((more.match(/<li/g) || []).length, (more.match(/<button type="button" data-open="\//g) || []).length, 'each More tools row can be opened on the bench');
+  assert.ok(/<li data-find="[^"]*compress image online[^"]*"><a href="\/photos\/">Photo tools<\/a><button type="button" data-open="\/photos\/">Open here<\/button><\/li>/.test(more));
   for (const p of OFFER_PAGES) { const row = offersRow(p); assert.ok(!row.includes('href="' + p + '"'), p); assert.match(row, /href="\/fix\/"/); }
 });
 

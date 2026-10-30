@@ -7,6 +7,8 @@ import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/m
 import { checkIdea, perks, stateText, queueIdea, DAILY, LIVE } from '../void-live-deploy/lib/members.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 import { ensureStoreTables } from '../void-live-deploy/lib/store-db.js';
+import { shareTags, cleanPage } from '../void-live-deploy/lib/pages.js';
+import { readFileSync } from 'node:fs';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -210,4 +212,21 @@ test('the owner is always a member: an account with an owner-bound passkey is pa
   const { tierOf } = await import('../void-live-deploy/lib/void-me.js');
   assert.equal(await tierOf({ DB }, 'someone-else'), 'free', 'another account stays free');
   assert.equal(await tierOf({ DB: { prepare() { throw new Error('down'); } } }, USER), 'free', 'a read error is free');
+});
+
+test('a published page shares as its own: title, canonical, link card and description name the page and its cards, escaped', () => {
+  const home = readFileSync(new URL('../void-live-deploy/index.html', import.meta.url), 'utf8');
+  const page = cleanPage({ cards: [{ name: 'Say "hi" & <b>bye</b>' }, { text: 'A note with no name at all, long enough to cut.' }, { name: 'C' }, { name: 'D' }, { name: 'E' }, { name: 'F' }] });
+  const html = shareTags(home, 'my_page', page);
+  const tag = (re) => (html.match(re) || [])[1];
+  assert.equal(tag(/<title>([^<]*)<\/title>/), '@my_page \u00b7 Verse');
+  assert.equal(tag(/<link rel="canonical" href="([^"]*)"/), 'https://a-to-mind.com/@my_page');
+  assert.equal(tag(/<meta property="og:url" content="([^"]*)"/), 'https://a-to-mind.com/@my_page');
+  for (const re of [/<meta property="og:title" content="([^"]*)"/, /<meta name="twitter:title" content="([^"]*)"/]) assert.equal(tag(re), '@my_page\u2019s Verse');
+  const want = '6 cards: Say &quot;hi&quot; &amp; bye, A note with no name at all, long enough, C, D and 2 more. A published Verse on A-to-Mind.';
+  for (const re of [/<meta property="og:description" content="([^"]*)"/, /<meta name="twitter:description" content="([^"]*)"/, /<meta name="description" content="([^"]*)"/]) assert.equal(tag(re), want);
+  assert.equal((html.match(/<title>/g) || []).length, 1); // nothing doubled, and the rest of the head is the home page's
+  assert.equal(html.replace(/<title>[^<]*<\/title>|<(?:link|meta)[^>]*(?:canonical|og:url|og:title|twitter:title|og:description|twitter:description|name="description")[^>]*>/g, ''),
+    home.replace(/<title>[^<]*<\/title>|<(?:link|meta)[^>]*(?:canonical|og:url|og:title|twitter:title|og:description|twitter:description|name="description")[^>]*>/g, ''));
+  assert.match(shareTags(home, 'empty_one', cleanPage({})), /<meta name="description" content="A published Verse on A-to-Mind\."/);
 });

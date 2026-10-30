@@ -2,7 +2,7 @@
 // #1788 added a target note and no page, and the queue called the three versus jobs done).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { handedIn, judge, pagesOf, pageOk } from './team-gate.mjs';
+import { handedIn, judge, pagesOf, pageOk, replayJobs } from './team-gate.mjs';
 import { reviewNote } from '../void-live-deploy/lib/team.js';
 
 const URL1 = 'https://github.com/atomeam/void-loop/pull/1786';
@@ -49,4 +49,11 @@ test('a live page works when it answers 200 with a real HTML page', () => {
   assert.equal(pageOk(404, page), false);
   assert.equal(pageOk(200, '<html></html>'), false, 'an empty shell');
   assert.equal(pageOk(200, '{"error":"x"}'.repeat(100)), false, 'not a page');
+});
+
+test('a replay stands for a handed-in job per pull request, and drops what is not one', () => {
+  const rows = replayJobs('1766:versus:emojicombos.com, 1786:versus:diffuse.tools:speed,x:versus:a.com,12:Versus:A.com,9;rm:feature:x');
+  assert.deepEqual(rows.map((r) => [r.id, r.target]), [['replay-1766', 'versus:emojicombos.com'], ['replay-1786', 'versus:diffuse.tools:speed']]);
+  assert.deepEqual(handedIn(rows[0]), { agent: 'replay', url: 'https://github.com/atomeam/void-loop/pull/1766', number: 1766 });
+  assert.deepEqual(replayJobs(''), []);
 });

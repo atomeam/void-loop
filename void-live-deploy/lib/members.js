@@ -27,6 +27,7 @@ export const PERKS = Object.freeze([
   { id: 'films', title: 'Review Verse\'s films', text: 'Rate each new Verse film on the films page and leave a note. The owner reads every one.' },
   { id: 'mark', title: 'The MultiVerse mark', text: 'Your stage and your published page show the MultiVerse mark in the corner. It opens this page.' },
   { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
+  { id: 'share', title: 'Your page shares as yours', text: 'A link to your published page shows your name and your cards in iMessage, Discord, X and Slack, not the Verse home card.' },
 ]);
 export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
