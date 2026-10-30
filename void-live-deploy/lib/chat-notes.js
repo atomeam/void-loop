@@ -47,7 +47,8 @@ export function parseIntent(raw) {
   // templates
   if ((m = /^(?:start|make|create|begin|open|new|neue?|erstelle(?: mir)?(?: eine?n?)?)\s+(?:me )?(?:a |an |my |eine?n? )?(?:new |neue?n? )?(meeting|trip|travel|shopping|weekly(?: plan)?|week plan|reise|einkaufs\w*|wochen\w*)\s*(note|notes|template|list|liste|plan|notiz)(?:\s+(?:for|about|called|on|zu|für)\s+(.+))?$/i.exec(t)) && !(/^(?:shopping|einkaufs\w*)$/i.test(m[1]) && /^(?:list|liste)$/i.test(m[2]))) return { op: 'template', kind: m[1].toLowerCase(), about: (m[3] || '').trim() };
   // create
-  if ((m = /^(?:make|create|start|write|draft|add|save|neue?|erstelle|mach(?:e)?|schreibe?)(?: me| mir)?(?: an?| eine?)?(?: new| neue?)? (?:note|notiz)\b(?:\s+(?:about|on|for|über|zu|mit dem titel))?\s*[:,\-–]?\s*(.+)$/i.exec(t)) && !/^(?:called|titled|named|that says|saying|which says)\s/i.test(m[1])
+  // "take a note: buy milk", "new note buy milk", "take a note of my locker code"; not "take a note of this url" (a pointer at a page, sticky's)
+  if ((m = /^(?:make|create|start|write|draft|add|save|take|new|neue?|erstelle|mach(?:e)?|schreibe?)(?: me| mir)?(?: an?| eine?)?(?: new| neue?)? (?:note|notiz)\b(?:\s+(?:about|on|of|for|über|zu|mit dem titel))?\s*[:,\-–]?\s*(.+)$/i.exec(t)) && !/^(?:called|titled|named|that says|saying|which says)\s/i.test(m[1]) && !/^(?:this|that|it|these|those)(?:\s+(?:url|page|link|site|tab))?$/i.test(m[1])
     || (m = /^(?:note to self|notiz an mich)\s*[:,\-–]\s*(.+)$/i.exec(t)) || (m = /^note to self\s+(.+)$/i.exec(t))
     || (m = /^(?:write down|jot down|jot|note down|schreib auf|notiere(?: mir)?)\s*[:,]?\s*(.+)$/i.exec(t))) return { op: 'create', rest: m[1].trim() };
   if ((m = /^(?:remember to|don'?t forget to|merk dir[:,]? (?:zu )?)\s*(.+)$/i.exec(t))) return { op: 'create', rest: 'To do: ' + m[1].trim() };

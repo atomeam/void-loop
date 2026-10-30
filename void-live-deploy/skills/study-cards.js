@@ -55,6 +55,7 @@ function mountDeck(th, el, stageApi) {
   head.appendChild(h('b', '', th.title || label(th)));
   head.appendChild(h('span', 'opacity:.7;font-size:12px', th.cards.length + ' card' + (th.cards.length === 1 ? '' : 's') + ' · ' + due + ' due today', { class: 'sc-count' }));
   el.appendChild(head);
+  if (th.note) el.appendChild(h('div', 'opacity:.75;font-size:12px;margin:-4px 0 6px', th.note, { class: 'sc-note' }));
   const apply = (good) => {
     th.reviews = (th.reviews || 0) + 1;
     th.cards[idx] = S.grade(th.cards[idx], good, today, th.reviews);
@@ -242,9 +243,9 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'study-cards',
-  examples: ['flashcards: hola = hello, gato = cat', 'language drill: bonjour = hello; merci = thanks', 'glossary: entropy = disorder; enthalpy = heat content',
+  examples: ['flashcards: hola = hello, gato = cat', 'make flashcards for spanish verbs', 'language drill: bonjour = hello; merci = thanks', 'glossary: entropy = disorder; enthalpy = heat content',
     'definition card for entropy: a measure of disorder', 'formula card for energy: E = mc^2 where E energy, m mass, c speed of light', 'cite as apa: The Origin of Species by Charles Darwin, 1859'],
-  nearMisses: ['what are flashcards', 'best flashcard app for medical school', 'how do I study for an exam', 'define serendipity', 'quiz me on this', 'what is a glossary', 'cite this as APA', 'what is a formula'],
+  nearMisses: ['what are flashcards', 'best flashcard app for medical school', 'how do I study for an exam', 'define serendipity', 'quiz me on this', 'what is a glossary', 'cite this as APA', 'what is a formula', 'make flashcards for me'],
   parseStudy,
   match(lower, text) { return !!S.parseStudy(text || lower); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'study-cards' : 'none'; },
