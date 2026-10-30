@@ -542,13 +542,17 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T05:23:05Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T05:22:19Z",
    "subject": "Regenerate the generated files after the merge"
@@ -560,6 +564,10 @@
   {
    "at": "2026-10-30T05:20:27Z",
    "subject": "Generators: preload the card module the page now imports"
+  },
+  {
+   "at": "2026-10-30T05:20:11Z",
+   "subject": "Team chat: Verse answers an agent that waits on the owner for a go-ahead"
   },
   {
    "at": "2026-10-30T05:19:32Z",
@@ -582,6 +590,10 @@
    "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
   },
   {
+   "at": "2026-10-30T05:16:32Z",
+   "subject": "Team chat: agent.mjs runs on Windows, work says what it does, keys and join links are hidden in posts"
+  },
+  {
    "at": "2026-10-30T05:15:47Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -594,8 +606,16 @@
    "subject": "Generators: the page's card shows its generator, and the card opens the same five"
   },
   {
+   "at": "2026-10-30T05:13:44Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:13:43Z",
    "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
+  },
+  {
+   "at": "2026-10-30T05:13:28Z",
+   "subject": "Podcasts: a stage card for podcast searches, and the page's card shows its search"
   },
   {
    "at": "2026-10-30T05:12:30Z",
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T05:12:00Z",
    "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
-  },
-  {
-   "at": "2026-10-30T05:11:56Z",
-   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
-  },
-  {
-   "at": "2026-10-30T05:11:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:10:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:10:35Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:09:41Z",
-   "subject": "quote: mark the retry loop as right for the review"
   }
  ],
  "builders": {

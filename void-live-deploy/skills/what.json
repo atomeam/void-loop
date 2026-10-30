@@ -231,6 +231,7 @@
  "place": "Street map of any place",
  "plan-stability": "\"is my plan stable\": a plan is a start value and a chain of numeric steps, each \"input x multiplier…",
  "podcast": "Verse Out Loud, Verse's own weekly podcast",
+ "podcast-search": "Shows for a topic, from the directory the Podcasts page uses",
  "poker": "Heads-up Texas Hold'em against Verse for play money: \"play poker\", \"texas hold'em\"",
  "pollen": "Open-Meteo CAMS pollen (Europe) + geocoding, no key",
  "pong": "Verse Pong against Verse: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",
