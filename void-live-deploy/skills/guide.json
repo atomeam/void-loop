@@ -3207,7 +3207,7 @@
    "chapter": "numbers",
    "name": "util",
    "title": "Util",
-   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes",
+   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes, a diff checker, Markdown to HTML",
    "examples": [
     "generate a password",
     "16 character password",

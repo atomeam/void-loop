@@ -1,12 +1,15 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text, hashes, a diff checker, Markdown to HTML
  * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes); nothing is sent anywhere.
+ * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes, lib/textdiff.js
+ * for the diff checker, lib/markdown.js for Markdown); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';
 import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
+import { diffTexts, diffCounts, withContext, MAX_LINES } from '../lib/textdiff.js';
+import { mdToHtml } from '../lib/markdown.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -42,6 +45,9 @@ export function utilOf(text) {
   const ALGO = '(md5|sha-?1|sha-?256|sha-?384|sha-?512)';
   if (new RegExp('^(?:(?:an?|the)\\s+)?(?:free\\s+|online\\s+)?(?:' + ALGO + '\\s+)?(?:hash|checksum|digest)?\\s*(?:generator|maker|calculator|creator)$|^' + ALGO + '\\s+(?:hash\\s+)?online$|^hash\\s+(?:a\\s+|some\\s+)?text$').test(l) && /md5|sha|hash|checksum|digest/.test(l)) {
     const a = l.match(/(md5|sha-?1|sha-?256|sha-?384|sha-?512)/); return { kind: 'hashmaker', algo: a ? algoOf(a[1]) : 'sha256' }; }
+  // a diff checker and Markdown to HTML, asked for by name (2026-10-30: "diff checker" and "markdown to html" fell to an article that answered nothing)
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+|line\s+)?(?:diff|difference)\s+(?:checker|tool|finder|viewer)$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text|string)\s+(?:compare|comparison|diff)(?:\s+tool)?$|^(?:compare|diff)\s+(?:two\s+)?(?:texts|text|lists)$/.test(l)) return { kind: 'diffmaker' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:markdown|md)\s+(?:to\s+html(?:\s+converter)?|converter|preview(?:er)?|editor|viewer|renderer)$|^convert\s+markdown(?:\s+to\s+html)?$/.test(l)) return { kind: 'mdmaker' };
   // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
   // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
   m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
@@ -187,6 +193,36 @@ async function run(text, api) {
       if (mine === turn) codes.forEach((c, i) => { c.textContent = sums[i]; }); }; // a slower answer for older text never overwrites a newer one
     if (box) box.addEventListener('input', paint);
     paint();
+  } else if (q.kind === 'diffmaker') {
+    // every character counts: a space, a blank line or a changed case is a difference (lib/textdiff.js)
+    const box = (cls, label) => '<label style="display:block;font-size:13px;color:#8a8a8a">' + label + '<textarea class="' + cls + '" rows="5" maxlength="200000" aria-label="' + label + ' text" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea></label>';
+    el = showPage((p) => { p.innerHTML = '<h2>Diff checker</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">' + box('util-a', 'Original') + box('util-b', 'Changed') + '</div>'
+      + '<p class="util-say" aria-live="polite" style="margin:8px 0 4px">Paste a text on each side</p>'
+      + '<pre class="util-diff" style="margin:0;max-height:260px;overflow:auto;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word"></pre>'
+      + '<p style="color:#8a8a8a">Line by line: removed lines are red with −, added lines green with +. Compared in your browser and never sent anywhere.</p>'; });
+    const A = el && el.querySelector && el.querySelector('.util-a'), B = el && el.querySelector && el.querySelector('.util-b'), say = el && el.querySelector && el.querySelector('.util-say'), pre = el && el.querySelector && el.querySelector('.util-diff');
+    const paint = () => {
+      if (!A || !B || !say || !pre) return;
+      if (!A.value && !B.value) { say.textContent = 'Paste a text on each side'; pre.innerHTML = ''; return; }
+      const rows = diffTexts(A.value, B.value);
+      if (rows.tooLong) { say.textContent = 'Up to ' + MAX_LINES + ' lines a side'; pre.innerHTML = ''; return; }
+      const c = diffCounts(rows), n = (k, w) => k + ' ' + w + (k === 1 ? '' : 's');
+      say.textContent = !c.del && !c.add ? 'The two texts are the same' : n(c.del, 'line') + ' removed, ' + n(c.add, 'line') + ' added, ' + c.same + ' the same';
+      const num = (r) => String(r.t === 'add' ? r.b : r.a).padStart(4, ' ');
+      pre.innerHTML = c.del || c.add ? withContext(rows).map((r) => r.t === 'skip' ? '<span style="color:#8a8a8a">   ⋯ ' + r.n + ' unchanged line' + (r.n === 1 ? '' : 's') + '</span>'
+        : '<span style="' + (r.t === 'del' ? 'color:#ff8a8a;background:rgba(255,80,80,.12)' : r.t === 'add' ? 'color:#7fd6a0;background:rgba(80,220,140,.12)' : 'color:#9a9a9a') + '">'
+          + num(r) + ' ' + (r.t === 'del' ? '−' : r.t === 'add' ? '+' : ' ') + ' ' + esc(r.s) + '</span>').join('\n') : '';
+    };
+    for (const t of [A, B]) if (t) t.addEventListener('input', paint);
+  } else if (q.kind === 'mdmaker') {
+    el = showPage((p) => { p.innerHTML = '<h2>Markdown to HTML</h2><textarea class="util-in" rows="6" maxlength="200000" placeholder="# A heading&#10;&#10;Some **bold** text and a [link](https://a-to-mind.com)" aria-label="Markdown" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>'
+      + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">Preview</div><div class="util-md" style="max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2px 10px"></div>'
+      + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">HTML</div><pre class="util-out" style="margin:0;max-height:160px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Headings, bold, italic, links, images, lists, quotes, code and rules. Tables and raw HTML are not converted: HTML you type shows as text. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), view = el && el.querySelector && el.querySelector('.util-md'), out = el && el.querySelector && el.querySelector('.util-out');
+    // the preview is the converter's own HTML: every text is escaped and a link keeps only an http, https, mailto or relative address (lib/markdown.js)
+    const paint = () => { if (!box || !view || !out) return; const h = mdToHtml(box.value); view.innerHTML = h; out.textContent = h; };
+    if (box) box.addEventListener('input', paint);
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
@@ -242,8 +278,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', '16 character password', 'strong password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns'],
+  examples: ['generate a password', '16 character password', 'strong password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax'],
   match(lower, text) { return !!utilOf(text); },
   run
 };
