@@ -2,7 +2,7 @@
 // checked against allowlists, each feed read into one shape, the Bundesliga fallback, F1, cache lifetimes, the endpoint's bounds, the routes
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState, draftOrder, botPick, playersOf } from '../void-live-deploy/lib/scores.js';
+import { flightAsk, LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState, draftOrder, botPick, playersOf } from '../void-live-deploy/lib/scores.js';
 import { askIn, lookScores, onRequestGet, board } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
@@ -37,6 +37,9 @@ test('a game carries the town of its ground, for the weather there; the summary 
   const kept = readSummary({ header: { id: 7, competitions: [comp({ fullName: 'Emirates Stadium', address: { city: 'London' } }).competitions[0]] }, gameInfo: { venue: { fullName: 'Elsewhere', address: { city: 'Nowhere' } } } });
   assert.equal(kept.game.venue, 'Emirates Stadium', 'the header venue wins'); assert.equal(kept.game.city, 'London');
   assert.equal(wordsFor('en').vwx, 'Weather at the ground'); assert.equal(wordsFor('de').vwx, 'Wetter am Stadion');
+  assert.equal(g.country, 'England'); assert.equal(flightAsk(g), 'London United Kingdom', 'the airport list names the state');
+  assert.equal(flightAsk({ city: 'Boston', country: 'USA' }), 'Boston United States'); assert.equal(flightAsk({ city: 'Madrid', country: 'Spain' }), 'Madrid Spain'); assert.equal(flightAsk({ city: 'Kyiv' }), 'Kyiv'); assert.equal(flightAsk({ venue: 'X' }), '');
+  assert.equal(wordsFor('en').vfly, 'Flights to the game'); assert.equal(wordsFor('de').vfly, 'Flüge zum Spiel');
 });
 test('standings: ranked rows, the sport\'s columns', () => {
   const s = readStandings(STANDINGS, 'soccer'); assert.equal(s.groups.length, 1); assert.deepEqual(s.groups[0].cols, ['P', 'W', 'D', 'L', 'GD', 'Pts']);

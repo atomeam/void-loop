@@ -80,11 +80,14 @@ export function summaryOf(t) {
   if (t.passed) out.push('Passed ' + t.passed.ok + ' of ' + t.passed.of);
   if (t.read) {
     for (const c of t.read.changed) out.push('Changed: ' + c);
+    for (const b of t.read.blocked) out.push('Blocked: ' + b);
     for (const w of t.read.waits) out.push('Waiting: ' + w);
     if (t.read.next) out.push('Next step: ' + t.read.next);
   }
   // the report's word, not the state: the live lines above say what is true now (2026-10-30: the card said four were still failing over a green main)
-  out.push(t.failures.length ? 'It names ' + t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' as failing' : 'Nothing in it names a failure');
+  const nb = t.read ? t.read.blocked.length : 0;
+  out.push(t.failures.length ? 'It names ' + t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' as failing'
+    : nb ? nb + ' thing' + (nb === 1 ? ' is' : 's are') + ' blocked, and nothing in it names a failure' : 'Nothing in it names a failure');
   return out;
 }
 
@@ -99,26 +102,31 @@ export function isBuildersReport(text) {
 // answered one with the broken-automation fix card ("That thread didn't start" read as trouble, "job loop" as the thing). It is a report to
 // read back: what changed, what waits, and the one next step. A text that says something of its own is broken is never one.
 const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live|finished|done)|no result yet|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b|on\s+auto-?merge\b|will\s+check\b|after\s+it\s+(?:deploys|merges|ships|lands|goes\s+live)\b|(?:gave|handed)\s+(?:\w+\s+){0,3}back\b|no\s+spec(?:ification)?s?\b)/i;
-const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b)/i;
+const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b|the\s+(?:one|only|last)\s+(?:step|thing)\s+left\b)/i;
+// a thing the report says is blocked ("Video is blocked.") is a blocker to show, not a wait; "a check blocked it" stays a wait (2026-10-30 card: "Video is blocked"
+// came back under Waiting, over "Nothing in it names a failure")
+const BLOCKED = /^(?:[\w'’/.-]+\s+){0,5}(?:is|are|stays?|remains?)\s+(?:still\s+)?blocked\b|\bstill\s+blocked\b|^blocked\s*:/i;
 const CHANGED = /\b(?:merged|is (?:now )?live|went live|shipped|deployed|released|landed|adds|added|fixed|finished|done|turned on|switched on|published)\b/i;
 const BROKEN = /\b(?:stopped\s+(?:working|firing|running)|is(?:n't| not)\s+working|does(?:n't| not)\s+work|not working|keeps?\s+failing|won't\s+(?:run|start|fire|load)|broke\b|crash(?:es|ed)?)\b/i;
 // a report's own closing checks ("[HYGIENE CHECK]", "Remainder: unverified", "Decision: keep") and a pasted time stamp ("Today 2:15 AM") are about the
 // report, not about the work: the 2026-10-30 card read them back as "Changed:" lines, joined by the ⏎ a copied chat puts between lines
 const CLOSING = /^\[?(?:HYGIENE|ASPIRATION)\s+CHECK\]?$|^(?:criterion|reviewed|found|remainder|request names|change reaches|outside|decision)\s*:/i;
-const STAMP = /^(?:(?:today|yesterday|(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)\s+)?(?:at\s+)?\d{1,2}:\d{2}(?:\s*[ap]\.?m\.?)?$/i;
-const kindOf = (s) => (NEXT.test(s) ? 'next' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null);
+// a pasted chat keeps its own stamps ("Today 7:34 AM", "Yesterday", "Oct 29, 4:10 PM"): a time line is the chat's, not the report's
+const STAMP = /^(?:(?:today|yesterday|monday|tuesday|wednesday|thursday|friday|saturday|sunday|mon|tue|wed|thu|fri|sat|sun)\b|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\.?\s+\d{1,2}\b)(?:,?\s*\d{4})?(?:\s*(?:at\s+)?,?\s*\d{1,2}:\d{2}\s*(?:[ap]\.?m\.?)?)?$|^(?:at\s+)?\d{1,2}:\d{2}\s*(?:[ap]\.?m\.?)?$/i;
+const kindOf = (s) => (/\?\s*$/.test(s) ? null : NEXT.test(s) ? 'next' : BLOCKED.test(s) ? 'blocked' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null); // a question is not a fact
 const plain = (s) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, '').replace(/^\s*(?:>|[-+]\s|\d+[.)]\s)\s*/, '').replace(/\s+/g, ' ').trim(); // keeps "#1470"
 const tidy = (s) => s.replace(/^(?:also|and|then|plus|so)\s*,?\s+/i, '').replace(/[,;\s]+$/, '').replace(/[^.!]$/, '$&.').replace(/^./, (c) => c.toUpperCase());
 
 /** a pasted status report read back as { changed, waits, next }, or null when the text is not one (a question, an instruction, a
  *  complaint that something is broken, or too short to be a report). Pure. */
 export function statusReadOf(raw) {
+  // ⏎ is how a copied chat marks its line breaks: each one ends a line, as a newline does
   const lines = String(raw || '').split(/\n+|\s*⏎\s*/).map(plain).filter((l) => l && !CLOSING.test(l) && !STAMP.test(l)), text = lines.join(' ');
   if (text.length < MIN_CHARS || text.length > 20000 || BROKEN.test(text) || !lines.length) return null;
   if (/\?\s*$/.test(lines[0]) || /^(?:why|how|what|who|can|could|please|fix|help|explain)\b/i.test(lines[0])) return null;
   const sentences = lines.flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z"'(])/)).map((x) => x.trim()).filter((x) => x.length > 3);
   if (sentences.length < 3) return null;
-  const read = { changed: [], waits: [], next: null }, open = [];
+  const read = { changed: [], waits: [], blocked: [], next: null }, open = [];
   for (const s of sentences) {
     // "the cleaner is live, and the fix is set to ship after the reset" is two items; split only when both halves read as one
     const halves = s.split(/,\s+and\s+/);
@@ -128,6 +136,7 @@ export function statusReadOf(raw) {
       const k = kindOf(p);
       if (k === 'next') read.next = read.next || tidy(p);
       else if (k === 'waits') { read.waits.push(tidy(p)); open.push({ text: tidy(p), nums }); }
+      else if (k === 'blocked') read.blocked.push(tidy(p));
       else if (k) {
         read.changed.push(tidy(p));
         // a later line that says the same #PR is done closes what an earlier line left open ("#1775 is on automerge" then "#1775, deployed")
@@ -138,7 +147,7 @@ export function statusReadOf(raw) {
   }
   // a wait that a later line closed still made it a report (owner, 2026-10-30: a report with two verified fixes, a fix "on automerge" and 2 jobs
   // "given back" was answered as a broken automation, because neither was read as open)
-  return read.changed.length && open.length ? read : null;
+  return read.changed.length && (open.length || read.blocked.length) ? read : null;
 }
 /** true for a pasted status report (see statusReadOf). lib/automation-fix.js intentOf asks this, so a report is never a fix ask. Pure. */
 export function isStatusReport(text) { return !!statusReadOf(text); }

@@ -542,37 +542,13 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
-  {
-   "at": "2026-10-30T16:49:26Z",
-   "subject": "Load game and sky helpers on first use, not with the routing order"
-  },
-  {
-   "at": "2026-10-30T16:48:19Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T16:45:07Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T16:44:46Z",
-   "subject": "Incident: the browser suite failed on 3bf3d447 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T16:35:15Z",
-   "subject": "Read a pasted status report as a report, not a broken automation"
-  },
-  {
-   "at": "2026-10-30T16:33:19Z",
-   "subject": "Scores page: the weather at the game's ground"
-  },
   {
    "at": "2026-10-30T16:32:55Z",
    "subject": "Spotter: 2 check(s) healed with no revert after d0f883ca9412accf1ff4900e1c34f6c97683773e (tools/flakes.json)"
@@ -598,12 +574,12 @@
    "subject": "End a long card title at a whole sentence, never mid-word"
   },
   {
-   "at": "2026-10-30T16:28:30Z",
-   "subject": "Time page: flights to the city asked for, on the event's day when it is ahead"
-  },
-  {
    "at": "2026-10-30T16:27:43Z",
    "subject": "openapi-check: mark /api/sing as Verse's own (member-only, owner's Modal)"
+  },
+  {
+   "at": "2026-10-30T16:26:00Z",
+   "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
   },
   {
    "at": "2026-10-30T16:24:34Z",
@@ -628,6 +604,30 @@
   {
    "at": "2026-10-30T16:17:47Z",
    "subject": "Verse sings: ACE-Step 1.5 on the owner's Modal, behind /api/sing"
+  },
+  {
+   "at": "2026-10-30T16:14:18Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T16:10:52Z",
+   "subject": "Stage card: show how main stands now, not old failures"
+  },
+  {
+   "at": "2026-10-30T16:09:33Z",
+   "subject": "Time page: put the event on the calendar, and see the matches that day"
+  },
+  {
+   "at": "2026-10-30T16:07:12Z",
+   "subject": "Sports search: put a match still to come on the calendar"
+  },
+  {
+   "at": "2026-10-30T16:06:49Z",
+   "subject": "CSV to JSON both ways and a CSS minifier"
+  },
+  {
+   "at": "2026-10-30T15:59:16Z",
+   "subject": "Cite the Better Sleep Council for the bed size answers"
   }
  ],
  "builders": {

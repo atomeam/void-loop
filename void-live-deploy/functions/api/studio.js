@@ -98,22 +98,30 @@ async function bench(env, b) {
 }
 
 async function spentToday(env, who) { const r = await env.DB.prepare('SELECT usd FROM void_studio_spend WHERE day = ? AND who = ?').bind(dayOf(), who).first(); return r ? Number(r.usd) || 0 : 0; }
-const spend = (env, who, usd) => env.DB.prepare('INSERT INTO void_studio_spend (day, who, usd, n) VALUES (?, ?, ?, 1) ON CONFLICT(day, who) DO UPDATE SET usd = usd + excluded.usd, n = n + 1').bind(dayOf(), who, usd).run();
+// one statement both checks and books the dollars, so parallel asks cannot all pass the check before any of them is written
+async function reserve(env, who, usd, cap) {
+  if (!(usd <= cap)) return false;
+  const r = await env.DB.prepare('INSERT INTO void_studio_spend (day, who, usd, n) VALUES (?, ?, ?, 1) ON CONFLICT(day, who) DO UPDATE SET usd = usd + excluded.usd, n = n + 1 WHERE usd + excluded.usd <= ?').bind(dayOf(), who, usd, cap + 1e-9).run();
+  return Number(r && r.meta && r.meta.changes) === 1;
+}
+const refund = (env, who, usd) => env.DB.prepare('UPDATE void_studio_spend SET usd = MAX(0, usd - ?), n = MAX(0, n - 1) WHERE day = ? AND who = ?').bind(usd, dayOf(), who).run();
 /** one clip from a partner video model, counted against `who`'s daily dollar cap */
 export async function makeVideo(env, b, who, cap) {
   const prompt = cleanLine(b.prompt, 600); if (!prompt) return { state: 'refused', why: 'empty' };
   const ask = videoAskOf(String(b.model || 'p-video'), b), image = typeof b.image === 'string' && (/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(b.image) && b.image.length < 4e6 || /^https:\/\/[^\s"'<>]{8,500}$/.test(b.image)) ? b.image : '';
   if (!Number.isFinite(ask.usd)) return { state: 'refused', why: 'no price' };
-  const used = await spentToday(env, who);
-  if (used + ask.usd > cap) return { state: 'resting', why: 'cap', left: Math.max(0, Math.round((cap - used) * 1000) / 1000) };
+  if (!(await reserve(env, who, ask.usd, cap))) { const used = await spentToday(env, who).catch(() => cap); return { state: 'resting', why: 'cap', left: Math.max(0, Math.round((cap - used) * 1000) / 1000) }; }
   const t0 = Date.now();
   try {
     const r = await timed(env.AI.run(VIDEO_MODELS[ask.model], videoInputOf(ask, prompt, image)), VIDEO_MS, ask.model);
     const url = videoUrlOf(r);
     if (!url) return { state: 'failed', ...ask, ms: Date.now() - t0, why: 'no video in the answer: ' + (r && typeof r === 'object' ? JSON.stringify(r).slice(0, 200) : typeof r) };
-    await spend(env, who, ask.usd).catch(() => {});
     return { state: 'video', ...ask, url, ms: Date.now() - t0 };
-  } catch (e) { return { state: 'failed', ...ask, ms: Date.now() - t0, why: why(e) }; }
+  } catch (e) {
+    // a refusal (no credits, a bad input) is not billed, so its dollars go back; a timeout may still be billed, so they stay booked
+    const w = why(e); if (!/took over/.test(w)) await refund(env, who, ask.usd).catch(() => {});
+    return { state: 'failed', ...ask, ms: Date.now() - t0, why: w };
+  }
 }
 
 export async function onRequestPost({ request, env }) {
