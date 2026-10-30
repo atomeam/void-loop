@@ -172,3 +172,30 @@ export async function claimSale(env, voidId, ref, email) {
   if (rowId) await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (claimed with the receipt)', voidId, rowId).run();
   return { ok: true, tier: unlock.tier };
 }
+
+// The owner's own purchase links itself (coordinator, 2026-10-30: "buyers should never have to paste an Order ID"). Gumroad makes a
+// test ping only when the creator buys their own product, so a trusted test sale that reached Verse with no Verse id belongs to the
+// owner. It is linked to the account the owner signs in with: an account with a passkey the owner bound (void_owner_passkeys, which
+// only READ_TOKEN can write). The usual rules still hold: Atom's seller, the membership product, verifySale, no later refund,
+// dispute, cancellation or end, and a sale already linked to a Verse stays there. -> the tier set, or null. Called by /api/members.
+export async function linkOwnerTest(env, voidId) {
+  if (!voidId) return null;
+  await ensureStoreTables(env); await ensureTables(env);
+  const isOwner = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(voidId).first().catch(() => null);
+  if (!isOwner) return null;
+  const rows = (await env.DB.prepare("SELECT s.id, s.raw FROM void_sales s WHERE s.resource = 'sale' AND s.void_id IS NULL AND s.raw LIKE '%test=true%' AND NOT EXISTS (SELECT 1 FROM void_accounts a WHERE a.sale_id = s.sale_id) AND NOT EXISTS (SELECT 1 FROM void_sales d WHERE d.resource IN ('refund', 'dispute', 'cancellation', 'subscription_ended') AND (d.sale_id = s.sale_id OR (s.subscription_id IS NOT NULL AND d.subscription_id = s.subscription_id))) ORDER BY s.at DESC LIMIT 5").all()).results || [];
+  for (const r of rows) {
+    const p = parsePing(r.raw), unlock = unlockFor(p);
+    if (String(p.test) !== 'true' || !unlock || !p.sale_id || String(p.refunded) === 'true' || (p.url_params && p.url_params.void)) continue;
+    const v = await verifySale(env, p, unlock);
+    if (!v.ok) continue;
+    const now = new Date().toISOString();
+    try {
+      await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated')
+        .bind(voidId, unlock.tier, p.sale_id, v.subscription_id, now).run();
+    } catch (_) { continue; }
+    await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (owner test purchase, linked to the owner)', voidId, r.id).run();
+    return unlock.tier;
+  }
+  return null;
+}

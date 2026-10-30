@@ -6,7 +6,7 @@
 // The tier is read from void_accounts (only /api/gumroad writes it, after Gumroad confirms the sale); the page's word is never trusted.
 import { ensureTables, bad, good, session, tierOf, brake } from '../../lib/void-me.js';
 import { LIVE, BUY, DAILY, MONTHLY, perks, checkIdea, ensureIdeas, usage, queueIdea, mine, wall } from '../../lib/members.js';
-import { relinkRecorded, claimSale } from './gumroad.js';
+import { relinkRecorded, claimSale, linkOwnerTest } from './gumroad.js';
 
 const QUEUE = 'CREATE TABLE IF NOT EXISTS void_queue (id TEXT PRIMARY KEY, ask TEXT, target TEXT, state TEXT, note TEXT, at TEXT, updated TEXT)';
 async function ready(env) { await ensureTables(env); await env.DB.prepare(QUEUE).run(); await ensureIdeas(env); }
@@ -20,6 +20,7 @@ export async function onRequestGet({ request, env }) {
     if (!me) return good({ ...out, signedIn: false });
     let tier = await tierOf(env, me.userId);
     if (tier !== 'paid') { try { tier = (await relinkRecorded(env, me.userId)) === 'paid' ? 'paid' : tier; } catch (_) {} } // a purchase recorded before today's rules
+    if (tier !== 'paid') { try { tier = (await linkOwnerTest(env, me.userId)) === 'paid' ? 'paid' : tier; } catch (_) {} } // the owner's own purchase, made with no Verse id
     return good({ ...out, signedIn: true, tier, ...(tier === 'paid' ? { left: (await usage(env, me.userId)).left, ideas: await mine(env, me.userId) } : {}) });
   } catch (_) { return good({ ...base, wall: [], signedIn: false, note: 'members are unavailable just now' }); }
 }
