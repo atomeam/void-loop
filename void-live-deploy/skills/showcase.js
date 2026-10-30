@@ -16,6 +16,7 @@
  * line shows (a2m.void.shown.v1), tapped or not, and never offered again; what is new is what is not in that list. A first visit only
  * remembers when it was (a2m.void.growthSeen.v1), so a newcomer is not told about everything ever built. Nothing is sent anywhere.
  */
+import { hardenedLine } from '../lib/hardened-line.js';
 import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
 import { reactionBar } from '../lib/reaction-bar.js'; // spectator reactions under a step (the closed list, /api/react)
 import { targetOf } from '../lib/reactions.js';
@@ -47,26 +48,8 @@ export function lineOf(what) {
   return cut; // whole sentences, never cut with an ellipsis (owner, 2026-10-21: "i need to see the whole sentences")
 }
 
-/** what one of Verse's own upgrades did, from the line grow-self writes (it opens "Verse hardened itself:" and names the benchmark asks and
- *  the skills they are for, calendar-file, clock and web4, say): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
- *  clause alone read "Verse hardened itself" on every one of them (owner, 2026-10-20: "it should be saying the upgrade not just Verse hardened
- *  itself a bunch of times"). null for any other line. Pure. */
-export function hardenedLine(what) {
-  const m = /^(?:Verse|Void|V01D) hardened itself:\s*(.+)$/i.exec(String(what || '').replace(/\s+/g, ' ').trim());
-  if (!m) return null;
-  const [asksPart, ...rest] = m[1].split(/\.\s+(?=Why these|New phrases|Added:|Did not route)/)[0].replace(/\.$/, '').split(/,? and (?=the card art)/i);
-  const art = /card art/i.test(rest.join(' ') + ' ' + asksPart);
-  const a = /^(\d+) benchmark ask\(s\) for (.+)$/i.exec(asksPart.trim());
-  if (!a) return art ? 'Sharper card art: my art scores went up' : null;
-  // keep the richer "Why these / Added / Did not route" tail when present (owner 2026-10-21)
-  // the actual new phrases and the skill each now opens (owner, 2026-10-21: "list the actual new phrases and which skill they now open, not just a count")
-  const ph = /New phrases:\s*(.+?)\.(?:\s+Did not route|\s*$)/.exec(m[1]);
-  const tail = ph ? ' — new phrases: ' + ph[1].trim() : m[1].includes('Added:') ? ' — added: ' + m[1].split('Added:')[1].split(/\.\s+Did not route/)[0].replace(/\.$/, '').trim() : '';
-  const names = a[2].split(/,\s*/).map((x) => x.replace(/-/g, ' ').trim()).filter(Boolean);
-  const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
-  const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
-  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '') + tail;
-}
+// hardenedLine moved to lib/hardened-line.js so the growth card can read it too without an import cycle (growth-tree.js reads growth.js)
+export { hardenedLine } from '../lib/hardened-line.js';
 
 /** one of Verse's own upgrades from the phrases it proved: what got better and two of the new ways of asking, short enough for one line and a
  *  tray chip. The whole list ran to ten phrases, and a line whose first clause did not parse opened with ": new phrases" (owner's screenshot,

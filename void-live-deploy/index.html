@@ -2734,11 +2734,13 @@ say('nothing selected to remove');
       if (vpageEl !== el) return;
       const why = (x) => (honest ? honest.honestBecause(x.because, x.evidence) : x.because);
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
-        // one block per want (owner, 2026-10-21: the wants ran together): the want, then its reason on its own line, then the recorded fact
-        + (w.wants.length ? '<ul class="will-list" style="list-style:none;padding:0;margin:10px 0">' + w.wants.map((x) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + esc(x.i_want) + '</b><div style="color:#8a8a8a;margin-top:4px">' + esc(why(x)) + '</div>'
-          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
-        // what I wanted and got: asks the ledger names as built, shown apart, never as a current want (functions/api/will.js splitBuilt)
-        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Got it</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li style="margin:0 0 10px;color:#9aa"><b style="display:block">' + esc(x.i_want) + '</b><div style="font-size:12px">built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
+        // one block per want (owner, 2026-10-21: the wants ran together; 2026-10-30: asks and reasons still read as one run of plain
+        // lines when copied): a numbered want, then "Why:" on its own line, then "Evidence:", so the copied text keeps the structure too
+        + (w.wants.length ? '<div class="vh">What I want next</div><ol class="will-list" style="list-style:none;padding:0;margin:6px 0 10px">' + w.wants.map((x, i) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + (i + 1) + '. ' + esc(x.i_want) + '</b><div class="will-why" style="color:#8a8a8a;margin-top:4px"><span style="color:#aab">Why:</span> ' + esc(why(x)) + '</div>'
+          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px"><span style="color:#aab">Evidence:</span> ' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ol>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
+        // what I wanted and got: asks the ledger names as built, shown apart and marked done, never as a current want (functions/api/will.js
+        // splitBuilt; owner, 2026-10-30: a "Got it" line between the asks made the built repo ask read as one more want)
+        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Already built</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li class="will-done" style="margin:0 0 10px;color:#9aa"><b style="display:block"><span style="color:#7d9">Done:</span> ' + esc(x.i_want) + '</b><div style="font-size:12px">Built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
     }
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
@@ -6106,6 +6108,12 @@ say('nothing selected to remove');
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
+      // a typed question about a secret, token or key name is answered from the names Verse's code reads (lib/note-ask.js secretAsk), never looked up:
+      // "what is the Modal secret called?" went to Wikipedia, which suggested "model secret called" and showed a fashion model (live, 2026-10-30)
+      if (/\b(?:secrets?|tokens?|keys?|credentials?|variables?)\b/i.test(typed) && typed.length <= 160) {
+        const N = await import('/lib/note-ask.js').catch(() => null), facts = N ? N.secretAsk(typed) : [];
+        if (facts.length) { currentAsk = typed; showPage((p) => { p.innerHTML = '<h2>' + esc(typed.replace(/[?.!\s]+$/, '')) + '</h2>' + facts.map((f) => '<p>' + esc(f) + '</p>').join('') + '<div class="src">from Verse\u2019s own code (lib/verse-secrets.js), names only, never a value</div>'; }); say(''); loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'secret names' }); return; }
+      }
       // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
       const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
       { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words

@@ -5,6 +5,7 @@
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
+import { hardenedLine } from '../lib/hardened-line.js'; // one of Verse's own hardening runs in one line
 import { communityHtml } from '../lib/joins.js'; // the community line: members on MultiVerse and the join link (GET /api/joins)
 import { lastRunHtml } from '../lib/will-last.js'; // the will's last run: shipped with its PR, or why not (GET /api/will lastRun)
 import { PROOF_URL, todayCheck, todayHtml } from '../lib/ledger-today.js'; // today's lines with their hashes, checked here against /growth.proof.json
@@ -117,7 +118,8 @@ export function failuresByFamily(fam) {
 export function spurt(list, hours = 24) {
   const L = (list || []).filter((e) => e && e.at), last = L.reduce((t, e) => Math.max(t, Date.parse(e.at)), 0);
   const recent = L.filter((e) => last - Date.parse(e.at) <= hours * 36e5);
-  const head = (w) => String(w || '').split(/[:(]/)[0].trim().slice(0, 60);
+  // a hardening run reads as what got better ("Better at clock"), never the bare "Verse hardened itself" (owner, 2026-10-30: six in a row)
+  const head = (w) => String(hardenedHead(w) || w || '').split(/[:(]/)[0].trim().slice(0, 60);
   return { added: recent.filter((e) => e.kind === 'grow').map((e) => head(e.what)), changed: recent.filter((e) => e.kind === 'build' || e.kind === 'fix').map((e) => head(e.what)) };
 }
 /** stability: each skill's rating and when the site tester last saw it pass, newest-tested last; seen: { 'skill:x': iso } */
@@ -127,7 +129,9 @@ export function stability(fam, seen = {}) {
 export function ownerHtml(esc, fam, list, seen) {
   const F = failuresByFamily(fam), S = spurt(list), st = stability(fam, seen);
   const tested = st.filter((x) => x.passed).length, steady = st.filter((x) => x.tier === 'proven' && !x.failing).length;
-  const names = (a) => a.slice(0, 6).map(esc).join('; ') + (a.length > 6 ? '; and ' + (a.length - 6) + ' more' : '');
+  // the same name twice is shown once with its count, so the list stays short and every name in it differs
+  const names = (a) => { const n = new Map(); for (const x of a) n.set(x, (n.get(x) || 0) + 1); const u = [...n];
+    return u.slice(0, 6).map(([x, c]) => esc(x) + (c > 1 ? ' (' + c + ' times)' : '')).join('; ') + (u.length > 6 ? '; and ' + (u.length - 6) + ' more' : ''); };
   return '<div class="sub growth-owner" data-owner-view style="line-height:1.45;margin-top:4px">'
     + 'Failures by family: ' + (F.length ? F.map((x) => '<b style="font-weight:600">' + esc(x.family) + '</b> ' + x.skills + ' skill' + (x.skills > 1 ? 's' : '') + ' (' + x.asks + ' ask' + (x.asks > 1 ? 's' : '') + ')').join(', ') : 'none on the bench') + '. '
     + 'Stability: ' + steady + ' of ' + st.length + ' skills proven with nothing failing; the site tester has passed ' + tested + ' of them live. '
@@ -209,6 +213,31 @@ export function entryHtml(esc, e, cause) {
     + ' · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>' + esc(e.what) + why;
 }
 
+const HARDENED = /^(?:Verse|Void|V01D) hardened itself\b/i;
+const andList = (a) => a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1] : a[0] || '';
+/** a hardening run as what got better: "Better at password, random and boards: “d20” now opens random; …", from its "New phrases"
+ *  (or the phrases it lists before "for"), or the older benchmark form (lib/hardened-line.js). null when it says neither. Pure. */
+export function hardenedHead(what) {
+  const w = String(what || '').replace(/\s+/g, ' ').trim(), m = /^(?:Verse|Void|V01D) hardened itself:\s*(.+?)\s+for\s+([^.]+)\.(?:\s|$)/i.exec(w);
+  if (!m) return hardenedLine(w);
+  const skills = m[2].split(/,\s*/).map((x) => x.replace(/-/g, ' ').trim()).filter(Boolean);
+  const shown = skills.length > 4 ? skills.slice(0, 3).concat(skills.length - 3 + ' more') : skills;
+  const ph = /New phrases:\s*(.+?)(?:\s+Did not route:|$)/.exec(w);
+  return 'Better at ' + andList(shown) + ': ' + (ph ? ph[1].replace(/\.$/, '') : 'new ways of asking ' + m[1]) + '.';
+}
+/** one ledger line, each word shown once: a hardening run as what got better, with its "Why these" and "Did not route" behind
+ *  "details"; any other long line as its whole sentences up to about 300 characters, with the rest behind "more". Never the cut
+ *  line and then the whole line again (owner, 2026-10-30). Pure. */
+export function entryText(esc, what) {
+  const w = String(what || ''), line = HARDENED.test(w) ? hardenedHead(w) : null;
+  const more = (rest, label) => rest ? '<details><summary style="cursor:pointer;color:#8a8a92;font-size:12px">' + label + '</summary>' + esc(rest) + '</details>' : '';
+  if (line) return esc(line) + more((w.match(/(?:Why these|Did not route):.*?(?=\s+(?:New phrases|Added|Did not route):|$)/g) || []).map((x) => x.trim()).join(' '), 'details');
+  if (w.length <= 320) return esc(w);
+  const ends = [...w.slice(0, 301).matchAll(/[.!?](?=\s)/g)].map((m) => m.index + 1).filter((i) => i >= 120);
+  const cut = ends.length ? ends[ends.length - 1] : w.slice(0, 300).replace(/\s+\S*$/, '').length;
+  return esc(w.slice(0, cut)) + more(w.slice(cut).trim(), 'more');
+}
+
 export function growthHtml(esc, list, kind, shown, { head = true } = {}) {
   const s = summary(list), rows = ordered(list, kind), n = Math.min(shown || PAGE_SIZE, rows.length);
   const chip = (k, label, count) => '<button type="button" data-kind="' + k + '" style="margin:0 6px 6px 0;padding:3px 10px;border-radius:12px;border:1px solid '
@@ -216,15 +245,24 @@ export function growthHtml(esc, list, kind, shown, { head = true } = {}) {
     + esc(label) + ' ' + count + '</button>';
   const chips = chip('', 'all', s.total) + Object.keys(KIND_LABEL).filter((k) => s.byKind[k]).map((k) => chip(k, KIND_LABEL[k], s.byKind[k])).join('');
   let day = '';
-  const items = rows.slice(0, n).map((e) => {
-    const d = String(e.at || '').slice(0, 10), head = d !== day ? '<h3 style="margin:14px 0 4px;font-size:14px;color:#8a8a92">' + esc(d || 'undated') + '</h3>' : '';
-    day = d;
-    const what = e.what.length > 320
-      ? '<details><summary style="cursor:pointer">' + esc(e.what.slice(0, 300).replace(/\s+\S*$/, '')) + '…</summary>' + esc(e.what) + '</details>'
-      : esc(e.what);
-    return head + '<div style="margin:0 0 10px;line-height:1.45"><div style="font-size:12px;color:#8a8a92"><span style="color:' + (KIND_COLOR[e.kind] || '#aaa') + '">'
-      + esc(KIND_LABEL[e.kind] || e.kind || '') + '</span> · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>'
-      + what + '</div>';
+  const meta = (e, by) => '<div style="font-size:12px;color:#8a8a92"><span style="color:' + (KIND_COLOR[e.kind] || '#aaa') + '">'
+    + esc(KIND_LABEL[e.kind] || e.kind || '') + '</span>' + (by ? ' · ' + esc(by) : '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>';
+  // each day's entries, with a run of 2 or more hardening runs folded into one block with its count (owner, 2026-10-30: six entries
+  // in a row read "Verse hardened itself" and each one showed twice, once cut short and once in full)
+  const blocks = [];
+  for (const e of rows.slice(0, n)) {
+    const d = String(e.at || '').slice(0, 10), last = blocks[blocks.length - 1];
+    if (HARDENED.test(e.what) && last && last.day === d && last.hard) last.list.push(e);
+    else blocks.push({ day: d, hard: HARDENED.test(e.what), list: [e] });
+  }
+  const items = blocks.map((b) => {
+    const head = b.day !== day ? '<h3 style="margin:14px 0 4px;font-size:14px;color:#8a8a92">' + esc(b.day || 'undated') + '</h3>' : '';
+    day = b.day;
+    if (b.list.length < 2) return head + '<div style="margin:0 0 10px;line-height:1.45">' + meta(b.list[0], b.list[0].by || '') + entryText(esc, b.list[0].what) + '</div>';
+    const bys = [...new Set(b.list.map((e) => e.by || ''))];
+    return head + '<div style="margin:0 0 10px;line-height:1.45" data-hardened-group="' + b.list.length + '">' + meta(b.list[0], bys.length === 1 ? bys[0] : '')
+      + 'Verse hardened itself ' + b.list.length + ' times:<ul style="margin:4px 0 0;padding-left:18px">'
+      + b.list.map((e) => '<li style="margin:0 0 6px">' + entryText(esc, e.what) + '</li>').join('') + '</ul></div>';
   }).join('');
   return (head ? growthHead(esc, list) : '')
     + '<div style="margin:8px 0 2px">' + chips + '</div>'

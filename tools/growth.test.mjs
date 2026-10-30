@@ -158,3 +158,48 @@ test('growth entries (owner, 2026-10-28): a branch writes its own file, the fold
   w(join(dir, 'bad.json'), '{"what": 1}');
   assert.throws(() => fold({ ledger: led, dir }), /bad\.json/);
 });
+
+// owner, 2026-10-30 ("How Verse has grown" card): each "Verse hardened itself" entry showed twice (cut short, then in full), six of them
+// in a row read the same, and "Last spurt" said "Verse hardened itself" six times
+import { entryText, hardenedHead, ownerHtml } from '../void-live-deploy/skills/growth.js';
+const hard = (i, at) => ({ at, by: 'grow-self', kind: 'grow', what: `Verse hardened itself: 'ask ${i}', 'other ${i}' for skill-${i}, tool${i}.  Why these: tab (no benchmark ask, evidence tier: checked, ${i} failed runs name it). New phrases: “ask ${i}” now opens skill-${i}; “other ${i}” now opens tool${i}. Did not route: heads or tails ${i}.` });
+const six = [0, 1, 2, 3, 4, 5].map((i) => hard(i, '2026-10-30T0' + i + ':00:00Z'));
+const plain = (h) => h.replace(/<[^>]+>/g, ' ').replace(/&quot;/g, '"');
+
+test('a run of hardening entries on one day is one block with its count, and each entry shows once', () => {
+  const h = growthHtml(esc, six, '', 40);
+  assert.equal((h.match(/data-hardened-group="6"/g) || []).length, 1, 'one block for the six');
+  assert.equal((plain(h).match(/Verse hardened itself/g) || []).length, 1, 'the words "Verse hardened itself" once, with the count');
+  assert.match(plain(h), /Verse hardened itself 6 times:/);
+  for (let i = 0; i < 6; i++) {
+    assert.equal(plain(h).split('Better at skill ' + i + ' and tool' + i).length - 1, 1, 'entry ' + i + ' once');
+    assert.equal(plain(h).split('heads or tails ' + i).length - 1, 1, 'its details once');
+  }
+  assert.doesNotMatch(h, /…/, 'no cut copy with an ellipsis');
+});
+
+test('one hardening entry alone is not grouped, and a long plain entry shows each word once', () => {
+  const one = growthHtml(esc, [hard(7, '2026-10-30T07:00:00Z'), { at: '2026-10-30T08:00:00Z', by: 'y', kind: 'fix', what: 'Fixed the clock. ' + Array.from({ length: 40 }, (_, i) => 'Sentence number ' + i + ' says one thing.').join(' ') }], '', 40);
+  assert.doesNotMatch(one, /data-hardened-group/);
+  assert.match(plain(one), /Better at skill 7 and tool7: “ask 7” now opens skill-7; “other 7” now opens tool7\./);
+  for (const i of [0, 12, 39]) assert.equal(plain(one).split('Sentence number ' + i + ' says').length - 1, 1, 'sentence ' + i + ' once');
+  assert.match(entryText(esc, 'word '.repeat(100)), /<details>/);
+});
+
+test('the older benchmark form keeps its line, and "Last spurt" names what got better, each name once', () => {
+  assert.equal(hardenedHead('Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4'), 'Better at calendar file, clock and web4: 9 more ways of asking answered right');
+  const twice = [...six, { ...hard(0, '2026-10-30T07:00:00Z') }];
+  const o = plain(ownerHtml(esc, { families: [] }, twice, {}));
+  assert.doesNotMatch(o, /Verse hardened itself/);
+  assert.match(o, /Last spurt: 7 new/);
+  assert.match(o, /Better at skill 0 and tool0 \(2 times\)/);
+});
+
+test('the real ledger: no hardening entry shows its words twice on the card', () => {
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const h = plain(growthHtml(esc, ledger, '', 200));
+  for (const e of ordered(ledger).slice(0, 200).filter((x) => /^Verse hardened itself/.test(x.what))) {
+    const why = /Why these: (.{20,60}?)[;.]/.exec(e.what);
+    if (why) assert.ok(h.split(why[1]).length - 1 <= ordered(ledger).slice(0, 200).filter((x) => x.what.includes(why[1])).length, e.at);
+  }
+});
