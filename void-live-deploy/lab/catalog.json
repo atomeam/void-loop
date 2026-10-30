@@ -1,5 +1,104 @@
 [
  {
+  "slug": "f467-webgpu-causal-echo-lattice-mind",
+  "num": 467,
+  "title": "webgpu-causal-echo-lattice-mind",
+  "blurb": "Causal Echo Lattice Mind: user pointer trajectories, device orientation, and optional microphone spectral energy generate delayed \"echo\" particles on a lattice.",
+  "status": "works",
+  "source": "F467-webgpu-causal-echo-lattice-mind",
+  "hash": "f9940aa43833"
+ },
+ {
+  "slug": "f466-webgpu-bayesian-wave-collapse-mind",
+  "num": 466,
+  "title": "WebGPU Bayesian Wave Collapse Mind",
+  "blurb": "Canvas2D discrete 2D wave lattice (N≈64, WebGPU compute path prepared via note) whose driving sources are biased by a local Bayesian particle-filter mind (32",
+  "status": "works",
+  "source": "F466-webgpu-bayesian-wave-collapse-mind",
+  "hash": "cf41907f6f41"
+ },
+ {
+  "slug": "f466-webgpu-spectral-cloth-dom-weaver",
+  "num": 466,
+  "title": "webgpu-spectral-cloth-dom-weaver",
+  "blurb": "Novel combination for The Verse canvas: a real-time mass-spring cloth simulation whose spring stiffness and damping are driven by live microphone spectral energy",
+  "status": "works",
+  "source": "F466-webgpu-spectral-cloth-dom-weaver",
+  "hash": "ab7eb7eb3619"
+ },
+ {
+  "slug": "f465-webgpu-hebbian-mic-swarm-morph",
+  "num": 465,
+  "title": "webgpu-hebbian-mic-swarm-morph",
+  "blurb": "Novel combination of real-time microphone spectral analysis driving a Hebbian learning rule on particle swarm associations, rendered on Canvas2D (WebGPU compute",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F465-webgpu-hebbian-mic-swarm-morph",
+  "hash": "02ac309a165a"
+ },
+ {
+  "slug": "f464-competitive-local-mlp-dom-genome-transfer",
+  "num": 464,
+  "title": "Competitive Local MLP DOM Genome Transfer",
+  "blurb": "Branches away from the recent dominant cluster of WebGPU particle/SPH/PBD/spectral kernels, WebXR hand/gaze MLP physics, Hopfield trajectory associative fields",
+  "status": "works",
+  "source": "F464-competitive-local-mlp-dom-genome-transfer",
+  "hash": "07c056a023f0"
+ },
+ {
+  "slug": "f463-hopfield-trajectory-associative-spatial-mind",
+  "num": 463,
+  "title": "Continuous Hopfield Trajectory Associative Spatial Mind",
+  "blurb": "Extends Verse local-mind seals by adding true associative memory capacity over spatial trajectories (not evolutionary genomes, not supervised online MLP, not NCA",
+  "status": "works",
+  "source": "F463-hopfield-trajectory-associative-spatial-mind",
+  "hash": "e1219539a0a3"
+ },
+ {
+  "slug": "f462-preference-evo-orient-spatial-orbs",
+  "num": 462,
+  "title": "Preference-Driven Spatial Orb Evolution",
+  "blurb": "Extends Verse Brain imagination rollouts by adding interactive user-preference evolution of spatial generative attractor parameters, and the embodiment registry via",
+  "status": "works",
+  "source": "F462-preference-evo-orient-spatial-orbs",
+  "hash": "fc5a27f1b461"
+ },
+ {
+  "slug": "f461-webxr-gaze-online-mlp-dom-physics",
+  "num": 461,
+  "title": "WebXR Gaze Online-MLP DOM Physics",
+  "blurb": "Novel combination that deliberately branches away from the recent evolutionary-genome / WebGPU SPH-PBD-spectral / hand-constraint / spatial-audio / L-system cluster.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F461-webxr-gaze-online-mlp-dom-physics",
+  "hash": "3c50a92aeec2"
+ },
+ {
+  "slug": "f460-spatial-audio-evolutionary-agents",
+  "num": 460,
+  "title": "Spatial Audio Evolutionary Agents",
+  "blurb": "Novel combination: Canvas2D multi-agent spatial field with per-agent Web Audio oscillators spatialized via HRTF PannerNodes (position mapped from canvas",
+  "status": "works",
+  "source": "F460-spatial-audio-evolutionary-agents",
+  "hash": "32e8aaea76cc"
+ },
+ {
+  "slug": "f459-webgpu-sph-mlp-agent-mind",
+  "num": 459,
+  "title": "WebGPU SPH MLP Agent Mind",
+  "blurb": "Novel combination that deliberately branches away from the recent WebXR-hand-PBD / spectral-audio-feedback / granular-broadcast-genome / L-system / expression-tree",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F459-webgpu-sph-mlp-agent-mind",
+  "hash": "919ada49b885"
+ },
+ {
   "slug": "f458-webxr-hand-pbd-mlp-constraint-mind",
   "num": 458,
   "title": "WebXR Hand → PBD Constraint Mind (local MLP)",
