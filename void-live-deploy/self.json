@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T17:39:22Z",
-   "subject": "Hints while typing: a one-word hint the typed letters begin comes first"
+   "at": "2026-10-30T17:51:38Z",
+   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
+  },
+  {
+   "at": "2026-10-30T17:51:38Z",
+   "subject": "MCP skill tools run each skill's own code on the server"
+  },
+  {
+   "at": "2026-10-30T17:48:01Z",
+   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
   },
   {
    "at": "2026-10-30T17:38:34Z",
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T16:49:26Z",
    "subject": "Load game and sky helpers on first use, not with the routing order"
-  },
-  {
-   "at": "2026-10-30T16:49:24Z",
-   "subject": "Name the real Modal secrets now that the sing workflow reads them"
-  },
-  {
-   "at": "2026-10-30T16:49:17Z",
-   "subject": "Verse mints, uses and retires its own Cloudflare keys"
   }
  ],
  "builders": {
