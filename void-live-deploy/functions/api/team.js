@@ -46,6 +46,7 @@ import { ownerOk } from '../../lib/guard.js';
 import { session } from '../../lib/void-me.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
+import { briefOf } from '../../lib/job-guide.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });
 const bad = (status, say) => json({ ok: false, say }, status);
@@ -215,7 +216,7 @@ export async function handOut(env, a, now) {
     const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
     if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's own post is the job's thread
     await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
-    return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, thread };
+    return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread };
   }
   return null;
 }
