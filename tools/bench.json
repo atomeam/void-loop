@@ -2006,12 +2006,12 @@
   },
   {
     "ask": "42 in binary",
-    "want": "calc",
-    "says": "101010"
+    "want": "calc|skill:baseconv",
+    "says": "101010|0010 1010"
   },
   {
     "ask": "convert 255 to hex",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "\\bff\\b|0xff"
   },
   {
@@ -2995,12 +2995,12 @@
   },
   {
     "ask": "what is 255 in binary",
-    "want": "calc",
-    "says": "11111111"
+    "want": "calc|skill:baseconv",
+    "says": "11111111|1111 1111"
   },
   {
     "ask": "what is 0xff in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "255"
   },
   {
@@ -3968,7 +3968,7 @@
   },
   {
     "ask": "what is 101010 in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "42"
   },
   {
@@ -4632,8 +4632,8 @@
   {"ask": "what is the gcd of 48 and 180", "want": "calc", "says": "12"},
   {"ask": "lcm of 6 and 8", "want": "calc", "says": "24"},
   {"ask": "roman numerals for 2026", "want": "calc", "says": "MMXXVI"},
-  {"ask": "what is 1010 in binary to decimal", "want": "calc", "says": "\\b10\\b"},
-  {"ask": "255 in hex", "want": "calc", "says": "FF|ff"},
+  {"ask": "what is 1010 in binary to decimal", "want": "calc|skill:baseconv", "says": "\\b10\\b"},
+  {"ask": "255 in hex", "want": "calc|skill:baseconv", "says": "FF|ff"},
   {"ask": "review this python: except: pass", "want": "review", "says": "hides every error|silently|bare"},
   {"ask": "is this code safe? eval(userInput)", "want": "review", "says": "runs text as code"},
   {"ask": "review this sql: DELETE FROM users;", "want": "review", "says": "every row"},
