@@ -4,7 +4,17 @@
  * "tell me a quote", "random quote", "inspirational quote".
  */
 export function isQuote(text) {
-  return /^(?:please\s+)?(?:(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another|one\s+more|some)\s+|(?:another|a|an|some)\s+)?(?:(?:inspirational|motivational|inspiring|uplifting|famous|wise|random|good)\s+)?quotes?(?:\s+about\s+.+)?(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return isDayQuote(text) || /^(?:please\s+)?(?:(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another|one\s+more|some)\s+|(?:another|a|an|some)\s+)?(?:(?:inspirational|motivational|inspiring|uplifting|famous|wise|random|good)\s+)?quotes?(?:\s+about\s+.+)?(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
+
+// "quote of the day", "what's today's quote": the page Wikiquote's editors made for today (2026-10-30: these asks fell to an article)
+export function isDayQuote(text) {
+  return /^(?:please\s+)?(?:(?:what'?s|what\s+is|tell\s+me|give\s+me|show\s+me)\s+)?(?:the\s+|a\s+)?(?:quote\s+of\s+the\s+day|today'?s\s+quote|daily\s+quote)(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
+/** the quote-of-the-day page for a date, as Wikiquote names it: "Wikiquote:Quote of the day/October 30, 2026". local = the asker's own day. Pure. */
+export function dayTitle(d, local = true) {
+  const m = local ? d.getMonth() : d.getUTCMonth(), day = local ? d.getDate() : d.getUTCDate(), y = local ? d.getFullYear() : d.getUTCFullYear();
+  return 'Wikiquote:Quote of the day/' + MONTHS[m] + ' ' + day + ', ' + y;
 }
 
 // Wikiquote's quote of the day for a random past day (2026-10-30: api.quotable.io stopped answering, so every ask on a-to-mind.com
@@ -20,6 +30,7 @@ const ent = (x) => String(x).replace(/&nbsp;/g, ' ').replace(/&quot;/g, '"').rep
   .replace(/&#x([0-9a-f]{1,6});/gi, (_, n) => (parseInt(n, 16) <= 0x10ffff ? String.fromCodePoint(parseInt(n, 16)) : '')).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 /** a quote-of-the-day page's HTML -> { quote, author } | null: the author is the "~ Name ~" line, the quote the text just above it. Pure. */
 export function qotdFrom(html) {
+  const cq = cquoteFrom(html); if (cq) return cq;
   const lines = String(html || '').replace(/<!--[\s\S]*?-->/g, '').replace(/<(?:style|script)[\s\S]*?<\/(?:style|script)>/gi, '').replace(/<sup[\s\S]*?<\/sup>/gi, '').replace(/\s+/g, ' ')
     .replace(/<br\s*\/?>|<\/(?:p|td|tr|div|li|dd|dl|table)>/gi, '\n').replace(/<[^>]*>/g, '').split('\n').map((l) => ent(l).replace(/\s+/g, ' ').trim());
   const at = lines.findIndex((l) => /^~\s*\S.*~$/.test(l));
@@ -29,6 +40,17 @@ export function qotdFrom(html) {
   for (; i >= 0 && lines[i]; i--) q.unshift(lines[i]);
   let quote = q.join(' ').trim();
   if (quote.length > 700) { const cut = quote.indexOf('. ', 500); if (cut < 0) return null; quote = quote.slice(0, cut + 1); } // whole sentences, never a cut word
+  return quote.length >= 8 && author && author.length <= 120 ? { quote, author } : null;
+}
+
+// the shape Wikiquote's pages have had since 2026 (October 30, 2026): a Cquote table, the quote in its widest cell, the author in <cite>—Name</cite>
+function cquoteFrom(html) {
+  const h = String(html || ''), at = h.indexOf('class="cquote"'); if (at < 0) return null;
+  const tab = h.slice(at), cite = tab.match(/<cite[^>]*>([\s\S]*?)<\/cite>/i); if (!cite) return null;
+  const text = (x) => ent(x.replace(/<sup[\s\S]*?<\/sup>/gi, '').replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+  const author = text(cite[1]).replace(/^[\u2014\u2013-]+\s*/, '').trim();
+  let quote = ''; for (const m of tab.slice(0, tab.indexOf(cite[0])).matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)) { const t = text(m[1]); if (t.length > quote.length) quote = t; }
+  if (quote.length > 700) { const cut = quote.indexOf('. ', 500); if (cut < 0) return null; quote = quote.slice(0, cut + 1); }
   return quote.length >= 8 && author && author.length <= 120 ? { quote, author } : null;
 }
 
@@ -78,8 +100,12 @@ async function fromTheme(name, rand = Math.random) {
 async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A quote</h2><div class="sub">…</div>'; });
-  const theme = themeOf(text);
+  const theme = themeOf(text), today = isDayQuote(text);
   let got = theme ? await fromTheme(theme) : null;
+  if (today) for (const title of [...new Set([dayTitle(new Date()), dayTitle(new Date(), false)])]) { // the asker's day, then Wikiquote's own (UTC) day
+    if (got) break;
+    try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, quote of the day for ' + title.split('/')[1], today: true }; } } catch (_) {} // void-review: ok (at most 2 tries, stops at the first quote)
+  }
   for (let i = 0; i < 3 && !got; i++) { // a day with no page, or a page in another shape, is skipped for another day
     const title = qotdTitle();
     try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); const q = qotdFrom(j && j.parse && j.parse.text); if (q) got = { ...q, page: pageUrl(title), label: 'Wikiquote, ' + title.split('/')[1], day: true }; } } catch (_) {} // void-review: ok (a retry that stops at the first quote, not one request per item)
@@ -89,15 +115,16 @@ async function run(text, api) {
     el.innerHTML = '<h2>A quote</h2><p>Wikiquote didn\'t answer just now, so I have no quote to show. Ask again in a moment.</p>';
     return 'none';
   }
-  const note = theme && got.day && /\babout\b/i.test(text) ? '<div class="sub">Wikiquote has no quotes page on “' + esc(theme) + '”, so this is its quote of the day.</div>' : '';
-  el.innerHTML = '<h2>A quote</h2>' + note + '<p style="font-size:22px;line-height:1.45;font-weight:300;font-style:italic">“' + esc(got.quote) + '”</p><p style="font-size:16px">' + esc(got.author) + '</p><div class="sub">say “another quote” for one more</div>'
+  let note = theme && got.day && /\babout\b/i.test(text) ? '<div class="sub">Wikiquote has no quotes page on “' + esc(theme) + '”, so this is its quote of the day.</div>' : '';
+  if (today && !got.today) note = '<div class="sub">Wikiquote has no quote of the day for today, so this is one from another day.</div>';
+  el.innerHTML = '<h2>' + (got.today ? 'Quote of the day' : 'A quote') + '</h2>' + note + '<p style="font-size:22px;line-height:1.45;font-weight:300;font-style:italic">“' + esc(got.quote) + '”</p><p style="font-size:16px">' + esc(got.author) + '</p><div class="sub">say “another quote” for one more</div>'
     + '<div class="src">Source: <a href="' + esc(got.page) + '" target="_blank" rel="noopener">' + esc(got.label) + '</a></div>';
   return 'quote';
 }
 
 export default {
   name: 'quote',
-  examples: ['tell me a quote', 'random quote', 'inspirational quote', 'another quote', 'quote about perseverance'],
+  examples: ['tell me a quote', 'random quote', 'inspirational quote', 'another quote', 'quote about perseverance', 'quote of the day', "what's today's quote"],
   nearMisses: ['what is a quote', 'stock quotes', 'quote of the day news'],
   match(lower, text) { return isQuote(text); },
   run,

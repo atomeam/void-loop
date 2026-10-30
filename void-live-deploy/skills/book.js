@@ -8,7 +8,7 @@ export function bookOf(text) {
   let m = t.match(/^(?:isbn[:\s-]*)((?:\d-?){9,16}\d)$/i);
   if (m) return { q: m[1].replace(/-/g, ''), isbn: true };
   // "books like dune", "books similar to the hobbit": the book's own subject, other books on it
-  m = t.match(/^(?:(?:recommend|suggest|give\s+me)\s+)?(?:some\s+)?(?:books?|novels?|reads?)\s+(?:like|similar\s+to)\s+(.{2,80})$/i);
+  m = t.match(/^(?:(?:recommend|suggest|give\s+me)\s+(?:me\s+)?)?(?:some\s+)?(?:(?:books?|novels?|reads?)(?:\s+recommendations?)?|(?:book|novel|reading)\s+(?:recommendations?|suggestions?|recs)|recommendations?\s+for\s+(?:books?|novels?))\s+(?:like|similar\s+to)\s+(.{2,80})$/i);
   if (m) return { q: m[1].replace(/^the\s+/i, ''), isbn: false, like: true };
   m = t.match(/^(?:(?:a|some|any)\s+)?(?:books?\s+by|novels?\s+by|find\s+(?:the\s+)?book|book\s+called)\s+(.{2,80})$/i);
   if (m && !/^(?:a|the)\s+book$/.test(m[1])) return { q: m[1].replace(/^the\s+/i, ''), isbn: false };
@@ -56,7 +56,7 @@ async function run(text, api) {
 }
 export default {
   name: 'book',
-  examples: ['books by octavia butler', 'book called dune', 'isbn 9780441172719', 'find the book the left hand of darkness', 'books like dune'],
+  examples: ['books by octavia butler', 'book called dune', 'isbn 9780441172719', 'find the book the left hand of darkness', 'books like dune', 'book recommendations like the hobbit'],
   nearMisses: ['what is a book', 'book a table', 'how to write a book', 'map of a library'],
   match(lower, text) { return !!bookOf(text); },
   run
