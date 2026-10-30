@@ -13,6 +13,9 @@ export const WINDOW_MS = 60e3;
 export const LIMITS = {
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   answer: { rpm: 30, body: 20000 },
+  // Versus by itself asks Verse's own model here (functions/api/tower-self.js, owner only): up to 24,000 characters of site text and a 4,000-character
+  // schema, JSON-escaped and UTF-8 (a CJK page is 3 bytes a character). The default 16,000 bytes refused every read with 413 (owner's review, 2026-10-30)
+  'tower-self': { rpm: 30, body: 120000 },
   appraise: { rpm: 6, body: 1200000 },
   translate: { rpm: 40, body: 1200000 }, // 5,000 characters of text, or one downsized photo whose text the vision model reads, 40 a minute: a translation model call each (functions/api/translate.js) // one downsized photo (768 px JPEG) per call, 6 a minute: a vision model call each (functions/api/appraise.js) // /api/answer also keeps its own tighter 12 a minute for model calls
   'fanfic-hits': { rpm: 60, body: 0 }, // /fanfic/ read counts (functions/api/fanfic-hits.js): a POST has no body; one count per visitor, story and day, 30 a minute per connection in the route
