@@ -357,7 +357,8 @@ test('each ask keeps its own why, a repeated why is dropped, and the target is a
 
 test('asks held behind the Versus target come last and carry the site; the hold ends when the target moves on', async () => {
   const { holdAsks } = await import('../void-live-deploy/lib/voice.js');
-  const held = JSON.parse(readFileSync(new URL('../void-live-deploy/void.asks.json', import.meta.url), 'utf8')).held;
+  // a fixed held list (the shape of void.asks.json `held`), so lifting a real hold does not break the test
+  const held = [{ words: 'Absorb every repository on the account into the core code', until: 'sycophanthex.com' }, { words: 'Create a browser-based utility to check the watertightness of STL print files.', until: 'sycophanthex.com' }];
   const asks = [{ ask: 'Absorb every repository on the account into the core code to unify the system architecture.' }, { ask: 'Build a browser-based utility to check the watertightness of STL print files.' }, { ask: 'Add author pages to the story catalog' }];
   const out = holdAsks(asks, held, 'sycophanthex.com');
   assert.equal(out[0].ask, 'Add author pages to the story catalog'); assert.equal(out[0].held, undefined);

@@ -67,3 +67,10 @@ test('the card reads the live store: a matched row shows the catalog price and l
   // the whole card falls back cleanly with no catalog at all
   assert.match(cardHtml(esc, null), /What Verse sells/);
 });
+
+test('the card names the membership by its name, MultiVerse, and links its page', () => {
+  const esc = (s) => String(s);
+  const html = cardHtml(esc, null);
+  assert.match(html, /<a href="https:\/\/a-to-mind\.com\/members\/"[^>]*>MultiVerse<\/a>, a Verse of your own, for \$49 a month/);
+  assert.doesNotMatch(html, /Paid Verse|custom Verse/);
+});

@@ -1,1 +1,0 @@
-{"at":"2026-10-29T14:59:15Z","by":"claude","kind":"fix","what":"The self card's counts agree: waiting is every ask not built, so 'N waiting' plus 'built' always makes the total (it said 3 waiting beside 237 of 244)","show":"the self card's waiting count and its built count add up to every ask","try":"what do you think of yourself"}

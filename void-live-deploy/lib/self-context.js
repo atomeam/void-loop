@@ -4,7 +4,7 @@
 // its skills (skills/index.json) and its will (void_kv 'will', the same thing GET /api/will shows). All of it is already
 // public on a-to-mind.com; nothing owner-only (queue, earnings, spends) is read here. Also its games and card miniatures
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
-import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
+import { knowsFacts, voiceFacts, keptFacts, familyFacts } from './voice.js';
 import { PERSONA } from './persona.js';
 import { models, ANSWER_FALLBACK } from './models.js';
 const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
@@ -55,17 +55,18 @@ const asset = async (env, origin, p) => {
 
 export async function readSelf(env, origin, ms = 800) {
   const kv = async (k) => { try { const r = await env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(k).first(); return r && r.v ? JSON.parse(r.v) : null; } catch (_) { return null; } };
-  const [self, skills, will, voice, replies] = await Promise.all([
+  const [self, skills, will, voice, replies, families] = await Promise.all([
     within(asset(env, origin, '/self.json'), ms),
     within(asset(env, origin, '/skills/index.json'), ms),
     within(kv('will'), ms),
     within(kv('voice'), ms),
     within(kv('voice-replies'), ms),
+    within(asset(env, origin, '/skills/families.json'), ms),
   ]);
-  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null };
+  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null, families: families && Array.isArray(families.families) ? families : null };
 }
 
-export function selfFacts({ self, skills, will, voice, replies } = {}, { card = false, note = '' } = {}) {
+export function selfFacts({ self, skills, will, voice, replies, families } = {}, { card = false, note = '' } = {}) {
   const parts = [];
   const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
@@ -82,7 +83,9 @@ export function selfFacts({ self, skills, will, voice, replies } = {}, { card = 
   if (!card || asksModelDate(note)) parts.push(modelFacts(self)); // a card note that does not name the model gets no model date to restate (live card 3)
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
-  const knows = knowsFacts(self), said = voiceFacts(voice);
+  // the family counts and the least proven family, ranked as the card's bars rank them (owner's review, 2026-10-30: the answer named Games, the bars Words and the world)
+  const fams = familyFacts(families); if (fams) parts.push(fams);
+  const knows = knowsFacts(self), said = voiceFacts(voice, families);
   if (knows) parts.push(knows);
   if (said) parts.push(said);
   const kept = keptFacts(replies); // what it kept from talking with its owner (its own words, never the owner's: these facts reach any visitor's answer)

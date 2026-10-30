@@ -77,10 +77,12 @@ export function baseAsk(text, base) {
   const a = convert(c.digits, base, 10), b = convert(p.value, p.from, 10);
   return a.ok && b.ok && a.out === b.out ? ask : '';
 }
-/** what an ask wants: { value, from (0 = by prefix or decimal), to } or null. A bare number with a prefix or no source base is read as decimal unless it carries 0x/0b/0o. Pure. */
+/** what an ask wants: { value, from (0 = by prefix or decimal), to } or null. A bare number with no source base is read as decimal unless it carries
+ *  0x/0b/0o, or it is all 0s and 1s and asked "in decimal": decimal to decimal answers nothing, so "what is 101010 in decimal" is binary (42). Pure. */
 export function parseAsk(text) {
   const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
-  for (const [re, pick] of PATTERNS) { const m = re.exec(t); if (!m) continue; const [value, fromWord, toWord] = pick(m), to = baseOf(toWord), from = fromWord ? baseOf(fromWord) : 0; if (to && (from || !fromWord)) return { value, from: from || 0, to }; }
+  for (const [re, pick] of PATTERNS) { const m = re.exec(t); if (!m) continue; const [value, fromWord, toWord] = pick(m), to = baseOf(toWord), from = fromWord ? baseOf(fromWord) : 0;
+    if (to && (from || !fromWord)) return { value, from: from || (to === 10 && /^[01][01_,]+$/.test(value) ? 2 : 0), to }; }
   return null;
 }
 

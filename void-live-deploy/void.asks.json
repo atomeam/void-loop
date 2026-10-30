@@ -2225,17 +2225,12 @@
       "frontier": "Absorb and connect every repo",
       "until": "sycophanthex.com",
       "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the tower goes every site ever made, smallest first (owner, 2026-10-29)"
-    },
-    {
-      "words": "Create a browser-based utility to check the watertightness of STL print files.",
-      "until": "sycophanthex.com",
-      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the forge already checks the STL files it writes (printCheck, ledger 2026-10-10T20:43:56Z), a check for a file someone brings waits (owner, 2026-10-29)"
     }
   ],
   "totals": {
-    "asked": 239,
+    "asked": 241,
     "built": 236,
-    "through": "2026-10-28T22:29:00Z",
+    "through": "2026-10-29T22:41:00Z",
     "open": [
       {
         "ask": "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins.",
@@ -2253,10 +2248,24 @@
       },
       {
         "ask": "Create a utility to check the watertightness of STL print files in the browser",
-        "at": "2026-10-28T22:29:00Z",
+        "at": "2026-10-29T22:41:00Z",
         "kind": "daily",
         "small": true,
         "times": 6
+      },
+      {
+        "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1
+      },
+      {
+        "ask": "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 4
       }
     ]
   }

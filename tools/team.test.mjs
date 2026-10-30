@@ -166,3 +166,21 @@ test('the team chat card on the stage (skills/team-chat.js): takes the team-chat
   assert.equal(t.waiting, 4); assert.equal(t.busy, 1);
   assert.deepEqual(teamLines(null), { agents: [], channels: [], waiting: 0, busy: 0 }, 'an answer that is not the workspace shows nothing made up');
 });
+
+test('the owner is an account: the owner account\'s signed-in session is the owner here; any other account is not let in', async () => {
+  const env = world(); const sid = async (t) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('void-session:' + t)))].map((x) => x.toString(16).padStart(2, '0')).join('');
+  env.DB.raw.exec('CREATE TABLE void_sessions (id TEXT PRIMARY KEY, user_id TEXT, expires INTEGER); CREATE TABLE void_passkeys (id TEXT PRIMARY KEY, user_id TEXT); CREATE TABLE void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT)');
+  const OWNS = 'o'.repeat(43), OTHER = 'm'.repeat(43), LAPSED = 'x'.repeat(43); // secret-scan: ok (test session tokens)
+  const later = Date.now() + 864e5;
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(OWNS), 'u-owner', later);
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(OTHER), 'u-other', later);
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(LAPSED), 'u-owner', Date.now() - 1);
+  env.DB.raw.exec("INSERT INTO void_passkeys VALUES ('pk-owner-phone', 'u-owner'), ('pk-owner-laptop', 'u-owner'), ('pk-other', 'u-other'); INSERT INTO void_owner_passkeys VALUES ('pk-owner-phone', '2026-10-14')");
+  assert.deepEqual((await get(env, '?me', OWNS)).me, { kind: 'owner', name: 'Owner' }, 'the owner account signed in on any of its passkeys');
+  const other = await get(env, '?me', OTHER);
+  assert.equal(other.me, null); assert.equal(other.signedIn, true, 'the page can say signed in, but not as the owner');
+  assert.equal((await get(env, '?c=work', OTHER)).status, 401, 'another account reads no message');
+  assert.equal((await API.onRequestPost({ env, request: req('POST', '', { do: 'invite', name: 'Rogue' }, OTHER), now: T0 })).status, 401, 'and invites no one');
+  assert.equal((await get(env, '?me', LAPSED)).me, null, 'a session past its end is nobody');
+  assert.equal((await API.onRequestPost({ env, request: req('POST', '', { do: 'invite', name: 'Scout' }, OWNS), now: T0 })).status, 201, 'the owner account invites');
+});

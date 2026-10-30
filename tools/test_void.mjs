@@ -49,10 +49,13 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
-// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites)\.js)(\?|$)/;
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
+// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
-const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
+// SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
+let SECTION = null;
+const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) { sweep(); SECTION = label; } return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
@@ -74,7 +77,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got, section: SECTION }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -5170,6 +5173,12 @@ try {
       // like Wikipedia: a title with no page answers 404 (the exact-title try, ccaf78621, asks for "Snorgleblat" before it searches)
       if (!['Michael Jordan', 'Air Jordan', 'Blat'].includes(t)) return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found', title: 'Not found.' }) });
       return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
+    // a name ask whose only page is a loose neighbour goes to the answer route first (51056167, a name inside a list page);
+    // the real route finds nothing on the web for a made-up word, so it answers null and the card falls back to the closest
+    // page. The suite's shared stub answers every ask with the sky text, which no real route gives for "snorgleblat"
+    // (red since 51056167, hidden by the retry that healed checks it never ran; 2026-10-29, f8101922 shard 2).
+    await E.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}');
+      if (/snorgleblat/.test(b.ask || '')) return r.fulfill(json({ answer: null, sources: [], note: 'nothing on the web' })); return r.fallback(); });
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
     check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
@@ -5649,7 +5658,24 @@ try {
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
   }
-  if (want('verse brain: one workspace that eighteen organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want("verse brain current: the swimmers learn to ride the flow, and once they beat the drifters their orb, riding the current, is on the card")) { // coordinator, 2026-10-29: prove the organ 19 orb renders, do not fake the trigger
+    const F = await fresh(), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    const box = await (await F.p.$(card + ' canvas')).boundingBox();
+    for (let i = 0; i < 30; i++) await F.p.mouse.move(box.x + box.width * (0.5 + 0.3 * Math.cos(i * 0.4)), box.y + box.height * (0.5 + 0.3 * Math.sin(i * 0.4)));
+    // nothing is told or set: the card's own loop runs the brain until a life of swimmers ends with more food than drifters in the same flow
+    // the card draws its orbs every step but writes its data- counts only every 4th step (skills/verse-brain.js), so the
+    // orb can show up to 3 steps before data-currentlives counts the life that earned it (shard 4 on 06da9b70 read lives 0)
+    await until(async () => !!(await F.p.$(card + ' .vb-orb[data-key="current"]')) && +(await F.p.$eval(card, (e) => e.dataset.currentlives || 0)) >= 1, 40000);
+    const o = await F.p.evaluate((card) => { const e = document.querySelector(card), orb = e && e.querySelector('.vb-orb[data-key="current"]'), s = window.verseBrain && window.verseBrain.state();
+      return { orb: orb ? { text: orb.textContent, organ: orb.dataset.organ, left: parseFloat(orb.style.left), top: parseFloat(orb.style.top) } : null, lives: +(e && e.dataset.currentlives || 0),
+        ticks: +(e && e.dataset.ticks || 0), line: s ? (s.self.find((l) => /^Current:/.test(l)) || '') : '' }; }, card);
+    check('verse brain current: on the live card, with only the pointer moved over it, the swimmers of organ 19 beat the drifters in the same flow, and the card shows their orb, "riding the current", where they swim; the brain\'s own self says the gain over drifters in words',
+      !!o.orb && o.orb.text === 'riding the current' && o.orb.organ === 'current' && o.orb.left >= 0 && o.orb.left <= 100 && o.orb.top >= 0 && o.orb.top <= 100 && o.lives >= 1
+      && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
+    await F.ctx.close();
+  }
+  if (want('verse brain: one workspace that twenty organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5720,9 +5746,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its eighteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 18 && a.rows === 18 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 20 && a.rows === 20 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
@@ -5936,7 +5962,8 @@ try {
   if (want("\"remember that <fact>\" keeps one line (POST with the bearer), \"forget that <fact>\" removes")) { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
     await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
-    await T.p.reload(); await T.p.waitForTimeout(700);
+    // wait for the skills to be in after the reload (skillsUp), not a fixed 700 ms: ~300 skill files load before the first ask is routed
+    await T.p.reload(); await skillsUp(T.p);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -7594,6 +7621,9 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
+    // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
+    // midnight UTC "two hours ago" is yesterday (red on main at 00:22, 01:19 and 00:51 UTC, 2026-10-29 and 2026-10-30)
+    const todayAgo = (h) => new Date(Math.max(Date.parse(new Date().toISOString().slice(0, 10)), Date.now() - h * 36e5)).toISOString();
     // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
@@ -7656,7 +7686,7 @@ try {
         label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color,
         red: segs.length, redColor: segs.map((l) => getComputedStyle(l).stroke).join(), redAt: segs.map((l) => l.getAttribute('x1') + '-' + l.getAttribute('x2')).join(), overdue: b.dataset.overdue, amber: amber && amber.textContent, amberColor: amber && getComputedStyle(amber).color, title: b.title }; });
     const v1 = await vel(), hits1 = reflectHits;
-    reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
+    reflectAsked = built([['a', ago(0)], ['b', todayAgo(1)], ['c', todayAgo(2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
     const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
@@ -8236,12 +8266,13 @@ try {
     const m = await until(async () => { const x = await probe(M); return x && x.im && x.im.w > 40 ? x : null; }, 12000) || await probe(M);
     check('poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text', !!m && m.poster === '1' && m.display === 'grid' && m.art.h > m.art.w * 1.3 && Math.abs((m.art.x + m.art.w / 2) - (m.card.x + m.card.w / 2)) < 10 && m.art.w < m.card.w * 0.6 && m.type.y >= m.art.b - 2 && m.ptHits === false && m.numHits === false && !M.errors.length, JSON.stringify(m && { art: m.art, card: m.card, type: m.type, cols: m.cols }));
     await M.ctx.close();
-    // an answer with a long body: one title, and a small painting fills its art window
+    // an answer with a long body: one title, and a small painting fills its art window. The reply section (lib/card-reply.js, #1569) at the end of
+    // every card has its own section heading; it is not a second title, so it is left out of the count like the art window
     const A = await fresh(); const ANS = '## Visa test card\n\nA visa test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
     await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
     await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
     await A.ask('show me a visa test card', 2200); // "the site test card" is Verse's own card now (lib/own-parts.js); a visa test card still goes to the answer path
-    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
+    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art') && !h.closest('.vreply')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
     check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me a visa test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
     await A.ctx.close();
     // a text-only reply: the seal is the one picture, centred and filling the window
@@ -9346,7 +9377,7 @@ try {
   const OUT_LINE = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
-  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
+  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
   // A price question is different: the membership sentence stays first, and the services card opens under it.
@@ -9898,19 +9929,19 @@ try {
     [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
   // No GUMROAD_ACCESS_TOKEN (Atom doesn't pass one): a keyed ping from Atom's seller account for the paid membership is trusted.
   const kEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123' };
-  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE';
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE', VK4 = 'FFFFFFFFFFFFFFFFFFFFFF';
   const kSale = (id, extra = {}) => vmSale(id, { seller_id: SELLER, subscription_id: 'sub-k' + id, 'url_params[void]': VK1, ...extra });
   const kGood = await ping(kSale('k1'), { env: kEnv });
   const kWrongSeller = await ping(kSale('k2', { seller_id: 'zzOtherSellerZZzzzzzzz==', 'url_params[void]': VK2 }), { env: kEnv });
   const kNoSeller = await ping(kSale('k3', { seller_id: '', 'url_params[void]': VK2 }), { env: kEnv });
-  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK2 }), { env: kEnv });
+  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK4 }), { env: kEnv }); // only the creator can make one: their own Verse
   const kNoKey = await ping(kSale('k5', { 'url_params[void]': VK2 }), { env: kEnv, key: '' });
   const kReuse = await ping(kSale('k1', { 'url_params[void]': VK3, sale_timestamp: '2026-09-28T03:00:00Z' }), { env: kEnv });
   const kOther = await ping({ sale_id: 'k6', seller_id: SELLER, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'GTQsNJR9Nsd66O5QVhI4MA==', product_permalink: 'https://moonbeam846.gumroad.com/l/gqsgib', price: '2500', 'url_params[void]': VK2, resource_name: 'sale' }, { env: kEnv });
   const kPinned = await ping(kSale('k7', { 'url_params[void]': VK2 }), { env: { ...kEnv, GUMROAD_SELLER_ID: 'someone-else==' } });
   const kCancel = await ping({ subscription_id: 'sub-kk1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', resource_name: 'cancellation', cancelled_at: '2026-10-01T00:00:00Z' }, { env: kEnv });
-  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid; wrong or missing seller, test ping or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
-    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && /test ping/.test(kTest.body.effect) && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
+  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid (the creator\'s own test purchase too); wrong or missing seller or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
+    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && kTest.body.effect === 'tier paid' && kEnv.DB.accounts.get(VK4).tier === 'paid' && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
     && !kEnv.DB.accounts.has(VK2) && !kEnv.DB.accounts.has(VK3) && kEnv.DB.sales.has('sale:k2:2026-09-28T01:00:00Z') && !kEnv.DB.sales.has('sale:k5:2026-09-28T01:00:00Z') && kCancel.body.effect === 'tier free (cancellation)' && kEnv.DB.accounts.get(VK1).tier === 'free',
     [kGood.body.effect, kWrongSeller.body.effect, kNoSeller.body.effect, kTest.body.effect, kNoKey.status, kReuse.body.effect, kOther.body.effect, kPinned.body.effect, kCancel.body.effect].join(' | '));
 
@@ -12038,13 +12069,24 @@ let bad = results.filter((r) => !r.ok);
 // quiz card). A check that fails twice is red, as before; one that heals is named below so it is not forgotten, and the spotter
 // (tools/flakes.mjs) counts it. Not for --only runs (finish.mjs, a person) and not after the suite threw: nothing after that ran.
 if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.name === 'suite ran to the end')) {
-  const heads = [...new Set(bad.map((r) => r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ')))];
+  // a check runs again by its own section's want label: the first words of its name can match no section at all, when the label
+  // is worded differently (2026-10-29: 'article: "who is X" opens the person' sits under '"who is X" prefers the person', so its
+  // second run ran nothing). The shared core block keeps the first words of the name: a second run of core is the whole long page.
+  const headOf = (r) => r.section && !r.section.startsWith('core: ') ? r.section : r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ');
+  const heads = [...new Set(bad.map(headOf))];
   if (heads.length <= 6) {
     releaseHeavy();
     for (const h of heads) {
       const c = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--only', h], { env: { ...process.env, VOID_RETRY: '1', VOID_SKIP_BENCH: '1', VOID_SHARD: '' }, encoding: 'utf8', timeout: 8 * 60e3 });
       if (c.status !== 0) console.log('second run of "' + h + '" failed too (exit ' + c.status + '): ' + String(c.stdout || '').split('\n').filter((l) => /^FAIL|passed|matched/.test(l)).join(' | ').slice(0, 300) + ' ' + String(c.stderr || '').slice(-200));
-      if (c.status === 0) for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + h); }
+      // healed only when the second run ran this very check and it passed: "--only <head>" can match another section and skip this
+      // one (a check in the CORE block, or under another want label), exit 0 with it never run, and hide a real failure (2026-10-29:
+      // six "paid:" checks that the MultiVerse rename broke read "healed" on cd360ad0)
+      const ran = new Set(String(c.stdout || '').split('\n').filter((l) => l.startsWith('pass ')).map((l) => l.slice(5)));
+      for (const r of bad) if (headOf(r) === h) {
+        if (c.status === 0 && ran.has(r.name)) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + r.name); }
+        else if (c.status === 0) console.log('second run of "' + h + '" did not run "' + r.name.slice(0, 120) + '": still red');
+      }
     }
     bad = results.filter((r) => !r.ok);
   }

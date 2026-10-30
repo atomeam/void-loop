@@ -202,6 +202,9 @@ jobs:
           else echo "::error::a-to-mind.com/ HTTP $code does not carry $want"; head -c 300 live.tmp; echo; ok=1; fi
           check /skills/index.json void-live-deploy/skills/index.json || ok=1
           check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
+          # the Versus queue's data (tools/tower-size.mjs, tools/tower-target.mjs): the order on the card is only as true as these files live
+          check /tower.size.json void-live-deploy/tower.size.json || ok=1
+          check /tower.target.json void-live-deploy/tower.target.json || ok=1
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
 

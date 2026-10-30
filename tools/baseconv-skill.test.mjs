@@ -23,11 +23,14 @@ test('ff hex to binary: grouped answer, all four bases, 8 bits, signed -1, the l
   assert.ok(h.includes('>8 bits; as a signed 8-bit number: -1.</p>'), h);
   assert.ok(h.includes('<a class="bc-open" href="/base-converter/?b=16&amp;v=ff">Open the converter</a>'));
 });
-test('0xff in decimal reads the prefix as hex; what is 1010 in decimal is decimal to decimal with commas', () => {
+test('0xff in decimal reads the prefix as hex; what is 1010 in decimal reads 0s and 1s as binary (decimal to decimal answers nothing)', () => {
   let h = card('0xff in decimal').h; assert.ok(h.startsWith('<h2>ff hex to decimal</h2>')); assert.equal(out(h), '255');
-  h = card('what is 1010 in decimal').h; assert.ok(h.startsWith('<h2>1010 decimal to decimal</h2>')); assert.equal(out(h), '1,010');
-  assert.deepEqual(rows(h), ['Binary=0011 1111 0010', 'Octal=1 762', 'Decimal=1,010', 'Hex=03 F2']);
-  assert.ok(h.includes('href="/base-converter/?b=10&amp;v=1010"'));
+  h = card('what is 1010 in decimal').h; assert.ok(h.startsWith('<h2>1010 binary to decimal</h2>')); assert.equal(out(h), '10');
+  assert.deepEqual(rows(h), ['Binary=1010', 'Octal=12', 'Decimal=10', 'Hex=0A']);
+  assert.ok(h.includes('href="/base-converter/?b=2&amp;v=1010"'));
+  assert.equal(out(card('what is 101010 in decimal').h), '42');
+  assert.equal(out(card('what is 1020 in decimal').h), '1,020', 'a 2 in it: decimal, as before');
+  assert.equal(out(card('42 in binary').h), '0010 1010', 'to binary: the decimal number, as before');
 });
 test('4142 hex to decimal: its text reading, escaped quotes', () => {
   const h = card('4142 hex to decimal').h;

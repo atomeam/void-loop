@@ -97,6 +97,8 @@ export function mountReply(el, doc, { owner = '', fetchFn, card } = {}) {
   const mk = (tag, props = {}) => Object.assign(doc.createElement(tag), props);
   const sec = mk('section', { className: 'vtell-box vreply' });
   sec.setAttribute('data-share-skip', '1');
+  // the speaker reads the card's own words; "Reply to what I said, or correct me" and the Send row are controls, so it skips them (void.html speakText)
+  sec.setAttribute('data-nospeak', '1');
   const h = mk('h3', { className: 'vreply-h', textContent: REPLY.title });
   const talk = mk('div', { className: 'v-talk' }); talk.setAttribute('data-reply-talk', '1'); talk.setAttribute('aria-live', 'polite');
   const box = mk('textarea', { maxLength: REPLY.max, rows: 2, placeholder: REPLY.title }); box.setAttribute('data-reply-box', '1'); box.setAttribute('aria-label', 'Your reply to Verse about this card');

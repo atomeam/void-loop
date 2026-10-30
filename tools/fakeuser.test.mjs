@@ -46,6 +46,9 @@ test('the asks', () => {
   assert.deepEqual(askFake('generate 5 fake german women'), { n: 5, nats: ['de'], gender: 'female' });
   assert.deepEqual(askFake('fake name generator'), { n: 10, nats: ['us'], gender: '' }); assert.ok(askFake('20 random users from japan and brazil').nats.length === 2);
   for (const no of ['generate 5 rows of dummy data with name email city', 'random name picker wheel', 'pick a random name from alice, bob', 'who is a random user', 'random number', 'fake news', 'my users', 'name a random country', 'spin the wheel']) assert.equal(askFake(no), null, no);
+  // a made-up thing's name is the generators' (skills/textgen.js), not a made-up person: "random band name" was answered with fake people
+  for (const no of ['random band name', 'random fantasy name', 'random superhero name', 'give me a random pet name', 'random business names']) assert.equal(askFake(no), null, no);
+  assert.ok(askFake('random name') && askFake('fake names'));
 });
 
 test('all 21 of randomuser.me\'s nationalities (and Japan); usernames are plain letters whatever the alphabet', () => {

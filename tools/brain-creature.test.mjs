@@ -44,8 +44,10 @@ test('it is an organ of the one brain: it walks toward the focus, writes into th
   assert.ok(b.creature.steps > 0 && b.creature.w.body.m > 0, 'it has a living body');
   assert.ok(B.selfSays(b).some((l) => /^Creature: generation \d+, /.test(l)), 'it says what it is doing');
   const orb = B.embodiment(b).find((e) => e.key === 'creature'); assert.ok(orb && orb.organ === 'creature', 'it has a body on the card');
-  B.dragTo(b, orb, 0.8, 0.2);
-  assert.ok(L.distTo(b.creature.x, b.creature.y, 0.8 * B.GW, 0.2 * B.GH) < 1.5, 'the body goes where it is dragged');
+  // drag it to the corner across from where the brain attends, so it lands far from the focus whatever region won the attention
+  const tx = b.focus.x < 0.5 ? 0.85 : 0.15, ty = b.focus.y < 0.5 ? 0.8 : 0.2;
+  B.dragTo(b, orb, tx, ty);
+  assert.ok(L.distTo(b.creature.x, b.creature.y, tx * B.GW, ty * B.GH) < 1.5, 'the body goes where it is dragged');
   assert.ok(b.creature.w.body.m > 0, 'and it is still alive there');
   const d = () => L.distTo(b.creature.x, b.creature.y, b.focus.x * B.GW, b.focus.y * B.GH), far = d();
   for (let t = 0; t < 400; t++) B.stepBrain(b, {});
