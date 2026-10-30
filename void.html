@@ -4138,7 +4138,12 @@ say('nothing selected to remove');
       const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
-      if (wm) { setV(wm.value, wm.note); cookFlow(el, query); return 'calc'; }
+      if (wm) {
+        // a unit answer from word maths ("5 miles to km" is read here first) opens the unit converter on the same ask, as the unit branch below does;
+        // not the tail of a fraction ("3/4 cup in ml" would hand over "4 cup in ml")
+        const wu = lower.match(CALC_UNIT_RE); if (wu && !/[\d./]$/.test(lower.slice(0, wu.index))) el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());
+        setV(wm.value, wm.note); cookFlow(el, query); return 'calc';
+      }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
       const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);

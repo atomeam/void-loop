@@ -160,6 +160,22 @@ test('a currency answer opens its pair on Markets, not the plain calculator (202
   assert.match(src, /const \{ amount, from, to \} = cm;\n\s+if \(from !== to\) el\.dataset\.page = '\/markets\/\?s=' \+ from \+ to;/);
 });
 
+test('a unit answer read by word maths links to the unit converter too (2026-10-30: live, "5 miles to km" still opened /calculator/), never a fraction\'s tail', () => {
+  const src = readFileSync(resolve(root, '../../void.html'), 'utf8');
+  const line = src.match(/const CALC_UNIT_RE = (\/.+\/[a-z]*);/);
+  assert.ok(line, 'the unit pattern is in void.html');
+  const RE = new Function('return ' + line[1])();
+  const guard = src.match(/const wu = lower\.match\(CALC_UNIT_RE\); if \(wu && !(\/.+?\/)\.test\(lower\.slice\(0, wu\.index\)\)\) el\.dataset\.page = '\/convert\/\?q=' \+ encodeURIComponent\(wu\[0\]\.trim\(\)\);/);
+  assert.ok(guard, 'the word-maths path sets the converter link before it draws');
+  const tail = new Function('return ' + guard[1])();
+  const page = (ask) => { const wu = ask.match(RE); return wu && !tail.test(ask.slice(0, wu.index)) ? '/convert/?q=' + encodeURIComponent(wu[0].trim()) : ''; };
+  assert.equal(page('5 miles to km'), '/convert/?q=' + encodeURIComponent('5 miles to km'));
+  assert.equal(page('what is 70 f in c'), '/convert/?q=' + encodeURIComponent('70 f in c'));
+  assert.equal(page('3/4 cup in ml'), '', 'a fraction is not handed over as its last number');
+  assert.equal(page('2.5 kg to lb'), '/convert/?q=' + encodeURIComponent('2.5 kg to lb'));
+  assert.ok(src.indexOf("el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());") < src.indexOf("setV(wm.value, wm.note)"), 'the link is set before the card is drawn');
+});
+
 test('a card whose art box shows the answer\'s photo does not show the same photo again in its body (2026-10-30: the recipe card showed its dish twice)', () => {
   const css = CARD_CSS.join ? CARD_CSS.join('') : String(CARD_CSS);
   assert.match(css, /\.vpage\.vcard>img\[data-vc-art-src\]\{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none\}/);

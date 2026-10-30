@@ -651,7 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 15
+   "tests": 16
   },
   {
    "file": "lib/field-cards.js",
@@ -2786,7 +2786,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/ai-generators.js",
