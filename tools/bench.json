@@ -4074,7 +4074,13 @@
   },
   {
     "ask": "how much luggage weight allowed",
-    "want": "answer|article|said|calc"
+    "want": "skill:baggage",
+    "says": "23 kg \\(50 lb\\)"
+  },
+  {
+    "ask": "checked bag weight limit",
+    "want": "skill:baggage",
+    "says": "32 kg \\(70 lb\\)"
   },
   {
     "ask": "what is 23 kg in pounds",
