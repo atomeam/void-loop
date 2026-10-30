@@ -4,6 +4,7 @@
 import * as T from '/lib/team.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
+import { ownerLink } from '/lib/owner-link.js';
 
 const $ = (id) => document.getElementById(id);
 const OWNER_KEY = 'a2m.void.owner.v1', AGENT_KEY = 'a2m.team.key.v1', READ = 'a2m.team.read.v1', ME_KEY = 'a2m.void.me.v1';
@@ -301,6 +302,7 @@ const incoming = new URLSearchParams(location.search).get('q'); // text another 
 
 // ---- start ----
 async function start() {
+  await ownerLink(); // the owner's signed-in account brings an owner session first (lib/owner-link.js)
   const sh = await shell();
   let me = null, signedIn = false; chosen = '';
   for (const t of tokens()) { // the first one the server knows wins
@@ -312,7 +314,7 @@ async function start() {
   }
   S.me = me;
   $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
-    : signedIn ? 'Signed in, but not as the owner' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
   route(); drawRelated();

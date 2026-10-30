@@ -63,7 +63,10 @@
   #card input.vb-word { font-size: 16px !important; min-height: 40px; }
   #card table { font-size: 12px; } #card td { border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
   #card summary, #saysBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
-  #saysBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #saysBox li { margin: 3px 0; }
+  #saysBox ul, #didBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #saysBox li, #didBox li { margin: 3px 0; }
+  #didBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  #didBox .undo { font: inherit; font-size: 12px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; min-height: 30px; margin-left: 6px; cursor: pointer; }
+  #didBox .ok { color: var(--cool); } #didBox .no { color: var(--hot); }
   #related, #asks { margin-top: 14px; font-size: 13px; }
   .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; color: var(--soft); } .tk-row a { color: var(--soft); }
   .note { font-size: 12.5px; color: var(--soft); }
@@ -144,6 +147,7 @@
   <div id="panelHead"><h1>Verse Brain, full screen</h1></div>
   <p class="lede">The same brain as its card on the Verse stage: one workspace that twenty organs share. Move over the field and it predicts you; where it guessed wrong turns red and its attention moves there. Tell it words, drag what it holds, say Good, ask it why, hum to it.</p>
   <div id="card"></div>
+  <details id="didBox" open><summary>What it did on Verse, and why</summary><p class="note" id="didSum">When more than one skill can answer an ask on the Verse stage, the brain picks which one does, and learns from whether you kept the card. Asks typed on tool pages are heard here too. Each lesson can be undone.</p><ul id="did"><li>Nothing yet: ask Verse something on the stage.</li></ul></details>
   <details id="saysBox" open><summary>What it says about itself</summary><ul id="says"><li>Waking up.</li></ul></details>
   <noscript><p>Verse Brain runs in your browser with JavaScript; with it off there is no brain to show.</p></noscript>
   <!-- asks -->

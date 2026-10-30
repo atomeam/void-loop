@@ -80,4 +80,5 @@ $('claimgo').addEventListener('click', async () => {
   await load();
 });
 
+import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => {}); // one owner identity: the owner's account carries owner pages too
 load();

@@ -568,16 +568,17 @@ export const CATALOG = {
   ],
   // the file converter (2026-10-29): onlineconverter.com, studied by hand from its home page (read through a fetch; this build network gets a 403
   // from the site, so no live scan). Its 106 tools are listed one by one in lib/converter.js with Verse's own status; these rows are its groups.
-  // Verse writes no video and no compressed sound, so those rows stay missing or partial until it does: no row is made to pass.
+  // Verse writes MP4 and WEBM video (2026-10-30), not the other 6 formats, no video edits yet and no compressed sound: those rows stay
+  // partial or missing until it does. No row is made to pass.
   '/converter/': [
-    ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
+    ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('aviOf|wmvOf|flvOf'), T('mp4\\(video, audio\\)'), ['onlineconverter.com']],
     ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA', T('audio converter'), T('lamejs|mp3Encoder'), T('aiff\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
     ['image-convert', 'Convert', 'Image converters: JPG, BMP, DNG, GIF, PDF, PNG, TIFF and WEBP', T('image converter'), T('dngOf|writeDng'), T('tiff\\(pixels\\(c\\)\\)'), ['onlineconverter.com']],
     ['ebook-convert', 'Convert', 'Ebook converters: EPUB, AZW, DOCX, HTML, MOBI, PDF, RTF and TXT', T('ebook converter'), T('mobiOf|azwOf'), T('epubOf\\('), ['onlineconverter.com']],
     ['document-convert', 'Convert', 'Document converters (PDF, DOCX, HTML, TXT) that keep the layout', T('document converter'), T('keepLayout|layoutOf'), T('docxBytesOf\\('), ['onlineconverter.com']],
     ['unit-convert', 'Convert', 'Unit converters: weight, length, area, speed, temperature, time zone, time, currency and volume', T('unit converter'), T("UNIT\\('Area'"), null, ['onlineconverter.com']],
     ['audio-tools', 'Edit', 'Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair', T('cut mp3|merge audio'), T('denoise|noiseReduce'), T('removeSilence\\('), ['onlineconverter.com']],
-    ['video-tools', 'Edit', 'Video tools: cut, merge, resize, rotate, compress, watermark, text, speed and 11 more', T('cut video|merge video'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
+    ['video-tools', 'Edit', 'Video tools: cut, merge, resize, rotate, compress, watermark, text, speed and 11 more', T('cut video|merge video'), T('cutVideo|mergeVideo'), null, ['onlineconverter.com']],
     ['image-tools', 'Edit', 'Image tools: blur, brighten, compress, cut, resize, rotate, watermark, merge, GIF speed, a frame from a video, background removal', T('resize image|merge images'), T('removeBackground'), T("'merge-images'"), ['onlineconverter.com']],
     ['ebook-tools', 'Edit', 'Ebook tools: change an EPUB cover, compress AZW3, CBZ, CBR and EPUB, merge EPUB', T('epub'), T('epubCover|mergeEpub'), null, ['onlineconverter.com']],
     ['pdf-tools', 'Edit', 'PDF tools: add an image, compress, merge and split', T('pdf'), T("'pdf-image'"), null, ['onlineconverter.com']],
