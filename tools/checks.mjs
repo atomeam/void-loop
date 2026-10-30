@@ -125,6 +125,7 @@ for (const [name, file] of [
   ['generators', 'generators.test.mjs'],
   ['listgen', 'listgen.test.mjs'],
   ['image-gen', 'image-gen.test.mjs'],
+  ['video-gen', 'video-gen.test.mjs'],
   ['generators-hub', 'generators-hub.test.mjs'],
   ['gallery', 'gallery.test.mjs'],
   ['character', 'character.test.mjs'],

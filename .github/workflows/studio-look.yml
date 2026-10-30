@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       op:
-        description: bench, video or board
+        description: bench, video, clip or board
         default: bench
         type: string
       models:
@@ -81,6 +81,7 @@ jobs:
           case "$OP" in
             bench) node tools/studio-look.mjs bench ${MODELS:+--models "$MODELS"} ${PROMPTS:+--prompts "$PROMPTS"} --size "$SIZE" --cap "$CAP" | tee summary.txt ;;
             video) node tools/studio-look.mjs video ${PROMPT:+--prompt "$PROMPT"} --model "$MODEL" --seconds "$SECONDS" --draft "$DRAFT" | tee summary.txt ;;
+            clip) node tools/studio-look.mjs clip | tee summary.txt ;;
             *) node tools/studio-look.mjs board | tee summary.txt ;;
           esac
           { echo '### Studio look'; echo '```'; cut -c1-300 summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
