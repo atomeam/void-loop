@@ -1,5 +1,5 @@
 /**
- * pollen skill - Open-Meteo CAMS pollen (Europe) + geocoding, no key
+ * pollen skill - the pollen forecast for a place in Europe, plant by plant (Open-Meteo CAMS pollen + geocoding, no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "pollen in Paris", "allergy forecast in Berlin", "how bad is the pollen in London",
  * "ragweed count in Vienna", "is pollen high in Madrid".

@@ -1541,7 +1541,7 @@
    "chapter": "games",
    "name": "tictactoe",
    "title": "Tic-tac-toe",
-   "line": "The first board game as a real skill (countdown's shape, not make's iframe)",
+   "line": "Tic tac toe against Verse on the stage: you are X, and Verse answers each move",
    "examples": [
     "lets play tic tac toe",
     "tic tac toe",
@@ -2365,7 +2365,7 @@
    "chapter": "sky",
    "name": "weather",
    "title": "Weather",
-   "line": "Open-Meteo, no key",
+   "line": "The weather now and the forecast for a place, kept current while the card is up",
    "examples": [
     "weather in Tokyo",
     "weather here",
@@ -2382,7 +2382,7 @@
    "chapter": "sky",
    "name": "air",
    "title": "Air",
-   "line": "Open-Meteo Air Quality + geocoding, no key",
+   "line": "The air quality for a place: the US AQI, its category, the main pollutant and what to do",
    "examples": [
     "air quality in Tokyo",
     "AQI in London",
@@ -2399,7 +2399,7 @@
    "chapter": "sky",
    "name": "uv",
    "title": "Uv",
-   "line": "Open-Meteo UV index + geocoding, no key",
+   "line": "The UV index for a place now and today's highest, with sun advice",
    "examples": [
     "UV index in Miami",
     "how strong is the sun in LA",
@@ -2433,7 +2433,7 @@
    "chapter": "sky",
    "name": "pollen",
    "title": "Pollen",
-   "line": "Open-Meteo CAMS pollen (Europe) + geocoding, no key",
+   "line": "The pollen forecast for a place in Europe, plant by plant",
    "examples": [
     "pollen in Paris",
     "allergy forecast in Berlin",
@@ -3221,7 +3221,7 @@
    "chapter": "numbers",
    "name": "walls",
    "title": "Walls",
-   "line": "Wallpaper rolls and drywall sheets for a room or one wall, next to home.js's paint and flooring",
+   "line": "Wallpaper rolls and drywall sheets for a room or one wall, next to the paint and flooring answers",
    "examples": [
     "how many rolls of wallpaper for a 12x14 room",
     "how much wallpaper do i need for a 10x12 bedroom with 9 foot ceilings",
@@ -3769,7 +3769,7 @@
    "chapter": "words",
    "name": "technical-context",
    "title": "Technical context",
-   "line": "Match: true when this skill should take the ask",
+   "line": "Why a risky code term such as Rust unwrap or shell=True can fail, with the safer line and a caution shape on the stage",
    "examples": [
     "why is rust unwrap a risk",
     "is unwrap risky in rust",
@@ -3820,7 +3820,7 @@
    "chapter": "words",
    "name": "translate",
    "title": "Translate",
-   "line": "Google gtx, MyMemory fallback, no key",
+   "line": "A word or phrase in another language, with a link to the full translator for 100 languages",
    "examples": [
     "translate hello to Spanish",
     "how do you say thank you in Japanese",
@@ -6754,7 +6754,7 @@
    "chapter": "self",
    "name": "store",
    "title": "Store",
-   "line": "\"what can I buy\" -> Verse's store, from the same catalog the /store page and /api/store use",
+   "line": "What you can buy from Verse, from the same catalog as the store page",
    "examples": [
     "what's new in the store",
     "store preview",

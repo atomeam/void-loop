@@ -1,5 +1,5 @@
 /**
- * air skill - Open-Meteo Air Quality + geocoding, no key
+ * air skill - the air quality for a place: the US AQI, its category, the main pollutant and what to do (Open-Meteo Air Quality + geocoding, no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "air quality in Tokyo", "AQI in London", "is the air good in Paris", "what's the air quality in New York".
  * Shows US AQI with a clear label, category, dominant pollutant, short guidance, and dated Open-Meteo sources.
