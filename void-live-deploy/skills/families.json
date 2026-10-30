@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 2,
+  "tested": 1,
   "checked": 7,
-  "proven": 376
+  "proven": 377
  },
  "families": [
   {
@@ -25,8 +25,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 1,
-    "checked": 0,
+    "tested": 0,
+    "checked": 1,
     "proven": 59
    },
    "skills": [
@@ -200,10 +200,12 @@
     },
     {
      "name": "video-gen",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-30",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     },
     {
      "name": "walker",
@@ -950,13 +952,13 @@
     {
      "name": "baggage",
      "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "why": "3 real asks in the benchmark",
      "failing": [
       "how much luggage weight allowed"
      ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0.5
+     "success_rate": 0.667
     },
     {
      "name": "sky",
@@ -1304,8 +1306,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 23
+    "checked": 0,
+    "proven": 24
    },
    "skills": [
     {
@@ -1366,11 +1368,12 @@
     },
     {
      "name": "rentbuy",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     },
     {
      "name": "savings",
@@ -3634,7 +3637,7 @@
     {
      "name": "local-inference",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
