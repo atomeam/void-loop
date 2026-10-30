@@ -498,7 +498,7 @@
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); document.documentElement.classList.remove('pre');
     // the note's title handed to the rap page as its topic (owner, 2026-10-30: "connect it all to work seemlessly"); off while the note has no title
-    mountRelated($('related'), '/notes/', [{ label: de ? 'Ein Rap darüber' : 'Rap about this note', href: () => { const e = cur(), t = e && e.title ? String(e.title).trim() : ''; return t ? '/rap/?t=' + encodeURIComponent(t.slice(0, 120)) : null; } }]);
+    mountRelated($('related'), '/notes/', [{ label: de ? 'Ein Rap darüber' : 'Rap about this note', href: () => { const t = String($('dtitle').textContent || '').trim(); return t ? '/rap/?t=' + encodeURIComponent(t.slice(0, 120)) : null; } }]); // the title as typed: the note itself saves 400 ms later
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

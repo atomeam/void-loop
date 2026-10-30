@@ -102,10 +102,10 @@ test('the rap is wired into the pages around it: its card follows the topic, its
   assert.equal(cardAsk(settingsOf({ topic: '' })), '', 'no topic: the card link keeps its example'); assert.equal(cardAsk(null), '');
   const page = rd('rap/app.js');
   assert.ok(page.includes("'/metronome/?bpm=' + beatFor(settings).bpm"), 'the beat hands its tempo to the metronome, which reads ?bpm=');
-  assert.ok(page.includes('{ card: () => cardAsk(settings) }'), 'the page gives its card the topic and style on it');
+  assert.ok(page.includes('{ card: () => cardAsk(settings || readForm()) }'), 'the page gives its card the topic and style on it, the typed ones before a rap is written');
   assert.ok(rd('metronome/app.js').includes("q.get('bpm')"), 'the metronome reads the tempo it is handed');
   // a note's title opens /rap/ as the topic, and /rap/ reads ?t= as the topic
-  assert.match(rd('notes/index.html'), /'\/rap\/\?t=' \+ encodeURIComponent\(t\.slice\(0, 120\)\)/);
+  assert.match(rd('notes/index.html'), /const t = String\(\$\('dtitle'\)\.textContent \|\| ''\)\.trim\(\); return t \? '\/rap\/\?t=' \+ encodeURIComponent\(t\.slice\(0, 120\)\)/, 'the title as typed, not the copy saved 400 ms later');
   assert.equal(fromLink('?t=' + encodeURIComponent('Groceries for Sunday')).settings.topic, 'Groceries for Sunday');
   const { RELATED } = await import('../void-live-deploy/lib/toolkit.js');
   for (const p of ['/notes/', '/metronome/']) assert.ok(RELATED[p].includes('/rap/'), p + ' lists the rap page back');
