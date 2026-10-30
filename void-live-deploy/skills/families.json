@@ -14,7 +14,7 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 2,
   "checked": 7,
   "proven": 377
  },
@@ -25,8 +25,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 0,
-    "checked": 1,
+    "tested": 1,
+    "checked": 0,
     "proven": 59
    },
    "skills": [
@@ -200,12 +200,10 @@
     },
     {
      "name": "video-gen",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-30",
-     "last_tested_by": "its tests",
-     "success_rate": 1,
-     "promoted": "2026-10-30"
+     "last_tested_by": "its tests"
     },
     {
      "name": "walker",
@@ -952,13 +950,13 @@
     {
      "name": "baggage",
      "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "why": "2 real asks in the benchmark",
      "failing": [
       "how much luggage weight allowed"
      ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0.667
+     "success_rate": 0.5
     },
     {
      "name": "sky",
@@ -1306,7 +1304,7 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 0,
+    "checked": 1,
     "proven": 24
    },
    "skills": [
@@ -1368,12 +1366,11 @@
     },
     {
      "name": "rentbuy",
-     "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
-     "promoted": "2026-10-30"
+     "success_rate": 1
     },
     {
      "name": "savings",
@@ -1412,6 +1409,14 @@
      "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 11
+    },
+    {
+     "name": "stocks",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "the benchmark",
+     "success_rate": 1
     },
     {
      "name": "markets",
