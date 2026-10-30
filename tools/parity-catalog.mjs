@@ -491,6 +491,11 @@ export const CATALOG = {
     ['dst', 'Time', 'Daylight saving changes', T('daylight|dst'), T('daylight|DST'), null, ['timeanddate.com']],
     ...COMMON,
   ],
+  '/cpan/': [
+    ['recent', 'Testing', 'Recent CPAN module test results', T('recent'), T('Recent'), null, []],
+    ['search', 'Testing', 'Search for CPAN modules', T('search'), T('search'), null, []],
+    ...COMMON,
+  ],
   '/color/': [
     ['info', 'Colour', 'All about a colour: codes and conversions', T('rgb|hex|hsl|cmyk'), T('cmyk|hsl'), null, 'core'],
     ['shades', 'Colour', 'Shades, tints and harmonies', T('shade|tint|complement'), T('shade|tint|complement'), null, 'core'],
