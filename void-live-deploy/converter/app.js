@@ -9,15 +9,16 @@ import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
 import { TRANSITIONS } from '/lib/transition.js';
 import { changeCover, mergeBooks, compressBook, compressComic } from '/lib/epub-edit.js';
+import { repair } from '/lib/mp4-repair.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, 'video+video': VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip' };
+const ACCEPT = { sound: SND + ',video/*', video: VID, 'video+video': VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip', repair: VID + ',.3gp,.3g2,.m4v,.m4a,audio/mp4' };
 // how many files a tool needs, and what to say about them
-const NEED = { 'video+video': [2, ' Pick 2 videos: the first you pick is Video 1, the second Video 2.'], 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'] };
+const NEED = { 'video+video': [2, ' Pick 2 videos: the first you pick is Video 1, the second Video 2.'], 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'], repair: [1, ' Pick the broken file. With Have Reference Video, pick a good video from the same phone or camera too, second.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
@@ -92,6 +93,7 @@ function opts() {
   if (run === 'watermark-image') o.append(field('Mark', pick('wmk', [['words', 'Your words'], ['picture', 'The smallest picture you pick']], 'words')), field('Words', txt('words', '', 'Your name')), field('Corner', pick('corner', [['br', 'Bottom right'], ['bl', 'Bottom left'], ['tr', 'Top right'], ['tl', 'Top left']], 'br')), field('Size (% of the width)', num('pw', 15, 'any', 1, 60)), field('Seen (%: 100 is solid)', num('alpha', 60, '1', 5, 100)), field('JPG and WebP quality (10-100)', num('qual', 90, '1', 10, 100)));
   if (run === 'merge-images') o.append(field('Put them', pick('dir', [['row', 'side by side'], ['column', 'one above the other']], 'row')));
   if (run === 'video') videoOpts(t.vop, o);
+  if (run === 'repair') { o.append(field('Reference', pick('rref', [['no', 'No Reference Video'], ['yes', 'Have Reference Video']], 'no'))); $('rref').onchange = ready; }
   if (run === 'pdf-image') o.append(field('Page', num('page', 1, '1', 1)), field('From the left (%)', num('px', 5, 'any', 0, 100)), field('From the top (%)', num('py', 5, 'any', 0, 100)), field('Width (% of the page)', num('pw', 30, 'any', 1, 100)));
   qual(); ready();
 }
@@ -156,7 +158,7 @@ async function setFiles(list) {
   clearOut();
 }
 function ready() {
-  const need = cur && cur.vop === 'transition' ? ($('tmode') && $('tmode').value !== 'join' ? 1 : 2) : cur && (cur.many || cur.run === 'pdf-image') ? 2 : cur && NEED[cur.from] ? NEED[cur.from][0] : 1, auto = !cur && !($('to') && $('to').value);
+  const need = cur && cur.vop === 'transition' ? ($('tmode') && $('tmode').value !== 'join' ? 1 : 2) : cur && cur.run === 'repair' ? ($('rref') && $('rref').value === 'yes' ? 2 : 1) : cur && (cur.many || cur.run === 'pdf-image') ? 2 : cur && NEED[cur.from] ? NEED[cur.from][0] : 1, auto = !cur && !($('to') && $('to').value);
   $('go').disabled = files.length < need || auto;
   $('status').textContent = files.length && files.length < need ? 'Pick ' + need + ' or more files for this tool.' : '';
 }
@@ -358,6 +360,13 @@ async function go() {
       try { const bm = await createImageBitmap(pic.f); size = 'the picture is ' + bm.width + ' x ' + bm.height + ' pixels'; if (bm.close) bm.close(); } catch (_) {}
       const r = await changeCover(await bytesOf(e.f), encode);
       add({ name: outName(e.f.name, 'epub', taken), ext: 'epub', bytes: r.bytes, notes: [...r.notes, made, size].filter(Boolean) });
+    } else if (t.run === 'repair') {
+      // the broken file first; with Have Reference Video, a good video from the same camera second
+      const withRef = $('rref') && $('rref').value === 'yes';
+      if (withRef && list.length < 2) throw new Error('pick the broken file, then a good video from the same phone or camera.');
+      say('Mending ' + list[0].f.name + (withRef ? ' with ' + list[1].f.name : ''));
+      const r = repair(await bytesOf(list[0].f), withRef ? await bytesOf(list[1].f) : null);
+      add({ name: outName(base(list[0].f.name) + '_fixed.' + r.ext, r.ext, taken), ext: r.ext, bytes: r.bytes, notes: r.notes });
     } else if (t.run === 'pdf-image') {
       const p = list.find((x) => x.fmt === 'pdf'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!p || !pic) throw new Error('pick one PDF and one picture.');
