@@ -178,6 +178,22 @@ export const JOURNEYS = {
     if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not the day of the match');
     await check('the sports page put "Arsenal vs Chelsea" on ' + soon + ' in the calendar');
   },
+  'show an event in every city on the time page, put it on the calendar, and see the matches that day': async (p, check) => {
+    const d = new Date(Date.now() + 9 * 86400000), soon = d.toISOString().slice(0, 10), rel = (t) => p.locator('#related a', { hasText: t }).getAttribute('href');
+    const at = '/time/?at=' + soon + 'T15:00:00Z&cities=Kyoto@Asia/Tokyo,London';
+    await p.goto(ORIGIN + '/time/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await p.locator('#related a', { hasText: 'Put the event on my calendar' }).getAttribute('aria-disabled')) !== 'true') throw new Error('with no event shown, "Put the event on my calendar" is not off');
+    await check('with no event shown, the calendar link reads as off');
+    await p.goto(ORIGIN + at, { waitUntil: 'load' }); await p.waitForSelector('#event:not([hidden])');
+    if ((await rel('Matches that day')) !== '/scores/?date=' + soon) throw new Error('"Matches that day" goes to "' + (await rel('Matches that day')) + '", not /scores/?date=' + soon);
+    await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#related a', { hasText: 'Put the event on my calendar' }).click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    const card = await p.locator('#invBody').innerText();
+    if (!card.includes('Event in Kyoto, London') || !card.includes('3:00')) throw new Error('the invite reads "' + card.replace(/\s+/g, ' ').slice(0, 160) + '", not the event in Kyoto and London at 3:00 PM');
+    await check('the calendar opened on "Event in Kyoto, London" at 3:00 PM on ' + soon);
+    await Promise.all([p.waitForURL(/\/calendar\/\?d=/), p.locator('#invAdd').click()]);
+    if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not ' + soon);
+    await check('the event is on the calendar on ' + soon);
+  },
   'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the time page opened on Kyoto');

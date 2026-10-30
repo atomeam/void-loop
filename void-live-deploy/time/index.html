@@ -268,9 +268,20 @@
   setInterval(() => { drawTop(); if (new Date().getSeconds() === 0) drawClocks(); }, 1000);
   // the city at the top (the one asked for, else your own clock's city) carried to its weather and its local radio and TV, as /weather/ links back here
   const topCity = () => cityName(main || youPlace);
+  // the day and the minute on this device's clock, as the calendar and the scores page read them ("2026-11-03", "2026-11-03T15:00")
+  const isoDay = (tz, ms) => { const y = wall(tz, new Date(ms)).ymd; return y[0] + '-' + String(y[1] + 1).padStart(2, '0') + '-' + String(y[2]).padStart(2, '0'); };
+  const isoMin = (tz, ms) => { const w = wall(tz, new Date(ms)); return isoDay(tz, ms) + 'T' + String(w.h).padStart(2, '0') + ':' + String(w.m).padStart(2, '0'); };
+  // the event shown in every city, on Verse's own calendar at its moment in this device's zone (/calendar/?e=, lib/calendar.js eventFromLink); an hour long until it is changed there
+  const eventCal = () => { if (evShown === null) return null; const names = [...new Set(all().map(cityName).filter(Boolean))].slice(0, 4);
+    const ev = { title: 'Event' + (names.length ? ' in ' + names.join(', ') : ''), start: isoMin(you, evShown), end: isoMin(you, evShown + 3600000), tz: you, allDay: false, notes: 'The moment in every city: ' + eventLink(evShown) };
+    let bin = ''; for (const b of new TextEncoder().encode(JSON.stringify(ev))) bin += String.fromCharCode(b);
+    return '/calendar/?e=' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
   mountRelated(document.getElementById('related'), '/time/', [
     { label: 'The weather in this city', href: () => (topCity() ? '/weather/?place=' + encodeURIComponent(topCity()) : null) },
     { label: 'Radio and TV in this city', href: () => (topCity() ? '/local/?place=' + encodeURIComponent(topCity()) : null) },
+    { label: 'Put the event on my calendar', href: eventCal },
+    // the matches of the event's day, else of today where the top city is (the scores page reads ?date=)
+    { label: 'Matches that day', href: () => '/scores/?date=' + (evShown !== null ? isoDay(you, evShown) : isoDay((main || youPlace).tz, Date.now())) },
   ], { card: () => timeAsk(main, places) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
