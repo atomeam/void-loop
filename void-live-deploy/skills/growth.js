@@ -23,8 +23,9 @@ export const PAGE_SIZE = 40;
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/[’]/g, "'").replace(/\s+/g, ' ');
 const ASK_RE = /^(?:(?:show|open|summon|give)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:(?:verse|void)(?:'s)?\s+)?growth(?:\s+(?:ledger|log|panel|history))?$|^(?:how\s+(?:have\s+you|has\s+(?:verse|void))\s+grown|how\s+did\s+(?:you|(?:verse|void))\s+grow|what\s+(?:have\s+you|has\s+(?:verse|void))\s+learned\s+lately|what'?s\s+new\s+(?:in|with)\s+(?:verse|void))$/;
-// "what just shipped?" is about Verse here, not the Just Cause video games (2026-10-19: it came back as a Wikipedia sentence about copies shipped)
-const SHIPPED_RE = /^what(?:'s|\s+has|\s+have\s+you)?\s+(?:just\s+)?shipped(?:\s+(?:today|lately|recently|yesterday|so\s+far))?$|^what\s+did\s+you\s+(?:just\s+)?(?:ship|build)(?:\s+(?:today|lately|recently|yesterday))?$|^what\s+have\s+you\s+just\s+(?:shipped|built)$|^what\s+(?:was|has\s+been)\s+(?:just\s+)?(?:shipped|built)(?:\s+(?:today|lately|recently))?$/;
+// "what just shipped?" is about Verse here, not the Just Cause video games (2026-10-19: it came back as a Wikipedia sentence about copies shipped);
+// "what got built" too (2026-10-30: on a-to-mind.com it gave "Not found ... Did you mean Built to Spill?")
+const SHIPPED_RE = /^what(?:'s|\s+has|\s+have\s+you)?\s+(?:just\s+)?shipped(?:\s+(?:today|lately|recently|yesterday|so\s+far))?$|^what\s+did\s+you\s+(?:just\s+)?(?:ship|build)(?:\s+(?:today|lately|recently|yesterday))?$|^what\s+have\s+you\s+just\s+(?:shipped|built)$|^what\s+(?:was|has\s+been|got)\s+(?:just\s+)?(?:shipped|built)(?:\s+(?:today|lately|recently))?$/;
 export function growthOf(text) { const t = CLEAN(text); return ASK_RE.test(t) || SHIPPED_RE.test(t); }
 // "what can you do now that you couldn't last week?": the same card, opening on the last 7 days (weekSummary) with the tree
 // set to a week ago, so this week's tips grow in as it answers

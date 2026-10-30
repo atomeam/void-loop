@@ -6988,5 +6988,8 @@
   {"ask": "podcasts about history", "want": "skill:podcast-search"},
   {"ask": "find a podcast about cooking", "want": "skill:podcast-search"},
   {"ask": "best podcasts about science", "want": "skill:podcast-search"},
-  {"ask": "any good podcasts about space", "want": "skill:podcast-search"}
+  {"ask": "any good podcasts about space", "want": "skill:podcast-search"},
+  {"ask": "What got built", "want": "skill:growth"},
+  {"ask": "what got built today", "want": "skill:growth"},
+  {"ask": "what got shipped recently", "want": "skill:growth"}
 ]
