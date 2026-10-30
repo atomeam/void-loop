@@ -57,10 +57,11 @@ export function incidentHits(incidents, names) {
   return hit;
 }
 
-/** Every skill scored, most lacking first. { name, score, reasons[], examples[] }; a skill with no example asks cannot be hardened here and is left out. Pure. */
+/** Every skill scored, most lacking first. { name, score, reasons[], examples[] }; a skill with no example asks of its own cannot be hardened here and is left out
+ *  (examples the guide quoted from a header, examplesFrom: 'header', are labels or the owner's words, never asks that skill routes). Pure. */
 export function rank({ guide, families, bench, incidents } = {}) {
   const pages = guide && Array.isArray(guide.pages) ? guide.pages : [];
-  const skills = pages.filter((p) => p && p.kind === 'skill' && typeof p.name === 'string' && Array.isArray(p.examples) && p.examples.length);
+  const skills = pages.filter((p) => p && p.kind === 'skill' && typeof p.name === 'string' && Array.isArray(p.examples) && p.examples.length && p.examplesFrom !== 'header');
   const tiers = tiersOf(families), benched = benchedCount(Array.isArray(bench) ? bench : (bench && (bench.asks || bench.items)) || []);
   const hits = incidentHits(incidents, skills.map((s) => s.name));
   return skills.map((s) => {

@@ -29,6 +29,14 @@ test('no benchmark ask and a weak tier ranks first, with its reasons; thin evide
   assert.ok(!r.some((x) => x.name === 'noexamples' || x.name === 'make'));
 });
 
+test('examples the guide quoted from a header (button labels, the owner\'s words) are never candidate asks', () => {
+  const g = { pages: guide.pages.concat([{ kind: 'skill', name: 'tab', examples: ['put in the page', 'draft for me'], examplesFrom: 'header' }]) };
+  const r = rank({ guide: g, families, bench, incidents: {} });
+  assert.ok(!r.some((x) => x.name === 'tab'));
+  const p = plan({ guide: g, families, bench, incidents: {} }, { n: 50 });
+  assert.ok(p.candidates.length && !p.candidates.some((c) => c.want === 'skill:tab'));
+});
+
 test('failed runs that name a skill raise it, and only as a whole word', () => {
   const incidents = { incidents: [{ checks: ['chess: the board opens'] }, { checks: ['chessboard other'] }, { checks: ['timer: a countdown'] }] };
   const h = incidentHits(incidents, ['chess', 'timer', 'pw']);

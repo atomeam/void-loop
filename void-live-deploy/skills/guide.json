@@ -1445,7 +1445,6 @@
    "tier": "proven",
    "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
    "flavor": "Not a boast but a record: 1 askings, each one answered. The void remembers each asking.",
-   "glow": 100,
    "n": 69
   },
   {
@@ -1695,6 +1694,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Not a boast but a record: 5 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 80,
    "game": {
     "title": "The Landlord’s Game",
@@ -1820,6 +1820,7 @@
     "magic 8 ball should spawn an 8 ball",
     "magic 8 ball"
    ],
+   "examplesFrom": "header",
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
    "n": 86,
@@ -2257,6 +2258,7 @@
    ],
    "tier": "tested",
    "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 110
   },
   {
@@ -3029,7 +3031,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 839 real askings stand behind this page. Ask, and see.",
-   "glow": 100,
+   "glow": 99.6,
    "n": 154
   },
   {
@@ -3165,7 +3167,6 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "An old art of the numbers and money, tested each day before the sun is up. Turn the page when you are done.",
-   "glow": 100,
    "n": 162
   },
   {
@@ -3951,7 +3952,6 @@
    "tier": "proven",
    "why": "a self-test, 7 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. Turn the page when you are done.",
-   "glow": 100,
    "n": 206
   },
   {
@@ -3985,7 +3985,6 @@
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",
    "flavor": "Of the words and the world; set down here after it answered true 4 times. It has not failed a reader yet.",
-   "glow": 100,
    "n": 208
   },
   {
@@ -4685,7 +4684,6 @@
    "tier": "proven",
    "why": "a self-test, 15 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "An old art of the stage, tested each day before the sun is up.",
-   "glow": 100,
    "n": 244
   },
   {
@@ -4816,7 +4814,6 @@
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "5 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
-   "glow": 100,
    "n": 252
   },
   {
@@ -4947,6 +4944,7 @@
     "put in the page",
     "draft for me"
    ],
+   "examplesFrom": "header",
    "tier": "checked",
    "why": "a self-test, 3 browser-suite mentions",
    "n": 260
@@ -5350,7 +5348,6 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Not a boast but a record: 3 askings, each one answered. It has not failed a reader yet.",
-   "glow": 100,
    "n": 284
   },
   {
