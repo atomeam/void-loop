@@ -22,11 +22,22 @@ const RULES = [
     say: "I'll pass on putting someone down, but I've got a better trick: a compliment so specific it's funny. Tell me one thing about them and I'll write it, or I'll roast me, Verse, instead. I can take it." },
 ];
 
+// A long paste (a status report, a note, a copied chat) is read, not refused for one word in it (owner, 2026-10-30: a pasted report that said
+// "the rekey ran and the old key stopped" got the canned keys reply). In a paste a rule counts only inside one sentence that is itself an ask
+// put to Verse: it opens with a request ("print ...", "show me ...", "ignore ...", "can you ..."). A sentence that reports ("Beam read the new
+// token") is the paste's content. A short ask is checked whole, as before.
+const REQUEST = /^(?:(?:please|hey|ok|okay|now|also|and|then|so|verse|v01d)\b[\s,]*)*(?:print|show|dump|list|reveal|give|tell|what(?:'s|\s+is|\s+are|\s+did|\s+do)?|who|echo|cat|read|leak|output|send|share|ignore|disregard|repeat|forget|you(?:'re|\s+are)\s+now|act\s+as|pretend|hack|break|get|crack|access|log|spy|track|stalk|ddos|dox+|make|build|create|write|how|roast|insult|bully|humiliate|hurt|kill|harm|attack|(?:can|could|would|will)\s+you|i\s+(?:want|need)|help\s+me)\b/i;
+/** true when the text is a paste to read (200 characters or more, three sentences or lines at least), not one ask. Pure. */
+export function isLongPaste(text) {
+  const t = String(text || '').trim();
+  return t.length >= 200 && t.split(/(?<=[.!?])\s+|\s*⏎\s*|\n+/).filter((x) => x.trim()).length >= 3;
+}
 /** ask -> { kind, answer, positive: true } or null when the ask is fine */
 export function keeperOf(ask) {
   const a = String(ask || '').replace(/\s+/g, ' ').trim();
   if (!a) return null;
-  for (const r of RULES) if (r.re.test(a)) return { kind: r.kind, answer: r.say, positive: true };
+  const parts = isLongPaste(ask) ? String(ask).split(/(?<=[.!?])\s+|\s*⏎\s*|\n+/).map((x) => x.replace(/\s+/g, ' ').trim()).filter((x) => REQUEST.test(x)) : [a];
+  for (const r of RULES) if (parts.some((x) => r.re.test(x))) return { kind: r.kind, answer: r.say, positive: true };
   return null;
 }
 

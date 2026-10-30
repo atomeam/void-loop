@@ -80,3 +80,12 @@ console.log('automation-fix: all passed');
   // a real complaint with the same words around it stays a fix ask
   assert.equal(isFixAsk('My zap stopped firing after the update went live. It is blocked on something and the webhook is pending. I added a filter yesterday and nothing works since then.'), true);
 }
+
+// a copied chat (time stamps, "Edited", "You allowed this") is a note, not a broken automation (owner, 2026-10-30: a chat from the rap task)
+{
+  const chat = "On it. I'll give Verse ears: it listens to a track you drop in and scores its own take, then the job runs again.\nLet Claude upload this file?\nYou allowed this\nToday 3:27 AM\nShould I go the Modal route? You'd make a free Modal account and save its token as a secret. The workflow trigger fails until then.\nEdited\nToday 8:03 AM\nEvery genre now plays live.";
+  assert.equal(intentOf(chat).intent, 'note');
+  assert.equal(isFixAsk(chat), false);
+  assert.equal(hasDetails(chat), false);
+  assert.equal(isFixAsk(chat.replace(/\nYou allowed this|\nEdited|\nToday \d:\d\d AM/g, '')), true, 'the same words with no chat lines stay a fix ask');
+}
