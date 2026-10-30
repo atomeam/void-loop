@@ -1,7 +1,7 @@
 // tests for lib/epub-edit.js: an EPUB read and written again (mimetype first and stored), the change of its cover, the merge of books and the compression of a book
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readBook, writeBook, changeCover, coverOf, resolve, mergeBooks, obfuscate, identifierOf, encryptedOf, compressBook } from '../void-live-deploy/lib/epub-edit.js';
+import { readBook, writeBook, changeCover, coverOf, resolve, mergeBooks, obfuscate, identifierOf, encryptedOf, compressBook, compressComic } from '../void-live-deploy/lib/epub-edit.js';
 import { epubOf, epubParas } from '../void-live-deploy/lib/converter.js';
 
 const te = new TextEncoder(), td = new TextDecoder();
@@ -168,4 +168,18 @@ test('a fixed layout book keeps the size of its pictures, and an encrypted pictu
   assert.deepEqual(sides, [0]);
   let called = 0; const r = await compressBook(await picBook({ enc: true }), async () => { called++; return JPG; }, { maxSide: 1600 });
   assert.equal(called, 0); assert.match(r.notes.join(' '), /1 encrypted file keeps its bytes/);
+});
+
+test('a comic (CBZ) is made smaller page by page: each page keeps its name and place, and ComicInfo.xml keeps its bytes', async () => {
+  const info = te.encode('<ComicInfo><Title>One</Title></ComicInfo>');
+  const { zip } = await import('../void-live-deploy/lib/translate-docs.js');
+  const cbz = await zip([{ name: '001.jpg', data: BIG }, { name: '002.png', data: BIG.slice(0, 9000) }, { name: 'ComicInfo.xml', data: info }]);
+  const seen = [], r = await compressComic(cbz, async (d, t, side) => { seen.push([t, side]); return t === 'image/png' ? PNG : JPG; }, { maxSide: 2000 });
+  assert.deepEqual(seen, [['image/jpeg', 2000], ['image/png', 2000]]);
+  const { unzip } = await import('../void-live-deploy/lib/translate-docs.js'), out = await unzip(r.bytes);
+  assert.deepEqual(out.map((f) => f.name), ['001.jpg', '002.png', 'ComicInfo.xml']);
+  assert.ok(same(out[0].data, JPG) && same(out[1].data, PNG) && same(out[2].data, info));
+  assert.match(r.notes.join(' '), /2 of the 2 pages were made smaller/);
+  await assert.rejects(compressComic(await zip([{ name: 'a.txt', data: info }]), async () => JPG), /no JPEG, PNG or WebP pages/);
+  await assert.rejects(compressComic(new Uint8Array([0x52, 0x61, 0x72, 0x21, 0x1a, 7, 0, 0]), async () => JPG), /not a CBZ file/);
 });
