@@ -3,11 +3,11 @@
 // source, asked at the same time, because iTunes refuses shared cloud addresses) and the Internet Archive (public-domain, Creative Commons and
 // Blender open movies, played in a <video>). The title is untrusted: cleaned before any request, and the upstream hosts are fixed here.
 // Not found = { verified: false } with nothing else, never a guess. When no source could be reached the answer says so (unreachable) and is not
-// cached; a found movie is cached for a day. No D1, no KV, no model. Only a 2xx from upstream is cached at the edge.
+// cached; a found movie is cached for a day, a movie no source knows for an hour. No D1, no KV, no model. Only a 2xx from upstream is cached at the edge.
 import { cleanTitle, cleanYear, pickItunes, legalArchive, pickFile, archiveFileUrl, watchLinks, normTitle, WIKIDATA, wikidataQuery, pickWikidata } from '../../lib/movies.js';
 const UA = { 'user-agent': 'Verse/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
 async function getJson(u, ms = 5000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(u, { headers: UA, signal: c.signal, cf: { cacheTtlByStatus: { '200-299': 86400, '300-599': 0 } } }); if (!r.ok) throw new Error('upstream ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
-const reply = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': o.unreachable ? 'no-store' : 'public, max-age=86400' } });
+const reply = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': o.unreachable ? 'no-store' : o.verified === false ? 'public, max-age=3600' : 'public, max-age=86400' } });
 const FAIL = Symbol('unreachable');
 
 export async function lookup(title, year, get = getJson) {
