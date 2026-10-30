@@ -42,6 +42,13 @@ function start(wf, input, id) {
   gh(...a);
 }
 
+async function coderBudget() {
+  try {
+    const r = await fetch(API.replace(/\/api\/queue$/, '/api/coder'), { headers: { 'user-agent': 'a2m-conductor/1' }, signal: AbortSignal.timeout(15000) });
+    return r.ok ? await r.json() : null;
+  } catch (_) { return null; }
+}
+
 async function tick() {
   const now = Date.now(), day = new Date(now).toISOString().slice(0, 10);
   const state = (() => { try { return JSON.parse(fs.readFileSync(STATE, 'utf8')); } catch (_) { return {}; } })();
@@ -63,6 +70,9 @@ async function tick() {
   // the kill switch is a file in the repository the clock checks out each tick (domains/verse-loop.pause): while it exists the coder takes no job
   const paused = fs.existsSync('domains/verse-loop.pause');
   for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].paused = paused;
+  // the coder's free model budget (GET /api/coder: counts only). Full: the coder is not started until room comes back; unknown: started as before
+  const budget = await coderBudget();
+  if (budget && budget.room === false) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = { until: budget.until };
   const p = plan({ jobs, wf, handed, now });
   const done = { started: [], requeued: [], setAside: [], healed: [], probe: false };
   const act = async (label, fn) => { if (DRY) return true; try { return await fn(); } catch (e) { warn(label + ': ' + String(e.message || e).slice(0, 120)); return false; } };
@@ -101,13 +111,13 @@ async function tick() {
   if (willDue({ exists: will.exists, busy: will.busy, lastRunMs: will.last, now }) && await act('will', async () => { start('will.yml'); return true; })) done.will = true;
   // nothing for the coder to take from the queue: a lap of the Verse loop (red checks, the top of docs/NEXT.md, grooming) at most hourly
   const lapWf = wf[LAP] || {}, lapRuns = runs[LAP] || [];
-  if (lapDue({ exists: lapWf.exists, busy: lapWf.busy || (wf[AGENT] || {}).busy, started: done.started.some((s) => s.wf === AGENT), paused, lastRunMs: lapWf.last, now })
+  if (lapDue({ exists: lapWf.exists, busy: lapWf.busy || (wf[AGENT] || {}).busy, started: done.started.some((s) => s.wf === AGENT), paused, noModel: !!lapWf.noModel, lastRunMs: lapWf.last, now })
     && await act('verse-loop', async () => { start(LAP); return true; })) done.lap = true;
   void lapRuns;
   // the site's own clock (void-tick.yml, a chain like this one) is started again when no run of it is going or waiting
   const siteClock = runsOf('void-tick.yml');
   if (siteClock && !siteClock.some((x) => BUSY.has(x.status)) && await act('void-tick', async () => { start('void-tick.yml'); return true; })) done.revived = ['void-tick.yml'];
-  return finish({ ...state, handed }, now, { open: jobs.length, held: p.held, wf, done });
+  return finish({ ...state, handed }, now, { open: jobs.length, held: p.held, wf, done, coder: budget });
 }
 
 function finish(state, now, t) {
@@ -119,7 +129,7 @@ function finish(state, now, t) {
     setAside: ticks.reduce((n, x) => n + (x.setAside || 0), 0), probes: ticks.filter((x) => x.probe).length, errors: ticks.filter((x) => x.error).length };
   const broken = t ? Object.entries(t.wf).filter(([, s]) => s.exists && s.fails >= 3).map(([f, s]) => ({ wf: f, fails: s.fails, url: s.url })) : (state.broken || []);
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
-    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), handed: state.handed || {}, ticks };
+    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
   const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',

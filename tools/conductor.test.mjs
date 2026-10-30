@@ -147,3 +147,13 @@ test('a paid member\'s idea goes before every free job however old, a repair bef
   assert.deepEqual(plan({ jobs: [member], wf: all({ [AGENT]: { today: 60 } }), now: NOW }).start.map((s) => s.id), ['m1'], 'one run a tick all day');
   assert.equal(FIRST.versus, undefined, 'free jobs keep their score order');
 });
+
+test('a coder with no free model calls left is not started (no run spent on "no model answered"); it says until when; the rest go on', () => {
+  const jobs = [job('w1', 'will:paint'), job('p1', 'probe:q')];
+  const p = plan({ jobs, wf: all({ [AGENT]: { noModel: { until: '2026-10-27T00:00:00.000Z' } } }), now: NOW });
+  assert.ok(!p.start.some((s) => s.wf === AGENT));
+  assert.ok(p.held.some((h) => h.id === 'w1' && /free model calls until 00:00 UTC/.test(h.why)));
+  assert.equal(p.start.find((s) => s.wf === 'propose-fix.yml').id, 'p1');
+  const base = { exists: true, busy: false, started: false, paused: false, lastRunMs: NOW - 2 * H, now: NOW };
+  assert.equal(lapDue({ ...base, noModel: true }), false, 'no lap either');
+});

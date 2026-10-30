@@ -122,8 +122,8 @@ export function willDue({ exists, busy, lastRunMs, now }) {
 }
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
-export function lapDue({ exists, busy, started, paused, lastRunMs, now }) {
-  return !!exists && !busy && !started && !paused && now - (lastRunMs || 0) >= LAP_EVERY_H * H;
+export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {
+  return !!exists && !busy && !started && !paused && !noModel && now - (lastRunMs || 0) >= LAP_EVERY_H * H;
 }
 
 /**
@@ -161,6 +161,8 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
     if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    // the coder's free model calls are used up (functions/api/coder.js GET): a run now ends "no model answered" and spends one of the day's runs
+    if (s.noModel) { out.held.push({ id: j.id, why: 'Verse\'s coder has used its free model calls' + (s.noModel.until ? ' until ' + String(s.noModel.until).slice(11, 16) + ' UTC' : '') }); continue; }
     if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;
     if (broken(r.wf) && kindOf(j.target) !== 'heal') { out.held.push({ id: j.id, why: r.wf + ' is broken (' + s.fails + ' failed runs); its repair is queued' }); continue; }
     if ((s.today || 0) >= r.cap) { out.held.push({ id: j.id, why: r.wf + ' reached its ' + r.cap + ' runs today' }); continue; }
