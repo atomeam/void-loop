@@ -3,7 +3,7 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
-import { writeVideo, writeStill, soundOf48, encodeSound, drawOver } from '/lib/video-write.js';
+import { writeVideo, writeStill, writeSplit, soundOf48, encodeSound, drawOver } from '/lib/video-write.js';
 import { flac, alacFile, opusFile, m4aFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
@@ -15,9 +15,9 @@ const make = (tag, props = {}, ...kids) => { const e = document.createElement(ta
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip' };
+const ACCEPT = { sound: SND + ',video/*', video: VID, 'video+video': VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', 'picture+picture?': 'image/*', epub: 'application/epub+zip,.epub', cbz: '.cbz,.cbr,application/vnd.comicbook+zip,application/zip' };
 // how many files a tool needs, and what to say about them
-const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'] };
+const NEED = { 'video+video': [2, ' Pick 2 videos: the first you pick is Video 1, the second Video 2.'], 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'], 'picture+picture?': [1, ' Pick 1 or more pictures; for a picture mark, pick the mark too.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
@@ -120,6 +120,7 @@ function videoOpts(vop, o) {
     'gif-video': () => [field('See-through parts become', colour('bcol', '#ffffff'))],
     'pictures-video': () => [field('Seconds for each picture', num('each', 2, 'any', 0.1, 600))],
     'pdf-video': () => [field('Seconds for each page', num('each', 3, 'any', 0.1, 600))],
+    split: () => [field('Layout', pick('slay', [['lr', 'Left and Right'], ['tb', 'Top and Bottom']], 'lr')), field('Duration', pick('slen', [['longest', 'The longer video'], ['1-loop', 'Video 1 (Video 2 plays again)'], ['2-loop', 'Video 2 (Video 1 plays again)'], ['1-hold', 'Video 1 (Video 2 plays once)'], ['2-hold', 'Video 2 (Video 1 plays once)']], 'longest')), field('Sound', pick('ssnd', [['mix', 'Both, mixed'], ['1', 'Video 1'], ['2', 'Video 2']], 'mix'))],
     transition: () => [field('Options', pick('tmode', [['join', '2 Files'], ['start', '1 File (Start)'], ['end', '1 File (End)'], ['both', '1 File (Start & End)']], 'join')), field('Transition', pick('tkind', TRANSITIONS.map((x) => [...x]), 'fade')), field('Duration (seconds, 1-10)', num('tsec', 3, 'any', 1, 10))],
   }[vop];
   o.append(...(f ? f() : []), field('Save as', pick('vfmt', VIDEO_OUT.map((x) => [x, x.toUpperCase()]), 'mp4')), QUALITY(vop === 'compress' ? 'small' : 'medium'));
@@ -428,6 +429,11 @@ async function runVideo(t, list, taken, add, fail, say) {
     }
     for (const { f } of vids) { const w = 'Adding ' + name + ' to ' + f.name; say(w); try { add(result(f.name, 'with transition', await writeVideo(f, { container: ext, quality: q, transition: { kind, seconds, mode }, onProgress: progress(w) }))); } catch (e) { fail(f, e); } }
     return;
+  }
+  if (v === 'split') {
+    if (vids.length < 2) throw new Error('pick 2 videos: the first you pick is Video 1.');
+    const w = 'Putting ' + vids[0].f.name + ' and ' + vids[1].f.name + ' on one screen'; say(w);
+    add(result(vids[0].f.name, 'split screen', await writeSplit([vids[0].f, vids[1].f], { container: ext, quality: q, layout: $('slay').value, length: $('slen').value, sound: $('ssnd').value, onProgress: progress(w) }), vids.length > 2 ? [(vids.length - 2) + ' more video' + (vids.length === 3 ? '' : 's') + ' not used: a split screen takes 2'] : [])); return;
   }
   if (v === 'merge') { const w = 'Joining ' + vids.length + ' videos'; say(w); add(result(vids[0].f.name, 'joined', await writeVideo(vids.map((x) => x.f), { container: ext, quality: q, onProgress: progress(w) }), [vids.length + ' videos one after another'])); return; }
   // one video with a second file: a sound, or a picture

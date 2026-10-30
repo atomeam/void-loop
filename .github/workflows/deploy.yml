@@ -318,3 +318,46 @@ jobs:
           echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
       - name: node --test tools/members-paid.e2e.mjs (Already joined, after a reload, the idea box)
         run: node --test tools/members-paid.e2e.mjs
+
+  # The page-to-page hand-offs (tools/handoff-e2e.mjs: BPM counter and metronome, chord finder and piano, calendar, time and weather)
+  # played in a real browser on a PR that changes one of those pages or the hand-off code (2026-10-30: until now nothing in CI ran them,
+  # so a broken hand-off only showed when a person used it). Its own job, like members-paid: a red here fails "Verse deploy" and holds the merge.
+  handoffs:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-handoffs-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Does this PR touch a hand-off?
+        id: touch
+        run: |
+          if git diff --name-only HEAD^1 HEAD | grep -Eq 'void-live-deploy/(bpm|metronome|chords|piano|calendar|time|weather)/|handoff'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "### No hand-off page changed: journeys not played" >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/setup-node@v4
+        if: steps.touch.outputs.run == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.touch.outputs.run == 'true'
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        if: steps.touch.outputs.run == 'true'
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        if: steps.touch.outputs.run == 'true'
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium
+        if: steps.touch.outputs.run == 'true'
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: node tools/handoff-e2e.mjs (every hand-off journey, step by step)
+        if: steps.touch.outputs.run == 'true'
+        run: node tools/handoff-e2e.mjs

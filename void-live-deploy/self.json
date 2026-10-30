@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T09:47:45Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T09:45:50Z",
    "subject": "Unit converter pages: write the SEO block the table gives them"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T08:34:28Z",
    "subject": "Incident: the browser suite failed on e89cf175 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:23:36Z",
-   "subject": "Incident: the browser suite failed on 8491640e (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

@@ -261,7 +261,7 @@
   $('evlink').addEventListener('click', async () => { const ms = eventMs() ?? evShown; if (ms === null) return; try { await navigator.clipboard.writeText(eventLink(ms)); const w = $('evlink').textContent; $('evlink').textContent = 'Copied'; setTimeout(() => { $('evlink').textContent = w; }, 1200); } catch (_) {} });
   $('d1').value = todayIso(); { const t = new Date(Date.parse(todayIso() + 'T00:00:00Z') + 30 * 86400000); $('d2').value = t.toISOString().slice(0, 10); }
   for (const id of ['d1', 'd2', 'bn']) $(id).addEventListener('input', drawDates);
-  drawAll(); drawDates();
+  drawAll(); drawDates(); if (evShown !== null) $('event').scrollIntoView({ block: 'start' }); // a link that carries ?at= (the calendar's event) opens on that moment
   setInterval(() => { drawTop(); if (new Date().getSeconds() === 0) drawClocks(); }, 1000);
   mountRelated(document.getElementById('related'), '/time/', [], { card: () => timeAsk(main, places) });
 </script>

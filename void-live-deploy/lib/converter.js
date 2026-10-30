@@ -42,7 +42,7 @@ export const CATALOG = Object.freeze([
   vid('Video', 'Compress Video', 'compress', 'A smaller file: a lower bit rate and, if you pick it, fewer pixels. It says how much smaller the file became.'),
   vid('Video', 'Cut Video', 'cut', 'Keeps the video from one second to another, with its sound.'),
   vid('Video', 'Increase Video Volume', 'gain', 'Makes the sound of a video louder or quieter by a number of decibels, with a count of clipped samples.'),
-  tool('Video', 'Make Split Screen Video', 'no', { note: 'Not on Verse yet: Verse plays and codes one video at a time, so it does not put two side by side yet.' }),
+  vid('Video', 'Make Split Screen Video', 'split', 'Plays 2 videos at once, side by side or one above the other, as one video: the first you pick is Video 1. You pick how long it runs (the longer video, or Video 1 or 2 with the other played again or held) and whose sound it has.', { from: 'video+video' }),
   vid('Video', 'Merge Video', 'merge', 'Plays 2 or more videos one after another, in the order you pick them, as one video the size of the first.', { many: true }),
   tool('Video', 'Repair MP4', 'no', { note: 'Not on Verse yet: Verse reads a video through the browser, which cannot open a broken MP4; a repair rebuilds the index from the raw data, which Verse does not do.' }),
   vid('Video', 'Resize Video', 'resize', 'Makes the video the width you set; the height follows, so the shape stays.'),

@@ -3992,9 +3992,9 @@
    "title": "Book",
    "line": "A book or an author from Open Library",
    "examples": [
-    "books by octavia butler",
-    "book called dune",
-    "isbn 9780441172719"
+    "who wrote pride and prejudice",
+    "who is the author of dune",
+    "books by octavia butler"
    ],
    "tier": "proven",
    "why": "a self-test, 6 real asks in the benchmark",
@@ -7423,8 +7423,8 @@
    "line": "The Verse Book as a real book",
    "card": "Book",
    "examples": [
-    "books by octavia butler",
-    "book called dune"
+    "who wrote pride and prejudice",
+    "who is the author of dune"
    ],
    "owner": "book",
    "ownerPage": 209,
@@ -9120,7 +9120,7 @@
     {
      "rank": 120,
      "name": "book",
-     "catches": "books by octavia butler"
+     "catches": "who wrote pride and prejudice"
     }
    ],
    "n": 465
