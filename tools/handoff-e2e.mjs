@@ -87,7 +87,7 @@ export const JOURNEYS = {
     if (!/^\/stopwatch\/\?t=\d+%20minutes$/.test(cd)) throw new Error('"Countdown to the next event" goes to "' + cd + '"');
     await check('"Weather that day" on ' + soon + ' carries Lisbon and the countdown counts to the event');
   },
-  'work out a flight, see its landing in both cities on the time page, the weather where it lands, and add it to the calendar': async (p, check) => {
+  'work out a flight, see its landing in both cities on the time page, the weather and the local radio and TV where it lands, and add it to the calendar': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
     await open(); await check('the flights page worked out JFK to LHR');
     const at = new URL(await p.locator('#fa-time').getAttribute('href'), ORIGIN).searchParams.get('at'), want = await p.evaluate(() => import('/lib/flights-core.js').then((C) => new Date(C.legFacts({ lat: 40.6413, lon: -73.7781, tz: 'America/New_York' }, { lat: 51.47, lon: -0.4543, tz: 'Europe/London' }, '2026-11-20T19:00').arrUtc).toISOString().replace(/\.000Z$/, 'Z')));
@@ -99,10 +99,28 @@ export const JOURNEYS = {
     await open(); await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#fa-weather').click()]); await p.waitForSelector('#q');
     if (!/^London\b/.test(await p.locator('#q').inputValue())) throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not London');
     await check('the weather page opened on London');
+    await open(); await Promise.all([p.waitForURL(/\/local\/\?place=/), p.locator('#fa-local').click()]); await p.waitForSelector('#q');
+    const here = new URL(p.url()).searchParams;
+    if (!/^London\b/.test(await p.locator('#q').inputValue()) || here.get('cc') !== 'GB' || !/^51\.4\d*,-0\.4\d*$/.test(here.get('ll') || '')) throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '" at ' + p.url() + ', not London at Heathrow');
+    await check('the local radio and TV page opened at Heathrow, London');
     await open(); await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#fa-cal').click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
     await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
+  },
+  'pick two players on the fantasy page, spin them on the wheel, and pick one of the draft board at random': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/fantasy/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); await p.locator('#example').click(); await p.waitForSelector('.pick button'); await check('the fantasy page opened the example sheet');
+    for (const n of ['Cy Dee', 'Ann Lee']) await p.locator('.pick button', { hasText: n }).first().click();
+    await Promise.all([p.waitForURL(/\/wheel\/#/), p.locator('#related a', { hasText: 'Spin these players on the wheel' }).click()]); await p.waitForSelector('#entries');
+    const wheel = (await p.locator('#entries').inputValue()).split('\n').map((x) => x.trim()).filter(Boolean);
+    if (wheel.join('|') !== 'Cy Dee|Ann Lee') throw new Error('the wheel opened with "' + wheel.join(', ') + '", not the two picked players');
+    await check('the wheel opened with Cy Dee and Ann Lee');
+    await open(); await p.locator('#example').click(); await p.waitForSelector('.pick button');
+    await Promise.all([p.waitForURL(/\/random\/\?list=/), p.locator('#related a', { hasText: 'Pick one of these players at random' }).click()]); await p.waitForSelector('#list');
+    const list = (await p.locator('#list').inputValue()).split('\n');
+    if (list.length !== 8 || list[0] !== 'Cy Dee') throw new Error('the random page opened with ' + list.length + ' names starting "' + list[0] + '", not the 8 players of the board best first');
+    await check('the random page opened with the 8 players of the draft board, Cy Dee first');
   },
 };
 
