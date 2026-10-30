@@ -5,8 +5,10 @@
 // pages were opened, when, on which deploy and how; a page is "broken" only for something it was seen to do, never for something guessed.
 // Pure: no fetch, no DOM. Tests: tools/selfcheck.test.mjs.
 
-// pages that are not tools, so a missing "Use with" row (lib/toolkit.js mountRelated, .tk-row) is not a gap on them
-export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html']);
+// pages that are not tools, so a missing "Use with" row (lib/toolkit.js mountRelated, .tk-row) is not a gap on them: the stage, Verse's own
+// pages, articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which link to each other instead
+export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/members/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
+  '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/full-stack-audit/', '/keep-it-running/', '/one-time-fix/']);
 export const KINDS = Object.freeze({
   status: 'does not open', script: 'script error', request: 'a file or API it needs fails', empty: 'shows nothing', light: 'light page (off design)',
   link: 'dead link', wording: 'wording', unwired: 'not wired into the tools',
@@ -25,16 +27,17 @@ export function luminance(css) {
 // "fight" went (owner, 2026-10-29: "verse doesnt fight any sight ... its assimilate"); the old name V01D never shows to a person (AGENTS.md)
 const WORDING = [[/\bfight(?:s|ing)?\b/i, 'says "fight": Verse assimilates'], [/\bV01D\b/, 'says the old name V01D']];
 const clip = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, WHY_MAX);
-const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/lab\//.test(path);
+const tool = (path) => !NOT_TOOLS.includes(path) && !/^\/(?:lab|fix)\//.test(path);
 
-/** What one page was seen to do wrong: [{ kind, why }]. seen: { path, status, errors[], failed[{ url, status }], text, bg, toolRow, deadLinks[] }
+/** What one page was seen to do wrong: [{ kind, why }]. seen: { path, status, errors[], failed[{ url, status }], text, controls, bg, toolRow, deadLinks[] }
  *  as tools/self-check.mjs read it from the rendered page. Pure. */
 export function pageProblems(seen) {
   const s = seen || {}, out = [], add = (kind, why) => out.push({ kind, why: clip(why) });
   if (!(s.status >= 200 && s.status < 400)) { add('status', 'answers ' + (s.status || 'nothing')); return out; }
   for (const e of (s.errors || []).slice(0, 2)) add('script', e);
   for (const f of (s.failed || []).slice(0, 3)) add('request', (f.status || 'no answer') + ' ' + f.url);
-  if (String(s.text || '').replace(/\s+/g, '').length < 20) add('empty', 'under 20 characters of text after it loaded');
+  // a page made of a box to type in, a canvas or a picture is not empty (the front page is one prompt: "Command the Verse")
+  if (String(s.text || '').replace(/\s+/g, '').length < 20 && !(s.controls > 0)) add('empty', 'under 20 characters of text and nothing to type in, press or see after it loaded');
   const l = luminance(s.bg); if (l !== null && l > 0.5) add('light', 'background ' + s.bg);
   for (const u of (s.deadLinks || []).slice(0, 3)) add('link', u.status + ' ' + u.url);
   for (const [re, why] of WORDING) { const m = String(s.text || '').match(new RegExp('.{0,40}' + re.source + '.{0,40}', re.flags)); if (m) add('wording', why + ': "' + m[0].trim() + '"'); }

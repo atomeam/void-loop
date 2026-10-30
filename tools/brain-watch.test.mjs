@@ -77,9 +77,51 @@ test('the host reads GitHub and /incidents.json, logs the breaks with its picks,
   h.stop();
 });
 
+// the shapes /api/will and /api/team answer with (functions/api/will.js GET, functions/api/team.js GET), cut to what the watch reads
+const WILL = { wants: [{ title: 'Offer its proven skills as MCP tools too', because: 'It lets Verse work inside other AIs.' }],
+  lastRun: { title: 'Overhaul surface:ask', state: 'queued', tries: 2, shipped: false, pr: null, why: 'idle: no model answered (workers-ai 401)' },
+  lap: { tower: { line: 'Versus: now onlineconverter.com (Verse ahead on 0 of 12 aspects), 0 surpassed', floor: 1, floors: 1270, beaten: 0 } } };
+const TEAM = { ok: true, waiting: 86, members: [{ name: 'Vibe', state: 'away' }, { name: 'ClaudeDuet', state: 'away' }] };
+
+test('what Verse decided is read from its will: a will run stuck after 2 tries and jobs with no agent here are breaks', () => {
+  const o = W.observe({ will: WILL, team: TEAM }, NOW);
+  assert.deepEqual(o.map((x) => [x.key, x.ok]), [['will', false], ['team', false]]);
+  assert.match(o[0].what, /stuck on "Overhaul surface:ask"/); assert.match(o[0].why, /2 tries, nothing shipped; the last said: idle: no model answered/);
+  assert.equal(o[1].what, '86 jobs wait on the team and no agent is here'); assert.match(o[1].why, /2 agents are on the team, all away/);
+  const ok = W.observe({ will: { lastRun: { ...WILL.lastRun, tries: 1 } }, team: { ...TEAM, members: [{ name: 'Vibe', state: 'here' }] } }, NOW);
+  assert.deepEqual(ok.map((x) => x.ok), [true, true], 'one try, or an agent here, is no break');
+  assert.deepEqual(W.observe({ will: {}, team: { waiting: 'x' } }), [], 'nothing read, nothing claimed');
+  const w = W.createWatch(); W.takeIn(w, o, NOW); assert.deepEqual(W.focusOf(w), ['wants', 'tower', 'team-chat']);
+});
+
+test('a new decision is an action in the log once, with what Verse wants next, why, and the site it is assimilating; it is kept', () => {
+  const d = W.decisionOf(WILL);
+  assert.deepEqual(d, { want: 'Offer its proven skills as MCP tools too', because: 'It lets Verse work inside other AIs.', site: 'onlineconverter.com', tower: WILL.lap.tower.line });
+  const w = W.createWatch(), a = W.decide(w, d, NOW);
+  assert.equal(a.kind, 'decided'); assert.equal(a.what, 'Verse decided next: "Offer its proven skills as MCP tools too"'); assert.match(a.why, /other AIs\.; Versus: now onlineconverter\.com/);
+  assert.equal(W.decide(w, W.decisionOf(WILL), NOW + 1), null, 'the same decision is not news');
+  assert.equal(W.decide(w, W.decisionOf({ ...WILL, wants: [{ title: 'Something else' }] }), NOW + 2).what, 'Verse decided next: "Something else"');
+  assert.equal(W.decisionOf(null), null); assert.equal(W.decisionOf({ wants: 3 }), null);
+  const w2 = W.createWatch(); assert.ok(W.loadWatch(w2, JSON.parse(JSON.stringify(W.watchOf(w)))));
+  assert.equal(w2.next.want, 'Something else'); assert.deepEqual(w2.log.map((x) => x.kind), ['decided', 'decided']);
+  assert.equal(W.dismiss(w, a.id), false, 'a decision is not a break to mark seen');
+});
+
+test('the host reads /api/will and /api/team in the same look and keeps the decision', async () => {
+  const body = (j) => ({ ok: true, json: async () => j });
+  const fetchFn = async (u) => (u === '/api/will' ? body(WILL) : u === '/api/team' ? body(TEAM) : { ok: false, status: 404 });
+  const h = startHost({ win: null, doc: null, ticking: false, bridge: false, fetch: fetchFn, store: { loadKept: async () => null, keep: async () => true } });
+  await h.ready; const r = await h.watchNow();
+  assert.deepEqual(r.breaks.map((b) => b.key).sort(), ['team', 'will']); assert.ok(r.news.some((n) => n.kind === 'decided'));
+  assert.equal(h.decision().site, 'onlineconverter.com');
+  assert.equal(h.route('show my wants', ['status', 'wants']).pick, 'wants', 'a stuck will pulls toward the skill that answers for it');
+  h.stop();
+});
+
 test('/brain/ shows the breaks it sees with a Look now button, and each break in its log can be marked seen', () => {
   const page = read('void-live-deploy/brain/index.html'), app = read('void-live-deploy/brain/app.js'), host = read('void-live-deploy/lib/brain-host.js');
   assert.match(page, /id="watchBox"/); assert.match(page, /id="lookBtn"/); assert.match(page, /id="breaks"/);
+  assert.match(page, /id="next"/); assert.match(app, /host\.decision\(\)/); assert.match(app, /a\.kind === 'decided'/);
   assert.match(app, /host\.dismiss\(a\.id\)/); assert.match(app, /host\.undismiss\(a\.id\)/); assert.match(app, /\['Watch', /);
   assert.match(host, /setTimeout\(\(\) => host\.ready\.then\(look\), 20000\)/); assert.match(host, /doc\.visibilityState === 'hidden'\) return; if \(Watch\.due/);
 });

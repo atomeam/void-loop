@@ -550,12 +550,24 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T04:30:32Z",
-   "subject": "self.json: regenerated after the merge"
+   "at": "2026-10-30T04:33:09Z",
+   "subject": "Use with row on /is-it/ pages; the services pages and articles are not tools"
   },
   {
-   "at": "2026-10-30T04:27:26Z",
-   "subject": "map: the team live check (tools/team-live.mjs, team-live.yml)"
+   "at": "2026-10-30T04:32:23Z",
+   "subject": "Verse Brain reads what Verse decided: its will and its team"
+  },
+  {
+   "at": "2026-10-30T04:31:26Z",
+   "subject": "Deep space on every page, and the breaks the self-check found"
+  },
+  {
+   "at": "2026-10-30T04:28:10Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:27:53Z",
+   "subject": "Recipes card shows the recipe open on the page"
   },
   {
    "at": "2026-10-30T04:26:57Z",
@@ -610,24 +622,12 @@
    "subject": "Join card: a rate limit for /api/joins, the community line after the will's line"
   },
   {
-   "at": "2026-10-30T04:21:12Z",
-   "subject": "/team/: the owner's lost #work post goes on the queue (do: queue); the live check (tools/team-live.mjs, team-live.yml); one owner check"
-  },
-  {
    "at": "2026-10-30T04:20:58Z",
    "subject": "deps.json: count functions/api/holidays.js"
   },
   {
    "at": "2026-10-30T04:19:05Z",
    "subject": "converter: write MOV and MKV, and 15 video edits on the device"
-  },
-  {
-   "at": "2026-10-30T04:19:03Z",
-   "subject": "Versus heycolor.com: keep the journey, drop the paint row from the PDF table"
-  },
-  {
-   "at": "2026-10-30T04:18:37Z",
-   "subject": "Holidays: the page asks Verse's own address, Verse asks Nager.Date"
   }
  ],
  "builders": {
