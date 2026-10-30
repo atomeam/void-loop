@@ -135,7 +135,10 @@ test('the asks that reach the pages', () => {
   assert.equal(o('flights to lisbon'), '/flights/?toq=lisbon'); assert.equal(o('cheap flights'), '/flights/'); assert.equal(o('flights from london to paris'), '/flights/?fromq=london&toq=paris'); assert.equal(o('flights to lisbon from new york'), '/flights/?fromq=new%20york&toq=lisbon');
   assert.equal(o('flight time london new york'), '/flights/time/?fromq=london&toq=new%20york'); assert.equal(o('how long is the flight from paris to tokyo'), '/flights/time/?fromq=paris&toq=tokyo'); assert.equal(o('distance from london to new york'), '/flights/distance/?fromq=london&toq=new%20york');
   assert.equal(o('airport codes'), '/flights/airports/'); assert.equal(o('layover calculator'), '/flights/trip/'); assert.equal(o('flight co2 calculator'), '/flights/co2/'); assert.equal(o('great circle map'), '/flights/map/');
-  for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo']) assert.equal(o(no), '', no);
+  assert.equal(o('flight distance'), '/flights/distance/'); assert.equal(o('where can i fly'), '/flights/routes/'); assert.equal(o('where can i fly from berlin'), '/flights/routes/?fromq=berlin');
+  assert.equal(o('destinations from lisbon'), '/flights/routes/?fromq=lisbon'); assert.equal(o('airports within 3 hours of london'), '/flights/routes/?fromq=london'); assert.equal(o('nonstop destinations'), '/flights/routes/');
+  for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo', 'destinations', 'where can i fly a drone']) assert.equal(o(no), '', no);
+  for (const s of FLIGHT_SITES) assert.notEqual(o(s.card), '', 'the stage ask of ' + s.path + ' is a flight ask: ' + s.card);
 });
 test('coastlines: the encoder and the decoder agree, the file is small, and the map draws them under the route', async () => {
   const { linesOf, encodeLine, varint, Q } = await import('./coast-build.mjs'), { COAST, COAST_Q } = await import('../void-live-deploy/lib/flights-coast.js');
@@ -157,6 +160,10 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
   const skill = (await import('../void-live-deploy/skills/flights.js')).default;
   for (const a of ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes']) assert.ok(skill.match(a), a);
   for (const a of ['distance from london to new york', 'fly to tokyo', 'my flight is delayed']) assert.ok(!skill.match(a), a);
+  for (const a of ['flight distance', 'where can i fly', 'great circle map']) assert.ok(skill.match(a), a);
+  const names = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8')), mods = [];
+  for (const n of names) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; mods.push(...(sk.family ? sk.members : [sk])); }
+  for (const s of FLIGHT_SITES) { const k = mods.find((m) => m.match(s.card.toLowerCase(), s.card)); assert.equal(k && k.name, 'flights', 'the stage gives the card ask of ' + s.path + ' to the flights card: ' + s.card); }
   let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
   assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/');
 });
