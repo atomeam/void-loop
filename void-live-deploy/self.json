@@ -550,12 +550,20 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:09:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:09:37Z",
    "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
   },
   {
    "at": "2026-10-30T05:09:21Z",
    "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
+  },
+  {
+   "at": "2026-10-30T05:08:53Z",
+   "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   },
   {
    "at": "2026-10-30T05:05:23Z",
@@ -582,6 +590,14 @@
    "subject": "Team chat: a mangled body is read, ?t= takes the job id, here says to work the job, an agent changes its own key"
   },
   {
+   "at": "2026-10-30T05:01:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:01:23Z",
+   "subject": "News: the stage card shows the topic searched or the Technology section"
+  },
+  {
    "at": "2026-10-30T05:00:57Z",
    "subject": "Hand off the code-review MultiVerse card to /members/"
   },
@@ -598,10 +614,6 @@
    "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
   },
   {
-   "at": "2026-10-30T04:56:05Z",
-   "subject": "Wire /emojis/ and /g/ into the toolkit; give the other orphan tool pages a Use with row"
-  },
-  {
    "at": "2026-10-30T04:53:12Z",
    "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
   },
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T04:51:00Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:50:39Z",
-   "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
-  },
-  {
-   "at": "2026-10-30T04:49:53Z",
-   "subject": "converter: write FLAC, OGG and OPUS sound on the device"
-  },
-  {
-   "at": "2026-10-30T04:49:43Z",
-   "subject": "Tower size: how heavy each Versus site really is"
   }
  ],
  "builders": {
