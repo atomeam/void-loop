@@ -33,11 +33,23 @@ const TABLES = [
   "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];
 // The account's tier. Fails closed: a missing row, an unknown value or any read error is 'free' (never paid by accident).
+// The owner is always a member: an account with a passkey the owner bound with the key itself (void_owner_passkeys) is 'paid',
+// with no sale, receipt or form. Only READ_TOKEN can bind such a passkey (/api/passkey 'owner-bind').
 export async function tierOf(env, userId) {
   try {
     const row = await env.DB.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').bind(userId).first();
-    return row && row.tier === 'paid' ? 'paid' : 'free';
-  } catch (_) { return 'free'; }
+    if (row && row.tier === 'paid') return 'paid';
+  } catch (_) { /* fall through to the owner check */ }
+  return (await isOwner(env, userId)) ? 'paid' : 'free';
+}
+// True only when this account holds an owner-bound passkey. Any read error is false.
+export async function isOwner(env, userId) {
+  if (!userId) return false;
+  try {
+    // void-review: ok (bound parameter)
+    const row = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first();
+    return !!(row && row.y);
+  } catch (_) { return false; }
 }
 const made = new WeakMap();
 export function ensureTables(env) {
