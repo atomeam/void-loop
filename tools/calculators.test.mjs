@@ -106,6 +106,10 @@ test('the stage card with the asker\'s own numbers: the epoch, percent-encoding 
   assert.deepEqual(f('compound interest 1000 at 5% for 10 years'), ['compound-interest', { P: '1000', r: '5', t: '10', 't.u': 'yr' }]);
   assert.deepEqual(f('compound interest on $10k at 6% for 18 months compounded daily'), ['compound-interest', { P: '10000', r: '6', t: '18', 't.u': 'month', n: '365' }]);
   assert.deepEqual(f('simple interest on 5000 at 4% for 3 years'), ['simple-interest', { P: '5000', r: '4', t: '3', 't.u': 'yr' }]);
+  // the page's own sum answers these (void.html), so formulas leaves them: the same ask never gets two answers
+  for (const a of ['compound interest on 1000 at 5% for 10 years', 'compound interest on 1000 at 5% for 10 years monthly', 'compound interest on $2500 at 4.5% over 3 years']) {
+    assert.equal(f(a), null, a); assert.ok(!formulas.match(a, a), a);
+  }
   for (const a of ['simple interest 5000 at 4% for 3 years compounded daily', 'what is compound interest', 'unix', 'timestamp', '1700000000', 'call 1700000000', 'encode', 'compound interest']) assert.equal(f(a), null, a);
   for (const [a, id] of [['epoch converter', 'unix-time'], ['url encoder', 'url-encode'], ['roman numeral converter', 'roman-numerals'], ['days between dates', 'days-between'], ['date difference', 'days-between']]) assert.equal(pick(a).id, id, a);
   let html = '', page = ''; const api = { esc: (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]), showPage: (fn) => { const el = { dataset: {} }; fn(el); html = el.innerHTML; page = el.dataset.page; return el; } };
