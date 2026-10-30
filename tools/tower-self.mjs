@@ -123,7 +123,7 @@ export function validTexts(t, { host, baseText, fam }) {
 }
 /** the words a page gets when the model's are refused: its family page's own, so nothing is said that the page does not do. Pure. */
 /** text cut to `n` characters at the end of a sentence, never mid-sentence. Pure. */
-export const sentences = (t, n) => { const c = clip(t, 2000); if (c.length <= n) return c; const cut = c.slice(0, n), at = cut.lastIndexOf('. '); return at > n / 3 ? cut.slice(0, at + 1) : cut.replace(/[,;:]?\s+\S*$/, '') + '.'; };
+export const sentences = (t, n) => { const c = clip(t, 2000); if (c.length <= n) return c.replace(/[,;:]$/, '.'); const cut = c.slice(0, n), at = cut.lastIndexOf('. '); return at > n / 3 ? cut.slice(0, at + 1) : cut.replace(/[,;:]?\s+\S*$/, '') + '.'; };
 export const fallbackTexts = (fam) => ({ name: clip(fam.title || fam.label, 60), h1: clip(fam.title || fam.label, 70), intro: sentences(fam.does, 320), does: sentences(fam.does, 320), asks: (fam.asks || []).slice(0, 6), slug: '' });
 /** a free folder under the family's page for the row: the model's slug, else the family's own words, never one taken. Pure. */
 export function slugFor(want, fam, taken) {

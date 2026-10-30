@@ -47,7 +47,10 @@ export function withRelated(html, path) {
 export function moreTools(html) {
   const listed = new Set([...withoutBlock(html, MORE).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1].split('?')[0]));
   // MORE_PAGES: pages of their own that no tool row reaches yet, linked here so none is an orphan (tools/seo-audit.mjs); the stage card lists them too
-  const extra = [...Object.entries(TOOLS), ...MORE_PAGES].filter(([p], i, a) => p !== '/tools/' && !listed.has(p) && a.findIndex((x) => x[0] === p) === i);
+  // one line per name: a page Verse built twice for two sites (lib/self-sites.js, /convert/unit-converter/ and -2/) is one tool to a reader
+  const names = new Set([...withoutBlock(html, MORE).matchAll(/href="\/[^"]*">([^<]*)</g)].map((m) => m[1].toLowerCase()));
+  const extra = [...Object.entries(TOOLS), ...MORE_PAGES].filter(([p], i, a) => p !== '/tools/' && !listed.has(p) && a.findIndex((x) => x[0] === p) === i)
+    .filter(([, name]) => { const k = String(name).toLowerCase(); if (names.has(k)) return false; names.add(k); return true; });
   return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li><a href="' + esc(p) + '">' + esc(name) + '</a></li>').join('') + '</ul></section>';
 }
 /** on each paid page: the other things Verse does for people, each with its one plain line (lib/products.js), and the free fixes. Pure. */
