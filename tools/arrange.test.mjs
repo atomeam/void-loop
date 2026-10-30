@@ -65,7 +65,7 @@ function recorder() {
   const node = () => { const n = { connect() {}, frequency: param({}, 'f'), detune: { value: 0 }, Q: { value: 0 }, threshold: { value: 0 }, knee: { value: 0 }, ratio: { value: 0 }, attack: { value: 0 }, release: { value: 0 } }; n.gain = param(n, 'g'); return n; };
   const ctx = { sampleRate: RATE, destination: {}, createGain: node, createBiquadFilter: node, createDynamicsCompressor: node, createWaveShaper: node, createOscillator() { return { ...node(), start() {}, stop() {} }; },
     createBuffer: (c, n) => ({ getChannelData: () => new Float32Array(n) }), decodeAudioData: async (b) => ({ path: b.path, data: pcm(b.bytes) }),
-    createBufferSource() { const s = { playbackRate: { value: 1 }, connect(g) { s.g = g; }, start(at) { s.at = at; }, stop(t) { s.off = t; } }; sources.push(s); return s; } };
+    createBufferSource() { const s = { playbackRate: { value: 1 }, connect(g) { s.g = g; }, start(at) { s.at = at; }, stop(t) { if (s.at == null) throw new Error('InvalidStateError: stop() before start()'); s.off = t; } }; sources.push(s); return s; } };
   return { ctx, played: () => sources.filter((s) => s.buffer && s.buffer.path).map((s) => ({ path: s.buffer.path, data: s.buffer.data, at: s.at, rate: s.playbackRate.value, gain: s.g.g ?? s.g.gain.value, off: s.off })) };
 }
 test('a heavy song on the real instruments: every hit a recording, harder in the climax, the pad on the grand piano', async () => {
