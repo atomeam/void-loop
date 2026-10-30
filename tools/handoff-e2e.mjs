@@ -2,7 +2,7 @@
 // test them end to end). The pages are served from the files in void-live-deploy (the browser's requests are answered from disk; every
 // outside host is cut off), a person's steps are played, and after every step the page must hold no error, stub or placeholder.
 //   node tools/handoff-e2e.mjs        (VOID_TEST_BROWSER: the browser, default /usr/bin/google-chrome)
-import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url'; import zlib from 'node:zlib';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy'), ORIGIN = 'https://verse.test';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.webmanifest': 'application/manifest+json' };
@@ -17,6 +17,28 @@ function serve(r) {
   if (u.pathname.endsWith('/')) f = path.join(f, 'index.html');
   if (!fs.existsSync(f)) return r.fulfill({ status: 404, body: '' });
   return r.fulfill({ status: 200, contentType: TYPES[path.extname(f)] || 'application/octet-stream', body: fs.readFileSync(f) });
+}
+
+/** a one-page PDF with lines of text in Helvetica, built by hand with its byte offsets, so pdf.js can read the words back */
+function textPdf(lines) {
+  const body = 'BT /F1 18 Tf 72 720 Td 24 TL ' + lines.map((l) => '(' + l.replace(/[()\\]/g, '') + ') Tj T*').join(' ') + ' ET';
+  const objs = ['<< /Type /Catalog /Pages 2 0 R >>', '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+    '<< /Length ' + body.length + ' >>\nstream\n' + body + '\nendstream', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'];
+  let out = '%PDF-1.4\n'; const at = [];
+  objs.forEach((o, i) => { at.push(out.length); out += (i + 1) + ' 0 obj\n' + o + '\nendobj\n'; });
+  const x = out.length;
+  out += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n' + at.map((n) => String(n).padStart(10, '0') + ' 00000 n \n').join('') + 'trailer\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + x + '\n%%EOF\n';
+  return Buffer.from(out, 'latin1');
+}
+
+/** one file's text out of a zip (a .docx), read from its local headers; stored or deflated */
+function zipText(buf, name) {
+  for (let i = 0; i + 30 < buf.length; i++) if (buf.readUInt32LE(i) === 0x04034b50) {
+    const m = buf.readUInt16LE(i + 8), size = buf.readUInt32LE(i + 18), nl = buf.readUInt16LE(i + 26), xl = buf.readUInt16LE(i + 28), at = i + 30 + nl + xl;
+    if (buf.toString('latin1', i + 30, i + 30 + nl) === name) return (m === 8 ? zlib.inflateRawSync(buf.subarray(at, at + size)) : buf.subarray(at, at + size)).toString('utf8');
+  }
+  return '';
 }
 
 /** the journeys: each a list of steps on one page object; a step throws to fail */
@@ -259,6 +281,24 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('p.send a', { hasText: 'Resize it' }).click()]);
     await p.waitForFunction(() => /\d+\s*[×x]\s*\d+/.test(document.body.innerText) && !location.search, null, { timeout: 15000 });
     await check('the resize page opened the PDF page');
+  },
+  'rotate a PDF, then translate it: the translate page waits for the language and one press': async (p, check) => {
+    await p.goto(ORIGIN + '/pdf/?tool=rotate', { waitUntil: 'load' }); await p.waitForSelector('input.pick');
+    await p.locator('input.pick').setInputFiles({ name: 'hello.pdf', mimeType: 'application/pdf', buffer: textPdf(['Good morning', 'The shop opens at nine']) });
+    await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
+    await p.locator('button.go').click(); await p.waitForSelector('p.result a', { hasText: 'Translate it', timeout: 20000 });
+    await check('the PDF page rotated hello.pdf and offered to translate it');
+    await Promise.all([p.waitForURL(/\/translate\//), p.locator('p.result a', { hasText: 'Translate it' }).click()]);
+    await p.waitForSelector('#handed', { timeout: 15000 });
+    if (/doc=handoff/.test(p.url())) throw new Error('the address still asks for the PDF: ' + p.url());
+    await check('the translate page holds ' + (await p.locator('#handed').textContent()) + ' and waits for a press');
+    // a stand-in translator: each paragraph back in capitals, so the one-for-one split holds
+    let asked = 0; await p.route('**/api/translate', async (r) => { asked++; const b = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ json: { text: String(b.text).toUpperCase() } }); });
+    const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 30000 }), p.locator('#handed').click()]);
+    if (!/^hello-rotated\.[a-z-]+\.docx$/.test(dl.suggestedFilename())) throw new Error('the translation downloaded as ' + dl.suggestedFilename());
+    const doc = zipText(fs.readFileSync(await dl.path()), 'word/document.xml');
+    if (!doc.includes('GOOD MORNING') || !doc.includes('THE SHOP OPENS AT NINE')) throw new Error('the translated document does not hold the translated words: ' + doc.slice(0, 200));
+    await check('one press translated it (' + asked + ' request) into ' + dl.suggestedFilename() + ', which holds GOOD MORNING and THE SHOP OPENS AT NINE');
   },
   'pick a palette for a colour, then paint a picture by number in it, and go back to the picture’s own colours': async (p, check) => {
     await p.goto(ORIGIN + '/color/?c=e4572e', { waitUntil: 'load' }); await p.waitForSelector('#pals a');
