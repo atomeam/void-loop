@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: onlineconverter.com (https://onlineconverter.com/)
-- Verse: /converter/ (onlineconverter.com, tower gate 0 of 12)
+- Verse: /converter/ (onlineconverter.com, tower gate 10 of 12)
 - Live scan: not scanned yet
 - History: [docs/HISTORY/onlineconverter.com.md](../HISTORY/onlineconverter.com.md)
 
