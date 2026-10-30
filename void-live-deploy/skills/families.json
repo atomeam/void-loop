@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 2,
-  "checked": 16,
-  "proven": 359
+  "checked": 15,
+  "proven": 360
  },
  "families": [
   {
@@ -1625,8 +1625,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 4,
-    "proven": 38
+    "checked": 3,
+    "proven": 39
    },
    "sources": {
     "read": 24,
@@ -1634,10 +1634,8 @@
     "second": 13,
     "answered": 0,
     "points": 1.46,
-    "one_live_from_proven": [
-     "fact"
-    ],
-    "words": "Source reliability: 24 skills answer from outside sources; 22 name the source on the card, 13 have a second source, 0 have a kept live answer from it (1.46 of 3 on average). One kept live answer each would make 1 more proven: fact."
+    "one_live_from_proven": [],
+    "words": "Source reliability: 24 skills answer from outside sources; 22 name the source on the card, 13 have a second source, 0 have a kept live answer from it (1.46 of 3 on average)."
    },
    "skills": [
     {
@@ -1704,7 +1702,7 @@
     {
      "name": "movie",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1867,7 +1865,7 @@
     {
      "name": "news",
      "tier": "proven",
-     "why": "a self-test, 9 real asks in the benchmark",
+     "why": "a self-test, 11 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1907,7 +1905,7 @@
     {
      "name": "quote",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1925,11 +1923,12 @@
     },
     {
      "name": "fact",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-30",
      "streak": 5,
      "source": {
       "sites": [
@@ -1939,8 +1938,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet. One kept live answer from jsph.pl would make it proven"
+      "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet"
      }
     },
     {
@@ -1956,7 +1954,7 @@
     {
      "name": "magic8",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -1966,9 +1964,9 @@
     {
      "name": "recipe",
      "tier": "proven",
-     "why": "1 browser-suite mention, 9 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 11,
      "source": {
@@ -2003,7 +2001,7 @@
     {
      "name": "media-pick",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2043,7 +2041,7 @@
     {
      "name": "show",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2250,7 +2248,7 @@
     {
      "name": "morse",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-29",
      "last_tested_by": "its tests",
      "success_rate": 1,
