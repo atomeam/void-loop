@@ -38,10 +38,12 @@ export function searchAirports(idx, q, limit = 8) {
   if (/^[A-Z]{4}$/.test(up)) add(idx.byIcao.get(up), 98);
   const alias = ALIAS[f]; if (alias) return searchAirports(idx, alias, limit);
   const words = f.split(' ');
-  for (const [code, name] of Object.entries(METRO_NAME)) if (fold_(name).startsWith(f) && f.length >= 3) METRO[code].forEach((c, i) => add(idx.byIata.get(c), 90 - i * 0.5));
+  // "<city> <country>" (another page's ask, such as a game's ground) ranks like the bare city in that country.
+  const inCountry = (a, n) => f.startsWith(n + ' ') && !!a && fold_(a.country) === f.slice(n.length + 1);
+  for (const [code, name] of Object.entries(METRO_NAME)) { const n = fold_(name); if ((n.startsWith(f) && f.length >= 3) || inCountry(idx.byIata.get(METRO[code][0]), n)) METRO[code].forEach((c, i) => add(idx.byIata.get(c), 90 - i * 0.5)); }
   for (const a of idx.list) {
     const city = fold_(a.city), name = fold_(a.name);
-    if (city === f) add(a, 85 + a.size); else if (city.startsWith(f)) add(a, 70 + a.size * 3); else if (name.startsWith(f)) add(a, 60 + a.size * 3);
+    if (city === f || inCountry(a, city)) add(a, 85 + a.size); else if (city.startsWith(f)) add(a, 70 + a.size * 3); else if (name.startsWith(f)) add(a, 60 + a.size * 3);
     else if (!(out.length && /^[A-Z]{3}$/.test(up)) && words.every((w) => a.key.includes(w))) add(a, 30 + a.size * 3);
   }
   out.sort((x, y) => y.s - x.s || y.a.size - x.a.size || x.a.iata.localeCompare(y.a.iata));

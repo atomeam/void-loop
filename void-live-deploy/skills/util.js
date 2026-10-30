@@ -1,10 +1,10 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, hashes, diffs, Markdown, CSV, CSS
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, hashes, diffs, Markdown, CSV, YAML, CSS
  * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes, lib/textdiff.js
  * for the diff checker, lib/markdown.js for Markdown, lib/csvjson.js for CSV and JSON,
- * lib/cssmin.js for CSS); nothing is sent anywhere.
+ * lib/yamljson.js for YAML and JSON, lib/cssmin.js for CSS); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';
@@ -12,6 +12,7 @@ import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
 import { diffTexts, diffCounts, withContext, MAX_LINES } from '../lib/textdiff.js';
 import { mdToHtml } from '../lib/markdown.js';
 import { csvToJson, jsonToCsv } from '../lib/csvjson.js';
+import { yamlToJson, jsonToYaml } from '../lib/yamljson.js';
 import { minifyCss } from '../lib/cssmin.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
@@ -53,6 +54,10 @@ export function utilOf(text) {
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:markdown|md)\s+(?:to\s+html(?:\s+converter)?|converter|preview(?:er)?|editor|viewer|renderer)$|^convert\s+markdown(?:\s+to\s+html)?$/.test(l)) return { kind: 'mdmaker' };
   m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv|json)\s+(?:file\s+)?to\s+(csv|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv)\s+(?:to\s+)?json\s+converter$/);
   if (m && (m[3] || m[1] !== m[2])) return { kind: 'csvjson', dir: m[3] || m[1] };
+  // YAML and JSON, both ways, and a YAML check (2026-10-30: "yaml to json" and "json to yaml" fell to an article that answered nothing)
+  m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(ya?ml|json)\s+(?:file\s+)?to\s+(ya?ml|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(ya?ml)\s+(?:to\s+)?json\s+converter$/);
+  if (m && (m[3] || (m[1] === 'json') !== (m[2] === 'json'))) return { kind: 'yamljson', dir: m[1] === 'json' ? 'json' : 'yaml' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:ya?ml\s+(?:validator|linter|lint|checker|parser|viewer)|(?:validate|check|lint|parse)\s+(?:my\s+|this\s+)?ya?ml)$/.test(l)) return { kind: 'yamljson', dir: 'yaml' };
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:css\s+(?:minifier|minify|minification|compressor|compress|optimizer)(?:\s+tool)?|(?:minify|compress)\s+(?:my\s+|this\s+)?css)$/.test(l)) return { kind: 'cssmin' };
   // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
   // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
@@ -248,6 +253,32 @@ async function run(text, api) {
       if (box) { if (out && out.textContent) box.value = out.textContent; box.setAttribute && box.setAttribute('aria-label', dir === 'csv' ? 'CSV' : 'JSON'); }
       paint();
     });
+  } else if (q.kind === 'yamljson') {
+    // one card both ways: YAML to JSON, or JSON to YAML after a press on the arrow (lib/yamljson.js); a fault in the YAML names its line
+    let dir = q.dir;
+    const title = () => (dir === 'yaml' ? 'YAML to JSON' : 'JSON to YAML');
+    const hint = () => (dir === 'yaml' ? 'name: Ann&#10;tags: [a, b]&#10;address:&#10;  city: Oslo' : '{&quot;name&quot;: &quot;Ann&quot;, &quot;tags&quot;: [&quot;a&quot;, &quot;b&quot;]}');
+    el = showPage((p) => { p.innerHTML = '<h2>' + title() + '</h2><textarea class="util-in" rows="7" maxlength="2000000" placeholder="' + hint() + '" aria-label="' + (dir === 'yaml' ? 'YAML' : 'JSON') + '" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (title() is one of two fixed headings; typed text goes to the textarea value only)
+      + '<p style="margin:8px 0 4px"><button type="button" class="util-flip" aria-label="Swap the direction">⇄ swap</button> <span class="util-say" aria-live="polite">Paste ' + (dir === 'yaml' ? 'YAML' : 'JSON') + '</span></p>'
+      + '<pre class="util-out" style="margin:0;max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Maps, lists, quotes, | and > blocks, comments, anchors and several documents. Words like yes and no stay text, and the YAML it writes quotes them. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say'), flip = el && el.querySelector && el.querySelector('.util-flip'), head = el && el.querySelector && el.querySelector('h2');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste ' + (dir === 'yaml' ? 'YAML' : 'JSON'); return; }
+      const r = dir === 'yaml' ? yamlToJson(box.value) : jsonToYaml(box.value);
+      if (r.error) { out.textContent = ''; say.textContent = r.error; return; }
+      out.textContent = dir === 'yaml' ? r.json : r.yaml;
+      say.textContent = (dir === 'yaml' ? 'Valid YAML: ' : '') + r.what;
+    };
+    if (box) box.addEventListener('input', paint);
+    if (flip) flip.addEventListener('click', () => {
+      // the output becomes the new input, so a round trip is one press
+      dir = dir === 'yaml' ? 'json' : 'yaml';
+      if (head) head.textContent = title();
+      if (box) { if (out && out.textContent) box.value = out.textContent; box.setAttribute && box.setAttribute('aria-label', dir === 'yaml' ? 'YAML' : 'JSON'); }
+      paint();
+    });
   } else if (q.kind === 'cssmin') {
     // safe only: comments and spaces go, nothing is renamed, merged or moved (lib/cssmin.js)
     el = showPage((p) => { p.innerHTML = '<h2>CSS minifier</h2><textarea class="util-in" rows="6" maxlength="2000000" placeholder="a {&#10;  color: red;&#10;}" aria-label="CSS" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
@@ -327,8 +358,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html', 'uuid generator'],
-  nearMisses: ['what is csv', 'csv vs json', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax', 'what is a uuid', 'uuid vs guid'],
+  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'yaml to json', 'json to yaml', 'yaml validator', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html', 'uuid generator'],
+  nearMisses: ['what is csv', 'csv vs json', 'what is yaml', 'yaml vs json', 'yaml syntax', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax', 'what is a uuid', 'uuid vs guid'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

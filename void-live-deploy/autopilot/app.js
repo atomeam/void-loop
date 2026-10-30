@@ -66,6 +66,10 @@ async function load() {
   tile('t-started', d && d.conductor && d.conductor.last24h ? d.conductor.last24h.started : null);
   const since = Date.now() - days * 86400e3;
   if (inc.status === 'fulfilled') { const i = incidentsIn(inc.value.incidents, since); tile('t-open', i.open); $('t-open').nextElementSibling.textContent = 'open incidents on main' + (i.healed ? ' (' + i.healed + ' healed, median ' + i.medianMinutes + ' min)' : ''); } else tile('t-open', null);
+  // Verse's own keys (tools/key-keeper.mjs, read at the last deploy): how many jobs the keymaster can mint a key for
+  const k = d && d.keys;
+  if (k && k.keymaster) { const ok = k.jobs.filter((j) => j.ok); $('t-keys').textContent = ok.length + ' of ' + k.jobs.length; $('t-keys').title = ''; $('t-keys').nextElementSibling.textContent = 'jobs Verse mints its own key for' + (ok.length < k.jobs.length ? ' (not yet: ' + k.jobs.filter((j) => !j.ok).map((j) => j.job).join(', ') + ')' : ''); }
+  else { $('t-keys').textContent = k ? 'none' : 'n/a'; $('t-keys').title = k ? '' : 'the last deploy did not read the keys'; $('t-keys').nextElementSibling.textContent = k ? 'keys Verse mints: waiting for its one keymaster key' : 'keys Verse mints for itself'; }
   coderPanel(coder.status === 'fulfilled' ? coder.value : null);
   if (d && d.conductor) {
     hourBars(d.conductor.byHour || new Array(24).fill(0), d.conductor.updated);

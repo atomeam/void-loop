@@ -436,6 +436,7 @@ for (const [name, file] of [
   ['aurora', 'aurora.test.mjs'],
   ['drone', 'drone.test.mjs'],
   ['cf-scope', 'cf-scope.test.mjs'],
+  ['key-keeper', 'key-keeper.test.mjs'],
   ['mirror', 'mirror.test.mjs'],
   ['digest-proposal', 'digest-proposal.test.mjs'],
   ['splat', 'splat.test.mjs'],
