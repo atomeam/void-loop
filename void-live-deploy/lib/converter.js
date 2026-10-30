@@ -53,7 +53,7 @@ export const CATALOG = Object.freeze([
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
     ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' })
     : conv('Audio', f, 'no', { note: ['ALAC', 'AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
-  tool('Audio', 'Add Image to MP3', 'no', { note: NO }),
+  tool('Audio', 'Add Image to MP3', 'here', { run: 'mp3-image', from: 'mp3+picture', note: 'Puts a picture in the MP3 as its cover (the ID3 tag, as music players show it). The sound is not coded again, so it stays exactly as it was; title, artist and the other tag fields stay too.' }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
   vid('Audio', 'Audio to Video', 'sound-video', 'A sound becomes a video: the picture you add (or a colour) shown for as long as the sound plays.', { from: 'sound+picture?' }),
   tool('Audio', 'Change Audio Speed', 'here', { run: 'speed', from: 'sound', note: 'Faster or slower, as a tape plays it: the pitch moves with the speed. The result is a WAV.' }),
@@ -517,4 +517,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/ogg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });

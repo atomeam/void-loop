@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:35:21Z",
-   "subject": "Resize image: the page card carries the size, the stage card opens the page at it"
+   "at": "2026-10-30T05:35:26Z",
+   "subject": "Stage links from /emojis/ and /g/ open real cards; /g/ footer link opens the README"
   },
   {
    "at": "2026-10-30T05:33:47Z",

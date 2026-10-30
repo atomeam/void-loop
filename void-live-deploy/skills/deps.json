@@ -962,6 +962,13 @@
    "tests": 3
   },
   {
+   "file": "lib/emoji.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
@@ -1317,13 +1324,6 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/emoji.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
   },
   {
    "file": "lib/keep-going.js",
@@ -2846,6 +2846,13 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp3-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6063,7 +6070,8 @@
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
-    "lib/tally.js"
+    "lib/tally.js",
+    "skills/emoji.js"
    ],
    "reachedBy": [
     "functions/api/tally.js",
@@ -7840,6 +7848,10 @@
     "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
+  },
+  "lib/mp3-edit.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/music-audio.js": {
    "imports": [
@@ -11999,7 +12011,9 @@
    ]
   },
   "skills/emoji.js": {
-   "imports": [],
+   "imports": [
+    "lib/emoji.js"
+   ],
    "importedBy": []
   },
   "skills/error-garden.js": {
