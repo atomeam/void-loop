@@ -89,9 +89,16 @@ export function pastNote(line, sha, recent, runs) {
   return { ...line, text: line.text + ' · a past result: main has moved on since, see main above', ok: null };
 }
 
-/** the live lines for a reading: main first, then each named PR and commit. Never throws; a call GitHub refuses says so. */
-export async function liveLines(t, fetchFn = (u) => fetch(u, { headers: { accept: 'application/vnd.github+json' } })) {
-  const get = async (path) => { try { const r = await fetchFn(API + path); return r && r.ok ? await r.json() : { __status: r ? r.status : 0 }; } catch (_) { return { __status: 0 }; } };
+// a call that hangs is stopped after CALL_MS (owner, 2026-10-30: the card still read "checking GitHub..." long after the check should have ended):
+// it counts as GitHub not answering, so the card always comes to a result
+export const CALL_MS = 8000;
+/** the live lines for a reading: main first, then each named PR and commit. Never throws and never hangs; a call GitHub refuses says so. */
+export async function liveLines(t, fetchFn = (u, signal) => fetch(u, { headers: { accept: 'application/vnd.github+json' }, signal }), { callMs = CALL_MS } = {}) {
+  const get = async (path) => {
+    const ac = typeof AbortController === 'function' ? new AbortController() : null; let timer;
+    const late = new Promise((_, no) => { timer = setTimeout(() => { if (ac) ac.abort(); no(new Error('timeout')); }, callMs); });
+    try { const r = await Promise.race([fetchFn(API + path, ac ? ac.signal : undefined), late]); return r && r.ok ? await Promise.race([r.json(), late]) : { __status: r ? r.status : 0 }; } catch (_) { return { __status: 0 }; } finally { clearTimeout(timer); }
+  };
   const out = [], refused = (j) => j && j.__status !== undefined;
   const recent = await get('/commits?sha=main&per_page=12');
   if (refused(recent) || !Array.isArray(recent)) return [{ text: recent && recent.__status === 403 ? 'GitHub is limiting calls from this device just now: try again within the hour' : 'GitHub did not answer, so nothing here is checked', ok: null }];
