@@ -35,6 +35,14 @@ const KEPT = [
   ['/podcast/', 'weekly', '0.6', [D + 'podcast/index.html']],
   ['/obituaries/', 'weekly', '0.7', [D + 'obituaries/index.html']],
   ['/markets/screener/', 'weekly', '0.7', [D + 'markets/screener/index.html']],
+  // pages linked from the site and its footers that no list held, so neither a search engine nor the self-check opened them: the privacy policy,
+  // the boards' rules, and the four pages under /generators/ (the editor, the character chat, the story writer, the forum)
+  ['/privacy/', 'monthly', '0.3', [D + 'privacy/index.html']],
+  ['/boards/rules/', 'monthly', '0.4', [D + 'boards/rules/index.html']],
+  ['/generators/make/', 'weekly', '0.8', [D + 'generators/make/index.html']],
+  ['/generators/chat/', 'weekly', '0.7', [D + 'generators/chat/index.html']],
+  ['/generators/story/', 'weekly', '0.7', [D + 'generators/story/index.html']],
+  ['/generators/forum/', 'weekly', '0.6', [D + 'generators/forum/index.html']],
 ];
 // the /is-it/ pages are rendered by one function from one skill: a change to either is a change to every day
 const IS_IT_FILES = [D + 'functions/is-it/[what].js', D + 'skills/is-it.js'];
