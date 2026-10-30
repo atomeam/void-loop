@@ -34,12 +34,12 @@ export function utilOf(text) {
   // hashes (2026-10-30: "md5 of hello" and "sha256 generator" fell to an article). The tool by its name, with no text yet, is a card that hashes as you type
   const ALGO = '(md5|sha-?1|sha-?256|sha-?384|sha-?512)';
   if (new RegExp('^(?:(?:an?|the)\\s+)?(?:free\\s+|online\\s+)?(?:' + ALGO + '\\s+)?(?:hash|checksum|digest)?\\s*(?:generator|maker|calculator|creator)$|^' + ALGO + '\\s+(?:hash\\s+)?online$|^hash\\s+(?:a\\s+|some\\s+)?text$').test(l) && /md5|sha|hash|checksum|digest/.test(l)) {
-    const a = l.match(new RegExp(ALGO)); return { kind: 'hashmaker', algo: a ? algoOf(a[1]) : 'sha256' }; }
+    const a = l.match(/(md5|sha-?1|sha-?256|sha-?384|sha-?512)/); return { kind: 'hashmaker', algo: a ? algoOf(a[1]) : 'sha256' }; }
   // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
   // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
   m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
   if (m) { const s = (m[2] ?? m[3] ?? m[4] ?? m[6]).replace(/^["“'‘](.*)["”'’]$/s, '$1'); if (s) return { kind: 'hash', algo: m[1] ? algoOf(m[1]) : m[5] ? algoOf(m[5]) : 'sha256', s }; }
-  m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
+  m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/); // void-review: ok (m is declared with let at the top of utilOf)
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
   m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
   if (m) return { kind: 'color', c: m[1] };
