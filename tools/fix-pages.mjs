@@ -25,7 +25,7 @@ export function askOf(p) {
 }
 
 const STYLE = `:root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; }
-    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; } }
+    :root { color-scheme: dark; } /* deep space in every colour scheme (owner, 2026-10-29: never a stark-white page) */
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
     main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
