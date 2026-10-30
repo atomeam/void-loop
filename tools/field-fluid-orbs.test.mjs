@@ -44,6 +44,15 @@ test('a density peak spawns an orb where it is, one per peak, none near an orb a
   const many = run(3, 200); assert.ok(many.orbs.length >= 1 && many.orbs.length <= F.MAX_ORBS, 'a live field keeps between one and ' + F.MAX_ORBS + ' orbs: ' + many.orbs.length);
 });
 
+test('a memory stirs the fluid: F.stir pools dye where a memory lands so an orb is born there, and a zero stir changes nothing', () => {
+  const s = F.create(11); s.d.fill(0); s.u.fill(0); s.v.fill(0);
+  F.stir(s, 30, 12, 1); let near = null;
+  for (let i = 0; i < 6 && !near; i++) { F.step(s, 1 / 60, {}); near = s.orbs.find((o) => Math.abs(o.x - 30) <= 3 && Math.abs(o.y - 12) <= 3) || null; }
+  assert.ok(near, 'an orb is born within 3 cells of the stir in a few steps');
+  const t = F.create(11), before = Array.from(t.d); F.stir(t, 30, 12, 0); assert.deepEqual(Array.from(t.d), before, 'k = 0 adds no dye');
+  F.stir(t, 30, 12, 5); assert.ok(Math.max(...t.d) <= F.DMAX, 'a stir never pushes density past DMAX');
+});
+
 test('left alone, the agents pool the fluid themselves: orbs are born with no pointer, and an orb outlives its peak long enough to tap', () => {
   for (let seed = 1; seed <= 6; seed++) { const s = F.create(seed); let first = -1; for (let i = 0; i < 1800 && first < 0; i++) { F.step(s, 1 / 60, {}); if (s.orbs.length) first = i; } assert.ok(first >= 0, 'seed ' + seed + ': an orb within 30 s untouched'); }
   let o = F.evolveOrbs({ seed: 5 }); for (let g = 0; g < 6; g++) o = F.evolveOrbs({ pop: o.pop, seed: 5, gen: o.gen });
@@ -102,4 +111,13 @@ test('the skill: its asks open the memory orbs card, look-alikes do not, and it 
   for (const a of [...skill.nearMisses, 'memory', 'fluid', 'crystal ball']) assert.equal(skill.match(a.toLowerCase(), a), false, a);
   assert.equal(modeAsk('mind field orbs').id, 'agent-fluid-memory-orbs');
   assert.ok(skill.stageKinds['agent-fluid-memory-orbs'] && fam.stageKinds['agent-fluid-memory-orbs']);
+});
+
+test('fast on phones: the orbs card asks to rest while scrolled away, and the stage honours that ask only for cards that make it', async () => {
+  const { readFileSync } = await import('node:fs');
+  const card = readFileSync(new URL('../void-live-deploy/skills/agent-fluid-memory-orbs.js', import.meta.url), 'utf8');
+  const stage = readFileSync(new URL('../void-live-deploy/lib/field-stage.js', import.meta.url), 'utf8');
+  assert.match(card, /restOffscreen: true/, 'the orbs idea opts in');
+  assert.match(stage, /if \(idea\.restOffscreen && typeof IntersectionObserver === 'function'\)/, 'the stage watches only an idea that opts in');
+  assert.match(stage, /!document\.hidden && !still && !away/, 'the loop skips frames while the card is away');
 });

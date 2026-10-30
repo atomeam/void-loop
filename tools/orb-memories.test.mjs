@@ -88,3 +88,26 @@ test('the memories pull the fluid: its orbs are born on them far more often than
   assert.ok(withPull > 0.3, 'about half the orbs are born on a memory (' + withPull.toFixed(2) + ')');
   assert.ok(withPull > 3 * without, 'pulled ' + withPull.toFixed(2) + ' against ' + without.toFixed(2) + ' by chance');
 });
+
+test('a memory that is new, or that Verse thinks about again, stirs the fluid once; a steady one does not', () => {
+  const before = new Map();
+  const a = { key: 'idea:calendar', word: 'calendar', x: 0.2, y: 0.3, act: 0.5 }, b = { key: 'field:7', x: 0.8, y: 0.5, act: 0.1 };
+  const first = M.stirsOf(before, [a, b]);
+  assert.deepEqual(first.map((s) => s.key), ['idea:calendar', 'field:7']);
+  assert.equal(first[0].strength, 0.5); assert.equal(first[1].strength, M.STIR_MIN); assert.equal(first[0].word, 'calendar');
+  assert.deepEqual(M.stirsOf(before, [a, b]), []); // steady: nothing
+  assert.deepEqual(M.stirsOf(before, [{ ...a, act: 0.6 }, b]), []); // a small rise is not a thought
+  const again = M.stirsOf(before, [{ ...a, act: 0.95 }, b]);
+  assert.equal(again.length, 1); assert.ok(again[0].strength > M.STIR_MIN && again[0].strength <= 1);
+  M.stirsOf(before, [b]); assert.equal(before.has('idea:calendar'), false); // it left
+  assert.equal(M.stirsOf(before, [a, b]).length, 1); // and coming back is new
+  assert.deepEqual(M.stirsOf(new Map(), [null, { word: 'x' }]), []);
+});
+
+test('an orb is named by the remembered word it sits near, and only a near one', () => {
+  const mems = [{ word: 'pizza', x: 0.5, y: 0.5 }, { word: 'night', x: 0.9, y: 0.1 }, { key: 'field:2', x: 0.51, y: 0.5 }];
+  assert.equal(M.wordNear(mems, 0.52, 0.48), 'pizza');
+  assert.equal(M.wordNear(mems, 0.88, 0.12), 'night');
+  assert.equal(M.wordNear(mems, 0.1, 0.9), '');
+  assert.equal(M.wordNear([], 0.5, 0.5), '');
+});
