@@ -154,7 +154,8 @@ async function signOut(request, env) {
 async function tier(request, env) {
   const me = await session(request, env);
   if (!me) return bad(401, 'not signed in');
-  return good({ tier: await tierOf(env, me.userId), owner: await ownerAccount(env, me.userId) });
+  // userId: the caller's own account id, so a page can show it when this browser's record lacks it (team/app.js)
+  return good({ tier: await tierOf(env, me.userId), owner: await ownerAccount(env, me.userId), userId: me.userId });
 }
 
 async function forget(request, env) {

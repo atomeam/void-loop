@@ -65,6 +65,8 @@ test("passkey 'tier' says owner for the owner account only", async () => {
   const o = await call(env, owner, { step: 'tier' }), m = await call(env, member, { step: 'tier' });
   assert.deepEqual([o.j.tier, o.j.owner], ['paid', true]);
   assert.deepEqual([m.j.tier, m.j.owner], ['free', false]);
+  assert.equal(m.j.userId, 'member-acct', 'the caller gets its own account id back, so /team/ can show it');
+  assert.equal((await call(env, null, { step: 'tier' })).status, 401, 'no session, no id');
 });
 
 test("'owner-bind-account': only the key binds a signed-in account, and then every passkey on it is the owner's", async () => {

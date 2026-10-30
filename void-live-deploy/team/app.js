@@ -299,7 +299,27 @@ function drawRelated() {
   ] : []);
 }
 // this browser's Verse account id (shown when the account is signed in but not the owner's, so the owner can name it: lib/owner-accounts.js)
-const myId = () => { try { const u = (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).userId; return /^[A-Za-z0-9_-]{16,64}$/.test(u || '') ? u : ''; } catch (_) { return ''; } };
+const ID_RE = /^[A-Za-z0-9_-]{16,64}$/;
+const myRecord = () => { try { return JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}; } catch (_) { return {}; } };
+// the id from this browser's record, or else from the server for the account's own session (/api/passkey 'tier' returns userId)
+async function myId() {
+  const rec = myRecord();
+  if (ID_RE.test(rec.userId || '')) return rec.userId;
+  if (!rec.token) return '';
+  try {
+    const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + rec.token }, body: JSON.stringify({ step: 'tier' }), cache: 'no-store' });
+    const j = r.ok ? await r.json() : null;
+    return j && ID_RE.test(j.userId || '') ? j.userId : '';
+  } catch (_) { return ''; }
+}
+// the id as text with a Copy button, so it can be sent on a phone with one tap
+function showId(el, id) {
+  const label = document.createElement('span'); label.textContent = '. This account\'s Verse id: ';
+  const code = document.createElement('code'); code.textContent = id; code.style.userSelect = 'all';
+  const copy = document.createElement('button'); copy.type = 'button'; copy.textContent = 'Copy'; copy.style.marginLeft = '.5em';
+  copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(id); copy.textContent = 'Copied'; } catch (_) { copy.textContent = 'Select it to copy'; } });
+  el.append(label, code, copy);
+}
 const incoming = new URLSearchParams(location.search).get('q'); // text another page handed over (/team/?q=...) waits in the message box
 
 // ---- start ----
@@ -316,7 +336,8 @@ async function start() {
   }
   S.me = me;
   $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
-    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' + (myId() ? '. This account\'s Verse id: ' + myId() : '') : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+  if (!S.me && signedIn) myId().then((id) => { if (id) showId($('who'), id); });
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
   route(); drawRelated();
