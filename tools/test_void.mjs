@@ -656,6 +656,33 @@ try {
     const after = await read(), kept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
     check('walker: after a reload the figure is back on the floor with the same picture (no ask needed); "stop walking" removes it and clears the record',
       !!back && back.src === PNG && back.above >= 24 && back.above <= 27 && after === null && kept === null && !P.errors.length, JSON.stringify({ back: back && { above: back.above, src: back.src.slice(0, 20) }, after, kept, errors: P.errors }));
+    // lifted and thrown like any thing on the stage, and "clear" clears it (owner, 2026-10-30: "the cartoon walking around wont clear and cant be
+    // thrown"): a slow drag sets it back on the floor where it is let go; a flick throws it off the stage and it is gone and forgotten; "clear" too
+    const walkAgain = async () => { await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click()); return until(read, 4000); };
+    // the press and the moves are dispatched on the figure and the window, as a finger would send them, so a card over the floor never takes them
+    const drag = (moves, gap) => P.p.evaluate(async ([moves, gap]) => {
+      const w = document.querySelector('#stage .walker'), r = w.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+      const ev = (t, dx, dy) => new PointerEvent(t, { clientX: x + dx, clientY: y + dy, button: 0, buttons: 1, pointerId: 7, pointerType: 'mouse', bubbles: true });
+      w.dispatchEvent(ev('pointerdown', 0, 0));
+      for (const [dx, dy] of moves) { window.dispatchEvent(ev('pointermove', dx, dy)); if (gap) await wait(gap); }
+      window.dispatchEvent(ev('pointerup', moves[moves.length - 1][0], moves[moves.length - 1][1]));
+    }, [moves, gap]);
+    const a0 = await walkAgain();
+    await drag(Array.from({ length: 8 }, (_, i) => [-(i + 1) * 8, -(i + 1) * 12]), 60); // 8 px left and 12 px up every 60 ms: a slow carry
+    await P.p.waitForTimeout(150);
+    const set = await read(), setBubble = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
+    check('walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept',
+      !!a0 && !!set && set.above >= 24 && set.above <= 27 && Math.abs((set.x - a0.x) + 64) < 40 && setBubble === true && !!set.kept && !P.errors.length, JSON.stringify({ a0: a0 && a0.x, set: set && { x: set.x, above: set.above, kept: !!set.kept }, setBubble, errors: P.errors }));
+    await drag(Array.from({ length: 4 }, (_, i) => [(i + 1) * 40, -(i + 1) * 30]), 0); // a flick: 50 px a move with no wait between
+    const thrownKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    const flown = await until(async () => ((await P.p.$('#stage .walker')) ? null : 'gone'), 4000);
+    check('walker: a flick throws the figure off the stage: it is forgotten on release and gone once it has flown off',
+      thrownKept === null && flown === 'gone' && !P.errors.length, JSON.stringify({ thrownKept, flown, errors: P.errors }));
+    const a2 = await walkAgain();
+    await P.ask('clear', 800);
+    const cleared = await read(), clearedKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    check('walker: "clear" clears the walking figure with the rest of the stage and forgets it',
+      !!a2 && cleared === null && clearedKept === null && !P.errors.length, JSON.stringify({ a2: !!a2, cleared, clearedKept, errors: P.errors }));
     await P.ctx.close();
   }
   // the backdrop (owner, 2026-10-25: "a static, beautifully lit 2D painted scene with fixed camera angles, where ... cards project shadows and walk along

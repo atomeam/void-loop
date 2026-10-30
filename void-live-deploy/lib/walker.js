@@ -89,3 +89,28 @@ export function recordOf({ src = '', emoji = '', subject = '', ask = '' } = {}) 
 export function parseRecord(raw) {
   try { const j = JSON.parse(raw || 'null'); if (!j || j.v !== 1 || (!j.src && !j.emoji && !j.subject)) return null; return recordOf(j); } catch (_) { return null; }
 }
+
+// Thrown (owner, 2026-10-30: "the cartoon walking around wont clear and cant be thrown"): the walker is lifted and thrown like every other thing on
+// the stage (index.html bindDrag): the same flick speed, gravity, spin and friction slider. A slow drop sets it back on the floor where it was let go.
+export const TOSS_SPEED = 0.9; // px/ms: a flick, not a place-down (the stage's own TOSS_SPEED)
+export const GRAVITY = 0.0016; // px/ms² added to the fall each ms of flight (the stage's toss)
+export const LIFT = 5; // px the pointer moves before a press is a lift, not a tap
+
+/** on release: thrown when the flick is fast enough or the figure is let go off the stage. Box { x, y, w, h } in stage px. Pure. */
+export function tossOf({ x = 0, y = 0, w = SPRITE, h = SPRITE, vx = 0, vy = 0, stageW = 0, stageH = 0 } = {}) {
+  const off = x + w < 0 || y + h < 0 || (stageW > 0 && x > stageW) || (stageH > 0 && y > stageH);
+  return { thrown: Math.hypot(Number(vx) || 0, Number(vy) || 0) >= TOSS_SPEED || off };
+}
+
+/** one frame of the throw: { x, y, vx, vy, spin } after dtMs (at most 32), with friction fr (0..1, the slider's setting). Pure. */
+export function fly(f, dtMs, fr = 0.995) {
+  const dt = Math.max(0, Math.min(32, Number(dtMs) || 0)), k = Math.max(0, Math.min(1, Number(fr)));
+  const vx = f.vx * (Number.isFinite(k) ? k : 0.995), vy = f.vy + GRAVITY * dt;
+  return { x: f.x + vx * dt, y: f.y + vy * dt, vx, vy, spin: f.spin + vx * dt * 0.4 };
+}
+
+/** where a slow drop sets the figure: the floor, at the x it was let go, kept inside the stage. Pure. */
+export function dropX(x, width) {
+  const maxX = Math.max(0, (Number(width) || SPRITE) - SPRITE);
+  return Math.round(Math.max(0, Math.min(maxX, Number(x) || 0)));
+}
