@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:22:19Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:21:16Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:20:27Z",
    "subject": "Generators: preload the card module the page now imports"
   },
@@ -564,6 +572,14 @@
   {
    "at": "2026-10-30T05:18:55Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:18:02Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:17:40Z",
+   "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
   },
   {
    "at": "2026-10-30T05:15:47Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T05:09:41Z",
    "subject": "quote: mark the retry loop as right for the review"
-  },
-  {
-   "at": "2026-10-30T05:09:38Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:09:37Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T05:09:21Z",
-   "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
-  },
-  {
-   "at": "2026-10-30T05:08:53Z",
-   "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
   }
  ],
  "builders": {
