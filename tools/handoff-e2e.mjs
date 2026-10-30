@@ -60,7 +60,7 @@ export const JOURNEYS = {
     if (on.join(' ') !== 'C E G') throw new Error('the chord finder picked ' + on.join(' ') + ', not C E G');
     await check('the chord finder named C E G as C major');
   },
-  'add an invited event to the calendar, see its moment in other cities on the time page, then the weather where it happens': async (p, check) => {
+  'add an invited event to the calendar, see its moment in other cities on the time page, then the weather, the flights and the matches that day': async (p, check) => {
     const ev = { title: 'Team lunch', start: '2026-11-03T12:30', end: '2026-11-03T13:30', allDay: false, location: 'Berlin' };
     await p.goto(ORIGIN + '/calendar/?e=' + Buffer.from(JSON.stringify(ev)).toString('base64url'), { waitUntil: 'load' }); await p.waitForSelector('#invAdd', { state: 'visible' });
     await check('the calendar opened on the invite'); await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
@@ -90,8 +90,15 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/flights\/\?d=/), p.locator('#detFlights').click()]); await p.waitForSelector('#f-d');
     if ((await p.locator('#f-d').inputValue()) !== soon) throw new Error('the flights page opened with the date "' + (await p.locator('#f-d').inputValue()) + '", not ' + soon);
     await check('the flights page opened on the event day ' + soon);
+    // the same day's matches: the scores page opens on it, in the visitor's own league
+    await p.goto(ORIGIN + '/calendar/?d=' + soon + '&view=day', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await rel('Matches that day')) !== '/scores/?date=' + soon) throw new Error('"Matches that day" goes to "' + (await rel('Matches that day')) + '", not /scores/?date=' + soon);
+    await Promise.all([p.waitForURL(/\/scores\//), p.locator('#related a', { hasText: 'Matches that day' }).click()]); await p.waitForSelector('#date');
+    await p.waitForFunction((d) => document.getElementById('date').value === d, soon, { timeout: 10000 }).catch(() => {});
+    if ((await p.locator('#date').inputValue()) !== soon) throw new Error('the scores page opened on "' + (await p.locator('#date').inputValue()) + '", not ' + soon);
+    await check('the scores page opened on the matches of ' + soon);
   },
-  'work out a flight, see its landing in both cities on the time page, the weather and the local radio and TV where it lands (and fly back there from it), and add it to the calendar': async (p, check) => {
+  'work out a flight, see its landing in both cities on the time page, the weather, the local radio and TV and the remote jobs where it lands (and fly back there from it), and add it to the calendar': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
     await open(); await check('the flights page worked out JFK to LHR');
     const at = new URL(await p.locator('#fa-time').getAttribute('href'), ORIGIN).searchParams.get('at'), want = await p.evaluate(() => import('/lib/flights-core.js').then((C) => new Date(C.legFacts({ lat: 40.6413, lon: -73.7781, tz: 'America/New_York' }, { lat: 51.47, lon: -0.4543, tz: 'Europe/London' }, '2026-11-20T19:00').arrUtc).toISOString().replace(/\.000Z$/, 'Z')));
@@ -107,6 +114,12 @@ export const JOURNEYS = {
     const here = new URL(p.url()).searchParams;
     if (!/^London\b/.test(await p.locator('#q').inputValue()) || here.get('cc') !== 'GB' || !/^51\.4\d*,-0\.4\d*$/.test(here.get('ll') || '')) throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '" at ' + p.url() + ', not London at Heathrow');
     await check('the local radio and TV page opened at Heathrow, London');
+    // the remote jobs open to people in the arrival country: /jobs/ reads GB as its UK region and writes the region into its own link
+    await open(); if ((await p.locator('#fa-jobs').getAttribute('href')) !== '/jobs/?cc=GB') throw new Error('the jobs link is "' + (await p.locator('#fa-jobs').getAttribute('href')) + '", not /jobs/?cc=GB');
+    await Promise.all([p.waitForURL(/\/jobs\//), p.locator('#fa-jobs').click()]); await p.waitForSelector('#jb-region');
+    await p.waitForFunction(() => document.getElementById('jb-region').value === 'uk', null, { timeout: 10000 }).catch(() => {});
+    if ((await p.locator('#jb-region').inputValue()) !== 'uk') throw new Error('the jobs page opened with the region "' + (await p.locator('#jb-region').inputValue()) + '", not uk');
+    await check('the jobs page opened on the remote jobs open in the UK (' + new URL(p.url()).search + ')');
     // and back: flights to the place a local page shows pick the airport near it, over the London the flights page remembers
     await p.goto(ORIGIN + '/local/?place=Lisbon&ll=38.72,-9.14&cc=PT', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
     await Promise.all([p.waitForURL(/\/flights\/\?tonear=/), p.locator('#related a', { hasText: 'Flights to here' }).click()]); await p.waitForFunction(() => document.documentElement.dataset.flightsReady === '1' && new URLSearchParams(location.search).get('to'));
@@ -168,7 +181,7 @@ export const JOURNEYS = {
     if (link !== '/color/?c=' + first) throw new Error('the gradient page read the painting, but its colour link still opens ' + link + ', not /color/?c=' + first);
     await check('the gradient page links its first colour #' + first + ' right away');
   },
-  'save a painting as a PDF: the PDF page opens its images-to-PDF tool with the painting in the list': async (p, check) => {
+  'save a painting and a gradient as a PDF: the PDF page opens its images-to-PDF tool with the picture in the list': async (p, check) => {
     await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the paint page opened with its picture');
     await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save your painting as a PDF' }).click()]);
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
@@ -181,6 +194,11 @@ export const JOURNEYS = {
     const head = await p.evaluate(async () => { const b = new Uint8Array(await (await fetch(document.querySelector('a.dl').href)).arrayBuffer()); return String.fromCharCode(...b.slice(0, 5)) + ' ' + b.length; });
     if (!head.startsWith('%PDF-')) throw new Error('the download is not a PDF: it starts "' + head + '"');
     await check('the PDF page made a ' + head.split(' ')[1] + '-byte PDF of the painting');
+    // a gradient goes the same way, as a picture of the gradient
+    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save it as a PDF' }).click()]);
+    await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
+    await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
 };
 

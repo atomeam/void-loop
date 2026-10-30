@@ -77,7 +77,7 @@
   if (q.get('team') || q.get('game') || q.get('tab') === 'mine' || q.get('span') === '7') return;
   var p = new URLSearchParams({ league: q.get('league') || m.last || (/^de\b/i.test(navigator.language) ? 'bundesliga' : 'epl') });
   if (q.get('tab') === 'standings') p.set('view', 'standings'); else { var d = new Date(); p.set('date', q.get('date') || (d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'))); }
-  var qs = p.toString(); window.__early = { qs: qs, p: fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }).then(function (r) { return r.json(); }) }; } catch (e) {} })();
+  var qs = p.toString(), pr = fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }).then(function (r) { return r.json(); }); pr.catch(function () {}); /* offline: app.js reads the failure when it takes the answer; until then it is no unhandled error */ window.__early = { qs: qs, p: pr }; } catch (e) {} })();
 </script>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/scores/">
