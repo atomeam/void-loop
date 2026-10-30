@@ -225,3 +225,12 @@ test("the Calendar page's card opens on the day the page shows, and the card's p
   const page = fs.readFileSync(path.join(root, 'calendar', 'index.html'), 'utf8');
   assert.match(page, /mountRelated\(\$\('related'\), '\/calendar\/'[\s\S]*?\{ card: \(\) => A\.cardAskOf\(C\.dayKey\(state\.cursor\)\) \}\)/, 'the page gives its card the day it shows');
 });
+
+test('the stage calendar card sways while new, then settles still so its days hold under a pointer and the frame loop stops', async () => {
+  const { swayAmp, SWAY_HOLD, SWAY_FADE } = await import('../void-live-deploy/skills/calendar3d.js');
+  assert.equal(swayAmp(0), 3);
+  assert.equal(swayAmp(SWAY_HOLD - 1), 3);
+  assert.ok(swayAmp(SWAY_HOLD + SWAY_FADE / 2) > 0 && swayAmp(SWAY_HOLD + SWAY_FADE / 2) < 3);
+  assert.equal(swayAmp(SWAY_HOLD + SWAY_FADE), 0);
+  assert.equal(swayAmp(60000), 0);
+});

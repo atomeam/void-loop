@@ -542,13 +542,45 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T06:34:09Z",
+   "subject": "Calendar card settles still; tools page card follows the bench"
+  },
+  {
+   "at": "2026-10-30T06:26:49Z",
+   "subject": "converter: Watermark Image with words or a picture, on the device"
+  },
+  {
+   "at": "2026-10-30T06:26:41Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-10-30T06:26:11Z",
+   "subject": "Team agent script prints each job's brief"
+  },
+  {
+   "at": "2026-10-30T06:24:46Z",
+   "subject": "Podcast: the page shows the name Verse, not V01D"
+  },
+  {
+   "at": "2026-10-30T06:24:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:24:04Z",
+   "subject": "Test the paid MultiVerse paths in a browser on every PR"
+  },
+  {
+   "at": "2026-10-30T06:23:47Z",
+   "subject": "Every Versus job Verse hands out carries a full spec"
+  },
   {
    "at": "2026-10-30T06:22:48Z",
    "subject": "rap: ad-libs come off the main vocal onto their own track"
@@ -596,38 +628,6 @@
   {
    "at": "2026-10-30T06:10:23Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:09:27Z",
-   "subject": "Team jobs carry a brief: the repository, the kind's guide, the playbooks and how to deliver"
-  },
-  {
-   "at": "2026-10-30T06:09:25Z",
-   "subject": "openapi: mark /api/rapvoice as Verse's own (the rap page is its only caller)"
-  },
-  {
-   "at": "2026-10-30T06:09:00Z",
-   "subject": "Family health: the growth score part says when no family moves it, and its check holds on a fixture"
-  },
-  {
-   "at": "2026-10-30T06:08:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:08:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:08:01Z",
-   "subject": "Rap: Verse's own voice on the beat, produced beats, and a music video for every song"
-  },
-  {
-   "at": "2026-10-30T06:07:47Z",
-   "subject": "Conductor: a paid member's idea goes before every free job, after a repair"
-  },
-  {
-   "at": "2026-10-30T06:07:42Z",
-   "subject": "Emoji combos: /emoji-combos/ assimilates emojicombos.com"
   }
  ],
  "builders": {

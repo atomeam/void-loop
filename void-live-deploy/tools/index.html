@@ -48,13 +48,18 @@
   // same origin, so it keeps its own state and offline cache; ?open=calculator,convert keeps the set in the address
   const bench = document.getElementById('bench'), names = Object.fromEntries([...document.querySelectorAll('main li a')].map((a) => [a.getAttribute('href'), a.textContent]));
   const open = () => [...bench.querySelectorAll('.pane')].map((p) => p.dataset.path.replace(/^\//, '').replace(/\/$/, ''));
-  const keep = () => { const q = open(); try { history.replaceState(null, '', location.pathname + (q.length ? '?open=' + q.join(',') : '')); } catch (_) {} bench.classList.toggle('on', q.length > 0); };
+  const keep = () => { const q = open(); try { history.replaceState(null, '', location.pathname + (q.length ? '?open=' + q.join(',') : '')); } catch (_) {} bench.classList.toggle('on', q.length > 0); document.dispatchEvent(new Event('tk:card')); };
+  // the stage card for the bench: the tool opened last, as it stands in its pane (its own "card on the stage" ask, same origin),
+  // or its example while the pane loads; with no tool open, the kit's own card
+  const benchAsk = (CARD_ASK) => { const p = [...bench.querySelectorAll('.pane')].pop(); if (!p) return '';
+    try { const x = p.querySelector('iframe').contentDocument.querySelector('a.tk-card'); const q = x && new URL(x.href, location.href).searchParams.get('q'); if (q) return q; } catch (_) {}
+    return CARD_ASK[p.dataset.path] || ''; };
   function add(path) { if (!names[path] || bench.querySelector('.pane[data-path="' + path + '"]')) return; const pane = document.createElement('section'); pane.className = 'pane'; pane.dataset.path = path;
     const head = document.createElement('header'); const b = document.createElement('b'); b.textContent = names[path]; const full = document.createElement('a'); full.href = path; full.textContent = 'Full page'; const x = document.createElement('button'); x.type = 'button'; x.textContent = 'Close'; x.setAttribute('aria-label', 'Close ' + names[path]); x.onclick = () => { pane.remove(); keep(); };
-    head.append(b, full, x); const f = document.createElement('iframe'); f.src = path; f.title = names[path]; f.loading = 'lazy'; pane.append(head, f); bench.append(pane); keep(); pane.scrollIntoView({ block: 'nearest' }); }
+    head.append(b, full, x); const f = document.createElement('iframe'); f.src = path; f.title = names[path]; f.loading = 'lazy'; f.addEventListener('load', () => document.dispatchEvent(new Event('tk:card'))); pane.append(head, f); bench.append(pane); keep(); pane.scrollIntoView({ block: 'nearest' }); }
   for (const btn of document.querySelectorAll('button[data-open]')) btn.addEventListener('click', () => add(btn.dataset.open));
   for (const p of (new URLSearchParams(location.search).get('open') || '').split(',').map((x) => x.trim()).filter(Boolean)) { const q = '/' + p.replace(/^\//, '').replace(/\/$/, ''); add(names[q + '/'] ? q + '/' : q); }
-  addEventListener("load", () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/tools/')).catch(() => {}); });</script>
+  addEventListener("load", () => { import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/tools/', [], { card: () => benchAsk(m.CARD_ASK) })).catch(() => {}); });</script>
 <script>if ("serviceWorker" in navigator) addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });</script>
 </body>
 </html>

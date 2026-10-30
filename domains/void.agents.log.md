@@ -1167,3 +1167,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T06:05:40Z | claude | build | /emoji-combos/ assimilates emojicombos.com: tag search over 185 combos, copy, collect, your own, fancy text, dot art from a picture, a stage card, wired into hand-off
 2026-10-30T06:00:59Z | claude | fix | News: CBC refuses every request from a server, so CBS News takes its place and all 10 top-story sources load
 2026-10-30T06:19:28Z | claude | fix | Calendar card: the Calendar page's own card on the stage now opens the 3D calendar on the day the page shows, and the card's link back opens the page on the day you picked
+2026-10-30T06:33:43Z | claude | fix | Stage calendar card settles still after its first sway (days hold under a pointer, frame loop stops on phones); the tools page card follows the tool opened last on the bench
