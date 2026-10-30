@@ -4833,6 +4833,7 @@ say('nothing selected to remove');
     const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
     for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
     const shareReady = import('/lib/card-share.js').catch(() => null);
+    const pasteReady = import('/lib/paste-kind.js').catch(() => null); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
     function showSharedCard(sc) {
       currentAsk = sc.t;
@@ -4885,7 +4886,8 @@ say('nothing selected to remove');
         if (el.dataset && el.dataset.grounded) return; // the skill opened what the ask named (a lab tool by its own pattern)
         const r = g.judgeCard(text, el.innerText || '', skill);
         if (!r.unmet) return;
-        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing }]).slice(-20);
+        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing, refused: r.refuse }]).slice(-20);
+        if (r.refuse) { const t = el.querySelector('h2'); el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + esc(g.refusalLine(text, r.missing, t && t.textContent)) + '</p>'; } // a skill that looks a named thing up refuses a card about something else
         try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
       }, 1500)).catch(() => {});
     }
@@ -5423,6 +5425,7 @@ say('nothing selected to remove');
     const PUBLISH_RE = /^publish\s+my\s+(?:void|verse)(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
     const UNPUBLISH_RE = /^(unpublish(\s+my\s+(?:verse|void))?|take\s+(down\s+my\s+((?:verse|void)|page)|my\s+((?:verse|void)|page)\s+down))\s*[.!]?$/;
     let pendingPublish = null;
+    let lastPaste = null; // a paste that asked for nothing, for ten minutes: "sum it up" answers the line Verse said for it (lib/paste-kind.js)
     function publishAnswer(lower) {
       const pp = pendingPublish; if (!pp) return false;
       pendingPublish = null; clearTimeout(pp.timer); whisper.textContent = '';
@@ -6125,8 +6128,13 @@ say('nothing selected to remove');
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
-      // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
-      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
+      // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
+      const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
+      { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words
+        if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text).then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
+      // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js).
+      // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
+      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
       if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
@@ -6180,6 +6188,8 @@ say('nothing selected to remove');
       const calcEarly = calcable && !skillsLoaded; // routed before every skill was in: one ranked above the calc may still take this ask
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
+      // a paste no skill took that asks for nothing: one line that asks what the person wants, and nothing guessed (no stock answer, no article)
+      if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }

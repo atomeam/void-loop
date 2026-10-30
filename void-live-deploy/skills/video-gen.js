@@ -15,6 +15,20 @@ export function clipWords(text) {
   return m ? m[1].trim().slice(0, PROMPT_MAX) : '';
 }
 
+/** how long ago an ISO time was, in plain words, or '' (pure) */
+export function agoWords(iso, now = Date.now()) {
+  const t = Date.parse(iso || ''), m = Math.round((now - t) / 60000);
+  if (!Number.isFinite(t) || m < 0) return '';
+  return m < 2 ? 'just now' : m < 90 ? m + ' minutes ago' : Math.round(m / 60) + ' hours ago';
+}
+/** the card's state line from GET /api/clip: on or off in the route's own words, then when Verse last tested the video model.
+ *  That test runs at most every 6 hours, and tools/video-live.mjs reads this route from GitHub every 6 hours so it never goes stale. (pure) */
+export function stateLine(j, now = Date.now()) {
+  const state = j && j.on ? 'Video is on. ' + (Number(j.clipsLeft) || 0) + ' short clips left today for everyone.' : String((j && j.say) || 'Video is off right now.');
+  const ago = agoWords(j && j.checkedAt, now);
+  return state + (ago ? ' Verse last tested the video model ' + ago + '.' : '');
+}
+
 function run(text, api) {
   const { showPage, esc } = api, words = clipWords(text), href = '/video/?prompt=' + encodeURIComponent(words).replace(/[!'()*]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase()); // %20, not +: lib/card-frame.js pageOfCard links only a plain query
   showPage((el) => {
@@ -26,7 +40,7 @@ function run(text, api) {
     const line = el.querySelector('.vg-state');
     fetch('/api/clip', { cache: 'no-store' }).then((r) => r.json()).then((j) => {
       if (!line) return;
-      line.textContent = j && j.on ? 'Video is on. ' + (Number(j.clipsLeft) || 0) + ' short clips left today for everyone.' : String((j && j.say) || 'Video is off right now.');
+      line.textContent = stateLine(j);
     }).catch(() => { if (line) line.textContent = 'Could not check video just now; the page says whether it is on.'; });
   });
   return 'video-gen';

@@ -58,6 +58,49 @@ export function failuresOf(text) {
 const OURS = /github\.com\/atomeam\/void-loop\/(?:pull|commit)\/[0-9a-f]+|\batomeam\/void-loop#\d+/i;
 const ASKS_ABOUT_LINK = /^(?:please\s+)?(?:review|check|look(?:\s+at)?|summari[sz]e|explain|read|open|merge|close|approve|analy[sz]e|fix|show(?:\s+me)?|tell\s+me|what|why|how|can|could|is|does)\b/i;
 export function telemetryOf(raw) {
+  const card = reportCardOf(raw);
+  if (!card) return readingOf(raw);
+  // a copied report card, alone or with more pasted around it: the card's own lines say what the report said, and what is around it adds to that
+  const rest = readingOf(card.rest), seen = new Set(), add = (a, b) => [...a, ...b].filter((x) => { const k = x.toLowerCase(); return !seen.has(k) && seen.add(k); });
+  const r = (rest && rest.read) || { changed: [], waits: [], blocked: [], next: null };
+  const read = { changed: add(card.changed, r.changed), waits: add(card.waits, r.waits), blocked: add(card.blocked, r.blocked), next: card.next || r.next };
+  const prs = openFirst([...new Set([...card.prs, ...(rest ? rest.prs : [])])], read).slice(0, 5);
+  return { kind: 'status', signals: rest ? rest.signals : [], shas: [...new Set([...card.shas, ...(rest ? rest.shas : [])])].slice(0, 5), prs, failures: rest ? rest.failures : [], passed: rest ? rest.passed : null, read };
+}
+// the pull requests a report says still wait come first, then the ones it does not call done, and the done ones last: the card checks three, and the
+// open ones are the ones whose state may have changed since (2026-10-30: a report naming three merged pull requests and one waiting on CI was
+// checked on the three merged ones only)
+const openFirst = (prs, read) => {
+  const has = (lines, n) => new RegExp('#' + n + '\\b').test(((read && lines) || []).join(' ')), rank = (n) => (has(read && [...read.waits, ...(read.blocked || [])], n) ? 0 : has(read && read.changed, n) ? 2 : 1);
+  return prs.map((n, i) => [n, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([n]) => n);
+};
+
+// A copied "What is really true now" card pasted back (owner, 2026-10-30): its title, its kind line, its "checking GitHub" line and its code line are the
+// card's frame, not the report, and the copy alone is shorter than any report, so it was reopened as the frozen card it was copied from. Its own
+// "What the report said" lines are the report: they are read back, and the card is checked against GitHub again.
+const CARD_CODE = /(?:VERSE|Verse|V01D)-CARD:[A-Za-z0-9_-]{8,12000}/g;
+const CARD_FRAME = /^(?:What is really true now|What the report said|Verse card from a-to-mind\.com.*|Skill\s+[\u2014\u2013-]\s+.+|checking GitHub for main\b.*|Nothing in it names a failure\b.*|It names \d+ things? as failing|A (?:CI report|status update) from the builders\b.*|Named as failing in the report\b.*|Live state from GitHub's public API\b.*|Plant these in the error garden\b.*|[\u2713\u2717\u00b7]\s.*)$/;
+const CARD_LINE = /^(Pull requests|Commits|Changed|Waiting|Blocked|Next step)\s*:\s*(.+)$/;
+/** a copied report card inside a paste: { prs, shas, changed, waits, next, rest } with rest the paste without the card, or null. Pure. */
+export function reportCardOf(raw) {
+  const lines = String(raw || '').replace(/\s*\u23ce\s*/g, '\n').replace(CARD_CODE, '\n').split('\n').map((l) => l.trim());
+  if (!lines.includes('What the report said')) return null;
+  const out = { prs: [], shas: [], changed: [], waits: [], blocked: [], next: null }, rest = [];
+  for (const l of lines) {
+    const m = CARD_LINE.exec(l);
+    if (m && m[1] === 'Pull requests') out.prs.push(...(m[2].match(/\d{2,6}/g) || []));
+    else if (m && m[1] === 'Commits') out.shas.push(...(m[2].match(/\b[0-9a-f]{7,40}\b/g) || []));
+    else if (m && m[1] === 'Changed') out.changed.push(m[2]);
+    else if (m && m[1] === 'Waiting') out.waits.push(m[2]);
+    else if (m && m[1] === 'Blocked') out.blocked.push(m[2]);
+    else if (m) out.next = m[2];
+    else if (!CARD_FRAME.test(l)) rest.push(l);
+  }
+  for (const w of [...out.waits, ...out.blocked]) for (const n of w.match(/#(\d{2,6})\b/g) || []) if (!out.prs.includes(n.slice(1))) out.prs.push(n.slice(1));
+  return out.prs.length || out.shas.length || out.changed.length || out.waits.length || out.blocked.length ? { ...out, rest: rest.join('\n').trim() } : null;
+}
+
+function readingOf(raw) {
   const text = String(raw || '').trim();
   const ours = OURS.test(text) && text.length >= 60 && !ASKS_ABOUT_LINK.test(text);
   if ((text.length < MIN_CHARS && !ours) || text.length > 20000) return null;
@@ -66,7 +109,7 @@ export function telemetryOf(raw) {
   const signals = signalsOf(text), read = statusReadOf(text);
   if (signals.length < MIN_SIGNALS && !ours && !read) return null;
   const shas = [...new Set((text.match(/\b[0-9a-f]{7,40}\b/g) || []).filter((s) => /\d/.test(s) && /[a-f]/.test(s)))].slice(0, 5);
-  const prs = [...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))].slice(0, 5);
+  const prs = openFirst([...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))], read).slice(0, 5);
   const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*passed/i.exec(text);
   return { kind: read ? 'status' : signals.includes('run') || signals.includes('ci') ? 'ci' : 'status', signals, shas, prs, failures: failuresOf(text), passed: m ? { ok: +m[1], of: +m[2] } : null, read };
 }
