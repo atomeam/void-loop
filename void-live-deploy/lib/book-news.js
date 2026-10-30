@@ -128,11 +128,16 @@ export function groupNews(entries) {
 }
 
 /** the chapter's pages: the grouped entries cut into pages of at most `per` lines, each page regrouped (a day that runs over a page starts again
- *  at the top of the next, so every page reads on its own). [{ kind:'news', days }]. Pure. */
+ *  at the top of the next, so every page reads on its own). [{ kind:'news', days }], each day carrying `all`, the whole day's entries. Pure. */
 export function newsPages(entries, per = NEWS_PER_PAGE) {
-  const flat = groupNews(entries).flatMap((d) => d.groups.flatMap((g) => g.items));
+  const whole = groupNews(entries), flat = whole.flatMap((d) => d.groups.flatMap((g) => g.items));
+  const dayAll = new Map(whole.map((d) => [d.day, d.groups.flatMap((g) => g.items)]));
   const pages = [];
-  for (let i = 0; i < flat.length; i += per) pages.push({ kind: 'news', chapter: NEWS_ID, title: 'What’s new', days: groupNews(flat.slice(i, i + per)) });
+  for (let i = 0; i < flat.length; i += per) {
+    const days = groupNews(flat.slice(i, i + per));
+    for (const d of days) d.all = dayAll.get(d.day); // the whole day, not this page's part: "play all N" counts what the stage plays
+    pages.push({ kind: 'news', chapter: NEWS_ID, title: 'What’s new', days });
+  }
   return pages;
 }
 

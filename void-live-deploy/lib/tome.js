@@ -202,7 +202,7 @@ export function pageHtml(p, book, esc) {
     // touched to run it on the stage, a page of the site opens as a link; a day with asks that answered live (claims-verified.json) plays them all
     const tryLink = (t) => (t.charAt(0) === '/' ? ' <a href="' + esc(t) + '" class="tome-tryit">open it</a>' : ' <a href="#" class="tome-tryit" data-ask="' + esc(t) + '">try it</a>');
     return '<div class="tome-kicker">Just shipped</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
-      + (p.days || []).map((d) => { const live = d.groups.reduce((n, g) => n + g.items.filter((e) => e.live).length, 0);
+      + (p.days || []).map((d) => { const live = (d.all || d.groups.flatMap((g) => g.items)).filter((e) => e.live).length; // the whole day: the link plays every live line of it
         return '<div class="tome-day">' + esc(dayLabel(d.day)) + (live ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">play ' + (live === 1 ? 'it' : 'all ' + live) + ' on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? tryLink(e.try) : '') + '</li>').join('') + '</ul>').join(''); }).join('') + '</div>';
   }
   if (p.kind === 'opener') {
