@@ -78,13 +78,22 @@ export function usefulness(from, to) {
 export const LEGACY_FILE = path.join(root, 'tools', 'handoff-types.json');
 export const legacy = (file = LEGACY_FILE) => { const o = JSON.parse(rd(file) || '{}'); delete o._; return o; };
 
-/** the modules a page imports that are its own (its app.js, or a lib module at most two pages import): a shared one (the toolkit's
- *  "Use with" links) would make every page look connected to every other */
+/** the modules a page imports that are its own: its app.js; a module its index.html imports that only its family and at most one
+ *  other reach; or a module further down whose file is named for the page (lib/flights-core.js for /flights/, followed through the
+ *  modules that import it). A module every page reaches (the toolkit's "Use with" links) would make every page look connected to
+ *  every other, and a shared library deep in the chain (lib/converter.js under /rap/'s video writer) builds links the page never
+ *  shows, so neither is its own. */
 function ownSources(dir, routes) {
-  const htmlOf = Object.fromEntries(routes.map((r) => [r, rd(path.join(dir, r, 'index.html'))]));
-  const importsOf = (h) => [...h.matchAll(/(?:from|import)\s*\(?\s*["'](\/[\w./-]+\.js)["']/g)].map((m) => m[1]);
-  const uses = {}; for (const r of routes) for (const m of new Set(importsOf(htmlOf[r]))) uses[m] = (uses[m] || 0) + 1;
-  return Object.fromEntries(routes.map((r) => [r, importsOf(htmlOf[r]).filter((m) => m.startsWith(r) || uses[m] <= 2).map((m) => rd(path.join(dir, m))).join('\n')]));
+  const importsOf = (code, from) => [...code.matchAll(/(?:from|import|<script\b[^>]*\bsrc=)\s*\(?\s*["']((?:\/|\.\.?\/)[\w./-]+\.js)["']/g)]
+    .map((m) => (m[1].startsWith('/') ? m[1] : path.posix.normalize(path.posix.join(path.posix.dirname(from), m[1]))));
+  const deps = {}, depsOf = (m) => (deps[m] ??= importsOf(rd(path.join(dir, m)), m));
+  const reach = (r) => { const seen = new Set(), todo = importsOf(rd(path.join(dir, r, 'index.html')), r + 'index.html');
+    while (todo.length && seen.size < 200) { const m = todo.pop(); if (seen.has(m)) continue; seen.add(m); todo.push(...depsOf(m)); } return seen; };
+  const reached = Object.fromEntries(routes.map((r) => [r, reach(r)])), families = {};
+  const direct = (r) => new Set(importsOf(rd(path.join(dir, r, 'index.html')), r + 'index.html'));
+  const named = (r, m) => path.posix.basename(m).startsWith(r.split('/')[1].split('-')[0]);
+  for (const r of routes) for (const m of reached[r]) (families[m] ??= new Set()).add(r.split('/')[1]);
+  return Object.fromEntries(routes.map((r) => [r, [...reached[r]].filter((m, _, __, top = direct(r)) => m.startsWith(r) || (families[m].size <= 2 && (top.has(m) || named(r, m)))).map((m) => rd(path.join(dir, m))).join('\n')]));
 }
 
 /** the whole scan: { pages: [{ route, declared, in, out, readsLink, built }], gaps: [{ from, to, shared, score }] ranked, built: n, undeclared } */

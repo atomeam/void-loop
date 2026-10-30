@@ -56,6 +56,8 @@ test('the scan sees what is built: the BPM counter and the metronome hand each o
   const s = scan(), has = (a, b) => s.built.some((x) => x.from === a && x.to === b);
   assert.ok(has('/bpm/', '/metronome/') && has('/metronome/', '/bpm/'), 'bpm <-> metronome');
   assert.ok(has('/wheel/', '/tournaments/'), 'the verse_handoff ring');
+  assert.ok(has('/flights/', '/time/') && has('/flights/', '/calendar/'), 'links built in a module the page loads by <script src> and imports further down');
+  assert.ok(!has('/rap/', '/pdf/'), 'a shared library deep in another page\'s chain is not that page\'s own');
   assert.ok(!s.gaps.some((g) => g.from === '/bpm/' && g.to === '/metronome/'), 'a built connection is not a gap');
   assert.deepEqual(s.undeclared, []);
   assert.ok(s.gaps.length > 0 && s.gaps.every((g, i) => i === 0 || s.gaps[i - 1].score >= g.score), 'ranked, most useful first');
