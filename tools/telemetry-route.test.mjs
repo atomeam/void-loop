@@ -146,3 +146,24 @@ test('a status read needs both a change and a wait, and never takes a complaint 
     "That thread didn't start.",
   ]) assert.equal(statusReadOf(t), null, t.slice(0, 50));
 });
+
+// The report behind the card the owner pasted on 2026-10-30 (lines joined by ⏎, as a copied chat joins them). The card read its closing checks and a
+// time stamp back as "Changed:" lines, and said four were still failing over a main that had passed every shard: the noun "the red", a sentence on what
+// the suite does, and a red the report itself bounds in time.
+test('the 2026-10-30 report: closing checks and time stamps are not changes, and "the red", a suite rule and a bounded red are not failing', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const report = ['The walking cartoon fix (#1748) merged at 05:44Z.', 'I have no result yet. ⏎ Merging before test-and-deploy finished, as #1668 did, is by design.',
+    'The browser run is not finished. ⏎ Remainder: unverified ⏎ [HYGIENE CHECK] ⏎ Request names: the walking cartoon: clear it and throw it. ⏎ Change reaches: walker.js (the skill and the lib), plus the stage-cleared event in void.html and its 2 deploy copies. ⏎ Outside: none ⏎ Decision: keep ⏎ Today 2:15 AM ⏎ The walking cartoon passes in the real browser: all 6 walker checks are green on main.',
+    'The reviewer is right about the red. The copies check went red on main. The full suite runs on main and reverts a commit that fails it.',
+    'Main was red from about 05:44Z to 05:48Z because of my missed copy. #1764 is merged, so Verse\'s review now compares void.html with both deploy copies.',
+    'Automerge waits only for Verse\'s review. Commit 2fbc0ee8 and PR #1773 and #1337.'].join('\n');
+  const f = failuresOf(report);
+  assert.ok(!f.some((l) => /right about the red|reverts a commit|from about 05:44Z/.test(l)), JSON.stringify(f));
+  assert.ok(f.some((l) => /copies check went red on main/.test(l)), 'a red the report does not bound stays: ' + JSON.stringify(f));
+  const read = statusReadOf(report);
+  const said = [...read.changed, ...read.waits].join(' | ');
+  assert.ok(!/HYGIENE|Remainder|Decision|Outside|Request names|Change reaches|2:15 AM|⏎/.test(said), said);
+  assert.ok(read.waits.some((w) => /not finished/.test(w)) && read.waits.some((w) => /no result yet/.test(w)), said);
+  assert.ok(read.changed.some((c) => /#1748\) merged/.test(c)), said);
+  assert.match(summaryOf(telemetryOf(report)).pop(), /^It names 1 thing as failing$/);
+});
