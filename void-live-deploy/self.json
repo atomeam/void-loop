@@ -542,17 +542,13 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T17:50:43Z",
+  "at": "2026-10-25T17:49:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
-  {
-   "at": "2026-10-30T03:08:11Z",
-   "subject": "Word ladder: finish the skill (order, Games family, MAP, test); a bare \"ladder\" is no longer its"
-  },
   {
    "at": "2026-10-30T02:51:41Z",
    "subject": "Verse loop: task, Queue job mvpur47q (versus: uptimer.dev): Versus: uptimer.de"
@@ -628,6 +624,10 @@
   {
    "at": "2026-10-30T02:16:20Z",
    "subject": "STL checker: lift the hold, the owner said ship it"
+  },
+  {
+   "at": "2026-10-30T02:11:20Z",
+   "subject": "Verse loop: task, Queue job mvpur2xc (versus: notepad-plus-plus.org): Versus:"
   }
  ],
  "builders": {
