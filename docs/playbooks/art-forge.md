@@ -15,7 +15,7 @@
 **Commands:**
 1. `node --test tools/card-art-route.test.mjs tools/models.test.mjs` (route with a fake model and fake D1, the rules).
 2. `node tools/heavy.mjs node tools/test_void.mjs --only "Verse art forge"` (the page, route stubbed).
-3. Backfill every skill and miniature card (the Verse Book's pages are the same skills): `node tools/prepaint-art.mjs --status` prints "N of M cards painted" and the days left at the cap (about 161 cards, 6 days at 30 a day, less whatever live cards use); `--go --max 10` paints a few and stops at the cap. The record is the server's cache, so reruns never repaint and any machine can resume. Real-art kinds (film, show, song, album, book) are skipped.
+3. Backfill every skill and miniature card (the Book of Verse's pages are the same skills): `node tools/prepaint-art.mjs --status` prints "N of M cards painted" and the days left at the cap (about 161 cards, 6 days at 30 a day, less whatever live cards use); `--go --max 10` paints a few and stops at the cap. The record is the server's cache, so reruns never repaint and any machine can resume. Real-art kinds (film, show, song, album, book) are skipped.
 4. After a deploy, try it live once: ask "what is a cat" and look at `/api/card-art?key=cat`.
 
 **Worked when:** the art box shows the picture under the card frame; a second visit shows it at once; a skill card is painted from its name (kind `skill`); with `ART_OFF=1` the plate stays.

@@ -1,0 +1,22 @@
+{
+ "attempt": "live",
+ "occasion": 2,
+ "at": "2026-10-30T16:44:00Z",
+ "family": "media",
+ "skill": "local-stations",
+ "service": "a-to-mind.com/local/ (Radio Browser radio, iptv-org TV, streams from each station's own server)",
+ "ask": "local radio and TV in Boston",
+ "request": "https://a-to-mind.com/local/?place=Boston",
+ "ok": true,
+ "answer": {
+  "place": "Boston, Massachusetts",
+  "radio": { "listed": 60, "playable": 41, "played": "KISS 108 WXKS FM 107.9 Boston", "player": "Live · AAC" },
+  "tv": { "listed": 59, "playable": 7, "played": "WFXT · Fox", "player": "Live · Fox", "picture": "Boston 25 News live: Boston Police update, on-screen clock 12:44 PM" }
+ },
+ "artifact": "/mnt/project-files/local-media-probe/2026-10-30-boston-wfxt-live.png",
+ "failed": [
+  { "what": "52 of 59 Boston TV stations", "why": "no free stream listed that a browser can play from its own host; each row links the station and says it is free over the air" },
+  { "what": "19 of 60 Boston radio stations", "why": "stream is http only or on a non-standard port, so a secure page cannot play it; each row links the station's own site" }
+ ],
+ "error": ""
+}

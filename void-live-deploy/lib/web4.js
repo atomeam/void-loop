@@ -7,7 +7,7 @@
 /** the four steps, in order: { n, name, did, line, where, label }. `line` is two or three sentences, `where` is an ask that runs today. */
 export const LAYERS = [
   { n: 1, name: 'Read', did: 'pages you read',
-    line: 'Web 1 was pages you read: someone wrote them, you read them. In Verse that is the Verse Book, one page for everything Verse can do, and answers that name where they came from.',
+    line: 'Web 1 was pages you read: someone wrote them, you read them. In Verse that is the Book of Verse, one page for everything Verse can do, and answers that name where they came from.',
     where: 'open the book', label: 'open the book' },
   { n: 2, name: 'Write and share', did: 'places you post, and others see',
     line: 'Web 2 was where you write and share: you post, other people see it. In Verse that is the stage you fill with whatever you ask for, and a link to any card, so a friend can open what you made.',

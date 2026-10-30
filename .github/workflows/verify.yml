@@ -132,6 +132,23 @@ jobs:
       - name: 3D frame times (perf3d)
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 4
         run: node tools/perf3d.test.mjs
+      # /converter/ on a 390 px phone and with the network cut (owner, 2026-10-30: take onlineconverter.com to 12 of 12): its weight class,
+      # nothing blocking the first paint, then a PNG and a WAV converted offline. The proof is kept as an artifact of every run on main.
+      - name: Converter on a phone and offline
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
+        env:
+          CONVERTER_PROOF: converter-offline-proof.json
+        run: |
+          node tools/converter-phone.test.mjs
+          echo "### Converter offline proof: a PNG and a WAV converted with the network cut ($(date -u +%FT%TZ))" >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the converter offline proof
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1 && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: converter-offline-proof
+          path: converter-offline-proof.json
+          if-no-files-found: ignore
+          retention-days: 90
       - name: Every game played as four kinds of player (persona playtest)
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
         run: node tools/persona-playtest.mjs
