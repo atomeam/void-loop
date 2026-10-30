@@ -148,7 +148,7 @@ export const CARD_CSS = [
   '.vpage.vcard[data-poster] .vc-art img.vc-art-photo{object-fit:contain!important;object-position:50% 50%!important}',
   '.vpage.vcard[data-poster] .vc-title{margin-top:14px!important;justify-content:flex-start;text-align:left}',
   '.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-share,.vpage.vcard[data-poster] .vc-route,.vpage.vcard[data-poster] .vc-foot,.vpage.vcard[data-poster] .vc-arrows{grid-column:1 / -1}',
-  '.vpage.vcard[data-poster]>img{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the poster in the art box: not shown twice
+  '.vpage.vcard[data-poster]>img,.vpage.vcard>img[data-vc-art-src]{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the picture in the art box: not shown twice
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(60vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vpage.skyc .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vpage.vcard:not(.skyc) .vc-art{max-height:28vh;margin-top:4px}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds:not([data-facts]){height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds[data-facts] .vc-addstext,.vcard .vc-adds[data-facts] .vc-kws{display:block;height:0;margin:0;padding:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
   '@media (max-width:520px){.vpage.vcard[data-poster]{grid-template-columns:minmax(0,1fr)}.vpage.vcard[data-poster]>*{grid-column:1}.vpage.vcard[data-poster] .vc-art{grid-row:auto;justify-self:center;width:min(46%,170px);height:auto!important;margin:12px auto 4px!important;overflow:hidden}.vpage.vcard[data-poster] .vc-title{margin:8px 6px 0!important;justify-content:center;text-align:center}.vpage.vcard[data-poster] .vc-type,.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-foot{margin-left:6px}}',
   // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
@@ -294,6 +294,10 @@ export function keep(el, esc, stats) {
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
   // a real picture is the art (owner, 2026-10-18): it is the only thing in the box, with no plate, seal, texture or painting under or over it
   const source = artSource({ photo, painting: !!el._vcForge, hasArt: !!el.querySelector(':scope > .vc-art') }); // lib/art-source.js: one picture in the slot
+  // the picture in the art box is the answer's own photo, so the copy of it in the body goes (2026-10-30: a recipe card showed its dish twice).
+  // Only a photo that stands on its own in the card goes; a thumbnail inside a list of results stays with its row.
+  for (const i of el.querySelectorAll(':scope > img[data-vc-art-src]')) if (source !== 'photo' || i !== photoImg) delete i.dataset.vcArtSrc;
+  if (source === 'photo' && photoImg && photoImg.parentNode === el) photoImg.dataset.vcArtSrc = '1';
   if (source === 'photo') { const box = el.querySelector(':scope > .vc-art'); if (box) {
     for (const n of box.querySelectorAll(':scope > svg, :scope > .vc-seal')) n.remove(); box.classList.remove('vc-sealed'); box.classList.add('has-photo');
     const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = ''; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = photo; box.appendChild(im);
