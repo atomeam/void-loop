@@ -550,10 +550,6 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T09:40:51Z",
-   "subject": "Verse Brain dreams: ideas, jobs and fixes from real memory, on /brain/ and in /team/ #work"
-  },
-  {
    "at": "2026-10-30T09:39:59Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
@@ -594,6 +590,14 @@
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
+   "at": "2026-10-30T07:53:24Z",
+   "subject": "Dependency map: the drum kit"
+  },
+  {
+   "at": "2026-10-30T07:53:18Z",
+   "subject": "Real recorded drums: TR-808 and acoustic kit, ears hear drill at its beat"
+  },
+  {
    "at": "2026-10-30T07:52:51Z",
    "subject": "All-tools card: one chip per tool name, as /tools/ lists them"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T07:44:44Z",
    "subject": "proverb: a proverb from Wikiquote's English proverbs page, linked to its keyword"
-  },
-  {
-   "at": "2026-10-30T07:44:13Z",
-   "subject": "wip dream loop"
   }
  ],
  "builders": {

@@ -7,6 +7,7 @@
 // only the rap's own bars go to the voice route, one at a time.
 import { beatFor, timingOf, lengthOf } from './rap.js';
 import { produce, impulseOf } from './rap-beat.js';
+import { loadKit, kitFor } from './rap-kit.js';
 import { buildVocal, fetchVoice } from './rap-voice.js';
 import { master, isPlain, TUNE0 } from './rap-ears.js';
 
@@ -41,11 +42,18 @@ export function mixStems(beat, vocal, { beatLevel = 0.8, vocalLevel = 1 } = {}) 
   return [L, R];
 }
 
-/** render the beat stem offline: [L, R] at RATE, the plan's length. null without OfflineAudioContext. */
-export async function renderBeat(plan, { win = globalThis } = {}) {
+/** the recorded drum kit for the plan's style (lib/rap-kit.js), decoded; null when it cannot load, so the beat falls back to its synthesised
+ *  drums. `ctx` decodes it (any context: the buffers play in every context). */
+export function drumsFor(beat, ctx, { win = globalThis, fetchFn = null } = {}) {
+  if (!ctx || typeof ctx.decodeAudioData !== 'function') return Promise.resolve(null);
+  return loadKit(kitFor(beat), { fetchFn: fetchFn || ((u) => win.fetch(u)), decode: (bytes) => ctx.decodeAudioData(bytes) }).catch(() => null);
+}
+
+/** render the beat stem offline: [L, R] at RATE, the plan's length, with the recorded kit when it loads. null without OfflineAudioContext. */
+export async function renderBeat(plan, { win = globalThis, kitFetch = null } = {}) {
   const OAC = OACof(win); if (!OAC) return null;
-  const ctx = new OAC(2, Math.ceil(plan.seconds * RATE), RATE);
-  produce(ctx, plan.beat, { measures: plan.measures, t0: 0 });
+  const ctx = new OAC(2, Math.ceil(plan.seconds * RATE), RATE), kit = await drumsFor(plan.beat, ctx, { win, fetchFn: kitFetch });
+  produce(ctx, plan.beat, { measures: plan.measures, t0: 0, kit });
   const b = await ctx.startRendering();
   return [b.getChannelData(0), b.getChannelData(1)];
 }
