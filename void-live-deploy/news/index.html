@@ -109,7 +109,7 @@
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, L] = await Promise.all([import('/lib/toolkit.js'), import('/lib/news.js')]);
+    const [{ mountRelated }, L, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/news.js'), import('/lib/news-card.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.news.v1';
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     // the device's memory: followed topics and sources, the saved stories, the text size, the language, and the last headlines per section
@@ -253,7 +253,7 @@
     let tm; $('q').oninput = () => { clearTimeout(tm); tm = setTimeout(() => { st.q = $('q').value.trim(); draw(); }, 120); };
     $('copyLink').onclick = async () => { const u = L.shareLink(st, location.origin); try { await navigator.clipboard.writeText(u); status('Copied the link to this view.'); } catch (_) { status(u); } };
     if (st.lang !== 'en') { for (const b of $('secs').children) b.hidden = !['top', 'my', 'saved'].includes(b.dataset.sec); document.documentElement.lang = st.lang; }
-    chips(); mountRelated($('related'), '/news/', []);
+    chips(); mountRelated($('related'), '/news/', [], { card: () => cardAsk(st.sec, $('q').value) });
     await pick(st.sec);
     addEventListener('online', () => pick(st.sec));
     setInterval(() => { if (!document.hidden && st.sec !== 'saved') pick(st.sec); }, 10 * 60e3); // the edge keeps it seven minutes, so this costs the publishers nothing extra
