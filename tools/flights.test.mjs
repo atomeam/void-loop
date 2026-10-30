@@ -25,6 +25,9 @@ test('airport search by city, name, code, accents and city codes', () => {
   assert.deepEqual(s('NYC').slice(0, 3), ['JFK', 'LGA', 'EWR']); assert.deepEqual(s('LON').slice(0, 2), ['LHR', 'LGW']); assert.equal(s('london')[0], 'LHR'); assert.equal(s('new york')[0], 'JFK');
   assert.equal(s('münchen')[0], 'MUC'); assert.equal(s('Wien')[0], 'VIE'); assert.deepEqual(s(''), []); assert.deepEqual(s('zzzzqqq'), []);
   assert.ok(s('frankfurt').includes('FRA'));
+  // a city with its country (as the scores page asks for a game's ground) ranks like the bare city, and picks the right one of two cities
+  assert.deepEqual(s('London United Kingdom').slice(0, 2), ['LHR', 'LGW']); assert.equal(s('Manchester')[0], 'MHT'); assert.equal(s('Manchester United Kingdom')[0], 'MAN');
+  assert.equal(s('Paris France')[0], 'CDG'); assert.equal(s('Madrid Spain')[0], 'MAD'); assert.equal(s('Boston United States')[0], 'BOS');
 });
 test('nearby airports and airports of the same city', () => {
   const n = C.nearby(idx, A('LHR'), 60, 5).map((x) => x.a.iata); assert.ok(n.includes('LGW') && n.includes('LCY') && !n.includes('LHR'));

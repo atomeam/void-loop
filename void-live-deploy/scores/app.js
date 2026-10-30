@@ -119,6 +119,9 @@ async function mineView(tk) {
 }
 // the forecast at the ground, by the venue's town (the weather page looks the name up)
 const vwx = (g) => (g && g.city ? h('a', { id: 'vwx', href: '/weather/?place=' + encodeURIComponent(g.city), text: W.vwx }) : null);
+// flights to the game: the airport the flights page finds for the venue's town, on the day of the game in this device's zone
+const vfly = (g) => { const t = Date.parse(g && g.start); if (!g || !g.city || !Number.isFinite(t)) return null; const d = new Date(t), z = (n) => String(n).padStart(2, '0');
+  return h('a', { id: 'vfly', href: '/flights/?toq=' + encodeURIComponent(S.flightAsk(g)) + '&d=' + d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()), text: W.vfly }); };
 async function gameView(tk) {
   const lg = state.league, isF1 = S.leagueOf(lg).kind === 'f1';
   if (isF1) { const r = await api({ league: lg, date: state.date }); if (tk !== token) return; const g = r && (r.j.games || []).find((x) => x.id === state.game); if (!g) return sorry(); setNote(r);
@@ -135,7 +138,7 @@ async function gameView(tk) {
     (() => { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {} const e = S.calendarEvent(g, S.leagueOf(lg), tz); return e ? h('a', { id: 'vcal', href: '/calendar/?e=' + e, text: W.vcal }) : null; })(),
     // the same moment on the time page, in each city the visitor keeps there
     (() => { const t = Date.parse(g.start); return Number.isFinite(t) ? h('a', { id: 'vtime', href: '/time/?at=' + encodeURIComponent(new Date(t).toISOString().replace(/\.000Z$/, 'Z')), text: W.vtime }) : null; })(),
-    vwx(g)));
+    vwx(g), vfly(g)));
   else if (g && g.state === 'live' && g.city) kids.push(h('div', { class: 'row' }, vwx(g)));
   const wp = g && S.winProb(g, S.leagueOf(lg).grp);
   if (wp) { let pts = []; try { pts = JSON.parse(sessionStorage.getItem('a2m.void.scores.wp.' + g.id)) || []; } catch (_) {} pts.push(Math.round(wp.home * 100)); pts = pts.slice(-90); try { sessionStorage.setItem('a2m.void.scores.wp.' + g.id, JSON.stringify(pts)); } catch (_) {}
