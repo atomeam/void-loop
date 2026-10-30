@@ -189,7 +189,8 @@
   },
   {
     "ask": "how to boil an egg",
-    "want": "answer"
+    "want": "calc",
+    "says": "12 min"
   },
   {
     "ask": "recipe for pancakes",
@@ -6023,7 +6024,9 @@
   {"ask": "350 degrees in gas mark", "want": "calc", "says": "gas mark 4"},
   {"ask": "what gas mark is 200c", "want": "calc", "says": "gas mark 6"},
   {"ask": "medium rare steak temperature", "want": "calc", "says": "135"},
-  {"ask": "temperature for a well done steak", "want": "calc", "says": "160"},
+  {"ask": "temperature for a well done steak", "want": "calc", "says": "155"},
+  {"ask": "how hot should ground beef be cooked", "want": "calc", "says": "160"},
+  {"ask": "what temp is steak done", "want": "calc", "says": "145"},
   {"ask": "steak doneness chart", "want": "calc", "says": "medium well"},
   {"ask": "how many eggs in a dozen", "want": "calc", "says": "12"},
   {"ask": "how many in half a dozen", "want": "calc", "says": "^6|\\b6\\b"},

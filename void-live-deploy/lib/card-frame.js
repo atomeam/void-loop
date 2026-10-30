@@ -47,8 +47,9 @@ export function keywordsOf({ tier = '', tested = '', arrows = 0, fetched = false
 const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk: l.ink, artWhy: l.why }; };
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
- *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false } = {}) {
+ *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is;
+ *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask */
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -70,7 +71,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? addsLine(page.line) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
+    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : 'A fact it did not have to be taught: fetched, sourced and dated.') : '',
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
@@ -280,7 +281,7 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent) });
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined });
   // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
   const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
   if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);
