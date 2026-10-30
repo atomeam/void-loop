@@ -314,6 +314,7 @@ for (const [name, file] of [
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
+  ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
   ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load

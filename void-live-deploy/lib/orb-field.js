@@ -8,6 +8,7 @@
 //   adapter.sync(s)        every live orb in its own slot (position, flow, embedding, activation, provenance); a gone orb's slot freed
 //   adapter.seal(s, o)     the orb written, then its embedding slice sealed by the field -> { genomeId, slot }
 //   adapter.stats()        { own, others }: the slots active in the field that are this skill's, and other skills'
+//   adapter.slots()        every live slot in the field, with its owner (the field's own slots()), or [] where the field has none
 //   adapter.close()        every slot this card holds freed
 // A slot is claimed only where provenance reads 0 (free) or this skill's own code, so another skill's memories are never written over.
 import * as F from './field-fluid-orbs.js';
@@ -80,6 +81,7 @@ export function makeAdapter(field, { N, D }) {
     get held() { return held.size; },
     sync: (s) => serial(async () => { const live = new Set(s.orbs.map((o) => o.id)); for (const id of [...held.keys()]) if (!live.has(id)) await free(id); for (const o of s.orbs) await put(s, o); }),
     seal: (s, o) => serial(async () => { const slot = await put(s, o); if (slot < 0) return null; return { genomeId: String(await field.sealSlice(L.emb + D * slot, D)), slot }; }),
+    slots: () => { try { return typeof field.slots === 'function' ? field.slots() : []; } catch (_) { return []; } }, // every live slot, others' too
     stats: async () => { const act = await read(L.act, N), prov = await read(L.prov, N); let own = 0, others = 0; for (let i = 0; i < N; i++) if (act[i] > 0) prov[i] === code ? own++ : prov[i] !== 0 && others++; return { own, others }; },
     close: () => serial(async () => { for (const id of [...held.keys()]) await free(id); })
   };

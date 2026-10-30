@@ -17,14 +17,16 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 21, verse: 18, part: 11, no: 56, all: 106 });
+  assert.deepEqual(C.counts(), { here: 23, verse: 18, part: 11, no: 54, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');
     if (t.status === 'here') assert.ok(t.to || t.run, t.id + ' runs here');
   }
-  // every video tool is honestly not on Verse: no video encoder ships in the browser
-  for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) assert.equal(t.status, 'no', t.id);
+  // video: MP4 and WEBM are written here (WebCodecs and /lib/video-mux.js); every other video tool is honestly not on Verse yet, with why
+  for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) assert.equal(t.status, ['video-mp4', 'video-webm'].includes(t.id) ? 'here' : 'no', t.id);
+  assert.match(C.toolOf('video-wmv').note, /no browser can code/); assert.equal(C.toolOf('video-mp4').to, 'mp4'); assert.equal(C.toolOf('video-webm').from, 'video');
+  assert.equal(C.search('mov to avi')[1].tool.id, 'video-mp4'); assert.equal(C.search('mov to webm')[0].tool.id, 'video-webm');
   assert.equal(C.toolOf('audio-wav').status, 'here'); assert.equal(C.toolOf('audio-mp3').status, 'no'); assert.equal(C.toolOf('image-png').status, 'here');
   assert.equal(C.toolOf('nope'), null);
 });
@@ -56,7 +58,7 @@ test('the format comes from the first bytes, not only from the name', () => {
   assert.equal(C.formatOf(new TextEncoder().encode('plain words')), 'txt');
   assert.equal(C.formatOf(C.epubOf({ title: 'T', paras: ['a'] })), 'epub');
   assert.deepEqual(C.targetsOf('jpeg'), ['png', 'webp', 'gif', 'bmp', 'tiff', 'pdf']);
-  assert.deepEqual(C.targetsOf('mp4'), ['wav', 'aiff']);
+  assert.deepEqual(C.targetsOf('mp4'), ['webm', 'wav', 'aiff']); assert.deepEqual(C.targetsOf('mov'), ['mp4', 'webm', 'wav', 'aiff']);
   assert.deepEqual(C.targetsOf('mobi'), []);
 });
 
