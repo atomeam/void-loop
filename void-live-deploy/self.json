@@ -542,13 +542,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T05:41:25Z",
+   "subject": "News: fix the page script so the headlines load again"
+  },
+  {
+   "at": "2026-10-30T05:39:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T05:36:28Z",
    "subject": "Coder: show a short non-JSON model reply, escaped and masked"
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T05:26:26Z",
    "subject": "video-write: keep every picture on slow devices"
-  },
-  {
-   "at": "2026-10-30T05:26:11Z",
-   "subject": "tower journeys: script the password strength floor (howsecureismypassword.net)"
-  },
-  {
-   "at": "2026-10-30T05:25:09Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
