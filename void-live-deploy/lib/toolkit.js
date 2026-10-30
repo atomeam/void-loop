@@ -304,7 +304,7 @@ function toolNamed(t) {
 /** the tool a missing address, or the words asked there, names ('/wordcount', '/password-generator/', '/search/?q=word+count'), as { href, label },
  * or null. For the 404 page (2026-10-30): a typed address one letter or one dash off a tool led to a page with nothing on it. Pure. */
 export function toolNear(pathname, q) {
-  let path = String(pathname || ''); try { path = decodeURIComponent(path); } catch { /* a broken escape stays as typed */ }
+  let path = String(pathname || ''); try { path = decodeURIComponent(path); } catch (e) { if (!(e instanceof URIError)) throw e; } // a broken escape (/%E0%A4) stays as typed
   const segs = path.replace(/\.html?$/i, '').split('/').map(plainName).filter(Boolean);
   for (const words of [String(q || '').trim(), segs.join(' '), segs[segs.length - 1] || '', segs[0] || '']) {
     if (!words) continue;
