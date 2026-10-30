@@ -2247,6 +2247,16 @@
     "says": "24\\.[34]"
   },
   {
+    "ask": "what is my bmi if i am 6 feet and 180 pounds",
+    "want": "calc",
+    "says": "24\\.4"
+  },
+  {
+    "ask": "bmi 180 lbs 6 ft",
+    "want": "calc",
+    "says": "24\\.4"
+  },
+  {
     "ask": "how many calories to lose a pound",
     "want": "calc|answer|article",
     "says": "3,?500"
