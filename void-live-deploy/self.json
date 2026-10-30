@@ -550,8 +550,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T09:45:50Z",
+   "subject": "Unit converter pages: write the SEO block the table gives them"
+  },
+  {
+   "at": "2026-10-30T09:44:06Z",
+   "subject": "Chords and piano hand-off: the browser check reads the real chord name, and a linked sheet counts every note"
+  },
+  {
+   "at": "2026-10-30T09:43:19Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T09:43:03Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T09:42:54Z",
+   "subject": "toolNear: catch only the URIError a broken escape throws"
+  },
+  {
+   "at": "2026-10-30T09:42:44Z",
+   "subject": "Verse's haunting signature voice: an octave shadow, a ghost in a dark hall, a slow chorus on the doubles"
+  },
+  {
    "at": "2026-10-30T09:42:11Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T09:41:23Z",
+   "subject": "Regenerate the import map after the merge of main"
   },
   {
    "at": "2026-10-30T09:40:54Z",
@@ -560,6 +588,14 @@
   {
    "at": "2026-10-30T09:40:51Z",
    "subject": "Verse Brain dreams: ideas, jobs and fixes from real memory, on /brain/ and in /team/ #work"
+  },
+  {
+   "at": "2026-10-30T09:40:15Z",
+   "subject": "404 page: offer the tool a missing address names"
+  },
+  {
+   "at": "2026-10-30T09:40:11Z",
+   "subject": "Regenerate the parity notes after the merge of main"
   },
   {
    "at": "2026-10-30T09:39:59Z",
@@ -592,42 +628,6 @@
   {
    "at": "2026-10-30T08:23:36Z",
    "subject": "Incident: the browser suite failed on 8491640e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:21:32Z",
-   "subject": "Incident: the browser suite failed on 69f381cc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:10:08Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T07:53:24Z",
-   "subject": "Dependency map: the drum kit"
-  },
-  {
-   "at": "2026-10-30T07:53:18Z",
-   "subject": "Real recorded drums: TR-808 and acoustic kit, ears hear drill at its beat"
-  },
-  {
-   "at": "2026-10-30T07:52:51Z",
-   "subject": "All-tools card: one chip per tool name, as /tools/ lists them"
-  },
-  {
-   "at": "2026-10-30T07:51:34Z",
-   "subject": "The bench keeps its judged runs in one batch, after the paintings"
-  },
-  {
-   "at": "2026-10-30T07:51:25Z",
-   "subject": "Conductor waits for the coder's model calls; every main head gets its own suite"
-  },
-  {
-   "at": "2026-10-30T07:50:48Z",
-   "subject": "Chords and piano hand off to each other; the six new sitemap pages count visits"
-  },
-  {
-   "at": "2026-10-30T07:50:05Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
