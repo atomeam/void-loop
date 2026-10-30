@@ -168,13 +168,19 @@ export const JOURNEYS = {
     if ((new URL(p.url()).searchParams.get('list') || '').split('\n').length !== 8) throw new Error('the random page dropped the list from its address (' + p.url() + '), so a reload or a copied link loses it');
     await check('the random page opened with the 8 players of the draft board, Cy Dee first, and keeps them in its link');
   },
-  'paint a picture, resize it, edit it in the photo tools, and paint a kept picture as a new sheet': async (p, check) => {
+  'paint a picture, resize it, edit the resized copy, edit it in the photo tools, and paint a kept picture as a new sheet': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the paint page opened with its picture');
     await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
     await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
     if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the picture again');
     await check('the resize page opened the painting and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit the resized photo' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
+    if (new URL(p.url()).searchParams.has('img')) throw new Error('the photo tools kept ?img=handoff in their address, so a reload opens the resized copy again');
+    const got = await p.locator('#dl').getAttribute('download');
+    if (!/-resized/.test(got || '')) throw new Error('the photo tools did not open the resized copy, they would save "' + got + '"');
+    await check('the photo tools opened the resized copy as ' + got + ': ' + (await p.locator('#line').textContent()));
     await open();
     await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit your painting in photo tools' }).click()]);
     await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
