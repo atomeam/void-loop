@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T09:42:11Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T10:11:34Z",
+   "subject": "Autopilot: a live page of what Verse did on its own"
   },
   {
-   "at": "2026-10-30T09:40:54Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T10:10:40Z",
+   "subject": "Wiring test: verify's groups are one per head since #1839"
   },
   {
-   "at": "2026-10-30T09:40:51Z",
-   "subject": "Verse Brain dreams: ideas, jobs and fixes from real memory, on /brain/ and in /team/ #work"
+   "at": "2026-10-30T10:10:03Z",
+   "subject": "Wiring test: verify's groups are one per head since #1839"
   },
   {
-   "at": "2026-10-30T09:39:59Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T10:08:18Z",
+   "subject": "Piano from C2 to C6; a page loads only the takes its music plays"
   },
   {
-   "at": "2026-10-30T08:58:35Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
+   "at": "2026-10-30T10:07:55Z",
+   "subject": "work: read \"software jobs in boston\", \"remote designer jobs\" and \"jobs in berlin\"; leave the jobs report alone"
   },
   {
-   "at": "2026-10-30T08:56:00Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com"
+   "at": "2026-10-30T10:05:38Z",
+   "subject": "Verse's keys play a real grand piano (free Steinway B recordings)"
   },
   {
-   "at": "2026-10-30T08:55:58Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
+   "at": "2026-10-30T10:01:49Z",
+   "subject": "date asks: say 1 week 1 day, not 1 weeks 1 days or 0 weeks 3 days"
   },
   {
-   "at": "2026-10-30T08:49:47Z",
-   "subject": "Verse fixes its sky skill: learn to handle \"current sky\""
-  },
-  {
-   "at": "2026-10-30T08:38:23Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T08:34:28Z",
-   "subject": "Incident: the browser suite failed on e89cf175 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:23:36Z",
-   "subject": "Incident: the browser suite failed on 8491640e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:21:32Z",
-   "subject": "Incident: the browser suite failed on 69f381cc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:10:08Z",
+   "at": "2026-10-30T10:00:02Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T07:53:24Z",
-   "subject": "Dependency map: the drum kit"
+   "at": "2026-10-30T09:58:24Z",
+   "subject": "Calendar hand-offs: an event opens its moment on /time/ and its weather on /weather/, and a PR job plays the hand-off journeys"
   },
   {
-   "at": "2026-10-30T07:53:18Z",
-   "subject": "Real recorded drums: TR-808 and acoustic kit, ears hear drill at its beat"
+   "at": "2026-10-30T09:55:00Z",
+   "subject": "Recipe card: a dish the page has built in answers offline, and \"for 8\" scales it"
   },
   {
-   "at": "2026-10-30T07:52:51Z",
-   "subject": "All-tools card: one chip per tool name, as /tools/ lists them"
+   "at": "2026-10-30T09:53:14Z",
+   "subject": "The studio, live: /image/ paints with the bench's best affordable model"
   },
   {
-   "at": "2026-10-30T07:51:34Z",
-   "subject": "The bench keeps its judged runs in one batch, after the paintings"
+   "at": "2026-10-30T09:52:07Z",
+   "subject": "Main green: one colon line is not a list of readings; the resizer loads its card module on first touch"
   },
   {
-   "at": "2026-10-30T07:51:25Z",
-   "subject": "Conductor waits for the coder's model calls; every main head gets its own suite"
+   "at": "2026-10-30T09:50:51Z",
+   "subject": "Answer \"who wrote pride and prejudice\": the author from Open Library's title search"
   },
   {
-   "at": "2026-10-30T07:50:48Z",
-   "subject": "Chords and piano hand off to each other; the six new sitemap pages count visits"
+   "at": "2026-10-30T09:50:44Z",
+   "subject": "Recipes: metric to US gives cups as a measuring cup holds them"
   },
   {
-   "at": "2026-10-30T07:50:05Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T09:49:34Z",
+   "subject": "Verse Brain dreams: cut a long why on a word, not inside one"
+  },
+  {
+   "at": "2026-10-30T09:49:21Z",
+   "subject": "The rap stage says which drums play: the real kit, or the synth when it did not load"
+  },
+  {
+   "at": "2026-10-30T09:48:54Z",
+   "subject": "converter: Make Split Screen Video (2 videos side by side or one above the other)"
+  },
+  {
+   "at": "2026-10-30T09:47:20Z",
+   "subject": "Router checks: the stub page backs the fake models' labelled replies"
+  },
+  {
+   "at": "2026-10-30T09:46:48Z",
+   "subject": "Team score asks: a sport's name is not a team (\"cricket scores\")"
+  },
+  {
+   "at": "2026-10-30T09:44:06Z",
+   "subject": "Chords and piano hand-off: the browser check reads the real chord name, and a linked sheet counts every note"
   }
  ],
  "builders": {

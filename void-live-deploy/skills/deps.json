@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1054,
+ "counted": 1056,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2128,7 +2128,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 55,
-   "tests": 11
+   "tests": 12
   },
   {
    "file": "lib/pages.js",
@@ -2404,6 +2404,13 @@
    "tests": 1
   },
   {
+   "file": "lib/studio.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/film-reviews.js",
    "skills": 0,
    "direct": 0,
@@ -2538,6 +2545,13 @@
   },
   {
    "file": "lib/aurora-feed.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/autopilot.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2696,13 +2710,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 2
-  },
-  {
-   "file": "lib/studio.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
   },
   {
    "file": "lib/team-mcp.js",
@@ -3384,6 +3391,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/autopilot.js": {
+   "imports": [
+    "lib/autopilot.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/bench.js": {
    "imports": [
     "lib/guard.js",
@@ -3623,6 +3636,7 @@
     "lib/models.js",
     "lib/art-rules.js",
     "functions/api/card-art.js",
+    "functions/api/studio.js",
     "lib/image-gen.js"
    ],
    "importedBy": [
@@ -3990,7 +4004,14 @@
     "lib/studio.js",
     "lib/image-gen.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/image.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js"
+   ]
   },
   "functions/api/support.js": {
    "imports": [
@@ -4735,6 +4756,12 @@
     "lib/approval-core.js",
     "lib/approval-gate.js",
     "skills/approve-card.js"
+   ]
+  },
+  "lib/autopilot.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/autopilot.js"
    ]
   },
   "lib/autopsy.js": {
@@ -11013,6 +11040,12 @@
    ],
    "importedBy": [
     "functions/api/studio.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js"
    ]
   },
   "lib/study-cards.js": {
