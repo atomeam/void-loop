@@ -120,7 +120,7 @@ test('the stability trend: a point a day per family from void.better.json, today
 });
 
 test('"what just shipped?" is about Verse (it came back as a Wikipedia line about the Just Cause games, 2026-10-19), and real shipping questions are left alone', () => {
-  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently']) assert.equal(growthOf(q), true, q);
+  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently', 'What got built', 'what got shipped today']) assert.equal(growthOf(q), true, q);
   for (const q of ['what shipped to my order', 'where did my package ship', 'what have you built', 'when does the iphone ship']) assert.equal(growthOf(q), false, q);
 });
 
