@@ -24,7 +24,7 @@
     "publisher": { "@type": "Organization", "name": "A-to-Mind", "url": "https://a-to-mind.com/" },
     "offers": [
       { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
-      { "@type": "Offer", "name": "Verse Pro (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
+      { "@type": "Offer", "name": "MultiVerse (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
     ]
   }
   </script>
@@ -126,16 +126,16 @@ jobs:
         <li>No account: your license key is your key</li>
       </ul>
       <a class="buy primary" id="sbuy" href="#pro" hidden rel="noopener">Buy Code Review Pro</a>
-      <p class="muted" id="ssoon">Opening soon on its own. It is in Verse Pro today.</p>
+      <p class="muted" id="ssoon">Opening soon on its own. It is in MultiVerse today.</p>
     </div>
     <div class="plan">
-      <h3>Verse Pro</h3>
-      <div class="price" id="price">MultiVerse</div>
+      <h3>MultiVerse</h3>
+      <div class="price" id="price"></div>
       <ul>
         <li>Code Review Pro included, up to 5 keys</li>
         <li>Plus everything else MultiVerse adds: more model answers, private skills, a higher cap on actions you confirm</li>
       </ul>
-      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Verse Pro</a>
+      <a class="buy" id="buy" href="/members/">Join MultiVerse</a>
     </div>
   </div>
 
@@ -176,7 +176,6 @@ jobs:
 <script>
 (function () {
   'use strict';
-  var GUMROAD = 'https://moonbeam846.gumroad.com/l/yinmj';
   var me = null; try { me = JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null'); } catch (e) { me = null; }
   var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   var auth = function (h) { h = h || {}; h['content-type'] = 'application/json'; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
@@ -189,9 +188,8 @@ jobs:
     l.textContent = 'This month Verse\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
     l.hidden = false;
   }).catch(function (e) { console.warn('[code-review] the scoreboard line could not load', e); }); // the line simply stays hidden
-  // buying while signed in carries your Verse's id, so the purchase unlocks that Verse
-  if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
-  else { var bb = document.getElementById('buy'); bb.href = '/?q=' + encodeURIComponent('remember me'); bb.textContent = 'Sign in to get Verse Pro'; } // signed out: sign in first, so the purchase carries the Verse id
+  // the MultiVerse card hands off to /members/, the one page that joins: it signs you in first, carries your Verse's id to the
+  // checkout, links a receipt ("Already joined?") and shows a member as a member (members/members.js)
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
     if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
     var b = document.getElementById('sbuy'); b.href = o.standalone.url; b.hidden = false; document.getElementById('ssoon').hidden = true;
@@ -237,7 +235,8 @@ jobs:
     fetch('/api/review', { headers: auth() }).then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); }).then(function (x) {
       var s = x[0], j = x[1];
       if (s !== 200) { area.appendChild(el('p', 'muted', s === 401 ? 'Your sign-in has expired: sign in again at a-to-mind.com.' : 'Keys are unavailable right now.')); return; }
-      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with Verse Pro; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
+      if (j.tier === 'paid') document.getElementById('buy').textContent = 'You are on MultiVerse';
+      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with MultiVerse; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
       var ul = el('ul'); ul.id = 'keys';
       (j.keys || []).forEach(function (k) {
         var li = el('li', null, k.prefix + '…  made ' + String(k.at).slice(0, 10) + ' · ' + (k.total || 0) + ' closer reads ');

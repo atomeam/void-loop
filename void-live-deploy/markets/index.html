@@ -186,7 +186,7 @@
 <script type="module">
   // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, M] = await Promise.all([import('/lib/toolkit.js'), import('/lib/markets.js')]);
+    const [{ mountRelated }, M, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/markets.js'), import('/lib/markets-card.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.markets.v1', qs = new URLSearchParams(location.search);
     let store = { list: [], q: {}, last: 'AAPL' };
     try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
@@ -367,7 +367,7 @@
 
     if (qs.get('c')) { state.cmp = qs.get('c'); $('cmp').value = state.cmp; }
     setWatch(); paintList(); load(); if (list().length) refresh(); loadStrip(); loadMovers();
-    mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }]);
+    mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }], { card: () => cardAsk(state.sym) }); // a coin open here: its own price card, not the board
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

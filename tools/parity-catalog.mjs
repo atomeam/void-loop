@@ -572,7 +572,7 @@ export const CATALOG = {
   // those rows stay partial or missing until it does. No row is made to pass.
   '/converter/': [
     ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('aviOf|wmvOf|flvOf'), T("mkv: container === 'mkv'"), ['onlineconverter.com']],
-    ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA', T('audio converter'), T('lamejs|mp3Encoder'), T('aiff\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
+    ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet)', T('audio converter'), T('lamejs|mp3Encoder'), T('flac\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
     ['image-convert', 'Convert', 'Image converters: JPG, BMP, DNG, GIF, PDF, PNG, TIFF and WEBP', T('image converter'), T('dngOf|writeDng'), T('tiff\\(pixels\\(c\\)\\)'), ['onlineconverter.com']],
     ['ebook-convert', 'Convert', 'Ebook converters: EPUB, AZW, DOCX, HTML, MOBI, PDF, RTF and TXT', T('ebook converter'), T('mobiOf|azwOf'), T('epubOf\\('), ['onlineconverter.com']],
     ['document-convert', 'Convert', 'Document converters (PDF, DOCX, HTML, TXT) that keep the layout', T('document converter'), T('keepLayout|layoutOf'), T('docxBytesOf\\('), ['onlineconverter.com']],
