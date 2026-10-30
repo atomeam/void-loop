@@ -6926,5 +6926,10 @@
   {"ask": "agent workspace", "want": "skill:team-chat"},
   {"ask": "random uuid", "want": "skill:uuid"},
   {"ask": "another uuid", "want": "skill:uuid"},
-  {"ask": "random guid", "want": "skill:uuid"}
+  {"ask": "random guid", "want": "skill:uuid"},
+  {"ask": "hangman", "want": "skill:hangman"},
+  {"ask": "play hangman", "want": "skill:hangman"},
+  {"ask": "start hangman", "want": "skill:hangman"},
+  {"ask": "should I go", "want": "skill:yesno"},
+  {"ask": "yesno", "want": "skill:yesno"}
 ]
