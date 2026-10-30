@@ -455,7 +455,7 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/success-pulse.js",
