@@ -1158,3 +1158,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T05:26:10Z | claude | fix | scripted the password strength journeys (check a password; share the checker and reopen it, with nothing typed in the link)
 2026-10-30T05:17:37Z | claude | grow | The Flip page's stage card now flips the coin open on the page, and the stage's coin card opens the Flip page on the same coin
 2026-10-30T05:15:13Z | claude | grow | The Generators page's stage card now shows the generator open on the page, and the stage's generator card opens the page on the same generator and seed
+2026-10-30T05:35:19Z | claude | grow | Resize image page card: See it as a card on the stage shows the resizer at the size on the form (never the picture), and the stage card opens the page at that size
