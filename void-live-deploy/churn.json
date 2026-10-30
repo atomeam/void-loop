@@ -1,5 +1,5 @@
 {
- "at": "2026-10-30T02:16:05.841Z",
+ "at": "2026-10-30T02:24:09.577Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -46,7 +46,7 @@
   },
   {
    "file": "tools/bench.json",
-   "changes": 35
+   "changes": 36
   },
   {
    "file": "domains/tower-self.json",
@@ -177,6 +177,10 @@
    "changes": 16
   },
   {
+   "file": "void-live-deploy/void.asks.json",
+   "changes": 16
+  },
+  {
    "file": "docs/PARITY/github.md",
    "changes": 15
   },
@@ -202,10 +206,6 @@
   },
   {
    "file": "void-live-deploy/lib/calendar.js",
-   "changes": 15
-  },
-  {
-   "file": "void-live-deploy/void.asks.json",
    "changes": 15
   },
   {
