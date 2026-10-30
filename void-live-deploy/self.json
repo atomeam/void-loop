@@ -550,16 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T11:54:28Z",
-   "subject": "Refresh deps and the parity docs whose lines moved"
+   "at": "2026-10-30T12:07:49Z",
+   "subject": "rentbuy: a headline that fits the card"
   },
   {
-   "at": "2026-10-30T11:53:34Z",
-   "subject": "Currency answers open their pair on Markets"
+   "at": "2026-10-30T12:01:29Z",
+   "subject": "calculators page: preload lib/rentbuy.js"
   },
   {
-   "at": "2026-10-30T11:46:19Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T11:55:05Z",
+   "subject": "rentbuy: rent or buy worked out on the visitor's own numbers, with no opinion"
   },
   {
    "at": "2026-10-30T11:44:42Z",
@@ -594,10 +594,6 @@
    "subject": "guide: refresh after the families tiers"
   },
   {
-   "at": "2026-10-30T11:31:50Z",
-   "subject": "File the recipe card under Body and mind, next to food"
-  },
-  {
    "at": "2026-10-30T11:31:27Z",
    "subject": "families: refresh the tiers, stale on main"
   },
@@ -628,6 +624,10 @@
   {
    "at": "2026-10-30T11:20:07Z",
    "subject": "Better at local stations and open tool: 6 more ways of asking answered right — new phrases: “local radio” now opens local-stations; “radio…"
+  },
+  {
+   "at": "2026-10-30T11:19:37Z",
+   "subject": "video: open the clip with rel=noopener noreferrer"
   }
  ],
  "builders": {

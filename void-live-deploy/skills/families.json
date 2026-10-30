@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 2,
-  "checked": 6,
+  "checked": 7,
   "proven": 376
  },
  "families": [
@@ -1304,7 +1304,7 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 0,
+    "checked": 1,
     "proven": 23
    },
    "skills": [
@@ -1363,6 +1363,14 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "streak": 11
+    },
+    {
+     "name": "rentbuy",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "the benchmark",
+     "success_rate": 1
     },
     {
      "name": "savings",
