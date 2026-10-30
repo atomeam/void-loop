@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1027,
+ "counted": 1028,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1123,6 +1123,13 @@
    "tests": 1
   },
   {
+   "file": "lib/calc-units.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 25,
+   "tests": 2
+  },
+  {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
@@ -1317,13 +1324,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 1
-  },
-  {
-   "file": "lib/calc-units.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 2
   },
   {
    "file": "lib/keep-going.js",
@@ -2128,7 +2128,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 20,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/character.js",
@@ -2160,6 +2160,13 @@
   },
   {
    "file": "lib/markets-record.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
+   "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20,
@@ -3131,6 +3138,7 @@
     "lib/self-context.js",
     "lib/own-card.js",
     "lib/answer-honesty.js",
+    "lib/measure-ask.js",
     "lib/draft.js",
     "lib/memory-scope.js",
     "lib/memory-core.js",
@@ -5102,9 +5110,30 @@
    "importedBy": [
     "lib/calculators.js",
     "lib/formula-engine.js",
-    "lib/keypad.js"
+    "lib/keypad.js",
+    "lib/measure-ask.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js",
     "skills/formulas.js"
    ]
   },
@@ -7497,6 +7526,35 @@
   "lib/md.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/measure-ask.js": {
+   "imports": [
+    "lib/calc-units.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/media-local.js": {
    "imports": [
