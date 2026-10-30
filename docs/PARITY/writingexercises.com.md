@@ -12,9 +12,9 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Many generators (names, places, ideas) | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:77 `<h1 id="title">Random generators</h1>` |
-| Generate again with one press | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:87 `button" class="go" id="regen">Regenerate</button>` |
-| Writing prompts | Writing | have | studied by hand: writingexercises.com offers this (https://www.writingexercises.com/) | void-live-deploy/generators/index.html:118 `href="/generators/?g=writing-prompts">Writing prompts</a><a href="/generators/?g=dnd-npcs` |
+| Many generators (names, places, ideas) | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:79 `<h1 id="title">Random generators</h1>` |
+| Generate again with one press | Generators | have | every site of this kind offers it | void-live-deploy/generators/index.html:89 `button" class="go" id="regen">Regenerate</button>` |
+| Writing prompts | Writing | have | studied by hand: writingexercises.com offers this (https://www.writingexercises.com/) | void-live-deploy/generators/index.html:120 `href="/generators/?g=writing-prompts">Writing prompts</a><a href="/generators/?g=dnd-npcs` |
 | Subscribe | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Information Collection Notice | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | turn on JavaScript | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
