@@ -55,7 +55,7 @@ export const pageOk = (status, text) => status === 200 && /<html[\s>]/i.test(Str
 
 const owner = () => process.env.VOID_OWNER_TOKEN || process.env.VOID_MISSES_TOKEN || '';
 const headers = (json) => ({ authorization: 'Bearer ' + owner(), 'user-agent': 'a2m-team-gate/1.0', ...(json ? { 'content-type': 'application/json' } : {}) });
-const gh = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }) || 'null');
+const gh = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60e3 }) || 'null');
 
 /** the newest successful deploy holds this merge commit (the compare from the merge to the deploy is ahead or identical) */
 function deployed(sha) {
@@ -87,11 +87,11 @@ async function main() {
       if (v.pages) {
         if (!deployed(pr.merge_commit_sha)) v = { wait: 'its merge is not deployed yet' };
         else {
-          for (const p of v.pages) {
-            const r = await fetch(SITE + p, { redirect: 'follow' }).catch(() => null), text = r ? await r.text().catch(() => '') : '';
-            if (!pageOk(r ? r.status : 0, text)) { v = { back: 'the live page ' + p + ' answered ' + (r ? 'HTTP ' + r.status : 'nothing') }; break; }
-          }
-          if (v.pages) v.live = 'live: ' + h.url + (v.pages.length ? ' · checked ' + v.pages.join(' ') : '');
+          const read = (p) => fetch(SITE + p, { redirect: 'follow', signal: AbortSignal.timeout(30e3) })
+            .then(async (r) => ({ p, status: r.status, text: await r.text().catch(() => '') }), () => ({ p, status: 0, text: '' }));
+          const bad = (await Promise.all(v.pages.map(read))).find((r) => !pageOk(r.status, r.text));
+          v = bad ? { back: 'the live page ' + bad.p + ' answered ' + (bad.status ? 'HTTP ' + bad.status : 'nothing') }
+            : { live: 'live: ' + h.url + (v.pages.length ? ' · checked ' + v.pages.join(' ') : '') };
         }
       }
     } catch (e) { v = { wait: 'not read: ' + String((e && e.message) || e).slice(0, 80) }; }
