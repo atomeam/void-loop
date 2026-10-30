@@ -550,6 +550,18 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:16:52Z",
+   "subject": "A stated quantity is answered with its conversion even when the model refuses"
+  },
+  {
+   "at": "2026-10-30T06:13:47Z",
+   "subject": "converter: Merge EPUB on the device"
+  },
+  {
+   "at": "2026-10-30T06:12:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T06:10:23Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -560,6 +572,10 @@
   {
    "at": "2026-10-30T06:09:25Z",
    "subject": "openapi: mark /api/rapvoice as Verse's own (the rap page is its only caller)"
+  },
+  {
+   "at": "2026-10-30T06:09:00Z",
+   "subject": "Family health: the growth score part says when no family moves it, and its check holds on a fixture"
   },
   {
    "at": "2026-10-30T06:08:47Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T06:00:10Z",
    "subject": "converter: Remove Noise from Audio on the device"
-  },
-  {
-   "at": "2026-10-30T05:55:44Z",
-   "subject": "Growth: \"What got built\" opens the growth ledger, not a not-found card"
-  },
-  {
-   "at": "2026-10-30T05:55:09Z",
-   "subject": "Refresh deps.json for lib/measure-ask.js"
-  },
-  {
-   "at": "2026-10-30T05:54:52Z",
-   "subject": "converter: Increase MP3 Volume keeps the MP3, with no new coding"
-  },
-  {
-   "at": "2026-10-30T05:53:54Z",
-   "subject": "Sitemap lists the 12 linked pages it missed; self-check counts a studio's own \"Use with\" row"
   }
  ],
  "builders": {
