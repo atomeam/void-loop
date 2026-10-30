@@ -175,6 +175,9 @@ export const JOURNEYS = {
     await p.waitForFunction((was) => location.hash && location.hash !== was && !location.search, before, { timeout: 15000 });
     const stops = await p.locator('#stops .stop').count();
     if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
+    // an unpainted sheet is all paper: the gradient has to come from the picture's own colours, not from near-white paper
+    const hexes = new URL(p.url()).hash.split('-').slice(1).map((s) => s.slice(0, 6)), pale = (x) => [0, 2, 4].every((i) => parseInt(x.slice(i, i + 2), 16) > 0xe8);
+    if (hexes.every(pale)) throw new Error('the gradient page read only paper white from the painting: ' + hexes.join(', '));
     await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
     // its own links follow at once, with no hover or press first: the colour page link opens the first stop read from the painting
     const first = new URL(p.url()).hash.split('-')[1].slice(0, 6), link = await p.locator('#related a', { hasText: 'Open its first colour' }).getAttribute('href');
