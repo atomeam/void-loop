@@ -27,7 +27,7 @@ jobs:
   test:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30 # the test step has its own 12 minutes; the claims check after it must still get its turn
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,11 +37,14 @@ jobs:
           node-version: 22
       - run: npm ci --no-audit --no-fund
       - name: Test the live site and pick this run's improvement
+        timeout-minutes: 12 # a slow pass used to hit the job limit and cancel the whole run, so the claims list froze (last kept 2026-10-22)
+        continue-on-error: true
         env:
           CHROME_PATH: /usr/bin/google-chrome
         run: node tools/site-test.mjs --improve --shots site-test-shots || echo "::warning title=Site test::a regression case failed (the issue step files it once)"
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true # screenshots are a convenience; a storage timeout must not skip the claims check below
         with:
           name: site-test-shots
           path: site-test-shots/

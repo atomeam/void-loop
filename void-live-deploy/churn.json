@@ -1,5 +1,5 @@
 {
- "at": "2026-10-30T02:41:59.006Z",
+ "at": "2026-10-30T03:47:08.460Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
@@ -14,7 +14,7 @@
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 74
+   "changes": 75
   },
   {
    "file": "domains/handoff.md",
@@ -22,7 +22,7 @@
   },
   {
    "file": "tools/families.mjs",
-   "changes": 51
+   "changes": 52
   },
   {
    "file": "tools/tower-gate.mjs",
@@ -34,11 +34,11 @@
   },
   {
    "file": "void-live-deploy/lib/seo.js",
-   "changes": 46
+   "changes": 47
   },
   {
    "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 44
+   "changes": 45
   },
   {
    "file": "tools/tower-gate.test.mjs",
@@ -46,19 +46,19 @@
   },
   {
    "file": "tools/bench.json",
-   "changes": 38
+   "changes": 40
   },
   {
    "file": "domains/tower-self.json",
-   "changes": 32
+   "changes": 34
   },
   {
    "file": "tools/card-cycle.json",
-   "changes": 30
+   "changes": 31
   },
   {
    "file": "tools/grow-self.state.json",
-   "changes": 30
+   "changes": 31
   },
   {
    "file": "tools/tower.test.mjs",
@@ -66,11 +66,11 @@
   },
   {
    "file": "domains/conductor.json",
-   "changes": 27
+   "changes": 28
   },
   {
    "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 27
+   "changes": 28
   },
   {
    "file": "void-live-deploy/lib/guard.js",
@@ -82,7 +82,7 @@
   },
   {
    "file": "void-live-deploy/fanfic/index.html",
-   "changes": 25
+   "changes": 26
   },
   {
    "file": "tools/toolkit.test.mjs",
@@ -106,14 +106,14 @@
   },
   {
    "file": "void-live-deploy/skills/verse-brain.js",
+   "changes": 22
+  },
+  {
+   "file": "void-live-deploy/random/index.html",
    "changes": 21
   },
   {
    "file": "void-live-deploy/lib/art-rules.js",
-   "changes": 20
-  },
-  {
-   "file": "void-live-deploy/random/index.html",
    "changes": 20
   },
   {
@@ -130,15 +130,19 @@
   },
   {
    "file": "void-live-deploy/tower.size.json",
-   "changes": 18
+   "changes": 19
   },
   {
    "file": "void-live-deploy/color/index.html",
-   "changes": 17
+   "changes": 18
   },
   {
    "file": "void-live-deploy/generators/index.html",
-   "changes": 17
+   "changes": 18
+  },
+  {
+   "file": "void-live-deploy/void.asks.json",
+   "changes": 18
   },
   {
    "file": "void-live-deploy/lib/similar-index.js",
@@ -149,8 +153,8 @@
    "changes": 17
   },
   {
-   "file": "void-live-deploy/void.asks.json",
-   "changes": 17
+   "file": "tools/real-pages.mjs",
+   "changes": 16
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
@@ -189,11 +193,19 @@
    "changes": 15
   },
   {
-   "file": "tools/real-pages.mjs",
+   "file": "docs/TAGTEAM.md",
    "changes": 15
   },
   {
    "file": "tools/skill-matchers.test.mjs",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/base-converter/index.html",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/base64/index.html",
    "changes": 15
   },
   {
@@ -209,15 +221,23 @@
    "changes": 15
   },
   {
+   "file": "void-live-deploy/resize-image/index.html",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/time/index.html",
+   "changes": 15
+  },
+  {
+   "file": "void-live-deploy/wheel/index.html",
+   "changes": 15
+  },
+  {
+   "file": "docs/HANDOFF-GAPS.md",
+   "changes": 14
+  },
+  {
    "file": "docs/PARITY/lichess.md",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/base-converter/index.html",
-   "changes": 14
-  },
-  {
-   "file": "void-live-deploy/base64/index.html",
    "changes": 14
   },
   {
@@ -225,11 +245,11 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/recipes/index.html",
+   "file": "void-live-deploy/password-strength/index.html",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/resize-image/index.html",
+   "file": "void-live-deploy/recipes/index.html",
    "changes": 14
   },
   {
@@ -237,20 +257,8 @@
    "changes": 14
   },
   {
-   "file": "void-live-deploy/time/index.html",
-   "changes": 14
-  },
-  {
    "file": "void-live-deploy/translate/index.html",
    "changes": 14
-  },
-  {
-   "file": "void-live-deploy/wheel/index.html",
-   "changes": 14
-  },
-  {
-   "file": "docs/HANDOFF-GAPS.md",
-   "changes": 13
   },
   {
    "file": "tools/brain.test.mjs",
@@ -261,7 +269,15 @@
    "changes": 13
   },
   {
-   "file": "void-live-deploy/password-strength/index.html",
+   "file": "void-live-deploy/random-user/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/weather/index.html",
+   "changes": 13
+  },
+  {
+   "file": "void-live-deploy/word-count/index.html",
    "changes": 13
   }
  ]
