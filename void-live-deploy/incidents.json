@@ -2,6 +2,45 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T08:23:36.059Z",
+   "sha": "8491640e271712bd6818e9627e02ce3811cd2c90",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41022953581",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page"
+   ],
+   "touched": [
+    "tools/toolkit-skill.test.mjs",
+    "tools/toolkit.test.mjs",
+    "void-live-deploy/lib/toolkit.js",
+    "void-live-deploy/skills/toolkit.js",
+    ".github/workflows/studio-look.yml",
+    ".github/workflows/verify.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "growth/entries/20261030T073921Z-claude-83d771ea.json",
+    "tools/brain-map.test.mjs",
+    "tools/checks.mjs",
+    "tools/coder-route.test.mjs",
+    "tools/conductor-core.mjs"
+   ],
+   "shards": [
+    2,
+    4
+   ]
+  },
+  {
    "at": "2026-10-30T08:21:32.007Z",
    "sha": "69f381cca178df113fa066fced8f8e7427bb5f0e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41022873385",
@@ -1004,51 +1043,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 1263
-  },
-  {
-   "at": "2026-10-28T20:17:01.690Z",
-   "sha": "6c3dad22dce86ea1623d4287a2e8b8a926dc9288",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40757410187",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent as a noun: \"the product page launch on Friday\" plans \"launch the product page\": a countdown, a launch's own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)",
-    "open plan: \"plan my garden\" asks the answer engine (mode plan) for the steps and puts them up as one checklist, says they came from the engine; \"plan my day\" adds nothing",
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
-    "3D list: a grocery list gets one card and no clipboard beside it; rowsOf/newlyDone still find the ticked line (not a removed one) and the paper shows at most 7 lines",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "body: \"put it on the stage\" makes the meals checklist",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "intent without a day: \"plan my move\" brings the move's steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day",
-    "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
-    "intent preview: \"preview I need to ship the product page by Friday\" shows the goal, the dated steps and the pieces that would come with nothing on the stage, \"not what I meant\" sends the intent to the miss board tagged intent:misread, and \"put it on the stage\" then brings the countdown, the list and the calendar entry",
-    "plan history: the plan is kept with its goal and pieces"
-   ],
-   "touched": [
-    "tools/checks.mjs",
-    "tools/scrim.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/scrim.js",
-    "void-live-deploy/tournaments/index.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1360
   }
  ]
 }
