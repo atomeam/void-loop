@@ -17,7 +17,7 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 61, verse: 18, part: 11, no: 16, all: 106 });
+  assert.deepEqual(C.counts(), { here: 62, verse: 18, part: 11, no: 15, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');
@@ -25,7 +25,7 @@ test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the 
   }
   // video: MP4, MOV, WEBM and MKV are written here and 15 edits run here (WebCodecs, /lib/video-write.js, /lib/video-mux.js); the rest are
   // honestly not on Verse yet, each with why
-  const NOT_YET = ['video-wmv', 'make-split-screen-video', 'repair-mp4', 'stabilize-video'];
+  const NOT_YET = ['video-wmv', 'repair-mp4', 'stabilize-video'];
   for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) { assert.equal(t.status, NOT_YET.includes(t.id) ? 'no' : t.id === 'video-3gp' ? 'part' : 'here', t.id); if (t.status === 'no') assert.doesNotMatch(t.note, /does not do this yet/, t.id + ' says the real reason'); }
   for (const id of ['audio-to-video', 'remove-audio-from-video', 'gif-to-video', 'image-to-video', 'pdf-to-video']) { assert.equal(C.toolOf(id).status, 'here', id); assert.equal(C.toolOf(id).run, 'video', id); }
   // sound: WAV, AIFF, FLAC and ALAC with Verse's own encoders, OGG and OPUS with the browser's Opus encoder, M4A and M4R with its AAC
