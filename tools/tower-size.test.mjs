@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls, rankableControls } from '../void-live-deploy/lib/tower-weight.js';
+import { measure, weightOf, weightBand, bytesLabel, controlsOf, trustedControls, rankableControls, renderDrop } from '../void-live-deploy/lib/tower-weight.js';
 import { tower, easeLine } from '../void-live-deploy/lib/tower.js';
 import { planSizes, usable, isTool, renderedControls, openBrowser, within, shellOf } from './tower-size.mjs';
 
@@ -169,4 +169,18 @@ test('planSizes reads again a rendered row not yet checked for a bot wall or a c
   const file = { sites: { 'a.com': { controls: 9, counted: 'rendered', shell: 'none', at: '2026-10-29' }, 'b.com': { controls: 3, counted: 'rendered', at: '2026-10-29' } } };
   assert.deepEqual(planSizes({ sites, file, now, rendered: true }).map((s) => s.host), ['b.com']);
   assert.deepEqual(planSizes({ sites, file, now, rendered: false }).map((s) => s.host), [], 'without a browser it waits for a run that renders');
+});
+
+test('a rendered count far under the raw count is a block, not a small site (coinflip.tech rendered 5 of 149, generatorguru.com 4 of 356)', () => {
+  assert.equal(renderDrop({ counted: 'rendered', controls: 5, htmlControls: 149 }), true);
+  assert.equal(renderDrop({ counted: 'rendered', controls: 3, htmlControls: 3 }), false, 'the same count is the page');
+  assert.equal(renderDrop({ counted: 'rendered', controls: 9, htmlControls: 3 }), false, 'scripts that add controls are the page');
+  assert.equal(renderDrop({ counted: 'rendered', controls: 290, htmlControls: 1858 }), false, 'a big page stays big either way');
+  assert.equal(rankableControls({ counted: 'rendered', shell: 'none', controls: 4, htmlControls: 356 }), null);
+  const rank = { ranks: {}, order: {}, list: {} };
+  const size = { sites: {
+    'random.org': { bytes: 90000, controls: 4, htmlControls: 356, counted: 'rendered', shell: 'none', scripts: 3, nodes: 300, routes: 10 },
+    'isitchristmas.com': { bytes: 700, controls: 9, htmlControls: 9, counted: 'rendered', shell: 'none', scripts: 0, nodes: 20, routes: 0 } } };
+  const t = tower([], {}, null, null, rank, size), at = (id) => t.floors.findIndex((f) => f.id === id);
+  assert.ok(at('is it') < at('random number'), 'the real 9 stands before the blocked 4');
 });
