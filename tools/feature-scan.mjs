@@ -148,7 +148,7 @@ export function parseModelFeatures(text) {
 const SCHEMA = { name: 'features', schema: { type: 'object', properties: { features: { type: 'array', items: { type: 'object', properties: { name: { type: 'string' }, detail: { type: 'string' }, paid: { type: 'boolean' } }, required: ['name', 'detail', 'paid'] } } }, required: ['features'] } };
 /** one Workers AI call for a site's features, or null (no credentials, an error, an answer that is not the JSON asked for) */
 async function modelFeatures(host, pages) {
-  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return null;
+  const acct = process.env.CLOUDFLARE_ACCOUNT_ID, tok = process.env.CLOUDFLARE_AI_TOKEN || process.env.CLOUDFLARE_API_TOKEN; if (!acct || !tok) return null;
   try {
     const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + FREE_MODEL, { method: 'POST', signal: AbortSignal.timeout(60000),
       headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages: messagesOf(host, pages), max_tokens: 2000, response_format: { type: 'json_schema', json_schema: SCHEMA } }) });
