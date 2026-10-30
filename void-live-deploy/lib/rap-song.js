@@ -97,19 +97,30 @@ export function evenWords(timing) {
 
 /** one song, made once and kept: song.beat() and song.voice() each render the first time they are asked and give the same answer after.
  *  opts.tune (from Verse's ears) retimes the beat and masters the mix; song.retune(tune) is the same rap with another tune, sharing the voice
- *  Verse already fetched, so a new take costs no new voice requests. */
+ *  Verse already fetched, so a new take costs no new voice requests. A retune on the same tempo and swing (a new master alone) also shares the
+ *  rendered beat, voice and unmastered mix, so it costs no rendering at all. */
 export function songOf(r, s, opts = {}) {
-  const tune = opts.tune && !isPlain(opts.tune) ? { ...TUNE0, ...opts.tune } : null, plan = planOf(r, s, tune); let beatP = null, voiceP = null, clipsP = opts.clips || null;
+  const tune = opts.tune && !isPlain(opts.tune) ? { ...TUNE0, ...opts.tune } : null, plan = planOf(r, s, tune), shared = opts.shared || null; let beatP = null, voiceP = null, rawP = null, clipsP = opts.clips || null;
   const clips = (onProgress) => (clipsP = clipsP || clipsOf(plan, { ...opts, onProgress }).catch(() => ({ clips: [], adlibClips: [], note: 'the voice did not load' })));
+  const beat = () => (shared ? shared.beat() : (beatP = beatP || renderBeat(plan, opts).catch(() => null)));
+  const voice = (onProgress) => (shared ? shared.voice(onProgress) : (voiceP = voiceP || renderVoice(plan, { ...opts, flow: s.flow, onProgress, clips: clips(onProgress) }).catch(() => ({ stem: null, words: [], bars: [], voiced: 0, note: 'the voice did not load' }))));
+  /** the beat and the voice summed, before any master: [L, R], or null without offline audio. With the voice it is made once and kept. */
+  const raw = (withVoice = true) => {
+    if (!withVoice) return beat().then((b) => (b ? mixStems(b, null) : null));
+    if (shared) return shared.raw(true);
+    return (rawP = rawP || (async () => { const b = await beat(); if (!b) return null; const v = await voice(); return mixStems(b, v && v.stem); })());
+  };
+  const self = { beat, voice, raw };
   return {
-    plan, tune,
-    beat: () => (beatP = beatP || renderBeat(plan, opts).catch(() => null)),
-    voice: (onProgress) => (voiceP = voiceP || renderVoice(plan, { ...opts, flow: s.flow, onProgress, clips: clips(onProgress) }).catch(() => ({ stem: null, words: [], bars: [], voiced: 0, note: 'the voice did not load' }))),
+    plan, tune, beat, voice, raw,
     /** the mixed song as [L, R] (the beat alone when there is no voice), mastered by the tune when there is one; null without offline audio */
-    async mix(withVoice = true) { const b = await this.beat(); if (!b) return null; const v = withVoice ? await this.voice() : null; const [L, R] = mixStems(b, v && v.stem); return tune ? master(L, R, RATE, tune) : [L, R]; },
+    async mix(withVoice = true) { const m = await raw(withVoice); if (!m) return null; return tune ? master(m[0], m[1], RATE, tune) : m; },
     /** the whole song as a stereo WAV */
     async wav(withVoice = true) { const m = await this.mix(withVoice); return m ? wavStereo(m[0], m[1]) : null; },
     /** the same rap with another tune */
-    retune: (next) => songOf(r, s, { ...opts, tune: next, clips: clips() }),
+    retune(next) {
+      const p = planOf(r, s, next && !isPlain(next) ? { ...TUNE0, ...next } : null), same = p.beat.bpm === plan.beat.bpm && p.beat.swing === plan.beat.swing;
+      return songOf(r, s, { ...opts, tune: next, clips: clips(), shared: same ? (shared || self) : null });
+    },
   };
 }

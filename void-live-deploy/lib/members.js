@@ -27,6 +27,7 @@ export const PERKS = Object.freeze([
   { id: 'films', title: 'Review Verse\'s films', text: 'Rate each new Verse film on the films page and leave a note. The owner reads every one.' },
   { id: 'mark', title: 'The MultiVerse mark', text: 'Your stage and your published page show the MultiVerse mark in the corner. It opens this page.' },
   { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
+  { id: 'share', title: 'Your page shares as yours', text: 'A link to your published page shows your name and your cards in iMessage, Discord, X and Slack, not the Verse home card.' },
 ]);
 export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
@@ -78,7 +79,8 @@ export const jobAsk = (text) => 'A paid member asked Verse to add this (their wo
  * and the queue row is written only when the idea row was, in one batch (one transaction), so two sends at the same moment
  * cannot both pass a count read before either was written. */
 export async function queueIdea(env, userId, text, now = Date.now()) {
-  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm';
+  // the job id carries the idea's own random tail: two ideas in the same millisecond (two members, or one quick sender) are two jobs, not a clash that loses the second
+  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm' + id.slice(-4);
   const r = await env.DB.batch([
     env.DB.prepare('INSERT INTO void_member_ideas (id, user_id, text, at, job) SELECT ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 10) = ?) < ? AND (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 7) = ?) < ?')
       .bind(id, userId, text, at, job, userId, at.slice(0, 10), DAILY, userId, at.slice(0, 7), MONTHLY),

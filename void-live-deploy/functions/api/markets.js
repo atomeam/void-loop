@@ -146,26 +146,31 @@ export async function batch(request, env, list, f) {
 // the coin table (CoinGecko's top 50 by market cap, one call) and the screener's universe (16 shares and indices from the same quote cache, 30 coins in one call)
 const geckoMarkets = (f, qs) => get(f, 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&sparkline=true&price_change_percentage=24h,7d&' + qs);
 export const SCAN_STOCKS = [...MOVERS, 'SPX', 'DJI', 'NDX', 'IXIC'];
-/** Yahoo's spark answer (several symbols in one call) as { 'BTC-USD': { price, prev, closes[] } }. Both shapes it is known to send are read. Pure. */
+/** Yahoo's spark answer (several symbols in one call) as { 'BTC-USD': { price, prev, closes[] } }. Both shapes it is known to send are read. prev is the day before the
+ *  last daily close: Yahoo's chartPreviousClose is the close before the whole range (live 2026-10-30: the 24h move then read the same as the 7d move). Pure. */
 export function parseSpark(j) {
-  const out = {}, put = (sym, meta, close, prevClose) => { const c = (close || []).filter((v) => Number.isFinite(v)); const price = Number.isFinite(meta && meta.regularMarketPrice) ? meta.regularMarketPrice : c[c.length - 1]; if (sym && Number.isFinite(price) && price > 0) out[sym] = { price, prev: Number.isFinite(prevClose) ? prevClose : c.length > 1 ? c[c.length - 2] : null, closes: c }; };
+  const out = {}, put = (sym, meta, close, prevClose) => { const c = (close || []).filter((v) => Number.isFinite(v)); const price = Number.isFinite(meta && meta.regularMarketPrice) ? meta.regularMarketPrice : c[c.length - 1]; if (sym && Number.isFinite(price) && price > 0) out[sym] = { price, prev: c.length > 1 ? c[c.length - 2] : Number.isFinite(prevClose) ? prevClose : null, closes: c }; };
   if (j && j.spark && Array.isArray(j.spark.result)) for (const r of j.spark.result) { const x = r && r.response && r.response[0]; if (x) put(r.symbol, x.meta, x.indicators && x.indicators.quote && x.indicators.quote[0] && x.indicators.quote[0].close, x.meta && x.meta.chartPreviousClose); }
   else if (j && typeof j === 'object') for (const [sym, x] of Object.entries(j)) if (x && Array.isArray(x.close)) put(sym, null, x.close, x.chartPreviousClose);
   return out;
 }
 /** the snapshot's coins with the live prices laid over them: a price is taken only within 40% of the snapshot's (a Yahoo ticker can name another coin); market cap scales
- *  with the price (the supply barely moves in a day), the volume stays the snapshot's. { coins, live } with live the count that got a price. Pure. */
+ *  with the price (the supply barely moves in a day), the distance below the all-time high is measured from the new price, the volume stays the snapshot's. { coins, live } with live the count that got a price. Pure. */
 export function overlay(caps, prices) {
   let live = 0;
   const coins = (caps || []).map((c) => { const p = prices[c.sym + '-USD']; if (!p || !(c.price > 0) || Math.abs(p.price / c.price - 1) > 0.4) return c; live++;
     const k = p.closes.slice(-8), first = k[0];
-    return { ...c, price: p.price, pct24: p.prev ? (p.price / p.prev - 1) * 100 : c.pct24, pct7: first ? (p.price / first - 1) * 100 : c.pct7, cap: c.cap != null ? c.cap * p.price / c.price : null, spark: k.length > 2 ? k : c.spark }; });
+    const ath = c.athPct != null && c.athPct > -100 ? c.price / (1 + c.athPct / 100) : null;
+    return { ...c, price: p.price, pct24: p.prev ? (p.price / p.prev - 1) * 100 : c.pct24, pct7: first ? (p.price / first - 1) * 100 : c.pct7, cap: c.cap != null ? c.cap * p.price / c.price : null, athPct: ath ? Math.min(0, (p.price / ath - 1) * 100) : c.athPct, spark: k.length > 2 ? k : c.spark, live: true }; });
   return { coins, live };
 }
 // the top 50: CoinGecko live; when it does not answer (its free API often refuses shared Cloudflare addresses), the daily snapshot (data/coins.json, made by a GitHub
 // workflow from CoinGecko) with Yahoo's prices over it, three calls of at most 20 coins; and when Yahoo does not answer either, the snapshot itself, said to be one
 async function capsBody(f, now, snapFn) {
   try { const rows = capsRows(await geckoMarkets(f, 'order=market_cap_desc&per_page=50&page=1')); if (rows.length >= 10) return { ok: true, coins: rows, total: rows.reduce((a, r) => a + (r.cap || 0), 0), source: 'CoinGecko', delayed: true, at: new Date(now).toISOString() }; } catch (_) {}
+  return capsFallback(f, now, snapFn);
+}
+async function capsFallback(f, now, snapFn) {
   const snap = snapFn ? await snapFn().catch(() => null) : null, caps = snap && snap.ok && Array.isArray(snap.caps) ? snap.caps : [];
   if (caps.length < 10) return { ok: false, kind: 'away', say: 'The coin list did not answer just now.' };
   const syms = caps.map((c) => c.sym + '-USD'), parts = []; for (let i = 0; i < syms.length; i += 20) parts.push(syms.slice(i, i + 20));
@@ -175,16 +180,22 @@ async function capsBody(f, now, snapFn) {
   return { ok: true, coins: caps, total: caps.reduce((a, r) => a + (r.cap || 0), 0), live: 0, snapshot: snap.day, partial: true, source: 'The CoinGecko snapshot of ' + snap.day + ' (the live prices did not answer)', delayed: true, at: snap.at || new Date(now).toISOString() };
 }
 const ownSnapshot = (request, env) => async () => { if (!env || !env.ASSETS) return null; const r = await env.ASSETS.fetch(new Request(new URL('/data/coins.json', request.url))); return r.ok ? r.json() : null; }; // the site's own file, never another host
-async function scanBody(request, env, f, now) {
+// the screener's coins: CoinGecko; when it does not answer, the same snapshot and Yahoo prices as the coin table, kept to the coins the screener lists, and the
+// source names what answered (live 2026-10-30: CoinGecko refused, the screener had 0 coins and still named CoinGecko)
+async function scanBody(request, env, f, now, snapFn) {
   const quotes = await Promise.all(SCAN_STOCKS.map((s) => quoteBody(request, env, resolve(s), '1y', '', f, true).catch(() => null)));
-  let coins = []; try { coins = capsRows(await geckoMarkets(f, 'ids=' + Object.values(COINS).map((c) => c[0]).join(',') + '&per_page=50')); } catch (_) {}
+  const ids = Object.values(COINS).map((c) => c[0]);
+  let coins = [], coinSource = 'CoinGecko', coinFeed = null; try { coins = capsRows(await geckoMarkets(f, 'ids=' + ids.join(',') + '&per_page=50')); } catch (_) {}
+  if (!coins.length) { const fb = await capsFallback(f, now, snapFn).catch(() => null); coins = fb && fb.ok ? fb.coins.filter((c) => ids.includes(c.id)) : [];
+    const live = coins.filter((c) => c.live).length; coinFeed = coins.length ? { live, snapshot: fb.snapshot } : null;
+    coinSource = !coins.length ? '' : live ? 'Yahoo Finance (unofficial) for ' + live + ' coin prices over the CoinGecko snapshot of ' + fb.snapshot : 'the CoinGecko snapshot of ' + fb.snapshot + ' for coins (not live)'; }
   const rows = scanRows(quotes, coins);
-  return rows.length >= 8 ? { ok: true, rows, universe: { stocks: MOVERS.length, indices: 4, coins: coins.length }, source: 'Stooq, Yahoo Finance (fallback), CoinGecko', delayed: true, at: new Date(now).toISOString() } : { ok: false, kind: 'away', say: 'The price sources did not answer just now.' };
+  return rows.length >= 8 ? { ok: true, rows, universe: { stocks: MOVERS.length, indices: 4, coins: coins.length }, ...(coinFeed ? { coinFeed } : {}), source: 'Stooq, Yahoo Finance (fallback)' + (coinSource ? ', ' + coinSource : ''), delayed: true, at: new Date(now).toISOString() } : { ok: false, kind: 'away', say: 'The price sources did not answer just now.' };
 }
 export async function onRequestGet({ request, env, fetchFn = fetch }) {
   const u = new URL(request.url), p = u.searchParams, stamp = () => new Date().toISOString();
   if (p.has('caps')) return reply(await cachedBody(request, env, 'caps', 300, () => capsBody(fetchFn, Date.now(), ownSnapshot(request, env)), 'markets-batch', RL_BATCH), 300);
-  if (p.has('scan')) return reply(await cachedBody(request, env, 'scan', 300, () => scanBody(request, env, fetchFn, Date.now()), 'markets-batch', RL_BATCH), 300);
+  if (p.has('scan')) return reply(await cachedBody(request, env, 'scan', 300, () => scanBody(request, env, fetchFn, Date.now(), ownSnapshot(request, env)), 'markets-batch', RL_BATCH), 300);
   if (p.has('strip')) { const quotes = (await batch(request, env, STRIP.join(','), fetchFn)).filter((q) => q.ok); return reply(quotes.length ? { ok: true, quotes, source: 'Stooq, CoinGecko, ECB', delayed: true, at: stamp() } : { ok: false, kind: 'away', say: 'The price sources did not answer.' }, 120); }
   if (p.has('movers')) {
     const q = (await batch(request, env, MOVERS.join(','), fetchFn)).filter((x) => x.ok && x.pct != null).sort((a, b) => b.pct - a.pct);

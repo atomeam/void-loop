@@ -550,6 +550,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:28:02Z",
+   "subject": "Local TV and radio: drop signed-token streams, list /api/local as Verse's own, refresh the fanfic module list and hand-off gaps"
+  },
+  {
+   "at": "2026-10-30T07:21:10Z",
+   "subject": "Local TV and radio: escape the card heading and time out the iptv-org clones"
+  },
+  {
+   "at": "2026-10-30T07:18:45Z",
+   "subject": "Local TV and radio: fix the quote that stopped /local/app.js from parsing"
+  },
+  {
+   "at": "2026-10-30T07:16:49Z",
+   "subject": "Local TV and radio: /local/ finds the stations near you and plays them"
+  },
+  {
+   "at": "2026-10-30T07:16:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:11:33Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:10:59Z",
+   "subject": "Jobs: Himalayas categories read as words, not slugs"
+  },
+  {
    "at": "2026-10-30T07:10:15Z",
    "subject": "converter: 3GP writer (H.264 pictures, AAC sound where the browser codes it)"
   },
@@ -600,34 +628,6 @@
   {
    "at": "2026-10-30T06:55:05Z",
    "subject": "Copy the stage change to void.html"
-  },
-  {
-   "at": "2026-10-30T06:54:20Z",
-   "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
-  },
-  {
-   "at": "2026-10-30T06:53:39Z",
-   "subject": "Members: \"Built by @name\" on a member's published page"
-  },
-  {
-   "at": "2026-10-30T06:51:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:51:28Z",
-   "subject": "converter: M4A and M4R writer (AAC where the browser codes it, ALAC in the .m4a where it does not)"
-  },
-  {
-   "at": "2026-10-30T06:51:12Z",
-   "subject": "Reduced motion switch holds the stage still"
-  },
-  {
-   "at": "2026-10-30T06:50:33Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T06:46:00Z",
-   "subject": "Self-check: flag pages that look unfinished"
   }
  ],
  "builders": {

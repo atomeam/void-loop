@@ -51,7 +51,10 @@ export function moreTools(html) {
   const names = new Set([...withoutBlock(html, MORE).matchAll(/href="\/[^"]*">([^<]*)</g)].map((m) => m[1].toLowerCase()));
   const extra = [...Object.entries(TOOLS), ...MORE_PAGES].filter(([p], i, a) => p !== '/tools/' && !listed.has(p) && a.findIndex((x) => x[0] === p) === i)
     .filter(([, name]) => { const k = String(name).toLowerCase(); if (names.has(k)) return false; names.add(k); return true; });
-  return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li><a href="' + esc(p) + '">' + esc(name) + '</a></li>').join('') + '</ul></section>';
+  // each with the same "Open here" button as the hand-written rows, and the searches people make for it (lib/seo.js asks) for the page's find box
+  const asks = new Map(PAGES.map((g) => [g.path, (g.asks || []).join(' ')]));
+  return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li' + (asks.get(p) ? ' data-find="' + esc(asks.get(p)) + '"' : '') + '><a href="' + esc(p) + '">' + esc(name)
+    + '</a><button type="button" data-open="' + esc(p) + '">Open here</button></li>').join('') + '</ul></section>';
 }
 /** on each paid page: the other things Verse does for people, each with its one plain line (lib/products.js), and the free fixes. Pure. */
 export function offersRow(path) {

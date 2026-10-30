@@ -4,7 +4,7 @@
  * "tell me a proverb", "random proverb", "wise saying".
  */
 export function isProverb(text) {
-  return /^(?:please\s+)?(?:(?:tell|give)\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:proverb|saying)|(?:random|another)\s+(?:proverb|saying)|proverb(?:\s+please)?|wise\s+saying)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:tell|give)\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:proverb|saying)|(?:random|another)\s+(?:proverb|saying)|proverb(?:\s+please)?|(?:(?:tell|give)\s+(?:me\s+)?)?(?:an?\s+)?(?:wise|old|famous)\s+saying)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 const PROVERBS = [
@@ -36,7 +36,7 @@ function run(text, api) {
 
 export default {
   name: 'proverb',
-  examples: ['tell me a proverb', 'random proverb', 'wise saying', 'another proverb'],
+  examples: ['tell me a proverb', 'random proverb', 'wise saying', 'another proverb', 'an old saying', 'tell me an old saying'],
   nearMisses: ['what is a proverb', 'proverbs from the bible', 'quote'],
   match(lower, text) { return isProverb(text); },
   run,
