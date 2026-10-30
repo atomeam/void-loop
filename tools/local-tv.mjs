@@ -52,8 +52,8 @@ function sources() {
   let db = arg('--db'), iptv = arg('--iptv'), cities = arg('--cities');
   if (!db || !iptv) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'local-tv-'));
-    if (!db) { db = path.join(tmp, 'database'); execFileSync('git', ['clone', '-q', '--depth', '1', 'https://github.com/iptv-org/database.git', db]); }
-    if (!iptv) { iptv = path.join(tmp, 'iptv'); execFileSync('git', ['clone', '-q', '--depth', '1', 'https://github.com/iptv-org/iptv.git', iptv]); }
+    if (!db) { db = path.join(tmp, 'database'); execFileSync('git', ['clone', '-q', '--depth', '1', 'https://github.com/iptv-org/database.git', db], { timeout: 300e3 }); }
+    if (!iptv) { iptv = path.join(tmp, 'iptv'); execFileSync('git', ['clone', '-q', '--depth', '1', 'https://github.com/iptv-org/iptv.git', iptv], { timeout: 300e3 }); }
   }
   if (!cities) {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'local-cities-'));
@@ -98,7 +98,7 @@ export function build({ channels, feeds, cities, subdivisions, blocklist, entrie
     }
   }
   const index = { from: { iptv: 'https://github.com/iptv-org/iptv', database: 'https://github.com/iptv-org/database', places: 'GeoNames (CC BY 4.0) via the cities.json package', commits }, countries: {} };
-  for (const [cc, f] of Object.entries(countries).sort()) {
+  for (const [cc, f] of Object.entries(countries).sort(([a], [b]) => a.localeCompare(b))) {
     f.stations.sort((x, y) => (y.s ? 1 : 0) - (x.s ? 1 : 0) || x.t.localeCompare(y.t));
     for (const k of Object.keys(f.cities)) if (!f.cities[k][2]) f.cities[k].length = 2;
     index.countries[cc] = { stations: f.stations.length, playable: f.stations.filter((s) => s.s).length };

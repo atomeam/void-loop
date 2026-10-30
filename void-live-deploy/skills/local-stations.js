@@ -12,7 +12,7 @@ export { localAsk };
 async function run(text, api) {
   const { showPage, esc } = api, ask = localAsk(text) || { kind: 'radio', place: '' };
   const page = linkOf({ place: ask.place, tab: ask.kind === 'tv' ? 'tv' : '' });
-  const el = showPage((p) => { p.dataset.cardKind = 'Local TV and radio'; p.innerHTML = '<h2>Local ' + (ask.kind === 'tv' ? 'TV' : 'radio') + '</h2><div class="sub">Finding stations near you</div>'; });
+  const el = showPage((p) => { p.dataset.cardKind = 'Local TV and radio'; p.innerHTML = '<h2>' + esc(ask.kind === 'tv' ? 'Local TV' : 'Local radio') + '</h2><div class="sub">Finding stations near you</div>'; });
   const fail = (msg) => { if (api._pageStill && !api._pageStill(el)) return; el.innerHTML = '<h2>Local TV and radio</h2><p>' + esc(msg) + '</p><p><a href="' + esc(page) + '">Open the full page</a></p>'; };
   try {
     const where = await fetch(ask.place ? '/api/local?place=' + encodeURIComponent(ask.place) : '/api/local').then((r) => r.json());
