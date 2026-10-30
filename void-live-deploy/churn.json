@@ -1,24 +1,28 @@
 {
- "at": "2026-10-29T16:38:57.365Z",
+ "at": "2026-10-30T02:24:09.577Z",
  "max": 12,
  "days": 7,
  "sweep": 100,
  "hot": [
   {
    "file": "void-live-deploy/lib/tower.js",
-   "changes": 104
+   "changes": 108
   },
   {
    "file": "tools/tower-probes.mjs",
-   "changes": 87
+   "changes": 89
   },
   {
    "file": "void-live-deploy/sw.js",
-   "changes": 71
+   "changes": 74
   },
   {
    "file": "domains/handoff.md",
-   "changes": 68
+   "changes": 70
+  },
+  {
+   "file": "tools/families.mjs",
+   "changes": 51
   },
   {
    "file": "tools/tower-gate.mjs",
@@ -29,32 +33,44 @@
    "changes": 49
   },
   {
-   "file": "tools/families.mjs",
-   "changes": 47
+   "file": "void-live-deploy/lib/seo.js",
+   "changes": 46
+  },
+  {
+   "file": "void-live-deploy/lib/toolkit.js",
+   "changes": 44
   },
   {
    "file": "tools/tower-gate.test.mjs",
    "changes": 43
   },
   {
-   "file": "void-live-deploy/lib/seo.js",
-   "changes": 43
-  },
-  {
-   "file": "void-live-deploy/lib/toolkit.js",
-   "changes": 41
+   "file": "tools/bench.json",
+   "changes": 36
   },
   {
    "file": "domains/tower-self.json",
    "changes": 31
   },
   {
+   "file": "tools/card-cycle.json",
+   "changes": 30
+  },
+  {
+   "file": "tools/grow-self.state.json",
+   "changes": 30
+  },
+  {
    "file": "tools/tower.test.mjs",
    "changes": 29
   },
   {
-   "file": "tools/bench.json",
-   "changes": 28
+   "file": "domains/conductor.json",
+   "changes": 27
+  },
+  {
+   "file": "void-live-deploy/lib/card-frame.js",
+   "changes": 27
   },
   {
    "file": "void-live-deploy/lib/guard.js",
@@ -65,27 +81,19 @@
    "changes": 26
   },
   {
-   "file": "tools/card-cycle.json",
-   "changes": 24
-  },
-  {
-   "file": "tools/grow-self.state.json",
-   "changes": 24
+   "file": "void-live-deploy/fanfic/index.html",
+   "changes": 25
   },
   {
    "file": "tools/toolkit.test.mjs",
    "changes": 24
   },
   {
-   "file": "void-live-deploy/fanfic/index.html",
-   "changes": 24
-  },
-  {
-   "file": "void-live-deploy/lib/card-frame.js",
-   "changes": 24
-  },
-  {
    "file": ".github/workflows/tower-gate.yml",
+   "changes": 23
+  },
+  {
+   "file": "domains/growth-inbox.md",
    "changes": 23
   },
   {
@@ -97,11 +105,15 @@
    "changes": 23
   },
   {
-   "file": "domains/growth-inbox.md",
+   "file": "void-live-deploy/skills/verse-brain.js",
    "changes": 21
   },
   {
    "file": "void-live-deploy/lib/art-rules.js",
+   "changes": 20
+  },
+  {
+   "file": "void-live-deploy/random/index.html",
    "changes": 20
   },
   {
@@ -113,20 +125,24 @@
    "changes": 19
   },
   {
-   "file": "void-live-deploy/random/index.html",
-   "changes": 19
-  },
-  {
-   "file": "void-live-deploy/skills/verse-brain.js",
+   "file": "tools/bench.mjs",
    "changes": 18
   },
   {
-   "file": "domains/conductor.json",
-   "changes": 16
+   "file": "void-live-deploy/tower.size.json",
+   "changes": 18
   },
   {
    "file": "void-live-deploy/color/index.html",
-   "changes": 16
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/generators/index.html",
+   "changes": 17
+  },
+  {
+   "file": "void-live-deploy/lib/similar-index.js",
+   "changes": 17
   },
   {
    "file": "void-live-deploy/convert/unit-converter-2/index.html",
@@ -137,11 +153,11 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/functions/api/card-art.js",
+   "file": "void-live-deploy/functions/api/answer.js",
    "changes": 16
   },
   {
-   "file": "void-live-deploy/generators/index.html",
+   "file": "void-live-deploy/functions/api/card-art.js",
    "changes": 16
   },
   {
@@ -157,8 +173,24 @@
    "changes": 16
   },
   {
-   "file": "void-live-deploy/lib/similar-index.js",
+   "file": "void-live-deploy/tools/index.html",
    "changes": 16
+  },
+  {
+   "file": "void-live-deploy/void.asks.json",
+   "changes": 16
+  },
+  {
+   "file": "docs/PARITY/github.md",
+   "changes": 15
+  },
+  {
+   "file": "docs/PARITY/hugging-face.md",
+   "changes": 15
+  },
+  {
+   "file": "tools/real-pages.mjs",
+   "changes": 15
   },
   {
    "file": "tools/skill-matchers.test.mjs",
@@ -169,12 +201,24 @@
    "changes": 15
   },
   {
-   "file": "void-live-deploy/functions/api/answer.js",
+   "file": "void-live-deploy/lib/brain.js",
    "changes": 15
   },
   {
    "file": "void-live-deploy/lib/calendar.js",
    "changes": 15
+  },
+  {
+   "file": "docs/PARITY/lichess.md",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/base-converter/index.html",
+   "changes": 14
+  },
+  {
+   "file": "void-live-deploy/base64/index.html",
+   "changes": 14
   },
   {
    "file": "void-live-deploy/compare/index.html",
@@ -185,11 +229,15 @@
    "changes": 14
   },
   {
+   "file": "void-live-deploy/resize-image/index.html",
+   "changes": 14
+  },
+  {
    "file": "void-live-deploy/skills/coin.js",
    "changes": 14
   },
   {
-   "file": "void-live-deploy/tower.size.json",
+   "file": "void-live-deploy/time/index.html",
    "changes": 14
   },
   {
@@ -197,11 +245,15 @@
    "changes": 14
   },
   {
-   "file": "docs/PARITY/github.md",
+   "file": "void-live-deploy/wheel/index.html",
+   "changes": 14
+  },
+  {
+   "file": "docs/HANDOFF-GAPS.md",
    "changes": 13
   },
   {
-   "file": "docs/PARITY/hugging-face.md",
+   "file": "tools/brain.test.mjs",
    "changes": 13
   },
   {
@@ -209,35 +261,7 @@
    "changes": 13
   },
   {
-   "file": "void-live-deploy/base-converter/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/base64/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/resize-image/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/skills/cartoon.js",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/time/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/tools/index.html",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/void.asks.json",
-   "changes": 13
-  },
-  {
-   "file": "void-live-deploy/wheel/index.html",
+   "file": "void-live-deploy/password-strength/index.html",
    "changes": 13
   }
  ]
