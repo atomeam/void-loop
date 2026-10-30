@@ -6688,8 +6688,10 @@ say('nothing selected to remove');
       new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && n.dataset.id && !arrived.has(n.dataset.id)) { arrived.add(n.dataset.id); if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })
         .observe(document.getElementById('stage'), { childList: true });
       let hot = null;
+      // the Reduced motion hard switch (lib/a11y-modes.js) can go on while the page is open, so it is read on every move: with it on, cards hold still
+      const held = () => document.documentElement.classList.contains('a11y-motion');
       addEventListener('pointermove', (e) => {
-        const el = e.target.closest && e.target.closest('.vpage, .thing');
+        const el = held() ? null : e.target.closest && e.target.closest('.vpage, .thing');
         if (hot && hot !== el) { hot.style.removeProperty('--rx'); hot.style.removeProperty('--ry'); hot.classList.remove('lift'); }
         hot = el; if (!el) return;
         const b = el.getBoundingClientRect(); const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;

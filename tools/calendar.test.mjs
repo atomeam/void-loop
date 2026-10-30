@@ -234,3 +234,15 @@ test('the stage calendar card sways while new, then settles still so its days ho
   assert.equal(swayAmp(SWAY_HOLD + SWAY_FADE), 0);
   assert.equal(swayAmp(60000), 0);
 });
+
+test('the Reduced motion hard switch holds the stage still: no card tilt toward the pointer, no calendar sway or page turn', () => {
+  // the switch's own promise (lib/a11y-modes.js): "the worlds and figures hold still"; the CSS stops easing, these stop the JS motion
+  const cal = fs.readFileSync(path.join(root, 'skills', 'calendar3d.js'), 'utf8');
+  assert.ok(cal.includes("document.documentElement.classList.contains('a11y-motion')"), 'the calendar reads the switch');
+  assert.ok(cal.includes('const amp = calm() ? 0 : swayAmp(now - woke);'), 'no sway with the switch on, read live');
+  assert.ok(cal.includes('if (calm()) { swap(); return; }'), 'a month swaps without the page turn');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const tilt = html.slice(html.indexOf("const held = () => document.documentElement.classList.contains('a11y-motion');"));
+  assert.ok(tilt.length > 0 && html.includes("const held = () => document.documentElement.classList.contains('a11y-motion');"), 'the stage tilt reads the switch');
+  assert.ok(tilt.includes("const el = held() ? null : e.target.closest && e.target.closest('.vpage, .thing');"), 'with it on, no card is tilted and the last one is let go');
+});
