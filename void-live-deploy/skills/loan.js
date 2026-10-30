@@ -178,7 +178,7 @@ function payoffCard(q, api) {
     html += '<p style="color:#8a8a8a">Fixed rate, interest added each month, the same payment each month. Not a quote or advice: lenders and card issuers add fees.</p>'
       + '<p><a href="' + esc(href) + '">Open it in the payoff calculator</a>: change the payment and see the months move</p>'
       + '<div class="src">Each month: interest = balance × rate ÷ 12, then the payment comes off · same sum as the payoff-time calculator of /calculators/</div>';
-    el.innerHTML = html;
+    el.innerHTML = html; // void-review: ok, every value above goes through esc()
   });
   return 'loan';
 }
