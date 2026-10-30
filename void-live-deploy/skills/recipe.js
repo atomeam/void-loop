@@ -5,11 +5,22 @@
  */
 import { bandMini } from '../lib/card-mini.js';
 import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
+import { BUILT_IN, fromMeal, scale, swapUnits } from '../lib/recipes.js';
 // what "make" and "cook" take that is not food ("how do i make money", "what can i make with my time")
 const NOT_FOOD = /\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i;
+// the recipes page's own card (lib/recipe-card.js cardAsk): the recipe open there, a built-in one by its name or a TheMealDB one by its id,
+// with the servings and the units the page shows ("recipe for pancakes, built in, 8 servings, metric")
+const CARD = /^recipe for ([a-z0-9][a-z0-9 '&()-]{0,78}), (built in|themealdb (\d{1,8}))(?:, (\d{1,3}) servings)?, (metric|us units)$/i;
 export function dishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  let m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
+  let m = t.match(CARD);
+  if (m) {
+    const n = +m[4] || 0, servings = n >= 1 && n <= 200 ? n : 0, units = m[5].toLowerCase() === 'metric' ? 'metric' : 'us';
+    if (m[3]) return { dish: m[1], by: 'mealdb', id: m[3], servings, units };
+    if (BUILT_IN.some((r) => r.name.toLowerCase() === m[1].toLowerCase())) return { dish: m[1], by: 'built', servings, units };
+    return { dish: m[1], by: 'name' }; // not one of the built-in names: the plain search for it
+  }
+  m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
   if (m) return { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
   // "how do i make guacamole", "how to cook rice", "how to bake banana bread"; not money, friends, a website…
   m = t.match(/^(?:how\s+(?:do\s+(?:i|you)|to|can\s+i|should\s+i)|best\s+way\s+to)\s+(?:make|cook|bake|prepare)\s+(?:a\s+|an\s+|some\s+|the\s+)?([a-z][a-z' -]{1,30})$/i);
@@ -29,6 +40,25 @@ export function mealsInAll(lists) {
   return lists[0].filter((m) => rest.every((ids) => ids.has(m.idMeal)));
 }
 
+/** the page's recipe on the card, as the page shows it: scaled to its servings, in its units, with its link (recipes/index.html line()). */
+async function pageRecipe(q, el, api, base) {
+  const { esc } = api;
+  let r = q.by === 'built' ? BUILT_IN.find((x) => x.name.toLowerCase() === q.dish.toLowerCase()) : null;
+  if (q.by === 'mealdb') { const j = await fetch(base + 'lookup.php?i=' + encodeURIComponent(q.id)).then((x) => x.json()); if (!api._pageStill(el)) return 'recipe'; r = fromMeal(j && j.meals && j.meals[0]); }
+  if (!r) { el.innerHTML = '<h2>' + esc(q.dish) + '</h2><p>That recipe is not in the recipe service now.</p>'; return 'none'; }
+  const n = q.servings || r.servings, f = n / r.servings, line = (s) => swapUnits(scale(s, f), q.units), step = (s) => swapUnits(s, q.units);
+  const sub = [n + ' ' + (r.yield || (n === 1 ? 'serving' : 'servings')) + (r.servingsGuessed && !q.servings ? ' (a guess)' : ''), q.units === 'metric' ? 'metric' : 'US measures', r.area, r.category].filter(Boolean).join(' · ');
+  el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(sub) + '</div>'
+    + (r.image && /^https:\/\/www\.themealdb\.com\//.test(r.image) ? '<img alt="" src="' + esc(r.image) + '/preview">' : '')
+    + '<div class="sub" style="margin-top:8px">Ingredients</div><ul>' + r.ingredients.map((x) => '<li>' + esc(line(x)) + '</li>').join('') + '</ul>'
+    + '<div class="sub">Steps</div><ol>' + r.steps.slice(0, 20).map((x) => '<li style="margin:3px 0">' + esc(step(x)) + '</li>').join('') + '</ol>'
+    + (q.by === 'mealdb' ? '<div class="src">Source: <a href="https://www.themealdb.com/meal/' + encodeURIComponent(q.id) + '" target="_blank" rel="noopener">TheMealDB</a></div>' : '');
+  // the card's page link opens this same recipe at these servings and units (lib/card-frame.js pageOfCard)
+  el.dataset.page = '/recipes/?' + (q.by === 'mealdb' ? 'id=' + q.id : 'q=' + encodeURIComponent(r.id.replace(/-/g, ' '))) + (n !== r.servings ? '&servings=' + n : '') + '&units=' + q.units;
+  bandMini(api, el, 'pot', { dish: r.name, n: r.ingredients.length }, '3D pot on a cutting board with the recipe card for ' + r.name);
+  return 'recipe';
+}
+
 async function run(text, api) {
   const { showPage, esc } = api;
   const q = dishOf(text);
@@ -37,6 +67,7 @@ async function run(text, api) {
   const src = (id) => '<div class="src">Source: <a href="https://www.themealdb.com/meal/' + encodeURIComponent(id || '') + '" target="_blank" rel="noopener">TheMealDB</a></div>';
   try {
     const base = 'https://www.themealdb.com/api/json/v1/1/';
+    if (q.by === 'built' || q.by === 'mealdb') return await pageRecipe(q, el, api, base);
     const one = (s) => s.replace(/(ies)$/i, 'y').replace(/([^s])s$/i, '$1');
     let j, only = '';
     if (q.by === 'ingredient') {

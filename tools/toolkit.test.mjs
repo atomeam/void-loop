@@ -253,6 +253,43 @@ test('the made-up people page\'s card shows the people on the page: its count, c
   assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
 });
 
+test('the recipes page\'s card shows the recipe open there, at its servings and units, not pancakes for 4; the visitor\'s own recipes stay on the device', async () => {
+  const C = await import('../void-live-deploy/lib/recipe-card.js'), R = await import('../void-live-deploy/lib/recipes.js'), mod = await import('../void-live-deploy/skills/recipe.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; const said = await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => true }); return [said, el]; };
+  // every built-in recipe, at its own servings and at others, in both units: the stage reads it back and shows the page's lines
+  for (const r of R.BUILT_IN) for (const [n, units] of [[r.servings, 'us'], [r.servings * 2, 'metric'], [1, 'us']]) {
+    const ask = C.cardAsk(r, n, units); assert.ok(ask, 'an ask for ' + r.name + ' ' + n + ' ' + units);
+    assert.equal(await firstSkill(ask), 'recipe', 'the stage gives it to the recipe card: ' + ask);
+    assert.deepEqual(mod.dishOf(ask), { dish: r.name.toLowerCase(), by: 'built', servings: n === r.servings ? 0 : n, units }, 'it reads back the page\'s recipe: ' + ask);
+    const [said, el] = await show(ask); assert.equal(said, 'recipe', ask);
+    const line = (x) => R.swapUnits(R.scale(x, n / r.servings), units);
+    for (const x of r.ingredients) assert.ok(el.innerHTML.includes('<li>' + esc(line(x)) + '</li>'), 'the card shows the page\'s line ' + line(x) + ' for ' + ask);
+    const want = '/recipes/?q=' + encodeURIComponent(r.id.replace(/-/g, ' ')) + (n !== r.servings ? '&servings=' + n : '') + '&units=' + units;
+    assert.equal(el.dataset.page, want, 'the card\'s page link opens the same recipe'); assert.deepEqual(pageOfCard('recipe', el.dataset.page), [want, 'Recipes']);
+  }
+  // a TheMealDB recipe goes by its id, so the card looks up that one, not the first of the same name
+  const meal = { idMeal: '52772', strMeal: 'Teriyaki Chicken Casserole', strArea: 'Japanese', strCategory: 'Chicken', strMealThumb: 'https://www.themealdb.com/images/media/meals/x.jpg', strInstructions: 'Preheat oven to 350° F.\nBake for 15 minutes.', strIngredient1: 'soy sauce', strMeasure1: '3/4 cup', strIngredient2: 'chicken', strMeasure2: '2 lb' };
+  const r = R.fromMeal(meal), asked = [], was = globalThis.fetch;
+  globalThis.fetch = async (u) => { asked.push(String(u)); return { json: async () => ({ meals: String(u).includes('lookup.php?i=52772') ? [meal] : null }) }; };
+  try {
+    const ask = C.cardAsk(r, 8, 'metric'); assert.equal(ask, 'recipe for teriyaki chicken casserole, themealdb 52772, 8 servings, metric');
+    assert.equal(await firstSkill(ask), 'recipe');
+    const [said, el] = await show(ask); assert.equal(said, 'recipe'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772'], 'it looks up the id, nothing else');
+    for (const x of r.ingredients) assert.ok(el.innerHTML.includes(esc(R.swapUnits(R.scale(x, 2), 'metric'))), 'doubled and in metric: ' + x);
+    assert.ok(el.innerHTML.includes(esc(R.swapUnits('Preheat oven to 350° F.', 'metric'))), 'the steps in the page\'s units too');
+    assert.equal(el.dataset.page, '/recipes/?id=52772&servings=8&units=metric'); assert.ok(pageOfCard('recipe', el.dataset.page));
+  } finally { globalThis.fetch = was; }
+  // what keeps the example: no recipe, the visitor's own (written or imported) recipe, a TheMealDB look-alike from elsewhere
+  const mine = { id: 'my-gran-s-stew', name: 'My gran\'s stew', servings: 4, ingredients: ['a secret'], steps: ['stir'] };
+  for (const a of [[null, 4, 'us'], [mine, 4, 'us'], [{ ...R.BUILT_IN[0], name: 'Pancakes my way' }, 4, 'us'], [{ ...r, from: '' }, 4, 'us'], [{ ...r, name: 'Chicken, leek and something' }, 4, 'us']]) assert.equal(C.cardAsk(...a), '', 'the example ask stays: ' + (a[0] && a[0].name));
+  assert.equal(C.cardAsk(R.BUILT_IN[0], 999, 'us'), 'recipe for pancakes, built in, us units', 'servings past the page\'s limit: its own servings');
+  // other asks keep what they did
+  assert.deepEqual(mod.dishOf('recipe for pancakes'), { dish: 'pancakes', by: 'name' }); assert.deepEqual(mod.dishOf('recipes with chicken'), { dish: 'chicken', by: 'ingredient' });
+  const page = fs.readFileSync(new URL('../void-live-deploy/recipes/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes('{ card: () => cardAsk(state.recipe, state.servings, state.units) }'), 'the page gives the card its recipe, servings and units');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {

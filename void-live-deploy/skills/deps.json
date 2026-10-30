@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1012,
+ "counted": 1013,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -948,6 +948,13 @@
    "tests": 2
   },
   {
+   "file": "lib/recipes.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -1308,13 +1315,6 @@
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 4,
-   "tests": 2
-  },
-  {
-   "file": "lib/recipes.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 4,
    "tests": 2
   },
@@ -2909,6 +2909,13 @@
   },
   {
    "file": "lib/rating-note.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/recipe-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -8883,6 +8890,12 @@
     "skills/walker.js"
    ]
   },
+  "lib/recipe-card.js": {
+   "imports": [
+    "lib/recipes.js"
+   ],
+   "importedBy": []
+  },
   "lib/recipeimport.js": {
    "imports": [],
    "importedBy": [
@@ -8894,7 +8907,9 @@
    "importedBy": [
     "functions/api/recipes.js",
     "lib/chat-recipes.js",
-    "lib/kitchen.js"
+    "lib/kitchen.js",
+    "lib/recipe-card.js",
+    "skills/recipe.js"
    ],
    "reachedBy": [
     "skills/recipes-fill.js"
@@ -13659,7 +13674,8 @@
   "skills/recipe.js": {
    "imports": [
     "lib/card-mini.js",
-    "skills/swaps.js"
+    "skills/swaps.js",
+    "lib/recipes.js"
    ],
    "importedBy": []
   },
