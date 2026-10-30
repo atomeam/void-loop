@@ -1151,3 +1151,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T04:22:21Z | claude | fix | Versus queue: unrendered rows sort behind rendered ones; bot walls and country pickers (shell wall/gateway) no longer rank as small sites
 2026-10-30T04:38:41Z | claude | grow | A full Verse Brain takes new words in place of its dimmest idea
 2026-10-30T05:01:21Z | claude | grow | The News page's stage card now matches the page: a search there opens the stage topic card, the Technology section opens tech news, and those stage cards open News on the same view
+2026-10-30T04:51:02Z | claude | grow | Markets stage card: the coin open on the page

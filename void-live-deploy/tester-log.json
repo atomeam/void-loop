@@ -1,6 +1,6 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 75,
+ "cases": 83,
  "runsTotal": 191,
  "kinds": {
   "grow": 67,
@@ -233,79 +233,82 @@
  ],
  "weekly": [
   {
-   "from": "2026-07-30",
+   "from": "2026-08-07",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-06",
+   "from": "2026-08-14",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-13",
+   "from": "2026-08-21",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-20",
+   "from": "2026-08-28",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-27",
+   "from": "2026-09-04",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-03",
+   "from": "2026-09-11",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-10",
+   "from": "2026-09-18",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-17",
+   "from": "2026-09-25",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-24",
+   "from": "2026-10-02",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-01",
-   "runs": 0,
-   "passed": 0,
-   "of": 0
-  },
-  {
-   "from": "2026-10-08",
-   "runs": 0,
-   "passed": 0,
-   "of": 0
-  },
-  {
-   "from": "2026-10-15",
-   "runs": 191,
-   "passed": 3151,
-   "of": 5810,
-   "broken": 95,
-   "brokenOf": 2238,
+   "from": "2026-10-09",
+   "runs": 55,
+   "passed": 424,
+   "of": 899,
+   "broken": 22,
+   "brokenOf": 408,
    "brokenPassed": 22
+  },
+  {
+   "from": "2026-10-16",
+   "runs": 136,
+   "passed": 2727,
+   "of": 4911,
+   "broken": 73,
+   "brokenOf": 1830,
+   "brokenPassed": 0
+  },
+  {
+   "from": "2026-10-23",
+   "runs": 0,
+   "passed": 0,
+   "of": 0
   }
  ],
  "seen": {

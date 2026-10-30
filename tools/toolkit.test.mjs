@@ -290,6 +290,27 @@ test('the recipes page\'s card shows the recipe open there, at its servings and 
   assert.ok(page.includes('{ card: () => cardAsk(state.recipe, state.servings, state.units) }'), 'the page gives the card its recipe, servings and units');
 });
 
+test('the markets page\'s card shows the coin open there, not the board of top coins; its card opens Markets on that coin', async () => {
+  const C = await import('../void-live-deploy/lib/markets-card.js'), M = await import('../void-live-deploy/lib/markets.js'), mod = await import('../void-live-deploy/skills/crypto.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) }); try { await S.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; } return el; };
+  let priced = 0;
+  for (const [sym, [id]] of Object.entries(M.COINS)) {
+    const ask = C.cardAsk(sym); if (!ask) { assert.equal(mod.coinOf(id + ' price'), null, 'only a coin the stage cannot price keeps the example: ' + sym); continue; }
+    priced++; assert.match(ask, /^[a-z]{2,10} price$/, ask);
+    assert.equal(mod.coinOf(ask).id, id, 'the stage prices the same coin the page shows: ' + ask);
+    assert.equal(await firstSkill(ask), 'crypto', 'the stage gives it to the crypto card: ' + ask);
+    const el = await show(ask); assert.equal(el.dataset.page, '/markets/?s=' + sym, 'its card opens Markets on the same coin: ' + ask);
+    assert.deepEqual(pageOfCard('crypto', el.dataset.page), ['/markets/?s=' + sym, 'Markets']);
+    assert.equal(C.cardAsk(sym.toLowerCase()), ask, 'as the page resolves it: ' + sym);
+  }
+  assert.ok(priced >= 10, 'the coins the stage prices: ' + priced);
+  assert.equal(C.cardAsk('BTC'), 'bitcoin price'); assert.equal(C.cardAsk('BNB'), 'bnb price', 'by its ticker where the stage does not know its id');
+  for (const s of ['AAPL', 'SPX', 'EURUSD', 'TSLA', '', 'AVAX', 'not a symbol!']) assert.equal(C.cardAsk(s), '', 'the example ask stays: ' + s);
+  assert.equal(mod.pageOfCoin('nothing-listed'), '', 'a coin Markets does not list: no page link');
+  const page = fs.readFileSync(new URL('../void-live-deploy/markets/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes('{ card: () => cardAsk(state.sym) }'), 'the page gives the card the symbol open on it');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
