@@ -990,6 +990,13 @@
    "tests": 0
   },
   {
+   "file": "lib/fincalc.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
@@ -1501,13 +1508,6 @@
    "tests": 2
   },
   {
-   "file": "lib/fincalc.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/formulas-1.js",
    "skills": 1,
    "direct": 0,
@@ -1715,7 +1715,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/chat-generators.js",
@@ -6860,7 +6860,8 @@
    "imports": [],
    "importedBy": [
     "lib/calc-panels.js",
-    "lib/calculators.js"
+    "lib/calculators.js",
+    "skills/loan.js"
    ],
    "reachedBy": [
     "skills/formulas.js"
@@ -13792,7 +13793,9 @@
    ]
   },
   "skills/loan.js": {
-   "imports": [],
+   "imports": [
+    "lib/fincalc.js"
+   ],
    "importedBy": []
   },
   "skills/local-inference.js": {
