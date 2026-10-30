@@ -5931,7 +5931,7 @@
   {"ask": "what does it mean to be pragmatic", "want": "skill:define"},
   {"ask": "dictionary definition of empathy", "want": "skill:define"},
   {"ask": "use serendipity in a sentence", "want": "skill:define"},
-  {"ask": "what language does the word kindergarten come from", "want": "answer|article|skill:define"},
+  {"ask": "what language does the word kindergarten come from", "want": "skill:define"},
   {"ask": "what's the italian word for window", "want": "skill:translate"},
   {"ask": "how long is the flight from paris to new york", "want": "skill:distance", "says": "in the air"},
   {"ask": "miles from chicago to denver", "want": "skill:distance"},
