@@ -6718,6 +6718,8 @@
   {"ask": "what do you keep on this device", "want": "skill:state"},
   {"ask": "remote jobs for python", "want": "skill:work"},
   {"ask": "jobs as a writer", "want": "skill:work"},
+  {"ask": "find remote jobs", "want": "skill:work"},
+  {"ask": "job search", "want": "skill:work"},
   {"ask": "pick for me", "want": "skill:pick-for-me"},
   {"ask": "open the book", "want": "skill:guide"},
   {"ask": "the guide", "want": "skill:guide"},

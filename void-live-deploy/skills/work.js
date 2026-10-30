@@ -9,12 +9,19 @@ const NOT_ROLE = /^(?:steve|good|great|nice|well|odd|blow|hand|inside|side|the|m
 // what follows a bare "jobs" when it is the news or a framework, not a role: "jobs report", "jobs act", "jobs to be done"
 const NOT_TOPIC = /^(?:report|reports|data|numbers?|figures?|growth|market|act|day|program|programme|to be done|done|summit|fair|board|cuts?|crisis)\b/i;
 const NOT_PLACE = /^(?:me|my area|here|home)$/i;
+// a jobs ask with no role: a search verb, or "remote" / "work from home", must say it is a job hunt
+const WFH = '(?:remote|work[- ]from[- ]home|wfh)';
+const ANY_ROLE = new RegExp('^(?:(?:find|search(?:\\s+for)?|look(?:\\s+for)?|hunt\\s+for)\\s+(?:me\\s+)?(?:some\\s+)?(?:' + WFH + '\\s+)?(?:jobs?|work|a\\s+job|a\\s+' + WFH + '\\s+job)'
+  + '|(?:show|list)\\s+(?:me\\s+)?' + WFH + '\\s+(?:jobs?|work)|' + WFH + '\\s+jobs?|(?:' + WFH + '\\s+)?job\\s+(?:search|hunt(?:ing)?|listings?|openings))$', 'i');
 /** a jobs ask as { q, loc }: the role (may be '') and the place (may be ''). Null when the text is not a jobs ask. Pure. */
 export function workAsk(text) {
   let t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), loc = '', placed = false;
   // "... in Boston", "... near me": the place comes off the end first
   const at = t.match(/^(.+?)\s+(?:in|near|around|based in)\s+(?:the\s+)?([a-z][a-z .'-]{1,30})$/i);
   if (at && /\b(?:jobs?|work|positions|openings|vacancies)\b/i.test(at[1])) { t = at[1]; placed = true; loc = NOT_PLACE.test(at[2].trim()) ? '' : at[2].trim(); }
+  // 2026-10-30: no role at all, "find remote jobs", "find me a job", "work from home jobs", "job search": every role. Checked before the
+  // role rules, which read "search" in "job search" as a role. A bare "jobs" or "show me jobs" stays out: Verse has jobs of its own (the misses queue)
+  if (ANY_ROLE.test(t)) return { q: '', loc };
   const role = (q, bare) => {
     q = String(q || '').replace(/^(?:a|an|the)\s+/i, '').trim();
     if (!q || /^(?:me|you|(?:verse|void)|it|that|this)$/i.test(q)) return null;
@@ -64,8 +71,8 @@ async function run(text, api) {
 }
 export default {
   name: 'work',
-  examples: ['find me work as a designer', 'remote jobs for python', 'jobs as a writer', 'find jobs as a marketer', 'software jobs in boston', 'remote designer jobs', 'jobs in berlin'],
-  nearMisses: ['what is a job', 'book a table', 'how to write a resume', 'good job', 'steve jobs', 'jobs report', 'jobs to be done'],
+  examples: ['find me work as a designer', 'remote jobs for python', 'jobs as a writer', 'find jobs as a marketer', 'software jobs in boston', 'remote designer jobs', 'jobs in berlin', 'find remote jobs', 'job search'],
+  nearMisses: ['what is a job', 'book a table', 'how to write a resume', 'good job', 'steve jobs', 'jobs report', 'jobs to be done', 'show me jobs', 'get a job'],
   match(lower, text) { return !!workAsk(text); },
   run
 };
