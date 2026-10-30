@@ -3202,8 +3202,13 @@ say('nothing selected to remove');
       const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
       return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
     }
-    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart
-    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 200, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 227, rice: 185, oats: 90, 'rolled oats': 90, honey: 340, milk: 227, water: 236, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 198, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
+    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart (read 2026-10-30). 2026-10-30: seven of
+    // them were off the chart (sugar 200 for 198, butter 227 for 226, rice 185 for 198, oats 90 for 89, honey 340 for 336, olive oil 198
+    // for 200) and the cards gave no source. A row the chart gives for less than a cup (rice, honey, olive oil...) is scaled to a cup.
+    // Water is not from the chart: a US cup is 236.6 ml and water weighs 1 g a ml (KA_NOT).
+    const KA = [['King Arthur Baking: ingredient weight chart', 'https://www.kingarthurbaking.com/learn/ingredient-weight-chart']], KA_READ = '2026-10-30', KA_NOT = { water: 1 };
+    const cupSrc = (k) => (KA_NOT[k] ? {} : { src: KA, read: KA_READ });
+    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 198, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 226, rice: 198, oats: 89, 'rolled oats': 89, honey: 336, milk: 227, water: 237, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 200, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
     function numberWords(n) {
       if (n < 0) return 'minus ' + numberWords(-n); if (n === 0) return 'zero';
       const O = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'], T = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -3236,8 +3241,8 @@ say('nothing selected to remove');
       [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5-oz shots in a 750 ml bottle; about 39 in a 1.75 l handle'],
       [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, 'about 48', '6-oz cups at 2 tablespoons of grounds each; stronger brewing gives fewer'],
       [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
-      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level; a tablespoon is about 12.5 g'],
-      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g'],
+      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level: 198 g a cup ÷ 48 teaspoons is 4.1 g; a tablespoon is about 12.4 g', KA],
+      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g', KA],
       [/^how\s+many\s+watts\s+does\s+a\s+(?:fridge|refrigerator)\s+use$/, 'about 100–250 W running', 'a modern fridge, while the compressor runs; it cycles, so about 1–2 kWh a day in all'],
       [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; LED equivalents use about 8–10 W (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)'],
       [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; an LED equivalent uses about 14–16 W'],
@@ -3359,8 +3364,8 @@ say('nothing selected to remove');
       if (m) { const n = +(m[1] || m[2]).replace(/,/g, ''); if (Number.isSafeInteger(n)) return { value: numberWords(n), note: n.toLocaleString() + ' in words' }; }
       // baking by weight: "2 cups of flour in grams", "how many grams in a cup of sugar"
       m = t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+cups?\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+(grams|g|ounces|oz)$/) || ((mm) => mm && [mm[0], '1', mm[2], mm[1]])(t.match(/^how\s+many\s+(grams|g|ounces|oz)\s+(?:is|are|in)\s+(?:a|one|1)\s+cup\s+of\s+([a-z -]+)$/));
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
-        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (about ' + g + ' g a cup, spooned and levelled; scooping packs more in)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
+        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (' + (KA_NOT[k] ? '236.6 ml a cup, 1 g a ml' : 'about ' + g + ' g a cup, spooned and levelled; scooping packs more in') + ')', ...cupSrc(k) }; } }
       // food safety: "what temperature to cook chicken", "safe internal temp for pork"
       m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temp(?:erature)?\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey|lamb)\s+(?:done|be\s+done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$|^how\s+hot\s+(?:should|does|do)\s+(chicken|turkey|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|fish|salmon|leftovers)\s+(?:need\s+to\s+)?be\s+cooked(?:\s+to)?$/);
       // the chart's own page (FoodSafety.gov, last reviewed 2024-11-21, read 2026-10-30): the card said "(USDA)" with no link before
@@ -3379,8 +3384,8 @@ say('nothing selected to remove');
           src: [...(k === 'well done' ? [] : [CAB]), ...(!k || k === 'well done' ? [TW] : []), ['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']], read: '2026-10-30' }; }
       // grams to cups: "how many cups is 500g of flour", "250 g sugar in cups"
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
-        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
+        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup' + (KA_NOT[k] ? ' (236.6 ml, 1 g a ml)' : ' (spooned and levelled)'), ...cupSrc(k) }; } }
       return WM_NEXT;
     }
     // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
@@ -3565,7 +3570,7 @@ say('nothing selected to remove');
       if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
       if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
       // standard sizes and everyday quantities: fixed facts answered here, each with its usual caveat
-      for (const [re, value, note] of SIZE_FACTS) if (re.test(t)) return { value, note };
+      for (const [re, value, note, src] of SIZE_FACTS) if (re.test(t)) return src ? { value, note, src, read: KA_READ } : { value, note };
       // paper in other units: "a4 in inches", "us letter size in mm"
       m = t.match(/^(?:what\s+(?:size|dimensions?)\s+is\s+)?(a[0-6]|us\s+letter|letter|legal|tabloid)(?:\s+(?:paper|size|sheet))*(?:\s+(?:in|to)\s+(mm|cm|inches|in))?$/);
       if (m) { const P = { a0: [841, 1189], a1: [594, 841], a2: [420, 594], a3: [297, 420], a4: [210, 297], a5: [148, 210], a6: [105, 148], letter: [215.9, 279.4], 'us letter': [215.9, 279.4], legal: [215.9, 355.6], tabloid: [279.4, 431.8] }[m[1].replace(/\s+/g, ' ')], u = m[2] || (/^a/.test(m[1]) ? 'mm' : 'in');
@@ -3597,12 +3602,19 @@ say('nothing selected to remove');
       // ring sizes: "ring size 7 diameter", "17 mm ring size"
       m = t.match(/^(?:us\s+)?ring\s+size\s+(\d{1,2}(?:\.\d+)?)\s+(?:diameter|in\s+mm|inside\s+diameter|circumference)$/);
       if (m) { const dmm = 11.63 + 0.8128 * +m[1], r = (x) => Math.round(x * 100) / 100; return { value: /circum/.test(t) ? r(dmm * Math.PI) + ' mm around' : r(dmm) + ' mm', note: 'US ring size ' + m[1] + ': ' + r(dmm) + ' mm inside diameter, ' + r(dmm * Math.PI) + ' mm around' }; }
-      // turkey: "how long to cook a 12 pound turkey" (325 °F, unstuffed, USDA chart), "how long to thaw a 15 lb turkey in the fridge"
+      // turkey: "how long to cook a 12 pound turkey", "how long to thaw a 15 lb turkey in the fridge". 2026-10-30: the rows are the USDA FSIS
+      // "Let's Talk Turkey" tables (325 °F oven, read 2026-10-30), with the stuffed time from its own table (it was "add about 30 min"), the
+      // 4-8 lb row as a breast, a bird past 24 lb as past the table (it was "about 5 h or more"), and the thaw rows as the page gives them.
+      const TK = [['USDA FSIS: Let\u2019s Talk Turkey, roasting', 'https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/lets-talk-turkey-roasting']], TK_READ = '2026-10-30';
       m = t.match(/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:cook|roast|bake)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+for)?$/);
-      if (m) { const w = +m[1], R = [[12, '2¾–3 h'], [14, '3–3¾ h'], [18, '3¾–4¼ h'], [20, '4¼–4½ h'], [24, '4½–5 h']], r = (R.find((x) => w <= x[0]) || [0, 'about 5 h or more'])[1];
-        return { value: r, note: 'a ' + w + '-lb turkey, unstuffed, at 325 °F (USDA); add about 30 min if stuffed; it is done at 165 °F in the thickest part of the thigh, wing and breast' }; }
+      if (m) { const w = +m[1], R = [[8, '1½–3¼ h', '2½–3½ h', ' (a breast: USDA times a whole bird from 8 lb)'], [12, '2¾–3 h', '3–3½ h'], [14, '3–3¾ h', '3½–4 h'], [18, '3¾–4¼ h', '4–4¼ h'], [20, '4¼–4½ h', '4¼–4¾ h'], [24, '4½–5 h', '4¾–5¼ h']], r = R.find((x) => w <= x[0]);
+        if (!r || w < 4) return { value: w < 4 ? 'below the USDA table' : 'past the USDA table', note: 'the USDA roasting table at 325 °F runs from 4 to 24 lb; cook until a food thermometer reads 165 °F in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ };
+        return { value: r[1], note: 'a ' + w + '-lb turkey' + (r[3] || '') + ', unstuffed, in a 325 °F oven; stuffed: ' + r[2] + '. It is safe at 165 °F on a food thermometer in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ }; }
       m = t.match(/^how\s+long\s+(?:does\s+it\s+take\s+)?to\s+(?:thaw|defrost)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+in\s+(?:the\s+)?(fridge|refrigerator|cold\s+water))?$/);
-      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''); return cold ? { value: 'about ' + Math.ceil(w / 2) + ' h', note: 'in cold water: 30 min per pound, changing the water every 30 minutes (USDA)' } : { value: 'about ' + Math.ceil(w / 4) + ' days', note: 'in the fridge: about one day for every 4–5 lb (USDA); keeps 1–2 more days thawed' }; }
+      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''), F = [[12, '1–3 days'], [16, '3–4 days'], [20, '4–5 days'], [24, '5–6 days']], C = [[12, '2–6 h'], [16, '6–8 h'], [20, '8–10 h'], [24, '10–12 h']], r = (cold ? C : F).find((x) => w <= x[0]), hrs = w / 2;
+        const value = r ? r[1] : cold ? 'about ' + (hrs % 1 ? hrs.toFixed(1) : hrs) + ' h' : 'about ' + Math.ceil(w / 4) + ' days';
+        return cold ? { value, note: 'a ' + w + '-lb turkey in cold water: about 30 minutes per pound' + (r ? '' : ' (past the 24-lb table)') + '; change the water every 30 minutes and cook it right away (USDA)', src: TK, read: TK_READ }
+          : { value, note: 'a ' + w + '-lb turkey in the fridge: about 24 hours for every 4 to 5 pounds' + (r ? '' : ' (past the 24-lb table)') + '; it keeps 1–2 more days thawed (USDA)', src: TK, read: TK_READ }; }
       // recipe fractions: "double 3/4 cup", "half of 2/3 cup", "triple 1/3 cup"
       m = t.match(/^(double|triple|halve|half\s+of|a\s+third\s+of|quarter\s+of)\s+(\d+)\s*\/\s*(\d+)(?:\s+(cups?|tablespoons?|tbsp|teaspoons?|tsp|pounds?|lbs?|ounces?|oz))?$/);
       if (m && +m[3]) { const k = { double: [2, 1], triple: [3, 1], halve: [1, 2], 'half of': [1, 2], 'a third of': [1, 3], 'quarter of': [1, 4] }[m[1].replace(/\s+/g, ' ')], num = +m[2] * k[0], den = +m[3] * k[1], g = gcdOf(num, den), n = num / g, d = den / g, whole = Math.floor(n / d), rem = n % d;
@@ -3812,8 +3824,8 @@ say('nothing selected to remove');
         return { value: out, note: m[1] + 'd: every amount × ' + k }; }
       // butter: "2 sticks of butter in grams" (US stick = 113 g = 8 tbsp = ½ cup)
       m = t.match(/^(?:convert\s+|how\s+many\s+(grams|tablespoons|tbsp|cups|ounces|oz)\s+(?:is|are|in)\s+)?(\d+(?:\.\d+)?)\s+sticks?\s+(?:of\s+)?butter(?:\s+(?:in|to|into)\s+(grams|tablespoons|tbsp|cups|ounces|oz))?$/);
-      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113.4, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
-        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 113 g, 8 tbsp, ½ cup)' }; }
+      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
+        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 8 tbsp, ½ cup, 4 oz, 113 g)', src: KA, read: KA_READ }; }
       // "healthy weight for 5 foot 8", "ideal weight for 170 cm": the weights in the standard adult BMI band (18.5-24.9)
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:a\s+|the\s+|my\s+)?(?:healthy|ideal|normal|good|target)\s+weight\s+(?:range\s+)?(?:for|at)\s+(?:a\s+|someone\s+)?(?:(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?|(1[4-9]\d|2[0-2]\d)\s*cm)(?:\s+tall)?(?:\s+(?:man|woman|male|female|person|adult))?$/);
       if (m) { const inches = m[3] ? +m[3] / 2.54 : +m[1] * 12 + +(m[2] || 0), lo = 18.5 * inches * inches / 703, hi = 24.9 * inches * inches / 703;

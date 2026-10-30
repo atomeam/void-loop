@@ -193,6 +193,7 @@ mountRelated($('related'), '/local/', [
   { label: 'The weather here', href: () => (place && place.city ? '/weather/?q=' + encodeURIComponent(place.city) : null) },
   { label: 'The time here', href: () => (place && place.city ? '/time/?c=' + encodeURIComponent(place.city) : null) },
   { label: 'Flights to here', href: () => flightsLink(place) },
+  { label: 'Remote jobs open here', href: () => (place && /^[A-Z]{2}$/i.test(place.country || '') ? '/jobs/?cc=' + place.country.toUpperCase() : null) }, // /jobs/ reads the country as the region its listings are open in
 ], { card: () => (place && place.city ? 'local radio in ' + place.city : '') });
 
 const params = new URLSearchParams(location.search);
