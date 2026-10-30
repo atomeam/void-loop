@@ -3242,10 +3242,13 @@ say('nothing selected to remove');
     const POOL = [['WA Government sports dimensions guide: swimming', 'https://dlgsc.wa.gov.au/sport-and-recreation/sports-dimensions-guide/swimming'], ['AP (via KSAT): Paris pool depth and the World Aquatics minimum', 'https://www.ksat.com/sports/2024/07/31/no-world-records-have-been-set-at-the-olympic-pool-is-it-too-shallow/']];
     const STRIDE = [['University of Iowa Student Health: Taking Strides FAQs', 'https://studenthealth.uiowa.edu/assets/Taking-Strides-FAQs.pdf']];
     const HOOP = [['NBA rulebook, Rule 1: court dimensions and equipment', 'https://official.nba.com/rule-no-1-court-dimensions-equipment'], ['FIBA official basketball rules 2026: equipment', 'https://assets.fiba.basketball/image/upload/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf']];
+    const ITU_HD = [['ITU-R BT.1847-1: the 1280 × 720 format', 'https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.1847-1-201506-I!!PDF-E.pdf']];
+    const ITU_UHD = [['ITU-R BT.2100-2, table 1: image formats', 'https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2100-2-201807-S!!PDF-E.pdf']];
+    const DCI_FORMATS = [['DCI Digital Cinema System Specification 1.4.2, section 4.3.1', 'https://dcss.dcimovies.com/0c0cff34d231b516cb89ae3fad352d5cf37a9515/dcss.pdf']];
     const SIZE_FACTS = [
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
-      [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
-      [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels', ITU_UHD, '2026-10-30'],
+      [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs (ITU-R BT.2100); cinema 4K (DCI) is 4096 × 2160', [ITU_UHD[0], DCI_FORMATS[0]], '2026-10-30'],
+      [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD; 921,600 pixels', ITU_HD, '2026-10-30'],
       [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; about 0.6 m/s faster for each °C warmer, and about 1,450–1,500 m/s in water at room temperature', SOUND, '2026-10-30'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
@@ -3603,8 +3606,9 @@ say('nothing selected to remove');
       if (m) { const inch = +m[1] * (/^m/.test(m[2]) ? 39.37 : 12), lo = Math.round(inch / 1.6 / 5) * 5, hi = Math.round(inch / 1.0 / 5) * 5; return { value: 'about ' + lo + '–' + Math.min(hi, 120) + ' inches', note: 'for 4K at ' + m[1] + ' ' + m[2] + ': the smaller end fills about 30° of your view (SMPTE), the larger about 40° (THX, more cinematic)' }; }
       // resolutions: "how many pixels in 1080p", "how many megapixels is 4k"
       m = t.match(/^how\s+many\s+(pixels|megapixels)\s+(?:is|are\s+in|in)\s+(?:a\s+)?(720p|1080p|1440p|2k|4k|8k|full\s+hd|uhd)(?:\s+(?:screen|image|video|resolution))?$/);
-      if (m) { const R = { '720p': [1280, 720], '1080p': [1920, 1080], 'full hd': [1920, 1080], '1440p': [2560, 1440], '2k': [2560, 1440], '4k': [3840, 2160], uhd: [3840, 2160], '8k': [7680, 4320] }[m[2].replace(/\s+/g, ' ')], px = R[0] * R[1];
-        return { value: m[1] === 'pixels' ? px.toLocaleString() : (Math.round(px / 1e5) / 10) + ' MP', note: R[0] + ' × ' + R[1] }; }
+      if (m) { const R = { '720p': [1280, 720], '1080p': [1920, 1080], 'full hd': [1920, 1080], '1440p': [2560, 1440], '2k': [2048, 1080], '4k': [3840, 2160], uhd: [3840, 2160], '8k': [7680, 4320] }[m[2].replace(/\s+/g, ' ')], px = R[0] * R[1];
+        const S = { '720p': ITU_HD, '1080p': ITU_UHD, 'full hd': ITU_UHD, '2k': DCI_FORMATS, '4k': ITU_UHD, uhd: ITU_UHD, '8k': ITU_UHD }[m[2].replace(/\s+/g, ' ')];
+        return { value: m[1] === 'pixels' ? px.toLocaleString() : (Math.round(px / 1e5) / 10) + ' MP', note: R[0] + ' × ' + R[1] + (m[2] === '2k' ? ', the DCI cinema 2K container' : m[2] === '1440p' ? ', 1440 lines at 16:9' : ''), ...(S ? { src: S, read: '2026-10-30' } : {}) }; }
       // print: "print size of 3000x2000 at 300 dpi", "72 dpi in pixels per cm"
       m = t.match(/^(?:the\s+)?print\s+size\s+(?:of|for)\s+(?:a\s+)?(\d{2,6})\s*[x×]\s*(\d{2,6})(?:\s+(?:image|photo|pixels?))?\s+at\s+(\d{2,4})\s*(?:dpi|ppi)$/);
       if (m) { const r = (x) => Math.round(x * 100) / 100, w = +m[1] / +m[3], h = +m[2] / +m[3]; return { value: r(w) + ' × ' + r(h) + ' in', note: r(w * 2.54) + ' × ' + r(h * 2.54) + ' cm at ' + m[3] + ' dpi (300 is photo quality)' }; }
