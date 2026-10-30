@@ -118,10 +118,44 @@ test('the host reads /api/will and /api/team in the same look and keeps the deci
   h.stop();
 });
 
+// growth ledger entries (void.growth.json), the shapes Verse and its builders write
+const LEDGER = [
+  { at: hAgo(30), by: 'verse', kind: 'fix', what: 'Verse fixes its old skill: learn to handle "too old"', try: 'too old' },
+  { at: hAgo(5), by: 'verse', kind: 'fix', what: 'Verse fixes its quote skill: learn to handle "quote about perseverance"', try: 'quote about perseverance' },
+  { at: hAgo(4), by: 'verse', kind: 'fix', what: 'Verse fixes its meteors skill: learn to handle "meteor shower dates"', try: 'meteor shower dates' },
+  { at: hAgo(3), by: 'verse', kind: 'grow', what: "Verse hardened itself: 'hangman', 'play hangman' for hangman, yesno.  Why these: tab (no benchmark ask)" },
+  { at: hAgo(2), by: 'claude', kind: 'build', what: 'asked by Verse: edge caching for answers: a stable answer comes from the cache' },
+  { at: hAgo(2), by: 'verse', kind: 'build', what: 'Versus: took on no site; next randomarea.com' },
+  { at: hAgo(1), by: 'void-verify', kind: 'retire', what: 'Taken back off the site: a merge that failed the browser suite' },
+];
+
+test('it writes what Verse changed in the last day in plain lines, from the ledger, and logs a new count once; it is kept', async () => {
+  const G = await import('../void-live-deploy/skills/growth-tree.js'), r = W.writeLines(LEDGER, NOW, G.publicWhat);
+  assert.equal(r.total, 6, 'the entry older than a day is left out');
+  assert.deepEqual(r.lines, [
+    'Verse learned to answer 2 more asks, like "meteor shower dates" and "quote about perseverance".',
+    'It made 2 skills sturdier against asks that had failed, like yesno and hangman.',
+    'New: Edge caching for answers: a stable answer comes from the cache.',
+    'It took back 1 change that failed its checks on main.']);
+  assert.deepEqual(W.writeLines([], NOW).lines, []); assert.equal(W.writeLines('x', NOW).total, 0);
+  const w = W.createWatch(), a = W.write(w, r, NOW);
+  assert.equal(a.kind, 'wrote'); assert.match(a.what, /\(6 changes\)/); assert.equal(W.write(w, r, NOW + 1), null, 'the same count is not news');
+  const w2 = W.createWatch(); assert.ok(W.loadWatch(w2, JSON.parse(JSON.stringify(W.watchOf(w))))); assert.deepEqual(w2.wrote.lines, r.lines);
+  assert.equal(w2.log[0].kind, 'wrote');
+});
+
+test('the host reads /void.growth.json in the same look and gives what it wrote as data', async () => {
+  const body = (j) => ({ ok: true, json: async () => j }), fresh = LEDGER.map((e) => ({ ...e, at: new Date(Date.now() - (NOW - Date.parse(e.at))).toISOString() }));
+  const h = startHost({ win: null, doc: null, ticking: false, bridge: false, fetch: async (u) => (u === '/void.growth.json' ? body(fresh) : { ok: false, status: 404 }), store: { loadKept: async () => null, keep: async () => true } });
+  await h.ready; const r = await h.watchNow();
+  assert.ok(r.news.some((n) => n.kind === 'wrote')); assert.equal(h.wrote().total, 6); assert.match(h.wrote().lines[0], /^Verse learned to answer 2 more asks/);
+  h.stop();
+});
+
 test('/brain/ shows the breaks it sees with a Look now button, and each break in its log can be marked seen', () => {
   const page = read('void-live-deploy/brain/index.html'), app = read('void-live-deploy/brain/app.js'), host = read('void-live-deploy/lib/brain-host.js');
   assert.match(page, /id="watchBox"/); assert.match(page, /id="lookBtn"/); assert.match(page, /id="breaks"/);
-  assert.match(page, /id="next"/); assert.match(app, /host\.decision\(\)/); assert.match(app, /a\.kind === 'decided'/);
+  assert.match(page, /id="next"/); assert.match(page, /id="wrote"/); assert.match(app, /host\.wrote\(\)/); assert.match(app, /host\.decision\(\)/); assert.match(app, /a\.kind === 'decided'/);
   assert.match(app, /host\.dismiss\(a\.id\)/); assert.match(app, /host\.undismiss\(a\.id\)/); assert.match(app, /\['Watch', /);
   assert.match(host, /setTimeout\(\(\) => host\.ready\.then\(look\), 20000\)/); assert.match(host, /doc\.visibilityState === 'hidden'\) return; if \(Watch\.due/);
 });

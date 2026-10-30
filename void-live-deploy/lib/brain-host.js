@@ -13,7 +13,8 @@
 //   watches   Verse's own health every 15 minutes while the page is visible (lib/brain-watch.js): runs on main, open pull requests
 //             and issues, read from GitHub's public API and /incidents.json; a break is an action in its log and pulls its attention.
 //             The same look reads what Verse decided (/api/will: its top want, the site it is assimilating, its last run) and its team
-//             (/api/team: jobs waiting, agents here): a new decision is an action in its log, a stuck will or an unstaffed queue a break
+//             (/api/team: jobs waiting, agents here): a new decision is an action in its log, a stuck will or an unstaffed queue a break,
+//             and writes what Verse changed in the last day from its growth ledger (/void.growth.json), as data (host.wrote)
 // Nothing is sent anywhere. The asks it keeps are the visitor's own, on their own device; Forget on the card clears them.
 import * as B from './brain.js';
 import { loadKept, keep } from './brain-store.js';
@@ -72,6 +73,8 @@ export function startHost(opts = {}) {
       const [rows, inc, prs, issues, will, team] = await Promise.all([S.buildState(fetchFn).catch(() => null), json(fetchFn, '/incidents.json'), json(fetchFn, api + '/pulls?state=open&per_page=50'), json(fetchFn, api + '/issues?state=open&per_page=50'), json(fetchFn, '/api/will'), json(fetchFn, '/api/team')]);
       const W = watch(), r = Watch.takeIn(W, Watch.observe({ rows: rows ? S.causesOf(rows, inc) : null, prs: Array.isArray(prs) ? prs : null, issues: Array.isArray(issues) ? issues : null, will, team: team && team.ok ? team : null }));
       const d = Watch.decide(W, Watch.decisionOf(will)); if (d) r.news.push(d);
+      const [G, ledger] = await Promise.all([import('../skills/growth-tree.js').catch(() => null), json(fetchFn, '/void.growth.json')]);
+      const w = G && Array.isArray(ledger) ? Watch.write(W, Watch.writeLines(ledger, Date.now(), G.publicWhat)) : null; if (w) r.news.push(w);
       host.changed = true; for (const n of r.news) emit('watch', n);
       return r;
     } finally { host.watching = false; }
@@ -79,6 +82,9 @@ export function startHost(opts = {}) {
   host.breaks = () => Watch.breaksOf(watch());
   /** what Verse decided to do next, as its will said at the last look: { want, because, site, tower, at } or null. */
   host.decision = () => (watch().next ? { ...watch().next } : null);
+  /** what Verse changed in the last day, in plain lines, as the brain wrote it at its last look: { total, lines, since, at } or null.
+   *  Data for the What's new card (skills/showcase.js) and /brain/; the brain shows it, it never edits a card. */
+  host.wrote = () => (watch().wrote ? JSON.parse(JSON.stringify(watch().wrote)) : null);
   host.dismiss = (id) => { const ok = Watch.dismiss(watch(), id); if (ok) { host.changed = true; emit('dismissed', { id }); } return ok; };
   host.undismiss = (id) => { const ok = Watch.undismiss(watch(), id); if (ok) { host.changed = true; emit('undismissed', { id }); } return ok; };
   host.watchStats = () => { const W = watch(); return { reads: W.reads, at: W.at, breaks: Watch.breaksOf(W).length }; };

@@ -12,16 +12,18 @@
 //   decisions  what Verse decided to do next, read from its will (/api/will: its top want, the site it is assimilating, its last run) and
 //              its team (/api/team: jobs waiting, agents here). A new top want is an action in the log ('decided'); a will run that failed
 //              twice or more without shipping, and jobs that wait with no agent here, are breaks (kinds 'will' and 'team')
+//   writing    what Verse changed in the last day, in plain lines, from its growth ledger (/void.growth.json, through the ledger's own
+//              public filter, skills/growth-tree.js publicWhat): data the What's new card may show; a new count is an action ('wrote')
 // Pure: no fetch, no DOM, no storage (lib/brain-host.js reads, lib/brain-mind.js keeps). Check names and pull request numbers only.
 
 export const WATCH_MS = 15 * 60 * 1000, PR_OLD_H = 3, MAX_LOG = 40, MAX_CHECKS = 3;
-const KINDS = ['ci', 'prs', 'issues', 'will', 'team'], LOGGED = ['watch', 'recovered', 'decided'];
+const KINDS = ['ci', 'prs', 'issues', 'will', 'team'], LOGGED = ['watch', 'recovered', 'decided', 'wrote'];
 /** the skills that answer for each kind of break (names in skills/index.json), for the brain's attention. */
 export const ANSWERS = { ci: ['status', 'incident'], prs: ['merges'], issues: ['merges'], will: ['wants', 'tower'], team: ['team-chat'] };
 export const WILL_TRIES = 2;
 
 /** a fresh watch. */
-export const createWatch = () => ({ seen: {}, log: [], seq: 0, at: 0, reads: 0, next: null });
+export const createWatch = () => ({ seen: {}, log: [], seq: 0, at: 0, reads: 0, next: null, wrote: null });
 
 const s = (x, n = 120) => String(x == null ? '' : x).slice(0, n);
 const gh = (u) => (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(u || '') ? s(u, 200) : '');
@@ -85,6 +87,31 @@ export function decide(W, d, at = Date.now()) {
   return log(W, { kind: 'decided', what, why, url: '', key: 'will' }, at);
 }
 
+/** what Verse changed in the last day, in plain lines, from its growth ledger entries ([{ at, by, kind, what, try }], /void.growth.json).
+ *  plain(what) is the ledger's own public filter (skills/growth-tree.js plainly), passed in so this file stays pure. Pure. */
+export function writeLines(entries, at = Date.now(), plain = (x) => String(x || ''), days = 1) {
+  const from = at - days * 86400e3, recent = (Array.isArray(entries) ? entries : []).filter((e) => e && typeof e.what === 'string' && Date.parse(e.at) > from && Date.parse(e.at) <= at);
+  const of = (k) => recent.filter((e) => e.kind === k), q = (t) => '"' + s(t, 60) + '"', list = (xs) => xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs[0] || '';
+  const lines = [], fixes = of('fix'), asks = [...new Set(fixes.map((e) => s(e.try, 60).trim()).filter(Boolean))].reverse();
+  if (fixes.length) lines.push('Verse learned to answer ' + fixes.length + ' more ask' + (fixes.length === 1 ? '' : 's') + (asks.length ? ', like ' + list(asks.slice(0, 3).map(q)) : '') + '.');
+  const grows = of('grow'), skills = [...new Set(grows.flatMap((e) => ((e.what.match(/ for ([a-z0-9][a-z0-9, -]*?)\.\s/i) || [])[1] || '').split(/,\s*/)).map((x) => x.trim()).filter((x) => /^[a-z0-9-]{2,30}$/.test(x)))].reverse();
+  if (grows.length) lines.push('It made ' + (skills.length || grows.length) + ' skill' + ((skills.length || grows.length) === 1 ? '' : 's') + ' sturdier against asks that had failed' + (skills.length ? ', like ' + list(skills.slice(0, 4)) : '') + '.');
+  const clause = (t) => String(plain(t) || '').replace(/^asked by Verse:\s*/i, '').split(/;\s|\s\(|\.\s|,\s*asked by/)[0].replace(/[.\s]+$/, '').trim().replace(/^[a-z]/, (c) => c.toUpperCase());
+  const builds = [...new Set(of('build').map((e) => clause(e.what)).filter((t) => t && t.length <= 200 && !/^Versus: took on no site/.test(t)))].reverse();
+  if (builds.length) lines.push('New: ' + builds.slice(0, 2).join('. ') + '.' + (builds.length > 2 ? ' And ' + (builds.length - 2) + ' more.' : ''));
+  const back = of('retire').length; if (back) lines.push('It took back ' + back + ' change' + (back === 1 ? '' : 's') + ' that failed its checks on main.');
+  return { total: recent.length, lines, since: new Date(from).toISOString().slice(0, 10) };
+}
+
+/** keep what writeLines wrote: a new count of changes is an action in the log. Returns the action, or null when nothing changed. */
+export function write(W, w, at = Date.now()) {
+  if (!w || !Number.isFinite(+w.total) || !Array.isArray(w.lines)) return null;
+  const was = W.wrote, total = Math.max(0, Math.round(+w.total)), lines = w.lines.slice(0, 6).map((x) => s(x, 400));
+  W.wrote = { total, lines, since: s(w.since, 10), at };
+  if (!total || !lines.length || (was && was.total === total && was.since === W.wrote.since)) return null;
+  return log(W, { kind: 'wrote', what: 'Wrote what Verse changed in the last day (' + total + ' change' + (total === 1 ? '' : 's') + ')', why: 'it read them in its growth ledger: ' + lines[0].replace(/\.$/, ''), url: '', key: 'ledger' }, at);
+}
+
 /** take observations into the watch: a part that turns from ok (or unknown) to a break, or from a break to ok, is an action in the log.
  *  Returns { news: the actions logged now, breaks: the breaks that stand }. */
 export function takeIn(W, obs, at = Date.now()) {
@@ -123,7 +150,7 @@ export function undismiss(W, id) { const a = W.log.find((x) => x.id === id); if 
 export const due = (W, at = Date.now()) => !W.at || at - W.at >= WATCH_MS;
 
 /** what to keep on this device. */
-export const watchOf = (W) => ({ seen: W.seen, log: W.log.slice(-MAX_LOG), seq: W.seq, at: W.at, reads: W.reads, next: W.next || null });
+export const watchOf = (W) => ({ seen: W.seen, log: W.log.slice(-MAX_LOG), seq: W.seq, at: W.at, reads: W.reads, next: W.next || null, wrote: W.wrote || null });
 /** put a kept watch back; wrong shapes are ignored. */
 export function loadWatch(W, k) {
   if (!k || typeof k !== 'object' || !k.seen || typeof k.seen !== 'object') return false;
@@ -132,6 +159,8 @@ export function loadWatch(W, k) {
   W.seen = seen; W.seq = n(k.seq); W.at = n(k.at); W.reads = n(k.reads);
   const d = k.next && typeof k.next === 'object' ? k.next : null;
   W.next = d ? { want: s(d.want, 120), because: s(d.because, 160), site: s(d.site, 60), tower: s(d.tower, 160), at: n(d.at) } : null;
+  const wr = k.wrote && typeof k.wrote === 'object' && Array.isArray(k.wrote.lines) ? k.wrote : null;
+  W.wrote = wr ? { total: n(wr.total), lines: wr.lines.slice(0, 6).filter((x) => typeof x === 'string').map((x) => s(x, 400)), since: s(wr.since, 10), at: n(wr.at) } : null;
   W.log = (Array.isArray(k.log) ? k.log : []).filter((a) => a && typeof a.id === 'string' && LOGGED.includes(a.kind)).slice(-MAX_LOG)
     .map((a) => ({ id: s(a.id, 12), at: n(a.at), kind: a.kind, ask: '', cands: [], pick: s(a.pick, 40), first: '', what: s(a.what), why: s(a.why, 200), url: gh(a.url), outcome: a.outcome === 'seen' ? 'seen' : null }));
   return true;
