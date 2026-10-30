@@ -550,6 +550,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:20:27Z",
+   "subject": "Generators: preload the card module the page now imports"
+  },
+  {
    "at": "2026-10-30T05:19:32Z",
    "subject": "team-live: check the push signature without importing the site's lib"
   },
@@ -562,16 +566,16 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:18:02Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:17:40Z",
-   "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
-  },
-  {
    "at": "2026-10-30T05:15:47Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:15:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:15:15Z",
+   "subject": "Generators: the page's card shows its generator, and the card opens the same five"
   },
   {
    "at": "2026-10-30T05:13:43Z",
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T05:08:53Z",
    "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
-  },
-  {
-   "at": "2026-10-30T05:07:43Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {

@@ -962,6 +962,13 @@
    "tests": 3
   },
   {
+   "file": "lib/generators.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/brain-ask.js",
    "skills": 2,
    "direct": 1,
@@ -981,13 +988,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 3
-  },
-  {
-   "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/list-goal.js",
@@ -2762,6 +2762,13 @@
   },
   {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6558,10 +6565,18 @@
     "skills/walker.js"
    ]
   },
+  "lib/generators-card.js": {
+   "imports": [
+    "lib/generators.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
     "lib/chat-generators.js",
+    "lib/generators-card.js",
     "skills/textgen.js"
    ],
    "reachedBy": [
@@ -14621,7 +14636,9 @@
    "imports": [
     "lib/generators.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/generators-card.js"
+   ]
   },
   "skills/throw-off.js": {
    "imports": [],
