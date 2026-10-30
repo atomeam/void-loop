@@ -35,7 +35,7 @@ function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (String(
 
 // ---------- a job as a card ----------
 function card(j, opts = {}) {
-  const src = C.SOURCES[j.src], saved = (mem().saved || []).some((x) => x.id === j.id), fresh = opts.fresh && opts.fresh.has(j.id);
+  const src = C.SOURCES[j.src], saved = (mem().saved || []).some((x) => x.id === j.id), tracked = C.isTracked(mem().apps, j), fresh = opts.fresh && opts.fresh.has(j.id);
   const bits = [j.company, j.loc || t('Anywhere'), j.type && t(C.TYPES[j.type] || j.type), j.level].filter(Boolean).map(esc).join(' · ');
   const li = document.createElement('li'); li.className = 'job' + (fresh ? ' fresh' : ''); li.dataset.id = j.id;
   li.innerHTML = '<div class="jh"><span class="av" aria-hidden="true">' + esc((j.company || '?').slice(0, 1).toUpperCase()) + '</span><div class="jt"><a class="jl" href="' + esc(j.url) + '" target="_blank" rel="noopener">' + esc(j.title) + '</a>'
@@ -46,14 +46,19 @@ function card(j, opts = {}) {
     + (j.excerpt ? '<p class="ex">' + esc(j.excerpt) + '</p>' : '')
     + (j.tags.length ? '<div class="chips">' + j.tags.slice(0, 6).map((x) => '<button type="button" class="chip tagb" data-tag="' + esc(x) + '">' + esc(x) + '</button>').join('') + '</div>' : '')
     + '<div class="row jb"><a class="btn go" href="' + esc(j.apply || j.url) + '" target="_blank" rel="noopener">' + esc(t('Apply on')) + ' ' + esc(src.name) + '</a>'
-    + '<button type="button" class="savej" aria-pressed="' + saved + '">' + esc(saved ? t('Saved') : t('Save')) + '</button><button type="button" class="trackj">' + esc(t('Track')) + '</button></div>'
+    + '<button type="button" class="savej" aria-pressed="' + saved + '">' + esc(saved ? t('Saved') : t('Save')) + '</button><button type="button" class="trackj">' + esc(tracked ? t('In the tracker') : t('Track')) + '</button></div>'
     + '<div class="soft src">' + esc(t('Listing from')) + ' <a href="' + esc(j.url) + '" target="_blank" rel="noopener">' + esc(src.name) + '</a>' + (j.date ? ' · ' + esc(C.ago(j.date, lang())) : '') + '</div>';
   $(li, '.savej').addEventListener('click', (e) => { toggleSave(j); const on = (mem().saved || []).some((x) => x.id === j.id); e.target.setAttribute('aria-pressed', on); e.target.textContent = on ? t('Saved') : t('Save'); emitSaved(); });
   $(li, '.trackj').addEventListener('click', (e) => { addApp({ title: j.title, company: j.company, url: j.url, src: j.src, stage: 'saved' }); e.target.textContent = t('In the tracker'); });
+  cardJob.set(li, j);
   for (const b of li.querySelectorAll('.tagb')) b.addEventListener('click', () => { setSearch({ tag: b.dataset.tag }); const r = document.getElementById('jb-search'); if (r) r.scrollIntoView({ block: 'start' }); });
   return li;
 }
 const savedSubs = new Set(); const emitSaved = () => { for (const f of savedSubs) f(); };
+// Every card on the screen shows the Save and Track state of now, also after a change in another panel.
+const cardJob = new WeakMap();
+savedSubs.add(() => { const m = mem(); for (const li of document.querySelectorAll('li.job')) { const j = cardJob.get(li); if (!j) continue; const on = (m.saved || []).some((x) => x.id === j.id), sv = $(li, '.savej'), tr = $(li, '.trackj');
+  if (sv) { sv.setAttribute('aria-pressed', on); sv.textContent = on ? t('Saved') : t('Save'); } if (tr) tr.textContent = C.isTracked(m.apps, j) ? t('In the tracker') : t('Track'); } });
 function toggleSave(j) { const list = mem().saved || [], i = list.findIndex((x) => x.id === j.id); if (i >= 0) list.splice(i, 1); else list.unshift(j); keep({ saved: list.slice(0, 300) }); }
 
 // ---------- panels ----------
@@ -139,13 +144,13 @@ const PANELS = {
         $(li, '.st').addEventListener('change', (e) => save({ stage: e.target.value, ...(e.target.value === 'applied' && !a.applied ? { applied: today() } : {}) }));
         $(li, '.ad').addEventListener('change', (e) => save({ applied: e.target.value })); $(li, '.nx').addEventListener('change', (e) => save({ next: e.target.value }));
         $(li, '.nt').addEventListener('input', (e) => save({ notes: e.target.value.slice(0, 2000) }));
-        $(li, '.rm').addEventListener('click', () => { keep({ apps: (mem().apps || []).filter((x) => x.id !== a.id) }); draw(); });
+        $(li, '.rm').addEventListener('click', () => { keep({ apps: (mem().apps || []).filter((x) => x.id !== a.id) }); emitSaved(); });
         ul.append(li); }
     };
     $(el, '#jb-addapp').addEventListener('submit', (e) => { e.preventDefault(); const v = (id) => $(el, '#' + id).value.trim(); if (!v('ja-title')) return; addApp({ title: v('ja-title'), company: v('ja-company'), url: v('ja-url'), stage: $(el, '#ja-stage').value, applied: $(el, '#ja-stage').value === 'saved' ? '' : today() }); e.target.reset(); });
     $(el, '#jb-csv').addEventListener('click', () => download('applications.csv', 'text/csv', C.appsToCsv((mem().apps || []).map(C.cleanApp).filter(Boolean))));
     $(el, '#jb-ics').addEventListener('click', () => { const apps = (mem().apps || []).map(C.cleanApp).filter(Boolean); if (!apps.some((a) => a.next)) { $(el, '#jb-amsg').textContent = t('Give an application a next step date first.'); return; } download('next-steps.ics', 'text/calendar', C.appsToIcs(apps)); });
-    $(el, '#jb-imp').addEventListener('change', async (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const rows = C.appsFromCsv(await file.text()), have = (mem().apps || []).map(C.cleanApp).filter(Boolean), key = (a) => (a.title + '|' + a.company + '|' + a.applied).toLowerCase(); const add = rows.filter((r) => !have.some((h) => key(h) === key(r))); keep({ apps: add.concat(have).slice(0, 500) }); $(el, '#jb-amsg').textContent = t('Imported') + ' ' + add.length; e.target.value = ''; draw(); });
+    $(el, '#jb-imp').addEventListener('change', async (e) => { const file = e.target.files && e.target.files[0]; if (!file) return; const rows = C.appsFromCsv(await file.text()), have = (mem().apps || []).map(C.cleanApp).filter(Boolean), key = (a) => (a.title + '|' + a.company + '|' + a.applied).toLowerCase(); const add = rows.filter((r) => !have.some((h) => key(h) === key(r))); keep({ apps: add.concat(have).slice(0, 500) }); $(el, '#jb-amsg').textContent = t('Imported') + ' ' + add.length; e.target.value = ''; emitSaved(); });
     savedSubs.add(draw); draw(); return el;
   },
   feed() {
