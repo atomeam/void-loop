@@ -33,5 +33,13 @@ await call('moon_phase', { date: '2026-10-11T00:00:00Z' }, (s) => s.illuminated 
 await call('meteor_showers', { date: '2026-10-11' }, (s) => Array.isArray(s.active) && !!(s.next && s.next.name));
 // Verse's answer engine: a question it has answered before (the 7-day cache), and the open web answers when the model cannot
 await call('ask_void', { ask: 'what is the moon' }, (s) => typeof s.answer === 'string' && s.answer.length > 20);
+// Verse's proven skills, each run by its own code on the server (no model): asks whose answers are known
+await call('skill_swaps', { ask: 'substitute for buttermilk' }, (s, text) => s.path === 'skill_code' && /lemon juice/.test(text));
+await call('skill_eclipse', { ask: 'next eclipse' }, (s, text) => s.path === 'skill_code' && /eclipse/i.test(text) && /20\d\d/.test(text));
+await call('skill_country', { ask: 'capital of australia' }, (s, text) => s.path === 'skill_code' && /Canberra/.test(text));
+await call('skill_define', { ask: 'define serendipity' }, (s, text) => s.path === 'skill_code' && /fortunate|luck|chance/i.test(text) && /wiktionary/.test(text));
+const wrong = await client.callTool({ name: 'skill_swaps', arguments: { ask: 'define serendipity' } });
+if (!wrong.isError) fail('skill_swaps took an ask that is not its own: ' + JSON.stringify(wrong.content));
+console.log('ok   skill_swaps refuses an ask it does not take');
 await client.close();
-console.log('mcp probe: an MCP client listed and called all five tools at ' + URL_);
+console.log('mcp probe: an MCP client listed and called the tools, and four proven skills by their own code, at ' + URL_);
