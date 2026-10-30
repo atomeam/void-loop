@@ -140,24 +140,27 @@
     $('schemes').replaceChildren(...Object.entries(d.schemes).map(([k, list]) => { const r = el('div', { className: 'row s' }); r.replaceChildren(...list.map(swatch)); return el('div', { className: 'scheme' }, [el('p', { textContent: names[k] }), r]); }));
     // palettes that use it, how it looks with colour blindness, CSS that uses it, the nearest web-safe colour
     $('pals').replaceChildren(...palettesFor(d.hex).map((p) => { const keep = el('button', { type: 'button', textContent: 'Keep' }); keep.setAttribute('aria-label', 'Keep the ' + p.name + ' palette'); keep.addEventListener('click', () => { work = p.colors.slice(0, 10); $('pname').value = p.name + ' ' + d.hex; drawWork(); });
-      const r = el('div', { className: 'row s5' }); r.style.gridTemplateColumns = 'repeat(5, 1fr)'; r.replaceChildren(...p.colors.map(swatch)); return el('div', { className: 'pal' }, [el('p', {}, [el('span', { textContent: p.name }), keep]), r]); }));
+      const paint = el('a', { href: paintLink(p.colors), textContent: 'Paint with it' }); paint.setAttribute('aria-label', 'Paint a picture by number in the ' + p.name + ' palette');
+      const r = el('div', { className: 'row s5' }); r.style.gridTemplateColumns = 'repeat(5, 1fr)'; r.replaceChildren(...p.colors.map(swatch)); return el('div', { className: 'pal' }, [el('p', {}, [el('span', { textContent: p.name }), el('span', {}, [paint, ' ', keep])]), r]); }));
     $('blind').replaceChildren(...blindness(d.hex).map((b) => { const w = swatch(b.hex); w.classList.add('blind'); w.title = b.label + ': ' + b.hex; w.firstChild.textContent = b.label.split(' (')[0]; w.style.height = '48px'; return w; }));
     const ink = d.contrast.text; $('snip').textContent = '.box {\n  background-color: ' + d.hex.toLowerCase() + ';\n  color: ' + ink.toLowerCase() + ';\n}\n.text { color: ' + d.hex.toLowerCase() + '; }\n.frame { border: 2px solid ' + d.hex.toLowerCase() + '; }\n:root { --brand: ' + d.hex.toLowerCase() + '; }';
     $('safesum').textContent = 'The 216 web-safe colours (the nearest to this one is ' + webSafe(d.hex).toUpperCase() + ')';
     $('rest').hidden = false;
   }
   // your palette: up to ten colours, named and saved on this device; a saved one opens back into it, copies as CSS, or paints the wheel
+  // a palette opens paint by number with a picture in its colours (/paint/ reads ?colours= and keeps the picture's dark-to-light order)
+  function paintLink(list) { return '/paint/?colours=' + list.map((h) => String(h).replace('#', '').toLowerCase()).join(','); }
   const PAL = 'a2m.void.colour.palettes.v1'; let work = [], mine = []; try { mine = JSON.parse(localStorage.getItem(PAL) || '[]').filter((p) => p && Array.isArray(p.colors)).slice(0, 40); } catch (_) {}
   const keepMine = () => { try { localStorage.setItem(PAL, JSON.stringify(mine)); } catch (_) {} };
   function drawWork() { $('work').replaceChildren(...(work.length ? work.map((h, i) => { const b = swatch(h); b.title = 'Take ' + h + ' out of the palette'; b.setAttribute('aria-label', 'Take ' + h + ' out of the palette'); b.onclick = (e) => { e.stopPropagation(); work.splice(i, 1); drawWork(); }; return b; }) : [el('span', { className: 'hint', textContent: 'Add colours to make a palette (tap one to take it out).' })])); $('savep').disabled = !work.length; }
   function drawMine() {
     $('mypals').replaceChildren(...mine.map((p, i) => { const r = el('div', { className: 'row p' }); r.replaceChildren(...p.colors.map(swatch));
-      const open = el('button', { type: 'button', textContent: 'Edit' }), css = el('button', { type: 'button', textContent: 'Copy CSS' }), wheel = el('button', { type: 'button', textContent: 'Paint the wheel' }), del = el('button', { type: 'button', textContent: '×' });
-      for (const [b, w] of [[open, 'Edit'], [css, 'Copy the CSS of'], [wheel, 'Paint the wheel with'], [del, 'Delete']]) b.setAttribute('aria-label', w + ' the palette ' + p.name);
+      const open = el('button', { type: 'button', textContent: 'Edit' }), css = el('button', { type: 'button', textContent: 'Copy CSS' }), wheel = el('button', { type: 'button', textContent: 'Paint the wheel' }), pic = el('a', { href: paintLink(p.colors), textContent: 'Paint a picture' }), del = el('button', { type: 'button', textContent: '×' });
+      for (const [b, w] of [[open, 'Edit'], [css, 'Copy the CSS of'], [wheel, 'Paint the wheel with'], [pic, 'Paint a picture by number in'], [del, 'Delete']]) b.setAttribute('aria-label', w + ' the palette ' + p.name);
       open.onclick = () => { work = p.colors.slice(); $('pname').value = p.name; drawWork(); }; del.onclick = () => { mine.splice(i, 1); keepMine(); drawMine(); };
       css.onclick = () => copy(':root {\n' + p.colors.map((c, k) => '  --' + (p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'palette') + '-' + (k + 1) + ': ' + c.toLowerCase() + ';').join('\n') + '\n}', css);
       wheel.onclick = () => { if (setPalette(p.colors)) location.href = '/wheel/'; };
-      return el('div', { className: 'pal mine' }, [el('p', {}, [el('span', { textContent: p.name }), el('span', {}, [open, ' ', css, ' ', wheel, ' ', del])]), r]); }));
+      return el('div', { className: 'pal mine' }, [el('p', {}, [el('span', { textContent: p.name }), el('span', {}, [open, ' ', css, ' ', wheel, ' ', pic, ' ', del])]), r]); }));
   }
   $('addc').addEventListener('click', () => { if (now && !work.includes(now.hex.toUpperCase()) && work.length < 10) { work.push(now.hex.toUpperCase()); drawWork(); } });
   $('clearp').addEventListener('click', () => { work = []; $('pname').value = ''; drawWork(); });
@@ -193,6 +196,7 @@
     { label: 'Make a gradient from it', href: () => '/gradient/#' + gradientCode({ type: 'linear', angle: 90, stops: [{ color: '#' + curHex(), pos: 0 }, { color: lighter(curHex()), pos: 100 }] }) },
     { label: 'Use it as every tool\u2019s accent', run: () => (setAccent('#' + curHex()) ? 'Every tool wears it now' : 'This browser will not keep it') },
     { label: 'Paint the wheel in its shades', href: () => '/wheel/', go: () => setPalette(shadesOf('#' + curHex(), 8)) },
+    { label: 'Paint a picture by number in its shades', href: () => paintLink(shadesOf('#' + curHex(), 6)) },
     { label: 'It as a number', href: () => '/base-converter/?v=' + curHex() + '&b=16' },
   ], { card: () => 'color #' + curHex() }); // the stage card opens on the colour open here, not the example
 </script>

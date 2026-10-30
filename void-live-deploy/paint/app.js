@@ -14,6 +14,23 @@ const state = { tpl: null, labels: null, region: null, areas: [], paper: null, p
 const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || '') ?? d; } catch (_) { return d; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } };
 const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+// colours handed over in the link (?colours=1a5fb4,e4572e,...: a palette from /color/, or a shared link): the picture keeps its areas and
+// numbers, and each of its colours becomes the handed colour of the same lightness rank, so its dark parts stay dark and its light parts light
+export function coloursOf(s) {
+  return String(s || '').split(/[,\s]+/).map((x) => x.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)).filter(Boolean).slice(0, 16)
+    .map((m) => '#' + (m[1].length === 3 ? [...m[1]].map((c) => c + c).join('') : m[1]).toLowerCase());
+}
+const lum = (hex) => { const [r, g, b] = rgb(hex); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+export function restyled(palette, colours) {
+  let given = [...new Set(colours)].sort((a, b) => lum(a) - lum(b));
+  if (given.length === 1) { const c = rgb(given[0]); given = [c.map((v) => v * 0.35), c, c.map((v) => v + (255 - v) * 0.7)].map((k) => '#' + k.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')); }
+  const order = palette.map((_, i) => i).sort((a, b) => lum(palette[a]) - lum(palette[b])), n = order.length, m = given.length, out = palette.slice();
+  order.forEach((idx, r) => { const t = n > 1 ? (r / (n - 1)) * (m - 1) : (m - 1) / 2, lo = Math.floor(t), hi = Math.min(m - 1, lo + 1), f = t - lo, a = rgb(given[lo]), b = rgb(given[hi]);
+    out[idx] = '#' + a.map((v, k) => Math.round(v + (b[k] - v) * f).toString(16).padStart(2, '0')).join(''); });
+  return out;
+}
+let given = typeof location === 'undefined' ? [] : coloursOf(new URLSearchParams(location.search).get('colours') || new URLSearchParams(location.search).get('colors'));
+const colourTail = () => (given.length ? '&colours=' + given.map((h) => h.slice(1)).join(',') : '');
 
 // ---------- the sheet ----------
 function unpack(tpl) { const labels = new Uint8Array(tpl.w * tpl.h); let i = 0; for (const [v, len] of tpl.rle) { labels.fill(v, i, i + len); i += len; } return labels; }
@@ -320,7 +337,7 @@ $('png').onclick = () => {
     if (label) label.after(' ', a); }
 }
 $('share').onclick = () => {
-  const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done;
+  const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done + colourTail();
   history.replaceState(null, '', q);
   const own = /^own-/.test(state.tpl.id) ? ' This picture is your own photo, so the link opens it only on this device.' : '';
   navigator.clipboard?.writeText(location.origin + q).then(() => say('Link copied: it carries the areas you finished.' + own), () => say('The link is in the address bar.' + own));
@@ -394,12 +411,13 @@ async function thumb(b) {
 async function open(t, doneFromLink) {
   let tpl;
   try { tpl = await fetchOne(t); } catch (_) { $('credit').textContent = t.name + ' could not be loaded just now; try again in a moment.'; return; }
-  loadTemplate({ ...tpl, id: t.id, name: t.name || tpl.name });
+  loadTemplate({ ...tpl, id: t.id, name: t.name || tpl.name, ...(given.length ? { palette: restyled(tpl.palette, given) } : {}) });
+  $('restyle').hidden = !given.length;
   const saved = progressOf(t.id), list = doneFromLink || (saved ? saved.done : []);
   for (const id of list) { const a = state.areas[id]; if (a && !state.done.has(id)) paintArea(id, true); }
   if (list.length) { keep(); status(); if (!doneFromLink) say('Welcome back: ' + state.done.size + ' of ' + state.areas.length + ' areas of ' + tpl.name + ' were kept on this device.'); }
   state.revealed = state.done.size === state.areas.length;
-  if (!doneFromLink) history.replaceState(null, '', '/paint/?p=' + encodeURIComponent(t.id));
+  if (!doneFromLink) history.replaceState(null, '', '/paint/?p=' + encodeURIComponent(t.id) + colourTail());
   if (innerWidth < 700 && document.activeElement && document.activeElement.closest('#templates')) stage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 }
 function loadTemplate(tpl) {
@@ -422,6 +440,9 @@ $('mode').onclick = () => {
   say(state.mode === 'brush' ? 'Brush on: drag to paint; two fingers still zoom.' : 'Tap an area to fill it; drag to move around.');
 };
 $('undo').onclick = undo;
+$('owncol').onclick = () => { // back to the picture's own colours; what is painted stays painted
+  const t = PICTURES.find((x) => x.id === state.tpl.id); given = []; if (t) open(t).then(() => say('Back to the picture\u2019s own colours.'));
+};
 $('reset').onclick = () => { if (!state.tpl) return; clearPainted(); keep(); status(); say('Started over.'); };
 
 // ---------- your own photo ----------
