@@ -303,6 +303,29 @@ test('the recipes page\'s card shows the recipe open there, at its servings and 
   assert.ok(page.includes('{ card: () => cardAsk(state.recipe, state.servings, state.units) }'), 'the page gives the card its recipe, servings and units');
 });
 
+test('a recipe ask for a dish the page has built in shows that recipe with the network cut, at the servings asked; "for 6" leaves the dish to search', async () => {
+  const R = await import('../void-live-deploy/lib/recipes.js'), mod = await import('../void-live-deploy/skills/recipe.js'), S = mod.default;
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  const asked = [], was = globalThis.fetch; globalThis.fetch = async (u) => { asked.push(String(u)); throw new Error('offline'); };
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; asked.length = 0; const said = await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => true }); return [said, el]; };
+  try {
+    const pancakes = R.BUILT_IN.find((r) => r.id === 'pancakes');
+    for (const ask of ['recipe for pancakes', 'pancake recipe', 'guac recipe']) {
+      assert.equal(await firstSkill(ask), 'recipe', ask); const [said, el] = await show(ask);
+      assert.equal(said, 'recipe', ask); assert.deepEqual(asked, [], 'nothing fetched: ' + ask); assert.match(el.dataset.page, /^\/recipes\/\?q=/, ask);
+    }
+    assert.deepEqual(mod.dishOf('pancake recipe for 8'), { dish: 'pancake', by: 'name', servings: 8 });
+    assert.equal(await firstSkill('pancake recipe for 8'), 'recipe');
+    const [said, el] = await show('pancake recipe for 8 people'); assert.equal(said, 'recipe');
+    for (const x of pancakes.ingredients) assert.ok(el.innerHTML.includes('<li>' + esc(R.scale(x, 2)) + '</li>'), 'doubled: ' + x);
+    assert.equal(el.dataset.page, '/recipes/?q=pancakes&servings=8&units=us');
+    // not built in: the dish goes to the search without the servings, and a near name is not taken for a built-in one
+    await show('recipe for lasagna for 6'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/search.php?s=lasagna']);
+    await show('recipe for spaghetti carbonara'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/search.php?s=spaghetti%20carbonara']);
+    assert.equal(R.exactly('spaghetti carbonara'), null); assert.equal(R.exactly('chicken soup').id, 'chicken-soup'); assert.equal(R.exactly('pancake').id, 'pancakes');
+  } finally { globalThis.fetch = was; }
+});
+
 test('the markets page\'s card shows the coin open there, not the board of top coins; its card opens Markets on that coin', async () => {
   const C = await import('../void-live-deploy/lib/markets-card.js'), M = await import('../void-live-deploy/lib/markets.js'), mod = await import('../void-live-deploy/skills/crypto.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
   const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) }); try { await S.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; } return el; };

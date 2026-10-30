@@ -21,6 +21,8 @@ import { scrubOut } from '../../lib/keeper.js';
 import { models } from '../../lib/models.js';
 import { imageOf } from '../../lib/art-rules.js';
 import { capOf, asImage } from './card-art.js';
+import { publicPainter, paintWith } from './studio.js';
+import { IMAGE_MODELS } from '../../lib/models.js';
 import { cleanLine, refusalOf, promptOf, pollUrl, styleOf, shapeOf, seedOf, SHAPES, SAYS, aiShareOf, POLL_CAP, PER_CONN, PER_MINUTE, PROMPT_MAX, NEGATIVE_MAX } from '../../lib/image-gen.js';
 
 export const AI_MS = 25000, POLL_MS = 30000; // both inside the gate's 60 s wait for a first picture (2026-10-25: 40 + 40 s let a slow painter hold a picture past it)
@@ -103,7 +105,13 @@ export async function onRequestPost({ request, env }, fetchFn) {
   if (!aiRoom && !pollRoom) return resting('cap', de);
   let img = '', painter = '';
   if (aiRoom) {
-    try { img = await paintAi(env, full, size, seed); } catch (e) { await noteMiss(env, 'workers-ai', e); if (!/slow/.test(String(e && e.message))) { try { img = await paintAi(env, full, size, seed, false); } catch (e2) { await noteMiss(env, 'workers-ai without seed', e2); img = ''; } } } // a model that refuses the seed field paints without it
+    // the studio's bench picks the painter (functions/api/studio.js publicPainter): its best-scoring model inside klein-4b's cost; a square-only
+    // model paints square shapes only, and any miss falls back to klein-4b below, so a bad pick never costs the user a picture
+    const champ = await publicPainter(env).catch(() => 'klein-4b');
+    if (champ !== 'klein-4b' && IMAGE_MODELS[champ] && !(IMAGE_MODELS[champ].square && size[0] !== size[1])) {
+      try { img = imageOf((await paintWith(env, champ, full, size, seed, AI_MS)).img.replace(/^data:image\/[a-z]+;base64,/, '')) || ''; } catch (e) { await noteMiss(env, champ, e); img = ''; }
+    }
+    if (!img) try { img = await paintAi(env, full, size, seed); } catch (e) { await noteMiss(env, 'workers-ai', e); if (!/slow/.test(String(e && e.message))) { try { img = await paintAi(env, full, size, seed, false); } catch (e2) { await noteMiss(env, 'workers-ai without seed', e2); img = ''; } } } // a model that refuses the seed field paints without it
     if (img) painter = 'workers-ai';
   }
   if (!img && pollRoom) { img = await paintFree(env, full, size, seed, fetchFn); if (img) painter = 'pollinations'; }

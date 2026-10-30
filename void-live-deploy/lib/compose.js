@@ -1,8 +1,12 @@
 // Verse makes music (owner, 2026-10-17: "void should also learn how to make music"). An original short piece, composed here from a seed and
-// synthesised with Web Audio: no model call, no sample, no paid service, no tune copied from anywhere. The same ask always gives the same piece
+// played with Web Audio: no model call, no paid service, no tune copied from anywhere. Since 2026-10-30 (owner: "needs real beats and music ...
+// not just rap all music") it plays on real recordings when they load: a Steinway grand piano (lib/rap-piano.js) and a recorded drum kit or a
+// TR-808 (lib/rap-kit.js), both free (CC0 and free sets, sounds/*/CREDITS.md); without them it is synthesised as before. The same ask always gives the same piece
 // (the seed is a hash of the ask's own words). The mood word picks the tempo, the scale and the instruments; everything the card says about the
 // piece (key, tempo, bars, chords) is read back from the values that were composed, never described from memory.
 // Pure but for the two audio functions, which take any AudioContext-shaped object (a real one, an OfflineAudioContext, or a test's fake).
+import { chordOf, takeOf as pianoTake, loadPiano } from './rap-piano.js';
+import { takeOf as drumTake, loadKit } from './rap-kit.js';
 const NOTE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 export const SCALES = { major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10], dorian: [0, 2, 3, 5, 7, 9, 10], phrygian: [0, 1, 3, 5, 7, 8, 10], 'minor pentatonic': [0, 3, 5, 7, 10], 'major pentatonic': [0, 2, 4, 7, 9] };
 const PARENT = { 'minor pentatonic': 'minor', 'major pentatonic': 'major' }; // chords are built on the seven-note scale a pentatonic comes from
@@ -104,8 +108,36 @@ export function wavBytes(samples, rate) {
   return new Uint8Array(buf);
 }
 
-/** play the piece on a context (real or offline) starting at t0 seconds; returns the seconds it lasts. Sound only: sine, triangle, square, sawtooth and noise. */
-export function schedule(ctx, p, t0 = 0) {
+/** which real recordings a piece plays, by its style and lead: the piano always takes the chords, the bass on the soft pieces and the tune
+ *  when the lead is a soft voice (sine or triangle); the drums are the acoustic kit, or the TR-808 for a beat. Pure. */
+export function partsOf(p) {
+  const soft = p.style === 'soft';
+  return { chords: true, bass: soft, melody: p.lead === 'sine' || p.lead === 'triangle', kit: p.drums.kick.length ? (p.style === 'beat' ? '808' : 'kit') : null };
+}
+/** the MIDI notes the piano plays in a piece (the takes it needs). Pure. */
+export function pianoNotesOf(p) {
+  const parts = partsOf(p);
+  return [...p.chords.flatMap((c) => c.tones), ...(parts.bass ? p.bass.map((b) => b.midi) : []), ...(parts.melody ? p.melody.map((n) => n.midi) : [])];
+}
+/** load the real instruments a piece plays, decoded by `ctx`: { piano, kit }, each null when it cannot load (the piece then synthesises
+ *  that part). */
+export async function instrumentsFor(p, ctx, { fetchFn = (u) => globalThis.fetch(u) } = {}) {
+  if (!ctx || typeof ctx.decodeAudioData !== 'function') return { piano: null, kit: null };
+  // a heavy song (lib/arrange.js) plays its pad on the piano and every drum on the acoustic kit
+  const decode = (bytes) => ctx.decodeAudioData(bytes), kitName = p.sections ? 'kit' : partsOf(p).kit, notes = p.sections ? (p.pad || []).map((n) => n.midi) : pianoNotesOf(p);
+  const [piano, kit] = await Promise.all([(notes.length ? loadPiano({ notes, fetchFn, decode }) : Promise.reject(new Error('no piano part'))).catch(() => null), kitName ? loadKit(kitName, { fetchFn, decode }).catch(() => null) : null]);
+  return { piano, kit };
+}
+/** a plain sentence about what played, from what loaded. Pure. */
+export function playedLine(p, { piano = null, kit = null } = {}) {
+  const k = partsOf(p).kit, drums = !k ? '' : kit ? (k === '808' ? ' and a real TR-808' : ' and a real drum kit') : '';
+  if (piano) return 'Played on a real grand piano' + drums + '.' + (k && !kit ? ' The recorded drums did not load, so the drums are synthesised.' : '');
+  return 'The piano recordings did not load, so it is synthesised' + (kit ? ' over' + drums.replace(' and', '') : '') + '.';
+}
+
+/** play the piece on a context (real or offline) starting at t0 seconds; returns the seconds it lasts. With `piano` and `kit` (instrumentsFor)
+ *  the piano and drum parts play the recordings; without them every part is synthesised (sine, triangle, square, sawtooth and noise). */
+export function schedule(ctx, p, t0 = 0, { piano = null, kit = null } = {}) {
   const sp = 60 / p.bpm / 4, out = ctx.createGain(); out.gain.value = 0.5; out.connect(ctx.destination);
   const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = p.lead === 'sine' || p.lead === 'triangle' ? 5000 : 2600; lp.connect(out);
   const r = rng(p.seed ^ 0x9e3779b9), nb = ctx.createBuffer(1, Math.max(1, Math.floor(ctx.sampleRate * 0.5)), ctx.sampleRate), nd = nb.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = r() * 2 - 1;
@@ -119,21 +151,40 @@ export function schedule(ctx, p, t0 = 0) {
     if (drop) { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(freq, t); o.frequency.exponentialRampToValueAtTime(Math.max(20, freq * drop), t + dur); g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.02); return; }
     const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = nb; f.type = type; f.frequency.value = freq; g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(out); s.start(t, 0, dur + 0.02);
   };
-  const soft = p.style === 'soft';
-  for (const c of p.chords) for (const m of c.tones) note(out, 'sine', m, c.bar * p.stepsPerBar, p.stepsPerBar, soft ? 0.05 : 0.04, 0.08, 0.3);
-  for (const b of p.bass) note(out, 'sine', b.midi, b.step, b.len, 0.2, 0.02, 0.1);
-  for (const n of p.melody) note(lp, p.lead, n.midi, n.step, n.len, p.lead === 'sine' || p.lead === 'triangle' ? 0.16 : 0.07, 0.015, 0.15);
-  for (const s of p.drums.kick) hit(s, { freq: 140, dur: 0.18, gain: soft ? 0.25 : 0.55, drop: 0.3 });
-  for (const s of p.drums.snare) hit(s, { freq: 1800, type: 'bandpass', dur: 0.14, gain: 0.22 });
-  for (const s of p.drums.hat) hit(s, { freq: 7000, type: 'highpass', dur: 0.05, gain: 0.08 });
-  return p.steps * sp + 0.6;
+  const soft = p.style === 'soft', parts = partsOf(p), keys = !!(piano && piano.buffers && piano.buffers.size), drumKit = kit && kit.buffers && kit.buffers.size && parts.kit === kit.name ? kit : null;
+  // a recorded piano note: the nearest take at its pitch, held for its length, the damper falling over 0.3 s
+  const pianoNote = (midi, at, len, vel) => {
+    const k = pianoTake(midi, vel), buf = piano.buffers.get(k.path); if (!buf) return;
+    const s = ctx.createBufferSource(), g = ctx.createGain(), off = at + Math.min(Math.max(0.08, len), 2.6);
+    s.buffer = buf; s.playbackRate.value = k.rate; g.gain.setValueAtTime(0.42 * k.gain, at); g.gain.setValueAtTime(0.42 * k.gain, off); g.gain.exponentialRampToValueAtTime(0.0001, off + 0.3);
+    s.connect(g); g.connect(out); s.start(at); s.stop(off + 0.32);
+  };
+  if (keys) for (const c of p.chords) {
+    const bar = p.stepsPerBar * sp, at = t0 + c.bar * bar, hits = soft || p.style === 'slow' ? [[0, 1, 0.62]] : [[0, 0.5, 0.72], [0.5, 0.5, 0.58]];
+    for (const [from, len, vel] of hits) for (const n of chordOf({ t: at + from * bar, vel, notes: c.tones, dur: len * bar })) pianoNote(n.midi, n.t, n.dur, n.vel);
+  } else for (const c of p.chords) for (const m of c.tones) note(out, 'sine', m, c.bar * p.stepsPerBar, p.stepsPerBar, soft ? 0.05 : 0.04, 0.08, 0.3);
+  for (const b of p.bass) if (keys && parts.bass) pianoNote(b.midi, t0 + b.step * sp, b.len * sp, 0.7); else note(out, 'sine', b.midi, b.step, b.len, 0.2, 0.02, 0.1);
+  for (const n of p.melody) if (keys && parts.melody) pianoNote(n.midi, t0 + n.step * sp, n.len * sp, 0.88); else note(lp, p.lead, n.midi, n.step, n.len, p.lead === 'sine' || p.lead === 'triangle' ? 0.16 : 0.07, 0.015, 0.15);
+  if (drumKit) {
+    // the recorded drums: round robins alternate, the off-beat hats a little softer
+    const rr = {}, play = (voice, step, vel, gain) => { const n = rr[voice] = (rr[voice] ?? -1) + 1, k = drumTake(drumKit.name, voice, vel, n), buf = k && drumKit.buffers.get(k.path); if (!buf) return; const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf; g.gain.value = k.gain * gain; s.connect(g); g.connect(out); s.start(t0 + step * sp); };
+    for (const s of p.drums.kick) play('kick', s, soft ? 0.6 : 1, 0.8);
+    for (const s of p.drums.snare) play('snare', s, 1, 0.6);
+    for (const s of p.drums.hat) play('hat', s, s % 4 === 0 ? 0.9 : 0.65, 0.4);
+  } else {
+    for (const s of p.drums.kick) hit(s, { freq: 140, dur: 0.18, gain: soft ? 0.25 : 0.55, drop: 0.3 });
+    for (const s of p.drums.snare) hit(s, { freq: 1800, type: 'bandpass', dur: 0.14, gain: 0.22 });
+    for (const s of p.drums.hat) hit(s, { freq: 7000, type: 'highpass', dur: 0.05, gain: 0.08 });
+  }
+  return p.steps * sp + (keys ? 2.4 : 0.6);
 }
 
-/** render the piece to WAV bytes in the browser (OfflineAudioContext, 22.05 kHz mono), or null when there is no offline audio. */
-export async function renderWav(p, OAC = typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : (typeof webkitOfflineAudioContext !== 'undefined' ? webkitOfflineAudioContext : null)) {
+/** render the piece to WAV bytes in the browser (OfflineAudioContext, 22.05 kHz mono), on `instruments` (instrumentsFor) when given, or null
+ *  when there is no offline audio. */
+export async function renderWav(p, OAC = typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : (typeof webkitOfflineAudioContext !== 'undefined' ? webkitOfflineAudioContext : null), instruments = {}) {
   if (!OAC) return null;
-  const rate = 22050, secs = p.steps * (60 / p.bpm / 4) + 0.8, ctx = new OAC(1, Math.ceil(secs * rate), rate);
-  schedule(ctx, p, 0);
+  const rate = 22050, secs = p.steps * (60 / p.bpm / 4) + (instruments.piano ? 2.6 : 0.8), ctx = new OAC(1, Math.ceil(secs * rate), rate);
+  schedule(ctx, p, 0, instruments);
   const buf = await ctx.startRendering();
   return wavBytes(buf.getChannelData(0), rate);
 }

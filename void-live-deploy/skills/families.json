@@ -14,7 +14,7 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 0,
+  "tested": 2,
   "checked": 6,
   "proven": 374
  },
@@ -1109,7 +1109,7 @@
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 20
+    "proven": 19
    },
    "skills": [
     {
@@ -1215,16 +1215,6 @@
      "success_rate": 1
     },
     {
-     "name": "work",
-     "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
-     "last_tested": "2026-10-30",
-     "last_tested_by": "the benchmark",
-     "success_rate": 1,
-     "promoted": "2026-10-29",
-     "streak": 11
-    },
-    {
      "name": "routine",
      "tier": "proven",
      "why": "5 browser-suite mentions, 5 real asks in the benchmark",
@@ -1295,7 +1285,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 22
    },
@@ -1321,9 +1311,16 @@
      "streak": 3
     },
     {
+     "name": "open-tool",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 829 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 831 real asks in the benchmark",
      "failing": [
       "how much luggage weight allowed"
      ],
@@ -1624,18 +1621,20 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
     "proven": 42
    },
    "sources": {
-    "read": 26,
-    "named": 24,
-    "second": 14,
+    "read": 27,
+    "named": 25,
+    "second": 15,
     "answered": 0,
-    "points": 1.46,
-    "one_live_from_proven": [],
-    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.46 of 3 on average)."
+    "points": 1.48,
+    "one_live_from_proven": [
+     "local-stations"
+    ],
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
    },
    "skills": [
     {
@@ -1902,6 +1901,24 @@
      }
     },
     {
+     "name": "local-stations",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
+     "source": {
+      "sites": [
+       "open-meteo.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: open-meteo.com; named on the card; no second source; no kept live answer yet. One kept live answer from open-meteo.com would make it proven"
+     }
+    },
+    {
      "name": "joke",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
@@ -1950,13 +1967,14 @@
      "streak": 5,
      "source": {
       "sites": [
-       "jsph.pl"
+       "jsph.pl",
+       "wikipedia.org"
       ],
       "named": true,
-      "second": false,
+      "second": true,
       "answered": false,
-      "points": 1,
-      "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet"
+      "points": 2,
+      "words": "source 2 of 3: jsph.pl, wikipedia.org; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -2327,12 +2345,12 @@
   {
    "id": "life",
    "name": "Out in the world",
-   "for": "food delivery, rides and Waymo, social feeds and dating",
+   "for": "food delivery, rides and Waymo, remote jobs, social feeds and dating",
    "count": {
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 6
+    "proven": 7
    },
    "skills": [
     {
@@ -2342,6 +2360,16 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
+     "streak": 11
+    },
+    {
+     "name": "work",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "the benchmark",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {

@@ -3805,8 +3805,10 @@ say('nothing selected to remove');
       if (m) { const inches = m[3] ? +m[3] / 2.54 : +m[1] * 12 + +(m[2] || 0), lo = 18.5 * inches * inches / 703, hi = 24.9 * inches * inches / 703;
         const h = m[3] ? m[3] + ' cm' : m[1] + ' ft ' + (m[2] || 0) + ' in';
         return { value: Math.round(lo) + '–' + Math.round(hi) + ' lb', note: Math.round(lo * 0.45359237) + '–' + Math.round(hi * 0.45359237) + ' kg: the weights where an adult ' + h + ' has a BMI of 18.5 to 24.9 (the standard healthy band; BMI ignores muscle, build and age)' }; }
-      // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs"
-      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for|at|if\s+i'?m)?\s*(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?\s*(?:and\s+|,\s*)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
+      // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs". 2026-10-30: "what is my bmi if i am 6 feet
+      // and 180 pounds" and "bmi 180 lbs 6 ft" fell to the article search, which had nothing to say; they are worked out here now, either order.
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for\s+|at\s+|if\s+i(?:'?m|\s+am)\s+)?(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?(?:\s+tall)?\s*(?:and\s+|,\s*)?(?:i\s+)?(?:weigh\s+)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
+      if (!m) { const w = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for\s+|at\s+|if\s+i\s+weigh\s+)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)\s*(?:and\s+|,\s*|at\s+)?(?:i(?:'?m|\s+am)\s+)?(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?(?:\s+tall)?$/); if (w) m = [w[0], w[2], w[3], w[1]]; }
       if (m) { const inches = +m[1] * 12 + +(m[2] || 0), lb = +m[3], v = 703 * lb / (inches * inches), r = Math.round(v * 10) / 10, band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range';
         return { value: String(r), note: 'BMI for ' + m[1] + ' ft ' + (m[2] || 0) + ' in and ' + lb + ' lb: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; }
       // steps to distance (an average stride of 2.5 ft: about 2,100 steps a mile)

@@ -1175,3 +1175,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T07:39:21Z | claude | build | The studio: Verse paints eight reference prompts with every hosted image model and judges each picture with its own eyes (what is there, flaws, look), keeping a scoreboard and the best painter; the owner can make test clips with partner video models inside a daily dollar cap
 2026-10-30T08:56:00Z | verse | build | Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com
 2026-10-30T08:58:34Z | verse | build | Versus: took on no site; next randomarea.com
+2026-10-30T09:50:00Z | claude | build | The studio, live: /image/ paints with the bench's best affordable model; the judge rates CLEAN (it read FLAWS as a count); schnell gets no seed; the affordable painters are benched daily. Video waits on AI Gateway credits.

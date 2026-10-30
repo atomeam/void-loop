@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T09:42:11Z",
+   "at": "2026-10-30T10:53:48Z",
+   "subject": "Full-page link keeps what the card shows"
+  },
+  {
+   "at": "2026-10-30T10:49:00Z",
+   "subject": "Autopilot: each deploy ships a dated snapshot of Verse's own commits and deploys"
+  },
+  {
+   "at": "2026-10-30T10:48:38Z",
+   "subject": "File the remote jobs skill under Out in the world, not Time"
+  },
+  {
+   "at": "2026-10-30T10:45:50Z",
+   "subject": "Heavy songs play: start each recording before scheduling its stop"
+  },
+  {
+   "at": "2026-10-30T10:45:46Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T09:40:54Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T10:42:31Z",
+   "subject": "Loan payoff card: note that every value is escaped"
   },
   {
-   "at": "2026-10-30T09:40:51Z",
-   "subject": "Verse Brain dreams: ideas, jobs and fixes from real memory, on /brain/ and in /team/ #work"
+   "at": "2026-10-30T10:42:06Z",
+   "subject": "Loan: answer how long a monthly payment takes to pay off a balance"
   },
   {
-   "at": "2026-10-30T09:39:59Z",
+   "at": "2026-10-30T10:41:32Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-30T08:58:35Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site; next randomarea.com"
+   "at": "2026-10-30T10:41:01Z",
+   "subject": "Incident: the browser suite failed on c6ffa7bd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T08:56:00Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com"
+   "at": "2026-10-30T10:40:39Z",
+   "subject": "words: an anagram card says the service failed, not that no word fits"
   },
   {
-   "at": "2026-10-30T08:55:58Z",
-   "subject": "Versus by itself: no page built, the sites read recorded"
+   "at": "2026-10-30T10:36:54Z",
+   "subject": "fact: the card line names the Wikipedia topic facts too"
   },
   {
-   "at": "2026-10-30T08:49:47Z",
-   "subject": "Verse fixes its sky skill: learn to handle \"current sky\""
+   "at": "2026-10-30T10:34:47Z",
+   "subject": "Jobs: drop a salary that cannot be one instead of showing it as a year's pay"
   },
   {
-   "at": "2026-10-30T08:38:23Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-10-30T10:31:31Z",
+   "subject": "Open a tool by name: skip pages a skill already owns, and file it under Numbers"
   },
   {
-   "at": "2026-10-30T08:34:28Z",
-   "subject": "Incident: the browser suite failed on e89cf175 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:23:36Z",
-   "subject": "Incident: the browser suite failed on 8491640e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:21:32Z",
-   "subject": "Incident: the browser suite failed on 69f381cc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T08:10:08Z",
+   "at": "2026-10-30T10:30:00Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T07:53:24Z",
-   "subject": "Dependency map: the drum kit"
+   "at": "2026-10-30T10:27:16Z",
+   "subject": "Open a tool page by its name: 'word counter', 'open the piano'"
   },
   {
-   "at": "2026-10-30T07:53:18Z",
-   "subject": "Real recorded drums: TR-808 and acoustic kit, ears hear drill at its beat"
+   "at": "2026-10-30T10:25:40Z",
+   "subject": "Verse fixes its constellation skill: learn to handle \"star patterns tonight\""
   },
   {
-   "at": "2026-10-30T07:52:51Z",
-   "subject": "All-tools card: one chip per tool name, as /tools/ lists them"
+   "at": "2026-10-30T10:24:32Z",
+   "subject": "Notes: 'take a note: X' and 'new note X' write a note"
   },
   {
-   "at": "2026-10-30T07:51:34Z",
-   "subject": "The bench keeps its judged runs in one batch, after the paintings"
+   "at": "2026-10-30T10:23:04Z",
+   "subject": "Recipe card: a dish TheMealDB finds is scaled, and its page link opens it"
   },
   {
-   "at": "2026-10-30T07:51:25Z",
-   "subject": "Conductor waits for the coder's model calls; every main head gets its own suite"
+   "at": "2026-10-30T10:21:36Z",
+   "subject": "study-cards: \"make flashcards for spanish verbs\" makes a real deck"
   },
   {
-   "at": "2026-10-30T07:50:48Z",
-   "subject": "Chords and piano hand off to each other; the six new sitemap pages count visits"
-  },
-  {
-   "at": "2026-10-30T07:50:05Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T10:21:29Z",
+   "subject": "Heavy songs hit with the real drum kit and the grand piano pad"
   }
  ],
  "builders": {

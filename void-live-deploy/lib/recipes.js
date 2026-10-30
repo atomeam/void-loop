@@ -35,12 +35,24 @@ export function fmtQty(v) {
 /** a line with every quantity in it multiplied: "1 ½ cups flour (190 g)" × 2 is "3 cups flour (380 g)"; temperatures, pan sizes and
  *  percentages are left alone; a range scales both ends. Pure. */
 export function scale(line, factor) {
-  const f = +factor; if (!Number.isFinite(f) || f <= 0 || f === 1) return String(line || '');
+  const f = +factor; if (!Number.isFinite(f) || f <= 0 || f === 1) return String(line || '').replace(LEAD, agree); // "1 cups" as a source wrote it is "1 cup"
   return String(line || '').replace(QTY, (whole, a, b, at, src) => {
     if (NOT_QTY.test(src.slice(at + whole.length))) return whole;
     const lo = numOf(a), hi = b ? numOf(b) : NaN; if (!Number.isFinite(lo)) return whole;
     return fmtQty(lo * f) + (Number.isFinite(hi) ? ' to ' + fmtQty(hi * f) : '');
-  });
+  }).replace(LEAD, agree);
+}
+// the word after a line's leading quantity agrees with the new number: 2 × "1 egg" is "2 eggs", ½ × "2 cups" is "1 cup"; only the measures
+// and things a recipe counts, so "2 egg yolks" or "3 garlic" are left as written
+const COUNT = Object.fromEntries('cup tablespoon teaspoon ounce pound pint quart gallon clove egg slice can stalk stick onion carrot banana lime lemon avocado tomato potato breast thigh fillet sprig leaf pinch dash handful'
+  .split(' ').map((w) => [w, /(?:o|ch|sh)$/.test(w) && !/^avocado$/.test(w) ? w + 'es' : w === 'leaf' ? 'leaves' : w + 's']));
+const ONE = Object.fromEntries(Object.entries(COUNT).map(([a, b]) => [b, a]));
+const LEAD = new RegExp(String.raw`^(${NUM})(\s*(?:-|–|to)\s*(${NUM}))?(\s+(?:(?:small|medium|large|big|ripe|whole|heaped|level|scant)\s+)?)([a-z]+)\b`, 'i');
+function agree(whole, a, range, b, gap, word) {
+  const n = numOf(b || a), w = word.toLowerCase();
+  if (!Number.isFinite(n) || !(COUNT[w] || ONE[w])) return whole;
+  const to = n > 1 ? COUNT[w] || w : ONE[w] || w;
+  return a + (range || '') + gap + (word[0] === word[0].toUpperCase() ? to[0].toUpperCase() + to.slice(1) : to);
 }
 
 // units: what they are called and what one of them is in the other system
@@ -150,6 +162,12 @@ export function find(q, list = BUILT_IN) {
     else s = words.filter((w) => w.length > 2 && names.some((n) => n.split(' ').includes(w))).length ? 1 : 0;
     return [s, r];
   }).filter(([s]) => s > 0).sort((a, b) => b[0] - a[0]).map(([, r]) => r);
+}
+/** the built-in recipe a name search names exactly ("pancakes", "chicken soup", "guac"), or null: not a near one ("spaghetti carbonara"
+ *  is not the tomato pasta). Pure. */
+export function exactly(q, list = BUILT_IN) {
+  const d = dishOf(q); if (!d) return null; const joined = d.split(' ').map(single).join(' ');
+  return list.find((r) => r.id.replace(/-/g, ' ') === joined || [r.name].concat(r.aliases || []).some((n) => norm(n).split(' ').map(single).join(' ') === joined)) || null;
 }
 /** the ingredients a search names: "eggs, spinach and cheese" → ['eggs', 'spinach', 'cheese'], at most 5. Pure. */
 export const ingredientsOf = (text) => String(text || '').split(/,|;|\band\b|\bwith\b|\+|&/i).map((s) => norm(s).replace(/\b(?:what|can|i|make|some|recipes?|using|only|have|got|from)\b/g, ' ').replace(/\s+/g, ' ').trim()).filter((s) => s.length > 1).slice(0, 5);

@@ -90,3 +90,7 @@
 /sounds/drums/kit/*
   Content-Type: audio/wav
   Cache-Control: public, max-age=604800
+
+/sounds/piano/*
+  Content-Type: audio/wav
+  Cache-Control: public, max-age=604800

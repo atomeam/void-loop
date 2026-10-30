@@ -3,7 +3,7 @@
 // type, salary and source on each row, the jobs page link with the search, and the empty and dead-service cards.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import work, { workOf } from '../void-live-deploy/skills/work.js';
+import work, { workOf, workAsk } from '../void-live-deploy/skills/work.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const JOBS = [
@@ -24,6 +24,34 @@ test('the asks: the role, without "as a", and the ones it leaves', () => {
   for (const n of work.nearMisses) assert.ok(!work.match(n.toLowerCase(), n), n);
   for (const a of ['remote jobs rust', 'job for a translator']) assert.ok(work.match(a.toLowerCase(), a), a);
   for (const a of ['steve jobs', 'jobs', 'find me a flight to Paris', 'jobs for it']) assert.ok(!work.match(a.toLowerCase(), a), a);
+});
+
+test('the asks with the role first, a place, or the place alone; the news and Steve Jobs left alone', () => {
+  assert.deepEqual(workAsk('software jobs in boston'), { q: 'software', loc: 'boston' });
+  assert.deepEqual(workAsk('python developer jobs'), { q: 'python developer', loc: '' });
+  assert.deepEqual(workAsk('remote designer jobs'), { q: 'designer', loc: '' });
+  assert.deepEqual(workAsk('teacher job openings in texas'), { q: 'teacher', loc: 'texas' });
+  assert.deepEqual(workAsk('find me work as a designer in berlin'), { q: 'designer', loc: 'berlin' });
+  assert.deepEqual(workAsk('nursing jobs near me'), { q: 'nursing', loc: '' });
+  assert.deepEqual(workAsk('jobs in berlin'), { q: '', loc: 'berlin' });
+  assert.deepEqual(workAsk('find jobs in london'), { q: '', loc: 'london' });
+  assert.deepEqual(workAsk('jobs for the data team'), { q: 'data team', loc: '' });
+  for (const a of ['jobs report', 'new jobs report', 'jobs act', 'jobs data', 'jobs to be done', 'the jobs numbers', 'odd jobs', 'great job', 'my jobs', 'what is a job', 'what are jobs', 'work in progress', 'work in berlin', 'weather in boston', 'how many jobs in boston', 'turn the misses into jobs', 'queue these as jobs']) assert.equal(workAsk(a), null, a);
+});
+
+test('run: a place filters to listings open there, links the jobs page with both, and offers the same search on LinkedIn Jobs and Indeed', async () => {
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('python jobs in europe', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('<h2>Remote work · python · open to europe</h2>') && h.includes('>2 remote jobs<'), h);
+    assert.ok(h.includes('href="/jobs/?q=python&amp;loc=europe"'), h);
+    assert.ok(h.includes('The same search for europe on the big job boards: <a href="https://www.linkedin.com/jobs/search/?keywords=python&amp;location=europe&amp;f_WT=2"') && h.includes('>Indeed</a>'), h);
+  });
+  await withJobs({ jobs: JOBS }, async () => {
+    const api = apiOf(); assert.equal(await work.run('jobs in berlin', api), 'work');
+    const h = api.pages[0].innerHTML;
+    assert.ok(h.includes('<h2>Remote work · every role · open to berlin</h2>') && h.includes('Senior Python Developer') && !h.includes('Data Engineer'), h);
+  });
 });
 
 test('run: python finds the two python listings, newest first, with their details and sources; the off-host one is dropped', async () => {

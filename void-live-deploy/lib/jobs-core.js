@@ -64,9 +64,17 @@ export function parseSalary(text) {
   const nums = [...s.matchAll(/(\d{1,3}(?:[,.\s]\d{3})+|\d+(?:\.\d+)?)\s*([kK])?/g)].map((m) => { let n = +m[1].replace(/[,\s]/g, '').replace(/\.(?=\d{3}\b)/g, ''); if (m[2]) n *= 1000; return n; }).filter((n) => n >= 5);
   if (!nums.length || !cur) return null;
   const min = Math.min(nums[0], nums[1] || nums[0]), max = Math.max(nums[0], nums[1] || nums[0]);
-  return { min, max, cur, per: PER(s) };
+  return plausible({ min, max, cur, per: PER(s) });
 }
 const PER_YEAR = { hour: 2080, day: 260, week: 52, month: 12, year: 1 };
+/** a salary as given, or null when it cannot be one (2026-10-30, live on the jobs card: "USD 35–3,000 a year", "USD 1,000 a year", "USD 96,300–1,515,360
+ * a year"): ends more than tenfold apart are two different figures (a rate and a bonus), and a year's pay under 5,000 or over 1,000,000 is a figure
+ * whose period or currency the source got wrong. No salary beats a wrong one. Pure. */
+export function plausible(sal) {
+  if (!sal || !sal.max) return null;
+  const y = sal.max * (PER_YEAR[sal.per] || 1);
+  return (sal.min > 0 && sal.max > sal.min * 10) || y < 5000 || y > 1e6 ? null : sal;
+}
 /** a salary as a yearly figure in its own currency (the midpoint), for sorting and the minimum filter; 0 when none. Pure. */
 export const yearly = (sal) => (sal && sal.max ? Math.round(((sal.min || sal.max) + sal.max) / 2 * (PER_YEAR[sal.per] || 1)) : 0);
 const yearlyMin = (sal) => (sal && (sal.max || sal.min) ? Math.round((sal.max || sal.min) * (PER_YEAR[sal.per] || 1)) : 0);
@@ -135,8 +143,9 @@ export function checkJob(j) {
   if (!j || typeof j !== 'object' || !SOURCES[j.src]) return null; const host = SOURCES[j.src].host;
   const url = okUrl(j.url, host), apply = okUrl(j.apply, host) || url; if (!url || !j.id || !j.title) return null;
   const sal = j.salary && Number.isFinite(+j.salary.max) && +j.salary.max > 0 ? { min: +j.salary.min || 0, max: +j.salary.max, cur: String(j.salary.cur || 'USD').slice(0, 3).toUpperCase(), per: PER_YEAR[j.salary.per] ? j.salary.per : 'year' } : null;
+
   const s = (v, n) => String(v == null ? '' : v).slice(0, n), w = (v) => (j.src === 'himalayas' ? slugWords(s(v, 40)) : s(v, 40));
-  return { id: s(j.id, 40), src: j.src, title: s(j.title, 140), company: s(j.company, 80), url, apply, loc: s(j.loc, 120), regions: Array.isArray(j.regions) ? j.regions.filter((r) => REGIONS[r] || r === 'other').slice(0, 8) : regionsOf(j.loc), type: s(j.type, 20), level: s(j.level, 30), cat: w(j.cat), tags: (Array.isArray(j.tags) ? j.tags : []).map((t) => w(t)).filter((t, i, a) => t && a.indexOf(t) === i).slice(0, 8), salary: sal, date: iso(j.date), tz: s(j.tz, 40), excerpt: s(j.excerpt, 260), visa: j.visa === true };
+  return { id: s(j.id, 40), src: j.src, title: s(j.title, 140), company: s(j.company, 80), url, apply, loc: s(j.loc, 120), regions: Array.isArray(j.regions) ? j.regions.filter((r) => REGIONS[r] || r === 'other').slice(0, 8) : regionsOf(j.loc), type: s(j.type, 20), level: s(j.level, 30), cat: w(j.cat), tags: (Array.isArray(j.tags) ? j.tags : []).map((t) => w(t)).filter((t, i, a) => t && a.indexOf(t) === i).slice(0, 8), salary: plausible(sal), date: iso(j.date), tz: s(j.tz, 40), excerpt: s(j.excerpt, 260), visa: j.visa === true };
 }
 /** several lists of listings as one: the same job (same source and id, or the same title and company) once, newest first. Pure. */
 export function merge(...lists) {

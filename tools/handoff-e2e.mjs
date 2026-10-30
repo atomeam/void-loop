@@ -6,8 +6,9 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy'), ORIGIN = 'https://verse.test';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.webmanifest': 'application/manifest+json' };
-/** the negative control: what a page must never show after a step (whole words, and NaN in its own case: "dominant" on /chords/ holds "nan") */
-const BAD = /\b(?:coming soon|placeholder|lorem ipsum|something went wrong|not implemented|undefined)\b/i, BAD_NUM = /\bNaN\b/;
+/** the negative control: what a page must never show after a step */
+// whole words only, and NaN as written: "dominant" in a scale name is not a broken number (2026-10-30)
+const BAD = /\b(?:coming soon|placeholder|lorem ipsum|something went wrong|not implemented|undefined)\b|\bNaN\b/i;
 
 function serve(r) {
   const u = new URL(r.request().url());
@@ -99,7 +100,7 @@ async function run() {
     const check = async (what) => {
       const text = await p.evaluate(() => document.body.innerText);
       if (errors.length) throw new Error(what + ', but the page threw: ' + errors[0]);
-      const bad = text.match(BAD) || text.match(BAD_NUM); if (bad) throw new Error(what + ', but the page shows "' + bad[0] + '"');
+      const bad = text.match(BAD); if (bad) throw new Error(what + ', but the page shows "' + bad[0] + '"');
       if (text.trim().length < 40) throw new Error(what + ', but the page is almost empty');
       said.push(what);
     };

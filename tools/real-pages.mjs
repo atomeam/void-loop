@@ -319,6 +319,12 @@ export const SPECS = {
   '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/merge/': pdfMake, '/pdf/organize/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake, '/pdf/toolbox/': pdfMake,
   '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); }, '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
+  '/local/': async (t) => {
+    await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);
+    t.ok((await t.p.locator('#radio-list li').count()) > 0, 'Boston has real radio stations listed: ' + (await t.text('#radio-note')).slice(0, 90));
+    await t.click('#tab-tv'); await t.waitText('#tv-note', /stations broadcasting|No local TV/, 20000);
+    t.ok((await t.p.locator('#tv-list li').count()) > 0, 'Boston has local TV stations listed: ' + (await t.text('#tv-note')).slice(0, 90));
+  },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
   '/random-user/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
@@ -357,6 +363,22 @@ const LEDGER_FIX = [
   { number: 2, title: 'Login bug on the map page', html_url: 'https://github.com/test-owner/test-repo/issues/2', user: { login: 'bo', type: 'User' }, state: 'open', created_at: '2026-10-02T10:00:00Z', closed_at: null, updated_at: '2026-10-02T10:00:00Z', labels: [{ name: 'bug' }], comments: 1 },
   { number: 1, title: 'Add a dark theme', html_url: 'https://github.com/test-owner/test-repo/issues/1', user: { login: 'ana', type: 'User' }, state: 'closed', created_at: '2026-10-01T10:00:00Z', closed_at: '2026-10-05T10:00:00Z', updated_at: '2026-10-05T10:00:00Z', labels: [], comments: 0 },
 ];
+// /autopilot/: what Verse did on its own. The page's API is faked with a fixed record so the check reads exact values, and a dead source must say so
+const AUTOPILOT_FIX = { days: 1, read: new Date().toISOString(), sources: { commits: 'ok', deploys: 'ok', conductor: 'ok' }, ownCount: 2, merged: 5, complete: true, kinds: { fix: 1, measure: 1 }, deploys: 9,
+  own: [{ sha: 'a'.repeat(40), at: '2026-10-30T09:00:00Z', kind: 'fix', title: 'Verse fixes its sky skill', url: 'https://github.com/atomeam/void-loop/commit/' + 'a'.repeat(40) }, { sha: 'b'.repeat(40), at: '2026-10-30T08:00:00Z', kind: 'measure', title: 'Site test: new ground passed', url: 'https://github.com/atomeam/void-loop/commit/' + 'b'.repeat(40) }],
+  conductor: { updated: new Date().toISOString(), last24h: { started: 130, requeued: 4, probes: 15 }, byHour: Array.from({ length: 24 }, (_, i) => i % 5), held: 3, heldWhy: ["Verse's coder has used its free model calls until 00:00 UTC"], broken: 0 } };
+SPECS['/autopilot/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/autopilot', (r) => { const d = new URL(r.request().url()).searchParams.get('days'); return d === '7' ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ days: 7, read: new Date().toISOString(), sources: { commits: 'HTTP 403', deploys: 'HTTP 403', conductor: 'HTTP 403' } }) }) : r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AUTOPILOT_FIX) }); });
+  await t.p.route((u) => u.pathname === '/api/coder', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ model: '@cf/google/gemma-4-26b-a4b-it', hour: { used: 0, cap: 90 }, day: { used: 360, cap: 360 }, room: false, until: '2026-10-31T00:00:00.000Z' }) }));
+  await t.p.reload(); await t.waitText('#t-own', /2/, 10000);
+  t.ok((await t.text('#t-own')) === '2' && (await t.text('#t-deploys')) === '9' && (await t.text('#t-started')) === '130', 'the tiles read the record: 2 own changes, 9 deploys, 130 jobs started');
+  t.ok((await t.p.locator('#feed li').count()) === 2 && /Verse fixes its sky skill/.test(await t.text('#feed')), 'the feed lists the two commits Verse landed');
+  t.ok((await t.p.locator('#bars i').count()) === 24, 'one bar for each of the last 24 hours');
+  t.ok(/360 of 360/.test(await t.text('#coder')) && /holds coding jobs/.test(await t.text('#coder')), 'the coder panel says the budget is used up and the conductor holds jobs');
+  await t.click('[data-days="7"]'); await t.waitText('#feed', /did not answer/, 8000);
+  t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
+  t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
