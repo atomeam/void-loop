@@ -6,13 +6,13 @@
 // checks (tools/propose-fix.mjs) as Verse's own model; nothing it writes runs with a write token.
 //   node tools/propose-fix.mjs --brain claude ...   (the workflow's "brain: claude" input)
 import Anthropic from '@anthropic-ai/sdk';
-import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, fixPrompt, parseEdits, evidenceOf } from '../void-live-deploy/lib/propose-fix.js';
+import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, MAX_TRIED, fixPrompt, parseEdits, evidenceOf } from '../void-live-deploy/lib/propose-fix.js';
 
 export const BRAIN_MODEL = 'claude-opus-5-5';
 export const MAX_OUTPUT_TOKENS = 8000; // the per-run ceiling on what Claude writes, thinking included
 export const PRICE = { input: 4, output: 20 }; // dollars per million tokens for BRAIN_MODEL
 // the worst run: the longest prompt fixPrompt can build (about 4 characters a token, plus the system text) and every output token
-export const WORST_RUN_USD = Math.round((((MAX_SOURCE + FIX_SYSTEM.length + 1000) / 3) * PRICE.input + MAX_OUTPUT_TOKENS * PRICE.output) / 1e4) / 100;
+export const WORST_RUN_USD = Math.round((((MAX_SOURCE + MAX_TRIED + FIX_SYSTEM.length + 1000) / 3) * PRICE.input + MAX_OUTPUT_TOKENS * PRICE.output) / 1e4) / 100;
 
 /** What one call cost, in dollars, from the reply's usage. Pure. */
 export const costOf = (usage) => {
@@ -21,7 +21,7 @@ export const costOf = (usage) => {
 };
 
 /** The request for one proposal: the same system text and question Verse's own model gets, with the output ceiling. Pure. */
-export function brainRequest({ ask, skill, source, mode = 'learn', said = '' }) {
+export function brainRequest({ ask, skill, source, mode = 'learn', said = '', tried = '' }) {
   return {
     model: BRAIN_MODEL,
     max_tokens: MAX_OUTPUT_TOKENS,
@@ -30,7 +30,7 @@ export function brainRequest({ ask, skill, source, mode = 'learn', said = '' }) 
     betas: ['server-side-fallback-2026-07-01'],
     fallbacks: 'default',
     system: mode === 'narrow' ? NARROW_SYSTEM : FIX_SYSTEM,
-    messages: [{ role: 'user', content: fixPrompt(ask, skill, source, mode, said) }],
+    messages: [{ role: 'user', content: fixPrompt(ask, skill, source, mode, said, tried) }],
   };
 }
 

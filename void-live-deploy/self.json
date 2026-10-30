@@ -536,16 +536,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T18:19:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-30T18:15:33Z",
-   "subject": "Answer a typed secret-name question from Verse's own names"
   },
   {
    "at": "2026-10-30T18:14:34Z",
@@ -564,24 +556,24 @@
    "subject": "Fly stars check: sample the streak drawn for the last move"
   },
   {
-   "at": "2026-10-30T18:11:00Z",
+   "at": "2026-10-30T18:11:41Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:10:00Z",
-   "subject": "Music: mark the sequential archive.org downloads as intended"
-  },
-  {
-   "at": "2026-10-30T18:09:54Z",
-   "subject": "Music: score each song against real songs of its kind"
   },
   {
    "at": "2026-10-30T18:07:29Z",
    "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
   },
   {
+   "at": "2026-10-30T18:07:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
+  },
+  {
+   "at": "2026-10-30T17:56:28Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T17:51:38Z",
@@ -590,6 +582,10 @@
   {
    "at": "2026-10-30T17:51:38Z",
    "subject": "MCP skill tools run each skill's own code on the server"
+  },
+  {
+   "at": "2026-10-30T17:49:25Z",
+   "subject": "Money near misses: formulas leaves the page's own compound interest ask"
   },
   {
    "at": "2026-10-30T17:48:01Z",
@@ -614,6 +610,10 @@
   {
    "at": "2026-10-30T17:38:34Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T17:33:31Z",
+   "subject": "helper-pr: check the branch merged with main before opening a PR"
   }
  ],
  "builders": {

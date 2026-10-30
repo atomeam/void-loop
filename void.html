@@ -1812,6 +1812,7 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
+      ready: () => skillsReady, // every skill is in, so every saved card has its kind (skills/quiz.js settled: an ask right after a reload)
       closePage: () => closePage(),
       // the extension bridge the tab card draws with (skills/tab.js): the state the panel's messages fill, and the page's own senders
       ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
@@ -5953,7 +5954,7 @@ say('nothing selected to remove');
       { const r = l.match(/^(?:coin\s+(?:flip|toss)|flip\s+(?:a\s+)?coin)\s+for\s+(.{1,60})$/); if (r && !coinSkill()) return { title: 'Coin for ' + r[1], big: rnd(2) ? 'Heads' : 'Tails', note: 'a fair coin' }; }
       if (/^what\s+(?:does|would)\s+the\s+(?:magic\s+)?8[\s-]?ball\s+say(?:\s.*)?$/.test(l)) l = 'magic 8 ball';
       // a coin is the coin skill's (skills/coin.js: the coin on the card, the tally); these answer only if that skill did not load
-      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l) && !coinSkill()) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip', owner: 'coin' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
@@ -5973,7 +5974,7 @@ say('nothing selected to remove');
       if (/^(?:draw|pick|deal(?:\s+me)?|give\s+me)\s+a\s+(?:random\s+)?(?:playing\s+)?card$/.test(l)) { const R = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'], S = [['♠', 'Spades'], ['♥', 'Hearts'], ['♦', 'Diamonds'], ['♣', 'Clubs']], r = R[rnd(13)], su = S[rnd(4)]; return { title: 'Your card', big: r + ' ' + su[0], note: r + ' of ' + su[1] + ' · from a full 52-card deck' }; }
       // "flip 3 coins"
       m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
-      if (m && !coinSkill()) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }
+      if (m) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails', owner: 'coin' }; }
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+letter$/.test(l)) { const c = String.fromCharCode(65 + rnd(26)); return { title: 'Random letter', big: c, note: 'A to Z, each equally likely' }; }
       // a bare "random color" is the color skill's (skills/color.js shows the swatch, issue #1695): owner marks it, and the caller hands it over once the skills load
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it', owner: /^random\s+colou?r$/.test(l) ? 'color' : null }; }
