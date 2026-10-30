@@ -542,13 +542,25 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-25T20:01:10Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T04:56:05Z",
+   "subject": "Wire /emojis/ and /g/ into the toolkit; give the other orphan tool pages a Use with row"
+  },
+  {
+   "at": "2026-10-30T04:53:12Z",
+   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
+  },
+  {
+   "at": "2026-10-30T04:51:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T04:50:39Z",
    "subject": "Tower lists the hosting floor once, and /api/holidays is marked as Verse's own"
@@ -616,18 +628,6 @@
   {
    "at": "2026-10-30T04:35:59Z",
    "subject": "team-live: fetch the 4 agent pages at once"
-  },
-  {
-   "at": "2026-10-30T04:35:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:33:32Z",
-   "subject": "/team/: the live check's workflow moves to its own PR (a new workflow file needs the owner's approval to run)"
-  },
-  {
-   "at": "2026-10-30T04:33:09Z",
-   "subject": "Use with row on /is-it/ pages; the services pages and articles are not tools"
   }
  ],
  "builders": {
@@ -867,8 +867,8 @@
   "since": "2026-10-29",
   "next": [
    "howsecureismypassword.net",
-   "ndscalc.ru",
-   "emojicombos.com"
+   "generatorguru.com",
+   "coinflip.tech"
   ],
   "beaten": 0,
   "total": 1269

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1017,
+ "counted": 1019,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -791,7 +791,7 @@
    "skills": 3,
    "direct": 1,
    "dependants": 4,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/wheel.js",
@@ -1121,6 +1121,13 @@
    "direct": 0,
    "dependants": 25,
    "tests": 2
+  },
+  {
+   "file": "lib/markets.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 4
   },
   {
    "file": "lib/actions.js",
@@ -2047,13 +2054,6 @@
    "tests": 6
   },
   {
-   "file": "lib/markets.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 3
-  },
-  {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
@@ -2362,6 +2362,13 @@
    "tests": 0
   },
   {
+   "file": "lib/video-mux.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/approval-gate.js",
    "skills": 0,
    "direct": 0,
@@ -2572,13 +2579,6 @@
    "tests": 1
   },
   {
-   "file": "lib/video-mux.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
@@ -2629,6 +2629,13 @@
   },
   {
    "file": "lib/arena.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/audio-write.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2797,6 +2804,13 @@
   },
   {
    "file": "lib/ledger.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/markets-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4337,6 +4351,12 @@
    "reachedBy": [
     "skills/time.js"
    ]
+  },
+  "lib/audio-write.js": {
+   "imports": [
+    "lib/video-mux.js"
+   ],
+   "importedBy": []
   },
   "lib/aurora-feed.js": {
    "imports": [
@@ -7287,6 +7307,13 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/markets-card.js": {
+   "imports": [
+    "lib/markets.js",
+    "skills/crypto.js"
+   ],
+   "importedBy": []
+  },
   "lib/markets-record.js": {
    "imports": [],
    "importedBy": [
@@ -7318,8 +7345,10 @@
    "imports": [],
    "importedBy": [
     "functions/api/markets.js",
+    "lib/markets-card.js",
     "lib/report-run.js",
-    "lib/report.js"
+    "lib/report.js",
+    "skills/crypto.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -10714,6 +10743,7 @@
   "lib/video-mux.js": {
    "imports": [],
    "importedBy": [
+    "lib/audio-write.js",
     "lib/video-write.js"
    ]
   },
@@ -11636,8 +11666,12 @@
    "importedBy": []
   },
   "skills/crypto.js": {
-   "imports": [],
-   "importedBy": []
+   "imports": [
+    "lib/markets.js"
+   ],
+   "importedBy": [
+    "lib/markets-card.js"
+   ]
   },
   "skills/csv-table.js": {
    "imports": [

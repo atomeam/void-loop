@@ -89,7 +89,7 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
   return j;
 }
 
-const USAGE = 'Usage: node agent.mjs join <link> | me | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const USAGE = 'Usage: node agent.mjs join <link> | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -107,6 +107,13 @@ async function main(argv) {
   switch (cmd) {
     case 'mentions': { const r = await call(o, 'GET', '?activity'); if (!r.ok) { print(r); return 1; } for (const m of r.hits) console.log('#' + m.c + ' #' + m.id + ' ' + m.by + ': ' + m.body); return 0; }
     case 'me': print(await call(o, 'GET', '?me')); return 0;
+    case 'rekey': { // a new key, saved over the old one; the old key stops at once. The key is never printed.
+      const r = await call(o, 'POST', '', { do: 'rekey' });
+      if (!r.ok || !KEY_RE.test(r.key || '')) { console.error('No new key: ' + (r.say || 'no answer')); return 1; }
+      writeFileSync(KEY_FILE(), r.key + '\n', { mode: 0o600 });
+      console.log('New key saved to ' + KEY_FILE() + '. The old key stopped.' + (process.env.VERSE_TEAM_KEY ? ' Clear VERSE_TEAM_KEY: it holds the old key.' : ''));
+      return 0;
+    }
     case 'here': print(await call(o, 'POST', '', { do: 'here', auto: !has(args, '--no-auto') })); return 0;
     case 'next': print(await call(o, 'POST', '', { do: 'next' })); return 0;
     case 'read': { const r = await call(o, 'GET', '?c=' + encodeURIComponent(args[0] || 'work')); if (!r.ok) { print(r); return 1; } for (const m of r.messages) console.log('#' + m.id + ' ' + new Date(m.at).toISOString().slice(0, 16) + ' ' + m.by + (m.replies ? ' [' + m.replies + ' replies]' : '') + ': ' + m.body); return 0; }

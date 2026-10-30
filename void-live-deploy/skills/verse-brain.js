@@ -302,9 +302,11 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
       const here = !!host && host.brain === S().b && host.onlyHere(); // the page's own brain, holding only this page's asks
       if (restored || !(B.isCold(S().b) || here)) return false;
       const done = B.loadWorking(S().b, w); if (!done.length) return false;
+      // the words that came back, read before warm() hears this page's own asks again ("banana bread" opened the page: not from before)
+      const words = S().b.concepts.words.slice(-6);
       if (here) host.warm(S().b);
-      restored = true; el.dataset.restored = done.join(',');
-      const words = S().b.concepts.words; said.textContent = 'Back from before the reload: ' + (words.length ? words.slice(-6).join(', ') : 'its workspace and its spotlight') + '.';
+      restored = true; el.dataset.restored = done.join(','); el.dataset.back = words.join(',');
+      said.textContent = 'Back from before the reload: ' + (words.length ? words.join(', ') : 'its workspace and its spotlight') + '.';
       place(); sync(); return true;
     }
   });

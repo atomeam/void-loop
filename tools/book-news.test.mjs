@@ -84,6 +84,16 @@ test('pages: at most the per-page lines, every page regrouped on its own, all en
   assert.equal(pg.flatMap((p) => p.days.flatMap((d) => d.groups.flatMap((g) => g.items))).length, 5);
 });
 
+test('a day split over pages: each part carries the whole day, and "play all N" counts the whole day (the stage plays all of it)', async () => {
+  const { pageHtml } = await import('../void-live-deploy/lib/tome.js');
+  const e = newsEntries(L, 36, null, UTC), pg = newsPages(e, 2);
+  for (const p of pg) for (const d of p.days) assert.deepEqual(d.all.map((x) => x.line).sort(), e.filter((x) => x.day === d.day).map((x) => x.line).sort());
+  for (const x of e) x.live = true;
+  const split = pg.find((p) => p.days.some((d) => d.all.length > d.groups.flatMap((g) => g.items).length)), d = split.days.find((d) => d.all.length > d.groups.flatMap((g) => g.items).length);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  assert.match(pageHtml(split, { pages: pg }, esc), new RegExp('play all ' + d.all.length + ' on the stage'));
+});
+
 test('since: counts entries newer than the kept time; a first visit counts none', () => {
   const e = newsEntries(L, 36, null, UTC);
   assert.equal(newSince(e, "2026-10-16T11:30:00Z"), 2);
