@@ -14,7 +14,7 @@
    "skills": 33,
    "direct": 23,
    "dependants": 37,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/field-kit.js",
