@@ -11,11 +11,13 @@
 // check runs); the browser checks run one after another beside them, each taking the heavy lock itself (tools/heavy.mjs).
 // The slowest five and the wall time print after the list (owner, 2026-10-18: "how can we speed this all up?").
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
+import { inlineScripts } from './inline-scripts.mjs';
 import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './checks-changed.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -583,6 +585,7 @@ for (const [name, file] of [
   ['battleship skill', 'battleship-skill.test.mjs'],
   ['parody data', 'parody-data.test.mjs'],
   ['music-de', 'music-de.test.mjs'],
+  ['inline-scripts', 'inline-scripts.test.mjs'],
 ]) {
   addScript(name, file);
 }
@@ -593,11 +596,15 @@ add('files', async () => { const tracked = spawnSync('git', ['ls-files', '*.js',
   const files = narrowToChanged ? tracked.filter((f) => changedList.includes(f)) : tracked, counted = narrowToChanged ? files.length + ' changed of ' + tracked.length : String(tracked.length);
   const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
   const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(root, f), 'utf8')));
-  const checked = await Promise.all(files.filter((f) => /\.m?js$/.test(f)).map(async (f) => [f, await run(['--check', resolve(root, f)])]));
+  // a page's own <script> text is parsed too: an inline module that did not parse took /news/ down (#1741) with every check green
+  const tmp = mkdtempSync(resolve(tmpdir(), 'inline-scripts-'));
+  const inline = files.filter((f) => /\.html$/.test(f)).flatMap((f) => inlineScripts(readFileSync(resolve(root, f), 'utf8')).map((s, i) => {
+    const p = resolve(tmp, f.replace(/[^\w.-]/g, '_') + '.' + i + (s.module ? '.mjs' : '.cjs')); writeFileSync(p, s.code); return [f + ' (inline script ' + s.n + ')', p]; }));
+  const checked = await Promise.all([...files.filter((f) => /\.m?js$/.test(f)).map((f) => [f, resolve(root, f)]), ...inline].map(async ([f, p]) => [f, await run(['--check', p])]));
   const broken = checked.filter(([, r]) => !r.ok).map(([f]) => f);
   return [!garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
-    : counted + ' files: clean text, every script parses', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
+    : counted + ' files: clean text, every script parses (' + inline.length + ' inline in pages)', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
 // nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
 // back replaced the real folder with a link to itself
 add('tracked', async () => { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
