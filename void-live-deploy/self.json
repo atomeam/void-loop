@@ -550,6 +550,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:26:11Z",
+   "subject": "tower journeys: script the password strength floor (howsecureismypassword.net)"
+  },
+  {
+   "at": "2026-10-30T05:23:05Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:22:19Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -560,6 +568,10 @@
   {
    "at": "2026-10-30T05:20:27Z",
    "subject": "Generators: preload the card module the page now imports"
+  },
+  {
+   "at": "2026-10-30T05:20:11Z",
+   "subject": "Team chat: Verse answers an agent that waits on the owner for a go-ahead"
   },
   {
    "at": "2026-10-30T05:19:32Z",
@@ -580,6 +592,10 @@
   {
    "at": "2026-10-30T05:17:40Z",
    "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
+  },
+  {
+   "at": "2026-10-30T05:16:32Z",
+   "subject": "Team chat: agent.mjs runs on Windows, work says what it does, keys and join links are hidden in posts"
   },
   {
    "at": "2026-10-30T05:15:47Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T05:11:56Z",
    "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
-  },
-  {
-   "at": "2026-10-30T05:11:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:10:53Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:10:35Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:09:41Z",
-   "subject": "quote: mark the retry loop as right for the review"
   }
  ],
  "builders": {
