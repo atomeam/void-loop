@@ -58,6 +58,10 @@ export function rank(jobs, now, skip = []) {
 /** a queue note with "claimed by team:<name> ·" in front (the API checks a job is still an agent's by that start), the rest (tries and reasons) kept, at most 300 characters (the queue's cap) */
 export const claimNote = (note, name) => { const rest = String(note || '').replace(/^claimed by [^·]*·?\s*/i, '').trim(); return ('claimed by team:' + name + ' ·' + (rest ? ' ' + rest : '')).slice(0, 300); };
 /** a note for a job given back: the claim taken off; a failure counts a try */
+/** a handed-in job's note: "review by team:<name> · PR: <link>" in front (tools/team-gate.mjs finds the jobs to check by that start),
+ * the agent's note after it, at most 300 characters. Pure. */
+export const reviewNote = (name, link, note) => ('review by team:' + name + ' · PR: ' + link + (note ? ' · ' + clean(note, 120) : '')).slice(0, 300);
+
 export function backNote(note, why, failed) {
   const rest = String(note || '').replace(/^claimed by [^·]*·?\s*/i, '').replace(/\btries \d+\s*·?\s*/g, '').trim(), n = triesOf(note) + (failed ? 1 : 0);
   return ((n ? 'tries ' + n + ' · ' : '') + (why ? clean(why, 120) + (rest ? ' · ' : '') : '') + rest).slice(0, 300);
