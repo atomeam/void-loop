@@ -45,7 +45,7 @@ export const hasCorrection = (ask) => CORRECTED.test(String(ask || ''));
 export const CORRECTION_RULE = 'The message corrects itself: a later line (after "Correction:", "scratch that", "I was wrong", "actually" or the like) replaces what an earlier line said. Answer from the corrected version only. Never treat the earlier statement and its correction as both true, and do not repeat the statement that was corrected as a fact.';
 
 export const ACT_RULE = 'Writing this answer is the only thing you do here: you cannot note, log, save, record, remember, file, flag, forward or pass anything on, and nothing you write reaches a thread, a ticket or your builders. Never say you did or will do any of that. If the message asks you to, say plainly that you have not done it.';
-export const FILLER_RULE = 'Answer the message and say nothing else: no lines about being a program, an AI or a language model, about having or not having feelings, about what you can or cannot access in general, and no closing summary.';
+export const FILLER_RULE = 'Answer the message and say nothing else: no lines about being a program, an AI or a language model, about having or not having feelings, about what you can or cannot access or do, about your functions or your interface, and no closing summary. When the message asks someone to take a step, say what the step is and whose step it is.';
 
 // "I have noted this correction for the thread", "I've logged it", "I will pass this on": a claimed write with no record
 const OBJ = '(?:it|this|that|these|those|the\\s+\\w+|your\\s+\\w+)\\s+';
