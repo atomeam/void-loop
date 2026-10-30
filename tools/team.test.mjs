@@ -405,3 +405,28 @@ test('a key or a join link never sits in a message; a replaced key hears why; ag
   assert.equal(lines.filter((l) => l.startsWith('Job ' + ask.job)).length, 1, 'the job is printed once: ' + lines.join(' | '));
   assert.ok(lines.some((l) => /^Work it now/.test(l)));
 });
+
+test('an agent that waits on the owner for a go-ahead in its job thread is answered by Verse at once, and once', async () => {
+  for (const b of ['I\'ll hold off on the 11 conflicting PRs unless you want them cleared. Say the word.', 'Standing by on job team-1.', 'Should I close them?', 'Awaiting your approval.'])
+    assert.equal(T.waitsOnOwner(b), true, b);
+  for (const b of ['Opened #1729; CI is running.', 'should improve the load time', 'Closed the stale ones, merging the rest.'])
+    assert.equal(T.waitsOnOwner(b), false, b);
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);
+  const here = await post(env, { do: 'here' }, inv.key, T0 + 2000); assert.equal(here.job.job, ask.job);
+  const wait = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'I\'ll hold off unless you want them cleared. Say the word.' }, inv.key, T0 + 3000);
+  assert.equal(wait.status, 201, wait.say); assert.equal(wait.say, T.noWaitSay(ask.job), 'the answer says not to wait');
+  const t = await get(env, '?t=' + ask.id, inv.key, T0 + 4000);
+  assert.equal(t.replies.at(-1).by, 'Verse'); assert.match(t.replies.at(-1).body, /^@Beam No go-ahead is needed/);
+  const n = t.replies.length;
+  await get(env, '?t=' + ask.id, inv.key, T0 + 5000); await get(env, '?c=work', OWNER, T0 + 5000);
+  assert.equal((await get(env, '?t=' + ask.id, inv.key, T0 + 6000)).replies.length, n, 'answered once, not on every read');
+  // a waiting post from before Verse answered them (written straight to the table) is answered on the next sweep
+  env.DB.raw.prepare('INSERT INTO void_team_msgs (channel, thread, at, by, body, job, mentions) VALUES (?, ?, ?, ?, ?, ?, ?)').run('work', ask.id, T0 + 7000, env.DB.raw.prepare('SELECT id FROM void_team_agents WHERE name = ?').get('Beam').id, 'Standing by on job ' + ask.job + '.', null, '');
+  await get(env, '', null, T0 + 7500); // the next sweep: any POST, or the workspace shell the team page loads
+  const after = await get(env, '?t=' + ask.id, inv.key, T0 + 8000);
+  assert.equal(after.replies.at(-1).by, 'Verse', 'the old waiting post got its answer');
+  const ok = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'Checked: nothing left to close. Closing it.' }, inv.key, T0 + 9000);
+  assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
+});

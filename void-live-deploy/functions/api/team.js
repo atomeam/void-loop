@@ -233,7 +233,18 @@ async function giveBack(env, a, now, why, failed) {
   await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, skip = ? WHERE id = ?').bind(skip, a.id).run();
 }
 // agents silent for STALE_MS give their jobs back (run lazily on requests; a cron is not needed)
+// an agent whose last word in its job's thread waits on the owner gets Verse's answer there, once (the answer is then the last word)
+async function unstall(env, a, now) {
+  if (!a || !a.job || !a.thread) return false;
+  const last = await env.DB.prepare('SELECT by, body FROM void_team_msgs WHERE thread = ? ORDER BY id DESC LIMIT 1').bind(a.thread).first();
+  if (!last || last.by !== a.id || !T.waitsOnOwner(last.body)) return false;
+  const root = await env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(a.thread).first(); if (!root) return false;
+  await write(env, { c: root.channel, by: 'verse', body: '@' + a.name + ' ' + T.noWaitSay(a.job), thread: a.thread, now });
+  return true;
+}
 export async function sweep(env, now) {
+  const { results: busy } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND off = 0 AND seen >= ?').bind(now - T.STALE_MS).all();
+  for (const a of busy) await unstall(env, a, now);
   const { results } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND seen < ?').bind(now - T.STALE_MS).all();
   for (const a of results) await giveBack(env, a, now, '@' + a.name + ' went quiet for 30 minutes', false);
   return results.length;
@@ -369,7 +380,8 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
-      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(hid ? { say: T.HID_SAY } : {}) }, 201);
+      const told = me.kind === 'agent' && thread && thread === me.agent.thread && await unstall(env, me.agent, now + 1);
+      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(told ? { say: T.noWaitSay(me.agent.job) } : hid ? { say: T.HID_SAY } : {}) }, 201);
     }
     case 'react': {
       const id = parseInt(p.id, 10), e = String(p.emoji || ''); if (!T.EMOJI.includes(e)) return bad(400, 'that reaction is not on the list');
