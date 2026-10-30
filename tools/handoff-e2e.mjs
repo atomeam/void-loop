@@ -254,6 +254,21 @@ export const JOURNEYS = {
     await p.waitForFunction(() => /\d+\s*[×x]\s*\d+/.test(document.body.innerText) && !location.search, null, { timeout: 15000 });
     await check('the resize page opened the PDF page');
   },
+  'pick a palette for a colour, then paint a picture by number in it, and go back to the picture’s own colours': async (p, check) => {
+    await p.goto(ORIGIN + '/color/?c=e4572e', { waitUntil: 'load' }); await p.waitForSelector('#pals a');
+    const href = await p.locator('#pals a').first().getAttribute('href'), given = href.split('colours=')[1].split(',');
+    await check('the colour page offers ' + (await p.locator('#pals a').count()) + ' palettes to paint with (' + given.join(' ') + ')');
+    await Promise.all([p.waitForURL(/\/paint\/\?p=.*colours=/), p.locator('#pals a').first().click()]);
+    await p.waitForSelector('#palette i');
+    const shown = await p.$$eval('#palette i', (is) => is.map((i) => getComputedStyle(i).backgroundColor));
+    const hex = (c) => '#' + c.match(/\d+/g).slice(0, 3).map((v) => (+v).toString(16).padStart(2, '0')).join('');
+    // the picture's darkest and lightest colours become the palette's darkest and lightest, so at least those two show exactly
+    if (shown.map(hex).filter((h) => given.includes(h.slice(1))).length < 2) throw new Error('the paint palette shows none of the handed colours: ' + shown.map(hex).join(' '));
+    if (await p.locator('#restyle').isHidden()) throw new Error('the paint page does not say it is painted in the link’s colours');
+    await check('the paint page shows its ' + shown.length + ' colours in the handed palette (' + shown.map(hex).slice(0, 3).join(' ') + ' ...)');
+    await p.locator('#owncol').click(); await p.waitForFunction(() => !/colours=/.test(location.search) && document.getElementById('restyle').hidden, null, { timeout: 10000 });
+    await check('one press put back the picture’s own colours');
+  },
 };
 
 async function run() {
