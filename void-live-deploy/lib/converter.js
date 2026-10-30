@@ -20,8 +20,8 @@ const VIDEO_OUT_NOTE = { MP4: 'Any video your browser can play becomes an MP4 (H
 // a video tool: run 'video' with the edit (vop); each plays the video once, so it takes as long as the video plays
 const vid = (cat, name, vop, note, extra = {}) => tool(cat, name, 'here', { run: 'video', vop, from: 'video', note, ...extra });
 // the sounds Verse writes: WAV, AIFF, FLAC and ALAC with its own encoders; OGG and OPUS with the browser's Opus encoder in Verse's own Ogg pages
-const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', ALAC: 'ALAC (Apple Lossless, 16-bit, in an .m4a file: the same sound as a WAV, in less space; Verse codes it itself)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
-const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, ALAC, OGG or OPUS, but cannot write ' + f + '.';
+const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', ALAC: 'ALAC (Apple Lossless, 16-bit, in an .m4a file: the same sound as a WAV, in less space; Verse codes it itself)', M4A: 'an .m4a with AAC at 192 kbps where your browser codes AAC, and with Apple Lossless where it does not (the notes say which)', M4R: 'an iPhone ringtone (.m4r, AAC at 192 kbps, the first 40 seconds)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
+const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, ALAC, M4A, M4R, OGG or OPUS, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
 const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 'tool', name, status, ...extra });
@@ -51,7 +51,7 @@ export const CATALOG = Object.freeze([
   vid('Video', 'Sync Audio and Video', 'shift', 'Moves the sound earlier or later against the pictures, by the seconds you set.'),
   vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
-    ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' })
+    ? conv('Audio', f, f === 'M4R' ? 'part' : 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' + (f === 'M4R' ? ' Only in a browser that codes AAC: a ringtone has to be AAC, and Chrome on Linux has no AAC encoder, so there Verse stops and says so.' : '') })
     : conv('Audio', f, 'no', { note: ['AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
   tool('Audio', 'Add Image to MP3', 'here', { run: 'mp3-image', from: 'mp3+picture', note: 'Puts a picture in the MP3 as its cover (the ID3 tag, as music players show it). The sound is not coded again, so it stays exactly as it was; title, artist and the other tag fields stay too.' }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
@@ -154,8 +154,8 @@ export function formatOf(bytes, name = '') {
 export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
   if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
-  if (k === 'sound') return ['wav', 'aiff', 'flac', 'alac', 'ogg', 'opus'].filter((t) => t !== x);
-  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff', 'flac', 'alac', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'sound') return ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -521,4 +521,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', m4r: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });

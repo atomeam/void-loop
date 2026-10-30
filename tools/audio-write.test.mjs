@@ -2,7 +2,7 @@
 // back page by page, each check sum done again bit by bit
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { flac, oggOpus, crc8, crc16, crc32ogg, md5, alac, alacFile } from '../void-live-deploy/lib/audio-write.js';
+import { flac, oggOpus, crc8, crc16, crc32ogg, md5, alac, alacFile, m4aFile, RINGTONE_SECONDS } from '../void-live-deploy/lib/audio-write.js';
 
 const hex = (b) => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
 const te = new TextEncoder();
@@ -170,4 +170,21 @@ test('ALAC in an .m4a: the M4A brand, an alac sample entry with its 36-byte conf
   const rate = (m[inner + 32] << 24 | m[inner + 33] << 16 | m[inner + 34] << 8 | m[inner + 35]) >>> 0; assert.equal(rate, 48000);
   const stsz = find('stsz'); assert.equal((m[stsz + 12] << 24 | m[stsz + 13] << 16 | m[stsz + 14] << 8 | m[stsz + 15]), 3);
   const mdhd = find('mdhd'); assert.equal((m[mdhd + 16] << 24 | m[mdhd + 17] << 16 | m[mdhd + 18] << 8 | m[mdhd + 19]) >>> 0, 48000); assert.equal((m[mdhd + 20] << 24 | m[mdhd + 21] << 16 | m[mdhd + 22] << 8 | m[mdhd + 23]) >>> 0, 10000);
+});
+
+test('M4A without an AAC encoder: Apple Lossless in the .m4a, and it says so; M4R stops, since a ringtone has to be AAC', async () => {
+  assert.equal(typeof globalThis.AudioEncoder, 'undefined'); // node has none, as Chrome on Linux has no AAC encoder
+  const chans = sound(48000, 2, 'tone'), s = { rate: 48000, channels: chans };
+  const o = await m4aFile(s, () => assert.fail('no encoder is called'));
+  assert.equal(o.codec, 'alac'); assert.deepEqual([...o.bytes], [...alacFile(chans, 48000)]);
+  assert.match(o.notes.join(' '), /no AAC encoder, so the \.m4a holds Apple Lossless/);
+  await assert.rejects(m4aFile(s, () => {}, { ringtone: true }), /a ringtone has to be AAC/);
+  // a ringtone keeps the first 40 seconds: with an AAC encoder (a stand-in here), the encoder gets 40 s and no more
+  globalThis.AudioEncoder = Object.assign(function AudioEncoder() {}, { isConfigSupported: async (c) => ({ supported: c.codec === 'mp4a.40.2' }) });
+  try {
+    const long = { rate: 48000, channels: [new Float32Array(48000 * 45)] }; let got = 0;
+    const r = await m4aFile(long, async (x, cfg) => { got = x.channels[0].length; assert.equal(cfg.codec, 'mp4a.40.2'); return { codec: cfg.codec, rate: 48000, channels: 1, description: new Uint8Array([0x11, 0x88]), samples: [{ data: new Uint8Array(8), t: 0, d: 21333, key: true }] }; }, { ringtone: true });
+    assert.equal(got, 48000 * RINGTONE_SECONDS); assert.equal(r.codec, 'aac'); assert.match(r.notes.join(' '), /kept 0 to 40 s of 45\.0 s/);
+    assert.equal(String.fromCharCode(...r.bytes.subarray(8, 12)), 'M4A '); assert.ok(Buffer.from(r.bytes).includes(Buffer.from('mp4a')), 'an mp4a sample entry');
+  } finally { delete globalThis.AudioEncoder; }
 });
