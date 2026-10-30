@@ -84,11 +84,27 @@ const dl = (el, rows) => {
 };
 // what it did on Verse (lib/brain-route.js): its picks on the stage and the asks heard on tool pages, newest first; a lesson can be undone
 const host = window.verseBrainHost || null, didEl = $('#did');
+const breaksEl = $('#breaks'), lookBtn = $('#lookBtn');
+const breaks = () => { // the breaks that stand now, the owner's card: what is red, why, and a link to it
+  if (!host || !host.breaks || !breaksEl) return; const list = host.breaks(), w = host.watchStats(), sig = JSON.stringify([list.map((b) => [b.key, b.what, b.marked]), w.reads]);
+  if (breaksEl.dataset.sig === sig) return; breaksEl.dataset.sig = sig; breaksEl.dataset.n = String(list.length);
+  if (!w.reads) { breaksEl.replaceChildren(node('li', 'It has not looked yet: it looks 20 seconds after the page settles, then every 15 minutes.')); return; }
+  if (!list.length) { breaksEl.replaceChildren(node('li', 'Nothing is broken: main is green, no pull request is stuck and no issue is open.')); return; }
+  breaksEl.replaceChildren(...list.map((b) => { const li = node('li', b.what + ': ' + b.why + (b.marked ? ' (marked seen)' : '') + '.'); if (b.url) { const l = node('a', ' Open'); l.href = b.url; l.rel = 'noopener'; l.target = '_blank'; li.append(l); } return li; }));
+};
+if (lookBtn) lookBtn.addEventListener('click', async () => { if (!host || !host.watchNow) return; lookBtn.disabled = true; lookBtn.textContent = 'Looking'; try { await host.watchNow(); } finally { lookBtn.disabled = false; lookBtn.textContent = 'Look now'; breaks(); did(); } });
 const did = () => {
+  breaks();
   if (!host || !host.actions) return; const list = host.actions(12), sig = JSON.stringify(list.map((a) => [a.id, a.outcome]));
   if (didEl.dataset.sig === sig) return; didEl.dataset.sig = sig; didEl.dataset.n = String(list.length); if (!list.length) return;
   didEl.replaceChildren(...list.map((a) => {
     const li = document.createElement('li'); li.dataset.id = a.id;
+    if (a.kind === 'watch' || a.kind === 'recovered') { // what it saw of Verse's own health (lib/brain-watch.js)
+      li.append(node('span', (a.kind === 'watch' ? 'Saw a break: ' : 'Saw it mend: ') + a.what + ', because ' + a.why + '.'));
+      if (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(a.url || '')) { const l = node('a', ' Open'); l.href = a.url; l.rel = 'noopener'; l.target = '_blank'; li.append(l); }
+      if (a.kind === 'watch') { const u = node('button', a.outcome === 'seen' ? 'Unmark' : 'Mark seen'); u.type = 'button'; u.className = 'undo'; u.setAttribute('aria-label', (a.outcome === 'seen' ? 'Unmark ' : 'Mark seen: ') + a.what); u.addEventListener('click', () => { if (a.outcome === 'seen') host.undismiss(a.id); else host.dismiss(a.id); did(); }); li.append(u); }
+      return li;
+    }
     li.append(node('span', a.kind === 'heard' ? 'Heard "' + a.ask + '": ' + a.why + '.' : 'For "' + a.ask + '" it ' + a.why + ' (' + a.cands.length + ' could answer).'));
     if (a.outcome) { const o = node('span', a.outcome === 'kept' ? ' You kept it.' : a.outcome === 'left' ? ' You left it, so it learned.' : ' Lesson undone.'); o.className = a.outcome === 'kept' ? 'ok' : a.outcome === 'left' ? 'no' : ''; li.append(o); }
     if (a.outcome === 'kept' || a.outcome === 'left') { const u = node('button', 'Undo'); u.type = 'button'; u.className = 'undo'; u.setAttribute('aria-label', 'Undo what it learned from "' + a.ask + '"'); u.addEventListener('click', () => { host.undoRoute(a.id); did(); }); li.append(u); }
@@ -107,6 +123,7 @@ const read = () => {
     ['Organs', b.granted.length + ' of ' + B.ORGAN_IDS.length + ' ran this tick' + (s.starved ? ' · under-used: ' + s.starved : '')],
     ['Holds', s.concepts + ' words · ' + s.episodes + ' moments · ' + s.procedures + ' genomes'],
     ['Ticks', String(b.ticks) + (size ? ' · ' + size.W + 'x' + size.H + ' at ' + size.dpr + 'x' : '')],
+    host && host.watchStats ? ['Watch', (() => { const w = host.watchStats(); return w.reads ? w.breaks + ' break' + (w.breaks === 1 ? '' : 's') + ' standing · ' + w.reads + ' looks · last ' + Math.max(0, Math.round((Date.now() - w.at) / 60000)) + ' min ago' : 'first look soon'; })()] : null,
     host && host.routeStats ? ['Routes', (() => { const r = host.routeStats(); return r.picks + ' picks on Verse · ' + r.changed + ' not the page\'s first · ' + r.good + ' kept · ' + r.bad + ' left'; })()] : null,
   ]);
   did();
