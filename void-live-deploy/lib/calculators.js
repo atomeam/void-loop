@@ -719,6 +719,22 @@ CALCULATORS.push(
     (x) => { const s = String(x.s ?? ''); let out; if (x.how === 'dec') { try { out = decodeURIComponent(s.replace(/\+/g, ' ')); } catch { need(false, 'that has a % not followed by two hex digits of valid UTF-8'); } }
       else out = x.how === 'url' ? encodeURI(s) : encodeURIComponent(s).replace(/[!'()*]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase()); return { out, len: out.length }; },
     { src: 'https://www.rfc-editor.org/rfc/rfc3986#section-2.1' }),
+  // "unix timestamp 1700000000", "epoch converter", "2026-10-30 14:05 to unix time" (2026-10-30: these fell to an article). UTC only, so a
+  // shared link shows every reader the same answer; 12 to 14 digits read as milliseconds and 15 or more as microseconds, as epochconverter.com does
+  make('unix-time', 'Unix time (epoch) converter', 'Everyday', 'Unix time = seconds since 1970-01-01 00:00:00 UTC, leap seconds not counted',
+    ['v|Unix time, or a date and time in UTC|text||1700000000'],
+    ['utc|Date and time (UTC)|text', 'iso|ISO 8601|text', 's|Unix time (seconds)|text', 'ms|Unix time (milliseconds)|text', 'as|Read as|text'],
+    (x) => { const t = String(x.v ?? '').trim().replace(/,/g, ''); let ms, as;
+      if (/^-?\d+(?:\.\d+)?$/.test(t)) { const n = Number(t), d = t.replace(/^-/, '').split('.')[0].length; [ms, as] = d >= 15 ? [n / 1000, 'microseconds'] : d >= 12 ? [n, 'milliseconds'] : [n * 1000, 'seconds']; }
+      else { const m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?\s*(?:z|utc|gmt)?$/i);
+        need(m, 'type a Unix time like 1700000000, or a date like 2026-10-30 14:05 (UTC)'); const [Y, M, D, h = 0, mi = 0, se = 0] = m.slice(1).map((v) => (v === undefined ? 0 : Number(v)));
+        need(h < 24 && mi < 60 && se < 60, 'the time is past 23:59:59'); ms = Date.UTC(Y, M - 1, D, h, mi, se); need(new Date(ms).getUTCDate() === D && new Date(ms).getUTCMonth() === M - 1, 'that day is not on the calendar'); as = 'a date in UTC'; }
+      need(Number.isFinite(ms) && Math.abs(ms) <= 8.64e15, 'that is past the dates a computer clock can show (about 275,000 years either way)');
+      const d = new Date(ms), WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], MO = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const p2 = (n) => String(n).padStart(2, '0');
+      return { utc: WD[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MO[d.getUTCMonth()] + ' ' + d.getUTCFullYear() + ', ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) + ':' + p2(d.getUTCSeconds()),
+        iso: d.toISOString(), s: String(Math.floor(ms / 1000)), ms: String(Math.round(ms)), as }; },
+    { src: 'https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap04.html#tag_04_19' }),
   make('download-time', 'Download time (bandwidth)', 'Everyday', 'time = size × 8 bits ÷ (speed × (1 − overhead)); KB, MB, GB are powers of 1,000 and KiB, MiB, GiB powers of 1,024 (IEC 80000-13)',
     ['size|File size|number||1', SIZE, 'rate|Connection speed|number||100', RATE, 'ovh|Lost to protocol overhead|ratio|%|0'], ['t|Time|time|s', 'text|That is|text', 'per|Data an hour|number|GB'],
     (x) => { pos(x.size, 'File size'); pos(x.rate, 'Connection speed'); need(x.ovh >= 0 && x.ovh < 1, 'overhead is from 0% to under 100%'); const bits = x.size * Number(x.su) * 8, bps = x.rate * Number(x.ru) * (1 - x.ovh), t = bits / bps;
