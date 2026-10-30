@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { wikidataQuery, pickWikidata } from '../void-live-deploy/lib/movies.js';
 import { lookup, onRequestGet } from '../void-live-deploy/functions/api/movies.js';
-import { movieCard } from '../void-live-deploy/skills/movie.js';
+import { movieCard, lookupUrl, LOOKUP_V } from '../void-live-deploy/skills/movie.js';
 
 // the three "Parasite" films Wikidata returned for this query on 2026-10-30 (query.wikidata.org, trimmed to the fields used)
 const row = (q, d, dir, mins) => ({ f: { value: 'http://www.wikidata.org/entity/' + q }, date: { value: d + '-01-01T00:00:00Z' }, ...(dir ? { dir: { value: dir } } : {}), ...(mins ? { mins: { value: String(mins) } } : {}) });
@@ -55,4 +55,19 @@ test('iTunes answers: its facts win, and Wikidata only fills what iTunes left ou
   const f = await lookup('Parasite', 2019, fake({ 'itunes.apple.com': it, 'query.wikidata.org': parasite, 'archive.org': { response: { docs: [] } } }));
   assert.equal(f.director, 'Bong Joon Ho'); assert.equal(f.genre, 'Thriller'); assert.equal(f.runtime, 132);
   assert.deepEqual(f.sources, ['iTunes Search API', 'Wikidata']);
+});
+
+test('the pick asks a new address, so no answer the old lookup cached is read again, and "not verified" is kept an hour, not a day', async () => {
+  assert.ok(LOOKUP_V >= 2);
+  assert.equal(lookupUrl({ title: 'The Grand Budapest Hotel', year: 2014 }), '/api/movies?title=The%20Grand%20Budapest%20Hotel&year=2014&v=' + LOOKUP_V);
+  assert.equal(lookupUrl({ title: 'Parasite' }), '/api/movies?title=Parasite&v=' + LOOKUP_V);
+  const real = globalThis.fetch;
+  globalThis.fetch = async (u) => ({ ok: true, json: async () => (String(u).includes('wikidata') ? empty : String(u).includes('itunes') ? { results: [] } : { response: { docs: [] } }) });
+  try {
+    const r = await onRequestGet({ request: new Request('https://a-to-mind.com/api/movies?title=Nothing+Like+This&year=2019&v=2') });
+    assert.equal((await r.json()).verified, false); assert.equal(r.headers.get('cache-control'), 'public, max-age=3600');
+    globalThis.fetch = async (u) => ({ ok: true, json: async () => (String(u).includes('wikidata') ? parasite : String(u).includes('itunes') ? { results: [] } : { response: { docs: [] } }) });
+    const ok = await onRequestGet({ request: new Request('https://a-to-mind.com/api/movies?title=Parasite&year=2019&v=2') });
+    assert.equal((await ok.json()).verified, true); assert.equal(ok.headers.get('cache-control'), 'public, max-age=86400');
+  } finally { globalThis.fetch = real; }
 });
