@@ -4,9 +4,11 @@
 // agents take no job off the build queue: they never ask for work, and the one that tests push turns jobs off before it sets its address.
 // .github/workflows/team-live.yml runs it with the owner token. It never prints a key, a join link or any message or job text: the
 // repository is public, so the log holds counts, names and yes or no only.
-//   VERSE_OWNER=<owner token> node tools/team-live.mjs [--site https://a-to-mind.com] [--queue] [--retire Vibe,ClaudeDuet]
+//   VERSE_OWNER=<owner token> node tools/team-live.mjs [--site https://a-to-mind.com] [--queue] [--retire Vibe,ClaudeDuet] [--reopen id,id]
 //     --queue    also count the waiting jobs by kind, and put the owner's #work posts that never became a job on the queue
 //     --retire   also stop the named agents' old keys now (a new link is made and dropped; the owner presses New link on /team/ for one)
+//     --reopen   also put these done jobs back on the queue: a job closed as done that its pull request did not do (2026-10-30: Beam
+//                closed three versus jobs with a domains/targets note each and no page)
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const SITE = arg('--site', 'https://a-to-mind.com').replace(/\/$/, ''), OWNER = process.env.VERSE_OWNER || '';
 const API = SITE + '/api/team';
@@ -130,6 +132,10 @@ for (const n of retire) {
   const r = await call('POST', '', { do: 'invite', name: n, again: true });
   if (r.status === 201) ok(n + ': old key stopped (press New link beside ' + n + ' on /team/ for its join link)'); else console.log('skip ' + n + ': ' + r.status + ' ' + (r.say || ''));
 }
+// 5. done jobs that were not done go back on the queue, one statement each (only a job that is still done moves)
+const reopen = (arg('--reopen', '') || '').split(',').map((s) => s.trim()).filter((id) => /^[\w-]{1,40}$/.test(id));
+const reopened = await Promise.all(reopen.map((id) => fetch(SITE + '/api/queue', { method: 'PATCH', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ id, from: 'done', state: 'queued', note: 'reopened by the owner: its pull request did not do the job' }) }).then((r) => [id, r.status], () => [id, 0])));
+for (const [id, status] of reopened) if (status >= 200 && status < 300) ok(id + ': back on the queue'); else console.log('skip ' + id + ': ' + status + (status === 409 ? ' (not done now)' : ''));
 const after = await team('after');
 console.log('waiting: ' + before.waiting + ' before, ' + after.waiting + ' after');
 if (!process.exitCode) console.log('team live: any agent joins, all in the same chat, at ' + SITE);

@@ -603,3 +603,28 @@ test('next --wait waits for a job, prints it and exits, so an agent in a tool sh
     assert.equal(heres, 2, 'it asked again until a job came');
   } finally { srv.close(); }
 });
+
+import { runJob as scriptRunJob, jobPrompt } from '../void-live-deploy/team/agent.mjs';
+test('work --run hands the whole job to a one-shot agent and stops a stuck one, so the loop goes on with nobody pressing Continue', async () => {
+  // owner, 2026-10-30: "make it so Verse and Beam keep going automatically on their own" (Beam stopped after 3 jobs to ask "Continue?")
+  const job = { job: 'mvq1', kind: 'versus', target: 'versus:hexo.io', thread: 61, ask: 'Versus: hexo.io needs a page', brief: 'Code: https://github.com/atomeam/void-loop' };
+  const p = jobPrompt(job);
+  assert.match(p, /do not ask one/, 'nobody is there to answer');
+  assert.match(p, /Job mvq1 \(versus, versus:hexo\.io, thread 61\):\nVersus: hexo\.io needs a page/);
+  assert.match(p, /Code: https:\/\/github\.com\/atomeam\/void-loop/, 'the brief comes with it');
+  assert.match(p, /newest main in a clean checkout/, 'never an old local branch (Beam\'s first PRs carried a 10-day-old commit)');
+  assert.match(p, /a domains\/targets file alone does not finish it/, 'a versus job is the page, not a note about the site');
+  assert.match(p, /last line/);
+  const lines = [], log = (l) => lines.push(l);
+  // the prompt arrives on standard input and in the file the command names
+  const echo = await scriptRunJob('node -e "let s=\'\';process.stdin.on(\'data\',d=>s+=d).on(\'end\',()=>{const f=require(\'fs\').readFileSync(process.argv[1],\'utf8\');console.log(s===f?\'same\':\'differs\');console.log(\'https://github.com/atomeam/void-loop/pull/9\')})" {prompt-file}', job, { log });
+  assert.equal(echo.code, 0, lines.join('\n'));
+  assert.match(lines.join('\n'), /same/, 'the input and the file hold the same prompt');
+  assert.equal(echo.link, 'https://github.com/atomeam/void-loop/pull/9');
+  // a command that never reads its input still runs
+  assert.equal((await scriptRunJob('node -e "console.log(1)"', job, { log })).code, 0);
+  // a run past its minutes is stopped and given back with the reason
+  const t0 = Date.now(), stuck = await scriptRunJob('node -e "setTimeout(()=>{},60000)"', job, { log, minutes: 0.02 });
+  assert.equal(stuck.code, 124); assert.match(stuck.last, /stopped after 0\.02 minutes/);
+  assert.ok(Date.now() - t0 < 20e3, 'it did not wait the minute out');
+});
