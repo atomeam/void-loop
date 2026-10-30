@@ -149,6 +149,21 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
     await check('the paint page cut the kept picture into a new colouring sheet');
   },
+  "send a gradient to the photo tools as a picture, and take a painting's colours as a gradient": async (p, check) => {
+    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
+    const before = new URL(p.url()).hash;
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
+    const size = await p.locator('#note').textContent();
+    if (!/^1200 × 675 px/.test(size)) throw new Error('the photo tools opened a picture of "' + size + '", not the 1200 × 675 gradient');
+    await check('the photo tools opened the gradient as a ' + size.split(' · ')[0] + ' picture');
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction((was) => location.hash && location.hash !== was && !location.search, before, { timeout: 15000 });
+    const stops = await p.locator('#stops .stop').count();
+    if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
+    await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
+  },
 };
 
 async function run() {

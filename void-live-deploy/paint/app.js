@@ -305,7 +305,7 @@ $('png').onclick = () => {
 };
 // the painting into the photo pages, already open there (lib/image-handoff.js): a press keeps one PNG on this device and opens the page
 { const row = $('related'), label = row && row.querySelector('.tk-label');
-  for (const [text, path] of [['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
+  for (const [text, path] of [['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
     const a = document.createElement('a'); a.href = path; a.textContent = text; a.className = 'tk-hand';
     a.addEventListener('click', (e) => { e.preventDefault(); if (!state.tpl || !state.painted) return;
       sendImage(path, () => canvasBlob(paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
