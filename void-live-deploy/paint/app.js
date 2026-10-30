@@ -299,6 +299,13 @@ function paintingCanvas() {
   g.imageSmoothingEnabled = false; g.drawImage(state.painted, 0, 0, out.width, out.height);
   return out;
 }
+// the whole picture in its own colours, painted or not: a gradient read from a half-painted sheet would be mostly paper white
+function wholeCanvas() {
+  const { w, h } = state.tpl, pal = state.tpl.palette.map(rgb), c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'), img = g.createImageData(w, h);
+  for (let p = 0; p < w * h; p++) { const k = pal[state.labels[p]]; img.data[p * 4] = k[0]; img.data[p * 4 + 1] = k[1]; img.data[p * 4 + 2] = k[2]; img.data[p * 4 + 3] = 255; }
+  g.putImageData(img, 0, 0); return c;
+}
 $('png').onclick = () => {
   const a = document.createElement('a'); a.href = paintingCanvas().toDataURL('image/png'); a.download = (state.tpl.id || 'painting') + '.png'; a.click();
   say('PNG downloaded.');
@@ -308,7 +315,7 @@ $('png').onclick = () => {
   for (const [text, path] of [['Save your painting as a PDF', '/pdf/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
     const a = document.createElement('a'); a.href = path; a.textContent = text; a.className = 'tk-hand';
     a.addEventListener('click', (e) => { e.preventDefault(); if (!state.tpl || !state.painted) return;
-      sendImage(path, () => canvasBlob(paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
+      sendImage(path, () => canvasBlob(path.startsWith('/gradient/') ? wholeCanvas() : paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
         .then((ok) => { if (!ok) say('Your painting could not be kept for the next page in this browser.'); }); });
     if (label) label.after(' ', a); }
 }
