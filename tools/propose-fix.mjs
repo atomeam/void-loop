@@ -23,8 +23,8 @@ import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf, MAX_SOURCE } from '../
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
-export const STEPS = ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']; // 'lets go' runs for a routing correction only
-export const stepsFor = (mode) => STEPS.filter((s) => mode === 'narrow' || s !== 'lets go');
+export const STEPS = ['collisions', 'lets go', 'unit test', 'void review', 'benchmark', 'answers']; // 'lets go' runs for a routing correction only, 'answers' for a learned ask only
+export const stepsFor = (mode) => STEPS.filter((s) => (mode === 'narrow' ? s !== 'answers' : s !== 'lets go'));
 
 /** The job to work on: the oldest open probe: job (or a miss: job the router says a skill should have caught: its lane is propose-fix), or the one named; null when there is none. */
 export function pickJob(queue, id = '', hasSkill = (name) => existsSync(join(root, 'void-live-deploy', 'skills', name + '.js'))) {
@@ -48,6 +48,32 @@ export function regressionAsks(miss, bench, skill) {
 export async function letsGo(file, ask) {
   try { const mod = (await import(pathToFileURL(file).href + '?v=' + Date.now() + Math.random())).default; return mod.match(String(ask).toLowerCase(), ask) ? 'the skill still takes the ask' : ''; }
   catch (e) { return 'the edited skill did not load: ' + e.message; }
+}
+
+// what a card says when the skill took the ask but had no answer for it ("I couldn't find “is nyc”. Try a city name.")
+export const NO_ANSWER = /couldn['’]t find|could not find|can['’]t find|cannot find|no (?:match|result)s? for|try a city name|didn['’]t (?:answer|understand)|not sure what you mean/i;
+/** The benchmark checks that the right skill takes the ask, not that the card answers it: on 2026-10-30 a fix for "how far is nyc to london"
+ *  passed every step and went out as "Verse fixes its distance skill" while the live card said it could not find "is nyc". This runs the
+ *  edited skill's run() on the ask, with the network and a bare page, and reads what it drew: 'answered', 'no answer' (with the line that
+ *  says so), or 'not run' when the skill needs more of the page than a bare one gives (then the fix only routes, and its title says so). */
+export async function answers(file, ask, { timeoutMs = 15000 } = {}) {
+  const pages = [], esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const base = { esc, showPage: (fn) => { const el = { innerHTML: '', textContent: '', style: {}, appendChild() {}, querySelector: () => null }; fn(el); pages.push(el); return el; }, _pageStill: () => true };
+  const api = new Proxy(base, { get: (t, k) => (k in t ? t[k] : () => undefined) });
+  try {
+    const mod = (await import(pathToFileURL(file).href + '?v=' + Date.now() + Math.random())).default;
+    const out = await Promise.race([mod.run(ask, api), new Promise((_, no) => setTimeout(() => no(new Error('no answer in ' + timeoutMs / 1000 + ' s')), timeoutMs))]);
+    const said = pages.map((p) => String(p.innerHTML || p.textContent || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()).join(' ');
+    const bad = said.match(NO_ANSWER);
+    if (bad) return { outcome: 'no answer', why: said.slice(Math.max(0, bad.index - 40), bad.index + 80).trim() };
+    if (out === 'none' && !said) return { outcome: 'no answer', why: 'the skill drew nothing' };
+    return { outcome: 'answered', why: '' };
+  } catch (e) { return { outcome: 'not run', why: String(e && e.message || e).slice(0, 120) }; }
+}
+/** The pull request's title: "fixes" only when the card answered the ask; a fix whose answer could not be checked here only routes. Pure. */
+export function titleFor(miss, outcome) {
+  if (miss.mode === 'narrow') return 'Verse\'s ' + miss.skill + ' skill lets go of "' + miss.ask + '" (a correction)';
+  return outcome === 'answered' ? 'Verse fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"' : 'Verse routes "' + miss.ask + '" to its ' + miss.skill + ' skill (the answer is not checked)';
 }
 
 /** a gateway error worth one more try (the edge or the model's route hiccupped); 4xx and 500 are answers, not hiccups. Pure. */
@@ -108,7 +134,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const next = applyEdits(source, proposal.edits);
   if (!next) await bail('the edits do not apply to the file as it stands');
   const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
-    title: miss.mode === 'narrow' ? 'Verse\'s ' + miss.skill + ' skill lets go of "' + miss.ask + '" (a correction)' : 'Verse fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"', passed: false, failed: '', detail: '' };
+    title: titleFor(miss, ''), passed: false, failed: '', detail: '' };
   let committed = false;
   writeFileSync(file, next);
   const stop = (step, detail) => { result.failed = step; result.detail = String(detail || '').replace(/\s+/g, ' ').trim().slice(0, 160); };
@@ -134,6 +160,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       let score = null; try { score = JSON.parse(b.stdout.trim().split('\n').pop()); } catch (_) { score = null; }
       if (!score) stop('benchmark', 'did not run'); else if (score.wrong && score.wrong.length) stop('benchmark', score.wrong.length + ' of ' + score.total + ' missed' + (score.wrong.some((w) => String(w.ask || w).trim().toLowerCase() === miss.ask.toLowerCase()) ? ', the ask among them' : ''));
       else result.bench = { score: score.score, total: score.total };
+    }
+    // the right skill takes the ask: now the card must answer it, or the fix is not a fix (a "fixed" claim comes from the answer, not the route)
+    if (!result.failed && miss.mode !== 'narrow') {
+      const a = await answers(file, miss.ask); result.answers = a.outcome;
+      if (a.outcome === 'no answer') stop('answers', 'the card says: ' + a.why);
+      result.title = titleFor(miss, a.outcome);
     }
   } catch (e) { stop(result.failed || 'checks', e.message); }
   result.passed = !result.failed;
