@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { NOTES, ROOTS, SECONDS, HARD, takeOf, chordOf, pathOf, loadPiano } from '../void-live-deploy/lib/rap-piano.js';
+import { NOTES, ROOTS, SECONDS, HARD, takeOf, chordOf, pathOf, loadPiano, takesFor } from '../void-live-deploy/lib/rap-piano.js';
 import { pitchOf } from '../void-live-deploy/lib/rap-voice.js';
 import { settingsOf, beatFor } from '../void-live-deploy/lib/rap.js';
 import { beatEvents } from '../void-live-deploy/lib/rap-beat.js';
@@ -35,7 +35,7 @@ const takes = new Map();
 const takeData = (path) => { if (!takes.has(path)) takes.set(path, readWav(readFileSync(fileOf(path))).data); return takes.get(path); };
 
 test('every take is on disk: 48 kHz, mono, 16-bit, starting on its hammer, faded to silence, at the level NOTES says', () => {
-  assert.deepEqual(ROOTS, [48, 52, 56, 60, 64, 68, 72, 76]);
+  assert.deepEqual(ROOTS, [36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84]);
   for (const root of ROOTS) for (const layer of ['soft', 'hard']) {
     const path = pathOf(root, layer), label = root + ' ' + layer;
     assert.ok(existsSync(fileOf(path)), label + ' is on disk');
@@ -53,7 +53,7 @@ test('every take is on disk: 48 kHz, mono, 16-bit, starting on its hammer, faded
 // a hard strike rings a little sharp for its first tenths of a second (the string's tension rises with its swing), so the note is heard once it settles
 test('every take settles on its own note, within 15 cents', () => {
   for (const root of ROOTS) for (const layer of ['soft', 'hard']) {
-    const x = takeData(pathOf(root, layer)).subarray(Math.round(0.5 * RATE), Math.round(1.0 * RATE)), f = pitchOf(x, RATE, { lo: 100, hi: 800 });
+    const x = takeData(pathOf(root, layer)).subarray(Math.round(0.5 * RATE), Math.round(1.0 * RATE)), f = pitchOf(x, RATE, { lo: 40, hi: 1200 });
     assert.ok(f, root + ' ' + layer + ': a pitch is heard');
     const cents = 1200 * Math.log2(f / hz(root));
     assert.ok(Math.abs(cents) < 15, root + ' ' + layer + ': heard ' + f.toFixed(1) + ' Hz for ' + hz(root).toFixed(1) + ' Hz (' + cents.toFixed(1) + ' cents)');
@@ -61,7 +61,7 @@ test('every take settles on its own note, within 15 cents', () => {
 });
 
 test('a note plays the nearest recording at its pitch, the layer its velocity calls for, never shifted more than 2 semitones in range', () => {
-  for (let m = 46; m <= 78; m++) {
+  for (let m = 34; m <= 86; m++) {
     const k = takeOf(m, 0.9);
     assert.ok(Math.abs(m - k.root) <= 2, m + ' plays ' + k.root);
     assert.ok(Math.abs(k.rate - 2 ** ((m - k.root) / 12)) < 1e-12, m + ': rate');
@@ -71,7 +71,7 @@ test('a note plays the nearest recording at its pitch, the layer its velocity ca
   assert.equal(takeOf(60, 1).path, '/sounds/piano/60-hard.wav');
   assert.ok(Math.abs(takeOf(52, 0.5).gain - 0.5 / NOTES[52].soft) < 1e-12, 'the gain brings the take to the velocity');
   assert.ok(takeOf(52, 0.79).gain <= 1.6, 'never lifted more than 1.6 times');
-  assert.equal(takeOf(20).root, 48, 'below the range: the lowest recording');
+  assert.equal(takeOf(20).root, 36, 'below the range: the lowest recording');
 });
 
 test('a chord is rolled by hand: low to high, 6 to 10 ms apart, the top note louder, the same every time', () => {
@@ -86,11 +86,16 @@ test('a chord is rolled by hand: low to high, 6 to 10 ms apart, the top note lou
   assert.deepEqual(chordOf({ t: 0, notes: [] }), []);
 });
 
-test('the piano loads every take once and shares it between pages of the same session', async () => {
+test('a page loads only the takes its music plays, each once, shared between pages of the same session', async () => {
+  assert.deepEqual(takesFor([55, 60, 64, 67]), ['/sounds/piano/56-soft.wav', '/sounds/piano/56-hard.wav', '/sounds/piano/60-soft.wav', '/sounds/piano/60-hard.wav', '/sounds/piano/64-soft.wav', '/sounds/piano/64-hard.wav', '/sounds/piano/68-soft.wav', '/sounds/piano/68-hard.wav']);
+  assert.equal(takesFor().length, ROOTS.length * 2, 'no notes named: every take');
   const seen = [];
   const fetchFn = async (u) => { seen.push(u); return { ok: true, arrayBuffer: async () => readFileSync(fileOf(u)) }; };
-  const p = await loadPiano({ fetchFn, decode: (b) => b.length });
-  assert.equal(p.buffers.size, ROOTS.length * 2); assert.equal(seen.length, ROOTS.length * 2);
+  const p = await loadPiano({ fetchFn, decode: (b) => b.length, notes: [55, 60, 64, 67] });
+  assert.equal(p.buffers.size, 8); assert.equal(seen.length, 8);
+  const all = await loadPiano({ fetchFn, decode: (b) => b.length });
+  assert.equal(all.buffers.size, ROOTS.length * 2);
+  assert.equal(seen.length, ROOTS.length * 2, 'the takes already loaded are not fetched again');
   await loadPiano({ fetchFn, decode: (b) => b.length });
   assert.equal(seen.length, ROOTS.length * 2, 'the second load fetches nothing');
 });

@@ -1,5 +1,5 @@
 # Rebuild Verse's grand piano (void-live-deploy/sounds/piano/) from the original recordings: a Steinway B played with the sustain pedal down,
-# every 4 semitones from C3 to E5, a soft and a hard layer. Mono, 48 kHz, 16-bit, the onset moved to the start, cut at 3 s with a 0.5 s fade.
+# every 4 semitones from C2 to C6, a soft and a hard layer. Mono, 48 kHz, 16-bit, the onset moved to the start, cut at 3 s with a 0.5 s fade.
 # One gain for both layers of a note, so the soft layer stays soft. Credits and license: sounds/piano/CREDITS.md.
 #   python3 tools/piano.py <vcsl> <out>
 #     <vcsl>   a checkout of https://github.com/sgossner/VCSL (CC0), with "Chordophones/Zithers/Grand Piano, Steinway B/Sus"
@@ -10,7 +10,7 @@ if len(sys.argv) != 3: sys.exit('usage: python3 tools/piano.py <vcsl> <out>')
 SRC = os.path.join(sys.argv[1], 'Chordophones', 'Zithers', 'Grand Piano, Steinway B', 'Sus')
 OUT = sys.argv[2]
 R, CAP, FADE = 48000, 3.0, 0.5
-NOTES = [('C3', 48), ('E3', 52), ('G#3', 56), ('C4', 60), ('E4', 64), ('G#4', 68), ('C5', 72), ('E5', 76)]
+NOTES = [('C2', 36), ('E2', 40), ('G#2', 44), ('C3', 48), ('E3', 52), ('G#3', 56), ('C4', 60), ('E4', 64), ('G#4', 68), ('C5', 72), ('E5', 76), ('G#5', 80), ('C6', 84)]
 LAYERS = [('soft', 2), ('hard', 4)]
 def load(p):
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', p, '-ac', '1', '-ar', str(R), '-f', 'f32le', '-'], capture_output=True, check=True).stdout

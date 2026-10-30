@@ -6,7 +6,7 @@
 // sets the beat's level), save as one stereo WAV, and are the sound of the music video (lib/rap-video.js). Nothing about the visitor is sent:
 // only the rap's own bars go to the voice route, one at a time.
 import { beatFor, timingOf, lengthOf } from './rap.js';
-import { produce, impulseOf } from './rap-beat.js';
+import { produce, impulseOf, beatEvents } from './rap-beat.js';
 import { loadKit, kitFor } from './rap-kit.js';
 import { loadPiano } from './rap-piano.js';
 import { buildVocal, fetchVoice, shadowsOf } from './rap-voice.js';
@@ -50,10 +50,13 @@ export function drumsFor(beat, ctx, { win = globalThis, fetchFn = null } = {}) {
   return loadKit(kitFor(beat), { fetchFn: fetchFn || ((u) => win.fetch(u)), decode: (bytes) => ctx.decodeAudioData(bytes) }).catch(() => null);
 }
 
-/** the recorded grand piano (lib/rap-piano.js), decoded; null when it cannot load, so the keys fall back to the electric piano. */
-export function pianoFor(ctx, { win = globalThis, fetchFn = null } = {}) {
+/** the recorded grand piano (lib/rap-piano.js) for the notes the beat's keys play, decoded; null when it cannot load, so the keys fall back
+ *  to the electric piano. */
+export function pianoFor(beat, ctx, { win = globalThis, fetchFn = null } = {}) {
   if (!ctx || typeof ctx.decodeAudioData !== 'function') return Promise.resolve(null);
-  return loadPiano({ fetchFn: fetchFn || ((u) => win.fetch(u)), decode: (bytes) => ctx.decodeAudioData(bytes) }).catch(() => null);
+  const notes = beatEvents(beat, { measures: Math.max(1, (beat.chords || []).length) }).events.filter((e) => e.kind === 'keys').flatMap((e) => e.notes);
+  if (!notes.length) return Promise.resolve(null);
+  return loadPiano({ notes, fetchFn: fetchFn || ((u) => win.fetch(u)), decode: (bytes) => ctx.decodeAudioData(bytes) }).catch(() => null);
 }
 
 /** render the beat stem offline: [L, R] at RATE, the plan's length, with the recorded kit and piano when they load. null without
@@ -61,7 +64,7 @@ export function pianoFor(ctx, { win = globalThis, fetchFn = null } = {}) {
 export async function renderBeat(plan, { win = globalThis, kitFetch = null } = {}) {
   const OAC = OACof(win); if (!OAC) return null;
   const ctx = new OAC(2, Math.ceil(plan.seconds * RATE), RATE);
-  const [kit, piano] = await Promise.all([drumsFor(plan.beat, ctx, { win, fetchFn: kitFetch }), pianoFor(ctx, { win, fetchFn: kitFetch })]);
+  const [kit, piano] = await Promise.all([drumsFor(plan.beat, ctx, { win, fetchFn: kitFetch }), pianoFor(plan.beat, ctx, { win, fetchFn: kitFetch })]);
   produce(ctx, plan.beat, { measures: plan.measures, t0: 0, kit, piano });
   const b = await ctx.startRendering();
   return [b.getChannelData(0), b.getChannelData(1)];

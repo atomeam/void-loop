@@ -79,7 +79,7 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
         if (my !== token || !ac) return;
         // the recorded drums and grand piano: decoded once per page, so a second play starts at once
         const keyed = beat.rapStyle === 'boom bap' || beat.rapStyle === 'conscious' || !beat.rapStyle;
-        const [kit, piano] = whole ? [null, null] : await Promise.all([drumsFor(beat, ac, { win }), keyed ? pianoFor(ac, { win }) : null]);
+        const [kit, piano] = whole ? [null, null] : await Promise.all([drumsFor(beat, ac, { win }), keyed ? pianoFor(beat, ac, { win }) : null]);
         if (my !== token || !ac) return;
         // say which drums and keys play, so a kit or a piano that did not load is never passed off as the real one
         const drums = whole ? '' : (kit ? (kit.name === '808' ? ' Real TR-808 drums.' : ' A real recorded drum kit.') : ' The recorded drums did not load, so my synth drums play.')
