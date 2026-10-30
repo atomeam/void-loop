@@ -194,7 +194,7 @@ export const JOURNEYS = {
     if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not ' + soon);
     await check('the event is on the calendar on ' + soon);
   },
-  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto and the remote jobs open in Japan (none offered for UTC)': async (p, check) => {
+  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto and the remote jobs open in Japan and the flights there (none offered for UTC)': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the time page opened on Kyoto');
     await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#related a', { hasText: 'The weather in this city' }).click()]); await p.waitForSelector('#q');
@@ -212,6 +212,17 @@ export const JOURNEYS = {
     await p.goto(ORIGIN + '/time/?c=UTC@UTC', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
     if ((await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('aria-disabled')) !== 'true') throw new Error('UTC, which is no country, still offers remote jobs');
     await check('UTC is no country, so the jobs link reads as off');
+    // the flights to the airport nearest Kyoto (Osaka Itami, ITM), and on the event's day when an event ahead is shown
+    await open(); await Promise.all([p.waitForURL(/\/flights\/\?tonear=/), p.locator('#related a', { hasText: 'Flights to this city' }).click()]); await p.waitForFunction(() => document.documentElement.dataset.flightsReady === '1' && new URLSearchParams(location.search).get('to'));
+    if (new URL(p.url()).searchParams.get('to') !== 'ITM') throw new Error('flights to Kyoto opened to ' + new URL(p.url()).searchParams.get('to') + ', not ITM');
+    await check('the flights page picked the airport nearest Kyoto (ITM)');
+    { const day = new Date(Date.now() + 40 * 86400000).toISOString().slice(0, 10);
+      await p.goto(ORIGIN + '/time/?at=' + day + 'T03:00:00Z&c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+      const href = await p.locator('#related a', { hasText: 'Flights to this city' }).getAttribute('href'), d = new URLSearchParams(href.split('?')[1]).get('d');
+      if (d !== day) throw new Error('the flights link for an event on ' + day + ' at noon in Kyoto carries the day ' + d); await check('an event ahead carries its day in Kyoto to the flights page (' + href + ')'); }
+    await p.goto(ORIGIN + '/time/?c=UTC@UTC', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await p.locator('#related a', { hasText: 'Flights to this city' }).getAttribute('aria-disabled')) !== 'true') throw new Error('UTC, which is no place, still offers flights');
+    await check('UTC is no place, so the flights link reads as off');
   },
   'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
