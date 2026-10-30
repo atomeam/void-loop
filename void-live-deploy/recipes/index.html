@@ -238,7 +238,7 @@
 <script type="module">
   // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, R, K, RI] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js')]);
+    const [{ mountRelated }, R, K, RI, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js'), import('/lib/recipe-card.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
@@ -309,7 +309,7 @@
     }
     function open(r, { note = '' } = {}) {
       state.recipe = r; state.servings = +q.get('servings') > 0 && !state.opened ? Math.min(200, +q.get('servings')) : r.servings; state.opened = true;
-      render(); say(note);
+      render(); say(note); document.dispatchEvent(new Event('tk:card')); // a recipe that came back from the network: the stage card link follows it
       const it = { id: r.id, name: r.name, at: Date.now(), recipe: r };
       store.hist = [it].concat(store.hist.filter((h) => h.id !== r.id)).slice(0, MAX_HIST); keep(); lists();
     }
@@ -541,7 +541,8 @@
     lists(); setMode(state.mode); $('q').value = state.i || state.q;
     if (state.id || state.q || state.i) go(); else if (!navigator.onLine) say(W.offline);
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); // a recipe still on its way after 2.5 s: show the page as it stands
-    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }]);
+    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }],
+      { card: () => cardAsk(state.recipe, state.servings, state.units) }); // its stage card shows the recipe open here, at its servings and units, not pancakes
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
