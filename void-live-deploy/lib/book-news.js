@@ -64,7 +64,7 @@ export function visitorLine(e) {
     const by = new Map(); for (const p of ps) { const k = p.skill.replace(/-/g, ' '); if (!by.has(k)) by.set(k, []); if (!by.get(k).includes(p.ask)) by.get(k).push(p.ask); }
     return [...by].map(([k, asks]) => and(asks.map(quote)) + ' now open' + (asks.length === 1 ? 's ' : ' ') + k).join('; ');
   }
-  const fx = /^(?:Verse|Void|V01D) fixes its ([\w -]+?) skill:\s*learn to handle\s*["\u201c](.+?)["\u201d]\s*$/i.exec(cut(e.what));
+  const fx = /^(?:Verse|Void|V01D) fixes its ([\w -]+?) skill:\s*learn to handle\s*["\u201c](.+?)["\u201d]\s*(?:\(from my probes\)\s*)?$/i.exec(cut(e.what)); // the forge marks a probe's fix (tools/propose-fix.mjs ledgerWhat)
   if (fx && !e.show) return 'The ' + fx[1].replace(/-/g, ' ') + ' skill now answers ' + quote(fx[2]);
   const show = cut(e.show);
   if (show && !INTERNAL.test(show)) return show;

@@ -145,3 +145,8 @@ test('an entry that added nothing is not news, and the same words twice in a day
     .concat([{ at: '2026-10-24T05:00:00Z', kind: 'build', what: 'Colour codes on one page.', try: 'colour codes' }, { at: '2026-10-24T06:00:00Z', kind: 'build', what: 'Colour codes on one page.', try: 'colour codes' }]);
   const n = newsEntries(L, 36, null, { tz: 'UTC' }); assert.equal(n.length, 1); assert.equal(n[0].line, 'Colour codes on one page.');
 });
+
+test('a fix the forge made from its own probe ("(from my probes)" on the ledger line) reads like any other fix to a visitor', () => {
+  const line = visitorLine({ at: '2026-10-30T19:00:00Z', kind: 'fix', what: 'Verse fixes its sky skill: learn to handle "current sky" (from my probes)', try: 'current sky' });
+  assert.equal(line, 'The sky skill now answers “current sky”');
+});
