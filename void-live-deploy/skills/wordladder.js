@@ -4,7 +4,7 @@
  * "word ladder from cat to dog", "ladder from cold to warm".
  */
 export function isWordLadder(text) {
-  return /^(?:please\s+)?(?:word\s+)?ladder(?:\s+from\s+\w+\s+to\s+\w+)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:make\s+|solve\s+)?(?:a\s+)?word\s+ladder|ladder\s+from\s+[a-z]+\s+to\s+[a-z]+)(?:\s+from\s+[a-z]+\s+to\s+[a-z]+)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 const DICT = new Set(['cat', 'bat', 'hat', 'hot', 'dot', 'dog', 'cog', 'cot', 'cold', 'cord', 'card', 'ward', 'warm', 'word', 'lord', 'load', 'lead', 'dead', 'deed', 'feed']);
@@ -32,10 +32,10 @@ function ladder(start, end) {
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const m = /from\s+(\w+)\s+to\s+(\w+)/i.exec(text || '');
+  const m = /from\s+([a-z]+)\s+to\s+([a-z]+)/i.exec(text || '');
   const a = m ? m[1].toLowerCase() : 'cat', b = m ? m[2].toLowerCase() : 'dog';
   const path = ladder(a, b);
-  const html = path ? '<p style="font-size:24px;text-align:center">' + path.map(esc).join(' → ') + '</p>' : '<p style="text-align:center">No ladder found from ' + esc(a) + ' to ' + esc(b) + ' (small dictionary).</p>';
+  const html = path ? '<p style="font-size:24px;text-align:center">' + path.map(esc).join(' &rarr; ') + '</p>' : '<p style="text-align:center">No ladder found from ' + esc(a) + ' to ' + esc(b) + ' in its word list. It knows only a small set of 3 and 4 letter words.</p>';
   showPage((p) => { p.innerHTML = '<h2>Word Ladder</h2>' + html + '<div class="sub">say “word ladder from cat to dog”</div>'; });
   return 'wordladder';
 }
@@ -43,11 +43,11 @@ function run(text, api) {
 export default {
   name: 'wordladder',
   examples: ['word ladder from cat to dog', 'ladder from cold to warm', 'word ladder'],
-  nearMisses: ['what is a word ladder', 'ladder in words'],
+  nearMisses: ['what is a word ladder', 'ladder in words', 'ladder', 'buy a ladder', 'snakes and ladders'],
   match(lower, text) { return isWordLadder(text); },
   run,
   suite() {
-    const ok = isWordLadder('word ladder from cat to dog') && isWordLadder('ladder') && !isWordLadder('what is a word ladder');
+    const ok = isWordLadder('word ladder from cat to dog') && !isWordLadder('ladder') && !isWordLadder('what is a word ladder');
     return { ok, got: 'match works' };
   }
 };
