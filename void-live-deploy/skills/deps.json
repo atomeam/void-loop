@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1077,
+ "counted": 1078,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1499,6 +1499,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 1
+  },
+  {
+   "file": "lib/job-regions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 0
   },
   {
    "file": "lib/keep-going.js",
@@ -7645,6 +7652,17 @@
     "functions/team/mcp.js"
    ]
   },
+  "lib/job-regions.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/jobs-core.js"
+   ],
+   "reachedBy": [
+    "functions/api/jobs.js",
+    "lib/jobs-ui.js",
+    "skills/work.js"
+   ]
+  },
   "lib/job-sites.js": {
    "imports": [],
    "importedBy": [
@@ -7669,7 +7687,8 @@
   "lib/jobs-core.js": {
    "imports": [
     "lib/privacy.js",
-    "lib/ics.js"
+    "lib/ics.js",
+    "lib/job-regions.js"
    ],
    "importedBy": [
     "functions/api/jobs.js",
