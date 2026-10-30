@@ -1,103 +1,22 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-29T23:42:55.037Z",
+ "updated": "2026-10-30T00:13:50.644Z",
  "last24h": {
-  "ticks": 129,
-  "started": 110,
+  "ticks": 132,
+  "started": 117,
   "requeued": 1,
   "setAside": 0,
   "probes": 13,
   "errors": 0
  },
  "broken": [],
- "held": [
-  {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvpi0j4s",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpi0joe",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpi0kbn",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpi0kt2",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpi0lbh",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpi0lt3",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpur2bk",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpur2xc",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpur3cd",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpur3sa",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpur47q",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvpwmhl2",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0ck3",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0d75",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0dsj",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0eck",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0f07",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvqf0fkb",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  }
- ],
+ "held": [],
  "handed": {
   "mvbl52gd": 1793306272330,
-  "mveb8rsi": 1793262501611,
-  "mva30i2e": 1793284671984,
-  "mveb8svc": 1793263121716,
-  "mva30j4u": 1793285288718,
+  "mveb8rsi": 1793318608356,
+  "mva30i2e": 1793318608356,
+  "mveb8svc": 1793319230644,
+  "mva30j4u": 1793319230644,
   "mvfu4evy": 1793241541772,
   "mvsw572e": 1793241541772,
   "mvpuq9g6": 1793242157695,
@@ -153,7 +72,8 @@
   "mvtr4z0i": 1793292684921,
   "mvtr4zrr": 1793293301015,
   "mvtruzch": 1793293917800,
-  "mvttbday": 1793295151663
+  "mvttbday": 1793295151663,
+  "mvu167w7": 1793318608356
  },
  "ticks": [
   {
@@ -2865,6 +2785,95 @@
    "lap": false,
    "revived": [],
    "held": 111,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-29T23:53:11.909Z",
+   "open": 111,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 111,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T00:03:28.356Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mvpi0j4s",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 92
+    },
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 90
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 68
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T00:13:50.644Z",
+   "open": 111,
+   "started": [
+    {
+     "id": "mvpi0joe",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 92
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 82
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 68
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 0,
    "warnings": 0
   }
  ]
