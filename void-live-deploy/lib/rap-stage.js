@@ -86,10 +86,12 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
         onBar(-1);
         const at = (sec, fn) => timers.push(setTimeout(fn, Math.max(0, (t0 + sec - ac.currentTime) * 1000)));
         const bv = own ? null : pick;
-        for (const b of timing) at(b.at, () => {
+        timing.forEach((b, k) => at(b.at, () => {
           if (!ac) return; onBar(b.bar);
+          // the status line follows the performance, so it never still says "count in" once the rap is under way
+          onSay((mode === 'voice' ? 'Bar ' : 'Your bar: ') + (k + 1) + ' of ' + timing.length + (b.section ? ', the ' + String(b.section).toLowerCase() : '') + '.' + (own && note && vox ? ' Some bars have no voice: ' + note + '.' : ''));
           if (speak) { try { synth.cancel(); const u = new win.SpeechSynthesisUtterance(b.text); u.rate = b.rate; u.pitch = 0.85; u.lang = 'en-US'; if (bv) u.voice = bv; synth.speak(u); } catch (_) { /* a voice that failed: the beat goes on */ } }
-        });
+        }));
         at(the.plan.measures * the.plan.measure + 0.6, () => { end(); onSay('That was the whole rap. Perform it again, save the song, or make the video.'); });
       })().catch(() => { if (my === token) { end(); onSay('Could not start the sound.'); } });
       return true;

@@ -141,6 +141,9 @@ test('the song: its plan covers every bar and the tail, the mix never clips, the
 test('the music video: a title through the count-in, each bar with its words lit in time, an end card, a spectrum that hears the song', () => {
   const s = settingsOf({ topic: 'pizza' }), plan = planOf(SAMPLE, s), words = evenWords(plan.timing), t0 = plan.timing[0];
   assert.equal(frameState(plan.timing, words, plan.seconds, 0).phase, 'title');
+  // just before the first bar starts (inside the 50 ms lead), the picture is still the title: there is no bar yet to draw (the live crash of 2026-10-30)
+  const lead = frameState(plan.timing, words, plan.seconds, t0.at - 0.02); assert.equal(lead.phase, 'title'); assert.equal(lead.bar, -1);
+  for (let t = 0; t < plan.seconds; t += 1 / 30) { const f = frameState(plan.timing, words, plan.seconds, t); assert.ok(f.phase !== 'bar' || plan.timing[f.bar], 'a bar frame at ' + t.toFixed(3) + ' s has a bar'); }
   const mid = frameState(plan.timing, words, plan.seconds, t0.at + t0.len / 2); assert.equal(mid.phase, 'bar'); assert.equal(mid.bar, 0); assert.ok(mid.lit > 0 && mid.lit < t0.text.split(' ').length + 1);
   const b5 = plan.timing[5]; assert.equal(frameState(plan.timing, words, plan.seconds, b5.at + 0.01).bar, 5);
   assert.equal(frameState(plan.timing, words, plan.seconds, plan.seconds - 0.1).phase, 'outro');
