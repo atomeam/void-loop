@@ -3,6 +3,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { weekUrl, weekItems } from '../void-live-deploy/lib/news-week.js';
 
 test('weekUrl: stories of the past 7 days, the topic encoded', () => {
@@ -31,4 +34,18 @@ test('the stage card and the News page both use it', () => {
   assert.match(skill, /from '\.\.\/lib\/news-week\.js'/); assert.match(skill, /weekUrl\(topic\)/);
   assert.match(page, /import\('\/lib\/news-week\.js'\)/); assert.match(page, /id="week" hidden/);
   assert.doesNotMatch(page, /innerHTML[^;]*weekHits/);
+});
+
+test('the News page script parses: a misplaced line once stopped every headline from loading', () => {
+  const html = fs.readFileSync(new URL('../void-live-deploy/news/index.html', import.meta.url), 'utf8');
+  const mods = [...html.matchAll(/<script type="module">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  assert.ok(mods.length, 'the page has its module');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'news-page-'));
+  try {
+    mods.forEach((src, i) => {
+      const f = path.join(dir, i + '.mjs'); fs.writeFileSync(f, src);
+      const r = spawnSync(process.execPath, ['--check', f], { encoding: 'utf8' });
+      assert.equal(r.status, 0, 'news/index.html module ' + i + ' does not parse:\n' + r.stderr);
+    });
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
