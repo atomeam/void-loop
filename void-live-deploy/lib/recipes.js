@@ -149,6 +149,12 @@ export function find(q, list = BUILT_IN) {
     return [s, r];
   }).filter(([s]) => s > 0).sort((a, b) => b[0] - a[0]).map(([, r]) => r);
 }
+/** the built-in recipe a name search names exactly ("pancakes", "chicken soup", "guac"), or null: not a near one ("spaghetti carbonara"
+ *  is not the tomato pasta). Pure. */
+export function exactly(q, list = BUILT_IN) {
+  const d = dishOf(q); if (!d) return null; const joined = d.split(' ').map(single).join(' ');
+  return list.find((r) => r.id.replace(/-/g, ' ') === joined || [r.name].concat(r.aliases || []).some((n) => norm(n).split(' ').map(single).join(' ') === joined)) || null;
+}
 /** the ingredients a search names: "eggs, spinach and cheese" → ['eggs', 'spinach', 'cheese'], at most 5. Pure. */
 export const ingredientsOf = (text) => String(text || '').split(/,|;|\band\b|\bwith\b|\+|&/i).map((s) => norm(s).replace(/\b(?:what|can|i|make|some|recipes?|using|only|have|got|from)\b/g, ' ').replace(/\s+/g, ' ').trim()).filter((s) => s.length > 1).slice(0, 5);
 const hasWord = (line, w) => { const l = norm(line), v = [w, single(w), w + 's', w + 'es']; return v.some((x) => x.length > 2 && new RegExp('\\b' + x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b').test(l)); };

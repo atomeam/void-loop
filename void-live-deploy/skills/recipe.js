@@ -5,7 +5,7 @@
  */
 import { bandMini } from '../lib/card-mini.js';
 import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
-import { BUILT_IN, fromMeal, scale, swapUnits } from '../lib/recipes.js';
+import { BUILT_IN, exactly, fromMeal, scale, swapUnits } from '../lib/recipes.js';
 // what "make" and "cook" take that is not food ("how do i make money", "what can i make with my time")
 const NOT_FOOD = /\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i;
 // the recipes page's own card (lib/recipe-card.js cardAsk): the recipe open there, a built-in one by its name or a TheMealDB one by its id,
@@ -20,8 +20,11 @@ export function dishOf(text) {
     if (BUILT_IN.some((r) => r.name.toLowerCase() === m[1].toLowerCase())) return { dish: m[1], by: 'built', servings, units };
     return { dish: m[1], by: 'name' }; // not one of the built-in names: the plain search for it
   }
-  m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
-  if (m) return { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
+  // "recipe for lasagna for 6", "pancake recipe for 8 people": the dish, and the servings asked for
+  const fed = t.match(/^(.+?)\s+(?:for|to\s+serve|serving|serves)\s+(\d{1,3})(?:\s+(?:people|persons|servings|portions|guests))?$/i);
+  const n = fed && +fed[2] >= 1 && +fed[2] <= 200 ? +fed[2] : 0, asked = n ? fed[1] : t;
+  m = asked.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || asked.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
+  if (m) return n ? { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name', servings: n } : { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
   // "how do i make guacamole", "how to cook rice", "how to bake banana bread"; not money, friends, a website…
   m = t.match(/^(?:how\s+(?:do\s+(?:i|you)|to|can\s+i|should\s+i)|best\s+way\s+to)\s+(?:make|cook|bake|prepare)\s+(?:a\s+|an\s+|some\s+|the\s+)?([a-z][a-z' -]{1,30})$/i);
   if (m && !NOT_FOOD.test(m[1])) return { dish: m[1].trim(), by: 'name' };
@@ -68,6 +71,10 @@ async function run(text, api) {
   try {
     const base = 'https://www.themealdb.com/api/json/v1/1/';
     if (q.by === 'built' || q.by === 'mealdb') return await pageRecipe(q, el, api, base);
+    // a dish the recipes page has built in ("recipe for pancakes"): that one, with its quantities and at the servings asked, as the page shows
+    // it and with the network cut (2026-10-30: "pancake recipe" said the service did not answer when TheMealDB was down)
+    const own = q.by === 'name' && exactly(q.dish);
+    if (own) return await pageRecipe({ dish: own.name, by: 'built', servings: q.servings || 0, units: 'us' }, el, api, base);
     const one = (s) => s.replace(/(ies)$/i, 'y').replace(/([^s])s$/i, '$1');
     let j, only = '';
     if (q.by === 'ingredient') {
