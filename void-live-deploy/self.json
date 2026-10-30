@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:17:40Z",
-   "subject": "Flip: the page's card flips its coin, and the coin card opens the same coin"
+   "at": "2026-10-30T05:15:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:13:43Z",
+   "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
   },
   {
    "at": "2026-10-30T05:12:30Z",
@@ -562,7 +566,19 @@
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
+   "at": "2026-10-30T05:12:00Z",
+   "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
+  },
+  {
+   "at": "2026-10-30T05:11:56Z",
+   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
+  },
+  {
    "at": "2026-10-30T05:11:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:10:53Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T05:03:38Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:03:06Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T05:02:50Z",
-   "subject": "Team: Verse pushes each job to an agent's own address, signed, so no agent has to stay online"
-  },
-  {
-   "at": "2026-10-30T05:02:43Z",
-   "subject": "Safety-check: run a lib's own tests before the far ones, and openapi-check for an /api route"
-  },
-  {
-   "at": "2026-10-30T05:02:35Z",
-   "subject": "Team chat: a mangled body is read, ?t= takes the job id, here says to work the job, an agent changes its own key"
   }
  ],
  "builders": {
