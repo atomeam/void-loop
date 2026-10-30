@@ -18,7 +18,7 @@ export function drawBars(box, r, doc = document) {
     const ol = el(doc, 'ol', 'rp-bars');
     for (const b of s.bars) {
       const li = el(doc, 'li', 'rp-bar'); li.dataset.i = String(i);
-      const letter = sc.letters[i]; li.append(el(doc, 'span', 'rp-l' + (letter ? ' rp-' + letter : ''), letter || '·'));
+      const letter = sc.letters[i], tag = el(doc, 'span', 'rp-l' + (letter ? ' rp-' + letter : ''), letter || '·'); tag.setAttribute('data-share-skip', '1'); li.append(tag); // the scheme letter is shown, not saved: a shared bar reads as the bar
       const end = endWordOf(b), at = end ? b.toLowerCase().lastIndexOf(end) : -1, text = el(doc, 'span', 'rp-t');
       if (letter && at >= 0) { text.append(doc.createTextNode(b.slice(0, at))); text.append(el(doc, 'mark', 'rp-r rp-' + letter, b.slice(at, at + end.length))); text.append(doc.createTextNode(b.slice(at + end.length))); } else text.textContent = b;
       li.append(text); ol.append(li); out.push(li); i++;
@@ -84,6 +84,8 @@ export function mountRap(box, r, s, { doc = document, win = window, extra = [] }
   box.textContent = '';
   const perf0 = beatFor(s), meta = el(doc, 'p', 'rp-meta', metaLine(r, s, perf0)), lyr = el(doc, 'div', 'rp-lyrics'), ctl = el(doc, 'div', 'rp-ctl'), msg = el(doc, 'p', 'rp-msg');
   msg.setAttribute('role', 'status'); lyr.setAttribute('aria-live', 'off');
+  // a copied or saved card keeps the meta line and the bars, never the buttons, the voice list or a status line (lib/card-share.js data-share-skip)
+  ctl.setAttribute('data-share-skip', '1'); msg.setAttribute('data-share-skip', '1');
   const bars = drawBars(lyr, r, doc);
   const play = el(doc, 'button', 'rp-btn go', 'Perform it'), self = el(doc, 'button', 'rp-btn', 'Rap it yourself'), copy = el(doc, 'button', 'rp-btn', 'Copy the lyrics'), wavB = el(doc, 'button', 'rp-btn', 'Save the beat');
   for (const b of [play, self, copy, wavB]) { b.type = 'button'; b.addEventListener('pointerdown', stop); b.addEventListener('keydown', stop); }
