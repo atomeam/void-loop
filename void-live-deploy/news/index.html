@@ -192,8 +192,8 @@
       $('pane').hidden = !(st.sec === 'my' || st.showFollow); $('follow').setAttribute('aria-pressed', String(!$('pane').hidden));
       if (!list.length) status(st.sec === 'saved' ? 'Nothing saved yet. Tap the star on a story to keep it for later.' : st.sec === 'my' ? (mem.topics.length || mem.sources.length ? 'No story matches what you follow right now.' : 'Follow a topic or a source and the stories that match appear here.') : st.q ? 'No headline matches “' + st.q + '”.' : st.at ? 'No stories.' : 'Loading the headlines…');
       else if (st.sec === 'saved') status(list.length + ' saved, on this device.');
-      week(!list.length && st.q && st.at && st.sec !== 'saved' && st.sec !== 'my' ? st.q : '');
       else status((st.offline ? 'Offline: the headlines kept ' + L.ageText(st.at, now) + '. ' : '') + list.length + ' ' + (list.length === 1 ? 'story' : 'stories') + (st.at && !st.offline ? ', updated ' + L.ageText(st.at, now) : '') + '.');
+      week(!list.length && st.q && st.at && st.sec !== 'saved' && st.sec !== 'my' ? st.q : '');
       const ok = st.sources.filter((s) => s.ok);
       $('srcs').textContent = ''; if (st.sources.length) { $('srcs').append(document.createTextNode('Sources (' + ok.length + ' of ' + st.sources.length + ' answered): ')); st.sources.forEach((s, i) => { const a = el('a', null, s.name + (s.ok ? ' ' + s.count : ' (no answer)')); a.href = (L.SOURCES[s.src] || [])[1] || '#'; a.target = '_blank'; a.rel = 'noopener noreferrer'; $('srcs').append(a, document.createTextNode(i < st.sources.length - 1 ? ', ' : '. ')); }); $('srcs').append(document.createTextNode('Headlines, links and short summaries as the feeds publish them; read the story at the source.')); }
       const u = L.shareLink(st, location.origin); try { history.replaceState(null, '', u.replace(location.origin, '')); } catch (_) { /* a sandboxed frame */ }
