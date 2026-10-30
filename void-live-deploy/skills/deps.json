@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1060,
+ "counted": 1062,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -969,6 +969,20 @@
    "tests": 2
   },
   {
+   "file": "lib/rap-kit.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
+   "file": "lib/rap-piano.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -1319,20 +1333,6 @@
    "tests": 2
   },
   {
-   "file": "lib/rap-kit.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
-   "file": "lib/rap-piano.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
    "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
@@ -1386,7 +1386,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 5,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/rap-voice.js",
@@ -2051,7 +2051,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tasks.js",
@@ -2566,6 +2566,13 @@
   },
   {
    "file": "lib/aurora-feed.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/autopilot.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3403,6 +3410,12 @@
    "imports": [
     "lib/guard.js",
     "lib/automations-run.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/autopilot.js": {
+   "imports": [
+    "lib/autopilot.js"
    ],
    "importedBy": []
   },
@@ -4451,7 +4464,9 @@
   },
   "lib/arrange.js": {
    "imports": [
-    "lib/compose.js"
+    "lib/compose.js",
+    "lib/rap-piano.js",
+    "lib/rap-kit.js"
    ],
    "importedBy": [
     "skills/music.js"
@@ -4778,6 +4793,12 @@
     "lib/approval-core.js",
     "lib/approval-gate.js",
     "skills/approve-card.js"
+   ]
+  },
+  "lib/autopilot.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/autopilot.js"
    ]
   },
   "lib/autopsy.js": {
@@ -9595,6 +9616,7 @@
   "lib/rap-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/arrange.js",
     "lib/rap-beat.js",
     "lib/rap-song.js"
    ],
@@ -9603,6 +9625,7 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "lib/rap-voice.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },
@@ -9617,6 +9640,7 @@
   "lib/rap-piano.js": {
    "imports": [],
    "importedBy": [
+    "lib/arrange.js",
     "lib/rap-beat.js",
     "lib/rap-song.js"
    ],
@@ -9625,6 +9649,7 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "lib/rap-voice.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },

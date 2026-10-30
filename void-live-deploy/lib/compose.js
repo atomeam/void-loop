@@ -123,8 +123,9 @@ export function pianoNotesOf(p) {
  *  that part). */
 export async function instrumentsFor(p, ctx, { fetchFn = (u) => globalThis.fetch(u) } = {}) {
   if (!ctx || typeof ctx.decodeAudioData !== 'function') return { piano: null, kit: null };
-  const decode = (bytes) => ctx.decodeAudioData(bytes), kitName = partsOf(p).kit;
-  const [piano, kit] = await Promise.all([loadPiano({ notes: pianoNotesOf(p), fetchFn, decode }).catch(() => null), kitName ? loadKit(kitName, { fetchFn, decode }).catch(() => null) : null]);
+  // a heavy song (lib/arrange.js) plays its pad on the piano and every drum on the acoustic kit
+  const decode = (bytes) => ctx.decodeAudioData(bytes), kitName = p.sections ? 'kit' : partsOf(p).kit, notes = p.sections ? (p.pad || []).map((n) => n.midi) : pianoNotesOf(p);
+  const [piano, kit] = await Promise.all([(notes.length ? loadPiano({ notes, fetchFn, decode }) : Promise.reject(new Error('no piano part'))).catch(() => null), kitName ? loadKit(kitName, { fetchFn, decode }).catch(() => null) : null]);
   return { piano, kit };
 }
 /** a plain sentence about what played, from what loaded. Pure. */

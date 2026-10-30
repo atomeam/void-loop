@@ -35,7 +35,7 @@ export function fmtQty(v) {
 /** a line with every quantity in it multiplied: "1 ½ cups flour (190 g)" × 2 is "3 cups flour (380 g)"; temperatures, pan sizes and
  *  percentages are left alone; a range scales both ends. Pure. */
 export function scale(line, factor) {
-  const f = +factor; if (!Number.isFinite(f) || f <= 0 || f === 1) return String(line || '');
+  const f = +factor; if (!Number.isFinite(f) || f <= 0 || f === 1) return String(line || '').replace(LEAD, agree); // "1 cups" as a source wrote it is "1 cup"
   return String(line || '').replace(QTY, (whole, a, b, at, src) => {
     if (NOT_QTY.test(src.slice(at + whole.length))) return whole;
     const lo = numOf(a), hi = b ? numOf(b) : NaN; if (!Number.isFinite(lo)) return whole;

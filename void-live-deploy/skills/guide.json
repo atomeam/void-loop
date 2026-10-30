@@ -4330,8 +4330,8 @@
    "line": "Flashcards with spaced repeat, a quiz from a list, a language drill, a definition card, a code snippet card, an algorithm steps card, a formula card, a cite-as stub and a glossary builder, as cards on the stage",
    "examples": [
     "flashcards: hola = hello, gato = cat",
-    "language drill: bonjour = hello; merci = thanks",
-    "glossary: entropy = disorder; enthalpy = heat content"
+    "make flashcards for spanish verbs",
+    "language drill: bonjour = hello; merci = thanks"
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
@@ -4658,8 +4658,8 @@
    "line": "A sentence writes into the Notes page's own store",
    "examples": [
     "add a note: buy milk",
-    "add eggs to my shopping list",
-    "what did I write about Lisbon"
+    "take a note: call the vet",
+    "add eggs to my shopping list"
    ],
    "tier": "proven",
    "why": "a self-test, 4 real asks in the benchmark",

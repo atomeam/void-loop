@@ -6037,5 +6037,6 @@
   {"at": "2026-10-30T07:27:31Z", "by": "verse", "kind": "fix", "what": "Verse fixes its meteors skill: learn to handle \"is there a meteor shower soon\"", "try": "is there a meteor shower soon"},
   {"at": "2026-10-30T08:49:35Z", "by": "verse", "kind": "fix", "what": "Verse fixes its sky skill: learn to handle \"current sky\"", "try": "current sky"},
   {"at": "2026-10-30T08:56:00Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com"},
-  {"at": "2026-10-30T08:58:34Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"}
+  {"at": "2026-10-30T08:58:34Z", "by": "verse", "kind": "build", "what": "Versus: took on no site; next randomarea.com"},
+  {"at": "2026-10-30T10:22:17Z", "by": "verse", "kind": "fix", "what": "Verse fixes its constellation skill: learn to handle \"star patterns tonight\"", "try": "star patterns tonight"}
 ]

@@ -28,7 +28,7 @@ export const TOOLS = Object.freeze({
 // pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
 export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
   ['/books/', 'Bookshelf'], ['/films/', 'Films'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
-  ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments']].map(Object.freeze));
+  ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments'], ['/autopilot/', 'Autopilot: what Verse did on its own']].map(Object.freeze));
 /** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, without /tools/ itself. Pure. */
 export const allTools = () => [...Object.entries(TOOLS), ...MORE_PAGES.filter(([p]) => !Object.hasOwn(TOOLS, p))].filter(([p]) => p !== '/tools/');
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
