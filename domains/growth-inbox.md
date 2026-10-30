@@ -74,5 +74,9 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent |
 | open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
 | building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
-| open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
+| shipped 452b17a | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent; already on main |
 | building | 2026-10-30 | compliment skill: give a random compliment | new idea by growth agent; helper/new-compliment |
+| building | 2026-10-30 | riddle skill: a random riddle with answer on request | new idea by growth agent; helper/riddle-skill |
+| open | 2026-10-30 | fortune skill: a random fortune cookie message | new idea by growth agent |
+| open | 2026-10-30 | pig latin skill: convert text to pig latin | new idea by growth agent |
+| open | 2026-10-30 | acronym skill: expand or make an acronym | new idea by growth agent |
