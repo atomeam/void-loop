@@ -46,7 +46,8 @@ export function kickPulse(kicks, t) { let p = 0; for (const k of kicks) { if (k 
 export function frameState(timing, words, seconds, t) {
   const first = timing.length ? timing[0].at : seconds, last = timing.length ? timing[timing.length - 1] : null;
   let bar = -1; for (let i = 0; i < timing.length; i++) if (timing[i].at <= t + 1e-6) bar = i;
-  const phase = t < first - 0.05 ? 'title' : last && t > last.at + last.len + 0.4 ? 'outro' : 'bar';
+  // the title holds until the first bar has started: a bar shown before its own start has no words to show
+  const phase = bar < 0 || t < first - 0.05 ? 'title' : last && t > last.at + last.len + 0.4 ? 'outro' : 'bar';
   const lit = bar < 0 ? 0 : words.filter((w) => w.bar === timing[bar].bar && w.at <= t + 1e-6).length;
   return { phase, bar: phase === 'title' ? -1 : bar, lit, progress: Math.max(0, Math.min(1, t / Math.max(1e-6, seconds))) };
 }
