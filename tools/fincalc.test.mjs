@@ -1,7 +1,7 @@
 // lib/fincalc.js: loan payments and schedules, a mortgage, compound interest, percentages, BMI and calories, against worked values
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { payment, amortize, mortgage, compound, percentOf, whatPercent, change, bmi, bmiBand, healthyRange, bmr, calories, goals } from '../void-live-deploy/lib/fincalc.js';
+import { payment, amortize, mortgage, compound, percentOf, whatPercent, change, bmi, bmiBand, healthyRange, bmr, calories, goals, yearsMonths } from '../void-live-deploy/lib/fincalc.js';
 const near = (a, b, d = 0.01) => assert.ok(Math.abs(a - b) <= d, a + ' ≈ ' + b);
 
 test('a loan: the annuity payment, the schedule pays it off, extra a month ends it sooner', () => {
@@ -25,4 +25,13 @@ test('percentages, BMI and calories', () => {
   const [lo, hi] = healthyRange(175); near(lo, 56.66, 0.01); near(hi, 76.26, 0.01);
   near(bmr({ sex: 'male', kg: 80, cm: 180, age: 30 }), 1780); near(bmr({ sex: 'female', kg: 60, cm: 165, age: 30 }), 1320.25);
   near(calories(1780, 1.55), 2759); assert.equal(goals(2000)[2][1], 1450);
+});
+
+test('yearsMonths: whole words, no "1 years" and no "0 years"', () => {
+  assert.equal(yearsMonths(46), '3 years 10 months');
+  assert.equal(yearsMonths(12), '1 year');
+  assert.equal(yearsMonths(9), '9 months');
+  assert.equal(yearsMonths(13), '1 year 1 month');
+  assert.equal(yearsMonths(1), '1 month');
+  assert.equal(yearsMonths(360), '30 years');
 });

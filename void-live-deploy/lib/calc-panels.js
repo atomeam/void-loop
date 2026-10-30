@@ -3,7 +3,7 @@
  * wired to the panels in the page's HTML after its load event. Each panel answers as you type, keeps its numbers on this device, and opens from
  * a link (/calculator/#loan). The arithmetic is lib/fincalc.js; the charts are plain SVG drawn here.
  */
-import { amortize, mortgage, compound, percentOf, whatPercent, change, bmi, bmiBand, healthyRange, bmr, calories, goals, ACTIVITY } from './fincalc.js';
+import { amortize, yearsMonths, mortgage, compound, percentOf, whatPercent, change, bmi, bmiBand, healthyRange, bmr, calories, goals, ACTIVITY } from './fincalc.js';
 
 const $ = (id) => document.getElementById(id), KEY = 'a2m.void.calculator.panels.v1';
 const money = (v) => (v === null || !Number.isFinite(v) ? '–' : v.toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
@@ -34,7 +34,7 @@ const C = ['#6d4aff', '#f29e4c', '#1f8a4c'];
 function loan() {
   const a = amortize(val('la'), val('lr'), Math.round((val('ly') || 0) * 12), val('lx') || 0);
   if (!a) { lines($('lout'), [['Fill in the amount, the rate and the years.', '']]); $('lchart').replaceChildren(); $('ltable').replaceChildren(); return; }
-  lines($('lout'), [['Monthly payment', money(a.pay), true], ['Total interest', money(a.totalInterest)], ['Total paid', money(a.totalPaid)], ['Paid off in', Math.floor(a.payoffMonths / 12) + ' years ' + (a.payoffMonths % 12) + ' months']]);
+  lines($('lout'), [['Monthly payment', money(a.pay), true], ['Total interest', money(a.totalInterest)], ['Total paid', money(a.totalPaid)], ['Paid off in', yearsMonths(a.payoffMonths)]]);
   chart($('lchart'), a.years.map((y) => [y.principal, y.interest]), a.years.map((y) => y.balance), { title: 'Each year of the loan: principal and interest paid, and the balance left', keys: ['Principal', 'Interest', 'Balance'] }, C);
   table($('ltable'), ['Year', 'Interest', 'Principal', 'Balance'], a.years.map((y) => [String(y.year), money(y.interest), money(y.principal), money(y.balance)]));
   $('lmonths').onclick = () => table($('ltable'), ['Month', 'Payment', 'Interest', 'Principal', 'Balance'], a.months.map((m) => [String(m.n), money(m.pay), money(m.interest), money(m.principal), money(m.balance)]));

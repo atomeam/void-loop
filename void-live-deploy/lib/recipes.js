@@ -40,7 +40,19 @@ export function scale(line, factor) {
     if (NOT_QTY.test(src.slice(at + whole.length))) return whole;
     const lo = numOf(a), hi = b ? numOf(b) : NaN; if (!Number.isFinite(lo)) return whole;
     return fmtQty(lo * f) + (Number.isFinite(hi) ? ' to ' + fmtQty(hi * f) : '');
-  });
+  }).replace(LEAD, agree);
+}
+// the word after a line's leading quantity agrees with the new number: 2 × "1 egg" is "2 eggs", ½ × "2 cups" is "1 cup"; only the measures
+// and things a recipe counts, so "2 egg yolks" or "3 garlic" are left as written
+const COUNT = Object.fromEntries('cup tablespoon teaspoon ounce pound pint quart gallon clove egg slice can stalk stick onion carrot banana lime lemon avocado tomato potato breast thigh fillet sprig leaf pinch dash handful'
+  .split(' ').map((w) => [w, /(?:o|ch|sh)$/.test(w) && !/^avocado$/.test(w) ? w + 'es' : w === 'leaf' ? 'leaves' : w + 's']));
+const ONE = Object.fromEntries(Object.entries(COUNT).map(([a, b]) => [b, a]));
+const LEAD = new RegExp(String.raw`^(${NUM})(\s*(?:-|–|to)\s*(${NUM}))?(\s+(?:(?:small|medium|large|big|ripe|whole|heaped|level|scant)\s+)?)([a-z]+)\b`, 'i');
+function agree(whole, a, range, b, gap, word) {
+  const n = numOf(b || a), w = word.toLowerCase();
+  if (!Number.isFinite(n) || !(COUNT[w] || ONE[w])) return whole;
+  const to = n > 1 ? COUNT[w] || w : ONE[w] || w;
+  return a + (range || '') + gap + (word[0] === word[0].toUpperCase() ? to[0].toUpperCase() + to.slice(1) : to);
 }
 
 // units: what they are called and what one of them is in the other system
