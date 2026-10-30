@@ -2394,7 +2394,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 3,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/translate-langs.js",
