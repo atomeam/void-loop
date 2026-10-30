@@ -1,0 +1,185 @@
+{
+ "from": {
+  "iptv": "https://github.com/iptv-org/iptv",
+  "database": "https://github.com/iptv-org/database",
+  "places": "GeoNames (CC BY 4.0) via the cities.json package",
+  "commits": {
+   "database": "326ecb0bcd01",
+   "iptv": "c7281e53ae78"
+  }
+ },
+ "countries": {
+  "AL": {
+   "stations": 1,
+   "playable": 0
+  },
+  "AR": {
+   "stations": 152,
+   "playable": 36
+  },
+  "AT": {
+   "stations": 20,
+   "playable": 2
+  },
+  "AU": {
+   "stations": 168,
+   "playable": 20
+  },
+  "BE": {
+   "stations": 2,
+   "playable": 1
+  },
+  "BO": {
+   "stations": 12,
+   "playable": 4
+  },
+  "BR": {
+   "stations": 146,
+   "playable": 43
+  },
+  "CA": {
+   "stations": 212,
+   "playable": 38
+  },
+  "CG": {
+   "stations": 1,
+   "playable": 0
+  },
+  "CL": {
+   "stations": 28,
+   "playable": 5
+  },
+  "CO": {
+   "stations": 26,
+   "playable": 5
+  },
+  "CR": {
+   "stations": 4,
+   "playable": 1
+  },
+  "DE": {
+   "stations": 23,
+   "playable": 23
+  },
+  "DO": {
+   "stations": 15,
+   "playable": 9
+  },
+  "EC": {
+   "stations": 5,
+   "playable": 1
+  },
+  "ES": {
+   "stations": 238,
+   "playable": 71
+  },
+  "FI": {
+   "stations": 5,
+   "playable": 1
+  },
+  "FR": {
+   "stations": 1,
+   "playable": 0
+  },
+  "GB": {
+   "stations": 4,
+   "playable": 2
+  },
+  "GE": {
+   "stations": 2,
+   "playable": 1
+  },
+  "GR": {
+   "stations": 45,
+   "playable": 11
+  },
+  "GT": {
+   "stations": 15,
+   "playable": 1
+  },
+  "ID": {
+   "stations": 140,
+   "playable": 47
+  },
+  "IN": {
+   "stations": 33,
+   "playable": 19
+  },
+  "IR": {
+   "stations": 2,
+   "playable": 0
+  },
+  "IT": {
+   "stations": 30,
+   "playable": 8
+  },
+  "JP": {
+   "stations": 49,
+   "playable": 1
+  },
+  "KR": {
+   "stations": 46,
+   "playable": 12
+  },
+  "ME": {
+   "stations": 1,
+   "playable": 0
+  },
+  "MR": {
+   "stations": 1,
+   "playable": 0
+  },
+  "MX": {
+   "stations": 54,
+   "playable": 12
+  },
+  "PE": {
+   "stations": 64,
+   "playable": 20
+  },
+  "PH": {
+   "stations": 1,
+   "playable": 0
+  },
+  "PK": {
+   "stations": 1,
+   "playable": 0
+  },
+  "PY": {
+   "stations": 5,
+   "playable": 2
+  },
+  "RO": {
+   "stations": 1,
+   "playable": 1
+  },
+  "RU": {
+   "stations": 168,
+   "playable": 54
+  },
+  "SE": {
+   "stations": 12,
+   "playable": 0
+  },
+  "UA": {
+   "stations": 14,
+   "playable": 9
+  },
+  "US": {
+   "stations": 10607,
+   "playable": 398
+  },
+  "UY": {
+   "stations": 1,
+   "playable": 0
+  },
+  "VE": {
+   "stations": 7,
+   "playable": 4
+  },
+  "VN": {
+   "stations": 1,
+   "playable": 0
+  }
+ }
+}

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1056,
+ "counted": 1061,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,7 +27,7 @@
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 68,
+   "dependants": 69,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 22,
    "direct": 1,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 78,
+   "dependants": 79,
    "tests": 5
   },
   {
@@ -83,7 +83,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 2
   },
   {
@@ -118,49 +118,49 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 62,
+   "dependants": 63,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 55,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 3
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 4
   },
   {
    "file": "lib/autopsy.js",
    "skills": 15,
    "direct": 5,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 6
   },
   {
@@ -181,7 +181,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 3
   },
   {
@@ -202,56 +202,56 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
@@ -545,28 +545,28 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 81,
+   "dependants": 82,
    "tests": 1
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 9
   },
   {
@@ -888,35 +888,35 @@
    "file": "lib/compose.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 2
   },
   {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 1
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 6
   },
   {
@@ -967,6 +967,13 @@
    "direct": 1,
    "dependants": 5,
    "tests": 2
+  },
+  {
+   "file": "lib/local-ask.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 0
   },
   {
    "file": "lib/generators.js",
@@ -1126,43 +1133,50 @@
    "file": "lib/story.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/rap.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 5
   },
   {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 2
   },
   {
    "file": "lib/markets.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 4
   },
   {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 2
+  },
+  {
+   "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 1
   },
   {
    "file": "lib/actions.js",
@@ -1172,17 +1186,10 @@
    "tests": 2
   },
   {
-   "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 1
-  },
-  {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
@@ -1309,14 +1316,14 @@
    "skills": 1,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/rap-piano.js",
    "skills": 1,
    "direct": 0,
    "dependants": 7,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/writing-aids.js",
@@ -1443,6 +1450,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/stabilize.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/transition.js",
@@ -1597,6 +1611,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
+  },
+  {
+   "file": "lib/local-media.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/news-week.js",
@@ -2113,252 +2134,252 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 84,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 82,
+   "dependants": 83,
    "tests": 29
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 55,
+   "dependants": 56,
    "tests": 12
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43,
+   "dependants": 44,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 8
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36,
+   "dependants": 37,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31,
+   "dependants": 32,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 27,
+   "dependants": 28,
    "tests": 3
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 7
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 0
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 7
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 2
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
@@ -3324,6 +3345,7 @@
    "importedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -3660,6 +3682,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/local.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/local-media.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/markets.js": {
    "imports": [
     "functions/api/answer.js",
@@ -3675,6 +3704,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4282,6 +4312,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4320,6 +4351,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4350,6 +4382,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4477,6 +4510,7 @@
     "functions/api/comments.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4681,6 +4715,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -4785,6 +4820,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -4891,6 +4927,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5454,6 +5491,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5536,6 +5574,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5676,6 +5715,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5789,6 +5829,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5847,6 +5888,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5926,6 +5968,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5957,6 +6000,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5993,6 +6037,7 @@
     "functions/api/films.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -6081,6 +6126,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -6184,6 +6230,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -6256,6 +6303,7 @@
     "functions/api/card-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -6357,6 +6405,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -6415,6 +6464,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -6942,6 +6992,7 @@
     "functions/api/card-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7126,6 +7177,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/hook/[id].js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -7169,6 +7221,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7341,6 +7394,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7458,6 +7512,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7537,6 +7592,7 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/daily-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/news.js",
@@ -7641,6 +7697,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7705,6 +7762,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7823,6 +7881,27 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/local-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/local-media.js",
+    "lib/toolkit.js"
+   ],
+   "reachedBy": [
+    "functions/api/local.js",
+    "skills/local-stations.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/local-media.js": {
+   "imports": [
+    "lib/local-ask.js"
+   ],
+   "importedBy": [
+    "functions/api/local.js",
+    "skills/local-stations.js"
+   ]
+  },
   "lib/markets-card.js": {
    "imports": [
     "lib/markets.js",
@@ -7842,6 +7921,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -7874,6 +7954,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -7960,6 +8041,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8022,6 +8104,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8063,6 +8146,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8097,6 +8181,7 @@
     "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/news.js",
@@ -8268,6 +8353,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/gallery.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -8382,6 +8468,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8418,6 +8505,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8457,6 +8545,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8485,6 +8574,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8617,6 +8707,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8672,6 +8763,7 @@
     "functions/api/hook/[id].js",
     "functions/api/icsfeed.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -8776,6 +8868,7 @@
     "functions/api/gallery.js",
     "functions/api/gumroad.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -8895,6 +8988,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8923,6 +9017,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8954,6 +9049,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9021,6 +9117,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9116,6 +9213,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9172,6 +9270,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9218,6 +9317,7 @@
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9270,6 +9370,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9351,6 +9452,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9621,6 +9723,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9683,6 +9786,7 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9784,6 +9888,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9814,6 +9919,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9845,6 +9951,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -9902,6 +10009,7 @@
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -9949,6 +10057,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10022,6 +10131,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10147,6 +10257,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10186,6 +10297,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10354,6 +10466,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -10404,6 +10517,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10532,6 +10646,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10573,6 +10688,17 @@
    "imports": [],
    "importedBy": [
     "skills/sprite-sheet.js"
+   ]
+  },
+  "lib/stabilize.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/stage-camera.js": {
@@ -10818,6 +10944,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10930,6 +11057,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -10969,6 +11097,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -11001,6 +11130,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -11066,6 +11196,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -11204,6 +11335,7 @@
     "functions/api/handoff.js",
     "functions/api/image.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -11408,7 +11540,8 @@
     "lib/flight-sites.js",
     "lib/job-sites.js",
     "lib/converter-ask.js",
-    "lib/brain-ask.js"
+    "lib/brain-ask.js",
+    "lib/local-ask.js"
    ],
    "importedBy": [
     "skills/toolkit.js"
@@ -11584,7 +11717,8 @@
     "lib/flv.js",
     "lib/video-mux.js",
     "lib/converter.js",
-    "lib/transition.js"
+    "lib/transition.js",
+    "lib/stabilize.js"
    ],
    "importedBy": [
     "lib/rap-video.js"
@@ -11630,6 +11764,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -11679,6 +11814,7 @@
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -11758,6 +11894,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -11821,6 +11958,7 @@
     "functions/api/gallery.js",
     "functions/api/gumroad.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -11913,6 +12051,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -13180,6 +13319,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -13234,6 +13374,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -13650,6 +13791,12 @@
   },
   "skills/local-inference.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/local-stations.js": {
+   "imports": [
+    "lib/local-media.js"
+   ],
    "importedBy": []
   },
   "skills/lock-rules.js": {
@@ -15386,6 +15533,7 @@
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",

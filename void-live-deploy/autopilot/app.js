@@ -11,15 +11,18 @@ const ago = (iso) => { const m = Math.round((Date.now() - Date.parse(iso)) / 60e
 let days = 1; try { if (new URLSearchParams(location.search).get('days') === '7') days = 7; } catch (_) {}
 
 async function get(url) { const r = await fetch(url, { headers: { accept: 'application/json' } }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const chip = (n, label) => { const c = el('span', 'chip'); c.append(el('b', null, fmt(n)), ' ' + label); return c; };
+const line = (kind, cls, text) => { const li = el('li'); li.append(el('span', 'kind', kind), el('span', cls, text)); return li; };
 const tile = (id, v, why) => { const el = $(id); el.textContent = v == null ? 'n/a' : fmt(v); el.title = v == null ? (why || 'this source did not answer') : ''; };
 
 function coderPanel(c) {
   const box = $('coder'); box.textContent = '';
-  if (!c || !c.day) { box.innerHTML = '<span class="note">The coder\'s budget did not answer just now.</span>'; return; }
+  if (!c || !c.day) { box.append(el('span', 'note', 'The coder\'s budget did not answer just now.')); return; }
   const full = c.room === false, pct = Math.min(100, Math.round((c.day.used / Math.max(1, c.day.cap)) * 100));
   const p = document.createElement('p'); p.style.margin = '0';
-  p.innerHTML = '<b>' + fmt(c.day.used) + '</b> of ' + fmt(c.day.cap) + ' calls today, <b>' + fmt(c.hour.used) + '</b> of ' + fmt(c.hour.cap) + ' this hour';
-  const m = document.createElement('div'); m.className = 'meter' + (full ? ' full' : ''); m.innerHTML = '<i style="width:' + pct + '%"></i>';
+  p.append(el('b', null, fmt(c.day.used)), ' of ' + fmt(c.day.cap) + ' calls today, ', el('b', null, fmt(c.hour.used)), ' of ' + fmt(c.hour.cap) + ' this hour');
+  const m = document.createElement('div'); m.className = 'meter' + (full ? ' full' : ''); const bar = el('i'); bar.style.width = pct + '%'; m.append(bar);
   const n = document.createElement('p'); n.className = 'note'; n.style.margin = '0';
   n.textContent = full ? 'Used up. The conductor holds coding jobs until ' + new Date(c.until).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + ' instead of starting runs that would only fail.' : 'Room left: coding jobs run as the conductor starts them.';
   if (c.model) n.textContent += ' Model: ' + c.model.replace(/^@cf\//, '') + '.';
@@ -37,17 +40,17 @@ function hourBars(byHour, updated) {
 function feed(d) {
   const ul = $('feed'); ul.textContent = '';
   const kinds = $('kinds'); kinds.textContent = '';
-  for (const [k, n] of Object.entries(d.kinds || {}).sort((a, b) => b[1] - a[1])) { const c = document.createElement('span'); c.className = 'chip'; c.innerHTML = '<b>' + fmt(n) + '</b> '; c.append(KIND[k] || k); kinds.append(c); }
-  if (d.merged) { const c = document.createElement('span'); c.className = 'chip'; c.innerHTML = '<b>' + fmt(d.merged) + '</b> '; c.append('pull requests its auto-merge landed'); kinds.append(c); }
+  for (const [k, n] of Object.entries(d.kinds || {}).sort((a, b) => b[1] - a[1])) kinds.append(chip(n, KIND[k] || k));
+  if (d.merged) kinds.append(chip(d.merged, 'pull requests its auto-merge landed'));
   const own = Array.isArray(d.own) ? d.own : [];
-  if (!own.length) { const li = document.createElement('li'); li.innerHTML = '<span class="kind">quiet</span><span class="note">Verse\'s own loops landed nothing on main in this window. Its coder and conductor numbers above say why.</span>'; ul.append(li); return; }
+  if (!own.length) { ul.append(line('quiet', 'note', 'Verse\'s own loops landed nothing on main in this window. Its coder and conductor numbers above say why.')); return; }
   for (const c of own.slice(0, 60)) {
     const li = document.createElement('li'), k = document.createElement('span'); k.className = 'kind ' + (c.kind === 'assimilate' ? 'build' : c.kind === 'watch' ? 'measure' : c.kind); k.textContent = KIND[c.kind] || c.kind;
     const body = document.createElement('span'), a = document.createElement('a'); a.href = c.url; a.rel = 'noopener'; a.textContent = c.title;
     const t = document.createElement('span'); t.className = 'when'; t.textContent = when(c.at) + ' · ' + c.sha.slice(0, 7);
     body.append(a, t); li.append(k, body); ul.append(li);
   }
-  if (own.length > 60) { const li = document.createElement('li'); li.innerHTML = '<span class="kind">more</span><span class="note">' + fmt(own.length - 60) + ' more in the window: every one is in main\'s history on GitHub.</span>'; ul.append(li); }
+  if (own.length > 60) ul.append(line('more', 'note', fmt(own.length - 60) + ' more in the window: every one is in main\'s history on GitHub.'));
 }
 
 async function load() {
@@ -68,12 +71,12 @@ async function load() {
     const held = $('held'); held.textContent = '';
     const c = d.conductor.last24h || {};
     for (const [n, label] of [[c.requeued, 'requeued after a failed run'], [c.probes, 'probes of a loop'], [d.conductor.held, 'held right now'], [d.conductor.broken, 'loops it found broken']]) {
-      if (!Number.isFinite(n)) continue; const s = document.createElement('span'); s.className = 'chip'; s.innerHTML = '<b>' + fmt(n) + '</b> '; s.append(label); held.append(s);
+      if (Number.isFinite(n)) held.append(chip(n, label));
     }
     for (const why of d.conductor.heldWhy || []) { const s = document.createElement('span'); s.className = 'chip'; s.textContent = 'Held: ' + why; held.append(s); }
-  } else { $('bars').innerHTML = ''; $('held').innerHTML = '<span class="err">The conductor\'s record did not answer: ' + (src.conductor || 'no reply') + '.</span>'; }
-  if (d && src.commits === 'ok') { feed(d); if (d.complete === false) $('feed').insertAdjacentHTML('beforeend', '<li><span class="kind">cut</span><span class="note">The window held more commits than one read takes; the newest are shown.</span></li>'); }
-  else $('feed').innerHTML = '<li><span class="kind">n/a</span><span class="err">Main\'s history did not answer just now (' + (src.commits || (ap.reason && ap.reason.message) || 'no reply') + '). Nothing is shown instead of a guess.</span></li>';
+  } else { $('bars').textContent = ''; $('held').replaceChildren(el('span', 'err', 'The conductor\'s record did not answer: ' + (src.conductor || 'no reply') + '.')); }
+  if (d && src.commits === 'ok') { feed(d); if (d.complete === false) $('feed').append(line('cut', 'note', 'The window held more commits than one read takes; the newest are shown.')); }
+  else $('feed').replaceChildren(line('n/a', 'err', 'Main\'s history did not answer just now (' + (src.commits || (ap.reason && ap.reason.message) || 'no reply') + '). Nothing is shown instead of a guess.'));
   $('asof').textContent = d ? 'Read ' + ago(d.read) + (d.cached ? ' (cached up to 10 min)' : '') : '';
 }
 

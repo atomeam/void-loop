@@ -6,7 +6,7 @@
  * one out, fmt() writes a number for people, and the query helpers make every answer a link. Pure. Tests: tools/calculators.test.mjs.
  */
 import { KINDS, unitOf, findUnit, toSI, fromSI } from './calc-units.js';
-import { payment, amortize, compound } from './fincalc.js';
+import { payment, amortize, compound, yearsMonths } from './fincalc.js';
 import { daysBetween, addDays, businessDaysBetween, ageParts, isDay, DAY_NAMES, parseClock } from './date-math.js';
 import { compileAll, compile } from './formula-engine.js';
 import { FORMULA_BATCHES } from './formulas.js';
@@ -375,7 +375,7 @@ CALCULATORS.push(
   make('payoff-time', 'Payment: months to pay off a loan', 'Money', 'n = −ln(1 − r × P ÷ payment) ÷ ln(1 + r), r = rate ÷ 12', ['P|Loan amount|money|$|20000', 'rate|Interest rate (a year)|ratio|%|7', 'pay|Monthly payment|money|$|500'],
     ['n|Months to pay off|number|months', 'years|Years and months|text', 'interest|Total interest|money|$'],
     (x) => { pos(x.P, 'Loan amount'); pos(x.pay, 'Monthly payment'); const r = x.rate / 12; need(x.pay > x.P * r, 'the payment does not cover the interest, so the loan never ends'); const n = r === 0 ? x.P / x.pay : -Math.log(1 - (r * x.P) / x.pay) / Math.log(1 + r), m = Math.ceil(n - 1e-9);
-      let bal = x.P, interest = 0; for (let k = 0; k < m && bal > 1e-9; k++) { const i = bal * r; interest += i; bal = bal + i - Math.min(x.pay, bal + i); } return { n, years: Math.floor(m / 12) + ' years ' + (m % 12) + ' months', interest }; }),
+      let bal = x.P, interest = 0; for (let k = 0; k < m && bal > 1e-9; k++) { const i = bal * r; interest += i; bal = bal + i - Math.min(x.pay, bal + i); } return { n, years: yearsMonths(m), interest }; }),
   make('interest-rate', 'Interest rate of a loan', 'Money', 'the rate r where P × r ÷ (1 − (1 + r)^−n) = payment (found by bisection)', ['P|Loan amount|money|$|20000', 'pay|Monthly payment|money|$|386.66', 'term|Loan term|time|month|60'],
     ['rate|Interest rate (a year)|ratio|%', 'interest|Total interest|money|$'], (x) => { const n = months(x.term, 'Loan term'), r = rateFor(x.P, x.pay, n); need(r !== null, 'the payments add up to less than the loan'); return { rate: r, interest: x.pay * n - x.P }; }),
   make('retirement', 'Retirement savings', 'Money', 'at retirement = savings × (1 + r)^n + monthly × ((1 + r)^n − 1) ÷ r; income = that × q ÷ (1 − (1 + q)^−m)', ['age|Age now|number||35', 'at|Retirement age|number||67', 'have|Saved so far|money|$|50000', 'monthly|Saved each month|money|$|1000', 'ret|Return before retirement (a year)|ratio|%|6', 'years|Years the money must last|number||25', 'after|Return in retirement (a year)|ratio|%|4'],

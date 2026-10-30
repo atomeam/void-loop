@@ -7,7 +7,8 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy'), ORIGIN = 'https://verse.test';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.webmanifest': 'application/manifest+json' };
 /** the negative control: what a page must never show after a step */
-const BAD = /coming soon|placeholder|lorem ipsum|something went wrong|not implemented|undefined|NaN/i;
+// whole words only, and NaN as written: "dominant" in a scale name is not a broken number (2026-10-30)
+const BAD = /\b(?:coming soon|placeholder|lorem ipsum|something went wrong|not implemented|undefined)\b|\bNaN\b/i;
 
 function serve(r) {
   const u = new URL(r.request().url());
