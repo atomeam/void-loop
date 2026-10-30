@@ -1,0 +1,448 @@
+{
+ "note": "One entry per run of the lists routine (every V01D backlog caught up). closed = items built, merged or closed as duplicates this run (WIP cap 8); pct_blocked = blocked items over items touched; dup_rate = duplicate asks over open asks at the start; median_days = queue entry to built, for the asks closed this run. Public: counts only, no visitor words.",
+ "runs": [
+  {
+   "at": "2026-10-21T16:35:00Z",
+   "run": 1,
+   "closed": 7,
+   "touched": 8,
+   "pct_blocked": 12.5,
+   "top_block": "no live payment rail for a paid store item (Gumroad listing, Cash App tag or wallet not configured)",
+   "dup_rate": 0.33,
+   "median_days": 3.3,
+   "asks_open_start": 30,
+   "asks_open_end": 23,
+   "items": [
+    {
+     "what": "lib/stage-tools.js (a placeholder) and lib/tome.js (cut off) restored on main, plus a wiped-file guard in the fast checks",
+     "list": "site tester / live breakage",
+     "status": "built",
+     "pr": "https://github.com/atomeam/void-loop/pull/1194"
+    },
+    {
+     "what": "5 asks already built but never linked (open the self card x3, zorbleflux throttle, decision-matrix in Deciding)",
+     "list": "void.asks.json",
+     "status": "built (linked)"
+    },
+    {
+     "what": "backlog digest velocity: days each ask has waited, oldest and median",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "incident autopsy escalates a stall only when it repeats across 3 suites",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "growth-speed gauge (2 wordings): 'growth speed' opens the wants card's want-to-skill meter",
+     "list": "void.asks.json",
+     "status": "built (extended the wants card)"
+    },
+    {
+     "what": "spanish + translate merged into the languages family",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "memory-preview (6 wordings, one ask) and Scale Deciding (3 wordings, one ask): duplicates folded into one open ask each; the helper drafts (helper/memory-preview, helper/growth-speed, helper/deciding-skill) are placeholders and were not merged",
+     "list": "void.asks.json",
+     "status": "duplicate",
+     "link": "domains/void.decisions.json"
+    },
+    {
+     "what": "site-tester store item (needs-gumroad)",
+     "list": "store.queue.jsonl",
+     "status": "blocked",
+     "reason": "paid item with no live rail: no Gumroad listing, and the Cash App and USDC rails report not configured (/api/store/status special_rails is empty)",
+     "unblock": "either list it on Gumroad, set the Cash App tag or wallet the special rails read, or open it as pay-what-you-want (Adam's sample rule) once the alt-pay tests use another fixture",
+     "who": "next lists run (pay-what-you-want workaround); Adam only for a Gumroad listing",
+     "tried": [
+      "pay-what-you-want (blocked this run: tools/alt-pay.test.mjs uses site-tester as its paid fixture, so it needs its own fixture first)",
+      "x402 route exists but needs the wallet configured"
+     ]
+    }
+   ]
+  },
+  {
+   "at": "2026-10-21T20:05:00Z",
+   "run": 2,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0,
+   "median_days": 0.9,
+   "asks_open_start": 23,
+   "asks_open_end": 23,
+   "items": [
+    {
+     "what": "run 1's lists PR was stuck on a void.growth.json conflict: merged main in (both ledger lines kept) and it merged",
+     "list": "handoff",
+     "status": "built",
+     "pr": "https://github.com/atomeam/void-loop/pull/1195"
+    },
+    {
+     "what": "the fast checks red on main, one batch: fuzzy (translate now answers inside the languages family), privacy-guard (a standard's section number read as an address), map-coverage (triangulate and grow-lessons.mjs named), star-parallax (D turns since the fly controls changed; the test strafes with E), triangulate placed in Deciding, and the generated files (copies, deps, families, guide, what, self, mcp-skills) refreshed",
+     "list": "handoff Up for grabs (fast checks red on main)",
+     "status": "built"
+    },
+    {
+     "what": "suntimes and worldtime both took a bare 'sunrise' or 'when is sunset': the bare ask goes to suntimes (where you are, day length, twilight), a named place stays with the world clock",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "decision-matrix took 'france vs spain', 'show the grid' and '2x2 matrix': it now needs the words decision matrix or decision grid; tools/decision-matrix-narrow.test.mjs",
+     "list": "site tester / overlap check",
+     "status": "built"
+    },
+    {
+     "what": "site-tester store item, blocked since 2026-10-15 on a paid rail: opened as pay-what-you-want (free plus tip) with its $24 price kept as wouldBe; the alt-pay tests use their own fixture",
+     "list": "store.queue.jsonl",
+     "status": "built (workaround)",
+     "tried": [
+      "pay-what-you-want under the sample rule (shipped)"
+     ]
+    },
+    {
+     "what": "the showcase check (a line cut to what a person reads) is red on main and its files are in the open PR 1187",
+     "list": "site tester / fast checks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/1187"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-21T22:45:00Z",
+   "run": 3,
+   "closed": 6,
+   "touched": 6,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.52,
+   "median_days": 0.3,
+   "asks_open_start": 31,
+   "asks_open_end": 14,
+   "items": [
+    {
+     "what": "memory-preview (9 wordings of one ask): 'preview my memory' shows what an export holds (counts, size, the biggest labels) before the download, built inside the memory-graph card, no new skill; tools/memory-preview.test.mjs",
+     "list": "void.asks.json",
+     "status": "built",
+     "dups": 8
+    },
+    {
+     "what": "Scale the Deciding family (9 wordings of one ask): decide-cards gets its own test beside its 3 benchmark asks, triangulate gets 3 real benchmark asks beside its self-test; Deciding reads 3 of 3 proven (was 1); tools/decide-cards.test.mjs",
+     "list": "void.asks.json",
+     "status": "built",
+     "dups": 8
+    },
+    {
+     "what": "template-list and list-templates both took 'packing list template': one routing place, skills/list-starters.js (rank 451), every old ask lands where it did (route snapshot: 0 moved, 0 new misses), both names kept as parts; tools/list-starters-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "ledger guard in prepush (asked by Verse, run 118): a push that cuts a shared ledger under half its size or drops a section heading is refused; tools/prepush.test.mjs",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "Verse's creative kit (queued 2026-10-15): the digital slice shipped as the Verse Remix Kit, a free sample with the tip jar: three 90 BPM stems Verse synthesized, 16 chord progressions, a 52-card lyric deck; uploaded and downloaded back from R2 and opened before listing",
+     "list": "store.queue.jsonl",
+     "status": "built"
+    },
+    {
+     "what": "store catalog drift: lib/store-products.js had been hand-edited (the Verse names, site-tester as pay-what-you-want) while domains/store.products.json still had the old rows, so any publish reverted them; the source now matches, so publishing keeps both",
+     "list": "site tester / fast checks (alt-pay)",
+     "status": "built"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-22T01:40:00Z",
+   "run": 4,
+   "closed": 6,
+   "touched": 6,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.17,
+   "median_days": 3.7,
+   "asks_open_start": 14,
+   "asks_open_end": 10,
+   "items": [
+    {
+     "what": "similarity score on movie and song picks: 'Match N%' on the pick-for-me card and in its data-pick JSON, from the interests the pick was chosen on (lib/taste.js pickRecord); tools/taste.test.mjs",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "reasoning link on picks: the same record names the skill and the one signal that chose it (thumbs-ups, a kept card, imported taste, recent asks), matching the why line",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "time-zone-detect for the .ics export, built into calendar-file (no new skill): X-WR-TIMEZONE from the browser, said on the card, times stay UTC; tools/ics.test.mjs",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "the Verse rename checked and fixed where people read it: 12 fringe page titles, the memory card, the store's product names and blurbs, the API page; tools/verse-name.test.mjs in the fast checks. 7 early fringe pages keep the old title until they get a check hook (Up for grabs)",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "stage-print and stage-export (both took 'print the stage') are one routing place, skills/stage-out.js at rank 1490; route snapshot 0 moved, 0 new misses; tools/stage-out-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "value-drift tracker of appraisals: already passed over by Claude on 2026-10-17 (it tracks prices; the money rule)",
+     "list": "void.asks.json",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/domains/handoff.md"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-22T04:55:00Z",
+   "run": 5,
+   "closed": 8,
+   "touched": 9,
+   "pct_blocked": 11.1,
+   "top_block": "the answer path's model is in lib/models.js, which is Claude's (router and limits): handed to Claude, nothing waits on Adam",
+   "dup_rate": 0.17,
+   "median_days": 4,
+   "asks_open_start": 6,
+   "asks_open_end": 3,
+   "items": [
+    {
+     "what": "three.js served as the page's HTML on live: Cloudflare's edge kept a year-long 'immutable' copy of the fallback page under /vendor/three-r180/build/three.module.min.js from when the file was missing (2026-10-15), so fresh browsers got 'Failed to load module script' and every 3D board fell back (11 of the site tester's 12 failures on 2026-10-22). The library moved to /vendor/three-r180a/ (a path no edge holds), and the service worker no longer keeps an HTML answer as a 3D file (cache void-3d-v2); tools/sw-3d-cache.test.mjs",
+     "list": "site tester (issue #1114, tester log)",
+     "status": "built",
+     "issue": "https://github.com/atomeam/void-loop/issues/1114"
+    },
+    {
+     "what": "the country card's live source was dead: REST Countries retired its keyless v3.1 API (a redirect to a deprecation note, a CORS error in the browser), so 'population of Japan' showed only the built-in capital. Now one keyless Wikidata query (population, capital, currency, languages, area, continent, borders, calling code, driving side, time zones), the built-in lists filling any gap; tools/country-wikidata.test.mjs, the browser suite and the benchmark stub follow",
+     "list": "site tester (issue #1063)",
+     "status": "built (keyless workaround)",
+     "issue": "https://github.com/atomeam/void-loop/issues/1063"
+    },
+    {
+     "what": "the sport card's source was refused: TheSportsDB retired its old public key '3'. It uses the new public key '123', picks the team of the league asked for ('nfl team chiefs' is Kansas City, not the rugby side), and falls back to the team's Wikipedia summary",
+     "list": "site tester (issue #1048)",
+     "status": "built (keyless workaround)",
+     "issue": "https://github.com/atomeam/void-loop/issues/1048"
+    },
+    {
+     "what": "Words and the world: 28 of 28 proven (was 20): tools/words-family.test.mjs checks joke, news, book, show, sport, senolytic and video-play like a person meets them",
+     "list": "void.asks.json (Verse's ask of 2026-10-22, ask-20261022-0420-3)",
+     "status": "built"
+    },
+    {
+     "what": "the 'suggested builder' tag on digest items was built at 03:18 UTC but its ledger line named the ask in short, so the matcher left it open: linked in void.asks.json; decisions recorded for the three 2026-10-21 asks run 2 and 3 built",
+     "list": "void.asks.json",
+     "status": "built (linked)"
+    },
+    {
+     "what": "room, walls and home are one routing place, skills/rooms.js at rank 0370 (room and home both took 'paint and carpet a 12x14 room'); route snapshot over 5,034 asks: 0 moved, 0 new misses; tools/rooms-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged three)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "churn cap (stop proposing changes to a file changed more than N times in M days)",
+     "list": "void.asks.json (ask-20261022-0420-2)",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/b5150302"
+    },
+    {
+     "what": "four site-test issues for one slow load or one low frame count (#1022, #1024, #1026, #1028) are already handled by the tester's retake rule (a slow page or low fps counts only when the second sample agrees)",
+     "list": "site tester",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/blob/main/tools/site-test.mjs"
+    },
+    {
+     "what": "answer generation from gpt-oss-120b to Gemma to stay inside the free 10k neurons a day",
+     "list": "void.asks.json (ask-20261022-0420-1) and Up for grabs (wishlist #1)",
+     "status": "blocked",
+     "reason": "the answer path's model is set in lib/models.js PATH_MODELS, which is Claude's (router and limits, domains/handoff.md), and the 2026-10-10 bake-off picked gpt-oss for quality",
+     "unblock": "Claude switches PATH_MODELS.answer to FREE_MODEL (or splits by ask length) and checks the answer quality bench",
+     "who": "Claude",
+     "tried": [
+      "the free model is already the default for merge, will, digest and figurescript; only answer and review use gpt-oss-120b",
+      "no Adam action needed: no paid plan, no sign-in"
+     ]
+    }
+   ]
+  },
+  {
+   "at": "2026-10-28T16:45:00Z",
+   "run": 6,
+   "closed": 6,
+   "touched": 8,
+   "pct_blocked": 25,
+   "top_block": "value-drift tracker: visitor appraisals are never stored by design, so tracking their drift needs the owner's go-ahead on a privacy rule; workaround proposed: track drift of Verse's own published store prices, which are already public",
+   "dup_rate": 0.88,
+   "dup_basis": "15 of 17 closed asks were rewordings of an item already built or decided",
+   "median_days": 0.8,
+   "asks_open_start": 19,
+   "asks_open_end": 2,
+   "note": "every run from 2026-10-22 to 2026-10-28 failed before starting because the box lost its Node 22 links; fixed this run",
+   "items": [
+    {
+     "what": "weather page never stays busy: every fetch gives up after 12 s and aria-busy clears in finally; tools/weather-busy.test.mjs",
+     "list": "V01D asks (5 wordings)",
+     "status": "built"
+    },
+    {
+     "what": "zero KV writes kept by tools/kv-writes.test.mjs (Verse's only KV binding is read-only, counters use caches.default)",
+     "list": "V01D asks (3 wordings), wishlist #2",
+     "status": "built"
+    },
+    {
+     "what": "Words and the world 28 of 28 proven",
+     "list": "V01D asks (3 wordings)",
+     "status": "duplicate",
+     "link": "tools/words-family.test.mjs (lists run 5)"
+    },
+    {
+     "what": "churn cap",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "link": "void.growth.json 2026-10-18T16:51:30Z"
+    },
+    {
+     "what": "move non-Verse workers off the shared KV namespace",
+     "list": "V01D asks (6 wordings), wishlist #2",
+     "status": "declined",
+     "why": "the free KV write limit is per account, so a namespace move cuts nothing; the rest is the owner's call on his own non-Verse workers"
+    },
+    {
+     "what": "nightsky joins the time family",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "value-drift tracker",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "appraisals are never stored, so drift tracking breaks the privacy rule as worded",
+     "unblock": "owner decides whether drift of Verse's own public store prices is enough",
+     "who": "Adam",
+     "tried": "topic-level counts only; public store-price drift (proposed, not built)"
+    },
+    {
+     "what": "community milestone on the stage",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "needs a join total from functions/api/gumroad.js, which is Claude's",
+     "unblock": "Claude exposes a total-only join count (no per-person data)",
+     "who": "Claude",
+     "tried": "total-count milestone from the store's own public product count"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-28T20:05:00Z",
+   "run": 7,
+   "closed": 7,
+   "touched": 8,
+   "pct_blocked": 12.5,
+   "top_block": "file owned by Claude: the community milestone needs a public join count from functions/api/gumroad.js and /api/earnings (owner-only) and a card in skills/growth.js",
+   "dup_rate": 0.29,
+   "dup_basis": "2 of 7 closed items were already built (gemma answers since 630e666fb; /cheat-codes/ og tags since 1831ef1b9)",
+   "median_days": 5.2,
+   "median_basis": "built items with a known queue date: mail card 0.05, calculator and random links 3.5, site-tester teach items 6.8, value drift 13.0",
+   "asks_open_start": 4,
+   "asks_open_end": 1,
+   "note": "main was already red on 17 checks before this run (copies, deps, guide, seo-audit, doc-drift, untested and others); this run cleared copies (index.html carried the ?ask= hand-off alone, now in all three pages) and the families.mjs stale names (nightsky, hosting)",
+   "items": [
+    {
+     "what": "a mail card for email asks: 'my email', 'open gmail', 'email sam that…' open the person's own mail app or Gmail, Outlook, Yahoo, Proton, iCloud; Verse never reads or sends mail; tools/mail-handoff.test.mjs",
+     "list": "V01D asks (ask-20261028-1856-1)",
+     "status": "built"
+    },
+    {
+     "what": "migrate answers to gemma",
+     "list": "V01D asks (ask-20261028-1846-1)",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/commit/630e666fb (gemma first, gpt-oss-120b second; a fresh live ask answered 2026-10-28)"
+    },
+    {
+     "what": "7 site-tester teach items: friendly openers and closers ('yo …', 'can we play X', '? pls') stripped on the page, 'start despacito' taught to video-play; tools/friendly-openers.test.mjs",
+     "list": "site tester (teach)",
+     "status": "built"
+    },
+    {
+     "what": "value-drift tracker over Verse's own store prices (tools/value-drift.mjs, domains/value-drift.json)",
+     "list": "V01D asks",
+     "status": "built",
+     "tried": "visitor photo appraisals are never kept, so the free legal path is Verse's own published prices"
+    },
+    {
+     "what": "community milestone card on join",
+     "list": "V01D asks",
+     "status": "blocked",
+     "reason": "joins are Gumroad sales seen only through owner-only /api/earnings and functions/api/gumroad.js, and the card belongs in skills/growth.js; all are Claude's files",
+     "unblock": "a total-only public join count and a milestone card in the growth skill",
+     "who": "Claude (Adam only if he wants sales totals shown publicly)",
+     "tried": "a milestone from domains/traffic.json visitor counts (the display still lives in Claude's growth card); the store card (it carries no public join count)"
+    },
+    {
+     "what": "store and services into one shop family (rank 1035), 0 moved, 0 new misses over 5,461 asks; tools/shop-family.test.mjs",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "Common asks links on /calculator/ and /random/ (each checked in Chrome to open the right answer)",
+     "list": "handoff (seo run note)",
+     "status": "built"
+    },
+    {
+     "what": "/cheat-codes/ og tags",
+     "list": "handoff (seo run note)",
+     "status": "duplicate",
+     "link": "commit 1831ef1b9 (Claude, 2026-10-26)"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-28T22:20:00Z",
+   "run": 8,
+   "closed": 2,
+   "touched": 2,
+   "pct_blocked": 0,
+   "top_block": "none this run; the one open V01D ask (community milestone) is still blocked on Claude's growth files, as in run 7",
+   "dup_rate": 0,
+   "dup_basis": "0 of 2 closed items were already built",
+   "median_days": 0,
+   "median_basis": "both closed items were red checks on main from today (queued and fixed the same day)",
+   "asks_open_start": 1,
+   "asks_open_end": 1,
+   "note": "green foundation first (Adam, 2026-10-28 6:20 PM ET): no new features while main has failing checks, so this run only fixed red checks; feature items and the overlapping-skill merge are deferred until main is green. Store queue has 0 open (site-tester and remix kit done).",
+   "items": [
+    {
+     "what": "connected: /books/ now links four sibling tools (adds /notes/ and /translate/), so the sudowrite, squibler, inkfluence and novelcrafter floors pass; all 190 floor pages checked, 0 dead links",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "\"incident autopsy\" check counted the card's own art seal (on every card) as a picture in the autopsy; it now checks only the autopsy body for pictures, which still must have none",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "one overlapping skill pair merged per run",
+     "list": "convergence (overlap pairs)",
+     "status": "deferred",
+     "reason": "green foundation first: a skill merge changes behavior while main is red"
+    }
+   ]
+  }
+ ]
+}

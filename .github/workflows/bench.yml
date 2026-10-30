@@ -1,4 +1,4 @@
-# The everyday benchmark (tools/bench.json, 1,900+ asks on the real page, about 15-25 min on a hosted runner). It is the
+# The everyday benchmark (tools/bench.json, 3,200+ asks on the real page, about 50 min on a hosted runner). It is the
 # biggest CI cost, so it does not run on every PR: the routines run it locally before they open a PR (tools/checks.mjs,
 # tools/test_void.mjs), the watchdog runs it on main every Sunday, and here it runs on a PR only when the benchmark
 # harness itself changes. Run it on any branch by hand: gh workflow run bench.yml --ref <branch>
@@ -31,7 +31,10 @@ permissions:
 jobs:
   bench:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # 2026-10-17: 2,368 asks took 36 minutes. By 2026-10-20 the benchmark had outgrown 40 minutes, and every daily run on main was cut at
+    # the limit (cancelled, 10 days in a row), so tools/bench.misses.json and the growth card's failing list stayed at 2026-10-17 (issue #1695).
+    # 3,250+ asks need about 50 minutes, and twice that when a first run is inconclusive and runs once more.
+    timeout-minutes: 120
     permissions:
       contents: write # the floor file on main, after a clean run there
       actions: read # to find the last good run

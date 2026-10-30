@@ -1,0 +1,14 @@
+# A-to-Mind robots.txt
+# Draft for run 003. Hold-gate. Not live until a human copies this to the site root.
+# Mechanical allow/deny only. House rules live in /llms.txt.
+
+User-agent: *
+Allow: /
+Allow: /llms.txt
+Allow: /.well-known/agent-card.json
+Allow: /sitemap.xml
+Allow: /robots.txt
+Disallow: /drafts/
+Disallow: /api/
+
+Sitemap: https://a-to-mind.com/sitemap.xml

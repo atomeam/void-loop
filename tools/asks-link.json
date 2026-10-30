@@ -2,6 +2,16 @@
   "note": "Curated by a builder reading the growth ledger (2026-10-16, tools/asks-link.mjs): each rule names the ledger entry that built every open ask of V01D's whose words match. Matched by a regular expression over the ask's words; the ledger entry's own text is quoted in the link's why. Add a rule only when the entry really built the ask.",
   "rules": [
     {
+      "match": "(migrat|mov|switch)\\w*.{0,40}answer.{0,60}gemma|gemma.{0,40}answer",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done"
+    },
+    {
+      "match": "value.?drift",
+      "ledgerAt": "2026-10-28T19:43:51Z",
+      "why": "tools/value-drift.mjs reads Verse's own store prices across the history of the store and flags any kind of product whose prices spread past a quarter (domains/value-drift.json, tools/value-drift.test.mjs)"
+    },
+    {
       "match": "velocity.?smoothing",
       "ledgerAt": "2026-10-18T11:45:16Z",
       "why": "lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs)"
@@ -310,6 +320,66 @@
       "match": "open the self card",
       "ledgerAt": "2026-10-17T09:37:08Z",
       "why": "'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\")"
+    },
+    {
+      "match": "growth-speed'? gauge",
+      "ledgerAt": "2026-10-21T16:30:48Z",
+      "why": "duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21)"
+    },
+    {
+      "match": "memory.?preview",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs)"
+    },
+    {
+      "match": "deciding family",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json)"
+    },
+    {
+      "match": "similarity.?score",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs)"
+    },
+    {
+      "match": "reasoning.?link",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line"
+    },
+    {
+      "match": "time.?zone.?detect",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs)"
+    },
+    {
+      "match": "replaced with 'Verse'",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose"
+    },
+    {
+      "match": "weather page.*aria-busy|aria-busy.*weather page",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2"
+    },
+    {
+      "match": "edge cach.*KV writes|caches\\.default.*KV",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1"
+    },
+    {
+      "match": "words and the world.*(unproven|proven)",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs)"
+    },
+    {
+      "match": "churn cap",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "duplicate: tools/churn.mjs lists files changed more than 12 times in 7 days and the will's guard skips wants on them (2026-10-18)"
+    },
+    {
+      "match": "non-V01D workers off the shared namespace",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers"
     }
   ],
   "extra": [

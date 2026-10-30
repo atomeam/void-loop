@@ -1,0 +1,32 @@
+{
+  "name": "auto-deploy-action",
+  "version": "1.0.0",
+  "description": "Automated deployment for any platform with zero configuration",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "ncc build index.ts -o dist/index.js"
+  },
+  "keywords": [
+    "deployment",
+    "vercel",
+    "netlify",
+    "cloudflare",
+    "railway",
+    "render",
+    "automation",
+    "ci-cd"
+  ],
+  "author": "Aether",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.0",
+    "@actions/github": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@vercel/ncc": "^0.38.0",
+    "typescript": "^5.0.0"
+  }
+}

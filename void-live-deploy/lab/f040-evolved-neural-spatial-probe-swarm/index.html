@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; perspective:800px; transition:filter 0.4s, transform 0.4s; }
+canvas { position:absolute; inset:0; pointer-events:none; }
+.probe { position:absolute; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle,#6cf,#28a); border:2px solid #fff; pointer-events:none; will-change:transform; transition:background 0.2s; }
+#hud { position:fixed; top:12px; left:12px; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; z-index:10; }
+button { margin:4px; padding:6px 10px; background:#224; color:#eee; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Evolved Neural Spatial Probe Swarm with Graph Overlay and Morphing Chrome · Verse lab</title>
+<meta name="description" content="Novel combination: A swarm of absolute-positioned DOM probe agents that navigate a 2D spatial stage.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Evolved Neural Spatial Probe Swarm with Graph Overlay and Morphing Chrome · Verse lab">
+<meta property="og:description" content="Novel combination: A swarm of absolute-positioned DOM probe agents that navigate a 2D spatial stage.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f040-evolved-neural-spatial-probe-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f040-evolved-neural-spatial-probe-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+<canvas id="graph"></canvas>
+<div id="probes"></div>
+</div>
+<div id="hud">
+<div>F-040 Neural Probe Swarm | fitness: <span id="fit">0</span> | gen: <span id="gen">0</span></div>
+<button id="seal">Seal genome</button>
+<button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Evolved Neural Spatial Probe Swarm with Graph Overlay and Morphing Chrome</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

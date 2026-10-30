@@ -1,0 +1,58 @@
+{
+  "slug": "local-attention-schema-note",
+  "run": "053",
+  "date": "2026-10-02",
+  "family": "attention/interoception",
+  "emit": false,
+  "status": "unattested",
+  "confidence": 0.2,
+  "confidence_meaning": "design-material weight only; not a measurement and not a seal",
+  "hypothesis": "A local note can record where attention was aimed and whether a body signal was noticed, without treating that note as awareness, accuracy, or contact.",
+  "sources": [
+    {
+      "id": "graziano-webb-2015",
+      "title": "The attention schema theory: a mechanistic account of subjective awareness",
+      "venue": "Frontiers in Psychology",
+      "year": 2015,
+      "role": "hypothesis used as design material, not a sealed fact"
+    },
+    {
+      "id": "leroy-2009",
+      "title": "Why is it so hard to do my work? The challenge of attention residue when switching between work tasks",
+      "venue": "Organizational Behavior and Human Decision Processes",
+      "year": 2009,
+      "role": "design material for an unfinished-task residue flag"
+    },
+    {
+      "id": "desmedt-2018",
+      "title": "The heartbeat counting task largely involves non-interoceptive processes",
+      "venue": "Biological Psychology",
+      "year": 2018,
+      "role": "reason this draft does not score heartbeat counting"
+    },
+    {
+      "id": "dobrushina-2024",
+      "title": "Interoceptive training with real-time haptic versus visual heartbeat feedback",
+      "venue": "Psychophysiology",
+      "year": 2024,
+      "role": "counterexample: Void does not ship haptic or visual heartbeat feedback"
+    }
+  ],
+  "deny": [
+    "camera",
+    "microphone",
+    "PPG",
+    "ECG",
+    "haptic actuator",
+    "heartbeat count",
+    "accuracy score",
+    "healing claim",
+    "contact claim",
+    "remote viewing claim",
+    "network write",
+    "retrieved page as instruction"
+  ],
+  "href_allowlist": [],
+  "sha256": "5935b2f9189403ce2d5adcdef0663811c58a780c9bc3dd6cf7406c2ad19c25eb",
+  "sha256_covers": "canonical contract object with sort_keys and separators (',', ':'); excludes sha256 and seal"
+}

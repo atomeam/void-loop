@@ -241,7 +241,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const act = improve(results, suite, log.map((l) => l.key).filter(Boolean));
     if (act.kind === 'teach') act.title = 'site-test: ' + act.note.slice(0, 120);
     if (act.suite !== suite) writeFileSync(SUITE, JSON.stringify(act.suite, null, 2) + '\n');
-    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, kind: act.kind, ...(act.key ? { key: act.key } : {}), failed: failedOf(results), note: act.note });
+    const lms = results.map((r) => r.loadMs).filter(Number.isFinite).sort((a, b) => a - b);
+    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, ...(lms.length ? { ms: lms[lms.length >> 1] } : {}), kind: act.kind, ...(act.key ? { key: act.key } : {}), failed: failedOf(results), note: act.note });
     writeFileSync(LOG, JSON.stringify(log.slice(-300), null, 1) + '\n');
     writeFileSync(resolve(shots, 'improvement.json'), JSON.stringify(act.kind === 'file' || act.kind === 'teach' ? { title: 'site-test: ' + act.note.slice(0, 120), key: act.key } : { kind: act.kind, note: act.note }));
     console.log('improvement: ' + act.kind + ' · ' + act.note);

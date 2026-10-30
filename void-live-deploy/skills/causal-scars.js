@@ -112,7 +112,7 @@ function mount(th, stageApi) {
     for (const [k, v] of Object.entries({ x: pos[n].x, y: pos[n].y, width: W, height: H, rx: 8, fill: roots.has(n) ? 'rgba(143,180,255,.25)' : 'rgba(255,255,255,.08)', stroke: roots.has(n) ? '#8fb4ff' : 'rgba(255,255,255,.3)' })) r.setAttribute(k, v);
     const t = document.createElementNS(SVGNS, 'text');
     for (const [k, v] of Object.entries({ x: pos[n].x + 8, y: pos[n].y + H / 2 + 4, 'font-size': 12, fill: '#e8e8e8' })) t.setAttribute(k, v);
-    t.textContent = n.length > 22 ? n.slice(0, 21) + '…' : n;
+    t.textContent = n.length > 22 ? n.slice(0, 21) + '…' : n; // ellipsis-ok: drawn picture or short label, the full text is on the card
     gEl.append(r, t); svg.appendChild(gEl); nodeEls[n] = gEl;
   }
   const paint = (node) => { // dim what would not exist without `node`

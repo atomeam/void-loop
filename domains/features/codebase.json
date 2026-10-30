@@ -1,0 +1,150 @@
+{
+ "floor": "codebase",
+ "verse_page": "/g/",
+ "researched": "2026-10-25",
+ "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+ "sites": {
+  "codebasehq.com": {
+   "sources": [
+    "https://www.codebasehq.com/",
+    "https://www.codebasehq.com/features",
+    "https://www.codebasehq.com/features/hosting/mercurial",
+    "https://stackshare.io/codebasehq/vs/github",
+    "https://alternativeto.net/software/codebase/about"
+   ],
+   "features": [
+    {
+     "name": "Git, Mercurial and Subversion hosting",
+     "detail": "unlimited repositories of any type per project",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "/g/ holds snippets in a link; no repositories"
+    },
+    {
+     "name": "Repository browser",
+     "detail": "files, history, diffs, blame",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "shows a GitHub file read-only (?gh=) with line numbers; no history or blame"
+    },
+    {
+     "name": "Code review on commits / merge requests",
+     "detail": "comment on changes",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "\"What changed\" diff between an edited copy and its original; no comments"
+    },
+    {
+     "name": "Ticket tracking",
+     "detail": "custom statuses, priorities, categories, assignees",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Milestones and sprints",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Kanban board",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Time tracking",
+     "detail": "log hours, billed and unbilled, estimates against tickets",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Notebook (wiki)",
+     "detail": "source-controlled Markdown documentation",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Project files and discussions",
+     "detail": "upload files, discuss in the project",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "up to 8 files per gist (lib/gist.js MAX_FILES); no discussion"
+    },
+    {
+     "name": "Deployment tracking (unconfirmed)",
+     "detail": "record deployments",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Users, teams and permissions",
+     "detail": "accounts with project access",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no accounts by design; a passphrase locks a gist"
+    },
+    {
+     "name": "Activity feed and notifications",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "API and webhooks",
+     "detail": "",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "none"
+    },
+    {
+     "name": "Paid plans",
+     "detail": "Hobbyist £20/month (6 projects, 10 users), Studio £50, Agency £110, Corporate £220",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "Verse charges nothing"
+    }
+   ]
+  }
+ },
+ "verse_extra": [
+  "No account needed",
+  "Nothing stored: the gist lives in the link",
+  "Passphrase lock that never leaves the page",
+  "Edit a copy and see what changed",
+  "Open any public GitHub file as a gist with lines lit (?gh=...&L=)"
+ ],
+ "gaps": [
+  "Git, Mercurial and Subversion hosting",
+  "Ticket tracking",
+  "Milestones and sprints",
+  "Kanban board",
+  "Time tracking",
+  "Notebook (wiki)",
+  "Users, teams and permissions",
+  "Repository browser",
+  "Code review on commits / merge requests",
+  "Deployment tracking (unconfirmed)",
+  "Activity feed and notifications",
+  "API and webhooks",
+  "Paid plans",
+  "Project files and discussions"
+ ],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "codebasehq.com": {
+    "url": "https://www.codebasehq.com/",
+    "scanned": "2026-10-26",
+    "features": []
+   }
+  }
+ }
+}

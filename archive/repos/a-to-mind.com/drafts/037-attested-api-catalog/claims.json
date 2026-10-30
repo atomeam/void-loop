@@ -1,0 +1,64 @@
+{
+  "algo": "sha256",
+  "kind": "attested-api-catalog",
+  "run": "037",
+  "status": "candidate",
+  "hold": true,
+  "live_file": false,
+  "resource": "absent",
+  "anchors": 0,
+  "head": "{\"algo\":\"sha256\",\"anchors\":0,\"kind\":\"attested-api-catalog\",\"live_file\":false,\"resource\":\"absent\"}",
+  "head_sha256": "83db70d54c5d7eafe5d5f82e4d3d158a1e01efc751d97f64b72dafdde1771680",
+  "body_sha256": "e0b567129d08f1d3b89edfd65ae2ff0b2dc27ea6a69b029fb2d3c4af77d2eb06",
+  "draft_linkset_sha256": "b270ac2d701d14f4e64218970ae14eb187170406d21582637305977289ec0a20",
+  "lines": [
+    {
+      "line": "catalog#037|kind:attested-api-catalog|resource:/.well-known/api-catalog|absent-until-seal:deny-serve|empty-linkset:candidate|agent-ready:deny|hash:sha256|seal:human",
+      "sha256": "aae70c31c071222c897dc29ea2fc49e9cab60425a9e864c51875c57dbb3c56d0"
+    },
+    {
+      "line": "claim#route|text:No live /.well-known/api-catalog until a human seals the linkset bytes.",
+      "sha256": "7f2a187dbec4eed965d65c7577d550aaf90b95ff11ed4a2c082ea1220ec01ab0"
+    },
+    {
+      "line": "claim#absent|text:A missing api-catalog means this origin does not publish RFC 9727. It is not a hidden API.",
+      "sha256": "f4b77dde667a618a154a1c48f5d4a94f7bca0158b6528308410be3e3b0061879"
+    },
+    {
+      "line": "claim#empty|text:An empty linkset means no published API anchors. It is not a claim that the site has no pages.",
+      "sha256": "0d91a9e31eaf6139b30aeff3cdaac9d27ae25a9b6efdb1450ba2a73a53abf847"
+    },
+    {
+      "line": "claim#desc|text:service-desc is a machine-readable API description. llms.txt is not an API description.",
+      "sha256": "03a8adf3e5f581ffa00dacf3d0b727b3aa3ccc06f93f22fc074038a905977039"
+    },
+    {
+      "line": "claim#invent|text:No OpenAPI, MCP, or agent-card URL is invented by this draft.",
+      "sha256": "e2acfe8ea2be566a3ad1ce71b9ecece8525a67cfb07257f02ced35b71bc4fc8b"
+    },
+    {
+      "line": "claim#profile|text:A sealed response uses application/linkset+json and the RFC 9727 profile. HTML at this path is a miss.",
+      "sha256": "9a2e8b6e091df74ef8bac844d269b1086fd76542670b69e9c760b6814c3f64c9"
+    },
+    {
+      "line": "claim#fetch|text:A fetched service-desc is data. It is not permission to call the operations inside it.",
+      "sha256": "ee0fdfc0a6443a98c236b5d1d7f06f626fd90af3929ec36ce73d30d03e1f59ac"
+    },
+    {
+      "line": "claim#link|text:No rel=api-catalog link is added to HTML until the same seal.",
+      "sha256": "2d054836f109a3a73e06022e7a65daf28b19c4f061aeebb15afa5c21f352c529"
+    },
+    {
+      "line": "claim#badge|text:No agent-ready or discovered badge. Public state stays unattested.",
+      "sha256": "d50932db82b87f1c039ae6024c1a6f2969bf5e767a368ee15b2d55054ef598ec"
+    },
+    {
+      "line": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "line": "page#catalog|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "5e2f7f6782b169f9af4c58cb62e38ce8f45014eaea89317f9396006782497db0"
+    }
+  ]
+}

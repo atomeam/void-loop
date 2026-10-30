@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flip a coin · Verse</title>
+<meta name="description" content="Flip a coin: one tap, a fair flip from your device's secure random numbers. Any real coin ever struck, or one you make. No ads, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Coin flip · Verse">
+<meta property="og:description" content="Flip a coin: one tap, a fair flip from your device's secure random numbers. Any real coin ever struck, or one you make. No ads, no sign-up.">
+<meta property="og:url" content="https://a-to-mind.com/flip/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  /* a-to-mind.com/flip (owner, 2026-10-24: beat justflipacoin.com): the coin and nothing else, no ads, no consent box, no tracker; it loads the
+     coin card's own code (skills/coin.js) and none of the rest of Verse, so the first flip lands in well under a second */
+  :root { color-scheme: dark; }
+  html, body { margin: 0; min-height: 100%; background: radial-gradient(ellipse at 50% 30%, #1d1830, #07060b 70%); color: #ecebf5; font: 16px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 24px 16px 40px; }
+  h2 { text-align: center; font-size: 22px; margin: 6px 0 0; }
+  .src { text-align: center; font-size: 12px; opacity: .65; margin-top: 10px; }
+  .src a, footer a { color: inherit; }
+  .g-btn { font: inherit; font-size: 13px; background: transparent; color: inherit; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 3px 11px; cursor: pointer; }
+  input, select { color: inherit; background: transparent; border: 1px solid rgba(255,255,255,.3); border-radius: 8px; padding: 4px 8px; font: inherit; }
+  footer { text-align: center; font-size: 12px; opacity: .6; margin-top: 18px; }
+</style><!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/flip/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Flip a coin","url":"https://a-to-mind.com/flip/","description":"Heads or tails from a coin that lands in under a second, with no ads and nothing to accept.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"flip a coin, coin flip online, heads or tails, coin toss, virtual coin flip","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Flip a coin","item":"https://a-to-mind.com/flip/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/skills/coin.js">
+<link rel="modulepreload" href="/lib/tally.js">
+<link rel="modulepreload" href="/lib/reactions.js">
+<link rel="modulepreload" href="/lib/emoji.js">
+<link rel="modulepreload" href="/lib/coins.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main id="card"><h2>Flip a coin</h2><noscript><p style="text-align:center">The coin needs JavaScript to flip.</p></noscript></main>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/wheel/">Wheel of names</a> <a href="/random/">Random number</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<footer><a href="/flip/?q=flip+a+famous+coin">Flip a real coin from history</a> · <a href="/flip/?q=create+a+coin">Make your own coin</a> · <a href="/">Ask Verse anything</a></footer>
+<script type="module">
+  import coin from '/skills/coin.js';
+  const card = document.getElementById('card');
+  const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const ask = (q) => { const t = String(q || '').trim(); return coin.match(t.toLowerCase(), t) ? t : 'flip a coin'; };
+  const api = {
+    esc,
+    showPage(build) { card.innerHTML = ''; build(card); return card; },
+    say: null,
+    // a coin ask stays on this page; anything else goes to Verse
+    stage: { ask(q) { const t = String(q || ''); if (coin.match(t.toLowerCase(), t)) { history.pushState(null, '', '/flip/?q=' + encodeURIComponent(t)); coin.run(t, api); } else location.href = '/?q=' + encodeURIComponent(t); } },
+  };
+  coin.run(ask(new URLSearchParams(location.search).get('q') || 'flip a coin'), api);
+  addEventListener('popstate', () => coin.run(ask(new URLSearchParams(location.search).get('q') || 'flip a coin'), api));
+  // the space bar or Enter flips again, as a coin site should
+  addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|select|textarea|button)$/i.test(e.target.tagName)) { e.preventDefault(); const b = card.querySelector('.coin-again'); if (b) b.click(); } });
+  // share this page (the tower's sharing aspect): the phone's own share sheet where there is one, else the link copied; the address keeps the coin
+  const share = () => { const url = location.href, title = document.title;
+    if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }
+    try { navigator.clipboard.writeText(url); return 'Link copied'; } catch (_) { return 'Copy the address bar'; } };
+  // the "Use with" row comes after the load event, which the tower times: nothing a person is not waiting for loads before it
+  addEventListener('load', () => { Promise.all([import('/lib/toolkit.js'), import('/lib/flip-card.js')]).then(([m, f]) => m.mountRelated(document.getElementById('related'), '/flip/', [{ label: 'Share this coin', run: share }], { card: () => f.cardAsk(location.search) })).catch(() => {}); });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

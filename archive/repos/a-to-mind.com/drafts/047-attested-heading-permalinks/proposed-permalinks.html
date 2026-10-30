@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 047 — attested heading permalinks (not sealed)</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f4f1ea;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d7d0c4;
+      --mark: #6b3f12;
+      --focus: #0b57d0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161410;
+        --ink: #f3efe6;
+        --muted: #b7b0a4;
+        --line: #3a342c;
+        --mark: #e2b07a;
+        --focus: #9ec1ff;
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      font: 1.05rem/1.5 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.7rem; line-height: 1.2; margin: 0 0 0.5rem; }
+    p { margin: 0.75rem 0; }
+    .status {
+      border: 1px solid var(--line);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0 1.5rem;
+    }
+    .h-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin: 2rem 0 0.4rem;
+    }
+    h2 { font-size: 1.25rem; margin: 0; scroll-margin-block-start: 1rem; }
+    .permalink {
+      font: 0.95rem/1 ui-monospace, monospace;
+      color: var(--mark);
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+      min-width: 1.5rem;
+      min-height: 1.5rem;
+    }
+    .permalink:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .injected { border-left: 3px solid var(--line); padding-left: 0.75rem; color: var(--muted); }
+    code, .mono { font-family: ui-monospace, monospace; font-size: 0.86rem; overflow-wrap: anywhere; }
+    button {
+      font: inherit;
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 0.4rem 0.7rem;
+      margin-right: 0.5rem;
+    }
+    button:disabled { opacity: 0.45; }
+    button:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
+    dialog { border: 1px solid var(--ink); background: var(--bg); color: var(--ink); max-width: 28rem; }
+    dialog::backdrop { background: rgba(0,0,0,0.4); }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="mono">Draft 047 · not sealed · emit false</p>
+    <h1>Attested heading permalinks</h1>
+    <p>This page is a hold-gate preview. It does not change a-to-mind.com. A permalink exists only for a heading in the sealed catalog. Heading text is not an id source.</p>
+    <div class="status" role="status" id="status">Catalog hash check pending. Fragment not evaluated.</div>
+
+    <nav aria-label="Attested sections">
+      <p>Sections in this draft catalog:</p>
+      <ul id="toc"></ul>
+    </nav>
+
+    <article id="doc"></article>
+
+    <section class="injected" aria-label="Unattested example">
+      <h2>Injected heading, not in the catalog</h2>
+      <p>No id. No permalink. A slugger would have invented <span class="mono">#injected-heading-not-in-the-catalog</span>. This draft does not.</p>
+    </section>
+
+    <p>
+      <button type="button" id="hold">Hold this draft</button>
+      <button type="button" id="seal" disabled>Seal (human only)</button>
+    </p>
+    <p class="mono" id="hold-note">Hold writes sessionStorage only. It is not a seal.</p>
+    <p class="mono">Contract SHA-256<br>3bad58ad38220f3b93cb4b392eeae6ae1594e77192fc087d5013e15ea0d2f122</p>
+    <p class="mono">Catalog SHA-256<br>2d1dab226803f49454baf6054d2951f438e1fd3dc9284ef14863504e30cbd0c9</p>
+  </main>
+
+  <dialog id="gate" aria-labelledby="gate-title">
+    <h2 id="gate-title">Hold is not a seal</h2>
+    <p>Holding records that a person looked at this draft in this tab. It does not add ids to the live site, and it does not put this slug on the Queue.</p>
+    <form method="dialog">
+      <button type="submit" value="hold" id="confirm-hold">Record hold</button>
+      <button type="submit" value="cancel">Cancel</button>
+    </form>
+  </dialog>
+
+  <script type="application/json" id="catalog">{
+  "schema": "a-to-mind.heading-permalinks/047",
+  "emit": false,
+  "page": "draft-only",
+  "autoslug": "deny",
+  "hover_only": "deny",
+  "copy_replaces_nav": "deny",
+  "jsonld": "deny",
+  "smooth_scroll": "deny",
+  "seal": "human",
+  "headings": [
+    {
+      "id": "what-a-permalink-is",
+      "level": 2,
+      "text": "What a permalink is",
+      "href": "#what-a-permalink-is"
+    },
+    {
+      "id": "catalog-not-slug",
+      "level": 2,
+      "text": "Catalog, not a slugger",
+      "href": "#catalog-not-slug"
+    },
+    {
+      "id": "fragment-miss",
+      "level": 2,
+      "text": "A fragment that is not attested",
+      "href": "#fragment-miss"
+    }
+  ]
+}</script>
+  <script>
+    const EXPECTED = "2d1dab226803f49454baf6054d2951f438e1fd3dc9284ef14863504e30cbd0c9";
+    const status = document.getElementById("status");
+    const catalog = JSON.parse(document.getElementById("catalog").textContent);
+
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    function render(ok) {
+      const toc = document.getElementById("toc");
+      const doc = document.getElementById("doc");
+      toc.replaceChildren();
+      doc.replaceChildren();
+      if (!ok || catalog.emit !== false) {
+        status.textContent = "Catalog refused. No permalinks rendered.";
+        return;
+      }
+      for (const heading of catalog.headings) {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = heading.href;
+        a.textContent = heading.text;
+        li.append(a);
+        toc.append(li);
+
+        const row = document.createElement("div");
+        row.className = "h-row";
+        const h = document.createElement("h" + heading.level);
+        h.id = heading.id;
+        h.textContent = heading.text;
+        const link = document.createElement("a");
+        link.className = "permalink";
+        link.href = heading.href;
+        const mark = document.createElement("span");
+        mark.setAttribute("aria-hidden", "true");
+        mark.textContent = "#";
+        const name = document.createElement("span");
+        name.className = "visually-hidden";
+        name.textContent = "Permalink to " + heading.text;
+        link.append(mark, name);
+        row.append(h, link);
+        const p = document.createElement("p");
+        p.textContent = "Stable id " + heading.id + " is from the catalog. Activating the permalink navigates. It does not copy, and it does not call the clipboard.";
+        doc.append(row, p);
+      }
+    }
+
+    function fragmentNote() {
+      const hash = location.hash;
+      if (!hash) {
+        status.textContent = "Catalog matches. No fragment in the URL.";
+        return;
+      }
+      const known = catalog.headings.some((h) => h.href === hash);
+      status.textContent = known
+        ? "Catalog matches. Fragment " + hash + " is attested."
+        : "Catalog matches. Fragment " + hash + " is not attested. Not treated as a heading.";
+    }
+
+    sha256(document.getElementById("catalog").textContent).then((digest) => {
+      const ok = digest === EXPECTED;
+      render(ok);
+      if (ok) fragmentNote();
+      else status.textContent = "Catalog hash mismatch. Permalinks withheld.";
+    });
+
+    window.addEventListener("hashchange", fragmentNote);
+
+    const gate = document.getElementById("gate");
+    document.getElementById("hold").addEventListener("click", () => gate.showModal());
+    gate.addEventListener("close", () => {
+      if (gate.returnValue !== "hold") return;
+      sessionStorage.setItem("atm-permalink-hold-047", JSON.stringify({
+        at: new Date().toISOString(),
+        seal: false,
+        emit: false
+      }));
+      document.getElementById("hold-note").textContent = "Hold recorded in this tab. Still not a seal. emit remains false.";
+    });
+  </script>
+</body>
+</html>

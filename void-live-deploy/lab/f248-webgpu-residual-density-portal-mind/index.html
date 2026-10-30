@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --hue: 220;
+  --blur: 0px;
+  --contrast: 1;
+  --bg: #0a0a12;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  filter: contrast(var(--contrast));
+}
+canvas { display: block; position: absolute; inset: 0; }
+#ui {
+  position: absolute; top: 12px; left: 12px; z-index: 10;
+  background: rgba(0,0,0,.45); padding: 8px 12px; border-radius: 8px;
+  backdrop-filter: blur(6px); font-size: 13px; max-width: 320px;
+}
+.portal {
+  position: absolute; width: 140px; height: 80px;
+  background: rgba(20,20,40,.55);
+  border: 1px solid hsla(var(--hue), 70%, 60%, .6);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; text-align: center; cursor: grab;
+  transform-style: preserve-3d;
+  transition: filter .2s;
+  user-select: none;
+  z-index: 5;
+}
+.portal:active { cursor: grabbing; }
+#status { margin-top: 6px; opacity: .8; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Residual Density Portal Mind · Verse lab</title>
+<meta name="description" content="Coarse residual density lattice (Canvas2D today, WebGPU compute path noted) whose cells hold short residual embeddings that diffuse under a residual-driven rate.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Residual Density Portal Mind · Verse lab">
+<meta property="og:description" content="Coarse residual density lattice (Canvas2D today, WebGPU compute path noted) whose cells hold short residual embeddings that diffuse under a residual-driven rate.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f248-webgpu-residual-density-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f248-webgpu-residual-density-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F-248 Residual Density Portal Mind</strong><br>
+  Tilt / sound / drag portals to consolidate<br>
+  <button id="mic">Enable Mic</button>
+  <button id="orient">Enable Tilt</button>
+  <button id="xr">Enter XR</button>
+  <div id="status">residual: —</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Residual Density Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,469 @@
+{
+ "floor": "inkfluence",
+ "verse_page": "/books/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "inkfluenceai.com": {
+   "url": "https://www.inkfluenceai.com/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://www.inkfluenceai.com/",
+    "https://www.inkfluenceai.com/features",
+    "https://www.inkfluenceai.com/pricing",
+    "https://www.inkfluenceai.com/faq",
+    "https://www.inkfluenceai.com/help",
+    "https://www.inkfluenceai.com/what-is-inkfluence-ai",
+    "https://www.inkfluenceai.com/about"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Turn one idea into a finished book",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"turn\", \"idea\", \"finish\""
+    },
+    {
+     "name": "Real books, made this way",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"real\", \"made\", \"way\""
+    },
+    {
+     "name": "Watch your book take shape",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"watch\", \"take\", \"shape\""
+    },
+    {
+     "name": "Make the book. Then make it pay",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"make\", \"then\", \"pay\""
+    },
+    {
+     "name": "The whole book pipeline, on one screen",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"whole\", \"pipeline\", \"screen\""
+    },
+    {
+     "name": "Write with an editor that keeps up",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"editor\", \"keep\""
+    },
+    {
+     "name": "Covers that don't look homemade",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"cover\", \"don\", \"look\", \"homemade\""
+    },
+    {
+     "name": "Export files stores actually accept",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"store\"; not \"export\", \"file\", \"actually\""
+    },
+    {
+     "name": "100,000+ books and counting",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"100\", \"000+\", \"count\""
+    },
+    {
+     "name": "Your book, narrated. Included in Creator and Premium",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"narrat\", \"includ\", \"creator\""
+    },
+    {
+     "name": "Creators with real shelves",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"creator\", \"real\", \"shelve\""
+    },
+    {
+     "name": "Start free. Upgrade when it earns",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"start\", \"upgrade\", \"when\", \"earn\""
+    },
+    {
+     "name": "Free",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words"
+    },
+    {
+     "name": "Creator",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"creator\""
+    },
+    {
+     "name": "Premium",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"premium\""
+    },
+    {
+     "name": "Before you ask",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"ask\"; not \"before\""
+    },
+    {
+     "name": "Start tonight. Publish this week",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"start\", \"tonight\", \"publish\", \"week\""
+    },
+    {
+     "name": "Write, design, and sell books from one place",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"write\", \"design\", \"sell\""
+    },
+    {
+     "name": "From first idea to first sale",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"first\", \"idea\", \"sale\""
+    },
+    {
+     "name": "AI Book Generator",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"generator\""
+    },
+    {
+     "name": "Sell on Etsy & Gumroad",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"sell\", \"etsy\", \"gumroad\""
+    },
+    {
+     "name": "Smart Editor",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"smart\", \"editor\""
+    },
+    {
+     "name": "Brand Kit",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"brand\", \"kit\""
+    },
+    {
+     "name": "Multi-Format Export",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"multi\", \"format\", \"export\""
+    },
+    {
+     "name": "Lead Magnet Blocks",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"lead\", \"magnet\", \"block\""
+    },
+    {
+     "name": "iPhone & iPad App",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"iphone\", \"ipad\""
+    },
+    {
+     "name": "AI Cover Designer",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"cover\", \"designer\""
+    },
+    {
+     "name": "Explore the full platform",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"explore\", \"full\", \"platform\""
+    },
+    {
+     "name": "Inkfluence vs stitched tool stacks",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"inkfluence\", \"stitch\", \"stack\""
+    },
+    {
+     "name": "Pick the path that fits your book",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"pick\", \"path\", \"fit\""
+    },
+    {
+     "name": "Unblock Your Creativity",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"unblock\", \"creativity\""
+    },
+    {
+     "name": "Curriculum to Courseware",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"curriculum\", \"courseware\""
+    },
+    {
+     "name": "High-Converting Lead Magnets",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"high\", \"convert\", \"lead\", \"magnet\""
+    },
+    {
+     "name": "See Real AI-Generated Books",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"see\", \"real\", \"generat\""
+    },
+    {
+     "name": "Published by Real Creators",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"publish\", \"real\", \"creator\""
+    },
+    {
+     "name": "It's like having a professional editor on retainer",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"like\", \"having\", \"professional\", \"editor\""
+    },
+    {
+     "name": "Beautiful by default. Customizable by choice",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"beautiful\", \"default\", \"customizable\", \"choice\""
+    },
+    {
+     "name": "How the Features Work Together",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"how\", \"feature\", \"work\", \"together\""
+    },
+    {
+     "name": "Feature FAQs",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"feature\", \"faq\""
+    },
+    {
+     "name": "Your first book is free to write",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"first\", \"write\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Write with an editor that keeps up",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Covers that don't look homemade",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Creators with real shelves",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Start free. Upgrade when it earns",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Free",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Creator",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Premium",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Start tonight. Publish this week",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "From first idea to first sale",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Sell on Etsy & Gumroad",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Smart Editor",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Brand Kit",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Multi-Format Export",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Lead Magnet Blocks",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "iPhone & iPad App",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "AI Cover Designer",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Explore the full platform",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Inkfluence vs stitched tool stacks",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Unblock Your Creativity",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Curriculum to Courseware",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "High-Converting Lead Magnets",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Published by Real Creators",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "It's like having a professional editor on retainer",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Beautiful by default. Customizable by choice",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "How the Features Work Together",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  },
+  {
+   "name": "Feature FAQs",
+   "sites": [
+    "inkfluenceai.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}

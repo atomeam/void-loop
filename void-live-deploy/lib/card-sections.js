@@ -18,7 +18,7 @@ export function sectionsOf(blocks, { max = LONG_BODY } = {}) {
   for (const g of groups) {
     const prev = out[out.length - 1];
     if (prev && g.len < MIN_SECTION) { prev.to = g.to; prev.len += g.len; continue; }
-    out.push({ title: g.head.length > 70 ? g.head.slice(0, 67).replace(/\s+\S*$/, '') + '…' : g.head, from: g.from, to: g.to, len: g.len });
+    out.push({ title: g.head, from: g.from, to: g.to, len: g.len });
   }
   if (out.length < 2) return [];
   return out.map(({ title, from, to }) => ({ title: title || 'Section', from, to }));

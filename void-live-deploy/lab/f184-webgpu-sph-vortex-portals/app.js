@@ -1,0 +1,175 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+const N = 120;
+const particles = [];
+for (let i = 0; i < N; i++) {
+  particles.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-0.5)*2, vy: (Math.random()-0.5)*2,
+    dens: 1
+  });
+}
+
+let params = { visc: 0.02, press: 0.5, swirl: 0.3 };
+let best = { ...params, fitness: 0 };
+let gen = 0;
+let swirlScore = 0;
+let lastVx = 0, lastVy = 0;
+let pointer = { x: W/2, y: H/2, active: false, hist: [] };
+
+const portals = [];
+for (let i = 0; i < 3; i++) {
+  const el = document.createElement('div');
+  el.className = 'portal';
+  el.textContent = 'V' + (i+1);
+  document.body.appendChild(el);
+  portals.push({ el, cx: 0, cy: 0, ang: 0, r: 40 });
+}
+
+function computeForces() {
+  const bins = {};
+  const BS = 40;
+  particles.forEach(p => {
+    const bx = Math.floor(p.x / BS), by = Math.floor(p.y / BS);
+    const k = bx + ',' + by;
+    (bins[k] = bins[k] || []).push(p);
+  });
+
+  let totalCurl = 0;
+  particles.forEach(p => {
+    let fx = 0, fy = 0, dens = 0;
+    const bx = Math.floor(p.x / BS), by = Math.floor(p.y / BS);
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      const k = (bx+dx) + ',' + (by+dy);
+      (bins[k] || []).forEach(q => {
+        if (q === p) return;
+        const dx = q.x - p.x, dy = q.y - p.y;
+        const d2 = dx*dx + dy*dy + 1;
+        const d = Math.sqrt(d2);
+        dens += 1 / d;
+        const pr = params.press * (dens - 1) / d2;
+        fx -= pr * dx; fy -= pr * dy;
+        fx += params.visc * (q.vx - p.vx) / d;
+        fy += params.visc * (q.vy - p.vy) / d;
+        totalCurl += (dx * (q.vy - p.vy) - dy * (q.vx - p.vx)) / (d2 + 10);
+      });
+    }
+    p.dens = dens;
+    if (pointer.active) {
+      const dx = pointer.x - p.x, dy = pointer.y - p.y;
+      const d2 = dx*dx + dy*dy + 10;
+      const d = Math.sqrt(d2);
+      if (d < 80) {
+        const str = 2.5 / d;
+        fx += str * dx * 0.3;
+        fy += str * dy * 0.3;
+        fx += params.swirl * (-dy) * 0.15;
+        fy += params.swirl * dx * 0.15;
+      }
+    }
+    p.vx = (p.vx + fx) * 0.98;
+    p.vy = (p.vy + fy) * 0.98;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -0.8;
+    if (p.y < 0 || p.y > H) p.vy *= -0.8;
+    p.x = Math.max(0, Math.min(W, p.x));
+    p.y = Math.max(0, Math.min(H, p.y));
+  });
+  return totalCurl / N;
+}
+
+function detectVortices() {
+  const centers = [];
+  const used = new Set();
+  particles.forEach((p, i) => {
+    if (used.has(i) || p.dens < 0.8) return;
+    let cx = p.x, cy = p.y, c = 1, ang = Math.atan2(p.vy, p.vx);
+    used.add(i);
+    particles.forEach((q, j) => {
+      if (used.has(j)) return;
+      const d = Math.hypot(q.x - p.x, q.y - p.y);
+      if (d < 60 && q.dens > 0.6) {
+        cx += q.x; cy += q.y; c++;
+        used.add(j);
+      }
+    });
+    if (c > 3) centers.push({ x: cx/c, y: cy/c, str: c, ang });
+  });
+  centers.sort((a,b) => b.str - a.str);
+  return centers.slice(0, 3);
+}
+
+function evolve() {
+  const vort = Math.abs(swirlScore);
+  const fit = vort * 0.5 + Math.min(2, Math.abs(lastVort || 0));
+  if (fit > best.fitness) best = { ...params, fitness: fit };
+  params.visc = Math.max(0.001, best.visc * (0.8 + Math.random()*0.4));
+  params.press = Math.max(0.1, best.press * (0.8 + Math.random()*0.4));
+  params.swirl = Math.max(0.05, best.swirl * (0.85 + Math.random()*0.3));
+  gen++;
+  swirlScore *= 0.7;
+  document.getElementById('gen').textContent = gen;
+  document.getElementById('visc').textContent = params.visc.toFixed(3);
+  document.getElementById('press').textContent = params.press.toFixed(2);
+}
+
+let lastVort = 0;
+function loop() {
+  const vort = computeForces();
+  lastVort = vort;
+  swirlScore = swirlScore * 0.95 + (pointer.active ? Math.abs(pointer.hist.slice(-5).reduce((s,v,i,a)=> i? s + (a[i-1].x*v.y - a[i-1].y*v.x) : 0, 0)) : 0) * 0.05;
+  document.getElementById('vort').textContent = Math.abs(vort).toFixed(2);
+
+  ctx.fillStyle = 'rgba(10,10,18,0.25)';
+  ctx.fillRect(0,0,W,H);
+  particles.forEach(p => {
+    ctx.fillStyle = `hsla(${200 + p.dens*40}, 70%, ${50 + Math.min(40, Math.hypot(p.vx,p.vy)*10)}%, 0.7)`;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + p.dens*0.5, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  const cents = detectVortices();
+  portals.forEach((port, i) => {
+    const c = cents[i] || { x: W/2 + Math.cos(i)*100, y: H/2 + Math.sin(i)*100, str: 1, ang: 0 };
+    port.cx = port.cx * 0.9 + c.x * 0.1;
+    port.cy = port.cy * 0.9 + c.y * 0.1;
+    port.ang += 0.02 + Math.abs(vort)*0.01;
+    const ox = Math.cos(port.ang) * (30 + c.str);
+    const oy = Math.sin(port.ang) * (30 + c.str);
+    port.el.style.left = (port.cx + ox - 40) + 'px';
+    port.el.style.top = (port.cy + oy - 40) + 'px';
+    port.el.style.transform = `scale(${0.8 + c.str*0.05}) rotate(${port.ang*30}deg)`;
+    port.el.style.borderColor = `hsla(${180 + vort*20}, 80%, 60%, 0.8)`;
+  });
+
+  document.body.style.filter = `hue-rotate(${vort * 15}deg)`;
+
+  requestAnimationFrame(loop);
+}
+loop();
+
+canvas.addEventListener('pointerdown', e => { pointer.active = true; pointer.x = e.clientX; pointer.y = e.clientY; pointer.hist = []; });
+canvas.addEventListener('pointermove', e => {
+  if (!pointer.active) return;
+  const vx = e.clientX - pointer.x, vy = e.clientY - pointer.y;
+  pointer.hist.push({x: vx, y: vy});
+  if (pointer.hist.length > 12) pointer.hist.shift();
+  pointer.x = e.clientX; pointer.y = e.clientY;
+  lastVx = vx; lastVy = vy;
+});
+canvas.addEventListener('pointerup', () => pointer.active = false);
+canvas.addEventListener('pointerleave', () => pointer.active = false);
+
+document.getElementById('evolve').onclick = evolve;
+document.getElementById('seal').onclick = () => {
+  const data = { params: best, gen, ts: Date.now() };
+  try { localStorage.setItem('void-f184-seal', JSON.stringify(data)); alert('Sealed genome to localStorage'); }
+  catch(e) { alert('Seal failed: ' + e.message); }
+};
+
+setInterval(evolve, 10000);

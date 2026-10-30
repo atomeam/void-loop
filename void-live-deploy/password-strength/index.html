@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How secure is my password? · Verse</title>
+<meta name="description" content="How long a password would take to guess, why, and what to change. Worked out on your device: the password is never sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Password strength · Verse">
+<meta property="og:description" content="How long a password would take to guess, why, and what to change. Worked out on your device: the password is never sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/password-strength/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/password-strength/ (owner, 2026-10-24: back to the easy sites; the data's easiest real tool was howsecureismypassword.net, which now points to another site, asks about cookies and loads analytics, tag-manager and widget scripts):
+     one file and one small module, no third party, no cookie, nothing stored, the password only ever in this page */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --c0: #d6334a; --c1: #e0702b; --c2: #d9a400; --c3: #3d9c4f; --c4: #1f8a70; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --c0: #ff6b7e; --c1: #ff9a5c; --c2: #f0c43a; --c3: #6fd184; --c4: #4fd1b0; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
+  .box { display: flex; gap: 8px; }
+  input[type=password], input[type=text] { flex: 1; font: inherit; font-size: 20px; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; letter-spacing: .02em; }
+  input:focus { outline: none; border-color: var(--accent); }
+  .meter { height: 10px; border-radius: 6px; background: var(--line); margin: 14px 0 6px; overflow: hidden; } .meter i { display: block; height: 100%; width: 0; background: var(--c0); transition: width .15s, background .15s; }
+  .hint { font-size: 14px; color: var(--soft); margin: 0 0 6px; }
+  #label { font-size: 28px; font-weight: 800; min-height: 1.3em; } #label.s0 { color: var(--c0); } #label.s1 { color: var(--c1); } #label.s2 { color: var(--c2); } #label.s3 { color: var(--c3); } #label.s4 { color: var(--c4); }
+  .times { display: grid; gap: 8px; margin: 8px 0 4px; } .times[hidden] { display: none; } .times div { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; } .times b { display: block; font-size: 22px; } .times span { font-size: 13px; color: var(--soft); }
+  ul { margin: 8px 0; padding-left: 20px; } li { margin: 4px 0; }
+  .opt { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 12px 0; font-size: 14px; }
+  button { font: inherit; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; background: transparent; color: var(--ink); cursor: pointer; } button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .opt label { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; cursor: pointer; } .opt input[type=checkbox] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
+  button { min-height: 36px; }
+  #leakmsg { font-size: 15px; } #leakmsg.bad { color: var(--c0); font-weight: 600; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/password-strength/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"How secure is my password?","url":"https://a-to-mind.com/password-strength/","description":"How long a password would take to guess, why, and what to change, worked out on your device: the password is never sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"how secure is my password, password strength checker, password checker, how long to crack my password, is my password strong, password entropy","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"How secure is my password?","item":"https://a-to-mind.com/password-strength/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/pwcheck.js">
+<link rel="modulepreload" href="/lib/pw-handover.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>How secure is my password?</h1>
+  <div class="box"><input id="pw" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="128" aria-label="Password to check" placeholder="Type a password" autofocus></div>
+  <div class="meter" aria-hidden="true"><i id="bar"></i></div>
+  <p class="hint" id="hint">Type one to see its strength, from very weak to very strong, how long it would take to crack from a stolen list and at a login, why, the tips that fix it, and whether it has leaked.</p>
+  <div id="label" aria-live="polite"></div>
+  <div class="times" id="times" hidden>
+    <div><b id="offline"></b><span>cracked from a stolen list, offline, at 10 billion tries a second</span></div>
+    <div><b id="online"></b><span>at a login that allows 100 tries a second</span></div>
+  </div>
+  <ul id="why"></ul><ul id="tips"></ul>
+  <div class="opt"><label><input type="checkbox" id="show"> show it</label><button type="button" id="leak" class="go">Has it leaked?</button><button type="button" id="link" title="Copies the link to this checker; the password is never in it">Copy link</button><span id="leakmsg" role="status"></span></div>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/">Password generator</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Worked out on this device; the password is never sent anywhere, stored, or put in the address. It is an estimate: words and patterns are priced the way a guesser would try them, and what we do not recognise is priced as random. "Has it leaked?" sends only the first 5 characters of a fingerprint of the password to the Have I Been Pwned list, which answers with every fingerprint that starts the same; the match is made here. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { check, leakCount } from '/lib/pwcheck.js';
+  import { receive } from '/lib/pw-handover.js';
+  const $ = (id) => document.getElementById(id), pw = $('pw');
+  const fill = (ul, items) => { ul.textContent = ''; for (const t of items) { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); } };
+  const draw = () => {
+    const r = check(pw.value); $('leakmsg').textContent = ''; $('leakmsg').className = '';
+    $('times').hidden = !r.length; $('label').textContent = r.label; $('label').className = r.length ? 's' + r.score : '';
+    $('bar').style.width = r.length ? (10 + r.score * 22.5) + '%' : '0'; $('bar').style.background = 'var(--c' + r.score + ')';
+    $('offline').textContent = r.offline ? r.offline[0].toUpperCase() + r.offline.slice(1) : ''; $('online').textContent = r.online ? r.online[0].toUpperCase() + r.online.slice(1) : '';
+    fill($('why'), r.reasons); fill($('tips'), r.tips);
+  };
+  pw.addEventListener('input', draw);
+  // a password from /password/ comes over in memory (postMessage from the page that opened this one), never in the address.
+  // an old link with #p= is wiped from the address unread
+  if (/[#&]p=/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
+  receive(window, (v) => { pw.value = v; draw(); });
+  $('show').addEventListener('change', (e) => { pw.type = e.target.checked ? 'text' : 'password'; pw.focus(); });
+  $('leak').addEventListener('click', async () => {
+    const m = $('leakmsg'); if (!pw.value) { m.textContent = 'Type one first.'; return; } m.textContent = 'Asking…'; m.className = '';
+    const n = await leakCount(pw.value);
+    if (n === null) m.textContent = 'Could not reach the leak list just now.';
+    else if (n > 0) { m.textContent = 'It has leaked: it is in known breaches ' + n.toLocaleString('en') + ' times. Do not use it anywhere.'; m.className = 'bad'; }
+    else m.textContent = 'Not in the known leaks (that does not make it strong).';
+  });
+  // Copy link: the address of this checker alone, never the password (nothing typed is ever put in the address)
+  $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.origin + location.pathname); $('link').textContent = 'Link copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1500); } catch (_) {} });
+  mountRelated(document.getElementById('related'), '/password-strength/');
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Photo tools: compress, convert, edit, strip EXIF · Verse</title>
+<meta name="description" content="Compress and convert photos (JPEG, PNG, WebP, AVIF) with a before and after slider, resize, crop, rotate, adjust, filters, text, draw, read and strip EXIF, and batch to a zip. Everything happens on your device: nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Photo tools · Verse">
+<meta property="og:description" content="Compress, convert, resize, crop, edit and clean photos on your device. Nothing is uploaded.">
+<meta property="og:url" content="https://a-to-mind.com/photos/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/photos/ (Versus' Photos floor and its lane: squoosh.app, photopea.com, tinypng.com, exif.tools, exifeditor.io, iloveimg.com): the first paint is this file alone, the editor is one module after load, every picture stays on the device */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --ok: #1f8a4c; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --ok: #6fd184; --on-accent: #15131c; --box: #14121c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 14px; text-align: center; min-height: 92px; box-sizing: border-box; } .drop.over { border-color: var(--accent); background: var(--box); }
+  .drop input { max-width: 100%; min-height: 44px; font: inherit; font-size: 15px; } .drop label { display: block; font-size: 15px; margin-bottom: 4px; } .drop small { display: block; color: var(--soft); font-size: 12px; margin-top: 4px; }
+  button, select, input[type=number], input[type=text] { font: inherit; font-size: 15px; color: var(--ink); }
+  button { background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; cursor: pointer; }
+  button.go { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); font-weight: 600; } button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); } button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  select, input[type=number], input[type=text] { background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 44px; width: 100%; box-sizing: border-box; min-width: 0; } select option { background: var(--bg); color: var(--ink); }
+  #work { margin-top: 12px; } #work[hidden] { display: none; }
+  .files { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 8px; } .files:empty { display: none; }
+  .files button { flex: 0 0 auto; padding: 0; width: 72px; min-height: 72px; border-radius: 10px; overflow: hidden; position: relative; background: var(--box); } .files button[aria-pressed="true"] { outline: 3px solid var(--accent); }
+  .files img { width: 72px; height: 72px; object-fit: cover; display: block; } .files b { position: absolute; right: 2px; bottom: 2px; font-size: 10px; background: #000b; color: #fff; padding: 0 4px; border-radius: 6px; }
+  .stage { position: relative; border: 1px solid var(--line); border-radius: 12px; background: var(--box) repeating-conic-gradient(#8881 0 25%, transparent 0 50%) 0 0 / 16px 16px; overflow: hidden; touch-action: pan-y; min-height: 200px; }
+  .stage canvas, .stage img { display: block; max-width: 100%; height: auto; margin: 0 auto; } #pv { max-height: 60vh; width: auto; } #ov { position: absolute; left: 0; top: 0; touch-action: none; }
+  #crop { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px #0008; touch-action: none; cursor: move; box-sizing: border-box; } #crop[hidden] { display: none; } #crop i { position: absolute; right: -2px; bottom: -2px; width: 34px; height: 34px; background: var(--accent); border-radius: 8px 0 0 0; cursor: nwse-resize; }
+  #cmp { position: relative; user-select: none; } #cmp[hidden] { display: none; } #cmp .after { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; clip-path: inset(0 0 0 50%); } #cmp .before { width: 100%; height: auto; }
+  #cmp .tag { position: absolute; top: 6px; font-size: 12px; background: #000b; color: #fff; border-radius: 6px; padding: 1px 6px; } #cmp .l { left: 6px; } #cmp .r { right: 6px; }
+  #cmpr { width: 100%; margin: 8px 0 0; accent-color: var(--accent); min-height: 32px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; } .tabs button { font-size: 14px; padding: 6px 12px; }
+  .panel { margin-top: 10px; display: grid; gap: 10px; } .panel[hidden] { display: none; } .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  label.f { display: grid; gap: 3px; font-size: 13px; color: var(--soft); } label.f output { float: right; color: var(--ink); } label.f input[type=range] { width: 100%; min-height: 32px; accent-color: var(--accent); margin: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; } .chips button { font-size: 13px; padding: 4px 12px; min-height: 40px; }
+  #line { font-size: 17px; font-weight: 600; } #line.ok { color: var(--ok); } #note, .hint { font-size: 13px; color: var(--soft); } .hint:empty { display: none; }
+  .dl { display: flex; flex-wrap: wrap; gap: 8px; } .dl a { display: inline-flex; align-items: center; text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; min-height: 26px; background: var(--accent); color: var(--on-accent, #fff); } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; } td, th { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; } th { color: var(--soft); font-weight: 500; width: 40%; }
+  .warn { background: var(--box); border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 8px; padding: 8px 10px; font-size: 14px; } .warn.clean { border-left-color: var(--ok); }
+  details summary { cursor: pointer; font-size: 13px; color: var(--soft); min-height: 32px; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; } #lang { float: right; min-height: 32px; font-size: 13px; padding: 2px 10px; }
+  [hidden] { display: none !important; } #related { min-height: 130px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style><!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/photos/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Photo tools: compress, convert, edit, strip EXIF","url":"https://a-to-mind.com/photos/","description":"Compress and convert photos to JPEG, PNG, WebP or AVIF with a quality slider, a before and after slider and the size saved; resize, crop with shapes, rotate and flip; brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo; see and strip EXIF and GPS; many photos at once as one zip. In English and German, on your device: nothing is uploaded.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"compress image online, convert png to webp, photo editor online, crop photo online, remove exif data from photo, image compressor no upload, compress images in bulk to zip","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/photos/?tab={tab}"},"tab-input":"required name=tab"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Photo tools: compress, convert, edit, strip EXIF","item":"https://a-to-mind.com/photos/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body data-start="out">
+<main>
+  <button type="button" id="lang" aria-label="Sprache / Language">DE</button>
+  <h1 id="h1" data-i="title">Photo tools</h1>
+  <p class="sub" id="sub" data-i="sub">Compress, convert, edit and clean photos. Everything happens on this device: nothing is uploaded, and it opens offline.</p>
+  <div class="drop" id="drop"><label for="file" data-i="choose">Choose photos, drop them here, or paste one</label><input id="file" type="file" accept="image/*" multiple><small data-i="drophint">JPEG, PNG, WebP, AVIF, GIF, BMP. Several at once make a batch.</small></div>
+  <p style="text-align:center;margin:0 0 10px"><button type="button" id="share" data-i="share">Share this tool</button></p>
+  <p class="sub" id="caps" data-i="caps" style="min-height:7.5em">Compress and convert JPEG, PNG, WebP and AVIF with a quality slider, a before and after slider and the size saved. Resize, crop with shapes, rotate and flip. Brightness, contrast, saturation, blur and sharpen, filters, text and drawing with undo and redo. See and strip EXIF, GPS and other metadata. Batch many photos into one zip. Paste or drop photos. Nothing is uploaded and it works offline.</p>
+  <div id="work" hidden>
+    <div class="files" id="files" role="group" aria-label="Your photos"></div>
+    <div class="bar tabs" id="tabs" role="group" aria-label="Tools">
+      <button type="button" data-t="out" aria-pressed="true" data-i="t_out">Compress and convert</button><button type="button" data-t="crop" aria-pressed="false" data-i="t_crop">Crop and rotate</button><button type="button" data-t="adj" aria-pressed="false" data-i="t_adj">Adjust</button><button type="button" data-t="fil" aria-pressed="false" data-i="t_fil">Filters</button><button type="button" data-t="draw" aria-pressed="false" data-i="t_draw">Draw</button><button type="button" data-t="text" aria-pressed="false" data-i="t_text">Text</button><button type="button" data-t="info" aria-pressed="false" data-i="t_info">EXIF and privacy</button>
+    </div>
+    <div class="bar"><button type="button" id="undo" disabled data-i="undo">Undo</button><button type="button" id="redo" disabled data-i="redo">Redo</button><button type="button" id="reset" data-i="reset">Reset all</button><span class="hint" id="histn" role="status"></span></div>
+    <div class="stage" id="stage" style="margin-top:10px">
+      <canvas id="pv" aria-label="Your photo"></canvas><canvas id="ov" aria-hidden="true"></canvas><div id="crop" hidden><i></i></div>
+      <div id="cmp" hidden><img class="before" alt="Original" id="cb"><img class="after" alt="Result" id="ca"><span class="tag l" data-i="orig">Original</span><span class="tag r" data-i="res">Result</span></div>
+    </div>
+    <input type="range" id="cmpr" min="0" max="100" value="50" hidden aria-label="Compare the original and the result">
+    <p class="hint" id="stagehint"></p>
+
+
+    <section class="panel" id="p-crop" aria-label="Crop and rotate" hidden>
+      <div class="chips" id="aspects" aria-label="Crop shape"></div>
+      <div class="chips"><button type="button" id="rotl" data-i="rotl">Rotate left</button><button type="button" id="rotr" data-i="rotr">Rotate right</button><button type="button" id="flh" data-i="flh">Flip left-right</button><button type="button" id="flv" data-i="flv">Flip up-down</button></div>
+      <div class="chips"><button type="button" id="docrop" class="go" data-i="docrop">Apply crop</button></div>
+    </section>
+
+    <section class="panel" id="p-adj" aria-label="Adjust" hidden>
+      <label class="f"><span><span data-i="bri">Brightness</span> <output>0</output></span><input type="range" data-a="bri" min="-100" max="100" value="0"></label>
+      <label class="f"><span><span data-i="con">Contrast</span> <output>0</output></span><input type="range" data-a="con" min="-100" max="100" value="0"></label>
+      <label class="f"><span><span data-i="sat">Saturation</span> <output>0</output></span><input type="range" data-a="sat" min="-100" max="100" value="0"></label>
+      <label class="f"><span><span data-i="blur">Blur</span> <output>0</output></span><input type="range" data-a="blur" min="0" max="20" value="0"></label>
+      <label class="f"><span><span data-i="sharpen">Sharpen</span> <output>0</output></span><input type="range" data-a="sharpen" min="0" max="100" value="0"></label>
+    </section>
+
+    <section class="panel" id="p-fil" aria-label="Filters" hidden><div class="chips" id="filters"></div><p class="hint" data-i="filhint">A filter sits on top of the sliders in Adjust; None takes it off.</p></section>
+
+    <section class="panel" id="p-draw" aria-label="Draw" hidden>
+      <div class="row2"><label class="f"><span data-i="colour">Colour</span><input type="color" id="dcol" value="#ff3366" style="width:100%;min-height:44px"></label><label class="f"><span><span data-i="brush">Brush size</span> <output id="bo">8</output></span><input type="range" id="bsz" min="1" max="60" value="8"></label></div>
+      <p class="hint" data-i="drawhint">Draw on the photo with a finger or a mouse. Undo takes the last stroke back.</p>
+    </section>
+
+    <section class="panel" id="p-text" aria-label="Text" hidden>
+      <label class="f"><span data-i="txt">Text</span><input type="text" id="ttxt" maxlength="120" value="Hello"></label>
+      <div class="row2"><label class="f"><span data-i="colour">Colour</span><input type="color" id="tcol" value="#ffffff" style="width:100%;min-height:44px"></label><label class="f"><span><span data-i="size">Size</span> <output id="to">8</output>%</span><input type="range" id="tsz" min="2" max="30" value="8"></label></div>
+      <p class="hint" data-i="texthint">Tap the photo where the text should go.</p>
+    </section>
+
+    <section class="panel" id="p-info" aria-label="EXIF and privacy" hidden>
+      <div id="priv" class="warn"></div>
+      <div class="dl"><button type="button" id="stripOnly2" class="go" data-i="stripOnly">Strip metadata only (same pixels)</button><button type="button" id="metajson" data-i="metajson">Save the metadata as JSON</button></div>
+      <table id="meta" aria-label="Metadata"></table>
+      <p class="hint" data-i="reenc">A copy made in Compress and convert is drawn again from the pixels, so it carries none of this.</p>
+    </section>
+    <section class="panel" id="p-out" aria-label="Compress and convert">
+      <h2 class="oh" data-i="t_out">Compress and convert</h2>
+      <div class="row2"><label class="f"><span data-i="format">Format</span><select id="fmt"></select></label><label class="f"><span data-i="colours">PNG colours</span><select id="cols"><option value="0">Full (lossless)</option><option value="256">256</option><option value="128">128</option><option value="64">64</option><option value="32">32</option><option value="16">16</option></select></label></div>
+      <label class="f" id="qrow"><span><span data-i="quality">Quality</span> <output id="qo">80</output></span><input type="range" id="q" min="5" max="100" value="80"></label>
+      <div class="row2"><label class="f"><span data-i="width">Width (px)</span><input type="number" id="w" min="1" max="12000" inputmode="numeric"></label><label class="f"><span data-i="height">Height (px)</span><input type="number" id="h" min="1" max="12000" inputmode="numeric"></label></div>
+      <div class="chips" id="pcts" aria-label="Scale"><button type="button" data-p="100" aria-pressed="true">100%</button><button type="button" data-p="75" aria-pressed="false">75%</button><button type="button" data-p="50" aria-pressed="false">50%</button><button type="button" data-p="25" aria-pressed="false">25%</button><button type="button" data-p="1080" aria-pressed="false">1080 px</button><button type="button" data-p="2048" aria-pressed="false">2048 px</button></div>
+      <div id="line" role="status" aria-live="polite"></div><div id="note"></div>
+      <div class="dl"><a id="dl" href="#" download="photo.jpg" hidden data-i="save">Save</a><button type="button" id="zip" class="go" hidden data-i="zip">Download all as a zip</button><button type="button" id="stripOnly" data-i="stripOnly">Strip metadata only (same pixels)</button></div>
+      <div class="hint" id="batchnote"></div>
+    </section>
+  </div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/photos/?tab=out">Compress images</a><a href="/photos/?tab=crop">Crop a photo</a><a href="/photos/?tab=adj">Brightness and filters</a><a href="/photos/?tab=info">Check a photo for GPS</a><a href="/photos/?lang=de">Deutsch</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/resize-image/">Resize an image</a> <a href="/color/">Colour codes</a> <a href="/convert/">Unit converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer><span data-i="foot">Done on this device: pictures are never uploaded, saved copies are drawn again from the pixels so they carry no camera or place data, and the page opens offline after one visit. Quality 1 to 100 is the browser's encoder; AVIF is offered where this browser can write it.</span> <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module" src="/photos/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

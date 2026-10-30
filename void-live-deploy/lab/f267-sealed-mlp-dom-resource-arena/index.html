@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { --bg: #0d1117; --fg: #e6edf3; --accent: #58a6ff; --card: #161b22; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; background: #010409; cursor: crosshair; }
+  #hud { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; flex-wrap: wrap; z-index: 10; pointer-events: none; }
+  #hud > * { pointer-events: auto; }
+  button, input, textarea { background: var(--card); color: var(--fg); border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+  button:hover { border-color: var(--accent); }
+  .agent-card { position: absolute; min-width: 90px; padding: 6px 8px; background: var(--card); border: 2px solid #30363d; border-radius: 8px; font-size: 11px; pointer-events: none; transition: transform 0.1s linear, width 0.2s, height 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+  .agent-card.selected { border-color: var(--accent); }
+  #info { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: .8; max-width: 60%; }
+  #genomeBox { position: absolute; top: 60px; right: 12px; width: 220px; display: none; flex-direction: column; gap: 6px; }
+  #genomeBox.open { display: flex; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sealed MLP DOM Resource Arena · Verse lab</title>
+<meta name="description" content="Local multi-agent competition on a Canvas2D resource field with hybrid DOM agent cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sealed MLP DOM Resource Arena · Verse lab">
+<meta property="og:description" content="Local multi-agent competition on a Canvas2D resource field with hybrid DOM agent cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f267-sealed-mlp-dom-resource-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f267-sealed-mlp-dom-resource-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  <button id="addAgent">+ Agent</button>
+  <button id="seal">Seal selected</button>
+  <button id="exportBtn">Export genome</button>
+  <button id="importToggle">Import…</button>
+  <span id="status">Click canvas to plant resources</span>
+</div>
+<div id="genomeBox">
+  <textarea id="genomeIn" rows="4" placeholder="paste genome string…"></textarea>
+  <button id="doImport">Spawn from genome</button>
+</div>
+<div id="info">F267: local tiny-MLP agents compete for resources you plant. Higher energy → larger DOM card. Seal/export/import genomes (IndexedDB + clipboard). Offline.</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Sealed MLP DOM Resource Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

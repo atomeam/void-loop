@@ -4,7 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
-await acquireHeavy('3D tests (test_3d.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
+// one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits. Only when run on its own: tools/test_void.mjs
+// imports this file while it holds the lock itself, and the import then waited on its own process until the suite's five-minute stall timer
+// ended the shard red (every shard with 3D blocks, since 2026-10-17)
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'))) await acquireHeavy('3D tests (test_3d.mjs)');
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const until = async (fn, ms = 8000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
@@ -19,6 +22,11 @@ export async function miniContract(fresh, { kind, a, b, settledWhen = 'flipping'
     const m = await import('/skills/scene3d.js');
     const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
     const key = 'contract:' + kind + (reduce ? ':still' : '');
+    // the studio light (scene3d's studioHdri) replaces the room light a moment after the engine starts and redraws every live
+    // miniature once; on a loaded runner that redraw fell inside the idle window (swatch under reduced motion: idleDraws 1 on
+    // 27ae12e9). Mount once it has landed, as a visitor's later cards do; where the studio light never loads, mount at once
+    const E = await m.engine(), x = E.renderer.extensions;
+    if (x.has('EXT_color_buffer_half_float') || x.has('EXT_color_buffer_float')) await wait(() => E.studio, 15000);
     const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:16px;top:16px;width:260px;height:210px;z-index:9';
     document.body.appendChild(host);
     const me = () => m.liveMiniatures().find((x) => x.key === key);
@@ -157,7 +165,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       && sig.now === 'true' && sig.busy === 'false' && sig.opacity === '1' && sig.events.length === 1 && sig.events[0].key === 't3' && sig.events[0].kind === 'sample' && sig.listed === true,
       JSON.stringify(sig));
     check('3D scene: a miniature mounts on demand (vendored three.js r180 and skills/mini/sample.js load only now) with ACES, sRGB, PCF soft shadows, a room environment map, contact shadows, orbit and zoom, and GLTFLoader with meshopt and KTX2; bad kinds are refused',
-      !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
+      !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180a\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
       JSON.stringify({ r, drawn, pix, hits, e: F.errors }));
     const moved = await F.p.evaluate(async () => {
       const m = await import('/skills/scene3d.js'); const a = document.getElementById('t3host'), b = document.createElement('div'); b.style.cssText = 'position:fixed;left:400px;top:40px;width:200px;height:200px'; document.body.appendChild(b);
@@ -202,6 +210,26 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight.flipping === false : true);
     check('reference miniature (countdown): draws real pixels, its state follows the data (12 -> 11), a remount by key moves the live one (nothing rebuilt), the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands with no flip, and unmounting frees it',
       ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.flipping === true && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- the tool cards' figures (owner, 2026-10-25: "should be a card for all too and 3d figure if possible"): the random number's die, the
+  // password's padlock, the colour's paint-chip fan, the wheel, translate's speech bubbles, the recipe's pot and the word count's page, each through the behaviour contract with two data values that look different
+  if (want("3d: the tool cards' figures")) {
+    const E = [{ label: 'ann' }, { label: 'bob' }, { label: 'cat' }];
+    const kinds = [
+      ['dice', { value: '12', lo: 1, hi: 100 }, { value: '77', lo: 1, hi: 100 }, 'rolling', (s) => s.value === '77'],
+      ['padlock', { score: 4 }, { score: 1 }, 'moving', (s, a) => s.score === 1 && s.open === true && a.open === false],
+      ['swatch', { hex: '#ff5733' }, { hex: '#2a9d8f' }, 'opening', (s) => s.hex === '#2a9d8f'],
+      ['wheel', { entries: E, win: 'bob' }, { entries: E, win: 'cat' }, 'spinning', (s, a) => s.win === 'cat' && a.win === 'bob'],
+      ['bubbles', { from: 'hello', to: 'hola', lang: 'Spanish' }, { from: 'thank you', to: 'gracias', lang: 'Spanish' }, 'turning', (s) => s.to === 'gracias' && s.from === 'thank you'],
+      ['pot', { dish: 'Pancakes', n: 6 }, { dish: 'Lasagne', n: 12 }, 'lifting', (s) => s.dish === 'Lasagne' && s.n === 12],
+      ['page', { words: 9 }, { words: 180 }, 'sliding', (s) => s.words === 180],
+    ];
+    for (const [kind, a, b, settledWhen, right] of kinds) {
+      const c = await miniContract(fresh, { kind, a, b, settledWhen });
+      const ok = (r, still) => r.drawn && r.colours > 20 && r.same && r.stateA && r.stateB && right(r.stateB, r.stateA) && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight[settledWhen] === false : true);
+      check('3D ' + kind + ' (a tool card\'s figure): draws real pixels, its state follows the data, a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands at once, and unmounting frees it',
+        ok(c.moving, false) && ok(c.still, true) && !c.errors.length, JSON.stringify(c).slice(0, 900));
+    }
   }
   // ---- the gear explainer (explainer.gear-pair) through the same contract: a 16-32 pair, then the driver changed to 24 teeth
   if (want("3d: the gear explainer")) {
@@ -266,6 +294,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight.growing === false : true);
     check('growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmounting frees it',
       ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.growing === true && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- the 3D tower (owner, 2026-10-25: "some things are missing, like a 3d tower") through the same contract: 25 floors, 20 surpassed, then 21
+  if (want("3d: the tower")) {
+    const floors = (beaten) => [...Array.from({ length: beaten }, (_, i) => ({ id: 'b' + i, site: 'site' + i + '.example', state: 'beaten', n: 11, m: 11, page: '/p/' })),
+      { id: 'cur', site: 'now.example', state: 'current', n: 4, m: 11 }, ...Array.from({ length: 24 - beaten }, (_, i) => ({ id: 'a' + i, site: 'ahead' + i + '.example', state: 'ahead', n: 0, m: 9 }))];
+    const c = await miniContract(fresh, { kind: 'tower', a: { floors: floors(20) }, b: { floors: floors(21) }, settledWhen: 'rising' });
+    const ok = (r) => r.drawn && r.colours > 30 && r.same && r.stateA && r.stateA.floors === 25 && r.stateA.labelled === 13 && r.stateA.current === 20 && r.stateA.cut === 8 && r.stateA.drawn === 24
+      && r.stateB.current === 21 && r.stateB.cut === 9 && r.stateB.labelled === 13 && r.redrew && r.settled && r.freed;
+    check('3D tower miniature: draws real pixels from 25 floors (20 surpassed, the current one, the next 3 of the queue as outlines), names the last 12 surpassed plus the current one and counts 8 cut below, a remount by key moves the live one, a 21st conquest shows on the canvas, it turns while idle but holds still under reduced motion (no redraws), and unmounting frees it',
+      ok(c.moving) && ok(c.still) && c.moving.stateA.turning === true && c.still.stateA.turning === false && c.still.idleDraws === 0 && !c.errors.length, JSON.stringify(c));
   }
   // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
   if (want("3d: \"growth\"")) {
@@ -518,7 +556,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     const typed = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('tcalc'); return s && !s.pending && s.display === '84' ? s : false; }), 30000);
     check('miniatures: the stopwatch\u2019s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, \u00d7, 7, = and then shows 84 ("15% of 240" types 15%\u00d7240)',
-      r.sw.second && r.sw.minute && r.typing.pending > 0 && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
+      r.sw.second && r.sw.minute && r.typing.pending > 0 && r.typing.keysInside === true && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
+    // the keys work by hand (owner, 2026-10-25: "the buttons are pressing but nothing is showing up"): 7 + 5 = 12, × 3 = 36, C, 9 % = 0.09, 5 ± = -5, . 5 = 0.5, 8 ÷ 0 = Error
+    const hand = await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const cm = await m.mountMiniature(document.getElementById('mc'), 'calculator', {}, { key: 'tcalc2' }); const P = (...ks) => { for (const k of ks) cm.inst.press(k); return cm.inst.state().display; };
+      return [P('7', '+', '5', '='), P('×', '3', '='), P('C'), P('9', '%'), P('C', '5', '±'), P('C', '.', '5'), P('C', '8', '÷', '0', '=')]; }).catch((e) => String(e));
+    check('miniatures: tapped keys work the calculator by hand (7 + 5 = 12, × 3 = 36, C 0, 9 % 0.09, 5 ± -5, . 5 0.5, 8 ÷ 0 Error)', Array.isArray(hand) && hand.join(' ') === '12 36 0 0.09 -5 0.5 Error', JSON.stringify(hand));
+    // the five models (owner, 2026-10-25: "a cycle of all the existing calculators too for 3d"): each mounts from data.model, reports it, and 7 + 5 = is 12 on every one
+    const models = await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const out = [];
+      for (const id of ['SL-200', 'FX-900', 'DT-12', 'RP-11', 'GX-84']) { const h = await m.mountMiniature(document.getElementById('mc'), 'calculator', { model: id }, { key: 'tcalc:' + id }); for (const k of ['7', '+', '5', '=']) h.inst.press(k); const s = h.inst.state(); out.push(s.model + ':' + s.display + (s.keysInside ? '' : ':hangs')); m.unmountMiniature('tcalc:' + id); }
+      return out; }).catch((e) => String(e));
+    check('miniatures: the five Verse calculator models each mount from data.model, report it in state(), keep every key on the case, and work 7 + 5 = 12', Array.isArray(models) && models.join(' ') === 'SL-200:12 FX-900:12 DT-12:12 RP-11:12 GX-84:12', JSON.stringify(models));
     await F.ask('make a calculator', 600);
     const card = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:calc')); return l && l.draws > 0 && !!document.querySelector('.calc-card .void-mini canvas') ? window.__voidMini.state(l.key) : false; }), 60000);
     await F.ask('calculate 12*7', 600);
@@ -796,6 +843,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       } else await F.p.waitForTimeout(250);
     }
     const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
+    // when the 3D board never drew, say so and why: the loop above never runs then, and the card's empty log ("Earlier moves (-1)")
+    // read as "no move in 90 s" (verify on 0f1dc25d: the board was not up after 90 s on a loaded shard; it passed on its rerun alone)
+    const why = key ? null : await F.p.evaluate(() => { let s = null; try { s = { off: sessionStorage.getItem('void.3d.off'), crash: sessionStorage.getItem('void.3d.crash') }; } catch (_) {}
+      return { minis: window.__voidMini ? window.__voidMini.list() : null, wraps: [...document.querySelectorAll('.connect4-view .void-mini')].map((w) => w.dataset.rendered + (w.isConnected ? '' : ' (off the page)')), flat: !!document.querySelector('.lift3d-off'), ...s }; }).catch((e) => String(e));
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
       return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
@@ -805,7 +856,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     check('Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)',
       !!won && won.dim === won.discs - 4 && lay.fits && lay.apart && lay.above && /because/.test(lay.latest || '') && /^Earlier moves \(\d+\)$/.test(lay.earlier || '') && !F.errors.length,
-      JSON.stringify({ won, lay, e: F.errors }));
+      JSON.stringify({ won, why, lay, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the Verse Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
@@ -986,7 +1037,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const mean = a.reduce((m, s) => [m[0] + s.d[0], m[1] + s.d[1], m[2] + s.d[2]], [0, 0, 0]).map((x) => x / a.length);
       return { n: a.length, same: JSON.stringify(a) === JSON.stringify(b), other: JSON.stringify(a) !== JSON.stringify(c), lean: Math.hypot(...mean), inPage: !!document.querySelector('.vpage .void-self canvas') };
     });
-    const before = drawn ? drawn.draws : 0;
+    // the card frame's art and type line sit above the body, so at 720 px tall its middle falls below the page's visible bottom and a tap
+    // there lands on the stage and closes the page (verify on 725c3929 and 31a24cf5: "broke": false, draws stuck): bring it into view first,
+    // as a visitor scrolls to it
+    if (drawn) { await F.p.evaluate(() => { const s = document.querySelector('.vpage .void-self'); if (s) s.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
+    const before = drawn ? await F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'void').draws) : 0;
     const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
     if (pt) await F.p.mouse.click(pt.x, pt.y);
     const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);

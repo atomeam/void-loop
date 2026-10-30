@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prize wheel &amp; payout odds · Verse</title>
+<meta name="description" content="Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out. Free, private, works offline; it never pays or collects anything.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Prize wheel &amp; payout odds · Verse">
+<meta property="og:description" content="The real odds and expected value of every slice on a prize wheel, the chance of the top prize in N spins, and how long a reward drip takes to reach a cashout.">
+<meta property="og:url" content="https://a-to-mind.com/prizes/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/prizes/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#f2c14e; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #2a2210, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:780px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:15px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:40px; }
+  input[type=number] { width:7em; }
+  textarea { width:100%; min-height:120px; resize:vertical; line-height:1.4; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-size:14px; background:#1b1824; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:8px 16px; min-height:40px; cursor:pointer; }
+  button:hover { border-color:#4a4434; }
+  button.go { background:var(--accent); color:#1b1505; border-color:var(--accent); font-weight:700; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#f3e3b8; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; overflow-wrap:anywhere; }
+  .spin { display:grid; grid-template-columns:minmax(0,300px) 1fr; gap:14px; align-items:center; }
+  @media (max-width:620px) { .spin { grid-template-columns:1fr; justify-items:center; } }
+  .wheelbox { position:relative; width:100%; max-width:300px; aspect-ratio:1; }
+  .wheelbox canvas { width:100%; height:100%; display:block; }
+  .pointer { position:absolute; left:50%; top:-4px; transform:translateX(-50%); width:0; height:0; border-left:11px solid transparent; border-right:11px solid transparent; border-top:20px solid #fff; filter:drop-shadow(0 1px 2px #000); }
+  #result { font-size:20px; font-weight:700; min-height:1.6em; margin:4px 0; overflow-wrap:anywhere; }
+  .scroll { width:100%; max-width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:520px; font-size:14px; }
+  caption { text-align:left; color:var(--quiet); font-size:12px; padding:0 0 6px; }
+  th, td { text-align:right; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  th:first-child, td:first-child { text-align:left; overflow-wrap:anywhere; }
+  tr.top td { color:#fff3c4; }
+  dl.sum { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; margin:10px 0 0; font-size:14px; }
+  dl.sum dt { color:var(--quiet); }
+  dl.sum dd { margin:0; font-variant-numeric:tabular-nums; }
+  #drip { font-size:18px; font-weight:600; margin:8px 0 0; }
+  #shareline { overflow-wrap:anywhere; font-size:13px; color:var(--quiet); }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 0; }
+  footer a, #shareline a, .vh-strip a { color:#f3dfa6; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto; } }
+  /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
+  #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
+  #related .tk-label { color:var(--soft); }
+  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+</style>
+<script src="/visit.js" defer></script>
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/prizes.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Prize wheel &amp; payout odds</h1>
+  <p class="sub" id="lead">Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.</p>
+
+  <section class="card" aria-labelledby="h-wheel">
+    <h2 id="h-wheel">The wheel</h2>
+    <div class="row">
+      <label><span>Preset</span>
+        <select id="preset" aria-label="Preset">
+          <option value="raffle">Raffle or giveaway</option>
+          <option value="punch">Loyalty punch card</option>
+          <option value="loot">Loot drop table</option>
+          <option value="faucet">Reward faucet audit</option>
+        </select>
+      </label>
+      <label><span>Cost per spin ($)</span><input id="cost" type="number" min="0" step="any" inputmode="decimal" aria-label="Cost per spin in dollars"></label>
+      <label><span>Spins (N)</span><input id="n" type="number" min="1" step="1" inputmode="numeric" aria-label="Number of spins N for the odds"></label>
+    </div>
+    <label for="slices"><span>Slices, one a line: <code>Label:value:weight</code> (a plain name is worth 1 with weight 1)</span></label>
+    <textarea id="slices" spellcheck="false" aria-describedby="slicehelp"></textarea>
+    <p class="note" id="slicehelp">Value is what the slice pays (in dollars, points or anything else); weight is how many tickets it has. A slice with weight 10 is ten times as likely as one with weight 1.</p>
+    <div class="spin">
+      <div class="wheelbox"><canvas id="wheel" width="600" height="600" role="img" aria-label="The prize wheel"></canvas><div class="pointer" aria-hidden="true"></div></div>
+      <div>
+        <button type="button" class="go" id="spin">Spin</button>
+        <p id="result" role="status" aria-live="polite"></p>
+        <p class="note">Each spin is drawn with your device's secure random numbers first, then the wheel turns to land on it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-odds">
+    <h2 id="h-odds">Odds and expected value</h2>
+    <div class="scroll">
+      <table id="odds">
+        <caption id="oddscap">Every slice's chance, its share of the expected value per spin, and the chance it comes up at least once in N spins</caption>
+        <thead><tr><th scope="col">Slice</th><th scope="col">Value</th><th scope="col">Weight</th><th scope="col">Chance</th><th scope="col">EV per spin</th><th scope="col" id="nhead">1+ in N</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <dl class="sum" id="sum"></dl>
+    <p class="note">P(at least one top prize in N spins) = 1 − (1 − p)<sup>N</sup>, where p is the top prize's chance on one spin.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-sim">
+    <h2 id="h-sim">Check it: 1,000 spins</h2>
+    <div class="row"><button type="button" id="sim">Run 1,000 spins</button></div>
+    <p class="say" id="simsay" aria-live="polite"></p>
+    <div class="scroll" id="simwrap" hidden>
+      <table id="simtable">
+        <caption>What 1,000 spins gave against what the odds expect</caption>
+        <thead><tr><th scope="col">Slice</th><th scope="col">Expected</th><th scope="col">Got</th><th scope="col">Chance</th><th scope="col">Share</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-drip">
+    <h2 id="h-drip">Reward drip: time to cash out</h2>
+    <p class="note">One free spin every cooldown, each worth the expected value above, until the balance reaches the minimum cashout. Each referral who spins as often adds the referral share of what they earn.</p>
+    <div class="row">
+      <label><span>Cooldown (minutes)</span><input id="cd" type="number" step="any" inputmode="decimal" aria-label="Cooldown between spins in minutes"></label>
+      <label><span>Minimum cashout ($)</span><input id="min" type="number" min="0" step="any" inputmode="decimal" aria-label="Minimum cashout in dollars"></label>
+      <label><span>Referral share (%)</span><input id="ref" type="number" min="0" step="any" inputmode="decimal" aria-label="Referral share in percent"></label>
+      <label><span>Referrals</span><input id="refs" type="number" min="0" step="1" inputmode="numeric" aria-label="Number of active referrals"></label>
+    </div>
+    <p id="drip" role="status" aria-live="polite"></p>
+    <p class="note" id="dripnote"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-share">
+    <h2 id="h-share">Keep or send it</h2>
+    <p class="note" id="sendrow"></p>
+    <div class="row">
+      <button type="button" id="share">Copy share link</button>
+      <button type="button" id="export">Export CSV</button><!-- void-review: ok, CSV is button text, not a name -->
+      <button type="button" id="json">Export JSON</button>
+    </div>
+    <p id="shareline"></p>
+    <p class="say" id="say" aria-live="polite"></p>
+  </section>
+
+  <footer>
+    <p>This page only does the arithmetic. It never pays out, takes a payment or holds anything; every number is worked out in your browser and nothing is sent anywhere. A slice that pays more than it costs on average is rare: when the expected value per spin is below the cost, the house keeps the difference over time.</p>
+    <nav class="siblings" aria-label="Use together with">
+      <a href="/wheel/">Wheel of names</a>
+      <a href="/random/">Random number</a>
+      <a href="/flip/">Coin flip</a>
+      <a href="/calculator/">Calculator</a>
+      <a href="/tournaments/">Tournament standings</a>
+      <a href="/generators/">Generators</a>
+      <a href="/tools/">All tools</a>
+      <a href="/?ask=prize%20wheel%20odds">See it as a card on the stage</a>
+      <a href="/">Back to Verse</a>
+    </nav>
+  </footer>
+  <nav id="related" class="tk-row" aria-label="Related tools"><span class="tk-label">Use with</span> <a href="/wheel/">Wheel of names</a> <a href="/random/">Random number</a> <a href="/flip/">Coin flip</a> <a href="/calculator/">Calculator</a> <a href="/tournaments/">Tournament standings</a> <a href="/tools/">All tools</a></nav>
+</main>
+<script type="module">
+  import { parseSlices, labelsOf, odds, pick, atLeastOnce, spinsFor, secureRandom, seeded, simulate, drip, PRESETS, stateOf, queryOf, fmt, money, pct, csvOf } from '/lib/prizes.js';
+  import { slices as arcs, plan, ease } from '/lib/wheel.js';
+  import { mountPill, mountStrip, sendLink, wheelLink, tournamentsLink, textOfHandoff } from '/lib/handoff.js';
+  const $ = (id) => document.getElementById(id);
+  const st = stateOf(location.search);
+  const say = (t) => { $('say').textContent = t; };
+  const COLORS = ['#f2c14e', '#8b7bff', '#3fb68b', '#e5735f', '#4aa3df', '#d97ad8', '#9bc53d', '#f08a4b', '#5bc0be', '#c9a227'];
+  let rot = 0, spinning = false;
+
+  const items = () => parseSlices(st.slices);
+  const link = () => { const q = queryOf(st); return location.origin + '/prizes/' + (q ? '?' + q : ''); };
+  const one = (p) => (p > 0 ? '1 in ' + fmt(1 / p, 1 / p >= 100 ? 0 : 1) : 'never');
+
+  function draw() {
+    const c = $('wheel'), g = c.getContext('2d'), s = items(), R = 290, cx = 300, cy = 300;
+    g.clearRect(0, 0, 600, 600);
+    const parts = arcs(s.map((x) => ({ label: x.label, weight: x.weight }))).filter((p) => p.end > p.start);
+    if (!parts.length) { g.fillStyle = '#191827'; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.fill(); return; }
+    g.save(); g.translate(cx, cy); g.rotate((rot * Math.PI) / 180);
+    parts.forEach((p, i) => {
+      const a0 = ((p.start - 90) * Math.PI) / 180, a1 = ((p.end - 90) * Math.PI) / 180;
+      g.beginPath(); g.moveTo(0, 0); g.arc(0, 0, R, a0, a1); g.closePath(); g.fillStyle = COLORS[i % COLORS.length]; g.fill();
+      g.strokeStyle = '#0b0a10'; g.lineWidth = 2; g.stroke();
+      if (p.end - p.start > 7) {
+        g.save(); g.rotate((a0 + a1) / 2); g.fillStyle = '#120e05'; g.font = '600 24px system-ui,sans-serif'; g.textAlign = 'right'; g.textBaseline = 'middle';
+        const t = p.label.length > 16 ? p.label.slice(0, 15) + '…' : p.label; g.fillText(t, R - 16, 0); g.restore();
+      }
+    });
+    g.restore();
+    g.beginPath(); g.arc(cx, cy, 26, 0, Math.PI * 2); g.fillStyle = '#0b0a10'; g.fill();
+    $('wheel').setAttribute('aria-label', 'Prize wheel with ' + s.length + (s.length === 1 ? ' slice' : ' slices'));
+  }
+
+  function render() {
+    const s = items(), o = odds(s, st.cost), N = st.n;
+    $('nhead').textContent = '1+ in ' + fmt(N, 0);
+    const body = $('odds').tBodies[0]; body.replaceChildren();
+    o.rows.forEach((r, i) => {
+      const tr = document.createElement('tr'); if (i === o.top) tr.className = 'top';
+      for (const v of [r.label, fmt(r.value), fmt(r.weight), pct(r.p), money(r.ev), pct(atLeastOnce(r.p, N))]) { const td = document.createElement('td'); td.textContent = v; tr.append(td); }
+      body.append(tr);
+    });
+    const top = o.top >= 0 ? o.rows[o.top] : null, rows = [
+      ['Expected value per spin', money(o.ev)],
+      ['Cost per spin', money(o.cost)],
+      ['Net per spin', money(o.net) + (o.cost > 0 ? ' (' + (o.net < 0 ? 'you lose ' : 'you gain ') + pct(Math.abs(o.net) / o.cost) + ' of each spin on average)' : '')],
+      ['Over ' + fmt(N, 0) + ' spins', 'spend ' + money(o.cost * N) + ', expect back ' + money(o.ev * N)],
+    ];
+    if (top) rows.push(['Top prize', top.label + ' (' + fmt(top.value) + '), ' + pct(top.p) + ' a spin, ' + one(top.p)],
+      ['P(top prize ≥1 in ' + fmt(N, 0) + ')', pct(atLeastOnce(top.p, N))],
+      ['Spins for even odds of the top prize', Number.isFinite(spinsFor(top.p)) ? fmt(spinsFor(top.p), 0) : 'never']);
+    if (!s.length) rows.unshift(['No slices', 'type one a line, like Prize:10:1']);
+    $('sum').replaceChildren(...rows.flatMap(([k, v]) => { const dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = k; dd.textContent = v; return [dt, dd]; }));
+    $('sum').dataset.ev = String(o.ev); $('sum').dataset.topp = String(o.topP);
+    const d = drip({ ev: o.ev, cooldownMin: st.cd, cashout: st.min, referralPct: st.ref, referrals: st.refs });
+    $('drip').textContent = d.never ? d.text : fmt(d.spins, 0) + (d.spins === 1 ? ' spin' : ' spins') + ' · ' + fmt(d.hours, 1) + ' hours · ' + fmt(d.days, 1) + ' days to reach ' + money(st.min);
+    $('dripnote').textContent = d.never ? (st.cd <= 0 ? 'The cooldown has to be more than 0 minutes.' : 'Every slice pays 0 on average, so the balance never grows.') : money(d.perSpin) + ' a spin on average' + (st.refs && st.ref ? ' including ' + st.refs + ' referral' + (st.refs === 1 ? '' : 's') + ' at ' + fmt(st.ref) + '%' : '') + ', one spin every ' + fmt(st.cd) + ' minutes. That is ' + money(d.perSpin * 60 / st.cd) + ' an hour.';
+    $('shareline').textContent = link();
+    draw();
+  }
+  function commit() { const q = queryOf(st); history.replaceState(null, '', '/prizes/' + (q ? '?' + q : '')); render(); }
+
+  function fill() {
+    $('preset').value = st.preset; $('slices').value = st.slices;
+    for (const k of ['cost', 'n', 'cd', 'min', 'ref', 'refs']) $(k).value = String(st[k]);
+  }
+  fill(); render();
+
+  $('slices').addEventListener('input', (e) => { st.slices = e.target.value.slice(0, 20000); commit(); });
+  for (const k of ['cost', 'n', 'cd', 'min', 'ref', 'refs']) $(k).addEventListener('input', (e) => {
+    const v = Number(e.target.value); if (!Number.isFinite(v) || e.target.value === '') return;
+    st[k] = k === 'n' ? Math.max(1, Math.min(1e7, Math.round(v))) : k === 'refs' ? Math.max(0, Math.round(v)) : k === 'cd' ? v : Math.max(0, v); commit();
+  });
+  $('preset').addEventListener('change', (e) => { const P = PRESETS[e.target.value]; if (!P) return; Object.assign(st, { preset: e.target.value, slices: P.slices, cost: P.cost, n: P.n, cd: P.cd, min: P.min, ref: P.ref, refs: P.refs }); fill(); commit(); $('result').textContent = ''; say(P.name + ' loaded.'); });
+
+  $('spin').addEventListener('click', () => {
+    const s = items(), e = s.map((x) => ({ label: x.label, weight: x.weight }));
+    if (spinning) return; if (!e.some((x) => x.weight > 0)) { $('result').textContent = 'Add a slice with a weight above 0 first.'; return; }
+    // the winner first, from crypto.getRandomValues; the turn is planned to land on it
+    const i = pick(s, secureRandom());
+    const done = () => { spinning = false; $('spin').disabled = false; $('result').textContent = s[i].label + ' · worth ' + fmt(s[i].value) + ' (' + pct(odds(s).rows[i].p) + ' chance)'; };
+    const to = plan(e, i, rot % 360, 5, secureRandom());
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { rot = to; draw(); done(); return; }
+    spinning = true; $('spin').disabled = true; $('result').textContent = 'Spinning…';
+    const from = rot % 360, t0 = performance.now(), ms = 3600;
+    const step = (t) => { const k = Math.min(1, (t - t0) / ms); rot = from + (to - from) * ease(k); draw(); if (k < 1) requestAnimationFrame(step); else done(); };
+    requestAnimationFrame(step);
+  });
+
+  $('sim').addEventListener('click', () => {
+    const s = items(); if (!s.length) { $('simsay').textContent = 'Add a slice first.'; return; }
+    const r = simulate(s, 1000, st.seed ? seeded(st.seed) : secureRandom);
+    const body = $('simtable').tBodies[0]; body.replaceChildren();
+    for (const x of r.rows) { const tr = document.createElement('tr'); for (const v of [x.label, fmt(x.expected, 1), fmt(x.got, 0), pct(x.p), pct(x.share)]) { const td = document.createElement('td'); td.textContent = v; tr.append(td); } body.append(tr); }
+    $('simwrap').hidden = false;
+    $('simtable').dataset.counts = r.counts.join(',');
+    $('simsay').textContent = 'Average won per spin over 1,000 spins: ' + money(r.mean) + ', against the expected ' + money(r.ev) + '. Chi-square ' + fmt(r.chi2, 2) + ' on ' + r.df + ' degrees of freedom (a value near ' + r.df + ' is an ordinary fit).'
+      + (st.seed ? ' Seeded with "' + st.seed + '", so these 1,000 spins are the same every time; the Spin button still uses secure random numbers.' : ' Run it again for a fresh 1,000.');
+  });
+
+  const download = (name, type, text) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); };
+  $('share').addEventListener('click', async () => { const url = link(); try { await navigator.clipboard.writeText(url); say('Link copied. It holds the whole wheel and every setting.'); } catch (_) { say('Copy this link: ' + url); } });
+  $('export').addEventListener('click', () => { download('prize-odds.csv', 'text/csv', csvOf(items(), st.cost, st.n)); say('CSV saved: every slice with its chance and expected value.'); });
+  $('json').addEventListener('click', () => { const s = items(), o = odds(s, st.cost); download('prize-odds.json', 'application/json', JSON.stringify({ slices: s, cost: st.cost, n: st.n, ev: o.ev, net: o.net, drip: drip({ ev: o.ev, cooldownMin: st.cd, cashout: st.min, referralPct: st.ref, referrals: st.refs }), link: link() }, null, 2)); say('JSON saved.'); });
+
+  // send the labels on (the :value:weight comes off), and take a list another page left here
+  const labels = () => labelsOf(items());
+  const empty = () => say('Add a slice first.');
+  $('sendrow').append('Send the slice names: ',
+    sendLink(document, '/prizes/', { label: 'Spin them on the name wheel', empty, go: () => { const l = labels(); return l.length ? { href: wheelLink(l), data: l, name: 'prize slices' } : null; } }), ' · ',
+    sendLink(document, '/prizes/', { label: 'Seed a tournament roster', empty, go: () => { const l = labels(); return l.length ? { href: tournamentsLink(l), data: l, name: 'prize slices' } : null; } }));
+  mountPill($('slices').previousElementSibling, '/prizes/', (h) => { st.slices = textOfHandoff(h); $('slices').value = st.slices; commit(); say('Pasted from ' + h.fromPage + '. Plain names count as value 1, weight 1; edit them to set prizes.'); });
+  mountStrip(document.querySelector('main > footer'), '/prizes/');
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

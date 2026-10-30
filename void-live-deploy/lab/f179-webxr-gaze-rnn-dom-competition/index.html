@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0a12; --card: #1a1a2e; --accent: #00ffc8; }
+  body { margin: 0; background: var(--bg); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: fixed; inset: 0; z-index: 1; }
+  .agent-card {
+    position: absolute; width: 140px; height: 90px; background: var(--card);
+    border: 2px solid var(--accent); border-radius: 12px; padding: 8px;
+    font-size: 12px; pointer-events: auto; z-index: 10; transition: transform 0.05s linear;
+    box-shadow: 0 0 12px rgba(0,255,200,0.3); user-select: none;
+  }
+  .agent-card h4 { margin: 0 0 4px; font-size: 13px; }
+  #controls { position: fixed; top: 12px; left: 12px; z-index: 20; background: rgba(0,0,0,0.6); padding: 12px; border-radius: 8px; }
+  button { background: #222; color: var(--accent); border: 1px solid var(--accent); padding: 6px 12px; margin: 4px; cursor: pointer; border-radius: 4px; }
+  button:hover { background: #333; }
+  #status { position: fixed; bottom: 12px; left: 12px; z-index: 20; font-size: 11px; opacity: 0.8; }
+  #gaze { position: absolute; width: 16px; height: 16px; border: 2px solid #ff0; border-radius: 50%; pointer-events: none; z-index: 15; transform: translate(-50%,-50%); display: none; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze Competitive RNN DOM Mind · Verse lab</title>
+<meta name="description" content="Novel combination: true WebXR gaze (XRInputSource targetRayMode 'gaze' or viewer pose) as the primary causal sequence input to a local multi-agent system of tiny">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze Competitive RNN DOM Mind · Verse lab">
+<meta property="og:description" content="Novel combination: true WebXR gaze (XRInputSource targetRayMode 'gaze' or viewer pose) as the primary causal sequence input to a local multi-agent system of tiny">
+<meta property="og:url" content="https://a-to-mind.com/lab/f179-webxr-gaze-rnn-dom-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f179-webxr-gaze-rnn-dom-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="gaze"></div>
+<div id="controls">
+  <button id="xrBtn">Enter WebXR</button>
+  <button id="sealBtn">Seal Best Genome</button>
+  <button id="transferBtn">Force Transfer</button>
+  <button id="resetBtn">Reset</button>
+  <div id="info">Gaze / pointer drives competitive RNNs. Cards morph to track.</div>
+</div>
+<div id="status">Agents: 4 | Mode: pointer | Best fitness: 0</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze Competitive RNN DOM Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

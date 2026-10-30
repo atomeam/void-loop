@@ -1,0 +1,5 @@
+// /flights/co2/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["controls","co2"],"controls":["airports","trip","pax","cabin"],"de":{"h1":"CO2-Rechner für Flüge","intro":"Das CO2, das ein Sitz auf einem Flug verursacht, für die Flughäfen, die Kabine, die Zahl der Passagiere und einen Rückflug, die Sie wählen. Die Methode steht unter der Zahl, mit einer Spanne und dem Wert mit Effekten in großer Höhe. Eine Schätzung aus Durchschnitten, keine Zahl einer Fluggesellschaft; auf Ihrem Gerät berechnet."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/co2/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

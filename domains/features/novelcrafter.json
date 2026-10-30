@@ -1,0 +1,535 @@
+{
+ "floor": "novelcrafter",
+ "verse_page": "/books/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "novelcrafter.com": {
+   "url": "https://www.novelcrafter.com/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://www.novelcrafter.com/",
+    "https://www.novelcrafter.com/features",
+    "https://www.novelcrafter.com/features/codex",
+    "https://www.novelcrafter.com/help/getting-started",
+    "https://www.novelcrafter.com/pricing",
+    "https://www.novelcrafter.com/help",
+    "https://www.novelcrafter.com/about-us"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Write, without restriction",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"restriction\""
+    },
+    {
+     "name": "Challenges shouldn't define your writing journey",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"challenge\", \"shouldn\", \"define\", \"writ\""
+    },
+    {
+     "name": "Organization meets Inspiration",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"organization\", \"meet\", \"inspiration\""
+    },
+    {
+     "name": "The Codex, a wiki that truly keeps track",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"codex\", \"wiki\", \"truly\", \"keep\""
+    },
+    {
+     "name": "See your work in a different light",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"see\", \"work\", \"different\", \"light\""
+    },
+    {
+     "name": "Share across books",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"share\", \"across\""
+    },
+    {
+     "name": "Collaborate with others",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"collaborate\", \"other\""
+    },
+    {
+     "name": "Smart tools, your rules",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"smart\", \"rule\""
+    },
+    {
+     "name": "As little or as much as you want",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"little\", \"much\", \"want\""
+    },
+    {
+     "name": "An ecosystem that remembers your story",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"ecosystem\", \"remember\", \"story\""
+    },
+    {
+     "name": "Make it yours",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"make\", \"your\""
+    },
+    {
+     "name": "Not locked in, ever",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"not\"; not \"lock\", \"ever\""
+    },
+    {
+     "name": "Books to Blogs to Business",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"blog\", \"busi\""
+    },
+    {
+     "name": "What Authors Say",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"what\", \"author\", \"say\""
+    },
+    {
+     "name": "Built by writers, for writers",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"built\", \"writer\""
+    },
+    {
+     "name": "Write like you mean it",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"like\", \"mean\""
+    },
+    {
+     "name": "Explore Novelcrafter by Feature & Genre",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"explore\", \"novelcrafter\", \"feature\", \"genre\""
+    },
+    {
+     "name": "Story Bible & World Builder",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"story\", \"bible\", \"world\", \"builder\""
+    },
+    {
+     "name": "Romance & NSFW Writing",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"romance\", \"nsfw\", \"writ\""
+    },
+    {
+     "name": "Core",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"core\""
+    },
+    {
+     "name": "Novel Import",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"novel\", \"import\""
+    },
+    {
+     "name": "Export",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"export\""
+    },
+    {
+     "name": "Dark Mode",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"dark\", \"mode\""
+    },
+    {
+     "name": "Extract from Snippets",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"extract\", \"snippet\""
+    },
+    {
+     "name": "Mobile Compatible",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"mobile\", \"compatible\""
+    },
+    {
+     "name": "Novel Covers",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"novel\", \"cover\""
+    },
+    {
+     "name": "Novel POV",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"novel\", \"pov\""
+    },
+    {
+     "name": "Novel Templates",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"novel\", \"template\""
+    },
+    {
+     "name": "Novel Tense",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"novel\", \"tense\""
+    },
+    {
+     "name": "Pen Names",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"pen\", \"name\""
+    },
+    {
+     "name": "Revision History",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"revision\", \"history\""
+    },
+    {
+     "name": "Series",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"sery\""
+    },
+    {
+     "name": "Snippets",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"snippet\""
+    },
+    {
+     "name": "Split/Pin panels",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"split\", \"pin\", \"panel\""
+    },
+    {
+     "name": "Manuscript",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"manuscript\""
+    },
+    {
+     "name": "Rich Text Editor",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"rich\", \"text\", \"editor\""
+    },
+    {
+     "name": "Marker/Highlighter",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"marker\", \"highlighter\""
+    },
+    {
+     "name": "Customizable Interface",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"customizable\", \"interface\""
+    },
+    {
+     "name": "Focus Mode",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"focu\", \"mode\""
+    },
+    {
+     "name": "Marker Timeline",
+     "detail": "a heading on /features",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"marker\", \"timeline\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Write, without restriction",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Challenges shouldn't define your writing journey",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Organization meets Inspiration",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "The Codex, a wiki that truly keeps track",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "See your work in a different light",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Collaborate with others",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Smart tools, your rules",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "As little or as much as you want",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "An ecosystem that remembers your story",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Make it yours",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "What Authors Say",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Built by writers, for writers",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Write like you mean it",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Explore Novelcrafter by Feature & Genre",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Story Bible & World Builder",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Romance & NSFW Writing",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Core",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Novel Import",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Export",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Dark Mode",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Extract from Snippets",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Mobile Compatible",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Novel Covers",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Novel POV",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Novel Templates",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Novel Tense",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Pen Names",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Revision History",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Series",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Snippets",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Split/Pin panels",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Manuscript",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Rich Text Editor",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Marker/Highlighter",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Customizable Interface",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Focus Mode",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  },
+  {
+   "name": "Marker Timeline",
+   "sites": [
+    "novelcrafter.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}

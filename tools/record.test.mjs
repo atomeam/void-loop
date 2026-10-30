@@ -71,12 +71,13 @@ console.log('record: ok');
   assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, null).finding, '', 'no run: no card');
   assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, { findings: [] }).finding, '', 'no findings: no card');
   assert.equal(script({ id: 'x-1', label: 'X', sub: 'y' }, { findings: ['Verse misses 3 of 10 asks.', 'second'] }).finding, 'Verse misses 3 of 10 asks.', 'branded, the first only');
+  // never cut (2026-10-22): the whole finding is kept and paginated at word boundaries, no page over FINDING_MAX, no "…"
+  const { findingPages } = await import('./record.mjs');
   const long = 'The cue sped answers up when it pointed the right way. It slowed them down when it pointed the wrong way, every sitting, for every one of the people who tried it.';
-  assert.equal(findingOf({ findings: [long] }), 'The cue sped answers up when it pointed the right way.', 'too long: its first sentence');
-  const one = 'word '.repeat(40).trim(), f = findingOf({ findings: [one] });
-  assert.ok(f.length <= FINDING_MAX && f.endsWith('…') && one.startsWith(f.slice(0, -1)), 'no sentence fits: cut at a word, marked with an ellipsis, nothing added: ' + f);
-  // zero-lie: nothing on the card that the ledger does not hold, and no card for a run with no findings
-  for (const [card, src] of [[s.finding, 'about 40% unseen'], [f.slice(0, -1), one]]) assert.ok(src.startsWith(card), card);
+  assert.equal(findingOf({ findings: [long] }), long, 'the whole finding');
+  const pages = findingPages(long);
+  assert.ok(pages.length > 1 && pages.every((p) => p.length <= FINDING_MAX && !p.includes('\u2026')), 'paginated, never cut: ' + JSON.stringify(pages));
+  assert.equal(pages.join(' '), long, 'every word kept, in order');
 }
 
 // a film of a shipped change (2026-10-17): the lab ran out of experiments never filmed, so deploys filmed nothing

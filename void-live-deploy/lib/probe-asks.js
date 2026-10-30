@@ -15,7 +15,7 @@ const MAX_CHARS = 100, MAX_WORDS = 16;
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/;
 const COMMAND = /\b(ignore|disregard|forget|override|previous|instructions?|system\s+prompt|prompt|jailbreak|pretend|you\s+are|act\s+as|email|e-mail|send|post|publish|delete|remove|reveal|secret|password|token|api\s*key|owner|admin|sudo|exec|eval)\b/i;
 
-export const PROBE_SYSTEM = 'You are Verse, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks. ' + PERSONA + ' '
+export const PROBE_SYSTEM = 'You are Verse, the face of A-to-Mind: you do whatever anyone asks. ' + PERSONA + ' '
   + 'You are writing test asks for yourself: short things real people would type into your input, in one of your own skill families, so your builders can see which ones you miss. '
   + 'Write them the way people really type: lower case, short, sometimes a typo or a short form, a number or a place where the skill needs one, never a full polite sentence. '
   + 'Each ask must be something the named family should answer, and each names which skill should answer it (its want). Spread them across the family\'s skills, more on the least checked ones. '

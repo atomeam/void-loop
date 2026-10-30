@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Draft for run 003. Hold-gate.
+  URL-set SHA-256: ec417cd4545c5054f6ca70a517387512b0fb6c942ed19deca8e600f1c709210e
+  Canonical string = the five <loc> values in this order, each followed by LF.
+  lastmod is the last sealed visible-change stamp for that file, not "today".
+  priority and changefreq omitted (Google ignores them).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://a-to-mind.com/</loc>
+    <lastmod>2026-09-19</lastmod>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/llms.txt</loc>
+    <lastmod>2026-09-19</lastmod>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/.well-known/agent-card.json</loc>
+    <lastmod>2026-09-19</lastmod>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/sitemap.xml</loc>
+    <lastmod>2026-09-28</lastmod>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/robots.txt</loc>
+    <lastmod>2026-09-28</lastmod>
+  </url>
+</urlset>

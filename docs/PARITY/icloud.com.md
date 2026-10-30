@@ -1,0 +1,22 @@
+# icloud.com: feature parity
+
+Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
+
+- Original: icloud.com (https://www.icloud.com/calendar)
+- Verse: /calendar/ (calendar: icloud.com, tower gate 11 of 15)
+- Live scan: 2026-10-28, HTTP 200, page title "Calendar - Apple iCloud"
+- History: [docs/HISTORY/icloud.com.md](../HISTORY/icloud.com.md)
+
+**Match: 100%**: 9 have, 0 partial, 0 missing, 0 unreviewed, of 9 features.
+
+| Feature | Area | Verse | Evidence on the original | Evidence in Verse |
+| --- | --- | --- | --- | --- |
+| Day, week, month and year views | Views | have | every site of this kind offers it | void-live-deploy/calendar/index.html:198 `d="vYear" aria-pressed="false">Year</button>` |
+| Make, edit and delete events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:133 `ton type="button" id="newBtn">New event</button>` |
+| Repeating events | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:126 `th, week and day; events that repeat, remind and invite; everything stays on this device a` |
+| Reminders and notifications | Events | have | every site of this kind offers it | void-live-deploy/calendar/index.html:138 `pe="button" id="allow" hidden>Allow notifications</button>` |
+| Several calendars with colours | Calendars | have | every site of this kind offers it | void-live-deploy/calendar/index.html:168 `type="submit" id="calAddBtn">Add calendar</button></form>` |
+| Subscribe to a calendar by address | Calendars | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:169 `ton type="submit" id="feedBtn">Subscribe</button></form>` |
+| Invite people and collect replies | Sharing | have | studied by hand: icloud.com offers this (https://www.icloud.com/calendar) | void-live-deploy/calendar/index.html:210 `o the invitees with the .ics">Invite by email</button>` |
+| Share a calendar | Sharing | have | every site of this kind offers it | void-live-deploy/calendar/index.html:209 `link that carries this event">Share link</button>` |
+| Time zones | Settings | have | every site of this kind offers it | void-live-deploy/calendar/index.html:166 `length="60" placeholder="e.g. America/New_York" style="flex:1 1 180px"></div>` |

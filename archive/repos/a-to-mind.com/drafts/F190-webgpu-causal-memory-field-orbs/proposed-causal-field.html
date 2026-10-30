@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F190 Causal Memory Field Orbs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --energy: 0.2; --residual: 0.5; --hue: 200; }
+  html, body { margin: 0; height: 100%; background: #0a0a0f; color: #e8e6e3; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+  #orbs { position: absolute; inset: 0; pointer-events: none; }
+  .orb {
+    position: absolute; width: 40px; height: 40px; border-radius: 50%;
+    background: radial-gradient(circle, hsla(var(--hue), 80%, 60%, 0.9), transparent 70%);
+    filter: blur(1px) brightness(calc(1 + var(--energy)));
+    transform: translate(-50%, -50%) scale(calc(0.6 + var(--energy)));
+    transition: transform 0.1s linear, filter 0.2s;
+    mix-blend-mode: screen;
+  }
+  #hud {
+    position: absolute; top: 1rem; left: 1rem; pointer-events: none;
+    background: rgba(10,10,15,0.6); padding: 0.6rem 1rem; border-radius: 8px;
+    border: 1px solid hsla(var(--hue), 60%, 50%, 0.4);
+    backdrop-filter: blur(4px);
+  }
+  #status { font-size: 0.9rem; }
+  #info { font-size: 0.75rem; opacity: 0.7; margin-top: 0.3rem; }
+  body { filter: hue-rotate(calc(var(--hue) * 1deg)) contrast(calc(1 + var(--energy)*0.3)); }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="orbs"></div>
+<div id="hud">
+  <div id="status">causal field · idle</div>
+  <div id="info">Move pointer to deposit memory. Tilt device. Orbs track causal density.</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d', { alpha: false });
+const orbsEl = document.getElementById('orbs');
+const statusEl = document.getElementById('status');
+let W, H, gridW = 80, gridH = 50, field = [], prevField = [];
+let mx = 0, my = 0, hasPointer = false;
+let beta = 0, gamma = 0;
+let params = { diffusion: 0.18, decay: 0.96, source: 0.8 };
+let residual = 0.4, energy = 0.2, hue = 200;
+let history = [];
+const orbs = [];
+
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+  gridW = Math.max(40, Math.floor(W / 12));
+  gridH = Math.max(30, Math.floor(H / 12));
+  field = new Float32Array(gridW * gridH);
+  prevField = new Float32Array(gridW * gridH);
+}
+resize();
+addEventListener('resize', resize);
+
+// Worker for residual predictor + param adaptation
+const workerCode = `
+let velHist = [];
+let bestFit = -Infinity;
+self.onmessage = (e) => {
+  const { vx, vy, samples, params } = e.data;
+  velHist.push({vx, vy});
+  if (velHist.length > 8) velHist.shift();
+  // simple residual predictor
+  let predVx = 0, predVy = 0;
+  if (velHist.length > 2) {
+    predVx = velHist[velHist.length-1].vx * 0.7 + velHist[velHist.length-2].vx * 0.3;
+    predVy = velHist[velHist.length-1].vy * 0.7 + velHist[velHist.length-2].vy * 0.3;
+  }
+  const res = Math.hypot(vx - predVx, vy - predVy);
+  const avgE = samples.reduce((a,b)=>a+b,0) / (samples.length || 1);
+  const fit = -res + avgE * 0.5;
+  let newParams = {...params};
+  if (fit > bestFit) {
+    bestFit = fit;
+  } else {
+    // hill climb
+    newParams.diffusion = Math.max(0.05, Math.min(0.4, params.diffusion + (Math.random()-0.5)*0.02));
+    newParams.decay = Math.max(0.9, Math.min(0.99, params.decay + (Math.random()-0.5)*0.01));
+  }
+  self.postMessage({ residual: Math.min(1, res), predicted: {vx: predVx, vy: predVy}, params: newParams, energy: avgE });
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = (e) => {
+  const d = e.data;
+  residual = d.residual;
+  energy = Math.min(1, d.energy * 3);
+  params = d.params;
+  // store best
+  try { localStorage.setItem('f190-params', JSON.stringify(params)); } catch {}
+};
+
+// load sealed params
+try {
+  const s = localStorage.getItem('f190-params');
+  if (s) params = JSON.parse(s);
+} catch {}
+
+// create orbs
+for (let i = 0; i < 6; i++) {
+  const el = document.createElement('div');
+  el.className = 'orb';
+  orbsEl.appendChild(el);
+  orbs.push({ el, x: Math.random()*W, y: Math.random()*H, tx: 0, ty: 0 });
+}
+
+addEventListener('pointermove', e => {
+  mx = e.clientX; my = e.clientY;
+  hasPointer = true;
+  history.push({x: mx, y: my, t: performance.now()});
+  if (history.length > 20) history.shift();
+});
+addEventListener('pointerleave', () => hasPointer = false);
+
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    beta = e.beta || 0;
+    gamma = e.gamma || 0;
+  });
+}
+
+function idx(x, y) { return y * gridW + x; }
+
+function step() {
+  // deposit source
+  if (hasPointer) {
+    const gx = Math.floor((mx / W) * gridW);
+    const gy = Math.floor((my / H) * gridH);
+    if (gx >= 1 && gx < gridW-1 && gy >= 1 && gy < gridH-1) {
+      field[idx(gx, gy)] = Math.min(1, field[idx(gx, gy)] + params.source);
+    }
+  }
+  // diffusion + decay + tilt bias (CPU fallback; WebGPU would do this in compute)
+  const tiltX = gamma * 0.002;
+  const tiltY = beta * 0.002;
+  for (let y = 1; y < gridH-1; y++) {
+    for (let x = 1; x < gridW-1; x++) {
+      const i = idx(x, y);
+      const lap = (field[idx(x-1,y)] + field[idx(x+1,y)] + field[idx(x,y-1)] + field[idx(x,y+1)] - 4*field[i]);
+      const bias = tiltX * (field[idx(x+1,y)] - field[idx(x-1,y)]) + tiltY * (field[idx(x,y+1)] - field[idx(x,y-1)]);
+      prevField[i] = field[i] * params.decay + lap * params.diffusion + bias * 0.1;
+    }
+  }
+  // swap
+  [field, prevField] = [prevField, field];
+
+  // sample for worker
+  const samples = [];
+  for (let k = 0; k < 8; k++) {
+    const sx = Math.floor(Math.random() * (gridW-2)) + 1;
+    const sy = Math.floor(Math.random() * (gridH-2)) + 1;
+    samples.push(field[idx(sx, sy)]);
+  }
+  let vx = 0, vy = 0;
+  if (history.length > 1) {
+    const a = history[history.length-1], b = history[history.length-2];
+    vx = a.x - b.x; vy = a.y - b.y;
+  }
+  worker.postMessage({ vx, vy, samples, params });
+
+  // render field
+  const img = ctx.createImageData(gridW, gridH);
+  for (let i = 0; i < field.length; i++) {
+    const v = Math.min(255, field[i] * 400);
+    img.data[i*4] = v * 0.3;
+    img.data[i*4+1] = v * 0.6;
+    img.data[i*4+2] = v;
+    img.data[i*4+3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  ctx.drawImage(canvas, 0, 0, gridW, gridH, 0, 0, W, H);
+
+  // update orbs from field peaks + predicted
+  let peakX = W/2, peakY = H/2, peakV = 0;
+  for (let y = 0; y < gridH; y += 2) {
+    for (let x = 0; x < gridW; x += 2) {
+      const v = field[idx(x,y)];
+      if (v > peakV) { peakV = v; peakX = (x/gridW)*W; peakY = (y/gridH)*H; }
+    }
+  }
+  orbs.forEach((o, i) => {
+    const ang = (i / orbs.length) * Math.PI * 2 + performance.now()*0.001;
+    o.tx = peakX + Math.cos(ang) * (40 + peakV * 80);
+    o.ty = peakY + Math.sin(ang) * (40 + peakV * 80);
+    o.x += (o.tx - o.x) * 0.08;
+    o.y += (o.ty - o.y) * 0.08;
+    const localE = field[idx(Math.floor((o.x/W)*gridW), Math.floor((o.y/H)*gridH))] || 0;
+    o.el.style.left = o.x + 'px';
+    o.el.style.top = o.y + 'px';
+    o.el.style.setProperty('--energy', Math.min(1, localE * 4));
+    o.el.style.opacity = 0.4 + localE * 2;
+  });
+
+  // morph chrome
+  hue = (hue + residual * 2) % 360;
+  document.documentElement.style.setProperty('--energy', energy);
+  document.documentElement.style.setProperty('--residual', residual);
+  document.documentElement.style.setProperty('--hue', hue);
+  const mode = residual < 0.3 ? 'anticipating' : energy > 0.4 ? 'remembering' : 'idle';
+  statusEl.textContent = `causal field · ${mode} · e:${energy.toFixed(2)} r:${residual.toFixed(2)}`;
+
+  requestAnimationFrame(step);
+}
+step();
+</script>
+</body>
+</html>

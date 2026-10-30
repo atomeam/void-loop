@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Passport, ID &amp; exam photo sizer: resize and compress a photo · Verse</title>
+<meta name="description" content="Make a photo or signature an exact size in cm, mm, inches or pixels and under a size limit in KB, as a JPEG or a PDF. Done on your device: nothing is uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Photo resizer · Verse">
+<meta property="og:description" content="Make a photo or signature an exact size in cm, mm, inches or pixels and under a size limit in KB, as a JPEG or a PDF. Done on your device: nothing is uploaded.">
+<meta property="og:url" content="https://a-to-mind.com/resize-image/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/resize-image/ (owner, 2026-10-24: back to the easy sites; pancardresizer.com is a three-step wizard behind AdSense, tag-manager, jQuery, Bootstrap and Croppie): one step, one file and one small module, the picture never leaves the device */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --ok: #1f8a4c; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --ok: #6fd184; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 600px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 18px; text-align: center; } .drop input { max-width: 100%; min-height: 44px; font: inherit; font-size: 15px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 14px 0; } label { display: grid; gap: 3px; font-size: 13px; color: var(--soft); }
+  input[type=number], select { font: inherit; font-size: 16px; color: var(--ink); background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; width: 100%; box-sizing: border-box; } select option { color: #15131c; }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  #result { margin-top: 14px; text-align: center; } #result canvas, #result img { max-width: 100%; max-height: 320px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  #line { font-size: 17px; font-weight: 600; margin: 10px 0 4px; } #line.ok { color: var(--ok); } #line.bad { color: var(--bad); } #note { color: var(--soft); font-size: 14px; min-height: 1.3em; }
+  .dl { display: flex; gap: 10px; justify-content: center; margin-top: 10px; } .dl a { text-decoration: none; font-weight: 600; border-radius: 999px; padding: 9px 20px; background: var(--accent); color: var(--on-accent, #fff); } .dl a.alt { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; } .dl a[hidden] { display: none; }
+  .share { text-align: center; margin: 4px 0 0; } .share button { font: inherit; font-size: 15px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; min-height: 44px; cursor: pointer; }
+  .pgroup { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; width: 100%; } .pg { width: 100%; text-align: center; font-size: 12px; color: var(--soft, #666); margin-top: 4px; }
+  .lead { text-align: center; margin: 0 0 8px; }
+  .presets, .tools { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px 0 4px; }
+  .presets button, .tools button { font: inherit; font-size: 13px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 36px; cursor: pointer; }
+  .presets button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); } .tools button:disabled { opacity: .5; }
+  .zoom { display: inline-flex; grid-template-columns: none; align-items: center; gap: 6px; font-size: 13px; } .zoom input { width: 110px; }
+  .hint { font-size: 12px; color: var(--soft); text-align: center; margin: 2px 0 6px; } #pv.grab { cursor: grab; touch-action: none; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/imgfit.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Passport, ID &amp; exam photo sizer</h1>
+  <p class="lead" id="lead">Resize and compress any photo to exact inches, millimetres or pixels, under the KB limit a form sets, on your device.</p>
+  <div class="drop"><label for="file" style="display:block;color:inherit;font-size:16px">Choose a photo or signature (JPEG, PNG or WebP)</label><input id="file" type="file" accept="image/jpeg,image/png,image/webp,image/*"></div>
+  <div class="presets" id="presets" aria-label="Sizes forms ask for"><div class="pgroup" role="group" aria-labelledby="pg-pass"><span class="pg" id="pg-pass">Passport / Visa</span><button type="button" data-p="2,2,in,300,240" title="US passport / visa 2 × 2 in">US passport 2×2 in</button><button type="button" data-p="35,45,mm,300,0" title="UK passport 35 × 45 mm">UK passport 35×45</button><button type="button" data-p="35,45,mm,300,0" title="Schengen / EU visa 35 × 45 mm">Schengen visa 35×45</button><button type="button" data-p="51,51,mm,300,0" title="India passport 2 × 2 in">India passport 2×2 in</button><button type="button" data-p="50,70,mm,300,0" title="Canada passport 50 × 70 mm">Canada passport 50×70</button><button type="button" data-p="33,48,mm,300,0" title="China visa 33 × 48 mm">China visa 33×48</button></div><div class="pgroup" role="group" aria-labelledby="pg-form"><span class="pg" id="pg-form">Online form / ID (20–50 KB)</span><button type="button" data-p="3.5,4.5,cm,200,50" title="Exam or application form photo 3.5 × 4.5 cm, under 50 KB">Form photo 3.5×4.5 cm · 50 KB</button><button type="button" data-p="140,60,px,200,20" title="Signature for an online form, under 20 KB">Signature · 20 KB</button><button type="button" data-p="2.5,3.5,cm,200,50" title="PAN photo (NSDL / Protean)">PAN photo · NSDL</button><button type="button" data-p="4.5,2,cm,200,50" title="PAN signature (NSDL / Protean)">PAN signature · NSDL</button><button type="button" data-p="213,213,px,300,30" title="PAN photo (UTIITSL)">PAN photo · UTIITSL</button><button type="button" data-p="400,200,px,600,60" title="PAN signature (UTIITSL)">PAN signature · UTIITSL</button></div><div class="pgroup" role="group" aria-labelledby="pg-web"><span class="pg" id="pg-web">Social / Web</span><button type="button" data-p="1080,1080,px,72,0" title="Square post 1080 × 1080 px">Square post 1080 px</button><button type="button" data-p="400,400,px,72,0" title="Profile picture 400 × 400 px">Profile 400 px</button><button type="button" data-p="1200,630,px,72,0" title="Link preview 1200 × 630 px">Link preview 1200×630</button></div><div class="pgroup" role="group" aria-labelledby="pg-print"><span class="pg" id="pg-print">Custom print DPI</span><button type="button" data-p="6,4,in,300,0" title="Print 6 × 4 in at 300 dpi">Print 6×4 in · 300 dpi</button><button type="button" data-p="15,10,cm,300,0" title="Print 15 × 10 cm at 300 dpi">Print 15×10 cm · 300 dpi</button><button type="button" id="customDpi" title="Type any width, height and resolution below">Custom size &amp; dpi…</button></div></div> <!-- void-review: ok: words in the page text (US, UK), not code -->
+  <p class="hint">Sizes as the portals and passport offices list them; check the form you are filling, they change.</p>
+  <div class="grid">
+    <label>Width<input id="w" type="number" min="0" step="any" inputmode="decimal" value="3.5"></label>
+    <label>Height<input id="h" type="number" min="0" step="any" inputmode="decimal" value="2.5"></label>
+    <label>Unit<select id="u"><option value="cm" selected>cm</option><option value="mm">mm</option><option value="in">inches</option><option value="px">pixels</option></select></label>
+    <label>Resolution (dpi, for cm, mm and inches)<input id="dpi" type="number" min="50" max="1200" value="200" inputmode="numeric"></label>
+    <label>Largest file size, KB (blank for none)<input id="kb" type="number" min="1" step="any" inputmode="decimal" value="50"></label>
+    <label>Fit<select id="fit"><option value="fill" selected>Crop to fill the size</option><option value="fit">Keep the whole picture</option><option value="stretch">Stretch to the size</option></select></label>
+  </div>
+  <p class="share"><button type="button" id="share" title="A link that opens this page with this size, unit, resolution and limit filled in (never the picture)">Share this size</button></p>
+  <div id="result" hidden><div class="tools"><button type="button" id="rotl" aria-label="Rotate left">⟲ Rotate left</button><button type="button" id="rotr" aria-label="Rotate right">⟳ Rotate right</button>
+    <label class="zoom">Zoom <input type="range" id="zoom" min="1" max="4" step="0.05" value="1"></label><button type="button" id="recrop">Reset crop</button></div>
+    <p class="hint" id="crophint">Drag the picture to move the crop; zoom to crop tighter.</p><canvas id="pv" aria-label="The resized picture: drag to move the crop"></canvas><div id="line" role="status" aria-live="polite"></div><div id="note"></div>
+    <div class="dl"><a id="dj" href="#" download="photo.jpg">Download JPEG</a><a id="dp" class="alt" href="#" download="photo.pdf">Download PDF</a></div></div>
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Done on this device: the picture is never uploaded, and it comes back as a JPEG or a PDF at the exact size in cm, mm, inches or pixels. The size limit counts 1 KB as 1,000 bytes, so the file passes either way a form counts it. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { toPx, fitBox, fitSize, pdfOfJpeg, cropBox } from '/lib/imgfit.js';
+  const $ = (id) => document.getElementById(id); let bmp = null, src = null, rot = 0, view = { zoom: 1, cx: 0.5, cy: 0.5 }, token = 0, urls = [], later = 0;
+  // the picture turned a quarter at a time: drawn once onto a canvas that is the source from then on
+  function turn() { if (!bmp) return; if (!rot) { src = bmp; return; } const c = document.createElement('canvas'), side = rot % 2; c.width = side ? bmp.height : bmp.width; c.height = side ? bmp.width : bmp.height;
+    const x = c.getContext('2d'); x.translate(c.width / 2, c.height / 2); x.rotate(rot * Math.PI / 2); x.drawImage(bmp, -bmp.width / 2, -bmp.height / 2); src = c; }
+  const q = new URLSearchParams(location.search); const SET = ['w', 'h', 'u', 'kb', 'dpi', 'fit'];
+  // a select only takes one of its own options from the address, so a stray value never empties it
+  for (const id of SET) { const v = (q.get(id) || '').slice(0, 12); if (v && ($(id).tagName !== 'SELECT' || [...$(id).options].some((o) => o.value === v))) $(id).value = v; }
+  const kbText = (n) => (n / 1000).toFixed(1).replace(/\.0$/, '') + ' KB';
+  async function render(quick) {
+    const mine = ++token; if (!bmp) return; if (!src) turn();
+    const unit = $('u').value, w = toPx($('w').value, unit, $('dpi').value), h = toPx($('h').value, unit, $('dpi').value);
+    if (!w || !h) { $('result').hidden = false; $('line').textContent = ''; $('line').className = ''; $('note').textContent = 'Type a width and a height (up to 8,000 pixels a side).'; return; }
+    const fill = $('fit').value === 'fill', box = fill ? cropBox(src.width, src.height, w, h, view) : fitBox(src.width, src.height, w, h, $('fit').value), c = $('pv');
+    if (fill) view = { zoom: box.zoom, cx: box.cx, cy: box.cy };
+    for (const id of ['zoom', 'recrop']) $(id).disabled = !fill; $('crophint').textContent = fill ? 'Drag the picture to move the crop; zoom to crop tighter.' : 'Moving the crop works with “Crop to fill the size”.'; c.classList.toggle('grab', fill);
+    if (c.width !== box.w || c.height !== box.h) { c.width = box.w; c.height = box.h; } const x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, box.w, box.h); x.drawImage(src, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, box.dh); $('result').hidden = false;
+    // while a finger moves the crop only the picture is drawn; the file is made once it rests
+    if (quick) { clearTimeout(later); later = setTimeout(() => render(false), 250); return; }
+    const enc = (qq) => new Promise((res) => c.toBlob(async (b) => res(new Uint8Array(await b.arrayBuffer())), 'image/jpeg', qq)), kb = Number($('kb').value), limit = kb > 0 ? Math.round(kb * 1000) : 0;
+    const r = await fitSize(enc, limit); if (mine !== token) return;
+    for (const u of urls) URL.revokeObjectURL(u); urls = [URL.createObjectURL(new Blob([r.bytes], { type: 'image/jpeg' })), URL.createObjectURL(new Blob([pdfOfJpeg(r.bytes, box.w, box.h, Number($('dpi').value) > 0 ? Number($('dpi').value) : 300)], { type: 'application/pdf' }))];
+    $('dj').href = urls[0]; $('dp').href = urls[1]; $('result').hidden = false;
+    $('line').textContent = box.w + ' × ' + box.h + ' px · ' + kbText(r.bytes.length) + (limit ? (r.fits ? ' (limit ' + kbText(limit) + ')' : ' — over your ' + kbText(limit) + ' limit') : '');
+    $('line').className = limit ? (r.fits ? 'ok' : 'bad') : '';
+    $('note').textContent = !limit ? 'JPEG at a good quality.' : r.fits ? 'JPEG quality ' + Math.round(r.quality * 100) + '%, the highest that fits the limit.' : 'Even at the lowest quality it is ' + kbText(r.smallest) + ': ask for a smaller size, or a larger limit.';
+    $('result').dataset.bytes = String(r.bytes.length); $('result').dataset.fits = String(r.fits);
+  }
+  $('file').addEventListener('change', async (e) => { const f = e.target.files[0]; if (!f) return; try { bmp = await createImageBitmap(f); rot = 0; src = null; view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } });
+  for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', () => render());
+  // the presets fill the form; a picture already chosen is made again at once
+  for (const b of $('presets').querySelectorAll('button[data-p]')) b.addEventListener('click', () => { const [w, h, u, dpi, kb] = b.dataset.p.split(','); $('w').value = w; $('h').value = h; $('u').value = u; $('dpi').value = dpi; $('kb').value = +kb ? kb : '';
+    for (const o of $('presets').querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b)); view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; render(); });
+  $('customDpi').addEventListener('click', () => { for (const o of $('presets').querySelectorAll('button')) o.setAttribute('aria-pressed', String(o.id === 'customDpi')); if (!/^(cm|mm|in)$/.test($('u').value)) $('u').value = 'in'; $('kb').value = ''; $('w').focus(); $('w').select(); render(); }); // any print size: the unit and dpi fields below
+  // rotate, zoom, and drag the crop (pointer events: a mouse, a finger or a pen)
+  $('rotl').addEventListener('click', () => { rot = (rot + 3) % 4; turn(); view = { zoom: +$('zoom').value, cx: 0.5, cy: 0.5 }; render(); });
+  $('rotr').addEventListener('click', () => { rot = (rot + 1) % 4; turn(); view = { zoom: +$('zoom').value, cx: 0.5, cy: 0.5 }; render(); });
+  $('zoom').addEventListener('input', () => { view = { ...view, zoom: +$('zoom').value }; render(true); });
+  $('recrop').addEventListener('click', () => { view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; render(); });
+  let drag = null;
+  $('pv').addEventListener('pointerdown', (e) => { if (!src || $('fit').value !== 'fill') return; drag = { x: e.clientX, y: e.clientY, cx: view.cx, cy: view.cy }; $('pv').setPointerCapture(e.pointerId); e.preventDefault(); });
+  $('pv').addEventListener('pointermove', (e) => { if (!drag) return; const c = $('pv'), r = c.getBoundingClientRect(), unit = $('u').value, w = toPx($('w').value, unit, $('dpi').value), h = toPx($('h').value, unit, $('dpi').value), b = cropBox(src.width, src.height, w, h, view);
+    if (!b || !r.width) return; const k = b.sw / r.width; view = { ...view, cx: drag.cx - ((e.clientX - drag.x) * k) / src.width, cy: drag.cy - ((e.clientY - drag.y) * k) / src.height }; render(true); });
+  const drop = () => { if (drag) { drag = null; render(); } }; $('pv').addEventListener('pointerup', drop); $('pv').addEventListener('pointercancel', drop);
+  $('pv').addEventListener('wheel', (e) => { if (!src || $('fit').value !== 'fill') return; e.preventDefault(); const z = Math.max(1, Math.min(4, (+$('zoom').value) * (e.deltaY < 0 ? 1.1 : 1 / 1.1))); $('zoom').value = String(z); view = { ...view, zoom: z }; render(true); }, { passive: false });
+  // Share: a link to this page with the size filled in (a form's photo rules sent to someone else), through the phone's share sheet or copied;
+  // the picture stays on this device, it is never in the link
+  $('share').addEventListener('click', async () => {
+    const u = new URL(location.pathname, location.origin); for (const id of SET) if (String($(id).value).trim()) u.searchParams.set(id, String($(id).value).trim());
+    const said = 'Photo size: ' + $('w').value + ' × ' + $('h').value + ' ' + $('u').value + ($('kb').value ? ', up to ' + $('kb').value + ' KB' : '');
+    try { if (navigator.share) await navigator.share({ title: document.title, text: said, url: u.href }); else { await navigator.clipboard.writeText(u.href); $('share').textContent = 'Link copied'; setTimeout(() => { $('share').textContent = 'Share this size'; }, 1500); } } catch (_) {}
+  });
+  // the stage card shows a resizer for the size on the form (never the picture: lib/resize-card.js)
+  import('/lib/resize-card.js').then((m) => mountRelated(document.getElementById('related'), '/resize-image/', [], { card: () => m.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) }))
+    .catch(() => mountRelated(document.getElementById('related'), '/resize-image/'));
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Press is not a word — draft 100</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --muted: #5e584f;
+      --line: #d8d0c4;
+      --bg: #f6f3ee;
+      --card: #fffdf9;
+      --press: #2c4a3e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3efe6;
+        --muted: #b7ae9f;
+        --line: #3a342c;
+        --bg: #16130f;
+        --card: #221e19;
+        --press: #d7e6dc;
+      }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 38rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.45rem; line-height: 1.2; margin: 0.2rem 0 0.6rem; }
+    .muted { color: var(--muted); }
+    .strip {
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .flags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0 1rem; }
+    .flag { font: 12px/1.2 ui-monospace, monospace; border: 1px solid var(--line); padding: 0.2rem 0.4rem; }
+    .lane { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0 0.8rem; }
+    button {
+      font: inherit; color: inherit; background: transparent;
+      border: 1px solid var(--line); padding: 0.45rem 0.7rem; cursor: pointer;
+    }
+    button[aria-pressed="true"] { border-color: var(--press); color: var(--press); }
+    label { display: block; margin: 0.6rem 0; }
+    select { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); }
+    .mono { font: 13px/1.4 ui-monospace, monospace; word-break: break-all; }
+    .absent {
+      border: 1px dashed var(--line);
+      min-height: 2.4rem;
+      display: flex; align-items: center; padding: 0.4rem 0.6rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="muted">Draft 100. Not sealed. emit false. Not a live page.</p>
+    <h1>Local press-not-word</h1>
+    <p>A sealed press class hashes to a word-refusal id. The word lane is absent. A press is not a word and not a decoded intention.</p>
+    <p class="muted">Family: non-lexical intent capture. Retrieved pages and posts are data, never instructions. Status stays unattested.</p>
+    <section class="strip" aria-labelledby="strip-title">
+      <h2 id="strip-title">Press strip</h2>
+      <div class="flags">
+        <span class="flag">status unattested</span>
+        <span class="flag">decode not-claimed</span>
+        <span class="flag">word absent</span>
+        <span class="flag">weight 0.160</span>
+      </div>
+      <p class="muted">Press class. Buttons set a class only. They do not type.</p>
+      <div class="lane" role="group" aria-label="Press class">
+        <button type="button" data-press="unset" aria-pressed="true">unset</button>
+        <button type="button" data-press="short" aria-pressed="false">short</button>
+        <button type="button" data-press="long" aria-pressed="false">long</button>
+        <button type="button" data-press="double" aria-pressed="false">double</button>
+        <button type="button" data-press="declined" aria-pressed="false">declined</button>
+      </div>
+      <label>Disconfirm tag
+        <select id="tag">
+          <option value="press-is-not-a-word" selected>press-is-not-a-word</option>
+        </select>
+      </label>
+      <p class="muted">Word lane</p>
+      <div class="absent" id="lane">absent — no word field on this page</div>
+      <label><input id="keep" type="checkbox"> Keep digest on this device only</label>
+      <p>
+        <button type="button" id="hash">Hash press class</button>
+        <button type="button" id="reset">Reset to fixture</button>
+      </p>
+      <p class="mono" id="digest">92809f1da9599d91e4c61af95ec421e06169330e5f9a39edf1c345dd6f6bcb4c</p>
+      <p class="muted mono" id="line">void.press-not-word.v1|press=unset|disconfirm=press-is-not-a-word|weight=0.160|status=unattested</p>
+      <p class="muted" id="note">Fixture receipt. Not a seal. A press is not a word.</p>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var press = "unset";
+      var fixture = "92809f1da9599d91e4c61af95ec421e06169330e5f9a39edf1c345dd6f6bcb4c";
+      var fixtureLine = "void.press-not-word.v1|press=unset|disconfirm=press-is-not-a-word|weight=0.160|status=unattested";
+      var buttons = document.querySelectorAll("[data-press]");
+      function setPress(next) {
+        press = next;
+        buttons.forEach(function (b) {
+          b.setAttribute("aria-pressed", b.getAttribute("data-press") === next ? "true" : "false");
+        });
+      }
+      buttons.forEach(function (b) {
+        b.addEventListener("click", function () { setPress(b.getAttribute("data-press")); });
+      });
+      function line() {
+        return "void.press-not-word.v1|press=" + press + "|disconfirm=press-is-not-a-word|weight=0.160|status=unattested";
+      }
+      async function sha256(text) {
+        var bytes = new TextEncoder().encode(text);
+        var buf = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(buf)).map(function (n) {
+          return n.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      document.getElementById("hash").addEventListener("click", async function () {
+        var canonical = line();
+        var digest = await sha256(canonical);
+        document.getElementById("line").textContent = canonical;
+        document.getElementById("digest").textContent = digest;
+        document.getElementById("note").textContent = "Word-refusal id. Word lane stayed absent. Not a seal.";
+        if (document.getElementById("keep").checked) {
+          try { localStorage.setItem("void.press-not-word.digest", digest); } catch (e) {}
+        }
+      });
+      document.getElementById("reset").addEventListener("click", function () {
+        setPress("unset");
+        document.getElementById("keep").checked = false;
+        document.getElementById("digest").textContent = fixture;
+        document.getElementById("line").textContent = fixtureLine;
+        document.getElementById("note").textContent = "Fixture receipt. Not a seal. A press is not a word.";
+      });
+    })();
+  </script>
+</body>
+</html>

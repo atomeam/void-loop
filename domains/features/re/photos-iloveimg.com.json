@@ -1,0 +1,338 @@
+{
+ "site": "www.iloveimg.com",
+ "url": "https://www.iloveimg.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 547182,
+   "ext": true
+  },
+  {
+   "f": "web.beac31e.css",
+   "t": "css",
+   "b": 250643
+  },
+  {
+   "f": "web.beac31e.js",
+   "t": "js",
+   "b": 276670
+  },
+  {
+   "f": "ilove.min.js",
+   "t": "js",
+   "b": 3991
+  }
+ ],
+ "assetCount": 4,
+ "bytes": 1078486,
+ "html": {
+  "mobile": {
+   "title": "iLoveIMG | The fastest free web app for ",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "share": {
+    "og": 7,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "COMPRESS IMAGE",
+   "w": "d"
+  },
+  {
+   "l": "CONVERT TO JPG",
+   "w": "d"
+  },
+  {
+   "l": "CROP IMAGE",
+   "w": "d"
+  },
+  {
+   "l": "Login",
+   "w": "d"
+  },
+  {
+   "l": "PHOTO EDITOR",
+   "w": "d"
+  },
+  {
+   "l": "RESIZE IMAGE",
+   "w": "d"
+  },
+  {
+   "l": "Sign up",
+   "w": "d"
+  },
+  {
+   "l": "iLoveIMG",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/upload/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 1622,
+  "index": false,
+  "sections": [
+   {
+    "s": "ca",
+    "n": 63
+   },
+   {
+    "s": "de",
+    "n": 63
+   },
+   {
+    "s": "es",
+    "n": 63
+   },
+   {
+    "s": "fr",
+    "n": 63
+   },
+   {
+    "s": "it",
+    "n": 63
+   },
+   {
+    "s": "pt",
+    "n": 63
+   },
+   {
+    "s": "ru",
+    "n": 63
+   },
+   {
+    "s": "ar",
+    "n": 62
+   },
+   {
+    "s": "bg",
+    "n": 62
+   },
+   {
+    "s": "el",
+    "n": 62
+   },
+   {
+    "s": "hi",
+    "n": 62
+   },
+   {
+    "s": "id",
+    "n": 62
+   },
+   {
+    "s": "ja",
+    "n": 62
+   },
+   {
+    "s": "ko",
+    "n": 62
+   },
+   {
+    "s": "ms",
+    "n": 62
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "web.beac31e.css",
+   "own": true,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "web.beac31e.js",
+   "own": true,
+   "apiPaths": [
+    "/auth/auth@43560",
+    "/api@171458"
+   ],
+   "flags": [
+    "showPaletteOnly@20404",
+    "allowEmpty@21060",
+    "showInitial@21074",
+    "allowHTML@28788",
+    "showOnCreate@224481",
+    "isEnabled@227322",
+    "useFlex@237804",
+    "allowSecretKey@266520"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  }
+ ],
+ "hosts": [
+  {
+   "host": "sentry.io",
+   "file": "web.beac31e.js",
+   "at": 266444
+  },
+  {
+   "host": "webhook.site",
+   "file": "web.beac31e.js",
+   "at": 191155
+  }
+ ],
+ "thirdParty": [
+  "analytics.google.com",
+  "sentry.io",
+  "webhook.site",
+  "www.googletagmanager.com"
+ ],
+ "services": [
+  "Google Analytics",
+  "Sentry"
+ ],
+ "requests": [
+  "https://analytics.google.com/g/collect?_ee&_eu&_fv&_gaz&_nsi&_p&_s&_ss",
+  "https://evt.iloveimg.com/?_a&_c&_d&_l&_m&_r&_s&_u"
+ ],
+ "storage": {
+  "local": [],
+  "session": [
+   "evi"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "web.beac31e.css"
+  },
+  {
+   "name": "API path /api",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "web.beac31e.js@171458"
+  },
+  {
+   "name": "API path /auth/auth",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "web.beac31e.js@43560"
+  },
+  {
+   "name": "Feature flag allowEmpty",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@21060"
+  },
+  {
+   "name": "Feature flag allowHTML",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@28788"
+  },
+  {
+   "name": "Feature flag allowSecretKey",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@266520"
+  },
+  {
+   "name": "Feature flag isEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@227322"
+  },
+  {
+   "name": "Feature flag showInitial",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@21074"
+  },
+  {
+   "name": "Feature flag showOnCreate",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@224481"
+  },
+  {
+   "name": "Feature flag showPaletteOnly",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@20404"
+  },
+  {
+   "name": "Feature flag useFlex",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "web.beac31e.js@237804"
+  },
+  {
+   "name": "Path kept from crawlers /upload/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /ar/ (62 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /ca/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /de/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /es/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /fr/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /it/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /pt/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /ru/ (63 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

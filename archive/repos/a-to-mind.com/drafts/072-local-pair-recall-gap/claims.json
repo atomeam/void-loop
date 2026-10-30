@@ -1,0 +1,17 @@
+{
+  "slug": "local-pair-recall-gap",
+  "run": "072",
+  "family": "collective-memory miss board",
+  "status": "unattested",
+  "emit": false,
+  "page_may_set_attested": false,
+  "hypothesis": "Two person-typed recalls of one sealed fixture id, entered before the fixture line is shown, hash to a token gap between the recalls. The gap is a hypothesis of disagreement between two local notes. It is not a collective-memory seal, not a timeline proof, and not a score against the fixture.",
+  "observation": "A person types two recalls in sequence for one closed fixture id. The page withholds the sealed line until both are sealed.",
+  "claim": "A token gap between two recalls is sometimes read, off this page, as evidence that a public line changed. This page does not make that reading.",
+  "inference_denied": "Agreement between the two recalls is not a shared-reality seal. Disagreement is not a timeline proof. A later look at the sealed line is not a correction score.",
+  "disconfirm": "A primary record the person can check outside this page, named in the note. This page does not fetch it.",
+  "confidence": "design-material weight typed by the person, not a measurement",
+  "href_allowlist": [],
+  "worker": "403 every method, body not read",
+  "differs_from": "local-collective-miss-board compared one recall to a visible fixture and stored a match flag. This draft withholds the line, requires a second recall, and hashes only the gap between the two recalls."
+}

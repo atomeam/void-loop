@@ -35,6 +35,17 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "distance",
+  "tool": "skill_distance",
+  "family": "sky",
+  "familyName": "Sky and earth",
+  "examples": [
+   "distance from london to paris",
+   "how far is paris from berlin",
+   "how far is new york from boston"
+  ]
+ },
+ {
   "skill": "eclipse",
   "tool": "skill_eclipse",
   "family": "sky",
@@ -46,14 +57,14 @@ export const SKILL_TOOLS = [
   ]
  },
  {
-  "skill": "film-metadata",
-  "tool": "skill_film_metadata",
+  "skill": "joke",
+  "tool": "skill_joke",
   "family": "words",
   "familyName": "Words and the world",
   "examples": [
-   "find me a sci-fi film from the 80s",
-   "films by Kurosawa",
-   "movies directed by Hitchcock"
+   "tell me a joke",
+   "make me laugh",
+   "tell me a dad joke"
   ]
  },
  {
@@ -76,17 +87,6 @@ export const SKILL_TOOLS = [
    "what can i swap for buttermilk",
    "substitute for eggs in baking",
    "baking powder substitute"
-  ]
- },
- {
-  "skill": "technical-context",
-  "tool": "skill_technical_context",
-  "family": "words",
-  "familyName": "Words and the world",
-  "examples": [
-   "why is rust unwrap a risk",
-   "is unwrap risky in rust",
-   "technical context for unwrap"
   ]
  },
  {

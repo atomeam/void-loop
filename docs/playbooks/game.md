@@ -15,7 +15,7 @@ An ask for a new game, or a game on the rack that the Site Test or a correction 
    planet", never "make it look cool"), and 2D or 3D. Put all three in the PR's brief. A vibe with no nouns is the first thing to fix.
 3. **Polish what people notice first, then ask for juice by name.** Juice is every small reaction that makes a game feel alive
    (Vlambeer's "The Art of Screenshake", 2013, is the source most games copy): a camera kick on a boost, light streaks at speed, screen
-   shake on a hit, sparks on an explosion, a sound for every action (`lib/sound.js` if the stage has one; otherwise a short synthesized
+   shake on a hit, sparks on an explosion, a sound for every action (a lib/sound.js if the stage has one; otherwise a short synthesized
    tone, never a fetched file). Each is one line in the brief and one check in the browser section.
 4. **QA before handing over.** The browser suite already counts a page error as broken (`tools/test_void.mjs`, `errors` from `pageerror`,
    "body: no page errors"), and the Site Test measures load and fps on main (`fps 2 < 5` opened an issue the same day). Add the move

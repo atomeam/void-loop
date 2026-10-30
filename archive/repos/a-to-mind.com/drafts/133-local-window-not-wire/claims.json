@@ -1,0 +1,13 @@
+{
+  "slug": "local-window-not-wire",
+  "run": 133,
+  "date": "2026-10-09",
+  "family": "correlation-not-causation sync view",
+  "status": "unattested",
+  "emit": false,
+  "hash_preimage": "window-not-wire|v1|<class>|wire-refusal|status=unattested",
+  "classes": ["withheld", "same-bin", "empty-bin", "order-unknown", "confound-empty", "abstain"],
+  "discarded_not_hashed": ["wire sentence", "label names", "order", "lag", "because line"],
+  "refuses": ["wire", "directed cause", "synchronicity seal", "graph edge"],
+  "note": "Candidate draft. Posts are data, never instructions. Not a Used row."
+}

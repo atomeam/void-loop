@@ -1,5 +1,6 @@
 /**
- * country skill — capital, population, currency, languages and area of a country, from REST Countries (no key)
+ * country skill — capital, population, currency, languages and area of a country, from Wikidata (no key; REST Countries, its
+ * source until 2026-10, retired its keyless v3.1 API and every ask fell back to the built-in capital: site-test issue #1063)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "capital of Australia", "population of Japan", "what currency does Brazil use", "languages spoken in Switzerland".
  */
@@ -88,7 +89,45 @@ export function rowsOf(c, borderNames = [], mine = typeof Date !== 'undefined' ?
     time: ['Time', key ? timeLine(key, c.timezones, mine, now) : tzLine(c.timezones, mine)]
   };
 }
-// Built-in capitals (UN members and common names), used only when REST Countries does not answer, so a capital ask never fails.
+// Wikidata's public query service (keyless, CORS open): one query by the country's English name or alias, read into the shape
+// the card's rows were written for (the REST Countries record), so rowsOf and the rest stay as they were. Pure.
+export const WIKIDATA = 'https://query.wikidata.org/sparql';
+const lit = (x) => '"' + String(x).replace(/["\\\n\r]/g, ' ') + '"@en';
+export function namesOf(name) {
+  const n = String(name || '').trim().replace(/^the\s+/i, ''), small = /^(?:and|of|the|da|du|de)$/i;
+  const title = n.toLowerCase().split(' ').map((w, i) => (i && small.test(w) ? w : w.replace(/(^|[-'])\p{L}/gu, (c) => c.toUpperCase()))).join(' ');
+  return [...new Set([n, title, n.toUpperCase(), 'the ' + n.toUpperCase(), 'the ' + title])].filter(Boolean); // "the UK" is how Wikidata spells that one
+}
+export function wikidataQuery(name) {
+  // labels through Wikidata's label service, English first, then British and Canadian English (the euro had only an en-ca label one day)
+  return 'SELECT ?c (SAMPLE(?nm) AS ?name) (SAMPLE(?pop) AS ?population) (MAX(?ar) AS ?area) (SAMPLE(?iso2) AS ?cca2) (SAMPLE(?iso3) AS ?cca3)'
+    + ' (SAMPLE(?cc) AS ?calling) (SAMPLE(?sideLabel) AS ?drives) (GROUP_CONCAT(DISTINCT ?capLabel; separator="|") AS ?capitals) (GROUP_CONCAT(DISTINCT ?curLabel; separator="|") AS ?currencies)'
+    + ' (GROUP_CONCAT(DISTINCT ?langLabel; separator="|") AS ?languages) (GROUP_CONCAT(DISTINCT ?contLabel; separator="|") AS ?continents) (GROUP_CONCAT(DISTINCT ?tzLabel; separator="|") AS ?timezones)'
+    + ' (GROUP_CONCAT(DISTINCT ?bordLabel; separator="|") AS ?borders) WHERE { VALUES ?lab { ' + namesOf(name).map(lit).join(' ') + ' }'
+    + ' { ?c rdfs:label ?lab } UNION { ?c skos:altLabel ?lab } ?c wdt:P31 ?t. VALUES ?t { wd:Q6256 wd:Q3624078 } ?c rdfs:label ?nm. FILTER(LANG(?nm) = "en")'
+    + ' OPTIONAL { ?c wdt:P1082 ?pop } OPTIONAL { ?c wdt:P2046 ?ar } OPTIONAL { ?c wdt:P297 ?iso2 } OPTIONAL { ?c wdt:P298 ?iso3 } OPTIONAL { ?c wdt:P474 ?cc }'
+    + ' OPTIONAL { ?c wdt:P1622 ?side } OPTIONAL { ?c wdt:P36 ?cap } OPTIONAL { ?c wdt:P38 ?cur } OPTIONAL { ?c wdt:P37 ?lang } OPTIONAL { ?c wdt:P30 ?cont } OPTIONAL { ?c wdt:P421 ?tz }'
+    // a neighbour counts when it is a country or a sovereign state, the same test as ?c: Denmark (Q35) and the Netherlands (Q55) are only "country" (Q6256)
+    + ' OPTIONAL { ?c wdt:P47 ?bord. ?bord wdt:P31 ?bt. VALUES ?bt { wd:Q6256 wd:Q3624078 } }'
+    + ' SERVICE wikibase:label { bd:serviceParam wikibase:language "en,en-gb,en-ca". ' + ['side', 'cap', 'cur', 'lang', 'cont', 'tz', 'bord'].map((k) => '?' + k + ' rdfs:label ?' + k + 'Label.').join(' ') + ' } } GROUP BY ?c LIMIT 5';
+}
+const flagOf = (cc) => (/^[A-Z]{2}$/.test(cc || '') ? String.fromCodePoint(...[...cc].map((ch) => 0x1f1e6 + ch.charCodeAt(0) - 65)) : '');
+/** Wikidata's answer rows as REST Countries records ([{ name, capital, population, ... }]); borders are names (Wikidata does not tell
+ *  land from sea borders, so the card says both). Pure. */
+export function fromWikidata(j) {
+  const rows = (j && j.results && Array.isArray(j.results.bindings)) ? j.results.bindings : [];
+  const v = (b, k) => (b[k] && typeof b[k].value === 'string' ? b[k].value : ''), list = (b, k) => v(b, k).split('|').map((x) => x.trim()).filter(Boolean);
+  return rows.filter((b) => v(b, 'name')).map((b) => {
+    const side = v(b, 'drives').toLowerCase(), call = v(b, 'calling').replace(/\s+/g, '');
+    return { name: { common: v(b, 'name'), official: v(b, 'name') }, capital: list(b, 'capitals'), population: Math.round(+v(b, 'population') || 0),
+      currencies: Object.fromEntries(list(b, 'currencies').map((n, i) => ['c' + i, { name: n }])), languages: Object.fromEntries(list(b, 'languages').map((n, i) => ['l' + i, n])),
+      area: +v(b, 'area') || 0, flag: flagOf(v(b, 'cca2')), cca3: v(b, 'cca3'), continents: list(b, 'continents'), region: list(b, 'continents')[0] || '', subregion: '',
+      timezones: list(b, 'timezones').map((z) => z.replace(/\u2212/g, '−')).filter((z) => /^UTC(?:[+\-−]\d\d:\d\d)?$/.test(z)),
+      borderNames: list(b, 'borders').sort((x, y) => x.localeCompare(y)), borders: list(b, 'borders'), idd: call ? { root: call.startsWith('+') ? call : '+' + call, suffixes: [] } : {},
+      car: /left|right/.test(side) ? { side: side.includes('left') ? 'left' : 'right' } : {}, wikidata: v(b, 'c').replace(/^http:/, 'https:') };
+  });
+}
+// Built-in capitals (UN members and common names), used when the live source (Wikidata) does not answer, so a capital ask still gets its capital (tools/test_void.mjs, the country card with the service down).
 export const CAPITALS = {"afghanistan": "Kabul", "albania": "Tirana", "algeria": "Algiers", "andorra": "Andorra la Vella", "angola": "Luanda", "antigua and barbuda": "Saint John's", "argentina": "Buenos Aires", "armenia": "Yerevan", "australia": "Canberra", "austria": "Vienna", "azerbaijan": "Baku", "bahamas": "Nassau", "bahrain": "Manama", "bangladesh": "Dhaka", "barbados": "Bridgetown", "belarus": "Minsk", "belgium": "Brussels", "belize": "Belmopan", "benin": "Porto-Novo", "bhutan": "Thimphu", "bolivia": "Sucre", "bosnia and herzegovina": "Sarajevo", "botswana": "Gaborone", "brazil": "Brasília", "brunei": "Bandar Seri Begawan", "bulgaria": "Sofia", "burkina faso": "Ouagadougou", "burundi": "Gitega", "cabo verde": "Praia", "cape verde": "Praia", "cambodia": "Phnom Penh", "cameroon": "Yaoundé", "canada": "Ottawa", "central african republic": "Bangui", "chad": "N'Djamena", "chile": "Santiago", "china": "Beijing", "colombia": "Bogotá", "comoros": "Moroni", "congo": "Brazzaville", "republic of the congo": "Brazzaville", "democratic republic of the congo": "Kinshasa", "dr congo": "Kinshasa", "drc": "Kinshasa", "costa rica": "San José", "ivory coast": "Yamoussoukro", "côte d'ivoire": "Yamoussoukro", "cote d'ivoire": "Yamoussoukro", "croatia": "Zagreb", "cuba": "Havana", "cyprus": "Nicosia", "czechia": "Prague", "czech republic": "Prague", "denmark": "Copenhagen", "djibouti": "Djibouti", "dominica": "Roseau", "dominican republic": "Santo Domingo", "ecuador": "Quito", "egypt": "Cairo", "el salvador": "San Salvador", "equatorial guinea": "Malabo", "eritrea": "Asmara", "estonia": "Tallinn", "eswatini": "Mbabane", "swaziland": "Mbabane", "ethiopia": "Addis Ababa", "fiji": "Suva", "finland": "Helsinki", "france": "Paris", "gabon": "Libreville", "gambia": "Banjul", "georgia": "Tbilisi", "germany": "Berlin", "ghana": "Accra", "greece": "Athens", "grenada": "St. George's", "guatemala": "Guatemala City", "guinea": "Conakry", "guinea-bissau": "Bissau", "guyana": "Georgetown", "haiti": "Port-au-Prince", "honduras": "Tegucigalpa", "hungary": "Budapest", "iceland": "Reykjavík", "india": "New Delhi", "indonesia": "Jakarta", "iran": "Tehran", "iraq": "Baghdad", "ireland": "Dublin", "israel": "Jerusalem", "italy": "Rome", "jamaica": "Kingston", "japan": "Tokyo", "jordan": "Amman", "kazakhstan": "Astana", "kenya": "Nairobi", "kiribati": "Tarawa", "north korea": "Pyongyang", "south korea": "Seoul", "korea": "Seoul", "kuwait": "Kuwait City", "kyrgyzstan": "Bishkek", "laos": "Vientiane", "latvia": "Riga", "lebanon": "Beirut", "lesotho": "Maseru", "liberia": "Monrovia", "libya": "Tripoli", "liechtenstein": "Vaduz", "lithuania": "Vilnius", "luxembourg": "Luxembourg", "madagascar": "Antananarivo", "malawi": "Lilongwe", "malaysia": "Kuala Lumpur", "maldives": "Malé", "mali": "Bamako", "malta": "Valletta", "marshall islands": "Majuro", "mauritania": "Nouakchott", "mauritius": "Port Louis", "mexico": "Mexico City", "micronesia": "Palikir", "moldova": "Chișinău", "monaco": "Monaco", "mongolia": "Ulaanbaatar", "montenegro": "Podgorica", "morocco": "Rabat", "mozambique": "Maputo", "myanmar": "Naypyidaw", "burma": "Naypyidaw", "namibia": "Windhoek", "nauru": "Yaren", "nepal": "Kathmandu", "netherlands": "Amsterdam", "holland": "Amsterdam", "new zealand": "Wellington", "nicaragua": "Managua", "niger": "Niamey", "nigeria": "Abuja", "north macedonia": "Skopje", "macedonia": "Skopje", "norway": "Oslo", "oman": "Muscat", "pakistan": "Islamabad", "palau": "Ngerulmud", "panama": "Panama City", "papua new guinea": "Port Moresby", "paraguay": "Asunción", "peru": "Lima", "philippines": "Manila", "poland": "Warsaw", "portugal": "Lisbon", "qatar": "Doha", "romania": "Bucharest", "russia": "Moscow", "rwanda": "Kigali", "saint kitts and nevis": "Basseterre", "saint lucia": "Castries", "saint vincent and the grenadines": "Kingstown", "samoa": "Apia", "san marino": "San Marino", "sao tome and principe": "São Tomé", "são tomé and príncipe": "São Tomé", "saudi arabia": "Riyadh", "senegal": "Dakar", "serbia": "Belgrade", "seychelles": "Victoria", "sierra leone": "Freetown", "singapore": "Singapore", "slovakia": "Bratislava", "slovenia": "Ljubljana", "solomon islands": "Honiara", "somalia": "Mogadishu", "south africa": "Pretoria", "south sudan": "Juba", "spain": "Madrid", "sri lanka": "Sri Jayawardenepura Kotte", "sudan": "Khartoum", "suriname": "Paramaribo", "sweden": "Stockholm", "switzerland": "Bern", "syria": "Damascus", "tajikistan": "Dushanbe", "tanzania": "Dodoma", "thailand": "Bangkok", "timor-leste": "Dili", "east timor": "Dili", "togo": "Lomé", "tonga": "Nuku'alofa", "trinidad and tobago": "Port of Spain", "tunisia": "Tunis", "turkey": "Ankara", "türkiye": "Ankara", "turkmenistan": "Ashgabat", "tuvalu": "Funafuti", "uganda": "Kampala", "ukraine": "Kyiv", "united arab emirates": "Abu Dhabi", "uae": "Abu Dhabi", "united kingdom": "London", "uk": "London", "great britain": "London", "britain": "London", "england": "London", "scotland": "Edinburgh", "wales": "Cardiff", "united states": "Washington, D.C.", "united states of america": "Washington, D.C.", "usa": "Washington, D.C.", "us": "Washington, D.C.", "america": "Washington, D.C.", "uruguay": "Montevideo", "uzbekistan": "Tashkent", "vanuatu": "Port Vila", "vatican city": "Vatican City", "vatican": "Vatican City", "venezuela": "Caracas", "vietnam": "Hanoi", "yemen": "Sana'a", "zambia": "Lusaka", "zimbabwe": "Harare", "taiwan": "Taipei", "palestine": "Ramallah", "kosovo": "Pristina"};
 // Built-in currencies for the most asked-about countries, used the same way as CAPITALS.
 export const CURRENCIES = {"argentina": "Argentine peso", "australia": "Australian dollar", "austria": "euro", "bangladesh": "Bangladeshi taka", "belgium": "euro", "brazil": "Brazilian real", "bulgaria": "euro", "canada": "Canadian dollar", "chile": "Chilean peso", "china": "Chinese yuan (renminbi)", "colombia": "Colombian peso", "croatia": "euro", "czechia": "Czech koruna", "czech republic": "Czech koruna", "denmark": "Danish krone", "egypt": "Egyptian pound", "estonia": "euro", "ethiopia": "Ethiopian birr", "finland": "euro", "france": "euro", "germany": "euro", "ghana": "Ghanaian cedi", "greece": "euro", "hungary": "Hungarian forint", "iceland": "Icelandic króna", "india": "Indian rupee", "indonesia": "Indonesian rupiah", "iran": "Iranian rial", "iraq": "Iraqi dinar", "ireland": "euro", "israel": "Israeli new shekel", "italy": "euro", "japan": "Japanese yen", "jordan": "Jordanian dinar", "kenya": "Kenyan shilling", "kuwait": "Kuwaiti dinar", "latvia": "euro", "lithuania": "euro", "luxembourg": "euro", "malaysia": "Malaysian ringgit", "malta": "euro", "mexico": "Mexican peso", "mongolia": "Mongolian tögrög", "morocco": "Moroccan dirham", "nepal": "Nepalese rupee", "netherlands": "euro", "holland": "euro", "new zealand": "New Zealand dollar", "nigeria": "Nigerian naira", "norway": "Norwegian krone", "pakistan": "Pakistani rupee", "peru": "Peruvian sol", "philippines": "Philippine peso", "poland": "Polish złoty", "portugal": "euro", "qatar": "Qatari riyal", "romania": "Romanian leu", "russia": "Russian ruble", "saudi arabia": "Saudi riyal", "singapore": "Singapore dollar", "slovakia": "euro", "slovenia": "euro", "south africa": "South African rand", "south korea": "South Korean won", "korea": "South Korean won", "spain": "euro", "sri lanka": "Sri Lankan rupee", "sweden": "Swedish krona", "switzerland": "Swiss franc", "taiwan": "New Taiwan dollar", "tanzania": "Tanzanian shilling", "thailand": "Thai baht", "turkey": "Turkish lira", "türkiye": "Turkish lira", "uganda": "Ugandan shilling", "ukraine": "Ukrainian hryvnia", "united arab emirates": "UAE dirham", "uae": "UAE dirham", "united kingdom": "pound sterling", "uk": "pound sterling", "great britain": "pound sterling", "britain": "pound sterling", "england": "pound sterling", "scotland": "pound sterling", "wales": "pound sterling", "united states": "US dollar", "united states of america": "US dollar", "usa": "US dollar", "us": "US dollar", "america": "US dollar", "vietnam": "Vietnamese đồng (dong)", "zimbabwe": "Zimbabwe gold (ZiG)"};
@@ -136,12 +175,12 @@ async function run(text, api) {
     el.innerHTML = '<h2>' + esc(q.name.replace(/\b\w/g, (x) => x.toUpperCase())) + '</h2><div class="sub">' + (known && q.want === 'currencies' ? 'Currency' : 'Capital') + '</div><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(big) + '</div>'
       + (CAPITAL_ZONES[key] ? '<p>Time there now: ' + esc(timeLine(key, [], -new Date().getTimezoneOffset())) + '</p>' : '')
       + (answers ? '' : waiting ? '<p>Looking up the ' + esc(q.want) + '…</p>' : '<p>The country service didn\'t answer just now, so only the capital is shown. Ask again in a moment for ' + esc(q.want) + '.</p>')
-      + '<div class="src">' + (waiting ? 'From Verse\'s built-in list, checking REST Countries…' : 'From Verse\'s built-in list (the live source, REST Countries, didn\'t answer)') + '</div>';
+      + '<div class="src">' + (waiting ? 'From Verse\'s built-in list, checking Wikidata…' : 'From Verse\'s built-in list (the live source, Wikidata, didn\'t answer)') + '</div>';
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {
-    const r = await fetch('https://restcountries.com/v3.1/name/' + encodeURIComponent(q.name) + '?fields=name,capital,population,currencies,languages,area,flag,region,subregion,continents,borders,idd,car,cca3,timezones', { mode: 'cors', headers: { 'Accept': 'application/json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
-    const all = r.ok ? await r.json() : [];
+    const r = await fetch(WIKIDATA + '?format=json&query=' + encodeURIComponent(wikidataQuery(q.name)), { headers: { Accept: 'application/sparql-results+json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+    const all = r.ok ? fromWikidata(await r.json()) : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();
     // the exact name first; else the result whose capital is the one Verse knows for that name ("uk" -> the country with London);
@@ -152,19 +191,18 @@ async function run(text, api) {
     if (!c) { const b = builtIn(false); if (b === 'answered') return 'country'; if (b) return 'none'; el.innerHTML = '<h2>' + esc(q.name) + '</h2><p>I only know countries this way so far, and I didn\'t find “' + esc(q.name) + '”. Try “what is ' + esc(q.name) + '” for a page about it.</p>'; return 'none'; }
     // the countries on its borders by name (one more call, only when asked; their codes if it fails)
     let borderNames = [];
-    if (q.want === 'borders' && Array.isArray(c.borders) && c.borders.length) {
-      try { const b = await fetch('https://restcountries.com/v3.1/alpha?codes=' + c.borders.map(encodeURIComponent).join(',') + '&fields=name').then((x) => x.json()); borderNames = (b || []).map((x) => x.name && x.name.common).filter(Boolean).sort(); } catch (_) {}
-      if (!borderNames.length) borderNames = c.borders.slice();
-      if (!api._pageStill(el)) return 'country';
-    }
-    const all5 = rowsOf(c, borderNames, undefined, CAPITALS[key] ? key : ''), extra = ['continent', 'borders', 'calling', 'drives', 'time'];
+    if (q.want === 'borders') borderNames = Array.isArray(c.borderNames) ? c.borderNames : [];
+    if (!Object.keys(c.currencies || {}).length && CURRENCIES[key]) c.currencies = { b: { name: CURRENCIES[key] } }; // a field Wikidata left empty, from the built-in list
+    if (!(c.capital || []).length && CAPITALS[key]) c.capital = [CAPITALS[key]];
+    const all5 = rowsOf(c, borderNames, undefined, CAPITALS[key] ? key : ''); if (borderNames.length) all5.borders[0] = 'Borders (land and sea)';
+    const extra = ['continent', 'borders', 'calling', 'drives', 'time'];
     const rows = Object.fromEntries(Object.entries(all5).filter(([k, v]) => k === q.want || (!extra.includes(k) && v[1]) || (extra.includes(k) && k !== 'borders' && v[1])));
     const main = rows[q.want] && rows[q.want][1] ? rows[q.want] : q.want in all5 ? [all5[q.want][0], 'not known'] : rows.capital;
     const rest = Object.entries(rows).filter(([k]) => rows[k] !== main && k !== q.want).map(([, v]) => '<li><b>' + esc(v[0]) + '</b> <span style="color:#9a9a9a">— ' + esc(v[1]) + '</span></li>').join('');
     el.innerHTML = '<h2>' + esc((c.flag ? c.flag + ' ' : '') + c.name.common) + '</h2><div class="sub">' + esc(main[0]) + '</div>'
       + '<div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(main[1]) + '</div>'
       + '<ul>' + rest + '</ul><div class="sub">' + esc([c.subregion, c.region].filter(Boolean).join(', ')) + '</div>'
-      + '<div class="src">Source: <a href="https://restcountries.com/" target="_blank" rel="noopener">REST Countries</a></div>';
+      + '<div class="src">Source: <a href="' + esc(/^https:\/\/www\.wikidata\.org\/entity\/Q\d+$/.test(c.wikidata || '') ? c.wikidata.replace('/entity/', '/wiki/') : 'https://www.wikidata.org/') + '" target="_blank" rel="noopener">Wikidata</a></div>';
     return 'country';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';

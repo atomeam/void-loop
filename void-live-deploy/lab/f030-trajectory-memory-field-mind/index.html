@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --hue: 200;
+  --scale: 1;
+  --cx: 50vw;
+  --cy: 50vh;
+}
+body {
+  margin: 0;
+  background: #080812;
+  color: #d0d0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+#hud {
+  position: fixed;
+  left: var(--cx);
+  top: var(--cy);
+  transform: translate(-50%, -50%) scale(var(--scale));
+  z-index: 10;
+  background: rgba(16,16,36,0.75);
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: 1px solid hsla(var(--hue), 75%, 65%, 0.6);
+  backdrop-filter: blur(10px);
+  transition: left 0.4s, top 0.4s, transform 0.3s, border-color 0.3s;
+  pointer-events: auto;
+  max-width: 280px;
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+}
+button {
+  background: #252550;
+  color: #fff;
+  border: 1px solid #5a5aaa;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin: 4px 4px 0 0;
+  cursor: pointer;
+}
+button:hover { background: #353570; }
+#status { font-size: 0.85rem; opacity: 0.85; margin-top: 8px; }
+.note { font-size: 0.72rem; margin-top: 8px; opacity: 0.65; line-height: 1.3; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Trajectory Memory Field Mind · Verse lab</title>
+<meta name="description" content="Continuous spatial field (Canvas2D; WebGPU compute path noted) that retains pointer trajectories as decaying activation trails.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Trajectory Memory Field Mind · Verse lab">
+<meta property="og:description" content="Continuous spatial field (Canvas2D; WebGPU compute path noted) that retains pointer trajectories as decaying activation trails.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f030-trajectory-memory-field-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f030-trajectory-memory-field-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F-030 Trajectory Memory Field</strong>
+  <div id="status">Mind initializing…</div>
+  <button id="seal">Seal Kernel</button>
+  <button id="reset">Reset Field</button>
+  <div class="note">
+    Draw with pointer to inject trails. Mind evolves decay/diffusion to keep structured memories. HUD tracks memory centroid; sound pans with it.
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Trajectory Memory Field Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

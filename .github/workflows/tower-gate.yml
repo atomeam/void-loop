@@ -1,0 +1,185 @@
+# The tower's automatic checks (tools/tower-gate.mjs) against the live sites. The session container cannot reach the sites; this runner can.
+# Passive page loads only. A changed verdict is committed to main as "Tower gate: ..." and the deploy started, so the live tower card moves by
+# itself; the deploy of that commit does not start this again (the head commit says so).
+# Which floors (owner, 2026-10-24: "Target the current fight by default ... Keep --all for scheduled cron sweeps only"):
+#   after a deploy        the fight Verse is in now, a floor whose page the deploy changed, floors missing a newly measurable aspect (at most 3,
+#                         about a minute: tools/tower-gate.mjs --which), one job
+#   by hand               `floor`: one floor id, several separated by commas (one job), or `all` for every floor (the sweep)
+#   once a day            every floor (the sweep), so a site that changed under Verse is caught
+# The sweep runs as a matrix (2026-10-25): every floor measured once, in slices of the floors spread over six runners (speed is ms to the load
+# event, so two floors timed on one runner would share its CPU and network; the slicing is across machines, never threads), each slice uploaded
+# as an artifact, then one merge job folds every slice into tower.evidence.json (tools/tower-merge.mjs: a slice row replaces an older row for the
+# same floor and aspect only, a fight run that committed while the sweep ran keeps its newer verdict) and commits as the fight run does. A slice
+# that fails leaves the others to be merged (fail-fast off, the merge runs unless the sweep was cancelled). About eight minutes in all instead of
+# 45 on one runner.
+# Runs in one group queue (2026-10-25): a fight run started by a deploy is never cancelled by the next deploy; GitHub keeps the newest pending run
+# of the group and starts it when the one in progress ends, so every deploy's verdict lands (cancelling meant builders pushing minutes apart
+# left no verdict at all: runs 93 and 101 were cut short with their floors never measured). The sweep has its own group, so a deploy's fight run
+# neither waits for it nor cuts it short.
+name: Tower gate
+
+on:
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      floor:
+        description: a floor id (e.g. "colour codes"), several separated by commas, or "all" for every floor (the sharded sweep); empty measures the current fight
+        default: ''
+  schedule:
+    - cron: '17 6 * * *'
+
+permissions:
+  contents: write # commit the verdicts
+  actions: write # start the deploy after the commit (a GITHUB_TOKEN push starts no workflow)
+
+concurrency:
+  # fight runs queue behind each other (the newest pending one runs after the one in progress, never cancelling it); the sweep has its own group.
+  # A run by hand gets a group of its own (2026-10-25: GitHub keeps one queued run per group, so a hand run waiting behind a deploy's fight run
+  # was cancelled by the next deploy; runs 124, 150 and 151 never measured their floors). It runs beside the fight run, on its own machine.
+  group: ${{ (github.event_name == 'schedule' || inputs.floor == 'all') && 'tower-gate-sweep' || (github.event_name == 'workflow_dispatch' && format('tower-gate-hand-{0}', github.run_id)) || 'tower-gate' }}
+  cancel-in-progress: false
+
+jobs:
+  # the fight run (after a deploy) and a run by hand for one floor or a list: one job, the floors one after another
+  gate:
+    if: github.event_name != 'schedule' && inputs.floor != 'all' && (github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && !startsWith(github.event.workflow_run.head_commit.message, 'Tower gate:')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 60 # a fight run takes minutes (at most 3 floors); a list by hand about a minute a floor (eleven aspects, a German browser and an offline reload per site)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2 # the deploy's own change, for the floors whose pages it touched
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Measure the floors against their live sites
+        env:
+          TOWER_PRIVATE: ${{ runner.temp }}/tower-private
+          CHROME_PATH: /usr/bin/google-chrome
+          FLOOR: ${{ inputs.floor }}
+        run: |
+          if [ -n "$FLOOR" ]; then
+            printf '%s\n' "$FLOOR" | tr ',' '\n' > floors.txt # one floor, or several separated by commas
+          else
+            node tools/tower-gate.mjs --which $(git diff --name-only HEAD~1 HEAD 2>/dev/null) > floors.txt
+          fi
+          echo "measuring: $(paste -sd, floors.txt)"
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 480 node tools/tower-gate.mjs "$f" || echo "::warning::$f not measured (or stopped after 8 minutes)"; }; done < floors.txt # a floor that hangs costs 8 minutes, never the run
+          # the floor's scripted journeys on Verse's own page, in the same browser (tools/tower-journeys.mjs; an unscripted floor is skipped)
+          while IFS= read -r f; do [ -n "$f" ] && { timeout 240 node tools/tower-journeys.mjs --scripted "$f" || echo "::warning::$f journeys not run (or stopped after 4 minutes)"; }; done < floors.txt
+      - name: Commit the verdicts and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # hand runs go in parallel and each starts from its own copy of main: keep only what this run measured (its floors' rows, icons, screenshots),
+          # start again from the newest main, put those back by timestamp, and push; rows other runs landed meanwhile stay (tools/gate-land.mjs)
+          node tools/gate-land.mjs take floors.txt "$RUNNER_TEMP/mine.json"
+          mkdir -p "$RUNNER_TEMP/keep"; for d in tower.shots tower.icons; do [ -d void-live-deploy/$d ] && cp -r void-live-deploy/$d "$RUNNER_TEMP/keep/"; done
+          for i in 1 2 3 4 5; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/gate-land.mjs put "$RUNNER_TEMP/mine.json"
+            for d in tower.shots tower.icons; do [ -d "$RUNNER_TEMP/keep/$d" ] && cp -r "$RUNNER_TEMP/keep/$d" void-live-deploy/; done
+            git add void-live-deploy/tower.evidence.json
+            git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "Tower gate: $(paste -sd, floors.txt) measured against their live sites"
+            git push -q origin HEAD:main && break; sleep $((i * 4))
+          done
+          gh workflow run deploy.yml --ref main -f after_merge=true
+
+  # the sweep: slice i of N of every floor on its own runner, written to a slice file and uploaded; N is the length of the matrix list below
+  # (strategy.job-total), so the list is the one place the number of runners is set: 46 floors over 6 runners is about eight floors each
+  sweep:
+    if: github.event_name == 'schedule' || inputs.floor == 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40 # about eight floors, about a minute each
+    strategy:
+      fail-fast: false # one slice failing leaves the others to be merged
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Measure this slice of the floors against their live sites
+        env:
+          TOWER_PRIVATE: ${{ runner.temp }}/tower-private
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/tower-gate.mjs --shard ${{ matrix.shard }}/${{ strategy.job-total }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tower-slice-${{ matrix.shard }}
+          path: void-live-deploy/tower.evidence.${{ matrix.shard }}.json
+          if-no-files-found: warn # a slice that measured nothing is merged as nothing
+          retention-days: 3
+
+  # the naming audit (owner, 2026-10-26: "every future floor measurement entirely bulletproof"): the completeness checklist reads a
+  # page the way a visitor does, so a feature the page HAS but never NAMES counts as missing. Two floors lost completeness that way (the
+  # coin's flip counter, the base64 decoder). This runs the gate's own checklist over the deployed pages and fails when a page stops
+  # naming something it is credited with, so the drift is found here instead of by a gate run days later. Credited means the gate's last
+  # measurement (tower.evidence.json) does not list it as lacking; a known gap is listed, never failed on (2026-10-29: the check failed on
+  # every run because it failed on gaps). A drifted page shows as an annotation on the run.
+  naming:
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.floor == 'all' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: The service worker parses (a worker that does not parse takes every page offline)
+        run: node --check void-live-deploy/sw.js
+      - name: Every page names what its checklist credits it with
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/naming-audit.mjs --rendered --live --check
+  # every slice folded into tower.evidence.json on a fresh main, then committed and deployed as the fight run does
+  merge:
+    needs: sweep
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || inputs.floor == 'all') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        continue-on-error: true # every slice failing leaves nothing to download; the step below says so
+        with:
+          pattern: tower-slice-*
+          path: slices
+          merge-multiple: true
+      - name: Fold the slices into the evidence file
+        run: |
+          set -- slices/*.json; [ -e "$1" ] || { echo "::warning::no slice was uploaded, nothing to merge"; exit 0; }
+          echo "$# slices: $*"
+          node tools/tower-gate.mjs --merge "$@" # the pure fold (tools/tower-merge.mjs) imports nothing from node_modules
+      - name: Commit the verdicts and deploy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.evidence.json
+          git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true # each site as the gate saw it, for /compare/, and its icon for the card
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower gate: every floor measured against its live site ($(ls slices/*.json | wc -l) slices)"
+          # main moves while the gate runs (other pushes): take the newest main under the verdict commit and try again
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true

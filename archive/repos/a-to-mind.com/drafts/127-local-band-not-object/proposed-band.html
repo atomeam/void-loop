@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Band, not object — draft 127</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1a1c19; --line: #c5c9be; --paper: #f3f4ef; --mark: #3d5a45; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3f4ef; --line: #3e443c; --paper: #161815; --mark: #b7c9b4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .bands { display: grid; gap: 0.45rem; margin: 1.5rem 0; }
+    .band { height: 1.6rem; border: 1px solid var(--line); }
+    .band.on { background: var(--mark); }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 127. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A band mark is not an object</h1>
+    <p>Sensory-substitution hypotheses paint a substitute band and then name a doorway, an obstacle, or a scene. This page seals the band class only. A sentence that names an object is discarded and is not hashed.</p>
+    <div class="bands" id="bands" aria-hidden="true">
+      <div class="band" data-class="pitch-row"></div>
+      <div class="band" data-class="electrode-row"></div>
+      <div class="band" data-class="pressure-row"></div>
+    </div>
+    <form id="band-form">
+      <fieldset>
+        <legend>Band class</legend>
+        <label><input type="radio" name="band_class" value="withheld" checked> Withheld — no band recorded</label>
+        <label><input type="radio" name="band_class" value="pitch-row"> Pitch row — a sound stand-in; not an object</label>
+        <label><input type="radio" name="band_class" value="electrode-row"> Electrode row — a touch stand-in; not a scene</label>
+        <label><input type="radio" name="band_class" value="pressure-row"> Pressure row — a force stand-in; not a named thing</label>
+      </fieldset>
+      <fieldset>
+        <legend>Object sentence (discarded)</legend>
+        <label for="object">Write an object name if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="object" name="object_sentence" maxlength="240" placeholder="not an object"></textarea>
+      </fieldset>
+      <button type="submit">Seal band class</button>
+      <output id="out" for="band-form">status: unattested
+object-refusal id: none
+object sentence: not hashed</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("band-form");
+    const out = document.getElementById("out");
+    const bands = document.querySelectorAll("#bands .band");
+    const objectSentence = document.getElementById("object");
+    function selected() {
+      const node = form.querySelector("input[name=band_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    function paint(band) {
+      bands.forEach((row) => {
+        row.classList.toggle("on", row.getAttribute("data-class") === band);
+      });
+    }
+    form.addEventListener("change", () => { paint(selected()); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const band = selected();
+      const dropped = objectSentence.value;
+      objectSentence.value = "";
+      const preimage = "void-band-not-object|v1|class=" + band + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      paint(band);
+      out.textContent = [
+        "status: unattested",
+        "band class: " + band,
+        "object-refusal id: " + hex.slice(0, 16),
+        "preimage excludes object sentence: yes",
+        dropped ? "dropped chars: " + dropped.length : "dropped chars: 0"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

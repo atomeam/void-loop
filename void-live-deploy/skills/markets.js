@@ -16,6 +16,12 @@ export function marketsAsk(text) {
   if (/^(?:how\s+(?:is|are)\s+(?:crypto|the\s+crypto\s+market)\s+(?:doing\s+)?(?:today)?|top\s+(?:crypto|coins|cryptocurrencies))$/.test(t)) return { board: true };
   return null;
 }
+export const DEFAULT_IDS = 'bitcoin,ethereum,solana,ripple,dogecoin,cardano,litecoin,binancecoin';
+/** CoinGecko's row cut to what the card needs (the same cut as functions/api/markets.js slim). Pure. */
+export function slimRow(row) {
+  const sp = (row && row.sparkline_in_7d && row.sparkline_in_7d.price) || [], step = Math.max(1, Math.ceil(sp.length / 56));
+  return { id: row.id, symbol: String(row.symbol || '').toUpperCase(), name: row.name, price: row.current_price, change24h: row.price_change_percentage_24h, spark: sp.filter((_, i) => i % step === 0) };
+}
 /** an SVG polyline path for a sparkline in a w×h box. Pure. */
 export function sparkPath(vals, w = 120, h = 32) {
   const v = (vals || []).filter(Number.isFinite); if (v.length < 2) return '';
@@ -39,7 +45,10 @@ async function run(text, api) {
   showPage((p) => { p.className += ' markets-card'; p.innerHTML = '<h2>Crypto</h2><p class="g-sub">loading prices…</p>'; });
   const el = document.querySelector('.vpage.markets-card') || document.querySelector('.vpage');
   try {
-    const j = await fetch('/api/markets').then((r) => r.json());
+    let j = await fetch('/api/markets').then((r) => r.json()).catch(() => null);
+    // CoinGecko refuses some calls from Cloudflare's network (live 2026-10-21: /api/markets got nothing); then the page asks
+    // CoinGecko's same keyless public API itself, from the visitor's own connection (CORS is open), and slims it the same way
+    if (!j || !j.ok || !j.coins || !j.coins.length) j = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=' + DEFAULT_IDS + '&sparkline=true&price_change_percentage=24h').then((r) => r.json()).then((rows) => ({ ok: Array.isArray(rows), coins: (Array.isArray(rows) ? rows : []).map(slimRow) }));
     if (!j.ok || !j.coins.length) throw 0;
     el.innerHTML = '<h2>Crypto</h2><div class="mk-rows">' + j.coins.map((c) => { const up = (c.change24h || 0) >= 0, col = up ? '#7fd6a0' : '#ff8a8a';
       return '<div class="mk-row" style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:52px;font-weight:600">' + esc(c.symbol) + '</span><span style="flex:1">' + esc(money(c.price)) + '</span>'

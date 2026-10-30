@@ -59,10 +59,14 @@ function fuelOf(text) {
     || t.match(/(?:£|gbp\s*)(\d+(?:\.\d+)?)/);
   if (m) {
     price = num(m[1]);
+    // the unit written right after the price ("£6.50 a gallon", "1.85 per liter") wins over a guess from the whole ask ("fuel" has an l in it)
+    const after = t.slice(m.index + m[0].indexOf(m[1]) + m[1].length, m.index + m[0].indexOf(m[1]) + m[1].length + 16);
+    const near = /^\s*(?:\/\s*|per\s+|an?\s+)?gal/.test(after) ? 'gal' : /^\s*(?:\/\s*|per\s+|an?\s+)?(?:l|ltr|liters?|litres?)\b/.test(after) ? 'L' : null;
     if (/€|eur/.test(t) && /€|eur|per\s+l|\/\s*l|liter|litre/.test(t)) { currency = 'EUR'; priceUnit = 'L'; }
-    else if (/£|gbp/.test(t)) { currency = 'GBP'; priceUnit = /l(?:iter|itre)?/.test(t) ? 'L' : 'gal'; }
+    else if (/£|gbp/.test(t)) { currency = 'GBP'; priceUnit = 'L'; } // UK pumps price by the litre: a bare £ price is per litre
     else if (/per\s+l|\/\s*l|liter|litre/.test(t) && !/gallon|\/\s*gal/.test(t)) { priceUnit = 'L'; if (/€|eur/.test(t)) currency = 'EUR'; }
     else { priceUnit = 'gal'; }
+    if (near) priceUnit = near;
   }
   if (!Number.isFinite(price) || price <= 0 || price > 50) return null;
   if (!priceUnit) priceUnit = Number.isFinite(lp100) ? 'L' : 'gal';

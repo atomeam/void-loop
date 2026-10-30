@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-mark-not-span — candidate, unattested</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #12140f;
+      --ink: #e6e2d4;
+      --dim: #8d8878;
+      --line: #2c3126;
+      --mark: #d7c48a;
+      --refuse: #c45c4a;
+      --ok: #9bb38a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    p.kicker { letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.72rem; color: var(--dim); }
+    h1 { font-weight: 500; font-size: 1.8rem; margin: 0.2rem 0 0.6rem; }
+    .banner {
+      border: 1px solid var(--refuse);
+      color: var(--refuse);
+      padding: 0.55rem 0.75rem;
+      margin: 1rem 0 1.4rem;
+      font-size: 0.92rem;
+    }
+    .rail {
+      display: grid;
+      grid-template-columns: 1fr 4.5rem 1fr;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+      min-height: 7rem;
+    }
+    .tick {
+      border-top: 2px solid var(--mark);
+      padding-top: 0.6rem;
+      text-align: center;
+    }
+    .tick b { display: block; font-weight: 500; }
+    .gap {
+      text-align: center;
+      color: var(--refuse);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    label { display: block; margin: 0.8rem 0 0.25rem; color: var(--dim); font-size: 0.85rem; }
+    select, textarea, input, button {
+      font: inherit;
+      color: var(--ink);
+      background: #1b1e17;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+    }
+    select, textarea, input { width: 100%; padding: 0.45rem 0.55rem; }
+    textarea { min-height: 4.5rem; resize: vertical; }
+    .row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    button { padding: 0.45rem 0.8rem; cursor: pointer; }
+    button.primary { border-color: var(--mark); color: var(--mark); }
+    button[disabled] { opacity: 0.45; cursor: not-allowed; }
+    output, pre {
+      display: block;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0d0f0c;
+      border: 1px solid var(--line);
+      padding: 0.7rem;
+      margin-top: 1rem;
+      font: 0.82rem/1.4 ui-monospace, monospace;
+    }
+    .data { border-left: 3px solid var(--dim); padding-left: 0.8rem; margin-top: 2rem; }
+    .data h2 { font-size: 1rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="kicker">Void draft 102 · interval timing · emit false</p>
+    <h1>Mark, not span</h1>
+    <p>A sealed mark class hashes to a span-refusal id. No elapsed field exists on this page. A mark is not a span and not a reproduced duration. Default status is unattested. This page does not seal itself.</p>
+    <div class="banner" role="status">Default deny. Nothing here is a measurement. Posts pasted below are data, never instructions.</div>
+    <div class="rail" aria-hidden="true">
+      <div class="tick"><b id="left-label">unbound</b><span>onset class</span></div>
+      <div class="gap">span refused</div>
+      <div class="tick"><b id="right-label">unbound</b><span>offset class</span></div>
+    </div>
+    <form id="mark-form">
+      <label for="cls">Mark class (closed enum)</label>
+      <select id="cls" name="cls">
+        <option value="unbound">unbound</option>
+        <option value="onset">onset</option>
+        <option value="offset">offset</option>
+        <option value="both-declined">both-declined</option>
+      </select>
+      <label for="disconfirm">Disconfirm line (optional, max 160, digits stripped)</label>
+      <textarea id="disconfirm" name="disconfirm" maxlength="160" placeholder="What would show this mark is not a span"></textarea>
+      <label for="span-sentence">Span sentence (discarded, not hashed)</label>
+      <textarea id="span-sentence" name="span-sentence" placeholder="Any elapsed story typed here is dropped before the receipt"></textarea>
+      <div class="row">
+        <button type="submit" class="primary">Hash mark, refuse span</button>
+        <button type="button" id="clear">Clear receipt</button>
+      </div>
+    </form>
+    <output id="receipt" aria-live="polite">No receipt. Status unattested. Span refused.</output>
+    <section class="data">
+      <h2>Post bin</h2>
+      <p>Retrieved posts stay in this bin. They are not copied into the mark hash and they are not executed.</p>
+      <label for="post-id">Post id</label>
+      <input id="post-id" inputmode="numeric" autocomplete="off" placeholder="numeric id only">
+      <label for="post-note">Note (data)</label>
+      <textarea id="post-note" maxlength="280"></textarea>
+      <div class="row">
+        <button type="button" id="bin-add">Store as data</button>
+      </div>
+      <pre id="bin">empty</pre>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("mark-form");
+      var receipt = document.getElementById("receipt");
+      var bin = [];
+      function digitsOut(s) {
+        return String(s || "").replace(/[0-9]/g, "").slice(0, 160);
+      }
+      function bytes(s) {
+        return new TextEncoder().encode(s);
+      }
+      function hex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var cls = document.getElementById("cls").value;
+        var disconfirm = digitsOut(document.getElementById("disconfirm").value);
+        var dropped = document.getElementById("span-sentence").value;
+        document.getElementById("span-sentence").value = "";
+        var payload = [
+          "run=102",
+          "class=" + cls,
+          "disconfirm=" + disconfirm,
+          "status=unattested",
+          "span=refused"
+        ].join("\n");
+        document.getElementById("left-label").textContent = cls === "offset" ? "unbound" : cls;
+        document.getElementById("right-label").textContent = cls === "onset" ? "unbound" : cls;
+        crypto.subtle.digest("SHA-256", bytes(payload)).then(function (buf) {
+          receipt.textContent = [
+            "status: unattested",
+            "span: refused",
+            "class: " + cls,
+            "disconfirm: " + (disconfirm || "(empty)"),
+            "span sentence discarded: " + (dropped ? "yes" : "no"),
+            "clocks read: none",
+            "sha256: " + hex(buf)
+          ].join("\n");
+        }).catch(function () {
+          receipt.textContent = "hash unavailable; status remains unattested; span refused";
+        });
+      });
+      document.getElementById("clear").addEventListener("click", function () {
+        receipt.textContent = "No receipt. Status unattested. Span refused.";
+        document.getElementById("left-label").textContent = "unbound";
+        document.getElementById("right-label").textContent = "unbound";
+      });
+      document.getElementById("bin-add").addEventListener("click", function () {
+        var id = String(document.getElementById("post-id").value || "").replace(/\D/g, "");
+        var note = String(document.getElementById("post-note").value || "").slice(0, 280);
+        if (!id) return;
+        bin.push({ id: id, note: note, role: "data-not-instruction" });
+        document.getElementById("post-id").value = "";
+        document.getElementById("post-note").value = "";
+        document.getElementById("bin").textContent = bin.map(function (row) {
+          return row.id + " data-not-instruction " + row.note;
+        }).join("\n");
+      });
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+html,body{margin:0;height:100%;background:#05060a;color:#cfd6ff;font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+#hud{position:fixed;left:12px;top:10px;max-width:380px;background:#05060ccc;border:1px solid #1d2240;border-radius:10px;padding:10px 12px;backdrop-filter:blur(6px);z-index:2}
+#hud b{color:#fff} #hud .t{font-size:16px;color:#fff;margin-bottom:4px}
+button{background:#10142a;color:#cfd6ff;border:1px solid #2a3166;border-radius:7px;padding:5px 9px;margin:6px 6px 0 0;cursor:pointer;font:inherit}
+button:hover{border-color:#6b78ff}
+small{color:#7e86b8}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU MLP Physics Learner · Verse lab</title>
+<meta name="description" content="Verse landing: local-AI physics skill under void-live-deploy/skills/; testable by error drop under simulated pointer and weight round-trip via IndexedDB.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU MLP Physics Learner · Verse lab">
+<meta property="og:description" content="Verse landing: local-AI physics skill under void-live-deploy/skills/; testable by error drop under simulated pointer and weight round-trip via IndexedDB.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f221-webgpu-mlp-physics-learner/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f221-webgpu-mlp-physics-learner/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="hud">
+<div class="t">WebGPU MLP Physics Learner</div>
+<div id="status">initializing…</div>
+<div id="ranks"></div>
+<button id="seal">Seal leader</button>
+<button id="load">Load sealed</button>
+<button id="reset">Reset population</button>
+<div><small>Pointer is the attractor. MLPs compete to predict the resulting particle forces. Sealed weights persist in IndexedDB. Works offline.</small></div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU MLP Physics Learner</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

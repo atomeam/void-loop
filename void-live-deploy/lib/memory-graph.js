@@ -190,6 +190,19 @@ export function exportOf(graph, at) {
     nodes: JSON.parse(JSON.stringify(g.nodes)), edges: { ...g.edges }, visits: (Array.isArray(g.visits) ? g.visits : empty().visits).map((d) => d.slice()), prev: g.prev ? { ...g.prev } : null };
 }
 
+/**
+ * a look inside an export before it downloads (asked by Verse, "memory-preview": a snippet of what the file holds): counts by kind, its size,
+ * the span of days and the few labels it holds most of, biggest first. Only labels the graph already keeps (a few words, never a sentence). Pure.
+ */
+export function previewOf(exp, max = 5) {
+  const e = exp && plain(exp) && plain(exp.nodes) ? exp : exportOf(empty(), 0);
+  const nodes = Object.values(e.nodes).filter((n) => n && KINDS.has(n.kind) && typeof n.label === 'string');
+  const kinds = {}; for (const n of nodes) kinds[n.kind] = (kinds[n.kind] || 0) + 1;
+  const sample = nodes.slice().sort((a, b) => (b.n || 0) - (a.n || 0) || String(a.label).localeCompare(String(b.label))).slice(0, Math.max(0, max)).map((n) => ({ kind: n.kind, label: n.label, n: n.n || 0 }));
+  const bytes = JSON.stringify(e, null, 2).length;
+  return { things: nodes.length, links: Object.keys(e.edges || {}).length, kinds, sample, kB: Math.max(1, Math.round(bytes / 1024)), first: e.first || null, last: e.last || null, asks: e.asks || 0 };
+}
+
 /** one imported node, cleaned: { id, node } or null. The id is made again from the cleaned label, never taken from the file. */
 function cleanNode(id, n) {
   if (!plain(n) || !KINDS.has(n.kind) || typeof n.label !== 'string' || n.label.length > FACT_MAX || typeof id !== 'string' || !id.startsWith(n.kind + ':')) return null;

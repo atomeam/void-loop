@@ -1,0 +1,689 @@
+{
+ "site": "chordchord.com",
+ "url": "https://chordchord.com/chord-finder",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 371,
+   "ext": true
+  },
+  {
+   "f": "_buildManifest.js",
+   "t": "js",
+   "b": 5447
+  },
+  {
+   "f": "_ssgManifest.js",
+   "t": "js",
+   "b": 97
+  },
+  {
+   "f": "1040-d28ef8ae68533494.js",
+   "t": "js",
+   "b": 57848
+  },
+  {
+   "f": "1455-90be3723016d7ced.js",
+   "t": "js",
+   "b": 37838
+  },
+  {
+   "f": "1992-f3a1617e0581a27a.js",
+   "t": "js",
+   "b": 40540
+  },
+  {
+   "f": "2020-9fab70b9e42217c3.js",
+   "t": "js",
+   "b": 16261
+  },
+  {
+   "f": "2118.c37b1c0306b6237f.js",
+   "t": "js",
+   "b": 576
+  },
+  {
+   "f": "2135-2845071a6fdb7177.js",
+   "t": "js",
+   "b": 4080
+  },
+  {
+   "f": "2528-d6f211b77d10f3d6.js",
+   "t": "js",
+   "b": 13316
+  },
+  {
+   "f": "3095.4dfaf952b96139ba.js",
+   "t": "js",
+   "b": 896
+  },
+  {
+   "f": "4908-4ece4e99204cf48a.js",
+   "t": "js",
+   "b": 12764
+  },
+  {
+   "f": "4940-fdf332f7cd101a35.js",
+   "t": "js",
+   "b": 36298
+  },
+  {
+   "f": "4973.d84cb867cbbd41b2.js",
+   "t": "js",
+   "b": 2808
+  },
+  {
+   "f": "4979.f161e4e448af3b4f.js",
+   "t": "js",
+   "b": 2926
+  },
+  {
+   "f": "5237.ba382c217d3f9d55.js",
+   "t": "js",
+   "b": 14594
+  },
+  {
+   "f": "5257.5b7b3879fa7ec7e0.js",
+   "t": "js",
+   "b": 727
+  },
+  {
+   "f": "5284.a12ef0c699017d80.js",
+   "t": "js",
+   "b": 931
+  },
+  {
+   "f": "6988-fde40e979e7a4580.js",
+   "t": "js",
+   "b": 10322
+  },
+  {
+   "f": "8701.8e4949feabc29378.js",
+   "t": "js",
+   "b": 35293
+  },
+  {
+   "f": "9247.1a0f78ebe8b73c3d.js",
+   "t": "js",
+   "b": 341185
+  },
+  {
+   "f": "9531.11f03dc8b89fd10e.js",
+   "t": "js",
+   "b": 1428
+  },
+  {
+   "f": "9890-a47dda0c866c4f03.js",
+   "t": "js",
+   "b": 20620
+  },
+  {
+   "f": "a10d605c.3bcf9923d4922789.js",
+   "t": "js",
+   "b": 69214
+  },
+  {
+   "f": "framework-338c0e44701cad4e.js",
+   "t": "js",
+   "b": 209247
+  },
+  {
+   "f": "main-4e94715d5f56bde8.js",
+   "t": "js",
+   "b": 133911
+  },
+  {
+   "f": "_app-ba99e2edec5129b8.js",
+   "t": "js",
+   "b": 138517
+  },
+  {
+   "f": "[tool]-755b04f9e53ef814.js",
+   "t": "js",
+   "b": 26718
+  },
+  {
+   "f": "webpack-c347174ab42d11e7.js",
+   "t": "js",
+   "b": 11636
+  },
+  {
+   "f": "4e63d6a1b7b44db9.css",
+   "t": "css",
+   "b": 34230
+  },
+  {
+   "f": "5f8ceb06b83f7b48.css",
+   "t": "css",
+   "b": 5849
+  },
+  {
+   "f": "c6ed3e524414a6b0.css",
+   "t": "css",
+   "b": 4216
+  },
+  {
+   "f": "d5b7b56cd299b03a.css",
+   "t": "css",
+   "b": 52357
+  },
+  {
+   "f": "e1090e723f111d43.css",
+   "t": "css",
+   "b": 48785
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  }
+ ],
+ "assetCount": 35,
+ "bytes": 1423699,
+ "html": {
+  "mobile": {
+   "title": "Chord Finder: Discover and Play Chords o",
+   "lang": "en",
+   "manifest": "https://chordchord.com/manifest.json",
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 6,
+    "twitter": false,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "ariaLabels": [
+    "Logo"
+   ],
+   "roles": {
+    "alert": 1
+   },
+   "live": true,
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "Generator",
+   "w": "md"
+  },
+  {
+   "l": "Logo",
+   "w": "md"
+  },
+  {
+   "l": "Pricing",
+   "w": "d"
+  }
+ ],
+ "manifest": {
+  "name": "ChordChord",
+  "display": "fullscreen",
+  "displayOverride": [],
+  "orientation": "",
+  "scope": "/",
+  "icons": 4,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [
+   "https://chordchord.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 54,
+  "index": false,
+  "sections": [
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "30-songs-with-same-4-chords",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   },
+   {
+    "s": "[token]",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "1455-90be3723016d7ced.js",
+   "own": true,
+   "apiPaths": [
+    "/api/paddle-billing/customer-id@2436",
+    "[token]@2503",
+    "/api/paddle-billing/portal-url@3110"
+   ],
+   "flags": [
+    "allowLogout@8947",
+    "showAddDiscounts@9018",
+    "showMask@34742"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "2528-d6f211b77d10f3d6.js",
+   "own": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "4940-fdf332f7cd101a35.js",
+   "own": true,
+   "flags": [
+    "showMask@8886"
+   ]
+  },
+  {
+   "file": "8701.8e4949feabc29378.js",
+   "own": true,
+   "apiPaths": [
+    "/api/mini-tools/chord-finder@9763",
+    "/api/mini-tools/scale-finder@9848",
+    "[token]@9944",
+    "/api/mini-tools/scale-types@10053",
+    "/api@30633"
+   ]
+  },
+  {
+   "file": "9247.1a0f78ebe8b73c3d.js",
+   "own": true,
+   "flags": [
+    "disableNormalization@18654"
+   ],
+   "apis": [
+    "Background worker threads",
+    "Passkeys and credentials",
+    "Records audio or video",
+    "Use the camera or microphone"
+   ]
+  },
+  {
+   "file": "framework-338c0e44701cad4e.js",
+   "own": true,
+   "apis": [
+    "Picture in picture"
+   ]
+  },
+  {
+   "file": "main-4e94715d5f56bde8.js",
+   "own": true,
+   "apiPaths": [
+    "/api@5170"
+   ],
+   "flags": [
+    "disableStaticImages@119545",
+    "enableLogs@121651"
+   ],
+   "routes": [
+    "/_next/image@66692"
+   ],
+   "apis": [
+    "Compresses data in the browser",
+    "Syncs between tabs"
+   ],
+   "mimes": [
+    "text/partytown",
+    "image/webp"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 1,
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "_app-ba99e2edec5129b8.js",
+   "own": true,
+   "flags": [
+    "shareEnabled@7697",
+    "bassEnabled@39071",
+    "chordEnabled@39131"
+   ],
+   "routes": [
+    "/_next/image@35893"
+   ]
+  },
+  {
+   "file": "[tool]-755b04f9e53ef814.js",
+   "own": true,
+   "apiPaths": [
+    "/api/usage@20447",
+    "/api@23777"
+   ],
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "analytics.google.com",
+   "file": "6988-fde40e979e7a4580.js",
+   "at": 6442
+  },
+  {
+   "host": "andyocean.notion.site",
+   "file": "[tool]-755b04f9e53ef814.js",
+   "at": 10110
+  },
+  {
+   "host": "blog.chordchord.com",
+   "file": "[tool]-755b04f9e53ef814.js",
+   "at": 2872
+  },
+  {
+   "host": "calendly.com",
+   "file": "[tool]-755b04f9e53ef814.js",
+   "at": 10474
+  },
+  {
+   "host": "cdn.chordchord.com",
+   "file": "_app-ba99e2edec5129b8.js",
+   "at": 86360
+  },
+  {
+   "host": "cdn.jsdelivr.net",
+   "file": "6988-fde40e979e7a4580.js",
+   "at": 3839
+  },
+  {
+   "host": "cdn.paddle.com",
+   "file": "4940-fdf332f7cd101a35.js",
+   "at": 29091
+  },
+  {
+   "host": "chordchord.com",
+   "file": "_app-ba99e2edec5129b8.js",
+   "at": 123762
+  },
+  {
+   "host": "developers.google.com",
+   "file": "6988-fde40e979e7a4580.js",
+   "at": 586
+  },
+  {
+   "host": "forms.gle",
+   "file": "[tool]-755b04f9e53ef814.js",
+   "at": 10646
+  },
+  {
+   "host": "nextjs.org",
+   "file": "main-4e94715d5f56bde8.js",
+   "at": 19281
+  },
+  {
+   "host": "www.google.com",
+   "file": "6988-fde40e979e7a4580.js",
+   "at": 726
+  },
+  {
+   "host": "www.googletagmanager.com",
+   "file": "6988-fde40e979e7a4580.js",
+   "at": 5437
+  }
+ ],
+ "thirdParty": [
+  "analytics.google.com",
+  "andyocean.notion.site",
+  "calendly.com",
+  "cdn.jsdelivr.net",
+  "cdn.paddle.com",
+  "developers.google.com",
+  "forms.gle",
+  "nextjs.org",
+  "static.cloudflareinsights.com",
+  "www.google.com",
+  "www.googletagmanager.com"
+ ],
+ "services": [
+  "Cloudflare",
+  "Google Analytics"
+ ],
+ "requests": [
+  "https://cdn.chordchord.[token].json",
+  "https://cdn.chordchord.[token].mp3",
+  "https://chordchord.com/cdn-cgi/rum"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Records audio or video",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "9247.1a0f78ebe8b73c3d.js@331520"
+  },
+  {
+   "name": "Installable web app (fullscreen)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "API path /api",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "8701.8e4949feabc29378.js@30633"
+  },
+  {
+   "name": "API path /api/mini-tools/chord-finder",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "8701.8e4949feabc29378.js@9763"
+  },
+  {
+   "name": "API path /api/mini-tools/scale-finder",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "8701.8e4949feabc29378.js@9848"
+  },
+  {
+   "name": "API path /api/mini-tools/scale-types",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "8701.8e4949feabc29378.js@10053"
+  },
+  {
+   "name": "API path /api/paddle-billing/customer-id",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "1455-90be3723016d7ced.js@2436"
+  },
+  {
+   "name": "API path /api/paddle-billing/portal-url",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "1455-90be3723016d7ced.js@3110"
+  },
+  {
+   "name": "API path /api/usage",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "[tool]-755b04f9e53ef814.js@20447"
+  },
+  {
+   "name": "API path [token]",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "1455-90be3723016d7ced.js@2503"
+  },
+  {
+   "name": "Feature flag allowLogout",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1455-90be3723016d7ced.js@8947"
+  },
+  {
+   "name": "Feature flag bassEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-ba99e2edec5129b8.js@39071"
+  },
+  {
+   "name": "Feature flag chordEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-ba99e2edec5129b8.js@39131"
+  },
+  {
+   "name": "Feature flag disableNormalization",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "9247.1a0f78ebe8b73c3d.js@18654"
+  },
+  {
+   "name": "Feature flag disableStaticImages",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "main-4e94715d5f56bde8.js@119545"
+  },
+  {
+   "name": "Feature flag enableLogs",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "main-4e94715d5f56bde8.js@121651"
+  },
+  {
+   "name": "Feature flag shareEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-ba99e2edec5129b8.js@7697"
+  },
+  {
+   "name": "Feature flag showAddDiscounts",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1455-90be3723016d7ced.js@9018"
+  },
+  {
+   "name": "Feature flag showMask",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1455-90be3723016d7ced.js@34742"
+  },
+  {
+   "name": "Picture in picture",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "framework-338c0e44701cad4e.js@2363"
+  },
+  {
+   "name": "Use the camera or microphone",
+   "kind": "input",
+   "tag": "read",
+   "evidence": "9247.1a0f78ebe8b73c3d.js@194852"
+  },
+  {
+   "name": "Background worker threads",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "9247.1a0f78ebe8b73c3d.js@113333"
+  },
+  {
+   "name": "Compresses data in the browser",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "main-4e94715d5f56bde8.js@25911"
+  },
+  {
+   "name": "Passkeys and credentials",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "9247.1a0f78ebe8b73c3d.js@84497"
+  },
+  {
+   "name": "Syncs between tabs",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "main-4e94715d5f56bde8.js@25864"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "main-4e94715d5f56bde8.js"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Route /_next/image",
+   "kind": "route",
+   "tag": "read",
+   "evidence": "main-4e94715d5f56bde8.js@66692"
+  }
+ ]
+}

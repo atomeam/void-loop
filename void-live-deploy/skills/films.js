@@ -98,16 +98,29 @@ const STYLE = `<style>
   .vfilms li::before { content: counter(s); display: block; font-weight: 800; font-size: 18px; background: linear-gradient(90deg, #ff3d7f, #7a5cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .vfilms .who { margin: 0; font-size: 13px; opacity: .75; }
   /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+  /* the whole word is ONE box (owner, 2026-10-22: "VERSE F   I   LMS"): a card title is a flex row spread with space-between, so loose
+     text and the glitch span were spread apart as three items; wrapped, the word stays whole and the glitch shakes all of it */
+  .vfilms .glw { display: inline-block; white-space: nowrap; animation: gl-w var(--gl-d, 10s) ease-in-out -3s infinite; }
+  @keyframes gl-w { 0%, 94.5% { transform: none; text-shadow: none; } 96.5% { transform: translateX(1px); text-shadow: -2px 0 rgba(255,61,127,.7), 2px 0 rgba(122,92,255,.7); } 98% { transform: translateX(-1px); text-shadow: 2px 0 rgba(255,61,127,.7), -2px 0 rgba(122,92,255,.7); } 99.5%, 100% { transform: none; text-shadow: none; } }
   .vfilms .gl { position: relative; display: inline-block; }
-  .vfilms .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
-  .vfilms .gl i { position: absolute; left: 50%; top: 0; font-style: normal; visibility: hidden; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
-    text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 6s steps(1, end) infinite; }
-  .vfilms .gl.fast b, .vfilms .gl.fast i { animation-duration: 2.6s; animation-delay: -1.1s; } /* the I flickers more often (owner: "the i flickers") */
-  @keyframes gl-l { 0%, 88% { visibility: visible; } 89% { visibility: hidden; } 91% { visibility: visible; } 94% { visibility: hidden; } 95%, 100% { visibility: visible; } }
-  @keyframes gl-1 { 0%, 88% { visibility: hidden; } 89% { visibility: visible; } 91% { visibility: hidden; } 94% { visibility: visible; } 95%, 100% { visibility: hidden; } }
-  @media (prefers-reduced-motion: reduce) { .vfilms .gl b, .vfilms .gl i { animation: none; } .vfilms .play { transition: none; } }
+  .vfilms .gl b { font-weight: inherit; animation: gl-l var(--gl-d, 10s) ease-in-out -3s infinite; }
+  .vfilms .gl i { position: absolute; left: 50%; top: 0; font-style: normal; opacity: 0; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
+    text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 var(--gl-d, 10s) ease-in-out -3s infinite; }
+  /* rare and slow (owner, 2026-10-22: "rarer and slower"): one eased ~400ms swap per 8-12 s cycle; the page re-rolls the cycle length each time (--gl-d) */
+  @keyframes gl-l { 0%, 94% { opacity: 1; } 95.5% { opacity: 0; } 98% { opacity: 0; } 99.6%, 100% { opacity: 1; } }
+  @keyframes gl-1 { 0%, 94% { opacity: 0; } 95.5% { opacity: 1; } 98% { opacity: 1; } 99.6%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .vfilms .gl b, .vfilms .gl i, .vfilms .glw { animation: none; } .vfilms .play { transition: none; } }
 
 </style>`;
+
+/** every glitch word re-rolls its cycle to 8-12 s at random after each glitch, so the swap comes at an unpredictable moment (owner, 2026-10-22) */
+export function glitchRandom(root) {
+  for (const w of root.querySelectorAll('.glw')) {
+    if (w._glr) continue; w._glr = 1;
+    const roll = () => w.style.setProperty('--gl-d', (8 + Math.random() * 4).toFixed(2) + 's');
+    roll(); w.addEventListener('animationiteration', (e) => { if (e.target === w) roll(); });
+  }
+}
 
 function run(text, api) {
   if (wantsNewFilms(text)) return runNew(api);
@@ -116,7 +129,7 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
+      + '<h2 aria-label="VERSE FILMS"><span class="glw">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</span></h2>'
       + '<p class="line">' + esc('Every day Verse films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + (wantsUpload(text)
@@ -124,6 +137,7 @@ function run(text, api) {
         : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for Verse') + '</li></ol>')
       + '<p class="who">' + esc('Free for everyone to watch and share, no sign-in.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
+    glitchRandom(el);
   });
   return 'films';
 }

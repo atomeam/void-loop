@@ -153,7 +153,7 @@ export function outlineFromHeadings(text) {
 export function gistOf(par) {
   const first = sentencesOf(par)[0] || '';
   const w = first.split(/\s+/);
-  return w.length > 12 ? w.slice(0, 12).join(' ') + '…' : first;
+  return w.length > 12 ? w.slice(0, 12).join(' ') + '…' : first; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 /** a reverse outline: the gist of each paragraph (or of each sentence when the text is one paragraph). Pure. */
 export function reverseOutline(text) {

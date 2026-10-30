@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a0f; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(10,10,20,0.85); padding: 12px; border-radius: 8px; font-size: 13px; max-width: 280px; z-index: 10; }
+  #agents { position: fixed; bottom: 12px; left: 12px; display: flex; gap: 8px; z-index: 10; }
+  .agent-card { background: rgba(20,20,40,0.9); padding: 8px; border-radius: 6px; min-width: 100px; font-size: 12px; border: 1px solid #334; transition: border-color 0.2s, box-shadow 0.2s; }
+  .agent-card.leader { border-color: #6cf; box-shadow: 0 0 12px #6cf; }
+  button { background: #224; color: #adf; border: 1px solid #46a; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-top: 6px; }
+  button:hover { background: #336; }
+  #status { color: #8cf; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Neural Kernel Competition · Verse lab</title>
+<meta name="description" content="Verse landing: local-AI GPU neural kernel skill under void-live-deploy/skills/;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Neural Kernel Competition · Verse lab">
+<meta property="og:description" content="Verse landing: local-AI GPU neural kernel skill under void-live-deploy/skills/;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f223-webgpu-neural-kernel-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f223-webgpu-neural-kernel-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="status">Initializing…</div>
+  <div>Particles: <span id="n">256</span></div>
+  <div>Leader fitness: <span id="fit">–</span></div>
+  <button id="seal">Seal leader to IndexedDB</button>
+  <button id="reload">Reload sealed</button>
+  <p style="font-size:11px; opacity:0.7; margin:8px 0 0;">Drag / click = attractor. Tilt device if available. Offline-capable.</p>
+</div>
+<div id="agents"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Neural Kernel Competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

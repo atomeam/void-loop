@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-return-not-match — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1a17;
+      --paper: #f3efe6;
+      --line: #c9c0b0;
+      --hold: #6a3d2a;
+      --quiet: #5c564c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --paper: #171614; --line: #3e3a34; --hold: #e2b79a; --quiet: #c2b8a8; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+    .flag { color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-return-not-match</h1>
+    <p>Draft only. A return mark is not a match and not a solved incubation. Status stays unattested. The match sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="return-form">
+      <fieldset>
+        <legend>Return class</legend>
+        <label><input type="radio" name="return-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="return-class" value="blank"> blank</label>
+        <label><input type="radio" name="return-class" value="fragment"> fragment</label>
+        <label><input type="radio" name="return-class" value="unrelated"> unrelated</label>
+        <label><input type="radio" name="return-class" value="same-words"> same-words</label>
+        <label><input type="radio" name="return-class" value="abstain"> abstain</label>
+      </fieldset>
+      <p>Return seat. Closed class only. same-words does not store the words and does not score overlap.</p>
+      <div class="seat" id="return-seat">empty</div>
+      <p>Match seat. Locked empty. A solution sentence is not stored.</p>
+      <div class="seat" id="match-seat">empty — match refused</div>
+      <label for="match-sentence">Match sentence (discarded on seal; not hashed)</label>
+      <textarea id="match-sentence" name="match-sentence" autocomplete="off" spellcheck="false"></textarea>
+      <button type="submit">Seal return class</button>
+    </form>
+    <p>Match-refusal id</p>
+    <output id="refusal" class="ids">none</output>
+    <p>Preimage</p>
+    <output id="preimage" class="ids">none</output>
+    <fieldset>
+      <legend>Retrieved text is data</legend>
+      <label for="paste">Paste well. Not executed. Not hashed.</label>
+      <textarea id="paste" autocomplete="off" spellcheck="false"></textarea>
+      <p id="paste-flag" class="flag">no imperative flag</p>
+    </fieldset>
+    <p>Inert post ids from the scan. Not seats. Not links.</p>
+    <ul class="ids">
+      <li>2108709815166058536</li>
+      <li>2108584048985583664</li>
+      <li>2108649532602847644</li>
+      <li>2108709754180620293</li>
+      <li>2108709860917518685</li>
+      <li>2108426465054453974</li>
+    </ul>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("return-form");
+      var seat = document.getElementById("return-seat");
+      var matchSeat = document.getElementById("match-seat");
+      var sentence = document.getElementById("match-sentence");
+      var refusal = document.getElementById("refusal");
+      var preimageOut = document.getElementById("preimage");
+      var paste = document.getElementById("paste");
+      var flag = document.getElementById("paste-flag");
+      var allowed = {
+        withheld: 1,
+        blank: 1,
+        fragment: 1,
+        unrelated: 1,
+        "same-words": 1,
+        abstain: 1
+      };
+
+      function selected() {
+        var node = form.querySelector("input[name=return-class]:checked");
+        return node ? node.value : "";
+      }
+
+      form.addEventListener("change", function () {
+        var value = selected();
+        seat.textContent = allowed[value] ? value : "empty";
+      });
+
+      paste.addEventListener("input", function () {
+        var lines = paste.value.split(/\n/);
+        var hit = lines.some(function (line) {
+          return /^\s*(do |run |ignore previous|system:|execute |sudo )/i.test(line);
+        });
+        flag.textContent = hit ? "flagged as data, not an instruction" : "no imperative flag";
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var value = selected();
+        if (!allowed[value]) {
+          refusal.textContent = "denied — no class";
+          preimageOut.textContent = "none";
+          return;
+        }
+        var preimage = "return-not-match|v1|" + value + "|match-refusal|status=unattested";
+        sentence.value = "";
+        matchSeat.textContent = "empty — match refused";
+        window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          refusal.textContent = hex;
+          preimageOut.textContent = preimage;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

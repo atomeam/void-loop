@@ -18,7 +18,7 @@ test('flying right slides both layers left, the near one more than the far one (
   const far = layerView(cam, FAR, W, H), near = layerView(cam, NEAR, W, H);
   assert.equal(far.ox, -75); assert.equal(near.ox, -200); assert.equal(far.oy, 18); assert.equal(near.oy, 48);
   assert.ok(Math.abs(near.ox) > Math.abs(far.ox) && far.s === 1 && near.s === 1);
-  // held D for half a second through the real flight maths: both layers moved, the near one further
+  // held D (right; the original controls came back in cc841604) for half a second through the real flight maths: both layers moved, the near one further
   let c = { ...HOME }, v = { x: 0, y: 0 }; for (let i = 0; i < 30; i++) ({ cam: c, vel: v } = fly(c, v, { d: true }, 1 / 60));
   const f2 = layerView(c, FAR, W, H), n2 = layerView(c, NEAR, W, H);
   assert.ok(n2.ox < f2.ox && f2.ox < 0, JSON.stringify({ c, f2, n2 }));

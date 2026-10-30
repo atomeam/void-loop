@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; transition: filter 0.2s, transform 0.3s; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 12px; left: 12px; background: rgba(0,0,0,0.6); padding: 10px 14px; border-radius: 8px; font-size: 13px; z-index: 10; max-width: 280px; }
+  #card { position: fixed; bottom: 20px; right: 20px; width: 180px; height: 120px; background: rgba(40,40,80,0.7); border: 1px solid #666; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: transform 0.3s, filter 0.2s; z-index: 5; }
+  button { margin-top: 6px; padding: 4px 10px; background: #333; color: #eee; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #444; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Attention Wave Sonifier Mind · Verse lab</title>
+<meta name="description" content="A continuous spatial wave / reaction-diffusion lattice (Canvas2D primary, WebGPU compute path sketched) whose local diffusion and reaction rates are modulated in">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Attention Wave Sonifier Mind · Verse lab">
+<meta property="og:description" content="A continuous spatial wave / reaction-diffusion lattice (Canvas2D primary, WebGPU compute path sketched) whose local diffusion and reaction rates are modulated in">
+<meta property="og:url" content="https://a-to-mind.com/lab/f312-webgpu-attention-wave-sonifier-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f312-webgpu-attention-wave-sonifier-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div>F312 Attention Wave Sonifier</div>
+  <div id="status">Initializing…</div>
+  <div id="fitness">Fitness: —</div>
+  <div id="energy">Energy: —</div>
+  <button id="seal">Seal Genome</button>
+  <button id="load">Load Genome</button>
+  <div id="hash" style="font-size:11px;margin-top:4px;word-break:break-all;"></div>
+</div>
+<div id="card">Living Card<br>morphs with field</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Attention Wave Sonifier Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

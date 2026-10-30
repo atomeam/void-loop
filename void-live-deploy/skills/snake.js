@@ -6,6 +6,7 @@ import * as S from './snake-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { snakeRecorder, snakeGhostBody, submit, load, words } from '../lib/arcade-ghost.js';
 import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Verse)
+import { rulesLine } from './game-rules-line.js';
 
 export function snakeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -27,6 +28,7 @@ function mount(th, stageApi) {
     if (Math.hypot(dx, dy) < 12) { const [hx, hy] = th.state.you.body[0]; dx = p.x - (hx + 0.5) * PX; dy = p.y - (hy + 0.5) * PX; } // a tap: turn toward it
     S.turn(th.state, Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up')); start = null; go = true;
   });
+  c.el.appendChild(rulesLine('steer with the arrow keys, WASD or a swipe; eat to grow, and don\u2019t hit a wall, yourself or Verse. Longest snake wins.'));
   c.again.addEventListener('click', (e) => { e.stopPropagation(); th.state = S.create((Date.now() & 0xffff) || 7); go = false; rec = snakeRecorder(); saved = false; });
   let acc = 0;
   c.start((dt, g) => {

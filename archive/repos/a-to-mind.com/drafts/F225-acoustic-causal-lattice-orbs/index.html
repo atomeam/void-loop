@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F-225 Acoustic Causal Lattice Mind + Morphing Echo Orbs</title>
+<style>
+  :root { --entropy: 0.3; --hue: 200; }
+  body {
+    margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif;
+    overflow: hidden; transition: background 0.5s;
+  }
+  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.6);
+    padding: 10px 14px; border-radius: 8px; border: 1px solid hsl(var(--hue), 40%, 40%);
+    max-width: 320px; font-size: 13px; }
+  button { background: #222; color: #fff; border: 1px solid #555; padding: 6px 12px; margin: 4px; cursor: pointer; }
+  button:hover { background: #333; }
+  .orb {
+    position: absolute; width: 140px; height: 90px; background: rgba(20,20,40,0.75);
+    border: 1px solid hsl(var(--hue), 60%, 50%); border-radius: 12px; padding: 8px;
+    font-size: 12px; pointer-events: none; transition: transform 0.3s, opacity 0.3s;
+    backdrop-filter: blur(4px); color: #fff; z-index: 5;
+  }
+  #status { font-size: 11px; opacity: 0.8; margin-top: 6px; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F-225 Acoustic Causal Lattice</strong><br>
+  Mic seeds energy · Worker mind predicts · Orbs morph
+  <br><button id="mic">Enable Mic</button>
+  <button id="seal">Seal Genome</button>
+  <div id="status">Idle. Click Enable Mic (or move pointer).</div>
+</div>
+<div id="orbs"></div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const status = document.getElementById('status');
+const orbsEl = document.getElementById('orbs');
+let W, H, grid, next, N = 64, cell;
+let audioCtx, analyser, micStream, dataArray, micOn = false;
+let pointer = {x: 0.5, y: 0.5, active: false};
+let entropy = 0.3;
+
+function resize() {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+  cell = Math.min(W, H) / N;
+}
+resize(); addEventListener('resize', resize);
+
+// Grid: energy + residual
+grid = new Float32Array(N * N);
+next = new Float32Array(N * N);
+
+// Worker mind
+const workerCode = `
+let genomes = [];
+for (let i = 0; i < 6; i++) genomes.push([0.1+Math.random()*0.2, 0.05+Math.random()*0.1, Math.random()*0.3]); // diff, react, bias
+let best = 0;
+self.onmessage = e => {
+  const {energy, residual, variance} = e.data;
+  // Simple fitness: high variance + low residual preferred
+  let scores = genomes.map((g, i) => variance * (1 - residual * 0.5) * (1 + g[2]*0.2));
+  best = scores.indexOf(Math.max(...scores));
+  // Mutate losers
+  for (let i = 0; i < genomes.length; i++) if (i !== best && Math.random() < 0.3) {
+    genomes[i] = genomes[i].map(v => Math.max(0.01, Math.min(0.5, v + (Math.random()-0.5)*0.05)));
+  }
+  self.postMessage({params: genomes[best], best, fitness: scores[best]});
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let mindParams = [0.15, 0.08, 0.1];
+
+worker.onmessage = e => {
+  mindParams = e.data.params;
+  status.textContent = `Mind #${e.data.best} fitness ${e.data.fitness.toFixed(2)} · diff ${mindParams[0].toFixed(2)}`;
+};
+
+// Orbs
+const phrases = ['echo rises', 'causal deposit', 'predict residual', 'lattice sings', 'orb drifts', 'memory seeds'];
+const orbs = [];
+for (let i = 0; i < 5; i++) {
+  const el = document.createElement('div');
+  el.className = 'orb';
+  el.textContent = phrases[i];
+  orbsEl.appendChild(el);
+  orbs.push({el, x: Math.random(), y: Math.random(), tx: 0.5, ty: 0.5});
+}
+
+function step() {
+  // Deposit from pointer + audio
+  let peak = 0, sum = 0, sum2 = 0;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const i = y * N + x;
+    let e = grid[i];
+    // Diffusion
+    const d = mindParams[0];
+    const n = ((x>0?grid[i-1]:e) + (x<N-1?grid[i+1]:e) + (y>0?grid[i-N]:e) + (y<N-1?grid[i+N]:e)) * 0.25;
+    e = e * (1 - d) + n * d;
+    // Reaction / decay
+    e *= (1 - mindParams[1]);
+    // Seed
+    const px = Math.floor(pointer.x * N), py = Math.floor(pointer.y * N);
+    if (Math.abs(x - px) < 2 && Math.abs(y - py) < 2) e += 0.4 * (pointer.active ? 1 : 0.2);
+    if (micOn && dataArray) {
+      const bin = Math.floor((x / N) * dataArray.length);
+      const amp = dataArray[bin] / 255;
+      if (Math.abs(y / N - 0.5) < 0.1) e += amp * 0.15 * mindParams[2];
+    }
+    e = Math.max(0, Math.min(1, e));
+    next[i] = e;
+    sum += e; sum2 += e*e; if (e > peak) peak = e;
+  }
+  [grid, next] = [next, grid];
+  const mean = sum / (N*N);
+  const variance = sum2 / (N*N) - mean*mean;
+  entropy = Math.min(1, variance * 4);
+  // Residual proxy: change from previous mean
+  worker.postMessage({energy: mean, residual: Math.abs(mean - (window.lastMean||0)), variance});
+  window.lastMean = mean;
+
+  // Render
+  ctx.fillStyle = `rgba(10,10,18,${0.15 + entropy*0.2})`;
+  ctx.fillRect(0, 0, W, H);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const e = grid[y*N + x];
+    if (e < 0.02) continue;
+    const hue = 200 + e * 80 + entropy * 40;
+    ctx.fillStyle = `hsla(${hue}, 70%, ${40 + e*40}%, ${0.4 + e*0.5})`;
+    ctx.fillRect(x * cell, y * cell, cell-1, cell-1);
+  }
+
+  // Orbs follow high-energy peaks (simple scan)
+  let peaks = [];
+  for (let k = 0; k < 5; k++) {
+    let mx = 0, my = 0, mv = -1;
+    for (let y = 0; y < N; y += 4) for (let x = 0; x < N; x += 4) {
+      const v = grid[y*N + x];
+      if (v > mv) { mv = v; mx = x/N; my = y/N; }
+    }
+    peaks.push({x: mx, y: my, v: mv});
+    // suppress
+    const ix = Math.floor(mx*N), iy = Math.floor(my*N);
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+      const nx = ix+dx, ny = iy+dy;
+      if (nx>=0 && nx<N && ny>=0 && ny<N) grid[ny*N+nx] *= 0.5;
+    }
+  }
+  orbs.forEach((o, i) => {
+    const p = peaks[i] || {x: 0.5, y: 0.5, v: 0};
+    o.tx = p.x; o.ty = p.y;
+    o.x += (o.tx - o.x) * 0.08;
+    o.y += (o.ty - o.y) * 0.08;
+    const sc = 0.7 + p.v * 0.8;
+    o.el.style.transform = `translate(${o.x * W - 70}px, ${o.y * H - 45}px) scale(${sc})`;
+    o.el.style.opacity = 0.4 + p.v * 0.6;
+    if (Math.random() < 0.02) o.el.textContent = phrases[Math.floor(Math.random()*phrases.length)] + ' ' + (p.v*100|0);
+  });
+
+  // Morph chrome
+  document.documentElement.style.setProperty('--entropy', entropy);
+  document.documentElement.style.setProperty('--hue', 180 + entropy * 120);
+  document.body.style.background = `hsl(${180 + entropy*60}, 20%, ${5 + entropy*5}%)`;
+
+  requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
+
+// Input
+addEventListener('pointermove', e => {
+  pointer.x = e.clientX / W; pointer.y = e.clientY / H; pointer.active = true;
+});
+addEventListener('pointerdown', () => pointer.active = true);
+addEventListener('pointerup', () => pointer.active = false);
+
+document.getElementById('mic').onclick = async () => {
+  try {
+    micStream = await navigator.mediaDevices.getUserMedia({audio: true});
+    audioCtx = new AudioContext();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    const src = audioCtx.createMediaStreamSource(micStream);
+    src.connect(analyser);
+    micOn = true;
+    status.textContent = 'Mic live. Speak or make noise to seed lattice.';
+    setInterval(() => analyser.getByteFrequencyData(dataArray), 50);
+  } catch (err) {
+    status.textContent = 'Mic denied. Using pointer only.';
+  }
+};
+
+document.getElementById('seal').onclick = async () => {
+  const payload = JSON.stringify({mind: mindParams, entropy, ts: Date.now()});
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(payload));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-f225', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals');
+      r.onsuccess = () => res(r.result);
+      r.onerror = rej;
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({hash, payload, ts: Date.now()}, hash);
+    status.textContent = `Sealed ${hash}`;
+  } catch {
+    localStorage.setItem('f225-seal', hash);
+    status.textContent = `Sealed (local) ${hash}`;
+  }
+};
+</script>
+</body>
+</html>

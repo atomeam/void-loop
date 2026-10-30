@@ -1,0 +1,35 @@
+{
+  "slug": "local-miss-not-flip",
+  "run": 108,
+  "family": "collective-memory miss board",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical": "miss-not-flip|v1|<class>|flip-refusal",
+  "classes": {
+    "logo-gap": "9089bf65b49fe89ff69f764926ad365bd1f257b9ebcf47fd008a7b979bd1f966",
+    "line-gap": "25f4b946ba2140e9843c19d67084e0fa9b00a7eeb9118b3ede35c26913b34b68",
+    "spelling-gap": "6d4a674500e15d97b03b7d72fafa9656dfefbac8f66fe9fc5b1a88af5b146e5b",
+    "date-gap": "3597f77d1c2de7c91c63a19270fe1b2119d4557be92e6f9f6a055524189c0628",
+    "abstain": "67b76a4628a9a957a6f7476ff3cc035a81b57e4e1ca4f2acf13931ea96af3e56",
+    "local-only": "6f642fe8753817ab82b0eaf0e8d9f6de9ad2f25998eaa8f90f4b52c25a400ae8"
+  },
+  "not_in_hash": ["flip sentence", "crowd tally", "disconfirm line", "post id", "icon name"],
+  "href_allowlist": [],
+  "hypotheses": [
+    {
+      "id": "uap-window-108",
+      "one_line": "Public posts pair a wingbeat/parallax re-read with interview and orb claims; none is a sealed sensor log.",
+      "confidence": 0.18,
+      "status": "unattested",
+      "source": "drafts/108-local-miss-not-flip/x-scan.md"
+    },
+    {
+      "id": "miss-window-108",
+      "one_line": "Public posts treat a shared wrong recall as a catalogued miss, a joke, or a timeline flip; a miss mark can refuse the flip without a crowd tally.",
+      "confidence": 0.2,
+      "status": "unattested",
+      "source": "drafts/108-local-miss-not-flip/x-scan.md"
+    }
+  ]
+}

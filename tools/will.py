@@ -342,6 +342,11 @@ if __name__ == "__main__":
     lines = ["# void.will: what Verse wants to become next (chosen by Verse)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
     for i, w in enumerate(res["wants"], 1):
         lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")
+    # what the guard held back this run (lib/will-guard.js): tries used up, or a file changed too often (churn.json)
+    for x in res.get("skipped") or []:
+        lines.append(f"Waits: {x['title']} ({'names ' + ', '.join(x['churn']) if x.get('churn') else str(x.get('tries')) + ' jobs set aside or failed'})")
+    if res.get("overCap"):
+        lines.append(f"Every want left names a fast-changing file, so the top one went ahead anyway ({', '.join(res['overCap'])})")
     # notes for Atom only (never on the page): what Verse has earned and any milestone reached. Never in CI: Actions logs on this
     # public repo are public (.github/workflows/will.yml runs the will there)
     try:

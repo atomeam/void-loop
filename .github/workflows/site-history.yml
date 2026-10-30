@@ -1,0 +1,47 @@
+# Every site gets a cited history before Verse fights it, with no exceptions (tools/site-history.mjs: Wikidata, Wikipedia and the Wayback Machine
+# only, unknowns written as unknown, never invented). Each day this writes the next sites of the Versus queue that have no history yet, the lightest
+# first, frontier sites included, then rebuilds void-live-deploy/history/ and parity.json for the site. Public sources only; no secret. The sandboxes cannot reach those sources,
+# so it runs here.
+name: Site history
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "sites to document this run"
+        default: "40"
+  schedule:
+    - cron: '47 6 * * *'
+concurrency:
+  group: void-site-history
+  cancel-in-progress: false
+permissions:
+  contents: write
+  actions: write
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Write the missing histories
+        env:
+          MAX: ${{ inputs.max || '40' }}
+        run: |
+          case "$MAX" in ''|*[!0-9]*) MAX=40 ;; esac
+          node tools/site-history.mjs --missing --max "$MAX" --slow
+          # parity.mjs rebuilds void-live-deploy/history/<slug>.json (what /obituaries/ opens) and parity.json from docs/HISTORY; without --write it does nothing
+          node tools/parity.mjs --write
+      - name: Commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/HISTORY docs/PARITY void-live-deploy/history void-live-deploy/parity.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Site history: the next sites of the queue, each with a cited history"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true

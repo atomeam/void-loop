@@ -1,0 +1,30 @@
+{
+  "slug": "local-sort-not-arc",
+  "run": "086",
+  "date": "2026-10-07",
+  "family": "anomalous-event timeline",
+  "emit": false,
+  "status": "unattested",
+  "confidence": 0.22,
+  "confidence_note": "design-material weight, not a measurement",
+  "href_allowlist": [],
+  "hash_canon": "local-sort-not-arc|v1|earlier=YYYY-MM|later=YYYY-MM|narrative=discarded|arc=refused|status=unattested",
+  "hypotheses": [
+    {
+      "id": "uap-window-086",
+      "source": "public X posts 2026-10-06/07; ids in x-scan.md",
+      "claim": "dated retellings identify non-human craft or a jumped timeline",
+      "status": "unattested",
+      "confidence": 0.24,
+      "disconfirm": "multi-sensor conventional identification, or a release of the five withheld files with ordinary explanations"
+    },
+    {
+      "id": "sort-not-arc",
+      "source": "public chronology posts in x-scan.md; AARO UAP Records list as contrast",
+      "claim": "a sorted pair of year-month classes is a disclosure arc",
+      "status": "unattested",
+      "confidence": 0.22,
+      "disconfirm": "a later primary day-level stamp that reverses the typed class order, or a sealed note that the classes were mistyped"
+    }
+  ]
+}

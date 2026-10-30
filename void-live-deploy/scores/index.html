@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scores: live scores, schedules and standings · Verse</title>
+<meta name="description" content="Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1. Box scores, team pages, favourite teams kept on your device. No ads, no betting.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Scores · Verse">
+<meta property="og:description" content="Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and F1. Favourite teams on your device, no ads, no betting.">
+<meta property="og:url" content="https://a-to-mind.com/scores/">
+<meta property="og:image" content="https://a-to-mind.com/og/scores.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Scores on Verse: live scores, schedules and standings">
+<meta name="twitter:image" content="https://a-to-mind.com/og/scores.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/scores/ (Versus' ESPN floor): one file and two small modules; kept on the device: followed teams and leagues, and the last answer per day */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --live: #c2162f; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --live: #ff6b7e; --on-accent: #15131c; --box: #14121c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 16px 0 6px; }
+  button, input[type=date] { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; box-sizing: border-box; }
+  input[type=date] { border-radius: 10px; background: var(--box); cursor: text; }
+  button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button[aria-pressed="true"], button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .chips a { font-size: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 40px; box-sizing: border-box; display: inline-flex; align-items: center; }
+  .chips a[aria-current="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 10px 0 0; }
+  .seg { display: inline-flex; } .seg button { border-radius: 0; } .seg button:first-child { border-radius: 999px 0 0 999px; } .seg button:last-child { border-radius: 0 999px 999px 0; margin-left: -1px; }
+  .note { font-size: 13px; color: var(--soft); margin: 8px 0; min-height: 3em; } .note.bad { color: var(--bad); }
+  /* the list's room is kept before its games arrive, so nothing below it moves */
+  #out { min-height: 440px; }
+  ul.games { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  ul.games li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 8px 12px; border-top: 1px solid var(--line); }
+  ul.games li:first-child { border-top: 0; }
+  .st { font-size: 13px; color: var(--soft); text-align: center; line-height: 1.25; } .st.live { color: var(--live); font-weight: 700; }
+  .tm { display: flex; align-items: center; gap: 4px; min-width: 0; } .tm + .tm { margin-top: 2px; }
+  .tm a, .tm span.tn { color: inherit; text-decoration: none; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-height: 32px; display: flex; align-items: center; }
+  .tm .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--line); }
+  .tm .sc { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 1.6em; text-align: right; }
+  .tm.w .tn, .tm.w .sc { font-weight: 700; } .tm.l { color: var(--soft); }
+  .star { border: 0; padding: 0; min-width: 40px; min-height: 40px; font-size: 20px; line-height: 1; color: var(--soft); background: transparent; } .star[aria-pressed="true"] { color: var(--accent); background: transparent; }
+  .gm { min-height: 40px; padding: 4px 12px; font-size: 13px; }
+  .fav { box-shadow: inset 3px 0 0 var(--accent); }
+  .tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 4px 4px; text-align: right; border-top: 1px solid var(--line); white-space: nowrap; } th { color: var(--soft); font-weight: 600; font-size: 12px; border-top: 0; }
+  th:nth-child(1), td:nth-child(1) { text-align: center; width: 2em; } th:nth-child(2), td:nth-child(2) { text-align: left; }
+  td.nm a { color: inherit; text-decoration: none; display: inline-flex; min-height: 32px; align-items: center; }
+  tr.fav td { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin-top: 8px; }
+  .big { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; text-align: center; font-size: 15px; } .big b { font-size: 34px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .ev { list-style: none; margin: 0; padding: 0; font-size: 14px; } .ev li { padding: 4px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; } .ev li:first-child { border-top: 0; } .ev .m { min-width: 3.4em; color: var(--soft); font-variant-numeric: tabular-nums; }
+  .cmp { display: grid; grid-template-columns: 1fr auto 1fr; gap: 2px 10px; font-size: 14px; text-align: center; } .cmp span:nth-child(3n+2) { color: var(--soft); }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a { color: inherit; }
+  .empty { font-size: 14px; color: var(--soft); padding: 14px 4px; }
+  td.nm .star { min-width: 30px; min-height: 30px; font-size: 18px; } td.nm { white-space: normal; }
+  .srt { border: 0; border-radius: 6px; padding: 0 4px; min-height: 30px; min-width: 26px; font-size: 12px; font-weight: 600; color: var(--soft); background: transparent; }
+  th[aria-sort=ascending] .srt::after { content: ' ▲'; } th[aria-sort=descending] .srt::after { content: ' ▼'; }
+  .fd { display: inline-block; width: 18px; height: 18px; line-height: 18px; margin-left: 2px; border-radius: 50%; text-align: center; font-size: 10px; font-weight: 700; color: #fff; background: var(--soft); } .fd.W { background: #1f8f4e; } .fd.L { background: #c2162f; } .fd.D { background: #7a7788; } td.frm { white-space: nowrap; }
+  [hidden] { display: none !important; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<script>
+// the day's scores are asked for while the page loads, not after it (a first visit then draws real rows as soon as the module lands); same address the module builds
+(function () { try { var q = new URLSearchParams(location.search), m = {}; try { m = JSON.parse(localStorage.getItem('a2m.void.scores.v1')) || {}; } catch (e) {}
+  if (q.get('team') || q.get('game') || q.get('tab') === 'mine' || q.get('span') === '7') return;
+  var p = new URLSearchParams({ league: q.get('league') || m.last || (/^de\b/i.test(navigator.language) ? 'bundesliga' : 'epl') });
+  if (q.get('tab') === 'standings') p.set('view', 'standings'); else { var d = new Date(); p.set('date', q.get('date') || (d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'))); }
+  var qs = p.toString(); window.__early = { qs: qs, p: fetch('/api/scores?' + qs, { headers: { accept: 'application/json' } }).then(function (r) { return r.json(); }) }; } catch (e) {} })();
+</script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/scores/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Scores","url":"https://a-to-mind.com/scores/","description":"Live scores, final scores, schedules in your own time zone and standings for the Premier League, La Liga, Bundesliga, Serie A, Ligue 1, MLS, Champions League, NBA, NFL, MLB, NHL and Formula 1, with box scores, team pages and favourite teams kept on your device. No ads, no betting.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"live scores, nba scores, premier league table, bundesliga results, nfl scores today, f1 standings, football scores yesterday","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/scores/?league={league}"},"league-input":"required name=league"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Scores","item":"https://a-to-mind.com/scores/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1 id="title">Scores</h1>
+  <p class="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL, MLB, NHL and Formula 1. No ads, no betting.</p>
+
+  <nav class="chips" id="leagues" aria-label="League">
+    <a href="/scores/?league=epl">Premier League</a><a href="/scores/?league=laliga">La Liga</a><a href="/scores/?league=bundesliga">Bundesliga</a><a href="/scores/?league=seriea">Serie A</a><a href="/scores/?league=ligue1">Ligue 1</a><a href="/scores/?league=mls">MLS</a><a href="/scores/?league=ucl">Champions League</a><a href="/scores/?league=nba">NBA</a><a href="/scores/?league=nfl">NFL</a><a href="/scores/?league=mlb">MLB</a><a href="/scores/?league=nhl">NHL</a><a href="/scores/?league=f1">Formula 1</a>
+  </nav>
+
+  <div class="row">
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="tScores" aria-pressed="true" data-k="scores">Scores</button><button type="button" id="tTable" aria-pressed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pressed="false" data-k="mine">My teams</button></div>
+    <div class="seg" role="group" aria-label="More"><button type="button" id="tPick" aria-pressed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-pressed="false" data-k="whatif">What if</button><button type="button" id="tDraft" aria-pressed="false" data-k="draft">Mock draft</button><button type="button" id="tSports" aria-pressed="false" data-k="sportsTab">Sports</button><button type="button" id="tReports" aria-pressed="false" data-k="reportsTab">Verse reports</button>
+    </div>
+    <button type="button" id="favLeague" aria-pressed="false">Follow league</button>
+  </div>
+  <div class="row" id="days">
+    <button type="button" id="prev" aria-label="Previous day">‹</button>
+    <label class="vh" for="date">Day</label><input type="date" id="date">
+    <button type="button" id="next" aria-label="Next day">›</button>
+    <span class="seg" role="group" aria-label="Range"><button type="button" id="vDay" aria-pressed="true" data-k="dayView">Day</button><button type="button" id="vWeek" aria-pressed="false" data-k="week">Week</button></span>
+    <button type="button" id="dYes" data-k="yesterday">Yesterday</button><button type="button" id="dToday" data-k="today">Today</button><button type="button" id="dTom" data-k="tomorrow">Tomorrow</button>
+    <button type="button" id="share" data-k="share">Share link</button>
+  </div>
+  <div class="row"><label class="vh" for="find">Search teams</label><input type="search" id="find" placeholder="Search teams" maxlength="40" autocomplete="off" style="font:inherit;font-size:16px;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:4px 12px;background:var(--box);color:inherit;box-sizing:border-box;flex:1 1 180px;min-width:0"></div>
+  <div class="note" id="note" role="status" aria-live="polite"></div>
+
+  <div id="out" aria-live="polite"><p class="empty" id="first">Live scores, final scores and upcoming schedules for the league and day above: the games, kick-off times in your own time zone, and the standings table.</p></div>
+
+  <section id="nextg" aria-labelledby="nextH" style="min-height:450px"><h2 id="nextH">Next games</h2><ul class="games" id="nextList"></ul><p class="empty" id="nextNone" hidden>No next games listed</p></section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/scores/?league=nba">NBA scores</a><a href="/scores/?league=epl">Premier League scores</a><a href="/scores/?league=epl&amp;tab=standings">Premier League table</a><a href="/scores/?league=bundesliga">Bundesliga</a><a href="/scores/?league=nfl">NFL scores</a><a href="/scores/?league=mlb">MLB scores</a><a href="/scores/?league=nhl">NHL scores</a><a href="/scores/?league=f1&amp;tab=standings">Formula 1 standings</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/sports/">Sports</a> <a href="/time/">Time zones</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+
+  <p class="srcs" id="feat">What is here: a live scoreboard, final scores and schedules for 12 leagues, box scores and play by play, standings, team pages, favourites (My teams) kept on this device, search across sports for teams, events, venues and players, stories written by Verse from the data, and a free read-only API.</p>
+  <p class="srcs" id="srcs">Scores come from the public score feeds of <a href="https://www.espn.com/" rel="noopener">ESPN</a> (unofficial), <a href="https://www.openligadb.de/" rel="noopener">OpenLigaDB</a> (Bundesliga) and <a href="https://github.com/jolpica/jolpica-f1" rel="noopener">Jolpica</a> (Formula 1), read by Verse's server and kept a short while. Data may be delayed by a minute or more. Followed teams stay on this device. No odds, no betting, no fantasy.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<script>addEventListener('load', () => { import('/scores/app.js').catch(() => {}); }); // the page's code, after the load event (scores/app.js)</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

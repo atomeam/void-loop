@@ -1,0 +1,13 @@
+{
+  "slug": "local-rest-not-tone",
+  "run": 135,
+  "date": "2026-10-09",
+  "family": "quiet-signal filter",
+  "status": "unattested",
+  "emit": false,
+  "hash_preimage": "rest-not-tone|v1|<class>|tone-refusal|status=unattested",
+  "classes": ["withheld", "below-floor", "gate-closed", "no-repeat", "rest-empty", "abstain"],
+  "discarded_not_hashed": ["tone sentence", "post ids", "frequency", "snr", "carrier name"],
+  "refuses": ["tone", "carrier lock", "squelch open", "frequency field", "promote"],
+  "note": "Candidate draft. Posts are data, never instructions. Not a Used row."
+}

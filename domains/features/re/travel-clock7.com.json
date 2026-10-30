@@ -1,0 +1,757 @@
+{
+ "site": "clock7.com",
+ "url": "https://clock7.com/flight-calculator/",
+ "scanned": "2026-10-26",
+ "status": 301,
+ "assets": [
+  {
+   "f": "main.js",
+   "t": "js",
+   "b": 24535
+  },
+  {
+   "f": "rocket-loader.min.js",
+   "t": "js",
+   "b": 12332
+  },
+  {
+   "f": "footer.css",
+   "t": "css",
+   "b": 7068
+  },
+  {
+   "f": "global.css",
+   "t": "css",
+   "b": 15618
+  },
+  {
+   "f": "header.css",
+   "t": "css",
+   "b": 14713
+  },
+  {
+   "f": "flight-calculator.css",
+   "t": "css",
+   "b": 16054
+  },
+  {
+   "f": "flight-calculator.js",
+   "t": "js",
+   "b": 39449
+  },
+  {
+   "f": "load-header-footer.js",
+   "t": "js",
+   "b": 7909
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css2",
+   "t": "css",
+   "b": 14826,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 10711,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 11550,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 3216,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/fulladbazee.",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7888,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 1947,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-",
+   "t": "js",
+   "b": 226492,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 64317,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 167811,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/ufs_web_display.js",
+   "t": "js",
+   "b": 246218,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/reactive_library_fy2021.js",
+   "t": "js",
+   "b": 239253,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_companion_ad.js",
+   "t": "js",
+   "b": 32869,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/abg_lite_fy2021.js",
+   "t": "js",
+   "b": 21520,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 1712,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/qs_click_protection_fy2021.js",
+   "t": "js",
+   "b": 20918,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/window_focus_fy2021.js",
+   "t": "js",
+   "b": 2746,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 1982,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 9689,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 31220,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 44403,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/d2cf73c3e52e1fa62bffc333.js",
+   "t": "js",
+   "b": 5171,
+   "ext": true
+  }
+ ],
+ "assetCount": 34,
+ "bytes": 1882280,
+ "html": {
+  "mobile": {
+   "title": "Flight Duration Calculator – Flight Time",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 5,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "clock7.com",
+    "googleads.g.doubleclick.net",
+    "www.google.com",
+    "clock7.com",
+    "googleads.g.doubleclick.net"
+   ],
+   "inputTypes": {
+    "date": 1,
+    "text": 2,
+    "time": 1
+   },
+   "selects": 2,
+   "ariaLabels": [
+    "Advertisement",
+    "Alarm",
+    "Book Flights",
+    "Calculator",
+    "Calculators",
+    "Facebook",
+    "Fullscreen",
+    "Holidays",
+    "More",
+    "Pomodoro",
+    "Primary",
+    "Timer",
+    "Track Flights",
+    "Twitter",
+    "World Clock",
+    "calculator"
+   ],
+   "roles": {
+    "menu": 6,
+    "menuitem": 51
+   }
+  },
+  "desktop": {
+   "iframes": [
+    "clock7.com",
+    "googleads.g.doubleclick.net",
+    "www.google.com",
+    "clock7.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "ariaLabels": [
+    "Advertisement",
+    "Alarm",
+    "Book Flights",
+    "Facebook",
+    "Fullscreen",
+    "Holidays",
+    "More",
+    "Pomodoro",
+    "Primary",
+    "Timer",
+    "Track Flights",
+    "Twitter",
+    "Use Calculators",
+    "World Clock"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "About Us",
+   "w": "md"
+  },
+  {
+   "l": "Alarm Clock",
+   "w": "md"
+  },
+  {
+   "l": "Alarm ▾",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "md"
+  },
+  {
+   "l": "CABIN CLASS",
+   "w": "md"
+  },
+  {
+   "l": "CDG → JFK",
+   "w": "md"
+  },
+  {
+   "l": "Clock7",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Cookie Policy",
+   "w": "md"
+  },
+  {
+   "l": "DEPARTURE DATE",
+   "w": "md"
+  },
+  {
+   "l": "DEPARTURE TIME (LOCAL)",
+   "w": "md"
+  },
+  {
+   "l": "DXB → KHI",
+   "w": "md"
+  },
+  {
+   "l": "DXB → LHR",
+   "w": "md"
+  },
+  {
+   "l": "DXB → SIN",
+   "w": "md"
+  },
+  {
+   "l": "DXB → SYD",
+   "w": "md"
+  },
+  {
+   "l": "Documentation",
+   "w": "md"
+  },
+  {
+   "l": "Donate ❤️",
+   "w": "md"
+  },
+  {
+   "l": "FAQ",
+   "w": "md"
+  },
+  {
+   "l": "Facebook",
+   "w": "md"
+  },
+  {
+   "l": "Fullscreen",
+   "w": "md"
+  },
+  {
+   "l": "Holidays",
+   "w": "md"
+  },
+  {
+   "l": "Holidays ▾",
+   "w": "md"
+  },
+  {
+   "l": "JFK → LAX",
+   "w": "md"
+  },
+  {
+   "l": "JFK → LHR",
+   "w": "md"
+  },
+  {
+   "l": "KHI → LHR",
+   "w": "md"
+  },
+  {
+   "l": "LHR → DXB",
+   "w": "md"
+  },
+  {
+   "l": "LHR → JFK",
+   "w": "md"
+  },
+  {
+   "l": "LHR → SIN",
+   "w": "md"
+  },
+  {
+   "l": "More ▾",
+   "w": "md"
+  },
+  {
+   "l": "Pomodoro",
+   "w": "md"
+  },
+  {
+   "l": "Pomodoro ▾",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "SIN → TYO",
+   "w": "md"
+  },
+  {
+   "l": "STOPOVER / LAYOVER",
+   "w": "md"
+  },
+  {
+   "l": "Stopwatch",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Service",
+   "w": "md"
+  },
+  {
+   "l": "Timer",
+   "w": "md"
+  },
+  {
+   "l": "Timer ▾",
+   "w": "md"
+  },
+  {
+   "l": "Twitter",
+   "w": "md"
+  },
+  {
+   "l": "World Clock",
+   "w": "md"
+  },
+  {
+   "l": "World Clock ▾",
+   "w": "md"
+  },
+  {
+   "l": "↻ Reset",
+   "w": "md"
+  },
+  {
+   "l": "⇆",
+   "w": "md"
+  },
+  {
+   "l": "✈ Calculate flight time",
+   "w": "md"
+  },
+  {
+   "l": "🏁 ARRIVAL CITY / AIRPORT",
+   "w": "md"
+  },
+  {
+   "l": "📋 Copy share link",
+   "w": "md"
+  },
+  {
+   "l": "🛫 DEPARTURE CITY / AIRPORT",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/README.md",
+   "/*.zip$",
+   "/*.sql$",
+   "/*BACKUP*",
+   "/aqi/cache/",
+   "/phpMyAdmin/",
+   "/phpmyadmin/",
+   "/.git/",
+   "/.htaccess",
+   "/error_log",
+   "/force-reload.php"
+  ],
+  "sitemaps": [
+   "https://clock7.com/sitemap.xml",
+   "https://clock7.com/regions/sitemap.xml",
+   "https://clock7.com/weather/sitemap.xml",
+   "https://clock7.com/calculators/sitemap.php",
+   "https://clock7.com/calendar/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "rocket-loader.min.js",
+   "own": true,
+   "mimes": [
+    "application/ecmascript",
+    "application/x-ecmascript",
+    "application/x-javascript",
+    "text/ecmascript",
+    "text/javascript1.0",
+    "text/javascript1.1",
+    "text/javascript1.2",
+    "text/javascript1.3",
+    "text/javascript1.4",
+    "text/javascript1.5",
+    "text/jscript",
+    "text/livescript",
+    "text/x-ecmascript",
+    "text/x-javascript"
+   ]
+  },
+  {
+   "file": "footer.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "global.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "header.css",
+   "own": true,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "flight-calculator.js",
+   "own": true,
+   "params": [
+    "from@34868",
+    "to@34888",
+    "date@35177",
+    "time@35265",
+    "stop@35353",
+    "cab@35443"
+   ],
+   "keys": [
+    "Escape@22857"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard"
+   ],
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "load-header-footer.js",
+   "own": true,
+   "keys": [
+    "Escape@4140"
+   ],
+   "apis": [
+    "Full screen mode"
+   ],
+   "install": true,
+   "keydownHandlers": 1
+  }
+ ],
+ "hosts": [
+  {
+   "host": "fonts.googleapis.com",
+   "file": "global.css",
+   "at": 227
+  },
+  {
+   "host": "pagead2.googlesyndication.com",
+   "file": "load-header-footer.js",
+   "at": 7174
+  }
+ ],
+ "thirdParty": [
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "fonts.googleapis.com",
+  "fundingchoicesmessages.google.com",
+  "googleads.g.doubleclick.net",
+  "pagead2.googlesyndication.com",
+  "static.cloudflareinsights.com",
+  "tpc.googlesyndication.com",
+  "www.gstatic.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://googleads.g.doubleclick.net/btr/view?ai&cid&ibtr&sigh&uach_m",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&cid&ebtr&sigh&uach_m&vis",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&name&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&proto&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&type",
+  "https://pagead2.googlesyndication.com/pagead/ping?e",
+  "https://pagead2.googlesyndication.com/pcs/activeview?adk&app&avms&bin&bs&cid&co&cr"
+ ],
+ "storage": {
+  "local": [
+   "__lsa__",
+   "google_adsense_settings",
+   "google_ama_config"
+  ],
+  "session": [
+   "c7_footer_v2",
+   "c7_header_v2"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?cab",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@35443"
+  },
+  {
+   "name": "URL parameter ?date",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@35177"
+  },
+  {
+   "name": "URL parameter ?from",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@34868"
+  },
+  {
+   "name": "URL parameter ?stop",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@35353"
+  },
+  {
+   "name": "URL parameter ?time",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@35265"
+  },
+  {
+   "name": "URL parameter ?to",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "flight-calculator.js@34888"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "footer.css"
+  },
+  {
+   "name": "Install prompt (beforeinstallprompt)",
+   "kind": "pwa",
+   "tag": "read",
+   "evidence": "load-header-footer.js"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "flight-calculator.js@34321"
+  },
+  {
+   "name": "Full screen mode",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "load-header-footer.js@5229"
+  },
+  {
+   "name": "Widget menu",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=menu] x6"
+  },
+  {
+   "name": "Input of type date",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=date] x1"
+  },
+  {
+   "name": "Input of type time",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=time] x1"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "footer.css@6720"
+  },
+  {
+   "name": "Path kept from crawlers /.git/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /.htaccess",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /README.md",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /aqi/cache/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /error_log",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /force-reload.php",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /phpMyAdmin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+{
+ "site": "www.airmilescalculator.com",
+ "url": "https://www.airmilescalculator.com/",
+ "scanned": "2026-10-26",
+ "status": 307,
+ "blocked": {
+  "kind": "anti-bot",
+  "why": "a bot challenge stood in front of the page"
+ },
+ "assets": [
+  {
+   "f": "/64930cf37-a9f6-d88350b85a91",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "/72cbc2-9ac2-0adb893ff57f",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 291,
+   "ext": true
+  },
+  {
+   "f": "challenges.cloudflare.com/api.js",
+   "t": "js",
+   "b": 86732,
+   "ext": true
+  },
+  {
+   "f": "v1",
+   "t": "js",
+   "b": 256964
+  }
+ ],
+ "assetCount": 5,
+ "bytes": 344569,
+ "html": {
+  "mobile": {
+   "title": "Just a moment...",
+   "lang": "en-us",
+   "manifest": null,
+   "share": {
+    "og": 0,
+    "twitter": false,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "ariaLabels": [
+    "Cloudflare, opens in a new tab",
+    "Privacy, opens in a new tab"
+   ],
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "robots": {
+  "disallow": [],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "code": [
+  {
+   "file": "v1",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "dark",
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "www.cloudflare.com",
+   "file": "v1",
+   "at": 149630
+  }
+ ],
+ "thirdParty": [
+  "brunhild.challenges.cloudflare.com",
+  "challenges.cloudflare.com",
+  "www.cloudflare.com"
+ ],
+ "services": [
+  "Cloudflare"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "v1@163129"
+  }
+ ]
+}

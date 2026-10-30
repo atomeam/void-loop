@@ -1,0 +1,113 @@
+{
+  "floor": "photo resizer",
+  "verse_page": "/resize-image/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "pancardresizer.com": {
+      "sources": [
+        "https://pancardresizer.com/",
+        "https://www.scribd.com/document/871746249/Text-Code"
+      ],
+      "features": [
+        {
+          "name": "Upload a photo or signature",
+          "detail": "JPEG/PNG",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Choose a photo or signature (JPEG, PNG or WebP)\""
+        },
+        {
+          "name": "Crop step",
+          "detail": "drag and zoom a crop box (Croppie) before resizing",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "with Crop to fill: drag the picture to move the crop, a Zoom slider (and the mouse wheel) to crop tighter, Reset crop (lib/imgfit.js cropBox)"
+        },
+        {
+          "name": "Resize to PAN sizes",
+          "detail": "photo 3.5 x 2.5 cm, signature 2 x 4.5 cm",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Width / Height in cm, mm, inches or pixels"
+        },
+        {
+          "name": "DPI setting",
+          "detail": "the resolution the portal asks (e.g. 200 dpi)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Resolution (dpi, for cm, mm and inches)\""
+        },
+        {
+          "name": "Compress under a KB limit",
+          "detail": "e.g. under 50 KB",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Largest file size, KB\""
+        },
+        {
+          "name": "One-tap presets for NSDL / UTI PAN photo and signature",
+          "detail": "portal sizes filled in for you",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "preset buttons: PAN photo and signature for NSDL / Protean and UTIITSL, US, UK, Schengen, India, Canada and China passport or visa sizes (lib/imgfit.js PRESETS)"
+        },
+        {
+          "name": "Download JPEG",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Download JPEG"
+        },
+        {
+          "name": "PDF output",
+          "detail": "some portals want PDF (unconfirmed on this site)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Download PDF"
+        },
+        {
+          "name": "Rotate",
+          "detail": "turn a sideways photo",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Rotate left / Rotate right, a quarter turn at a time"
+        },
+        {
+          "name": "White background / brightness",
+          "detail": "clean up the photo (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Photo and signature on one sheet",
+          "detail": "combine both for upload (unconfirmed)",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Guidance on PAN rules",
+          "detail": "text explaining NSDL/UTI requirements",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "footer explains KB counting only"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "One step instead of a three-step wizard",
+    "Nothing uploaded: done on the device",
+    "Fit modes: crop, keep whole, stretch",
+    "KB limit counted so it passes either way a form counts",
+    "Share a size as a link",
+    "No ads"
+  ],
+  "gaps": [
+    "White background / brightness",
+    "Photo and signature on one sheet",
+    "Guidance on PAN rules"
+  ]
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-gap-not-duration (draft, unattested)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body { font: 16px/1.4 system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; background: #f8f8f6; color: #222; }
+  .refusal { border-left: 4px solid #c00; padding: 0.5rem 1rem; background: #fff8f8; }
+  .hash { font-family: ui-monospace, monospace; font-size: 0.85em; word-break: break-all; }
+  button { margin: 0.5rem 0; }
+  .unattested { color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+<h1>Local gap-not-duration</h1>
+<p class="unattested">Draft only. Unattested default. Not a measurement. Not a clock. Not a timeline.</p>
+<p>Mark a local gap. The interface hashes the gap class. Any duration or measurement sentence is discarded and is not in the hash.</p>
+
+<label>Local mark label (no duration): <input id="label" type="text" placeholder="gap mark"></label><br>
+<button id="mark">Seal local gap mark</button>
+
+<div id="out" class="refusal" hidden>
+  <p><strong>Refusal id:</strong> <span class="hash" id="hash"></span></p>
+  <p>This is a gap mark. It is not a duration. It is not a clock reading. Measurement sentence discarded. Unattested default.</p>
+</div>
+
+<script>
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+document.getElementById('mark').onclick = async () => {
+  const label = (document.getElementById('label').value || 'local-gap').trim();
+  // hash only the class and mark; no duration text allowed in payload
+  const payload = `gap-class:local-gap-not-duration|mark:${label}|status:unattested`;
+  const h = await sha256(payload);
+  document.getElementById('hash').textContent = h;
+  document.getElementById('out').hidden = false;
+};
+</script>
+</body>
+</html>

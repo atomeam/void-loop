@@ -1,0 +1,33 @@
+# The site scout (tools/site-scout.mjs): what a real site shows and lets a visitor do, read from the live page where any site is reachable.
+# Started by hand (or by an agent) with the site's address; the report is the job's log, the screenshots an artifact kept 7 days. Passive.
+name: Site scout
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: the site's address (https://...)
+        required: true
+permissions:
+  contents: read
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --ignore-scripts
+      - name: Look at the site
+        env:
+          URL: ${{ inputs.url }}
+          CHROME_PATH: /usr/bin/google-chrome
+          SCOUT_OUT: scout-out
+        run: node tools/site-scout.mjs "$URL"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scout-shots
+          path: scout-out
+          retention-days: 7

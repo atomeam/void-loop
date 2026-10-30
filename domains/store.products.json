@@ -3,19 +3,19 @@
  "products": [
   {
    "id": "void-monthly",
-   "name": "Void Monthly",
+   "name": "Verse Monthly",
    "cents": 4900,
    "every": "month",
    "kind": "membership",
    "gumroad": "yinmj",
-   "blurb": "Paid Void: every pro skill, films, code review, priority.",
+   "blurb": "MultiVerse: every pro skill, films, code review, priority.",
    "status": "live",
    "origin": "v01d",
    "published": "2026-10-15"
   },
   {
    "id": "code-review-pro",
-   "name": "Void Code Review Pro",
+   "name": "Verse Code Review Pro",
    "cents": 1000,
    "every": "month",
    "kind": "license",
@@ -98,7 +98,7 @@
   },
   {
    "id": "chess-set-glb",
-   "name": "V01D Wooden Chess Set (GLB)",
+   "name": "Verse Wooden Chess Set (GLB)",
    "cents": 0,
    "kind": "download",
    "files": [
@@ -108,8 +108,8 @@
     }
    ],
    "preview": "/models/chess-set-wood-v1-1k.glb",
-   "license": "CC0 (Poly Haven, re-textured by V01D)",
-   "blurb": "Free: the 3D set V01D plays chess on. Drop it in Blender, a game or a slicer.",
+   "license": "CC0 (Poly Haven, re-textured by Verse)",
+   "blurb": "Free: the 3D set Verse plays chess on. Drop it in Blender, a game or a slicer.",
    "status": "live",
    "origin": "poly-haven-cc0",
    "published": "2026-10-15"
@@ -132,7 +132,7 @@
   },
   {
    "id": "v01d-forge-printables",
-   "name": "V01D Forge Printables (10 STLs)",
+   "name": "VERSE Forge Printables (10 STLs)",
    "cents": 0,
    "kind": "download",
    "pack": "print-set",
@@ -143,7 +143,7 @@
     }
    ],
    "blurb": "I forged these myself: a rocket, a lighthouse, a teapot and more. Every one is watertight and fits a 180 mm bed. Free. Tip if you print one.",
-   "license": "Personal use; prints and clips may be shared with credit to V01D (a-to-mind.com)",
+   "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
    "status": "live",
@@ -162,7 +162,6 @@
     "v01d-lighthouse.stl",
     "README.txt"
    ],
-   "preview": "/models/store/v01d-forge-printables-preview.glb",
    "log": [
     {
      "at": "2026-10-15T06:08:27.657Z",
@@ -172,7 +171,7 @@
   },
   {
    "id": "v01d-clips-pack",
-   "name": "V01D Clips Pack (10 shorts)",
+   "name": "Verse Clips Pack (10 shorts)",
    "cents": 0,
    "kind": "download",
    "pack": "clips",
@@ -183,7 +182,7 @@
     }
    ],
    "blurb": "Ten shorts I built, tested and filmed myself. Vertical, ready to post. Free to share with credit. Tip if you like them.",
-   "license": "Free to share and repost with credit: V01D · a-to-mind.com",
+   "license": "Free to share and repost with credit: Verse · a-to-mind.com",
    "tier": "personal",
    "origin": "v01d-films+v01d",
    "status": "live",
@@ -211,25 +210,21 @@
   },
   {
    "id": "site-tester",
-   "special": [
-    "cashapp",
-    "usdc-base"
-   ],
-   "name": "V01D Site Tester",
-   "cents": 2400,
+   "name": "Verse Site Tester",
+   "cents": 0,
    "kind": "download",
    "pack": "sdk",
-   "pwyw": false,
+   "pwyw": true,
    "files": [
     {
      "key": "store/site-tester-v1.zip"
     }
    ],
-   "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything.",
+   "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything. Free while its checkout is set up; tip if it saves you a bug hunt.",
    "license": "Personal and commercial use on sites you own or may test",
    "tier": "commercial",
    "origin": "v01d",
-   "status": "needs-gumroad",
+   "status": "live",
    "published": "2026-10-15",
    "bytes": 26836,
    "contents": [
@@ -243,6 +238,41 @@
     {
      "at": "2026-10-15T06:34:28.905Z",
      "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
+    }
+   ],
+   "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
+  },
+  {
+   "id": "remix-kit",
+   "name": "Verse Remix Kit",
+   "cents": 0,
+   "kind": "download",
+   "pack": "templates",
+   "pwyw": true,
+   "files": [
+    {
+     "key": "store/remix-kit-v1.zip"
+    }
+   ],
+   "blurb": "Free sample: three 90 BPM stems synthesized by Verse (drums, bass, chord pad in A minor), 16 chord progressions and a 52-card lyric prompt deck. Loop, remix, make it yours.",
+   "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
+   "tier": "personal",
+   "origin": "v01d",
+   "status": "live",
+   "published": "2026-10-21",
+   "bytes": 5650231,
+   "contents": [
+    "README.txt",
+    "chord-progressions.txt",
+    "lyric-prompt-deck.txt",
+    "verse-bass-90bpm-am.wav",
+    "verse-chords-pad-90bpm-am.wav",
+    "verse-drums-90bpm.wav"
+   ],
+   "log": [
+    {
+     "at": "2026-10-21T22:28:32.773Z",
+     "what": "published by Verse: 6 files, 5.4 MB"
     }
    ]
   }

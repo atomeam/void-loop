@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Colour codes: hex, RGB, HSL, CMYK, shades and schemes · Verse</title>
+<meta name="description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Colour codes, shades and schemes · Verse">
+<meta property="og:description" content="Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. No ads, nothing sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/color/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/color/ (owner, 2026-10-24: back to the easy sites), against hexcolor16.com (Tranco 63,673: a hex-code page behind AdSense, two
+     analytics, a tag manager, web fonts and a beacon) and color-hex.com, both floors of the tower: one file and one small module, no third party.
+     Then "ok beat it": every model either site lists and the CSS ones, hexcolor16.com's ramps, six harmonies, VGA palette and random colour */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c42b41; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  .pick { display: grid; grid-template-columns: 1fr 52px; gap: 8px; }
+  input[type=text] { font: 17px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 9px 11px; min-width: 0; width: 100%; box-sizing: border-box; }
+  input[type=text]:focus { outline: none; border-color: var(--accent); } input.bad { border-color: var(--bad); }
+  input[type=color] { width: 52px; height: 46px; border: 2px solid var(--line); border-radius: 10px; padding: 2px; background: transparent; cursor: pointer; }
+  #note { min-height: 1.4em; font-size: 14px; color: var(--bad); margin: 4px 0; }
+  #big { border-radius: 14px; padding: 26px 18px; text-align: center; border: 1px solid var(--line); }
+  #big b { display: block; font: 600 30px ui-monospace, Menlo, Consolas, monospace; letter-spacing: .02em; } #big span { font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; } td { padding: 6px 4px; border-bottom: 1px solid var(--line); } td:first-child { color: var(--soft); width: 6.5em; }
+  td code { font: 15px ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; } /* breaks between the numbers first, inside one only when it must */ td:last-child { text-align: right; width: 4.5em; }
+  button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; background: transparent; color: var(--ink); cursor: pointer; }
+  .row { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; } .row.s { grid-template-columns: repeat(4, 1fr); } .row.v { grid-template-columns: repeat(8, 1fr); }
+  .sw { border: 1px solid var(--line); border-radius: 8px; height: 40px; padding: 0; cursor: pointer; position: relative; }
+  .sw small { position: absolute; left: 0; right: 0; bottom: 2px; font: 10px ui-monospace, Menlo, monospace; opacity: .9; }
+  .hint { font-size: 12px; color: var(--soft); margin: 0 0 6px; } .pal { margin: 6px 0 10px; } .pal p { margin: 0 0 3px; font-size: 14px; display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+  .pal p button, .mine p button { font: inherit; font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; background: transparent; color: var(--ink); cursor: pointer; min-height: 28px; }
+  .row.p { grid-template-columns: repeat(10, 1fr); min-height: 40px; } .row.ws { grid-template-columns: repeat(12, 1fr); } .row.ws .sw { height: 26px; } .row.ws .sw small { display: none; }
+  #pname { font: inherit; font-size: 14px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 36px; box-sizing: border-box; width: 11em; }
+  #snip { font: 13px/1.5 ui-monospace, Menlo, monospace; background: var(--line); border-radius: 8px; padding: 8px 10px; overflow-x: auto; white-space: pre-wrap; } .blind small { display: block !important; }
+  .scheme { margin: 6px 0 10px; } .scheme p { margin: 0 0 3px; font-size: 14px; }
+  .ratio { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .ratio > div { border-radius: 10px; padding: 10px 12px; border: 1px solid var(--line); font-size: 14px; }
+  .ratio > div { display: flex; gap: 10px; align-items: center; } .sample { flex: none; width: 52px; height: 52px; border-radius: 8px; display: grid; place-items: center; font: 700 26px/1 system-ui, sans-serif; }
+  .ratio strong { font-size: 18px; } .ok { color: inherit; font-weight: 600; } .no { color: var(--soft); text-decoration: line-through; }
+  .ok, .no { white-space: nowrap; display: inline-block; } @media (max-width: 560px) { .row:not(.s) .sw small { display: none; } } /* nine hex labels do not fit a phone row; each swatch keeps its title */
+  .dl { display: flex; gap: 8px; margin-top: 18px; justify-content: center; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/color/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Colour codes, shades and schemes","url":"https://a-to-mind.com/color/","description":"Type a colour as hex, RGB, HSL or a name and get it in every model, its nearest name, tints, shades and tones, five colour schemes and whether text on it can be read. Palettes made from it, your own saved palettes, colour-blind views and the 216 web-safe colours. Nothing sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"hex to rgb, rgb to hex, hex colour codes, colour code converter, hsl to hex, colour shades and tints, colour scheme generator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/color/?c={color}"},"color-input":"required name=color"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Colour codes, shades and schemes","item":"https://a-to-mind.com/color/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/gradient.js">
+<link rel="modulepreload" href="/lib/colour.js">
+<link rel="modulepreload" href="/lib/palettes.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Colour codes, shades and schemes</h1>
+  <p class="lede" style="margin:0 0 10px;font-size:13px;opacity:.75">Every colour model, the nearest name, WCAG contrast, tints, shades and schemes, worked out on this device and kept for offline use.</p>
+  <div class="pick"><input id="in" type="text" autocomplete="off" spellcheck="false" aria-label="A colour: hex, rgb, hsl or a name" placeholder="#ff5733, rgb(255 87 51), tomato" autofocus><input id="wheel" type="color" aria-label="Pick a colour" value="#6d4aff"></div>
+  <nav id="jobs" class="tk-row" aria-label="What is the colour for?"><span class="tk-label">For:</span> <a href="?c=1a5fb4&amp;for=read#ratio" data-for="read">Readable text pairs</a> <a href="?c=e4572e&amp;for=brand#palh" data-for="brand">Brand palette</a> <a href="?c=00a19a&amp;for=print#modt" data-for="print">Print vs screen</a></nav>
+  <p id="forhint" class="hint" hidden></p>
+  <div id="note" role="status" aria-live="polite"></div>
+  <div id="big"><b id="hex">#6D4AFF</b><span id="name"></span></div>
+  <!-- filled by the module below and shown whole, so nothing already on screen moves when it arrives (no layout shift on a slow first visit) -->
+  <div id="rest" hidden>
+  <table id="modt"><tbody id="models"></tbody></table>
+  <h2>Can text on it be read? (WCAG contrast)</h2>
+  <div class="ratio" id="ratio"></div>
+  <h2>Monochromatic tints, to white</h2><div class="row" id="tints"></div>
+  <h2>Shades, to black</h2><div class="row" id="shades"></div>
+  <h2>Tones, to grey</h2><div class="row" id="tones"></div>
+  <h2>Schemes</h2><div id="schemes"></div>
+  <h2 id="palh">Palettes made from it</h2>
+  <p class="hint">Eight palettes of five built around this colour by the usual rules (each starts with it); tap a colour to open it, or keep a palette.</p>
+  <div id="pals"></div>
+  <h2>Your palette</h2>
+  <div class="row p" id="work"></div>
+  <div class="dl"><button type="button" id="addc">Add this colour</button><input id="pname" type="text" maxlength="40" placeholder="Palette name" aria-label="Palette name" autocomplete="off"><button type="button" id="savep">Save palette</button><button type="button" id="clearp">Clear</button></div>
+  <div id="mypals"></div>
+  <h2>How it looks with colour blindness</h2>
+  <div class="row s" id="blind"></div>
+  <h2>CSS</h2>
+  <pre id="snip"></pre>
+  <details id="websafe"><summary id="safesum">The 216 web-safe colours</summary><div class="row ws" id="safe"></div></details>
+  <h2>The 16 VGA colours</h2><div class="row v" id="vga"></div>
+  <div class="dl"><button type="button" id="random">Random colour</button></div>
+  <div class="dl"><button type="button" id="json">Download JSON</button><button type="button" id="csv">Download CSV</button><button type="button" id="link">Copy link</button></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/color/?c=ff5733">#ff5733</a><a href="/color/?c=6d4aff">#6d4aff</a><a href="/color/?c=ff0000">#ff0000</a><a href="/color/?c=00ff00">#00ff00</a><a href="/color/?c=0000ff">#0000ff</a><a href="/color/?c=ffa500">#ffa500</a><a href="/color/?c=808080">#808080</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/gradient/">Gradient</a> <a href="/wheel/">Wheel of names</a> <a href="/base-converter/">Base converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Type a colour any way: <code>#f53</code>, <code>ff5733</code>, <code>rgb(255 87 51)</code>, <code>hsl(11 100% 60%)</code> or one of the 148 CSS names. Click any swatch to make it the colour. The nearest name is the nearest to the eye (CIE Lab), not to the numbers. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
+  </div>
+</main>
+<script type="module">
+  import { mountRelated, setAccent, setPalette, shadesOf } from '/lib/toolkit.js';
+  import { pack as gradientCode } from '/lib/gradient.js';
+  import { parse, describe, passes, toHex } from '/lib/colour.js';
+  import { palettesFor, blindness, WEB_SAFE, webSafe } from '/lib/palettes.js';
+  const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
+  let now = null;
+  const copy = async (text, b) => { try { await navigator.clipboard.writeText(text); const t = b.textContent; b.textContent = 'Copied'; setTimeout(() => { b.textContent = t; }, 1200); } catch (_) {} };
+  const swatch = (hex) => { const d = describe(parse(hex)), b = el('button', { type: 'button', className: 'sw', title: hex, ariaLabel: 'Use ' + hex }); b.style.background = hex; b.style.color = d.contrast.text; b.append(el('small', { textContent: hex.slice(1) })); b.addEventListener('click', () => set(hex, true)); return b; };
+  const fill = (id, list) => { $(id).replaceChildren(...list.map(swatch)); };
+  function show(d) {
+    now = d; const big = $('big'); big.style.background = d.hex; big.style.color = d.contrast.text; $('hex').textContent = d.hex;
+    $('name').textContent = d.name.exact ? d.name.name : 'nearest name: ' + d.name.name + ' (' + d.name.hex + ')';
+    $('wheel').value = d.hex.toLowerCase();
+    const rows = [['HEX', d.hex], ['Decimal', String(d.decimal)], ['RGB', 'rgb(' + d.rgb.r + ', ' + d.rgb.g + ', ' + d.rgb.b + ')'], ['HSL', 'hsl(' + d.hsl.h + ', ' + d.hsl.s + '%, ' + d.hsl.l + '%)'], ['HSV / HSB', d.hsv.h + '°, ' + d.hsv.s + '%, ' + d.hsv.v + '%'],
+      ['HWB', 'hwb(' + d.hwb.h + ' ' + d.hwb.w + '% ' + d.hwb.b + '%)'], ['CMYK', d.cmyk.c + '%, ' + d.cmyk.m + '%, ' + d.cmyk.y + '%, ' + d.cmyk.k + '%'],
+      ['CIE XYZ', d.xyz.x + ', ' + d.xyz.y + ', ' + d.xyz.z], ['CIE Yxy', d.yxy.Y + ', ' + d.yxy.x + ', ' + d.yxy.y], ['CIE Lab', d.lab.l + ', ' + d.lab.a + ', ' + d.lab.b], ['CIE LCh', d.lch.l + ', ' + d.lch.c + ', ' + d.lch.h + '°'],
+      ['CIELUV', d.luv.l + ', ' + d.luv.u + ', ' + d.luv.v], ['Hunter Lab', d.hunterLab.l + ', ' + d.hunterLab.a + ', ' + d.hunterLab.b],
+      ['Oklab', 'oklab(' + d.oklab.l + ' ' + d.oklab.a + ' ' + d.oklab.b + ')'], ['OKLCH', 'oklch(' + d.oklch.l + ' ' + d.oklch.c + ' ' + d.oklch.h + ')'], ['Luminance', String(d.luminance)]];
+    $('models').replaceChildren(...rows.map(([k, v]) => { const b = el('button', { type: 'button', textContent: 'Copy' }); b.addEventListener('click', () => copy(v, b)); return el('tr', {}, [el('td', { textContent: k }), el('td', {}, [el('code', { textContent: v })]), el('td', {}, [b])]); }));
+    // the verdict is read on the page's own colours; only the sample "Aa" sits on the colour, as an example of the text (WCAG 1.4.3: incidental)
+    $('ratio').replaceChildren(...[['#FFFFFF', d.contrast.white, 'white'], ['#000000', d.contrast.black, 'black']].map(([ink, r, word]) => {
+      const p = passes(r), box = el('div'), sample = el('span', { className: 'sample', textContent: 'Aa' }); sample.setAttribute('aria-hidden', 'true'); sample.style.background = d.hex; sample.style.color = ink;
+      const mark = (ok, label) => el('span', { className: ok ? 'ok' : 'no', textContent: label + (ok ? ' ✓' : ' ✗') + ' ' });
+      box.append(sample, el('div', {}, [el('strong', { textContent: r.toFixed(2) + ':1' }), ' ' + word + ' text', el('br'), mark(p.aa, 'AA'), mark(p.aaa, 'AAA'), mark(p.aaLarge, 'AA large')]));
+      return box;
+    }));
+    fill('tints', d.tints); fill('shades', d.shades); fill('tones', d.tones);
+    const names = { complementary: 'Complementary (opposite)', analogous: 'Analogous (neighbours, ±30°)', triadic: 'Triadic (three, 120° apart)', split: 'Split-complementary (±150°)', tetradic: 'Tetradic (rectangle: two opposite pairs, 60° apart)', square: 'Square (four, 90° apart)' };
+    $('schemes').replaceChildren(...Object.entries(d.schemes).map(([k, list]) => { const r = el('div', { className: 'row s' }); r.replaceChildren(...list.map(swatch)); return el('div', { className: 'scheme' }, [el('p', { textContent: names[k] }), r]); }));
+    // palettes that use it, how it looks with colour blindness, CSS that uses it, the nearest web-safe colour
+    $('pals').replaceChildren(...palettesFor(d.hex).map((p) => { const keep = el('button', { type: 'button', textContent: 'Keep' }); keep.setAttribute('aria-label', 'Keep the ' + p.name + ' palette'); keep.addEventListener('click', () => { work = p.colors.slice(0, 10); $('pname').value = p.name + ' ' + d.hex; drawWork(); });
+      const r = el('div', { className: 'row s5' }); r.style.gridTemplateColumns = 'repeat(5, 1fr)'; r.replaceChildren(...p.colors.map(swatch)); return el('div', { className: 'pal' }, [el('p', {}, [el('span', { textContent: p.name }), keep]), r]); }));
+    $('blind').replaceChildren(...blindness(d.hex).map((b) => { const w = swatch(b.hex); w.classList.add('blind'); w.title = b.label + ': ' + b.hex; w.firstChild.textContent = b.label.split(' (')[0]; w.style.height = '48px'; return w; }));
+    const ink = d.contrast.text; $('snip').textContent = '.box {\n  background-color: ' + d.hex.toLowerCase() + ';\n  color: ' + ink.toLowerCase() + ';\n}\n.text { color: ' + d.hex.toLowerCase() + '; }\n.frame { border: 2px solid ' + d.hex.toLowerCase() + '; }\n:root { --brand: ' + d.hex.toLowerCase() + '; }';
+    $('safesum').textContent = 'The 216 web-safe colours (the nearest to this one is ' + webSafe(d.hex).toUpperCase() + ')';
+    $('rest').hidden = false;
+  }
+  // your palette: up to ten colours, named and saved on this device; a saved one opens back into it, copies as CSS, or paints the wheel
+  const PAL = 'a2m.void.colour.palettes.v1'; let work = [], mine = []; try { mine = JSON.parse(localStorage.getItem(PAL) || '[]').filter((p) => p && Array.isArray(p.colors)).slice(0, 40); } catch (_) {}
+  const keepMine = () => { try { localStorage.setItem(PAL, JSON.stringify(mine)); } catch (_) {} };
+  function drawWork() { $('work').replaceChildren(...(work.length ? work.map((h, i) => { const b = swatch(h); b.title = 'Take ' + h + ' out of the palette'; b.setAttribute('aria-label', 'Take ' + h + ' out of the palette'); b.onclick = (e) => { e.stopPropagation(); work.splice(i, 1); drawWork(); }; return b; }) : [el('span', { className: 'hint', textContent: 'Add colours to make a palette (tap one to take it out).' })])); $('savep').disabled = !work.length; }
+  function drawMine() {
+    $('mypals').replaceChildren(...mine.map((p, i) => { const r = el('div', { className: 'row p' }); r.replaceChildren(...p.colors.map(swatch));
+      const open = el('button', { type: 'button', textContent: 'Edit' }), css = el('button', { type: 'button', textContent: 'Copy CSS' }), wheel = el('button', { type: 'button', textContent: 'Paint the wheel' }), del = el('button', { type: 'button', textContent: '×' });
+      for (const [b, w] of [[open, 'Edit'], [css, 'Copy the CSS of'], [wheel, 'Paint the wheel with'], [del, 'Delete']]) b.setAttribute('aria-label', w + ' the palette ' + p.name);
+      open.onclick = () => { work = p.colors.slice(); $('pname').value = p.name; drawWork(); }; del.onclick = () => { mine.splice(i, 1); keepMine(); drawMine(); };
+      css.onclick = () => copy(':root {\n' + p.colors.map((c, k) => '  --' + (p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'palette') + '-' + (k + 1) + ': ' + c.toLowerCase() + ';').join('\n') + '\n}', css);
+      wheel.onclick = () => { if (setPalette(p.colors)) location.href = '/wheel/'; };
+      return el('div', { className: 'pal mine' }, [el('p', {}, [el('span', { textContent: p.name }), el('span', {}, [open, ' ', css, ' ', wheel, ' ', del])]), r]); }));
+  }
+  $('addc').addEventListener('click', () => { if (now && !work.includes(now.hex.toUpperCase()) && work.length < 10) { work.push(now.hex.toUpperCase()); drawWork(); } });
+  $('clearp').addEventListener('click', () => { work = []; $('pname').value = ''; drawWork(); });
+  $('savep').addEventListener('click', () => { if (!work.length) return; const name = ($('pname').value.trim() || 'Palette ' + (mine.length + 1)).slice(0, 40), at = mine.findIndex((p) => p.name === name);
+    if (at >= 0) mine[at].colors = work.slice(); else mine.unshift({ name, colors: work.slice() }); keepMine(); drawMine(); $('pname').value = name; const b = $('savep'), t = b.textContent; b.textContent = 'Saved'; setTimeout(() => { b.textContent = t; }, 1200); });
+  $('websafe').addEventListener('toggle', () => { if ($('websafe').open && !$('safe').children.length) fill('safe', WEB_SAFE); });
+  function set(text, fromSwatch) {
+    const rgb = parse(text); $('in').classList.toggle('bad', !rgb && !!String(text).trim()); $('note').textContent = rgb || !String(text).trim() ? '' : 'Not a colour I can read: try #ff5733, rgb(255 87 51), hsl(11 100% 60%) or a name like tomato.';
+    if (!rgb) return; if (fromSwatch) $('in').value = toHex(rgb); show(describe(rgb));
+    try { { const f = new URLSearchParams(location.search).get('for'); history.replaceState(null, '', '?c=' + toHex(rgb).slice(1) + (f ? '&for=' + encodeURIComponent(f) : '')); } } catch (_) {}
+  }
+  const save = (name, type, text) => { const a = el('a', { href: URL.createObjectURL(new Blob([text], { type })), download: name }); document.body.append(a); a.click(); a.remove(); };
+  $('in').addEventListener('input', () => set($('in').value));
+  $('wheel').addEventListener('input', () => { $('in').value = $('wheel').value; set($('wheel').value); });
+  $('json').addEventListener('click', () => now && save(now.hex.slice(1).toLowerCase() + '.json', 'application/json', JSON.stringify(now, null, 2)));
+  $('csv').addEventListener('click', () => { if (!now) return; const d = now, rows = [['model', 'value'], ['hex', d.hex], ['rgb', d.rgb.r + ' ' + d.rgb.g + ' ' + d.rgb.b], ['hsl', d.hsl.h + ' ' + d.hsl.s + '% ' + d.hsl.l + '%'], ['hsv', d.hsv.h + ' ' + d.hsv.s + '% ' + d.hsv.v + '%'], ['cmyk', d.cmyk.c + ' ' + d.cmyk.m + ' ' + d.cmyk.y + ' ' + d.cmyk.k], ['lab', d.lab.l + ' ' + d.lab.a + ' ' + d.lab.b], ['name', d.name.name], ['contrast on white', d.contrast.white], ['contrast on black', d.contrast.black], ...['tints', 'shades', 'tones'].map((k) => [k, d[k].join(' ')]), ...Object.entries(d.schemes).map(([k, v]) => [k, v.join(' ')])]; save(d.hex.slice(1).toLowerCase() + '.csv', 'text/csv', rows.map((r) => r.join(',')).join('\n') + '\n'); });
+  $('link').addEventListener('click', () => copy(location.href, $('link')));
+  // the 16 colours of the VGA (and CGA, and early web) palette, in their standard order, as hexcolor16.com lists them
+  const VGA = ['#000000', '#000080', '#008000', '#008080', '#800000', '#800080', '#808000', '#c0c0c0', '#808080', '#0000ff', '#00ff00', '#00ffff', '#ff0000', '#ff00ff', '#ffff00', '#ffffff'];
+  fill('vga', VGA); drawWork(); drawMine();
+  $('random').addEventListener('click', () => { const n = crypto.getRandomValues(new Uint32Array(1))[0] & 0xffffff; set('#' + n.toString(16).padStart(6, '0'), true); });
+  const start = new URLSearchParams(location.search).get('c') || '6d4aff'; $('in').value = parse(start) ? (/^[0-9a-f]{3,8}$/i.test(start) ? '#' + start : start) : ''; set($('in').value || '#6d4aff');
+  // the three everyday jobs (docs/WIDER-USE.md): a plain line on what to look at, the colour in the link, the section in view; the link restores it
+  const FOR = { read: 'Text on a colour: the contrast below says whether white or black text passes WCAG AA (4.5:1 for body text, 3:1 for large) and AAA (7:1). Try your own background colour above.',
+    brand: 'A brand palette: pick your main colour above, choose one of the eight palettes below (each starts with it), add or remove colours, name it and save it, then download JSON or CSV.',
+    print: 'Print vs screen: screens mix light (RGB, hex), printers mix ink (CMYK). The CMYK row is a plain conversion with no ink profile, so ask your printer for theirs; very bright screen colours often print duller.' };
+  const job = (k, jump) => { const h = $('forhint'); if (!FOR[k]) { h.hidden = true; return; } h.textContent = FOR[k]; h.hidden = false; for (const a of document.querySelectorAll('#jobs a')) a.setAttribute('aria-current', String(a.dataset.for === k)); const t = { read: 'ratio', brand: 'palh', print: 'modt' }[k]; if (jump) requestAnimationFrame(() => $(t).scrollIntoView({ block: 'start' })); };
+  for (const a of document.querySelectorAll('#jobs a')) a.addEventListener('click', (e) => { e.preventDefault(); const u = new URL(a.href); $('in').value = '#' + u.searchParams.get('c'); set($('in').value); try { history.replaceState(null, '', '?c=' + u.searchParams.get('c') + '&for=' + a.dataset.for); } catch (_) {} job(a.dataset.for, true); });
+  { const k = new URLSearchParams(location.search).get('for'); if (k) job(k, true); }
+  const curHex = () => new URLSearchParams(location.search).get('c') || '6d4aff';
+  const lighter = (h) => '#' + [0, 2, 4].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) + (255 - parseInt(h.slice(i, i + 2), 16)) * 0.6).toString(16).padStart(2, '0')).join('');
+  mountRelated($('related'), '/color/', [
+    { label: 'Make a gradient from it', href: () => '/gradient/#' + gradientCode({ type: 'linear', angle: 90, stops: [{ color: '#' + curHex(), pos: 0 }, { color: lighter(curHex()), pos: 100 }] }) },
+    { label: 'Use it as every tool\u2019s accent', run: () => (setAccent('#' + curHex()) ? 'Every tool wears it now' : 'This browser will not keep it') },
+    { label: 'Paint the wheel in its shades', href: () => '/wheel/', go: () => setPalette(shadesOf('#' + curHex(), 8)) },
+    { label: 'It as a number', href: () => '/base-converter/?v=' + curHex() + '&b=16' },
+  ], { card: () => 'color #' + curHex() }); // the stage card opens on the colour open here, not the example
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

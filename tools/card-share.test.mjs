@@ -10,13 +10,13 @@ test('copy text reads well and ends in one code line', () => {
 });
 test('pasting the copied text, or only its code, gives the card back (unicode, newlines)', () => {
   const back = parse(shareText(card)), bare = parse(codeOf(card));
-  for (const d of [back, bare]) { assert.equal(d.t, card.t); assert.equal(d.k, card.k); assert.equal(d.b, card.b); assert.equal(d.src.length, 2); assert.equal(d.src[1].u, ''); }
+  for (const d of [back, bare]) { assert.equal(d.t, card.t); assert.equal(d.k, card.k); assert.equal(d.b, card.b); assert.equal(d.src.length, 1, 'the source with no link is dropped'); assert.match(d.src[0].u, /^https:/); }
 });
 test('only https links survive and nothing else rides along', () => {
   assert.ok(parse(codeOf(card)).src.every((s) => s.u === '' || s.u.startsWith('https://')));
   assert.deepEqual(Object.keys(dataOf(card)).sort(), ['b', 'k', 'src', 't', 'v']);
   const evil = MARK + Buffer.from(JSON.stringify({ v: 1, t: '<img src=x onerror=1>', b: 'x', power: 99, src: [{ t: 'a', u: 'http://x.test' }] })).toString('base64url');
-  const d = parse(evil); assert.equal(d.power, undefined); assert.equal(d.src[0].u, '');
+  const d = parse(evil); assert.equal(d.power, undefined); assert.deepEqual(d.src, [], 'an http link is not a source');
 });
 test('junk is not a card', () => {
   assert.equal(parse('hello'), null); assert.equal(parse(MARK + 'not-json-at-all'), null); assert.equal(parse(MARK + Buffer.from('{"v":2,"t":"x"}').toString('base64url')), null); assert.equal(parse(''), null);
@@ -69,13 +69,13 @@ test('a long card keeps its whole answer, up to 8000 characters (the self card s
   const { BODY_MAX } = await import('../void-live-deploy/lib/card-share.js');
   const long = ('What got built. ').repeat(300).trim(); // 4,799 characters, past the old 2,400 cut
   const d = dataOf({ title: 'What I think of myself', kind: 'Answer', body: long });
-  assert.equal(d.b, long); assert.equal(BODY_MAX, 8000);
+  assert.equal(d.b, long); assert.ok(BODY_MAX >= 1e6);
   const back = parse(shareText(d)); assert.equal(back.b, long, 'a pasted copy restores all of it'); assert.ok(codeOf(d).length < 600, 'the code line stays short');
 });
 test('the full-content badge (asked by Verse): nothing on a short card, "whole text kept" past 2400 characters, and past the cap only what is true', async () => {
   const { fullNote, BODY_MAX } = await import('../void-live-deploy/lib/card-share.js');
   assert.equal(fullNote(0), ''); assert.equal(fullNote(2400), ''); assert.equal(fullNote(2401), 'whole text kept'); assert.equal(fullNote(BODY_MAX), 'whole text kept');
-  assert.equal(fullNote(BODY_MAX + 500), 'first ' + BODY_MAX + ' of ' + (BODY_MAX + 500) + ' characters kept'); assert.equal(fullNote('x'), '');
+  assert.equal(fullNote(724820), 'whole text kept'); assert.ok(BODY_MAX >= 724820, 'no cut-off'); assert.equal(fullNote('x'), '');
 });
 
 test('self card (owner review 2026-10-18): saved text keeps a blank line between sections and "- " bullets, and the sections are structured blocks', async () => {
@@ -112,7 +112,7 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.match(html, /<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="30">show all 30<\/button>/);
   assert.match(html, /data-n="6">show all 6</);
   assert.equal((html.match(/data-share-skip="1"/g) || []).length, 25 * 2 + 1, 'an older build keeps a short line, not its details and dates; an older ask keeps a short line');
-  assert.equal((html.match(/<summary data-share-short="[^"]+">/g) || []).length, 26, 'every folded item carries its short line for the saved text');
+  assert.equal((html.match(/data-share-short/g) || []).length, 0, 'a folded item saves its whole line, never a cut one (owner, 2026-10-22: no cut-off anywhere)');
   const { shortLine, SHORT } = await import('../void-live-deploy/lib/self-blocks.js');
   assert.equal(shortLine('ask 7'), 'ask 7');
   const sl = shortLine('a careful sentence about what Verse wanted built and why it mattered to the stage, twice over');
@@ -130,4 +130,40 @@ test('a card shared before the rename (V01D-CARD:) still pastes, and new copies 
   const old = code.replace(/^VERSE-CARD:/, 'V01D-CARD:');
   assert.equal(parse(old)?.t, 'Old card');
   assert.equal(parse(code)?.t, 'Old card');
+});
+
+test('a share link reopens the card it was made from, and nothing else', async () => {
+  const { linkOf, fromHash } = await import('../void-live-deploy/lib/card-share.js');
+  const url = linkOf(card); assert.match(url, /^https:\/\/a-to-mind\.com\/#vc=[A-Za-z0-9_-]+$/);
+  assert.equal(fromHash(new URL(url).hash)?.t, card.t);
+  assert.equal(fromHash('#other=1'), null); assert.equal(fromHash('#vc=!!'), null);
+});
+
+test('self card picture: every line wrapped whole (no ellipsis), long family labels wrap, fact tags stripped, "and N more" is a sentence (2026-10-22)', async () => {
+  const { selfLayout } = await import('../void-live-deploy/lib/card-image.js');
+  const { readableVoice } = await import('../void-live-deploy/lib/card-share.js');
+  assert.equal(readableVoice('Verse has 306 skills [S1, S3, S4]. It moves to gemma [What I said about myself most recently]. Growth [S2].'), 'Verse has 306 skills. It moves to gemma. Growth.');
+  const long = 'Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit, a long sentence that must wrap instead of being cut short';
+  const items = Array.from({ length: 911 }, (_, i) => 'ledger line ' + i + ' ' + long);
+  const out = selfLayout({ voice: long + ' ' + long, bars: [{ name: 'Words and the world and everything else', share: 0.5, label: '2 of 4 proven' }], sections: [{ title: "What's built and improved, skill by skill", lines: items }] });
+  const txt = out.els.filter((e) => e.k === 'text').map((e) => e.text);
+  assert.ok(!txt.some((t) => /\u2026|\.\.\./.test(t)), 'no ellipsis in the picture');
+  assert.ok(txt.join(' ').includes('must wrap instead of being cut short'));
+  assert.ok(txt.some((t) => /^And 908 more, every one of them in the saved text\.$/.test(t)));
+  assert.ok(txt.join(' ').includes('everything else'));
+});
+
+test('self card copy text (2026-10-22): no empty "- " bullets, a deep folded item whole, no "characters kept" cap', async () => {
+  const { selfSections, selfHtml } = await import('../void-live-deploy/lib/self-blocks.js');
+  const { textOf, tidy } = await import('../void-live-deploy/lib/card-share.js');
+  const { parseHTML } = await import('linkedom').catch(() => ({}));
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const deep = 'the deepest folded build, a long sentence that must be copied whole and never be cut short with an ellipsis at all';
+  const recent = Array.from({ length: 400 }, (_, i) => ({ ask: 'ask ' + i, what: i === 399 ? deep : 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: 'root' }));
+  const html = selfHtml(selfSections({ entries: [{ kind: 'daily', thoughts: 'hi', weakest: 'maps' }], asks: [], follow: { total: 400, built: 400, recent } }), esc);
+  assert.ok(!/data-share-short/.test(html));
+  if (!parseHTML) return; // the DOM half runs where linkedom is installed; the browser check (tools/site-test) covers the page
+  const { document } = parseHTML('<div>' + html + '</div>');
+  const t = tidy(textOf(document.querySelector('div')));
+  assert.equal((t.match(/^- *$/gm) || []).length, 0); assert.ok(!/characters kept/.test(t));
 });

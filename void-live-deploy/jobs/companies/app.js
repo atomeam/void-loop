@@ -1,0 +1,5 @@
+// /jobs/companies/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["companies","search","saved","alerts","tracker","feed","sources"],"de":{"h1":"Remote-Firmen, die einstellen","intro":"Wer jetzt remote einstellt: jede Firma in den Anzeigen mit der Zahl ihrer offenen Jobs, von A bis Z oder die meisten zuerst. Wählen Sie eine, um alle ihre Jobs zu sehen, merken Sie sie sich und führen Sie Ihre Bewerbungen in einer Liste auf diesem Gerät."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/companies/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

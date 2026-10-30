@@ -1,0 +1,5 @@
+// /flights/time/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the flights screen and its airport list come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/flights-ui.js').then(({ mountFlights }) => mountFlights(document.getElementById('app'), {"panels":["controls","time"],"controls":["airports","via","stay","dates","time"],"de":{"h1":"Flugzeitrechner","intro":"Wählen Sie Abflug- und Zielflughafen und wann Sie fliegen: Sie erhalten die übliche Flugzeit, die Ankunft in der Ortszeit des Ziels, den Zeitunterschied und ob die Strecke die Datumsgrenze überquert. Fügen Sie einen Zwischenstopp mit Wartezeit hinzu, um die ganze Reise zu sehen. Berechnet auf Ihrem Gerät aus Lage und Zeitzone der Flughäfen."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/flights/time/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

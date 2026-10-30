@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F-210 · Compression Oracle World</title>
+<style>
+:root{--hue:250;--ink:#dfe6ff}
+html,body{margin:0;height:100%;background:#000;color:var(--ink);font:13px/1.4 ui-monospace,Menlo,monospace;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#hud{position:fixed;left:14px;top:14px;max-width:340px;pointer-events:none}
+#hud h1{font-size:13px;letter-spacing:.3em;margin:0 0 6px;opacity:.8}
+#beliefs{position:fixed;right:14px;top:14px;width:250px;display:flex;flex-direction:column;gap:6px}
+.card{padding:8px 10px;border:1px solid hsla(var(--h),80%,70%,.5);background:hsla(var(--h),60%,12%,.55);border-radius:6px;backdrop-filter:blur(4px)}
+.card b{color:hsl(var(--h),90%,75%)} .bar{height:3px;background:hsl(var(--h),90%,65%);margin-top:4px;transition:width .3s}
+#log{position:fixed;left:14px;bottom:14px;max-width:520px;opacity:.75;white-space:pre-wrap}
+small{opacity:.6}
+</style></head><body>
+<canvas id="c"></canvas>
+<div id="hud"><h1>COMPRESSION ORACLE</h1>
+<div>Move pointer, press keys, or use a gamepad. The oracle thinks by <i>compressing</i>: a gesture it can squeeze against a known concept is understood; one that won't compress is surprise, and surprise births a new attractor in the world.</div>
+<div id="stat"><small>booting…</small></div></div>
+<div id="beliefs"></div>
+<div id="log"></div>
+<script type="module">
+// ---------- Local "AI": compression-based concept learning (NCD) ----------
+const enc = new TextEncoder();
+const hasCS = typeof CompressionStream !== 'undefined';
+async function csize(str){
+  if(!hasCS){ // fallback: crude LZ-ish dictionary size estimate
+    const seen=new Set();let w='',n=0;for(const ch of str){const k=w+ch;if(seen.has(k))w=k;else{seen.add(k);n++;w=ch;}}return n*1.5+4;}
+  const s=new Blob([enc.encode(str)]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+  return (await new Response(s).arrayBuffer()).byteLength;
+}
+async function ncd(a,b,ca,cb){ca??=await csize(a);cb??=await csize(b);const cab=await csize(a+b);return (cab-Math.min(ca,cb))/Math.max(ca,cb);}
+// symbolize a gesture: quantized direction + speed + source glyph
+const DIRS='abcdefgh';
+function symbol(dx,dy,src){const ang=Math.atan2(dy,dx);const d=DIRS[(Math.round(ang/(Math.PI/4))+8)%8];const sp=Math.hypot(dx,dy);const s=sp<2?'0':sp<8?'1':sp<20?'2':'3';return src+d+s;}
+const concepts=[]; // {id,name,proto,cp,hue,x,y,strength,hits}
+let segment=[],lastSym='',segStart=performance.now(),thinking=false;
+const NAMES=['drift','orbit','stab','scrawl','pulse','spiral','hesitate','sweep','zigzag','dive','hover','shiver'];
+function push(sym){if(sym===lastSym&&segment.length&&segment[segment.length-1].endsWith('*'))return;segment.push(sym);lastSym=sym;}
+async function think(){
+  if(thinking||segment.length<12)return; thinking=true;
+  const s=segment.join(''); segment=[]; const cs=await csize(s);
+  let best=null,bd=1e9; const dists=[];
+  for(const c of concepts){const d=await ncd(s,c.proto,cs,c.cp);dists.push([c,d]);if(d<bd){bd=d;best=c;}}
+  const SURPRISE=0.62;
+  if(!best||bd>SURPRISE){
+    if(concepts.length<12){const c={id:concepts.length,name:NAMES[concepts.length],proto:s,cp:cs,hue:(concepts.length*67+190)%360,x:Math.random()*.8+.1,y:Math.random()*.8+.1,strength:1,hits:1};concepts.push(c);say(`surprise ${best?bd.toFixed(2):'∞'} → new concept "${c.name}" (${s.length} sym → ${cs} B)`);spawnShock(c,1);}
+    else{best.proto=(best.proto+s).slice(-400);best.cp=await csize(best.proto);say(`saturated; folding into "${best.name}"`);}
+  } else {
+    best.hits++;best.strength=Math.min(4,best.strength+.4);
+    // learning: prototype absorbs the new evidence, bounded
+    best.proto=(best.proto.slice(-300)+s).slice(-400);best.cp=await csize(best.proto);
+    say(`understood as "${best.name}" (ncd ${bd.toFixed(2)})`);spawnShock(best,.5);
+  }
+  for(const c of concepts)c.strength=Math.max(.2,c.strength*.97);
+  render(dists); thinking=false; share();
+}
+function say(t){const l=document.getElementById('log');l.textContent=(t+'\n'+l.textContent).split('\n').slice(0,6).join('\n');}
+// ---------- UI that physically reorders with the oracle's beliefs ----------
+let lastOrder='';
+function render(){
+  const ranked=[...concepts].sort((a,b)=>b.strength-a.strength);
+  const order=ranked.map(c=>c.id).join(',');
+  const draw=()=>{const box=document.getElementById('beliefs');box.innerHTML='';for(const c of ranked){const d=document.createElement('div');d.className='card';d.style.setProperty('--h',c.hue);d.style.viewTransitionName='c'+c.id;d.innerHTML=`<b>${c.name}</b> <small>${c.hits} hits · ${c.cp}B core</small><div class="bar" style="width:${c.strength*25}%"></div>`;box.appendChild(d);}};
+  if(order!==lastOrder&&document.startViewTransition){const vt=document.startViewTransition(draw);vt.ready.catch(()=>{});vt.finished.catch(()=>{});}else draw();
+  lastOrder=order;
+  const top=ranked[0]; if(top)document.documentElement.style.setProperty('--hue',top.hue);
+}
+// ---------- Inputs: pointer, keyboard, gamepad ----------
+let px=innerWidth/2,py=innerHeight/2,lx=px,ly=py,lastT=0;
+addEventListener('pointermove',e=>{px=e.clientX;py=e.clientY;const t=performance.now();if(t-lastT>40){push(symbol(px-lx,py-ly,'p'));lx=px;ly=py;lastT=t;}});
+addEventListener('keydown',e=>{push('k'+(e.key.length===1?e.key.toLowerCase():'_'));});
+function pollPad(){const pads=navigator.getGamepads?navigator.getGamepads():[];for(const g of pads){if(!g)continue;const [ax,ay]=g.axes;if(Math.hypot(ax,ay)>.15){px=Math.max(0,Math.min(innerWidth,px+ax*12));py=Math.max(0,Math.min(innerHeight,py+ay*12));push(symbol(ax*20,ay*20,'g'));}g.buttons.forEach((b,i)=>{if(b.pressed)push('b'+i);});}}
+// ---------- Cross-tab hive: Web Locks elects one thinker, BroadcastChannel shares concepts ----------
+const bc='BroadcastChannel' in self?new BroadcastChannel('f210-oracle'):null;let leader=false;
+if(navigator.locks){navigator.locks.request('f210-thinker',()=>{leader=true;stat();return new Promise(()=>{});});}else leader=true;
+function share(){bc&&leader&&bc.postMessage(concepts.map(({id,name,proto,cp,hue,x,y,strength,hits})=>({id,name,proto,cp,hue,x,y,strength,hits})));}
+if(bc)bc.onmessage=e=>{if(leader)return;concepts.length=0;concepts.push(...e.data);render();};
+function stat(){document.getElementById('stat').innerHTML=`<small>${gpu?'WebGPU':'Canvas2D'} world · ${hasCS?'CompressionStream':'LZ fallback'} mind · ${leader?'this tab is the thinker':'follower tab (another tab holds the thinker lock)'}</small>`;}
+// ---------- World: particles pulled by concept attractors, repelled by surprise shocks ----------
+const N=12000,shocks=[];function spawnShock(c,a){shocks.push({x:c.x,y:c.y,a,t:0,h:c.hue});}
+const cv=document.getElementById('c');let gpu=null;
+function resize(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}resize();addEventListener('resize',resize);
+const WGSL=`
+struct P{pos:vec2f,vel:vec2f};
+struct U{n:u32,k:u32,t:f32,mx:f32,my:f32,_a:f32,_b:f32,_c:f32,att:array<vec4f,12>};
+@group(0)@binding(0) var<storage,read_write> ps:array<P>;
+@group(0)@binding(1) var<uniform> u:U;
+@compute @workgroup_size(128) fn sim(@builtin(global_invocation_id) id:vec3u){
+ let i=id.x; if(i>=u.n){return;} var p=ps[i]; var f=vec2f(0.);
+ for(var k=0u;k<u.k;k++){let a=u.att[k]; let d=a.xy-p.pos; let r=max(length(d),.02);
+   f+=normalize(d)*a.z*.0006/(r) + vec2f(-d.y,d.x)*a.z*.0009/(r*r+.05);}
+ let m=vec2f(u.mx,u.my)-p.pos; f-=normalize(m)*.00025/max(dot(m,m),.002);
+ p.vel=(p.vel+f)*.985; p.pos+=p.vel; if(p.pos.x<0.||p.pos.x>1.){p.vel.x*=-1.;p.pos.x=clamp(p.pos.x,0.,1.);}
+ if(p.pos.y<0.||p.pos.y>1.){p.vel.y*=-1.;p.pos.y=clamp(p.pos.y,0.,1.);} ps[i]=p;}
+struct VO{@builtin(position) p:vec4f,@location(0) c:vec4f};
+@vertex fn vs(@builtin(vertex_index) v:u32,@builtin(instance_index) i:u32)->VO{
+ let q=array(vec2f(-1,-1),vec2f(1,-1),vec2f(-1,1),vec2f(1,1))[v]; let p=ps[i];
+ var o:VO; o.p=vec4f((p.pos.x*2.-1.)+q.x*.0025,(1.-p.pos.y*2.)+q.y*.0035,0.,1.);
+ let s=clamp(length(p.vel)*120.,0.,1.); o.c=vec4f(.35+.6*s,.4+.3*s,1.,.55); return o;}
+@fragment fn fs(i:VO)->@location(0) vec4f{return i.c;}`;
+async function initGPU(){
+  if(!navigator.gpu)return null;const ad=await navigator.gpu.requestAdapter();if(!ad)return null;const dev=await ad.requestDevice();dev.addEventListener('uncapturederror',e=>say('GPU error: '+e.error.message));
+  const ctx=cv.getContext('webgpu');const fmt=navigator.gpu.getPreferredCanvasFormat();ctx.configure({device:dev,format:fmt,alphaMode:'opaque'});
+  const init=new Float32Array(N*4);for(let i=0;i<N;i++){init[i*4]=Math.random();init[i*4+1]=Math.random();}
+  const buf=dev.createBuffer({size:init.byteLength,usage:GPUBufferUsage.STORAGE,mappedAtCreation:true});new Float32Array(buf.getMappedRange()).set(init);buf.unmap();
+  const ub=dev.createBuffer({size:32+12*16,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+  const mod=dev.createShaderModule({code:WGSL.replace(/struct VO[\s\S]*$/,'')});
+  // vertex stage can't bind read_write storage: compute and render get separate modules + layouts
+  const bglR=dev.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX,buffer:{type:'read-only-storage'}}]});
+  const WR=WGSL.replace('@group(0)@binding(0) var<storage,read_write> ps:array<P>;','@group(0)@binding(0) var<storage,read> ps:array<P>;').replace(/@group\(0\)@binding\(1\)[^;]+;/,'').replace(/@compute[\s\S]*?ps\[i\]=p;}/,'');
+  const modR=dev.createShaderModule({code:WR});
+  const bglC=dev.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.COMPUTE,buffer:{type:'storage'}},{binding:1,visibility:GPUShaderStage.COMPUTE,buffer:{type:'uniform'}}]});
+  const cp=dev.createComputePipeline({layout:dev.createPipelineLayout({bindGroupLayouts:[bglC]}),compute:{module:mod,entryPoint:'sim'}});
+  const rp=dev.createRenderPipeline({layout:dev.createPipelineLayout({bindGroupLayouts:[bglR]}),vertex:{module:modR,entryPoint:'vs'},fragment:{module:modR,entryPoint:'fs',targets:[{format:fmt,blend:{color:{srcFactor:'src-alpha',dstFactor:'one'},alpha:{srcFactor:'one',dstFactor:'one'}}}]},primitive:{topology:'triangle-strip'}});
+  const bgC=dev.createBindGroup({layout:bglC,entries:[{binding:0,resource:{buffer:buf}},{binding:1,resource:{buffer:ub}}]});
+  const bgR=dev.createBindGroup({layout:bglR,entries:[{binding:0,resource:{buffer:buf}}]});
+  return {dev,ctx,ub,cp,rp,bgC,bgR};
+}
+// Canvas2D fallback (fewer particles, same physics)
+const M=2500,cpu=new Float32Array(M*4);for(let i=0;i<M;i++){cpu[i*4]=Math.random();cpu[i*4+1]=Math.random();}
+function atts(){const a=concepts.map(c=>[c.x,c.y,c.strength]);for(const s of shocks)a.push([s.x,s.y,-s.a*(1-s.t)*6]);return a.slice(0,12);}
+function step2D(g,A,mx,my){g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,0,cv.width,cv.height);g.fillStyle='#8af';
+  for(let i=0;i<M;i++){let x=cpu[i*4],y=cpu[i*4+1],vx=cpu[i*4+2],vy=cpu[i*4+3],fx=0,fy=0;
+    for(const [ax,ay,s] of A){const dx=ax-x,dy=ay-y,r=Math.max(Math.hypot(dx,dy),.02);fx+=dx/r*s*.0006/r-dy*s*.0009/(r*r+.05);fy+=dy/r*s*.0006/r+dx*s*.0009/(r*r+.05);}
+    const mdx=mx-x,mdy=my-y,mr=Math.max(mdx*mdx+mdy*mdy,.002),ml=Math.sqrt(mdx*mdx+mdy*mdy)||1;fx-=mdx/ml*.00025/mr;fy-=mdy/ml*.00025/mr;
+    vx=(vx+fx)*.985;vy=(vy+fy)*.985;x+=vx;y+=vy;if(x<0||x>1){vx*=-1;x=Math.min(1,Math.max(0,x));}if(y<0||y>1){vy*=-1;y=Math.min(1,Math.max(0,y));}
+    cpu.set([x,y,vx,vy],i*4);g.fillRect(x*cv.width,y*cv.height,2,2);}}
+window.__f210={concepts,ncd,csize,think,push};
+gpu=await Promise.race([initGPU(),new Promise(r=>setTimeout(()=>r(null),3000))]).catch(e=>{say('WebGPU init failed: '+e.message);return null;});stat();
+const g2=gpu?null:cv.getContext('2d');
+function frame(t){
+  pollPad(); for(const s of shocks)s.t+=.02; while(shocks.length&&shocks[0].t>=1)shocks.shift();
+  // concepts drift slowly so the world never settles
+  for(const c of concepts){c.x+=Math.sin(t*.0002+c.id)*.0004;c.y+=Math.cos(t*.00017+c.id*2)*.0004;}
+  const A=atts(),mx=px/innerWidth,my=py/innerHeight;
+  if(gpu){const u=new ArrayBuffer(32+12*16),dv=new DataView(u);dv.setUint32(0,N,true);dv.setUint32(4,A.length,true);dv.setFloat32(8,t/1000,true);dv.setFloat32(12,mx,true);dv.setFloat32(16,my,true);
+    const f=new Float32Array(u,32);A.forEach((a,i)=>f.set([a[0],a[1],a[2],0],i*4));gpu.dev.queue.writeBuffer(gpu.ub,0,u);
+    const e=gpu.dev.createCommandEncoder();const c=e.beginComputePass();c.setPipeline(gpu.cp);c.setBindGroup(0,gpu.bgC);c.dispatchWorkgroups(Math.ceil(N/128));c.end();
+    const r=e.beginRenderPass({colorAttachments:[{view:gpu.ctx.getCurrentTexture().createView(),loadOp:'clear',clearValue:{r:0,g:0,b:.01,a:1},storeOp:'store'}]});r.setPipeline(gpu.rp);r.setBindGroup(0,gpu.bgR);r.draw(4,N);r.end();gpu.dev.queue.submit([e.finish()]);
+  } else step2D(g2,A,mx,my);
+  if(performance.now()-segStart>1400){segStart=performance.now();if(leader)think();}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

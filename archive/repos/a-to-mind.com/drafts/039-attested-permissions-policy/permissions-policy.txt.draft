@@ -1,0 +1,5 @@
+# CANDIDATE. Not a support resource. Do not serve.
+# status:candidate hold:true sealed:false
+# Rename is denied. SHA-256 of the header value line with no trailing newline:
+# cbf6dd54442bb654c4a83a85a258c5e64e13944b7559681b9587159f148087e1
+accelerometer=(),attribution-reporting=(),autoplay=(),bluetooth=(),browsing-topics=(),camera=(),captured-surface-control=(),compute-pressure=(),display-capture=(),encrypted-media=(),fullscreen=(),gamepad=(),geolocation=(),gyroscope=(),hid=(),identity-credentials-get=(),idle-detection=(),language-detector=(),language-model=(),local-fonts=(),local-network-access=(),magnetometer=(),microphone=(),midi=(),on-device-speech-recognition=(),otp-credentials=(),payment=(),picture-in-picture=(),publickey-credentials-create=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),speaker-selection=(),storage-access=(),summarizer=(),translator=(),usb=(),web-share=(),window-management=(),xr-spatial-tracking=()

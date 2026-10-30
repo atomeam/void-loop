@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#canvas { position:absolute; top:0; left:0; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:72px; height:72px; border-radius:12px;
+  background:rgba(40,40,80,0.85); border:2px solid #66f;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-size:10px; cursor:grab; user-select:none; z-index:10;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5); transition:transform 0.1s;
+}
+.agent:active { cursor:grabbing; transform:scale(1.05); }
+.agent .seal { font-size:8px; opacity:0.7; }
+#ui { position:absolute; top:10px; left:10px; z-index:20; background:rgba(0,0,0,0.6); padding:8px; border-radius:8px; }
+button { margin:2px; padding:4px 8px; background:#224; color:#cef; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+#status { font-size:12px; margin-top:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation MLP DOM Forage WebGPU Field · Verse lab</title>
+<meta name="description" content="DeviceOrientation as primary causal input biasing a shared density field (particle diffusion, WebGPU compute path prepared).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation MLP DOM Forage WebGPU Field · Verse lab">
+<meta property="og:description" content="DeviceOrientation as primary causal input biasing a shared density field (particle diffusion, WebGPU compute path prepared).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f287-orientation-mlp-dom-forage-webgpu-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f287-orientation-mlp-dom-forage-webgpu-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="orientBtn">Enable Orientation</button>
+  <button id="sealBtn">Seal Population to IDB</button>
+  <button id="loadBtn">Load Sealed</button>
+  <div id="status">Tilt device or drag agents. Drop one onto another to transfer genome.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation MLP DOM Forage WebGPU Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

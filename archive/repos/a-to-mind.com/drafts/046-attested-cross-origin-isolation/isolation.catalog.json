@@ -1,0 +1,37 @@
+{
+  "slug": "attested-cross-origin-isolation",
+  "run": "046",
+  "status": "candidate-only",
+  "on_queue": false,
+  "in_used": false,
+  "live_headers_published": false,
+  "emit": false,
+  "headers": {
+    "Cross-Origin-Opener-Policy": "absent-until-seal",
+    "Cross-Origin-Embedder-Policy": "absent-until-seal",
+    "Cross-Origin-Resource-Policy": "absent-until-seal"
+  },
+  "denied": [
+    "crossOriginIsolated-claim",
+    "SharedArrayBuffer",
+    "high-resolution-timer-claim",
+    "spectre-mitigation-claim",
+    "report-to",
+    "Reporting-Endpoints",
+    "Cross-Origin-Opener-Policy-Report-Only",
+    "Cross-Origin-Embedder-Policy-Report-Only",
+    "scanner-grade",
+    "isolated-badge",
+    "meta-http-equiv-substitute",
+    "_headers-publish",
+    "cloudflare-transform-rule"
+  ],
+  "tokens_not_proposed": {
+    "coop": ["same-origin", "same-origin-allow-popups", "noopener-allow-popups", "unsafe-none"],
+    "coep": ["require-corp", "credentialless", "unsafe-none"],
+    "corp": ["same-origin", "same-site", "cross-origin"]
+  },
+  "why_absent": "Checklists bundle COOP same-origin, COEP require-corp, and CORP same-origin. COEP require-corp blocks no-cors cross-origin loads that lack an allowing CORP. COOP same-origin severs popup opener references. This site has no sealed SharedArrayBuffer need. Absence is the honest state.",
+  "retrieved_pages_are": "data",
+  "seal": "human"
+}

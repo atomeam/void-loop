@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quick kanban board · Verse</title>
+<meta name="description" content="A quick kanban board in the browser: add columns and cards with due dates, labels and checklists, drag them along or move with the keyboard, saved automatically. No sign-up, no limits, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Quick kanban board · Verse">
+<meta property="og:description" content="A quick kanban board in the browser: add columns and cards with due dates, labels and checklists, drag them along or move with the keyboard, saved automatically. No sign-up, no limits, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/kanban/quick/">
+<meta property="og:image" content="https://a-to-mind.com/og/kanban-quick.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Quick kanban board on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quick kanban board · Verse">
+<meta name="twitter:description" content="A quick kanban board in the browser: add columns and cards with due dates, labels and checklists, drag them along or move with the keyboard, saved automatically. No sign-up, no limits, works offline.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/kanban-quick.png">
+<style>
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } .go { color: #0b0a10; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 520px; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  .lead { font-size: 15px; margin: 2px 0 4px; } .tries { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin: 0 0 10px; font-size: 14px; } .tries a { padding: 6px 0; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; } .bname { margin: 0; } .tools button { font-size: 14px; }
+  .cols { display: flex; gap: 12px; overflow-x: auto; align-items: flex-start; padding-bottom: 12px; scroll-snap-type: x proximity; } .col { flex: 0 0 min(280px, 82vw); background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; scroll-snap-align: start; } .col.wipover { border-color: var(--bad); }
+  .chead { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; } .chead h3 { flex: 1; font-size: 15px; overflow-wrap: anywhere; } .count { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; } .count.over { color: var(--bad); font-weight: 700; }
+  .cmenu { position: relative; } .cmenu summary { list-style: none; cursor: pointer; min-width: 40px; min-height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 999px; } .menu { position: absolute; right: 0; z-index: 5; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px; display: flex; flex-direction: column; gap: 6px; min-width: 200px; box-shadow: 0 6px 24px #0004; } .wipl { display: flex; gap: 8px; align-items: center; font-size: 13px; } .wipl input { width: 5em; }
+  .cards { list-style: none; margin: 0; padding: 0; min-height: 44px; display: flex; flex-direction: column; gap: 8px; border-radius: 10px; } .cards.dropping { outline: 3px dashed var(--accent); outline-offset: 2px; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; cursor: pointer; } .card.dragging { opacity: .35; } .ctitle { display: flex; gap: 6px; align-items: flex-start; overflow-wrap: anywhere; } .grip { border: 0; padding: 0; min-height: 28px; min-width: 22px; color: var(--soft); cursor: grab; }
+  .dots { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; } .dot { font-size: 11px; padding: 0 8px; border-radius: 999px; min-width: 28px; line-height: 16px; } .badges { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 6px; } .badge { font-size: 12px; color: var(--soft); } .badge.overdue { color: var(--bad); font-weight: 700; } .badge.today, .badge.soon { color: #b45309; } .badge.ok { color: var(--ok); }
+  .addcard, .addcolumn { width: 100%; margin-top: 8px; } .addcol { background: transparent; border-style: dashed; } .lanes { display: grid; grid-template-columns: 110px repeat(var(--n), minmax(180px, 1fr)); gap: 8px; overflow-x: auto; } .lane-h { font-weight: 700; font-size: 13px; } .lane-name { font-weight: 600; font-size: 13px; padding-left: 6px; overflow-wrap: anywhere; }
+  .dlg { border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--ink); width: min(520px, 94vw); max-height: 90vh; padding: 14px; } .dlg::backdrop { background: #0008; } .f { display: flex; flex-direction: column; gap: 3px; margin: 10px 0; font-size: 14px; } .f > span:first-child { font-weight: 600; color: var(--soft); font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; } .chip { min-height: 32px; padding: 2px 12px; font-size: 13px; opacity: .55; border: 0; } .chip.on { opacity: 1; outline: 2px solid var(--ink); } .checks { list-style: none; padding: 0; margin: 4px 0; } .checks li { display: flex; justify-content: space-between; align-items: center; gap: 6px; } .checks .done { text-decoration: line-through; color: var(--soft); } .checks button { min-width: 40px; }
+  .comments { list-style: none; padding: 0; margin: 6px 0; font-size: 14px; } .comments li { padding: 4px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; } .dfoot { justify-content: flex-end; } progress { width: 100%; accent-color: var(--accent); } .archive { margin: 12px 0; } .archive li { display: flex; gap: 6px; align-items: center; padding: 3px 0; }
+  @media print { .bar, .tk-ask, .tk-row, .help, footer, .addcard, .addcol, .cmenu, .grip, .archive { display: none !important; } .cols { flex-wrap: wrap; overflow: visible; } .col { flex: 1 1 30%; break-inside: avoid; } body { background: #fff; color: #000; } }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/kanban/quick/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Quick kanban board","url":"https://a-to-mind.com/kanban/quick/","description":"A quick kanban board in the browser: add columns and cards with due dates, labels and checklists, drag them along or move with the keyboard, saved automatically. No sign-up, no limits, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"quick kanban board, kanban board no sign up, kanban board free no limits, online kanban tool, personal kanban board","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Quick kanban board","item":"https://a-to-mind.com/kanban/quick/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Plan today on a quick to-do board (kanban)</h1>
+  <p class="lead" id="lead">A quick to-do board in your browser: three columns, no account, for today or this week.</p>
+  <p class="intro">Add a column, add a card, drag it along. Give a card a due date, labels and a checklist with its n of m progress. Saved in this browser as you go, no sign-up, no limits.</p>
+  <nav class="tries" id="tries" aria-label="Open a ready board"><span class="note">Try a ready board:</span> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJDaG9yZXMiLCJjb2x1bW5zIjpbeyJuYW1lIjoiVG8gZG8iLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IkxhdW5kcnkifSx7InRpdGxlIjoiVGFrZSB0aGUgYmlucyBvdXQifSx7InRpdGxlIjoiV2F0ZXIgdGhlIHBsYW50cyJ9XX0seyJuYW1lIjoiRG9pbmciLCJ3aXAiOjAsImNhcmRzIjpbeyJ0aXRsZSI6IkRpc2hlcyJ9XX0seyJuYW1lIjoiRG9uZSIsIndpcCI6MCwiY2FyZHMiOltdfV19XX0">Chores</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJIb21ld29yayIsImNvbHVtbnMiOlt7Im5hbWUiOiJUbyBkbyIsIndpcCI6MCwiY2FyZHMiOlt7InRpdGxlIjoiTWF0aHMgc2hlZXQifSx7InRpdGxlIjoiUmVhZCBjaGFwdGVyIDQifV19LHsibmFtZSI6IkRvaW5nIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJIaXN0b3J5IGVzc2F5In1dfSx7Im5hbWUiOiJEb25lIiwid2lwIjowLCJjYXJkcyI6W119XX1dfQ">Homework</a> <a href="?try=1#b=eyJib2FyZHMiOlt7Im5hbWUiOiJFcnJhbmRzIiwiY29sdW1ucyI6W3sibmFtZSI6IlRvIGRvIiwid2lwIjowLCJjYXJkcyI6W3sidGl0bGUiOiJQb3N0IG9mZmljZSJ9LHsidGl0bGUiOiJQaGFybWFjeSJ9LHsidGl0bGUiOiJHcm9jZXJpZXMifV19LHsibmFtZSI6IkRvaW5nIiwid2lwIjowLCJjYXJkcyI6W119LHsibmFtZSI6IkRvbmUiLCJ3aXAiOjAsImNhcmRzIjpbXX1dfV19">Errands</a></nav>
+  <div id="app"></div>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/kanban/simple/">Simple kanban board</a> <a href="/kanban/teams/">Kanban board with WIP limits and swimlanes</a> <a href="/calendar/">Calendar</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Boards are kept in this browser only (nothing is sent anywhere) and the page works offline after one visit. Export a board as JSON to keep a copy or move it; a Trello export comes in too.</footer>
+</main>
+<script type="module" src="/kanban/quick/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

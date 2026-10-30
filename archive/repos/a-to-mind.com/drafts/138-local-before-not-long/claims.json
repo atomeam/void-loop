@@ -1,0 +1,30 @@
+{
+  "slug": "local-before-not-long",
+  "run": 138,
+  "family": "interval timing",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "confidence": 0.28,
+  "confidence_note": "Design-material weight only. Not a measurement. Public window mostly names circadian or metaphor clocks, not an order-versus-duration protocol.",
+  "hypothesis": "A sealed before class can be hashed without storing a long sentence or a clock reading.",
+  "refusal": "long",
+  "sources": [
+    {
+      "kind": "paper",
+      "note": "Cerebral Cortex 2025: short tactile intervals described as modality-specific; SET named as a pacemaker-counter. Hypothesis, not a Void clock.",
+      "url": "https://academic.oup.com/cercor/article/35/3/bhaf051/8063806"
+    },
+    {
+      "kind": "paper",
+      "note": "Scientific Reports 2025: neuroadaptive imagery feedback reported to change verbal time estimates. Not a length seal.",
+      "url": "https://www.nature.com/articles/s41598-025-93204-0"
+    },
+    {
+      "kind": "paper",
+      "note": "Attention, Perception, & Psychophysics 2024: causal intervals reported shorter than noncausal ones in three of four tasks. Not an order-as-length badge.",
+      "url": "https://link.springer.com/article/10.3758/s13414-024-02996-2"
+    }
+  ],
+  "disallowed_fields": ["long", "sentence", "ms", "duration", "clock", "elapsed", "stretch", "weber", "dilation", "chronostasis"]
+}

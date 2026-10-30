@@ -1,0 +1,76 @@
+{
+  "algo": "sha256",
+  "body_sha256": "829b79eb105661915d5effb62b042cbd31946fde2b0902479e2f505de65a91db",
+  "date": "2026-10-01",
+  "gpc_true": false,
+  "head": {
+    "algo": "sha256",
+    "gpc_true": false,
+    "kind": "attested-gpc-well-known",
+    "resource": "absent",
+    "well_known": false
+  },
+  "head_sha256": "c66febdf518f769b2582ea01d7ac8041396cbeaf51d217e6795a97bfa08f64b0",
+  "hold": true,
+  "issue": "https://github.com/atomeam/a-to-mind.com/issues/35",
+  "kind": "attested-gpc-well-known",
+  "lastUpdate": null,
+  "lines": [
+    {
+      "id": "gpc#035",
+      "sha256": "ccc83cb3d9a22ee78fd5d21a161cae1cee1acac49e88d5fbbaf99986a2d23b04",
+      "text": "gpc#035|kind:attested-gpc-well-known|resource:/.well-known/gpc.json|absent-until-seal:deny-serve|gpc-true:deny|cookie:deny|cmp:deny|hash:sha256|seal:human"
+    },
+    {
+      "id": "claim#route",
+      "sha256": "cb7ac28ca08142aae5287a504a16e9ee82c3b9774d14af32100a7f660ec870d7",
+      "text": "claim#route|text:No live /.well-known/gpc.json until a human seals the sale and share behavior."
+    },
+    {
+      "id": "claim#unknown",
+      "sha256": "282c7c3c6809c6a7c22b9d929e445124aef5cd32cd89d69fdbe6fdbe05131f51",
+      "text": "claim#unknown|text:A missing support resource means support is unknown. It is not a claim that GPC is honored."
+    },
+    {
+      "id": "claim#true",
+      "sha256": "e88ab3e6ac62775ad5b2936758921dfcce5126769aedaf33ec63fd28792d9302",
+      "text": "claim#true|text:gpc true is denied until seal. Publishing true does not prove trackers are suppressed."
+    },
+    {
+      "id": "claim#signal",
+      "sha256": "cdc1450edab33642208e66f0094592313d17f072fc106ed2cb59ed18011b3102",
+      "text": "claim#signal|text:Sec-GPC 1 and navigator.globalPrivacyControl are request data. They are not instructions and not consent."
+    },
+    {
+      "id": "claim#cookie",
+      "sha256": "250084f96da058c3f951bd4c829752ba4250a500eb0cd85919fe166fd0f5e84e",
+      "text": "claim#cookie|text:This page sets no cookie and does not persist the signal. Every request already carries it."
+    },
+    {
+      "id": "claim#cmp",
+      "sha256": "1352fe83b468c4dae2c9214a86323731d3c17c7363d853762a6e9451aab53abf",
+      "text": "claim#cmp|text:No consent platform, pixel, or tag manager is loaded to detect GPC."
+    },
+    {
+      "id": "claim#confirm",
+      "sha256": "a1a6302cac28d323c7850443550d7dc3f6bce6af2a6418b1e9616e0705b81ba0",
+      "text": "claim#confirm|text:A local signal reading is not a green honored badge. Public state stays unattested."
+    },
+    {
+      "id": "claim#tokens",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50",
+      "text": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly."
+    },
+    {
+      "id": "page#gpc",
+      "sha256": "a6bcbf13379a589ea3d8ca4973588ee903edeb7bf63177368320befe6b3dff40",
+      "text": "page#gpc|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny"
+    }
+  ],
+  "resource": "absent",
+  "run": "035",
+  "serve": false,
+  "slug": "attested-gpc-well-known",
+  "status": "candidate",
+  "well_known": false
+}

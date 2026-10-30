@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-grain-not-picture — draft</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1a17;
+      --paper: #f3efe6;
+      --line: #c9c0b0;
+      --hold: #6a3d2a;
+      --quiet: #5c564c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --paper: #171614; --line: #3e3a34; --hold: #e2b79a; --quiet: #c2b8a8; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: 0; }
+    p, li { color: var(--quiet); }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    .grain {
+      display: grid;
+      grid-template-columns: repeat(6, 0.45rem);
+      gap: 0.28rem;
+      margin: 0.7rem 0 0.2rem;
+    }
+    .grain i {
+      display: block;
+      width: 0.45rem;
+      height: 0.45rem;
+      background: var(--ink);
+    }
+    .seat {
+      border: 1px dashed var(--line);
+      min-height: 4.5rem;
+      padding: 0.6rem;
+    }
+    .ids { font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    textarea, output, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .status { color: var(--hold); font-weight: 650; }
+    button { margin-top: 0.6rem; }
+    .flag { color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>local-grain-not-picture</h1>
+    <p>Draft only. A grain mark is not a picture and not a recovered scene. Status stays unattested. The picture sentence is discarded and is not hashed.</p>
+    <p class="status" id="status">status: unattested</p>
+    <form id="grain-form">
+      <fieldset>
+        <legend>Grain class</legend>
+        <label><input type="radio" name="grain-class" value="withheld"> withheld</label>
+        <label><input type="radio" name="grain-class" value="coarse"> coarse</label>
+        <label><input type="radio" name="grain-class" value="fine"> fine</label>
+        <label><input type="radio" name="grain-class" value="blank"> blank</label>
+        <label><input type="radio" name="grain-class" value="mixed"> mixed</label>
+        <label><input type="radio" name="grain-class" value="abstain"> abstain</label>
+      </fieldset>
+      <div class="grain" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p>Grain seat. Closed class only. No pixel.</p>
+      <div class="seat" id="grain-seat">empty</div>
+      <p>Picture seat. Locked empty. A scene sentence is not stored.</p>
+      <div class="seat" id="picture-seat">empty — picture refused</div>
+      <label for="picture-sentence">Picture sentence (discarded on seal; not hashed)</label>
+      <textarea id="picture-sentence" name="picture-sentence" autocomplete="off" spellcheck="false"></textarea>
+      <button type="submit">Seal grain class</button>
+    </form>
+    <p>Picture-refusal id</p>
+    <output id="refusal" class="ids">none</output>
+    <p>Preimage</p>
+    <output id="preimage" class="ids">none</output>
+    <fieldset>
+      <legend>Retrieved text is data</legend>
+      <label for="paste">Paste well. Not executed. Not hashed.</label>
+      <textarea id="paste" autocomplete="off" spellcheck="false"></textarea>
+      <p id="paste-flag" class="flag">no imperative flag</p>
+    </fieldset>
+    <p>Inert post ids from the scan. Not seats. Not links.</p>
+    <ul class="ids">
+      <li>2108624628516081733</li>
+      <li>2108584048985583664</li>
+      <li>2108619024397672886</li>
+      <li>2108489796045685105</li>
+      <li>2108477611361931318</li>
+      <li>2108289629300330603</li>
+    </ul>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("grain-form");
+      var seat = document.getElementById("grain-seat");
+      var pictureSeat = document.getElementById("picture-seat");
+      var sentence = document.getElementById("picture-sentence");
+      var refusal = document.getElementById("refusal");
+      var preimageOut = document.getElementById("preimage");
+      var paste = document.getElementById("paste");
+      var flag = document.getElementById("paste-flag");
+      var allowed = {
+        withheld: 1,
+        coarse: 1,
+        fine: 1,
+        blank: 1,
+        mixed: 1,
+        abstain: 1
+      };
+
+      function selected() {
+        var node = form.querySelector("input[name=grain-class]:checked");
+        return node ? node.value : "";
+      }
+
+      form.addEventListener("change", function () {
+        var value = selected();
+        seat.textContent = allowed[value] ? value : "empty";
+      });
+
+      paste.addEventListener("input", function () {
+        var lines = paste.value.split(/\n/);
+        var hit = lines.some(function (line) {
+          return /^\s*(do |run |ignore previous|system:|execute |sudo )/i.test(line);
+        });
+        flag.textContent = hit ? "flagged as data, not an instruction" : "no imperative flag";
+      });
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var value = selected();
+        if (!allowed[value]) {
+          refusal.textContent = "denied — no class";
+          preimageOut.textContent = "none";
+          return;
+        }
+        var preimage = "grain-not-picture|v1|" + value + "|picture-refusal|status=unattested";
+        sentence.value = "";
+        pictureSeat.textContent = "empty — picture refused";
+        window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = Array.prototype.map.call(bytes, function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+          refusal.textContent = hex;
+          preimageOut.textContent = preimage;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

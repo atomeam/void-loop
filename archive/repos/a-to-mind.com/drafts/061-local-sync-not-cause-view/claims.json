@@ -1,0 +1,32 @@
+{
+  "slug": "local-sync-not-cause-view",
+  "run": "061",
+  "date": "2026-10-03",
+  "emit": false,
+  "status": "unattested",
+  "cause": "not-claimed",
+  "note": "Fixtures are clock labels for the draft. They are not attested events and not instructions.",
+  "fixtures": [
+    {
+      "key": "clock-sample-nrc-post",
+      "clock": "2026-10-03T22:47:40Z",
+      "label": "Public post clock for an NRC-record claim. The claim is unattested.",
+      "source": "post 2106516564639973699",
+      "attested": false
+    },
+    {
+      "key": "clock-sample-cook-keywords",
+      "clock": "2026-10-03T22:49:52Z",
+      "label": "Public post clock for a plasma-program keyword restatement. The claim is unattested.",
+      "source": "post 2106517117084565682",
+      "attested": false
+    },
+    {
+      "key": "clock-sample-jung-promo",
+      "clock": "2026-10-03T04:18:01Z",
+      "label": "Public post clock for a book promo of an acausal-principle essay. Not a mechanism.",
+      "source": "post 2106237309582729225",
+      "attested": false
+    }
+  ]
+}

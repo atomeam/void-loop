@@ -1,0 +1,30 @@
+{
+  "slug": "local-grain-not-picture",
+  "run": 139,
+  "family": "sensory substitution",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "confidence": 0.33,
+  "confidence_note": "Design-material weight only. Not a measurement. In-window posts name substitution, implants, and functional vision. They are not a picture of a scene.",
+  "hypothesis": "A sealed grain class can be hashed without storing a picture sentence or a recovered scene.",
+  "refusal": "picture",
+  "sources": [
+    {
+      "kind": "paper",
+      "note": "npj Science of Learning 2026: sighted adults learned traditional and reversed vOICe mappings on simplified stimuli. Recognition claim, not a recovered-scene seal.",
+      "url": "https://www.nature.com/articles/s41539-025-00385-4"
+    },
+    {
+      "kind": "review",
+      "note": "OECS sensory-substitution chapter: devices are described as restoring function by another modality. Hypothesis, not a picture on this page.",
+      "url": "https://oecs.mit.edu/pub/lmiweq0s"
+    },
+    {
+      "kind": "abstract",
+      "note": "ARVO 2026 abstract: tongue display and vOICe compared on visual-cortex recruitment. Not an acuity score.",
+      "url": "https://iovs.arvojournals.org/article.aspx?articleid=2813369"
+    }
+  ],
+  "disallowed_fields": ["picture", "sentence", "scene", "image", "pixel", "acuity", "sight", "frame", "sonify"]
+}

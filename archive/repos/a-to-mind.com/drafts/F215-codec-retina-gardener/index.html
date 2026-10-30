@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F-215 · Codec Retina Gardener · The Void</title>
+<style>
+:root{--bg:#020205;--ink:#d9dcff;--dim:#6b6f99}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:13px/1.4 ui-sans-serif,system-ui,sans-serif}
+main{display:grid;grid-template-columns:minmax(0,min(78vh,62vw)) minmax(260px,1fr);gap:18px;padding:18px;min-height:100%;align-items:start}
+#stage{position:relative;aspect-ratio:1;width:100%}
+#world{width:100%;height:100%;display:block;border-radius:6px;image-rendering:auto;box-shadow:0 0 80px #2a2a7a33}
+#overlay{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);pointer-events:none}
+#overlay i{border:1px solid transparent;transition:border-color .3s, box-shadow .3s}
+#overlay i.focus{border-color:#ffffffaa;box-shadow:inset 0 0 24px #ffffff33}
+h1{font-size:15px;margin:0 0 4px;letter-spacing:.08em;font-weight:600}
+p.sub{margin:0 0 12px;color:var(--dim)}
+#retina{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cell{--s:0;--m:0;all:unset;cursor:pointer;display:block;padding:8px 7px;min-height:64px;font:11px/1.3 ui-monospace,monospace;color:var(--ink);
+ background:color-mix(in oklab,#0b0b1c calc(100% - var(--s)*60%),#4b3cff calc(var(--s)*60%));
+ border-radius:calc(4px + (1 - var(--s))*18px);
+ transform:scale(calc(.86 + var(--s)*.14)) skewX(calc(var(--m)*-8deg));
+ letter-spacing:calc(var(--m)*.12em);
+ outline:1px solid #ffffff14;transition:all .45s cubic-bezier(.2,.9,.2,1)}
+.cell[data-c=dead]{opacity:.55;filter:saturate(.3)}
+.cell[data-c=flow]{outline-color:#7fd8ff88}
+.cell[data-c=novel]{outline-color:#ffb44a99;clip-path:polygon(0 6%,8% 0,92% 0,100% 8%,100% 94%,90% 100%,6% 100%,0 92%)}
+.cell[data-c=noise]{outline-color:#ff4a6a99;filter:contrast(1.3)}
+.cell b{display:block;font-size:10px;color:var(--dim);font-weight:400}
+#hud{margin-top:14px;display:grid;gap:6px;font:12px/1.4 ui-monospace,monospace}
+#hud .row{display:flex;justify-content:space-between;border-bottom:1px solid #ffffff10;padding-bottom:3px}
+.bar{height:4px;background:#ffffff12;border-radius:2px;overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,#4b3cff,#7fd8ff)}
+.btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+button.b{background:#12122a;color:var(--ink);border:1px solid #ffffff22;border-radius:6px;padding:6px 10px;cursor:pointer;font:inherit}
+[popover]{background:#0b0b1c;color:var(--ink);border:1px solid #ffffff33;border-radius:10px;padding:12px 14px;font:12px/1.5 ui-monospace,monospace;max-width:320px}
+[popover]::backdrop{background:#0006}
+.legend{color:var(--dim);font-size:11px;margin-top:10px}
+@media (max-width:800px){main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <div id="stage"><canvas id="world" width="512" height="512"></canvas><div id="overlay"></div></div>
+  <section>
+    <h1>CODEC RETINA GARDENER</h1>
+    <p class="sub">A living reaction-diffusion world, watched by 16 tiny video encoders. What the codec cannot predict is what the gardener calls surprise, and it tends each patch toward the edge of chaos.</p>
+    <div id="retina"></div>
+    <div id="hud"></div>
+    <div class="btns">
+      <button class="b" id="tAgent">Pause gardener</button>
+      <button class="b" id="tStorm">Storm (scramble patches)</button>
+      <button class="b" id="tKill">Drought (kill patches)</button>
+    </div>
+    <p class="legend">Click a patch in the world to seed life there. Click a retina card for what the gardener has learned about it. Card shapes: dim means dead, blue outline means flowing (it moves but the codec predicts it), amber cut corners means novel (the gardener's target), red means noise.</p>
+  </section>
+</main>
+<div id="pop" popover></div>
+<script>
+'use strict';
+const Q = new URLSearchParams(location.search);
+const N_T = 4, TILES = 16, TPX = 64;                 // 4x4 retina, 64px per encoder
+let seed = +(Q.get('seed') || 7) >>> 0;
+const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+const AGENT_ON = Q.get('agent') !== '0';
+const FORCE_CPU = Q.has('cpu');
+const BAND = [ +(Q.get('lo') || 7.2), +(Q.get('hi') || 9.6) ];  // log2 bytes per delta frame
+const MID = (BAND[0] + BAND[1]) / 2;
+
+// ---------- per-tile Gray-Scott parameters (the gardener's levers) ----------
+const fk = new Float32Array(TILES * 2);
+for (let t = 0; t < TILES; t++) { fk[2*t] = 0.012 + rnd() * 0.07; fk[2*t+1] = 0.045 + rnd() * 0.022; }
+const clampFK = t => { fk[2*t] = Math.min(0.09, Math.max(0.008, fk[2*t])); fk[2*t+1] = Math.min(0.07, Math.max(0.04, fk[2*t+1])); };
+
+// ---------- world: WebGPU compute with Canvas2D fallback ----------
+const canvas = document.getElementById('world');
+const W = { mode: 'none', step: null, seedAt: null, grid: 0 };
+const STEPS = +(Q.get('steps') || 10);
+
+const WGSL_SIM = `
+struct P { fk: array<vec4<f32>, 8>, n: u32, pad0:u32, pad1:u32, pad2:u32 };
+@group(0) @binding(0) var<storage, read> src: array<vec2<f32>>;
+@group(0) @binding(1) var<storage, read_write> dst: array<vec2<f32>>;
+@group(0) @binding(2) var<uniform> p: P;
+fn at(x: i32, y: i32) -> vec2<f32> { let n = i32(p.n); return src[u32(((y + n) % n) * n + ((x + n) % n))]; }
+@compute @workgroup_size(8, 8)
+fn main(@builtin(global_invocation_id) g: vec3<u32>) {
+  let n = p.n; if (g.x >= n || g.y >= n) { return; }
+  let x = i32(g.x); let y = i32(g.y);
+  let c = at(x, y);
+  let lap = 0.2 * (at(x-1,y) + at(x+1,y) + at(x,y-1) + at(x,y+1))
+          + 0.05 * (at(x-1,y-1) + at(x+1,y-1) + at(x-1,y+1) + at(x+1,y+1)) - c;
+  let tid = (g.y * 4u / n) * 4u + (g.x * 4u / n);
+  let q = p.fk[tid / 2u];
+  var F = q.x; var K = q.y; if ((tid & 1u) == 1u) { F = q.z; K = q.w; }
+  let uvv = c.x * c.y * c.y;
+  let u = c.x + (1.0 * lap.x - uvv + F * (1.0 - c.x));
+  let v = c.y + (0.5 * lap.y + uvv - (F + K) * c.y);
+  dst[g.y * n + g.x] = clamp(vec2<f32>(u, v), vec2<f32>(0.0), vec2<f32>(1.0));
+}`;
+
+function paint(a, n, d) {             // V concentration to colour
+  for (let i = 0; i < n * n; i++) {
+    const t = Math.min(1, a[2*i+1] * 3.2), lo = Math.min(1, t / 0.55), hi = Math.max(0, (t - 0.55) / 0.45);
+    d[4*i] = (2 + 72 * lo + 128 * hi) | 0; d[4*i+1] = (2 + 60 * lo + 216 * hi) | 0; d[4*i+2] = (5 + 250 * lo) | 0; d[4*i+3] = 255;
+  }
+}
+function initialField(n) {
+  const a = new Float32Array(n * n * 2);
+  for (let i = 0; i < n * n; i++) { a[2*i] = 1; a[2*i+1] = 0; }
+  for (let k = 0; k < 40; k++) stamp(a, n, (rnd() * n) | 0, (rnd() * n) | 0, 4 + (rnd() * 5 | 0));
+  return a;
+}
+function stamp(a, n, cx, cy, r) {
+  for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) {
+    const i = (((y + n) % n) * n + ((x + n) % n)); a[2*i] = 0.5; a[2*i+1] = 0.25 + rnd() * 0.05; }
+}
+
+async function initGPU() {
+  if (FORCE_CPU || !navigator.gpu) return false;
+  const adapter = await Promise.race([navigator.gpu.requestAdapter(), new Promise(r => setTimeout(() => r(null), 3000))]);
+  if (!adapter) return false;
+  const dev = await adapter.requestDevice();
+  let gpuErr = null; dev.addEventListener('uncapturederror', e => { gpuErr = e.error.message; console.warn('GPU', gpuErr); });
+  // Presentation goes through a readback to a 2D canvas, not a WebGPU swapchain: the retina needs the pixels
+  // on the CPU anyway, and in headless Chrome merely presenting to a webgpu canvas destroyed the device.
+  const n = 256; W.grid = n;
+  const init = initialField(n);
+  const bufs = [0, 1].map(() => dev.createBuffer({ size: init.byteLength, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC }));
+  dev.queue.writeBuffer(bufs[0], 0, init); dev.queue.writeBuffer(bufs[1], 0, init);
+  const ubuf = dev.createBuffer({ size: 8 * 16 + 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+  const sim = dev.createComputePipeline({ layout: 'auto', compute: { module: dev.createShaderModule({ code: WGSL_SIM }), entryPoint: 'main' } });
+  const simBG = [0, 1].map(i => dev.createBindGroup({ layout: sim.getBindGroupLayout(0), entries: [
+    { binding: 0, resource: { buffer: bufs[i] } }, { binding: 1, resource: { buffer: bufs[1 - i] } }, { binding: 2, resource: { buffer: ubuf } }] }));
+  let cur = 0; const uarr = new ArrayBuffer(8 * 16 + 16);
+  W.step = () => {
+    new Float32Array(uarr, 0, 32).set(fk); new Uint32Array(uarr, 128, 4).set([n, 0, 0, 0]);
+    dev.queue.writeBuffer(ubuf, 0, uarr);
+    const enc = dev.createCommandEncoder();
+    const cp = enc.beginComputePass(); cp.setPipeline(sim);
+    for (let s = 0; s < STEPS; s++) { cp.setBindGroup(0, simBG[cur]); cp.dispatchWorkgroups(n / 8, n / 8); cur = 1 - cur; }
+    cp.end();
+    dev.queue.submit([enc.finish()]);
+  };
+  const rb = dev.createBuffer({ size: init.byteLength, usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST });
+  const src = new OffscreenCanvas(n, n), sg = src.getContext('2d'), simg = new ImageData(n, n), disp = canvas.getContext('2d'); let busy = false;
+  W.look = cb => {
+    if (busy || W.mode !== 'webgpu') return; busy = true;
+    const e = dev.createCommandEncoder(); e.copyBufferToBuffer(bufs[cur], 0, rb, 0, init.byteLength); dev.queue.submit([e.finish()]);
+    rb.mapAsync(GPUMapMode.READ).then(() => {
+      const f = new Float32Array(rb.getMappedRange()); paint(f, n, simg.data); rb.unmap(); sg.putImageData(simg, 0, 0); busy = false;
+      disp.imageSmoothingEnabled = true; disp.drawImage(src, 0, 0, canvas.width, canvas.height); cb(src);
+    }).catch(e => { busy = false; console.warn('readback', e.message); });
+  };
+  dev.lost.then(i => { console.warn('WebGPU device lost:', i.message); if (W.mode === 'webgpu') { initCPU(); W.mode = 'canvas2d (after GPU loss)'; } });
+  W.seedAt = (cx, cy, r) => {               // write a square of fresh V into the live buffer, row by row
+    const row = new Float32Array((2 * r + 1) * 2);
+    for (let y = cy - r; y <= cy + r; y++) {
+      const yy = (y + n) % n;
+      for (let x = 0; x < 2 * r + 1; x++) { row[2*x] = 0.5; row[2*x+1] = 0.25 + rnd() * 0.05; }
+      const x0 = Math.max(0, cx - r), x1 = Math.min(n - 1, cx + r);
+      dev.queue.writeBuffer(bufs[cur], (yy * n + x0) * 8, row, 0, (x1 - x0 + 1) * 2);
+    }
+  };
+  W.gpuErr = () => gpuErr;
+  W.mode = 'webgpu'; return true;
+}
+
+function initCPU() {
+  const n = 128; W.grid = n;
+  let a = initialField(n), b = new Float32Array(a.length);
+  const g = W.disp2d || canvas.getContext('2d'); const img = new ImageData(n, n); const off = new OffscreenCanvas(n, n); const og = off.getContext('2d');
+  W.step = () => {
+    for (let s = 0; s < STEPS; s++) {
+      for (let y = 0; y < n; y++) {
+        const ym = ((y - 1 + n) % n) * n, y0 = y * n, yp = ((y + 1) % n) * n;
+        const tidRow = ((y * 4 / n) | 0) * 4;
+        for (let x = 0; x < n; x++) {
+          const xm = (x - 1 + n) % n, xp = (x + 1) % n, i = y0 + x;
+          const t = tidRow + ((x * 4 / n) | 0), Fv = fk[2*t], Kv = fk[2*t+1];
+          const lu = 0.2 * (a[2*(ym+x)] + a[2*(yp+x)] + a[2*(y0+xm)] + a[2*(y0+xp)]) + 0.05 * (a[2*(ym+xm)] + a[2*(ym+xp)] + a[2*(yp+xm)] + a[2*(yp+xp)]) - a[2*i];
+          const lv = 0.2 * (a[2*(ym+x)+1] + a[2*(yp+x)+1] + a[2*(y0+xm)+1] + a[2*(y0+xp)+1]) + 0.05 * (a[2*(ym+xm)+1] + a[2*(ym+xp)+1] + a[2*(yp+xm)+1] + a[2*(yp+xp)+1]) - a[2*i+1];
+          const u = a[2*i], v = a[2*i+1], uvv = u * v * v;
+          b[2*i] = Math.min(1, Math.max(0, u + lu - uvv + Fv * (1 - u)));
+          b[2*i+1] = Math.min(1, Math.max(0, v + 0.5 * lv + uvv - (Fv + Kv) * v));
+        }
+      }
+      [a, b] = [b, a];
+    }
+    paint(a, n, img.data);
+    og.putImageData(img, 0, 0); g.imageSmoothingEnabled = true; g.drawImage(off, 0, 0, canvas.width, canvas.height);
+  };
+  W.seedAt = (cx, cy, r) => stamp(a, n, cx, cy, Math.max(2, r >> 1));
+  W.look = cb => cb(canvas);
+  W.gpuErr = () => null;
+  W.mode = 'canvas2d';
+}
+
+// ---------- the codec retina: one VideoEncoder per patch ----------
+// Bytes in a delta frame = what motion-compensated prediction could not explain.
+const R = { enc: [], cv: [], g: [], s: new Float32Array(TILES).fill(4), px: new Float32Array(TILES), prev: [], frames: 0, ready: false, codec: '' };
+async function initRetina() {
+  if (typeof VideoEncoder === 'undefined') return false;
+  const tries = [
+    { codec: 'vp09.00.10.08', bitrateMode: 'quantizer', opt: f => ({ vp9: { quantizer: 34 } }) },
+    { codec: 'vp8', bitrateMode: 'variable', bitrate: 400000, opt: () => ({}) }];
+  let pick = null;
+  for (const c of tries) {
+    try { const s = await VideoEncoder.isConfigSupported({ codec: c.codec, width: TPX, height: TPX, bitrateMode: c.bitrateMode, bitrate: c.bitrate, latencyMode: 'realtime', framerate: 15 }); if (s.supported) { pick = c; break; } } catch (e) {}
+  }
+  if (!pick) return false;
+  R.codec = pick.codec + '/' + pick.bitrateMode; R.opt = pick.opt;
+  for (let t = 0; t < TILES; t++) {
+    const enc = new VideoEncoder({
+      output: chunk => { if (chunk.type === 'delta') { const s = Math.log2(1 + chunk.byteLength); R.s[t] += (s - R.s[t]) * 0.35; } },
+      error: e => console.warn('encoder', t, e.message) });
+    enc.configure({ codec: pick.codec, width: TPX, height: TPX, bitrateMode: pick.bitrateMode, bitrate: pick.bitrate, latencyMode: 'realtime', framerate: 15 });
+    const cv = new OffscreenCanvas(TPX, TPX);
+    R.enc.push(enc); R.cv.push(cv); R.g.push(cv.getContext('2d', { willReadFrequently: true })); R.prev.push(null);
+  }
+  R.ready = true; return true;
+}
+function retinaLook(srcCanvas) {
+  if (!R.ready) return;
+  const S = srcCanvas.width / N_T, ts = R.frames++ * 66666;
+  for (let t = 0; t < TILES; t++) {
+    const enc = R.enc[t]; if (enc.encodeQueueSize > 2) continue;   // backpressure: a busy eye skips a blink
+    const g = R.g[t]; g.drawImage(srcCanvas, (t % N_T) * S, ((t / N_T) | 0) * S, S, S, 0, 0, TPX, TPX);
+    const d = g.getImageData(0, 0, TPX, TPX).data; let sum = 0; const p = R.prev[t];
+    if (p) for (let i = 0; i < d.length; i += 4) sum += Math.abs(d[i+2] - p[i+2]);
+    R.px[t] += (sum / (TPX * TPX) - R.px[t]) * 0.35; R.prev[t] = d;        // naive pixel-diff, for comparison only
+    const f = new VideoFrame(R.cv[t], { timestamp: ts });
+    enc.encode(f, Object.assign({ keyFrame: R.frames === 1 }, R.opt(f))); f.close();
+  }
+}
+// Classes: the retina tells "it moves but I saw it coming" (flow) apart from "this is new" (novel).
+function classOf(t) {
+  const s = R.s[t];
+  if (s > BAND[1]) return 'noise';
+  if (s >= BAND[0]) return 'novel';
+  return R.px[t] > 1.5 ? 'flow' : 'dead';
+}
+const inBand = t => R.s[t] >= BAND[0] && R.s[t] <= BAND[1];
+const dist = t => Math.max(0, BAND[0] - R.s[t], R.s[t] - BAND[1]) + Math.abs(R.s[t] - MID) * 0.15;
+
+// ---------- the gardener: attention + per-state action values + device metabolism ----------
+// Levers: seed fresh life, steer a patch's feed/kill toward one of four known Gray-Scott regimes, or wait.
+const REG = { spots: [0.0367, 0.0649], coral: [0.0545, 0.062], waves: [0.026, 0.051], worms: [0.078, 0.061] };
+const ACTS = ['seed', 'spots', 'coral', 'waves', 'worms', 'wait'], NA = ACTS.length;
+const QV = { below: [0.1, 0.05, 0.05, 0.05, 0.05, 0], above: [0, 0.05, 0.05, 0, 0, 0], in: [0, 0, 0, 0, 0, 0.05] }; // shared priors
+const QT = Array.from({ length: TILES }, () => ({ below: Array(NA).fill(0), above: Array(NA).fill(0), in: Array(NA).fill(0) }));
+const G = { budget: 3, pressure: 'unknown', thoughts: 0, acts: Array(NA).fill(0), rewards: [], focus: -1, pending: [], on: AGENT_ON, lastThink: 0 };
+const zone = t => R.s[t] < BAND[0] ? 'below' : R.s[t] > BAND[1] ? 'above' : 'in';
+const qOf = (t, z) => QT[t][z].map((v, i) => v + QV[z][i]);
+function act(t, a) {
+  const n = W.grid, c = n / N_T, cx = (t % N_T) * c, cy = ((t / N_T) | 0) * c;
+  if (a === 0) for (let k = 0; k < 3; k++) W.seedAt((cx + 4 + rnd() * (c - 8)) | 0, (cy + 4 + rnd() * (c - 8)) | 0, ((n / 64) | 0) + 2);
+  else if (a < 5) { const r = REG[ACTS[a]]; fk[2*t] += (r[0] - fk[2*t]) * 0.5; fk[2*t+1] += (r[1] - fk[2*t+1]) * 0.5; }
+  clampFK(t); G.acts[a]++;
+}
+// Time is counted in retina blinks, not milliseconds, so a slow device gets the same judgement as a fast one.
+function think() {
+  G.thoughts++;
+  const order = [...Array(TILES).keys()].sort((x, y) => dist(y) - dist(x));
+  const chosen = order.slice(0, G.budget).filter(t => dist(t) > 0.05 || rnd() < 0.15);
+  G.focus = chosen[0] ?? -1;
+  for (const t of chosen) {
+    if (G.pending.some(p => p.t === t)) continue;           // let the last action on this patch play out first
+    const z = zone(t), q = qOf(t, z);
+    let a = q.indexOf(Math.max(...q)); if (rnd() < 0.2) a = (rnd() * NA) | 0;
+    act(t, a); G.pending.push({ t, a, z, d0: dist(t), due: R.frames + 24 });
+  }
+}
+function learn() {
+  G.pending = G.pending.filter(p => {
+    if (R.frames < p.due) return true;
+    const r = p.d0 - dist(p.t); G.rewards.push(r); if (G.rewards.length > 200) G.rewards.shift();
+    QT[p.t][p.z][p.a] += (r - QT[p.t][p.z][p.a]) * 0.3; QV[p.z][p.a] += (r - QV[p.z][p.a]) * 0.05;
+    return false;
+  });
+}
+// Metabolism (reused from F-212): think less when the device is struggling.
+const PB = { nominal: 4, fair: 3, serious: 1, critical: 1 };
+try { if ('PressureObserver' in window) new PressureObserver(rs => { const s = rs.at(-1).state; G.pressure = s; G.budget = PB[s] ?? 3; }).observe('cpu').catch(() => {}); } catch (e) {}
+let ftEMA = 16;
+
+// ---------- UI that takes the shape of what the retina sees ----------
+const retinaEl = document.getElementById('retina'), overlay = document.getElementById('overlay'), hud = document.getElementById('hud'), pop = document.getElementById('pop');
+const cells = [], marks = [];
+for (let t = 0; t < TILES; t++) {
+  const b = document.createElement('button'); b.className = 'cell'; b.setAttribute('popovertarget', 'pop');
+  b.addEventListener('click', () => { pop.dataset.t = t; renderPop(); });
+  retinaEl.appendChild(b); cells.push(b);
+  const m = document.createElement('i'); overlay.appendChild(m); marks.push(m);
+}
+function renderPop() {
+  const t = +pop.dataset.t; if (isNaN(t)) return;
+  const fmt = z => ACTS.map((a, i) => a + ' ' + qOf(t, z)[i].toFixed(2)).join(' · ');
+  pop.innerHTML = `<b>Patch ${t}</b><br>surprise ${R.s[t].toFixed(2)} bits · pixel change ${R.px[t].toFixed(1)}<br>feed ${fk[2*t].toFixed(4)} · kill ${fk[2*t+1].toFixed(4)}<br><br>below band: ${fmt('below')}<br>in band: ${fmt('in')}<br>above band: ${fmt('above')}`;
+}
+function renderUI() {
+  let ib = 0;
+  for (let t = 0; t < TILES; t++) {
+    const s = Math.min(1, Math.max(0, (R.s[t] - 4) / 8)), c = classOf(t); if (inBand(t)) ib++;
+    const el = cells[t]; el.style.setProperty('--s', s.toFixed(3)); el.style.setProperty('--m', Math.min(1, R.px[t] / 12).toFixed(3));
+    el.dataset.c = c; el.innerHTML = `${c}<b>${R.s[t].toFixed(1)} bits</b><b>next: ${ACTS[qOf(t, zone(t)).reduce((m, v, i, a) => v > a[m] ? i : m, 0)]}</b>`;
+    marks[t].className = t === G.focus ? 'focus' : '';
+  }
+  const mr = G.rewards.length ? G.rewards.reduce((a, b) => a + b, 0) / G.rewards.length : 0;
+  hud.innerHTML = [
+    ['engine', `${W.mode} · ${R.ready ? R.codec : 'no WebCodecs'}`],
+    ['patches at the edge of chaos', `${ib} / 16`],
+    ['gardener', `${G.on ? 'awake' : 'paused'} · ${G.thoughts} thoughts · mean reward ${mr.toFixed(3)}`],
+    ['metabolism', `${G.pressure} · ${G.budget} patches per thought · frame ${ftEMA.toFixed(1)} ms`],
+    ['actions', ACTS.map((a, i) => a + ' ' + G.acts[i]).join(' · ')]
+  ].map(([k, v]) => `<div class="row"><span>${k}</span><span>${v}</span></div>`).join('') + `<div class="bar"><span style="width:${ib / 16 * 100}%"></span></div>`;
+  if (pop.matches(':popover-open')) renderPop();
+  return ib;
+}
+
+// ---------- interaction ----------
+canvas.addEventListener('pointerdown', e => {
+  const r = canvas.getBoundingClientRect(), n = W.grid;
+  W.seedAt(((e.clientX - r.left) / r.width * n) | 0, ((e.clientY - r.top) / r.height * n) | 0, (n / 40) | 0);
+});
+document.getElementById('tAgent').onclick = e => { G.on = !G.on; e.target.textContent = G.on ? 'Pause gardener' : 'Wake gardener'; };
+document.getElementById('tStorm').onclick = () => { for (let k = 0; k < 6; k++) { const t = (rnd() * 16) | 0; fk[2*t] = 0.012 + rnd() * 0.07; fk[2*t+1] = 0.045 + rnd() * 0.022; } };
+document.getElementById('tKill').onclick = () => { for (let k = 0; k < 5; k++) { const t = (rnd() * 16) | 0; fk[2*t] = 0.01; fk[2*t+1] = 0.068; } };
+
+// ---------- main loop ----------
+const stats = { samples: [], start: 0 };
+window.__f215 = { R, G, W, fk, stats, BAND, inBand, classOf };
+let frame = 0, last = performance.now();
+function loop(now) {
+  const dt = now - last; last = now; ftEMA += (dt - ftEMA) * 0.05;
+  if (!('PressureObserver' in window) || G.pressure === 'unknown') G.budget = ftEMA > 40 ? 1 : ftEMA > 24 ? 2 : 3;
+  W.step();
+  frame++; W.look(src => { if (R.ready && (W.looks = (W.looks || 0) + 1) % 2 === 0) retinaLook(src); });   // the retina blinks on every 2nd view
+  learn();
+  if (G.on && R.frames > 20 && R.frames - G.lastThink >= 6) { G.lastThink = R.frames; think(); }
+  if (frame % 6 === 0) { const ib = renderUI(); if (R.frames > 20) stats.samples.push([R.frames, ib]); }
+  requestAnimationFrame(loop);
+}
+(async () => {
+  if (!(await initGPU())) initCPU();
+  const ok = await initRetina();
+  if (!ok) hud.textContent = 'This browser has no WebCodecs VideoEncoder, so the retina is blind. The world still runs.';
+  window.__f215.ready = true;
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

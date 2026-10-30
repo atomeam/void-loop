@@ -5,8 +5,7 @@
 # (verify.yml, verify-main, which no longer waits for this deploy), and a failure reverts the commit that broke it and redeploys.
 #   PR                  the quick checks (seconds), no preview deploy (owner, 2026-10-15: Cloudflare is spent on growth);
 #                       Verse's review is its own workflow, void-review.yml
-#   push to main        the quick checks, then deploy (one production group: deploys stay serialized and only the newest
-#                       pending one runs); the full suite is verify.yml, started by the same push, never by this deploy
+#   push to main        the quick checks, then deploy (deploys run side by side; a run stops itself when a newer head's deploy is already on its way); the full suite is verify.yml, started by the same push, never by this deploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
 name: Verse deploy
 
@@ -40,7 +39,7 @@ jobs:
     # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
     # (Only the newest pending production deploy runs; the suite is verify.yml, one run per head, so no head goes untested.)
     concurrency:
-      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -97,6 +96,7 @@ jobs:
           printf '{"id":"%s"}' "$(git rev-parse HEAD)" > void-live-deploy/build.json # this deploy's id: an open tab compares it and offers a reload (lib/stale-tab.js)
           # every generated card, in dependency order (tools/refresh.mjs: the skill index, the dependency map, the families, the book, Verse's facts about itself, the bench alarms):
           # a merge that left one stale still deploys a current site, and a step that fails is a warning, never a blocked deploy or a hidden second failure
+          node tools/growth-fold.mjs --keep # the entries PRs left in growth/entries/ join the served ledger now; growth-fold.yml commits the fold on main
           node tools/refresh.mjs --keep-going || echo "::warning title=A generated card is stale::tools/refresh.mjs could not regenerate every step; the live site may show an older card"
           node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
           node tools/public-quotes.mjs # only Verse's words are served: the owner's quoted words leave every served comment and JSON file (the repo keeps them)
@@ -130,6 +130,21 @@ jobs:
       - name: CSP script hashes
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && vars.CSP_HASHES == 'true'
         run: node tools/csp-hashes.mjs --write
+
+      # Deploys run side by side (owner, 2026-10-25: "no need to serialize we should be able to do many things at once"): each run has its own
+      # group. What serializing protected is that an older run never lands after a newer one, so just before the upload a run asks whether a
+      # newer main head already has a deploy queued or running; if it does, this one stops (that run deploys a superset of it).
+      - name: A newer deploy is on its way (stop this one)
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git fetch -q origin main
+          head=$(git rev-parse origin/main)
+          if [ "$head" != "$(git rev-parse HEAD)" ] && git merge-base --is-ancestor HEAD "$head"; then
+            n=$(gh run list --workflow deploy.yml --json headSha,status,databaseId -q "[.[] | select(.headSha == \"$head\" and (.status == \"queued\" or .status == \"in_progress\" or .status == \"waiting\"))] | length")
+            if [ "${n:-0}" -gt 0 ]; then echo "main moved to $head and its deploy is running: this run stops"; gh run cancel "$GITHUB_RUN_ID"; sleep 60; fi
+          fi
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
@@ -187,8 +202,32 @@ jobs:
           else echo "::error::a-to-mind.com/ HTTP $code does not carry $want"; head -c 300 live.tmp; echo; ok=1; fi
           check /skills/index.json void-live-deploy/skills/index.json || ok=1
           check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
+          # the Versus queue's data (tools/tower-size.mjs, tools/tower-target.mjs): the order on the card is only as true as these files live
+          check /tower.size.json void-live-deploy/tower.size.json || ok=1
+          check /tower.target.json void-live-deploy/tower.target.json || ok=1
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
+
+      # IndexNow (owner, 2026-10-26: "wire IndexNow into the deployment pipeline so that search engines utilizing the protocol (like Bing and
+      # Yandex) are notified within minutes whenever new single-purpose utility pages go live"): once a-to-mind.com serves this deploy, the
+      # sitemap pages changed since the last successful main deploy go to api.indexnow.org in one POST (tools/indexnow.mjs). The base is that
+      # deploy's commit, not github.event.before: a run that stops for a newer one deploys nothing, so its changes ride on the next. One request
+      # to IndexNow (not Cloudflare), none when no listed page changed; an engine error is a log line, never a failed deploy.
+      - name: Tell IndexNow engines which pages changed
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          base=""
+          for s in $(gh run list --workflow deploy.yml --branch main --status success --json headSha -L 30 -q '.[].headSha' 2>/dev/null || true); do
+            if [ "$s" != "$SHA" ] && git merge-base --is-ancestor "$s" "$SHA" 2>/dev/null; then base=$s; break; fi
+          done
+          [ -n "$base" ] || base="$BEFORE"
+          echo "IndexNow base: ${base:-none} (head $SHA)"
+          node tools/indexnow.mjs --base "$base" --head "$SHA"
 
       # MCP live (frontier #6) checks Verse's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
       # every few hours (5 scheduled runs on 2026-10-12, none for 5 h after #571 added a tool), and a deploy automerge starts
@@ -219,6 +258,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run automations-seed.yml --repo "${{ github.repository }}" --ref main && echo "Automations seed started" >> "$GITHUB_STEP_SUMMARY"
 
+      # Verse's will (will.yml) after every main deploy, so a want this merge built leaves the card now. will.yml used to listen for
+      # this workflow's workflow_run, but a deploy that automerge starts (github-actions[bot], GITHUB_TOKEN) fires none: the last
+      # such run was 2026-10-29T03:13Z. A gh workflow run is the one start a GITHUB_TOKEN run can make.
+      - name: Start Verse's will
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run will.yml --repo "${{ github.repository }}" --ref main && echo "Verse's will started" >> "$GITHUB_STEP_SUMMARY"
+
       # Verse's voice (lib/voice.js): after anything ships, Verse is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.
@@ -236,3 +285,36 @@ jobs:
           # the self card's own words (weakest, next game, how I'd get better) were refreshed once a day, so after a fix they still described the old problem:
           # ask for the full reflection after a build too, at most every three hours so a burst of merges asks once
           node tools/reflect.mjs --daily --if-older 180 | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+  # The paid MultiVerse paths in a real browser on every PR (coordinator, 2026-10-30: cover them without a real member). A seeded
+  # test member on an in-memory D1 claims a receipt (Already joined), reloads, and sends an idea; nothing reaches Gumroad or
+  # a-to-mind.com. Its own job, so a red here fails "Verse deploy" and tools/pr-ready.mjs holds the merge.
+  members-paid:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-members-paid-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: node --test tools/members-paid.e2e.mjs (Already joined, after a reload, the idea box)
+        run: node --test tools/members-paid.e2e.mjs

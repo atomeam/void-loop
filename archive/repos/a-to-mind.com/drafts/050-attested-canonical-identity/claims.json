@@ -1,0 +1,31 @@
+{
+  "slug": "attested-canonical-identity",
+  "run": "050",
+  "status": "candidate",
+  "emit": false,
+  "kind": "attested-canonical-identity",
+  "origin": "https://a-to-mind.com",
+  "preferred_host": "a-to-mind.com",
+  "scheme": "https",
+  "www": "deny",
+  "http": "deny",
+  "method": "html-link-only",
+  "link_header": "deny",
+  "hreflang": "deny",
+  "x_default": "deny",
+  "query_self_canonical": "deny",
+  "query_fold_to_root": "deny",
+  "parameter_stripping": "deny",
+  "trailing_slash_rewrite": "deny",
+  "sitemap_rewrite": "deny",
+  "jsonld_url_rewrite": "deny",
+  "retired_path_revival": "deny",
+  "seal": "human",
+  "reviewed_at": null,
+  "notes": [
+    "Queue was empty. This file is not a seal.",
+    "Live a-to-mind.com had no rel=canonical and no hreflang on 2026-10-01.",
+    "llms.txt says earlier workflow pages are retired. Do not invent canonical targets for them.",
+    "A ?q= URL launches an ask. It is not a duplicate of / and must not be folded onto /."
+  ]
+}

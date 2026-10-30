@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Podcasts: search any show, play, follow, queue, download · Verse</title>
+<meta name="description" content="Search millions of podcasts or paste any RSS link. Play with speed from 0.5x to 3x, skip back 15 and forward 30, a sleep timer, chapters, transcripts, a queue and your place saved per episode. Follow shows, see new episodes, save episodes for offline, import and export OPML. All kept on your device, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Podcasts · Verse">
+<meta property="og:description" content="Search any podcast or paste an RSS link; speed, skip, sleep timer, chapters, transcripts, queue, follows and offline downloads on your device, no account.">
+<meta property="og:url" content="https://a-to-mind.com/podcasts/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>if (location.search) document.documentElement.classList.add('pre'); // a show or episode is coming from the link: hold the paint until it is drawn (html.pre)</script>
+<style>
+  /* a-to-mind.com/podcasts/ (Versus' Apple Podcasts floor): one file and two small modules; kept on the device: follows, places, queue, speed */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  h2.name { font-size: 22px; color: var(--ink); margin: 0 0 2px; line-height: 1.2; overflow-wrap: anywhere; }
+  input[type=search], input.box, select.box { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; }
+  input[type=search] { width: 100%; font-size: 17px; }
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, a.btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+  button.go, button[aria-pressed="true"], a.btn.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  button.bad { color: var(--bad); }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .row label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--soft); }
+  .pane { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin-top: 10px; }
+  .kit button { border-color: var(--accent); font-weight: 600; } .kit button[aria-expanded="true"] { background: var(--accent); color: var(--on-accent, #fff); }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; } .note.bad { color: var(--bad); }
+  .empty { font-size: 13px; color: var(--soft); }
+  [hidden] { display: none !important; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list > li { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .list > li:first-child { border-top: 0; }
+  .who { display: flex; gap: 12px; align-items: center; color: inherit; text-decoration: none; flex: 1 1 220px; min-width: 0; }
+  .who b { font-weight: 600; overflow-wrap: anywhere; display: block; } .who small { color: var(--soft); font-size: 13px; display: block; overflow-wrap: anywhere; }
+  .who img, .ph { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex: none; background: var(--line); display: block; }
+  .rank { width: 1.8em; flex: none; text-align: right; color: var(--soft); font-variant-numeric: tabular-nums; font-size: 14px; }
+  #view { min-height: 360px; }
+  #chart { min-height: 480px; }
+  .head { display: flex; gap: 14px; align-items: flex-start; } .head img, .head .ph { width: 96px; height: 96px; border-radius: 14px; } .head > div { min-width: 0; flex: 1 1 auto; }
+  .desc { font-size: 14px; color: var(--soft); white-space: pre-line; overflow-wrap: anywhere; margin: 6px 0 0; max-height: 9em; overflow: auto; }
+  .ep { display: block !important; } .ep .line { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+  .ep .t { flex: 1 1 220px; min-width: 0; } .ep .t b { font-weight: 600; overflow-wrap: anywhere; } .ep .t small { display: block; color: var(--soft); font-size: 13px; }
+  .ep .acts { display: flex; flex-wrap: wrap; gap: 6px; } .ep.played .t b { color: var(--soft); font-weight: 500; }
+  .ep details { margin-top: 4px; font-size: 14px; } .ep summary { cursor: pointer; color: var(--soft); min-height: 32px; display: flex; align-items: center; }
+  .ep .notes { white-space: pre-line; overflow-wrap: anywhere; color: var(--soft); margin: 4px 0 0; }
+  .bar { height: 3px; background: var(--line); border-radius: 2px; margin-top: 4px; overflow: hidden; } .bar i { display: block; height: 3px; background: var(--accent); }
+  .pl-head { display: flex; gap: 12px; align-items: center; } .pl-head img { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex: none; } .pl-show { font-size: 13px; color: var(--soft); overflow-wrap: anywhere; }
+  .seekrow { display: flex; gap: 8px; align-items: center; margin: 8px 0 0; font-variant-numeric: tabular-nums; font-size: 14px; color: var(--soft); } .seekrow input { flex: 1 1 auto; min-width: 0; height: 28px; accent-color: var(--accent); }
+  .ctl { justify-content: center; gap: 12px; } .ctl button { min-height: 48px; min-width: 64px; font-size: 15px; } .ctl button.go { min-width: 96px; }
+  details.fold { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 6px; } details.fold summary { cursor: pointer; font-weight: 600; font-size: 14px; min-height: 36px; display: flex; align-items: center; }
+  .chaps { list-style: none; margin: 0; padding: 0; } .chaps button { width: 100%; justify-content: flex-start; border-radius: 10px; gap: 10px; text-align: left; } .chaps .on { background: var(--accent); color: var(--on-accent, #fff); } .chaps .on span { color: inherit !important; }
+  .lines p { margin: 0; padding: 6px 0; border-top: 1px solid var(--line); font-size: 15px; overflow-wrap: anywhere; } .lines p[data-t] { cursor: pointer; } .lines p.on { color: var(--accent); font-weight: 600; } .lines time { color: var(--soft); font-size: 12px; margin-right: 8px; font-variant-numeric: tabular-nums; }
+  #mini { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--box); border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: center; padding: 6px 12px; box-sizing: border-box; }
+  #mini span { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+  html.mini main { padding-bottom: 80px; }
+  /* the Common asks row as lib/toolkit.js styles it, here for the first paint */
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a { color: inherit; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* a link that carries a show draws it after load; until that first draw only the title, its line and the search stay visible, so nothing jumps */
+  html.pre main > :not(h1):not(.sub):not(#f) { visibility: hidden; }
+</style>
+<!-- the two modules the page loads after load, named so the service worker keeps them with the page and it opens offline (they are dynamic imports, so tools/preload.mjs does not list them) -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/podcasts.js">
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/podcasts/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Podcasts","url":"https://a-to-mind.com/podcasts/","description":"Search millions of podcasts or paste any RSS link. Play with speed from 0.5x to 3x, skip back 15 and forward 30, a sleep timer, chapters, transcripts, a queue and your place saved per episode. Follow shows and see new episodes, save episodes for offline, import and export OPML. All kept on your device, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"podcasts, search podcasts, podcast player, podcast app without an account, play a podcast rss feed, top podcasts, podcast sleep timer and speed, import opml podcasts","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/podcasts/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Podcasts","item":"https://a-to-mind.com/podcasts/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1 id="title">Podcasts</h1>
+  <p class="sub" id="sub">Search any show or paste an RSS link. Play with speed, skip, a sleep timer, chapters and a queue; follow shows, save episodes for offline. Kept on your device, no account.</p>
+
+  <form id="f" autocomplete="off" role="search">
+    <label class="vh" for="q" id="qL">Search podcasts, or paste an RSS link</label>
+    <input type="search" id="q" placeholder="Search podcasts, or paste an RSS link" maxlength="400" enterkeyhint="search">
+    <div class="row"><button type="submit" class="go" id="go">Search</button><button type="button" id="homeBtn">Top podcasts</button></div>
+    <div class="note" id="note" role="status"></div>
+  </form>
+  <div class="row kit" id="kit">
+    <button type="button" id="folBtn" aria-expanded="false" aria-controls="folPane">Following</button>
+    <button type="button" id="newBtn" aria-expanded="false" aria-controls="newPane" style="min-width:150px">New episodes</button>
+    <button type="button" id="queBtn" aria-expanded="false" aria-controls="quePane">Queue</button>
+    <button type="button" id="dlBtn" aria-expanded="false" aria-controls="dlPane">Downloads</button>
+  </div>
+  <section class="pane" id="folPane" hidden aria-labelledby="folH"><h2 id="folH" style="margin:0 0 4px">Following</h2><ul class="list" id="folList"></ul>
+    <div class="row"><button type="button" id="opmlOut">Export OPML</button><button type="button" id="opmlIn">Import OPML</button><input type="file" id="opmlFile" accept=".opml,.xml,text/xml,application/xml,text/x-opml" class="vh" aria-label="Choose an OPML file to import" tabindex="-1"></div></section>
+  <section class="pane" id="newPane" hidden aria-labelledby="newH"><h2 id="newH" style="margin:0 0 4px">New episodes</h2><ul class="list" id="newList"></ul>
+    <div class="row"><button type="button" id="seenAll">Mark all seen</button></div></section>
+  <section class="pane" id="quePane" hidden aria-labelledby="queH"><h2 id="queH" style="margin:0 0 4px">Queue</h2><ol class="list" id="queList"></ol>
+    <div class="row"><button type="button" id="queClear" class="bad">Clear queue</button></div></section>
+  <section class="pane" id="dlPane" hidden aria-labelledby="dlH"><h2 id="dlH" style="margin:0 0 4px">Downloads</h2><ul class="list" id="dlList"></ul>
+    <p class="note" id="dlNote">Saved on this device for listening offline: up to 150 MB an episode and 1 GB in all, and only for publishers that allow a web page to save their audio. A browser may clear saved files it needs room for (Safari after a week without a visit).</p></section>
+
+  <section class="pane" id="player" hidden aria-labelledby="pTitle">
+    <div class="pl-head"><img id="pArt" width="64" height="64" alt="" hidden><div><div class="pl-show" id="pShow"></div><h2 id="pTitle" class="name"></h2></div></div>
+    <div class="note" id="pStat" role="status"></div>
+    <div class="seekrow"><span id="pCur">0:00</span><input type="range" id="seek" min="0" max="0" step="1" value="0" aria-label="Seek"><span id="pLen">0:00</span></div>
+    <div class="row ctl"><button type="button" id="back" aria-label="Back 15 seconds">⟲ 15</button><button type="button" id="pp" class="go" aria-label="Play">Play</button><button type="button" id="fwd" aria-label="Forward 30 seconds">30 ⟳</button></div>
+    <div class="row"><label>Speed <select id="speed" class="box"></select></label><label>Sleep timer <select id="sleep" class="box"></select></label></div>
+    <div class="row"><button type="button" id="pQueue">Add to queue</button><button type="button" id="pDl">Download</button><button type="button" id="pShare">Share</button><a class="btn" id="pOpen" rel="noopener" target="_blank">Open the audio</a></div>
+    <details class="fold" id="chap" hidden><summary>Chapters</summary><ul class="chaps" id="chapList"></ul></details>
+    <details class="fold" id="trans" hidden><summary>Transcript</summary><div class="row"><label class="vh" for="tq">Search the transcript</label><input type="search" id="tq" class="box" placeholder="Search the transcript" style="width:100%"></div><div class="lines" id="lines" aria-live="polite"></div></details>
+  </section>
+
+  <section id="view" aria-live="polite">
+    <article class="pane pinned" id="pin" style="margin-top:14px"><div class="who" style="align-items:flex-start"><img src="/podcast/cover-256.jpg" width="56" height="56" alt="" style="width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none"><div><h2 style="margin:0;color:var(--ink);font-size:18px">Verse Out Loud</h2><small>Pinned first: Verse's own weekly show, read from its public ledger, with the whole transcript. Free to download and repost.</small><div class="row"><a class="btn go" href="/podcasts/?show=verse">Open the show</a></div></div></div></article>
+    <h2 id="chartH">Top podcasts</h2>
+    <div class="row" id="chartCtl"><label class="vh" for="cc">Country</label><select id="cc" class="box" style="min-width:150px"><option value="us">United States</option></select><label class="vh" for="gen">Category</label><select id="gen" class="box" style="min-width:150px"><option value="0">All categories</option></select></div>
+    <ol class="list" id="chart"><li class="empty" id="chartEmpty">Loading the charts…</li></ol>
+  </section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/podcasts/?show=verse">Verse Out Loud</a><a href="/podcasts/?show=verse&amp;ep=ep1">Verse Out Loud episode 1</a><a href="/podcasts/?q=history">Search for history podcasts</a><a href="/podcasts/?q=science">Search for science podcasts</a><a href="/podcasts/?q=true%20crime">Search for true crime podcasts</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/translate/">Translate</a> <a href="/word-count/">Word counter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="srcs" id="srcs">Shows come from <a href="https://performance-partners.apple.com/search-api" rel="noopener">Apple's free public podcast directory</a> (search and charts), or from any RSS feed you paste. Verse reads a feed once through its own server, with a size and time limit and only public https addresses, and keeps the answer for 15 minutes; the audio always streams straight from the publisher and never passes through Verse. Follows, your place in each episode, the queue, speed and saved episodes stay on this device. There are no paid subscriptions, ratings or reviews, and nothing syncs between devices; export your follows as OPML to move them.</p>
+  <footer><a href="/">Verse</a> · <a href="/podcast/">Verse Out Loud</a> · <a href="/tools/">every tool</a></footer>
+</main>
+
+<div id="mini" hidden><span id="miniT"></span><button type="button" id="miniBack" aria-label="Back 15 seconds">⟲ 15</button><button type="button" id="miniPP" class="go" aria-label="Play">Play</button><button type="button" id="miniFwd" aria-label="Forward 30 seconds">30 ⟳</button></div>
+<audio id="au" preload="none"></audio>
+
+<script type="module">
+  // everything after the first paint: the page shows its box, its words and the pinned show at once; the module lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const $ = (id) => document.getElementById(id);
+    let mountRelated, P, cardAsk; try { [{ mountRelated }, P, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js'), import('/lib/podcasts-card.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
+    const au = $('au');
+    const KEY = 'a2m.void.podcasts.v1', CACHE = 'a2m-podcast-audio-v1', MAX_EP = 150 * 1048576, MAX_ALL = 1024 * 1048576, SELF = 'https://a-to-mind.com/podcast/rss.xml';
+    const h = (t, a, ...k) => { const e = document.createElement(t); for (const [n, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (n === 'class') e.className = v; else if (n === 'text') e.textContent = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else e.setAttribute(n, v === true ? '' : v); } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); } return e; };
+    const okImg = (u) => /^https:\/\//.test(u || '') || /^\/(?!\/)/.test(u || '');
+    const pic = (u, size, alt) => (okImg(u) ? h('img', { src: u, width: size, height: size, alt: alt || '', loading: 'lazy', decoding: 'async', referrerpolicy: 'no-referrer', onerror: (e) => e.target.replaceWith(h('span', { class: 'ph', 'aria-hidden': 'true', style: 'width:' + size + 'px;height:' + size + 'px' })) }) : h('span', { class: 'ph', 'aria-hidden': 'true' }));
+
+    // ---- what is kept on the device ----
+    let S = { follows: [], pos: {}, queue: [], speed: 1, dl: {}, cache: {}, cc: '' };
+    try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
+    const save = () => { try { const keys = Object.keys(S.pos); if (keys.length > 400) for (const k of keys.sort((a, b) => (S.pos[a].u || 0) - (S.pos[b].u || 0)).slice(0, keys.length - 400)) delete S.pos[k]; localStorage.setItem(KEY, JSON.stringify(S)); } catch (_) {} };
+    const say = (t, bad) => { const n = $('note'); n.textContent = t || ''; n.classList.toggle('bad', !!bad); };
+    const nav = mountRelated($('related'), '/podcasts/', [], { card: () => cardAsk(location.search) });
+    const keyOf = (show, ep) => P.hash(show.feed || show.id || 'x') + '.' + ep.id;
+    const compact = (show, ep) => ({ id: ep.id, key: keyOf(show, ep), title: ep.title, audio: ep.audio, dur: ep.dur, pub: ep.pub, image: ep.image || show.image || '', notes: P.cutAt(ep.notes || '', 240), showTitle: show.title, showImage: show.image || '', feed: show.feed || '', showId: show.verse ? 'verse' : show.id || '', bytes: ep.bytes || 0, chaptersUrl: ep.chaptersUrl, transcripts: ep.transcripts, chapters: ep.chapters });
+
+    // ---- the server (and Apple's directory straight, when Verse's edge does not answer a search) ----
+    async function api(qs) {
+      if (!navigator.onLine) return { ok: false, kind: 'offline', say: 'You are offline.' };
+      try { const r = await fetch('/api/podcasts?' + qs); const j = await r.json().catch(() => null); if (j && (j.ok || j.kind !== 'away')) return j; } catch (_) {}
+      if (/^q=/.test(qs)) { try { const r = await fetch('https://itunes.apple.com/search?media=podcast&entity=podcast&limit=25&term=' + qs.slice(2)); const j = await r.json(); return { ok: true, shows: (j.results || []).map(P.fromItunes).filter(Boolean) }; } catch (_) {} }
+      return { ok: false, kind: 'away', say: 'The directory did not answer just now.' };
+    }
+    async function getShow(spec) {
+      if (spec.verse || spec.feed === SELF) { try { const r = await fetch('/podcast/episodes.json'); const v = P.verseShow(await r.json()); cacheShow({ ...v, episodes: v.episodes.map(({ transcriptLines, ...e }) => e) }); return v; } catch (_) { const c = S.cache[SELF]; if (c) return { ...c, offline: true }; } }
+      const r = await api(spec.id ? 'id=' + encodeURIComponent(spec.id) : 'feed=' + encodeURIComponent(spec.feed));
+      if (r.ok && r.show) { const sh = r.show; if (spec.id) sh.id = spec.id; cacheShow(sh); return sh; }
+      const c = S.cache[spec.feed || ''] || Object.values(S.cache).find((x) => spec.id && x.id === spec.id); if (c) return { ...c, offline: true };
+      return { error: (r && r.say) || 'That show did not load.' };
+    }
+    function cacheShow(sh) { if (!sh.feed) return; S.cache[sh.feed] = { ...sh, description: P.cutAt(sh.description || '', 600), episodes: sh.episodes.slice(0, 30).map((e) => ({ ...e, notes: P.cutAt(e.notes || '', 300) })) }; const ks = Object.keys(S.cache); if (ks.length > 6) delete S.cache[ks[0]]; save(); }
+
+    // ---- places in the address: ?show= ?feed= ?q= ?ep= ?t= ----
+    const go = (params, push = true) => { const u = '/podcasts/' + (params && Object.keys(params).length ? '?' + new URLSearchParams(params) : ''); if (push) history.pushState({}, '', u); else history.replaceState({}, '', u); return route(); };
+    const here = () => new URLSearchParams(location.search);
+    const link = (params, ...kids) => { const a = h('a', { class: 'who', href: '/podcasts/?' + new URLSearchParams(params) }, ...kids); a.addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go(params); scrollTo(0, 0); }); return a; };
+    const showRow = (s, i) => h('li', {}, i != null ? h('span', { class: 'rank' }, String(i + 1)) : null, link(s.id ? { show: s.id } : { feed: s.feed }, pic(s.image, 56, ''), h('span', {}, h('b', {}, s.title), h('small', {}, [s.author, s.genre].filter(Boolean).join(' · ')))));
+
+    // ---- the charts and the search ----
+    const ccSel = $('cc'), genSel = $('gen');
+    for (const [v, t] of P.COUNTRIES) ccSel.append(h('option', { value: v }, t)); ccSel.firstElementChild.remove();
+    for (const [v, t] of P.GENRES) genSel.append(h('option', { value: String(v) }, t)); genSel.firstElementChild.remove();
+    ccSel.value = S.cc || ((navigator.language || '').split('-')[1] || 'us').toLowerCase(); if (!ccSel.value) ccSel.value = 'us';
+    // says where a list came from when it was not straight from Apple's directory
+    function srcNote(list, r) { const was = list.previousElementSibling; if (was && was.classList.contains('srcnote')) was.remove(); if (r && r.ok && r.note) list.before(h('p', { class: 'note srcnote', role: 'status' }, r.note)); }
+    async function chart() {
+      const list = $('chart'); list.replaceChildren(h('li', { class: 'empty' }, 'Loading the charts…'));
+      const r = await api('top=' + ccSel.value + '&genre=' + genSel.value);
+      srcNote(list, r);
+      list.replaceChildren(...(r.ok && r.shows.length ? r.shows.map(showRow) : [h('li', { class: 'empty' }, r.kind === 'offline' ? 'Charts need a connection. Your follows, queue and saved episodes work offline.' : 'The charts did not load. Search for a show above, or paste an RSS link.')]));
+    }
+    ccSel.addEventListener('change', () => { S.cc = ccSel.value; save(); chart(); }); genSel.addEventListener('change', chart);
+
+    // ---- views ----
+    let shown = null; // the show on the page
+    const view = $('view');
+    function homeView() { shown = null; document.title = 'Podcasts: search any show, play, follow, queue, download · Verse'; view.replaceChildren(...homeKids); chart(); }
+    const homeKids = [...view.children];
+    async function searchView(q) {
+      shown = null; view.replaceChildren(h('h2', { id: 'resH' }, 'Results for "' + q + '"'), h('ul', { class: 'list', id: 'results' }, h('li', { class: 'empty' }, 'Searching…')));
+      const r = await api('q=' + encodeURIComponent(q)); const ul = $('results'); if (!ul) return;
+      srcNote(ul, r);
+      ul.replaceChildren(...(r.ok && r.shows.length ? r.shows.map((s) => showRow(s)) : [h('li', { class: 'empty' }, r.ok ? 'No show matched. Try other words, or paste the show\'s RSS link.' : (r.say || 'The search did not answer.'))]));
+    }
+    const isFollowed = (show) => S.follows.find((f) => f.feed === show.feed);
+    async function showView(spec, epId, at) {
+      view.replaceChildren(h('p', { class: 'empty' }, 'Loading the show…')); const show = await getShow(spec);
+      if (show.error) { view.replaceChildren(h('p', { class: 'note bad' }, show.error), h('div', { class: 'row' }, h('button', { type: 'button', onclick: () => go({}) }, 'Back to the charts'))); return; }
+      show.feed = show.feed || spec.feed || ''; shown = show; document.title = show.title + ' · Podcasts · Verse'; if (S.follows.length) markSeen(show);
+      let hidePlayed = false, newestFirst = true, limit = 40;
+      const box = h('div', { id: 'showBox' });
+      const draw = () => {
+        const f = isFollowed(show), eps = show.episodes.filter((e) => !hidePlayed || P.stateOf(S.pos[keyOf(show, e)]) !== 'played'); if (!newestFirst) eps.reverse();
+        const rows = eps.slice(0, limit).map((e) => epRow(show, e, e.id === epId));
+        box.replaceChildren(
+          h('div', { class: 'head' }, pic(show.image, 96, ''), h('div', {}, h('h2', { class: 'name', id: 'showName' }, show.title), h('div', { class: 'pl-show' }, show.author), show.offline ? h('div', { class: 'note' }, 'Offline: the last copy of this show on this device.') : null,
+            h('div', { class: 'row' }, h('button', { type: 'button', id: 'follow', class: f ? '' : 'go', 'aria-pressed': f ? 'true' : 'false', onclick: () => { toggleFollow(show); draw(); } }, f ? 'Following' : 'Follow'), h('button', { type: 'button', onclick: () => share(show, null) }, 'Share'),
+              show.episodes[0] ? h('button', { type: 'button', onclick: () => play(withShow(show, show.episodes[0]), true) }, 'Play latest') : null))),
+          show.description ? h('p', { class: 'desc', tabindex: '0', 'aria-label': 'About this show' }, show.description) : null,
+          h('div', { class: 'row' }, h('label', {}, 'Show ', h('select', { class: 'box', 'aria-label': 'Which episodes', onchange: (e) => { hidePlayed = e.target.value === 'unplayed'; draw(); } }, h('option', { value: 'all', selected: !hidePlayed }, 'All episodes'), h('option', { value: 'unplayed', selected: hidePlayed }, 'Unplayed only'))),
+            h('label', {}, 'Order ', h('select', { class: 'box', 'aria-label': 'Order', onchange: (e) => { newestFirst = e.target.value === 'new'; draw(); } }, h('option', { value: 'new', selected: newestFirst }, 'Newest first'), h('option', { value: 'old', selected: !newestFirst }, 'Oldest first'))),
+            h('span', { class: 'empty' }, show.episodes.length + ' episodes' + (show.truncated ? ' (the newest ' + show.episodes.length + ' of ' + show.total + ')' : ''))),
+          h('ul', { class: 'list', id: 'eps' }, rows), eps.length > limit ? h('div', { class: 'row' }, h('button', { type: 'button', onclick: () => { limit += 40; draw(); } }, 'Show more episodes')) : null);
+      };
+      view.replaceChildren(box); draw();
+      const target = epId && show.episodes.find((e) => e.id === epId);
+      if (target) { await play(withShow(show, target), false, at); }
+    }
+    const withShow = (show, e) => ({ ...e, key: keyOf(show, e), showTitle: show.title, showImage: show.image || '', feed: show.feed || '', showId: show.verse ? 'verse' : show.id || '', image: e.image || show.image || '' });
+    function epRow(show, e, open) {
+      const key = keyOf(show, e), pos = S.pos[key], st = P.stateOf(pos), full = withShow(show, e), dl = S.dl[key];
+      const meta = [e.pub ? new Date(e.pub).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '', P.lengthWords(e.dur), st === 'played' ? 'Played' : st === 'started' ? 'Started' : '', dl ? 'Saved offline' : ''].filter(Boolean).join(' · ');
+      return h('li', { class: 'ep' + (st === 'played' ? ' played' : ''), id: 'ep-' + e.id },
+        h('div', { class: 'line' }, h('div', { class: 't' }, h('b', {}, e.title), h('small', {}, meta), st === 'started' && pos.d ? h('div', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: 'width:' + Math.min(100, Math.round((pos.t / pos.d) * 100)) + '%' })) : null),
+          h('div', { class: 'acts' }, h('button', { type: 'button', class: 'go', 'aria-label': 'Play ' + e.title, onclick: () => play(full, true) }, 'Play'), h('button', { type: 'button', 'aria-label': 'Add to queue: ' + e.title, onclick: () => { addQueue(full); } }, '+ Queue'),
+            h('button', { type: 'button', 'aria-label': (st === 'played' ? 'Mark unplayed: ' : 'Mark played: ') + e.title, onclick: () => { S.pos[key] = { ...(pos || {}), p: st !== 'played', t: st === 'played' ? 0 : (pos && pos.t) || 0, u: Date.now() }; save(); const li = $('ep-' + e.id); if (li) li.replaceWith(epRow(show, e, false)); } }, st === 'played' ? 'Unplayed' : 'Played'))),
+        e.notes ? h('details', { open: open || null }, h('summary', {}, 'Notes'), h('p', { class: 'notes' }, e.notes)) : null);
+    }
+
+    // ---- follows and the new-episodes list ----
+    function toggleFollow(show) {
+      const f = isFollowed(show);
+      if (f) S.follows = S.follows.filter((x) => x !== f);
+      else if (show.feed) { if (S.follows.length >= 60) return say('You follow 60 shows, the most this device keeps. Unfollow one first.', true); S.follows.push({ feed: show.feed, title: show.title, author: show.author, image: show.image || '', id: show.id || '', verse: !!show.verse, seen: show.episodes.map((e) => e.id).slice(0, 400), eps: show.episodes.slice(0, 15).map((e) => compact(show, e)), added: Date.now(), checked: Date.now() }); }
+      save(); renderFollows(); renderNews();
+    }
+    function markSeen(show) { const f = isFollowed(show); if (!f) return; const ids = show.episodes.map((e) => e.id); f.seen = [...new Set([...ids, ...(f.seen || [])])].slice(0, 400); save(); renderNews(); }
+    function renderFollows() {
+      const ul = $('folList'); ul.replaceChildren(...(S.follows.length ? S.follows.map((f) => h('li', {}, link(f.verse || f.feed === SELF ? { show: 'verse' } : f.id ? { show: f.id } : { feed: f.feed }, pic(f.image, 56, ''), h('span', {}, h('b', {}, f.title || f.feed), h('small', {}, f.author || ''))), h('button', { type: 'button', 'aria-label': 'Unfollow ' + (f.title || f.feed), onclick: () => { S.follows = S.follows.filter((x) => x !== f); save(); renderFollows(); renderNews(); } }, 'Unfollow'))) : [h('li', { class: 'empty' }, 'No shows followed yet. Open a show and tap Follow, or import an OPML file from another podcast app.')]));
+    }
+    const newOnes = () => S.follows.flatMap((f) => (f.eps || []).filter((e) => f.seen && !f.seen.includes(e.id) && P.stateOf(S.pos[e.key]) !== 'played')).sort((a, b) => (b.pub || '').localeCompare(a.pub || '')).slice(0, 50);
+    function renderNews() {
+      const list = newOnes(), ul = $('newList'); $('newBtn').textContent = 'New episodes' + (list.length ? ' (' + list.length + ')' : '');
+      ul.replaceChildren(...(list.length ? list.map((e) => h('li', {}, h('span', { class: 'who' }, pic(e.image, 56, ''), h('span', {}, h('b', {}, e.title), h('small', {}, [e.showTitle, e.pub ? new Date(e.pub).toLocaleDateString() : '', P.lengthWords(e.dur)].filter(Boolean).join(' · ')))), h('button', { type: 'button', class: 'go', 'aria-label': 'Play ' + e.title, onclick: () => play(e, true) }, 'Play'), h('button', { type: 'button', 'aria-label': 'Add to queue: ' + e.title, onclick: () => addQueue(e) }, '+ Queue'))) : [h('li', { class: 'empty' }, S.follows.length ? 'Nothing new. Your shows are checked each time this page opens.' : 'Follow a show and its new episodes appear here.')]));
+    }
+    $('seenAll').addEventListener('click', () => { for (const f of S.follows) f.seen = [...new Set([...(f.eps || []).map((e) => e.id), ...(f.seen || [])])].slice(0, 400); save(); renderNews(); });
+    async function refreshFollows() { // after load, never before: at most 40 shows, three at a time, each at most every 30 minutes
+      const due = S.follows.filter((f) => !f.checked || Date.now() - f.checked > 30 * 60e3).slice(0, 40); let i = 0;
+      const worker = async () => { while (i < due.length) { const f = due[i++]; const r = await api('feed=' + encodeURIComponent(f.feed)); if (!r.ok || !r.show) continue; const sh = r.show; f.title = sh.title || f.title; f.author = sh.author || f.author; f.image = sh.image || f.image; f.checked = Date.now(); if (!f.seen) f.seen = sh.episodes.map((e) => e.id).slice(0, 400); f.eps = sh.episodes.slice(0, 15).map((e) => compact(sh, e)); } };
+      if (!due.length || !navigator.onLine) return; await Promise.all([worker(), worker(), worker()]); save(); renderFollows(); renderNews();
+    }
+    $('opmlOut').addEventListener('click', () => { const blob = new Blob([P.buildOpml(S.follows)], { type: 'text/x-opml' }), a = h('a', { href: URL.createObjectURL(blob), download: 'verse-podcasts.opml' }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); say('Saved verse-podcasts.opml: any podcast app can import it.'); });
+    $('opmlIn').addEventListener('click', () => $('opmlFile').click());
+    $('opmlFile').addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0]; e.target.value = ''; if (!file) return; if (file.size > 2e6) return say('That file is too big for an OPML list.', true);
+      const rows = P.parseOpml(await file.text()); let n = 0; for (const r of rows) { if (S.follows.length >= 60) break; if (S.follows.some((f) => f.feed === r.feed)) continue; S.follows.push({ feed: r.feed, title: r.title, author: '', image: '', seen: null, eps: [], added: Date.now() }); n++; }
+      save(); renderFollows(); say(rows.length ? 'Imported ' + n + ' of ' + rows.length + ' shows' + (S.follows.length >= 60 ? ' (60 is the most kept)' : '') + '. Their episodes load in a moment.' : 'No shows with a feed address were found in that file.', !rows.length); refreshFollows();
+    });
+
+    // ---- the player ----
+    let cur = null, objUrl = '', lastSave = 0, sleepTimer = 0, sleepEnd = 0, sleepAtEnd = false, sleepTick = 0, chapters = [];
+    for (const s of P.SPEEDS) $('speed').append(h('option', { value: String(s) }, s + '×')); for (const [v, t] of P.SLEEPS) $('sleep').append(h('option', { value: String(v) }, t));
+    S.speed = P.clampSpeed(S.speed); $('speed').value = String(S.speed);
+    const setPP = (playing) => { for (const b of [$('pp'), $('miniPP')]) { b.textContent = playing ? 'Pause' : 'Play'; b.setAttribute('aria-label', playing ? 'Pause' : 'Play'); } if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused'; };
+    const status = (t, bad) => { const n = $('pStat'); n.textContent = t; n.classList.toggle('bad', !!bad); };
+    async function srcFor(e) {
+      if (objUrl) { URL.revokeObjectURL(objUrl); objUrl = ''; }
+      if (S.dl[e.key] && 'caches' in window) { try { const c = await caches.open(CACHE), m = await c.match(e.audio); if (m) { objUrl = URL.createObjectURL(await m.blob()); return objUrl; } } catch (_) {} }
+      return e.audio;
+    }
+    async function play(e, autoplay, at) {
+      if (cur && cur.key !== e.key) keepPlace();
+      cur = e; chapters = e.chapters || []; S.queue = S.queue.filter((q) => q.key !== e.key); renderQueue();
+      $('player').hidden = false; document.documentElement.classList.remove('pre');
+      $('pTitle').textContent = e.title; $('pShow').textContent = e.showTitle || ''; const art = $('pArt'); if (okImg(e.image)) { art.src = e.image; art.hidden = false; art.referrerPolicy = 'no-referrer'; } else art.hidden = true;
+      $('pOpen').href = e.audio; $('pLen').textContent = P.clock(e.dur) || '0:00'; $('pCur').textContent = '0:00'; $('seek').value = 0; $('seek').max = e.dur || 0; $('miniT').textContent = e.title;
+      status('Loading the audio…'); setPP(false); $('pDl').textContent = S.dl[e.key] ? 'Remove download' : 'Download';
+      au.preload = 'metadata'; au.src = await srcFor(e); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; au.dataset.at = at || '';
+      au.load(); loadExtras(e); meta(e);
+      if (shown && ((shown.verse && e.showId === 'verse') || (shown.feed && shown.feed === e.feed))) { const u = here(); u.set('ep', e.id); u.delete('t'); history.replaceState({}, '', '/podcasts/?' + u); } // a play from a list elsewhere keeps the address as it is
+      markSeenEp(e);
+      if (autoplay) { try { await au.play(); } catch (_) { status('Press Play to start (your browser asked for a tap first).'); } }
+    }
+    function markSeenEp(e) { const f = S.follows.find((x) => x.feed === e.feed); if (f && f.seen && !f.seen.includes(e.id)) { f.seen.unshift(e.id); save(); renderNews(); } }
+    function keepPlace() { if (!cur || !Number.isFinite(au.currentTime)) return; const old = S.pos[cur.key] || {}; S.pos[cur.key] = { ...old, t: Math.floor(au.currentTime), d: Math.floor(au.duration || cur.dur || 0), u: Date.now() }; save(); }
+    au.addEventListener('loadedmetadata', () => {
+      const d = au.duration; if (Number.isFinite(d)) { $('seek').max = Math.floor(d); $('pLen').textContent = P.clock(d); }
+      const at = +au.dataset.at || P.resumeAt(S.pos[cur.key], d); if (at > 0 && Number.isFinite(d)) { au.currentTime = Math.min(at, d); }
+      status(Number.isFinite(d) ? 'Ready to play · ' + P.clock(d) + (at > 0 ? ' · resuming at ' + P.clock(at) : '') : 'Ready to play');
+    });
+    au.addEventListener('play', () => { setPP(true); }); au.addEventListener('pause', () => { setPP(false); keepPlace(); });
+    au.addEventListener('waiting', () => status('Buffering…')); au.addEventListener('playing', () => status('Playing' + (S.speed !== 1 ? ' at ' + S.speed + '×' : '')));
+    au.addEventListener('error', () => { if (cur) status('This episode did not load. The publisher\'s server may be down or may not allow this page; Open the audio tries it directly.', true); setPP(false); });
+    au.addEventListener('timeupdate', () => {
+      const t = au.currentTime, d = au.duration; $('pCur').textContent = P.clock(t); if (!$('seek').matches(':active')) $('seek').value = Math.floor(t);
+      if (Date.now() - lastSave > 5000) { lastSave = Date.now(); keepPlace(); }
+      const ch = chapters.length ? chapters.filter((c) => c.t <= t).pop() : null; document.querySelectorAll('#chapList button').forEach((b) => b.classList.toggle('on', ch && +b.dataset.t === ch.t));
+      if ($('trans').open) document.querySelectorAll('#lines p[data-t]').forEach((p) => p.classList.toggle('on', +p.dataset.t <= t && (!p.nextElementSibling || +p.nextElementSibling.dataset.t > t)));
+      if ('mediaSession' in navigator && navigator.mediaSession.setPositionState && Number.isFinite(d) && d > 0) { try { navigator.mediaSession.setPositionState({ duration: d, playbackRate: au.playbackRate, position: Math.min(t, d) }); } catch (_) {} }
+    });
+    au.addEventListener('ended', () => {
+      const e = cur; if (e) { S.pos[e.key] = { t: 0, d: Math.floor(au.duration || 0), p: true, u: Date.now() }; save(); }
+      if (sleepAtEnd) { sleepAtEnd = false; $('sleep').value = 'off'; status('Sleep timer: stopped at the end of the episode.'); return; }
+      const next = S.queue[0]; if (next) play(next, true); else status('Finished.');
+    });
+    $('seek').addEventListener('input', (e) => { $('pCur').textContent = P.clock(+e.target.value); }); $('seek').addEventListener('change', (e) => { au.currentTime = +e.target.value; });
+    const jump = (d) => { if (!cur) return; au.currentTime = Math.max(0, Math.min(Number.isFinite(au.duration) ? au.duration : 1e9, au.currentTime + d)); };
+    const toggle = async () => { if (!cur) return; if (au.paused) { try { await au.play(); } catch (_) { status('Press Play again.'); } } else au.pause(); };
+    $('back').onclick = $('miniBack').onclick = () => jump(-15); $('fwd').onclick = $('miniFwd').onclick = () => jump(30); $('pp').onclick = $('miniPP').onclick = toggle;
+    $('speed').addEventListener('change', (e) => { S.speed = P.clampSpeed(e.target.value); au.defaultPlaybackRate = S.speed; au.playbackRate = S.speed; save(); });
+    $('sleep').addEventListener('change', (e) => {
+      clearTimeout(sleepTimer); clearInterval(sleepTick); sleepAtEnd = false; const v = e.target.value; if (v === 'off') return status(au.paused ? 'Ready.' : 'Playing');
+      if (v === 'end') { sleepAtEnd = true; return status('Sleep timer: stops at the end of this episode.'); }
+      sleepEnd = Date.now() + +v * 60000; sleepTimer = setTimeout(() => { au.pause(); $('sleep').value = 'off'; clearInterval(sleepTick); status('Sleep timer: paused.'); }, +v * 60000);
+      const tick = () => status('Sleep timer: pausing in ' + Math.max(1, Math.ceil((sleepEnd - Date.now()) / 60000)) + ' min'); tick(); sleepTick = setInterval(tick, 30000);
+    });
+    function meta(e) {
+      if (!('mediaSession' in navigator)) return;
+      try { const abs = (u) => (/^\//.test(u || '') ? location.origin + u : u); navigator.mediaSession.metadata = new MediaMetadata({ title: e.title, artist: e.showTitle || '', album: e.showTitle || '', artwork: okImg(e.image) ? [{ src: abs(e.image), sizes: '512x512' }] : [] }); } catch (_) {}
+      const set = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (_) {} };
+      set('play', toggle); set('pause', () => au.pause()); set('seekbackward', (d) => jump(-(d && d.seekOffset || 15))); set('seekforward', (d) => jump(d && d.seekOffset || 30)); set('seekto', (d) => { if (d && Number.isFinite(d.seekTime)) au.currentTime = d.seekTime; });
+      set('previoustrack', () => { au.currentTime = 0; }); set('nexttrack', () => { const n = S.queue[0]; if (n) play(n, true); else jump(30); });
+    }
+    async function loadExtras(e) { // chapters and the transcript, after the audio is on its way
+      const cd = $('chap'), cl = $('chapList'); cl.replaceChildren(); cd.hidden = true;
+      const drawChaps = () => { cd.hidden = !chapters.length; cl.replaceChildren(...chapters.map((c) => h('li', {}, h('button', { type: 'button', 'data-t': String(c.t), onclick: () => { au.currentTime = c.t; } }, h('span', { style: 'font-variant-numeric:tabular-nums;color:var(--soft)' }, P.clock(c.t)), c.title)))); };
+      if (chapters.length) drawChaps(); else if (e.chaptersUrl) { const r = await api('chapters=' + encodeURIComponent(e.chaptersUrl)); if (cur === e && r.ok && r.chapters.length) { chapters = r.chapters; drawChaps(); } }
+      const td = $('trans'); td.hidden = !(e.transcriptLines || e.showId === 'verse' || (e.transcripts && e.transcripts.length)); td.open = false; $('lines').replaceChildren(); $('tq').value = ''; td.dataset.loaded = '';
+    }
+    $('trans').addEventListener('toggle', async () => {
+      const td = $('trans'); if (!td.open || td.dataset.loaded || !cur) return; td.dataset.loaded = '1'; const e = cur, box = $('lines'); box.textContent = 'Loading the transcript…';
+      let lines = e.transcriptLines; if (!lines && e.showId === 'verse') { try { const v = P.verseShow(await (await fetch('/podcast/episodes.json')).json()); lines = (v.episodes.find((x) => x.id === e.id) || {}).transcriptLines; } catch (_) {} } if (!lines && e.transcripts) { const t = e.transcripts[0], r = await api('transcript=' + encodeURIComponent(t.url) + '&kind=' + t.kind); lines = r.ok ? r.lines : []; }
+      if (cur !== e) return; if (!lines || !lines.length) { box.textContent = 'The transcript did not load.'; return; }
+      box.replaceChildren(...lines.slice(0, 1500).map((l) => h('p', l.t != null ? { 'data-t': String(l.t), onclick: () => { au.currentTime = l.t; } } : {}, l.t != null ? h('time', {}, P.clock(l.t)) : null, l.text)));
+    });
+    $('tq').addEventListener('input', (e) => { const q = e.target.value.trim().toLowerCase(); document.querySelectorAll('#lines p').forEach((p) => { p.hidden = !!q && !p.textContent.toLowerCase().includes(q); }); });
+    new IntersectionObserver(([en]) => { const on = !en.isIntersecting && !!cur; $('mini').hidden = !on; document.documentElement.classList.toggle('mini', on); }).observe($('player'));
+
+    // ---- queue ----
+    const strip = (e) => { const { transcriptLines, ...r } = e; return { ...r, notes: P.cutAt(r.notes || '', 240) }; };
+    function addQueue(e) { if (cur && cur.key === e.key) return say('That episode is playing now.'); if (S.queue.some((q) => q.key === e.key)) return say('Already in the queue.'); if (S.queue.length >= 100) return say('The queue holds 100 episodes.', true); S.queue.push(strip(e)); save(); renderQueue(); say('Added to the queue: ' + e.title); }
+    function renderQueue() {
+      $('queBtn').textContent = 'Queue' + (S.queue.length ? ' (' + S.queue.length + ')' : ''); const ul = $('queList');
+      ul.replaceChildren(...(S.queue.length ? S.queue.map((e, i) => h('li', {}, h('span', { class: 'who' }, pic(e.image, 56, ''), h('span', {}, h('b', {}, e.title), h('small', {}, [e.showTitle, P.lengthWords(e.dur)].filter(Boolean).join(' · ')))),
+        h('button', { type: 'button', class: 'go', 'aria-label': 'Play ' + e.title, onclick: () => play(e, true) }, 'Play'), h('button', { type: 'button', 'aria-label': 'Move up: ' + e.title, disabled: i === 0, onclick: () => { [S.queue[i - 1], S.queue[i]] = [S.queue[i], S.queue[i - 1]]; save(); renderQueue(); } }, '↑'),
+        h('button', { type: 'button', 'aria-label': 'Move down: ' + e.title, disabled: i === S.queue.length - 1, onclick: () => { [S.queue[i + 1], S.queue[i]] = [S.queue[i], S.queue[i + 1]]; save(); renderQueue(); } }, '↓'), h('button', { type: 'button', 'aria-label': 'Remove from the queue: ' + e.title, onclick: () => { S.queue.splice(i, 1); save(); renderQueue(); } }, '✕'))) : [h('li', { class: 'empty' }, 'The queue is empty. Tap + Queue on an episode; the next one plays when this one ends.')]));
+    }
+    $('queClear').addEventListener('click', () => { S.queue = []; save(); renderQueue(); }); $('pQueue').addEventListener('click', () => cur && addQueue(cur));
+
+    // ---- downloads (Cache API; where the publisher allows a web page to read its audio) ----
+    const used = () => Object.values(S.dl).reduce((n, d) => n + (d.size || 0), 0);
+    async function download(e) {
+      if (!('caches' in window)) return status('This browser cannot save episodes.', true);
+      if (S.dl[e.key]) { try { await (await caches.open(CACHE)).delete(e.audio); } catch (_) {} delete S.dl[e.key]; save(); renderDl(); $('pDl').textContent = 'Download'; return status('Removed from this device.'); }
+      if (!navigator.onLine) return status('Saving an episode needs a connection.', true);
+      if ((e.bytes || 0) > MAX_EP || used() + (e.bytes || 0) > MAX_ALL) return status('Too big to keep: the limit is 150 MB an episode and 1 GB in all.', true);
+      $('pDl').disabled = true;
+      try {
+        const res = await fetch(e.audio, { mode: 'cors', credentials: 'omit' }); if (!res.ok) throw new Error('status');
+        const total = +res.headers.get('content-length') || e.bytes || 0; if (total > MAX_EP || used() + total > MAX_ALL) throw new Error('size');
+        const rd = res.body.getReader(), parts = []; let n = 0;
+        for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); n += value.byteLength; if (n > MAX_EP) { rd.cancel(); throw new Error('size'); } status('Saving… ' + Math.round(n / 1048576) + ' MB' + (total ? ' of ' + Math.round(total / 1048576) : '')); }
+        const type = res.headers.get('content-type') || e.type || 'audio/mpeg'; await (await caches.open(CACHE)).put(e.audio, new Response(new Blob(parts, { type }), { headers: { 'content-type': type } }));
+        S.dl[e.key] = { ...strip(e), size: n, saved: Date.now() }; save(); renderDl(); if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+        if (cur && cur.key === e.key) $('pDl').textContent = 'Remove download'; status('Saved for offline · ' + (n / 1048576).toFixed(1) + ' MB. It plays from this device now.');
+      } catch (err) { status(String(err.message) === 'size' ? 'Too big to keep: the limit is 150 MB an episode and 1 GB in all.' : 'This publisher does not let a web page save its audio (or the connection dropped). It still streams.', true); }
+      $('pDl').disabled = false;
+    }
+    $('pDl').addEventListener('click', () => cur && download(cur));
+    function renderDl() {
+      const rows = Object.values(S.dl).sort((a, b) => (b.saved || 0) - (a.saved || 0)); $('dlBtn').textContent = 'Downloads' + (rows.length ? ' (' + rows.length + ')' : '');
+      $('dlList').replaceChildren(...(rows.length ? rows.map((e) => h('li', {}, h('span', { class: 'who' }, pic(e.image, 56, ''), h('span', {}, h('b', {}, e.title), h('small', {}, [e.showTitle, (e.size / 1048576).toFixed(1) + ' MB'].join(' · ')))), h('button', { type: 'button', class: 'go', 'aria-label': 'Play ' + e.title, onclick: () => play(e, true) }, 'Play'), h('button', { type: 'button', class: 'bad', 'aria-label': 'Remove the download: ' + e.title, onclick: () => download(e).then(renderDl) }, 'Remove'))) : [h('li', { class: 'empty' }, 'Nothing saved yet. Open an episode and tap Download.')]));
+    }
+
+    // ---- sharing, in words ----
+    async function share(show, e) {
+      const url = P.shareLink(location.origin, show, e, e && cur && cur.key === e.key ? au.currentTime : 0), text = P.shareText(show, e), title = e ? e.title : show.title;
+      try { if (navigator.share) { await navigator.share({ title, text, url }); return; } } catch (err) { if (err && err.name === 'AbortError') return; }
+      try { await navigator.clipboard.writeText(text + '\n' + url); say('Link copied: ' + url); } catch (_) { say(url); }
+    }
+    $('pShare').addEventListener('click', () => { if (!cur) return; const show = shown && (shown.feed === cur.feed || shown.id === cur.showId) ? shown : { title: cur.showTitle, feed: cur.feed, id: cur.showId === 'verse' ? '' : cur.showId, verse: cur.showId === 'verse' }; share(show, cur); });
+    addEventListener('pagehide', keepPlace);
+
+    // ---- the panes, the search box, the address ----
+    const panes = { folBtn: 'folPane', newBtn: 'newPane', queBtn: 'quePane', dlBtn: 'dlPane' };
+    for (const [b, p] of Object.entries(panes)) $(b).addEventListener('click', () => { const open = $(p).hidden; for (const [b2, p2] of Object.entries(panes)) { $(p2).hidden = true; $(b2).setAttribute('aria-expanded', 'false'); } $(p).hidden = !open; $(b).setAttribute('aria-expanded', String(open)); });
+    $('f').addEventListener('submit', (e) => { e.preventDefault(); const k = P.kindOfInput($('q').value); if (k.feed) go({ feed: k.feed }); else if (k.q) go({ q: k.q }); else say('Type a show or paste an RSS link.', true); });
+    $('homeBtn').addEventListener('click', () => { $('q').value = ''; go({}); });
+    $('pin').querySelector('a').addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go({ show: 'verse' }); });
+    async function route() {
+      const q = here(); say('');
+      if (q.get('show') === 'verse') await showView({ verse: true }, q.get('ep'), +q.get('t') || 0);
+      else if (q.get('show')) { if (/^\d{1,12}$/.test(q.get('show'))) await showView({ id: q.get('show') }, q.get('ep'), +q.get('t') || 0); else say('That link has no show.', true); }
+      else if (q.get('feed')) { const w = P.whyNot(q.get('feed')); if (w) { say('That feed address cannot be read (' + w + ').', true); homeView(); } else await showView({ feed: q.get('feed') }, q.get('ep'), +q.get('t') || 0); }
+      else if (q.get('q')) { $('q').value = q.get('q'); await searchView(q.get('q')); }
+      else homeView();
+      document.documentElement.classList.remove('pre');
+    }
+    addEventListener('popstate', route);
+    renderFollows(); renderNews(); renderQueue(); renderDl();
+    try { await route(); } finally { document.documentElement.classList.remove('pre'); }
+    setTimeout(refreshFollows, 1500); // new episodes of followed shows, after the page is up
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

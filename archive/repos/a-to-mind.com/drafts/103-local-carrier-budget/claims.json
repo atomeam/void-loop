@@ -1,0 +1,47 @@
+{
+  "slug": "local-carrier-budget",
+  "run": 103,
+  "family": "sensory substitution",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "canonical": "carrier-budget|v1|<class>|sense-refusal",
+  "denied": ["restored-sight", "object-label", "distance-meters", "threat", "implant-equivalence", "scene"],
+  "hypotheses": [
+    {
+      "id": "pitch-bin",
+      "sha256": "9ca8eb5e6e93564149de8e8344bd76cf36dabebd7817c94cb0a2361469f79394",
+      "claim": "A pitch bin is a carrier budget line, not sight.",
+      "confidence": "low-as-sight",
+      "status": "unattested"
+    },
+    {
+      "id": "time-column",
+      "sha256": "b4e98b920cdfb6e83df29fea2f65daf074270a4e6ac9958304214ad291503ca3",
+      "claim": "A time column is a carrier budget line, not a recovered scene.",
+      "confidence": "low-as-sight",
+      "status": "unattested"
+    },
+    {
+      "id": "instrument-timbre",
+      "sha256": "c01e52800c222dbf29354e8ebaa5299ea5e28bb7d63ef62a6af5923173fc2185",
+      "claim": "An instrument timbre token is not a color sense.",
+      "confidence": "low-as-sight",
+      "status": "unattested"
+    },
+    {
+      "id": "electrode-locus",
+      "sha256": "012d7b58cb212bb3ed303bc84c8c13eabfe6cdbede4ef77b91f5372ab1208f9e",
+      "claim": "An electrode locus token is not a tongue percept and not restored vision.",
+      "confidence": "low-as-sight",
+      "status": "unattested"
+    },
+    {
+      "id": "depth-band",
+      "sha256": "7f0f675524fae567d5d8cda220cc4ee7270569f4c8807821671b2e224ce38887",
+      "claim": "A depth band token is not distance in meters.",
+      "confidence": "low-as-sight",
+      "status": "unattested"
+    }
+  ]
+}

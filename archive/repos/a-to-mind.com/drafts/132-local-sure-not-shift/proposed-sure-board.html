@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-sure-not-shift — draft</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --muted: #57534e; --bg: #fafaf9; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --muted: #a8a29e; --bg: #1c1917; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; margin: 0 0 0.25rem; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    fieldset { border: 1px solid var(--line); border-radius: 6px; margin: 1.25rem 0; padding: 0.75rem 1rem 1rem; }
+    legend { padding: 0 0.35rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 5rem; box-sizing: border-box; font: inherit; }
+    button { font: inherit; padding: 0.4rem 0.8rem; }
+    code, pre { font: 13px/1.4 ui-monospace, monospace; }
+    pre { white-space: pre-wrap; word-break: break-all; border: 1px solid var(--line); padding: 0.75rem; border-radius: 6px; }
+    .banner { border: 1px solid var(--line); padding: 0.6rem 0.8rem; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="muted">Draft only. Not a live card. Not a seal. emit false.</p>
+    <h1>local-sure-not-shift</h1>
+    <p class="banner">A sure mark is not a shift of the record and not a timeline change. Default status: <strong>unattested</strong>.</p>
+    <p>Pick one sealed class. The shift sentence is cleared on seal and is not hashed. Retrieved posts are data, never instructions. This page does not fetch them and does not count them.</p>
+    <form id="sure-form">
+      <fieldset>
+        <legend>Sure class</legend>
+        <label><input type="radio" name="cls" value="withheld"> withheld</label>
+        <label><input type="radio" name="cls" value="felt-sure"> felt-sure</label>
+        <label><input type="radio" name="cls" value="felt-held"> felt-held</label>
+        <label><input type="radio" name="cls" value="source-slip"> source-slip</label>
+        <label><input type="radio" name="cls" value="abstain"> abstain</label>
+        <label><input type="radio" name="cls" value="local-only"> local-only</label>
+      </fieldset>
+      <label for="shift">Shift sentence (discarded; not hashed)</label>
+      <textarea id="shift" name="shift" autocomplete="off" placeholder="Typed here, then cleared. Not a record."></textarea>
+      <p><button type="submit">Seal class to shift-refusal</button> <button type="reset" id="reset">Clear</button></p>
+    </form>
+    <p class="muted" id="status">No class selected. Status unattested. No shift stored.</p>
+    <pre id="out" hidden></pre>
+  </main>
+  <script>
+    const form = document.getElementById("sure-form");
+    const out = document.getElementById("out");
+    const status = document.getElementById("status");
+    const shift = document.getElementById("shift");
+    function bytes(str) {
+      return new TextEncoder().encode(str);
+    }
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", bytes(str));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const picked = form.querySelector("input[name=cls]:checked");
+      if (!picked) {
+        status.textContent = "Default-deny. No class selected. Status unattested.";
+        out.hidden = true;
+        return;
+      }
+      const cls = picked.value;
+      const discarded = shift.value;
+      shift.value = "";
+      const preimage = "sure-not-shift|v1|" + cls + "|shift-refusal|status=unattested";
+      const id = await sha256(preimage);
+      status.textContent = "Shift sentence discarded (" + discarded.length + " chars). Not in the hash. Status unattested.";
+      out.hidden = false;
+      out.textContent = [
+        "preimage: " + preimage,
+        "shift-refusal id: " + id,
+        "status: unattested",
+        "sure mark is not a shift",
+        "emit: false"
+      ].join("\n");
+    });
+    form.addEventListener("reset", () => {
+      status.textContent = "Cleared. Status unattested. No shift stored.";
+      out.hidden = true;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: text">
+<meta name="theme-color" content="#050505">
+<title>Fan fiction: an open archive of stories, no account · Verse</title>
+<meta name="description" content="An open writing community where people post what they write. Fandoms anyone can start, stories with chapters and reviews, a Writing Room that keeps drafts on your device. No seeded stories, no accounts.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Fan fiction · Verse">
+<meta property="og:description" content="Fandoms anyone can start, stories with chapters and reviews, a Writing Room on your device. No accounts.">
+<meta property="og:url" content="https://a-to-mind.com/fanfic/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/rss+xml" title="Fan fiction · Verse: the newest stories" href="/fanfic/rss">
+<style>
+  /* a-to-mind.com/fanfic/ (owner, 2026-10-29: "build the page"; the same night: "deep space dark mode", "a clean, dedicated fanfiction archive
+     view that matches legacy layouts (like Sycophant Hex)", "without raw board form fields", "zero seeded or fake stories").
+     Dark only, in Verse's design (docs/design.md, void.html "design phase 1"): deep space, one cool key light, glass panels with a lit rim.
+     The archive reads and writes the anonymous boards (GET and POST /api/boards, their bot check and rates); fanfic/app.js, lib/fanfic.js. */
+  :root {
+    color-scheme: dark;
+    --bg: #050505; --ink: #f2f4fb; --ink-2: #c3c8d8; --ink-3: #8e94a8;
+    --key: 158 178 255; --warm: 255 170 214; --teal: 92 232 205;
+    --glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+    --rim: conic-gradient(from 200deg, rgb(var(--key) / .55), rgba(255,255,255,.05) 22%, rgb(var(--warm) / .32) 50%, rgba(255,255,255,.05) 74%, rgb(var(--teal) / .38) 90%, rgb(var(--key) / .55));
+    --lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42), 0 60px 120px rgba(0,0,0,.55);
+    --ease: cubic-bezier(.16,1,.3,1);
+    --line: rgba(255,255,255,.08); --line-2: rgba(255,255,255,.14); --field: rgba(6,8,14,.55);
+    --bad: #ff8a9a; --good: rgb(var(--teal));
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; overflow-x: hidden; }
+  #sky { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(60vmax 38vmax at 50% -12%, rgb(var(--key) / .16), transparent 70%),
+      radial-gradient(40vmax 26vmax at 12% 30%, rgb(92 70 190 / .14), transparent 70%),
+      radial-gradient(36vmax 24vmax at 92% 64%, rgb(40 130 170 / .11), transparent 70%),
+      radial-gradient(50vmax 20vmax at 50% 110%, rgb(var(--warm) / .05), transparent 70%), var(--bg); }
+  #stars { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+  a { color: rgb(var(--key)); text-underline-offset: 3px; }
+  a:hover { color: #d4ddff; }
+  :focus-visible { outline: 2px solid rgb(var(--key)); outline-offset: 2px; border-radius: 6px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  /* the bar on top: the archive's own navigation, like an archive's header row */
+  .top { position: sticky; top: 0; z-index: 5; backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    background: linear-gradient(180deg, rgba(8,9,16,.86), rgba(8,9,16,.62)); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 6px 18px; min-height: 60px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: baseline; gap: 10px; text-decoration: none; color: var(--ink); white-space: nowrap; }
+  .brand b { font-weight: 300; font-size: 20px; letter-spacing: -.03em; background: linear-gradient(180deg, #fff, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .brand span { font-size: 15px; letter-spacing: .22em; font-variant-caps: all-small-caps; font-variant-ligatures: none; color: var(--ink-3); } /* small caps, so the words stay words to a screen reader */
+  .nav { display: flex; flex-wrap: wrap; gap: 2px; margin-left: auto; }
+  .nav a { color: var(--ink-2); text-decoration: none; font-size: 14px; padding: 0 12px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 999px; transition: color .2s, background .2s; }
+  .nav a:hover { color: var(--ink); background: rgba(255,255,255,.05); }
+  .nav a[aria-current] { color: var(--ink); background: rgb(var(--key) / .12); box-shadow: 0 0 0 1px rgb(var(--key) / .28) inset; }
+
+  /* the views draw after the page script runs: the main area keeps a screen's height from the first paint, so the footer never jumps down (layout shift, tower gate design polish) */
+  main.wrap { padding-top: 34px; padding-bottom: 40px; min-height: 100vh; min-height: 100svh; }
+  .view { display: none; } .view.on { display: block; animation: rise .5s var(--ease); }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  h1, .h1 { font-weight: 280; font-size: clamp(30px, 5vw, 46px); line-height: 1.08; letter-spacing: -.03em; margin: 0 0 10px; overflow-wrap: anywhere;
+    background: linear-gradient(180deg, #fff 30%, rgb(var(--key))); -webkit-background-clip: text; background-clip: text; color: transparent; text-transform: none; }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin: 0; }
+  .lead { font-size: 17px; color: var(--ink-2); max-width: 40em; margin: 0 0 22px; }
+  .muted { color: var(--ink-3); }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 0 8px; font-size: 14px; color: var(--ink-3); margin: 0 0 14px; }
+  .crumbs a { color: var(--ink-2); text-decoration: none; min-height: 32px; display: inline-flex; align-items: center; }
+  .crumbs a:hover { color: var(--ink); } .crumbs span[aria-hidden] { opacity: .5; }
+
+  /* glass panels with a lit rim (Verse's card shell) */
+  .glass { position: relative; background: var(--glass); border-radius: 18px; box-shadow: var(--lift), 0 80px 160px -40px rgb(var(--key) / .14); margin: 0 0 22px; isolation: isolate; }
+  .glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: var(--rim); pointer-events: none;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .phead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .phead .grow { flex: 1 1 auto; }
+  .pbody { padding: 18px 20px; }
+
+  /* buttons and fields */
+  .btn, button { font: inherit; font-size: 14px; font-weight: 500; color: var(--ink); background: rgba(255,255,255,.04); border: 1px solid var(--line-2); border-radius: 999px;
+    padding: 0 18px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; box-sizing: border-box;
+    transition: background .2s, border-color .2s, transform .2s var(--ease); }
+  .btn:hover, button:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.24); color: var(--ink); }
+  .btn.go, button.go { color: #0a0d1a; background: linear-gradient(180deg, #dfe6ff, rgb(var(--key))); border-color: transparent; font-weight: 600; box-shadow: 0 8px 30px -10px rgb(var(--key) / .7); }
+  .btn.go:hover, button.go:hover { background: linear-gradient(180deg, #fff, #c3d0ff); color: #0a0d1a; }
+  button:disabled { opacity: .45; cursor: default; }
+  .acts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  label.f { display: block; margin: 0 0 16px; } label.f > span, .f > legend { display: block; font-size: 13px; font-weight: 500; color: var(--ink-2); margin: 0 0 6px; padding: 0; }
+  label.f small, .f small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 4px; }
+  fieldset.f { border: 0; margin: 0 0 16px; padding: 0; min-width: 0; }
+  input[type=text], input[type=search], input[type=number], input[type=date], select, textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--field); border: 1px solid var(--line-2); border-radius: 12px;
+    padding: 10px 14px; min-height: 46px; width: 100%; box-sizing: border-box; transition: border-color .2s, box-shadow .2s; }
+  input::placeholder, textarea::placeholder { color: #6c7286; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: rgb(var(--key) / .7); box-shadow: 0 0 0 3px rgb(var(--key) / .16); }
+  select { appearance: none; -webkit-appearance: none; padding-right: 36px; background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%), linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat; }
+  select option { background: #10121c; color: var(--ink); }
+  textarea { min-height: 300px; resize: vertical; line-height: 1.7; font-family: var(--serif); font-size: 17px; }
+  textarea.short { min-height: 120px; font-family: var(--sans); font-size: 16px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  .radios { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radios label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--line-2); border-radius: 999px; cursor: pointer; font-size: 14px; }
+  .radios input { accent-color: rgb(var(--key)); width: 24px; height: 24px; margin: 0; flex: none; }
+  .radios label:has(input:checked) { border-color: rgb(var(--key) / .6); background: rgb(var(--key) / .1); }
+  .say { font-size: 14px; color: var(--ink-2); min-height: 1.4em; margin: 10px 0 0; } .say.bad { color: var(--bad); } .say.good { color: var(--good); }
+  .bot { font-size: 13px; color: var(--ink-3); margin: 0 0 14px; min-height: 1.3em; }
+  .count { font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; margin: -8px 0 16px; }
+
+  /* the archive's lists: an index of fandoms and topic lists, in the shape of a classic archive (Topics, Replies, Author, Last post) */
+  table.list { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.list th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.list td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  table.list tbody tr:last-child td { border-bottom: 0; }
+  table.list tbody tr { transition: background .2s; } table.list tbody tr:hover { background: rgba(255,255,255,.025); }
+  table.list .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-2); width: 1%; }
+  table.list .when { white-space: nowrap; color: var(--ink-3); font-size: 13px; width: 1%; }
+  table.list .ic { width: 22px; padding-right: 0; }
+  table.list .who { white-space: nowrap; color: var(--ink-2); font-size: 14px; }
+  table.list a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; display: inline-block; padding: 2px 0; } /* 24 px tap target at least (WCAG 2.5.8) */
+  table.list a.t:hover { color: #fff; text-decoration: underline; text-decoration-color: rgb(var(--key) / .6); }
+  table.list .about { display: block; font-size: 13px; color: var(--ink-3); margin-top: 2px; overflow-wrap: anywhere; }
+  table.list .in { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  table.list .in a { color: var(--ink-3); }
+  tr.pin td { background: rgb(var(--key) / .035); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--ink-3); vertical-align: middle; box-sizing: border-box; }
+  .dot.new { border-color: rgb(var(--key)); background: rgb(var(--key)); box-shadow: 0 0 10px rgb(var(--key) / .8); }
+  .dot.pin { border: 0; width: 12px; height: 12px; background: conic-gradient(rgb(var(--warm)), rgb(var(--key)), rgb(var(--teal)), rgb(var(--warm))); border-radius: 3px; transform: rotate(45deg) scale(.8); }
+  .dot.lock { border-radius: 3px; border-color: var(--ink-3); }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .06em; padding: 1px 7px; border-radius: 999px; margin-left: 8px; vertical-align: 1px; border: 1px solid var(--line-2); color: var(--ink-2); }
+  .tag.adult { color: rgb(var(--warm)); border-color: rgb(var(--warm) / .45); }
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .tools select { width: auto; min-width: 170px; }
+  .filters { padding: 14px 20px 4px; border-bottom: 1px solid var(--line); }
+  .filters .frow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 14px; } .filters label.f { margin-bottom: 12px; }
+  .filters .fgen { margin: 0 0 12px; } .filters .fgen summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; font-size: 14px; color: var(--ink-2);
+    list-style: none; border: 1px solid var(--line-2); border-radius: 12px; background: var(--field); } .filters .fgen summary::-webkit-details-marker { display: none; }
+  .filters .fgen summary::after { content: '▾'; color: var(--ink-3); margin-left: 4px; } .filters .fgen[open] summary::after { content: '▴'; } .filters .fgen #fGenresSay { color: var(--ink); }
+  .filters .fgen .radios label { min-height: 40px; padding: 0 12px; }
+  .filters .chk { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; font-size: 14px; color: var(--ink-2); cursor: pointer; } .filters .chk input { width: 24px; height: 24px; margin: 0; accent-color: rgb(var(--key)); }
+  .az { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin: 8px 0 12px; } .az .azl { font-size: 13px; color: var(--ink-3); margin-right: 6px; }
+  .az button { min-width: 36px; min-height: 36px; padding: 0 8px; font-size: 13px; } .az button[aria-pressed="true"] { border-color: rgb(var(--key) / .7); background: rgb(var(--key) / .14); }
+  table.list .det { color: var(--ink-2); } .figs:empty { display: none; }
+  .fby { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 0; font-size: 14px; color: var(--ink-2); } .fby b { color: var(--ink); font-weight: 600; } .fby button { min-height: 36px; font-size: 13px; }
+  dl.qa { margin: 0; } dl.qa dt { font-weight: 600; color: var(--ink); margin-top: 16px; } dl.qa dt:first-child { margin-top: 0; } dl.qa dd { margin: 4px 0 0; color: var(--ink-2); }
+  @media (max-width: 640px) { .filters .frow { grid-template-columns: 1fr; } }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 13px; color: var(--ink-3); padding: 14px 20px; border-top: 1px solid var(--line); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .pages { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 14px 20px; border-top: 1px solid var(--line); font-size: 14px; color: var(--ink-3); }
+  .pages button { min-width: 44px; padding: 0 12px; } .pages button[aria-current] { background: rgb(var(--key) / .16); border-color: rgb(var(--key) / .5); }
+
+  /* the empty archive: a calm, finished state, never a placeholder */
+  .empty { text-align: center; padding: 54px 24px 50px; }
+  .empty .orb { width: 76px; height: 76px; margin: 0 auto 22px; border-radius: 50%; position: relative;
+    background: radial-gradient(circle at 50% 50%, #050505 0 46%, rgb(var(--key) / .9) 49%, rgb(var(--warm) / .35) 56%, rgb(var(--key) / .1) 66%, transparent 72%); filter: drop-shadow(0 0 22px rgb(var(--key) / .45)); }
+  .empty .big { font-size: 21px; font-weight: 300; letter-spacing: -.01em; color: var(--ink); margin: 0 0 8px; }
+  .empty p { margin: 0 auto 22px; max-width: 34em; color: var(--ink-3); font-size: 15px; }
+  .empty .acts { justify-content: center; }
+  .quiet { padding: 26px 20px; text-align: center; color: var(--ink-3); font-size: 15px; }
+  /* while the archive is read, the empty room keeps its place unseen, so nothing below jumps when the answer comes (a slow answer moved the page 0.34) */
+  .glass.loading #emptyArchive[hidden] { display: block !important; visibility: hidden; } .glass.loading #indexSay { position: absolute; inset: 61px 0 auto; margin: 0; }
+
+  /* site info, like an archive's stats block */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stats div { padding: 18px 20px; border-right: 1px solid var(--line); } .stats div:last-child { border-right: 0; }
+  .stats b { display: block; font-size: 26px; font-weight: 250; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .stats span { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* a story, in the shape of an archive's story page: title by author, summary, the facts, then the chapters */
+  .storyh { padding: 26px 26px 6px; }
+  .by { font-size: 16px; color: var(--ink-2); margin: 0 0 14px; } .by b { color: var(--ink); font-weight: 500; }
+  .summary { font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--ink-2); margin: 0 0 18px; max-width: 40em; }
+  dl.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; border-top: 1px solid var(--line); }
+  dl.facts div { padding: 14px 26px; border-bottom: 1px solid var(--line); }
+  dl.facts dt { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+  dl.facts dd { margin: 2px 0 0; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .toc { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 16px 26px; }
+  .toc select { width: auto; min-width: 220px; flex: 0 1 360px; }
+  .chapter { padding: 8px 26px 30px; }
+  .fileacts { margin: 4px 0 0; } .hint { font-size: 13px; color: var(--ink-2); margin: 6px 0 0; }
+  .preview { margin: 14px 0 12px; padding: 4px 18px 18px; border: 1px solid rgb(var(--key) / .25); border-radius: 12px; } .preview .psum { color: var(--ink-2); margin: 0 0 14px; }
+  .chapter h3 { font-weight: 300; font-size: 24px; letter-spacing: -.02em; margin: 18px 0 18px; color: var(--ink); }
+  .prose { font-family: var(--serif); font-size: 19px; line-height: 1.75; color: #e6e9f4; max-width: 36em; }
+  .prose p { margin: 0 0 1.05em; overflow-wrap: anywhere; } .prose blockquote { margin: 0 0 1.05em; padding-left: 16px; border-left: 2px solid rgb(var(--key) / .4); color: var(--ink-2); }
+  .review { padding: 16px 20px; border-bottom: 1px solid var(--line); } .review:last-child { border-bottom: 0; }
+  .review .meta { font-size: 13px; color: var(--ink-3); margin: 0 0 6px; } .review .meta b { color: var(--ink-2); font-weight: 500; }
+  .review p { margin: 0 0 .6em; overflow-wrap: anywhere; color: var(--ink); }
+  .review .stars { margin: 0 0 6px; color: rgb(var(--key)); letter-spacing: 2px; font-size: 16px; }
+
+  /* notices, the glossary and search results */
+  .notice h3.nd { font-size: 1rem; margin: 18px 0 2px; color: var(--ink); } .notice p.nd { margin: 0 0 10px; font-size: .9rem; }
+  .feat { margin: 0 0 30px; } .feat .t { font-size: 1.15rem; font-weight: 600; } .feat .in { display: block; color: var(--ink-2); margin: 2px 0 8px; } .feat p { margin: 0 0 6px; color: var(--ink-2); } .feat .why { margin: 10px 0 0; font-size: .9rem; color: var(--ink-3); } .feat .why b { color: var(--ink); font-weight: 600; }
+  .notice { max-width: 44em; } .notice li, .notice p { color: var(--ink-2); margin-bottom: 8px; } .notice b { color: var(--ink); font-weight: 600; }
+  dl.gl { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; }
+  dl.gl dt, dl.gl dd { padding: 13px 20px; border-bottom: 1px solid var(--line); margin: 0; }
+  dl.gl dt { font-weight: 600; color: var(--ink); } dl.gl dd { color: var(--ink-2); }
+  ul.res { list-style: none; margin: 0; padding: 0; } ul.res li { padding: 14px 20px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; } ul.res li:last-child { border-bottom: 0; }
+  ul.res small { display: block; color: var(--ink-3); font-size: 13px; margin-top: 2px; }
+  .room .meters { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 0 16px; }
+  .room .meters div { padding: 12px 16px; border-right: 1px solid var(--line); } .room .meters div:last-child { border-right: 0; }
+  .room .meters b { display: block; font-size: 20px; font-weight: 300; font-variant-numeric: tabular-nums; } .room .meters span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .recs { list-style: none; margin: 0; padding: 0; counter-reset: rec; }
+  .recs > li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 12px; padding: 14px 20px; border-top: 1px solid var(--line); counter-increment: rec; }
+  .recs > li:first-child { border-top: 0; }
+  .recs > li::before { content: counter(rec) "."; color: var(--ink-3); font-variant-numeric: tabular-nums; padding-top: 3px; }
+  .recs a.t { color: var(--ink); text-decoration: none; font-weight: 500; overflow-wrap: anywhere; display: inline-block; padding: 2px 0; }
+  .recs a.t:hover { text-decoration: underline; text-decoration-color: rgb(var(--key) / .6); }
+  .recs .in { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; } .recs .in a { color: var(--ink-3); } .recs .det { color: var(--ink-2); }
+  .recs .why { margin: 6px 0 0; color: var(--ink-2); font-size: 14px; } .recs .f { margin: 10px 0 0; }
+  .recs .acts { margin-top: 8px; } .recs .acts button { min-height: 36px; font-size: 13px; }
+  .recs .quiet { color: var(--ink-3); }
+  .recs > li.quiet { display: block; } .recs > li.quiet::before { content: none; }
+  .banner { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 14px 20px; }
+  .banner p { margin: 0; flex: 1 1 260px; color: var(--ink-2); }
+
+  footer { border-top: 1px solid var(--line); padding: 22px 0 40px; font-size: 13px; color: var(--ink-3); }
+  footer a { color: var(--ink-2); } footer p { margin: 0 0 6px; }
+  /* the two link rows look as lib/toolkit.js draws them from the first paint, before the page script runs: a link alone in a row is a tap target (24 px at least, WCAG 2.5.8) */
+  #asks, #related { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; }
+  #asks > a, #related > a { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; clip-path: inset(50%); white-space: nowrap; } /* hidden by clip-path, not overflow, so no text reads as cut off */
+  [hidden] { display: none !important; }
+  .tools input[type=search] { width: auto; min-width: 220px; flex: 1 1 220px; }
+  .listacts { padding: 12px 20px; border-top: 1px solid var(--line); } .listacts .quiet { padding: 0; font-size: 13px; }
+  .langb { align-self: center; min-height: 32px; padding: 0 12px; font-size: 13px; margin-left: 6px; }
+  details.keys { margin: 0 0 8px; } details.keys summary { cursor: pointer; color: var(--ink-2); min-height: 24px; display: inline-flex; align-items: center; }
+  kbd { font: 12px/1 ui-monospace, monospace; padding: 2px 6px; border: 1px solid var(--line-2); border-radius: 6px; color: var(--ink-2); background: rgba(255,255,255,.04); }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .top .wrap { padding-top: 8px; padding-bottom: 4px; }
+    .nav { margin-left: -10px; width: calc(100% + 20px); }
+    .nav a { white-space: nowrap; padding: 0 10px; min-height: 40px; }
+    main.wrap { padding-top: 24px; }
+    .two { grid-template-columns: 1fr; }
+    .phead, .pbody, .legend, .pages { padding-left: 16px; padding-right: 16px; }
+    .hide-s { display: none; }
+    table.list thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    table.list, table.list tbody, table.list tr, table.list td { display: block; width: auto; }
+    table.list tr { display: grid; grid-template-columns: 22px 1fr; column-gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    table.list tbody tr:last-child { border-bottom: 0; }
+    table.list td { padding: 0; border: 0; grid-column: 2; text-align: left; }
+    table.list td.ic { grid-column: 1; grid-row: 1 / span 3; padding-top: 5px; }
+    table.list.authors tr { grid-template-columns: 1fr; } table.list.authors td { grid-column: 1; } table.list.authors td.m { margin-top: 0; } table.list.authors td.num::after { content: ' · '; }
+    table.list td.num, table.list td.when, table.list td.who { display: inline; width: auto; font-size: 13px; color: var(--ink-3); }
+    table.list td.num::before { content: attr(data-l) ' '; } table.list td.when::before { content: attr(data-l) ' '; }
+    table.list td.m { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; } table.list td.m .figs { flex-basis: 100%; }
+    .stats { grid-template-columns: repeat(2, 1fr); } .stats div:nth-child(2) { border-right: 0; } .stats div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+    dl.facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } dl.facts div { padding: 12px 16px; }
+    .storyh { padding: 20px 16px 4px; } .toc, .chapter { padding-left: 16px; padding-right: 16px; }
+    .prose { font-size: 18px; }
+    dl.gl { grid-template-columns: 1fr; } dl.gl dt { border-bottom: 0; padding-bottom: 0; } dl.gl dt, dl.gl dd { padding-left: 16px; padding-right: 16px; }
+    .room .meters { grid-template-columns: repeat(3, 1fr); } .room .meters div:nth-child(3) { border-right: 0; } .room .meters div:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+  }
+  @media (prefers-reduced-motion: reduce) { .view.on { animation: none; } * { transition: none !important; } }
+  @media (forced-colors: active) { .glass::before { display: none; } .glass { border: 1px solid CanvasText; } h1, .h1, .brand b { color: CanvasText; background: none; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/fanfic/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Fan fiction: an open archive of stories","url":"https://a-to-mind.com/fanfic/","description":"An open writing community where people post what they write: fandoms anyone can start, stories with chapters and reviews, pinned guides, paging and a period filter, search, a writing glossary and a Writing Room that keeps drafts, word count, reading time and a writing streak on your device. No seeded stories, no accounts.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"fan fiction, fanfic archive, post a story, write fan fiction, read fanfic, fan fiction writing community, story chapters and reviews, writing streak","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/fanfic/?v=search&q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Fan fiction: an open archive of stories","item":"https://a-to-mind.com/fanfic/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="sky" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/fanfic/" data-go><b>Verse</b><span>Fan Fiction</span></a>
+    <nav class="nav" aria-label="Archive">
+      <a href="/fanfic/" data-go data-v="index" aria-keyshortcuts="i">Index</a>
+      <a href="/fanfic/?v=recent" data-go data-v="recent" aria-keyshortcuts="r">Most recent</a>
+      <a href="/fanfic/?v=search" data-go data-v="search" aria-keyshortcuts="/">Search</a>
+      <a href="/fanfic/?v=authors" data-go data-v="authors">Authors</a>
+      <a href="/fanfic/?v=series" data-go data-v="series">Series</a>
+      <a href="/fanfic/?v=recs" data-go data-v="recs">Rec lists</a>
+      <a href="/fanfic/?v=challenges" data-go data-v="challenges">Challenges</a>
+      <a href="/fanfic/?v=room" data-go data-v="room" id="roomLink" aria-keyshortcuts="w">Writing Room</a>
+      <a href="/fanfic/?v=glossary" data-go data-v="glossary">Writing Glossary</a>
+      <a href="/fanfic/?notice=rules" data-go data-v="notice">Rules</a>
+      <a href="/fanfic/?notice=help" data-go data-v="help">Help</a>
+      <button type="button" class="langb" id="langBtn" translate="no" lang="de" aria-label="Auf Deutsch lesen">Deutsch</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <noscript><p class="lead">The archive needs JavaScript to read and post stories.</p></noscript>
+
+  <!-- the index: the archive's front page -->
+  <section class="view" id="index" aria-labelledby="indexH">
+    <h1 id="indexH">Archive Descriptions &amp; Stories</h1>
+    <p class="lead">An open writing community where people post what they write. No seeded stories, no accounts, just boards.</p>
+    <div class="acts" style="margin:0 0 30px">
+      <a class="btn go" href="/fanfic/?v=room" data-go>Open the Writing Room</a>
+      <a class="btn" href="/fanfic/?v=search" data-go>Search</a>
+      <a class="btn" href="/fanfic/?v=random" data-go>Random story</a>
+      <a class="btn" href="/fanfic/?v=glossary" data-go>Writing Glossary</a>
+      <a class="btn" href="/fanfic/?notice=format" data-go>Quick start: how to post</a>
+    </div>
+
+    <div class="glass feat" id="featured" aria-labelledby="featH" hidden>
+      <div class="phead"><h2 class="grow" id="featH">Featured story</h2></div>
+      <div class="pbody"><a class="t" id="featLink" data-go translate="no"></a><span class="in" id="featBy"></span><p id="featSum" translate="no"></p><p class="why"><b>Why it is featured:</b> <span id="featWhy"></span></p></div>
+    </div>
+
+    <div class="glass loading" id="fandomBox">
+      <div class="phead"><h2 class="grow" id="fandomsH">Fandoms</h2><a class="btn" href="/fanfic/?new=fandom" data-go>Start a fandom</a></div>
+      <table class="list" aria-labelledby="fandomsH" id="fandomList" hidden>
+        <thead><tr><th class="ic"><span class="vh">New</span></th><th>Fandom</th><th class="num">Stories</th><th class="num">Posts</th><th>Last post</th></tr></thead>
+        <tbody id="fandoms"></tbody>
+      </table>
+      <div class="empty" id="emptyArchive" hidden>
+        <div class="orb" aria-hidden="true"></div>
+        <p class="big">An open room for stories. Post your first thread to begin.</p>
+        <p>Start a fandom or a genre, then post the first story in it. Every story here is written by someone who came to share it.</p>
+        <div class="acts"><a class="btn go" href="/fanfic/?new=fandom" data-go>Start a fandom</a><a class="btn" href="/fanfic/?v=room" data-go>Write in the Writing Room first</a></div>
+      </div>
+      <p class="quiet" id="indexSay" role="status">Opening the archive…</p>
+    </div>
+
+    <div class="glass" id="latestBox">
+      <div class="phead"><h2 class="grow" id="latestH">Stories</h2>
+        <div class="tools"><label class="vh" for="find">Find a story</label><input type="search" id="find" maxlength="100" enterkeyhint="search" placeholder="A title, a fandom or a pen name" aria-keyshortcuts="/"></div>
+        <div class="tools" data-tools></div>
+      </div>
+      <div class="filters" id="filters">
+        <div class="frow">
+          <label class="f"><span>Sort</span><select id="fSort"></select></label>
+          <label class="f"><span>Rated</span><select id="fRated"><option value="">Any rating</option></select></label>
+          <label class="f"><span>Status</span><select id="fStatus"><option value="">Complete or in progress</option><option value="Complete">Complete</option><option value="In progress">In progress</option></select></label>
+          <label class="f"><span>Characters</span><input type="search" id="fChars" maxlength="120" placeholder="Names, split by commas"></label>
+        </div>
+        <details class="fgen"><summary><span>Genres:</span><span id="fGenresSay">any</span></summary><p class="quiet">A story shows when it has every genre ticked.</p><div class="radios" id="fGenres"></div></details>
+        <label class="chk"><input type="checkbox" id="fNoWarn"> Hide stories with warnings</label>
+        <p class="fby" id="fBy" hidden>Stories by <b id="fByName"></b> <button type="button" id="fByAll">Show every author</button></p>
+        <p class="fby" id="fSeries" hidden>The series <b id="fSeriesName"></b> by <b id="fSeriesBy"></b><span>, in part order</span> <button type="button" id="fSeriesAll">Show every story</button></p>
+        <nav class="az" id="fAz" aria-label="Titles A to Z"><span class="azl">Titles A to Z</span></nav>
+      </div>
+      <table class="list" aria-labelledby="latestH" id="latest">
+        <thead><tr><th class="ic"><span class="vh">New</span></th><th>Topics</th><th class="num hide-s">Replies</th><th class="hide-s">Author</th><th>Last post</th></tr></thead>
+        <tbody data-rows></tbody>
+      </table>
+      <div class="pages" data-pages hidden></div>
+      <div class="acts listacts"><button type="button" id="copyLink">Copy link</button><button type="button" id="exportCsv">Export list (.csv)</button><span class="quiet" id="listSay" role="status"></span></div>
+      <div class="legend"><span><i class="dot new"></i>New posts</span><span><i class="dot"></i>No new posts</span><span><i class="dot pin"></i>Announcement</span><span><i class="dot lock"></i>Locked</span></div>
+    </div>
+
+    <div class="glass">
+      <div class="phead"><h2 id="statsH">Site info</h2></div>
+      <div class="stats" id="stats" aria-labelledby="statsH">
+        <div><b id="nFandoms">0</b><span>Fandoms</span></div>
+        <div><b id="nStories">0</b><span>Stories</span></div>
+        <div><b id="nPosts">0</b><span>Posts</span></div>
+        <div><b id="nAuthors">0</b><span>Authors</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- one fandom: its topic list -->
+  <section class="view" id="forum" aria-labelledby="forumH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="forumCrumb" translate="no"></span></nav>
+    <h2 id="forumH" class="h1" translate="no"></h2>
+    <p class="lead" id="forumAbout"></p>
+    <div class="acts" style="margin:0 0 24px"><a class="btn go" id="forumPost" href="/fanfic/?new=story" data-go>Post a new story</a></div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="forumListH">Topics</h2><div class="tools" data-tools></div></div>
+      <table class="list" aria-labelledby="forumListH">
+        <thead><tr><th class="ic"><span class="vh">New</span></th><th>Topics</th><th class="num hide-s">Replies</th><th class="hide-s">Author</th><th>Last post</th></tr></thead>
+        <tbody data-rows></tbody>
+      </table>
+      <div class="pages" data-pages hidden></div>
+    </div>
+  </section>
+
+  <!-- most recent across every fandom -->
+  <section class="view" id="recent" aria-labelledby="recentH">
+    <h2 id="recentH" class="h1">Most recent</h2>
+    <p class="lead">The stories with the newest posts, in every fandom. <a href="/fanfic/rss">Follow the newest stories by feed (RSS)</a></p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="recentListH">Topics</h2><div class="tools" data-tools></div></div>
+      <table class="list" aria-labelledby="recentListH">
+        <thead><tr><th class="ic"><span class="vh">New</span></th><th>Topics</th><th class="num hide-s">Replies</th><th class="hide-s">Author</th><th>Last post</th></tr></thead>
+        <tbody data-rows></tbody>
+      </table>
+      <div class="pages" data-pages hidden></div>
+    </div>
+  </section>
+
+  <!-- the authors A to Z -->
+  <section class="view" id="authors" aria-labelledby="authorsH">
+    <h2 id="authorsH" class="h1">Authors</h2>
+    <p class="lead">Everyone who has posted a story here, A to Z. Open a name to read that writer's stories.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="authorListH">Authors A to Z</h2><span class="quiet" id="authorsSay"></span></div>
+      <table class="list authors" aria-labelledby="authorListH">
+        <thead><tr><th>Pen name</th><th class="num">Stories</th><th>Last post</th></tr></thead>
+        <tbody id="authorRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="view" id="series" aria-labelledby="seriesH">
+    <h2 id="seriesH" class="h1">Series</h2>
+    <p class="lead">Stories a writer tells in parts, A to Z. Open a series to read its parts in order.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="seriesListH">Series A to Z</h2><span class="quiet" id="seriesSay"></span></div>
+      <table class="list authors" aria-labelledby="seriesListH">
+        <thead><tr><th>Series</th><th class="hide-s">Writer</th><th class="num">Parts</th><th>Last post</th></tr></thead>
+        <tbody id="seriesRows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- rec lists: this device's own list of stories it recommends, and a list someone sent by its link (the list is after the #, never posted) -->
+  <section class="view" id="recs" aria-labelledby="recsH">
+    <h2 id="recsH" class="h1">Rec lists</h2>
+    <p class="lead">Stories you recommend, in your order, each with a line on why. Your list stays on this device. Its link holds the whole list, so whoever opens the link reads the same stories. Nothing is posted.</p>
+    <div class="glass banner" id="recsShared" hidden><p id="recsSharedSay"></p><button class="go" type="button" id="recsKeep">Add them to my rec list</button><button type="button" id="recsMine">Show my rec list</button></div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="recsListH">My rec list</h2><span class="quiet" id="recsSay"></span></div>
+      <div class="pbody" id="recsNameBox"><label class="f" style="margin:0"><span>List name</span><input type="text" id="recsName" maxlength="60" placeholder="My rec list"></label></div>
+      <ol class="recs" id="recRows" aria-labelledby="recsListH"></ol>
+      <div class="acts pbody" id="recsActs"><button type="button" class="go" id="recsShare">Share link</button><span class="quiet" id="recsShareSay" role="status"></span></div>
+    </div>
+  </section>
+
+  <!-- writing challenges: each is a thread in a fandom whose first post holds the prompt and its last day (lib/fanfic.js challengeBody) -->
+  <section class="view" id="challenges" aria-labelledby="challengesH">
+    <h2 id="challengesH" class="h1">Writing challenges</h2>
+    <p class="lead">A challenge is a prompt in a fandom, with a last day to enter if its setter gives one. Writers enter stories they posted here, and only a story's own writer can enter it. When the challenge closes, the one who set it names up to 3 winners.</p>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="challengeListH">Challenges</h2><span class="quiet" id="challengesSay"></span></div>
+      <table class="list authors" aria-labelledby="challengeListH">
+        <thead><tr><th>Challenge</th><th class="hide-s">Fandom</th><th>Entries close</th><th>Last post</th></tr></thead>
+        <tbody id="challengeRows"></tbody>
+      </table>
+    </div>
+    <div class="glass">
+      <div class="phead"><h2 id="cgFormH">Set a challenge</h2></div>
+      <form class="pbody" id="cgForm" autocomplete="off" aria-labelledby="cgFormH">
+        <div class="two">
+          <label class="f"><span>Fandom</span><select id="cgFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Entries are stories posted in this fandom.</small></label>
+          <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. The challenge carries this device's mark, so only you can name its winners.</small></label>
+        </div>
+        <label class="f"><span>Title</span><input type="text" name="title" maxlength="100" required></label>
+        <label class="f"><span>Prompt and rules</span><textarea name="prompt" maxlength="2000" required placeholder="What to write, the rules, and how you will pick the winners"></textarea></label>
+        <label class="f"><span>Last day to enter</span><input type="date" name="closes"><small>Optional. An entry posted after this day does not count. Leave it empty to keep the challenge open.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Set the challenge</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- one challenge: its prompt, its winners, its entries, and a way to enter a story -->
+  <section class="view" id="challenge" aria-labelledby="challengeH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a href="/fanfic/?v=challenges" data-go>Challenges</a></nav>
+    <article class="glass">
+      <div class="storyh">
+        <h2 id="challengeH" class="h1" translate="no"></h2>
+        <p class="by" id="challengeBy"></p>
+      </div>
+      <dl class="facts" id="challengeInfo"></dl>
+      <section class="chapter"><div class="prose" id="challengePrompt" translate="no"></div>
+        <div class="acts"><a class="btn go" id="challengeWrite" href="/fanfic/?new=story" data-go>Write a story for it</a><a class="btn" id="challengeReport" href="/boards/">Report this</a></div></section>
+    </article>
+    <div class="glass" id="winnersBox" hidden>
+      <div class="phead"><h2 class="grow" id="winnersH">Winners</h2></div>
+      <ol class="recs" id="winnerRows" aria-labelledby="winnersH"></ol>
+    </div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="entriesH">Entries</h2><span class="quiet" id="entriesSay"></span></div>
+      <ol class="recs" id="entryRows" aria-labelledby="entriesH"></ol>
+      <form class="pbody" id="enForm" autocomplete="off" style="border-top:1px solid var(--line)">
+        <label class="f"><span>Enter a story you posted</span><select name="story" id="enStory"></select><small>Only stories this device posted in this fandom can be entered, signed with the same mark.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Enter the story</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+      <form class="pbody" id="wnForm" autocomplete="off" style="border-top:1px solid var(--line)" hidden>
+        <label class="f"><span>Name a winner</span><select name="story" id="wnStory"></select><small>You set this challenge, so you pick its winners: first place first, up to 3.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Name the winner</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- a random story: the view shows only while one is picked, or when there is none to pick -->
+  <section class="view" id="random" aria-labelledby="randomH">
+    <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="randomH">Random story</p><p id="randomSay"></p><div class="acts"><a class="btn go" href="/fanfic/?new=story" data-go>Post a story</a><a class="btn" href="/fanfic/" data-go>Back to the index</a></div></div>
+  </section>
+
+  <!-- one story -->
+  <section class="view" id="story" aria-labelledby="storyH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><a id="storyCrumb" href="/fanfic/" data-go>Story</a></nav>
+    <article class="glass">
+      <div class="storyh">
+        <h2 id="storyH" class="h1" translate="no"></h2>
+        <p class="by" id="storyBy"></p>
+        <p class="by det" id="storyDetails" translate="no" hidden></p>
+        <p class="summary" id="storySum" translate="no"></p>
+      </div>
+      <dl class="facts" id="storyInfo"></dl>
+      <div class="toc" id="toc"><label class="vh" for="tocSel">Chapter</label><select id="tocSel"></select><span class="muted" id="tocSay"></span></div>
+      <div id="chapters"></div>
+    </article>
+    <div class="glass" id="addChapter" hidden>
+      <div class="phead"><h2>Add the next chapter</h2></div>
+      <form class="pbody" id="chForm" autocomplete="off">
+        <label class="f"><span>Chapter title</span><input type="text" name="title" maxlength="100" placeholder="Optional"></label>
+        <label class="f"><span>The chapter</span><textarea name="text" required></textarea></label>
+        <label class="chk" id="chDoneBox"><input type="checkbox" name="done"> This chapter ends the story: mark it Complete</label>
+        <p class="count" data-count></p>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Post chapter</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+    <div class="glass">
+      <div class="phead"><h2 class="grow" id="reviewsH">Reviews</h2></div>
+      <div id="reviews"></div>
+      <form class="pbody" id="rvForm" autocomplete="off" style="border-top:1px solid var(--line)">
+        <label class="f"><span>Your review</span><textarea class="short" name="text" maxlength="4000" required placeholder="What stayed with you?"></textarea></label>
+        <fieldset class="f"><legend>Stars</legend><div class="radios"><label><input type="radio" name="stars" value="0" checked> No stars</label><label><input type="radio" name="stars" value="1"> 1</label><label><input type="radio" name="stars" value="2"> 2</label><label><input type="radio" name="stars" value="3"> 3</label><label><input type="radio" name="stars" value="4"> 4</label><label><input type="radio" name="stars" value="5"> 5</label></div><small>Optional. The story shows the average of the stars its reviews give.</small></fieldset>
+        <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. Kept on this device for next time.</small></label>
+        <p class="bot" data-bot></p>
+        <div class="acts"><button class="go" type="submit">Post review</button></div>
+        <p class="say" data-say role="status"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- post a story -->
+  <section class="view" id="post" aria-labelledby="postH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span>Post a story</span></nav>
+    <h2 id="postH" class="h1">Post a story</h2>
+    <p class="lead">Your story goes up in its fandom for anyone to read. Later chapters go on the story's own page.</p>
+    <div class="glass banner" id="postFor" hidden><p id="postForSay"></p></div>
+    <form class="glass pbody" id="stForm" autocomplete="off">
+      <div class="two">
+        <label class="f"><span>Fandom</span><select id="stFandom" name="fandom" required><option value="">Choose a fandom</option></select><small>Not listed? Choose A new fandom and name it here.</small></label>
+        <label class="f"><span>Pen name</span><input type="text" name="pen" maxlength="40" placeholder="Anonymous"><small>Optional. Your chapters carry the same mark, made on this device.</small></label>
+      </div>
+      <div class="two" id="stNew" hidden>
+        <label class="f"><span>New fandom</span><input type="text" name="newFandom" maxlength="40" placeholder="A book, show, game or genre"><small>It opens with your story. Anyone can post in it after you.</small></label>
+        <fieldset class="f"><legend>Who it is for</legend><div class="radios"><label><input type="radio" name="newRate" value="all" checked> All ages</label><label><input type="radio" name="newRate" value="adult"> 18+ only</label></div></fieldset>
+      </div>
+      <label class="f"><span>Title</span><input type="text" name="title" maxlength="100" required></label>
+      <div class="two">
+        <label class="f"><span>Rating</span><select name="rating" required><option value="">Choose a rating</option></select><small>Readers filter the archive by it.</small></label>
+        <label class="f"><span>Characters</span><input type="text" name="characters" maxlength="260" placeholder="Up to 6 names, split by commas"><small>Readers find stories by the people in them.</small></label>
+      </div>
+      <div class="two">
+        <label class="f"><span>Series</span><input type="text" name="series" maxlength="40" placeholder="Not in a series"><small>Optional. Give your stories the same series name to read them as one series.</small></label>
+        <label class="f"><span>Part in the series</span><input type="number" name="part" min="1" max="999" step="1" inputmode="numeric" placeholder="1"><small>Needed with a series name. Readers get the parts in this order.</small></label>
+      </div>
+      <fieldset class="f"><legend>Status</legend><div class="radios"><label><input type="radio" name="status" value="In progress" checked> In progress: more chapters to come</label><label><input type="radio" name="status" value="Complete"> Complete: a one-shot, or every chapter is here</label></div><small>A later chapter can mark the story Complete.</small></fieldset>
+      <fieldset class="f"><legend>Genres (up to 3)</legend><div class="radios" id="stGenres"></div></fieldset>
+      <fieldset class="f"><legend>Warnings</legend><div class="radios" id="stWarnings"></div><small>Tick each one that applies. Readers can hide every story with a warning.</small></fieldset>
+      <label class="f"><span>Summary</span><textarea class="short" name="summary" maxlength="300" placeholder="One or two lines a reader sees first"></textarea></label>
+      <label class="f"><span>Chapter 1</span><textarea name="text" required></textarea></label>
+      <div class="acts fileacts"><button type="button" id="stOpen">Open a file</button><input type="file" id="stFile" hidden><button type="button" id="stUndo" hidden>Undo open</button><button type="button" id="stPrev" aria-expanded="false" aria-controls="stPreview">Preview</button></div>
+      <p class="hint">A .docx, .txt, .html or .md file opens here, on this device. Nothing is sent until you press Post story.</p>
+      <section class="chapter preview" id="stPreview" hidden aria-label="Preview"><p class="hint">Preview: what readers see once it is up.</p><h3></h3><p class="psum"></p><div class="prose"></div></section>
+      <p class="count" data-count></p>
+      <p class="bot" data-bot></p>
+      <div class="acts"><button class="go" type="submit">Post story</button><a class="btn" href="/fanfic/?notice=format" data-go>How to format chapters</a></div>
+      <p class="say" data-say role="status"></p>
+    </form>
+  </section>
+
+  <!-- start a fandom -->
+  <section class="view" id="fandom" aria-labelledby="fandomH">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span>Start a fandom</span></nav>
+    <h2 id="fandomH" class="h1">Start a fandom</h2>
+    <p class="lead">A fandom or a genre is a shelf for stories. Anyone can start one, and anyone can post in it.</p>
+    <form class="glass pbody" id="fdForm" autocomplete="off">
+      <label class="f"><span>Name</span><input type="text" name="title" maxlength="40" required placeholder="A book, show, game or genre"></label>
+      <label class="f"><span>Description</span><input type="text" name="about" maxlength="180" placeholder="One line about what belongs here"></label>
+      <fieldset class="f"><legend>Who it is for</legend>
+        <div class="radios"><label><input type="radio" name="rate" value="all" checked> All ages</label><label><input type="radio" name="rate" value="adult"> 18+ only</label></div>
+      </fieldset>
+      <p class="bot" data-bot></p>
+      <div class="acts"><button class="go" type="submit">Start the fandom</button></div>
+      <p class="say" data-say role="status"></p>
+    </form>
+  </section>
+
+  <!-- search -->
+  <section class="view" id="search" aria-labelledby="searchH">
+    <h2 id="searchH" class="h1">Search</h2>
+    <p class="lead">Every story, chapter and review in every fandom.</p>
+    <form class="acts" id="sf" role="search" autocomplete="off" style="margin:0 0 22px">
+      <label class="vh" for="sq">Search the archive</label>
+      <input type="search" id="sq" maxlength="200" enterkeyhint="search" placeholder="A title, a character, a line" style="flex:1 1 260px;width:auto">
+      <button class="go" type="submit">Search</button>
+    </form>
+    <div class="glass"><ul class="res" id="sres"></ul><p class="quiet" id="sSay" role="status">Type a word to search.</p></div>
+  </section>
+
+  <!-- the Writing Room -->
+  <section class="view room" id="room" aria-labelledby="roomH">
+    <h2 id="roomH" class="h1">Writing Room</h2>
+    <p class="lead">Your drafts stay on this device. Nothing leaves it until you post.</p>
+    <div class="glass banner" id="shared" hidden><p id="sharedSay"></p><button class="go" type="button" id="sharedKeep">Keep it in my Writing Room</button><button type="button" id="sharedNo">No thanks</button></div>
+    <div class="glass pbody">
+      <div class="acts" style="margin:0 0 16px"><label class="vh" for="drafts">Your drafts</label><select id="drafts" style="flex:1 1 220px;width:auto"></select><button type="button" id="newDraft">New draft</button><button type="button" id="delDraft">Delete draft</button></div>
+      <label class="f"><span>Title</span><input type="text" id="dTitle" maxlength="100" placeholder="Untitled story"></label>
+      <label class="f"><span>Your story</span><textarea id="dText" placeholder="Start writing. It saves as you type, on this device only."></textarea></label>
+      <div class="meters" aria-live="polite">
+        <div><b id="sWords">0</b><span>Words</span></div>
+        <div><b id="sRead">nothing yet</b><span>Reading time</span></div>
+        <div><b id="sToday">0</b><span>Today</span></div>
+        <div><b id="sStreak">0</b><span>Day streak</span></div>
+        <div><b id="sSaved">Saved</b><span>On this device</span></div>
+      </div>
+      <div class="acts"><button class="go" type="button" id="toPost">Post this story</button><button type="button" id="export">Export .txt</button><button type="button" id="copy">Copy text</button><button type="button" id="share">Share link</button></div>
+      <p class="say" id="roomSay" role="status"></p>
+    </div>
+  </section>
+
+  <!-- the Writing Glossary -->
+  <section class="view" id="glossary" aria-labelledby="glossaryH">
+    <h2 id="glossaryH" class="h1">Writing Glossary</h2>
+    <p class="lead">The words writers and readers use here.</p>
+    <dl class="glass gl">
+      <dt>AU</dt><dd>Alternate universe: the characters you know, in a different world or a different turn of events.</dd>
+      <dt>Canon</dt><dd>What the original book, show or game says happened.</dd>
+      <dt>Crossover</dt><dd>Characters from two or more stories meet.</dd>
+      <dt>Drabble</dt><dd>A very short story, traditionally exactly 100 words.</dd>
+      <dt>Fandom</dt><dd>The people who love a story, and the shelf their writing goes on.</dd>
+      <dt>Fluff</dt><dd>Light, warm, happy writing.</dd>
+      <dt>Angst</dt><dd>Writing about pain and longing; the opposite of fluff.</dd>
+      <dt>Hurt/comfort</dt><dd>One character is hurt and another looks after them.</dd>
+      <dt>OC</dt><dd>Original character: one you made up and added to someone else's world.</dd>
+      <dt>OOC</dt><dd>Out of character: a character acts in a way canon would not.</dd>
+      <dt>One-shot</dt><dd>A complete story in one chapter.</dd>
+      <dt>Pairing</dt><dd>Two characters a story puts together; a "ship".</dd>
+      <dt>Prompt</dt><dd>An idea or a line someone offers for others to write from.</dd>
+      <dt>Beta reader</dt><dd>Someone who reads a draft before it goes up and helps fix it.</dd>
+      <dt>WIP</dt><dd>Work in progress: a story still being written, chapter by chapter.</dd>
+      <dt>Summary</dt><dd>The one or two lines a reader sees before the story.</dd>
+    </dl>
+  </section>
+
+  <!-- the pinned notices, written by Verse -->
+  <section class="view" id="notice" aria-label="Notice">
+    <nav class="crumbs" aria-label="Where you are"><a href="/fanfic/" data-go>Index</a><span aria-hidden="true">/</span><span id="crumbNotice">Announcement</span><span id="crumbAbout" hidden>About</span></nav>
+    <article class="notice" id="n-format" hidden>
+      <h2 class="h1">How to format chapters</h2>
+      <div class="glass pbody"><ol>
+        <li>Post a story from <b>Post a story</b>: choose its fandom, give it a title and a short summary, and paste or write chapter 1.</li>
+        <li>Add each next chapter from the story's own page, with <b>Add the next chapter</b>. Only the device that posted the story sees that button, so nobody else can add chapters to it.</li>
+        <li>Leave a blank line between paragraphs. A line that starts with &gt; shows as a quote.</li>
+        <li>A long chapter is fine. The archive cuts it into parts at paragraph breaks and posts them in order, so nothing is lost.</li>
+        <li>Put warnings a reader would want (major character death, violence, self-harm) in the summary.</li>
+      </ol></div>
+    </article>
+    <article class="notice" id="n-report" hidden>
+      <h2 class="h1">Report spam or abuse here</h2>
+      <div class="glass pbody">
+        <p>Every story and review can be reported. Three reports from different people hide it until it is looked at.</p>
+        <p>Report spam, flooding, personal information about anyone, a story in the wrong fandom or with the wrong rating, and anything illegal. You can report a post on <a id="reportLink" href="/boards/">its board page</a>.</p>
+        <p>For a takedown or anything urgent, write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+      </div>
+    </article>
+    <article class="notice" id="n-reviews" hidden>
+      <h2 class="h1">Reviews and stars: how they work</h2>
+      <div class="glass pbody">
+        <p>Anyone can review a story on its page. A review can give the story 1 to 5 stars, or none.</p>
+        <p>The story page shows how many reviews it has and the average of the stars readers gave. Stars from the story's own writer do not count.</p>
+        <p>Be kind in reviews. Critique the story, never the writer.</p>
+      </div>
+    </article>
+    <article class="notice" id="n-help" hidden>
+      <h2 class="h1">Help desk: questions and answers</h2>
+      <div class="glass pbody"><dl class="qa">
+        <dt>How do I post a story?</dt><dd>Choose <a href="/fanfic/?new=story" data-go>Post a story</a>. Pick its fandom and its rating, give it a title and a short summary, and write or paste chapter 1. <a href="/fanfic/?notice=format" data-go>How to format chapters</a> has the details.</dd>
+        <dt>How do I add the next chapter?</dt><dd>Open the story and choose <b>Add the next chapter</b>. Only the device that posted the story shows that button.</dd>
+        <dt>Do I need an account?</dt><dd>No. Your drafts, what you have read and your 18+ answer are kept on this device. Stories you post carry a mark made on this device, so readers can tell your stories from a writer with the same pen name.</dd>
+        <dt>How do I find a story?</dt><dd>On the index, type in <b>Find a story</b>, use the filters or Titles A to Z, or open <a href="/fanfic/?v=authors" data-go>Authors</a>, <a href="/fanfic/?v=series" data-go>Series</a>, <a href="/fanfic/?v=recs" data-go>Rec lists</a>, <a href="/fanfic/?v=search" data-go>Search</a> or <a href="/fanfic/?v=random" data-go>Random story</a>.</dd>
+        <dt>Something here breaks the rules. What do I do?</dt><dd>Read <a href="/fanfic/?notice=report" data-go>Report spam or abuse here</a>.</dd>
+        <dt>Where can I ask something else?</dt><dd>Ask on Verse's <a href="/boards/">open boards</a> (the forums every story here is posted to), or write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</dd>
+      </dl></div>
+    </article>
+    <article class="notice" id="n-news" hidden>
+      <h2 class="h1">Site news and the news archive</h2>
+      <div class="glass pbody">
+        <p>What is new in the archive, newest first. Talk about it on Verse's <a href="/boards/">open boards</a>.</p>
+        <h3 class="nd">News archive</h3>
+        <p class="nd"><time datetime="2026-10-29">29 October 2026</time></p>
+        <dl class="qa">
+          <dt>Terms, disclaimer and credits</dt><dd>The footer links the terms of use, a disclaimer and the credits.</dd>
+          <dt>Open a file in the post form</dt><dd>Open a .docx, .txt, .html or .md file as chapter 1, and check it in Preview before you post.</dd>
+          <dt>Hits, figures and the first story</dt><dd>Hits count real reads of each story. Each row shows its chapters, words, reviews and stars. The first writer opens a fandom and posts the story with one press.</dd>
+          <dt>Challenges, rec lists and series</dt><dd>Writing challenges have a last day, signed entries and winners. Share a rec list by link. A story can be a part of a series, complete or in progress, and get 1 to 5 stars.</dd>
+          <dt>A feed of new stories</dt><dd>Follow the newest stories by <a href="/fanfic/rss" type="application/rss+xml">RSS</a>.</dd>
+          <dt>Authors, Random story and the help desk</dt><dd>Find a writer's stories, open a random story, and read the answers on the help desk. The index has story details, filters, sort and Titles A to Z.</dd>
+          <dt>Find, link and export</dt><dd>Find a story, link to it, export the list as CSV, use the keyboard shortcuts, and read the archive in German.</dd>
+          <dt>The archive opens</dt><dd>The archive opens with a Writing Room, and it works offline. It starts empty. The first story shows when a writer posts it.</dd>
+        </dl>
+      </div>
+    </article>
+    <article class="notice" id="n-terms" hidden>
+      <h2 class="h1">Terms of use</h2>
+      <div class="glass pbody"><ul>
+        <li>Everything posted here is public. Anyone can read it, link to it and quote it.</li>
+        <li>Stories, chapters and reviews here are posts on Verse's open boards, so the board rules apply to every post.</li>
+        <li>Post only writing that you have the right to post.</li>
+        <li>There are no accounts. A pen name is a name, not a login. The mark made on your device tells your stories apart from a namesake's.</li>
+        <li>A post that breaks a rule can be hidden or removed. Three reports from different people hide a post until it is looked at.</li>
+        <li>To ask for a takedown (your personal information, illegal content or a copyright claim), write to <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> with the link to the post.</li>
+      </ul><p><a href="/boards/rules/">The board rules</a> · <a href="/privacy/">Privacy</a></p></div>
+    </article>
+    <article class="notice" id="n-disclaimer" hidden>
+      <h2 class="h1">Disclaimer</h2>
+      <div class="glass pbody">
+        <p>Stories here are fan fiction. Readers write them, not Verse.</p>
+        <p>Characters, places and worlds belong to the people and companies that made them. Verse is not connected with them, and no story here is official.</p>
+        <p>A story says what its writer thinks, not what Verse thinks. Each writer picks the rating and the warnings, so read the summary before the story.</p>
+        <p>Verse charges nothing to read or to post.</p>
+      </div>
+    </article>
+    <article class="notice" id="n-credits" hidden>
+      <h2 class="h1">Credits</h2>
+      <div class="glass pbody"><dl class="qa">
+        <dt>Stories, chapters and reviews</dt><dd>Their writers, each named by the pen name on the post.</dd>
+        <dt>The archive and its German words</dt><dd>Verse, at a-to-mind.com.</dd>
+        <dt>Type</dt><dd>The fonts already on your device: Iowan Old Style, Palatino or Georgia for stories. Nothing is downloaded for them.</dd>
+        <dt>The person check when you post</dt><dd>Cloudflare Turnstile when the site has it set up, or else a short puzzle that your device solves by itself.</dd>
+      </dl></div>
+    </article>
+    <article class="notice" id="n-rules" hidden>
+      <h2 class="h1">Writing rules &amp; guidelines</h2>
+      <div class="glass pbody"><ul>
+        <li>The <a href="/boards/rules/">board rules</a> apply here: anything legal, no doxxing, illegal content removed and reported.</li>
+        <li>Adult stories go only in fandoms marked 18+. Sexual content involving anyone under 18 is never allowed, in any fandom, whatever the canon says.</li>
+        <li>Post your own writing. Credit a co-writer, a beta reader or a prompt you answered.</li>
+        <li>Be kind in reviews. Critique the story, never the writer.</li>
+        <li>A review can give the story 1 to 5 stars. The story page shows the average of those stars.</li>
+      </ul></div>
+    </article>
+  </section>
+
+  <!-- the 18+ question, and a page that is not here -->
+  <section class="view" id="gate" aria-labelledby="gateH">
+    <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="gateH">This fandom is for adults</p><p>Its stories are for readers 18 and older.</p><div class="acts"><button class="go" type="button" id="gateYes">I am 18 or older</button><a class="btn" href="/fanfic/" data-go>Back to the index</a></div></div>
+  </section>
+  <section class="view" id="gone" aria-labelledby="goneH">
+    <div class="glass empty"><div class="orb" aria-hidden="true"></div><p class="big" id="goneH">That story is not here</p><p id="goneSay">It may have been removed, or the link is not complete.</p><div class="acts"><a class="btn go" href="/fanfic/" data-go>Back to the index</a></div></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/fanfic/?new=story">Post a story</a><a href="/fanfic/?new=fandom">Start a fandom</a><a href="/fanfic/?v=recent">Most recent stories</a><a href="/fanfic/?v=random">Random story</a><a href="/fanfic/?v=room">Writing Room</a><a href="/fanfic/?v=glossary">Writing glossary</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/generators/">Generators</a> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p>Stories here are posts on Verse's <a href="/boards/">open boards</a> and follow <a href="/boards/rules/">the rules</a>. Takedowns and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+  <p>New stories by feed: <a href="/fanfic/rss" type="application/rss+xml">RSS</a></p>
+  <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>/</kbd> find a story · <kbd>n</kbd> post a new story · <kbd>w</kbd> the Writing Room · <kbd>i</kbd> the index · <kbd>r</kbd> the most recent stories · <kbd>?</kbd> these shortcuts</p><p>Shortcuts work anywhere outside a text field.</p></details>
+  <p id="brainSay" hidden></p>
+  <p>No accounts. Your drafts, what you have read and your 18+ answer are kept on this device only. <a href="/fanfic/?notice=news" data-go>News</a> · <a href="/fanfic/?notice=terms" data-go>Terms</a> · <a href="/fanfic/?notice=disclaimer" data-go>Disclaimer</a> · <a href="/fanfic/?notice=credits" data-go>Credits</a> · <a href="/privacy/">Privacy</a> · <a href="/">Verse</a></p>
+</footer>
+<script>
+// the module after load, as /boards/ does: nothing fetched holds the load event back (Versus measures speed). Each file of the module is first
+// asked again of the server (an unchanged file costs a 304): Cloudflare keeps .js in the browser for 4 hours, and a page not yet under the
+// current service worker (sw.js asks again the same way) ran an old app.js under a new page after a deploy (2026-10-29, the post form's
+// "A new fandom" choice missing). The list is the module's static imports; tools/fanfic.test.mjs fails when it falls behind them.
+const CODE = ['/fanfic/app.js', '/lib/fanfic.js', '/lib/boards.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/brain-bridge.js', '/lib/fanfic-de.js'];
+addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/fanfic/app.js')).catch(() => {}); });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

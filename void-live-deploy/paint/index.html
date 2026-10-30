@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paint by number · Verse</title>
+<meta name="description" content="Paint by number in the browser: real paintings and original pictures in six categories cut into numbered areas, zoom in, tap an area to fill it with its number, watch the picture fill in, download a PNG, save it to a gallery on this device, or send a link that carries the finished areas. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Paint by number · Verse">
+<meta property="og:description" content="Real paintings cut into numbered areas: tap an area to fill it, watch the picture appear, download a PNG or send a link. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/paint/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/paint/">
+<meta name="verse-handoff" content="in: image, color, palette; out: image">
+<link rel="modulepreload" href="/paint/app.js">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --line:#2a2a35; --accent:#8b7bff; --paper:#fcfbf7; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:15px; margin:14px 0 6px; color:var(--soft); font-weight:600; }
+  .sub { color:var(--soft); margin:0 0 12px; font-size:14px; }
+  .row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0; }
+  button, .file, select { font:inherit; font-size:13px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:6px 12px; cursor:pointer; min-height:36px; }
+  button[aria-pressed="true"] { border-color:var(--accent); background:#251c46; }
+  button:focus-visible, select:focus-visible, .file:focus-within, #stage:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .file { position:relative; overflow:hidden; display:inline-flex; align-items:center; }
+  .file input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  #cats { gap:6px; margin:4px 0 8px; }
+  #templates { display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:8px; min-height:132px; margin:0 0 10px; }
+  .card { display:flex; flex-direction:column; align-items:center; gap:4px; border-radius:12px; padding:8px 6px; position:relative; min-height:128px; }
+  .card canvas { width:88px; height:88px; border-radius:8px; background:#e9e7e0; }
+  .card .nm { font-size:12px; line-height:1.2; text-align:center; }
+  .card .badge { position:absolute; top:6px; right:6px; font-size:11px; background:#0009; border-radius:99px; padding:0 6px; }
+  .card .badge:empty { display:none; }
+  .work { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:16px; align-items:start; }
+  .side { position:sticky; top:10px; }
+  #stage { position:relative; border-radius:10px; overflow:hidden; background:var(--paper); box-shadow:0 8px 26px #0008; touch-action:none; aspect-ratio:1/1; user-select:none; -webkit-user-select:none; }
+  #stage.zoomed { cursor:grab; }
+  #view { transform-origin:0 0; will-change:transform; }
+  #c { display:block; width:100%; height:auto; aspect-ratio:1/1; cursor:pointer; }
+  .zoom { position:absolute; right:8px; bottom:8px; display:flex; gap:4px; align-items:center; background:#0b0a12cc; border-radius:999px; padding:3px; }
+  .zoom button { min-width:36px; min-height:36px; padding:0 8px; font-size:16px; }
+  .zoom span { font-size:12px; color:var(--soft); min-width:42px; text-align:center; }
+  #bar { height:6px; border-radius:99px; background:#1a1926; overflow:hidden; margin:0 0 10px; }
+  #bar i { display:block; height:100%; width:0; background:linear-gradient(90deg,#8b7bff,#5ad1ff); transition:width .2s; }
+  #palette { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; min-height:141px; align-content:flex-start; }
+  #palette button { display:flex; align-items:center; gap:8px; border-radius:12px; min-height:44px; text-align:left; }
+  #palette i { width:22px; height:22px; border-radius:6px; border:1px solid #0006; display:inline-block; flex:none; }
+  #palette button.gone { opacity:.5; }
+  #palette button.nudge { animation:nudge .5s; }
+  @keyframes nudge { 30% { transform:scale(1.08); border-color:#ffd36b; } }
+  .stat { font-variant-numeric:tabular-nums; }
+  #count { display:block; min-height:46px; font-size:14px; }
+  #say { min-height:20px; font-size:13px; color:#cfc8ff; margin:6px 0; }
+  #credit { min-height:17px; }
+  #title { font-size:16px; margin:0 0 4px; }
+  #reveal { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:#07060bd9; text-align:center; padding:16px; }
+  #reveal[hidden] { display:none; }
+  #reveal canvas { width:min(70%,360px); aspect-ratio:1/1; border-radius:10px; box-shadow:0 0 0 4px #fff2, 0 10px 40px #8b7bff66; image-rendering:pixelated; }
+  #reveal.play canvas { animation:rise .9s ease-out; }
+  #reveal h3 { margin:0; font-size:20px; }
+  #reveal p { margin:0; color:var(--soft); font-size:13px; }
+  @keyframes rise { from { transform:scale(.7); opacity:0; } }
+  #gallery { list-style:none; padding:0; margin:6px 0 0; font-size:14px; }
+  #gallery li { display:flex; justify-content:space-between; gap:8px; padding:3px 0; border-bottom:1px solid #1c1c26; }
+  .link { background:none; border:0; padding:0; min-height:0; color:var(--ink); text-decoration:underline; text-underline-offset:2px; }
+  .credit { color:var(--soft); font-size:12px; margin:8px 0 0; }
+  .credit a { color:inherit; }
+  .keys { color:var(--soft); font-size:12px; }
+  .inl { margin:0; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; }
+  footer a { color:inherit; }
+  @media (max-width:760px) {
+    main { padding:14px 10px 120px; }
+    #templates { display:flex; overflow-x:auto; gap:8px; padding-bottom:6px; scroll-snap-type:x mandatory; min-height:136px; }
+    .card { flex:0 0 104px; scroll-snap-align:start; }
+    .work { display:block; }
+    .side { position:static; }
+    #palette { position:fixed; left:0; right:0; bottom:0; z-index:5; display:flex; flex-wrap:nowrap; overflow-x:auto; gap:6px; padding:8px 10px calc(8px + env(safe-area-inset-bottom)); background:#0b0a12f2; border-top:1px solid var(--line); min-height:0; margin:0; }
+    #palette button { flex:none; }
+    .keys { display:none; }
+  }
+  @media (prefers-reduced-motion: reduce) { #bar i, #palette button.nudge, #reveal.play canvas { transition:none; animation:none; } }
+  /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
+  #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
+  #related .tk-label { color:var(--soft); }
+  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Paint by number</h1>
+  <p class="sub">Real paintings cut into numbered areas, and original pictures drawn for Verse. Pick a picture, pick a colour, then tap an area carrying its number and the picture fills in. Zoom in with the wheel, a pinch or the + button. Nothing is sent anywhere: your progress is kept on this device after every tap, and in your link.</p>
+
+  <h2 id="libh">Picture library</h2>
+  <div class="row" id="cats" aria-label="Categories"></div>
+  <div id="templates" aria-labelledby="libh"></div>
+  <div class="row">
+    <label class="file">Upload your own image<input id="up" type="file" accept="image/*" aria-label="Upload your own image"></label>
+    <label class="sub inl">Detail <select id="detail" aria-label="How many colours your photo is cut into"><option value="8">8 colours</option><option value="12" selected>12 colours</option><option value="16">16 colours</option></select></label>
+    <span class="sub inl">Your photo is cut into areas here, on this device; it is never uploaded.</span>
+  </div>
+
+  <div class="work">
+    <div>
+      <p id="title"></p>
+      <div id="stage" tabindex="0" aria-describedby="keys">
+        <div id="view"><canvas id="c" width="880" height="880" role="img" aria-label="The painting so far" aria-describedby="count"></canvas></div>
+        <div class="zoom"><button type="button" id="zout" aria-label="Zoom out">−</button><span id="zlevel">100%</span><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zfit" aria-label="Fit the whole picture">Fit</button></div>
+        <div id="reveal" hidden role="dialog" aria-labelledby="rtitle">
+          <canvas id="rc" width="440" height="440" aria-hidden="true"></canvas>
+          <h3 id="rtitle">Finished</h3>
+          <p id="rline"></p>
+          <div class="row"><button type="button" id="rreplay">Replay</button><button type="button" id="rpng">Download PNG</button><button type="button" id="rnext">Next picture</button><button type="button" id="rclose">Close</button></div>
+        </div>
+      </div>
+      <p id="say" aria-live="polite"></p>
+      <p class="keys" id="keys">Keys: + and − zoom, 0 fits, arrows move, 1–9 pick a colour, H gives a hint, Enter fills the ringed area, Ctrl+Z undoes.</p>
+    </div>
+    <div class="side">
+      <div class="row stat"><span id="count">Loading…</span></div>
+      <div id="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+      <h2>Colour palette</h2>
+      <div id="palette" aria-label="Colours"></div>
+      <div class="row">
+        <button type="button" id="hint">Hint</button>
+        <button type="button" id="next">Find a <span id="nextn">1</span></button>
+        <button type="button" id="hl" aria-pressed="true">Highlight: on</button>
+        <button type="button" id="mode" aria-pressed="false">Brush: off</button>
+        <button type="button" id="undo">Undo</button>
+        <button type="button" id="reset">Start over</button>
+      </div>
+      <div class="row">
+        <button type="button" id="png">Download PNG</button>
+        <button type="button" id="share">Share link</button>
+        <button type="button" id="save">Save to gallery</button>
+      </div>
+      <p class="credit" id="credit"></p>
+      <h2>Gallery</h2>
+      <ul id="gallery" aria-label="Saved paintings"></ul>
+    </div>
+  </div>
+
+  <footer>
+    <p>Areas are numbered in the colour order of the palette; tap one with the matching colour chosen and it fills, and when a colour's numbered areas are done its tiny specks fill themselves. Hints are free and unlimited. No account, no ads, and it works offline once the painting has loaded. The paintings are public domain and the original pictures are free to use (CC0), cut into areas by <a href="https://a-to-mind.com/">Verse</a>.</p>
+    <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/g/">Gist</a> · <a href="/flip/">Coin flip</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=paint%20by%20numbers">See it on the stage</a> · <a href="/">Back to Verse</a></p>
+  </footer>
+  <nav id="related" class="tk-row" aria-label="Related tools"><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/gradient/">Gradient</a> <a href="/learn-to-draw/">Learn to draw</a> <a href="/image/">AI image generator</a> <a href="/tools/">All tools</a></nav>
+</main>
+<script type="module" src="/paint/app.js"></script>
+</body>
+</html>

@@ -34,6 +34,9 @@ test('newInSub: the line under the header keeps only what the header does not al
   const d = '1999 song by Britney Spears'; assert.equal(newInSub(d, h(d)), '');
   assert.equal(newInSub('Small domesticated carnivorous mammal', 'Creature'), 'Small domesticated carnivorous mammal', 'nothing in the header to repeat');
   assert.equal(newInSub('', 'Film'), '');
+  const e = 'American basketball player (born 1963)'; assert.equal(newInSub(e, h(e)), 'American basketball player', 'the year is in the header, so "(born 1963)" goes whole, never "(born )"');
+  const f = 'English poet (1795\u20131821)'; assert.equal(newInSub(f, h(f)), 'English poet (died 1821)', 'the year the header lacks stays, said as a death year');
+  const g = 'Italian painter (b. 1450)'; assert.equal(newInSub(g, h(g)), 'Italian painter (b. 1450)', 'a year the header does not hold stays as it was');
 });
 test('repeatsTitle: a heading that only repeats the card title is redundant, a different one is not', () => {
   assert.equal(repeatsTitle('Show me the Site Test card', 'Site Test Card (Visa)'), true);

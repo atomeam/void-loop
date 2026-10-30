@@ -173,10 +173,10 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:/m, 'a push to main, or a dispatch (automerge, by hand)');
   assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
-  assert.doesNotMatch(verify, /^\s+needs:/m);
-  assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the fast tests');
-  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}-\$\{\{ matrix\.shard \}\}\n\s+cancel-in-progress: false/, 'one group per head and shard for the suite, never cancelled (three shards since 2026-10-16)');
-  assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3\]/, 'the suite runs as three shards'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/3/, 'each job gets its shard');
+  assert.deepEqual(verify.match(/^\s+needs:.*$/gm).map((x) => x.trim()), ['needs: browser-suite'], 'only the incident job waits (for every shard, so a red head writes one incident)');
+  assert.match(verify, /group: void-verify-fast\n\s+cancel-in-progress: false/, 'one shared group for the fast tests: a started run finishes, only the newest head waits behind it (2026-10-26)');
+  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}\n\s+cancel-in-progress: false/, 'one shared group per shard for the suite, never cancelled: a started run finishes, only the newest head waits (three shards since 2026-10-16)');
+  assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3, 4\]/, 'the suite runs as four shards (three until 2026-10-29, when shard 1 outgrew the budget)'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/4/, 'each job gets its shard');
   assert.ok(isSuiteJob('browser-suite') && isSuiteJob('browser-suite (2)') && isSuiteJob('verify-main') && !isSuiteJob('python-tests') && !isSuiteJob('browser-suite-x'), 'a shard job counts as the suite job');
   assert.match(verify, /part: fast/); assert.match(verify, /part: suite/);
   assert.match(verify, /::error title=python-tests failed::/, 'a red fast test says so and reverts nothing');
@@ -186,7 +186,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /Verse-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
-  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'production' \}\}/, 'deploys stay serialized in production');
+  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| format\('run-\{0\}', github\.run_id\) \}\}/, 'deploys run side by side, each in its own group');
   assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
 });
 

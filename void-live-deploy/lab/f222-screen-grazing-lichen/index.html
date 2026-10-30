@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{color-scheme:dark}body{margin:0;background:#04040a;color:#cfd3ff;font:14px/1.4 system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+header{max-width:900px;padding:14px 16px 4px;text-align:center}h1{font-weight:300;letter-spacing:.2em;font-size:18px;margin:0 0 4px}p{margin:4px 0;color:#8a8fb8}
+#stage{position:relative;width:min(96vw,960px);aspect-ratio:96/60;border-radius:14px;overflow:hidden;box-shadow:0 0 60px #2a1a6a55}
+canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px}
+button,label{background:#11122a;border:1px solid #2f3170;color:#dfe2ff;border-radius:999px;padding:7px 14px;cursor:pointer;font:inherit}
+button:hover{border-color:#7a6cff}#stats{font:12px ui-monospace,monospace;color:#9aa0d8;text-align:center;min-height:3em;white-space:pre}
+#chart{width:min(96vw,960px);height:90px;position:static}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Screen-Grazing Lichen · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Screen-Grazing Lichen.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Screen-Grazing Lichen · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Screen-Grazing Lichen.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f222-screen-grazing-lichen/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f222-screen-grazing-lichen/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<header><h1>SCREEN-GRAZING LICHEN</h1>
+<p>A colony that lives on your actual screen. Share a tab or window and it learns to predict the next frame, but it only gets to learn where its creatures are standing. They hunt for whatever surprises the model, so the learning goes where the world is changing.</p></header>
+<div class="bar">
+<button id="share">Let it graze my screen</button><button id="demo">Demo screen</button>
+<button id="pick">Pick a color it avoids</button><input id="col" type="color" value="#ffffff" hidden>
+<label><input type="checkbox" id="showS" checked> surprise</label><label><input type="checkbox" id="showP"> its prediction</label>
+</div>
+<div id="stage"><canvas id="view" width="96" height="60"></canvas><canvas id="fx" width="960" height="600"></canvas></div>
+<canvas id="chart" width="960" height="90"></canvas>
+<div id="stats">starting…</div>
+<video id="vid" muted playsinline hidden></video>
+<script src="core.js"></script>
+<script src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

@@ -1,0 +1,29 @@
+{
+  "slug": "local-mark-not-span",
+  "run": 102,
+  "date": "2026-10-07",
+  "family": "interval timing",
+  "emit": false,
+  "status": "unattested",
+  "span": "refused",
+  "classes": ["unbound", "onset", "offset", "both-declined"],
+  "hash_fields": ["run", "class", "disconfirm", "status", "span"],
+  "discarded_before_hash": ["span_sentence", "post_text", "elapsed"],
+  "clocks_read": [],
+  "hypotheses": [
+    {
+      "id": "mark-not-span",
+      "claim": "A named mark class can be stored without becoming an elapsed span.",
+      "confidence": "design-material",
+      "status": "unattested",
+      "source": "run 102 candidate; contrasts PsychoPy-style reproduction and performance.now subtraction"
+    },
+    {
+      "id": "stress-speeds-clock",
+      "claim": "Under stress an internal clock speeds up so five minutes feel like fifty.",
+      "confidence": "low",
+      "status": "unattested",
+      "source": "x-scan post 2107517088029888841; not in the mark hash"
+    }
+  ]
+}

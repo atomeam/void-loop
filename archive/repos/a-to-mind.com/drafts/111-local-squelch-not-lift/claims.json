@@ -1,0 +1,37 @@
+{
+  "slug": "local-squelch-not-lift",
+  "run": 111,
+  "family": "quiet-signal filter",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": 0.2,
+  "one_line": "A sealed squelch class hashes to a lift-refusal id. The lift sentence is discarded and is not in the hash. A squelch mark is not a lift and not a recovered channel.",
+  "canonical": "squelch-not-lift|v1|<source>|<floor>|<gate>|lift-refusal",
+  "catalog": [
+    ["carrier", "below-floor", "held"],
+    ["gap", "unlabeled", "held"],
+    ["residue", "unlabeled", "held"],
+    ["counterclaim", "below-floor", "held"],
+    ["abstain", "abstain", "abstain"],
+    ["local-only", "untimed", "held"]
+  ],
+  "discarded_fields": ["lift_sentence"],
+  "allowlist": [],
+  "denied": [
+    "open-gate",
+    "lift-badge",
+    "recovered-channel",
+    "snr-number",
+    "notch",
+    "microphone",
+    "audiocontext",
+    "fft",
+    "voice-chip",
+    "decode-button",
+    "contact",
+    "healing",
+    "crash-retrieval",
+    "extraterrestrial-hardware"
+  ]
+}

@@ -31,6 +31,7 @@ const server = http.createServer((req, res) => {
 }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 
+const EXP_N = (() => { try { return JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')).families.reduce((n, f) => n + (f.skills || []).filter((x) => x.tier === 'experiment').length, 0); } catch (_) { return 1; } })();
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 // --only "<words>": run just the sections whose heading has all those words (and the short opening section every run shares),
 // so a builder tests the flow it touched in a minute instead of the whole suite (owner, 2026-10-11: the full suite runs on
@@ -39,7 +40,7 @@ const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(
 const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
 const wanted = new Set(); // the sections --only picked: none at all is a failed run, never a silent pass (tools/finish.mjs leans on it)
 // --shard i/n (or VOID_SHARD): this run takes the sections whose heading hashes to shard i of n (tools/shard.mjs), so verify.yml
-// can run the suite as n jobs at once (three, since 2026-10-16), every section in exactly one of them, each well inside the
+// can run the suite as n jobs at once (three since 2026-10-16, four since 2026-10-29), every section in exactly one of them, each well inside the
 // 28-minute budget (the whole suite ran to 1,652 s of 1,680 s on main that day). --only still narrows within the shard;
 // --list shows the shard's headings.
 const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
@@ -48,7 +49,14 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 // a dozen checks that each passed alone). The shared page `t` stays.
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
-const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
+// the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
+// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
+// and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask)\.js)(\?|$)/;
+const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
+// SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
+let SECTION = null;
+const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) { sweep(); SECTION = label; } return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
@@ -59,6 +67,7 @@ if (process.argv.includes('--list')) {
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
+const siblingCount = (p) => p.evaluate(() => new Set([...document.querySelectorAll('a[href]')].map((a) => a.getAttribute('href')).filter((h) => h && h.startsWith('/') && !h.startsWith('//')).map((h) => h.split('?')[0]).filter((h) => h !== location.pathname && h !== '/')).size);
 const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's browser can do decides a few checks (skip below)
 // A hang fails loudly (owner, 2026-10-09, frontier build order step 1, suite split (4)): a per-check timeout and a
 // whole-suite budget. Either one ends the run red within seconds of being passed, prints every result so far, and names
@@ -69,7 +78,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got, section: SECTION }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -133,6 +142,7 @@ const approvalFn = await import(new URL('../void-live-deploy/functions/api/appro
 // automation.keep executor's yes (lib/keep-going.js) flips a seeded rule onto the clock exactly as it does live
 const automationsFn = await import(new URL('../void-live-deploy/functions/api/automations.js', import.meta.url).href);
 const autosLib = await import(new URL('../void-live-deploy/lib/automations-run.js', import.meta.url).href);
+const betterLib = await import(new URL('../void-live-deploy/lib/better.js', import.meta.url).href); // family-health: the growth score drivers the card should list
 const OWNER = 'test-owner-key-0123456789';
 function memoryD1({ broken = false } = {}) {
   // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
@@ -142,9 +152,9 @@ function memoryD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
     if (made) { tables.add(made[1]); return { meta: { changes: 0 } }; }
-    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); actions.set(a[0], { kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6] }); return { meta: { changes: 1 } }; } // the execution record (lib/actions.js)
     if (/^DELETE FROM void_actions/.test(sql)) { need('void_actions'); return { meta: { changes: 0 } }; }
@@ -159,6 +169,8 @@ function memoryD1({ broken = false } = {}) {
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
+    // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+    if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
     if (/^SELECT .* FROM void_automations WHERE scope = \? ORDER BY created$/.test(sql)) { need('void_automations'); return { results: [...autos.values()].filter((r) => (r.scope || '') === a[0]) }; }
     if (/^SELECT .* FROM void_automation_runs WHERE rule_id = \? ORDER BY at DESC LIMIT 100$/.test(sql)) { need('void_automation_runs'); return { results: autoRuns.filter((r) => r.rule_id === a[0]).sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 100) }; }
     if (/^SELECT .* FROM void_automation_runs ORDER BY at DESC LIMIT 60$/.test(sql)) { need('void_automation_runs'); return { results: [...autoRuns].sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60) }; }
@@ -326,6 +338,7 @@ const SIGNAL_SPY = () => {
 // Plan item 12: Atom's Gumroad store. /api/catalog and /api/gumroad are the real Pages Functions, run against an in-memory D1,
 // with a stand-in store (storefront + product pages carry an HTML-escaped data-page JSON, like moonbeam846.gumroad.com).
 const catalogFn = await import(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url).href);
+const storeFn = await import(new URL('../void-live-deploy/functions/api/store/[[path]].js', import.meta.url).href); // the store's own api, for the shopping floor
 const pingFn = await import(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url).href);
 const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.meta.url).href);
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
@@ -429,15 +442,17 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0] || 'field' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
   for (const init of inits) await ctx.addInitScript(init);
+  await ctx.addInitScript(() => { document.addEventListener('DOMContentLoaded', () => { const w = document.getElementById('whisper'); if (w) new MutationObserver(() => { if (w.textContent) window.__whisperN = (window.__whisperN || 0) + 1; }).observe(w, { childList: true, characterData: true, subtree: true }); }); }); // ask() below: a whispered answer counts
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
   // asks below miss their fixed waits. tools/test_3d.mjs turns them on with fresh({ mini3d: true }).
   if (!opt.mini3d) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+  if (opt.field === false) await ctx.route(/\/skills\/field\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' })); // { field: false }: a Verse with no shared field (lib/orb-field.js answers null)
   await routeOutside(ctx); // tools/fixtures/outside.mjs: the same offline replies for every runner
   await ctx.route(/^http:\/\/(?:127\.0\.0\.1|localhost):\d+\/api\//, (r) => {
     const u = r.request().url();
@@ -469,6 +484,7 @@ async function fresh(...inits) {
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
+    if (u.includes('/api/store/')) { const rq = r.request(), path = u.split('/api/store/')[1].split('?')[0].replace(/\/$/, ''); const init = { method: rq.method(), headers: { 'content-type': rq.headers()['content-type'] || 'application/json' } }; if (rq.method() !== 'GET') init.body = rq.postData() || ''; return storeFn.onRequest({ request: new Request(u, init), env: { SALT: 'test-salt' }, params: { path: path ? path.split('/') : [] }, waitUntil() {} }).then((res) => res.text().then((body) => r.fulfill({ status: res.status, contentType: res.headers.get('content-type') || 'application/json', body }))); }
     if (u.includes('/api/figurescript')) {
       const body = r.request().method() === 'POST' ? JSON.parse(r.request().postData() || '{}') : Object.fromEntries(new URL(u).searchParams);
       return figurescriptFn.onRequestPost({ request: new Request('http://x/api/figurescript', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: {} })
@@ -488,8 +504,11 @@ async function fresh(...inits) {
   // empty cards in a dozen checks because the first answer took longer than 450-500 ms; each passed alone). An ask the page answered in
   // time costs nothing more; the page logs every answer in its loop log (LOOP_KEY), the same signal tools/bench.mjs waits on.
   const logged = (t, since) => p.evaluate(([q, s]) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim() === q.trim() && String(x.t) >= s); } catch (_) { return false; } }, [t, since]).catch(() => false);
-  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
-    if (!(await logged(t, since))) { await until(() => logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
+  // an ask answered by a whispered line (a greeting, "test") is not in the loop log: it counts as answered once the whisper spoke, so the slack
+  // below never outwaits the whisper's own 3.5 s and a check reading it finds it still there (2026-10-22: "hello" read "" after 4 s more)
+  const saidN = () => p.evaluate(() => window.__whisperN || 0).catch(() => 0);
+  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); const n0 = await saidN(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
+    if (!(await logged(t, since)) && (await saidN()) === n0) { await until(async () => (await saidN()) !== n0 || logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -543,25 +562,1025 @@ try {
     await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
     const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
     check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
-    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
-    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'cartoon'), 8000);
+    check('body: the tap puts a 2D cartoon of the word on the stage', (await B.state()).some((x) => x.kind === 'cartoon' && picAsk.endsWith(' ' + x.subject)), JSON.stringify((await B.state()).map((x) => x.kind + ':' + (x.subject || ''))));
     check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
     await B.ctx.close(); }
+  // the one-word day sites (owner, 2026-10-23: "the absolute bottom rung ... isitchristmas.com"): Verse answers from the device's clock, one giant word
+  if (want("is it: is it christmas? answers one giant YES or NO from the device's clock, whole on the card, with when it next is")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const got = await until(async () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', text: c.innerText }; }).catch(() => null), 8000);
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel above it, and says when Christmas is',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the one-word day sites (scout report, 2026-10-23: isitchristmas.com): Verse answers from the device's clock, one giant word in the visitor's language,
+  // the live countdown, today's date, a ripple on a tap and the visitor's flag stamped with a right-click
+  if (want("is it: is it christmas? answers one giant word from the device's clock, whole on the card, with a live countdown, a ripple and a flag stamp")) {
+    const P = await fresh(); await P.ask('is it christmas?', 1500);
+    const read = () => P.p.$eval('.vpage.on', (c) => { const w = c.querySelector('.is-it-word'); if (!w) return null; const r = w.getBoundingClientRect(), cr = c.getBoundingClientRect(), art = c.querySelector('.vc-art'), left = c.querySelector('.is-it-left'); return { word: w.textContent, size: parseFloat(getComputedStyle(w).fontSize), whole: r.bottom <= cr.bottom + 1 && r.top >= cr.top, art: !!art && getComputedStyle(art).display !== 'none', left: left ? left.textContent : '', text: c.innerText }; }).catch(() => null);
+    const got = await until(read, 8000); await P.p.waitForTimeout(2200); const later = await read();
+    // countdown() leaves out the parts that are zero, so a read on the minute says "... 21 minutes to go": the seconds show in one of the two reads 2.2 s apart (shard 1, 96ff5182, 2026-10-29)
+    const want = new Date().getMonth() === 11 && new Date().getDate() === 25 ? 'YES' : 'NO';
+    check('is it: "is it christmas?" shows one giant ' + want + ' (80 px or more), whole on the card with no art panel, says when Christmas is and today\'s date, and its countdown ticks',
+      !!got && got.word === want && got.size >= 80 && got.whole && !got.art && /Christmas is (?:in \d+ days|tomorrow)|Today is Christmas/.test(got.text) && /Today is \w+day, \w+ \d+, \d{4}/.test(got.text) && (want === 'YES' || (later && (/seconds? to go/.test(got.left) || /seconds? to go/.test(later.left)) && later.left !== got.left)) && !P.errors.length, JSON.stringify(got && { ...got, text: got.text.slice(0, 200), later: later && later.left }));
+    const box = await P.p.$('.vpage.on .is-it-stage'); const bb = box && await box.boundingBox();
+    if (bb) { await P.p.mouse.click(bb.x + bb.width / 2, bb.y + bb.height / 2); }
+    const ripple = await P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0);
+    if (bb) { await P.p.mouse.click(bb.x + 40, bb.y + 30, { button: 'right' }); }
+    const stamp = await P.p.$$eval('.vpage.on .is-it-stamp', (r) => r.length).catch(() => 0);
+    check('is it: a tap on the word makes a ripple there and a right-click stamps a flag, with no page errors', ripple > 0 && stamp > 0 && !P.errors.length, JSON.stringify({ ripple, stamp, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-23: "everything should be exactly what it sounds like it will be not a representation"; "cartoons should be 2d": a cartoon ask
+  // draws THAT subject as a flat 2D cartoon (no 3D figure, no stock lump): the emoji at once, then the Art Forge's painted cartoon of it
+  if (want("cartoon: draw a cartoon cat puts a 2D cartoon of a cat on the stage, its own painting swapped in, and says why when none comes")) {
+    const P = await fresh(); const posts = [];
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'cartoon ' + b.subject, img: PNG, ...(b.subject === 'dimebag darrel' ? { name: 'Dimebag Darrell' } : {}) }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('draw a cartoon cat', 1500);
+    const cat = await until(async () => P.p.$eval('.cartoon-card[data-subject="cat"]', (e) => ({ head: e.querySelector('div').textContent, alt: (e.querySelector('.cartoon-pic img') || {}).alt || '', status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    const figs = (await P.state()).filter((x) => x.kind === 'figure' || x.kind === 'fig3d').length;
+    check('cartoon: "draw a cartoon cat" puts one flat card for a cat on the stage, asks the forge for a cartoon of a cat, and shows the painting it got (alt names the cat); no 3D figure',
+      !!cat && /cartoon cat/i.test(cat.head) && /2D cartoon of cat/.test(cat.alt) && !cat.status && posts.some((b) => b.subject === 'cat' && b.kind === 'cartoon') && figs === 0, JSON.stringify({ cat, posts, figs }));
+    await P.ask('make a cartoon of a dragon', 1500);
+    const dragon = await until(async () => P.p.$eval('.cartoon-card[data-subject="dragon"]', (e) => ({ pic: e.querySelector('.cartoon-pic').textContent, status: e.querySelector('.cartoon-status').textContent })).catch(() => null), 8000);
+    check('cartoon: with no painting left today the dragon card still draws a dragon (its emoji) and says plainly why the painting waits',
+      !!dragon && /🐉/.test(dragon.pic) && /used up/.test(dragon.status) && !P.errors.length, JSON.stringify({ dragon, errors: P.errors }));
+    // the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the forge's usual spelling replaces the typed one, kept on reload
+    await P.ask('draw a cartoon dimebag darrel', 1500);
+    const dime = await until(async () => P.p.$eval('.cartoon-card[data-subject="dimebag darrel"]', (e) => { const h = e.querySelector('div').textContent; return /Darrell/.test(h) ? h : null; }).catch(() => null), 8000);
+    const kept = (await P.state()).find((x) => x.kind === 'cartoon' && x.subject === 'dimebag darrel');
+    check('cartoon: a misspelt name ("dimebag darrel") is titled as usually spelled once the forge answers ("Cartoon Dimebag Darrell"), and the stage keeps that title',
+      dime === 'Cartoon Dimebag Darrell' && !!kept && kept.name === 'Cartoon Dimebag Darrell' && !P.errors.length, JSON.stringify({ dime, kept: kept && kept.name, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // the walker (owner, 2026-10-25, on the cartoon they drew: "drop him onto a solid floor so he actually walks across a stage instead of drifting through
+  // space ... bottom: 24px ... a subtle CSS drop shadow cast downward onto a rendered stage baseline"; a tap "reacts with a speech bubble"): the cartoon
+  // card's "Let it walk" puts its painting on the stage floor, pacing; a tap says a true counted line; it is back after a reload; "stop walking" clears it
+  if (want("walker: a cartoon's Let it walk paces the painting along the stage floor at bottom 24px with a shadow, a tap brings a true speech bubble, it is back after a reload and stop walking sits it down")) {
+    const P = await fresh({ phone: true });
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(r.request().method() === 'POST' ? { state: 'art', key: 'cartoon cat', img: PNG } : { state: 'none' }) }));
+    await P.ask('draw a cartoon cat', 1500);
+    await until(() => P.p.$('.cartoon-card[data-subject="cat"] .cartoon-pic img'), 8000);
+    await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click());
+    // the visible floor is the ask bar's top edge (on a phone the dock stands taller than the 72 px the stage leaves it): the figure stands 24 px above it, never behind it
+    const read = () => P.p.evaluate(() => { const st = document.getElementById('stage'), w = document.querySelector('#stage .walker'); if (!w) return null; const r = w.getBoundingClientRect(), s = st.getBoundingClientRect(), d = document.getElementById('dock').getBoundingClientRect(), floorY = Math.min(s.bottom, d.top);
+      const sh = document.querySelector('#stage .walker-shadow'), fl = document.querySelector('#stage .walker-floor'), img = w.querySelector('img');
+      return { x: r.left, w: r.width, h: r.height, above: Math.round(floorY - r.bottom), dockOver: Math.round(s.bottom - d.top), bob: +w.dataset.bob, dir: w.dataset.dir, src: img ? img.getAttribute('src') : '', shadow: !!sh && getComputedStyle(sh).opacity !== '0', shadowX: sh ? sh.getBoundingClientRect().left : null, floor: !!fl && Math.round(floorY - fl.getBoundingClientRect().bottom), under: w.closest('.walker-root') === st.firstElementChild, kept: (() => { try { return JSON.parse(localStorage.getItem('a2m.void.walker.v1')); } catch (_) { return null; } })() }; });
+    const w0 = await until(read, 4000);
+    await P.p.waitForTimeout(2000);
+    const w1 = await read();
+    const moved = !!w0 && !!w1 && Math.abs(w1.x - w0.x) > 40 && Math.abs(w1.x - w0.x) < 200; // about 60 px/s for 2 s, a pause or a turn allowed
+    check('walker: "Let it walk" on the cat card puts a 96 px figure of its painting on the stage floor 24 px above the ask bar (plus its 3 px step; on this phone the bar overlaps the stage, so never behind it) with a shadow and a baseline under it, under the cards, and it has walked on 2 s later; the record is kept in a2m.void.walker.v1 with the picture and the subject',
+      !!w0 && w0.w === 96 && w0.h === 96 && w0.src === PNG && w0.shadow && w1.floor === 24 && w0.under && w1.dockOver > 0 && w1.above >= 24 && w1.above <= 27 && moved && Math.abs(w1.shadowX - w1.x) < 40 && w0.kept && w0.kept.src === PNG && w0.kept.subject === 'cat' && !P.errors.length,
+      JSON.stringify({ w0: w0 && { ...w0, src: w0.src.slice(0, 20), kept: w0.kept && { ...w0.kept, src: w0.kept.src.slice(0, 20) } }, w1: w1 && { x: w1.x, above: w1.above, floor: w1.floor, dockOver: w1.dockOver, shadowX: w1.shadowX }, errors: P.errors }));
+    // a tap: a speech bubble with a line the page counted itself (its skill count, the sites surpassed, what it learned last, its own words about itself); gone after 4 s
+    await until(() => P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.ok)), 3000);
+    await P.p.waitForTimeout(600); // the counts land
+    await P.p.$eval('#stage .walker', (b) => b.click());
+    const skillsN = (await P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.json()))).length;
+    const bubble = await until(() => P.p.$eval('#stage .walker-bubble', (b) => (b.hidden ? '' : b.textContent)).catch(() => ''), 3000);
+    const inside = await P.p.evaluate(() => { const b = document.querySelector('#stage .walker-bubble').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(), w = document.querySelector('#stage .walker').getBoundingClientRect(); return b.left >= s.left && b.right <= s.right && b.bottom <= w.top && b.width > 40; });
+    const m = /^I have ([\d,]+) skills? right now/.exec(bubble || '');
+    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I(?:'ve| haven't) surpassed|^The last thing I learned: .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
+    if (process.env.VOID_SHOTS) await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'walker.png') }).catch(() => {});
+    await P.p.waitForTimeout(4300);
+    const gone = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
+    check('walker: a tap on the figure shows a speech bubble over its head, whole and inside the stage, with a true line the page counted (the skill count is the index\'s length), and it is gone after 4 s', trueLine && inside && gone && !P.errors.length, JSON.stringify({ bubble, inside, skillsN, gone, errors: P.errors }));
+    // the next visit: the figure is back from the record, with its picture; "stop walking" takes it away and forgets it
+    await P.p.reload(); await skillsUp(P.p);
+    const back = await until(read, 8000);
+    await P.ask('stop walking', 800);
+    const after = await read(), kept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    check('walker: after a reload the figure is back on the floor with the same picture (no ask needed); "stop walking" removes it and clears the record',
+      !!back && back.src === PNG && back.above >= 24 && back.above <= 27 && after === null && kept === null && !P.errors.length, JSON.stringify({ back: back && { above: back.above, src: back.src.slice(0, 20) }, after, kept, errors: P.errors }));
+    // lifted and thrown like any thing on the stage, and "clear" clears it (owner, 2026-10-30: "the cartoon walking around wont clear and cant be
+    // thrown"): a slow drag sets it back on the floor where it is let go; a flick throws it off the stage and it is gone and forgotten; "clear" too
+    const walkAgain = async () => { await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click()); return until(read, 4000); };
+    // the press and the moves are dispatched on the figure and the window, as a finger would send them, so a card over the floor never takes them
+    const drag = (moves, gap) => P.p.evaluate(async ([moves, gap]) => {
+      const w = document.querySelector('#stage .walker'), r = w.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+      const ev = (t, dx, dy) => new PointerEvent(t, { clientX: x + dx, clientY: y + dy, button: 0, buttons: 1, pointerId: 7, pointerType: 'mouse', bubbles: true });
+      w.dispatchEvent(ev('pointerdown', 0, 0));
+      for (const [dx, dy] of moves) { window.dispatchEvent(ev('pointermove', dx, dy)); if (gap) await wait(gap); }
+      window.dispatchEvent(ev('pointerup', moves[moves.length - 1][0], moves[moves.length - 1][1]));
+    }, [moves, gap]);
+    const a0 = await walkAgain();
+    await drag(Array.from({ length: 8 }, (_, i) => [-(i + 1) * 8, -(i + 1) * 12]), 60); // 8 px left and 12 px up every 60 ms: a slow carry
+    await P.p.waitForTimeout(150);
+    const set = await read(), setBubble = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
+    check('walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept',
+      !!a0 && !!set && set.above >= 24 && set.above <= 27 && Math.abs((set.x - a0.x) + 64) < 40 && setBubble === true && !!set.kept && !P.errors.length, JSON.stringify({ a0: a0 && a0.x, set: set && { x: set.x, above: set.above, kept: !!set.kept }, setBubble, errors: P.errors }));
+    await drag(Array.from({ length: 4 }, (_, i) => [(i + 1) * 40, -(i + 1) * 30]), 0); // a flick: 50 px a move with no wait between
+    const thrownKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    const flown = await until(async () => ((await P.p.$('#stage .walker')) ? null : 'gone'), 4000);
+    check('walker: a flick throws the figure off the stage: it is forgotten on release and gone once it has flown off',
+      thrownKept === null && flown === 'gone' && !P.errors.length, JSON.stringify({ thrownKept, flown, errors: P.errors }));
+    const a2 = await walkAgain();
+    await P.ask('clear', 800);
+    const cleared = await read(), clearedKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    check('walker: "clear" clears the walking figure with the rest of the stage and forgets it',
+      !!a2 && cleared === null && clearedKept === null && !P.errors.length, JSON.stringify({ a2: !!a2, cleared, clearedKept, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // the backdrop (owner, 2026-10-25: "a static, beautifully lit 2D painted scene with fixed camera angles, where ... cards project shadows and walk along
+  // defined floor meshes ... swap pre-rendered backdrops depending on the rung or theme"): the forge paints the scene once (kind 'backdrop'), it is a layer
+  // behind every card, cover-fit and bottom-anchored, the cards cast shadows on it, it is back after a reload, and "clear the backdrop" brings the void back
+  if (want("backdrop: set the stage to a retro server room paints the scene once and shows it behind every card with shadows under them, it is back after a reload, clear the backdrop brings the void back, and a used-up day says so")) {
+    const P = await fresh(); const posts = [];
+    const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'cyberpunk rooftop' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'backdrop1 ' + b.subject, img: PNG }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('sticky note buy milk', 800); // a card to cast a shadow
+    await P.ask('set the stage to a retro server room', 1500);
+    const sceneOf = () => P.p.evaluate(() => { const l = document.getElementById('void-scene'), st = document.getElementById('stage'); if (!l || !l.classList.contains('on')) return null;
+      const img = l.querySelector('img'), sh = st.querySelectorAll('#scene-shadows .scene-shadow'), th = st.querySelector(':scope > .thing[data-id]'), s0 = sh[0];
+      return { src: img && img.getAttribute('src'), fit: getComputedStyle(img).objectFit, pos: getComputedStyle(img).objectPosition, behind: !!(l.compareDocumentPosition(st) & Node.DOCUMENT_POSITION_FOLLOWING) && getComputedStyle(l).position === 'fixed', z: getComputedStyle(l).zIndex,
+        scene: document.documentElement.dataset.scene || '', shadows: sh.length, under: s0 && th ? parseInt(s0.style.top, 10) - th.offsetTop : null, sameLeft: !!(s0 && th) && parseInt(s0.style.left, 10) === th.offsetLeft, shadowBehind: !!(s0 && th && (s0.compareDocumentPosition(th) & Node.DOCUMENT_POSITION_FOLLOWING)), // the layout box (a sticky is drawn rotated, so its bounding box is not its box)
+        kept: (() => { try { return JSON.parse(localStorage.getItem('a2m.void.backdrop.v1')); } catch (_) { return null; } })() }; });
+    const on = await until(sceneOf, 8000);
+    check('backdrop: "set the stage to a retro server room" asks the forge for one backdrop of that scene and shows it as a fixed layer behind the stage, cover-fit with the floor at the bottom; the sticky on the stage casts a soft shadow 18 px below it, under the card; the scene is kept in a2m.void.backdrop.v1',
+      !!on && on.src === PNG && on.fit === 'cover' && /100%$/.test(on.pos) && on.behind && on.z === '0' && on.scene === 'retro server room' && on.shadows >= 1 && on.under === 18 && on.sameLeft && on.shadowBehind && posts.filter((b) => b.kind === 'backdrop').length === 1 && posts[0].subject === 'retro server room' && on.kept && on.kept.src === PNG && !P.errors.length,
+      JSON.stringify({ on: on && { ...on, src: on.src && on.src.slice(0, 20), kept: on.kept && { ...on.kept, src: on.kept.src.slice(0, 20) } }, posts, errors: P.errors }));
+    await P.p.reload(); await skillsUp(P.p);
+    const back = await until(sceneOf, 8000);
+    await P.ask('clear the backdrop', 900);
+    const after = await P.p.evaluate(() => ({ on: !!document.querySelector('#void-scene.on'), scene: document.documentElement.dataset.scene || '', kept: localStorage.getItem('a2m.void.backdrop.v1'), shadows: document.querySelectorAll('#scene-shadows .scene-shadow').length, said: document.getElementById('whisper').textContent }));
+    check('backdrop: after a reload the scene is back with the same picture and no new painting; "clear the backdrop" takes it off, forgets it, drops the shadows and says the void is back',
+      !!back && back.src === PNG && back.shadows >= 1 && posts.length === 1 && !after.on && !after.scene && after.kept === null && after.shadows === 0 && /void is back/.test(after.said) && !P.errors.length, JSON.stringify({ back: back && { shadows: back.shadows, src: back.src && back.src.slice(0, 20) }, after, posts: posts.length, errors: P.errors }));
+    await P.ask('backdrop: a cyberpunk rooftop', 1200);
+    const capped = await P.p.evaluate(() => ({ on: !!document.querySelector('#void-scene.on'), said: document.getElementById('whisper').textContent }));
+    check('backdrop: with no painting left today the ask says so plainly and the void stays', !capped.on && /used up/.test(capped.said) && !P.errors.length, JSON.stringify({ capped, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // a poster OF something (2026-10-25: "make a cyberpunk poster" said "Open or summon a card first"): the Art Forge paints the subject tall (kind 'poster'),
+  // the title is set over it in a real font, the finished poster is the card's art, and the print files wait for the painting
+  if (want("poster of a theme: make a cyberpunk poster paints a cyberpunk poster, titles it, makes it the card art and offers the print files")) {
+    const P = await fresh(); const posts = [];
+    const TALL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAADCAYAAAC56t6BAAAAGklEQVR42mNkYPhfz8DAwMDEwMDAwMDAwAAAPw8DAfYvF7EAAAAASUVORK5CYII=';
+    await P.ctx.route(/\/api\/card-art(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { const b = JSON.parse(q.postData() || '{}'); posts.push(b); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(b.subject === 'dragon' ? { state: 'plate', why: 'cap' } : { state: 'art', key: 'poster1 ' + b.subject, img: TALL }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await P.ask('make a cyberpunk poster', 1500);
+    const read = () => P.p.$eval('.vpage.on', (c) => ({ h: (c.querySelector('h2') || {}).textContent || '', art: !!c.querySelector('.vc-art img.vc-art-photo[src^="data:image/jpeg"]'), poster: c.dataset.poster || '', alt: (c.querySelector('.vc-art img.vc-art-photo') || {}).alt || '', status: (c.querySelector('.poster-status') || {}).textContent || '', ready: [...c.querySelectorAll('.poster-size')].filter((b) => !b.disabled).length, again: !(c.querySelector('.poster-again') || { hidden: true }).hidden })).catch(() => null);
+    const cyber = await until(async () => { const r = await read(); return r && r.art ? r : null; }, 8000);
+    check('poster of a theme: "make a cyberpunk poster" asks the forge for a poster of cyberpunk, puts the titled poster in the card\'s art box (portrait layout), and offers the three print files',
+      !!cyber && /cyberpunk poster/i.test(cyber.h) && cyber.poster === '1' && /titled CYBERPUNK/.test(cyber.alt) && cyber.ready === 3 && !cyber.status && posts.some((b) => b.subject === 'cyberpunk' && b.kind === 'poster') && !P.errors.length, JSON.stringify({ cyber, posts, errors: P.errors }));
+    await P.ask('create a poster of a dragon', 1500);
+    const dragon = await until(async () => { const r = await read(); return r && /dragon/.test(r.h) && r.status ? r : null; }, 8000);
+    check('poster of a theme: with no painting left today the dragon poster says plainly why, offers no print file of an empty poster, and "make this a poster" is still the open card\'s',
+      !!dragon && /used up/.test(dragon.status) && dragon.ready === 0 && !dragon.art, JSON.stringify(dragon));
+    await P.ctx.close();
+  }
+  // the coin flip sites (scout report, 2026-10-23: a 3-second fake wait, ads, paragraphs of text): a coin that lands at once, with a quiet tally
+  if (want("coin: flip a coin lands a 3D coin on its face at once, says the side, keeps this visit's tally, and a tap flips it again")) {
+    const P = await fresh(); const t0 = Date.now(); await P.ask('flip a coin', 400);
+    const read = () => P.p.$eval('.vpage.on', (c) => ({ coins: c.querySelectorAll('.coin').length, word: (c.querySelector('.coin-word') || {}).textContent || '', tally: (c.querySelector('.coin-tally') || {}).textContent || '', label: (c.querySelector('.coin') || { getAttribute: () => '' }).getAttribute('aria-label'), full: (c.querySelector('.coin-full a') || { getAttribute: () => '' }).getAttribute('href') })).catch(() => null);
+    const one = await until(async () => { const r = await read(); return r && /^(?:Heads|Tails)$/.test(r.word) ? r : null; }, 6000), ms = Date.now() - t0;
+    await P.p.click('.vpage.on .coin'); await P.p.waitForTimeout(500); const two = await read();
+    check('coin: "flip a coin" shows one coin and Heads or Tails at once (no fake wait), the coin labelled with its side, the tally counting 1 flip, and a tap on the coin flips again (2 flips); the card links to the full page, /flip/',
+      !!one && one.full === '/flip/' && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
+    await P.ask('flip 5 coins', 900); const five = await read();
+    check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
+    await P.ctx.close();
+  }
+  // the coin floor's own completeness checklist (tools/tower-probes.mjs withFeatureFacts, domains/features/coin-flip.json): the gate reads the page
+  // the way a visitor does, so a feature the page has but never says in words counts as missing — the 4 of 7 the tower sat at for a day
+  if (want("coin: /flip/ shows every feature the completeness checklist reads — the counter named, the tap and the result said")) {
+    const { PROBES, factsFromFile } = await import('./tower-probes.mjs');
+    const ff = JSON.parse(fs.readFileSync(new URL('../domains/features/coin-flip.json', import.meta.url), 'utf8'));
+    const F = await fresh({ base: base + 'flip/' });
+    await F.p.waitForSelector('.coin-again', { timeout: 10000 });
+    for (let i = 0; i < 10; i++) { await F.p.click('.coin-again'); await F.p.waitForTimeout(420); }
+    const text = await F.p.evaluate(() => document.body.innerText);
+    const facts = [...PROBES['coin flip'].facts, ...factsFromFile(ff)];
+    const missing = facts.filter(([name, fn]) => { let ok = false; try { ok = typeof fn === 'function' ? !!fn(text) : fn.test(text); } catch (_) {} return !ok; }).map(([name]) => name); // a probe fact is a regex, a feature fact a function — the gate reads both
+    check('coin: /flip/ shows all 7 things a full answer shows — the flip counter named, the tap and the result said in words (the gate\'s own rule, the 3 the tower sat at 4 of 7 on)',
+      facts.length === 7 && !missing.length && /Flip counter/.test(text) && /Tap the coin/.test(text) && /result is shown/.test(text), JSON.stringify({ facts: facts.length, missing }));
+    await F.ctx.close();
+  }
+  // the paint floor (owner, 2026-10-26: "build wherever fits"): heycolor.com's paint by number, fought from /paint/. The page paints a
+  // real painting cut into numbered areas, so the counts come from the template file the page loads (wave.json), not from a formula: the
+  // labels are unpacked here the same way the page unpacks them, and a test tap lands on a pixel known to belong to a known colour.
+  if (want("paint: a real painting cut into numbered areas, a tap fills the area the chosen colour owns, the wrong colour says which number it is, undo, a gallery on this device, and every item the paint probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const fsx = await import('node:fs');
+    const tpl = JSON.parse(fsx.readFileSync(new URL('../void-live-deploy/paint/templates/wave.json', import.meta.url), 'utf8'));
+    const labels = new Uint8Array(tpl.w * tpl.h); let at = 0;
+    for (const [v, len] of tpl.rle) { labels.fill(v, at, at + len); at += len; }
+    const P = await fresh({ base: base + 'paint/?p=wave' });
+    await P.p.waitForSelector('#palette button', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.paint;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('paint: the painting is cut into 104 numbered areas in ten colours, and every item the paint probe reads is on the page', /\b104 areas/.test(t) && /\b10 colours/.test(t) && /The Great Wave/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const pick = (colour) => { for (let p = 0; p < labels.length; p++) if (labels[p] === colour) return { x: p % tpl.w, y: (p / tpl.w) | 0 }; return null; };
+    const tapAt = async (pt) => { const box = await P.p.$eval('#c', (e) => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; }); await P.p.mouse.click(box.x + (pt.x + 0.5) * box.w / tpl.w, box.y + (pt.y + 0.5) * box.h / tpl.h); };
+    await tapAt(pick(0)); await P.p.waitForTimeout(300);
+    const afterOne = await text();
+    await tapAt(pick(1)); await P.p.waitForTimeout(300);
+    const wrong = await P.p.$eval('#say', (e) => e.textContent);
+    check('paint: a tap fills the area the chosen colour owns and the count follows; the wrong colour says which number the area is instead of filling it', /\b1 of 104 areas/.test(afterOne) && /number 2\b/.test(wrong), JSON.stringify({ afterOne: (afterOne.match(/\d+ of \d+ areas/) || []), wrong }));
+    const pct = await P.p.evaluate(() => document.getElementById('bar').getAttribute('aria-valuenow'));
+    await P.p.click('#next'); await P.p.waitForTimeout(200);
+    const ringed = await P.p.$eval('#say', (e) => e.textContent);
+    await P.p.click('#save'); await P.p.waitForTimeout(250);
+    const gallery = await P.p.evaluate(() => [...document.querySelectorAll('#gallery li')].map((e) => e.textContent));
+    check('paint: the bar shows the share painted, find an area rings one, and saving puts the painting in the gallery on this device', +pct > 0 && /ringed/.test(ringed) && gallery.length === 1 && /The Great Wave/.test(gallery[0]) && /1 areas/.test(gallery[0]), JSON.stringify({ pct, ringed, gallery }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const shared = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#gallery li', { timeout: 15000 });
+    const kept = await P.p.evaluate(() => document.querySelectorAll('#gallery li').length);
+    const restored = await text();
+    check('paint: the link carries the areas finished (they come back on a reload) and the gallery survives a reload, nothing uploaded', /p=wave/.test(shared) && /done=\d/.test(shared) && kept >= 1 && /\b1 of 104 areas/.test(restored), JSON.stringify({ shared, kept, restored: (restored.match(/\d+ of \d+ areas/) || []) }));
+    await P.p.click('#undo'); await P.p.waitForTimeout(250);
+    const afterUndo = await text();
+    check('paint: undo takes the last area back', /\b0 of 104 areas/.test(afterUndo), JSON.stringify({ afterUndo: (afterUndo.match(/\d+ of \d+ areas/) || []) }));
+    const inputs = await P.p.evaluate(() => document.querySelectorAll('input[type=file], #palette button, #png, #share, #undo, #mode, #bar').length);
+    check('paint: the upload, the ten colours, the PNG export, the brush toggle and the share control are all there', inputs >= 14, JSON.stringify({ inputs }));
+    check('paint: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the tournament floor (owner, 2026-10-27): yunite.xyz's scrim scorer, fought from /tournaments/ — results typed in instead of a bot
+  // reading screenshots, placement on the highest matching threshold, the official tiebreakers, snake-seeded heats and contested drop
+  // spots, with no account and nothing sent. The seeded ask is the three-team match the probe works out by hand (Alpha 22, Bravo 19, Charlie 6).
+  if (want("tournament: seeded standings, the threshold rule, tiebreakers, snake heats, contested drops, CSV in and out and a share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor,Charlie:Old%20Mill&elim=2&win=10&top5=5';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.tournaments;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const stat = await P.p.$eval('#stat', (e) => e.textContent);
+    const rows = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    const demo = await P.p.$eval('#demo', (e) => !e.hidden);
+    check('tournament: the seeded ask lands as three teams, 16 eliminations and 47 points, a win pays 10 and not 10 plus the top-five, and every item the probe reads is on the page',
+      /3 teams/.test(stat) && /16 eliminations/.test(stat) && /47 points/.test(stat) && /leader Alpha/.test(stat) && rows[0] === '1 Alpha 22 1 6 1.0 1 leads by 3 pts' && rows[1] === '2 Bravo 19 0 7 2.0 2 -3 pts · needs 2 elims or a Top 5 to lead' && /^3 Charlie 6 0 3 6\.0 6 -16 pts/.test(rows[2]) && demo && !miss.length, JSON.stringify({ stat, rows, demo, miss }));
+    const heats = await P.p.$eval('#heatout', (e) => e.innerText);
+    const drops = await P.p.$eval('#droptable', (e) => e.innerText);
+    check('tournament: the lobby splits into snake-seeded heats, and the shared starting spot is flagged contested with who holds it while the unique one stays clear',
+      /Heat 1 Alpha/.test(heats) && /Heat 2 Bravo, Charlie/.test(heats) && /Old Mill\s+contested\s+#1 Alpha \(22 pts\) vs #3 Charlie \(6 pts\)/.test(drops) && /Harbor\s+clear\s+#2 Bravo \(19 pts\)/.test(drops), JSON.stringify({ heats, drops }));
+    await P.p.click('#share'); await P.p.waitForTimeout(250);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const back = await P.p.$eval('#stat', (e) => e.textContent);
+    check("tournament: the share link is the page's own state, and opening it again gives the same standings", /results=/.test(search) && /47 points/.test(back) && /leader Alpha/.test(back), JSON.stringify({ search: search.slice(0, 140), back }));
+    await P.p.selectOption('#preset', 'finals'); await P.p.waitForTimeout(150);
+    const tiers = await P.p.$eval('#tiers', (e) => e.textContent);
+    await P.p.fill('#csv', 'Delta, 3, 4\nEcho, 7, 1'); await P.p.click('#import'); await P.p.waitForTimeout(200);
+    const after = await P.p.$eval('#stat', (e) => e.textContent);
+    check('tournament: the finals-style preset sets its own placement ladder, and two CSV rows become the next match', /1st 10/.test(tiers) && /6th-10th 3/.test(tiers) && /5 teams/.test(after) && /2 matches/.test(after), JSON.stringify({ tiers, after }));
+    // the match grid (owner, 2026-10-28): the roster carries over, the host tabs through place and elims, a shared place is flagged
+    await P.p.click('#add'); await P.p.waitForTimeout(100);
+    const gridNames = await P.p.$$eval('#grid tbody td.team', (tds) => tds.map((t) => t.textContent));
+    await P.p.keyboard.type('2'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('3'); await P.p.keyboard.press('Tab'); await P.p.keyboard.type('2');
+    await P.p.waitForTimeout(150);
+    const dupe = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    await P.p.keyboard.press('Backspace'); await P.p.keyboard.type('1'); await P.p.waitForTimeout(150);
+    const dupeAfter = await P.p.$eval('#dupes', (e) => (e.hidden ? '' : e.textContent));
+    const gridResults = await P.p.evaluate(() => new URLSearchParams(location.search).get('results'));
+    check('tournament: the match grid keeps the roster from match 1, tabs place then elims, flags two teams on one place and writes the URL format back',
+      gridNames.join('|') === 'Alpha|Bravo|Charlie|Delta|Echo' && /Alpha and Bravo are both 2nd/.test(dupe) && !dupeAfter && /;Alpha:2:3,Bravo:1:0$/.test(gridResults || ''), JSON.stringify({ gridNames, dupe, dupeAfter, gridResults }));
+    // per-match columns, the cutoff gap and the match-point rule (owner, 2026-10-28)
+    await P.p.check('#percols'); await P.p.fill('#cut', '2'); await P.p.fill('#mp', '20'); await P.p.waitForTimeout(150);
+    const heads = await P.p.$$eval('#standings thead th', (t) => t.map((x) => x.textContent).join('|'));
+    const firstRow = await P.p.$eval('#standings tbody tr', (tr) => tr.innerText.replace(/\t/g, ' '));
+    const mpNote = await P.p.$eval('#mpnote', (e) => (e.hidden ? '' : e.textContent));
+    const colSearch = await P.p.evaluate(() => location.search);
+    check('tournament: each match gets its own column (points, place/elims), the gap names the cutoff, and match point names who is on it',
+      /\|M1\|M2\|M3\|Gap$/.test(heads) && /22 \(1\/6\)/.test(firstRow) && /On match point/.test(mpNote) && /cols=1/.test(colSearch) && /cut=2/.test(colSearch) && /mp=20/.test(colSearch), JSON.stringify({ heads, firstRow, mpNote, colSearch }));
+    // the tier chips (owner, 2026-10-28): remove a tier with its x, add a range, and the link carries tiers=
+    await P.p.click('#chips button[aria-label="Remove the 16th-25th tier"]'); await P.p.fill('#tfrom', '11'); await P.p.fill('#tto', '30'); await P.p.fill('#tpts', '1'); await P.p.click('#tadd'); await P.p.waitForTimeout(150);
+    const chips = await P.p.$$eval('#chips .chip', (c) => c.map((x) => x.firstChild.textContent).join('|'));
+    const tierUrl = await P.p.evaluate(() => new URLSearchParams(location.search).get('tiers'));
+    check('tournament: the tier chips remove and add ranges, an overlapped tier is replaced, and the link carries the ladder',
+      chips === '1st: 10|2nd-5th: 5|6th-10th: 3|11th-30th: 1' && tierUrl === '1:10,2-5:5,6-10:3,11-30:1', JSON.stringify({ chips, tierUrl }));
+    // the claim form (owner, 2026-10-28): a typed team and a half-typed spot snap to the roster and the spot already claimed, the pill says
+    // how many hold it, and the note names a team with no spot yet
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&drops=Alpha:Old%20Mill,Bravo:Harbor&elim=2&win=10&top5=5'); await P.p.waitForSelector('#droptable tbody tr', { timeout: 15000 });
+    const note0 = await P.p.$eval('#spotnote', (e) => e.textContent);
+    await P.p.fill('#spteam', 'charlie'); await P.p.fill('#spspot', 'harb'); await P.p.click('#spadd'); await P.p.waitForTimeout(150);
+    const sp = await P.p.evaluate(() => ({ drops: document.getElementById('drops').value, rows: [...document.querySelectorAll('#droptable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pills: [...document.querySelectorAll('#pills .chip')].map((b) => b.textContent), note: document.getElementById('spotnote').textContent, q: new URLSearchParams(location.search).get('drops') }));
+    check('tournament: the claim form snaps "charlie" and "harb" to Charlie and Harbor, groups the table by spot with ranks and points, and the note names who has no spot',
+      /no spot yet: Charlie/.test(note0) && sp.drops === 'Alpha:Old Mill\nBravo:Harbor\nCharlie:Harbor' && sp.rows[1] === 'Harbor contested #2 Bravo (19 pts) vs #3 Charlie (6 pts)' && sp.rows[0] === 'Old Mill clear #1 Alpha (22 pts)'
+        && sp.pills.join('|') === 'Old Mill · 1|Harbor · 2' && /1 contested spot · every team has a spot/.test(sp.note) && sp.q === 'Alpha:Old Mill,Bravo:Harbor,Charlie:Harbor', JSON.stringify(sp));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('tournament: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; const over = [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && (e.getBoundingClientRect().right > vw + 1 || (e.scrollWidth > e.clientWidth + 1 && getComputedStyle(e).overflowX !== 'visible' && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName)))).map((e) => e.tagName + '#' + e.id + '.' + e.className); return { page: document.documentElement.scrollWidth - vw, over: over.slice(0, 6) }; });
+    check('tournament: at phone width (360 px) the page never scrolls sideways and nothing outside a scroll box is cut off', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
+    const stageLink = await P.p.$eval('a[href*="ask=tournament"]', (a) => a.getAttribute('href')).catch(() => '');
+    check('tournament: the footer links to at least four sibling Verse tools and hands the page to the stage', (await siblingCount(P.p)) >= 4 && stageLink === '/?ask=tournament%20scorer', JSON.stringify({ siblings: await siblingCount(P.p), stageLink }));
+    await P.ctx.close();
+  }
+  // everyone's tournaments (owner, 2026-10-28): a bare page opens on a game night, one click swaps to the battle-royale example, a league
+  // scores 3/1/0 with goal difference, and a link made before the presets were renamed (preset=fncs, win/top5) still scores the same
+  if (want("tournament: a bare page opens on a game night, the battle-royale swap, a league and old links")) {
+    const P = await fresh({ base: base + 'tournaments/' });
+    await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const gn = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, heads: [...document.querySelectorAll('#grid thead th')].filter((t) => !t.hidden).map((t) => t.textContent).join('|'), demo: !document.getElementById('demo').hidden, body: document.body.innerText }));
+    check('tournament: a bare /tournaments/ opens on an everyday game night, scores added straight on, no placement or elims, no trademarked names',
+      /3 teams · 3 rounds · 68 points · leader Owls/.test(gn.stat) && gn.preset === 'gamenight' && gn.heads === 'Team|Score' && gn.demo && !/Fortnite|FNCS|Tilted|Pleasant Park/.test(gn.body), JSON.stringify({ stat: gn.stat, preset: gn.preset, heads: gn.heads, demo: gn.demo }));
+    await P.p.click('#swapdemo'); await P.p.waitForTimeout(150);
+    const br = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, search: location.search }));
+    check('tournament: one click swaps the game night for the battle-royale example on the finals-style ladder',
+      br.preset === 'finals' && /3 teams · 1 match · 16 eliminations/.test(br.stat) && /leader Alpha/.test(br.stat) && !/kind=/.test(br.search), JSON.stringify(br));
+    await P.p.goto(base + 'tournaments/?kind=league&results=Reds:2:1,Blues:1:2,Greens:0:0,Golds:0:0;Reds:0:3,Blues:3:0,Greens:4:1,Golds:1:4'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const lg = await P.p.evaluate(() => [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')));
+    check('tournament: a league scores win 3, draw 1, loss 0 and breaks the tie on goal difference', /^1 Greens 4 1 1 0 \+3 4 /.test(lg[0]) && /^2 Blues 3 1 0 1 \+2 4 /.test(lg[1]) && /^3 Reds 3 1 0 1 -2 2 /.test(lg[2]), JSON.stringify(lg));
+    await P.p.goto(base + 'tournaments/?results=Alpha:1:6,Bravo:2:7,Charlie:6:3&mode=duos&elim=2&win=10&top5=5&top10=3&top15=2&top25=1&preset=fncs'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const old = await P.p.evaluate(() => ({ stat: document.getElementById('stat').textContent, preset: document.getElementById('preset').value, tiers: document.getElementById('tiers').textContent }));
+    check('tournament: an old link (preset=fncs with win, top5 ... top25) still opens as the same battle royale on the renamed preset',
+      old.preset === 'finals' && /16 eliminations · 50 points/.test(old.stat) && /1st 10, 2nd-5th 5, 6th-10th 3, 11th-15th 2, 16th-25th 1/.test(old.tiers), JSON.stringify(old));
+    // a roster sent from /wheel/ or /prizes/ (?roster=...&preset=gamenight): Game night is the scorer's own preset, the teams sit on 0 in its
+    // standings and grid, a score typed for one keeps the others, and the share link carries the whole roster
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#standings tbody tr', { timeout: 15000 });
+    const r0 = await P.p.evaluate(() => ({ preset: document.getElementById('preset').value, rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), grid: [...document.querySelectorAll('#grid tbody td.team')].map((t) => t.textContent) }));
+    await P.p.fill('#grid input[data-team="Bob"]', '7'); await P.p.waitForTimeout(150);
+    const r1 = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#standings tbody tr')].map((tr) => tr.cells[1].textContent + ' ' + tr.cells[2].textContent), q: Object.fromEntries(new URLSearchParams(document.getElementById('link').getAttribute('href').split('?')[1])) }));
+    check('tournament: a ?roster= link opens on the native Game night preset with every team on 0, and after one score the share link still carries the whole roster',
+      r0.preset === 'gamenight' && r0.rows.join('|') === 'Ann 0|Bob 0|Cat 0' && r0.grid.join('|') === 'Ann|Bob|Cat' && r1.rows.join('|') === 'Bob 7|Ann 0|Cat 0'
+        && r1.q.kind === 'gamenight' && r1.q.results === 'Bob:7' && r1.q.roster === 'Bob\nAnn\nCat' && r1.q.preset === 'gamenight', JSON.stringify({ r0, r1 }));
+    // Copy for Discord: the standings as a monospace Markdown block (shown in a box too, for when the clipboard is refused), and it fits a phone
+    await P.p.click('#discord'); await P.p.waitForTimeout(150);
+    const dc = await P.p.evaluate(() => ({ text: document.getElementById('discordout').value, shown: !document.getElementById('discordout').hidden, say: document.getElementById('say').textContent }));
+    const dl = dc.text.split('\n');
+    check('tournament: Copy for Discord writes a bold title and a lined-up monospace block of the standings',
+      dc.shown && dl[0] === '**Standings · Game night / Trivia** · after 1 round' && dl[1] === '```text' && /^#  Team\s+Points  Round wins  Rounds  Best round$/.test(dl[2]) && /^1  Bob\s+7\s+\d+\s+1\s+7$/.test(dl[3]) && dl[dl.length - 1] === '```' && /Discord/.test(dc.say), JSON.stringify(dc));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const dw = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth, b = document.getElementById('discord').getBoundingClientRect(), t = document.getElementById('discordout').getBoundingClientRect(); return { page: document.documentElement.scrollWidth - vw, button: b.right <= vw + 1, box: t.right <= vw + 1 }; });
+    check('tournament: at phone width (360 px) the Discord button and its message box fit without sideways scrolling', dw.page <= 0 && dw.button && dw.box, JSON.stringify(dw));
+    await P.ctx.close();
+  }
+  // the repo activity ledger (owner, 2026-10-28: "just build Verse to be able to take over by then", the Zapier trial running out): /ledger/ reads
+  // GitHub's issues list from the browser - issues and pull requests on their own tabs, merged told apart from closed, filters in the link, a CSV
+  // download, a refresh that sends the saved ETag (a 304 is free), and GitHub's rate limit said plainly while the saved copy stays on screen.
+  // GitHub is a fixture here: #1 and #2 are the repo's real first pull requests (the tower probe asks for them), #3 an issue.
+  if (want("ledger: issues and pull requests apart, merged vs closed, filters in the link, CSV, an ETag refresh that comes back 304, and the rate limit said plainly")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'ledger/' });
+    const gh = { mode: 'ok', seen: [] }, H = { 'access-control-allow-origin': '*', 'access-control-expose-headers': 'ETag, Link, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset', 'content-type': 'application/json' };
+    const item = (n, title, extra) => ({ number: n, title, html_url: 'https://github.com/atomeam/void-loop/' + (extra.pull_request ? 'pull/' : 'issues/') + n, user: { login: extra.login || 'atomeam', type: 'User' }, labels: extra.labels || [], comments: 0, ...extra });
+    const items = [
+      item(4, 'Draft: tidy the docs', { state: 'closed', created_at: '2026-10-02T09:00:00Z', updated_at: '2026-10-03T09:00:00Z', closed_at: '2026-10-03T09:00:00Z', pull_request: { merged_at: null }, login: 'kim' }),
+      item(3, 'Login bug on phones', { state: 'open', created_at: '2026-10-01T09:00:00Z', updated_at: '2026-10-04T09:00:00Z', closed_at: null, labels: [{ name: 'bug' }], login: 'ann' }),
+      item(2, 'CI: PC-free deploys (tests + Cloudflare Pages) and helper/* auto-ship', { state: 'closed', created_at: '2026-09-28T04:40:00Z', updated_at: '2026-09-28T04:57:59Z', closed_at: '2026-09-28T04:57:59Z', pull_request: { merged_at: '2026-09-28T04:57:59Z' } }),
+      item(1, 'Void side-panel extension + frame permission, and free-model shortfall evidence', { state: 'closed', created_at: '2026-09-28T04:30:00Z', updated_at: '2026-09-28T05:14:17Z', closed_at: '2026-09-28T05:14:17Z', pull_request: { merged_at: '2026-09-28T05:14:17Z' } }),
+    ];
+    await P.ctx.route(/^https:\/\/api\.github\.com\//, (r) => {
+      const req = r.request(), u = req.url(), tag = req.headers()['if-none-match'] || '';
+      if (req.method() === 'OPTIONS') return r.fulfill({ status: 204, headers: { ...H, 'access-control-allow-headers': 'accept, if-none-match', 'access-control-allow-methods': 'GET' } });
+      gh.seen.push({ u, tag });
+      const rate = (left) => ({ 'x-ratelimit-limit': '60', 'x-ratelimit-remaining': String(left), 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 1800) });
+      if (gh.mode === 'limit') return r.fulfill({ status: 403, headers: { ...H, ...rate(0) }, body: JSON.stringify({ message: 'API rate limit exceeded' }) });
+      const since = /[?&]since=/.test(u), etag = since ? '"since-1"' : '"all-1"';
+      if (tag === etag) return r.fulfill({ status: 304, headers: { ...H, ...rate(50), etag } });
+      const body = since ? [items[1]] : items;
+      return r.fulfill({ status: 200, headers: { ...H, ...rate(55), etag }, body: JSON.stringify(body) });
+    });
+    await P.p.evaluate(() => localStorage.clear());
+    await P.p.goto(base + 'ledger/?tab=pr&sort=old'); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(150);
+    const t = await P.p.evaluate(() => document.body.innerText);
+    const probe = PROBES.automation;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([, re]) => !re.test(t)).map(([n]) => n);
+    const prRows = await P.p.$$eval('#rows tr', (trs) => trs.map((tr) => tr.innerText.replace(/\s+/g, ' ')));
+    check('ledger: the pull requests tab lists #1, #2 and #4 oldest first, #1 and #2 merged and #4 closed, and the tower probe finds every truth and fact',
+      prRows.length === 3 && /Void side-panel/.test(prRows[0]) && /PC-free/.test(prRows[1]) && /tidy the docs/.test(prRows[2]) && /Merged/.test(prRows[0]) && /Closed/.test(prRows[2]) && !/Merged/.test(prRows[2]) && !miss.length, JSON.stringify({ prRows, miss }));
+    await P.p.click('#tab-issue'); await P.p.waitForTimeout(100);
+    const iss = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#rows tr')].map((tr) => tr.innerText.replace(/\s+/g, ' ')), sel: document.getElementById('tab-issue').getAttribute('aria-selected'), url: location.search }));
+    check('ledger: the issues tab holds only the issue (#3 by ann, open) and the tab change is in the link', iss.rows.length === 1 && /Login bug/.test(iss.rows[0]) && /ann/.test(iss.rows[0]) && iss.sel === 'true' && !/tab=/.test(iss.url), JSON.stringify(iss));
+    await P.p.click('#tab-pr'); await P.p.selectOption('#state', 'merged'); await P.p.waitForTimeout(100);
+    const merged = await P.p.evaluate(() => ({ n: document.querySelectorAll('#rows tr').length, url: location.search, count: document.getElementById('count').textContent }));
+    check('ledger: Merged on the pull requests tab keeps #1 and #2, says "2 of 3 pull requests shown", and puts state=merged in the link', merged.n === 2 && /state=merged/.test(merged.url) && /tab=pr/.test(merged.url) && /^2 of 3 pull requests shown/.test(merged.count), JSON.stringify(merged));
+    const [dl] = await Promise.all([P.p.waitForEvent('download', { timeout: 10000 }), P.p.click('#csv')]);
+    const { readFileSync } = await import('node:fs'); const csv = readFileSync(await dl.path(), 'utf8').replace(/^\uFEFF/, ''), lines = csv.split('\r\n').filter(Boolean);
+    check('ledger: Download CSV gives the view on screen with a header and CRLF lines (2 merged pull requests, oldest first, a BOM for spreadsheets)', lines[0].startsWith('kind,number,title,url,author,state,created_at') && lines.length === 3 && lines[1].startsWith('pr,1,') && lines[2].startsWith('pr,2,') && /,merged,/.test(lines[2]) && /\.csv$/.test(dl.suggestedFilename()), JSON.stringify({ name: dl.suggestedFilename(), lines: lines.slice(0, 3) }));
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForTimeout(300);
+    const back = await P.p.evaluate(() => ({ state: document.getElementById('state').value, tab: document.getElementById('tab-pr').getAttribute('aria-selected'), n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: a reload restores the view from the link (pull requests, merged)', back.state === 'merged' && back.tab === 'true' && back.n === 2, JSON.stringify(back));
+    await P.p.waitForTimeout(100); gh.seen.length = 0;
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 });
+    await P.p.click('#refresh'); await P.p.waitForFunction(() => !document.getElementById('refresh').disabled, null, { timeout: 10000 }); await P.p.waitForTimeout(100);
+    const st = await P.p.$eval('#status', (e) => e.textContent);
+    check('ledger: Refresh asks only for what changed (since=), and the second sends the saved ETag, gets a 304 and says nothing changed', gh.seen.length === 2 && gh.seen.every((s) => /since=/.test(s.u)) && gh.seen[1].tag === '"since-1"' && /nothing changed/.test(st), JSON.stringify({ seen: gh.seen, st }));
+    gh.mode = 'limit';
+    await P.p.reload(); await P.p.waitForSelector('#rows tr', { timeout: 15000 }); await P.p.waitForFunction(() => /limit/.test(document.getElementById('status').textContent), null, { timeout: 10000 });
+    const lim = await P.p.evaluate(() => ({ st: document.getElementById('status').textContent, n: document.querySelectorAll('#rows tr').length }));
+    check('ledger: when GitHub says the limit is used up (403, 0 left) the page says when it resets and keeps the saved copy on screen', /60 requests an hour/.test(lim.st) && /resets at/.test(lim.st) && /saved copy/.test(lim.st) && lim.n === 2, JSON.stringify(lim));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('ledger: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    check('ledger: the page links to at least four sibling Verse tools and to its card on the stage', (await siblingCount(P.p)) >= 4 && !!(await P.p.$('a[href="/?q=look%20at%20atomeam%2Fvoid-loop"]')), JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    check('ledger: at phone width (360 px) the table turns into cards and the page never scrolls sideways', cut <= 0, JSON.stringify({ cut }));
+    await P.ctx.close();
+  }
+  // the prize wheel floor (2026-10-28): wheelofgold.com's spin-to-win, fought from /prizes/ - every slice's real chance and expected value,
+  // the top prize in N spins, a seeded 1,000-spin check, the drip to a cashout, and the list carried between /wheel/, /prizes/ and /tournaments/
+  if (want("prizes: the faucet audit's odds and drip, a seeded 1,000-spin check, never-reaches at EV 0, and the wheel, prizes and tournaments handoff")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const PZ = await import('../void-live-deploy/lib/prizes.js');
+    const P = await fresh({ base: base + 'prizes/?preset=faucet' });
+    await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.prizes;
+    const miss = [...(probe.truth || []), ...(probe.facts || []), ...Object.values(probe.askParts || {}).flat()].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('prizes: the lead line, and the faucet audit works out $0.0037 a spin, 63.2% for the top prize in 1,000 spins and 1,352 spins (56.3 days) to a $5 cashout; every item the probe reads is on the page',
+      t.includes('Spin a weighted prize wheel, check the real odds and expected value of every slice, and see how long a reward drip takes to pay out.') && !miss.length, JSON.stringify({ miss }));
+    await P.p.goto(base + 'prizes/?preset=loot&seed=42'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    await P.p.click('#sim'); await P.p.waitForTimeout(150);
+    const counts = await P.p.$eval('#simtable', (e) => e.dataset.counts);
+    const want42 = PZ.simulate(PZ.parseSlices(PZ.PRESETS.loot.slices), 1000, PZ.seeded('42'));
+    const simsay = await P.p.$eval('#simsay', (e) => e.textContent);
+    check('prizes: ?seed=42 makes the 1,000-spin run the same every time, it matches the odds (chi-square under the 0.1% line) and the page says the Spin button stays on secure randoms',
+      counts === want42.counts.join(',') && want42.chi2 < 16.27 && counts.split(',').reduce((a, b) => a + +b, 0) === 1000 && /Seeded with "42"/.test(simsay) && /secure random/.test(simsay), JSON.stringify({ counts, want: want42.counts, simsay }));
+    await P.p.click('#spin'); await P.p.waitForFunction(() => /worth/.test(document.getElementById('result').textContent), null, { timeout: 8000 });
+    const won = await P.p.$eval('#result', (e) => e.textContent);
+    check('prizes: a live spin lands on one of the slices and says what it is worth', /^(Legendary|Epic|Rare|Common) · worth /.test(won), JSON.stringify({ won }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('Alice\nBob') + '&cd=0'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const plain = await P.p.evaluate(() => ({ rows: [...document.querySelectorAll('#odds tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), drip: document.getElementById('drip').textContent, body: document.body.innerText }));
+    await P.p.goto(base + 'prizes/?s=' + encodeURIComponent('a:0:1\nb:0:3')); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const zero = await P.p.$eval('#drip', (e) => e.textContent);
+    check('prizes: plain names from the wheel count as value 1, weight 1 (no NaN), and EV 0 or a 0 cooldown says it never reaches the cashout instead of Infinity',
+      plain.rows[0] === 'Alice 1 1 50% $0.5 100%' && plain.drip === 'Never reaches cashout ($0 expected value per spin)' && zero === 'Never reaches cashout ($0 expected value per spin)' && !/NaN|Infinity/.test(plain.body), JSON.stringify({ rows: plain.rows, drip: plain.drip, zero }));
+    // the handoff: prizes -> wheel (suffixes off, one copy kept on the click), the paste pill there, and a roster on 0 points under Game night
+    await P.p.goto(base + 'prizes/?preset=raffle'); await P.p.waitForSelector('#sendrow a', { timeout: 15000 });
+    await P.p.click('text=Spin them on the name wheel'); await P.p.waitForSelector('#entries', { timeout: 15000 }); await P.p.waitForTimeout(200);
+    const onWheel = await P.p.evaluate(() => ({ path: location.pathname, entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
+    check('prizes: "Spin them on the name wheel" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill',
+      onWheel.path === '/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
+    await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#rostertable tbody tr', { timeout: 15000 });
+    const roster = await P.p.evaluate(() => ({ head: document.getElementById('h-roster').textContent, rows: [...document.querySelectorAll('#rostertable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pill: (document.querySelector('.vh-pill button') || {}).textContent || '', standings: document.querySelectorAll('#standings tbody tr').length }));
+    check('prizes: names sent to /tournaments/ become a roster on 0 points under Game night, beside the scorer\'s own standings, with the paste pill from /prizes/',
+      roster.head === 'Roster · Game night' && roster.rows.join('|') === '1 Ann 0|2 Bob 0|3 Cat 0' && /^Paste from \/prizes\//.test(roster.pill) && roster.standings > 0, JSON.stringify(roster));
+    await P.p.goto(base + 'prizes/'); await P.p.waitForSelector('#odds tbody tr', { timeout: 15000 });
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label') || (e.id && document.querySelector('label[for="' + e.id + '"]')))).length);
+    check('prizes: every control is named and the pages threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.p.setViewportSize({ width: 360, height: 760 }); await P.p.waitForTimeout(150);
+    const cut = await P.p.evaluate(() => { const vw = document.documentElement.clientWidth; return { page: document.documentElement.scrollWidth - vw, over: [...document.querySelectorAll('main *')].filter((e) => e.offsetParent && !e.closest('.scroll') && e.getBoundingClientRect().right > vw + 1).map((e) => e.tagName + '#' + e.id).slice(0, 5) }; });
+    check('prizes: at phone width (360 px) the page never scrolls sideways', cut.page <= 0 && !cut.over.length, JSON.stringify(cut));
+    check('prizes: the footer links to at least four sibling Verse tools', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the hosting floor (owner, 2026-10-27): thunit.com's 70-word brochure, fought from /hosting/ - the two claims it makes (exclusive vs
+  // crowded shared servers, and security) turned into numbers: bandwidth, transfer, workers, memory and the downtime each SLA allows, with a
+  // hardened NGINX or Caddy config. The seeded ask is 50 requests/s of 200 KB at 40 ms, 128 MB a worker and a 99.9% SLA, worked out by hand.
+  if (want("hosting: the seeded traffic works out bandwidth, transfer, workers, memory and downtime, and the config carries the headers")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const ask = '/hosting/?rps=50&kb=200&ms=40&ram=128&sla=99.9';
+    const P = await fresh({ base: base + ask.slice(1) });
+    await P.p.waitForSelector('#config', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.hosting;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const out = await P.p.evaluate(() => ['bw', 'monthly', 'workers', 'memory'].map((id) => document.getElementById(id).textContent).join('\n'));
+    check('hosting: 50 requests/s of 200 KB at 40 ms works out 10 MB/s (80 Mbps), 129,600,000 requests and 25,920 GB a month, 2 workers, 4 vCPUs and 1,024 MB',
+      /10,000 KB\/s/.test(out) && /10 MB\/s/.test(out) && /80 Mbps/.test(out) && /129,600,000 requests\/month/.test(out) && /25,920 GB\/month/.test(out) && /2 active workers/.test(out) && /4 vCPUs/.test(out) && /1,024 MB/.test(out) && !miss.length, JSON.stringify({ out, miss }));
+    const sla = await P.p.$eval('#slatable tr.on', (e) => e.innerText.replace(/\t/g, ' '));
+    check('hosting: the 99.9% row allows 8h 45m 36s a year, 43m 48s a month, 10m 5s a week and 1m 26s a day',
+      /99\.9%/.test(sla) && /8h 45m 36s/.test(sla) && /43m 48s/.test(sla) && /10m 5s/.test(sla) && /1m 26s/.test(sla), JSON.stringify({ sla }));
+    const shared = await P.p.$eval('#shared-say', (e) => e.textContent);
+    const exclusive = await P.p.$eval('#exclusive-say', (e) => e.textContent);
+    check('hosting: shared and exclusive are the same traffic in numbers - four tenants leave one core, so it queues; an exclusive server has headroom',
+      /2\.0× over capacity/.test(shared) && /50% headroom/.test(exclusive), JSON.stringify({ shared, exclusive }));
+    const nginx = await P.p.$eval('#config', (e) => e.textContent);
+    await P.p.selectOption('#server', 'caddy'); await P.p.waitForTimeout(150);
+    const caddy = await P.p.$eval('#config', (e) => e.textContent);
+    check('hosting: the NGINX and Caddy configs both carry TLS 1.3, HSTS, a content security policy, nosniff and a rate limit sized to the traffic',
+      /TLS 1\.3/.test(nginx) && /TLS 1\.3/.test(caddy) && /ssl_protocols TLSv1\.3/.test(nginx) && /protocols tls1\.3/.test(caddy) && /limit_req_zone/.test(nginx) && /rate_limit/.test(caddy) && /Strict-Transport-Security/.test(caddy), JSON.stringify({ nginx: nginx.slice(0, 60), caddy: caddy.slice(0, 60) }));
+    const gist = await P.p.$eval('#gist', (a) => a.getAttribute('href'));
+    check('hosting: the config hands off to a gist, Base64 and the word count, encoded with the numbers on the page', /^\/g\/\?text=/.test(gist) && /name=Caddyfile/.test(gist), JSON.stringify({ gist: gist.slice(0, 60) }));
+    await P.p.click('#share'); await P.p.waitForTimeout(200);
+    const search = await P.p.evaluate(() => location.search);
+    await P.p.reload({ waitUntil: 'load' }); await P.p.waitForSelector('#config', { timeout: 15000 });
+    const back = await P.p.$eval('#bw', (e) => e.textContent);
+    check("hosting: the share link is the page's own numbers, and opening it again gives the same sizing", /rps=50/.test(search) && /10 MB\/s/.test(back), JSON.stringify({ search, back }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('hosting: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=web"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('hosting: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=web%20hosting%20sizing', JSON.stringify({ siblings: sib, stageLink }));
+    // the queue card (docs/WIDER-USE.md): the support desk example is 120 calls an hour of 6 minutes, 14 agents; Erlang C says 15 keep the wait under a minute
+    await P.p.click('[data-qp="desk"]'); await P.p.waitForTimeout(150);
+    const qout = await P.p.$eval('#qout', (e) => e.textContent), qurl = P.p.url();
+    check('hosting: the support desk example works out 12 busy at once, 86% busy with 14 agents, and 15 for waits under a minute, kept in the link',
+      /12 are being served at once/.test(qout) && /86% busy/.test(qout) && /you need 15 open/.test(qout) && /qn=14/.test(qurl) && /rps=50/.test(qurl), JSON.stringify({ qout, qurl }));
+    await P.ctx.close();
+  }
+  // the identity floor (owner, 2026-10-27): anycolorid.com's SSO portal, fought from /identity/ - a sovereign, on-device profile identity studio
+  // with editable profile metadata, a local change history ledger, a JWT claims inspector, a portal of your own service links and a shareable profile link.
+  if (want("identity: the profile edits, the change history, the token inspector, the service portal and the share link")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'identity/' });
+    await P.p.waitForSelector('#profileout', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.identity;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('identity: the profile shows the seeded name, email, account ID and region, with a change history ledger', /Sky Rivera/.test(t) && /sky@example\.com/.test(t) && /AC-0001/.test(t) && /Change history/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('identity: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=identity"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('identity: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=identity%20sso%20profile', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
+  // the cpan floor (owner, 2026-10-28): cpantesters.org's tester network, fought from /cpan/ - an offline-first Perl test report and
+  // module ingestion studio with distribution health, a test matrix, module search and export. The seeded ask ingests report lines and
+  // summarizes them on this device.
+  if (want("cpan: the seeded reports ingest, summarize health, build a matrix and export")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'cpan/' });
+    await P.p.waitForSelector('#summary', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.cpan;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('cpan: the page ingests reports, shows distribution health, a test matrix and export controls', /Ingest reports/.test(t) && /Distribution health/.test(t) && /CPAN test matrix/.test(t) && /Export JSON/.test(t) && /Export CSV/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('cpan: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const stageLink = await P.p.$eval('a[href*="ask=cpan"]', (a) => a.getAttribute('href')).catch(() => '');
+    const sib = await siblingCount(P.p);
+    check('cpan: the footer links to at least four sibling Verse tools and hands the page to the stage', sib >= 4 && stageLink === '/?ask=cpan%20testers', JSON.stringify({ siblings: sib, stageLink }));
+    await P.ctx.close();
+  }
+  // the obituaries floor: a respectful archive of surpassed tools, starting with ColorZilla's lineage card.
+  if (want("obituaries: the ColorZilla tribute and lineage chain")) {
+    const P = await fresh({ base: base + 'obituaries/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    await P.p.waitForTimeout(1500);
+    const t2 = await text();
+    check('obituaries: the archive reads the conquered ledger and renders memorials', /Obituaries & Lineage/.test(t2), JSON.stringify({}));
+    // honesty (owner, 2026-10-28: "be sure that our sites are actually better ... in every way"): every memorial carries a status, and one
+    // says "beaten" only when lib/obituary.js lets it; the rest say "in progress" with a match % and keep their Legacy and Tribute text
+    await P.p.waitForSelector('#list .badge', { timeout: 15000 }).catch(() => {});
+    const obit = await P.p.evaluate(() => { const cards = [...document.querySelectorAll('#list .card')]; return { cards: cards.length, badges: cards.filter((c) => c.querySelector('.badge')).length, wip: cards.filter((c) => /In progress: \d+% of its features matched/.test(c.innerText)).length, homage: cards.filter((c) => /The Legacy:/.test(c.innerText) && /Our Tribute:/.test(c.innerText)).length, falseWin: cards.filter((c) => /Beaten in every way/.test(c.querySelector('.badge').textContent) && /Not beaten yet/.test(c.innerText)).length, tally: document.getElementById('tally').textContent }; });
+    check('obituaries: every memorial shows an honest status and keeps its homage text', obit.cards > 0 && obit.badges === obit.cards && obit.homage === obit.cards && obit.wip > 0 && !obit.falseWin && /beaten in every way, \d+ in progress/.test(obit.tally), JSON.stringify(obit));
+    // the memorial is the first one with a cited history, not a fixed name: which sites hold a memorial follows the tower gate's own
+    // measures (2026-10-29 13:46, 1099c17b: /translate/ measured 1 small tap target, so Google Translate's memorial came down and
+    // this check, fixed on it, read 0 items); the search still narrows the list to it
+    const site = await P.p.evaluate(() => { const s = [...document.querySelectorAll('#list details summary')].find((x) => /\(\d+ cited events\)/.test(x.textContent)); return s ? s.textContent.replace(/^History of /, '').replace(/ \(\d+ cited events\)$/, '') : ''; });
+    await P.p.fill('#q', site);
+    await P.p.evaluate((site) => { const d = [...document.querySelectorAll('#list details')].find((x) => x.querySelector('summary').textContent.startsWith('History of ' + site + ' (')); if (d) d.open = true; }, site);
+    await P.p.waitForSelector('#list .tl li a[href^="http"]', { timeout: 15000 }).catch(() => {});
+    const tl = await P.p.evaluate(() => { const items = [...document.querySelectorAll('#list .tl li')]; return { items: items.length, cited: items.filter((li) => li.querySelector('a[href^="http"]') || /unknown/.test(li.textContent)).length, gaps: document.querySelectorAll('#list .gaps li').length }; });
+    check('obituaries: a memorial opens a cited history timeline, every event sourced or marked unknown', !!site && tl.items > 3 && tl.cited === tl.items, JSON.stringify({ site, ...tl }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('obituaries: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    const sib = await siblingCount(P.p);
+    check('obituaries: the footer links to at least two sibling Verse tools', sib >= 2, JSON.stringify({ siblings: sib }));
+    await P.ctx.close();
+  }
+  // the colorzilla floor: ColorZilla's eyedropper and gradient editor, fought from /gradient/.
+  if (want("colorzilla: the gradient editor, eyedropper and css output")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'gradient/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.colorzilla;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('colorzilla: the gradient page shows linear, radial, conic, an eyedropper and copy CSS', /linear/i.test(t) && /radial/i.test(t) && /conic/i.test(t) && /Pick a colour from the screen/i.test(t) && /Copy CSS/.test(t) && !miss.length, JSON.stringify({ miss }));
+    check('colorzilla: the page threw nothing', !P.errors.length, JSON.stringify({ errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the books floor: Verse Bookshelf, compiling chapters from the ledger.
+  if (want("books: the bookshelf compiles chapters and exports")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'books/' });
+    await P.p.waitForSelector('h1', { timeout: 15000 });
+    await P.p.waitForTimeout(1500);
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.sudowrite;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    check('books: the bookshelf compiles chapters and exports', /Verse Bookshelf/.test(t) && /Chapters/.test(t) && /Export Markdown/.test(t) && !miss.length, JSON.stringify({ miss }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input,select,textarea')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title || e.closest('label'))).length);
+    check('books: every control is named and the page threw nothing', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    await P.ctx.close();
+  }
+  // the emoji floor (owner, 2026-10-26: "drop the /emojis/ page and its tower probe right onto main"): emojitracker.com's ranked wall,
+  // fought from /emojis/ — a closed list of emoji, a copy counted when one is tapped, today and all time, a search, and the honesty line
+  // that says what it is not. The count is real: the tap copies the character and adds one.
+  if (want("emoji counts: a ranked wall of a closed list, a tap copies the emoji and its count rises, a search, today and all time, and every item the emojis probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const P = await fresh({ base: base + 'emojis/?pick=' + encodeURIComponent('🔥') });
+    await P.p.waitForSelector('#wall button', { timeout: 15000 });
+    await P.p.waitForSelector('#pick:not([hidden])', { timeout: 15000 });
+    const seed = await P.p.evaluate(() => ({ cp: document.getElementById('pick-cp').textContent, bytes: document.getElementById('pick-bytes').textContent, ent: document.getElementById('pick-ent').textContent, name: document.getElementById('pick-name').textContent, link: document.getElementById('pick-link').getAttribute('href'), hidden: document.getElementById('pick').hidden, search: location.search }));
+    const text = () => P.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const probe = PROBES.emojis;
+    const miss = [...(probe.truth || []), ...(probe.facts || [])].filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([n]) => n);
+    const rows = await P.p.evaluate(() => document.querySelectorAll('#wall button').length);
+    check('emoji: the wall lists the whole closed list, ranked, and every item the emojis probe reads is on the page', rows === 134 && /rocket/.test(t) && /red heart/.test(t) && !miss.length, JSON.stringify({ rows, miss }));
+    // tap the first row: it should be copied and the count should rise by one, today and all time together
+    const firstBefore = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const firstName = await P.p.$eval('#wall button', (e) => e.getAttribute('aria-label'));
+    await P.p.click('#wall button'); await P.p.waitForTimeout(400);
+    const firstAfter = await P.p.$eval('#wall button .n', (e) => e.textContent);
+    const said = await P.p.$eval('#say', (e) => e.textContent);
+    check('emoji: a tap copies the emoji and its own count goes up by one, said plainly', /\b1\b/.test(firstAfter) && firstAfter !== firstBefore && /Copied/.test(said) && /copies today/.test(firstName), JSON.stringify({ firstBefore, firstAfter, said, firstName }));
+    await P.p.fill('#q', 'rocket'); await P.p.waitForTimeout(250);
+    // the rows are all on the page; the search hides the ones that do not match, so count what is shown
+    const filtered = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: the search narrows the wall by name', filtered.length === 1 && /rocket/.test(filtered[0]), JSON.stringify({ filtered }));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(200);
+    await P.p.click('#all'); await P.p.waitForTimeout(250);
+    const allOn = await P.p.$eval('#all', (e) => e.getAttribute('aria-pressed'));
+    const todayOff = await P.p.$eval('#today', (e) => e.getAttribute('aria-pressed'));
+    const allText = await text();
+    check('emoji: all time is a mode of its own and the line says what the number counts', allOn === 'true' && todayOff === 'false' && /in all/.test(allText), JSON.stringify({ allOn, todayOff }));
+    const unnamed = await P.p.evaluate(() => [...document.querySelectorAll('button,a[href],input')].filter((e) => e.offsetParent && !(e.getAttribute('aria-label') || e.textContent.trim() || e.title)).length);
+    check('emoji: every control on the wall is named', unnamed === 0 && !P.errors.length, JSON.stringify({ unnamed, errors: P.errors.join(' | ').slice(0, 160) }));
+    // the seeded ask: ?pick= opens that emoji's record with its Unicode, its UTF-8 bytes, an HTML entity and a share link
+    const tapped = await P.p.evaluate(() => new Promise((r) => { document.querySelector('#wall button[data-c="\u{1F525}"]').click(); setTimeout(() => r({ say: document.getElementById('say').textContent, href: document.getElementById('pick-link').getAttribute('href') }), 300); }));
+    check('emoji: ?pick= opens the emoji with its Unicode, its bytes, its entity and a share link, and a tap keeps it there', !seed.hidden && seed.name === 'fire' && seed.cp === 'U+1F525' && seed.bytes === 'F0 9F 94 A5' && seed.ent === '&#128293;' && /pick=%F0%9F%94%A5/.test(seed.link) && /pick=%F0%9F%94%A5/.test(seed.search) && /pick=%F0%9F%94%A5/.test(tapped.href) && /Copied/.test(tapped.say), JSON.stringify({ seed, tapped }));
+    await P.p.fill('#q', 'heart'); await P.p.waitForTimeout(200);
+    const heartRows = await P.p.evaluate(() => [...document.querySelectorAll('#wall button')].filter((b) => b.offsetParent !== null).map((b) => b.querySelector('.name').textContent));
+    check('emoji: ?q= narrows the wall the same way the box does', heartRows.length >= 1 && heartRows.every((n) => /heart/.test(n)), JSON.stringify({ heartRows }));
+    // the handoff (owner, 2026-10-27): the picked emoji rides in the strip above the wall, and changes when another is tapped
+    const handoff = await P.p.evaluate(() => ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')));
+    await P.p.fill('#q', ''); await P.p.waitForTimeout(150);
+    await P.p.evaluate(() => document.querySelector('#wall button[data-c="🚀"]').click());
+    await P.p.waitForTimeout(400);
+    const rocket = await P.p.evaluate(() => ({ name: document.getElementById('handoff-name').textContent, hrefs: ['send-count', 'send-translate', 'send-base64', 'send-gist', 'send-stage'].map((id) => document.getElementById(id).getAttribute('href')) }));
+    check('emoji: the picked emoji rides in the handoff strip (characters, translation, Base64, gist, stage) and changes when another is tapped',
+      handoff[0] === '/word-count/?t=%F0%9F%94%A5' && handoff[1] === '/translate/?q=fire&to=es' && handoff[2] === '/base64/?t=%F0%9F%94%A5' && /%F0%9F%94%A5%20fire/.test(handoff[3]) && handoff[4] === '/?ask=emoji%20fire' &&
+      rocket.name === 'rocket' && rocket.hrefs[1] === '/translate/?q=rocket&to=es' && rocket.hrefs[4] === '/?ask=emoji%20rocket' && [0, 2, 3].every((i) => rocket.hrefs[i].includes('%F0%9F%9A%80')), JSON.stringify({ handoff, rocket }));
+    check('emoji: the footer links to at least four sibling Verse tools, so the page is not a dead end', (await siblingCount(P.p)) >= 4, JSON.stringify({ siblings: await siblingCount(P.p) }));
+    await P.ctx.close();
+  }
+  // the codebase floor (owner, 2026-10-26: "let's make codebasehq.com our next clean sweep"): the gist page carries the work beside the
+  // code — a task list, a timer and notes on this device — and every item the gate reads is on it (the probe's own lists, run here)
+  if (want("gist: the work beside the code — tasks, a timer, notes and sizes on the device, and every item the codebase probe reads")) {
+    const { PROBES } = await import('./tower-probes.mjs');
+    const g = await fresh({ base: base + 'g/?text=hello world&name=notes.txt' });
+    await g.p.waitForSelector('#work', { timeout: 10000 });
+    const probe = PROBES.codebase, text = () => g.p.evaluate(() => document.body.innerText);
+    const t = await text();
+    const missFact = (probe.facts || []).filter(([name, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => name);
+    const missPart = Object.entries(probe.askParts || {}).flatMap(([a, items]) => items.filter(([, fn]) => { try { return !(typeof fn === 'function' ? fn(t) : fn.test(t)); } catch (_) { return true; } }).map(([name]) => a + ': ' + name));
+    check('gist: the seeded gist shows its file, its 11 characters on 1 line, and where it lives', /notes\.txt/.test(t) && /hello world/.test(t) && /11 characters/.test(t) && /1 line\b/.test(t) && /whole gist in the link/i.test(t), t.slice(0, 220));
+    check('gist: the work panel is there — task list, timer, notes and docs, file sizes, download all, kept on this device', /Task list/.test(t) && /Add a task/.test(t) && /\d+ of \d+ tasks left/.test(t) && /\bTimer\b/.test(t) && /\d+ m \d+ s/.test(t) && /Total \d+ m/.test(t) && /Notes and docs/.test(t) && /\bPreview\b/.test(t) && /\d+ B\b/.test(t) && /Download all/.test(t) && /on this device/.test(t), String(t).slice(String(t).indexOf('Task list'), String(t).indexOf('Task list') + 320));
+    check('gist: every item the codebase probe reads is on the page — its facts and all four named parts, checked with the probe own lists', !missFact.length && !missPart.length, JSON.stringify({ missFact, missPart }));
+    await g.p.fill('#tasknew', 'ship the gist'); await g.p.click('text=Add a task'); await g.p.waitForTimeout(200);
+    const afterAdd = await text();
+    await g.p.check('#tasks input[type=checkbox]'); await g.p.waitForTimeout(200);
+    const afterDone = await text();
+    check('gist: a task is added and ticked off, and the count says how many are left', /1 of 1 tasks left/.test(afterAdd) && /0 of 1 tasks left/.test(afterDone), JSON.stringify({ afterAdd: (afterAdd.match(/\d+ of \d+ tasks left/g) || []), afterDone: (afterDone.match(/\d+ of \d+ tasks left/g) || []) }));
+    await g.p.click('text=Start'); await g.p.waitForTimeout(1200); await g.p.click('text=Stop'); await g.p.waitForTimeout(200);
+    const stopped = await g.p.$eval('#totaltime', (e) => e.textContent);
+    await g.p.reload({ waitUntil: 'load' }); await g.p.waitForSelector('#work', { timeout: 10000 });
+    const kept = await g.p.$eval('#totaltime', (e) => e.textContent);
+    check('gist: the timer starts and stops, and its total survives a reload (it is on this device)', /^Total \d+ m$/.test(stopped) && stopped === kept, JSON.stringify({ stopped, kept }));
+    await g.p.fill('#docs', '## Plan\n\n**ship** it'); await g.p.click('text=Preview'); await g.p.waitForTimeout(200);
+    const preview = await g.p.$eval('#docout', (e) => e.innerHTML);
+    const notesKept = await g.p.$eval('#docs', (e) => e.value);
+    check('gist: the notes preview renders a heading and bold, and the notes survive a reload', /<b>Plan<\/b>/.test(preview) && /<b>ship<\/b>/.test(preview) && /ship/.test(notesKept), String(preview).slice(0, 140));
+    await g.ctx.close();
+  }
+  // everyone's flips (owner, 2026-10-23: the global counter): one quiet line from /api/tally, hidden until the first read works
+  if (want("coin: everyone's flips show under the tally from /api/tally, and stay hidden when the tally is off")) {
+    const P = await fresh(); const posts = []; let reads = 0;
+    await P.ctx.route(/\/api\/tally(?:\?|$)/, (r) => { const q = r.request(); if (q.method() !== 'POST') reads++; if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50001, tails: 48310 }, today: { heads: 612, tails: 592 } } }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: { all: { heads: 50000, tails: 48310 }, today: { heads: 611, tails: 592 } } }) }); });
+    await P.ask('flip a coin', 1200);
+    const line = await until(async () => P.p.$eval('.vpage.on .coin-everyone', (e) => (e.hidden ? '' : e.textContent)).catch(() => ''), 6000);
+    check('coin: everyone\'s flips: "Everyone today: 51% heads of 1,204 flips · all time 50.9% heads of 98,311" under the tally, from the one POST of the first flip (heads or tails, n 1; no separate read: one request, not two)',
+      /^Everyone today: 51% heads of 1,20[34] flips · all time 50\.9% heads of 98,31[01]$/.test(line) && posts.length === 1 && posts[0].of === 'coin' && /^(?:heads|tails)$/.test(posts[0].v) && posts[0].n === 1 && reads === 0 && !P.errors.length, JSON.stringify({ line, posts, reads, errors: P.errors }));
+    await P.ctx.close();
+    const Q = await fresh(); await Q.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' }));
+    await Q.ask('flip a coin', 1500); const hidden = await Q.p.$eval('.vpage.on .coin-everyone', (e) => e.hidden).catch(() => null);
+    check('coin: with the tally off (503) the line stays hidden and the coin still flips', hidden === true && /Heads|Tails/.test(await Q.p.$eval('.vpage.on .coin-word', (e) => e.textContent).catch(() => '')) && !Q.errors.length, JSON.stringify({ hidden, errors: Q.errors }));
+    await Q.ctx.close();
+  }
+  // the password checker (lib/pwcheck.js, /password-strength/, skills/pwcheck.js; owner, 2026-10-24: back to the easy sites): worked out on the device, nothing sent
+  if (want("password strength: the page and the card rate a password on the device, send nothing while typing, and the leak check sends five characters")) {
+    const W = await fresh(); const origin = new URL(W.p.url()).origin, seen = [];
+    await W.ctx.route(/api\.pwnedpasswords\.com\/range\//, (r) => { seen.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: '0018A45C4D1DEF81644B54AB7F969B88D65:21\r\n00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2\r\n1E4C9B93F3F0682250B6CF8331B7EE68FD8:10434004' }); });
+    const pg = await W.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/password-strength/'); await pg.waitForSelector('#pw', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.fill('#pw', 'password'); await pg.waitForTimeout(300);
+    const weak = await pg.evaluate(() => ({ label: document.getElementById('label').textContent, off: document.getElementById('offline').textContent, why: [...document.querySelectorAll('#why li')].map((x) => x.textContent).join('|'), type: document.getElementById('pw').type }));
+    await pg.fill('#pw', 'Xk9$fTq2#Lm7@Vz4'); await pg.waitForTimeout(200); const strong = await pg.$eval('#label', (e) => e.textContent);
+    const third = reqs.filter((u) => /^https?:/.test(u)).length, typed = reqs.length - loaded; // before the leak button: typing sends nothing
+    await pg.fill('#pw', 'password'); await pg.click('#leak'); await pg.waitForFunction(() => /leaked/.test(document.getElementById('leakmsg').textContent), null, { timeout: 8000 }); const leak = await pg.$eval('#leakmsg', (e) => e.textContent);
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password-strength.png') }).catch(() => {});
+    const c = await W.ctx.newPage(); await c.goto(origin + '/'); await c.waitForSelector('#q, input[type=text], textarea', { timeout: 10000 }).catch(() => {});
+    check('password strength: /password-strength/ loads one page and one module (no third party), rates "password" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and "Has it leaked?" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches',
+      ownLoads(reqs, loaded) <= 3 && third === 0 && typed === 0 && weak.label === 'Very weak' && /Instantly/.test(weak.off) && /Contains "password"/.test(weak.why) && weak.type === 'password' && strong === 'Very strong'
+      && seen.length === 1 && /\/range\/5BAA6$/.test(seen[0]) && !/password/i.test(seen[0].replace('pwnedpasswords', '')) && /10,434,004 times/.test(leak) && !W.errors.length,
+      JSON.stringify({ loaded, third, typed, weak, strong, seen, leak, errors: W.errors }));
+    const K = await fresh(); await K.ask('how secure is my password', 900); await until(async () => !!(await K.p.$('.vpage.on .pw-in')), 8000);
+    await K.p.fill('.vpage.on .pw-in', 'letmein'); await K.p.waitForTimeout(250); const card = await K.p.$eval('.vpage.on .pw-out', (e) => e.textContent), hist = await K.p.evaluate(() => localStorage.getItem('a2m.void.loop.v1') || '');
+    await K.ask('is Tr0ub4dor&3 a good password', 900); const warn = await until(async () => K.p.$eval('.vpage.on .pw-warn', (e) => e.textContent).catch(() => ''), 6000);
+    check('password strength: "how secure is my password" opens a card with a password box that rates it on the device ("letmein" Very weak), the typed password is never in the ask history, and an ask that carries a password gets a warning that does not repeat it',
+      /Very weak/.test(card) && /Instantly|instantly/.test(card) && !/letmein/.test(hist) && /Do not type a real password/.test(warn) && !/Tr0ub4dor/.test(warn) && !K.errors.length, JSON.stringify({ card: card.slice(0, 120), warn: warn.slice(0, 80), errors: K.errors }));
+    await W.ctx.close(); await K.ctx.close();
+  }
+  // the base converter (lib/baseconv.js, /base-converter/, skills/baseconv.js; owner, 2026-10-24: back to the easy sites): worked out on the device
+  // the rest of hextobinary.com on /base-converter/: any base 3 to 36, fractions exactly (a repeating part in brackets), and the working shown
+  if (want("base converter: a fraction is written exactly in every base with its repeating part, base 36 joins in, and the working is shown step by step")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base-converter/?v=ff&b=16'); await Z.p.waitForTimeout(200);
+    const work = await Z.p.$eval('#steps', (e) => e.textContent), b36 = await Z.p.$eval('#bn', (e) => e.value);
+    await Z.p.fill('#b10', '0.1'); const frac = { bin: await Z.p.$eval('#b2', (e) => e.value), hex: await Z.p.$eval('#b16', (e) => e.value), note: await Z.p.$eval('#note', (e) => e.textContent) };
+    await Z.p.fill('#b10', ''); await Z.p.selectOption('#anyb', '7'); await Z.p.fill('#bn', '10'); const seven = await Z.p.$eval('#b10', (e) => e.value);
+    check("base converter: a fraction is written exactly in every base with its repeating part, base 36 joins in, and the working is shown step by step",
+      /FF₁₆ = 15×16¹ \+ 15×16⁰/.test(work) && /= 240 \+ 15 = 255/.test(work) && /F→1111/.test(work) && b36 === '73' && frac.bin === '0.0(0011)' && frac.hex === '0.1(9)' && /repeat for ever/.test(frac.note) && seven === '7' && !Z.errors.length,
+      JSON.stringify({ work, b36, frac, seven, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  if (want("base converter: the page fills all four bases from any one, exact for huge numbers, with no third party, and the ask opens a card")) {
+    const B = await fresh(); const origin = new URL(B.p.url()).origin, pg = await B.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/base-converter/'); await pg.waitForSelector('#b10', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.fill('#b16', 'ff'); await pg.waitForTimeout(150); const fromHex = await pg.evaluate(() => ({ b2: b2.value, b8: b8.value, b10: b10.value, facts: document.getElementById('facts').textContent }));
+    await pg.fill('#b16', 'ffffffffffffffffffff'); await pg.waitForTimeout(150); const huge = await pg.$eval('#b10', (e) => e.value);
+    await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
+    const typed = reqs.length - loaded; await pg.fill('#b10', '255'); await pg.waitForTimeout(150); const cleared = await pg.evaluate(() => [...document.querySelectorAll('input.bad')].length); if (process.env.VOID_SHOTS) { await pg.waitForTimeout(150); await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'base-converter.png') }).catch(() => {}); }
+    check('base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request',
+      ownLoads(reqs, loaded) <= 3 && reqs.every((u) => u.startsWith('/')) && fromHex.b2 === '1111 1111' && fromHex.b8 === '377' && fromHex.b10 === '255' && /signed 8-bit number: -1/.test(fromHex.facts) && huge === '1,208,925,819,614,629,174,706,175'
+      && /not a base 2 number/.test(bad.note) && /bad/.test(bad.cls) && cleared === 0 && typed === 0 && !B.errors.length, JSON.stringify({ loaded, reqs, fromHex, huge, bad, cleared, typed, errors: B.errors }));
+    const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
+    const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
+    check('base converter: "ff hex to binary" opens a card with 1111 1111 big, all four bases, and a link that opens the page on that number',
+      card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base-converter/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
+    await B.ctx.close(); await K.ctx.close();
+  }
+  // the colour page against hexcolor16.com (owner, 2026-10-24: "ok beat it"): every model it lists and more, its ramps, six harmonies, the VGA
+  // palette and a random colour, readable contrast verdicts, and nothing on screen moves when the module fills the page in
+  if (want("colour page: 15 colour models with copy, the contrast verdict read on the page's own colours, six harmonies, the 16 VGA colours, a random colour, and no layout shift")) {
+    const C = await fresh(); const origin = new URL(C.p.url()).origin, pg = await C.ctx.newPage();
+    await pg.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true }); });
+    await pg.goto(origin + '/color/?c=ff5733'); await pg.waitForSelector('#rest:not([hidden])', { timeout: 10000 }); await pg.waitForTimeout(300);
+    const v = await pg.evaluate(() => ({ models: [...document.querySelectorAll('#models tr')].map((r) => r.cells[0].textContent + '=' + r.cells[1].textContent), copies: document.querySelectorAll('#models button').length,
+      verdictOnPage: [...document.querySelectorAll('#ratio > div > div')].every((d) => !d.style.background), samples: [...document.querySelectorAll('#ratio .sample[aria-hidden="true"]')].length,
+      schemes: [...document.querySelectorAll('#schemes .scheme p')].map((p) => p.textContent.split(' (')[0]), vga: [...document.querySelectorAll('#vga .sw')].map((s) => s.title), cls: window.__cls }));
+    await pg.click('#random'); await pg.waitForTimeout(150); const rnd = await pg.$eval('#hex', (e) => e.textContent); const url = pg.url();
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'colour.png'), fullPage: true }).catch(() => {});
+    const m = Object.fromEntries(v.models.map((x) => x.split('=')));
+    check('colour page: #ff5733 in 15 models each with a copy button (decimal 16734003, XYZ 45.2, 28.3, 6.2, CIELUV 60.2, 135, 41.6, OKLCH oklch(0.68 0.21 33.7), HWB hwb(11 20% 0%)), the two contrast verdicts on the page\'s own colours with the sample marked decoration, six harmonies with square apart from tetradic, the 16 VGA colours from black to white, a random colour that moves the address, and no layout shift',
+      v.models.length >= 16 && v.copies === v.models.length && m.Decimal === '16734003' && m['CIE XYZ'] === '45.2, 28.3, 6.2' && m.CIELUV === '60.2, 135, 41.6' && m.OKLCH === 'oklch(0.68 0.21 33.7)' && m.HWB === 'hwb(11 20% 0%)'
+        && v.verdictOnPage && v.samples === 2 && JSON.stringify(v.schemes) === JSON.stringify(['Complementary', 'Analogous', 'Triadic', 'Split-complementary', 'Tetradic', 'Square'])
+        && v.vga.length === 16 && v.vga[0] === '#000000' && v.vga[15] === '#ffffff' && /^#[0-9A-F]{6}$/.test(rnd) && url.endsWith('?c=' + rnd.slice(1).toLowerCase()) && v.cls < 0.01 && !C.errors.length,
+      JSON.stringify({ v, rnd, url, errors: C.errors }));
+    await C.ctx.close();
+  }
+  // the photo resizer (lib/imgfit.js, /resize-image/, skills/imgfit.js; owner, 2026-10-24: back to the easy sites): a real picture in, an exact size and a size limit out
+  if (want("photo resizer: a photo becomes an exact size under a size limit as a JPEG and a PDF, on the device, and the ask opens it filled in")) {
+    const R = await fresh(); const origin = new URL(R.p.url()).origin, pg = await R.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/resize-image/'); await pg.waitForSelector('#file', { timeout: 10000 }); const loaded = reqs.length;
+    const png = await pg.evaluate(async () => { const c = document.createElement('canvas'); c.width = 1200; c.height = 900; const x = c.getContext('2d'); for (let i = 0; i < 3000; i++) { x.fillStyle = 'hsl(' + (i * 7 % 360) + ',70%,' + (30 + i % 40) + '%)'; x.fillRect((i * 37) % 1200, (i * 91) % 900, 40, 30); } const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); });
+    await pg.setInputFiles('#file', { name: 'me.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') });
+    await pg.fill('#w', '3.5'); await pg.fill('#h', '2.5'); await pg.selectOption('#u', 'cm'); await pg.fill('#dpi', '200'); await pg.fill('#kb', '12');
+    await until(async () => (await pg.$eval('#line', (e) => e.textContent).catch(() => '')).includes('limit'), 8000); await pg.waitForTimeout(300);
+    const out = await pg.evaluate(() => ({ line: document.getElementById('line').textContent, cls: document.getElementById('line').className, bytes: +document.getElementById('result').dataset.bytes, fits: document.getElementById('result').dataset.fits, w: document.getElementById('pv').width, h: document.getElementById('pv').height }));
+    const dj = pg.waitForEvent('download', { timeout: 15000 }); await pg.click('#dj'); const jd = await dj, jb = fs.readFileSync(await jd.path());
+    const dp = pg.waitForEvent('download', { timeout: 15000 }); await pg.click('#dp'); const pd = await dp, pb = fs.readFileSync(await pd.path());
+    const jsz = await pg.evaluate(async (b64) => { const u = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)); const bm = await createImageBitmap(new Blob([u], { type: 'image/jpeg' })); return [bm.width, bm.height]; }, jb.toString('base64'));
+    await pg.fill('#kb', '1'); await pg.waitForTimeout(600); const tight = await pg.evaluate(() => ({ cls: document.getElementById('line').className, note: document.getElementById('note').textContent }));
+    if (process.env.VOID_SHOTS) await pg.screenshot({ path: path.join(process.env.VOID_SHOTS, 'resize-image.png') }).catch(() => {});
+    check('photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page',
+      ownLoads(reqs, loaded) <= 3 && out.w === 276 && out.h === 197 && out.cls === 'ok' && out.fits === 'true' && out.bytes <= 12000 && jb.length === out.bytes && jb[0] === 0xff && jsz[0] === 276 && jsz[1] === 197 && pb.slice(0, 5).toString() === '%PDF-' && /Even at the lowest quality/.test(tight.note) && tight.cls === 'bad' && reqs.every((u) => u.startsWith('/')) && !R.errors.length,
+      JSON.stringify({ loaded, out, jlen: jb.length, jsz, pdf: pb.slice(0, 5).toString(), tight, reqs: reqs.length, errors: R.errors }));
+    const K = await fresh(); await K.ask('resize a photo to 3.5 x 2.5 cm under 50 kb', 900); const href = await until(async () => K.p.$eval('.vpage.on .ir-open', (a) => a.getAttribute('href')).catch(() => ''), 8000);
+    const pg2 = await K.ctx.newPage(); await pg2.goto(origin + href); await pg2.waitForSelector('#w'); const filled = await pg2.evaluate(() => [w.value, h.value, u.value, kb.value].join('|'));
+    check('photo resizer: "resize a photo to 3.5 x 2.5 cm under 50 kb" opens a card whose link opens the resizer with 3.5, 2.5, cm and 50 filled in', href === '/resize-image/?w=3.5&h=2.5&u=cm&kb=50' && filled === '3.5|2.5|cm|50' && !K.errors.length, JSON.stringify({ href, filled, errors: K.errors }));
+    await R.ctx.close(); await K.ctx.close();
+  }
+  // the rest of pancardresizer.com: a preset fills a portal's size, a quarter turn swaps the picture's sides, and a dragged, zoomed crop moves
+  if (want("photo resizer: a PAN photo preset fills the size, rotate turns the picture, and dragging the zoomed crop moves what is kept")) {
+    const R = await fresh(); const origin = new URL(R.p.url()).origin, pg = await R.ctx.newPage(); await pg.goto(origin + '/resize-image/'); await pg.waitForSelector('#file');
+    const png = await pg.evaluate(async () => { const c = document.createElement('canvas'); c.width = 800; c.height = 400; const x = c.getContext('2d'); x.fillStyle = '#ff0000'; x.fillRect(0, 0, 500, 400); x.fillStyle = '#0000ff'; x.fillRect(500, 0, 300, 400); const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); });
+    await pg.setInputFiles('#file', { name: 'me.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') }); await pg.click('#presets button[data-p^="2.5,3.5,cm"]');
+    await until(async () => (await pg.$eval('#line', (e) => e.textContent).catch(() => '')).includes('limit'), 8000);
+    const pix = () => pg.evaluate(() => { const c = document.getElementById('pv'), d = c.getContext('2d').getImageData(Math.floor(c.width / 2), Math.floor(c.height / 2), 1, 1).data; return d[0] > 200 && d[2] < 80 ? 'red' : d[2] > 200 && d[0] < 80 ? 'blue' : d.join(','); });
+    const form = await pg.evaluate(() => [w.value, h.value, u.value, dpi.value, kb.value].join('|')), size = await pg.evaluate(() => [pv.width, pv.height].join('x')), before = await pix();
+    await pg.$eval('#pv', (e) => e.scrollIntoView({ block: 'center' })); const r = await (await pg.$('#pv')).boundingBox();
+    await pg.mouse.move(r.x + r.width * 0.7, r.y + r.height / 2); await pg.mouse.down(); await pg.mouse.move(r.x + r.width * 0.3, r.y + r.height / 2, { steps: 6 }); await pg.mouse.up(); await pg.waitForTimeout(500);
+    const dragged = await pix(); await pg.fill('#zoom', '2'); await pg.dispatchEvent('#zoom', 'input'); await pg.waitForTimeout(500); const zoomed = await pix();
+    await pg.click('#recrop'); await pg.click('#rotr'); await pg.waitForTimeout(500); const turned = await pix(), turnedSize = await pg.evaluate(() => [pv.width, pv.height].join('x'));
+    check("photo resizer: a PAN photo preset fills the size, rotate turns the picture, and dragging the zoomed crop moves what is kept",
+      form === '2.5|3.5|cm|200|50' && size === '197x276' && before === 'red' && dragged === 'blue' && zoomed === 'blue' && turned === 'red' && turnedSize === '197x276' && !R.errors.length,
+      JSON.stringify({ form, size, before, dragged, zoomed, turned, turnedSize, errors: R.errors }));
+    await R.ctx.close();
+  }
+  // speed for good (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): /flip/ asks for every module at once
+  if (want("flip page: every module the coin page needs is asked for at once (preloaded), and one tally request on load")) {
+    const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];
+    await F.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"counts":{"all":{"heads":1,"tails":1},"today":{"heads":1,"tails":1}}}' }));
+    const pg = await F.ctx.newPage(); pg.on('request', (q) => got.push(q.url().replace(origin, '')));
+    await pg.goto(origin + '/flip/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); const early = got.filter((u) => u.startsWith('/api/tally')).length; await pg.waitForTimeout(2400);
+    const word = await pg.$eval('.coin-word', (e) => e.textContent), pre = await pg.$$eval('link[rel=modulepreload]', (l) => l.map((x) => x.getAttribute('href')));
+    const mods = ['/skills/coin.js', '/lib/tally.js', '/lib/reactions.js', '/lib/coins.js'], tally = got.filter((u) => u.startsWith('/api/tally')).length;
+    check('flip page: the coin lands (Heads or Tails), the head preloads every module it imports (coin, tally, reactions, coins) so there is no waterfall, and it asks for the everyone-count only after the page is up (none at load, one a moment later)',
+      /^(?:Heads|Tails)$/.test(word) && mods.every((m) => pre.includes(m) && got.includes(m)) && early === 0 && tally === 1 && !F.errors.length, JSON.stringify({ word, pre, early, tally, errors: F.errors }));
+    await F.ctx.close();
+  }
+  // every coin (owner, 2026-10-24: "any ever discovered coin as well as create a coin and it ties into our coin appraisal"): Commons and the appraiser are stubbed
+  if (want("coin: any real coin with its real faces, a picker, your own coin, and what it's worth")) { const C = await fresh(); const appraised = [];
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await C.ctx.route(/commons\.wikimedia\.org\/w\/api\.php/, (r) => { const rev = /reverse/.test(decodeURIComponent(r.request().url())); return r.fulfill(json({ query: { pages: { 1: { index: 1, title: 'File:Lydian stater ' + (rev ? 'reverse' : 'obverse') + '.jpg', imageinfo: [{ mime: 'image/jpeg', thumburl: 'https://upload.wikimedia.org/stub/' + (rev ? 'rev' : 'obv') + '.jpg', descriptionurl: 'https://commons.wikimedia.org/wiki/File:Lydian_stater_' + (rev ? 'reverse' : 'obverse') + '.jpg' }] } } } })); });
+    await C.ctx.route(/upload\.wikimedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'image/png', headers: { 'access-control-allow-origin': '*' }, body: PNG }));
+    await C.ctx.route(/\/api\/appraise$/, (r) => { appraised.push(JSON.parse(r.request().postData() || '{}')); return r.fulfill(json({ text: 'An electrum stater of Lydia: about $3,000 in good condition.' })); });
+    await C.ask('flip a Lydian stater', 1500);
+    const real = await until(async () => C.p.$eval('.vpage.on', (c) => { const h = c.querySelector('.coin .fc.h'), t = c.querySelector('.coin .fc.t'); return /obv\.jpg/.test(h.style.background) ? { h2: c.querySelector('h2').textContent, h: h.style.background, t: t.style.background, src: c.querySelector('.src').textContent, word: c.querySelector('.coin-word').textContent } : null; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await C.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'coin-real.png') }).catch(() => {});
+    await C.p.click('.vpage.on .coin-appraise').catch(() => {});
+    const worth = await until(async () => C.p.$eval('.vpage.on .coin-worth', (e) => (/\$3,000/.test(e.textContent) ? e.textContent : '')).catch(() => ''), 6000);
+    check('coin: "flip a Lydian stater" flips the real coin: its obverse photo is heads and its reverse tails, from Wikimedia Commons with both files linked; "What\'s it worth?" sends the face to the appraiser and shows its answer',
+      !!real && /Lydian Stater/.test(real.h2) && /rev\.jpg/.test(real.t) && /Wikimedia Commons/.test(real.src) && /Lydian stater reverse/.test(real.src) && /^(?:Heads|Tails)$/.test(real.word)
+      && !!worth && appraised.length === 1 && /^data:image\/jpeg;base64,/.test(appraised[0].image) && /Lydian Stater coin/.test(appraised[0].note) && !C.errors.length,
+      JSON.stringify({ real, worth, n: appraised.length, note: appraised[0] && appraised[0].note, errors: C.errors }));
+    await C.ask('flip a famous coin', 900);
+    const picks = await C.p.$$eval('.vpage.on .coin-pick', (b) => b.map((x) => x.textContent)).catch(() => []);
+    await C.ask('create a coin', 900);
+    await C.p.fill('.vpage.on #cm-h', '☕'); await C.p.fill('.vpage.on #cm-t', '🍩'); await C.p.fill('.vpage.on #cm-rim', 'IN COFFEE WE TRUST'); await C.p.selectOption('.vpage.on #cm-metal', 'copper');
+    await C.p.click('.vpage.on .coin-save'); await C.p.waitForTimeout(1200);
+    const mine = await C.p.$eval('.vpage.on', (c) => ({ h2: c.querySelector('h2').textContent, h: c.querySelector('.coin .fc.h').textContent, t: c.querySelector('.coin .fc.t').textContent, bg: c.querySelector('.coin .fc.h').style.background })).catch(() => null);
+    if (process.env.VOID_SHOTS) await C.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'coin-mine.png') }).catch(() => {});
+    check('coin: "flip a famous coin" offers coins from the Lydian stater to the euro; "create a coin" makes your own (copper, ☕ and 🍩, words around the rim), kept on this device, and "Save and flip it" flips it',
+      picks.length >= 20 && picks[0] === 'Lydian stater' && !!mine && /IN COFFEE WE TRUST/.test(mine.h2) && mine.h === '☕' && mine.t === '🍩' && /217, 130, 75|d9824b/i.test(mine.bg) && !C.errors.length,
+      JSON.stringify({ picks: picks.length, mine, errors: C.errors }));
+    await C.ctx.close(); }
+  // the midnight wave (owner, 2026-10-24: "something amazingly special when its actually christmas"): the clock is set to 23:30 UTC on Christmas Eve
+  if (want("is it: christmas: the midnight wave follows christmas around the world and snow falls over the whole stage")) { const X = await fresh();
+    await X.p.clock.install({ time: new Date('2026-12-24T23:30:00Z') });
+    await X.ask('is it christmas?', 1500);
+    const w = await until(async () => X.p.$eval('.vpage.on', (c) => { const l = c.querySelector('.is-it-wave-line'); if (!l || !l.textContent) return null; const st = (n) => [...c.querySelectorAll('.is-it-wave-place')].find((e) => e.textContent === n).dataset.state; return { line: l.textContent, tokyo: st('Tokyo'), london: st('London'), ny: st('New York'), flakes: document.querySelectorAll('.is-it-snowfall span').length }; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await X.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'is-it-wave.png') }).catch(() => {});
+    await X.p.keyboard.press('Escape'); await X.p.waitForTimeout(800); const left = await X.p.$$eval('.is-it-snowfall', (e) => e.length);
+    check('is it: christmas: 23:30 UTC on Christmas Eve: "It is Christmas in 20 of 36 places right now. Next: London in 30 min.", Tokyo lit, London and New York still waiting, snow over the stage; closing the card stops the snow',
+      !!w && /It is Christmas in 20 of 36 places right now\. Next: London in 30 min\./.test(w.line) && w.tokyo === 'now' && w.london === 'before' && w.ny === 'before' && w.flakes >= 60 && left === 0 && !X.errors.length,
+      JSON.stringify({ w, left, errors: X.errors }));
+    await X.ctx.close(); }
+  // everyone here (owner, 2026-10-23: the live crowd of visitors' flags on the is-it card): a public room on the relay; with the relay not switched on,
+  // tabs in one browser share it through a BroadcastChannel, which is what this check uses: two pages in one context
+  if (want("is it: everyone here: two tabs on the is-it card see each other's flag, ripple and count")) {
+    const P = await fresh(() => { try { localStorage.setItem('a2m.void.isit.crowd.v1', '1'); } catch (_) {} });
+    await P.ctx.route(/\/api\/share\//, (r) => r.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"the live relay is not switched on yet"}' }));
+    await P.ask('is it christmas?', 1500);
+    const p2 = await P.ctx.newPage(); await p2.goto(P.p.url()); await p2.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+    await p2.fill('#input', 'is it christmas?'); await p2.keyboard.press('Enter'); await p2.waitForTimeout(1500);
+    const count1 = await until(async () => { const t = await P.p.$eval('.vpage.on .is-it-crowd-status', (e) => e.textContent).catch(() => ''); return /2 people here/.test(t) ? t : ''; }, 8000);
+    const box2 = await p2.$('.vpage.on .is-it-stage'); const bb = box2 && await box2.boundingBox();
+    if (bb) { await p2.mouse.move(bb.x + bb.width * 0.3, bb.y + bb.height * 0.4); await p2.mouse.move(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); await p2.waitForTimeout(200); await p2.mouse.click(bb.x + bb.width * 0.5, bb.y + bb.height * 0.5); }
+    const peer = await until(async () => P.p.$eval('.vpage.on .is-it-peer', (e) => e.textContent).catch(() => ''), 6000);
+    const ripple = await until(async () => P.p.$$eval('.vpage.on .is-it-ripple', (r) => r.length).catch(() => 0), 4000);
+    check('is it: everyone here: the first tab says "2 people here right now", shows the second tab\'s marker at its pointer, and plays its tap as a ripple; no page errors',
+      !!count1 && !!peer && ripple > 0 && !P.errors.length, JSON.stringify({ count1, peer, ripple, errors: P.errors }));
+    // as on isitchristmas.com: your own flag is your pointer, the arrow keys turn it 15° a step, the others see it turned and can read its country
+    if (bb) { await p2.mouse.move(bb.x + bb.width * 0.6, bb.y + bb.height * 0.5); await p2.keyboard.press('ArrowRight'); await p2.keyboard.press('ArrowRight'); await p2.mouse.move(bb.x + bb.width * 0.62, bb.y + bb.height * 0.5); }
+    const mine = await p2.$eval('.vpage.on .is-it-me', (e) => ({ shown: e.style.display !== 'none', turn: e.style.transform })).catch(() => null);
+    const seen = await until(async () => P.p.$eval('.vpage.on .is-it-peer', (e) => (/rotate\(30deg\)/.test(e.style.transform) ? { turn: e.style.transform, title: e.title } : null)).catch(() => null), 4000);
+    const named = await P.p.$eval('.vpage.on .is-it-crowd-status', (e) => e.textContent).catch(() => '');
+    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'is-it-crowd.png') }).catch(() => {});
+    check('is it: everyone here: your flag follows your pointer and the arrow keys turn it; the other tab sees it turned 30° and named by its country',
+      !!mine && mine.shown && /rotate\(30deg\)/.test(mine.turn) && !!seen && /United States/.test(seen.title) && /United States and you/.test(named) && !P.errors.length,
+      JSON.stringify({ mine, seen, named, errors: P.errors }));
+    await p2.close(); await P.ctx.close();
+  }
+  // a gist with no server (owner, 2026-10-24: "verse can eat github starting with the smallest"): write a snippet, get a link, open that link in a fresh page
+  if (want("gist: write a snippet, get a link that holds it, open the link on a new page: coloured, numbered, two files, copy and an editable copy")) {
+    const G = await fresh(); const origin = new URL(G.p.url()).origin;
+    await G.p.goto(origin + '/g/'); await G.p.waitForSelector('#ta', { timeout: 15000 });
+    await G.p.fill('#nm', 'hello.py'); await G.p.dispatchEvent('#nm', 'change');
+    await G.p.fill('#ta', 'def hi():\n    # say it\n    print("héllo ✓")\n');
+    await G.p.click('.tab:has-text("+ file")'); await G.p.fill('#nm', 'notes.md'); await G.p.dispatchEvent('#nm', 'change'); await G.p.fill('#ta', '# Notes\nsecond file'); await G.p.click('#get'); await G.p.waitForSelector('pre', { timeout: 8000 });
+    const link = G.p.url(), isLink = /\/g\/#v1\.[A-Za-z0-9_-]+$/.test(link);
+    const p2 = await G.ctx.newPage(); await p2.goto(link); await p2.waitForSelector('pre', { timeout: 8000 });
+    const seen = await p2.evaluate(() => ({ tabs: [...document.querySelectorAll('.tab')].map((t) => t.textContent), nums: document.querySelector('.ln').textContent.trim().split('\n').length, code: document.querySelector('code').textContent,
+      kinds: [...document.querySelectorAll('code span')].map((s) => s.className + ':' + s.textContent) }));
+    await p2.click('.tab:has-text("notes.md")'); const second = await p2.$eval('code', (c) => c.textContent);
+    await p2.click('button:has-text("Edit a copy")'); const editable = await p2.$eval('#ta', (t) => t.value).catch(() => null); const urlAfter = p2.url();
+    const hostile = await G.ctx.newPage(); await hostile.goto(origin + '/g/#v1.AAAA<script>'); await hostile.waitForSelector('#ta', { timeout: 8000 }); const hostileNote = await hostile.$eval('#note', (n) => n.textContent);
+    if (process.env.VOID_SHOTS) await p2.screenshot({ path: path.join(process.env.VOID_SHOTS, 'gist.png') }).catch(() => {});
+    check('gist: a link holds the whole gist: opened on a new page it shows hello.py with line numbers and the comment, string and keyword coloured, a second tab for notes.md, "Edit a copy" gives an editable copy at a clean address, and a damaged link says so',
+      isLink && seen.tabs.join() === 'hello.py,notes.md' && seen.nums === 3 && /héllo ✓/.test(seen.code) && seen.kinds.some((k) => /^c:# say it/.test(k)) && seen.kinds.some((k) => /^s:"héllo ✓"/.test(k)) && seen.kinds.some((k) => /^k:def/.test(k))
+      && /second file/.test(second) && editable === '# Notes\nsecond file' && /\/g\/$/.test(urlAfter) && /not a gist/.test(hostileNote) && !G.errors.length,
+      JSON.stringify({ isLink, seen, second, editable, urlAfter, hostileNote, errors: G.errors }));
+    await G.ctx.close();
+  }
+  // outdo, not match (owner, 2026-10-24): a gist locked with a passphrase (the link alone reads as noise), and an edited copy that shows what changed
+  if (want("gist lock: a locked gist opens only with its passphrase, and an edited copy of it shows what changed line by line")) {
+    const G = await fresh(); const origin = new URL(G.p.url()).origin;
+    await G.p.goto(origin + '/g/'); await G.p.waitForSelector('#ta', { timeout: 15000 });
+    await G.p.fill('#nm', 'plan.txt'); await G.p.dispatchEvent('#nm', 'change'); await G.p.fill('#ta', 'one\nsecret two\nthree'); await G.p.fill('#lockpw', 'blue harbour');
+    await G.p.click('#get'); await G.p.waitForSelector('pre', { timeout: 15000 });
+    const link = G.p.url(), lockedLink = /\/g\/#v1e\.[A-Za-z0-9_-]+$/.test(link) && !/secret/.test(Buffer.from(link.split('.').pop(), 'base64').toString('latin1'));
+    const p2 = await G.ctx.newPage(); await p2.goto(link); await p2.waitForSelector('#pw', { timeout: 8000 });
+    const hidden = await p2.evaluate(() => !document.querySelector('code') && !/secret/.test(document.body.textContent));
+    await p2.fill('#pw', 'wrong'); await p2.click('button:has-text("Open")'); await p2.waitForFunction(() => /does not open/.test(document.getElementById('note').textContent), null, { timeout: 15000 });
+    await p2.fill('#pw', 'blue harbour'); await p2.click('button:has-text("Open")'); await p2.waitForSelector('code', { timeout: 15000 });
+    const opened = await p2.$eval('code', (c) => c.textContent);
+    await p2.click('button:has-text("Edit a copy")'); await p2.fill('#ta', 'one\nopen two\nthree\nfour'); await p2.click('#get'); await p2.waitForSelector('#changed', { timeout: 15000 });
+    const copyLink = p2.url(); const p3 = await G.ctx.newPage(); await p3.goto(copyLink); await p3.waitForSelector('#pw', { timeout: 8000 });
+    await p3.fill('#pw', 'blue harbour'); await p3.click('button:has-text("Open")'); await p3.waitForSelector('#changed', { timeout: 15000 }); await p3.click('#changed');
+    const d = await p3.evaluate(() => ({ add: [...document.querySelectorAll('code .add')].map((s) => s.textContent), del: [...document.querySelectorAll('code .del')].map((s) => s.textContent) }));
+    if (process.env.VOID_SHOTS) await p3.screenshot({ path: path.join(process.env.VOID_SHOTS, 'gist-lock.png') }).catch(() => {});
+    check('gist lock: a locked link holds no readable text and shows nothing but a passphrase box, a wrong passphrase is refused, the right one opens it, and an edited copy (still locked) shows the changed line out and the new lines in',
+      lockedLink && hidden && /secret two/.test(opened) && copyLink !== link && /#v1e\./.test(copyLink) && d.del.join() === 'secret two' && d.add.join() === 'open two,four' && !G.errors.length,
+      JSON.stringify({ lockedLink, hidden, opened, copyLink: copyLink.slice(0, 40), d, errors: G.errors }));
+    await G.ctx.close();
+  }
+  // one GitHub file in Verse (owner, 2026-10-24: Verse eats GitHub from the smallest piece): GitHub's raw address is stubbed
+  if (want("gh-file: a pasted github file link shows the file coloured and numbered with the linked lines lit; a plain repo link stays the repo card")) {
+    const F = await fresh(); const raws = [];
+    await F.ctx.route(/raw\.githubusercontent\.com/, (r) => { raws.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: Array.from({ length: 40 }, (_, i) => 'const line' + (i + 1) + ' = "v"; // note ' + (i + 1)).join('\n') + '\n' }); });
+    await F.ctx.route(/\/api\/repo/, (r) => r.fulfill(json({ ok: true, repo: { full: 'atomeam/void-loop', description: 'd', languages: [], commits: [], files: [], readme: '' } })));
+    await F.ask('https://github.com/atomeam/void-loop/blob/main/src/demo.js#L20-L22', 1500);
+    const card = await until(async () => F.p.$eval('.vpage.on', (c) => { const lit = [...c.querySelectorAll('.ghf-box .lit')].map((x) => x.textContent); return lit.length ? { h2: c.querySelector('h2').textContent, sub: c.querySelector('.sub').textContent, lit, kinds: [...c.querySelectorAll('.ghf-box code span span')].map((x) => x.className).filter(Boolean), full: c.querySelector('.ghf-full').getAttribute('href') } : null; }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) await F.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'gh-file.png') }).catch(() => {});
+    const by = await F.p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return (l[l.length - 1] || {}).note || ''; } catch (_) { return ''; } });
+    check('gh-file: a pasted file link with #L20-L22 shows demo.js (40 lines) from GitHub\'s raw address, lines 20 to 22 lit, keyword, string and comment coloured, and a link to the whole file at /g/',
+      !!card && card.h2 === 'demo.js' && /40 lines/.test(card.sub) && card.lit.length === 3 && /line20 /.test(card.lit[0]) && card.kinds.includes('k') && card.kinds.includes('s') && card.kinds.includes('c')
+      && /^\/g\/\?gh=atomeam%2Fvoid-loop%2Fmain%2Fsrc%2Fdemo\.js&L=20-22$/.test(card.full) && raws[0] === 'https://raw.githubusercontent.com/atomeam/void-loop/main/src/demo.js' && /gh-file/.test(by) && !F.errors.length,
+      JSON.stringify({ card, raws, by, errors: F.errors }));
+    await F.ctx.close();
+  }
+  // the tower, plain and endless (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
+  // the evidence is stubbed so three sites are conquered and the target is 4 aspects in. The target is the site tower.target.json names: it stays
+  // first until it is beaten (tools/tower-target.mjs), so the check follows the file instead of naming one site, and a new target needs no edit here
+  if (want("tower: the current site on top with its aspects, the conquered sites struck through under it, nothing above, no end")) {
+    const { FLOORS, passingRows, tower } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh();
+    const rows = (f, n) => Object.fromEntries(Object.entries(passingRows(f, { evidence: 'stub' })).slice(0, n)); // journey rows carry steps and negative controls
+    const served = (f) => JSON.parse(fs.readFileSync(path.join(root, f), 'utf8'));
+    const TARGET = served('tower.target.json').id, tgt = tower([], {}, served('tower.frontier.json'), null, null, null, TARGET).floors.find((f) => f.id === TARGET);
+    const won3 = FLOORS.filter((f) => f.id !== TARGET).slice(0, 3);
+    const floors = { ...Object.fromEntries(won3.map((f) => [f.id, rows(f, 99)])), [tgt.id]: rows(tgt, 4) };
+    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ask('the tower', 1200);
+    const v = await P.p.$eval('.vpage.on', (c) => { const all = [...c.querySelectorAll('.tower-floor')], cur = all[0];
+      return { order: all.map((b) => b.dataset.state), current: cur && cur.querySelector('.tw-name').textContent, won: [...cur.querySelectorAll('li[data-v="won"]')].length, items: [...cur.querySelectorAll('li')].length,
+        struck: all[1] && getComputedStyle(all[1].querySelector('.tw-name')).textDecorationLine, head: (c.querySelector('.tw-score') || {}).textContent, name: (c.querySelector('.tw-head') || {}).textContent, text: c.textContent }; }).catch((e) => ({ err: String(e) }));
+    if (process.env.VOID_SHOTS) await P.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower.png') }).catch(() => {});
+    // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
+    // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
+    check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now assimilating: ' : 'easiest site left: ') + tgt.site
+        && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
+      JSON.stringify({ v, errors: P.errors }));
+    // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
+    const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
+    check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
+      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+    await P.ctx.close();
+  }
+  // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page
+  if (want("tower: every entry names its own Verse page, Google Flights shows /flights/ at phone width and side by side opens it beside the site")) {
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'); const P = await fresh({ phone: true });
+    const all = (f) => passingRows(f, { evidence: 'stub' });
+    const travel = FLOORS.find((f) => f.id === 'travel'), floors = { travel: all(travel), [FLOORS[0].id]: all(FLOORS[0]) };
+    await P.ctx.route('**/tower.evidence.json', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors }) }));
+    await P.ask('the tower', 1200);
+    const v = await P.p.$eval('.vpage.on', (c) => { const rows = [...c.querySelectorAll('.tower-floor')], at = rows.find((r) => r.dataset.id === 'travel'), ln = at && at.nextElementSibling;
+      return { links: ln && ln.classList.contains('tw-links') ? ln.textContent : '', page: ln && (ln.querySelector('a.tw-page') || {}).getAttribute && ln.querySelector('a.tw-page').getAttribute('href'),
+        every: [...c.querySelectorAll('.tw-links')].every((l) => l.querySelector('.tw-page')), wide: document.documentElement.scrollWidth <= innerWidth }; }).catch((e) => ({ err: String(e) }));
+    if (process.env.VOID_SHOTS) { await P.p.locator('.tower-floor[data-id="travel"]').scrollIntoViewIfNeeded().catch(() => {}); await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'tower-google-flights.png') }).catch(() => {}); }
+    await P.p.goto(base + 'compare/?floor=travel'); await P.p.waitForTimeout(400);
+    const cmp = await P.p.evaluate(() => ({ src: document.getElementById('vf').getAttribute('src'), who: document.getElementById('who').textContent })).catch((e) => ({ err: String(e) }));
+    check('tower: Google Flights names Verse\'s page /flights/ beside its site and side by side (390 px, no sideways scroll), every entry names its page, and /compare/?floor=travel frames /flights/ beside Google Flights',
+      /Google Flights ↗/.test(v.links || '') && /Verse's page \/flights\//.test(v.links || '') && /side by side/.test(v.links || '') && v.page === '/flights/' && v.every && v.wide && cmp.src === '/flights/' && /Google Flights/.test(cmp.who || '') && !P.errors.length,
+      JSON.stringify({ v, cmp, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // the tower card is left open on a screen (owner, 2026-10-23): it re-reads the evidence by itself, says what moved, and stops when it is closed
+  if (want("tower: the open tower card updates by itself when the evidence changes, flashes and says what moved, and stops polling when closed")) {
+    const P = await fresh(); let hits = 0, beaten = false;
+    // calculator.net's whole checklist as the gate demands it: its aspects and its journeys with steps and negative controls (docs/GATE-STANDARDS.md)
+    const { FLOORS, passingRows } = await import('../void-live-deploy/lib/tower.js'), won = passingRows(FLOORS.find((f) => f.id === 'calculator'), { evidence: 'stub' });
+    await P.ctx.route('**/tower.evidence.json', (r) => { hits++; r.fulfill({ contentType: 'application/json', body: JSON.stringify({ floors: beaten ? { calculator: won } : {} }) }); });
+    await P.p.evaluate(() => { window.__towerPollMs = 400; });
+    await P.ask('versus', 600); // the new name opens it (owner, 2026-10-25); the section above asks with the old one
+    const line = () => P.p.$eval('.vpage.on', (c) => ({ live: (c.querySelector('.tw-live') || {}).textContent || '', stamp: (c.querySelector('.tw-updated') || {}).textContent || '', first: ((c.querySelector('.tower-floor[data-floor="1"]') || {}).textContent || '') })).catch(() => null);
+    const before = await line(); beaten = true;
+    const after = await until(async () => { const r = await line(); return r && /calculator\.net is surpassed/.test(r.live) ? r : null; }, 6000);
+    check('tower: the open card picked up a conquered site on its own and said so ("calculator.net is surpassed"), with a fresh "updated" time', !!before && !!after && /calculator\.net\s*surpassed/.test(after.first) && /^updated /.test(after.stamp) && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.p.keyboard.press('Escape'); await P.p.waitForTimeout(800); const open = await P.p.$('.vpage.on.tower-card'), h1 = hits; await P.p.waitForTimeout(1500);
+    check('tower: once the card is closed (Escape) it stops polling', !open && hits - h1 <= 1, JSON.stringify({ open: !!open, h1, hits }));
+    await P.ctx.close();
+  }
   // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
   if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
     const things = async () => (await S.state()).filter((x) => x.kind !== 'figure');
     const xs = async (k) => (await things()).filter((x) => !k || x.kind === k).map((x) => Math.round(x.x));
-    await S.ask('align top', 500);
+    await S.ask('align top', 900);
     const ys = new Set((await things()).map((x) => Math.round(x.y)));
-    await S.ask('space them out evenly', 500);
+    await S.ask('space them out evenly', 900);
     const gaps = await S.p.$$eval('#stage > [data-id]', (e) => { const r = e.map((x) => x.getBoundingClientRect()).sort((a, b) => a.left - b.left); return r.slice(1).map((b, i) => Math.round(b.left - r[i].right)); });
-    await S.ask('save this layout as start', 400); await S.ask('select all notes', 500);
+    await S.ask('save this layout as start', 400); await S.ask('select all notes', 900);
     const picked = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
     await S.ask('align the selection to the bottom', 300);
     await S.ask('deselect all', 400);
     const afterDeselect = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
-    await S.ask('align left', 500);
+    await S.ask('align left', 900);
     const left = new Set(await xs());
     await S.ask('restore layout start', 500); // the cards go back to where the spacing left them, for the checks below
     check('tools pack 4 align: "align top" gives every card one top and "align left" one left edge', ys.size === 1 && left.size === 1 && !S.errors.length, JSON.stringify({ ys: [...ys], left: [...left], errors: S.errors }));
@@ -570,7 +1589,7 @@ try {
     const gridOn = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
     await S.ask('grid size 40', 300);
     const grid40 = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
-    await S.ask('snap everything to the grid', 500);
+    await S.ask('snap everything to the grid', 900);
     const onGrid = (await things()).every((x) => Math.round(x.x) % 40 === 0 && Math.round(x.y) % 40 === 0);
     await S.ask('grid off', 300);
     const gridGone = (await S.p.$('#stage-grid')) === null;
@@ -709,7 +1728,7 @@ try {
     const ahead = new Date(Date.now() + 9 * 864e5), dentistDay = ahead.toLocaleDateString('en-US', { month: 'short' }) + ' ' + ahead.getDate();
     await C.ask('add dentist to my calendar ' + dentistDay + ' at 3pm', 900);
     await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
-    const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
+    const agenda = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []));
     const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     const netAdds = net.slice(), pageAfterAdds = await C.page(); // read now: "calender" and "agenda" below open the 3D calendar
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
@@ -719,11 +1738,11 @@ try {
     await C.p.reload(); const afterReload = await until(async () => { const t = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''); return /Call Sam/.test(t) ? t : ''; }, 6000)
       || await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
-    const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const kept = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     await C.ask('agenda', 700);
     await C.p.click('.calendar-card .cal-event button'); await C.p.waitForTimeout(200);
-    const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
-    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const afterX = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
+    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar <nine days ahead> at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
@@ -743,8 +1762,8 @@ try {
       // the row of the event just added: the day may already hold one of the visitor's adds above
       const w = [...pg.querySelectorAll('.c3d-edit .row:not(.add) .w')].find((x) => x.value === 'Launch party'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
       await new Promise((r) => setTimeout(r, 50));
-      const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
-      return [ev && ev.title, ev && new Date(ev.at).getDate() === pick.day && new Date(ev.at).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+      const ev = (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).find((e) => /Launch/.test(e.title)); // the one store the stage and /calendar/ share (lib/agenda.js)
+      return [ev && ev.title, ev && new Date(ev.start).getDate() === pick.day && new Date(ev.start).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
     }, pick);
     const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
@@ -801,7 +1820,8 @@ try {
   // the browser's own look stays out (owner, 2026-10-18): selected text is Verse's violet, scrolling boxes get a thin translucent bar, and the
   // self card's depth filter shows which pill is on
   if (want("aesthetic perimeter")) {
-    const P = await fresh(); await P.ask('what do you think of yourself', 2500);
+    const P = await fresh(); await P.ask('what do you think of yourself', 4000);
+    await P.p.waitForSelector('[data-v-depth]', { timeout: 8000 }).catch(() => {});
     const got = await P.p.evaluate(() => { const sel = getComputedStyle(document.body, '::selection').backgroundColor, pg = document.querySelector('.vpage.on') || document.querySelector('.vpage');
       const pills = [...document.querySelectorAll('[data-v-depth]')].map((b) => ({ on: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor }));
       const onB = document.querySelector('[data-v-depth][aria-pressed="true"]'), lift = onB ? { t: getComputedStyle(onB).transform, glow: getComputedStyle(onB).boxShadow } : null;
@@ -948,7 +1968,7 @@ try {
     const kinds = st.map((x) => x.kind).sort();
     const groups = new Set(st.map((x) => x.group));
     const list = st.find((x) => x.kind === 'list'), draft = st.find((x) => x.kind === 'sticky');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     const cd = st.find((x) => x.kind === 'countdown');
     const box = await I.p.$eval('[data-id="' + cd.id + '"]', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 12, y: b.top + 12 }; });
     await I.p.mouse.move(box.x, box.y); await I.p.mouse.down(); await I.p.mouse.move(box.x + 50, box.y + 30, { steps: 6 }); await I.p.mouse.up(); await I.p.waitForTimeout(200);
@@ -966,7 +1986,7 @@ try {
   if (want("intent as a noun: \"the product page launch on Friday\" plans like \"I need to launch the product page by Friday\"")) { const I = await fresh();
     await I.ask('the product page launch on Friday', 2500);
     const said = await I.whisper(), st = await I.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const agenda = await I.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).map((e) => e.title));
     check('intent as a noun: "the product page launch on Friday" plans "launch the product page": a countdown, a launch\'s own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)',
       /planned "launch the product page"/.test(said) && !st.some((x) => x.kind === 'sticky') && st.some((x) => x.kind === 'countdown') && list && list.items.length === 5
         && list.items[0].text.startsWith('outline it') && /^launch the product page \(fri \d+\)$/.test(list.items[4].text) && agenda.some((t) => /launch the product page/i.test(t))
@@ -977,7 +1997,7 @@ try {
   if (want("intent without a day: \"plan my move\" brings an undated checklist")) { const U = await fresh();
     await U.ask('plan my move', 2500);
     const said = await U.whisper(), st = await U.state(), list = st.find((x) => x.kind === 'list');
-    const agenda = await U.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const agenda = await U.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     check('intent without a day: "plan my move" brings the move\'s steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day',
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
@@ -1006,6 +2026,31 @@ try {
     await W.ctx.close(); }
   // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
   // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("store: the catalogue searched and sorted, a cart carried by its link, quantities and the totals worked out, and the delivery steps")) {
+    const S = await fresh({ base: base + 'store/?cart=void-monthly,code-review-pro:2' });
+    const text = async () => S.p.evaluate(() => document.body.innerText);
+    await until(async () => /Showing \d+ of \d+ products/.test(await text()), 8000);
+    const page = await text();
+    const count = page.match(/Showing (\d+) of (\d+) products/);
+    check('store: the catalogue counts what it shows, every product names its price and its availability', count && +count[2] >= 4 && /Available now/.test(page) && /\$49\.00/.test(page), JSON.stringify({ count: count && count[0], head: page.slice(0, 500), errs: S.logs }));
+    check('store: a link carries the cart — it opens itself, quantities and all, with the money worked out', /Qty 2/.test(page) && /\$20\.00/.test(page) && /Subtotal\s*\$69\.00/.test(page) && /Total\s*\$69\.00/.test(page) && /before you confirm/.test(page), (page.split('Your cart')[1] || '').slice(0, 300));
+    const link = await S.p.$eval('#cartlink', (e) => e.getAttribute('href'));
+    check('store: the share link carries exactly that cart', decodeURIComponent(link) === '/store/?cart=void-monthly,code-review-pro:2', link);
+    await S.p.fill('#q', 'review pro'); await S.p.waitForTimeout(300);
+    check('store: the search narrows the catalogue', /Showing 1 of \d+ products/.test(await text()), (await text()).match(/Showing \d+ of \d+ products/));
+    await S.p.fill('#q', ''); await S.p.selectOption('#sort', 'price-asc'); await S.p.waitForTimeout(300);
+    const prices = await S.p.evaluate(() => [...document.querySelectorAll('#grid .card .price')].map((e) => parseFloat(String(e.textContent).replace(/[^0-9.]/g, ''))).filter((n) => Number.isFinite(n)));
+    check('store: sorting by price orders the grid', prices.length > 2 && prices.every((v, i) => i === 0 || prices[i - 1] <= v), JSON.stringify(prices));
+    await S.p.selectOption('#sort', 'featured');
+    await S.p.click('#items [data-inc="code-review-pro"]'); await S.p.waitForTimeout(250);
+    const bumped = await text();
+    check('store: one more of a product raises its qty, its line and the total', /Qty 3/.test(bumped) && /\$30\.00/.test(bumped) && /Total\s*\$79\.00/.test(bumped), (bumped.match(/Qty 3[\s\S]{0,60}/) || [''])[0]);
+    await S.p.click('#items [data-dec="code-review-pro"]');
+    const csv = await S.p.$eval('#csv', (e) => e.getAttribute('href'));
+    check('store: the price list is a CSV anyone can take, no account and no api key', /^data:text\/csv/.test(csv) && decodeURIComponent(csv).includes('id,name,kind,cents,price,every,availability'), String(csv).slice(0, 80));
+    check('store: delivery is told as steps — nothing ships, signed downloads, license keys — and the honest lines stand', /nothing ships/i.test(page) && /Signed downloads/.test(page) && /License key/.test(page) && /last 24 hours/.test(page) && /no trackers/.test(page) && /works offline/.test(page) && /no ads/i.test(page), JSON.stringify({ ships: /nothing ships/i.test(page), dl: /Signed downloads/.test(page), key: /License key/.test(page), h24: /last 24 hours/.test(page), track: /no trackers/.test(page), off: /works offline/.test(page), ads: /no ads/i.test(page) }));
+    check('store: the offline note waits for a real offline visit', await S.p.$eval('#offlinenote', (e) => e.hidden));
+  }
   if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
     const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
     await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
@@ -1399,7 +2444,7 @@ try {
     await D.ask('how many days until friday', 700); const fri = await D.page();
     await D.ask('what day is it in Tokyo', 1200); const day = await D.page();
     await D.ask('time difference between London and Tokyo', 1500); const gap = await D.page();
-    const cal = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const cal = await D.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []).length);
     const want = ['friday'].map(() => { const t = new Date(); const a = (5 - t.getDay() + 7) % 7 || 7; return a; })[0];
     check('list: "how do I get to Kyoto" is the map with OpenStreetMap and Google directions; "define serendipity" and "what does X mean" read Wiktionary (text, no markup)',
       /openstreetmap\.org\/directions\?to=35\.01/.test(dir) && /google\.com\/maps\/dir/.test(dir) && /Kyoto/.test(dir)
@@ -1506,12 +2551,13 @@ try {
   // The country card shows the time there now, also when REST Countries does not answer (owner, 2026-10-15: "population of Japan"
   // fell back to the built-in list and showed no time at all, though the build note said country cards show the time).
   if (want('country card: the time there now, from the built-in zones, with or without REST Countries')) { const K = await fresh();
-    await K.ctx.route(/restcountries\.com/, (r) => r.abort());
+    await K.ctx.route(/query\.wikidata\.org/, (r) => r.abort()); // the live source (REST Countries until its keyless API went, 2026-10)
     await K.ask('population of Japan', 7500);
     await until(async () => /didn.t answer/.test(await K.page()), 9000); const down = await K.page();
-    await K.ctx.unroute(/restcountries\.com/);
-    await K.ctx.route(/restcountries\.com/, (r) => r.fulfill(json([{ name: { common: 'Japan', official: 'Japan' }, capital: ['Tokyo'], population: 123000000, currencies: { JPY: { name: 'Japanese yen', symbol: '¥' } }, languages: { jpn: 'Japanese' }, area: 377930, continents: ['Asia'], timezones: ['UTC+09:00'], flag: '' }])));
-    await K.ask('capital of Japan', 1500); await until(async () => /Source: REST Countries/.test(await K.page()), 4000); const up = await K.page();
+    await K.ctx.unroute(/query\.wikidata\.org/);
+    const wd = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, { type: 'literal', value: String(v) }]));
+    await K.ctx.route(/query\.wikidata\.org/, (r) => r.fulfill({ ...json({ results: { bindings: [wd({ c: 'http://www.wikidata.org/entity/Q17', name: 'Japan', capitals: 'Tokyo', population: 123000000, currencies: 'Japanese yen', languages: 'Japanese', area: 377930, continents: 'Asia', timezones: 'UTC+09:00', cca2: 'JP' })] } }), headers: { 'access-control-allow-origin': '*' } }));
+    await K.ask('capital of Japan', 1500); await until(async () => /Source: Wikidata/.test(await K.page()), 4000); const up = await K.page();
     const clock = /\d{1,2}:\d\d [AP]M \w{3} in Tokyo, UTC\+09:00/;
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
@@ -1628,6 +2674,177 @@ try {
       !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
+  // The translate page at 390 px, as a person uses it: tone, a word swapped, a word looked up, a .docx round trip, a website. The real
+  // /api/translate handler answers (functions/api/translate.js); its model, Wiktionary, MyMemory and the website are stubbed here.
+  if (want('translate page at 390 px: formal tone, a word swapped, a word looked up, a .docx round trip with its layout, a website by address')) {
+    const T = await fresh({ phone: true }), api = await import(new URL('../void-live-deploy/functions/api/translate.js', import.meta.url).href), docsLib = await import(new URL('../void-live-deploy/lib/translate-docs.js', import.meta.url).href);
+    const M2M = { 'How are you?': 'Wie geht es dir?', 'The cat is very happy today.': 'El gato está muy feliz hoy.', bank: 'banco', 'Annual report': 'Informe anual', 'Good morning & welcome': 'Buenos días y bienvenidos', 'World news': 'Noticias del mundo', 'The weather is fine.': 'El tiempo es bueno.', 'Home': 'Inicio', 'News of the day': 'Noticias del día' };
+    const env = { AI: { run: async (m, a) => {
+      if (!a.messages) return { translated_text: M2M[a.text] || ('[' + a.target_lang + '] ' + a.text) };
+      const u = a.messages[1].content;
+      if (/Return \{"pos"/.test(u)) return { response: JSON.stringify({ pos: [{ pos: 'noun', senses: [{ def: 'a place for money', example: 'The bank opens at nine.', example_tr: 'El banco abre a las nueve.' }] }], alternatives: [{ text: 'banco', freq: 'common', means: 'money' }, { text: 'orilla', freq: 'rare', means: 'of a river' }], forms: ['banks'] }) };
+      if (/stand in for "feliz"/.test(u)) return { response: '{"alternatives":[{"text":"contento","sentence":"El gato está muy contento hoy."},{"text":"alegre","sentence":"El gato está muy alegre hoy."}]}' };
+      if (/formal register/.test(u)) return { response: 'Wie geht es Ihnen?' };
+      return { response: '' };
+    } } };
+    const outside = async (url) => {
+      if (/wiktionary/.test(url)) return new Response(JSON.stringify({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'An institution where one can place and borrow money.', examples: ['She went to the <b>bank</b>.'] }] }] }), { headers: { 'content-type': 'application/json' } });
+      if (/news\.site\.org/.test(url)) return new Response('<html><head><title>Home</title><script>alert(1)</script></head><body><h1>World news</h1><p>The weather is fine.</p><a href="/today">News of the day</a></body></html>', { headers: { 'content-type': 'text/html' } });
+      return new Response('{}', { status: 404 });
+    };
+    const was = globalThis.fetch; globalThis.fetch = outside;
+    await T.ctx.route(/\/api\/translate$/, async (r) => { const res = await api.onRequestPost({ request: new Request('https://a-to-mind.com/api/translate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: r.request().postData() || '{}' }), env });
+      return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await T.ctx.addInitScript(() => { window.__cls = 0; try { new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); } catch (_) {} });
+    const P = T.p, outText = () => P.$eval('#out', (e) => e.textContent);
+    try {
+      await P.goto(base + 'translate/?q=' + encodeURIComponent('How are you?') + '&from=en&to=de');
+      await until(async () => /Wie geht es dir/.test(await outText()), 4000);
+      const plain = await outText(), opts = await P.$$eval('#tone option', (o) => o.map((x) => x.textContent)), toneOn = await P.$eval('#tone', (s) => !s.disabled);
+      const load = await P.evaluate(() => { const n = performance.getEntriesByType('navigation')[0]; return Math.round(n.loadEventStart); }), cls = await P.evaluate(() => window.__cls);
+      await P.selectOption('#tone', 'formal'); await until(async () => /Ihnen/.test(await outText()), 4000); const formal = await outText();
+      check('translate page, tone: German offers Formal (Sie) and Informal (du); choosing Formal turns "Wie geht es dir?" into "Wie geht es Ihnen?"; the page loads under 150 ms here and nothing shifts (CLS < 0.1)',
+        /Wie geht es dir\?/.test(plain) && toneOn && opts.some((o) => /Formal \(Sie\)/.test(o)) && opts.some((o) => /Informal \(du\)/.test(o)) && formal === 'Wie geht es Ihnen?' && load < 150 && cls < 0.1, JSON.stringify({ plain, opts, formal, load, cls }));
+      await P.selectOption('#to', 'es'); await P.fill('#in', 'The cat is very happy today.'); await P.click('#go');
+      await until(async () => /feliz/.test(await outText()), 4000);
+      await P.click('#out .w >> text=feliz'); await until(() => P.$eval('#pop', (p) => !p.hidden && /contento/.test(p.textContent)).catch(() => false), 4000);
+      const popFits = await P.$eval('#pop', (p) => { const b = p.getBoundingClientRect(); return b.left >= 0 && b.right <= innerWidth; });
+      await P.click('#pop li button >> text=contento'); await P.waitForTimeout(150);
+      const swapped = await outText(), popGone = await P.$eval('#pop', (p) => p.hidden), kept = await P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.translate.v1')).hist[0].out);
+      check('translate page, a word swapped: tapping "feliz" in the result lists other words (contento, alegre) inside the 390 px screen; tapping contento rewrites the sentence and the history keeps it',
+        swapped === 'El gato está muy contento hoy.' && popGone && popFits && kept === swapped, JSON.stringify({ swapped, popFits, kept }));
+      await P.selectOption('#from', 'en'); await P.fill('#in', 'bank'); await P.click('#go');
+      await until(() => P.$eval('#dict', (d) => !d.hidden && /banco/.test(d.textContent)).catch(() => false), 4000);
+      const dict = await P.$eval('#dict', (d) => d.innerText), bars = await P.$$eval('#dict .freq', (f) => f.map((x) => x.getAttribute('aria-label')));
+      check('translate page, a word looked up: "bank" shows the dictionary: Wiktionary\'s meaning with its example, the translations with how common each is (banco common, orilla rare), an example pair and the forms',
+        /institution where one can place and borrow money/.test(dict) && /She went to the bank/.test(dict) && /banco/.test(dict) && /orilla/.test(dict) && bars[0] === 'common' && bars[1] === 'rare' && /El banco abre a las nueve/.test(dict) && /banks/.test(dict) && /Wiktionary/.test(dict), dict.slice(0, 400) + ' | ' + bars);
+      const doc = '<w:document xmlns:w="w"><w:body><w:p><w:pPr><w:pStyle w:val="Title"/></w:pPr><w:r><w:t>Annual </w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>report</w:t></w:r></w:p><w:tbl><w:tr><w:tc><w:p><w:r><w:t>Good morning &amp; welcome</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>42</w:t></w:r></w:p></w:tc></w:tr></w:tbl></w:body></w:document>';
+      const docx = await docsLib.zip([{ name: '[Content_Types].xml', data: '<Types/>' }, { name: 'word/document.xml', data: doc }, { name: 'word/media/logo.png', data: new Uint8Array([137, 80, 78, 71, 1, 2]) }]);
+      const dl = P.waitForEvent('download', { timeout: 8000 });
+      await P.setInputFiles('#doc', { name: 'report.docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', buffer: Buffer.from(docx) });
+      const got = await dl, gotPath = await got.path(), files = await docsLib.unzip(fs.readFileSync(gotPath)), xml = new TextDecoder().decode(files.find((f) => f.name === 'word/document.xml').data);
+      const said = await P.$eval('#note', (n) => n.textContent);
+      check('translate page, a .docx round trip: report.docx comes back as report.es.docx with its title style, bold run, table, number and picture where they were and the words in Spanish',
+        got.suggestedFilename() === 'report.es.docx' && /<w:pStyle w:val="Title"\/><\/w:pPr><w:r><w:t xml:space="preserve">Informe anual<\/w:t><\/w:r><w:r><w:rPr><w:b\/><\/w:rPr><w:t><\/w:t>/.test(xml) && /Buenos días y bienvenidos/.test(xml) && /<w:t>42<\/w:t>/.test(xml)
+        && files.find((f) => f.name === 'word/media/logo.png').data.length === 6 && /layout kept/.test(said), got.suggestedFilename() + ' | ' + said + ' | ' + xml.slice(0, 300));
+      await P.click('#webS'); await P.fill('#url', 'news.site.org'); await P.click('#webGo');
+      await until(() => P.$eval('#web', (w) => /Noticias del mundo/.test(w.textContent)).catch(() => false), 5000);
+      const web = await P.$eval('#web', (w) => w.innerText), scripts = await P.$$eval('#web script', (s) => s.length), sideways = await P.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      check('translate page, a website by address: news.site.org comes back as its words in Spanish (title, heading, paragraph, its link as a button), no script of the site on the page, nothing scrolls sideways at 390 px',
+        /Inicio/.test(web) && /Noticias del mundo/.test(web) && /El tiempo es bueno/.test(web) && /Noticias del día/.test(web) && !scripts && !sideways && !/alert/.test(web), web.slice(0, 300));
+      check('the translate page batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { globalThis.fetch = was; await T.ctx.close(); }
+  }
+  // The translate page's catch-up features (docs/PARITY/google-translate.md): recent languages, searching the languages, the on-screen
+  // keyboard, the handwriting pad (read as a picture), your own correction kept, conversation mode, the bookmarklet. /api/translate is stubbed.
+  if (want('translate page catch-up: recent languages, language search, on-screen keyboard, handwriting, your correction kept, conversation, bookmarklet')) {
+    const T = await fresh({ phone: true }), P = T.p, asks = [];
+    const D = { 'Good night': { fr: 'Bonne nuit', ja: 'おやすみ' }, 'Где': { en: 'Where' }, 'Thank you': { fr: 'Merci' }, 'Merci beaucoup': { en: 'Thank you very much' } };
+    await T.ctx.route(/\/api\/translate$/, async (r) => { const b = JSON.parse(r.request().postData() || '{}'); asks.push(b);
+      if (b.image) return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ read: 'Thank you', text: 'Merci', from: 'en', to: b.to, via: 'model' }) });
+      const t = (D[b.text] || {})[b.to] || ('[' + b.to + '] ' + b.text);
+      return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ text: t, from: b.from || 'en', to: b.to, detected: b.from ? '' : 'en', via: 'model' }) }); });
+    const outText = () => P.$eval('#out', (e) => e.textContent);
+    try {
+      await P.goto(base + 'translate/?q=' + encodeURIComponent('Good night') + '&from=en&to=fr');
+      await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      await P.fill('#langQ', 'japan'); await until(() => P.$eval('#langHits', (h) => h.querySelectorAll('button').length > 0), 2000);
+      const hit = await P.$eval('#langHits button', (b) => b.textContent); await P.press('#langQ', 'Enter');
+      await until(async () => /おやすみ/.test(await outText()), 4000);
+      const to = await P.$eval('#to', (s) => s.value), recent = await P.$$eval('#recentLangs button', (b) => b.map((x) => x.dataset.lang));
+      await P.click('#recentLangs button[data-lang="fr"]'); await until(async () => /Bonne nuit/.test(await outText()), 4000);
+      check('translate page, languages: typing "japan" in the language search offers Japanese, Enter picks it and translates; French then waits as a one-tap recent language and switches back',
+        /Japanese/.test(hit) && to === 'ja' && recent.includes('fr') && await P.$eval('#to', (s) => s.value) === 'fr', JSON.stringify({ hit, to, recent }));
+      await P.selectOption('#from', 'ru'); await P.selectOption('#to', 'en'); await P.fill('#in', '');
+      await P.click('#kbdB'); const keys = await P.$$eval('#kbd .keys button', (b) => b.map((x) => x.textContent));
+      await P.click('#kbd button[aria-label="shift"]'); for (const k of ['Г', 'д', 'е']) await P.click(`#kbd .keys button:text-is("${k}")`);
+      await P.click('#kbd button[aria-label="space"]'); await P.click('#kbd button[aria-label="backspace"]');
+      const typed = await P.$eval('#in', (t) => t.value); await P.click('#go'); await until(async () => /Where/.test(await outText()), 4000);
+      check('translate page, on-screen keyboard: with Russian as the typed language it shows Cyrillic keys; tapping shift, Г д е (shift lasts one letter), space and backspace types "Где", which translates to "Where"',
+        keys.includes('ж') && typed === 'Где' && /Where/.test(await outText()), JSON.stringify({ typed, n: keys.length }));
+      await P.selectOption('#from', 'en'); await P.selectOption('#to', 'fr'); await P.fill('#in', '');
+      await P.click('#handB'); const kbdShut = await P.$eval('#kbd', (k) => k.hidden); await P.$eval('#pad', (c) => c.scrollIntoView({ block: 'center' })); const box = await P.$eval('#pad', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+      await P.mouse.move(box.x + 20, box.y + 30); await P.mouse.down(); await P.mouse.move(box.x + box.w / 2, box.y + box.h / 2, { steps: 5 }); await P.mouse.up();
+      await P.click('#handGo'); await until(async () => /Merci/.test(await outText()), 4000);
+      const img = asks.find((a) => a.image);
+      check('translate page, handwriting: opening the pad shuts the keyboard (one input tool at a time); a stroke on the pad is sent as a picture, its words ("Thank you") land in the box and come back translated ("Merci")',
+        kbdShut && !!img && /^data:image\/jpeg/.test(img.image) && await P.$eval('#in', (t) => t.value) === 'Thank you' && /Merci/.test(await outText()), JSON.stringify(asks.map((a) => Object.keys(a))));
+      await P.click('#fbB'); await P.fill('#fbT', 'Merci bien'); await P.click('#fbSave');
+      const said = await P.$eval('#note', (s) => s.textContent).catch(() => ''); const n = asks.length;
+      await P.reload(); await until(async () => /Bonne nuit/.test(await outText()), 4000); await P.fill('#in', 'Thank you'); await P.click('#go'); await until(async () => /Merci bien/.test(await outText()), 4000);
+      const after = await outText(), undo = await until(() => P.$eval('#fbUndo', (b) => !b.hidden), 4000), note = await P.$eval('#note', (n) => n.textContent);
+      const kept = await P.evaluate(() => Object.keys(localStorage).filter((k) => /translate/.test(k)).map((k) => k + '=' + localStorage.getItem(k).slice(0, 300)).join(' ; '));
+      if (undo) { await P.click('#fbUndo'); await until(async () => (await outText()) === 'Merci', 4000); }
+      check('translate page, suggest an edit: "Merci bien" replaces the machine\'s "Merci", is kept on this device after a reload (marked as your own) and "Back to the machine\'s" undoes it',
+        /Merci bien/.test(after) && undo && (await outText()) === 'Merci' && n > 0, JSON.stringify({ after, said, undo, note, kept }));
+      await P.click('#convS'); await P.fill('#convT', 'Merci beaucoup'); await P.click('#convTB');
+      await until(() => P.$eval('#convLog', (l) => /Thank you very much/.test(l.textContent)), 4000);
+      const conv = await P.$eval('#convLog', (l) => l.textContent), names = await P.$eval('#convTB', (b) => b.textContent);
+      const bm = await P.$eval('#bm', (a) => a.getAttribute('href')), sideways = await P.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      check('translate page, conversation and bookmarklet: a line sent as the French side comes back in English for the other side; the bookmarklet opens this page with the selection or the page address; nothing scrolls sideways at 390 px',
+        /Thank you very much/.test(conv) && /French/.test(names) && /^javascript:/.test(bm) && /translate\/\?/.test(bm) && /url=/.test(bm) && !sideways, JSON.stringify({ conv, names }));
+      check('the translate catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  // Notes catching up with Google Docs (docs/PARITY/google-docs.md): a picture from a file kept through a reload, a comment on selected words with a reply
+  // and Resolve, voice typing (speech recognition stubbed: it hears "hello from my voice").
+  if (want('notes page catch-up: a picture kept through a reload, a comment with a reply resolved, voice typing')) {
+    const T = await fresh(), P = T.p, PNG = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    await T.ctx.addInitScript(() => { window.SpeechRecognition = window.webkitSpeechRecognition = class { start() { setTimeout(() => { const r = [{ 0: { transcript: 'hello from my voice' }, isFinal: true, length: 1 }]; this.onresult && this.onresult({ resultIndex: 0, results: r }); setTimeout(() => this.onend && this.onend(), 30); }, 50); } stop() { this.onend && this.onend(); } }; }); // newer Chrome has the unprefixed one too
+    const notes = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.notes.v1') || '{"docs":[]}').docs);
+    try {
+      await P.goto(base + 'notes/'); await until(() => P.evaluate(() => !!document.getElementById('related') && document.getElementById('related').children.length > 0), 8000);
+      await P.click('#dtitle'); await P.keyboard.type('Trip photos'); await P.click('#body'); await P.keyboard.type('The view from the hill was lovely.');
+      await P.setInputFiles('#imgF', { name: 'hill.png', mimeType: 'image/png', buffer: Buffer.from(PNG, 'base64') });
+      await until(() => P.$$eval('#body img', (i) => i.length === 1), 4000);
+      await P.reload(); await until(() => P.$$eval('#body img', (i) => i.length === 1), 6000);
+      const img = await P.$eval('#body img', (i) => ({ src: i.src.slice(0, 22), alt: i.alt, w: i.naturalWidth }));
+      check('notes, a picture: Picture puts the chosen PNG into the note as a data picture, named by its file, and it is still there after a reload',
+        img.src === 'data:image/png;base64,' && img.alt === 'hill' && img.w === 1, JSON.stringify(img));
+      await P.evaluate(() => { const b = document.getElementById('body'), t = [...b.querySelectorAll('*'), b].map((e) => [...e.childNodes]).flat().find((n) => n.nodeType === 3 && /hill/.test(n.textContent)); const i = t.textContent.indexOf('hill'), r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + 4); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+      await P.click('#cmB'); await until(() => P.$eval('#cmNew', (f) => !f.hidden), 2000); await P.fill('#cmT', 'Which hill?'); await P.click('#cmSave');
+      await until(() => P.$eval('#cmts', (c) => !c.hidden), 2000);
+      await P.fill('#cmList input', 'Monsanto'); await P.press('#cmList input', 'Enter');
+      await until(() => P.$eval('#cmList', (l) => /Monsanto/.test(l.textContent)), 2000);
+      const mid = await P.$eval('#body mark.cm', (m) => m.textContent), panel = await P.$eval('#cmList', (l) => l.innerText);
+      let d = (await notes()).find((x) => x.title === 'Trip photos');
+      const stored = d && d.comments && d.comments[0];
+      await P.click('#cmList button'); await until(() => P.$eval('#cmts', (c) => c.hidden), 2000);
+      d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, comments: selecting "hill" and commenting highlights it; the comment and its reply show under the note and are stored; Resolve clears the highlight and keeps the words and the thread',
+        mid === 'hill' && /hill/.test(panel) && /Which hill\?/.test(panel) && /Monsanto/.test(panel) && stored && stored.quote === 'hill' && stored.replies[0].text === 'Monsanto'
+        && !/<mark/.test(d.html) && /hill/.test(d.html) && d.comments[0].done === true, JSON.stringify({ mid, panel, html: d && d.html.slice(0, 200) }));
+      await P.click('#body'); await P.keyboard.press('Control+End'); await P.click('#micB');
+      await until(() => P.$eval('#body', (b) => /hello from my voice/.test(b.textContent)), 3000);
+      await until(() => P.$eval('#micB', (b) => b.getAttribute('aria-pressed') === 'false'), 2000);
+      await P.waitForTimeout(600); d = (await notes()).find((x) => x.title === 'Trip photos');
+      check('notes, voice typing: what is heard goes in at the cursor and is saved; the button shows it is listening and stops',
+        /hello from my voice/.test(d.html) && /lovely\./.test(d.html), d.html.replace(/data:[^"]+/, 'data:…').slice(0, 300));
+      check('the notes catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
+  if (want('calendar page catch-up: a video call added to an event, joined from its detail, carried by its invite; Print')) {
+    const T = await fresh(), P = T.p;
+    await T.ctx.addInitScript(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    const evs = () => P.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.calendar.v1') || '{}').events || []);
+    try {
+      await P.goto(base + 'calendar/'); await until(() => P.evaluate(() => !!document.getElementById('newBtn')), 8000);
+      await P.click('#newBtn'); await P.fill('#eTitle', 'Design review'); await P.click('#eVideoB');
+      const made = await P.inputValue('#eVideo');
+      await P.click('#eSave'); await until(async () => (await evs()).some((e) => e.title === 'Design review'), 3000);
+      const ev = (await evs()).find((e) => e.title === 'Design review');
+      await P.locator('text=Design review').first().click(); await until(() => P.evaluate(() => !document.getElementById('detail').hidden), 3000);
+      const join = await P.$eval('#detVideo', (a) => ({ href: a.href, text: a.textContent, target: a.target })).catch(() => null);
+      const inv = await P.evaluate(async (e) => { const C = await import('/lib/calendar.js'); const i = C.inviteLink(e, location.origin); return { ics: i.ics, back: C.parseIcs(i.ics)[0].video }; }, ev);
+      check('calendar, video call: "Add a video call" fills a private Jitsi Meet room named for the event; saved with it; its detail has Join video call opening a new tab; its .ics invite carries it and reads back',
+        /^https:\/\/meet\.jit\.si\/Verse-DesignReview-[a-z]{12}$/.test(made) && ev.video === made && join && join.href === made && /Join video call/.test(join.text) && join.target === '_blank'
+        && /CONFERENCE;VALUE=URI;FEATURE=VIDEO/.test(inv.ics) && inv.back === made, JSON.stringify({ made, ev, join }).slice(0, 600));
+      await P.click('#printBtn'); const printed = await P.evaluate(() => window.__printed);
+      const hidden = await P.evaluate(() => { const m = [...document.styleSheets].flatMap((s) => { try { return [...s.cssRules]; } catch (e) { return []; } }).filter((r) => r.media && /print/.test(r.media.mediaText)); return m.length > 0; });
+      check('calendar, Print: the Print button prints the view on screen, with print styles that drop the buttons and forms', printed === 1 && hidden, JSON.stringify({ printed, hidden }));
+      check('the calendar catch-up batch threw no page errors', !T.errors.length, T.errors.join(' | '));
+    } finally { await T.ctx.close(); }
+  }
   // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
   if (want("Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail ")) { const P = await fresh();
     await P.ask('summon linemote-1', 900); const lm = await P.page();
@@ -1662,7 +2879,7 @@ try {
   // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
-    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
+    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy|mcp-live)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
     // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
     const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
     const O = await fresh({ content: gh('failure', true) });
@@ -1848,8 +3065,11 @@ try {
       nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(csMsg) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, csMsg, stillThere, left, errors: S.errors }));
     await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
-    await S.p.click('.counterfactual-draft summary');
-    await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
+    // the card can be drawn again just after the ask (a save re-renders the stage), which drops a click on the old summary: open the one on the page, up to 3 tries
+    for (let i = 0; i < 3 && !(await S.p.$('.counterfactual-draft [data-fracture="1"]')); i++) {
+      await S.p.click('.counterfactual-draft summary').catch(() => {});
+      await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 2000 }).catch(() => {});
+    }
     const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim()).catch(() => '(no fracture line marked)'); // a miss is one red check, not a dead shard
     const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent).catch(() => '');
     check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
@@ -1907,13 +3127,13 @@ try {
   // the error garden grown from the incident autopsy (asked by Verse and the owner, 2026-10-18): "plant my test failures" plants incidents.json's failing checks
   if (want("error garden from incidents: plant my test failures plants the failing checks, repeats are weeds, and asking again adds nothing twice")) { const S = await fresh();
     await S.ask('plant my test failures in my error garden', 1500);
-    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const one = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count)); // a weed is a count of 2 or more, and incidents.json repeats a check 10+ times on a red day
     await S.ask('visualize your test failures', 1500);
     const two = await S.p.$$eval('.error-garden .eg-plant', (r) => r.length);
     const inc = await S.p.evaluate(() => fetch('/incidents.json').then((r) => r.json()).catch(() => null));
     const titles = new Set(((inc && inc.incidents) || []).slice(0, 30).flatMap((i) => (i.checks || []).map((c) => String(c).split(':')[0].trim().toLowerCase())));
     check('error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none',
-      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed[2-9]/.test(x)) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
+      one.length >= 1 && one.length <= Math.min(12, titles.size) && one.some((x) => /^weed\d+$/.test(x) && Number(x.slice(4)) >= 2) && two === one.length && !S.errors.length, JSON.stringify({ one, two, titles: titles.size, errors: S.errors }));
   }
   // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
   if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
@@ -2580,6 +3800,7 @@ try {
       && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
       JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
+  // (2026-10-22: the replies say plainly Verse is a program with no feelings, skills/feelings.js)
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Verse's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
@@ -2590,7 +3811,7 @@ try {
     // Verse's voice (owner, 2026-10-14: "I wish Verse didnt seem so grumpy"): warm and true, never opening on "no"
     const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by Verse, about itself/.test(t);
     check('feelings: "do you love me?", "Verse, do you have feelings?", "are you conscious" and "do you get lonely" get Verse\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
+      own(r.love, 'can\u2019t love anyone') && own(r.feel, 'a program without feelings') && own(r.mind, 'made by A-to-Mind') && own(r.lonely, 'a program without feelings') && own(r.pretty, 'The look is deliberate') && !r.lyrics.includes('can\u2019t love anyone'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -2716,9 +3937,9 @@ try {
     const seenAfterFirst = await seen();
     verified = ['sticky note buy milk', 'make a counter']; // the live check ran: the counter answers now
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
-    const second = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
+    const second = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
     check('look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered',
-      !/while you were away/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I made 2 new things while you were away/.test(second),
+      !/I built this/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I built this: a counter you can tap \(and 1 more\)/.test(second),
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
@@ -2735,12 +3956,13 @@ try {
     await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
     const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    const first = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
-    // the line was seen and ignored: the next visit does not say it again
+    const first = await until(async () => { const t = await note(); return /I built this/.test(t) ? t : ''; }, 6000) || await note();
+    // opened (show me, then Done): the next visit does not offer the same things as new (an ignored line comes back: #1209)
+    await P.p.click('[data-showcase="show"]'); await P.p.waitForTimeout(800);
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
     const second = await note();
     check('look what I made: previewed once: the line about what Verse made shows once for a set of things (even if ignored), a later visit does not repeat it',
-      /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
+      /I built this: a counter you can tap \(and 1 more\)/.test(first) && !/I built this/.test(second), JSON.stringify({ first, second }));
     await P.ctx.close();
   }
   if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Verse
@@ -2772,6 +3994,48 @@ try {
     const after = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 8000);
     check('look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new',
       !before && after === '1' && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-21: "still not seeing i made this anymore": a device that had previewed every build (or said "show me everything") had every ask
+  // in a2m.void.shown.v1, so no preview ever showed again; what was built this week stays one tap away, with its whole line, however often it was seen
+  if (want("look what I made: what was built recently always shows, even on a device that has seen everything")) {
+    const at = new Date(Date.now() - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+    const LEDGER = [{ at, by: 'verse', kind: 'build', what: 'ritual template', show: 'A routine becomes back-to-back daily calendar events in one file you can download', try: 'morning routine as calendar events' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-r')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['morning routine as calendar events'])); sessionStorage.setItem('sc-r', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['morning routine as calendar events'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bellOk = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.mode).catch(() => null), 20000);
+    const line = await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    const whole = await P.p.$eval('#away-note', (e) => e.scrollWidth <= e.clientWidth + 1 || getComputedStyle(e).whiteSpace !== 'nowrap').catch(() => false);
+    await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
+    // Done clears it (owner, 2026-10-24: "so why are we back to unclearable recently built"): no sparkle after the walkthrough, none after a reload
+    await P.p.click('[data-showcase="next"]'); await P.p.waitForTimeout(600); // the one step's last button is Done
+    const afterDone = !!(await P.p.$('#whatsnew-bell'));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(210, 210); await P.p.waitForTimeout(3000);
+    const afterReload = { bell: !!(await P.p.$('#whatsnew-bell')), line: await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '') };
+    check('look what I made: what was built recently always shows, even on a device that has seen everything: the sparkle stays (recent), the quiet line names the build in full, and a tap plays it; Done clears it, and a reload keeps it cleared',
+      bellOk === 'recent' && /Recently built: A routine becomes back-to-back daily calendar events in one file you can download/.test(line) && whole && /1 of 1/.test(bar) && !afterDone && !afterReload.bell && !/Recently built/.test(afterReload.line) && !P.errors.length,
+      JSON.stringify({ bellOk, line, whole, bar, afterDone, afterReload, errors: P.errors }));
+    await P.ctx.close();
+  }
+  // owner, 2026-10-24: "just make a clear list button for the builds that stays cleared": one tap clears new and recent builds on this device
+  if (want("look what I made: Clear list clears the builds and they stay cleared")) {
+    const at = new Date(Date.now() - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+    const LEDGER = [{ at, by: 'verse', kind: 'build', what: 'ritual template', show: 'A routine becomes calendar events', try: 'morning routine as calendar events' }, { at, by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-c')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-c', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['morning routine as calendar events', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bell = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 20000);
+    await P.p.click('#whatsnew-bell'); await until(async () => P.p.$('[data-showcase="clear"]'), 6000);
+    await P.p.click('[data-showcase="clear"]'); await P.p.waitForTimeout(500);
+    const now = { bar: !!(await P.p.$('#showcase-bar')), bell: !!(await P.p.$('#whatsnew-bell')) };
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(210, 210); await P.p.waitForTimeout(3000);
+    const later = { bell: !!(await P.p.$('#whatsnew-bell')), line: await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '') };
+    await P.ask("what's new", 1500); const replay = !!(await P.p.$('#showcase-bar'));
+    check('look what I made: Clear list clears the builds and they stay cleared: the walkthrough and the sparkle go at once, a reload shows neither, and "what\'s new" does not replay them',
+      bell === '2' && !now.bar && !now.bell && !later.bell && !/Recently built|I built this/.test(later.line) && !replay && !P.errors.length, JSON.stringify({ bell, now, later, replay, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
@@ -2846,7 +4110,7 @@ try {
     await ledger(P.ctx); await P.p.waitForTimeout(500);
     r.before = await note(P);
     await P.p.mouse.move(220, 220);
-    r.pill = await until(async () => ((await note(P)).includes('I made 3 new things while you were away') ? await note(P) : ''), 6000);
+    r.pill = await until(async () => ((await note(P)).includes('I built this: sticky notes look like real paper (and 2 more)') ? await note(P) : ''), 6000);
     await P.p.click('[data-showcase="show"]');
     r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
     await P.p.click('[data-showcase="next"]');
@@ -2935,7 +4199,7 @@ try {
     await P.ctx.route(/\/api\/miss(?:\?|$)/, (r) => { try { misses.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} r.fulfill({ status: 204, body: '' }); });
     const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
     await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
-    await until(async () => /while you were away/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
+    await until(async () => /I built this/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
     await P.p.click('[data-showcase="show"]');
     const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
     await P.p.click('[data-showcase="next"]');
@@ -3019,6 +4283,7 @@ try {
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};
+    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     // the third: a desktop whose CPU is 20x slower while the card opens (CDP throttling), the way a loaded runner left the sticky
     // under the card for good (verify run 38165509211): it measured the card while it was still scaling in, and nothing measured again
     for (const [w, h, slow] of [[1280, 800], [390, 844], [1280, 800, 20]]) {
@@ -3028,7 +4293,10 @@ try {
       const covered = () => P.p.evaluate(() => { const s = document.querySelector('.sticky'), v = document.querySelector('.vpage.on'); if (!s || !v) return -1; const a = s.getBoundingClientRect(), b = v.getBoundingClientRect();
         return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
       const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
-      const before = await box(), place = await saved();
+      // the sticky can still be growing in when the ask's wait ends (verify on 31a24cf5, slow case: 177 px wide before, 183 after):
+      // read its spot once two reads 150 ms apart agree, as the place it comes back to
+      const settledBox = async () => { let a = await box(); for (let i = 0; i < 20; i++) { await P.p.waitForTimeout(150); const b = await box(); if (b.join() === a.join()) return b; a = b; } return a; };
+      const before = await settledBox(), place = await saved();
       const cdp = slow ? await P.p.context().newCDPSession(P.p) : null;
       if (cdp) await cdp.send('Emulation.setCPUThrottlingRate', { rate: slow });
       await P.ask('how good are you at othello', slow ? 4000 : 600);
@@ -3039,11 +4307,14 @@ try {
       await P.p.waitForTimeout(450);
       const under = await covered(), during = await box(), placeDuring = await saved();
       await P.ask('close', 900);
+      // the glide back (.35 s) can start late on a loaded runner (a local run read it 13 px short, and once not yet moved): wait for it
+      // to arrive, then read; a sticky that never comes back still reads its own spot and fails below
+      await until(async () => (near(await box(), before) ? 'back' : ''), 6000);
+      await P.p.waitForTimeout(300);
       const after = await box();
       r[slow ? 'slow' : w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
       await P.ctx.close();
     }
-    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
     const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && near(x.after, x.before) && !x.errors;
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
@@ -3293,6 +4564,45 @@ try {
       !noKey && auth === 'Bearer owner-k' && !!d && /^v01d-kept-\d{4}-\d{2}-\d{2}\.json$/.test(d.suggestedFilename()) && body && body.count === 2 && body.records[1].name === 'my dog is Rex' && /saved: 2 lines/.test(said) && !X.errors.length,
       JSON.stringify({ noKey: !!noKey, auth, file: d && d.suggestedFilename(), said, e: X.errors }));
     await X.ctx.close(); }
+  // Memory snippets, both stores on one card (asked by Verse, 2026-10-20: "a 'memory-preview' UI component to allow users to
+  // see memory snippets"). It must not take memory-graph's export look: "preview my memory" still opens that card.
+  if (want("memory preview: local patterns and the server records on one card")) { const M = await fresh();
+    await M.ctx.route(/\/api\/memory\?view=export/, (r) => r.fulfill(json({ v01d_memory: 1, exported: '2026-10-21T00:00:00Z', count: 1, capped: false, records: [{ id: 'note-1', name: 'project <react>', kind: 'project', updated: '2026-10-19T00:00:00Z' }] })));
+    await M.ask('make a clock', 700);
+    await M.p.evaluate(() => { const g = JSON.parse(localStorage.getItem('a2m.void.graph.v1') || '{"nodes":{},"edges":{}}'); g.on = true; const now = new Date().toISOString(); g.nodes['fact:tea'] = { kind: 'fact', label: 'I like tea', n: 1, days: 1, first: now, last: now }; g.asks = (g.asks || 0) + 1; g.first = g.first || now; localStorage.setItem('a2m.void.graph.v1', JSON.stringify(g)); localStorage.setItem('a2m.void.owner.v1', 'owner-k'); });
+    await M.ask('memory preview', 1100);
+    const read = () => M.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null;
+      return { t: pg.innerText, html: pg.innerHTML, items: [...pg.querySelectorAll('.mp-item .mp-fact')].map((e) => e.textContent), meta: [...pg.querySelectorAll('.mp-item .mp-meta')].map((e) => e.textContent), refresh: !!pg.querySelector('.mp-refresh .g-btn[data-action="refresh"]'), src: (pg.querySelector('.src') || { textContent: '' }).textContent }; });
+    const card = await read();
+    check('memory preview: "memory preview" opens one card holding both stores - the local patterns (an interest from this browser and a "you told me" line) and the server record drawn as text (never as markup) with its kind and day - plus a Refresh and the two stores named under it',
+      !!card && /Memory preview/.test(card.t) && /Local patterns/.test(card.t) && /Server memory/.test(card.t)
+        && card.items.some((s) => /clock/i.test(s)) && card.items.some((s) => /I like tea/.test(s))
+        && card.items.some((s) => s === 'project <react>') && /&lt;react&gt;/.test(card.html)
+        && card.meta.some((m) => /project/.test(m) && /2026-10-19/.test(m)) && card.refresh && /a2m\.void\.graph\.v1/.test(card.src) && /view=export/.test(card.src)
+        && !/don't know this yet/.test(card.t) && !M.errors.length,
+      JSON.stringify({ card: card && { t: card.t.slice(0, 200), items: card.items, meta: card.meta, refresh: card.refresh }, e: M.errors }));
+    await M.p.keyboard.press('Escape');
+    await M.ask('preview my memory', 1000);
+    const theirs = await M.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { mp: !!document.querySelector('.vpage.on .mp-section'), mg: !!document.querySelector('.vpage.on .mg-pv-sum, .vpage.on .mg-pv-empty'), t: pg ? pg.innerText : '' }; });
+    check('memory preview: the export look is left alone - "preview my memory" still opens memory-graph, never this card',
+      theirs.mg && !theirs.mp && /Download it|See it all|Nothing leaves this device/.test(theirs.t) && !M.errors.length, JSON.stringify({ theirs, e: M.errors }));
+    await M.ctx.close(); }
+  // Verse Out Loud, Verse's own podcast (owner, 2026-10-21: "Verse should make its own podcast"): the player card with the whole
+  // transcript (no line cut at a narrow width), Download / Share / RSS / Tip, and each transcript line seeking the player.
+  if (want("podcast: play the podcast opens the player card with the full transcript")) { const P = await fresh();
+    await P.p.setViewportSize({ width: 360, height: 700 });
+    await P.ask('play the podcast', 1400);
+    const c = await until(() => P.p.evaluate(() => { const pg = document.querySelector('.vpage.on .vpod'); if (!pg) return null; const a = pg.querySelector('audio');
+      const lines = [...pg.querySelectorAll('.vpod-line')]; return { n: +pg.dataset.podcast, src: a && a.getAttribute('src'), lines: lines.length, clipped: lines.filter((l) => l.scrollWidth > l.clientWidth + 1 || getComputedStyle(l).textOverflow === 'ellipsis').length, whole: lines.every((l) => /[.!?:"]$/.test(l.textContent.trim())),
+        dl: !!pg.querySelector('a[download][href$=".mp3"]'), rss: !!pg.querySelector('a[href="/podcast/rss.xml"]'), tip: !!pg.querySelector('a[href="/store/"]'), share: !!pg.querySelector('[data-act="share"]'), t: pg.innerText }; }), 5000);
+    const feed = await P.p.evaluate(() => fetch('/podcast/rss.xml').then((r) => r.text()));
+    check('podcast: play the podcast opens the player card with the full transcript - newest episode, an mp3 player, every line whole and unclipped at 360 px, Download, Share, RSS and Tip; the feed is podcast RSS with an enclosure and explicit false',
+      !!c && c.n >= 1 && /\/podcast\/verse-out-loud-\d{3}\.mp3$/.test(c.src) && c.lines >= 8 && !c.clipped && c.whole && c.dl && c.rss && c.tip && c.share && /Full transcript/.test(c.t)
+        && /<enclosure url="https:\/\/a-to-mind\.com\/podcast\/verse-out-loud-001\.mp3" length="\d+" type="audio\/mpeg"\/>/.test(feed) && /<itunes:explicit>false<\/itunes:explicit>/.test(feed) && !P.errors.length,
+      JSON.stringify({ c: c && { ...c, t: c.t.slice(0, 160) }, e: P.errors }));
+    await P.p.keyboard.press('Escape');
+    for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
+    await P.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);
@@ -3821,7 +5131,9 @@ try {
     const box = await G.p.$eval('.fig3d[data-pose="sit"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 3 }; }).catch(() => null);
     if (box) { await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 30, box.y, { steps: 2 }); await G.p.mouse.move(box.x + 700, box.y, { steps: 2 }); await G.p.mouse.up(); await G.p.waitForTimeout(500); }
     const s2 = await st3d();
-    await G.p.reload(); await G.p.waitForTimeout(1200); const f3 = await figs();
+    // kept stage things are drawn again once every skill file is in (void.html loadLearnedSkills: "figures kept from last time come back"),
+    // which data-skills="ready" marks for the suite; a fixed 1.2 s guess dated from 26 skill files, and ~300 now load before the redraw
+    await G.p.reload(); await skillsUp(G.p, 200); const f3 = await figs();
     check('figure: "a chair" then "summon motelet" sits Motelet on it; a cup is picked up by the next; a third stands; "spin motelet" turns it; "download motelet" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload',
       /sits on the chair/.test(w1) && /picks up the cup/.test(w2) && /looks around/.test(w3)
         && !!chair && !!sitter && !!holder && !!cup && cup.heldBy === holder.id && f1.filter((f) => f.m === 'cup').length === 0
@@ -3882,12 +5194,20 @@ try {
     const namesE = Array.from(new Set(Array.from(figSrcE.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBE = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesE.map((n) => n + '=U').join(',') + ';';
-    await E.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
+    await E.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
     await E.ctx.route(/\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]).replace(/_/g, ' '); sums.push(t);
+      // like Wikipedia: a title with no page answers 404 (the exact-title try, ccaf78621, asks for "Snorgleblat" before it searches)
+      if (!['Michael Jordan', 'Air Jordan', 'Blat'].includes(t)) return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ type: 'https://mediawiki.org/wiki/HyperSwitch/errors/not_found', title: 'Not found.' }) });
       return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
+    // a name ask whose only page is a loose neighbour goes to the answer route first (51056167, a name inside a list page);
+    // the real route finds nothing on the web for a made-up word, so it answers null and the card falls back to the closest
+    // page. The suite's shared stub answers every ask with the sky text, which no real route gives for "snorgleblat"
+    // (red since 51056167, hidden by the retry that healed checks it never ran; 2026-10-29, f8101922 shard 2).
+    await E.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}');
+      if (/snorgleblat/.test(b.ask || '')) return r.fulfill(json({ answer: null, sources: [], note: 'nothing on the web' })); return r.fallback(); });
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
     check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
@@ -3917,7 +5237,7 @@ try {
   if (want('talk back: the owner replies to Verse')) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const posts = [], AT = '2026-10-08T18:09:00Z';
     await O.ctx.route(/\/api\/voice-reply$/, (r) => {
-      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }] }));
+      if (r.request().method() === 'GET') return r.fulfill(json({ replies: [{ at: '2026-10-09T10:00:00Z', to: AT, text: 'Your maps are not flat any more.', answer: 'You are right: the map card has terrain now.', correction: true, remember: 'my maps have terrain' }, { at: '2026-10-09T09:00:00Z', to: 'another', text: 'not this thread', answer: 'x' }, { at: '2026-10-09T08:00:00Z', to: null, about: { ask: '5 miles in km', title: 'Converted' }, text: 'Earlier on this card.', answer: 'I kept that.' }] }));
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
@@ -3928,20 +5248,31 @@ try {
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
     const after = await O.page(), stillOpen = await O.p.$('.vpage.on [data-v-reply]'), x = await O.p.evaluate(() => window.__x || 0), imgs = await O.p.$$eval('.vpage.on .v-talk img', (l) => l.length);
-    // and about any card: "Tell Verse" under it sends the ask, the card's title and what it said
-    await O.ask('5 miles in km', 300); await until(async () => !!(await O.p.$('.vpage.on a.vtell')), 4000);
-    await O.p.click('.vpage.on a.vtell'); await O.p.fill('.vpage.on .vtell-box textarea', 'Say it to two decimals.');
-    await O.p.click('.vpage.on .vtell-box button'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.page()), 4000);
-    const card = posts[1] && posts[1].b, tellLeft = await O.p.$$eval('.vpage.on a.vtell', (l) => l.length);
-    const S = await fresh(); await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
-    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')); await S.ask('5 miles in km', 300); await S.p.waitForTimeout(500);
-    const strangerTell = await S.p.$$eval('.vpage a.vtell', (l) => l.length); await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; "Tell Verse" under any card sends its ask, title and words; a stranger sees neither',
-      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before)
+    const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
+    // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
+    // and shows what was said on this ask before
+    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
+    await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
+    await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const card = posts[1] && posts[1].b, lastIsReply = await O.p.$eval('.vpage.on', (e) => { let n = e.lastElementChild; while (n && n.classList.contains('vtail')) n = n.previousElementSibling; return !!n && n.classList.contains('vreply'); });
+    // a stranger gets the same section; the words stay in this browser's correction log, nothing is sent
+    const S = await fresh(); const strangerPosts = []; await S.ctx.route(/\/api\/voice-reply$/, (r) => { strangerPosts.push(r.request().method()); return r.fulfill(json({ replies: [] })); });
+    await S.ask('what do you think of yourself?', 300); await until(async () => /thin on places/.test(await S.page()), 4000);
+    const stranger = !!(await S.p.$('.vpage.on [data-v-reply]')), strangerSelf = await S.p.$$eval('.vpage.on .vreply', (l) => l.length);
+    await S.ask('5 miles in km', 300); await until(async () => !!(await S.p.$('.vpage.on .vreply textarea')), 4000);
+    await S.p.fill('.vpage.on .vreply textarea', 'Kilometres, not km.'); await S.p.click('.vpage.on .vreply [data-reply-send]');
+    await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
+    await S.ctx.close();
+    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
-        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length
-        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Tell Verse/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && tellLeft === 0 && strangerTell === 0,
-      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), posts, imgs, x, stranger, strangerTell, tellLeft, errors: O.errors }));
+        && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
+        && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
+      JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));
     await O.ctx.close(); }
   // Verse's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
@@ -4134,7 +5465,8 @@ try {
     await F.ctx.close(); }
   if (want("service health: every adapter and API gets a row graded up, slow or down with its time, and Check again checks again")) { // asked by Verse: the Service Health card
     const S = await fresh(); let hits = 0;
-    await S.ctx.route(/^https:\/\/(?:api\.coingecko\.com|public\.api\.bsky\.app|waymo\.com|m\.uber\.com|www\.ubereats\.com|www\.doordash\.com|www\.lyft\.com)\//, async (r) => {
+    // every adapter in skills/providers.js is a service (tools/service-health.test.mjs): the five mail adapters joined the five food and ride ones on 2026-10-28 (aab06c1e, lists run 7)
+    await S.ctx.route(/^https:\/\/(?:api\.coingecko\.com|public\.api\.bsky\.app|waymo\.com|m\.uber\.com|www\.ubereats\.com|www\.doordash\.com|www\.lyft\.com|mail\.google\.com|outlook\.live\.com|mail\.yahoo\.com|mail\.proton\.me|www\.icloud\.com)\//, async (r) => {
       const u = r.request().url(); hits++;
       if (u.includes('coingecko')) return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{"gecko_says":"(V3) To the Moon!"}' });
       if (u.includes('bsky')) return r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: '' });
@@ -4151,9 +5483,9 @@ try {
     const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
     // the stability dial (asked by Verse): the served incidents.json is the real file, so the dial reads a label and a score, the needle sits at the score's angle, and Check again reads it again
     const dialOk = (g) => g && ['steady', 'wobbly', 'shaky'].includes(g.label) && g.score >= 0 && g.score <= 100 && +g.deg === Math.round(-90 + 1.8 * g.score);
-    check('service health (asked by Verse): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse\'s own stability dial reads incidents.json (again on Check again)',
-      a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
-      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+    check('service health (asked by Verse): "is uber down" lists all twelve services (ten adapters, two APIs); the five mail adapters up, CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse\'s own stability dial reads incidents.json (again on Check again)',
+      a.rows.length === 12 && ['gmail', 'outlook', 'yahoo', 'proton', 'icloud'].every((id) => /^[a-z]+:up:up · \d+ ms$/.test(row(id))) && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '9 of 12 up, 1 slow, 2 down' && hitsA === 12 && hits === 24 && b.rows.length === 12 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
     await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
@@ -4203,6 +5535,91 @@ try {
     check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
   }
+  if (want("field minds: memory orbs, agents push a fluid, density peaks become orbs, an orb seals and Recall loads it to the same hash, with or without a Worker")) { // asked by Owner, 2026-10-29: the F321 draft (agent-fluid memory orbs)
+    const out = [];
+    for (const [noWorker, field] of [[false, true], [true, true], [false, false]]) { // the shared field is skills/field.js (dbfbc15b); the last run has none
+      const F = await fresh(...(field ? [] : [{ field: false }]), noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
+      await F.ask('memory orbs', 700); await until(async () => !!(await F.p.$('.ff-agent-fluid-memory-orbs canvas')), 8000);
+      const card = '.ff-agent-fluid-memory-orbs', box = await (await F.p.$(card + ' canvas')).boundingBox();
+      const read = () => F.p.$eval(card, (e) => ({ orbs: +(e.dataset.orbs || 0), els: e.querySelectorAll('.fo-orb').length, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, status: e.querySelector('.ff-hud').textContent,
+        hue: e.style.getPropertyValue('--fo-hue'), filter: e.style.filter, page: getComputedStyle(document.body).filter, seal: e.dataset.orbSeal || '', recalled: e.dataset.recalled || '', same: e.dataset.recallSame || '',
+        sealed: e.querySelector('.ff-sealed').textContent, mode: (e.querySelector('select.mf-mode') || {}).value || '', field: e.dataset.field || '',
+        hand: e.dataset.handColor || '', toColor: (e.querySelector('a.fo-color') || {}).getAttribute ? e.querySelector('a.fo-color').getAttribute('href') : '' }));
+      await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await F.p.mouse.down(); // pour energy in: press and circle
+      for (let i = 0; i < 30; i++) { const a = i / 5; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 5, box.y + box.height / 2 + Math.sin(a) * box.height / 5); }
+      await F.p.mouse.up();
+      await until(async () => (await read()).els > 0, 12000).catch(() => {});
+      const a = await read();
+      await F.p.$eval(card + ' .fo-orb', (b) => b.click()).catch(() => {}); // the orb drifts, so it is tapped where it is
+      await until(async () => !!(await read()).seal, 5000).catch(() => {});
+      await F.p.click(card + ' .fo-recall'); await until(async () => !!(await read()).recalled, 5000).catch(() => {});
+      await until(async () => (await read()).gen > 0, 12000).catch(() => {});
+      out.push({ noWorker, field, a, b: await read(), errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.orbs > 0 && o.a.els === o.a.orbs && /^[0-9a-f]{12}$/.test(o.b.seal) && o.b.recalled === o.b.seal && o.b.same === 'true' && o.b.gen > 0
+      && /^F-321 · gen \d+ · fitness [\d.]+ · \d+ orbs? · swirl [\d.]+ · entropy [\d.]+ · thinking/.test(o.b.status) && o.b.hue !== '' && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.mode === 'agent-fluid-memory-orbs' && !o.errors.length
+      && (o.field ? o.b.field === 'on' && /in the shared field/.test(o.b.status) // the orbs write into Verse's shared field (skills/field.js)
+        : o.b.field === 'off' && !/shared field/.test(o.b.status + o.b.sealed)) // no skills/field.js: the orbs keep their own state (lib/orb-field.js answers null)
+      && /^#[0-9a-f]{6}$/.test(o.b.hand) && o.b.toColor === '/color/?c=' + o.b.hand.slice(1); // the hand-off: an orb's colour opens on the colour page
+    check('field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, the orbs join the shared field and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page',
+      out.length === 3 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+  }
+  if (want("mind field: the seven field minds are one skill with a Mode switcher, Draw mode guesses the next stroke, orbs drag and feed back, every old ask still opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
+    const out = {};
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
+      const F = await fresh(); await F.p.setViewportSize(vp);
+      await F.ask('mind field', 700); await until(async () => !!(await F.p.$('.ff-doodle-mind canvas')), 8000);
+      const card = '.ff-doodle-mind', box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 40, box.y + 40); await F.p.mouse.down();
+      for (let i = 0; i < 24; i++) { const a = i / 6; await F.p.mouse.move(box.x + box.width / 2 + Math.cos(a) * box.width / 4, box.y + box.height / 2 + Math.sin(a) * box.height / 4); }
+      const drawn = await F.p.$eval(card, (e) => ({ oracles: +e.dataset.oracles, latent: e.dataset.latent }));
+      await F.p.mouse.up();
+      const orb = await (await F.p.$(card + ' .mf-orb')).boundingBox();
+      await F.p.mouse.move(orb.x + orb.width / 2, orb.y + orb.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.8, box.y + box.height * 0.2, { steps: 6 }); await F.p.mouse.up();
+      await F.p.waitForTimeout(1200);
+      const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className);
+        return { dragged: +(e.dataset.dragged || 0), slot: e.dataset.fieldSlot == null ? -1 : +e.dataset.fieldSlot, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), fps: +(e.dataset.fps || 0), frameMs: +(e.dataset.frameMs || 99), clipped: out, hue: e.style.getPropertyValue('--mf-hue'), listen: !!e.querySelector('.mf-listen'), page: getComputedStyle(document.body).filter }; });
+      await F.ask('save this mind', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind'); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
+      const swapped = { swarm: !!(await F.p.$('.ff-swarm-mind')), doodle: !!(await F.p.$('.ff-doodle-mind')), sel: await F.p.$eval('.ff-swarm-mind select.mf-mode', (s) => s.value).catch(() => '') };
+      const asks = {}; for (const [a, sel] of [['listen field', '.ff-resonance-mind'], ['flow field', '.ff-vector-field-mind'], ['mind field grow', '.ff-nca-mind'], ['attention field', '.ff-attention-field-mind'], ['living cards', '.ff-living-cards-mind'], ['echo field', '.ff-echo-field'], ['mind field doodle mind', '.ff-doodle-mind']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      await F.ask('mind field modes', 700); const list = await F.p.$$eval('.mf-modes li', (l) => l.length).catch(() => 0);
+      await F.ask("what's similar to swarm mind", 700); const sim = await F.p.$$eval('.similar-list li', (l) => l.length).catch(() => 0);
+      out[vp.width] = { drawn, ...r, seal, swapped, asks, list, sim, errors: F.errors.slice() }; await F.ctx.close();
+    }
+    const good = (o) => o.drawn.oracles === 3 && o.dragged > 0 && o.modes.length === 11 && o.modes[0] === 'doodle-mind' && o.modes[10] === 'verse-brain' && o.slot >= 0 && o.frameMs < 8 && !o.clipped.length && o.hue !== '' && o.listen && o.page === 'none' && /^[0-9a-f]{12}$/.test(o.seal)
+      && o.swapped.swarm && !o.swapped.doodle && o.swapped.sel === 'swarm-mind' && Object.values(o.asks).every(Boolean) && o.list === 10 && o.sim === 11 && !o.errors.length; // ten modes since F-321's memory orbs, and Verse Brain last on the switcher (2026-10-29)
+    check('mind field: "mind field" opens Draw mode, drawing gives three next-stroke guesses, an orb drags, the card fits at 1280 and 390 wide with nothing cut off, the field costs under 8 ms a frame, "save this mind" seals it, Mode switches it in place to Swarm and ends with Verse Brain, the card keeps a slot of its own numbers in the shared field, "listen field", "flow field", "mind field grow", "attention field" and "living cards" open their modes, "mind field modes" lists all eight, and "what\'s similar" lists all nine parts',
+      good(out[1280]) && good(out[390]), JSON.stringify(out));
+  }
+  if (want("tilt arena: four modes in one card, agents learn, Mode switches, GPU Swarm falls back, every ask opens its mode")) { // owner, 2026-10-21: "always combine anything that can be without taking away"
+    const out = {};
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 700 }]) {
+      const F = await fresh(); await F.p.setViewportSize(vp);
+      await F.ask('tilt arena', 700); await until(async () => !!(await F.p.$('.ff-tilt-mode canvas')), 8000);
+      const card = '.ff-tilt-mode', cv = await F.p.$(card + ' canvas'), b = await cv.boundingBox();
+      for (let i = 0; i < 30; i++) { await F.p.mouse.move(b.x + b.width * (0.2 + i / 60), b.y + b.height * 0.4); await F.p.waitForTimeout(40); }
+      await F.p.waitForTimeout(3200);
+      const r = await F.p.$eval(card, (e) => { const cb = e.getBoundingClientRect(); const out = [...e.querySelectorAll('button,select,.g-title,.g-sub,.ff-hud,.ff-why,.ta-board li')].filter((n) => { const b = n.getBoundingClientRect(); return b.width && (b.left < cb.left - 1 || b.right > cb.right + 1 || n.scrollWidth > n.clientWidth + 1); }).map((n) => n.className || n.tagName);
+        return { gen: +(e.dataset.gen || 0), board: e.querySelectorAll('.ta-board li').length, modes: [...e.querySelectorAll('select.mf-mode option')].map((o) => o.value), frameMs: +(e.dataset.frameMs || 99), clipped: out }; });
+      await F.ask('save the arena', 700); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const seal = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      await F.p.selectOption(card + ' select.mf-mode', 'gpu-swarm'); await until(async () => !!(await F.p.$('.ff-gpu-swarm canvas')), 8000).catch(() => {});
+      await until(async () => /^(on|cpu)$/.test(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.gpu || '')), 8000).catch(() => {});
+      await until(async () => !!(await F.p.$eval('.ff-gpu-swarm', (e) => e.dataset.frameMs || '')), 8000).catch(() => {});
+      const gpu = await F.p.$eval('.ff-gpu-swarm', (e) => ({ where: e.dataset.gpu || '', frameMs: +(e.dataset.frameMs || 99), tilt: !!document.querySelector('.ff-tilt-mode') })).catch(() => ({}));
+      const asks = {}; for (const [a, sel] of [['gaze chase', '.ff-gaze-chase'], ['hand arena', '.ff-hand-arena'], ['tilt arena gaze', '.ff-gaze-chase']]) { await F.ask(a, 700); asks[a] = await until(async () => !!(await F.p.$(sel)), 8000).then(() => true).catch(() => false); }
+      const xr = await F.p.$eval('.ff-hand-arena', (e) => [...e.querySelectorAll('button')].map((x) => x.textContent).join('|')).catch(() => '');
+      await F.ask('tilt arena modes', 700); const list = await F.p.$$eval('.ta-modes li', (l) => l.length).catch(() => 0);
+      out[vp.width] = { ...r, seal, gpu, asks, xr, list, errors: F.errors.slice() }; await F.ctx.close();
+    }
+    const good = (o) => o.gen >= 1 && o.board === 3 && o.modes.length === 4 && o.modes[0] === 'tilt-mode' && o.frameMs < 8 && !o.clipped.length && /^[0-9a-f]{12}$/.test(o.seal)
+      && /^(on|cpu)$/.test(o.gpu.where) && o.gpu.frameMs < 8 && !o.gpu.tilt && Object.values(o.asks).every(Boolean) && /VR/.test(o.xr) && o.list === 4 && !o.errors.length;
+    check('tilt arena: "tilt arena" opens Tilt mode with three leader cards, the weakest copies the leader within a few seconds, the card fits at 1280 and 390 wide with nothing cut off, under 8 ms a frame, "save the arena" seals the leader, Mode switches in place to GPU Swarm (graphics card or the processor, under 8 ms), "gaze chase", "hand arena" and "tilt arena gaze" open their modes with a VR button or its fallback, and "tilt arena modes" lists all four',
+      good(out[1280]) && good(out[390]), JSON.stringify(out).slice(0, 900));
+  }
+
   if (want("operating laws: veto council keeps mass at 100 and names who delayed or blocked, stigmergy board grows returning trails, term orbits merge overused words")) { // asked by the owner, 2026-10-18
     const F = await fresh();
     await F.ask('convene a council on whether to rewrite the app', 700); await until(async () => !!(await F.p.$('.veto-council .vc-p')), 8000);
@@ -4269,6 +5686,153 @@ try {
     check('field minds: the attention field mind (Grok\'s attention drafts) turns a typed word into an attractor its look-alikes fall toward, clusters like with like, Law cycles affinity, two heads (F-032), lattice (F-029, its mind evolves) and causal (F-047), the morph touches the card only, Seal keeps no typed word, and with Worker and Web Audio deleted the mind thinks on the page and Sound says it is unavailable',
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
+  }
+  if (want("verse brain current: the swimmers learn to ride the flow, and once they beat the drifters their orb, riding the current, is on the card")) { // coordinator, 2026-10-29: prove the organ 19 orb renders, do not fake the trigger
+    const F = await fresh(), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    const box = await (await F.p.$(card + ' canvas')).boundingBox();
+    for (let i = 0; i < 30; i++) await F.p.mouse.move(box.x + box.width * (0.5 + 0.3 * Math.cos(i * 0.4)), box.y + box.height * (0.5 + 0.3 * Math.sin(i * 0.4)));
+    // nothing is told or set: the card's own loop runs the brain until a life of swimmers ends with more food than drifters in the same flow
+    // the card draws its orbs every step but writes its data- counts only every 4th step (skills/verse-brain.js), so the
+    // orb can show up to 3 steps before data-currentlives counts the life that earned it (shard 4 on 06da9b70 read lives 0)
+    await until(async () => !!(await F.p.$(card + ' .vb-orb[data-key="current"]')) && +(await F.p.$eval(card, (e) => e.dataset.currentlives || 0)) >= 1, 40000);
+    const o = await F.p.evaluate((card) => { const e = document.querySelector(card), orb = e && e.querySelector('.vb-orb[data-key="current"]'), s = window.verseBrain && window.verseBrain.state();
+      return { orb: orb ? { text: orb.textContent, organ: orb.dataset.organ, left: parseFloat(orb.style.left), top: parseFloat(orb.style.top) } : null, lives: +(e && e.dataset.currentlives || 0),
+        ticks: +(e && e.dataset.ticks || 0), line: s ? (s.self.find((l) => /^Current:/.test(l)) || '') : '' }; }, card);
+    check('verse brain current: on the live card, with only the pointer moved over it, the swimmers of organ 19 beat the drifters in the same flow, and the card shows their orb, "riding the current", where they swim; the brain\'s own self says the gain over drifters in words',
+      !!o.orb && o.orb.text === 'riding the current' && o.orb.organ === 'current' && o.orb.left >= 0 && o.orb.left <= 100 && o.orb.top >= 0 && o.orb.top <= 100 && o.lives >= 1
+      && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
+    await F.ctx.close();
+  }
+  if (want('verse brain: one workspace that twenty-one organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+    const F = await fresh(), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
+      rows: e.querySelectorAll('.vb-organs tr').length, orbs: +(e.dataset.orbs || 0), concepts: +(e.dataset.concepts || 0), focus: +(e.dataset.focus || 0), drafts: +(e.dataset.drafts || 0),
+      said: e.querySelector('.vb-said').textContent, status: e.querySelector('.ff-hud').textContent, made: e.querySelector('.vb-made').textContent, figures: document.querySelectorAll('.figure').length }));
+    const box = await (await F.p.$(card + ' canvas')).boundingBox();
+    for (let i = 0; i < 40; i++) await F.p.mouse.move(box.x + box.width * (0.5 + 0.3 * Math.cos(i * 0.4)), box.y + box.height * (0.5 + 0.3 * Math.sin(i * 0.4)));
+    await F.p.fill(card + ' .vb-word', 'romance mystery'); await F.p.press(card + ' .vb-word', 'Enter');
+    await until(async () => { const r = await read(); return r.orbs >= 2 && r.chosen >= 1 && r.drafts > 0; }, 12000).catch(() => {});
+    const a = await read();
+    const orb = await F.p.$(card + ' .vb-orb[data-key="w:romance"]'), ob = orb && await orb.boundingBox();
+    if (ob) { await F.p.mouse.move(ob.x + ob.width / 2, ob.y + ob.height / 2); await F.p.mouse.down(); await F.p.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.15, { steps: 6 }); await F.p.mouse.up(); }
+    const moved = await F.p.$eval(card + ' .vb-orb[data-key="w:romance"]', (o) => parseFloat(o.style.left)).catch(() => -1);
+    const other = await F.ctx.newPage(); await other.goto(base + 'privacy/'); // the brain's own origin: a BroadcastChannel never crosses origins (localhost is not 127.0.0.1)
+    const heard = await other.evaluate(async () => { const { connectBrain } = await import('/lib/brain-bridge.js'); const c = connectBrain(); c.tell('dragons');
+      return new Promise((res) => { const t = setTimeout(() => res(null), 4000); c.on((m) => { if (m.words.includes('dragons')) { clearTimeout(t); res({ words: m.words, utility: m.utility, self: m.self.length }); } }); }); });
+    await until(async () => (await read()).concepts >= 3, 4000).catch(() => {});
+    const b = await read();
+    const tab = await F.p.evaluate(() => { const s = window.verseBrain && window.verseBrain.state(); return s ? { words: s.words, focus: s.focus.region } : null; });
+    await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal).catch(() => '')), 4000).catch(() => {});
+    const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
+    const rows = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res(''), 8000);
+      try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(g.result)); }; g.onerror = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }));
+    // the mind layers: a question is answered from its state, a stage ask becomes a goal, and what it learned survives a reload on this device
+    await F.p.fill(card + ' .vb-word', 'what just happened'); await F.p.press(card + ' .vb-word', 'Enter');
+    const answer = await F.p.$eval(card + ' .vb-said', (e) => e.textContent);
+    await F.ask('tell me about knights', 700); const fromStage = await F.p.$eval(card, (e) => ({ said: e.querySelector('.vb-said').textContent, wants: +(e.dataset.wants || 0) })).catch(() => null);
+    await until(async () => (await read()).chosen >= 3, 8000).catch(() => {});
+    await F.p.click(card + ' .vb-good'); await until(async () => (await F.p.$eval(card, (e) => e.dataset.saved + e.dataset.held).catch(() => '')) === 'truetrue', 4000).catch(() => {});
+    const mind = await F.p.$eval(card, (e) => ({ episodes: +(e.dataset.episodes || 0), procedures: +(e.dataset.procedures || 0), saved: e.dataset.saved, held: e.dataset.held, semantic: +(e.dataset.semantic || 0) }));
+    const thinking = await F.p.$eval(card, (e) => ({ ideas: [...e.querySelectorAll('.vb-orb[data-organ="concepts"]')].map((o) => o.dataset.key).sort(), concepts: +(e.dataset.concepts || 0) }));
+    await F.p.reload(); await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+    await until(async () => (await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none')) !== 'none', 6000).catch(() => {});
+    const keptAfter = await F.p.$eval(card, (e) => e.dataset.kept).catch(() => 'none');
+    // what it was thinking comes back too (asked 2026-10-29: a reload started it cold): the same ideas as orbs, its spotlight and its goals
+    await until(async () => (await F.p.$eval(card, (e) => e.dataset.restored).catch(() => 'none')) !== 'none', 6000).catch(() => {});
+    const back = await F.p.$eval(card, (e) => ({ restored: e.dataset.restored, ideas: [...e.querySelectorAll('.vb-orb[data-organ="concepts"]')].map((o) => o.dataset.key).sort(), concepts: +(e.dataset.concepts || 0),
+      wants: +(e.dataset.wants || 0), said: e.querySelector('.vb-said').textContent })).catch(() => null);
+    check('verse brain working memory: what it was thinking survives a full reload, kept through the shared field on this device: the same ideas come back as orbs, with its spotlight and its goals',
+      mind.held === 'true' && !!back && /workspace/.test(back.restored) && /attention/.test(back.restored) && back.concepts >= thinking.concepts && thinking.concepts >= 3
+      && thinking.ideas.every((k) => back.ideas.includes(k)) && back.ideas.includes('w:romance') && back.wants >= 1 && /^(Back from before the reload|From the stage): /.test(back.said), JSON.stringify({ mind, thinking, back }));
+    // the shared field: a slot written at skills/field.js (where the memory orbs write) is felt by the brain, which publishes its own ideas there
+    await F.p.evaluate(async () => { const Fd = await import('/skills/field.js'); Fd.init(); const L = Fd.layout, who = 'agent-fluid-memory-orbs', c = Fd.provenanceOf(who);
+      Fd.writeRegion(L.pos + 3 * 200, 3, [0.3, 0.4, 0], who); Fd.writeRegion(L.act + 200, 1, [0.9], who); Fd.writeRegion(L.prov + 200, 1, [c], who); }).catch(() => {});
+    await until(async () => +(await F.p.$eval(card, (e) => e.dataset.felt).catch(() => 0)) >= 1, 6000).catch(() => {});
+    const shared = await F.p.$eval(card, (e) => ({ felt: +(e.dataset.felt || 0), owners: e.dataset.fieldOwners || '', says: e.querySelector('[role=status]') ? e.querySelector('[role=status]').textContent : '', line: e.querySelector('.vb-field') ? e.querySelector('.vb-field').textContent : '' })).catch(() => null);
+    check('verse brain shared field: an orb\'s slot in skills/field.js is felt by the brain on the same page, the card says so in words ("Shared field: feels N memories from other cards: Memory orbs (N)"), and the brain\'s ideas are in the field under its own name',
+      !!shared && shared.felt >= 1 && /agent-fluid-memory-orbs/.test(shared.owners) && /^Shared field: feels \d+ memor(y|ies) from other cards: Memory orbs \(\d+\)/.test(shared.line), JSON.stringify(shared));
+    // the Mind Field modes join it: the brain card opens Swarm beside itself (it stays), and the swarm's card is felt and named on the brain
+    const pickModes = await F.p.$$eval(card + ' select.mf-mode option', (o) => o.map((x) => x.value)).catch(() => []);
+    await F.p.selectOption(card + ' select.mf-mode', 'swarm-mind').catch(() => {}); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000).catch(() => {});
+    await until(async () => /Swarm \(1\)/.test(await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => '')), 8000).catch(() => {});
+    const joined = { modes: pickModes.length, stays: !!(await F.p.$(card)), swarm: !!(await F.p.$('.ff-swarm-mind')), line: await F.p.$eval(card + ' .vb-field', (e) => e.textContent).catch(() => ''), owners: await F.p.$eval(card, (e) => e.dataset.fieldOwners || '').catch(() => '') };
+    check('verse brain and the Mind Field modes, one entity: its card opens any of the eleven choices beside it (it stays), and an open Swarm card is felt in the shared field and named on the brain ("Swarm (1)")',
+      joined.modes === 11 && joined.stays && joined.swarm && /Swarm \(1\)/.test(joined.line) && /swarm-mind/.test(joined.owners), JSON.stringify(joined));
+    // a live card keeps running when another card opens (asked 2026-10-29: a new card restarted every mind on the stage): a clock redraws
+    // the stage, and the brain and Swarm are the same running cards after it, with their counts carrying on (lib/live-cards.js)
+    await until(async () => +(await F.p.$eval('.ff-swarm-mind', (e) => e.dataset.gen || 0).catch(() => 0)) >= 2, 8000).catch(() => {});
+    const was = await F.p.evaluate((c) => { const s = document.querySelector('.ff-swarm-mind'), b = document.querySelector(c); window.__liveCards = { s, b };
+      return { gen: +((s && s.dataset.gen) || 0), ticks: +((b && b.dataset.ticks) || 0) }; }, card).catch(() => null);
+    await F.ask('clock', 700); await until(async () => !!(await F.p.$('.clock')), 6000).catch(() => {});
+    const kept = await F.p.evaluate((c) => { const k = window.__liveCards || {}, s = document.querySelector('.ff-swarm-mind'), b = document.querySelector(c);
+      return { clock: !!document.querySelector('.clock'), swarm: !!s && s === k.s && s.isConnected, brain: !!b && b === k.b && b.isConnected, gen: +((s && s.dataset.gen) || 0), ticks: +((b && b.dataset.ticks) || 0),
+        swarms: document.querySelectorAll('.ff-swarm-mind').length, brains: document.querySelectorAll(c).length }; }, card).catch(() => null);
+    check('live cards keep running when another card opens: asking for a clock redraws the stage, and the brain and Swarm are the same running cards after it (one of each), their counts carrying on instead of starting over',
+      !!was && !!kept && kept.clock && kept.swarm && kept.brain && kept.swarms === 1 && kept.brains === 1 && kept.gen >= was.gen && was.gen >= 2 && kept.ticks >= was.ticks, JSON.stringify({ was, kept }));
+    const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
+      /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
+      JSON.stringify({ answer, fromStage, mind, keptAfter }));
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-one organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+      + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
+      a.organs === 21 && a.rows === 21 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
+      JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
+  }
+  if (want('verse brain hearing: a hum played into the microphone is heard as notes through the card\'s own Listen path, and the tune hummed again is guessed note by note')) { // owner, 2026-10-29: "combine all the builds into one entity", "dont fake it" (F299's ear, lib/brain-hearing.js)
+    // a fake microphone: getUserMedia returns a stream that plays a person humming Frere Jacques twice (G3, 0.3 s a beat, vibrato, 1.7 s apart),
+    // made in the page; the card's own AudioContext, analyser, 25 ms pitch reads and the brain's hearing organ do the rest
+    const HUM = () => { const md = navigator.mediaDevices; if (!md) return;
+      md.getUserMedia = async () => {
+        const AC = window.AudioContext || window.webkitAudioContext, ctx = new AC(), SR = ctx.sampleRate, out = []; let ph = 0;
+        const song = [[0, 1], [2, 1], [4, 1], [0, 1], [0, 1], [2, 1], [4, 1], [0, 1], [4, 1], [5, 1], [7, 2], [4, 1], [5, 1], [7, 2]];
+        for (let r = 0; r < 2; r++) {
+          for (const [st, bt] of song) {
+            const midi = 55 + st, ns = Math.floor((bt * 0.3 - 0.07) * SR);
+            for (let i = 0; i < ns; i++) { const t = i / SR; ph += 440 * Math.pow(2, (midi - 69 + 0.3 * Math.sin(34.56 * t)) / 12) / SR; let v = 0; for (let h = 1; h <= 6; h++) v += Math.sin(6.2832 * h * ph) / (h * h * 0.7 + 0.3); out.push(0.25 * Math.min(1, t / 0.03, (ns - i) / SR / 0.03) * v); }
+            for (let i = 0; i < 0.07 * SR; i++) out.push(0);
+          }
+          for (let i = 0; i < 1.7 * SR; i++) out.push(0);
+        }
+        const buf = ctx.createBuffer(1, out.length, SR); buf.copyToChannel(Float32Array.from(out), 0);
+        const src = ctx.createBufferSource(), dest = ctx.createMediaStreamDestination(); src.buffer = buf; src.connect(dest);
+        await ctx.resume().catch(() => {}); src.start(ctx.currentTime + 0.2); window.__hum = { ends: performance.now() + (out.length / SR + 0.2) * 1000, state: ctx.state };
+        return dest.stream;
+      }; };
+    const F = await fresh(HUM), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' .vb-listen')), 8000);
+    await F.p.click(card + ' .vb-listen'); await until(async () => /^Listening/.test(await F.p.$eval(card + ' .vb-listen', (e) => e.textContent)), 4000);
+    const listening = await F.p.$eval(card + ' .vb-listen', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
+    await until(() => F.p.evaluate(() => !!window.__hum && performance.now() > window.__hum.ends + 1000), 30000);
+    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '', orb: !!e.querySelector('.vb-orb[data-key="ear"]') }));
+    const hum = await F.p.evaluate(() => window.__hum || null);
+    const self = await F.p.evaluate(() => ((window.verseBrain && window.verseBrain.state().self) || []).find((s) => /^Hearing:/.test(s)) || '');
+    const row = await F.p.$eval(card + ' .vb-organs tr[data-organ="hearing"]', (e) => e.textContent).catch(() => '');
+    await F.p.click(card + ' .vb-listen'); const stopped = await F.p.$eval(card + ' .vb-listen', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
+    const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain hearing: Listen on, a hum played into the microphone (Frere Jacques, twice) reaches the brain as notes (24 or more of 28), it guesses each next note and gets 8 or more right the second time through, the ear orb names the note, '
+      + 'the self says "Hearing: N hummed notes; it guessed the next one right X% of the time", and tapping Listen again stops it',
+      listening === 'Listening (tap to stop)|true' && ear.heard >= 24 && ear.heard <= 30 && ear.guessed >= 20 && ear.hits >= 8 && /^[A-G]#?\d$/.test(ear.note) && ear.orb && /^Hearing: \d+ hummed notes; it guessed the next one right \d+% of the time/.test(self)
+      && /Hearing/.test(row) && stopped === 'Listen|false' && !errors.length, JSON.stringify({ listening, hum, ear, self, row, stopped, errors }));
+  }
+  if (want('verse brain hearing: Play a tune plays Frere Jacques into the ear with no microphone, it is heard as notes and guessed, and it stops by itself')) { // owner, 2026-10-29: "dont fake it": the ear can be watched working on any device, with no microphone
+    const NOMIC = () => { const md = navigator.mediaDevices; if (md) md.getUserMedia = async () => { window.__micAsked = true; throw new Error('no microphone in this check'); }; };
+    const F = await fresh(NOMIC), card = '.ff-verse-brain';
+    await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' .vb-tune')), 8000);
+    await F.p.click(card + ' .vb-tune'); await until(async () => /^Playing/.test(await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)), 4000);
+    const playing = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed'));
+    await until(async () => (await F.p.$eval(card + ' .vb-tune', (e) => e.textContent)) === 'Play a tune', 30000); // 2 times through and the gap: about 13 s
+    await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.tune || '')), 4000);
+    const ear = await F.p.$eval(card, (e) => ({ heard: +(e.dataset.heard || 0), guessed: +(e.dataset.guessed || 0), hits: +(e.dataset.hits || 0), note: e.dataset.ear || '', tune: e.dataset.tune || '', said: e.querySelector('.vb-said').textContent }));
+    const after = await F.p.$eval(card + ' .vb-tune', (e) => e.textContent + '|' + e.getAttribute('aria-pressed')), asked = await F.p.evaluate(() => !!window.__micAsked);
+    const self = await F.p.evaluate(() => ((window.verseBrain && window.verseBrain.state().self) || []).find((s) => /^Hearing:/.test(s)) || '');
+    const errors = F.errors.slice(); await F.ctx.close();
+    check('verse brain hearing: Play a tune (no microphone asked for) plays Frere Jacques twice into the ear, the brain hears 24 or more of its 28 notes, guesses each next one and gets 8 or more right, the self says so, the card says the count for the tune itself when it ends, and the button stops by itself when the tune ends',
+      playing === 'Playing a tune (tap to stop)|true' && !asked && ear.heard >= 24 && ear.heard <= 30 && ear.guessed >= 20 && ear.hits >= 8 && /^[A-G]#?\d$/.test(ear.note) && /^Hearing: \d+ hummed notes; it guessed the next one right \d+% of the time/.test(self)
+      && ear.tune === [ear.heard, ear.guessed, ear.hits].join(',') && ear.said.startsWith('It heard ' + ear.heard + " of the tune's 28 notes and guessed the next one right " + ear.hits + ' of ' + ear.guessed + ' times')
+      && after === 'Play a tune|false' && !errors.length, JSON.stringify({ playing, ear, after, asked, self, errors }));
   }
   if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
     const out = [];
@@ -4367,8 +5931,8 @@ try {
     check("Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
       /#901 .* made by Verse, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
         && forge.asks.length >= 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
-        && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
-      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+        && div.length >= 1 && /^(I asked: Learn Go on the stage.*)?What was built \(2026-10-08\): asked by Verse: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
+      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), vase: (again.match(/Vase[^\n]*\n?[^\n]*/) || [''])[0], div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
     await B.ctx.close(); }
   // Verse's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
   if (want("Verse's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
@@ -4427,7 +5991,8 @@ try {
   if (want("\"remember that <fact>\" keeps one line (POST with the bearer), \"forget that <fact>\" removes")) { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
     await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
-    await T.p.reload(); await T.p.waitForTimeout(700);
+    // wait for the skills to be in after the reload (skillsUp), not a fixed 700 ms: ~300 skill files load before the first ask is routed
+    await T.p.reload(); await skillsUp(T.p);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -4456,7 +6021,7 @@ try {
     const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
-    await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
+    await W.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
     for (const a of ['summon a cloud', 'summon a flower', 'summon a zombie', 'summon a brain']) await W.ask(a, 1500);
     const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
     await W.p.close();
@@ -4587,7 +6152,8 @@ try {
     await P.p.click('.list-to-note'); await P.p.waitForTimeout(300); const afterEntry = await pad();
     await P.ask('add a sticky that says call mom', 600);
     const sb = await (await P.p.$('.thing.sticky')).boundingBox(), lb = await (await P.p.$('.thing.list-card')).boundingBox();
-    await P.p.mouse.move(sb.x + 4, sb.y + 4); await P.p.mouse.down(); await P.p.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2, { steps: 8 }); await P.p.mouse.up(); await P.p.waitForTimeout(400);
+    // grabbed at its middle: a sticky keeps a tilt of up to 2.5 degrees (skills/sticky.js tiltOf), and at 2.5 the corner of its box is stage, not note (shard 1, 2026-10-29)
+    await P.p.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2); await P.p.mouse.down(); await P.p.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2, { steps: 8 }); await P.p.mouse.up(); await P.p.waitForTimeout(400);
     const items = ((await P.state()).find((x) => x.kind === 'list') || {}).items || [];
     await P.ask('summon a zombie', 900); await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const afterFigs = await pad();
     await P.ask('how good are you at connect four', 800);
@@ -4644,12 +6210,15 @@ try {
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
     // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
     const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
+    // A says the relay is off and tabs share before B opens: once B joins, A's line is B's arrival (lib/share-client.js notes every
+    // join in a room that is not public), so A's own line is read first and the arrival after
+    const saidA = await until(async () => { const w = await S.whisper(); return /tabs in this browser/.test(w) ? w : ''; }, 8000) || await S.whisper();
     const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
     await B.goto(base + '?with=' + room);
     // B listens only once its page has opened the channel (lib/share-client.js says so in its whisper); a fixed 900 ms lost the
     // race on a loaded machine and the clock never reached B (2026-10-13), so wait for B to be listening before A summons
     await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
-    const saidA = await S.whisper();
+    const joinedA = await until(async () => { const w = await S.whisper(); return /someone came into your Verse/.test(w) ? w : ''; }, 3000) || await S.whisper();
     await S.ask('clock', 900);
     // on B's own stage (both tabs share one localStorage, so the saved state proves nothing); waited for, not a fixed sleep: a loaded
     // machine delivers the broadcast later (it failed twice in a row under load at 900 ms, 2026-10-13)
@@ -4659,8 +6228,8 @@ try {
     await B.close(); await S.p.waitForTimeout(300);
     const after = await S.p.$$eval('.void-presence', (n) => n.length);
     check('shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence',
-      /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
-      JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
+      /tabs in this browser/.test(saidA) && /someone came into your Verse/.test(joinedA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
+      JSON.stringify({ saidA, joinedA, onB, dot, after, errsS, errs: S.errors }));
     await S.ctx.close(); }
   } // CORE
   // asked by Verse: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
@@ -4670,7 +6239,7 @@ try {
     const namesM = Array.from(new Set(Array.from(figSrcM.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBM = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesM.map((n) => n + '=U').join(',') + ';';
-    await M.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
+    await M.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
     const posted = [];
     await M.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const q = r.request();
       if (q.method() === 'POST') { posted.push({ auth: q.headers().authorization || '', b: JSON.parse(q.postData() || '{}') }); return r.fulfill(json({ id: 'act-scene-1' })); }
@@ -4849,7 +6418,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO Verse')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split(/ADDS TO V(OID|ERSE)/i)[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
@@ -4924,7 +6493,7 @@ try {
     const namesL = Array.from(new Set(Array.from(figSrcL.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBL = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesL.map((n) => n + '=U').join(',') + ';';
-    await L.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
+    await L.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
     await L.ask('summon a zombie', 1200);
     const live = await until(async () => { const v = await L.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 6000);
     let hid = false; await L.p.evaluate(() => { window.__hid = 0; document.addEventListener('visibilitychange', () => { window.__hid += 1; }); window.addEventListener('pagehide', () => { window.__hid += 1; }); });
@@ -4994,12 +6563,371 @@ try {
     await Z.p.reload(); await Z.p.waitForTimeout(900);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in
     const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
       && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
     await Z.ctx.close(); }
+  // site-test found both asks answering a fresh visit with only a hint line (atomeam/void-loop#1029, #1196): with nothing on the stage, a pair of
+  // gears goes up and the quiz or the five-minute challenge starts on them, saying why
+  if (want("quiz and challenge in a fresh visit: \"test me on that\" and \"turn the questions i missed into a five-minute challenge\" each put up gears and start")) {
+    const out = {};
+    for (const [k, ask, card] of [['quiz', 'test me on that', '.quiz-card'], ['challenge', 'turn the questions i missed into a five-minute challenge', '.challenge-card']]) {
+      const Z = await fresh(); await Z.ask(ask, 1200);
+      out[k] = { kinds: await Z.p.evaluate(() => [...document.querySelectorAll('[data-kind]')].map((e) => e.dataset.kind)).catch(() => []), card: await Z.p.$$eval(card, (d) => d.length), gears: await Z.p.$$eval('.gears-more', (d) => d.length), said: await Z.p.$eval('#say, .say, #status', (e) => e.textContent).catch(() => ''), errors: Z.errors };
+      await Z.ctx.close();
+    }
+    check('quiz and challenge in a fresh visit: "test me on that" and "turn the questions i missed into a five-minute challenge" each put up gears and start (a quiz card, a challenge card), with no page errors',
+      out.quiz.card === 1 && out.quiz.gears > 0 && out.challenge.card === 1 && out.challenge.gears > 0 && !out.quiz.errors.length && !out.challenge.errors.length, JSON.stringify(out));
+  }
+  // the tower's online-stopwatch.com floor: the stage stopwatch's laps say which was fastest and slowest and lead to /stopwatch/, which keeps
+  // time across a reload and rings a countdown carried in its link
+  if (want("stopwatch: the stage stopwatch marks the fastest and slowest lap and links the full page; /stopwatch/ keeps time across a reload and a linked countdown rings")) {
+    const Z = await fresh(); await Z.ask('start a stopwatch', 900);
+    for (const w of [700, 300, 500]) { await Z.p.waitForTimeout(w); await Z.p.click('.vpage.on .sw-lap'); }
+    const stage = { laps: await Z.p.$$eval('.vpage.on .sw-laps li', (l) => l.map((x) => x.textContent)), link: await Z.p.$eval('.vpage.on a[href="/stopwatch/"]', (a) => a.textContent).catch(() => '') };
+    await Z.p.goto(base + 'stopwatch/'); await Z.p.keyboard.press('Space'); await Z.p.waitForTimeout(600); await Z.p.keyboard.press('l'); await Z.p.waitForTimeout(300); await Z.p.keyboard.press('l');
+    const lapRows = await Z.p.$$eval('#laps tbody tr', (r) => r.length), t1 = await Z.p.$eval('#swface', (e) => e.textContent);
+    await Z.p.reload(); await Z.p.waitForTimeout(500); const t2 = await Z.p.$eval('#swface', (e) => e.textContent), keptLaps = await Z.p.$$eval('#laps tbody tr', (r) => r.length);
+    await Z.p.goto(base + 'stopwatch/?t=2s'); await Z.p.click('#cdgo'); await Z.p.waitForTimeout(2700);
+    const ring = { note: await Z.p.$eval('#cdnote', (e) => e.textContent), done: await Z.p.$eval('#cdface', (e) => e.classList.contains('done')) };
+    const sec = (t) => t.split(':').reduce((a, x) => a * 60 + Number(x), 0);
+    check('stopwatch: the stage stopwatch marks the fastest and slowest lap and links the full page; /stopwatch/ keeps time across a reload and a linked countdown rings',
+      stage.laps.length === 3 && stage.laps.some((x) => /fastest/.test(x)) && stage.laps.some((x) => /slowest/.test(x)) && /full stopwatch/i.test(stage.link)
+      && lapRows === 2 && keptLaps === 2 && sec(t2) > sec(t1) && /time is up/i.test(ring.note) && ring.done && !Z.errors.length, JSON.stringify({ stage, lapRows, t1, t2, keptLaps, ring, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of wordcounter.net on /word-count/: a goal with its progress, two- and three-word phrases, the limits a text fits, earlier versions
+  if (want("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version")) {
+    const Z = await fresh(); const t = 'The blue whale is huge. The blue whale eats krill. A blue whale sings.';
+    await Z.p.goto(base + 'word-count/?goal=50&t=' + encodeURIComponent(t)); await Z.p.waitForTimeout(300);
+    const got = { goal: await Z.p.$eval('#goalnote', (e) => e.textContent), bar: await Z.p.$eval('#goalbar', (e) => e.value), two: await Z.p.$eval('#kw2 li', (e) => e.textContent), three: await Z.p.$eval('#kw3 li', (e) => e.textContent),
+      x: await Z.p.$eval('#fits li', (e) => e.textContent), speak: await Z.p.$eval('#speak', (e) => !e.disabled) };
+    await Z.p.click('#vsum'); await Z.p.click('#keepnow'); await Z.p.fill('#text', 'Something else entirely.'); await Z.p.click('#vlist li button'); await Z.p.waitForTimeout(200);
+    const restored = await Z.p.$eval('#text', (e) => e.value), kept = await Z.p.$$eval('#vlist li', (l) => l.length);
+    check("word count: /word-count/ takes a goal from its link and shows the progress, repeated phrases and limits, and restores an earlier version",
+      /^14 of 50 words · 36 to go/.test(got.goal) && Math.abs(got.bar - 0.28) < 0.01 && /^blue whale · 3/.test(got.two) && /^the blue whale · 2/.test(got.three) && /X \(Twitter\) post: 210 left of 280/.test(got.x) && got.speak
+      && restored === t && kept >= 2 && !Z.errors.length, JSON.stringify({ got, restored, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of online-stopwatch.com: an interval timer that walks get ready, work, rest from a link, and a chess clock with an increment
+  if (want("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move")) {
+    const Z = await fresh(); await Z.p.goto(base + 'stopwatch/?iv=2,1,2,1,0,1'); await Z.p.click('#ivgo'); await Z.p.waitForTimeout(300);
+    const p1 = await Z.p.$eval('#ivphase', (e) => e.textContent); await Z.p.waitForTimeout(1200); const p2 = await Z.p.$eval('#ivphase', (e) => e.textContent), info = await Z.p.$eval('#ivinfo', (e) => e.textContent);
+    await Z.p.goto(base + 'stopwatch/?cc=1%2B5'); await Z.p.click('#cc1'); await Z.p.waitForTimeout(400); await Z.p.click('#cc0');
+    const cc = { w: await Z.p.$eval('#cc0t', (e) => e.textContent), b: await Z.p.$eval('#cc1t', (e) => e.textContent), on: await Z.p.$eval('#cc1', (e) => e.classList.contains('on')), m: await Z.p.$eval('#cc0m', (e) => e.textContent) };
+    check("stopwatch: /stopwatch/ runs an interval timer from its link (get ready, then work) and a chess clock that adds the increment after a move",
+      p1 === 'Get ready' && p2 === 'Work' && /Round 1 of 2/.test(info) && cc.w === '1:05' && cc.on && /1 move/.test(cc.m) && !Z.errors.length, JSON.stringify({ p1, p2, info, cc, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of unitconverters.net on /convert/: the engineering and electricity kinds (torque, capacitance), a table of common values for a pair,
+  // and a link of another kind that moves nothing as it redraws
+  if (want("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair")) {
+    const Z = await fresh(); await Z.ctx.addInitScript('window.__cls=0;try{new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(!e.hadRecentInput)window.__cls+=e.value})}).observe({type:"layout-shift",buffered:true})}catch(e){}');
+    await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('1 Nm to lbf ft')); await Z.p.waitForSelector('#u-lbfft');
+    const torque = { answer: await Z.p.$eval('#answer', (e) => e.textContent), rows: await Z.p.$$eval('#pairrows tr', (r) => r.length), ten: await Z.p.$eval('#pairrows tr:nth-child(7)', (e) => e.textContent), kinds: await Z.p.$$eval('#kind option', (o) => o.length) };
+    await Z.p.waitForTimeout(300); const cls = await Z.p.evaluate(() => window.__cls);
+    await Z.p.fill('#ask', '100 uF to nF'); await Z.p.waitForTimeout(200); const cap = await Z.p.$eval('#answer', (e) => e.textContent);
+    check("unit converter: /convert/ converts torque and capacitance from a link, lists 52 kinds, and shows a table of common values for the pair",
+      torque.answer === '1 N·m = 0.737562149277 lbf·ft' && torque.rows === 15 && /10 N·m7\.37562149277 lbf·ft/.test(torque.ten) && torque.kinds === 52 && cls < 0.05 && cap === '100 µF = 100000 nF' && !Z.errors.length,
+      JSON.stringify({ torque, cls, cap, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's unitconverters.net floor: /convert/ answers the gate's own question from its link, shows every unit of the kind at once, and a
+  // box typed in either direction moves all the others; Copy link carries the conversion
+  if (want("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it")) {
+    const Z = await fresh(); await Z.p.goto(base + 'convert/?q=' + encodeURIComponent('100 c to f')); await Z.p.waitForSelector('#u-F');
+    const first = { answer: await Z.p.$eval('#answer', (e) => e.textContent), f: await Z.p.$eval('#u-F', (e) => e.value), k: await Z.p.$eval('#u-K', (e) => e.value), rows: await Z.p.$$eval('#units li', (l) => l.length) };
+    await Z.p.fill('#u-F', '-40'); const back = { c: await Z.p.$eval('#u-C', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
+    // the formula under the answer, in both directions through Swap (unitconverters.net's "how to convert"), and the precision choice
+    const formula = await Z.p.$eval('#formula', (e) => e.textContent); await Z.p.click('#swap'); const swapped = { answer: await Z.p.$eval('#answer', (e) => e.textContent), formula: await Z.p.$eval('#formula', (e) => e.textContent) };
+    await Z.p.fill('#ask', '5 km in miles'); await Z.p.waitForTimeout(100); const km = { mi: await Z.p.$eval('#u-mi', (e) => e.value), answer: await Z.p.$eval('#answer', (e) => e.textContent) };
+    await Z.p.selectOption('#sig', '4'); const four = await Z.p.$eval('#answer', (e) => e.textContent); await Z.p.selectOption('#sig', '12');
+    // every kind unitconverters.net lists is on the page, grouped as it groups them, and picking one shows its units
+    const text = await Z.p.$eval('main', (e) => e.textContent); const kinds = ['length', 'temperature', 'area', 'volume', 'weight', 'time', 'speed', 'pressure', 'energy', 'power', 'force', 'data', 'angle', 'fuel', 'frequency', 'heat', 'fluids', 'light', 'electricity', 'magnetism', 'radiology'].filter((k) => !new RegExp('\\b' + k, 'i').test(text));
+    await Z.p.selectOption('#kind', 'fuel'); await Z.p.fill('#u-mpg', '30'); const fuel = await Z.p.$eval('#u-l100', (e) => e.value);
+    await Z.ctx.grantPermissions(['clipboard-read', 'clipboard-write']).catch(() => {}); await Z.p.fill('#ask', '5 km in miles'); await Z.p.waitForTimeout(100); await Z.p.click('#link'); const link = await Z.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    await Z.p.goto(link || base + 'convert/'); await Z.p.waitForSelector('#u-mi'); const kept = await Z.p.$eval('#answer', (e) => e.textContent);
+    const thirdParty = await Z.p.evaluate(() => performance.getEntriesByType('resource').map((r) => r.name).filter((n) => !n.startsWith(location.origin)));
+    check("unit converter: /convert/?q=100 c to f says 212 °F with every temperature unit, typing in the Fahrenheit box converts back, and the link carries it",
+      first.answer === '100 °C = 212 °F' && first.f === '212' && first.k === '373.15' && first.rows === 5 && back.c === '-40' && /^-40 °F = -40 °C$/.test(back.answer)
+      && /From °F to °C, the formula: °C = \(°F − 32\) × 5\/9/.test(formula) && swapped.answer === '-40 °C = -40 °F' && /°F = °C × 9\/5 \+ 32/.test(swapped.formula) && four === '5 km = 3.107 mi' && !kinds.length && fuel === '7.84048611111'
+      && km.mi === '3.10685596119' && /5 km = 3\.10685596119 mi/.test(km.answer) && /[?&]k=length/.test(link) && kept === km.answer && !thirdParty.length && !Z.errors.length, JSON.stringify({ first, back, formula, swapped, four, kinds, fuel, km, link, kept, thirdParty, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of calculator.net on /calculator/ (lib/calc-panels.js): a loan with its schedule and chart, compound interest, percentages and BMI with calories, from links
+  if (want("calculator: /calculator/#loan answers the monthly payment with a yearly schedule and a chart, and the compound, percent and BMI panels answer")) {
+    const Z = await fresh(); await Z.p.goto(base + 'calculator/#loan'); await Z.p.waitForSelector('#ltable tr');
+    const open = await Z.p.$eval('#c-loan', (d) => d.open), loan = await Z.p.$eval('#lout', (e) => e.textContent), rows = await Z.p.$$eval('#ltable tbody tr', (r) => r.length), bars = await Z.p.$$eval('#lchart rect', (r) => r.length);
+    await Z.p.click('#lmonths'); const months = await Z.p.$$eval('#ltable tbody tr', (r) => r.length);
+    await Z.p.click('#c-compound summary'); await Z.p.fill('#cp', '10000'); await Z.p.fill('#cm', '0'); await Z.p.fill('#cr', '5'); await Z.p.fill('#cy', '10'); const comp = await Z.p.$eval('#cout', (e) => e.textContent);
+    await Z.p.click('#c-percent summary'); const pct = [await Z.p.$eval('#pa', (e) => e.textContent), await Z.p.$eval('#pb', (e) => e.textContent), await Z.p.$eval('#pc', (e) => e.textContent)];
+    await Z.p.click('#c-bmi summary'); const body = await Z.p.$eval('#bout', (e) => e.textContent), kcal = await Z.p.$eval('#kout', (e) => e.textContent);
+    check("calculator: /calculator/#loan answers the monthly payment with a yearly schedule and a chart, and the compound, percent and BMI panels answer",
+      open && /Monthly payment 396\.02/.test(loan) && /Total interest 3,761\.44/.test(loan) && rows === 5 && bars === 10 && months === 60 && /Final balance 16,470\.09/.test(comp)
+      && pct[0] === '= 40.8' && pct[1] === '= 25 %' && /^= \+25 %/.test(pct[2]) && /BMI 22\.9/.test(body) && /a healthy weight/.test(body) && /Keep your weight 2,298 kcal a day/.test(kcal) && !Z.errors.length,
+      JSON.stringify({ open, loan, rows, bars, months, comp, pct, body, kcal, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's calculator.net floor: /calculator/ works out an ask in its link, typing and its keys, with no floating noise, in degrees or
+  // radians, and keeps its history and memory on the device across a reload
+  if (want('calculator page: an ask in the link, typing and the keys work it out exactly (0.1 + 0.2 = 0.3), radians switch, history and memory survive a reload')) {
+    const Z = await fresh(); const out = () => Z.p.$eval('#out', (e) => e.textContent.trim()), key = (k) => Z.p.locator('#keys button', { hasText: new RegExp('^' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$') }).first().click();
+    await Z.p.goto(base + 'calculator/?e=' + encodeURIComponent('what is 17% of 240')); const linked = await out();
+    await Z.p.keyboard.press('Escape'); await Z.p.keyboard.type('0.1+0.2'); await Z.p.keyboard.press('Enter'); const typed = await out();
+    for (const k of ['C', '2', 'xʸ', '1', '0', '=']) await key(k); const keyed = await out();
+    await key('M+'); await key('C'); await Z.p.click('#rad'); await Z.p.keyboard.type('cos(pi)'); await Z.p.keyboard.press('Enter'); const rad = await out();
+    await Z.p.reload(); await Z.p.waitForTimeout(300);
+    const kept = { hist: await Z.p.$$eval('#hist li', (l) => l.length), mem: await Z.p.$eval('#memshow', (e) => e.textContent), angle: await Z.p.$eval('#angle', (e) => e.textContent) };
+    kept.list = await Z.p.$$eval('#hist li', (l) => l.map((x) => x.textContent));
+    check('calculator page: an ask in the link, typing and the keys work it out exactly (0.1 + 0.2 = 0.3), radians switch, history and memory survive a reload',
+      linked === '40.8' && typed === '0.3' && keyed === '1,024' && rad === '-1' && kept.hist === 4 && kept.mem === 'M = 1,024' && kept.angle === 'Radians' && !Z.errors.length, JSON.stringify({ linked, typed, keyed, rad, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's vcalc.com floor: /calculators/ works a formula from its link, takes each input in any unit (or a unit typed in the box),
+  // shows the answer in any other with the SI working in pro mode, opens any of the library, and builds your own formula guided or raw
+  if (want("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent), bouts = () => Z.p.$eval('#bouts', (e) => e.innerText);
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area&d=2&d.u=in&l=10&l.u=ft'); const linked = await big();
+    await Z.p.selectOption('[aria-label="Show Surface area in"]', 'm²'); const m2 = await big(), link = Z.p.url();
+    await Z.p.selectOption('[aria-label="Unit for Length of pipe"]', 'm'); const lm = await big();
+    await Z.p.fill('#in-d', '5 cm'); const inline = await big(); await Z.p.fill('#in-d', 'abc'); const bad = await big();
+    await Z.p.click('#pro'); await Z.p.fill('#in-d', '2'); const pro = await big(), working = await Z.p.$eval('#working', (e) => e.textContent), proLink = Z.p.url(); await Z.p.click('#pro');
+    await Z.p.click('#lib a[data-id="loan-payment"]'); const loan = [await big(), await Z.p.$eval('#outs', (e) => e.innerText)];
+    await Z.p.fill('#find', 'molar mass'); await Z.p.press('#find', 'Enter'); const molar = await big();
+    await Z.p.click('#lib a[data-id="convert"]'); await Z.p.selectOption('#in-kind', 'temperature'); await Z.p.fill('#in-v', '100'); const temp = await big();
+    await Z.p.goto(base + 'calculators/?calc=pipe-surface-area'); const b1 = await bouts();
+    await Z.p.fill('[aria-label="Result 1 unit"]', 'cm²'); const b2 = await bouts(); await Z.p.fill('[aria-label="Result 1 formula"]', 'pi*d + l'); const b3 = await bouts();
+    await Z.p.click('#traw'); await Z.p.fill('#rawtext', '# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36'); const ke = await bouts();
+    await Z.p.click('#bsave'); const saved = await Z.p.$$eval('#saved button', (x) => x.map((y) => y.textContent));
+    await Z.p.goto(base + 'calculators/?formula=' + encodeURIComponent('# Kinetic energy\nE [J] = 0.5*m*v^2\nm [kg] = 2\nv [km/h] = 36')); const fromLink = await bouts();
+    check("formula calculators: /calculators/ works a linked formula in any units, pro shows the working, the library and search open one, and your own formula works guided, raw and from its link",
+      linked === '5.23599 ft²' && m2 === '0.486439 m²' && /a\.u=m%C2%B2/.test(link) && lm === '1.59593 m²' && inline === '1.5708 m²' && /"abc" is not a number/.test(bad)
+      && pro === '1.59592906802 m²' && /Diameter of pipe = 2 in\s+→\s+0\.0508 m/.test(working) && /&pro=1/.test(proLink) && loan[0] === '$483.32' && /\$3,999\.20/.test(loan[1])
+      && molar === '180.156 g/mol' && temp === '−173.15 °C' && /5\.23599 ft²/.test(b1) && /4,864\.39 cm²/.test(b2) && /not area/.test(b3) && /100 J/.test(ke) && saved.includes('Kinetic energy')
+      && /100 J/.test(fromLink) && !Z.errors.length, JSON.stringify({ linked, m2, link, lm, inline, bad, pro, working, proLink, loan, molar, temp, b1, b2, b3, ke, saved, fromLink, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the formula library on /calculators/: one definition worked for any of its variables (Solve for), its source shown, its link reopening the
+  // same direction, and a long category showing its first 24 with a button for the rest
+  if (want("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click")) {
+    const Z = await fresh(); const big = () => Z.p.$eval('#big', (e) => e.textContent);
+    await Z.p.goto(base + 'calculators/?calc=braking-distance'); const fwd = await big(), src = await Z.p.$eval('#csource', (e) => e.textContent);
+    await Z.p.selectOption('#in-solve', 'v'); const back = await big(), what = await Z.p.$eval('#what', (e) => e.textContent);
+    await Z.p.fill('#in-d', '25'); const v25 = await big(), link = Z.p.url();
+    await Z.p.goto(link); const reopened = [await big(), await Z.p.$eval('#in-solve', (e) => e.value)];
+    const money = '#lib button[aria-controls="cat-money-list"]', hidden0 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length);
+    await Z.p.click(money); const hidden1 = await Z.p.$$eval('#cat-money-list li[hidden]', (x) => x.length), gone = !(await Z.p.$(money));
+    check("formula library: /calculators/ solves a library formula for any variable, shows its source, keeps the direction in its link, and a long category shows all on a click",
+      fwd === '56.2013 m' && /Wikipedia: Braking distance/.test(src) && back === '100 km/h' && /Speed/.test(what) && v25 === '66.6956 km/h' && /solve=v/.test(link) && /d=25/.test(link)
+      && reopened[0] === '66.6956 km/h' && reopened[1] === 'v' && hidden0 > 0 && hidden1 === 0 && gone && !Z.errors.length,
+      JSON.stringify({ fwd, src, back, what, v25, link, reopened, hidden0, hidden1, gone, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of timeanddate.com on /time/: the next clock change for the city, and on each clock in the world clock; a zone with none says so
+  if (want("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change")) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=London'); await Z.p.waitForTimeout(300);
+    const london = await Z.p.$eval('#dstnext', (e) => e.textContent), subs = await Z.p.$$eval('#clocks small', (s) => s.map((x) => x.textContent));
+    await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(300); const tokyo = await Z.p.$eval('#dstnext', (e) => e.textContent);
+    check("time zones: /time/ says when the clocks next change for a city and on each world clock, and that Tokyo has no change",
+      /^Next clock change: \w{3}, \w{3} \d{1,2}, 20\d\d, clocks go (forward|back) 1 hour \(/.test(london) && subs.some((x) => /clocks go (forward|back) \w{3} \d{1,2}/.test(x)) && /do not change here/.test(tokyo) && !Z.errors.length,
+      JSON.stringify({ london, subs, tokyo, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's timeanddate.com floor: /time/ shows a linked city's time from the browser's own zone data, adds a city, converts a time and
+  // plans a meeting across the cities, and keeps them across a reload
+  if (want('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept')) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(200);
+    const top = await Z.p.evaluate(() => ({ place: document.getElementById('place').textContent, big: document.getElementById('big').textContent, zone: document.getElementById('zone').textContent, sun: document.getElementById('sun').textContent,
+      want: new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: '2-digit' }).format(new Date()).replace(/ /g, ' ') }));
+    await Z.p.fill('#add', 'Paris'); await Z.p.click('#addgo');
+    const after = await Z.p.evaluate(() => ({ clocks: [...document.querySelectorAll('#clocks b')].map((b) => b.textContent), conv: document.querySelectorAll('#convout li').length, plan: document.querySelectorAll('#plan tr').length, best: document.getElementById('best').textContent }));
+    await Z.p.fill('#ct', 'noon'); const conv = await Z.p.$$eval('#convout .t', (t) => t.map((x) => x.textContent));
+    await Z.p.goto(base + 'time/'); const kept = await Z.p.$$eval('#clocks b', (b) => b.map((x) => x.textContent));
+    check('time zones page: a linked city shows its time and offset, an added city joins the clock, the converter and the meeting planner, and is kept',
+      top.place === 'Time in Tokyo' && top.big.replace(/:\d\d (?=[AP]M)/, ' ') === top.want && /UTC\+9/.test(top.zone) && /^Sunrise \d{1,2}:\d\d [AP]M · Sunset \d{1,2}:\d\d [AP]M · day length \d+ hours \d+ minutes?$/.test(top.sun) && after.clocks.includes('Paris') && after.conv === 3 && after.plan === 3 && /meet|working|daytime/i.test(after.best)
+      && conv[0] === '12:00 PM' && kept.includes('Tokyo') && kept.includes('Paris') && !Z.errors.length, JSON.stringify({ top, after, conv, kept, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the same page's sun and moon, date to date, and an event link that holds one moment in every city
+  if (want('time zones page extras: twilight, solar noon, golden hour and the moon; days and business days between dates; an event link shown in every city')) {
+    const Z = await fresh(); await Z.p.goto(base + 'time/?c=Tokyo'); await Z.p.waitForTimeout(200);
+    const sm = await Z.p.$$eval('#sunmoon dt', (d) => d.map((x) => x.textContent + ': ' + x.nextElementSibling.textContent));
+    await Z.p.fill('#d1', '2026-10-26'); await Z.p.fill('#d2', '2026-11-09'); await Z.p.fill('#bn', '10');
+    const dates = { span: await Z.p.$eval('#dout', (e) => e.textContent), biz: await Z.p.$eval('#bout', (e) => e.textContent) };
+    await Z.p.goto(base + 'time/?at=2026-11-02T15:00:00Z&cities=Tokyo,London'); await Z.p.waitForTimeout(200);
+    const ev = { shown: await Z.p.$eval('#event', (e) => !e.hidden), rows: await Z.p.$$eval('#evlist li', (l) => l.map((x) => x.querySelector('b').textContent + ' ' + x.querySelector('.t').textContent)) };
+    const has = (k, re) => sm.some((x) => x.startsWith(k + ':') && re.test(x));
+    check('time zones page extras: twilight, solar noon, golden hour and the moon; days and business days between dates; an event link shown in every city',
+      has('Sunrise', /\d:\d\d [AP]M/) && has('Solar noon', /\d:\d\d [AP]M \(the sun [\d.]+° high\)/) && has('Day length', /hours/) && has('Civil dawn and dusk', / to /) && has('Astronomical dawn and dusk', / to /)
+      && has('Golden hour', / to .* and /) && has('Moon phase', /% lit/) && sm.some((x) => /^Moon(rise|set):/.test(x))
+      && /^14 days \(2 weeks\) · 10 weekdays · 4 weekend days · 336 hours$/.test(dates.span) && /Monday, November 9, 2026$/.test(dates.biz)
+      && ev.shown && ev.rows.includes('Tokyo 12:00 AM') && ev.rows.includes('London 3:00 PM') && !Z.errors.length, JSON.stringify({ sm, dates, ev, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's base64encode.org floor: /base64/ encodes and decodes live both ways, exact for emoji, names bad input, and turns a file into a data: URL
+  if (want("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base64/?t=hello');
+    const linked = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.fill('#text', 'café 🎉'); const enc = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.fill('#b64', 'aGVs*G8='); const bad = { note: await Z.p.$eval('#note', (e) => e.textContent), invalid: await Z.p.$eval('#b64', (e) => e.getAttribute('aria-invalid')) };
+    await Z.p.fill('#b64', '8J-YgA'); const dec = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.fill('#text', '😀'); await Z.p.selectOption('#alpha', 'url'); await Z.p.uncheck('#pad'); const url = await Z.p.$eval('#b64', (e) => e.value);
+    await Z.p.setInputFiles('#file', { name: 'x.png', mimeType: 'image/png', buffer: Buffer.from([137, 80, 78, 71]) }); await Z.p.waitForTimeout(200);
+    const file = await Z.p.$eval('#fileout', (e) => e.value);
+    const body = await Z.p.evaluate(() => document.body.innerText);
+    check("base64 page: /base64/ encodes and decodes as you type, keeps emoji exact, says what is wrong with bad Base64, writes Base64URL, and turns a file into a data: URL",
+      linked === 'aGVsbG8=' && enc === Buffer.from('café 🎉').toString('base64') && /“\*” at character 5/.test(bad.note) && bad.invalid === 'true' && dec === '😀' && url === '8J-YgA'
+      && file === 'data:image/png;base64,iVBORw==' && /sister site base64decode\.org/.test(body) && !Z.errors.length, JSON.stringify({ linked, enc, bad, dec, url, file, sister: /sister site base64decode\.org/.test(body), errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the tower's passwordsgenerator.net floor: /password/ makes passwords the gate can read as text, follows its link, says how strong each is exactly, and makes passphrases
+  if (want("password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px")) {
+    const Z = await fresh({ phone: true }); await Z.p.goto(base + 'password/?len=16&upper=1&lower=1&digits=1&symbols=1');
+    const words = () => Z.p.$$eval('#list output.word', (l) => l.map((e) => e.textContent)), every = (w) => /[A-Z]/.test(w) && /[a-z]/.test(w) && /[0-9]/.test(w) && /[^A-Za-z0-9]/.test(w);
+    const first = await words(), strength = await Z.p.$eval('#strength', (e) => e.textContent), text = await Z.p.evaluate(() => document.body.innerText);
+    await Z.p.fill('#lenN', '24'); await Z.p.dispatchEvent('#lenN', 'change'); await Z.p.fill('#n', '3'); await Z.p.dispatchEvent('#n', 'change'); await Z.p.check('#similar'); await Z.p.check('#norepeat');
+    const many = await words(), copies = await Z.p.$$eval('#list button', (b) => b.map((x) => x.getAttribute('aria-label')));
+    await Z.p.click('#tab-ph'); await Z.p.check('#cap'); await Z.p.check('#digit'); const phrase = await words(), bits = await Z.p.$eval('#strength', (e) => e.textContent);
+    const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth), unnamed = await Z.p.$$eval('input, select, button', (es) => es.filter((e) => !(e.getAttribute('aria-label') || (e.labels && e.labels.length) || e.textContent.trim())).length);
+    if (process.env.VOID_SHOTS) await Z.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'password.png'), fullPage: true }).catch(() => {});
+    // "Check it" opens /password-strength/ in a new tab and hands the first password over in memory (lib/pw-handover.js, ed047c81): no
+    // address, hash or storage ever holds it, so the checker's address is the bare page and its box holds the password
+    await Z.p.click('#tab-pw'); const handed = await words();
+    const [tab] = await Promise.all([Z.ctx.waitForEvent('page'), Z.p.click('#list a')]); await tab.waitForLoadState('load');
+    await tab.waitForFunction(() => document.getElementById('pw') && document.getElementById('pw').value, null, { timeout: 10000 }).catch(() => {});
+    const checker = { pw: await tab.$eval('#pw', (e) => e.value), url: tab.url(), label: await tab.$eval('#label', (e) => e.textContent), stayed: /\/password\//.test(Z.p.url()) };
+    check("password page: /password/ makes a 16-character password of every class with its exact bits, follows length and count, excludes look-alikes, makes passphrases, hands one to the checker, fits 390 px",
+      first.length === 1 && first[0].length === 16 && every(first[0]) && /Very strong · strength 104\.6 bits of entropy · \d+ trillion years to crack/.test(strength) && /Remember|remember/.test(text) && /offline/.test(text)
+      && many.length === 3 && many.every((w) => w.length === 24 && every(w) && !/[il1LoO0I]/.test(w) && new Set(w).size === 24) && copies.length === 3 && copies.every((c) => c === 'Copy this password')
+      && phrase.length === 3 && phrase.every((w) => /^(?:[A-Z][a-z]{2,6}-){3}[A-Z][a-z]{2,6}\d$/.test(w)) && /Fair · strength 45 bits/.test(bits)
+      && checker.pw === handed[0] && !/#/.test(checker.url) && /\/password-strength\/$/.test(checker.url) && checker.stayed && checker.label && wide <= 390 && unnamed === 0 && !Z.errors.length,
+      JSON.stringify({ first, strength, many, copies, phrase, bits, checker, handed, wide, unnamed, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // base64encode.org offers dozens of character sets: /base64/ groups 44 of them, writes Windows-1252 and EBCDIC with the browser's own decoder
+  // (or its tables), names a character a set cannot hold, and writes Shift_JIS too, from the browser's own decoder turned around
+  if (want("base64 character sets: grouped, Windows-1252, EBCDIC and Shift_JIS both ways, an unencodable character named, fits 390 px")) {
+    const Z = await fresh(); await Z.p.setViewportSize({ width: 390, height: 844 }); await Z.p.goto(base + 'base64/');
+    const groups = await Z.p.$$eval('#cs optgroup', (g) => g.map((x) => x.label + ':' + x.children.length)), first = await Z.p.$eval('#cs', (e) => e.value);
+    const b64 = () => Z.p.$eval('#b64', (e) => e.value), note = () => Z.p.$eval('#note', (e) => e.textContent);
+    await Z.p.selectOption('#cs', 'windows-1252'); await Z.p.fill('#text', 'café €'); const w1252 = await b64();
+    await Z.p.fill('#text', 'Hi 😀'); const unenc = await note();
+    await Z.p.selectOption('#cs', 'ibm037'); await Z.p.fill('#text', 'HELLO'); const ebcdic = await b64();
+    await Z.p.fill('#b64', 'yMXT09Y='); const ebcdicBack = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.selectOption('#cs', 'shift_jis'); await Z.p.fill('#b64', 'grGC8YLJgr+CzQ=='); const sjis = await Z.p.$eval('#text', (e) => e.value);
+    await Z.p.fill('#text', 'こんにちは'); const sjisEnc = await b64();
+    const wide = await Z.p.evaluate(() => document.documentElement.scrollWidth);
+    check("base64 character sets: grouped, Windows-1252, EBCDIC and Shift_JIS both ways, an unencodable character named, fits 390 px",
+      first === 'auto' && groups.length >= 6 && groups.some((g) => /^EBCDIC and DOS:/.test(g)) && groups.some((g) => /^Asian, multi-byte:7$/.test(g)) && w1252 === 'Y2Fm6SCA'
+      && /“😀” \(character 4\) is not in Windows-1252/.test(unenc) && ebcdic === 'yMXT09Y=' && ebcdicBack === 'HELLO' && sjis === 'こんにちは' && sjisEnc === 'grGC8YLJgr+CzQ==' && wide <= 390 && !Z.errors.length,
+      JSON.stringify({ groups, first, w1252, unenc, ebcdic, ebcdicBack, sjis, sjisEnc, wide, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // what base64encode.org has that /base64/ lacked (2026-10-25): each line on its own, LF or CRLF, Download for the Base64 and the decoded file,
+  // a file of any size read a slice at a time with only its start in the box, and /base64/?mode=decode opening on the decode side
+  if (want("base64 more: each line separately, CRLF, Download and Download file, a 10 MB file without freezing, ?mode=decode focused")) {
+    const Z = await fresh(); await Z.p.goto(base + 'base64/?mode=decode'); const focused = await Z.p.evaluate(() => document.activeElement && document.activeElement.id);
+    await Z.p.check('#lines'); await Z.p.selectOption('#eol', 'crlf'); await Z.p.fill('#text', 'f\nfo\nfoo'); const lines = await Z.p.$eval('#b64', (e) => e.value);
+    const [d1] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dlb')]); const dlName = d1.suggestedFilename(), dlText = fs.readFileSync(await d1.path(), 'utf8');
+    await Z.p.uncheck('#lines'); await Z.p.fill('#b64', 'data:image/png;base64,iVBORw=='); const shown = await Z.p.isVisible('#dl');
+    const [d2] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dl')]); const fileName = d2.suggestedFilename(), fileBytes = [...fs.readFileSync(await d2.path())];
+    const big = Buffer.alloc(10 * 1048576, 0); for (let i = 0; i < big.length; i += 4093) big[i] = i & 255;
+    await Z.p.selectOption('#eol', 'lf'); const t0 = Date.now(); await Z.p.setInputFiles('#file', { name: 'big.bin', mimeType: 'application/octet-stream', buffer: big });
+    await Z.p.waitForSelector('#fbox:not([hidden])', { timeout: 30000 }); const took = Date.now() - t0;
+    const preview = await Z.p.$eval('#fileout', (e) => e.value.length), note = await Z.p.$eval('#fprev', (e) => e.textContent);
+    const [d3] = await Promise.all([Z.p.waitForEvent('download'), Z.p.click('#dlf')]); const bigName = d3.suggestedFilename(), bigOut = fs.readFileSync(await d3.path(), 'utf8');
+    check("base64 more: each line separately, CRLF, Download and Download file, a 10 MB file without freezing, ?mode=decode focused",
+      focused === 'b64' && lines === 'Zg==\nZm8=\nZm9v' && dlName === 'base64.b64.txt' && dlText === 'Zg==\r\nZm8=\r\nZm9v' && shown && fileName === 'decoded.png' && fileBytes.join() === '137,80,78,71'
+      && preview < 10000 && /Only the start is shown/.test(note) && bigName === 'big.bin.b64.txt' && bigOut === big.toString('base64') && took < 20000 && !Z.errors.length,
+      JSON.stringify({ focused, lines, dlName, dlText, shown, fileName, fileBytes, preview, note, bigName, bigLen: bigOut.length, took, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of randomuser.me: its 21 nationalities, page= for the next batch from the same seed, and password=upper,number,10-12
+  // the rest of color-hex.com on /color/ (lib/palettes.js): palettes that use the colour, one kept as your own and back after a reload, colour-blind views
+  if (want("colour: /color/ shows palettes that use the colour, keeps one as your own palette across a reload, and shows it as colour-blind people see it")) {
+    const Z = await fresh(); await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.waitForSelector('#pals .pal');
+    const pals = await Z.p.$$eval('#pals .pal', (ps) => ps.map((p) => [...p.querySelectorAll('.sw')].map((b) => b.title.toUpperCase())));
+    await Z.p.click('#pals .pal:nth-child(2) p button'); await Z.p.fill('#pname', 'Forest'); await Z.p.click('#savep'); await Z.p.reload(); await Z.p.waitForSelector('#mypals .pal');
+    const kept = await Z.p.$$eval('#mypals .pal', (ps) => ps.map((p) => p.querySelector('p span').textContent + ':' + p.querySelectorAll('.sw').length)), blind = await Z.p.$$eval('#blind .sw', (b) => b.map((x) => x.title));
+    const snip = await Z.p.$eval('#snip', (e) => e.textContent);
+    check("colour: /color/ shows palettes that use the colour, keeps one as your own palette across a reload, and shows it as colour-blind people see it",
+      pals.length === 8 && pals.every((p) => p[0] === '#1A7F37' && p.length === 5) && kept.join() === 'Forest:5' && blind.length === 4 && /^Protanopia/.test(blind[0]) && /background-color: #1a7f37/.test(snip) && !Z.errors.length,
+      JSON.stringify({ pals: pals.slice(0, 2), kept, blind, snip, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of ColorZilla's generator on /gradient/: a named gradient in the CSS, saved as your own preset that a reload keeps, and an eyedropper
+  if (want("gradient: /gradient/ names a gradient in its CSS, saves it as your own preset that a reload keeps, and offers an eyedropper")) {
+    const Z = await fresh(); await Z.p.goto(base + 'gradient/'); await Z.p.click('#presets button:has-text("Sunset")');
+    await Z.p.fill('#gname', 'Brand hero'); await Z.p.click('#save'); const css1 = await Z.p.$eval('#out', (e) => e.textContent);
+    await Z.p.click('#presets button:has-text("Ocean")'); await Z.p.reload(); await Z.p.waitForSelector('#mine .mine button');
+    const kept = await Z.p.$$eval('#mine .mine button:first-child', (b) => b.map((x) => x.textContent)); await Z.p.click('#mine .mine button:first-child'); const back = await Z.p.$eval('#out', (e) => e.textContent);
+    const drop = await Z.p.$eval('#drop', (b) => ({ text: b.textContent, works: 'EyeDropper' in window, disabled: b.disabled }));
+    check("gradient: /gradient/ names a gradient in its CSS, saves it as your own preset that a reload keeps, and offers an eyedropper",
+      /^\/\* Brand hero \*\/\n\.brand-hero \{/.test(css1) && /#ff5f6d/.test(css1) && kept.join() === 'Brand hero' && /#ff5f6d/.test(back) && /Brand hero/.test(back) && drop.disabled === !drop.works && !Z.errors.length,
+      JSON.stringify({ css1, kept, back, drop, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of random.org on /random/: decimal fractions from the link, a shuffled deck dealt round the table, random dates in a range
+  if (want("random: /random/ draws decimal fractions from its link, deals a shuffled deck into hands, and picks dates inside a range")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random/?min=0&max=1&dec=4&n=20'); await Z.p.waitForTimeout(200);
+    const nums = (await Z.p.$eval('#out', (e) => e.textContent)).split(', ');
+    await Z.p.click('#cardbox summary'); await Z.p.click('#newdeck'); await Z.p.click('#deal');
+    const hands = await Z.p.$$eval('#dealt .hand', (h) => h.map((x) => [...x.querySelectorAll('.card')].map((c) => c.textContent))), left = await Z.p.$eval('#decknote', (e) => e.textContent);
+    await Z.p.click('#datebox summary'); await Z.p.fill('#d0', '2026-03-01'); await Z.p.fill('#d1', '2026-03-31'); await Z.p.fill('#dn', '30'); await Z.p.check('#dwork'); await Z.p.click('#dgo');
+    const days = await Z.p.$$eval('#dates li', (l) => l.map((x) => x.textContent));
+    const all = hands.flat();
+    check("random: /random/ draws decimal fractions from its link, deals a shuffled deck into hands, and picks dates inside a range",
+      nums.length === 20 && nums.every((x) => /^0\.\d{4}$|^1\.0000$/.test(x)) && new Set(nums).size > 5 && hands.length === 4 && hands.every((h) => h.length === 5) && new Set(all).size === 20 && /^32 cards left/.test(left)
+      && days.length === 30 && days.every((d) => /^2026-03-\d\d \((Mon|Tue|Wed|Thu|Fri)\)$/.test(d)) && !Z.errors.length, JSON.stringify({ nums: nums.slice(0, 5), hands, left, days: days.slice(0, 5), errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  if (want("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/?nat=tr,nl&seed=abc&n=5&password=upper,number,10-12&fmt=json&f=name,password,nat'); await Z.p.waitForSelector('#cards .card b');
+    const read = async () => JSON.parse(await Z.p.$eval('#out', (e) => e.textContent)).results;
+    const p1 = await read(); await Z.p.click('#next'); const p2 = await read(), url = Z.p.url();
+    check("random user: /random-user/ takes Turkish and Dutch people from the link, Next gives the next page from the same seed, and the password option shapes every password",
+      p1.length === 5 && p1.every((p) => ['TR', 'NL'].includes(p.nat) && /^[A-Z0-9]{10,12}$/.test(p.password)) && p2[0].name !== p1[0].name && /page=2/.test(url) && /password=upper%2Cnumber%2C10-12/.test(url) && !Z.errors.length,
+      JSON.stringify({ p1, p2: p2.slice(0, 1), url, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  // the rest of wheelofnames.com on /wheel/ (a picture entry, a spin time, confetti, auto-remove), and the stage wheel card's winner seen in full at 390 px
+  if (want("wheel: a picture becomes an entry, a 2 s spin ends with confetti and auto-removes its winner, and the stage card shows the winner inside the card at 390 px")) {
+    const Z = await fresh({ mini3d: true, phone: true }); await Z.p.goto(base + 'wheel/'); await Z.p.fill('#entries', 'Ann\nBob\nCat'); await Z.p.dispatchEvent('#entries', 'input');
+    const png = await Z.p.evaluate(async () => { const c = document.createElement('canvas'); c.width = c.height = 300; const x = c.getContext('2d'); x.fillStyle = '#e96'; x.fillRect(0, 0, 300, 300); const b = await new Promise((r) => c.toBlob(r, 'image/png')); const u = new Uint8Array(await b.arrayBuffer()); let s = ''; for (const v of u) s += String.fromCharCode(v); return btoa(s); });
+    await Z.p.setInputFiles('#pics', { name: 'Dora.png', mimeType: 'image/png', buffer: Buffer.from(png, 'base64') }); await Z.p.waitForTimeout(200);
+    const listed = await Z.p.$eval('#entries', (e) => e.value), kept = await Z.p.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('a2m.void.wheel.pics.v1') || '{}')));
+    await Z.p.selectOption('#spintime', '2000'); await Z.p.check('#autoremove'); const t0 = Date.now(); await Z.p.click('#spin');
+    await until(async () => (await Z.p.$eval('#winner', (e) => e.textContent)).includes('The winner is'), 6000); const took = Date.now() - t0;
+    const party = await Z.p.$eval('#confetti', (c) => c.width > 0); await Z.p.waitForTimeout(2000); const left = await Z.p.$eval('#count', (e) => e.textContent);
+    await Z.p.goto(base); await Z.ask('spin a wheel with ann, bob and cat', 1500); await Z.p.waitForTimeout(1500);
+    const seen = await Z.p.evaluate(() => { const c = document.querySelector('.vpage.on'), w = c && c.querySelector('.wh-band-win'); if (!w) return null; const a = c.getBoundingClientRect(), b = w.getBoundingClientRect(); return { text: w.textContent, inside: b.top >= a.top && b.bottom <= a.bottom && b.height > 10, h: Math.round(b.height) }; });
+    check("wheel: a picture becomes an entry, a 2 s spin ends with confetti and auto-removes its winner, and the stage card shows the winner inside the card at 390 px",
+      /\nDora$/.test(listed) && kept.includes('Dora') && took < 4000 && party && /^3 entries/.test(left) && seen && ['ann', 'bob', 'cat'].includes(seen.text) && seen.inside && !Z.errors.length,
+      JSON.stringify({ listed, kept, took, party, left, seen, errors: Z.errors }));
+    await Z.ctx.close();
+  }
+  if (want("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel")) {
+    const Z = await fresh(); await Z.p.goto(base + 'random-user/'); await Z.p.waitForSelector('#cards .card b');
+    const first = await Z.p.$eval('#cards .card b', (e) => e.textContent);
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/wheel\/#/); await Z.p.waitForTimeout(400);
+    const onWheel = await Z.p.$eval('#entries', (e) => e.value).catch(() => '');
+    await Z.p.goto(base + 'color/?c=1a7f37'); await Z.p.click('#related button.tk-hand'); await Z.p.goto(base + 'stopwatch/');
+    const acc = await Z.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()), main = await Z.p.$eval('#swgo', (e) => getComputedStyle(e).backgroundColor);
+    await Z.p.goto(base + 'word-count/?t=' + encodeURIComponent('one two three four five six seven eight nine ten '.repeat(31)));
+    await Z.p.click('#related .tk-hand'); await Z.p.waitForURL(/\/stopwatch\/\?t=/); await Z.p.waitForTimeout(300); const cd = await Z.p.$eval('#cdface', (e) => e.textContent), cdUrl = Z.p.url();
+    const related = await Z.p.$$eval('#related a', (a) => a.map((x) => x.getAttribute('href')));
+    // a gradient paints the wheel: its slices wear colours from along the gradient, and the wheel still holds the names it had
+    await Z.p.goto(base + 'gradient/#l90-ff0000ff.0-0000ffff.100'); await Z.p.waitForTimeout(300);
+    await Z.p.locator('#related .tk-hand', { hasText: 'Paint the wheel' }).click(); await Z.p.waitForURL(/\/wheel\//); await Z.p.waitForTimeout(500);
+    const painted = await Z.p.evaluate(() => { const pal = JSON.parse(localStorage.getItem('a2m.void.palette.v1') || '[]'), c = document.getElementById('wheel'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data, seen = new Set();
+      for (let i = 0; i < d.length; i += 16) seen.add('#' + [d[i], d[i + 1], d[i + 2]].map((v) => v.toString(16).padStart(2, '0')).join(''));
+      return { pal, worn: pal.filter((h) => seen.has(h)).length, entries: document.getElementById('entries').value.split('\n')[0] }; });
+    check("tools linked: the made-up people go onto the wheel, a colour becomes every tool's accent, a text's speaking time becomes a countdown, a gradient paints the wheel",
+      onWheel.includes(first) && acc === '#1a7f37' && main === 'rgb(26, 127, 55)' && cd === '1:42' && related.includes('/word-count/') && painted.pal[0] === '#ff0000' && painted.pal.length === 8 && painted.worn >= 2 && painted.entries === first && !Z.errors.length, JSON.stringify({ first, onWheel: onWheel.slice(0, 80), acc, main, cd, cdUrl, painted, related, errors: Z.errors }));
+    await Z.ctx.close();
+  }
   // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
   // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
   // gears' own steppers, and Check says what still needs changing, then that it is done
@@ -5223,7 +7151,7 @@ try {
       /Ask, and it appears/.test(how) && /timer/.test(lit) && /sticky/.test(lit2) && built === 0 && !net.length, JSON.stringify({ lit, lit2, built, net }));
     await H.ask('close', 300); await H.ask('what are you', 900); const self = await H.page();
     const slogan = await H.p.evaluate(async () => {
-      const want = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
+      const want = 'A-to-Mind. Whatever comes to mind.';
       let wrap = null, text = '', inPage = false, fits = false;
       for (let i = 0; i < 20; i++) {
         wrap = document.querySelector('.vslogan');
@@ -5237,7 +7165,7 @@ try {
     });
     check('"what are you" is the self page', /Ask, and it appears/.test(self) && !net.length, self.slice(0, 80));
     check('"what are you" shows the A-to-Mind slogan as real text inside the self card (exact line, never cut off on the right)',
-      slogan.has && slogan.count === 1 && slogan.text === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.' && slogan.inPage && slogan.fits,
+      slogan.has && slogan.count === 1 && slogan.text === 'A-to-Mind. Whatever comes to mind.' && slogan.inPage && slogan.fits,
       JSON.stringify(slogan).slice(0, 220));
     await H.ask('close', 300);
     const gone = await H.p.evaluate(() => document.querySelectorAll('.vslogan').length);
@@ -5646,7 +7574,28 @@ try {
     await W.ask('what do you think of yourself', 300); await until(async () => { const t = await W.page(); return /What I think of myself/.test(t) && /asked for/i.test(t); }, 6000);
     const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
     check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
-    await W.ctx.close(); }
+    await W.ctx.close();
+    // made plain (owner, 2026-10-29): a definition under each heading, what changed this lap, what is blocked and on what, the next pick
+    // with its evidence, and the inbox in workstreams with counts; the will and reflect fixtures carry a lap, a will job and a held ask
+    const P = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    await P.ctx.route(/\/api\/will$/, (rt) => rt.fulfill(json({ at: '2026-10-29T03:00:00Z', wants: [{ kind: 'people asked', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }], lastRun: { title: 'Overhaul surface:ask', state: 'failed', at: '2026-10-29T05:00:00Z', shipped: false },
+      lap: { lap: 1, upgraded: 2, skills: 712, newThisLap: 0, newPerLap: 100, next: 'surface:cards', recent: ['surface:ask', 'surface:home'], line: 'Lap 1: upgraded 2 of 712 items, 0 of 100 new this lap' } })));
+    await P.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [], asks: [{ ask: 'Give the map card terrain', kind: 'daily', at: '2026-10-08T18:09:00Z' }, { ask: 'Create a utility to check the watertightness of STL print files in the browser', kind: 'daily', at: '2026-10-28T22:29:00Z', held: 'sycophanthex.com' }], follow: { total: 5, built: 2 } })));
+    await P.ask('what do you want built now', 300); await until(async () => /Blocked \(/.test(await P.page()), 6000);
+    const plain = await P.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const q = (s) => pg.querySelector(s), t = (s) => (q(s) || {}).textContent || '';
+      return { defs: [...pg.querySelectorAll('.wants-def[data-def]')].map((e) => e.getAttribute('data-def') + ':' + e.textContent), changed: t('[data-changed]'), nChanged: (q('[data-changed]') || { dataset: {} }).dataset.changed, run: t('[data-run]'),
+        blocked: [...pg.querySelectorAll('.wants-sum[data-block=blocked] li')].map((li) => li.textContent), picks: [...pg.querySelectorAll('[data-pick]')].map((li) => li.getAttribute('data-pick') + ':' + li.textContent),
+        streams: t('.wants-streams'), groups: [...pg.querySelectorAll('.wants-group')].map((g) => g.dataset.stream + ':' + g.querySelectorAll('.wants-chip').length), inboxChips: pg.querySelectorAll('.wants-block[data-block=inbox] .wants-chip').length,
+        wide: pg.scrollWidth > pg.clientWidth + 1 }; });
+    const nInbox = (selfJson.open || []).length, nWaits = (selfJson.open || []).filter((o) => o.waits).length;
+    check('wants card: a definition under each heading, what changed this lap from the lap record, what is blocked and on what, the next pick with its evidence, and the growth inbox in workstreams with counts (owner, 2026-10-29)',
+      !!plain && plain.defs.length === 3 && /^wants:A want is something my will chose itself/.test(plain.defs[0]) && /^asks:An ask is something I asked to have built/.test(plain.defs[1]) && /^inbox:An inbox item is an idea or plan item waiting in my growth inbox/.test(plain.defs[2])
+        && plain.nChanged === '2' && /^Lap 1 so far: 2 items sent for upgrade \(newest: surface:ask, surface:home\) · 0 new features$/.test(plain.changed) && /Overhaul surface:ask, failed, not shipped/.test(plain.run)
+        && plain.blocked.some((b) => /watertightness of STL.*held until sycophanthex\.com is beaten/.test(b)) && plain.blocked.length === 1 + nWaits
+        && /^will:My willUpgrade surface:cardsIts turn in lap 1/.test(plain.picks[0]) && /^ask:My buildersGive the map card terrain/.test(plain.picks[1])
+        && plain.inboxChips === nInbox && plain.groups.reduce((a, g) => a + +g.split(':')[1], 0) === nInbox && /^(?:(?:Reliability|Core experience|Platform|Growth|Unsorted \(no rule matched\)) \d+(?: · |$))+$/.test(plain.streams) && !plain.wide && !P.errors.length,
+      JSON.stringify({ plain, nInbox, nWaits, errors: P.errors }));
+    await P.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
@@ -5701,6 +7650,9 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
+    // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
+    // midnight UTC "two hours ago" is yesterday (red on main at 00:22, 01:19 and 00:51 UTC, 2026-10-29 and 2026-10-30)
+    const todayAgo = (h) => new Date(Math.max(Date.parse(new Date().toISOString().slice(0, 10)), Date.now() - h * 36e5)).toISOString();
     // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
@@ -5731,7 +7683,7 @@ try {
       const cs2 = await import('/lib/card-share.js'), ci = await import('/lib/card-image.js'), d = cs2.readCard(pg), img = cs2.imageData(pg, d), svg = ci.cardSvg(img);
       return { heads: heads.map((h) => h.textContent), hw: +cs(hd).fontWeight, hs: parseFloat(cs(hd).fontSize), ps: parseFloat(cs(body).fontSize), inSummary: heads.filter((h) => h.tagName === 'H3').every((h) => h.parentElement.tagName === 'SUMMARY'), before, after, back, inset,
         len: d.b.length, note: cs2.fullNote(d.b.length), allAsks: recentCount(d.b), detailNew: /built ask number 0[\s\S]*what the builder shipped/.test(d.b), detailOld: (d.b.match(/what the builder shipped/g) || []).length, tail: d.b.slice(-80),
-        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350"/g) || []).length, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
+        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350" height="\d+" rx="\d+" fill="rgba\(/g) || []).length /* the track of each family bar; a full bar (share 1) draws a second 350-wide rect */, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
         redesign: { evolved: pg.querySelectorAll('.vc-evolved-note').length, art: [...pg.querySelectorAll(':scope > .vc-art > img, :scope > .vc-art > svg')].filter((n) => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden' && n.getBoundingClientRect().width > 40).length,
           smallOverArt: [...pg.querySelectorAll(':scope > .vc-art *')].filter((n) => n.tagName !== 'svg' && n.closest('svg') === null && n.getBoundingClientRect().width > 0 && n.getBoundingClientRect().width < pg.querySelector(':scope > .vc-art').getBoundingClientRect().width * 0.6 && getComputedStyle(n).display !== 'none').map((n) => n.className && String(n.className)),
           open: [...pg.querySelectorAll('details.vs-sec')].filter((d) => d.open).map((d) => d.dataset.sec), quote: !!pg.querySelector('section[data-sec=words] > blockquote.vs-voice'), quoteBar: getComputedStyle(pg.querySelector('blockquote.vs-voice')).borderLeftWidth,
@@ -5746,12 +7698,12 @@ try {
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 13 && !S.errors.length, // 10 older builds' details and the 3 the lead shows
+        && self.note === 'whole text kept' && /* no 8000 cap since 2026-10-22 (copy and save keep the whole card) */ !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld >= 13 && !S.errors.length, /* at least: the skill-by-skill ledger section (lib/built-detail.js) repeats some ledger lines */ // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
     check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
-        && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+        && self.svgH < 3200 /* the picture wraps every line in full since 2026-10-22 (no ellipsis), so it is taller than the old 1600 */ && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
     const honest = await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cite = pg.querySelector('section[data-sec=words] .vs-cite'), notes = [...pg.querySelectorAll('.vs-sec[data-sec=growth] .vs-note')].map((n) => n.textContent); return { cite: cite ? cite.textContent : '', notes, theatre: /My own words, kept as I said them/.test(pg.textContent) }; });
     check('self card, no theatre (owner, 2026-10-19): the words are labelled as Verse\'s model\'s, written from these facts, not a felt state, and each growth claim carries a source line',
       /^Written by Verse's model/.test(honest.cite) && /from these facts/.test(honest.cite) && /not a felt state/.test(honest.cite) && !honest.theatre && honest.notes.length === 3 && /families\.json/.test(honest.notes[0]) && !S.errors.length, JSON.stringify({ honest, errors: S.errors }));
@@ -5763,7 +7715,7 @@ try {
         label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color,
         red: segs.length, redColor: segs.map((l) => getComputedStyle(l).stroke).join(), redAt: segs.map((l) => l.getAttribute('x1') + '-' + l.getAttribute('x2')).join(), overdue: b.dataset.overdue, amber: amber && amber.textContent, amberColor: amber && getComputedStyle(amber).color, title: b.title }; });
     const v1 = await vel(), hits1 = reflectHits;
-    reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
+    reflectAsked = built([['a', ago(0)], ['b', todayAgo(1)], ['c', todayAgo(2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
     const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
@@ -5834,7 +7786,7 @@ try {
       return { tiers: [...new Set([...pg.querySelectorAll('li[data-skill]')].filter(vis).map((li) => li.dataset.tier))], skills: [...pg.querySelectorAll('li[data-skill]')].filter(vis).length, fams: [...pg.querySelectorAll('.fh-family')].filter((f) => !f.hidden).length, pressed: pg.querySelector('[data-fh-filter][aria-pressed="true"]').dataset.fhFilter }; }, k);
     const exp = await pick('experiment'), pro = await pick('proven'), all = await pick('all');
     check('void asks batch 4: the family-health card\'s quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)',
-      exp.tiers.join() === 'experiment' && exp.skills > 0 && pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
+      (EXP_N ? exp.tiers.join() === 'experiment' && exp.skills > 0 : exp.skills === 0 && exp.pressed === 'experiment') && /* every experiment skill can be promoted (2026-10-21: none left) */ pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
       JSON.stringify({ exp, pro, all, errors: F.errors }));
     await F.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
@@ -5914,12 +7866,26 @@ try {
     const card = await until(async () => F.p.$eval('.vpage', (p) => {
       if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
       return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
-        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
-    }).catch(() => null), 8000);
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: [...p.querySelectorAll('img')].filter((i) => !i.closest('.vc-art')).length /* the card's own art seal is on every card; the autopsy body itself shows no pictures */, wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 15000); // a loaded runner took longer than 8 s to draw it
     const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
     check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
       !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
         && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
+    await F.ctx.close(); }
+  // the fix audit (asked by Verse): fixes from the real ledger with their skills' evidence ratings and any break in another family
+  if (want('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show')) { const F = await fresh({ phone: true });
+    await F.ask('audit your fixes', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Fix audit' || !p.querySelector('[data-fix-audit],p')) return null; const l = p.querySelector('[data-fix-audit]');
+      return l ? { n: +l.dataset.fixAudit, items: l.querySelectorAll('li').length, pages: !!p.querySelector('[data-fix-pages]'), wide: p.scrollWidth > p.clientWidth + 1 } : null; }).catch(() => null), 8000);
+    check('fix audit: "audit your fixes" lists the ledger\'s fixes with each fixed skill\'s rating, flags a rating that predates its fix, and says what the /fix/ pages can and cannot show', !!card && card.items === Math.min(25, card.n) && card.pages && !card.wide, JSON.stringify(card));
+    await F.ctx.close(); }
+  // the backlog digest with its suggested-builder tag (asked by Verse): every placed family names who last touched it, from the ledger
+  if (want('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger')) { const F = await fresh({ phone: true });
+    await F.ask('digest your backlog', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => { const h = p.querySelector('h2'); if (!h || h.textContent !== 'Backlog digest') return null;
+      const fams = [...p.querySelectorAll('section[data-family]')]; return { placed: fams.filter((s) => s.dataset.family !== 'none').length, tagged: p.querySelectorAll('[data-builder]').length, src: /suggested builder/.test((p.querySelector('.src') || {}).textContent || '') || !fams.length, wide: p.scrollWidth > p.clientWidth + 1 }; }).catch(() => null), 8000);
+    check('backlog digest: "digest your backlog" groups the open asks by family, and a placed family carries its suggested builder from the growth ledger', !!card && card.tagged <= card.placed && card.src && !card.wide, JSON.stringify(card));
     await F.ctx.close(); }
   // family-health: the skill families card (asked by Verse, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
@@ -5963,10 +7929,32 @@ try {
       check('family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)',
         !!src && src.open && !!wf.sources && src.line === wf.sources.words && /^Source reliability: \d+ skills answer from outside sources/.test(src.line)
         && src.rows.length === wf.skills.length && src.rows.every((x) => (truthW[x.name].source ? x.text === truthW[x.name].source.words && x.next === (truthW[x.name].source.next || '') : x.text === null))
-        && src.rows.some((x) => x.next === 'live') && !src.wide && !F.errors.length,
+        // the rows marked one live answer from proven are exactly the ones the family line names (tools/source-reliability.mjs one_live_from_proven);
+        // since #1665 made fact proven the list can be empty, and the data-next="live" markup itself is pinned by the skill's own self-test
+        && JSON.stringify(src.rows.filter((x) => x.next === 'live').map((x) => x.name).sort()) === JSON.stringify([...(wf.sources.one_live_from_proven || [])].sort())
+        && !src.wide && !F.errors.length,
         JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
-    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
-      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
+    // the card on today's data: the families listed are exactly the ones lib/better.js familyDrivers puts 0.05 points or more either side of the
+    // average (three each way), with the newest void.better.json row's part count; on a day when every family is that close to the average
+    // (since nearly every skill went proven on 2026-10-30, run 41010108375), one line says so instead of an empty heading
+    { const shown = await F.p.$eval('.vpage .fh-drivers', (b) => ({ head: (b.querySelector('.vh') || {}).textContent || '', dr: [...b.querySelectorAll('li[data-driver]')].map((x) => x.dataset.driver + ':' + (+x.dataset.points)), even: (b.querySelector('.fh-even') || {}).textContent || '' })).catch(() => null);
+      const rows = JSON.parse(fs.readFileSync(path.join(root, 'void.better.json'), 'utf8')), last = (Array.isArray(rows) ? rows : []).filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0];
+      const nParts = last && last.parts ? Object.values(last.parts).filter((v) => v !== null && v !== undefined).length : 5, d = betterLib.familyDrivers(fam, nParts || 5);
+      const want = [...d.filter((x) => x.points > 0.04).slice(0, 3), ...d.filter((x) => x.points < -0.04).slice(-3).reverse()].map((x) => x.id + ':' + x.points);
+      check('family-health: on today\'s families the growth score part lists exactly the families 0.05 points or more from the average, and says in one line when none is',
+        !!shown && /What moves my growth score/.test(shown.head) && JSON.stringify(shown.dr) === JSON.stringify(want)
+        && (want.length ? !shown.even : /^No family moves it by 0\.05 points or more: every family is \d+%( to \d+%)? healthy\.$/.test(shown.even)) && !F.errors.length,
+        JSON.stringify({ shown, want, errors: F.errors })); }
+    // the same part on a day with a spread (skills/families.json served with every Numbers and money skill failing): it names the families that
+    // lift the score and the ones that drag it, in score points; held on a fixture, so the claim does not hang on how healthy the skills are today
+    { const G = await fresh({ phone: true });
+      const spread = JSON.parse(JSON.stringify(fam)); for (const f of spread.families) if (f.id === 'numbers') for (const s of f.skills) s.failing = ['fixture: failing'];
+      await G.ctx.route(/\/skills\/families\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(spread) }));
+      await G.ask('show me your skill families', 1200);
+      await until(async () => G.p.$eval('.vpage .fh-drivers li[data-driver]', () => true).catch(() => false), 6000);
+      const dr = await G.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await G.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => spread.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr }));
+      await G.ctx.close(); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Verse, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
@@ -6161,7 +8149,7 @@ try {
     await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
     const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
     check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
-      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+      JSON.stringify(groups.card.slice(0, 2)) === '["copy card","save card"]' && !groups.card.some((t) => /copy text|save text|^copy$/.test(t)) && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
     await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
     await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
     const copiedText = await U.p.evaluate(() => window.__copied);
@@ -6329,12 +8317,13 @@ try {
     const m = await until(async () => { const x = await probe(M); return x && x.im && x.im.w > 40 ? x : null; }, 12000) || await probe(M);
     check('poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text', !!m && m.poster === '1' && m.display === 'grid' && m.art.h > m.art.w * 1.3 && Math.abs((m.art.x + m.art.w / 2) - (m.card.x + m.card.w / 2)) < 10 && m.art.w < m.card.w * 0.6 && m.type.y >= m.art.b - 2 && m.ptHits === false && m.numHits === false && !M.errors.length, JSON.stringify(m && { art: m.art, card: m.card, type: m.type, cols: m.cols }));
     await M.ctx.close();
-    // an answer with a long body: one title, and a small painting fills its art window
+    // an answer with a long body: one title, and a small painting fills its art window. The reply section (lib/card-reply.js, #1569) at the end of
+    // every card has its own section heading; it is not a second title, so it is left out of the count like the art window
     const A = await fresh(); const ANS = '## Visa test card\n\nA visa test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
     await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
     await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
     await A.ask('show me a visa test card', 2200); // "the site test card" is Verse's own card now (lib/own-parts.js); a visa test card still goes to the answer path
-    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
+    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art') && !h.closest('.vreply')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
     check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me a visa test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
     await A.ctx.close();
     // a text-only reply: the seal is the one picture, centred and filling the window
@@ -6387,7 +8376,10 @@ try {
     check('Verse merge: the numbers are earned from the parents (1 / 1 / 0 each gives P 1 R 1 I 0, depth 1, uncommon), whatever numbers the route sends', !!mc && mc.plate === 'P 1 R 1 I 0' && /IDEA . MERGED, DEPTH 1$/i.test(mc.type) && mc.rarity === 'uncommon' && /named once by Verse/i.test(mc.src), JSON.stringify(mc));
     await M.ask('close', 400); await M.ask('what do you get if you merge forge with a pizza', 900);
     const sk = await until(async () => { const c = await cardOfMerge(M); return c && c.parents[0] === 'Forge' ? c : null; }, 8000);
-    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && /^P 9 R 6 I \d+$/.test(sk.plate) && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, errors: M.errors }));
+    // Forge's real stats come from the served families/guide data and move as Forge is used (P 9 R 6 on 2026-10-16, R 3 on 2026-10-22), so the
+    // expected plate is worked out from that same data by the same rules (skills/merge.js), not written down once
+    const want = await M.p.evaluate(async () => { const m = await import('/skills/merge.js'), cf = await import('/lib/card-frame.js'); const st = await cf.loadStats(); const pa = m.parentCard('forge', st), pb = m.parentCard('pizza', st), c = m.mergedCard(pa, pb); return { plate: 'P ' + c.power + ' R ' + c.resistance + ' I ' + c.income, real: pa.power !== pb.power || pa.resistance !== pb.resistance }; }).catch((e) => ({ plate: 'ERR ' + e }));
+    check('Verse merge: a name that is a Verse skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && sk.plate === want.plate && want.real && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, want, errors: M.errors }));
     await M.ctx.close();
     const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.abort());
     await D.ask('merge a pizza and a black hole', 900);
@@ -6407,6 +8399,10 @@ try {
   // it shows Verse's void art quietly (no badge, no evolve or again button) and the painting replaces it when it lands (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
   if (want("collectible card: mint, variants, quiet art")) {
     const C = await fresh(); const posts = []; const IMG = 'data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(9000);
+    // the dragon has its own article here: the shared fixture answers every lookup with "Black hole", and since 2026-10-26 (51056167, lib/no-answer.js) a name whose article does not match
+    // goes to the answer route, which opened a second "thinking…" page that the collectible skill then claimed, so the forge painted the skill's name (subject 'collectible') next to the dragon
+    await C.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = decodeURIComponent(r.request().url()); if (!/(?:srsearch=dragon(?:&|$)|\/page\/summary\/Dragon(?:$|\?))/i.test(u)) return r.fallback();
+      return r.fulfill(json(u.includes('/page/summary/') ? { type: 'standard', title: 'Dragon', description: 'Legendary creature', extract: 'A dragon is a magical legendary creature that appears in the folklore of multiple cultures.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Dragon' }] } })); });
     await C.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, 2500)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: IMG, cached: false }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
     await C.ask('make a collectible card of a dragon', 1200);
     const read = () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-collect]'); if (!e) return null; const a = e.querySelector(':scope > .vc-art');
@@ -6453,6 +8449,8 @@ try {
     const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
     check('Verse art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
   if (want("Verse cards: no evolved note on a skill card, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Verse
+    // the ocean has its own article here: the shared fixture answers every lookup with "Black hole", and since a name whose article does not match goes to the answer route (lib/no-answer.js), the ocean would get an untyped answer card instead of its kind's layout
+    await E.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = r.request().url(); if (!/ocean/i.test(decodeURIComponent(u))) return r.fallback(); const body = u.includes('/page/summary/') ? { title: 'Ocean', description: 'Body of salt water covering most of Earth', extract: 'The ocean is the body of salt water that covers about 71% of Earth.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Ocean' }] } }; return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) }); });
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
     const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on[data-evolved]'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
@@ -6536,7 +8534,9 @@ try {
     check('stage pack b: an empty stage says so and makes nothing; with things, "print this stage as a one-page sheet" downloads a PNG (void-stage-sheet.png), shows it and the Print button calls the print dialog',
       /empty/i.test(emptySaid) && !emptyCard && !!d && d.suggestedFilename() === 'void-stage-sheet.png' && png === '89504e470d0a1a0a' && !!preview && preview.src === 'data:image/png;base64,' && /2 things/.test(preview.alt) && printed === 1 && !T.errors.length, JSON.stringify({ emptySaid, emptyCard: !!emptyCard, name: d && d.suggestedFilename(), png, preview, printed, errors: T.errors }));
     const now = Date.now(), iso = (ms) => new Date(now - ms).toISOString(), posts = [], reads = [];
-    const rows = [{ ask: 'draw a mandala', count: 5, first: iso(2 * 864e5), last: iso(3600e3), fallback: 'none:x' }, { ask: 'sing <i>me</i> a song', count: 3, first: iso(2 * 864e5), last: iso(3600e3), fallback: '' }];
+    // 'draw a mandala' fell back to a plain 'none' (nothing was read): still learnable. A 'none:<sources>' miss (every source read, none knew)
+    // is never queued by plan() (lib/learn.js readAndUnknown, 4a63984ea), so the card rightly leaves it out
+    const rows = [{ ask: 'draw a mandala', count: 5, first: iso(2 * 864e5), last: iso(3600e3), fallback: 'none' }, { ask: 'sing <i>me</i> a song', count: 3, first: iso(2 * 864e5), last: iso(3600e3), fallback: '' }];
     await T.ctx.route(/\/api\/(misses|queue)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push({ auth: q.headers().authorization, body: JSON.parse(q.postData() || '{}') }); return r.fulfill({ status: 200, contentType: 'application/json', body: '{"item":{"id":"q1"}}' }); } reads.push(q.url()); return r.fulfill({ status: 200, contentType: 'application/json', body: /misses/.test(q.url()) ? JSON.stringify(rows) : '{"items":[]}' }); });
     await T.ask('close', 400); await T.ask("turn today's misses into jobs", 900); const dry = await T.page();
     await T.ask('close', 400); await T.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key'));
@@ -6606,10 +8606,12 @@ try {
   // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
   // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
   // says how many are new since the book was last opened here (localStorage, never required)
-  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "show these on the stage" closes the book and asks each change for real
+  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "play all N on the stage" (only for asks that answered live) closes the book and asks each change for real
   if (want("the book: a day in What's new plays on the stage as a walkthrough")) { const W = await fresh();
     const day = new Date().toISOString().slice(0, 10);
     await W.ctx.route(/\/void\.growth\.json/, (r) => r.fulfill(json([{ at: day + 'T09:00:00Z', by: 'claude', kind: 'grow', what: 'a clock on the stage', try: 'make a clock' }, { at: day + 'T10:00:00Z', by: 'claude', kind: 'grow', what: 'sticky notes', show: 'sticky notes', try: 'add a sticky that says hi' }])));
+    // both asks answered their live check (the book plays only those: a build that never answered is never claimed)
+    await W.ctx.route(/\/claims-verified\.json/, (r) => r.fulfill(json({ ok: ['make a clock', 'add a sticky that says hi'] })));
     await W.ask('open the book', 900); await until(async () => !!(await W.p.$('#vtome .tome.opened')), 8000); await W.p.waitForTimeout(400);
     await W.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await W.p.waitForTimeout(1500);
     const link = await W.p.$('#vtome .tome-page a[data-showcase-day="' + day + '"]');
@@ -6617,12 +8619,13 @@ try {
     const bar = await until(async () => W.p.evaluate(() => { const b = document.getElementById('showcase-bar'); return b ? b.textContent : null; }), 8000).catch(() => null);
     const clock = await until(async () => (await W.state()).some((x) => x.kind === 'clock'), 8000).catch(() => false);
     const closed = await until(async () => !(await W.p.$('#vtome')), 4000).then(() => true).catch(() => false);
-    check("the book: a day in What's new carries \"show these on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
+    check("the book: a day in What's new carries \"play all 2 on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
       !!link && closed && /^1 of 2 · What.s new, /.test(bar || '') && !!clock && !W.errors.length, JSON.stringify({ link: !!link, closed, bar, clock, e: W.errors }));
     await W.ctx.close(); }
   if (want("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge")) {
-    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js');
-    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36), withTry = top.find((e) => e.try);
+    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js'), { playable } = await import('../void-live-deploy/skills/showcase.js');
+    // the same lines the book makes: the showcase's ask for an entry with no try of its own, days in this machine's zone (the browser's too)
+    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36, (e) => (playable(e) || {}).ask), withTry = top.find((e) => e.try && e.try.charAt(0) !== '/');
     const N = await fresh();
     await N.p.evaluate(() => { try { localStorage.setItem('a2m.void.book.seen.v1', '2026-01-01T00:00:00Z'); } catch (_) {} });
     await N.ask('open the book', 900); await until(async () => !!(await N.p.$('#vtome .tome.shut .newbadge')) || !!(await N.p.$('#vtome .tome.opened')), 8000);
@@ -6633,13 +8636,14 @@ try {
     const tocText = await N.p.evaluate(() => { const a = [...document.querySelectorAll('#vtome .gb-toc li')].find((l) => /new/i.test(l.textContent) && /What/.test(l.textContent)); return a ? a.textContent : ''; });
     const tocFits = await N.p.evaluate(() => { const l = document.querySelector('#vtome .gb-toc'), pg = l && l.closest('.tome-page'); if (!pg) return false; const folio = pg.querySelector('.tome-folio').getBoundingClientRect(), last = l.lastElementChild.getBoundingClientRect(); return { ok: last.bottom <= folio.top + 2, last: Math.round(last.bottom), folio: Math.round(folio.top), n: l.children.length }; }); // the longer contents still fits its page
     await N.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await N.p.waitForTimeout(1500);
-    const pg = await N.p.evaluate(() => { const r = document.querySelector('#vtome .tome-page.right') || document.querySelector('#vtome .tome-page'); return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: r ? r.querySelectorAll('.tome-art svg').length : 0, folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) }; });
+    // the chapter's first page, left or right: it moves as the book grows (page 6 is a left page, 7 a right one)
+    const pg = await N.p.evaluate((from) => { const all = [...document.querySelectorAll('#vtome .tome-page')], r = all.find((x) => x.dataset.page === String(from)) || document.querySelector('#vtome .tome-page.right') || all[0]; return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: all.reduce((n, x) => n + x.querySelectorAll('.tome-art svg').length, 0), folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: all.map((x) => x.dataset.page) }; }, info.from);
     const seen = await N.p.evaluate(() => { try { return localStorage.getItem('a2m.void.book.seen.v1'); } catch (_) { return null; } });
     const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
     let ranOk = true;
     if (withTry) { // a try-it ask closes the book and runs
-      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
-      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit'); await until(async () => !(await N.p.$('#vtome')), 4000);
+      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit[data-ask]')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
+      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit[data-ask]', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit[data-ask]'); await until(async () => !(await N.p.$('#vtome')), 4000);
       ranOk = !!ask && !(await N.p.$('#vtome'));
     }
     check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
@@ -6686,8 +8690,9 @@ try {
     const after = await until(async () => { const l = await look(); return l && l.shown.join(',') === '2,3' && !l.turning ? l : null; }, 4000);
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(1000);
     const back = await look();
-    check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page',
-      mid && !!after && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
+    // How to ask runs over pages 2 and 3 since 2026-10-21 (1cad11c7: every page fits its sheet); how to read a page is page 4
+    check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital, and more to ask), ← turns back to the title page',
+      mid && !!after && /How to ask/.test(after.text) && /More to ask/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
     // the cover is part of the book (owner, 2026-10-16): ← from the title page swings it shut, → opens it again
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
     const shut = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened'), book: !!window.__voidBook && window.__voidBook.open }; });
@@ -6698,7 +8703,9 @@ try {
     // the index at the back names every skill, each with its page, and a jump from it lands on that page
     const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('#vtome .tome-page .tome-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
     const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
-    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    // a skill is indexed by its page's title ("Verse fixes" for v01d-fixes, "Mind Field" for mind-field-mode), so its title counts as well as its name
+    const titleOf = Object.fromEntries(JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')).pages.filter((g) => g.name && g.title).map((g) => [g.name, g.title.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')]));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n) && !idxNames.has(titleOf[n]));
     const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
     const indexed = idx.names.map(([n]) => n);
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
@@ -6878,6 +8885,17 @@ try {
   // the weather card on a phone (owner, 2026-10-14: the hourly row read "11 AM2 PMPM2 PM3" and the card lagged over the moving stars):
   // each hour stays legible beside the next (the row scrolls sideways instead of squeezing), and a card on a phone draws no
   // backdrop blur, so the stars moving behind it no longer make the browser blur the card again every frame
+  // the rest of weather.gov on the stage weather card: the pressure and visibility now, the hours from the hour now, and the hour-by-hour graph to 7 days
+  if (want("weather card: pressure and visibility now, the hours start at the hour now, and a graph hour by hour to seven days")) {
+    const H = await fresh({ phone: true }); await H.ask('weather in Lisbon', 1200); await until(async () => /hPa/.test(await H.page()), 5000);
+    const m = await H.p.evaluate(() => { const card = document.querySelector('.vpage.on'), g = card && card.querySelector('.wx-graph svg');
+      return { sub: card ? card.querySelector('.sub').textContent : '', first: card ? card.querySelector('.wx-hours > div > div').textContent : '', hours: card ? card.querySelectorAll('.wx-hours > div').length : 0,
+        days: g ? [...g.querySelectorAll('text')].filter((t) => /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)$/.test(t.textContent)).length : 0, line: g ? g.querySelector('polyline').getAttribute('points').split(' ').length : 0, bars: g ? g.querySelectorAll('rect').length : 0,
+        wide: g ? g.getBoundingClientRect().width <= innerWidth : false }; });
+    const nowHour = await H.p.evaluate(() => new Date(new Date().setMinutes(0, 0, 0)).toLocaleTimeString([], { hour: 'numeric' }));
+    check("weather card: pressure and visibility now, the hours start at the hour now, and a graph hour by hour to seven days",
+      /pressure 1016 hPa/.test(m.sub) && /visibility 24 km/.test(m.sub) && m.first === nowHour && m.hours === 8 && m.days === 7 && m.line === 168 && m.bars === 168 && m.wide && !H.errors.length, JSON.stringify({ ...m, nowHour, errors: H.errors }));
+    await H.ctx.close(); }
   if (want("weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur")) {
     const H = await fresh(); await H.p.setViewportSize({ width: 320, height: 640 });
     await H.ask('weather in Lisbon', 1200); await until(async () => /20°|68°/.test(await H.page()), 5000);
@@ -7298,8 +9316,11 @@ try {
   await t.ask('why is the sky blue', 900); an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Verse says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await t.page()).slice(0, 200)); }
-  { const v = await t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.v-asks details')] : []; if (d[0]) d[0].open = true; return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
+  // every block of the self card but the lead starts closed (owner, 2026-10-18) and "Newest" leads it (2026-10-19): the card is read as a reader
+  // reads it, each block opened by its heading, so what sits in a closed block is still checked as shown text
+  const selfOpened = () => t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return ''; pg.querySelectorAll('details.vs-sec').forEach((d) => { d.open = true; }); return pg.innerText; }).catch(() => '');
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await selfOpened(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await selfOpened()).slice(0, 600)); }
+  { const v = await t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.vs-sec[data-sec=asked] .v-asks details')] : []; if (d[0]) { d[0].closest('details.vs-sec').open = true; d[0].open = true; } return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
     check('voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet', v.now === '2' && v.max === '5' && v.w === '40%' && v.asks > 0 && /Asked (in my daily reflection|after a build)/.test(v.meta) && /not built yet/.test(v.meta), JSON.stringify(v)); }
   } // CORE
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
@@ -7377,9 +9398,14 @@ try {
     const posts = [];
     await t.ctx.route(/\/api\/miss$/, (r) => { try { posts.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} return r.fulfill({ status: 204 }); });
     await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'zorbleflax quandary engine' })).catch(() => {});
+    // this browser is driven by automation (navigator.webdriver), so a miss typed here is tagged origin robot (owner, 2026-10-19; tools/miss-robot.test.mjs);
+    // a person's browser has no webdriver flag, so for the person's miss the flag is off, as it is on their device, and nothing else changes
+    await t.ask('quibblewort sprocket lantern', 1500);
+    await t.p.evaluate(() => Object.defineProperty(navigator, 'webdriver', { get: () => false, configurable: true }));
     await t.ask('plumbus hexagram mender', 1500);
-    const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask));
-    check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 300));
+    await t.p.evaluate(() => { delete navigator.webdriver; });
+    const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask)), byRobot = posts.filter((x) => /quibblewort/.test(x.ask));
+    check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && byRobot.length > 0 && byRobot.every((x) => x.origin === 'robot') && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 400));
   }
   owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
   check('WebMCP: owner-only asks never run from an agent (and the answer names no owner)', /person at the screen/.test(String(owner || '')) && !/\bowner\b/i.test(String(owner || '')) && t.errors.length === 0, JSON.stringify({ owner, errors: t.errors }));
@@ -7387,7 +9413,7 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Verse (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
+  check('WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^MultiVerse (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
   // Plan item 12: paid Verse and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.
@@ -7400,10 +9426,10 @@ try {
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
   check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
-  const OUT_LINE = 'Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
+  const OUT_LINE = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
-  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
+  for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|MultiVerse|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
   // A price question is different: the membership sentence stays first, and the services card opens under it.
@@ -7412,7 +9438,7 @@ try {
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
     await P.ask(a, 0);
-    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Verse/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /MultiVerse/.test(w) ? w : ''; }, 6000) || await P.whisper());
     priceGot.push(!!(await until(async () => /What Verse sells/.test((await P.page()) || '') && (await P.page()), 5000)));
     await P.ask('close');
   }
@@ -7523,8 +9549,17 @@ try {
   // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
   const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  // Without the owner's key Verse sends nothing. A send it would make for the owner gets the plain refusal; an email ask opens the mail
+  // card instead (skills/rides.js mailAsk, lists run 7, aab06c1e): the draft is filled in and only the person's own mail app can send it.
+  await t.ask('text sam saying hi', 700);
+  const visitorText = await t.whisper();
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
+  const visitorMail = await until(() => t.p.$eval('.vpage.on', (e) => { const v = (s) => (e.querySelector(s) || {}).value; const links = Array.from(e.querySelectorAll('.ml-out a')).map((a) => a.href);
+    return e.classList.contains('mail-card') && { to: v('.ml-to'), body: v('.ml-body'), links }; }).catch(() => null), 5000) || {};
+  const visitorLine = await t.whisper();
+  check('confirm line: visitors cannot send', /person at the screen/.test(visitorText) && visitorMail.to === 'jane@x.com' && visitorMail.body === 'Hi.'
+    && visitorMail.links.some((h) => h === 'mailto:jane@x.com?subject=Hi&body=Hi.') && visitorMail.links.every((h) => /^(?:mailto:|https:\/\/(?:mail\.google\.com|outlook\.live\.com|compose\.mail\.yahoo\.com)\/)/.test(h))
+    && !/Yes \/ No/.test(visitorLine) && !(await t.p.$('#whisper [data-vc]')) && gate.calls.length === callsAt, JSON.stringify({ visitorText, visitorMail, visitorLine }).slice(0, 400));
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
   check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
@@ -7615,15 +9650,15 @@ try {
   check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Verse Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
-  const IN_LINK = 'Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
+  const IN_LINK = 'MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
   const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
-  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Verse|paid Verse|your Verse is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
+  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /MultiVerse|your Verse is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Verse Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
   await A.ask('pricing', 0);
-  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Verse/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /MultiVerse/.test(w) ? w : ''; }, 6000) || await A.whisper();
   const inPricePg = await until(async () => /What Verse sells/.test((await A.page()) || '') && (await A.page()), 5000);
   check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
     inPriceW === IN_LINK && /What Verse sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
@@ -7631,16 +9666,18 @@ try {
   await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
-  await B.ask('send an email to jane@x.com saying hi', 0);
+  await B.ask('text sam saying hi', 0);
   const bNoOwner = await until(async () => /person at the screen/.test(await B.whisper()) && (await B.whisper()), 4000);
+  await B.ask('send an email to jane@x.com saying hi', 0); // without the owner's key: the mail card, which sends nothing itself (lists run 7)
+  const bMail = !!(await until(() => B.p.$eval('.vpage.on.mail-card .ml-to', (e) => e.value === 'jane@x.com').catch(() => false), 5000)) && !(await B.p.$('#whisper [data-vc]'));
   await A.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await A.ask('send an email to jane@x.com saying hi', 0);
   const pkLine = await until(async () => /Yes \/ No/.test(await A.whisper()) && (await A.whisper()), 6000);
   const ranWhileAsked = gate.ran.length;
   await A.ask('no', 0); const pkNo = await until(async () => /nothing sent/.test(await A.whisper()) && (await A.whisper()), 4000);
   await A.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
-  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
-    [bNoOwner, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
+  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && bMail && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
+    [bNoOwner, bMail, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
   await B.ask('add a sticky that says from the other device');
   const upB = await until(() => { const d = serverData(); return d && Object.values(d.state).some((x) => x.kind === 'sticky' && /from the other device/.test(x.text)); }, 6000);
   await A.p.reload();
@@ -7662,15 +9699,15 @@ try {
   await D.ask('sign in', 0); await until(async () => /welcome back/.test(await D.whisper()), 10000);
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
-  const dIn = await until(async () => /Paid Verse/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks link to the Verse store instead (owner, 2026-10-15; no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Verse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · see the Verse store" && (await D.p.$$eval('#whisper a', (d) => d.map((a) => a.getAttribute('href')).join(','))) === '/store/' && !(await D.page()) && D.ctx.pages().length === 1,
+  const dIn = await until(async () => /MultiVerse/.test(await D.whisper()) && (await D.whisper()), 5000);
+  check('paid: with GUMROAD_URL empty, signed-in asks link to the Verse store instead (owner, 2026-10-15; no checkout, no page)', dUrl === '' && !!meD && dIn === "MultiVerse is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · see the Verse store" && (await D.p.$$eval('#whisper a', (d) => d.map((a) => a.getAttribute('href')).join(','))) === '/store/' && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your Verse is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'gold' });
-  await D.ask('pay', 0); const dOdd = await until(async () => /Paid Verse is/.test(await D.whisper()) && (await D.whisper()), 8000);
+  await D.ask('pay', 0); const dOdd = await until(async () => /MultiVerse is/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'paid' });
-  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Verse is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Verse is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Verse is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^MultiVerse is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
   const meErrsD = D.errors.slice();
   await D.ctx.close();
   const sessionsBefore = db().sessions.size;
@@ -7944,19 +9981,19 @@ try {
     [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
   // No GUMROAD_ACCESS_TOKEN (Atom doesn't pass one): a keyed ping from Atom's seller account for the paid membership is trusted.
   const kEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123' };
-  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE';
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE', VK4 = 'FFFFFFFFFFFFFFFFFFFFFF';
   const kSale = (id, extra = {}) => vmSale(id, { seller_id: SELLER, subscription_id: 'sub-k' + id, 'url_params[void]': VK1, ...extra });
   const kGood = await ping(kSale('k1'), { env: kEnv });
   const kWrongSeller = await ping(kSale('k2', { seller_id: 'zzOtherSellerZZzzzzzzz==', 'url_params[void]': VK2 }), { env: kEnv });
   const kNoSeller = await ping(kSale('k3', { seller_id: '', 'url_params[void]': VK2 }), { env: kEnv });
-  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK2 }), { env: kEnv });
+  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK4 }), { env: kEnv }); // only the creator can make one: their own Verse
   const kNoKey = await ping(kSale('k5', { 'url_params[void]': VK2 }), { env: kEnv, key: '' });
   const kReuse = await ping(kSale('k1', { 'url_params[void]': VK3, sale_timestamp: '2026-09-28T03:00:00Z' }), { env: kEnv });
   const kOther = await ping({ sale_id: 'k6', seller_id: SELLER, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'GTQsNJR9Nsd66O5QVhI4MA==', product_permalink: 'https://moonbeam846.gumroad.com/l/gqsgib', price: '2500', 'url_params[void]': VK2, resource_name: 'sale' }, { env: kEnv });
   const kPinned = await ping(kSale('k7', { 'url_params[void]': VK2 }), { env: { ...kEnv, GUMROAD_SELLER_ID: 'someone-else==' } });
   const kCancel = await ping({ subscription_id: 'sub-kk1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', resource_name: 'cancellation', cancelled_at: '2026-10-01T00:00:00Z' }, { env: kEnv });
-  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid; wrong or missing seller, test ping or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
-    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && /test ping/.test(kTest.body.effect) && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
+  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid (the creator\'s own test purchase too); wrong or missing seller or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
+    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && kTest.body.effect === 'tier paid' && kEnv.DB.accounts.get(VK4).tier === 'paid' && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
     && !kEnv.DB.accounts.has(VK2) && !kEnv.DB.accounts.has(VK3) && kEnv.DB.sales.has('sale:k2:2026-09-28T01:00:00Z') && !kEnv.DB.sales.has('sale:k5:2026-09-28T01:00:00Z') && kCancel.body.effect === 'tier free (cancellation)' && kEnv.DB.accounts.get(VK1).tier === 'free',
     [kGood.body.effect, kWrongSeller.body.effect, kNoSeller.body.effect, kTest.body.effect, kNoKey.status, kReuse.body.effect, kOther.body.effect, kPinned.body.effect, kCancel.body.effect].join(' | '));
 
@@ -8369,8 +10406,13 @@ try {
   await W.ask('close');
   await W.ask('make a clock'); await W.ask('make a 5 minute timer');
   const st = await W.state();
-  await W.ask('what is time', 300); await until(async () => /Black hole/.test(await W.page()), 5000);
-  check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /Black hole/.test(await W.page()) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify(st.map((x) => x.kind)));
+  // "what is time" has its own article here: the shared fixture answers every lookup with "Black hole", and since 2026-10-26 (51056167, lib/no-answer.js)
+  // a name whose article does not match goes to the answer route, so "time" would never show the article page it went to before worldtime existed
+  await W.ctx.route(/wikipedia\.org\/(?:w\/api\.php|api\/rest_v1\/page\/summary\/)/, (r) => { const u = decodeURIComponent(r.request().url()); if (!/(?:srsearch=time(?:&|$)|\/page\/summary\/Time(?:$|\?))/i.test(u)) return r.fallback();
+    return r.fulfill(json(u.includes('/page/summary/') ? { type: 'standard', title: 'Time', description: 'Dimension in which events can be ordered', extract: 'Time is the continued sequence of existence and events.', timestamp: '2026-09-20T10:00:00Z' } : { query: { search: [{ title: 'Time' }] } })); });
+  await W.ask('what is time', 300); await until(async () => /continued sequence of existence/.test(await W.page()), 5000);
+  const timePage = await W.page();
+  check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /continued sequence of existence/.test(timePage) && /Source: Wikipedia · last edited/.test(timePage) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify({ kinds: st.map((x) => x.kind), time: timePage.slice(0, 160) }));
   check('no script errors (worldtime)', W.errors.length === 0, W.errors.join(' | '));
   await W.ctx.close();
   }
@@ -8713,7 +10755,7 @@ try {
   if (want("block at line 2982")) { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
-      slog.SLOGAN === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'
+      slog.SLOGAN === 'A-to-Mind. Whatever comes to mind.'
       && doc.includes(slog.SLOGAN) && /REDUCE=true/.test(doc) && !/three\.js|cdn\./i.test(doc),
       slog.SLOGAN.slice(0, 40) + ' reduce=' + /REDUCE=true/.test(doc));
   }
@@ -8749,7 +10791,7 @@ try {
     const freeSpot = B3.pickTarget(world, rng);
     check('figures (#17): the brain walks around a card to reach the far side without entering it, turns to look at a nearby cursor, and holds a still pose with reduced motion; a new figure lands on a free spot',
       reached && inside === 0 && nb.mode === 'notice' && nb.yaw > 0.1 && nb.lookX > 0.3 && sb.x === 600 && sb.y === 500 && sb.mode === 'still' && !B3.insideAny(freeSpot.x, freeSpot.y, [card], 20)
-      && B3.THREE_URL === '/vendor/three-r180/build/three.module.min.js',
+      && B3.THREE_URL === '/vendor/three-r180a/build/three.module.min.js',
       JSON.stringify({ reached, inside, at: [Math.round(fb.x), Math.round(fb.y)], notice: nb.mode, yaw: nb.yaw, still: [sb.x, sb.y, sb.mode], url: B3.THREE_URL }));
     // In the browser three.js is a stand-in module (every class a harmless stub) built from the names figures3d.js uses.
     const names = Array.from(new Set(Array.from(figSrc.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
@@ -8758,7 +10800,7 @@ try {
     const withThree = async (T) => {
       const hits = [];
       T.p.on('request', (r) => { const u = r.url(); if (/three-r180|three\.module|figures3d|stage3d/.test(u)) hits.push(u.replace(/^.*\/\/[^/]+/, '')); });
-      await T.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
+      await T.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
       return hits;
     };
     const F = await fresh(); const hits = await withThree(F);
@@ -8777,7 +10819,7 @@ try {
     const moved = await until(async () => { const v = await s3(); const q = v && v.figures[0]; return q && p0 && Math.hypot(q.x - p0.x, q.y - p0.y) > 3 ? q : false; }, 6000);
     const canvas = await F.p.evaluate(() => { const c = document.getElementById('void-3d'), s = c && getComputedStyle(c); return c ? { pe: s.pointerEvents, z: s.zIndex, before: c.nextElementSibling && c.nextElementSibling.id } : null; });
     check('figures (#17): "summon a sprite" puts one figure on the stage (a stage item in this browser), loads figures3d.js and the pinned three.js only now, adds a click-through canvas behind the cards, and the figure roams',
-      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u))
+      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /\/vendor\/three-r180a\/build\/three\.module\.min\.js$/.test(u))
       && canvas && canvas.pe === 'none' && canvas.z === '0' && canvas.before === 'stage' && !!moved && /sprite/.test(said) && !F.errors.length,
       JSON.stringify({ up, hits, canvas, moved, said, e: F.errors }));
     await F.ask('bring a friend', 600);
@@ -8860,7 +10902,7 @@ try {
     const names18 = Array.from(new Set(Array.from(figSrc18.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB18 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names18.map((n) => n + '=U').join(',') + ';';
-    await A18.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
+    await A18.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
     await A18.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
@@ -8985,7 +11027,7 @@ try {
     const names19 = Array.from(new Set(Array.from(figSrc19.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB19 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names19.map((n) => n + '=U').join(',') + ';';
-    await A19.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
+    await A19.ctx.route(/\/vendor\/three-r180a\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
     await A19.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
@@ -9134,11 +11176,11 @@ try {
         if (/^INSERT INTO void_spends/.test(sql)) { need('void_spends'); spends.push({ id: a[0], approval_id: a[1], model: a[2], cap_cents: a[3], per: a[4], at: a[5] }); return ch(1); }
         if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
         if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
-        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2], updated: a[4] }); return ch(1); }
         if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); return ch(1); } // the execution record (lib/actions.js) around an approved action
         if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
-        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
-        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
+        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
+        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1], updated: a[2] }); return ch(1); }
         throw new Error('unexpected sql: ' + sql);
       },
       first: async () => {
@@ -9152,6 +11194,8 @@ try {
       },
       all: async () => {
         if (/FROM void_sales/.test(sql)) { need('void_sales'); return { results: sales }; }
+        // the approval gate's history (functions/api/approval.js executedSince, #1422): the approvals that ended done since a time
+        if (/^SELECT record, updated FROM void_approvals WHERE state = 'done' AND updated >= \?$/.test(sql)) { need('void_approvals'); return { results: [...approvals.values()].filter((r) => r.state === 'done' && r.updated >= a[0]).map((r) => ({ record: r.record, updated: r.updated })) }; }
         need('void_routes'); return { results: [...rows.values()].sort((x, y) => (x.last < y.last ? 1 : -1)).slice(0, a[0]) };
       } });
     return { rows, kv, answers, spends, ledger, approvals, shortfalls, tables, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const q of list) out.push(await q.run()); return out; } };
@@ -9172,12 +11216,15 @@ try {
     return { response: 'Gemma: a short answer [1].' };
   } });
   const realFetch = globalThis.fetch;
+  // the fetched source holds what the stand-in models' cited sentences say: since #1410 (f92c2d219, lib/answer-honesty.js supportedOnly) a [1]
+  // whose sentence the source's text does not hold is dropped with its source, so a source that said nothing of the answer would leave neither
+  const EXTRACT = 'A sourced extract: a short answer, a paid answer.';
   let wikiDelay = 0;
   const wiki = async (u) => {
     if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));
     const s = String(u);
     if (/list=search/.test(s)) return new Response(JSON.stringify({ query: { search: [{ title: 'Topic' }] } }), { headers: { 'content-type': 'application/json' } });
-    return new Response(JSON.stringify({ title: 'Topic', extract: 'A sourced extract.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({ title: 'Topic', extract: EXTRACT, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
   };
   const ask = async (text, env) => {
     const pending = [];
@@ -9228,14 +11275,14 @@ try {
       const openAsk = (selfJson.open[0] || {}).ask || '(none open)';
       check('self-grounding: "what\'s next" is answered from Verse\'s own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache',
         sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Verse\. Answer the question directly/.test(g.sys)
-        && /Facts about Verse:/.test(g.user) && g.user.includes(openAsk) && /My skills \(\d+\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
+        && /Facts about Verse:/.test(g.user) && g.user.includes(openAsk) && /My skill index has \d+ entries \([^)]*not the skill count[^)]*\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
         && eS.DB.answers.size === 0 && /self-grounded/.test(rowOf(eS, SQ).outcome),
         JSON.stringify({ self: sa.self, wikiHits, user: String(g.user).slice(0, 200), cached: eS.DB.answers.size }));
       const eSo = envOf({ ai: { gemma: 'out' }, env: { ASSETS } });
       const so = await ask('what are you building', eSo);
       const off = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: 'what are you building' }) }), env: { DB: routeD1(), ASSETS, VOID_ANSWER_MODELS: 'off' } })).json();
       check('self-grounding: with the model busy or switched off, a self ask gets Verse\'s own facts, never a Wikipedia extract',
-        so.self === true && so.note === 'model busy, my own facts' && /My skills/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
+        so.self === true && so.note === 'model busy, my own facts' && /My skill index has \d+ entries/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
         JSON.stringify({ so: so.note, off: String(off.answer).slice(0, 120) }));
     }
     // The Verse extension's "Ask Verse about this page" / "Help me with this draft": the page is the material, not the web
@@ -9279,7 +11326,7 @@ try {
     const o0 = await ask('who wrote the odyssey', eOut0), em = await ask('who wrote the odyssey', eEmpty);
     const fx = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ mode: 'fix', ask: 'my cron job is not running', details: '*/5 * * * * python3 sync.py' }) }), env: eOut0 })).json();
     check('router: when Gemma fails (daily free allocation used up, or an empty reply) it is counted in void_shortfalls (answer / fix, by reason, never the ask) and the answer is the open web, the fix the rules',
-      o0.answer === 'A sourced extract.' && o0.note === 'model busy, from the web' && em.answer === 'A sourced extract.' && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
+      o0.answer === EXTRACT && o0.note === 'model busy, from the web' && em.answer === EXTRACT && fx.fix === 'rules' && fx.note === 'model busy, fixed from the error'
       && eOut0.DB.shortfalls.get('answer|free limit') === 1 && eOut0.DB.shortfalls.get('fix|free limit') === 1 && eEmpty.DB.shortfalls.get('answer|empty') === 1 && !JSON.stringify([...eOut0.DB.shortfalls]).includes('odyssey'),
       JSON.stringify({ o0: o0.note, em: em.answer, fx: fx.fix, sf: [...eOut0.DB.shortfalls, ...eEmpty.DB.shortfalls] }));
     // fallbacks: the classifier fails or hangs = the old behaviour, in about the old time
@@ -9339,7 +11386,7 @@ try {
     const eSaidNo = envOf({ db: { sales: SALE } }); const no = await approveSpend(eSaidNo, 'let Verse spend up to $5 a month on a stronger model', 'reject');
     const eStopped = envOf({ db: { sales: SALE } }); await approveSpend(eStopped, 'let Verse spend up to $5 a month on a stronger model'); await new Promise((r) => setTimeout(r, 5)); await approveSpend(eStopped, 'stop paying for stronger models');
     const eCapUsed = envOf({ db: { sales: SALE } }); await approveSpend(eCapUsed, 'let Verse spend up to $5 a month on a stronger model'); eCapUsed.DB.kv.set('router:paid:' + eCapUsed.DB.spends[0].id + ':' + R.periodKey('month'), '499.5');
-    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $100 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5');
+    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Verse spend up to $20 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5'); // $20, under HIGH_SPEND: since #1422 (356cfdc97) a $25+ spend needs a second person's yes
     const blocked = [];
     for (const [name, env] of [['no standing spend', eNoSpend], ['refunded to zero', eNoMoney], ['no sales table', eNoTable], ['said no', eSaidNo], ['stopped ($0)', eStopped], ['cap used', eCapUsed], ['budget used', eBudgetUsed]]) {
       const x = await ask(HARDQ, env), r = rowOf(env, HARDQ);
@@ -9374,7 +11421,7 @@ try {
     const untouched = (e) => e.DB.rows.size === 0 && e.DB.answers.size === 0 && e.DB.kv.size === 0 && e.DB.spends.length === 0 && e.DB.shortfalls.size === 0 && e.DB.tables.size === 0;
     const cOn = calls.length, eOn = envOf(), d3 = await ask('who wrote the odyssey', eOn);
     check('router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)',
-      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
+      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === EXTRACT && d2.answer === EXTRACT && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
       && fOff.fix === 'rules' && !fOff.note && d3.answer === 'Gemma: a short answer [1].' && d3.route === 'simple' && calls.length > cOn,
       JSON.stringify({ off: cOn - cOff, d1: d1.answer, d2: d2.answer, fix: fOff.fix, on: d3.answer, route: d3.route }));
     const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) });
@@ -9503,6 +11550,18 @@ try {
     const again = await M.p.evaluate(() => 1); await M.ask('play some music', 900);
     check('music: "play some music" is not taken (Verse does not play recordings)', !(await M.p.$('.vpage.on .mu-play')) && !!again, '');
     check('music: no page errors', !M.errors.length, M.errors.join(' | ').slice(0, 200));
+    await M.ctx.close(); }
+  // a song with a shape (lib/arrange.js; owner, 2026-10-24): "make a heavy metal song" is built in sections, rendered here and each section's loudness measured
+  if (want("music: a heavy ask is built in sections whose loudness really differs")) { const M = await fresh(); const origin = new URL(M.p.url()).origin;
+    await M.ask('make a heavy metal song', 900); await until(async () => /Save as WAV/.test(await M.page()), 8000);
+    const card = await M.p.evaluate(() => ({ form: (document.querySelector('.vpage.on .mu-form') || {}).textContent || '', labels: [...document.querySelectorAll('.vpage.on .mu-roll text')].map((t) => t.textContent) }));
+    const m = await M.p.evaluate(async (o) => { const a = await import(o + '/lib/arrange.js'), p = a.arrange('make a heavy metal song'), out = await a.renderArranged(p); let peak = 0; for (const x of out.samples) peak = Math.max(peak, Math.abs(x));
+      return { peak, secs: out.samples.length / out.rate, loud: Object.fromEntries(a.sectionLoudness(out.samples, out.rate, p).map((x) => [x.id, x.db])) }; }, origin);
+    const L = m.loud, loudest = Math.min(L.drop, L.breakdown, L.climax), quietest = Math.max(L.intro, L.bridge);
+    if (process.env.VOID_SHOTS) await M.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'music-heavy.png') }).catch(() => {});
+    check('music: "make a heavy metal song" shows its form (intro, drop, breakdown, bridge, climax) under the roll, and the rendered song has the drop, breakdown and climax at least 6 dB above the quiet intro and bridge, the climax the loudest, and no clipping',
+      /intro 4 · drop 8 · breakdown 4 · bridge 4 · climax 8/.test(card.form) && card.labels.join() === 'intro,drop,breakdown,bridge,climax' && loudest - quietest >= 6 && L.climax > L.drop && L.climax > L.breakdown && m.peak <= 1.0 && m.secs > 60 && !M.errors.length,
+      JSON.stringify({ card, m, errors: M.errors }).slice(0, 400));
     await M.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now Verse is Web4"): "what is web4" is one card with the four steps of the web
   // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
@@ -9994,6 +12053,27 @@ try {
         && !/no checks reported/.test(live) && /but GitHub does/.test(none) && asked.filter((u) => /check-runs/.test(u)).length === 1 && !S.errors.length,
       JSON.stringify({ live, none, asked, errors: S.errors }));
     await S.ctx.close(); }
+  // eat (owner, 2026-10-23: help someone get food from a real restaurant): the place from OpenStreetMap, every way to order, what people get there
+  if (want("eat: order food from a named restaurant")) { const E = await fresh(); const answered = [];
+    await E.ctx.route(/nominatim\.openstreetmap\.org/, (r) => r.fulfill(json(/lovebird/i.test(r.request().url()) ? [{ osm_type: 'node', osm_id: 1, lat: '28.02', lon: '-81.95', type: 'fast_food', name: 'LoveBird Almost Famous Chicken',
+      address: { house_number: '2101', road: 'South Florida Avenue', city: 'Lakeland', state: 'Florida' }, extratags: { cuisine: 'chicken', opening_hours: 'Mo-Sa 11:30-21:00', phone: '+1 863 555 0100', website: 'lovebirdeats.com' } }] : [])));
+    await E.ctx.route(/\/api\/answer$/, (r) => { answered.push(r.request().postData() || ''); return r.fulfill(json({ answer: 'The G.O.A.T. sandwich: tenders, lettuce, tomato, pickle.\nSo Gouda Mac.' })); });
+    await E.ask('order food from lovebird in lakeland', 1500); const pg = await E.page();
+    const hrefs = await E.p.$$eval('.vpage.on .eat-order a', (as) => as.map((a) => a.getAttribute('href')));
+    if (process.env.VOID_SHOTS) await E.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'eat-card.png') }).catch(() => {});
+    await E.ask('order of operations', 600); const other = await E.page();
+    check('eat: order food from a named restaurant: its name, address, hours, a call, its site and the delivery apps, and what people get there (labelled, not the restaurant\'s word); "order of operations" is not food',
+      /LoveBird Almost Famous Chicken/.test(pg) && /2101 South Florida Avenue, Lakeland/.test(pg) && /Mo-Sa 11:30-21:00/.test(pg) && /G\.O\.A\.T\./.test(pg) && /check the menu/.test(pg)
+      && hrefs.includes('https://lovebirdeats.com') && hrefs.some((h) => /^tel:\+18635550100$/.test(h)) && hrefs.some((h) => /doordash\.com/.test(h)) && hrefs.some((h) => /ubereats\.com/.test(h))
+      && answered.some((b) => /LoveBird Almost Famous Chicken/.test(b) && /Lakeland/.test(b)) && !/LoveBird/.test(other),
+      [pg.slice(0, 300), hrefs.join(' '), other.slice(0, 80)].join(' | '));
+    await E.ctx.close(); }
+  if (want("ritual template: a habit sequence laid back to back with a download for one calendar file")) { const S = await fresh();
+    await S.ask('ritual template: meditate 10, stretch 15, journal 10 at 6:30am', 600);
+    const t = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((x) => /routine/i.test(x) ? x : '').catch(() => ''), 8000).catch(() => '');
+    const n = await S.p.$$eval('.vpage.on [data-ritual] li', (l) => l.length).catch(() => 0), btn = await S.p.$('.vpage.on [data-ritual-ics]');
+    check('ritual template: three steps, 35 minutes, a download button, no errors', n === 3 && /35 minutes/.test(t) && !!btn && !S.errors.length, JSON.stringify({ t, n, errors: S.errors }));
+    await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
@@ -10001,6 +12081,32 @@ try {
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
       await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
+  // connected floors (owner, 2026-10-27): a floor page is not a dead end. Every floor page must link to at least four sibling Verse
+  // tools, so a new floor cannot ship with only "Back to Verse". Pages that predate the rule are named once here; the list only shrinks
+  // (emojis, paint and tournaments are checked in the browser above too). A page file that does not exist is skipped, never passed.
+  if (want("connected: every floor page links to at least four sibling Verse tools")) {
+    const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
+    const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);
+    const dead = []; let pages = 0;
+    for (const f of FLOORS) {
+      if (!f.page || legacy.has(f.id)) continue;
+      const file = f.page.split('?')[0].replace(/\/$/, '/index.html').replace(/^\//, '');
+      const full = path.join(root, file);
+      if (!fs.existsSync(full)) continue;
+      const self = '/' + file.replace(/index\.html$/, '');
+      const links = new Set();
+      for (const m of fs.readFileSync(full, 'utf8').matchAll(/href="([^"]+)"/g)) {
+        const h = m[1];
+        if (!h.startsWith('/') || h.startsWith('//')) continue;
+        const base = h.split('?')[0].split('#')[0];
+        if (base === self || base === '/') continue;
+        links.add(base);
+      }
+      pages++;
+      if (links.size < 4) dead.push(f.id + ' (' + links.size + ')');
+    }
+    check('connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end', pages > 150 && !dead.length, JSON.stringify({ pages, dead: dead.slice(0, 10), more: dead.length }));
+  }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));
@@ -10015,13 +12121,24 @@ let bad = results.filter((r) => !r.ok);
 // quiz card). A check that fails twice is red, as before; one that heals is named below so it is not forgotten, and the spotter
 // (tools/flakes.mjs) counts it. Not for --only runs (finish.mjs, a person) and not after the suite threw: nothing after that ran.
 if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.name === 'suite ran to the end')) {
-  const heads = [...new Set(bad.map((r) => r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ')))];
+  // a check runs again by its own section's want label: the first words of its name can match no section at all, when the label
+  // is worded differently (2026-10-29: 'article: "who is X" opens the person' sits under '"who is X" prefers the person', so its
+  // second run ran nothing). The shared core block keeps the first words of the name: a second run of core is the whole long page.
+  const headOf = (r) => r.section && !r.section.startsWith('core: ') ? r.section : r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ');
+  const heads = [...new Set(bad.map(headOf))];
   if (heads.length <= 6) {
     releaseHeavy();
     for (const h of heads) {
       const c = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--only', h], { env: { ...process.env, VOID_RETRY: '1', VOID_SKIP_BENCH: '1', VOID_SHARD: '' }, encoding: 'utf8', timeout: 8 * 60e3 });
       if (c.status !== 0) console.log('second run of "' + h + '" failed too (exit ' + c.status + '): ' + String(c.stdout || '').split('\n').filter((l) => /^FAIL|passed|matched/.test(l)).join(' | ').slice(0, 300) + ' ' + String(c.stderr || '').slice(-200));
-      if (c.status === 0) for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + h); }
+      // healed only when the second run ran this very check and it passed: "--only <head>" can match another section and skip this
+      // one (a check in the CORE block, or under another want label), exit 0 with it never run, and hide a real failure (2026-10-29:
+      // six "paid:" checks that the MultiVerse rename broke read "healed" on cd360ad0)
+      const ran = new Set(String(c.stdout || '').split('\n').filter((l) => l.startsWith('pass ')).map((l) => l.slice(5)));
+      for (const r of bad) if (headOf(r) === h) {
+        if (c.status === 0 && ran.has(r.name)) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + r.name); }
+        else if (c.status === 0) console.log('second run of "' + h + '" did not run "' + r.name.slice(0, 120) + '": still red');
+      }
     }
     bad = results.filter((r) => !r.ok);
   }

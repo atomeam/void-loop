@@ -1,0 +1,28 @@
+{
+  "denies": [
+    "performance.now",
+    "Date",
+    "audio-oscillator",
+    "pacemaker-reading",
+    "millisecond-field",
+    "missing-time-seal",
+    "contact",
+    "healing",
+    "remote-viewing",
+    "extraterrestrial-hardware"
+  ],
+  "emit": false,
+  "fixture": {
+    "id": "oddball-label-only",
+    "note": "A sealed oddball label is not a measured duration.",
+    "span_label": "stretched",
+    "tick_bin": "declined"
+  },
+  "href_allowlist": [],
+  "run": 78,
+  "seal": null,
+  "slug": "local-scalar-tick-stub",
+  "span_labels": ["brief", "ordinary", "stretched", "declined"],
+  "status": "unattested",
+  "tick_bins": ["0", "1", "2", "3", "4", "declined"]
+}

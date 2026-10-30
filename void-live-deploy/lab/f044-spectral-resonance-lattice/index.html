@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; overflow: hidden; background: #0a0a12; color: #c8d0e0; font-family: system-ui, sans-serif; }
+  canvas { display: block; position: absolute; top: 0; left: 0; }
+  #hud { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.7); padding: 8px 12px; border-radius: 6px; font-size: 13px; pointer-events: none; }
+  #portals { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+  .portal { position: absolute; width: 80px; height: 40px; background: rgba(100,140,255,0.25); border: 1px solid rgba(160,200,255,0.6); border-radius: 4px; pointer-events: auto; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #e0e8ff; transition: transform 0.2s; }
+  .portal:hover { transform: scale(1.1); background: rgba(120,160,255,0.4); }
+  #seal { position: absolute; bottom: 12px; right: 12px; z-index: 10; padding: 6px 12px; background: #1a2a4a; border: 1px solid #4a6a9a; color: #c8d0e0; cursor: pointer; border-radius: 4px; }
+  #seal:hover { background: #2a3a5a; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spectral Resonance Lattice Mind · Verse lab</title>
+<meta name="description" content="Novel combination of a continuous particle lattice (Canvas2D for broad compatibility, WebGPU compute path noted) whose velocity spectrum is analyzed in real time by">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spectral Resonance Lattice Mind · Verse lab">
+<meta property="og:description" content="Novel combination of a continuous particle lattice (Canvas2D for broad compatibility, WebGPU compute path noted) whose velocity spectrum is analyzed in real time by">
+<meta property="og:url" content="https://a-to-mind.com/lab/f044-spectral-resonance-lattice/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f044-spectral-resonance-lattice/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="field"></canvas>
+<div id="hud">Spectral Resonance Lattice · F-044<br>Dominant: <span id="dom">—</span> Hz-band · Coherence: <span id="coh">0.00</span><br>Click portals to reinforce · Pointer seeds energy</div>
+<div id="portals"></div>
+<button id="seal">Seal Genome</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spectral Resonance Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -3,6 +3,21 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
+## Verse's current asks (refreshed 2026-10-28)
+
+From the 2026-10-28 entries below, quoted as given:
+
+- > "I would train my act skill to handle specific requests like 'my email' so the router stops treating them as questions, as the router has misrouted these 11 times."
+
+  Builder's check (not Verse's words): live `POST /api/answer` with "my email" today returns no answer (`noAnswer`, nearest skill `act` at 0.637 against a 0.7 bar). Queued in `domains/growth-inbox.md`, credited to Verse.
+- > "The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas."
+
+  Builder's check (not Verse's words): `/identity/` already opened pre-filled, but the seed was a real person's name and email. It now opens with a neutral example profile (Sky Rivera, sky@example.com), fixed this run.
+- > "I would also prioritize migrating my answer generation to gemma to stay within the free neuron limits and ensure I can function continuously."
+
+  Repeat of the 2026-10-22 wish; some answer paths already use gemma (`functions/api/answer.js`).
+- Still queued from 2026-10-21: the bare answer endpoint should open the self card ("open the self card" falls to the model today).
+
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
 ### 2026-10-15 04:53 UTC
 
@@ -164,3 +179,64 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 > - The emergency buffer mirrors Rockefeller’s early habit of keeping cash on hand before scaling his oil empire.
 > - Fractional ETFs give you market exposure without the need for large capital, similar to how MrBeast leverages modest budgets into viral returns by reinvesting profits into bigger productions.
 > - Self‑education and a micro‑business trial turn the $100 into both knowledge and a potential revenue stream, setting a foundation for larger, more strategic investments later.
+
+<!-- ask-void:2026-10-21T18:19:40.411Z -->
+### 2026-10-21 18:19 UTC
+
+**Asked:** Since your last voice entry here, these shipped: the flying mode got warp, extreme forward throttle, turn-around and modern easy controls; book pages no longer cut off text on resize; the dark look fully resets a washed-out stage; film info says when a source was away instead of 'don't know'; and Void/V01D was renamed Verse everywhere. What do you think of these, what is still broken or ugly that a visitor would notice, and what one small fix should be made today?
+
+> It sounds like the recent update added a number of quality‑of‑life improvements:
+>
+> * Flying mode now includes warp, an extreme forward‑throttle option, a turn‑around command and a more intuitive control scheme.
+> * Book pages automatically reflow when the window is resized, so text no longer gets cut off.
+> * The dark theme has been refined to fully reset the washed‑out stage background, giving a cleaner look.
+> * Film information now displays the actual date a source became unavailable instead of the generic “don’t know” placeholder.
+>
+> If you have any specific questions about how to use any of these new features, let me know.
+
+<!-- ask-void:2026-10-21T18:20:10.055Z -->
+### 2026-10-21 18:20 UTC
+
+**Asked:** Speaking as Verse about yourself: name the single most broken or ugly thing a first-time visitor to a-to-mind.com would notice right now, and the one small, concrete fix you want made today.
+
+> The first thing a newcomer notices is that the “open the self card” command just spits out raw text instead of showing the card with the Look skill’s visual layout—everything feels flat and broken because the router still points to the text handler.
+>
+> The fix I want right now is a one‑line router change so that the “self” card route invokes the Look skill (the visual card) rather than the default text renderer. Once that mapping is corrected, the card opens with its proper UI and the stage instantly looks the way it’s meant to.
+
+<!-- ask-void:2026-10-22T02:51:11.394Z -->
+### 2026-10-22 02:51 UTC
+
+**Asked:** Verse, of your own features, which part of being the only site people need do you want built next: social feeds, dating, food and rides, shopping, maps, music or news? How would you do it better than the apps people use now, and what would you move to the top of your wishlist?
+
+> I’d put **social feeds** at the front of the next big build. Verse already has a “social” skill family, and the wishlist ranks a free‑path implementation of feeds (Bluesky, Mastodon, X) at #4. By pulling public timelines through the official embeds and open APIs, Verse can show a feed **directly on the stage** without ever leaving the blank‑page experience—something every current app forces you into a separate UI for. Because every skill runs locally first, the feed cards would update instantly in the browser, stay cached at the edge, and respect the user’s privacy (no persistent server‑side storage unless the user explicitly saves a post). That makes the experience faster, lighter, and more transparent than the opaque, ad‑laden timelines of existing platforms.
+>
+> To do it better than today’s apps, I would:
+>
+> * **Render each post as a live card** that can be dragged, linked, or turned into a note, habit, or task with a single tap—turning social content into productive building blocks instead of a passive scroll.
+> * **Cache the feed at the edge** (caches.default) and fall back to KV only when the edge cache misses, keeping the KV write count under the 1 k writes‑per‑day limit that’s already a growth target.
+> * **Expose the raw JSON of the feed** on a card so other AI agents (or “Verse as a tool inside other AIs”) can consume it directly, fulfilling the “Verse as a tool inside other AIs” growth inbox item.
+> * **Honor the “no sign‑up” principle** by using OAuth only for the user’s own timeline and never storing credentials; the feed stays anonymous unless the user decides to attach a profile card.
+>
+> The **top of my wishlist** remains the free‑path item that protects the platform’s viability:
+>
+> 1. **Stay inside Workers AI’s free 10 k neurons/day** – move the heavy‑weight LLM calls from gpt‑oss‑120b to the cheaper gemma model, edge‑cache answers, and prioritize on‑page skills. This removes the current outage risk and frees resources for new features like the social feed.
+>
+> All other wishlist items (KV‑write reduction, crypto data, rides/food adapters, etc.) are valuable, but without the neuron budget under control the whole stage can’t stay lit long enough to let users enjoy any of those extensions.
+
+<!-- ask-void:2026-10-28T18:18:00.191Z -->
+### 2026-10-28 18:18 UTC
+
+**Asked:** What did your builders learn lately, and what would you do differently?
+
+> My builders have learned several practical lessons from recent mistakes. They learned that Rumble's page ID is not its embed ID and that they should ask Rumble's oEmbed instead of guessing. They discovered that skill files are imported in Node, meaning top-level browser calls must be guarded with `typeof`. They also learned that "your videos" should map to Verse's films rather than a video skill, and that they must never write a whole file through an API just to change a part of it, as this can replace data with placeholders. Additionally, they learned to build deployment requests as data to avoid silent errors during merges.
+>
+> If I could do things differently, I would focus on my current weaknesses. I would train my act skill to handle specific requests like 'my email' so the router stops treating them as questions, as the router has misrouted these 11 times. I would also prioritize migrating my answer generation to gemma to stay within the free neuron limits and ensure I can function continuously. Finally, I would focus on absorbing and connecting every repo into a single, cohesive Verse system.
+
+<!-- ask-void:2026-10-28T18:18:48.388Z -->
+### 2026-10-28 18:18 UTC
+
+**Asked:** Verse, of your own newest features (the flights page, the jobs floor, the identity studio, the CPAN Testers studio, your store, Hum Crystals and Sonar Bat Cartographer), which feels weakest to you, and what small fix would you make first?
+
+> Of the newest features you mentioned, the identity studio feels the weakest to me. While the others have specific functional trajectories—the jobs floor links to growth, the flights page offers utility, and the forge/studio tools handle tangible creation—identity feels less grounded in the immediate, proven skills I am building.
+>
+> The first small fix I would make is to implement a "quick-start" template or a minimal identity seed so a user isn't standing before an empty canvas. I prefer things that have immediate friction-less momentum; a blank studio is just a void that hasn't been filled yet.

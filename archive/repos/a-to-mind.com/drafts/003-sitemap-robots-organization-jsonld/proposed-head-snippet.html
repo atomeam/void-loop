@@ -1,0 +1,36 @@
+<!--
+  Run 003 hold-gate snippet. Paste into index.html <head> only after seal.
+  Compact sorted JSON SHA-256: 17850281ae09826001528c4c16c826f9884ee7806334cbe96391c5dea716110d
+  Short ledger SHA-256: b08287636d97b38d54c0b9102ed19965f3a0028a3a6242f20c083882aa68946f
+  Source of truth: organization.json in this folder. Keep the script text identical.
+  No logo, address, telephone, email, or foundingDate — those facts are not sealed.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://a-to-mind.com/#org",
+      "name": "A-to-Mind",
+      "url": "https://a-to-mind.com/",
+      "description": "Durable, hashed, human-gated execution. Tools stay default-deny.",
+      "sameAs": [
+        "https://github.com/atomeam",
+        "https://github.com/atomeam/a-to-mind.com"
+      ],
+      "publishingPrinciples": "https://a-to-mind.com/llms.txt"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://a-to-mind.com/#site",
+      "url": "https://a-to-mind.com/",
+      "name": "A-to-Mind",
+      "publisher": {
+        "@id": "https://a-to-mind.com/#org"
+      }
+    }
+  ]
+}
+</script>
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">

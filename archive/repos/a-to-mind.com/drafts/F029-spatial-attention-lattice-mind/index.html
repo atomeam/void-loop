@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-029 Spatial Attention Lattice Mind — Void Frontier</title>
+<style>
+:root {
+  --hue: 220;
+  --scale: 1;
+  --filter: 0;
+}
+body {
+  margin: 0;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  transition: filter 0.4s, transform 0.4s;
+}
+#hud {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: rgba(20,20,40,0.7);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--hue), 70%, 60%, 0.5);
+  backdrop-filter: blur(8px);
+  transform: scale(var(--scale)) rotate(calc(var(--filter) * 2deg));
+  transition: all 0.3s ease;
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+}
+button {
+  background: #2a2a50;
+  color: white;
+  border: 1px solid #5a5a9a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin: 4px;
+  cursor: pointer;
+}
+button:hover { background: #3a3a70; }
+#status { font-size: 0.85rem; opacity: 0.8; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <strong>F-029 Spatial Attention Lattice Mind</strong>
+  <div id="status">Mind initializing…</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Field</button>
+  <div style="font-size:0.75rem; margin-top:8px; opacity:0.7">
+    Pointer injects energy. Orientation (if allowed) biases attention. Mind evolves local rule weights for diversity + interaction.
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const hud = document.getElementById('hud');
+
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+window.addEventListener('resize', () => {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+});
+
+const GRID = 48;
+const cellW = () => W / GRID;
+const cellH = () => H / GRID;
+
+let field = new Float32Array(GRID * GRID);
+let next = new Float32Array(GRID * GRID);
+let weights = [0.8, 0.15, 0.05, 0.3, 0.6, 0.1, 0.4, 0.2]; // 8 params for local attention-ish rule
+
+function idx(x, y) { return y * GRID + x; }
+function initField() {
+  for (let i = 0; i < field.length; i++) field[i] = Math.random() * 0.2;
+  // seed some peaks
+  for (let k = 0; k < 8; k++) {
+    const x = (Math.random()*GRID)|0, y = (Math.random()*GRID)|0;
+    field[idx(x,y)] = 0.8 + Math.random()*0.2;
+  }
+}
+initField();
+
+let pointer = {x: W/2, y: H/2, active: false};
+canvas.addEventListener('pointermove', e => {
+  pointer.x = e.clientX;
+  pointer.y = e.clientY;
+  pointer.active = true;
+});
+canvas.addEventListener('pointerdown', e => {
+  pointer.active = true;
+  const cx = (e.clientX / cellW()) | 0;
+  const cy = (e.clientY / cellH()) | 0;
+  if (cx >= 0 && cx < GRID && cy >= 0 && cy < GRID) {
+    field[idx(cx,cy)] = 1.0;
+    next[idx(cx,cy)] = 1.0;
+  }
+});
+
+let orient = {beta: 0, gamma: 0};
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = (e.beta || 0) / 90;
+    orient.gamma = (e.gamma || 0) / 90;
+  });
+}
+
+// Audio
+let audioCtx, oscillators = [];
+function startAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i = 0; i < 4; i++) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 110 + i * 55;
+    gain.gain.value = 0.02;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    oscillators.push({osc, gain});
+  }
+}
+document.body.addEventListener('click', startAudio, {once: true});
+
+// Worker mind
+const workerCode = `
+let pop = [];
+const POP = 6;
+function randomWeights() {
+  return Array.from({length: 8}, () => Math.random() * 1.2 - 0.2);
+}
+function mutate(w) {
+  return w.map(v => v + (Math.random()-0.5)*0.15);
+}
+function fitness(stats) {
+  // reward diversity (entropy proxy) + interaction (pointer density)
+  const diversity = stats.var || 0;
+  const interact = stats.ptrDensity || 0;
+  return diversity * 0.6 + interact * 0.4 + (stats.mean || 0) * 0.1;
+}
+self.onmessage = (e) => {
+  const {stats, current} = e.data;
+  if (!pop.length) {
+    pop = Array.from({length: POP}, () => ({w: randomWeights(), f: 0}));
+    pop[0].w = current || randomWeights();
+  }
+  // evaluate current
+  const f = fitness(stats);
+  // simple evolutionary: replace worst with mutant of best
+  pop.forEach(p => { if (p.w === current) p.f = f; });
+  pop.sort((a,b) => b.f - a.f);
+  const best = pop[0];
+  const worst = pop[pop.length-1];
+  worst.w = mutate(best.w);
+  worst.f = 0;
+  self.postMessage({weights: best.w, fitness: best.f, gen: Date.now()});
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let mindFitness = 0.3;
+
+worker.onmessage = (e) => {
+  weights = e.data.weights;
+  mindFitness = e.data.fitness || mindFitness;
+  updateMorph();
+};
+
+function updateMorph() {
+  const hue = 180 + mindFitness * 160;
+  const scale = 0.92 + mindFitness * 0.18;
+  const filt = mindFitness * 0.6;
+  document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--scale', scale);
+  document.documentElement.style.setProperty('--filter', filt);
+  hud.style.borderColor = `hsla(${hue}, 70%, 60%, 0.7)`;
+  if (oscillators.length) {
+    oscillators.forEach((o, i) => {
+      o.osc.frequency.setTargetAtTime(80 + mindFitness * 200 + i * 40 + (weights[i%8]||0)*30, audioCtx.currentTime, 0.2);
+      o.gain.gain.setTargetAtTime(0.01 + mindFitness * 0.04, audioCtx.currentTime, 0.2);
+    });
+  }
+}
+
+// Lattice step: attention-like local update using weights
+function step() {
+  const w = weights;
+  let sum = 0, sum2 = 0, ptrHits = 0, count = 0;
+  const pcx = (pointer.x / cellW()) | 0;
+  const pcy = (pointer.y / cellH()) | 0;
+
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = idx(x, y);
+      let acc = 0, wsum = 0.001;
+      // local neighborhood attention proxy
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = (x + dx + GRID) % GRID;
+          const ny = (y + dy + GRID) % GRID;
+          const ni = idx(nx, ny);
+          const sim = 1 - Math.abs(field[i] - field[ni]);
+          const att = Math.exp(sim * (w[0] || 0.5));
+          acc += field[ni] * att * (w[1 + ((dx+1)*3 + (dy+1)) % 7] || 0.1);
+          wsum += att;
+        }
+      }
+      let v = (acc / wsum) * (w[7] || 0.8) + field[i] * (1 - (w[6] || 0.2));
+      // pointer injection
+      const d = Math.hypot(x - pcx, y - pcy);
+      if (d < 3) v += 0.15 * (1 - d/3) * (pointer.active ? 1 : 0.3);
+      // orientation bias
+      v += orient.gamma * 0.02 * (x/GRID - 0.5) + orient.beta * 0.02 * (y/GRID - 0.5);
+      v = Math.max(0, Math.min(1, v));
+      next[i] = v;
+      sum += v; sum2 += v*v; count++;
+      if (d < 4) ptrHits++;
+    }
+  }
+  // swap
+  const tmp = field; field = next; next = tmp;
+
+  const mean = sum / count;
+  const var_ = sum2 / count - mean*mean;
+  const ptrDensity = ptrHits / count;
+
+  // send to mind occasionally
+  if (Math.random() < 0.08) {
+    worker.postMessage({stats: {mean, var: Math.max(0,var_), ptrDensity}, current: weights});
+  }
+
+  statusEl.textContent = `fitness ${(mindFitness*100|0)/100}  mean ${(mean*100|0)/100}  var ${(var_*100|0)/100}`;
+}
+
+function draw() {
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0, 0, W, H);
+  const cw = cellW(), ch = cellH();
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const v = field[idx(x,y)];
+      if (v < 0.05) continue;
+      const hue = 200 + v * 80 + mindFitness * 40;
+      ctx.fillStyle = `hsla(${hue}, 80%, ${30 + v*50}%, ${0.4 + v*0.6})`;
+      ctx.fillRect(x * cw, y * ch, cw - 1, ch - 1);
+    }
+  }
+  // pointer marker
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.beginPath();
+  ctx.arc(pointer.x, pointer.y, 8, 0, Math.PI*2);
+  ctx.stroke();
+}
+
+function loop() {
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// Seal
+document.getElementById('seal').onclick = async () => {
+  const data = JSON.stringify({weights, fitness: mindFitness, t: Date.now()});
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  try {
+    const req = indexedDB.open('void-f029', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('seals', {keyPath: 'id'});
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction('seals', 'readwrite');
+      tx.objectStore('seals').put({id: hex, weights, fitness: mindFitness, ts: Date.now()});
+      statusEl.textContent = `Sealed ${hex}`;
+    };
+  } catch(e) {
+    statusEl.textContent = `Seal hash ${hex} (IDB failed)`;
+  }
+};
+document.getElementById('reset').onclick = () => { initField(); statusEl.textContent = 'Field reset'; };
+</script>
+</body>
+</html>

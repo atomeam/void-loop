@@ -2,7 +2,7 @@
 // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, Apps Script, a script, a webhook, anything: Verse reads what was
 // pasted (error, config, steps), names the likely cause and gives the concrete fix or the corrected config. The fix is the answer.
 // Nothing here names or prices a product; any product line comes afterwards, from the live catalog (lib/gumroad.js).
-import { isBuildersReport } from './telemetry.js';
+import { isBuildersReport, isStatusReport } from './telemetry.js';
 
 const TROUBLE = /\b(broken|broke|breaks|breaking|fail(s|ed|ing|ure)?|not (working|running|firing|triggering|sending|syncing)|stopped (working|running|firing|triggering|sending|syncing)|(isn'?t|is not|aren'?t|doesn'?t|does not|won'?t|didn'?t|never) (work|run|fire|trigger|send|sync|start)s?|errors?|erroring|crash(es|ed|ing)?|stuck|dead|keeps? (failing|breaking|erroring|timing out)|times? out|timed out|timing out|returns? (a )?[45]\d\d|[45]\d\d error|fix|debug|repair|troubleshoot|double[- ]send(s|ing)?|duplicat(e|es|ing))\b/i;
 const THING = /\b(automations?|automated|workflows?|integrations?|webhooks?|web hooks?|scripts?|cron( jobs?)?|crontab|jobs?|scenarios?|zaps?|zapier|flows?|power automate|pipelines?|github actions?|actions? (workflow|run)|triggers?|bots?|syncs?|n8n|make\.com|make scenario|ifttt|applets?|apps script|lambdas?|cloud functions?|scheduled tasks?|task scheduler|macros?|api calls?|endpoints?|recipes?|pipedream|workato|tray\.io|airflow|dags?)\b/i;
@@ -33,6 +33,7 @@ export function intentOf(text) {
   const s = String(text || '').trim(), evidence = errorEvidence(s);
   if (isBuildersReport(s)) return { intent: 'report', evidence }; // a builder's report on CI and pull requests that quotes a timeout is the telemetry route's, not a fix (owner, 2026-10-18)
   if (evidence.length) return { intent: 'incident', evidence };
+  if (isStatusReport(s) && [null, 'script'].includes(platformOf(s))) return { intent: 'report', evidence }; // a pasted status report: what changed, what waits, the next step (owner, 2026-10-29)
   const sentences = (s.match(/[.!?](?:\s|$)/g) || []).length, design = (s.match(DESIGN) || []).length;
   if (s.length >= 400 && sentences >= 4 && design >= 3) return { intent: 'discussion', evidence };
   // A builder's own progress note ("I've reverted it", "the checks are running", "nothing is pushed yet"): first person, a run of

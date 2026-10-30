@@ -29,7 +29,7 @@ Claude and Grok Bot agreed (2026-10-15) that every job has one engine, and every
 | **Learner** | `lib/learn.js` | `tools/learn*.mjs`, review-learn, grow, gaps, misses snapshot, the reflection loop | either |
 | **Card / stage** | `showPage` + `.vpage` shell, `.thing` on the stage | `skills/side-card.js`, `skills/lift3d.js`, the 5 copies of `el()`, the per-skill inline card styles | Grok Bot (design phase 2) |
 | **3D** | `skills/scene3d.js` (one WebGL renderer, three r180) | `figures3d.js`'s second context, `draw.js`'s XR renderer, `void-ring.js` and `splat.js` raw WebGL, `calendar3d.js` CSS 3D, `sky3d.js` (already shared) | Grok Bot |
-| **Data** | D1 via one `lib/db.js` (new) | `ensureTables` in `store-db.js` and `void-me.js`, the `TABLE` strings in functions, localStorage keys spread across `void.html` | after store merges |
+| **Data** | D1 via one lib/db.js (planned) | `ensureTables` in `store-db.js` and `void-me.js`, the `TABLE` strings in functions, localStorage keys spread across `void.html` | after store merges |
 | **Media** | `lib/video.js` (parse + embed) | `skills/video.js`, `video-play.js`, `films.js`, `film-metadata.js`, `functions/api/{video,films,film-review}.js`, `tools/{clips,record,film-post,youtube}.mjs` | after the Films/Verse Tube and video-learning tracks land |
 | **Ask text** | `lib/ask-text.js` (**shipped, step 1**) | 30 copies of `CLEAN` | done for 23 |
 
@@ -40,20 +40,20 @@ Found by hashing every top-level function body (whitespace stripped) across skil
 | What | Copies | Files | Merge into |
 | --- | --- | --- | --- |
 | The ask tidier `CLEAN` (trim, drop trailing ?!., collapse spaces, maybe lower-case) | 30 (3 identical forms in 23 files, 7 variants) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral; variants in worldtime, releasenotes, calendar, growth, showcase, different, feelings | `lib/ask-text.js` (**done for 23**; the 7 variants next, with an `apostrophes` option) |
-| Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | `lib/owner-client.js` |
+| Owner token from localStorage | 6 | actions, memory, proposal, automations, watch, status (`ownerKey`) | lib/owner-client.js (planned) |
 | `el(tag, attrs, kids)` DOM helper | 5 | actions, memory, proposal, automations, watch | the card system |
-| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` sibling `lib/when.js` |
-| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | `lib/http.js` |
+| `asOf` (a reading's age in words) | 3 | air, pollen, uv | `lib/ask-text.js` sibling lib/when.js (planned) |
+| `json(body, status)` response | 3 | functions/api/bench, share/[room], share/index | lib/http.js (planned) |
 | `modelsOn(env)` | 3 | functions/api/answer, review, figurescript | `lib/models.js` (Claude) |
 | `hex` / `b64u` | 3 + 2 | lib/guard, automations-run, review-api; functions/api/films | `lib/guard.js` (Claude) |
 | `pick` | 2 + 2 | api/reflect + answer; api/figurescript + will | `lib/models.js` |
 | `save3mf` | 2 | print-download, print-file | one print module |
-| `ensureTables` | 2 | lib/store-db, lib/void-me | `lib/db.js` |
-| `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | `lib/cycle.js` |
+| `ensureTables` | 2 | lib/store-db, lib/void-me | lib/db.js (planned) |
+| `short`, `add` (cycle date maths) | 3 + 3 | period, ovulation, pregnancy | lib/cycle.js (planned) |
 | `slug` | 2 | api/reflect, api/will | `lib/ask-text.js` |
 | `seatsFor` | 2 | sorry-rules, aggravation | the board-game rules base |
 | `urlOf` | 2 | image, link | `lib/ask-text.js` |
-| `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | `lib/db.js` |
+| `ready` (D1 table guard) | 2 | lib/film-reviews, api/support | lib/db.js (planned) |
 | WebGL contexts | 5 kinds | scene3d, figures3d, draw (XR), void-ring, splat | `scene3d.js` |
 | Card shells | 4 | `.vpage` (showPage), `.thing` stage cards, side-card, lift3d | one stage system |
 | Video/film pieces | 13 files | see Media row | `lib/video.js` + one media route |
@@ -76,8 +76,8 @@ Rules for every merge: one PR per row; a snapshot test proves the callers behave
 
 1. **Ask text** (shipped): `lib/ask-text.js`, 23 skills. Smallest, most copied, zero risk.
 2. **Ask text, the 7 variants** (apostrophe and comma forms) + `slug`, `urlOf`, `asOf`: same file family, same proof.
-3. **Small server helpers**: `lib/http.js` (`json`), `lib/db.js` (`ensureTables`, `ready`). Wait for the store track to land first.
-4. **Owner client + `el()`**: one `lib/owner-client.js` and a card helper; five skills.
+3. **Small server helpers**: lib/http.js (planned) (`json`), lib/db.js (planned) (`ensureTables`, `ready`). Wait for the store track to land first.
+4. **Owner client + `el()`**: one lib/owner-client.js (planned) and a card helper; five skills.
 5. **Router**: Claude folds `modelsOn`/`pick` into `lib/models.js` and the inline matchers left in `void.html` into skills behind the router.
 6. **Budget**: Claude folds `hex`/`b64u` and rate limits into `lib/guard.js`.
 7. **One card shell** (design phase 2): `.vpage` and `.thing` share one component; side-card and lift3d become its "beside a 3D object" layout.
@@ -89,6 +89,13 @@ Each step that lands moves its row to **Done** below and its line to **Just fini
 
 ## Done
 
+- **Shop, one family (lists run 7, 2026-10-28)**: `skills/shop.js` makes one routing entry (rank 1035) of store and services, which both took "what can i buy" and "pricing" (tools/skill-overlap.mjs listed them as a merge candidate; now "same family"). store is asked first as before (it was 1035, services 1040), so every ask lands on the same member; both files, examples and near misses stay, and the page still logs skill:store / skill:services (aliases). The page's priced-services line now finds services inside its family. Route snapshot over 5,461 asks: 0 moved, 0 new misses. Listed skills 299 -> 298. Test: `tools/shop-family.test.mjs`.
+- **Night sky into time (lists run 6, 2026-10-28)**: `skills/time.js` now takes in nightsky right after sky, so the family makes one routing entry where sky and night-sky were two; both took "show me the sky" and "sky tonight" (tools/skill-overlap.mjs). sky answers the shared asks, nightsky keeps its own examples and "hide the sky". `night-sky` is gone from skills/index.json and skills/order; the route snapshot shows 0 moved and 0 new misses over 5,457 asks; tools/sky-world-family.test.mjs.
+- **Rooms, one family (lists run 5, 2026-10-22)**: `skills/rooms.js` makes one routing entry (rank 0370) of room, walls and home. room and home both took "paint and carpet a 12x14 room" (tools/skill-overlap.mjs listed them as a merge candidate), and room's whole-room card is built on walls and home, so the three were one job in three places. They sat side by side (0370, 0380, 0390) and are asked in that order, so every ask lands on the same member; all three files, examples, near misses and follow-ups stay, and the page still logs skill:room / skill:walls / skill:home (aliases). Route snapshot over 5,034 asks: 0 moved, 0 new misses. Listed skills 271 -> 269. Test: `tools/rooms-family.test.mjs`.
+- **Stage out, one family (lists run 4, 2026-10-21)**: `skills/stage-out.js` makes one routing entry (rank 1490) of stage-print and stage-export, which both took "print the stage" (tools/skill-overlap.mjs listed them as a merge candidate). stage-print is asked first as before, so every ask lands on the same member; both files, examples and near misses stay, and the page still logs skill:stage-print / skill:stage-export (aliases). Route snapshot over 5,007 asks: 0 moved, 0 new misses. Test: `tools/stage-out-family.test.mjs`.
+- **List starters, one family (lists run 3, 2026-10-21)**: `skills/list-starters.js` makes one routing entry (rank 0451) of template-list and list-templates, which both took "packing list template" (tools/skill-overlap.mjs listed them as a merge candidate). template-list is asked first as before, so every ask lands on the same member; both files, examples and near misses stay, and the page still logs skill:template-list / skill:list-templates (aliases). Route snapshot over 5,007 asks: 0 moved, 0 new misses. Test: `tools/list-starters-family.test.mjs`.
+- **Languages, one family (lists run, 2026-10-21)**: `skills/languages.js` makes one routing entry (rank 0190) of spanish and translate, which both took "answer me in Spanish" (tools/skill-overlap.mjs listed them as a merge candidate; now "same family"). spanish is asked first as before, so every ask lands on the same member; both files, examples and near misses stay, and the page still logs skill:spanish / skill:translate (aliases). Listed skills 273 -> 270 (the merge, and the two names `decision-log` and `memory-preview` that had no file and no order file). Test: `tools/languages-family.test.mjs` (every example of both lands where it did before).
+- **Sunrise and sunset, one owner each (lists run 2, 2026-10-21)**: suntimes and worldtime both answered a bare "sunrise" or "when is sunset" (the overlap check failed on main). The bare ask is suntimes' (it reads where you are and adds day length and twilight); worldtime keeps every ask that names a place ("sunset in Paris"). Every old wording still answers; `tools/sky-skills.test.mjs` locks both sides. The same run narrowed decision-matrix to asks that name a decision matrix or decision grid, so "france vs spain", "show the grid" and "2x2 matrix" stay with country, stage-arrange and decide-cards (`tools/decision-matrix-narrow.test.mjs`); the overlap allowance is 68 known pairs.
 - **Time, weather and sky as one family (2026-10-15)**: `sky-weather` folded into `time` at rank 131 (timer and clock move from 13 to 131, after convert, so "temperature converter" stays convert's); the sky-weather skill file removed (it only grouped imports). Listed skills **129 -> 128**; route snapshot over 3,411 asks: 0 moved, 0 new misses. `dates` stays its own family until calendar's match is narrowed.
 - **Skill families, time and sky (2026-10-15)**: owner: "existing skills should merge". `lib/skill-family.js` makes one routing entry out of several member skills, asked in their old order; `part()` names the member, so the page's log, misses and the benchmark still read `skill:<member>`. Three families: `sky-weather` (sky, moontonight, aurora-tonight, eclipse, meteors, constellation, weather, air, uv, quake, pollen), `time` (timer, clock, worldtime, suntimes, remind) and `dates` (calendar, today, holidays, countdown). Listed skills: **146 -> 129**. Measured with `tools/route-snapshot.mjs` over every example and near miss (member level) plus every bench.json ask, 3,411 asks: 2,344 land right before and after, **0 moved, 0 new misses**. `tools/skill-family.test.mjs` checks each member's examples and near misses through the whole order. Members keep their files (their own tests import them); `/tools.json` and `tools/families.mjs` read a family's `parts:` line, so agents and ratings still see each member.
 - **Step 1, ask text (2026-10-15)**: `lib/ask-text.js` (`clean`, `cleanLower`) replaces 23 copies. `tools/ask-text.test.mjs` checks both against all three old forms on 2,000+ strings and that every merged skill still matches its examples; a one-off before/after run of `match()` over 389 asks in those 23 skills was byte-identical to main.

@@ -323,8 +323,9 @@ test('the stage watch: a baseline, then adds, edits and dismissals go to the log
   const fake = { things: () => things, snapshot() { this.snapped = true; }, select() {}, save() {}, render() {} };
   const id = putBack(fake, readJson(PILE_KEY, [])[0]);
   assert.equal(id, 'b'); assert.equal(things.b.title, 'tea'); assert.ok(fake.snapped);
-  r = lookNow(api);
-  assert.deepEqual(r.added, ['b']); assert.equal(readJson(PILE_KEY, []).length, 0);
+  // putBack records the restore itself (a quick second dismissal used to cancel it out before the watcher looked)
+  assert.equal(readJson(CHANGES_KEY, [])[0].op + ':' + readJson(CHANGES_KEY, [])[0].id, 'add:b'); assert.equal(readJson(PILE_KEY, []).length, 0);
+  assert.deepEqual(lookNow(api).added, [], 'already recorded');
   // a taken id gets a new one
   const id2 = putBack(fake, { thing: { id: 'a', kind: 'sticky', text: 'dup' } });
   assert.notEqual(id2, 'a'); assert.equal(things.a.text, 'one!');

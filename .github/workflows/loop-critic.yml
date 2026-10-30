@@ -1,0 +1,20 @@
+# Self-critique before ship (docs/LOOP-GAPS.md): tools/loop-critic.mjs reads the lines a pull request adds to what visitors
+# see and annotates cut-off text, vague counts, roleplay and unverified claims. A finding fails the check, so a pull
+# request with one does not merge (grow-self's lines are refined by tools/loop-refine.mjs first).
+name: Loop critic
+on:
+  pull_request:
+    paths: ['void-live-deploy/**', 'void.html']
+permissions:
+  contents: read
+jobs:
+  critic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0, persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - shell: bash
+        run: node tools/loop-critic.mjs "origin/${{ github.base_ref }}" | tee -a "$GITHUB_STEP_SUMMARY"; exit "${PIPESTATUS[0]}"

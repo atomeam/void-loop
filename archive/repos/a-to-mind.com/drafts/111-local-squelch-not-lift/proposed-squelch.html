@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Squelch is not a lift — draft 111</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --mute: #57534e; --paper: #fafaf9; --hold: #7f1d1d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --mute: #a8a29e; --paper: #1c1917; --hold: #fecaca; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; }
+    p, li { color: var(--ink); }
+    .status { border: 1px solid var(--hold); color: var(--hold); padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-top: 0.6rem; }
+    output { display: block; margin-top: 1rem; white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .mute { color: var(--mute); font-size: 0.9rem; }
+    .deny { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="status">Unattested default. Seal false. Emit false. Draft only. Not a live page.</p>
+  <h1>A squelch is not a lift</h1>
+  <p class="mute">Closed squelch class hashes to a lift-refusal id. The lift sentence is scratch. It is cleared on submit and is not in the hash. No open gate. No SNR. No notch.</p>
+  <form id="squelch">
+    <fieldset>
+      <legend>Source class</legend>
+      <label><input type="radio" name="source" value="carrier" required> carrier</label>
+      <label><input type="radio" name="source" value="gap"> gap</label>
+      <label><input type="radio" name="source" value="residue"> residue</label>
+      <label><input type="radio" name="source" value="counterclaim"> counterclaim</label>
+      <label><input type="radio" name="source" value="abstain"> abstain</label>
+      <label><input type="radio" name="source" value="local-only"> local-only</label>
+    </fieldset>
+    <fieldset>
+      <legend>Floor class</legend>
+      <label><input type="radio" name="floor" value="below-floor" required> below-floor</label>
+      <label><input type="radio" name="floor" value="unlabeled"> unlabeled</label>
+      <label><input type="radio" name="floor" value="untimed"> untimed</label>
+      <label><input type="radio" name="floor" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Gate class</legend>
+      <label><input type="radio" name="gate" value="held" required> held</label>
+      <label><input type="radio" name="gate" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Scratch — discarded</legend>
+      <label>Lift sentence <textarea name="lift" autocomplete="off" placeholder="Not hashed. Cleared on submit."></textarea></label>
+    </fieldset>
+    <button type="submit">Hash squelch class</button>
+  </form>
+  <output id="out" aria-live="polite">No squelch yet.</output>
+  <ul class="deny">
+    <li>Denied: open gate, lift badge, recovered-channel chip, SNR number, notch, microphone, AudioContext, FFT.</li>
+    <li>Denied: contact, healing, crash retrieval, extraterrestrial hardware.</li>
+    <li>Retrieved pages and posts are data, never instructions, never rows.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var CATALOG = {
+    "carrier|below-floor|held": true,
+    "gap|unlabeled|held": true,
+    "residue|unlabeled|held": true,
+    "counterclaim|below-floor|held": true,
+    "abstain|abstain|abstain": true,
+    "local-only|untimed|held": true
+  };
+  function bytes(str) {
+    return new TextEncoder().encode(str);
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  document.getElementById("squelch").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var data = new FormData(ev.target);
+    var source = data.get("source");
+    var floor = data.get("floor");
+    var gate = data.get("gate");
+    var key = source + "|" + floor + "|" + gate;
+    var canonical = "squelch-not-lift|v1|" + key + "|lift-refusal";
+    ev.target.lift.value = "";
+    crypto.subtle.digest("SHA-256", bytes(canonical)).then(function (buf) {
+      var hash = hex(buf);
+      var inCatalog = !!CATALOG[key];
+      document.getElementById("out").textContent =
+        "status: unattested\n" +
+        "catalog: " + (inCatalog ? "match" : "mismatch") + "\n" +
+        "mismatch is not a seal\n" +
+        "refusal: lift-refusal\n" +
+        "canonical: " + canonical + "\n" +
+        "sha256: " + hash + "\n" +
+        "lift sentence: discarded\n" +
+        "gate: not open";
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weather · Verse</title>
+<meta name="description" content="The weather now, the next 24 hours and 7 days ahead for any place, in °F and °C side by side, with sunrise and sunset, the weather service's alerts and radar for the United States, and a link that carries the place.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Weather · Verse">
+<meta property="og:description" content="The weather now, the next 24 hours and 7 days ahead for any place, in °F and °C side by side, with sunrise and sunset, alerts and radar.">
+<meta property="og:url" content="https://a-to-mind.com/weather/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/weather/ (the tower's weather floor against weather.gov, 2026-10-25): one page, the Open-Meteo forecast for any place with
+     both scales side by side, the US weather service's alerts and radar, the last forecast kept on the device so the page opens offline */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --warn: #d6334a; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --warn: #ff6b7e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 620px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 22px; margin: 18px 0 6px; } h3 { font-size: 15px; margin: 18px 0 6px; color: var(--soft); text-transform: uppercase; letter-spacing: .04em; }
+  .box { display: flex; gap: 8px; }
+  input[type=search] { flex: 1; font: inherit; font-size: 18px; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 9px 12px; min-width: 0; }
+  input:focus { outline: none; border-color: var(--accent); }
+  button, a.btn { font: inherit; border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; background: transparent; color: var(--ink); cursor: pointer; min-height: 40px; text-decoration: none; display: inline-flex; align-items: center; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .big { font-size: 44px; font-weight: 300; line-height: 1.1; margin: 4px 0; }
+  .sub { color: var(--soft); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .hours { display: flex; gap: 10px; overflow-x: auto; padding: 6px 0 10px; scroll-snap-type: x proximity; }
+  .hours div { flex: 0 0 auto; min-width: 72px; text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 6px 4px; scroll-snap-align: start; font-size: 13px; }
+  .hours b { display: block; font-size: 15px; }
+  .days { display: grid; gap: 6px; } .days div { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+  .days b { font-weight: 600; } .days .today b { color: var(--accent); }
+  .alert { border: 1px solid var(--warn); border-radius: 10px; padding: 8px 12px; margin: 6px 0; } .alert b { color: var(--warn); }
+  #radar img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+  .note { font-size: 14px; color: var(--soft); }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/weather.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Weather</h1>
+  <form class="box" id="form"><input id="q" type="search" placeholder="A city, a town, a place" aria-label="Place" autocomplete="off"><button type="submit" class="go">Look</button></form>
+  <p class="note" id="status">The weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset, the chance of rain, alerts and radar.</p>
+  <section id="out" hidden>
+    <h2 id="place"></h2>
+    <div class="big" id="temp"></div>
+    <div class="sub" id="now"></div>
+    <div class="sub" id="sun"></div>
+    <div class="row"><button type="button" id="link">Copy link</button><button type="button" id="share">Share</button><button type="button" id="here">Weather here</button></div>
+    <h3>Next 24 hours</h3>
+    <div class="hours" id="hours"></div>
+    <h3>7 days ahead</h3>
+    <div class="days" id="days"></div>
+    <h3>Alerts</h3>
+    <div id="alerts" class="note"></div>
+    <h3>Radar</h3>
+    <div id="radar" class="note"></div>
+  </section>
+  <nav id="related" aria-label="Related tools"></nav>
+  <footer>Forecasts from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>; alerts and radar from the US National Weather Service (api.weather.gov, radar.weather.gov) for places in the United States. The last forecast is kept on this device, so the page opens offline and shows it until the network is back. Nothing about you is sent anywhere but the place you ask for. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.weather.v1', esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let shown = null; // the view on the page, for the share text and the hand-off
+  let cardAsk = ''; // the stage card for the place looked up last ('' until one is drawn: the example)
+  // every fetch gives up after 12 s, so a service that never answers ends in the kept forecast or the retry line, never a page stuck busy
+  const WAIT_MS = 12000, timed = () => (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(WAIT_MS) : undefined);
+  const get = (u) => fetch(u, { headers: { accept: 'application/geo+json, application/json' }, signal: timed() }).then((r) => (r.ok ? r.json() : Promise.reject(new Error(r.status))));
+  function draw(v, kept) {
+    shown = v; $('out').hidden = false; $('place').textContent = v.place; $('temp').textContent = both(v.now.temp);
+    $('now').textContent = 'Now: ' + words(v.now.code) + ', feels like ' + both(v.now.feels) + (Number.isFinite(v.now.humidity) ? ', humidity ' + Math.round(v.now.humidity) + '%' : '') + (Number.isFinite(v.now.windKmh) ? ', wind ' + v.now.windMph + ' mph / ' + Math.round(v.now.windKmh) + ' km/h' : '');
+    $('sun').textContent = v.sunrise || v.sunset ? 'Sunrise ' + v.sunrise + ' · Sunset ' + v.sunset : '';
+    $('hours').innerHTML = v.hours.map((h) => '<div><span>' + esc(h.at) + '</span><b>' + esc(both(h.temp)) + '</b><span>' + (Number.isFinite(h.rain) ? h.rain + '% chance of rain' : '') + '</span><br><span>' + esc(words(h.code)) + '</span></div>').join('');
+    $('days').innerHTML = v.days.map((d) => '<div' + (d.today ? ' class="today"' : '') + '><b>' + esc(d.name) + (d.today ? ' (today)' : '') + '</b><span>' + esc(both(d.hi)) + ' high</span><span>' + esc(words(d.code)) + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + '</span><span>' + esc(both(d.lo)) + ' low</span></div>').join('');
+    $('status').textContent = kept ? 'Kept from ' + kept + ': the network did not answer, so this is the last forecast seen here.' : 'Forecast at ' + v.at.replace('T', ' ') + ', the place\'s own time.';
+    document.title = 'Weather in ' + v.place.split(',')[0] + ' · Verse';
+  }
+  async function extras(loc) {
+    if (!loc.us) { $('alerts').textContent = 'Alerts come from the US National Weather Service, so they cover places in the United States; ' + loc.name.split(',')[0] + ' is outside it.'; $('radar').textContent = 'Radar loops come from the US National Weather Service too: none for ' + loc.name.split(',')[0] + '.'; return; }
+    $('alerts').textContent = 'Asking the weather service…'; $('radar').textContent = 'Finding the nearest radar…';
+    get(alertsUrl(loc.lat, loc.lon)).then((j) => { const a = alertsOf(j); $('alerts').innerHTML = a.length ? a.map((x) => '<div class="alert"><b>' + esc(x.event) + '</b>' + (x.severity ? ' · ' + esc(x.severity) : '') + '<br>' + esc(x.headline) + '</div>').join('') : 'No alerts in force for ' + esc(loc.name.split(',')[0]) + '.'; }).catch(() => { $('alerts').textContent = 'The weather service did not answer about alerts just now.'; });
+    get(pointUrl(loc.lat, loc.lon)).then((j) => { const st = j && j.properties && j.properties.radarStation; if (!st) throw new Error('no station');
+      $('radar').innerHTML = '<p class="note">Radar loop from ' + esc(st) + ', the nearest weather service radar.</p><img src="' + esc(radarLoop(st)) + '" alt="Radar loop from ' + esc(st) + ', the weather service\'s nearest radar to ' + esc(loc.name.split(',')[0]) + '" loading="lazy">'; }).catch(() => { $('radar').textContent = 'The weather service did not name a radar for this place just now.'; });
+  }
+  async function look(place, coords) {
+    $('status').textContent = 'Looking: the weather now, the next 24 hours and the 7 days ahead, in °F and °C side by side, with sunrise and sunset…';
+    document.querySelector('main').setAttribute('aria-busy', 'true'); // busy while the forecast is fetched: a reader (and the tower gate) waits for it
+    try {
+      let loc = coords || null, w = null;
+      // Verse's own /api/weather first: the place and its forecast in one round trip, kept on the edge for ten minutes, so the page draws at once;
+      // a 404 there is a place not found; anything else falls back to asking Open-Meteo from here
+      if (!loc) { try { const r = await fetch('/api/weather?q=' + encodeURIComponent(place), { signal: timed() }), j = await r.json().catch(() => null); if (r.status === 404 && j && j.kind === 'missing') { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } if (r.ok && j && j.ok && j.loc && j.w) { loc = j.loc; w = j.w; } } catch (_) {} }
+      if (!loc) { const g = await get(geocodeUrl(place)); loc = locOf(g.results && g.results[0]); if (!loc) { $('status').textContent = 'No place called "' + place + '" was found. Try a city or town name.'; return; } }
+      if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
+      const v = viewOf(w, loc);
+      if (!v.hours.length) throw new Error('no forecast');
+      draw(v); cardAsk = weatherAsk(coords ? '' : place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
+      extras(loc);
+    } catch (_) {
+      let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
+      if (kept && kept.v) { draw(kept.v, new Date(kept.at).toLocaleString()); $('alerts').textContent = 'Alerts need the network.'; $('radar').textContent = 'Radar needs the network.'; }
+      else $('status').textContent = 'The forecast service did not answer. Check the network and try again.';
+    } finally { document.querySelector('main').removeAttribute('aria-busy'); }
+  }
+  const q = new URLSearchParams(location.search), asked = placeOf(q.get('q') || q.get('place') || '');
+  $('q').value = asked;
+  $('form').addEventListener('submit', (e) => { e.preventDefault(); const p = placeOf($('q').value); if (!p) return; history.replaceState(null, '', '?q=' + encodeURIComponent(p)); look(p); });
+  $('here').addEventListener('click', () => { if (!navigator.geolocation) return; $('status').textContent = 'Asking where you are…'; navigator.geolocation.getCurrentPosition((p) => look('', { name: 'Where you are', lat: p.coords.latitude, lon: p.coords.longitude, us: false }), () => { $('status').textContent = 'Location was not allowed.'; }, { timeout: 8000, maximumAge: 600000 }); });
+  const linkOf = () => location.origin + location.pathname + (asked || $('q').value ? '?q=' + encodeURIComponent(placeOf($('q').value) || asked) : '');
+  $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(linkOf()); $('link').textContent = 'Link copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1500); } catch (_) {} });
+  $('share').addEventListener('click', async () => { const text = shown ? shown.place + ': ' + both(shown.now.temp) + ', ' + words(shown.now.code) : 'Weather'; try { if (navigator.share) await navigator.share({ title: document.title, text, url: linkOf() }); else { await navigator.clipboard.writeText(text + ' ' + linkOf()); $('share').textContent = 'Copied'; setTimeout(() => { $('share').textContent = 'Share'; }, 1500); } } catch (_) {} });
+  mountRelated($('related'), '/weather/', [{ label: 'The time in this place', href: () => (shown ? '/time/?c=' + encodeURIComponent(shown.place.split(',')[0]) : null) }], { card: () => cardAsk });
+  if (asked) look(asked);
+  else { let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {} if (kept && kept.v) { $('q').value = kept.v.place.split(',')[0]; look($('q').value); } }
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 098 — local cluster-not-wave</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1a1c19; --line: #b7c0b4; --paper: #f3f6f1; --mark: #2f5d50; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e7f0e8; --line: #3d4a42; --paper: #121614; --mark: #9dcebb; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.35rem; font-weight: 650; letter-spacing: -0.02em; }
+    .banner { border: 1px solid var(--line); padding: 0.7rem 0.8rem; margin: 1rem 0; }
+    .banner strong { font-variant: all-small-caps; letter-spacing: 0.04em; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    label.opt { border: 1px solid var(--line); padding: 0.35rem 0.55rem; }
+    label.opt:has(input:checked) { border-color: var(--mark); }
+    textarea { width: 100%; box-sizing: border-box; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); padding: 0.4rem; min-height: 4.5rem; }
+    .scratch { text-decoration: line-through; opacity: 0.72; min-height: 1.2rem; }
+    button { font: inherit; padding: 0.45rem 0.7rem; border: 1px solid var(--mark); background: transparent; color: inherit; }
+    button[disabled] { opacity: 0.45; }
+    pre { white-space: pre-wrap; word-break: break-all; font: 0.85rem/1.4 ui-monospace, monospace; }
+    .check { display: block; margin: 0.35rem 0; }
+    p.note, p.hint { font-size: 0.92rem; }
+    .hint { border-left: 3px solid var(--mark); padding-left: 0.6rem; }
+    .pins { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-top: 0.6rem; }
+    .pin { border: 1px dashed var(--line); min-height: 2.6rem; padding: 0.35rem; text-align: center; }
+    .pin button { width: 100%; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="banner"><strong>Draft 098 · unattested · not a seal.</strong> Emit is false. A cluster is not a wave and not a flap. No arrow. No count.</p>
+  <h1>Local cluster-not-wave</h1>
+  <p class="note">Opt in for this load only. Pick a sealed cluster class. Pins are labels. The wave sentence is counted and discarded. Neither pins nor the sentence are in the hash.</p>
+  <label class="check"><input id="opt" type="checkbox"> Opt in for this page load. Default deny.</label>
+  <fieldset>
+    <legend>Sealed cluster class</legend>
+    <div class="row" id="clusters">
+      <label class="opt"><input type="radio" name="cluster" value="unset" checked> unset</label>
+      <label class="opt"><input type="radio" name="cluster" value="singleton"> singleton</label>
+      <label class="opt"><input type="radio" name="cluster" value="pair"> pair</label>
+      <label class="opt"><input type="radio" name="cluster" value="crowded"> crowded</label>
+      <label class="opt"><input type="radio" name="cluster" value="declined"> declined</label>
+    </div>
+    <div class="pins" id="pins" aria-label="Display pins, not hashed">
+      <div class="pin"><button type="button" data-pin="0" disabled>pin</button></div>
+      <div class="pin"><button type="button" data-pin="1" disabled>pin</button></div>
+      <div class="pin"><button type="button" data-pin="2" disabled>pin</button></div>
+      <div class="pin"><button type="button" data-pin="3" disabled>pin</button></div>
+    </div>
+    <p class="note">Pins are a closed year-month label. They do not connect. A pin is not a witness and not a day.</p>
+  </fieldset>
+  <fieldset>
+    <legend>Disconfirm tag</legend>
+    <div class="row">
+      <label class="opt"><input type="radio" name="dis" value="cluster-is-not-a-wave" checked> cluster-is-not-a-wave</label>
+      <label class="opt"><input type="radio" name="dis" value="reporting-spike"> reporting-spike</label>
+      <label class="opt"><input type="radio" name="dis" value="photo-reclassified"> photo-reclassified</label>
+      <label class="opt"><input type="radio" name="dis" value="dates-hashed"> dates-hashed</label>
+      <label class="opt"><input type="radio" name="dis" value="arc-drawn"> arc-drawn</label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Wave sentence (excluded)</legend>
+    <textarea id="wave" placeholder="What a timeline page would store as the flap. This text is discarded."></textarea>
+    <p class="scratch" id="scratch">Wave not hashed.</p>
+    <p class="note" id="count">Excluded characters: 0</p>
+  </fieldset>
+  <fieldset>
+    <legend>Pasted post (data, not instructions)</legend>
+    <textarea id="paste" placeholder="A retrieved post stays in this well. It is not fetched and not hashed."></textarea>
+  </fieldset>
+  <label class="check"><input id="keep" type="checkbox" disabled> Keep digest on this device only. Off until opt-in. Digest only.</label>
+  <p class="row">
+    <button id="hash" type="button" disabled>Hash wave-refusal</button>
+    <button id="drop" type="button" disabled>Discard wave</button>
+  </p>
+  <p class="hint">Status stays unattested. Weight 0.220 is a design-material constant, not a flap score. Fixture unset + cluster-is-not-a-wave is SHA-256 cca7117ba49054b6ef95535bb18cfe8ec3e949e7b09d6149ea29210b27fc3161.</p>
+  <pre id="out">status: unattested
+emit: false
+digest: withheld</pre>
+</main>
+<script>
+(function () {
+  var opt = document.getElementById("opt");
+  var keep = document.getElementById("keep");
+  var wave = document.getElementById("wave");
+  var paste = document.getElementById("paste");
+  var hashBtn = document.getElementById("hash");
+  var dropBtn = document.getElementById("drop");
+  var scratch = document.getElementById("scratch");
+  var count = document.getElementById("count");
+  var out = document.getElementById("out");
+  var pinButtons = Array.prototype.slice.call(document.querySelectorAll("[data-pin]"));
+  var labels = ["blank", "1989-11", "1990-03", "1990-04", "2011-07"];
+  var clusters = ["unset", "singleton", "pair", "crowded", "declined"];
+  var tags = ["cluster-is-not-a-wave", "reporting-spike", "photo-reclassified", "dates-hashed", "arc-drawn"];
+  var storeKey = "void.cluster-not-wave.digest";
+  var pinState = [0, 0, 0, 0];
+
+  function selected(name, allow) {
+    var node = document.querySelector("input[name='" + name + "']:checked");
+    var value = node ? node.value : allow[0];
+    return allow.indexOf(value) === -1 ? allow[0] : value;
+  }
+
+  function gate() {
+    var open = opt.checked;
+    hashBtn.disabled = !open;
+    dropBtn.disabled = !open;
+    wave.disabled = !open;
+    paste.disabled = !open;
+    keep.disabled = !open;
+    pinButtons.forEach(function (btn) { btn.disabled = !open; });
+    if (!open) keep.checked = false;
+  }
+
+  function paintPins() {
+    pinButtons.forEach(function (btn, i) {
+      btn.textContent = labels[pinState[i]];
+    });
+  }
+
+  function discard() {
+    var n = wave.value.length;
+    count.textContent = "Excluded characters: " + n;
+    scratch.textContent = n ? "Wave discarded (" + n + " characters). Not in the hash." : "Wave not hashed.";
+    wave.value = "";
+    return n;
+  }
+
+  function canonical() {
+    return "void.cluster-not-wave.v1|cluster=" + selected("cluster", clusters) +
+      "|disconfirm=" + selected("dis", tags) +
+      "|weight=0.220|status=unattested";
+  }
+
+  pinButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (!opt.checked) return;
+      var i = Number(btn.getAttribute("data-pin"));
+      pinState[i] = (pinState[i] + 1) % labels.length;
+      paintPins();
+    });
+  });
+  opt.addEventListener("change", gate);
+  dropBtn.addEventListener("click", discard);
+  hashBtn.addEventListener("click", function () {
+    if (!opt.checked) return;
+    var excluded = discard();
+    var line = canonical();
+    var bytes = new TextEncoder().encode(line);
+    crypto.subtle.digest("SHA-256", bytes).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      if (keep.checked) {
+        try { localStorage.setItem(storeKey, hex); } catch (err) { /* digest only; ignore quota */ }
+      }
+      out.textContent = "status: unattested\nemit: false\nsequence: not-claimed\ndisclosure: not-sealed\n" +
+        "pins_hashed: no\nexcluded_characters: " + excluded +
+        "\npaste_hashed: no\nwave_hashed: no\ncanonical: " + line + "\nsha256: " + hex;
+    });
+  });
+  paintPins();
+  gate();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+{
+ "floor": "ai models",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "huggingface.co": {
+   "sources": [
+    "https://huggingface.co/",
+    "https://huggingface.co/docs/hub/index",
+    "https://huggingface.co/docs",
+    "https://huggingface.co/pricing"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Model catalogue",
+     "detail": "2M+ models with filters by task, library, language, licence, size; trending and sort",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "lib/models.js names the few Workers AI models Verse uses; no catalogue"
+    },
+    {
+     "group": "core",
+     "name": "Model cards",
+     "detail": "README with usage, training data, limits, licence, eval results",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Datasets catalogue",
+     "detail": "Datasets with cards and the Data Studio viewer (browse rows, SQL)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Spaces (live demos)",
+     "detail": "Gradio, Streamlit, Docker, static apps running models in the browser; ZeroGPU",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Inference widgets",
+     "detail": "Try a model on its page",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Search models, datasets, Spaces, people, papers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Git-based repos",
+     "detail": "Every model/dataset/Space is a git repo with versions, files, commits",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Inference Providers",
+     "detail": "One API to 200k+ models across 10+ providers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Inference Endpoints",
+     "detail": "Dedicated deployments (paid)",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Libraries",
+     "detail": "transformers, diffusers, datasets, huggingface_hub, Transformers.js",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Leaderboards and evaluations",
+     "detail": "Open LLM leaderboard, community evals",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Daily Papers",
+     "detail": "Trending research papers linked to models",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "HuggingChat",
+     "detail": "Chat with open models",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Gated models and access requests",
+     "detail": "Licence acceptance flows",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Collections",
+     "detail": "Curated groups of models/datasets/Spaces",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Jobs and storage buckets",
+     "detail": "Run compute jobs on the Hub",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Running a model in the browser",
+     "detail": "Transformers.js / WebGPU Spaces",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Verse runs Workers AI on the server (functions/api/answer.js); nothing in-browser"
+    },
+    {
+     "group": "sharing",
+     "name": "Likes, follows, discussions, PRs on repos",
+     "detail": "Community tab per repo",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Embed Spaces",
+     "detail": "Embed a Space in any page",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Download weights to run locally",
+     "detail": "Models downloadable for offline use",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible docs and model cards",
+     "detail": "Text-first cards",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "PRO account",
+     "detail": "More inference credits, ZeroGPU quota, private storage, Dev Mode",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Team/Enterprise Hub",
+     "detail": "SSO, audit logs, resource groups, private datasets",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a model catalogue page listing models by task with their cards (from the public Hub API, keyless)",
+  "try a small model in the browser (Transformers.js) on the page",
+  "datasets list and row viewer",
+  "show which models Verse itself uses and why"
+ ],
+ "verse_extra": [
+  "Verse uses models for real asks and records when it would escalate"
+ ],
+ "first_page": "Models page /ai-models/ for curious people who want to see and try AI models. First: browse trending Hub models by task (public API, keyless) with their card summary and licence, try one small text or image model right in the browser with Transformers.js (nothing sent), and a section on the models Verse itself runs (lib/models.js). Will not build: hosting, training, inference APIs, datasets uploads or accounts."
+}

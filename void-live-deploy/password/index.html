@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Password generator: strong random passwords and passphrases · Verse</title>
+<meta name="description" content="Generate strong random passwords on your device: 4 to 128 characters, uppercase, lowercase, numbers and symbols, no look-alikes, no ambiguous punctuation, no repeats, no three in a row, one of each class; up to 20 at once, each with its own Copy; passphrases of 3 to 10 common words. Every password shows its strength: the exact entropy in bits and how long it takes to crack at ten billion guesses a second. Nothing leaves the device; works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Password generator · Verse">
+<meta property="og:description" content="Strong random passwords and passphrases, made on your device with exact strength shown: entropy in bits and the time to crack. Nothing sent, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/password/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/password/ (the tower's passwordsgenerator.net floor): one file and one small module, no third party, nothing stored but the setting */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --c0: #d6334a; --c1: #e0702b; --c2: #d9a400; --c3: #3d9c4f; --c4: #1f8a70; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --c0: #ff6b7e; --c1: #ff9a5c; --c2: #f0c43a; --c3: #6fd184; --c4: #4fd1b0; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  .tabs { display: flex; gap: 6px; justify-content: center; margin: 0 0 12px; }
+  .tabs button[aria-selected="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: 8px 0; }
+  .opts { font-size: 14px; }
+  .opts label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; max-width: 100%; }
+  /* a 40 px tap target drawn as a 22 px box (the tower gate counts a control under 40 px as a design defect; a bare 20 px checkbox was one, eleven times) */
+  input[type=checkbox] { appearance: none; -webkit-appearance: none; width: 40px; height: 40px; margin: -9px 0 -9px -9px; padding: 0; border: 0; background: none; display: inline-grid; place-content: center; cursor: pointer; vertical-align: middle; }
+  input[type=checkbox]::before { content: ""; width: 22px; height: 22px; box-sizing: border-box; border: 1.5px solid var(--soft); border-radius: 6px; background: var(--bg); }
+  input[type=checkbox]:checked::before { background: var(--accent); border-color: var(--accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4 10.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-size: 16px; background-position: center; background-repeat: no-repeat; }
+  input[type=checkbox]:focus-visible { outline: 2px solid var(--accent); outline-offset: -6px; border-radius: 10px; }
+  input[type=number], input[type=text], select { font: inherit; font-size: 15px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 40px; box-sizing: border-box; }
+  input[type=number] { width: 5.5em; } input[type=text].sep { width: 4em; }
+  input[type=range] { flex: 1 1 160px; min-width: 120px; height: 40px; margin: 0; accent-color: var(--accent); }
+  select option { background: var(--bg); color: var(--ink); }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .pw { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
+  .pw output.word { flex: 1 1 200px; font: 20px/1.4 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; user-select: all; min-width: 0; }
+  .pw .meter { flex: 0 0 100%; height: 6px; border-radius: 4px; background: var(--line); overflow: hidden; } .pw .meter i { display: block; height: 100%; }
+  .pw .say { flex: 0 0 100%; font-size: 12px; color: var(--soft); overflow-wrap: anywhere; }
+  .s0 { background: var(--c0); } .s1 { background: var(--c1); } .s2 { background: var(--c2); } .s3 { background: var(--c3); } .s4 { background: var(--c4); }
+  #strength { font-size: 15px; margin: 10px 0 4px; } #strength b { font-size: 22px; } #strength.t0 b { color: var(--c0); } #strength.t1 b { color: var(--c1); } #strength.t2 b { color: var(--c2); } #strength.t3 b { color: var(--c3); } #strength.t4 b { color: var(--c4); }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 1.5em; } .note.bad { color: var(--c0); }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/password/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Password generator","url":"https://a-to-mind.com/password/","description":"Strong random passwords of 4 to 128 characters and passphrases of 3 to 10 words, made on your device, each with its exact entropy in bits and the time to crack. Nothing sent, works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"password generator, strong password generator, random password generator, 16 character password, passphrase generator, secure password generator, password generator without symbols","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/password/?len={length}"},"length-input":"required name=length"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Password generator","item":"https://a-to-mind.com/password/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/password-card.js">
+<link rel="modulepreload" href="/lib/pw-handover.js">
+<link rel="modulepreload" href="/lib/password.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Password generator</h1>
+  <div class="tabs" role="tablist" aria-label="What to make">
+    <button type="button" role="tab" id="tab-pw" aria-selected="true" aria-controls="opts-pw">Random password</button>
+    <button type="button" role="tab" id="tab-ph" aria-selected="false" aria-controls="opts-ph">Passphrase of words</button>
+  </div>
+  <form id="f">
+    <div id="opts-pw" role="tabpanel" aria-labelledby="tab-pw">
+      <div class="row">
+        <label for="len">Password length</label>
+        <input type="range" id="len" min="4" max="128" value="16" aria-label="Password length, 4 to 128">
+        <input type="number" id="lenN" min="4" max="128" value="16" aria-label="Password length as a number" inputmode="numeric">
+      </div>
+      <div class="row opts" role="group" aria-label="Characters to include">
+        <label><input type="checkbox" id="upper" checked> Uppercase (A-Z)</label>
+        <label><input type="checkbox" id="lower" checked> Lowercase (a-z)</label>
+        <label><input type="checkbox" id="digits" checked> Numbers (0-9)</label>
+        <label><input type="checkbox" id="symbols" checked> Symbols (!@#$%^&amp;*…)</label>
+      </div>
+      <div class="row opts" role="group" aria-label="Rules">
+        <label><input type="checkbox" id="each" checked> One of each chosen class</label>
+        <label title="i l 1 L o 0 O I"><input type="checkbox" id="similar"> Exclude similar characters (i l 1 L o 0 O)</label>
+        <label title="{ } [ ] ( ) / \ ' &quot; ` ~ , ; : . &lt; &gt;"><input type="checkbox" id="ambiguous"> Exclude ambiguous symbols ({ } [ ] ( ) / \ ' " ` ~ , ; : . &lt; &gt;)</label>
+        <label><input type="checkbox" id="norepeat"> No repeated characters</label>
+        <label><input type="checkbox" id="noseq"> No sequential characters (abc, 321)</label>
+      </div>
+    </div>
+    <div id="opts-ph" role="tabpanel" aria-labelledby="tab-ph" hidden>
+      <div class="row opts">
+        <label>Words <input type="number" id="words" min="3" max="10" value="4" aria-label="How many words, 3 to 10" inputmode="numeric"></label>
+        <label>Separator <select id="sep" aria-label="Separator between the words"><option value="-">- hyphen</option><option value=" ">space</option><option value=".">. dot</option><option value="_">_ underscore</option><option value="">none</option></select></label>
+        <label><input type="checkbox" id="cap"> Capitalise each word</label>
+        <label><input type="checkbox" id="digit"> Add a digit</label>
+      </div>
+    </div>
+    <div class="row opts">
+      <label>How many at once <input type="number" id="n" min="1" max="20" value="1" aria-label="How many passwords at once, 1 to 20" inputmode="numeric"></label>
+      <label><input type="checkbox" id="say"> Show how to remember it</label>
+    </div>
+    <div class="row">
+      <button type="submit" id="go" class="go">Generate</button>
+      <button type="button" id="copyall">Copy all</button>
+      <button type="button" id="link">Copy link</button>
+    </div>
+  </form>
+  <p class="note" id="note" role="status" aria-live="polite"></p>
+  <div id="strength" aria-live="polite"></div>
+  <div id="list" aria-label="The passwords" aria-live="polite"></div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/password/?len=16">16 characters</a><a href="/password/?len=12">12 characters</a><a href="/password/?len=20">20 characters</a><a href="/password/?len=32">32 characters</a><a href="/password/?len=16&amp;symbols=0">Letters and numbers only</a><a href="/password/?mode=phrase&amp;words=4">A passphrase of 4 words</a><a href="/password/?len=16&amp;n=5">5 passwords at once</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password-strength/">Password strength</a> <a href="/random/">Random number</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password-strength/">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/password-card.js';
+  import { handOver } from '/lib/pw-handover.js';
+  import { normalize, problemOf, bitsOf, generateMany, passphrase, phraseBits, strengthOf, sayable, MAX_COUNT } from '/lib/password.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.password.v1', q = new URLSearchParams(location.search);
+  let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
+  const pick = (k, d) => (q.has(k) ? q.get(k) : kept[k] ?? d), flag = (k, d) => pick(k, d ? '1' : '0') !== '0';
+  let mode = pick('mode', 'pw') === 'phrase' ? 'phrase' : 'pw';
+  $('len').value = $('lenN').value = normalize({ length: pick('len', 16) }).length;
+  for (const [id, k, d] of [['upper', 'upper', true], ['lower', 'lower', true], ['digits', 'digits', true], ['symbols', 'symbols', true], ['each', 'each', true], ['similar', 'similar', false], ['ambiguous', 'ambiguous', false], ['norepeat', 'norepeat', false], ['noseq', 'noseq', false], ['cap', 'cap', false], ['digit', 'digit', false], ['say', 'say', false]]) $(id).checked = flag(k, d);
+  $('words').value = Math.max(3, Math.min(10, +pick('words', 4) || 4)); $('sep').value = ['-', ' ', '.', '_', ''].includes(pick('sep', '-')) ? pick('sep', '-') : '-';
+  $('n').value = Math.max(1, Math.min(MAX_COUNT, +pick('n', 1) || 1));
+  const opts = () => ({ length: +$('lenN').value, upper: $('upper').checked, lower: $('lower').checked, digits: $('digits').checked, symbols: $('symbols').checked, each: $('each').checked, similar: $('similar').checked, ambiguous: $('ambiguous').checked, noRepeat: $('norepeat').checked, noSequential: $('noseq').checked });
+  const phraseOpts = () => ({ words: +$('words').value, sep: $('sep').value, capitalize: $('cap').checked, digit: $('digit').checked });
+  const setting = () => { const u = new URLSearchParams(); if (mode === 'phrase') { u.set('mode', 'phrase'); const p = phraseOpts(); u.set('words', p.words); u.set('sep', p.sep); if (p.capitalize) u.set('cap', '1'); if (p.digit) u.set('digit', '1'); }
+    else { const o = opts(); u.set('len', o.length); for (const k of ['upper', 'lower', 'digits', 'symbols', 'each']) u.set(k, o[k] ? '1' : '0'); for (const [k, v] of [['similar', o.similar], ['ambiguous', o.ambiguous], ['norepeat', o.noRepeat], ['noseq', o.noSequential]]) if (v) u.set(k, '1'); }
+    if (+$('n').value > 1) u.set('n', $('n').value); if ($('say').checked) u.set('say', '1'); return u; };
+  const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ ...Object.fromEntries(setting()), mode })); } catch (_) {} };
+  const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+  const copy = async (b, v) => { try { await navigator.clipboard.writeText(v); toast(b, 'Copied'); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+  let made = [];
+  function showTab() { const ph = mode === 'phrase'; $('tab-pw').setAttribute('aria-selected', String(!ph)); $('tab-ph').setAttribute('aria-selected', String(ph)); $('opts-pw').hidden = ph; $('opts-ph').hidden = !ph; }
+  function say(msg, bad) { $('note').textContent = msg; $('note').className = 'note' + (bad ? ' bad' : ''); }
+  function make() {
+    showTab(); keep(); $('list').textContent = ''; $('strength').textContent = ''; made = [];
+    const ph = mode === 'phrase', n = Math.max(1, Math.min(MAX_COUNT, +$('n').value || 1));
+    if (!ph) { const why = problemOf(opts()); if (why) { say(why, true); return; } }
+    const bits = ph ? phraseBits(phraseOpts()) : bitsOf(opts()), s = strengthOf(bits);
+    try { made = ph ? Array.from({ length: n }, () => passphrase(phraseOpts())) : generateMany(opts(), n); } catch (e) { say(e.message, true); return; }
+    say(ph ? n + (n > 1 ? ' passphrases of ' : ' passphrase of ') + phraseOpts().words + ' words' : n + (n > 1 ? ' passwords of ' : ' password of ') + opts().length + ' characters' + (opts().noSequential ? ' (the no-sequence rule removes a few more, so the strength is a hair below what is shown)' : ''));
+    const st = $('strength'); st.className = 't' + s.score; st.innerHTML = ''; const b = document.createElement('b'); b.textContent = s.label; st.append(b, ' · strength ' + bits.toLocaleString('en') + ' bits of entropy · ' + s.crack + ' to crack at 10 billion guesses a second');
+    for (const pw of made) {
+      const box = document.createElement('div'); box.className = 'pw';
+      const out = document.createElement('output'); out.className = 'word'; out.textContent = pw; out.setAttribute('aria-label', 'Generated ' + (ph ? 'passphrase' : 'password'));
+      const c = document.createElement('button'); c.type = 'button'; c.textContent = 'Copy'; c.setAttribute('aria-label', 'Copy this ' + (ph ? 'passphrase' : 'password')); c.addEventListener('click', () => copy(c, pw));
+      const chk = document.createElement('a'); chk.textContent = 'Check it'; chk.href = '/password-strength/'; chk.title = 'Open it in the strength checker (handed over in memory, never in the address)'; chk.addEventListener('click', (e) => { if (handOver(window, pw)) e.preventDefault(); });
+      const m = document.createElement('div'); m.className = 'meter'; m.setAttribute('aria-hidden', 'true'); const i = document.createElement('i'); i.className = 's' + s.score; i.style.width = (10 + s.score * 22.5) + '%'; m.append(i);
+      box.append(out, c, chk, m);
+      if ($('say').checked) { const sy = document.createElement('div'); sy.className = 'say'; sy.textContent = 'Remember it: ' + sayable(pw); box.append(sy); }
+      $('list').append(box);
+    }
+  }
+  $('tab-pw').addEventListener('click', () => { mode = 'pw'; make(); }); $('tab-ph').addEventListener('click', () => { mode = 'phrase'; make(); });
+  $('len').addEventListener('input', () => { $('lenN').value = $('len').value; make(); }); $('lenN').addEventListener('change', () => { $('lenN').value = normalize({ length: $('lenN').value }).length; $('len').value = $('lenN').value; make(); });
+  for (const id of ['upper', 'lower', 'digits', 'symbols', 'each', 'similar', 'ambiguous', 'norepeat', 'noseq', 'words', 'sep', 'cap', 'digit', 'n', 'say']) $(id).addEventListener('change', make);
+  $('f').addEventListener('submit', (e) => { e.preventDefault(); make(); });
+  $('copyall').addEventListener('click', () => copy($('copyall'), made.join('\n')));
+  // Copy link: the setting only, never a password
+  $('link').addEventListener('click', () => copy($('link'), location.origin + location.pathname + '?' + setting()));
+  make();
+  mountRelated($('related'), '/password/', [
+    // the address carries no password: the click hands the first one over in memory, in a new tab
+    { label: 'Check the first one\'s strength', href: () => (made[0] ? '/password-strength/' : null), go: () => !handOver(window, made[0]) },
+  ], { card: () => cardAsk($('lenN').value, mode) });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

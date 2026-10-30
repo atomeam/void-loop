@@ -1,0 +1,3188 @@
+[
+ {
+  "slug": "f458-webxr-hand-pbd-mlp-constraint-mind",
+  "num": 458,
+  "title": "WebXR Hand → PBD Constraint Mind (local MLP)",
+  "blurb": "Novel combination that deliberately branches away from the recent evolutionary-genome / spectral-feedback / NCA / L-system / Ising / HDC / orientation-MLP-canvas",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F458-webxr-hand-pbd-mlp-constraint-mind",
+  "hash": "c02c592f3223"
+ },
+ {
+  "slug": "f457-webgpu-spectral-feedback-swarm-mind",
+  "num": 457,
+  "title": "webgpu-spectral-feedback-swarm-mind",
+  "blurb": "Novel combination never built before: Canvas2D particle swarm (WebGPU compute path progressive) whose collective state drives a closed-loop Web Audio spectral",
+  "status": "works",
+  "source": "F457-webgpu-spectral-feedback-swarm-mind",
+  "hash": "f81fad7890d4"
+ },
+ {
+  "slug": "f456-webgpu-granular-broadcast-genome-mind",
+  "num": 456,
+  "title": "webgpu-granular-broadcast-genome-mind",
+  "blurb": "Novel combination never built before: Canvas2D granular discrete-element particle simulation (collision resolve with restitution/friction) whose per-particle genes",
+  "status": "works",
+  "source": "F456-webgpu-granular-broadcast-genome-mind",
+  "hash": "1caf34fe13a5"
+ },
+ {
+  "slug": "f455-webgpu-semantic-point-agent-morph",
+  "num": 455,
+  "title": "WebGPU Semantic Point Agent Morph",
+  "blurb": "Novel combination never built before: a spatial semantic point cloud (user-deposited concepts via simple hash embedding) explored by a local physics agent whose",
+  "status": "works",
+  "source": "F455-webgpu-semantic-point-agent-morph",
+  "hash": "cf41af289b62"
+ },
+ {
+  "slug": "f454-deviceorient-hebbian-genome-theft",
+  "num": 454,
+  "title": "deviceorient-hebbian-genome-theft",
+  "blurb": "Novel combination: DeviceOrientation (beta/gamma) as direct causal input to per-agent local Hebbian-learning networks (not MLP/RNN/attention).",
+  "status": "works",
+  "source": "F454-deviceorient-hebbian-genome-theft",
+  "hash": "8c6f6d24a9f0"
+ },
+ {
+  "slug": "f453-l-system-spatial-evo-mind",
+  "num": 453,
+  "title": "L-System Spatial Evo Mind",
+  "blurb": "Extends Verse Brain imagination rollouts / self region by adding an evolvable symbolic L-system generative substrate that can be rewarded, mutated, and manually",
+  "status": "works",
+  "source": "F453-l-system-spatial-evo-mind",
+  "hash": "cec5060117a7"
+ },
+ {
+  "slug": "f452-orient-mlp-canvas-agent-persistence",
+  "num": 452,
+  "title": "DeviceOrientation-Causal Local MLP Controlling Canvas Physical Agents with IndexedDB Persistence",
+  "blurb": "DeviceOrientationEvent provides causal input (tilt as environmental gravity) to a pure-JS tiny MLP.",
+  "status": "works",
+  "source": "F452-orient-mlp-canvas-agent-persistence",
+  "hash": "791b8f3633a8"
+ },
+ {
+  "slug": "f451-expression-tree-spatial-evo-mind",
+  "num": 451,
+  "title": "Expression-Tree Evolved Spatial Field",
+  "blurb": "A Verse lab experiment: Expression-Tree Evolved Spatial Field.",
+  "status": "works",
+  "source": "F451-expression-tree-spatial-evo-mind",
+  "hash": "979c6bc2eb39"
+ },
+ {
+  "slug": "f451-webxr-hand-ising-mlp-field",
+  "num": 451,
+  "title": "WebXR Hand-Driven Ising Field with Local MLP",
+  "blurb": "True WebXR hand-joint positions (or pointer fallback) serve as causal input to a tiny online-learning MLP.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F451-webxr-hand-ising-mlp-field",
+  "hash": "027db044bd7c"
+ },
+ {
+  "slug": "f450-orient-mlp-dom-sealed-orb-competition",
+  "num": 450,
+  "title": "Orient-MLP DOM Sealed Orb Competition",
+  "blurb": "A Verse lab experiment: Orient-MLP DOM Sealed Orb Competition.",
+  "status": "works",
+  "source": "F450-orient-mlp-dom-sealed-orb-competition",
+  "hash": "3a0a7462ae96"
+ },
+ {
+  "slug": "f450-webgpu-hdc-spatial-memory-palace",
+  "num": 450,
+  "title": "WebGPU HDC Spatial Memory Palace",
+  "blurb": "Novel combination of Hyperdimensional Computing (local algebraic associative memory in pure JS) with WebGPU spatial projection of hypervectors into particle",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F450-webgpu-hdc-spatial-memory-palace",
+  "hash": "87b7ac08b435"
+ },
+ {
+  "slug": "f449-orient-mlp-webgpu-pbf-field",
+  "num": 449,
+  "title": "Orient-MLP WebGPU PBF Field",
+  "blurb": "DeviceOrientation (or pointer proxy) is the causal input to a local tiny MLP that continuously modulates the viscosity and damping of a WebGPU compute-based",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F449-orient-mlp-webgpu-pbf-field",
+  "hash": "adff38aef45f"
+ },
+ {
+  "slug": "f448-webxr-hand-verlet-genome-portal",
+  "num": 448,
+  "title": "WebXR Hand Verlet Genome Portal Mind",
+  "blurb": "A deformable circular \"portal\" mesh of particles held by distance constraints (Verlet integration). User hand (mouse/touch proxy;",
+  "status": "works",
+  "source": "F448-webxr-hand-verlet-genome-portal",
+  "hash": "fa1288bc21f5"
+ },
+ {
+  "slug": "f447-webgpu-lbm-evolved-swimmers-mind",
+  "num": 447,
+  "title": "WebGPU LBM Evolved Swimmers Mind",
+  "blurb": "Novel combination: Lattice Boltzmann Method (LBM) fluid kernel in WebGPU compute (previously unused in Verse;",
+  "status": "works",
+  "source": "F447-webgpu-lbm-evolved-swimmers-mind",
+  "hash": "27976cd303b4"
+ },
+ {
+  "slug": "f446-webgpu-nca-xr-residual-mind",
+  "num": 446,
+  "title": "WebGPU NCA XR Residual Mind",
+  "blurb": "Novel combination of WebGPU-targeted Neural Cellular Automata (NCA) substrate whose local reaction is parameterized by a small evolved MLP (weights adapted by local",
+  "status": "works",
+  "source": "F446-webgpu-nca-xr-residual-mind",
+  "hash": "85fc0dea9aff"
+ },
+ {
+  "slug": "f445-webgpu-nca-spatial-memory-mind",
+  "num": 445,
+  "title": "WebGPU NCA Spatial Memory Mind",
+  "blurb": "A Verse lab experiment: WebGPU NCA Spatial Memory Mind.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F445-webgpu-nca-spatial-memory-mind",
+  "hash": "14cbe0a8bbe2"
+ },
+ {
+  "slug": "f444-webgpu-causal-wave-portal-mind",
+  "num": 444,
+  "title": "webgpu-causal-wave-portal-mind",
+  "blurb": "Multi-modal causal drivers (microphone spectral energy + pointer velocity + optional device orientation tilt) feed a WebGPU compute kernel (Canvas2D CPU fallback)",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F444-webgpu-causal-wave-portal-mind",
+  "hash": "8727e21d04a8"
+ },
+ {
+  "slug": "f443-webgpu-nca-spatial-memory-mind",
+  "num": 443,
+  "title": "WebGPU NCA Spatial Memory Mind",
+  "blurb": "Neural Cellular Automata (NCA) substrate whose local update rule maintains persistent spatial memory attractors. Pointer seeds create lasting high-activity regions.",
+  "status": "works",
+  "source": "F443-webgpu-nca-spatial-memory-mind",
+  "hash": "9480fb901fdb"
+ },
+ {
+  "slug": "f442-kuramoto-phase-lock-mind",
+  "num": 442,
+  "title": "Kuramoto Phase-Lock Mind",
+  "blurb": "Coupled phase oscillators (Kuramoto) whose coupling parameters are evolved by a local evolutionary mind to maximize phase order while entraining to user pointer",
+  "status": "works",
+  "source": "F442-kuramoto-phase-lock-mind",
+  "hash": "07ec786bdea4"
+ },
+ {
+  "slug": "f441-webgpu-interference-reservoir-morph",
+  "num": 441,
+  "title": "WebGPU Interference Reservoir Morph",
+  "blurb": "Spatial wave-interference field (2D discrete wave equation on a lattice) whose source frequencies and amplitudes are continuously adapted by a local reservoir",
+  "status": "works",
+  "source": "F441-webgpu-interference-reservoir-morph",
+  "hash": "64b1ba0927ca"
+ },
+ {
+  "slug": "f440-webgpu-online-learning-spatial-agent",
+  "num": 440,
+  "title": "WebGPU Online-Learning Spatial Agent",
+  "blurb": "Continuous online gradient-descent learning (tiny linear policy in Web Worker) that adapts the force/diffusion parameters of a spatial particle field in real time,",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F440-webgpu-online-learning-spatial-agent",
+  "hash": "30d38f004195"
+ },
+ {
+  "slug": "f439-webxr-hand-genome-competition",
+  "num": 439,
+  "title": "WebXR Hand Genome Competition",
+  "blurb": "Branch away from: residual predictors (F284 trajectory residual, F275 acoustic residual), spectral/audio minds (F269 fluid audio, F282 speech), orientation",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F439-webxr-hand-genome-competition",
+  "hash": "0f5f73ed9d21"
+ },
+ {
+  "slug": "f438-causal-webgpu-softbody-attention-mind",
+  "num": 438,
+  "title": "causal-webgpu-softbody-attention-mind",
+  "blurb": "Novel combination: Canvas2D/WebGPU softbody particle lattice whose spring and cohesion forces are continuously modulated by a local multi-head attention mind (Web",
+  "status": "works",
+  "source": "F438-causal-webgpu-softbody-attention-mind",
+  "hash": "681929c13ca2"
+ },
+ {
+  "slug": "f437-orient-webgpu-mlp-dom",
+  "num": 437,
+  "title": "Orient-WebGPU MLP DOM Agents",
+  "blurb": "Renumbered on 2026-10-29: this draft was F237-orient-webgpu-mlp-dom (F-237), a number it shared with F237-spoken-fluid-intent, which keeps F-237 because the",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F437-orient-webgpu-mlp-dom",
+  "hash": "25a90db0c10b"
+ },
+ {
+  "slug": "f436-webgpu-causal-intent-attention-cards",
+  "num": 436,
+  "title": "WebGPU Causal Intent Lattice with Evolutionary Multi-Head Attention Agents and Physically Morphing Thought Cards",
+  "blurb": "A 2D causal deposit lattice (pointer trajectory + device orientation inject decaying energy that diffuses) whose local field statistics and recent history are",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F436-webgpu-causal-intent-attention-cards",
+  "hash": "267d1a1ea17f"
+ },
+ {
+  "slug": "f435-webgpu-density-attractor-ai-audio",
+  "num": 435,
+  "title": "WebGPU Density Attractor AI + Spatial Audio",
+  "blurb": "Closed-loop spatial field: WebGPU-capable particle density driven by DeviceOrientation gravity and dynamic attractors placed/pruned by a local Worker AI.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F435-webgpu-density-attractor-ai-audio",
+  "hash": "d2126b48a393"
+ },
+ {
+  "slug": "f434-orient-attention-softbody",
+  "num": 434,
+  "title": "Orient-Query Attention Softbody",
+  "blurb": "A spatial soft-body particle field whose inter-particle forces are generated by a local single-head attention mechanism.",
+  "status": "works",
+  "source": "F434-orient-attention-softbody",
+  "hash": "aba95cfb50e3"
+ },
+ {
+  "slug": "f433-webgpu-multiagent-genome-competition",
+  "num": 433,
+  "title": "Webgpu Multiagent Genome Competition",
+  "blurb": "A Verse lab experiment: Webgpu Multiagent Genome Competition.",
+  "status": "works",
+  "source": "F433-webgpu-multiagent-genome-competition",
+  "hash": "e7816a7b001d"
+ },
+ {
+  "slug": "f432-webgpu-mlp-sph-genome-competition",
+  "num": 432,
+  "title": "WebGPU MLP SPH Genome Competition",
+  "blurb": "Verse landing: spatial multi-agent physics skill under void-live-deploy/skills/;",
+  "status": "works",
+  "source": "F432-webgpu-mlp-sph-genome-competition",
+  "hash": "986d1bbc3fdb"
+ },
+ {
+  "slug": "f431-webgpu-embedding-cluster-memory-palace",
+  "num": 431,
+  "title": "WebGPU Embedding Cluster Memory Palace",
+  "blurb": "Particle substrate where each particle carries a short embedding of user text (hash-based 8-dim). Particles attract via cosine similarity.",
+  "status": "works",
+  "source": "F431-webgpu-embedding-cluster-memory-palace",
+  "hash": "f50094f54d4b"
+ },
+ {
+  "slug": "f430-sealed-genome-competitive-swarm",
+  "num": 430,
+  "title": "sealed-genome-competitive-swarm",
+  "blurb": "Novel combination: A multi-agent competitive swarm on a shared canvas where each agent is a local tiny decision kernel (weight vector acting as MLP-like force",
+  "status": "works",
+  "source": "F430-sealed-genome-competitive-swarm",
+  "hash": "61498b34345f"
+ },
+ {
+  "slug": "f429-webgpu-causal-token-swarm-mind",
+  "num": 429,
+  "title": "WebGPU Causal Token Swarm Mind",
+  "blurb": "Continuous particle swarm where each particle is a spatial \"token\" carrying a short embedding vector (4-dim)",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F429-webgpu-causal-token-swarm-mind",
+  "hash": "13f4be9304b6"
+ },
+ {
+  "slug": "f428-webgpu-acoustic-attention-orbs",
+  "num": 428,
+  "title": "WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs",
+  "blurb": "Renumbered on 2026-10-29: this draft was F233-webgpu-acoustic-attention-orbs (F-233), a number it shared with F233-panel-play. Its number is now F-428;",
+  "status": "works",
+  "source": "F428-webgpu-acoustic-attention-orbs",
+  "hash": "844aa0c8db28"
+ },
+ {
+  "slug": "f427-resonant-neural-membrane",
+  "num": 427,
+  "title": "Resonant Neural Membrane",
+  "blurb": "A Verse lab experiment: Resonant Neural Membrane.",
+  "status": "works",
+  "source": "F427-resonant-neural-membrane",
+  "hash": "3c780cd4fd57"
+ },
+ {
+  "slug": "f426-acoustic-causal-lattice-orbs",
+  "num": 426,
+  "title": "Acoustic Causal Lattice Mind + Morphing Echo Orbs",
+  "blurb": "A Verse lab experiment: Acoustic Causal Lattice Mind + Morphing Echo Orbs.",
+  "status": "works",
+  "source": "F426-acoustic-causal-lattice-orbs",
+  "hash": "2f9354eeca97"
+ },
+ {
+  "slug": "f425-webgpu-acoustic-swarm-mind",
+  "num": 425,
+  "title": "WebGPU Acoustic Swarm Mind",
+  "blurb": "WebGPU compute particle swarm whose per-agent forces are biased in real time by microphone spectral energy and device orientation.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F425-webgpu-acoustic-swarm-mind",
+  "hash": "0926f1f8228f"
+ },
+ {
+  "slug": "f424-local-spatial-token-mind",
+  "num": 424,
+  "title": "Local Spatial Token Mind",
+  "blurb": "A Verse lab experiment: Local Spatial Token Mind.",
+  "status": "works",
+  "source": "F424-local-spatial-token-mind",
+  "hash": "d1aa3b951afb"
+ },
+ {
+  "slug": "f423-webgpu-fluid-policy-mind",
+  "num": 423,
+  "title": "webgpu-fluid-policy-mind",
+  "blurb": "WebGPU/Canvas2D fluid-particle substrate (400 agents with velocity, damping, orientation bias, pointer injection).",
+  "status": "works",
+  "source": "F423-webgpu-fluid-policy-mind",
+  "hash": "f65ad492fb39"
+ },
+ {
+  "slug": "f422-webgpu-sequence-transformer-morph",
+  "num": 422,
+  "title": "WebGPU Local Sequence Transformer Morph Field",
+  "blurb": "A Verse lab experiment: WebGPU Local Sequence Transformer Morph Field.",
+  "status": "works",
+  "source": "F422-webgpu-sequence-transformer-morph",
+  "hash": "d608ca39ff42"
+ },
+ {
+  "slug": "f421-webgpu-predictive-spectral-constellation",
+  "num": 421,
+  "title": "WebGPU Predictive Spectral Constellation",
+  "blurb": "Novel combination of a spectral resonance lattice (WebGPU preferred, Canvas2D fallback), a local predictive mind (attention + residual forecast in pure JS /",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F421-webgpu-predictive-spectral-constellation",
+  "hash": "340338239892"
+ },
+ {
+  "slug": "f420-rd-attention-kernel",
+  "num": 420,
+  "title": "Reaction-Diffusion Attention Kernel",
+  "blurb": "Renumbered on 2026-10-29: this draft was F205-rd-attention-kernel (F-205), a number it shared with F205-webrtc-orientation-dom-agent-competition.",
+  "status": "broken",
+  "error": "truncated file: a <script> never closes, so the page ends mid-code",
+  "source": "F420-rd-attention-kernel",
+  "hash": "872dca73a9be"
+ },
+ {
+  "slug": "f419-webgpu-embodied-rnn-morph",
+  "num": 419,
+  "title": "WebGPU Embodied RNN Morph Interface",
+  "blurb": "Local recurrent mind (simple tanh RNN) integrates pointer, orientation, and sensory feedback from CSS-embodied limbs.",
+  "status": "works",
+  "source": "F419-webgpu-embodied-rnn-morph",
+  "hash": "d13b7fb79c19"
+ },
+ {
+  "slug": "f418-webgpu-causal-fluid-mind",
+  "num": 418,
+  "title": "WebGPU Causal Fluid Mind",
+  "blurb": "A Verse lab experiment: WebGPU Causal Fluid Mind.",
+  "status": "works",
+  "source": "F418-webgpu-causal-fluid-mind",
+  "hash": "d5dae3f369ad"
+ },
+ {
+  "slug": "f417-local-embedding-morph-field",
+  "num": 417,
+  "title": "local-embedding-morph-field",
+  "blurb": "Novel combination: Spatial particle field (Canvas2D with WebGPU path noted) where each particle carries a local embedding vector.",
+  "status": "works",
+  "source": "F417-local-embedding-morph-field",
+  "hash": "abe8ee87a168"
+ },
+ {
+  "slug": "f416-webgpu-sonified-thought-field",
+  "num": 416,
+  "title": "WebGPU Sonified Evolutionary Thought Field",
+  "blurb": "A Verse lab experiment: WebGPU Sonified Evolutionary Thought Field.",
+  "status": "works",
+  "source": "F416-webgpu-sonified-thought-field",
+  "hash": "514d5959bc31"
+ },
+ {
+  "slug": "f415-webxr-causal-attention-lattice",
+  "num": 415,
+  "title": "WebXR Causal Attention Lattice",
+  "blurb": "Novel combination: Canvas2D (WebGPU compute path noted for next) causal energy lattice that receives pointer / XR-ray deposits.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F415-webxr-causal-attention-lattice",
+  "hash": "182ccfdb7034"
+ },
+ {
+  "slug": "f414-webgpu-embedding-lattice-mind",
+  "num": 414,
+  "title": "WebGPU Embedding Lattice Mind",
+  "blurb": "A Verse lab experiment: WebGPU Embedding Lattice Mind.",
+  "status": "broken",
+  "error": "pageerror: cemb is not defined",
+  "source": "F414-webgpu-embedding-lattice-mind",
+  "hash": "3aaa17bee4ad"
+ },
+ {
+  "slug": "f412-webxr-lattice-mind",
+  "num": 412,
+  "title": "WebXR Lattice Mind Assimilation",
+  "blurb": "Novel combination for The Verse canvas: a spatial lattice of cells whose growth and density are driven by local Worker-based AI reasoning (simple evolutionary",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F412-webxr-lattice-mind",
+  "hash": "6a13a9bfbd18"
+ },
+ {
+  "slug": "f411-evolving-attention-lattice-mind",
+  "num": 411,
+  "title": "Evolving Local Attention Lattice with Emergent Portals and Morphing Spatial Chrome",
+  "blurb": "Novel combination of a spatial attention lattice whose parameters are evolved by a local Web Worker, emergent interactive DOM portals at high-attention loci, and a",
+  "status": "works",
+  "source": "F411-evolving-attention-lattice-mind",
+  "hash": "940fbffce46e"
+ },
+ {
+  "slug": "f410-predictive-temporal-echo-mind",
+  "num": 410,
+  "title": "Predictive Temporal Echo Mind",
+  "blurb": "Novel combination of a spatial particle field (pointer + optional DeviceOrientation), decaying temporal echo maps written by agent trajectories, and a local Web",
+  "status": "works",
+  "source": "F410-predictive-temporal-echo-mind",
+  "hash": "2d37370b0228"
+ },
+ {
+  "slug": "f409-lattice-autopoiesis",
+  "num": 409,
+  "title": "Lattice Autopoiesis Mind",
+  "blurb": "Concept: Continuous reaction-diffusion lattice (Gray-Scott) on Canvas2D whose control parameters (feed F, kill K, diffusivities) are evolved by a local Web Worker",
+  "status": "works",
+  "source": "F409-lattice-autopoiesis",
+  "hash": "7d21822f475c"
+ },
+ {
+  "slug": "f408-webxr-evo-density-morph",
+  "num": 408,
+  "title": "WebXR Evolving Density Field with Local Worker Mind and Morphing Spatial Cards",
+  "blurb": "Novel combination: A WebGPU-capable (Canvas2D fallback) density field of agents whose update rules are evolved by a local Web Worker genetic algorithm.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F408-webxr-evo-density-morph",
+  "hash": "b54b1b2c3e49"
+ },
+ {
+  "slug": "f407-local-causal-echo-chamber",
+  "num": 407,
+  "title": "Local Causal Echo Chamber",
+  "blurb": "A Verse lab experiment: Local Causal Echo Chamber.",
+  "status": "works",
+  "source": "F407-local-causal-echo-chamber",
+  "hash": "0d844449590a"
+ },
+ {
+  "slug": "f406-predictive-residual-lattice",
+  "num": 406,
+  "title": "Predictive Residual Lattice Mind",
+  "blurb": "A Verse lab experiment: Predictive Residual Lattice Mind.",
+  "status": "works",
+  "source": "F406-predictive-residual-lattice",
+  "hash": "77f2fa9b0b1a"
+ },
+ {
+  "slug": "f405-spectral-resonance-lattice",
+  "num": 405,
+  "title": "Spectral Resonance Lattice Mind",
+  "blurb": "Novel combination of a continuous particle lattice (Canvas2D for broad compatibility, WebGPU compute path noted) whose velocity spectrum is analyzed in real time by",
+  "status": "works",
+  "source": "F405-spectral-resonance-lattice",
+  "hash": "e5e837476f1d"
+ },
+ {
+  "slug": "f404-resonance-seeking-agents",
+  "num": 404,
+  "title": "Resonance-Seeking Cognitive Agents in WebGPU Wavefield",
+  "blurb": "A Verse lab experiment: Resonance-Seeking Cognitive Agents in WebGPU Wavefield.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F404-resonance-seeking-agents",
+  "hash": "141b7f7f339c"
+ },
+ {
+  "slug": "f403-webgpu-thought-gravity",
+  "num": 403,
+  "title": "WebGPU Thought Gravity Wells",
+  "blurb": "Novel combination of local AI reasoning (Worker-based hash-embedding + evolutionary attractors), GPU/Canvas particle flow representing association streams, and",
+  "status": "works",
+  "source": "F403-webgpu-thought-gravity",
+  "hash": "bb43a0b55c90"
+ },
+ {
+  "slug": "f402-webxr-nca-mindscape",
+  "num": 402,
+  "title": "WebXR Neural Cellular Automaton Mindscape",
+  "blurb": "Renumbered on 2026-10-29: this draft was F026-webxr-nca-mindscape (F-026), a number it shared with F026-pointer-trajectory-lattice-mind. Its number is now F-402;",
+  "status": "broken",
+  "error": "blank page: nothing was painted after 2 seconds",
+  "source": "F402-webxr-nca-mindscape",
+  "hash": "a06c4c623c44"
+ },
+ {
+  "slug": "f401-spatial-graph-mind",
+  "num": 401,
+  "title": "Spatial Graph Mind",
+  "blurb": "A Verse lab experiment: Spatial Graph Mind.",
+  "status": "broken",
+  "error": "pageerror: canvas.getContext is not a function",
+  "source": "F401-spatial-graph-mind",
+  "hash": "e8363eed634a"
+ },
+ {
+  "slug": "f323-webgpu-attention-wave-collapse",
+  "num": 323,
+  "title": "WebGPU Attention Wave Collapse",
+  "blurb": "Main thread: 64x64 wave lattice step (discrete Laplacian + damping + attention-biased sources)",
+  "status": "works",
+  "source": "F323-webgpu-attention-wave-collapse",
+  "hash": "61f00810e375"
+ },
+ {
+  "slug": "f322-verse-self-mutating-shader-mind",
+  "num": 322,
+  "title": "verse-self-mutating-shader-mind",
+  "blurb": "Verse is now Verse. Novel combination never built: the mind is the rendering code.",
+  "status": "works",
+  "source": "F322-verse-self-mutating-shader-mind",
+  "hash": "634e9a3a9dd0"
+ },
+ {
+  "slug": "f321-webgpu-agent-fluid-memory-orbs",
+  "num": 321,
+  "title": "webgpu-agent-fluid-memory-orbs",
+  "blurb": "Novel combination for The Verse canvas: A local population of tiny policy agents (evolved MLP outputs as force vectors) inject into a GPU-accelerated 2D fluid-like",
+  "status": "works",
+  "source": "F321-webgpu-agent-fluid-memory-orbs",
+  "hash": "b8e79b0893ff"
+ },
+ {
+  "slug": "f320-orient-rnn-webgpu-softbody-dom-arena",
+  "num": 320,
+  "title": "orient-rnn-webgpu-softbody-dom-arena",
+  "blurb": "DeviceOrientation as primary causal input to a local tiny RNN (hidden size 8) whose outputs modulate parameters of a soft-body mass-spring physics system running in",
+  "status": "works",
+  "source": "F320-orient-rnn-webgpu-softbody-dom-arena",
+  "hash": "e536120bb034"
+ },
+ {
+  "slug": "f319-webgpu-orient-advection-mlp-probes",
+  "num": 319,
+  "title": "Orientation-Causal Advection MLP + DOM Probes",
+  "blurb": "A Verse lab experiment: Orientation-Causal Advection MLP + DOM Probes.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F319-webgpu-orient-advection-mlp-probes",
+  "hash": "7992f257a6cc"
+ },
+ {
+  "slug": "f318-webgpu-online-kmeans-particle-mind",
+  "num": 318,
+  "title": "webgpu-online-kmeans-particle-mind",
+  "blurb": "Novel combination: WebGPU (or Canvas2D fallback) multi-particle spatial field whose global attractors and force biases are driven by an online k-means clustering",
+  "status": "works",
+  "source": "F318-webgpu-online-kmeans-particle-mind",
+  "hash": "5e70081ba6a5"
+ },
+ {
+  "slug": "f317-webxr-hand-rd-dom-field",
+  "num": 317,
+  "title": "WebXR Hand Reaction-Diffusion DOM Field",
+  "blurb": "A persistent spatial reaction-diffusion (Gray-Scott) field visualized on canvas.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F317-webxr-hand-rd-dom-field",
+  "hash": "feb4c3c49d16"
+ },
+ {
+  "slug": "f316-webxr-hand-sealed-genome-dom-arena",
+  "num": 316,
+  "title": "WebXR Hand-Sealed Genome DOM Arena",
+  "blurb": "A multi-agent competition arena where six local rule-based agents (simple parameter genomes: attract, repel, speed, wander, cohesion) compete for food resources on",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F316-webxr-hand-sealed-genome-dom-arena",
+  "hash": "5c5de70240b8"
+ },
+ {
+  "slug": "f315-webgpu-softbody-policy-dom-mind",
+  "num": 315,
+  "title": "WebGPU Softbody Policy DOM Mind",
+  "blurb": "Mass-spring soft-body simulation (CPU for prototype; WebGPU compute path noted for particle forces and constraint projection) driven by a tiny local linear policy",
+  "status": "works",
+  "source": "F315-webgpu-softbody-policy-dom-mind",
+  "hash": "1ebeefcfdb3b"
+ },
+ {
+  "slug": "f315-webgpu-spectral-evo-mind-field",
+  "num": 315,
+  "title": "WebGPU Spectral Evolutionary Mind Field",
+  "blurb": "A spatial spectral mind field where a WebGPU compute shader maintains a grid of multi-frequency oscillators (wave interference).",
+  "status": "works",
+  "source": "F315-webgpu-spectral-evo-mind-field",
+  "hash": "bf00396a8fc6"
+ },
+ {
+  "slug": "f314-webgpu-multi-mlp-swarm-arena",
+  "num": 314,
+  "title": "WebGPU Multi-MLP Compute Swarm Arena",
+  "blurb": "A competitive multi-agent arena where four independent tiny MLPs (genomes) each steer a swarm of particles.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F314-webgpu-multi-mlp-swarm-arena",
+  "hash": "7a77aa05d02d"
+ },
+ {
+  "slug": "f313-webgpu-causal-motion-rnn-hybrid-sculpt",
+  "num": 313,
+  "title": "WebGPU Causal Motion RNN Hybrid Sculpt",
+  "blurb": "Online-learning Elman RNN (weights updated every frame from residual) driven by DeviceMotionEvent acceleration (primary causal input) + pointer.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F313-webgpu-causal-motion-rnn-hybrid-sculpt",
+  "hash": "320f569787e0"
+ },
+ {
+  "slug": "f313-webgpu-latent-dream-volume-curator",
+  "num": 313,
+  "title": "WebGPU Latent Dream Volume Curator",
+  "blurb": "Continuous 3D latent density volume (WebGPU compute + raymarch when available;",
+  "status": "works",
+  "source": "F313-webgpu-latent-dream-volume-curator",
+  "hash": "e38408729b67"
+ },
+ {
+  "slug": "f313-webgpu-nca-spatial-memory-mind",
+  "num": 313,
+  "title": "WebGPU NCA Spatial Memory Mind",
+  "blurb": "A Verse lab experiment: WebGPU NCA Spatial Memory Mind.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F313-webgpu-nca-spatial-memory-mind",
+  "hash": "14cbe0a8bbe2"
+ },
+ {
+  "slug": "f312-webgpu-attention-wave-sonifier-mind",
+  "num": 312,
+  "title": "WebGPU Attention Wave Sonifier Mind",
+  "blurb": "A continuous spatial wave / reaction-diffusion lattice (Canvas2D primary, WebGPU compute path sketched) whose local diffusion and reaction rates are modulated in",
+  "status": "works",
+  "source": "F312-webgpu-attention-wave-sonifier-mind",
+  "hash": "7794825039ae"
+ },
+ {
+  "slug": "f311-webrtc-sealed-orientation-mlp-dom-arena",
+  "num": 311,
+  "title": "WebRTC Sealed Orientation-MLP DOM Arena",
+  "blurb": "A competitive multi-agent arena of pure DOM orbs whose velocities are driven by tiny local MLPs (genomes = weight matrices).",
+  "status": "broken",
+  "error": "pageerror: a is not defined",
+  "source": "F311-webrtc-sealed-orientation-mlp-dom-arena",
+  "hash": "5c7c6aa241d0"
+ },
+ {
+  "slug": "f310-particle-life-dom-mind",
+  "num": 310,
+  "title": "Evolutionary Particle-Life Mind with Bidirectional DOM Embodiment",
+  "blurb": "A multi-species particle system (Particle Life style) on Canvas2D (WebGPU compute path noted for future) whose inter-species attraction/repulsion matrix is evolved",
+  "status": "works",
+  "source": "F310-particle-life-dom-mind",
+  "hash": "348f69d98c32"
+ },
+ {
+  "slug": "f309-webxr-gaze-rnn-idb-orb-field",
+  "num": 309,
+  "title": "WebXR Gaze RNN Persistent Orb Field",
+  "blurb": "True WebXR (progressive immersive-vr head-pose gaze) or DeviceOrientation/pointer as continuous causal input to a population of local tiny Elman RNNs.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F309-webxr-gaze-rnn-idb-orb-field",
+  "hash": "3d2f99323900"
+ },
+ {
+  "slug": "f308-lbm-wing-forge",
+  "num": 308,
+  "title": "Wing Forge: a wind tunnel that evolves its own wing",
+  "blurb": "A Verse lab experiment: Wing Forge: a wind tunnel that evolves its own wing.",
+  "status": "works",
+  "source": "F308-lbm-wing-forge",
+  "hash": "912e7211e747"
+ },
+ {
+  "slug": "f307-webgpu-mlp-physics-dom-pushers",
+  "num": 307,
+  "title": "WebGPU MLP Physics DOM Pushers",
+  "blurb": "True WebGPU compute shader runs a multi-particle physics kernel (velocity/position update with damping and bounds).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F307-webgpu-mlp-physics-dom-pushers",
+  "hash": "7c82b3a718b5"
+ },
+ {
+  "slug": "f306-slime-rail-planner",
+  "num": 306,
+  "title": "Slime Rail Planner · The Verse",
+  "blurb": "A Verse lab experiment: Slime Rail Planner · The Verse.",
+  "status": "works",
+  "source": "F306-slime-rail-planner",
+  "hash": "2f79bf0c2ef2"
+ },
+ {
+  "slug": "f305-webgpu-orient-genome-competition-arena",
+  "num": 305,
+  "title": "WebGPU Orient Genome Competition Arena",
+  "blurb": "Multi-agent evolutionary competition on a Canvas2D physics field (WebGPU compute upgrade path prepared) where agents have sealed genetic parameters controlling",
+  "status": "works",
+  "source": "F305-webgpu-orient-genome-competition-arena",
+  "hash": "525374f521c8"
+ },
+ {
+  "slug": "f304-lenia-gait-evolver",
+  "num": 304,
+  "title": "Lenia Gait Evolver · The Verse",
+  "blurb": "A Verse lab experiment: Lenia Gait Evolver · The Verse.",
+  "status": "works",
+  "source": "F304-lenia-gait-evolver",
+  "hash": "8e83b0e3fd1c"
+ },
+ {
+  "slug": "f303-webgpu-hebbian-spatial-memory-morph",
+  "num": 303,
+  "title": "WebGPU Hebbian Spatial Memory Morph",
+  "blurb": "A WebGPU particle lattice where each particle carries a small local memory vector.",
+  "status": "works",
+  "source": "F303-webgpu-hebbian-spatial-memory-morph",
+  "hash": "ecde555d3a70"
+ },
+ {
+  "slug": "f302-webxr-hand-rnn-physical-ui-sculptors",
+  "num": 302,
+  "title": "WebXR Hand RNN Physical UI Sculptors",
+  "blurb": "True WebXR hand-tracking (with pointer fallback) feeds a local tiny Elman RNN whose outputs generate spring targets for hybrid DOM sculptor cards.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F302-webxr-hand-rnn-physical-ui-sculptors",
+  "hash": "371f541ce002"
+ },
+ {
+  "slug": "f301-sonar-bat-cartographer",
+  "num": 301,
+  "title": "Sonar Bat Cartographer",
+  "blurb": "A pitch-dark procedural cave on The Verse canvas. A tabular Q-learning bat runs on-device and perceives only five echo rays plus a \"moth flutter\" bearing.",
+  "status": "works",
+  "source": "F301-sonar-bat-cartographer",
+  "hash": "42efa62937a2"
+ },
+ {
+  "slug": "f-300-kuramoto-phase-lock-mind",
+  "num": 300,
+  "title": "Kuramoto Phase-Lock Mind",
+  "blurb": "Coupled phase oscillators (Kuramoto) whose coupling parameters are evolved by a local evolutionary mind to maximize phase order while entraining to user pointer",
+  "status": "works",
+  "source": "F-300-kuramoto-phase-lock-mind",
+  "hash": "90d3c2acee0a"
+ },
+ {
+  "slug": "f300-orient-causal-mlp-physical-dom-agents",
+  "num": 300,
+  "title": "Orient-Causal MLP Physical DOM Agents",
+  "blurb": "DeviceOrientation (beta/gamma tilt) as the primary causal input to a population of local tiny MLPs (one per agent). Each MLP (4→8→2) outputs a 2D force.",
+  "status": "works",
+  "source": "F300-orient-causal-mlp-physical-dom-agents",
+  "hash": "d2cd81a6e84f"
+ },
+ {
+  "slug": "f300-webgpu-causal-wave-portal-mind",
+  "num": 300,
+  "title": "webgpu-causal-wave-portal-mind",
+  "blurb": "Multi-modal causal drivers (microphone spectral energy + pointer velocity + optional device orientation tilt) feed a WebGPU compute kernel (Canvas2D CPU fallback)",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F300-webgpu-causal-wave-portal-mind",
+  "hash": "f3bb250ac500"
+ },
+ {
+  "slug": "f300-webgpu-interference-reservoir-morph",
+  "num": 300,
+  "title": "WebGPU Interference Reservoir Morph",
+  "blurb": "Spatial wave-interference field (2D discrete wave equation on a lattice) whose source frequencies and amplitudes are continuously adapted by a local reservoir",
+  "status": "works",
+  "source": "F300-webgpu-interference-reservoir-morph",
+  "hash": "3967771fa57a"
+ },
+ {
+  "slug": "f300-webgpu-nca-spatial-memory-mind",
+  "num": 300,
+  "title": "WebGPU NCA Spatial Memory Mind",
+  "blurb": "Neural Cellular Automata (NCA) substrate whose local update rule maintains persistent spatial memory attractors. Pointer seeds create lasting high-activity regions.",
+  "status": "works",
+  "source": "F300-webgpu-nca-spatial-memory-mind",
+  "hash": "bf2ae6a4d977"
+ },
+ {
+  "slug": "f299-hum-crystal-music-box",
+  "num": 299,
+  "title": "Hum Crystals (hum-crystal-music-box)",
+  "blurb": "A music toy regular visitors can use: hum a tune, each note grows a glowing crystal on a slowly turning 3D spiral (height = pitch), and an on-device music box",
+  "status": "works",
+  "source": "F299-hum-crystal-music-box",
+  "hash": "00e095ce00cc"
+ },
+ {
+  "slug": "f298-webgpu-attention-message-graph-mind",
+  "num": 298,
+  "title": "WebGPU Attention Message Graph Mind",
+  "blurb": "A dynamic spatial concept graph whose node embeddings are updated by a local attention-based message-passing step.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F298-webgpu-attention-message-graph-mind",
+  "hash": "2c4461dee1c7"
+ },
+ {
+  "slug": "f297-webgpu-hebbian-kernel-dom-field",
+  "num": 297,
+  "title": "WebGPU Hebbian Kernel DOM Field",
+  "blurb": "A spatial association field whose weights are updated by a local Hebbian learning rule.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F297-webgpu-hebbian-kernel-dom-field",
+  "hash": "bd69f7a0a62f"
+ },
+ {
+  "slug": "f296-decision-tree-spatial-orbs",
+  "num": 296,
+  "title": "Decision Tree Spatial Orbs",
+  "blurb": "A spatial particle field (Canvas2D primary, WebGPU compute path prepared) whose clusters form \"orbs\".",
+  "status": "works",
+  "source": "F296-decision-tree-spatial-orbs",
+  "hash": "3ba61327bca6"
+ },
+ {
+  "slug": "f295-deviceorientation-dom-genome-arena",
+  "num": 295,
+  "title": "DeviceOrientation Causal DOM Genome Arena",
+  "blurb": "Hybrid DOM + canvas embodiment of multi-agent competition. Floating DOM agent cards are physical UI elements whose velocity is biased by a local tiny MLP (per-agent",
+  "status": "works",
+  "source": "F295-deviceorientation-dom-genome-arena",
+  "hash": "f3df9800410a"
+ },
+ {
+  "slug": "f294-webgpu-dom-orb-causal-echo",
+  "num": 294,
+  "title": "WebGPU DOM Orb Causal Echo Field",
+  "blurb": "A causal pointer-trajectory residual predictor (tiny online-learning MLP in main thread) generates a decaying residual hotspot.",
+  "status": "works",
+  "source": "F294-webgpu-dom-orb-causal-echo",
+  "hash": "1bbed352dc78"
+ },
+ {
+  "slug": "f293-orientation-hybrid-dom-mlp-persistence",
+  "num": 293,
+  "title": "orientation-hybrid-dom-mlp-persistence",
+  "blurb": "Hybrid DOM + canvas embodiment controlled by DeviceOrientation as the primary causal input.",
+  "status": "works",
+  "source": "F293-orientation-hybrid-dom-mlp-persistence",
+  "hash": "e80db0985348"
+ },
+ {
+  "slug": "f292-webgpu-reservoir-trajectory-echo-lattice",
+  "num": 292,
+  "title": "WebGPU Reservoir Trajectory Echo Lattice",
+  "blurb": "A spatial lattice field that echoes the user's recent pointer trajectory through a sealed local Echo State Network (ESN / reservoir).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F292-webgpu-reservoir-trajectory-echo-lattice",
+  "hash": "f84457522236"
+ },
+ {
+  "slug": "f291-webgpu-neural-foraging-genome-arena",
+  "num": 291,
+  "title": "WebGPU Neural Foraging Genome Arena",
+  "blurb": "A multi-agent particle foraging arena where each agent carries a sealed local genome (tiny 4-float weight vector acting as a force-kernel MLP).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F291-webgpu-neural-foraging-genome-arena",
+  "hash": "7a1d1e52cce3"
+ },
+ {
+  "slug": "f290-self-listening-spectral-agent-arena",
+  "num": 290,
+  "title": "Self-Listening Spectral Agent Arena",
+  "blurb": "A local evolving agent (tiny 6-8-4 MLP genome in Web Worker) generates its own audio (4 Web Audio oscillators whose frequencies and gains are agent outputs).",
+  "status": "works",
+  "source": "F290-self-listening-spectral-agent-arena",
+  "hash": "e99a5d8ed7df"
+ },
+ {
+  "slug": "f289-webxr-handgaze-mlp-genome-arena",
+  "num": 289,
+  "title": "WebXR Hand-Gaze MLP Genome Arena",
+  "blurb": "True WebXR hand tracking and gaze direction are the primary causal inputs to a local tiny MLP (multi-layer perceptron, 4-8-4, running on main thread or Worker).",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F289-webxr-handgaze-mlp-genome-arena",
+  "hash": "0e4010afc81d"
+ },
+ {
+  "slug": "f288-webgpu-reservoir-fluid-orientation-morph",
+  "num": 288,
+  "title": "WebGPU Reservoir Fluid Orientation Morph",
+  "blurb": "Device orientation (beta/gamma) and pointer residual (local prediction error from a tiny linear readout) are causal inputs to a local Echo State Network (reservoir",
+  "status": "works",
+  "source": "F288-webgpu-reservoir-fluid-orientation-morph",
+  "hash": "545276c2f121"
+ },
+ {
+  "slug": "f287-orientation-mlp-dom-forage-webgpu-field",
+  "num": 287,
+  "title": "Orientation MLP DOM Forage WebGPU Field",
+  "blurb": "DeviceOrientation as primary causal input biasing a shared density field (particle diffusion, WebGPU compute path prepared).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F287-orientation-mlp-dom-forage-webgpu-field",
+  "hash": "dec45d8a0cbf"
+ },
+ {
+  "slug": "f286-webgpu-online-learning-spatial-agent",
+  "num": 286,
+  "title": "WebGPU Online-Learning Spatial Agent",
+  "blurb": "Continuous online gradient-descent learning (tiny linear policy in Web Worker) that adapts the force/diffusion parameters of a spatial particle field in real time,",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F286-webgpu-online-learning-spatial-agent",
+  "hash": "0e331889279a"
+ },
+ {
+  "slug": "f286-webrtc-sealed-rnn-orientation-shared-arena",
+  "num": 286,
+  "title": "WebRTC Sealed RNN Orientation Shared Arena",
+  "blurb": "True WebRTC DataChannel shared multi-agent field. Each agent is a hybrid DOM card + canvas particle driven by a local tiny Elman RNN whose genome (weights) is",
+  "status": "works",
+  "source": "F286-webrtc-sealed-rnn-orientation-shared-arena",
+  "hash": "9cee7e373b29"
+ },
+ {
+  "slug": "f285-causal-webgpu-softbody-attention-mind",
+  "num": 285,
+  "title": "causal-webgpu-softbody-attention-mind",
+  "blurb": "Novel combination: Canvas2D/WebGPU softbody particle lattice whose spring and cohesion forces are continuously modulated by a local multi-head attention mind (Web",
+  "status": "works",
+  "source": "F285-causal-webgpu-softbody-attention-mind",
+  "hash": "2035b7219280"
+ },
+ {
+  "slug": "f285-webgpu-softbody-genome-arena",
+  "num": 285,
+  "title": "WebGPU Compute Softbody Genome Transfer Arena",
+  "blurb": "Multiple deformable softbody agents (mass-spring grids or chains) simulated via WebGPU compute shaders (Verlet + spring constraints) or Canvas2D JS fallback.",
+  "status": "works",
+  "source": "F285-webgpu-softbody-genome-arena",
+  "hash": "4a1936924f00"
+ },
+ {
+  "slug": "f285-webxr-hand-genome-competition",
+  "num": 285,
+  "title": "WebXR Hand Genome Competition",
+  "blurb": "Branch away from: residual predictors (F284 trajectory residual, F275 acoustic residual), spectral/audio minds (F269 fluid audio, F282 speech), orientation",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F285-webxr-hand-genome-competition",
+  "hash": "b1dcb5cfae54"
+ },
+ {
+  "slug": "f284-predictive-trajectory-residual-morph",
+  "num": 284,
+  "title": "Predictive Trajectory Residual Morph Arena",
+  "blurb": "Pointer trajectory history (sequence of positions + velocities, not single position) is the primary causal input to a local Web Worker tiny predictive model",
+  "status": "works",
+  "source": "F284-predictive-trajectory-residual-morph",
+  "hash": "480ccd453204"
+ },
+ {
+  "slug": "f283-webxr-gaze-mlp-webgpu-swarm",
+  "num": 283,
+  "title": "WebXR Gaze-Driven Tiny MLP WebGPU Swarm Arena",
+  "blurb": "True WebXR gaze (or pointer-as-gaze fallback) is the primary causal input to a population of local tiny MLPs (feed-forward, 4→8→2).",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F283-webxr-gaze-mlp-webgpu-swarm",
+  "hash": "effe6bddbf35"
+ },
+ {
+  "slug": "f282-speech-rnn-causal-portal-mind",
+  "num": 282,
+  "title": "Speech-Driven Causal RNN WebGPU Portal Mind",
+  "blurb": "Continuous local speech recognition (Web Speech API) as primary causal input.",
+  "status": "works",
+  "source": "F282-speech-rnn-causal-portal-mind",
+  "hash": "5baab3e738ec"
+ },
+ {
+  "slug": "f281-webxr-hand-webgpu-neural-cloth-mind",
+  "num": 281,
+  "title": "WebXR Hand WebGPU Neural Cloth Mind",
+  "blurb": "True WebXR hand tracking as primary causal input into a particle-cloth field whose motion is modulated by a local tiny residual neural kernel (4-weight vector).",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F281-webxr-hand-webgpu-neural-cloth-mind",
+  "hash": "c3d9339fe296"
+ },
+ {
+  "slug": "f280-webgpu-spectral-causal-portal-mind",
+  "num": 280,
+  "title": "WebGPU Spectral Causal Portal Mind",
+  "blurb": "Novel combination of a spectral (frequency-bin) wave lattice, a local Worker causal residual predictor, and active morphing DOM portals that feed impulses back into",
+  "status": "works",
+  "source": "F280-webgpu-spectral-causal-portal-mind",
+  "hash": "b85634be9cbe"
+ },
+ {
+  "slug": "f279-deviceorientation-rnn-physical-ui-arena",
+  "num": 279,
+  "title": "DeviceOrientation Causal RNN Physical UI Arena",
+  "blurb": "DeviceOrientation tilt (beta/gamma) is the primary causal input to per-agent tiny Elman-style RNNs.",
+  "status": "works",
+  "source": "F279-deviceorientation-rnn-physical-ui-arena",
+  "hash": "dfbaf8285d9f"
+ },
+ {
+  "slug": "f278-sealed-genome-multiagent-dom-arena",
+  "num": 278,
+  "title": "Sealed Genome Multi-Agent DOM Arena",
+  "blurb": "Novel combination: a competitive multi-agent particle arena (Canvas2D) where each agent carries a sealed genome (tiny float vector of behavior weights).",
+  "status": "works",
+  "source": "F278-sealed-genome-multiagent-dom-arena",
+  "hash": "deaa224947ab"
+ },
+ {
+  "slug": "f277-predictive-force-injection-mind",
+  "num": 277,
+  "title": "predictive-force-injection-mind",
+  "blurb": "Novel combination: A WebGPU (Canvas2D fallback) particle field whose forces are continuously steered by a local online linear predictor (LMS in a Web Worker) of the",
+  "status": "works",
+  "source": "F277-predictive-force-injection-mind",
+  "hash": "4de83f4a5126"
+ },
+ {
+  "slug": "f276-webgpu-spatial-concept-graph-mind",
+  "num": 276,
+  "title": "WebGPU Spatial Concept Graph Mind",
+  "blurb": "Novel combination: a force-directed spatial graph of concepts whose nodes are particles simulated on Canvas2D (WebGPU compute path noted), edges and repulsion",
+  "status": "works",
+  "source": "F276-webgpu-spatial-concept-graph-mind",
+  "hash": "2ff4a00791c0"
+ },
+ {
+  "slug": "f275-webgpu-acoustic-residual-spatial-mind",
+  "num": 275,
+  "title": "WebGPU Acoustic Residual Spatial Mind",
+  "blurb": "Novel combination: a WebGPU (fallback Canvas2D) particle flock whose attraction, separation, and noise parameters are modulated in real time by the prediction",
+  "status": "broken",
+  "error": "pageerror: Cannot read properties of undefined (reading '0')",
+  "source": "F275-webgpu-acoustic-residual-spatial-mind",
+  "hash": "8e512cd232cd"
+ },
+ {
+  "slug": "f274-reservoir-gesture-dom-chain",
+  "num": 274,
+  "title": "Reservoir Gesture DOM Chain",
+  "blurb": "Novel combination: a fixed-random Echo State Network (reservoir computing) running in a Web Worker that continuously ingests a causal stream of DeviceOrientation +",
+  "status": "works",
+  "source": "F274-reservoir-gesture-dom-chain",
+  "hash": "e122be1dcaee"
+ },
+ {
+  "slug": "f273-causal-rnn-memory-field",
+  "num": 273,
+  "title": "Causal RNN Memory Field",
+  "blurb": "Novel combination: a continuous Canvas2D causal deposit field (pointer + DeviceOrientation traces that diffuse and decay) whose recent history statistics are",
+  "status": "works",
+  "source": "F273-causal-rnn-memory-field",
+  "hash": "551240353c31"
+ },
+ {
+  "slug": "f272-webxr-hand-genome-particle-arena",
+  "num": 272,
+  "title": "WebXR Hand-Steered Multi-Agent Genome Particle Arena",
+  "blurb": "True WebXR hand tracking (pinch-to-grab, point-to-steer) as primary causal input into a multi-agent competition.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F272-webxr-hand-genome-particle-arena",
+  "hash": "de14c142d479"
+ },
+ {
+  "slug": "f271-spectral-trajectory-harmonic-mind",
+  "num": 271,
+  "title": "Spectral Trajectory Harmonic Particle Mind",
+  "blurb": "Novel combination: Spectral analysis of the live pointer (and optional orientation) trajectory drives an evolving set of harmonic oscillators hosted in a Web",
+  "status": "works",
+  "source": "F271-spectral-trajectory-harmonic-mind",
+  "hash": "6173d1e93e08"
+ },
+ {
+  "slug": "f270-webgpu-causal-intent-attention-cards",
+  "num": 270,
+  "title": "WebGPU Causal Intent Lattice with Evolutionary Multi-Head Attention Agents and Physically Morphing Thought Cards",
+  "blurb": "A 2D causal deposit lattice (pointer trajectory + device orientation inject decaying energy that diffuses) whose local field statistics and recent history are",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F270-webgpu-causal-intent-attention-cards",
+  "hash": "bc5b60dc9c15"
+ },
+ {
+  "slug": "f270-webgpu-nca-llm-steered-morph",
+  "num": 270,
+  "title": "WebGPU NCA LLM-Steered Morph",
+  "blurb": "Novel combination of a WebGPU-accelerated Neural Cellular Automata (NCA) spatial field, a local AI agent (Web Worker) that \"reasons\" over field statistics and user",
+  "status": "broken",
+  "error": "pageerror: Identifier 'e' has already been declared",
+  "source": "F270-webgpu-nca-llm-steered-morph",
+  "hash": "96261229bcbf"
+ },
+ {
+  "slug": "f269-webgpu-fluid-evolving-audio-mind",
+  "num": 269,
+  "title": "WebGPU Fluid Density Field with Local Evolutionary Audio-Mind",
+  "blurb": "Continuous 2D density/velocity field (CPU diffusion+advection with WebGPU compute path noted) whose global statistics (energy, entropy proxy, centroid) feed a local",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F269-webgpu-fluid-evolving-audio-mind",
+  "hash": "79a070bf6567"
+ },
+ {
+  "slug": "f268-webgpu-orientation-cloth-dom-anchors",
+  "num": 268,
+  "title": "WebGPU Orientation Cloth with DOM Anchors",
+  "blurb": "WebGPU compute shader simulates a spring-mass cloth membrane. DeviceOrientation tilts the gravity vector, draping and waving the cloth in real time.",
+  "status": "works",
+  "source": "F268-webgpu-orientation-cloth-dom-anchors",
+  "hash": "fe2d6aaff32b"
+ },
+ {
+  "slug": "f267-sealed-mlp-dom-resource-arena",
+  "num": 267,
+  "title": "Sealed MLP DOM Resource Arena",
+  "blurb": "Local multi-agent competition on a Canvas2D resource field with hybrid DOM agent cards.",
+  "status": "works",
+  "source": "F267-sealed-mlp-dom-resource-arena",
+  "hash": "c3872bb4ed7e"
+ },
+ {
+  "slug": "f266-webxr-gaze-persistent-idb-field",
+  "num": 266,
+  "title": "WebXR Gaze Persistent IndexedDB Memory Field",
+  "blurb": "True WebXR gaze-driven placement of spatial memory markers that persist across sessions and reloads via IndexedDB. Hybrid DOM HUD + WebGL canvas.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F266-webxr-gaze-persistent-idb-field",
+  "hash": "116bca0f6968"
+ },
+ {
+  "slug": "f265-webgpu-intent-rnn-fluid-memory-orbs",
+  "num": 265,
+  "title": "WebGPU Intent RNN Fluid Memory Orbs",
+  "blurb": "Main thread: Canvas WebGPU particle sim (compute shader for forces + integration), DOM overlay for orbs, AudioContext for optional spectral seeding,",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F265-webgpu-intent-rnn-fluid-memory-orbs",
+  "hash": "db7a20bfd227"
+ },
+ {
+  "slug": "f264-webgpu-mlp-physics-webrtc-arena",
+  "num": 264,
+  "title": "WebGPU Multi-Agent MLP Physics Arena with WebRTC Sealed Genome Transfer",
+  "blurb": "Novel combination: WebGPU compute shader runs parallel tiny MLPs (per-agent weights) that emit forces for a multi-agent soft-particle physics arena.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F264-webgpu-mlp-physics-webrtc-arena",
+  "hash": "aa6b3eafe880"
+ },
+ {
+  "slug": "f263-webgpu-causal-spectral-portal-mind",
+  "num": 263,
+  "title": "WebGPU Causal Spectral Portal Mind",
+  "blurb": "Novel combination: WebGPU compute shader evolves a multi-channel spectral/wave lattice (simplified 2D wave equation with damping and injection).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F263-webgpu-causal-spectral-portal-mind",
+  "hash": "51452c75d843"
+ },
+ {
+  "slug": "f262-webxr-hand-mlp-physics-genome-arena",
+  "num": 262,
+  "title": "WebXR Hand-Tracked Multi-Agent MLP Soft-Constraint Physics Arena with Sealed Genome Transfer",
+  "blurb": "Novel combination: True WebXR hand tracking (index fingertip) as causal spatial input into a multi-agent arena.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F262-webxr-hand-mlp-physics-genome-arena",
+  "hash": "d3d672d6775c"
+ },
+ {
+  "slug": "f261-webgpu-density-attractor-ai-audio",
+  "num": 261,
+  "title": "WebGPU Density Attractor AI + Spatial Audio",
+  "blurb": "Closed-loop spatial field: WebGPU-capable particle density driven by DeviceOrientation gravity and dynamic attractors placed/pruned by a local Worker AI.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F261-webgpu-density-attractor-ai-audio",
+  "hash": "1bc172ede049"
+ },
+ {
+  "slug": "f261-webgpu-orientation-nca-portal-mind",
+  "num": 261,
+  "title": "WebGPU Orientation-Causal Neural Cellular Automaton Portal Mind",
+  "blurb": "Novel combination: A WebGPU compute-driven Neural Cellular Automaton (NCA) lattice whose local rules are causally biased by DeviceOrientation (or pointer fallback).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F261-webgpu-orientation-nca-portal-mind",
+  "hash": "6d50a0b7ae4d"
+ },
+ {
+  "slug": "f260-orient-attention-softbody",
+  "num": 260,
+  "title": "Orient-Query Attention Softbody",
+  "blurb": "A spatial soft-body particle field whose inter-particle forces are generated by a local single-head attention mechanism.",
+  "status": "works",
+  "source": "F260-orient-attention-softbody",
+  "hash": "86234c14f932"
+ },
+ {
+  "slug": "f260-orientation-rnn-physical-ui-competition",
+  "num": 260,
+  "title": "Orientation RNN Physical UI Competition",
+  "blurb": "Local tiny RNNs (pure JS) control hybrid DOM physical UI elements (spring-like movable cards) in a competitive arena.",
+  "status": "works",
+  "source": "F260-orientation-rnn-physical-ui-competition",
+  "hash": "53c071d5e117"
+ },
+ {
+  "slug": "f259-orient-causal-webgpu-mlp-dom-physics",
+  "num": 259,
+  "title": "Orientation-Causal WebGPU MLP Softbody DOM Physics",
+  "blurb": "DeviceOrientation (or keyboard fallback) injects causal gravitational/wind forces into a softbody particle system.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F259-orient-causal-webgpu-mlp-dom-physics",
+  "hash": "e68140258245"
+ },
+ {
+  "slug": "f258-webgpu-volumetric-residual-attention-palace",
+  "num": 258,
+  "title": "WebGPU Volumetric Residual Attention Palace",
+  "blurb": "Novel combination of WebGPU volumetric residual field, local evolutionary attention policy (Web Worker), sealable DOM memory portals, and residual-driven chrome",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F258-webgpu-volumetric-residual-attention-palace",
+  "hash": "0daa359ca73d"
+ },
+ {
+  "slug": "f257-webgpu-spatial-attention-morph-ui-mind",
+  "num": 257,
+  "title": "webgpu-spatial-attention-morph-ui-mind",
+  "blurb": "Novel combination that deliberately leaves the recent WebXR-gaze-WebGPU-constraint / causal-RNN-sealed-peer / NCA-spatial-audio / orientation-sealed-physics /",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F257-webgpu-spatial-attention-morph-ui-mind",
+  "hash": "5743fbbcb8d1"
+ },
+ {
+  "slug": "f256-webxr-gaze-webgpu-constraint-dom-arena",
+  "num": 256,
+  "title": "webxr-gaze-webgpu-constraint-dom-arena",
+  "blurb": "Novel combination that deliberately leaves the recent causal-RNN-sealed-peer / orientation-WebGPU-sealed-physics / WebXR-hand-MLP / NCA-spatial-audio /",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F256-webxr-gaze-webgpu-constraint-dom-arena",
+  "hash": "386a485f725b"
+ },
+ {
+  "slug": "f255-causal-rnn-sealed-peer-agents",
+  "num": 255,
+  "title": "causal-rnn-sealed-peer-agents",
+  "blurb": "Novel combination that deliberately leaves the recent WebGPU-physics / residual-density / causal-lattice / NCA-spatial-audio / orientation-sealed-arena / hand-MLP",
+  "status": "works",
+  "source": "F255-causal-rnn-sealed-peer-agents",
+  "hash": "4cd47e070d03"
+ },
+ {
+  "slug": "f254-orientation-webgpu-sealed-physics-arena",
+  "num": 254,
+  "title": "Orientation-Driven WebGPU Sealed Physics Arena",
+  "blurb": "Novel combination deliberately branching from the recent residual-density / causal-lattice / intent-flow / recurrent-constraint / acoustic-softbody / MLP-particle /",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F254-orientation-webgpu-sealed-physics-arena",
+  "hash": "d24073b87386"
+ },
+ {
+  "slug": "f254-sealed-genome-competitive-swarm",
+  "num": 254,
+  "title": "sealed-genome-competitive-swarm",
+  "blurb": "Novel combination: A multi-agent competitive swarm on a shared canvas where each agent is a local tiny decision kernel (weight vector acting as MLP-like force",
+  "status": "works",
+  "source": "F254-sealed-genome-competitive-swarm",
+  "hash": "9491ab6333c3"
+ },
+ {
+  "slug": "f254-webgpu-embedding-cluster-memory-palace",
+  "num": 254,
+  "title": "WebGPU Embedding Cluster Memory Palace",
+  "blurb": "Particle substrate where each particle carries a short embedding of user text (hash-based 8-dim). Particles attract via cosine similarity.",
+  "status": "works",
+  "source": "F254-webgpu-embedding-cluster-memory-palace",
+  "hash": "82c01c09bdd3"
+ },
+ {
+  "slug": "f254-webgpu-multiagent-genome-competition",
+  "num": 254,
+  "title": "Webgpu Multiagent Genome Competition",
+  "blurb": "A Verse lab experiment: Webgpu Multiagent Genome Competition.",
+  "status": "works",
+  "source": "F254-webgpu-multiagent-genome-competition",
+  "hash": "faad33f62801"
+ },
+ {
+  "slug": "f253-webgpu-nca-spatial-audio-ui-mind",
+  "num": 253,
+  "title": "WebGPU Neural Cellular Automata Spatial Audio UI Mind",
+  "blurb": "Novel combination branching from the recent residual-density / causal-lattice / intent-flow / recurrent-constraint / acoustic-softbody / MLP-particle /",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F253-webgpu-nca-spatial-audio-ui-mind",
+  "hash": "1a18b39d1948"
+ },
+ {
+  "slug": "f252-webxr-hand-mlp-physical-ui-arena",
+  "num": 252,
+  "title": "WebXR Hand MLP Physical UI Arena",
+  "blurb": "Novel combination deliberately branching from the recent residual-density / causal-lattice / intent-flow / recurrent-constraint / acoustic-softbody /",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F252-webxr-hand-mlp-physical-ui-arena",
+  "hash": "68a271c79201"
+ },
+ {
+  "slug": "f251-webgpu-mlp-particle-arena",
+  "num": 251,
+  "title": "WebGPU MLP-Policy Particle Swarm Arena",
+  "blurb": "Novel combination deliberately branching from the recent residual-density / intent-flow / recurrent-constraint / causal-lattice / acoustic-softbody /",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F251-webgpu-mlp-particle-arena",
+  "hash": "a9343503a8bc"
+ },
+ {
+  "slug": "f250-webgpu-intent-flow-hypothesis-mind",
+  "num": 250,
+  "title": "WebGPU Intent-Flow Hypothesis Mind",
+  "blurb": "Novel combination branching from residual-density portals (F-248), recurrent constraint arena (F-249), acoustic softbody, and causal token swarms:",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F250-webgpu-intent-flow-hypothesis-mind",
+  "hash": "424732a4dd6f"
+ },
+ {
+  "slug": "f249-webgpu-recurrent-constraint-dom-arena",
+  "num": 249,
+  "title": "WebGPU Recurrent Constraint DOM Arena",
+  "blurb": "Novel combination deliberately branching from the recent residual density / causal lattice / acoustic softbody / token-swarm / WebXR residual-portal cluster",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F249-webgpu-recurrent-constraint-dom-arena",
+  "hash": "e80421edcf79"
+ },
+ {
+  "slug": "f248-webgpu-residual-density-portal-mind",
+  "num": 248,
+  "title": "WebGPU Residual Density Portal Mind",
+  "blurb": "Coarse residual density lattice (Canvas2D today, WebGPU compute path noted) whose cells hold short residual embeddings that diffuse under a residual-driven rate.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F248-webgpu-residual-density-portal-mind",
+  "hash": "8fdcdbe28872"
+ },
+ {
+  "slug": "f247-webgpu-causal-token-swarm-mind",
+  "num": 247,
+  "title": "WebGPU Causal Token Swarm Mind",
+  "blurb": "Continuous particle swarm where each particle is a spatial \"token\" carrying a short embedding vector (4-dim)",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F247-webgpu-causal-token-swarm-mind",
+  "hash": "0c2026deb07e"
+ },
+ {
+  "slug": "f247-webxr-gaze-rnn-dom-portals",
+  "num": 247,
+  "title": "WebXR Gaze RNN DOM Portals",
+  "blurb": "Novel combination deliberately branching from the recent residual lattice / softbody / entanglement / acoustic-physics cluster (F239–F246):",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F247-webxr-gaze-rnn-dom-portals",
+  "hash": "0eb835a42ff7"
+ },
+ {
+  "slug": "f246-webgpu-causal-entanglement-lattice-mind",
+  "num": 246,
+  "title": "WebGPU Causal Entanglement Lattice Mind",
+  "blurb": "Discrete multi-channel lattice (Canvas2D progressive, WebGPU compute stub) where cells hold energy and pairwise entanglement scores with 4-neighbors",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F246-webgpu-causal-entanglement-lattice-mind",
+  "hash": "90a8e4400f89"
+ },
+ {
+  "slug": "f245-webgpu-acoustic-softbody-webxr-mind",
+  "num": 245,
+  "title": "WebGPU Acoustic Softbody WebXR Mind",
+  "blurb": "Softbody particle lattice (CPU with WebGPU compute hook)",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F245-webgpu-acoustic-softbody-webxr-mind",
+  "hash": "65ce6809e9fa"
+ },
+ {
+  "slug": "f244-webxr-hand-neural-softbody",
+  "num": 244,
+  "title": "WebXR Hand Neural Softbody",
+  "blurb": "Novel combination deliberately branching from the recent sealed-genome-WebRTC-DOM-arena / acoustic-orientation-crystal / memory-consolidation-lattice cluster",
+  "status": "broken",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F244-webxr-hand-neural-softbody",
+  "hash": "515151e1637c"
+ },
+ {
+  "slug": "f243-sealed-genome-webrtc-dom-arena",
+  "num": 243,
+  "title": "Sealed Genome WebRTC DOM Arena",
+  "blurb": "Novel combination deliberately branching from the recent acoustic-orientation crystal / memory-lattice / neural-DOM-policy / fluid cluster (F238–F242):",
+  "status": "works",
+  "source": "F243-sealed-genome-webrtc-dom-arena",
+  "hash": "91e86d348670"
+ },
+ {
+  "slug": "f242-acoustic-orientation-crystal-mind",
+  "num": 242,
+  "title": "Acoustic Orientation Crystal Mind",
+  "blurb": "Novel combination branching from the recent memory-lattice / neural-DOM / fluid / swarm cluster (F238–F241):",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F242-acoustic-orientation-crystal-mind",
+  "hash": "587068628d58"
+ },
+ {
+  "slug": "f241-webgpu-memory-consolidation-lattice",
+  "num": 241,
+  "title": "WebGPU Memory Consolidation Lattice",
+  "blurb": "Novel combination branching from the recent swarm/policy/lattice cluster (F238–F240):",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F241-webgpu-memory-consolidation-lattice",
+  "hash": "0c6a5e5ee25d"
+ },
+ {
+  "slug": "f240-webgpu-neural-dom-policy-arena",
+  "num": 240,
+  "title": "WebGPU Neural Policy DOM Arena",
+  "blurb": "Novel combination deliberately branching from the recent particle-swarm / fluid-lattice / residual-attention / gesture-evolved field cluster (F232–F239):",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F240-webgpu-neural-dom-policy-arena",
+  "hash": "46a445482215"
+ },
+ {
+  "slug": "f239-webgpu-gesture-evolved-causal-swarm",
+  "num": 239,
+  "title": "WebGPU Gesture-Evolved Causal Swarm",
+  "blurb": "Single index.html with Canvas2D particle swarm (WebGPU availability probe; full compute kernel is the next building block).",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F239-webgpu-gesture-evolved-causal-swarm",
+  "hash": "57ed9187506c"
+ },
+ {
+  "slug": "f238-resonant-audio-fluid-lattice",
+  "num": 238,
+  "title": "Resonant Audio Fluid Lattice",
+  "blurb": "Canvas2D particle fluid (viscous agents with mutual attraction and boundary bounce)",
+  "status": "works",
+  "source": "F238-resonant-audio-fluid-lattice",
+  "hash": "a3e2428ad90d"
+ },
+ {
+  "slug": "f237-orient-webgpu-mlp-dom",
+  "num": 237,
+  "title": "Orient-WebGPU MLP DOM Agents",
+  "blurb": "A Verse lab experiment: Orient-WebGPU MLP DOM Agents.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F237-orient-webgpu-mlp-dom",
+  "hash": "e2ca628ab803"
+ },
+ {
+  "slug": "f237-spoken-fluid-intent",
+  "num": 237,
+  "title": "Spoken Fluid Intent",
+  "blurb": "A Verse lab experiment: Spoken Fluid Intent.",
+  "status": "works",
+  "source": "F237-spoken-fluid-intent",
+  "hash": "83ce12f1b49c"
+ },
+ {
+  "slug": "f236-scene-blocker",
+  "num": 236,
+  "title": "Scene Blocker",
+  "blurb": "Write a short scene in plain text. A local, rule-based director lays out the set, blocks the actors beat by beat, chooses a camera for every beat from about 20",
+  "status": "works",
+  "source": "F236-scene-blocker",
+  "hash": "82553bd35c80"
+ },
+ {
+  "slug": "f235-forge-duel",
+  "num": 235,
+  "title": "Forge Duel",
+  "blurb": "Forging is deterministic; sample texts land in the expected types (\"What if the moon could sing?\" is an Idea, \"I love you and miss you\" is a Feeling, \"Build a tiny",
+  "status": "works",
+  "source": "F235-forge-duel",
+  "hash": "3db225870a7c"
+ },
+ {
+  "slug": "f234-loop-grid",
+  "num": 234,
+  "title": "Loop Grid",
+  "blurb": "A Verse lab experiment: Loop Grid.",
+  "status": "works",
+  "source": "F234-loop-grid",
+  "hash": "de90838decdc"
+ },
+ {
+  "slug": "f233-panel-play",
+  "num": 233,
+  "title": "Panel Play",
+  "blurb": "A Verse lab experiment: Panel Play.",
+  "status": "works",
+  "source": "F233-panel-play",
+  "hash": "e4e53c6e682c"
+ },
+ {
+  "slug": "f233-webgpu-acoustic-attention-orbs",
+  "num": 233,
+  "title": "WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs",
+  "blurb": "A Verse lab experiment: WebGPU Acoustic Spatial Attention Lattice with Morphing Probe Orbs.",
+  "status": "works",
+  "source": "F233-webgpu-acoustic-attention-orbs",
+  "hash": "ac74d0f7d17c"
+ },
+ {
+  "slug": "f232-resonant-neural-membrane",
+  "num": 232,
+  "title": "Resonant Neural Membrane",
+  "blurb": "A Verse lab experiment: Resonant Neural Membrane.",
+  "status": "works",
+  "source": "F232-resonant-neural-membrane",
+  "hash": "3c780cd4fd57"
+ },
+ {
+  "slug": "f232-webxr-hand-particle-genome-arena",
+  "num": 232,
+  "title": "WebXR Hand Particle Genome Arena",
+  "blurb": "A Verse lab experiment: WebXR Hand Particle Genome Arena.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F232-webxr-hand-particle-genome-arena",
+  "hash": "e32b4df3fd2a"
+ },
+ {
+  "slug": "f231-taste-oracle",
+  "num": 231,
+  "title": "Taste Oracle",
+  "blurb": "A Verse lab experiment: Taste Oracle.",
+  "status": "works",
+  "source": "F231-taste-oracle",
+  "hash": "7d3671b7e115"
+ },
+ {
+  "slug": "f230-orientation-genome-arena",
+  "num": 230,
+  "title": "Orientation Genome Arena",
+  "blurb": "A Verse lab experiment: Orientation Genome Arena.",
+  "status": "works",
+  "source": "F230-orientation-genome-arena",
+  "hash": "1a59507c00b8"
+ },
+ {
+  "slug": "f229-webgpu-causal-attention-probes",
+  "num": 229,
+  "title": "WebGPU Causal Particle Lattice with Local Attention Mind and Morphing Probe Orbs",
+  "blurb": "Verse landing: spatial multi-modal local-AI skill under void-live-deploy/skills/; testable by residual→orb position stability and sealed state round-trip.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F229-webgpu-causal-attention-probes",
+  "hash": "84d670edb9d1"
+ },
+ {
+  "slug": "f228-orientation-sealed-dom-agents",
+  "num": 228,
+  "title": "Orientation Causal Sealed DOM Agents",
+  "blurb": "Verse landing: local-AI + DeviceOrientation skill under void-live-deploy/skills/;",
+  "status": "works",
+  "source": "F228-orientation-sealed-dom-agents",
+  "hash": "39a2f6b80492"
+ },
+ {
+  "slug": "f227-hypervector-dreamer",
+  "num": 227,
+  "title": "Hypervector Dreamer",
+  "blurb": "A Verse lab experiment: Hypervector Dreamer.",
+  "status": "works",
+  "source": "F227-hypervector-dreamer",
+  "hash": "daa85c539ff7"
+ },
+ {
+  "slug": "f226-webxr-gaze-mlp-sealed-agents",
+  "num": 226,
+  "title": "WebXR Gaze-Driven Sealed MLP Agents",
+  "blurb": "Verse landing: local-AI + WebXR skill under void-live-deploy/skills/; testable by gaze-proximity fitness drop and weight round-trip via IndexedDB.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F226-webxr-gaze-mlp-sealed-agents",
+  "hash": "f14950135863"
+ },
+ {
+  "slug": "f225-acoustic-causal-lattice-orbs",
+  "num": 225,
+  "title": "Acoustic Causal Lattice Mind + Morphing Echo Orbs",
+  "blurb": "A Verse lab experiment: Acoustic Causal Lattice Mind + Morphing Echo Orbs.",
+  "status": "works",
+  "source": "F225-acoustic-causal-lattice-orbs",
+  "hash": "2f9354eeca97"
+ },
+ {
+  "slug": "f225-surprisal-strata",
+  "num": 225,
+  "title": "Surprisal Strata — The Verse",
+  "blurb": "A Verse lab experiment: Surprisal Strata — The Verse.",
+  "status": "works",
+  "source": "F225-surprisal-strata",
+  "hash": "91297c394942"
+ },
+ {
+  "slug": "f224-thought-trace-lattice",
+  "num": 224,
+  "title": "Thought-Trace Lattice",
+  "blurb": "A Verse lab experiment: Thought-Trace Lattice.",
+  "status": "works",
+  "source": "F224-thought-trace-lattice",
+  "hash": "4edb312b172e"
+ },
+ {
+  "slug": "f223-webgpu-neural-kernel-competition",
+  "num": 223,
+  "title": "WebGPU Neural Kernel Competition",
+  "blurb": "Verse landing: local-AI GPU neural kernel skill under void-live-deploy/skills/;",
+  "status": "works",
+  "source": "F223-webgpu-neural-kernel-competition",
+  "hash": "e09b2bb46a31"
+ },
+ {
+  "slug": "f222-screen-grazing-lichen",
+  "num": 222,
+  "title": "Screen-Grazing Lichen",
+  "blurb": "A Verse lab experiment: Screen-Grazing Lichen.",
+  "status": "works",
+  "source": "F222-screen-grazing-lichen",
+  "hash": "6873f70d977a"
+ },
+ {
+  "slug": "f221-webgpu-mlp-physics-learner",
+  "num": 221,
+  "title": "WebGPU MLP Physics Learner",
+  "blurb": "Verse landing: local-AI physics skill under void-live-deploy/skills/; testable by error drop under simulated pointer and weight round-trip via IndexedDB.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F221-webgpu-mlp-physics-learner",
+  "hash": "c031ce23d9d5"
+ },
+ {
+  "slug": "f220-webgpu-mlp-sph-genome-competition",
+  "num": 220,
+  "title": "WebGPU MLP SPH Genome Competition",
+  "blurb": "Verse landing: spatial multi-agent physics skill under void-live-deploy/skills/;",
+  "status": "works",
+  "source": "F220-webgpu-mlp-sph-genome-competition",
+  "hash": "4ab7731776a8"
+ },
+ {
+  "slug": "f220-window-spanning-organism",
+  "num": 220,
+  "title": "Window-Spanning Organism",
+  "blurb": "A Verse lab experiment: Window-Spanning Organism.",
+  "status": "works",
+  "source": "F220-window-spanning-organism",
+  "hash": "26689ba5362b"
+ },
+ {
+  "slug": "f219-webgpu-spatial-attention-mind",
+  "num": 219,
+  "title": "WebGPU Spatial Attention Mind",
+  "blurb": "Verse landing: spatial attention skill under void-live-deploy/skills/;",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F219-webgpu-spatial-attention-mind",
+  "hash": "11fd008792af"
+ },
+ {
+  "slug": "f218-orientation-rnn-softbody-dom-competition",
+  "num": 218,
+  "title": "Orientation RNN Softbody DOM Competition",
+  "blurb": "Verse landing: spatial softbody skill under void-live-deploy/skills/; testable by energy drop under simulated orientation and genome round-trip via IndexedDB.",
+  "status": "works",
+  "source": "F218-orientation-rnn-softbody-dom-competition",
+  "hash": "b682dba7702f"
+ },
+ {
+  "slug": "f217-audible-synapse-forager",
+  "num": 217,
+  "title": "Audible Synapse Forager",
+  "blurb": "Open index.html from any static server (AudioWorklet and OPFS need http(s) or localhost). Press \"Wake the forager\".",
+  "status": "works",
+  "source": "F217-audible-synapse-forager",
+  "hash": "921684e5f693"
+ },
+ {
+  "slug": "f216-webxr-hand-residual-oracle-dom",
+  "num": 216,
+  "title": "WebXR Hand Residual Oracle DOM",
+  "blurb": "Verse landing: spatial residual oracle skill under void-live-deploy/skills/; testable by residual drop under simulated trajectory and genome round-trip via IndexedDB.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F216-webxr-hand-residual-oracle-dom",
+  "hash": "87cf3933e414"
+ },
+ {
+  "slug": "f215-codec-retina-gardener",
+  "num": 215,
+  "title": "Codec Retina Gardener",
+  "blurb": "Open index.html over http(s) or localhost (WebCodecs needs a secure context). Chrome or Edge gives the full path;",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F215-codec-retina-gardener",
+  "hash": "3e5b82d940a5"
+ },
+ {
+  "slug": "f214-acoustic-orientation-swarm-dom",
+  "num": 214,
+  "title": "Acoustic Orientation Swarm DOM Curators",
+  "blurb": "Verse landing: spatial acoustic swarm skill under void-live-deploy/skills/; testable by mic energy driving card scale and genome round-trip.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F214-acoustic-orientation-swarm-dom",
+  "hash": "71a31c697fdd"
+ },
+ {
+  "slug": "f213-webgpu-neural-kernel-dom-chain",
+  "num": 213,
+  "title": "WebGPU Neural Kernel DOM Chain",
+  "blurb": "V01D landing: spatial DOM chain skill under void-live-deploy/skills/; testable by fitness under simulated tilt and genome round-trip via BroadcastChannel.",
+  "status": "broken",
+  "needs": [
+   "webgpu"
+  ],
+  "error": "pageerror: Unexpected token '...'",
+  "source": "F213-webgpu-neural-kernel-dom-chain",
+  "hash": "3ffb02989ad5"
+ },
+ {
+  "slug": "f212-resonant-imagination",
+  "num": 212,
+  "title": "Resonant Imagination · The Verse",
+  "blurb": "A Verse lab experiment: Resonant Imagination · The Verse.",
+  "status": "works",
+  "source": "F212-resonant-imagination",
+  "hash": "d3074846282c"
+ },
+ {
+  "slug": "f211-webxr-hand-rnn-dom-curators",
+  "num": 211,
+  "title": "WebXR Hand RNN DOM Curators",
+  "blurb": "Verse landing: spatial DOM curator skill under void-live-deploy/skills/;",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F211-webxr-hand-rnn-dom-curators",
+  "hash": "d14e87aea433"
+ },
+ {
+  "slug": "f210-compression-oracle-world",
+  "num": 210,
+  "title": "Compression Oracle World",
+  "blurb": "Open index.html directly (no build, no network). Chrome/Edge with WebGPU gets a 12,000-particle compute world;",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F210-compression-oracle-world",
+  "hash": "98c0a0464f74"
+ },
+ {
+  "slug": "f209-causal-portal-attention-field",
+  "num": 209,
+  "title": "Causal Portal Attention Field",
+  "blurb": "A Verse lab experiment: Causal Portal Attention Field.",
+  "status": "works",
+  "source": "F209-causal-portal-attention-field",
+  "hash": "e017fce71c4b"
+ },
+ {
+  "slug": "f208-orientation-genome-competition-dom",
+  "num": 208,
+  "title": "Orientation Genome Competition DOM Embodiments",
+  "blurb": "A Verse lab experiment: Orientation Genome Competition DOM Embodiments.",
+  "status": "works",
+  "source": "F208-orientation-genome-competition-dom",
+  "hash": "526135e3de35"
+ },
+ {
+  "slug": "f207-spoken-sdf-program-synthesis",
+  "num": 207,
+  "title": "Spoken Sculpture: a local program-synthesis mind that writes its own shader",
+  "blurb": "A Verse lab experiment: Spoken Sculpture: a local program-synthesis mind that writes its own shader.",
+  "status": "works",
+  "source": "F207-spoken-sdf-program-synthesis",
+  "hash": "11a993a43d99"
+ },
+ {
+  "slug": "f206-orientation-mlp-dom-physics-competition",
+  "num": 206,
+  "title": "Orientation-Causal Local MLP Controlling Hybrid DOM Physics Agents in Competition",
+  "blurb": "5+ DOM circular agents, each with a ~12-weight tiny MLP (4-in → 4-hidden → 2-force-out).",
+  "status": "works",
+  "source": "F206-orientation-mlp-dom-physics-competition",
+  "hash": "28a2740268c1"
+ },
+ {
+  "slug": "f206-webgpu-sequence-transformer-morph",
+  "num": 206,
+  "title": "WebGPU Local Sequence Transformer Morph Field",
+  "blurb": "A Verse lab experiment: WebGPU Local Sequence Transformer Morph Field.",
+  "status": "works",
+  "source": "F206-webgpu-sequence-transformer-morph",
+  "hash": "d608ca39ff42"
+ },
+ {
+  "slug": "f205-rd-attention-kernel",
+  "num": 205,
+  "title": "Reaction-Diffusion Attention Kernel",
+  "blurb": "A Verse lab experiment: Reaction-Diffusion Attention Kernel.",
+  "status": "broken",
+  "error": "truncated file: a <script> never closes, so the page ends mid-code",
+  "source": "F205-rd-attention-kernel",
+  "hash": "37f08bf23a52"
+ },
+ {
+  "slug": "f205-webrtc-orientation-dom-agent-competition",
+  "num": 205,
+  "title": "WebRTC/Broadcast Orientation-Causal DOM Agent Competition",
+  "blurb": "6+ DOM circular agents with 6-float genomes (mass, spring, noise, hue, attract, maxSpeed).",
+  "status": "broken",
+  "error": "pageerror: Failed to execute 'transaction' on 'IDBDatabase': One of the specified object stores was not found.",
+  "source": "F205-webrtc-orientation-dom-agent-competition",
+  "hash": "0b82375ba54b"
+ },
+ {
+  "slug": "f204-webgpu-softbody-rnn-swarm-audio",
+  "num": 204,
+  "title": "WebGPU Softbody Lattice Driven by Local Worker RNN Swarm with Spatial Audio Sonification",
+  "blurb": "Pointer trajectory (last 32 samples) is fed as context to RNNs in the Worker.",
+  "status": "works",
+  "source": "F204-webgpu-softbody-rnn-swarm-audio",
+  "hash": "fd5a4431f3ed"
+ },
+ {
+  "slug": "f203-webxr-gaze-webgpu-neural-kernel-idb",
+  "num": 203,
+  "title": "WebXR Gaze-Driven WebGPU Neural Kernel Field with IndexedDB Persistence",
+  "blurb": "Gaze/pointer deposits causal energy; DeviceOrientation adds tilt bias to the kernel.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F203-webxr-gaze-webgpu-neural-kernel-idb",
+  "hash": "3987cef7e84e"
+ },
+ {
+  "slug": "f202-webxr-hand-mlp-dom-chain-competition",
+  "num": 202,
+  "title": "WebXR Hand-Driven MLP DOM Chain Competition",
+  "blurb": "Up to 4 competitive chains (agents), each controlled by a 4-input → 2-output tiny MLP (~20 weights).",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F202-webxr-hand-mlp-dom-chain-competition",
+  "hash": "a38bfa931a73"
+ },
+ {
+  "slug": "f201-webgpu-embodied-rnn-morph",
+  "num": 201,
+  "title": "WebGPU Embodied RNN Morph Interface",
+  "blurb": "Local recurrent mind (simple tanh RNN) integrates pointer, orientation, and sensory feedback from CSS-embodied limbs.",
+  "status": "works",
+  "source": "F201-webgpu-embodied-rnn-morph",
+  "hash": "1536158c3633"
+ },
+ {
+  "slug": "f201-webgpu-multiagent-sealed-genome-competition",
+  "num": 201,
+  "title": "WebGPU Multi-Agent Sealed Genome Competition",
+  "blurb": "8–16 agents with compact 6-float genomes control attraction, speed, noise, etc.",
+  "status": "works",
+  "source": "F201-webgpu-multiagent-sealed-genome-competition",
+  "hash": "6fafd1e805bd"
+ },
+ {
+  "slug": "f200-webgpu-causal-fluid-mind",
+  "num": 200,
+  "title": "WebGPU Causal Fluid Mind",
+  "blurb": "A Verse lab experiment: WebGPU Causal Fluid Mind.",
+  "status": "works",
+  "source": "F200-webgpu-causal-fluid-mind",
+  "hash": "d5dae3f369ad"
+ },
+ {
+  "slug": "f200-webxr-hand-rnn-dom-physics",
+  "num": 200,
+  "title": "webxr-hand-rnn-dom-physics",
+  "blurb": "A Verse lab experiment: webxr-hand-rnn-dom-physics.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F200-webxr-hand-rnn-dom-physics",
+  "hash": "52d934f6096a"
+ },
+ {
+  "slug": "f199-local-rnn-webgpu-causal-particle-field",
+  "num": 199,
+  "title": "Local RNN WebGPU Causal Particle Field",
+  "blurb": "Novel combination: Multi-agent competition where each agent is a local tiny RNN (hidden state recurrent, pure JS) that receives DeviceOrientationEvent components +",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F199-local-rnn-webgpu-causal-particle-field",
+  "hash": "6e7a13c9f3d6"
+ },
+ {
+  "slug": "f198-orientation-mlp-dom-gravity-swarm",
+  "num": 198,
+  "title": "Orientation MLP DOM Gravity Swarm",
+  "blurb": "Novel combination: Multi-agent competition embodied purely as hybrid DOM cards (absolute-positioned divs) whose positions obey simple Verlet-like physics under",
+  "status": "works",
+  "source": "F198-orientation-mlp-dom-gravity-swarm",
+  "hash": "79ec4e4b85fd"
+ },
+ {
+  "slug": "f197-local-embedding-morph-field",
+  "num": 197,
+  "title": "local-embedding-morph-field",
+  "blurb": "Novel combination: Spatial particle field (Canvas2D with WebGPU path noted) where each particle carries a local embedding vector.",
+  "status": "works",
+  "source": "F197-local-embedding-morph-field",
+  "hash": "a81a188b0e1f"
+ },
+ {
+  "slug": "f197-local-spatial-token-mind",
+  "num": 197,
+  "title": "Local Spatial Token Mind",
+  "blurb": "A Verse lab experiment: Local Spatial Token Mind.",
+  "status": "works",
+  "source": "F197-local-spatial-token-mind",
+  "hash": "d1aa3b951afb"
+ },
+ {
+  "slug": "f197-webgpu-acoustic-swarm-mind",
+  "num": 197,
+  "title": "WebGPU Acoustic Swarm Mind",
+  "blurb": "WebGPU compute particle swarm whose per-agent forces are biased in real time by microphone spectral energy and device orientation.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F197-webgpu-acoustic-swarm-mind",
+  "hash": "65214bb92b75"
+ },
+ {
+  "slug": "f197-webgpu-fluid-policy-mind",
+  "num": 197,
+  "title": "webgpu-fluid-policy-mind",
+  "blurb": "WebGPU/Canvas2D fluid-particle substrate (400 agents with velocity, damping, orientation bias, pointer injection).",
+  "status": "works",
+  "source": "F197-webgpu-fluid-policy-mind",
+  "hash": "fa1848542578"
+ },
+ {
+  "slug": "f197-webgpu-neural-kernel-competition-field",
+  "num": 197,
+  "title": "WebGPU Neural Kernel Competition Field",
+  "blurb": "Novel combination: Multiple competing agents whose tiny MLP controllers run as a local neural kernel (JS batched forward passes, WebGPU compute stub prepared for",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F197-webgpu-neural-kernel-competition-field",
+  "hash": "21d70ef355e7"
+ },
+ {
+  "slug": "f197-webgpu-predictive-spectral-constellation",
+  "num": 197,
+  "title": "WebGPU Predictive Spectral Constellation",
+  "blurb": "Novel combination of a spectral resonance lattice (WebGPU preferred, Canvas2D fallback), a local predictive mind (attention + residual forecast in pure JS /",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F197-webgpu-predictive-spectral-constellation",
+  "hash": "7cc9b14bab92"
+ },
+ {
+  "slug": "f197-webgpu-sonified-thought-field",
+  "num": 197,
+  "title": "WebGPU Sonified Evolutionary Thought Field",
+  "blurb": "A Verse lab experiment: WebGPU Sonified Evolutionary Thought Field.",
+  "status": "works",
+  "source": "F197-webgpu-sonified-thought-field",
+  "hash": "514d5959bc31"
+ },
+ {
+  "slug": "f196-deviceorientation-webgpu-springmass-hybrid",
+  "num": 196,
+  "title": "DeviceOrientation WebGPU Spring-Mass Hybrid",
+  "blurb": "DeviceOrientationEvent as the sole causal gravity/force vector into a WebGPU-resident (JS Verlet fallback) multi-body spring-mass chain.",
+  "status": "broken",
+  "needs": [
+   "webgpu"
+  ],
+  "error": "pageerror: Invalid left-hand side in assignment",
+  "source": "F196-deviceorientation-webgpu-springmass-hybrid",
+  "hash": "c0fef10b302b"
+ },
+ {
+  "slug": "f196-webgpu-embedding-lattice-mind",
+  "num": 196,
+  "title": "WebGPU Embedding Lattice Mind",
+  "blurb": "A Verse lab experiment: WebGPU Embedding Lattice Mind.",
+  "status": "broken",
+  "error": "pageerror: cemb is not defined",
+  "source": "F196-webgpu-embedding-lattice-mind",
+  "hash": "3aaa17bee4ad"
+ },
+ {
+  "slug": "f196-webxr-causal-attention-lattice",
+  "num": 196,
+  "title": "WebXR Causal Attention Lattice",
+  "blurb": "Novel combination: Canvas2D (WebGPU compute path noted for next) causal energy lattice that receives pointer / XR-ray deposits.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F196-webxr-causal-attention-lattice",
+  "hash": "6d259b0b186b"
+ },
+ {
+  "slug": "f195-webgpu-attention-swarm-mind",
+  "num": 195,
+  "title": "WebGPU Attention Swarm Mind with Morphing Spatial Chrome",
+  "blurb": "Novel combination: WebGPU compute shader drives a swarm of GPU particles whose positions and velocities are updated on the GPU.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F195-webgpu-attention-swarm-mind",
+  "hash": "28a46f5526b6"
+ },
+ {
+  "slug": "f194-webxr-gaze-rnn-hybrid-sculpt",
+  "num": 194,
+  "title": "WebXR Gaze RNN Hybrid Sculpt",
+  "blurb": "True WebXR gaze (with pointer fallback) as causal input to a local tiny RNN that sculpts hybrid DOM+canvas embodiments. Energy seeds from gaze diffuse on canvas;",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F194-webxr-gaze-rnn-hybrid-sculpt",
+  "hash": "17839c3591d4"
+ },
+ {
+  "slug": "f193-webrtc-indexeddb-sealed-genome-swarm",
+  "num": 193,
+  "title": "WebRTC + IndexedDB Sealed Genome Multi-Agent DOM Swarm",
+  "blurb": "A local multi-agent swarm embodied entirely as hybrid DOM elements (positioned divs) whose motion and decisions are driven by tiny on-device MLPs.",
+  "status": "works",
+  "source": "F193-webrtc-indexeddb-sealed-genome-swarm",
+  "hash": "eea4600de686"
+ },
+ {
+  "slug": "f192-webxr-hand-force-cloth-kernel",
+  "num": 192,
+  "title": "WebXR Hand Force Injection into WebGPU Cloth Kernel",
+  "blurb": "True WebXR hand-tracking (palm and index-tip joints) injects localized forces directly into a WebGPU compute mass-spring cloth simulation.",
+  "status": "works",
+  "needs": [
+   "webgpu",
+   "webxr"
+  ],
+  "source": "F192-webxr-hand-force-cloth-kernel",
+  "hash": "33d3d3a27744"
+ },
+ {
+  "slug": "f191-orientation-mlp-hybrid-agents",
+  "num": 191,
+  "title": "Orientation-Driven MLP Hybrid DOM-Canvas Agents",
+  "blurb": "Local tiny MLPs (pure JS) take DeviceOrientation (beta/gamma) as causal input and output velocity biases for competitive DOM agent cards.",
+  "status": "works",
+  "source": "F191-orientation-mlp-hybrid-agents",
+  "hash": "c645f1c9f58a"
+ },
+ {
+  "slug": "f190-webgpu-orientation-neural-particles",
+  "num": 190,
+  "title": "WebGPU Orientation Competitive Neural Particles",
+  "blurb": "WebGPU compute shaders implement multiple competitive local agents as neural-particle kernels. DeviceOrientation (or pointer proxy) is injected as a causal uniform.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F190-webgpu-orientation-neural-particles",
+  "hash": "d1ad0b89a29f"
+ },
+ {
+  "slug": "f189-sealed-mlp-dom-agents",
+  "num": 189,
+  "title": "Sealed MLP DOM Agents (Persistent WebRTC Field)",
+  "blurb": "Local tiny MLPs (pure JS, no WebGPU) control physical DOM agent cards. DeviceOrientation (or mouse proxy) is causal input to the networks.",
+  "status": "works",
+  "source": "F189-sealed-mlp-dom-agents",
+  "hash": "498bb69e0926"
+ },
+ {
+  "slug": "f188-webxr-hand-competitive-mlp-dom-field",
+  "num": 188,
+  "title": "WebXR Hand Competitive MLP DOM Field",
+  "blurb": "True WebXR hand-tracking (XRHand joints: palm, index tip, thumb tip relative) as causal multi-channel input to a population of competitive local tiny MLPs.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F188-webxr-hand-competitive-mlp-dom-field",
+  "hash": "f45fe1d9a034"
+ },
+ {
+  "slug": "f187-lattice-autopoiesis",
+  "num": 187,
+  "title": "Lattice Autopoiesis Mind",
+  "blurb": "Concept: Continuous reaction-diffusion lattice (Gray-Scott) on Canvas2D whose control parameters (feed F, kill K, diffusivities) are evolved by a local Web Worker",
+  "status": "works",
+  "source": "F187-lattice-autopoiesis",
+  "hash": "0e221129c868"
+ },
+ {
+  "slug": "f187-webgpu-spectral-fluid-orientation-evo-mind",
+  "num": 187,
+  "title": "WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes",
+  "blurb": "A Verse lab experiment: WebGPU Spectral Fluid Mind — Orientation Causal + Evolutionary DOM Echoes.",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F187-webgpu-spectral-fluid-orientation-evo-mind",
+  "hash": "3a3d0d03bffe"
+ },
+ {
+  "slug": "f186-trajectory-attention-echo-mind",
+  "num": 186,
+  "title": "Trajectory Attention Echo Mind",
+  "blurb": "Pointer trajectories build a persistent spatial memory field (coarse grid of local embeddings).",
+  "status": "works",
+  "source": "F186-trajectory-attention-echo-mind",
+  "hash": "e958143ea4a4"
+ },
+ {
+  "slug": "f185-sealed-rnn-physical-ui-agents",
+  "num": 185,
+  "title": "Sealed RNN Physical UI Agents",
+  "blurb": "Local tiny RNN (recurrent state) agents compete to control hybrid DOM physical UI cards. DeviceOrientation (or pointer proxy) is the causal input.",
+  "status": "works",
+  "source": "F185-sealed-rnn-physical-ui-agents",
+  "hash": "1f383a9db893"
+ },
+ {
+  "slug": "f184-webgpu-sph-vortex-portals",
+  "num": 184,
+  "title": "WebGPU SPH Vortex Mind with Orbiting Portals",
+  "blurb": "Simplified SPH-inspired particle fluid (Canvas2D primary; WebGPU compute path noted for neighbor forces and density) where particles interact via pressure,",
+  "status": "works",
+  "source": "F184-webgpu-sph-vortex-portals",
+  "hash": "39bd87f88cbb"
+ },
+ {
+  "slug": "f183-webgpu-genetic-softbody-portals",
+  "num": 183,
+  "title": "WebGPU Genetic Softbody Agents with Self-Morphing DOM Portals",
+  "blurb": "WebGPU compute shader (with Canvas2D fallback) updates a soft-body particle system: particles connected by springs with damping, attracted to user-injected energy",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F183-webgpu-genetic-softbody-portals",
+  "hash": "ab8873ccb057"
+ },
+ {
+  "slug": "f182-webgpu-spectral-nca-orientation-mind",
+  "num": 182,
+  "title": "WebGPU Spectral NCA Orientation Mind",
+  "blurb": "Novel combination: WebGPU compute Neural Cellular Automaton / reaction-diffusion lattice whose update is biased by real-time microphone spectral energy and device",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F182-webgpu-spectral-nca-orientation-mind",
+  "hash": "774dca4ac07e"
+ },
+ {
+  "slug": "f181-webgpu-compute-genome-physics",
+  "num": 181,
+  "title": "WebGPU Compute Genome Physics",
+  "blurb": "True WebGPU compute shaders implement both particle physics and per-agent tiny MLP evaluation for a multi-agent competitive swarm.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F181-webgpu-compute-genome-physics",
+  "hash": "7c141b0a4c7c"
+ },
+ {
+  "slug": "f180-orientation-causal-mlp-dom-field",
+  "num": 180,
+  "title": "Orientation-Causal MLP DOM Agents",
+  "blurb": "Pure DeviceOrientation as causal input driving tiny local JS MLPs that control hybrid DOM physical agents.",
+  "status": "works",
+  "source": "F180-orientation-causal-mlp-dom-field",
+  "hash": "7b936a42fbca"
+ },
+ {
+  "slug": "f179-webxr-gaze-rnn-dom-competition",
+  "num": 179,
+  "title": "WebXR Gaze Competitive RNN DOM Mind",
+  "blurb": "Novel combination: true WebXR gaze (XRInputSource targetRayMode 'gaze' or viewer pose) as the primary causal sequence input to a local multi-agent system of tiny",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F179-webxr-gaze-rnn-dom-competition",
+  "hash": "90aef58aa956"
+ },
+ {
+  "slug": "f178-webgpu-rnn-softbody-dom",
+  "num": 178,
+  "title": "WebGPU RNN Soft-Body DOM Mind",
+  "blurb": "Novel combination: a spring-mass soft-body grid (WebGPU compute path documented;",
+  "status": "works",
+  "source": "F178-webgpu-rnn-softbody-dom",
+  "hash": "26210f45f1d9"
+ },
+ {
+  "slug": "f177-webgpu-probe-swarm-mind",
+  "num": 177,
+  "title": "WebGPU Probe Swarm Mind",
+  "blurb": "Novel combination: a GPU-targeted spatial probe swarm (particles that actively sample and track a decaying user-intent density field deposited by pointer motion)",
+  "status": "works",
+  "source": "F177-webgpu-probe-swarm-mind",
+  "hash": "4805131f2891"
+ },
+ {
+  "slug": "f176-audio-residual-swarm-mind",
+  "num": 176,
+  "title": "audio-residual-swarm-mind",
+  "blurb": "Novel combination: Canvas2D particle swarm whose cohesion, separation, and hue are driven in real time by the residual error of a local Web Worker evolutionary",
+  "status": "works",
+  "source": "F176-audio-residual-swarm-mind",
+  "hash": "312eb3fc96ba"
+ },
+ {
+  "slug": "f175-webrtc-shared-device-field",
+  "num": 175,
+  "title": "webrtc-shared-device-field",
+  "blurb": "Novel combination: multi-peer WebRTC DataChannels for sharing a live spatial particle field, with DeviceOrientation (or pointer fallback) as causal input that",
+  "status": "works",
+  "source": "F175-webrtc-shared-device-field",
+  "hash": "17f5c597b656"
+ },
+ {
+  "slug": "f174-webxr-hand-mlp-swarm",
+  "num": 174,
+  "title": "webxr-hand-mlp-swarm",
+  "blurb": "Novel combination: true WebXR hand-tracking (or pointer/DeviceOrientation fallback) as causal input to a local tiny MLP that outputs force multipliers for a",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F174-webxr-hand-mlp-swarm",
+  "hash": "3d5d1e850bef"
+ },
+ {
+  "slug": "f173-webgpu-mlp-orientation-physics",
+  "num": 173,
+  "title": "webgpu-mlp-orientation-physics",
+  "blurb": "Novel combination: a local tiny MLP (JS) maps DeviceOrientation (or pointer fallback) + time into force multipliers that drive a WebGPU compute-shader particle",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F173-webgpu-mlp-orientation-physics",
+  "hash": "5bb45a8529ce"
+ },
+ {
+  "slug": "f172-webgpu-competitive-genome-agents",
+  "num": 172,
+  "title": "webgpu-competitive-genome-agents",
+  "blurb": "Novel combination: multi-agent competition on a spatial resource field where each agent is controlled by a local tiny MLP genome.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F172-webgpu-competitive-genome-agents",
+  "hash": "877da29ba7fd"
+ },
+ {
+  "slug": "171-webgpu-resonance-agent",
+  "num": 171,
+  "title": "Resonance Field Agent",
+  "blurb": "Novel combination: a local (browser-only) agent that classifies spatial gestures and modulates a particle field simulation. The field is the canvas UI;",
+  "status": "works",
+  "source": "171-webgpu-resonance-agent",
+  "hash": "5a6f0243de40"
+ },
+ {
+  "slug": "f0171-orientation-mlp-ui-controller",
+  "num": 171,
+  "title": "orientation-mlp-ui-controller",
+  "blurb": "Novel combination: DeviceOrientation events feed a local tiny MLP (pure JS, no external libs) whose outputs continuously morph a hybrid DOM+canvas interface (tile",
+  "status": "works",
+  "source": "F0171-orientation-mlp-ui-controller",
+  "hash": "73a9d1e59aa5"
+ },
+ {
+  "slug": "169-local-felt-not-attest",
+  "num": 169,
+  "title": "Verse local-felt-not-attest (draft)",
+  "blurb": "A Verse lab experiment: Verse local-felt-not-attest (draft).",
+  "status": "works",
+  "source": "169-local-felt-not-attest",
+  "hash": "4c64b4a3c3d5"
+ },
+ {
+  "slug": "162-local-incubate-not-log",
+  "num": 162,
+  "title": "local-incubate-not-log (draft)",
+  "blurb": "A Verse lab experiment: local-incubate-not-log (draft).",
+  "status": "works",
+  "source": "162-local-incubate-not-log",
+  "hash": "4832f5412472"
+ },
+ {
+  "slug": "161-local-map-not-sense",
+  "num": 161,
+  "title": "local-map-not-sense — Verse draft",
+  "blurb": "A Verse lab experiment: local-map-not-sense — Verse draft.",
+  "status": "works",
+  "source": "161-local-map-not-sense",
+  "hash": "cb09ce698cad"
+ },
+ {
+  "slug": "160-local-span-not-clock",
+  "num": 160,
+  "title": "local-span-not-clock (draft)",
+  "blurb": "A Verse lab experiment: local-span-not-clock (draft).",
+  "status": "works",
+  "source": "160-local-span-not-clock",
+  "hash": "5ab56004626c"
+ },
+ {
+  "slug": "159-local-sensation-not-claim",
+  "num": 159,
+  "title": "local-sensation-not-claim — draft",
+  "blurb": "A Verse lab experiment: local-sensation-not-claim — draft.",
+  "status": "works",
+  "source": "159-local-sensation-not-claim",
+  "hash": "bf67b0f4d38f"
+ },
+ {
+  "slug": "157-local-isolated-not-sequence",
+  "num": 157,
+  "title": "local-isolated-not-sequence — draft 157",
+  "blurb": "Unused in the prior six runs (last six: sensory substitution 151, private incubation log 152, weak-signal hypothesis ledger 153, human-machine co-agency 154, opt-in",
+  "status": "works",
+  "source": "157-local-isolated-not-sequence",
+  "hash": "bd95f1280bf6"
+ },
+ {
+  "slug": "156-local-cooccur-not-imply",
+  "num": 156,
+  "title": "local-cooccur-not-imply — draft (unattested)",
+  "blurb": "A Verse lab experiment: local-cooccur-not-imply — draft (unattested).",
+  "status": "works",
+  "source": "156-local-cooccur-not-imply",
+  "hash": "722b68e73d89"
+ },
+ {
+  "slug": "155-local-optin-not-record",
+  "num": 155,
+  "title": "local-optin-not-record — draft 155",
+  "blurb": "A Verse lab experiment: local-optin-not-record — draft 155.",
+  "status": "works",
+  "source": "155-local-optin-not-record",
+  "hash": "178512d42193"
+ },
+ {
+  "slug": "153-local-faint-not-promote",
+  "num": 153,
+  "title": "SPEC: local-faint-not-promote",
+  "blurb": "Strategic foresight and intelligence literature (Ansoff weak signals) treat faint early indicators as potentially disproportionate future signals.",
+  "status": "works",
+  "source": "153-local-faint-not-promote",
+  "hash": "d88e95760f12"
+ },
+ {
+  "slug": "152-local-incubate-not-attest",
+  "num": 152,
+  "title": "Local incubate-not-attest — draft",
+  "blurb": "A Verse lab experiment: Local incubate-not-attest — draft.",
+  "status": "works",
+  "source": "152-local-incubate-not-attest",
+  "hash": "302d57b3b307"
+ },
+ {
+  "slug": "151-local-proxy-not-sense",
+  "num": 151,
+  "title": "local-proxy-not-sense — Verse draft",
+  "blurb": "A Verse lab experiment: local-proxy-not-sense — Verse draft.",
+  "status": "works",
+  "source": "151-local-proxy-not-sense",
+  "hash": "33519d7173bd"
+ },
+ {
+  "slug": "150-local-interval-not-measure",
+  "num": 150,
+  "title": "local-interval-not-measure — Verse draft (run 150)",
+  "blurb": "A Verse lab experiment: local-interval-not-measure — Verse draft (run 150).",
+  "status": "works",
+  "source": "150-local-interval-not-measure",
+  "hash": "f0c007316f3a"
+ },
+ {
+  "slug": "149-local-intero-not-claim",
+  "num": 149,
+  "title": "SPEC — local-intero-not-claim (run 149)",
+  "blurb": "Local intero-not-claim; a sealed local attention or interoceptive observation class hashes to a claim-refusal id;",
+  "status": "works",
+  "source": "149-local-intero-not-claim",
+  "hash": "cb04a91cf382"
+ },
+ {
+  "slug": "147-local-quiet-not-boost",
+  "num": 147,
+  "title": "local-quiet-not-boost — Verse draft 147",
+  "blurb": "A Verse lab experiment: local-quiet-not-boost — Verse draft 147.",
+  "status": "works",
+  "source": "147-local-quiet-not-boost",
+  "hash": "c4f812fe1ddd"
+ },
+ {
+  "slug": "145-local-gaze-not-command",
+  "num": 145,
+  "title": "SPEC — local-gaze-not-command (run 145)",
+  "blurb": "opt-in gesture or gaze as local input",
+  "status": "works",
+  "source": "145-local-gaze-not-command",
+  "hash": "8aff2c67136d"
+ },
+ {
+  "slug": "144-local-weak-not-attest",
+  "num": 144,
+  "title": "Verse local-weak-not-attest — hashed weak-signal ledger (draft)",
+  "blurb": "A Verse lab experiment: Verse local-weak-not-attest — hashed weak-signal ledger (draft).",
+  "status": "works",
+  "source": "144-local-weak-not-attest",
+  "hash": "0100140843ed"
+ },
+ {
+  "slug": "141-local-private-not-shared",
+  "num": 141,
+  "title": "local-private-not-shared — Verse draft",
+  "blurb": "A Verse lab experiment: local-private-not-shared — Verse draft.",
+  "status": "works",
+  "source": "141-local-private-not-shared",
+  "hash": "fc379962e73a"
+ },
+ {
+  "slug": "f054-local-trajectory-embedding-echo",
+  "num": 54,
+  "title": "Local Trajectory Embedding Echo Field",
+  "blurb": "A spatial canvas where short user trajectories (pointer paths + device orientation deltas) are compressed by a local tiny encoder into fixed embedding vectors.",
+  "status": "works",
+  "source": "F054-local-trajectory-embedding-echo",
+  "hash": "2c06e690c63d"
+ },
+ {
+  "slug": "f053-webgpu-softbody-attention-portals",
+  "num": 53,
+  "title": "WebGPU Softbody Attention Portals",
+  "blurb": "A deformable softbody of particles simulated in a WebGPU compute shader.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F053-webgpu-softbody-attention-portals",
+  "hash": "402934a78f88"
+ },
+ {
+  "slug": "f052-spatial-causal-portal-lattice",
+  "num": 52,
+  "title": "Spatial Causal Portal Lattice",
+  "blurb": "WebGPU compute path (Canvas2D fallback) for a spatial energy lattice",
+  "status": "works",
+  "source": "F052-spatial-causal-portal-lattice",
+  "hash": "4574dccfd621"
+ },
+ {
+  "slug": "f051-webgpu-causal-echo-lattice",
+  "num": 51,
+  "title": "WebGPU Causal Echo Lattice Mind",
+  "blurb": "WebGPU compute (with Canvas2D fallback) running a causal wave/echo lattice: each cell holds phase and amplitude that propagates from pointer and planted anchors",
+  "status": "works",
+  "source": "F051-webgpu-causal-echo-lattice",
+  "hash": "9c70223888dc"
+ },
+ {
+  "slug": "f050-evolving-attention-lattice-mind",
+  "num": 50,
+  "title": "Evolving Local Attention Lattice with Emergent Portals and Morphing Spatial Chrome",
+  "blurb": "Novel combination of a spatial attention lattice whose parameters are evolved by a local Web Worker, emergent interactive DOM portals at high-attention loci, and a",
+  "status": "works",
+  "source": "F050-evolving-attention-lattice-mind",
+  "hash": "33df33c819f3"
+ },
+ {
+  "slug": "f050-spectral-resonance-mind",
+  "num": 50,
+  "title": "Spectral Resonance Lattice Mind",
+  "blurb": "Novel combination of a coarse Canvas2D lattice of coupled oscillators (spectral field), a local Web Worker evolutionary mind that adapts coupling/damping/prediction",
+  "status": "works",
+  "source": "F050-spectral-resonance-mind",
+  "hash": "20af39094cde"
+ },
+ {
+  "slug": "f050-webxr-evo-density-morph",
+  "num": 50,
+  "title": "WebXR Evolving Density Field with Local Worker Mind and Morphing Spatial Cards",
+  "blurb": "Novel combination: A WebGPU-capable (Canvas2D fallback) density field of agents whose update rules are evolved by a local Web Worker genetic algorithm.",
+  "status": "needs-webxr",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F050-webxr-evo-density-morph",
+  "hash": "102c7d3b061f"
+ },
+ {
+  "slug": "f049-predictive-swarm-residual-mind",
+  "num": 49,
+  "title": "Predictive Swarm Residual Mind",
+  "blurb": "Canvas2D particle swarm with local cohesion/separation rules modulated by residual error",
+  "status": "works",
+  "source": "F049-predictive-swarm-residual-mind",
+  "hash": "6158d87c92f9"
+ },
+ {
+  "slug": "048-evolving-particle-life-mind",
+  "num": 48,
+  "title": "Evolving Particle-Life Mind",
+  "blurb": "Novel combination: Canvas2D particle-life simulation (multi-species attraction/repulsion forces) whose interaction matrix is continuously evolved by a local Web",
+  "status": "works",
+  "source": "048-evolving-particle-life-mind",
+  "hash": "2356611f1400"
+ },
+ {
+  "slug": "f048-local-causal-echo-chamber",
+  "num": 48,
+  "title": "Local Causal Echo Chamber",
+  "blurb": "A Verse lab experiment: Local Causal Echo Chamber.",
+  "status": "works",
+  "source": "F048-local-causal-echo-chamber",
+  "hash": "0d844449590a"
+ },
+ {
+  "slug": "f048-resonant-spatial-audio-mind",
+  "num": 48,
+  "title": "Resonant Spatial Audio Mind",
+  "blurb": "Novel combination of a Canvas2D spatial particle field, a local Web Worker evolutionary policy mind that controls a multi-oscillator Web Audio synthesizer",
+  "status": "works",
+  "source": "F048-resonant-spatial-audio-mind",
+  "hash": "eff722c4f117"
+ },
+ {
+  "slug": "f047-causal-attention-lattice-mind",
+  "num": 47,
+  "title": "Causal Attention Lattice Mind",
+  "blurb": "Novel combination: Canvas2D spatial lattice whose local update is driven by a causal (pointer-history-conditioned) attention kernel whose parameters are evolved by",
+  "status": "works",
+  "source": "F047-causal-attention-lattice-mind",
+  "hash": "3071219af430"
+ },
+ {
+  "slug": "f046-webgpu-volumetric-thought-injection-mind",
+  "num": 46,
+  "title": "WebGPU Volumetric Thought Injection Mind",
+  "blurb": "Novel combination of a 3D volumetric density field (WebGPU compute preferred, Canvas2D particle-projection fallback), a local Worker-based neural policy agent that",
+  "status": "works",
+  "source": "F046-webgpu-volumetric-thought-injection-mind",
+  "hash": "da9e7f9e359b"
+ },
+ {
+  "slug": "f045-webgpu-nca-portal-mind",
+  "num": 45,
+  "title": "WebGPU Compute NCA Portal Mind",
+  "blurb": "Novel combination of a large-scale Neural Cellular Automaton (NCA) updated via WebGPU compute (with Canvas2D fallback), a local Worker evolutionary mind that",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F045-webgpu-nca-portal-mind",
+  "hash": "c2e1ea9ee471"
+ },
+ {
+  "slug": "044-resonant-echo-portals",
+  "num": 44,
+  "title": "Resonant Echo Portals",
+  "blurb": "Self-contained interactive prototype for The Verse canvas.",
+  "status": "works",
+  "source": "044-resonant-echo-portals",
+  "hash": "36f3e31e2158"
+ },
+ {
+  "slug": "f044-neural-implicit-vector-mind",
+  "num": 44,
+  "title": "Neural Implicit Spatial Vector Field Mind with Particle Tracers",
+  "blurb": "Novel combination of a continuous neural implicit vector field (small shared MLP that maps normalized position + pointer proximity to velocity) evolved by a local",
+  "status": "works",
+  "source": "F044-neural-implicit-vector-mind",
+  "hash": "c05c24ccb816"
+ },
+ {
+  "slug": "f044-spectral-resonance-lattice",
+  "num": 44,
+  "title": "Spectral Resonance Lattice Mind",
+  "blurb": "Novel combination of a continuous particle lattice (Canvas2D for broad compatibility, WebGPU compute path noted) whose velocity spectrum is analyzed in real time by",
+  "status": "works",
+  "source": "F044-spectral-resonance-lattice",
+  "hash": "ab49b7a2cf98"
+ },
+ {
+  "slug": "f043-predictive-residual-lattice",
+  "num": 43,
+  "title": "Predictive Residual Lattice Mind",
+  "blurb": "A Verse lab experiment: Predictive Residual Lattice Mind.",
+  "status": "works",
+  "source": "F043-predictive-residual-lattice",
+  "hash": "77f2fa9b0b1a"
+ },
+ {
+  "slug": "f043-webgpu-compute-nca-pointer-mind",
+  "num": 43,
+  "title": "Evolving Parameter Reaction-Diffusion Mind with Spatial Seeding and Morphing Chrome",
+  "blurb": "Novel combination of a continuous Gray-Scott reaction-diffusion field (spatial emergent patterns), a local Web Worker evolutionary mind that evolves the global",
+  "status": "works",
+  "source": "F043-webgpu-compute-nca-pointer-mind",
+  "hash": "4bb88991eb61"
+ },
+ {
+  "slug": "f042-predictive-audio-particle-mind",
+  "num": 42,
+  "title": "Predictive Audio Particle Anticipation Mind",
+  "blurb": "Novel combination of local Web Audio spectrum analysis, a Web Worker evolutionary predictive MLP mind, Canvas2D particle residual visualization, and morphing global",
+  "status": "works",
+  "source": "F042-predictive-audio-particle-mind",
+  "hash": "db2bf35844e1"
+ },
+ {
+  "slug": "f042-predictive-temporal-echo-mind",
+  "num": 42,
+  "title": "Predictive Temporal Echo Mind",
+  "blurb": "Novel combination of a spatial particle field (pointer + optional DeviceOrientation), decaying temporal echo maps written by agent trajectories, and a local Web",
+  "status": "works",
+  "source": "F042-predictive-temporal-echo-mind",
+  "hash": "17acf1f4ae17"
+ },
+ {
+  "slug": "f041-local-ai-portal-lattice-mind",
+  "num": 41,
+  "title": "Local Ai Portal Lattice Mind",
+  "blurb": "A Verse lab experiment: Local Ai Portal Lattice Mind.",
+  "status": "works",
+  "source": "F041-local-ai-portal-lattice-mind",
+  "hash": "3335d755bbb3"
+ },
+ {
+  "slug": "f041-resonance-seeking-agents",
+  "num": 41,
+  "title": "Resonance-Seeking Cognitive Agents in WebGPU Wavefield",
+  "blurb": "A Verse lab experiment: Resonance-Seeking Cognitive Agents in WebGPU Wavefield.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F041-resonance-seeking-agents",
+  "hash": "141b7f7f339c"
+ },
+ {
+  "slug": "f040-evolved-neural-spatial-probe-swarm",
+  "num": 40,
+  "title": "Evolved Neural Spatial Probe Swarm with Graph Overlay and Morphing Chrome",
+  "blurb": "Novel combination: A swarm of absolute-positioned DOM probe agents that navigate a 2D spatial stage.",
+  "status": "works",
+  "source": "F040-evolved-neural-spatial-probe-swarm",
+  "hash": "5cbf40dcf00f"
+ },
+ {
+  "slug": "f039-webgpu-multichannel-lattice-mind",
+  "num": 39,
+  "title": "Multi-Channel WebGPU Lattice Mind with Embodied Spatial Cards",
+  "blurb": "Novel combination: A multi-channel continuous lattice (activator / inhibitor / catalyst) stepped by a WebGPU compute shader (Canvas2D multi-buffer fallback).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F039-webgpu-multichannel-lattice-mind",
+  "hash": "c8375b634a46"
+ },
+ {
+  "slug": "f038-living-spatial-cards-mind",
+  "num": 38,
+  "title": "Living Spatial Cards Mind",
+  "blurb": "Novel combination: A continuous Canvas2D spatial field (parameterized reaction-diffusion / logistic lattice) whose local update rule is evolved by a Web Worker",
+  "status": "works",
+  "source": "F038-living-spatial-cards-mind",
+  "hash": "393fdc0a4df3"
+ },
+ {
+  "slug": "f037-resonant-voice-lattice-mind",
+  "num": 37,
+  "title": "Resonant Voice Lattice Mind",
+  "blurb": "A Verse lab experiment: Resonant Voice Lattice Mind.",
+  "status": "works",
+  "source": "F037-resonant-voice-lattice-mind",
+  "hash": "e5bfed19bf05"
+ },
+ {
+  "slug": "f036-local-evolving-nca-mind",
+  "num": 36,
+  "title": "Local Evolving Neural Cellular Automaton Spatial Mind",
+  "blurb": "Novel combination: A continuous 2D cellular field on Canvas2D whose local update rule is a shared tiny multi-layer perceptron (NCA-style).",
+  "status": "works",
+  "source": "F036-local-evolving-nca-mind",
+  "hash": "7634ce3794f1"
+ },
+ {
+  "slug": "f035-evo-neural-swarm-mind",
+  "num": 35,
+  "title": "Local Evolutionary Neural Swarm Controller",
+  "blurb": "Novel combination: Continuous spatial agents on Canvas2D whose acceleration is produced by a shared tiny neural network (MLP).",
+  "status": "works",
+  "source": "F035-evo-neural-swarm-mind",
+  "hash": "57c40b01a111"
+ },
+ {
+  "slug": "f034-spectral-resonance-mind",
+  "num": 34,
+  "title": "Spectral Resonance Evolutionary Mind",
+  "blurb": "Novel combination: A continuous field of coupled phase oscillators on a coarse grid whose coupling matrix and natural frequencies are evolved by a local Web Worker",
+  "status": "works",
+  "source": "F034-spectral-resonance-mind",
+  "hash": "b2d1f4eaf6aa"
+ },
+ {
+  "slug": "f033-vector-field-mind",
+  "num": 33,
+  "title": "Local Evolutionary Vector Field Mind",
+  "blurb": "Novel combination: Continuous particles advect under a coarse spatial vector field (grid of control vectors).",
+  "status": "works",
+  "source": "F033-vector-field-mind",
+  "hash": "b7c9a0b99cbe"
+ },
+ {
+  "slug": "f032-attention-field-mind",
+  "num": 32,
+  "title": "Local Attention Field Mind",
+  "blurb": "A continuous spatial field of token-particles on Canvas2D whose inter-particle forces are computed by a local Web Worker implementing simplified multi-head",
+  "status": "works",
+  "source": "F032-attention-field-mind",
+  "hash": "db8524ac1b3e"
+ },
+ {
+  "slug": "f031-resonant-attention-graph-mind",
+  "num": 31,
+  "title": "Resonant Spatial Attention Graph Mind",
+  "blurb": "Spatial graph of 42 nodes (positions, velocities, energy, phase, feature vectors) whose pairwise interactions are governed by a local Transformer-style",
+  "status": "works",
+  "source": "F031-resonant-attention-graph-mind",
+  "hash": "b7cb719b466a"
+ },
+ {
+  "slug": "f030-trajectory-memory-field-mind",
+  "num": 30,
+  "title": "Trajectory Memory Field Mind",
+  "blurb": "Continuous spatial field (Canvas2D; WebGPU compute path noted) that retains pointer trajectories as decaying activation trails.",
+  "status": "works",
+  "source": "F030-trajectory-memory-field-mind",
+  "hash": "f1c71fa808e3"
+ },
+ {
+  "slug": "f029-spatial-attention-lattice-mind",
+  "num": 29,
+  "title": "Spatial Attention Lattice Mind",
+  "blurb": "Continuous spatial lattice (Canvas2D grid; WebGPU compute path noted) whose local update is an attention-weighted aggregation over neighborhood, parameterized by a",
+  "status": "works",
+  "source": "F029-spatial-attention-lattice-mind",
+  "hash": "facf2931127b"
+ },
+ {
+  "slug": "f028-competitive-minds-field",
+  "num": 28,
+  "title": "Competitive Minds Field",
+  "blurb": "Novel combination: Shared Canvas2D particle field (lightweight boids) simultaneously influenced by two competing local evolutionary minds.",
+  "status": "works",
+  "source": "F028-competitive-minds-field",
+  "hash": "024260f1a8c8"
+ },
+ {
+  "slug": "f027-spectral-phase-mind",
+  "num": 27,
+  "title": "Spectral Phase Resonance Mind",
+  "blurb": "Novel combination: Continuous phase-oscillator field (particles with phase θ and natural frequency ω, local Kuramoto-style coupling) whose coupling strength K and",
+  "status": "works",
+  "source": "F027-spectral-phase-mind",
+  "hash": "5c6deffa7af1"
+ },
+ {
+  "slug": "f026-pointer-trajectory-lattice-mind",
+  "num": 26,
+  "title": "Pointer Trajectory Lattice Mind",
+  "blurb": "Novel combination: Canvas2D particle field attracted to a dynamic \"intent lattice\" computed by a local Web Worker from short-term pointer trajectory memory (recent",
+  "status": "works",
+  "source": "F026-pointer-trajectory-lattice-mind",
+  "hash": "649bbfd36a9e"
+ },
+ {
+  "slug": "f026-spatial-graph-mind",
+  "num": 26,
+  "title": "Spatial Graph Mind",
+  "blurb": "A Verse lab experiment: Spatial Graph Mind.",
+  "status": "broken",
+  "error": "pageerror: canvas.getContext is not a function",
+  "source": "F026-spatial-graph-mind",
+  "hash": "e8363eed634a"
+ },
+ {
+  "slug": "f026-webxr-nca-mindscape",
+  "num": 26,
+  "title": "WebXR Neural Cellular Automaton Mindscape",
+  "blurb": "A Verse lab experiment: WebXR Neural Cellular Automaton Mindscape.",
+  "status": "broken",
+  "error": "blank page: nothing was painted after 2 seconds",
+  "source": "F026-webxr-nca-mindscape",
+  "hash": "c26219378fe6"
+ },
+ {
+  "slug": "f025-webgpu-boids-rl-mind",
+  "num": 25,
+  "title": "WebGPU Boids RL Mind",
+  "blurb": "Novel combination: GPU-accelerated (Canvas fallback; WebGPU compute path noted) boids/flocking field whose behavioral parameters are continuously adapted by a local",
+  "status": "works",
+  "source": "F025-webgpu-boids-rl-mind",
+  "hash": "0f5c81e7c7a0"
+ },
+ {
+  "slug": "f024-webgpu-volumetric-evo-audio",
+  "num": 24,
+  "title": "WebGPU Volumetric Noise Verse with Local Evolutionary Controller and Spatial Audio Morph",
+  "blurb": "Novel combination for The Verse canvas: a volumetric density field (projected to 2D canvas via layered noise slices or simple ray-density) generated with",
+  "status": "works",
+  "source": "F024-webgpu-volumetric-evo-audio",
+  "hash": "f517bec7df85"
+ },
+ {
+  "slug": "f023-webgpu-evo-lattice-mind",
+  "num": 23,
+  "title": "WebGPU/Canvas Evolutionary Lattice Mind",
+  "blurb": "Novel combination for The Verse canvas: a continuous lattice (grid) substrate simulated on Canvas2D (WebGPU compute path noted for scaling), where each cell evolves",
+  "status": "works",
+  "source": "F023-webgpu-evo-lattice-mind",
+  "hash": "109c299fc862"
+ },
+ {
+  "slug": "f023-webxr-lattice-mind",
+  "num": 23,
+  "title": "WebXR Lattice Mind Assimilation",
+  "blurb": "Novel combination for The Verse canvas: a spatial lattice of cells whose growth and density are driven by local Worker-based AI reasoning (simple evolutionary",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F023-webxr-lattice-mind",
+  "hash": "a8b9457fcd7d"
+ },
+ {
+  "slug": "f022-webgpu-fluid-mind-morph",
+  "num": 22,
+  "title": "WebGPU Fluid Mind Morph",
+  "blurb": "Novel combination for The Verse canvas: a WebGPU compute-shader driven 2D particle-fluid field (velocity advection + simple pressure-like damping) representing the",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F022-webgpu-fluid-mind-morph",
+  "hash": "542a9b172615"
+ },
+ {
+  "slug": "f022-webgpu-thought-gravity",
+  "num": 22,
+  "title": "WebGPU Thought Gravity Wells",
+  "blurb": "Novel combination of local AI reasoning (Worker-based hash-embedding + evolutionary attractors), GPU/Canvas particle flow representing association streams, and",
+  "status": "works",
+  "source": "F022-webgpu-thought-gravity",
+  "hash": "f1c73f3330b5"
+ },
+ {
+  "slug": "f021-webgpu-reaction-diffusion-local-mind",
+  "num": 21,
+  "title": "webgpu-reaction-diffusion-local-mind",
+  "blurb": "Novel combination for The Verse canvas: a continuous GPU-native reaction-diffusion substrate (Gray-Scott model) representing the empty potential of the void, a local",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F021-webgpu-reaction-diffusion-local-mind",
+  "hash": "1248291d1320"
+ },
+ {
+  "slug": "frontier-orientation-swarm",
+  "num": 0,
+  "title": "Verse Frontier: Orientation Particle Swarm",
+  "blurb": "A Verse lab experiment: Verse Frontier: Orientation Particle Swarm.",
+  "status": "works",
+  "source": "frontier-orientation-swarm",
+  "hash": "a3b616ae5037"
+ },
+ {
+  "slug": "frontier-webgpu-attention-field",
+  "num": 0,
+  "title": "WebGPU Attention Field — Frontier Prototype",
+  "blurb": "Runnable spatial / local-AI capability for The Verse canvas.",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "frontier-webgpu-attention-field",
+  "hash": "8216b81e68d9"
+ }
+]

@@ -1,0 +1,1811 @@
+{
+ "site": "tinypng.com",
+ "url": "https://tinypng.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "[token].widget.cluster.groovehq.com/_buildManifest.js",
+   "t": "js",
+   "b": 3432,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/_ssgManifest.js",
+   "t": "js",
+   "b": 76,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].f5ed34abf0e7d9a20239.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].3b1fcfa2106ae14bfdf8.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].1183f5cce36d96feb029.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].0ecb202b1e20c34dfe2b.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].c5c4a3a611b273dcdbcb.js",
+   "t": "js",
+   "b": 59026,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/6b859938.1ce9891448442a263ac4.js",
+   "t": "js",
+   "b": 70340,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].377d054d962cbd2cf110.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/8f6c8215.67d1cbbeb63ad4fd2cc6.js",
+   "t": "js",
+   "b": 6712,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].b0b62a182d332b99c748.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].175278f709b52ba552af.js",
+   "t": "js",
+   "b": 213141,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].de5234b32714b00d19f7.js",
+   "t": "js",
+   "b": 112374,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].b337f3c384f283766f2b.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/bc22179d.a081f06757f1603acde3.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/c8b05f54.4177b0364110102e1d80.js",
+   "t": "js",
+   "b": 81449,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/commons.97128cde355ecc75f767.js",
+   "t": "js",
+   "b": 46844,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].f868ab1f416017603e40.js",
+   "t": "js",
+   "b": 211137,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].d1e8541e70cf9376c6e7.js",
+   "t": "js",
+   "b": 10002,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].d737c4c6a3cdb705a451.js",
+   "t": "js",
+   "b": 25320,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/framework.34bf141b0d86c4565ece.js",
+   "t": "js",
+   "b": 130197,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/main-458b4e671af992ead670.js",
+   "t": "js",
+   "b": 19806,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/_app-6cd207f717a3caec734a.js",
+   "t": "js",
+   "b": 23152,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/chat-86c4196bac892ac2f0c4.js",
+   "t": "js",
+   "b": 753,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/index-070d9cb263a6ae356463.js",
+   "t": "js",
+   "b": 0,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/kb-807de4bdd472e39c8923.js",
+   "t": "js",
+   "b": 538,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].js",
+   "t": "js",
+   "b": 3518,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/styles.02f8c6acb3e2a5a8e10b.js",
+   "t": "js",
+   "b": 113,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token].js",
+   "t": "js",
+   "b": 4361,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/styles.a6068002.chunk.css",
+   "t": "css",
+   "b": 11056,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/fonts",
+   "t": "css",
+   "b": 5406,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.com/loader",
+   "t": "js",
+   "b": 212,
+   "ext": true
+  },
+  {
+   "f": "[token].widget.cluster.groovehq.[token]",
+   "t": "js",
+   "b": 171208,
+   "ext": true
+  },
+  {
+   "f": "360playvid.info/s03796s.js",
+   "t": "js",
+   "b": 71397,
+   "ext": true
+  },
+  {
+   "f": "assets.endorsely.com/endorsely.js",
+   "t": "js",
+   "b": 3371,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/consent-sdk-2.3.js",
+   "t": "js",
+   "b": 288629,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/cc.js",
+   "t": "js",
+   "b": 947728,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/uc.js",
+   "t": "js",
+   "b": 121004,
+   "ext": true
+  },
+  {
+   "f": "googleads.g.doubleclick.net/691912621",
+   "t": "js",
+   "b": 6658,
+   "ext": true
+  },
+  {
+   "f": "ph.tinify.com/config.js",
+   "t": "js",
+   "b": 902,
+   "ext": true
+  },
+  {
+   "f": "ph.tinify.com/dead-clicks-autocapture.js",
+   "t": "js",
+   "b": 13059,
+   "ext": true
+  },
+  {
+   "f": "ph.tinify.com/exception-autocapture.js",
+   "t": "js",
+   "b": 11906,
+   "ext": true
+  },
+  {
+   "f": "ph.tinify.com/surveys.js",
+   "t": "js",
+   "b": 89989,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/pubads_impl.js",
+   "t": "js",
+   "b": 686549,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 134733,
+   "ext": true
+  },
+  {
+   "f": "_buildManifest.js",
+   "t": "js",
+   "b": 5604
+  },
+  {
+   "f": "_clientMiddlewareManifest.js",
+   "t": "js",
+   "b": 701
+  },
+  {
+   "f": "_ssgManifest.js",
+   "t": "js",
+   "b": 1012
+  },
+  {
+   "f": "0-rr-7o12v05j.js",
+   "t": "js",
+   "b": 66713
+  },
+  {
+   "f": "00ope53-_0enp.css",
+   "t": "css",
+   "b": 761
+  },
+  {
+   "f": "04ov2zlkgzc_u.js",
+   "t": "js",
+   "b": 1756
+  },
+  {
+   "f": "05res7_ez1rt1.css",
+   "t": "css",
+   "b": 814
+  },
+  {
+   "f": "06einn3fr14lb.css",
+   "t": "css",
+   "b": 954
+  },
+  {
+   "f": "081p_3_-2zzxz.css",
+   "t": "css",
+   "b": 4072
+  },
+  {
+   "f": "090flhr2eym0m.js",
+   "t": "js",
+   "b": 34390
+  },
+  {
+   "f": "097tblj9aog94.css",
+   "t": "css",
+   "b": 4699
+  },
+  {
+   "f": "09oojlib8m3b3.css",
+   "t": "css",
+   "b": 678
+  },
+  {
+   "f": "0_4vv0hcrjr__.css",
+   "t": "css",
+   "b": 2669
+  },
+  {
+   "f": "0afob3490mpcg.js",
+   "t": "js",
+   "b": 512
+  },
+  {
+   "f": "0ezozag4fi-w9.css",
+   "t": "css",
+   "b": 1074
+  },
+  {
+   "f": "0fv46s3ohjamr.css",
+   "t": "css",
+   "b": 1725
+  },
+  {
+   "f": "0hncac7mni7qw.js",
+   "t": "js",
+   "b": 16065
+  },
+  {
+   "f": "0hzugkftkhwnb.css",
+   "t": "css",
+   "b": 552
+  },
+  {
+   "f": "0k_wap_5vat_5.js",
+   "t": "js",
+   "b": 90480
+  },
+  {
+   "f": "0ks60mr3cs295.css",
+   "t": "css",
+   "b": 6795
+  },
+  {
+   "f": "0kvdgcat_028c.js",
+   "t": "js",
+   "b": 22964
+  },
+  {
+   "f": "0n_0wfbr0-1dq.js",
+   "t": "js",
+   "b": 34308
+  },
+  {
+   "f": "0nm_q_rbdz06c.css",
+   "t": "css",
+   "b": 901
+  },
+  {
+   "f": "0p7g0sdg2dujl.js",
+   "t": "js",
+   "b": 39963
+  },
+  {
+   "f": "0rf8hgl27gxv0.css",
+   "t": "css",
+   "b": 386
+  },
+  {
+   "f": "0st9o0jz6x68w.css",
+   "t": "css",
+   "b": 5468
+  },
+  {
+   "f": "0tfo99ysi_jl1.css",
+   "t": "css",
+   "b": 3461
+  },
+  {
+   "f": "0wq078lo9iyrr.css",
+   "t": "css",
+   "b": 9366
+  },
+  {
+   "f": "0y5q1jcjfzuje.css",
+   "t": "css",
+   "b": 1894
+  },
+  {
+   "f": "0ygfmmzrzu_on.css",
+   "t": "css",
+   "b": 120
+  },
+  {
+   "f": "1-cj2-wr54xs1.js",
+   "t": "js",
+   "b": 938
+  },
+  {
+   "f": "101v4egpbvini.css",
+   "t": "css",
+   "b": 443
+  },
+  {
+   "f": "10errumu3g5q_.js",
+   "t": "js",
+   "b": 45769
+  },
+  {
+   "f": "118b20yo_kalh.css",
+   "t": "css",
+   "b": 264
+  }
+ ],
+ "assetCount": 216,
+ "bytes": 9475821,
+ "html": {
+  "mobile": {
+   "title": "TinyPNG – Compress WebP, PNG and JPEG im",
+   "lang": "en",
+   "manifest": null,
+   "hreflang": [
+    "en",
+    "es",
+    "fr",
+    "zh",
+    "x-default"
+   ],
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 5,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "tinypng.com",
+    "tinypng.com",
+    "consentcdn.cookiebot.com",
+    "11447344-c647-4855-9011-1d04bc920c8d.widget.cluster.groovehq.com"
+   ],
+   "accepts": [
+    ".jpg, .jpeg, .png, .webp, .avif, .heif, .heic, .heix, .hif, .dmg, .svg"
+   ],
+   "inputTypes": {
+    "checkbox": 1,
+    "email": 1,
+    "file": 1,
+    "text": 1
+   },
+   "selects": 1,
+   "forms": 5,
+   "ariaLabels": [
+    "Close menu",
+    "FAQ Categories",
+    "Integrations",
+    "Menu",
+    "Mobile menu",
+    "Open menu",
+    "Primary",
+    "Resources",
+    "Solutions",
+    "Tools"
+   ],
+   "roles": {
+    "dialog": 1,
+    "alert": 1
+   },
+   "live": true,
+   "noscript": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "API Documentation",
+   "w": "m"
+  },
+  {
+   "l": "API Documentation API Reference",
+   "w": "d"
+  },
+  {
+   "l": "Analyze now",
+   "w": "md"
+  },
+  {
+   "l": "Blog",
+   "w": "m"
+  },
+  {
+   "l": "CDN Documentation",
+   "w": "m"
+  },
+  {
+   "l": "Close menu",
+   "w": "m"
+  },
+  {
+   "l": "Contact support",
+   "w": "m"
+  },
+  {
+   "l": "Convert my images",
+   "w": "m"
+  },
+  {
+   "l": "Convert my images automatically",
+   "w": "d"
+  },
+  {
+   "l": "Does TinyPNG support WebP images?",
+   "w": "md"
+  },
+  {
+   "l": "Donate",
+   "w": "md"
+  },
+  {
+   "l": "Figma Plugin Official",
+   "w": "m"
+  },
+  {
+   "l": "General",
+   "w": "md"
+  },
+  {
+   "l": "Get your API key",
+   "w": "md"
+  },
+  {
+   "l": "Getting started",
+   "w": "m"
+  },
+  {
+   "l": "How does it work",
+   "w": "md"
+  },
+  {
+   "l": "How it works",
+   "w": "m"
+  },
+  {
+   "l": "Image Compressor & Converter",
+   "w": "m"
+  },
+  {
+   "l": "Integrations",
+   "w": "md"
+  },
+  {
+   "l": "Is the privacy of my images ensured?",
+   "w": "md"
+  },
+  {
+   "l": "Knowledge base",
+   "w": "m"
+  },
+  {
+   "l": "Login",
+   "w": "md"
+  },
+  {
+   "l": "More about compression",
+   "w": "md"
+  },
+  {
+   "l": "More about conversion",
+   "w": "md"
+  },
+  {
+   "l": "Open menu",
+   "w": "m"
+  },
+  {
+   "l": "Overview",
+   "w": "m"
+  },
+  {
+   "l": "Pricing",
+   "w": "md"
+  },
+  {
+   "l": "Resources",
+   "w": "md"
+  },
+  {
+   "l": "Send link",
+   "w": "m"
+  },
+  {
+   "l": "Sign Up",
+   "w": "md"
+  },
+  {
+   "l": "Solutions",
+   "w": "md"
+  },
+  {
+   "l": "Status page",
+   "w": "md"
+  },
+  {
+   "l": "Tools",
+   "w": "md"
+  },
+  {
+   "l": "Try Image CDN",
+   "w": "md"
+  },
+  {
+   "l": "View all blog posts",
+   "w": "d"
+  },
+  {
+   "l": "View all integrations",
+   "w": "md"
+  },
+  {
+   "l": "Web Pro & Web Ultra",
+   "w": "md"
+  },
+  {
+   "l": "Web compressor",
+   "w": "md"
+  },
+  {
+   "l": "Website image Analyzer",
+   "w": "m"
+  },
+  {
+   "l": "What does TinyPNG do?",
+   "w": "md"
+  },
+  {
+   "l": "Why did you create TinyPNG?",
+   "w": "md"
+  },
+  {
+   "l": "Wordpress Plugin Official",
+   "w": "m"
+  },
+  {
+   "l": "中文 English Español Français",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/session",
+   "/web/session",
+   "/backend",
+   "/dashboard",
+   "/*/dashboard",
+   "/account",
+   "/developers/subscription",
+   "/photoshop/license"
+  ],
+  "sitemaps": [
+   "https://tinypng.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 198,
+  "index": false,
+  "sections": [
+   {
+    "s": "blog",
+    "n": 54
+   },
+   {
+    "s": "cdn",
+    "n": 29
+   },
+   {
+    "s": "es",
+    "n": 29
+   },
+   {
+    "s": "fr",
+    "n": 29
+   },
+   {
+    "s": "zh",
+    "n": 29
+   },
+   {
+    "s": "developers",
+    "n": 9
+   },
+   {
+    "s": "third-party",
+    "n": 5
+   },
+   {
+    "s": "pricing",
+    "n": 3
+   },
+   {
+    "s": "web",
+    "n": 3
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "analyzer",
+    "n": 1
+   },
+   {
+    "s": "dpa",
+    "n": 1
+   },
+   {
+    "s": "figma",
+    "n": 1
+   },
+   {
+    "s": "photoshop",
+    "n": 1
+   },
+   {
+    "s": "signup",
+    "n": 1
+   }
+  ],
+  "langs": [
+   "en",
+   "es",
+   "fr",
+   "zh"
+  ]
+ },
+ "code": [
+  {
+   "file": "_buildManifest.js",
+   "own": true,
+   "apiPaths": [
+    "/api/datocms/asset@4116",
+    "/api/datocms/preview-links@4142",
+    "/api/draft-mode/disable@4176",
+    "/api/draft-mode/enable@4207",
+    "/api/health@4237"
+   ]
+  },
+  {
+   "file": "0-rr-7o12v05j.js",
+   "own": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "0k_wap_5vat_5.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Paste images or text straight in"
+   ],
+   "mimes": [
+    "image/avif",
+    "image/jxl",
+    "image/webp",
+    "image/jpeg",
+    "image/png",
+    "image/heic",
+    "text/directory",
+    "image/heif"
+   ]
+  },
+  {
+   "file": "0p7g0sdg2dujl.js",
+   "own": true,
+   "params": [
+    "dpl@9967"
+   ],
+   "flags": [
+    "disableStaticImages@19136"
+   ],
+   "routes": [
+    "/_next/image@3194"
+   ],
+   "mimes": [
+    "image/avif",
+    "image/jxl",
+    "image/webp",
+    "image/jpeg",
+    "image/png",
+    "image/heic"
+   ]
+  },
+  {
+   "file": "10errumu3g5q_.js",
+   "own": true,
+   "apiPaths": [
+    "/api@41133"
+   ]
+  },
+  {
+   "file": "1dkbpr41krbcc.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "1g1wlmwggtw8_.js",
+   "own": true,
+   "apis": [
+    "Drag and drop files or items"
+   ],
+   "mimes": [
+    "text/uri-list"
+   ]
+  },
+  {
+   "file": "1nswbz93tp0_p.js",
+   "own": true,
+   "apiPaths": [
+    "/api@23499"
+   ],
+   "routes": [
+    "/dashboard/api@9037",
+    "/developers/reference/http@9821"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "1tp7ecdv3x-7t.js",
+   "own": true,
+   "flags": [
+    "useArrayDepthTexture@37255",
+    "allowOverride@355339"
+   ],
+   "apis": [
+    "Off-thread image drawing"
+   ],
+   "langs": 24,
+   "mimes": [
+    "image/png"
+   ]
+  },
+  {
+   "file": "1tqqxntu2m17e.js",
+   "own": true,
+   "params": [
+    "dpl@13496"
+   ],
+   "flags": [
+    "disableStaticImages@22665"
+   ],
+   "routes": [
+    "/_next/image@6723"
+   ],
+   "apis": [
+    "Picture in picture"
+   ],
+   "mimes": [
+    "image/webp"
+   ]
+  },
+  {
+   "file": "1w-f2luv7yx28.js",
+   "own": true,
+   "apiPaths": [
+    "/api@66277"
+   ],
+   "langs": 7,
+   "mimes": [
+    "text/partytown"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "1zqfq1wt8s6xj.js",
+   "own": true,
+   "flags": [
+    "allowFullScreen@12397"
+   ],
+   "graphql": true
+  },
+  {
+   "file": "22ea7tvam9n66.js",
+   "own": true,
+   "flags": [
+    "allowTouchMove@22120",
+    "allowSlidePrev@22508",
+    "allowSlideNext@22526",
+    "allowTouchCallbacks@35525",
+    "allowClick@40385"
+   ]
+  },
+  {
+   "file": "23vh9or6c21yp.js",
+   "own": true,
+   "graphql": true
+  },
+  {
+   "file": "2a1tsq7hnzc5f.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Drag and drop files or items",
+    "Paste images or text straight in",
+    "Picture in picture"
+   ],
+   "graphql": true,
+   "usesLocationSearch": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "2cms07j5z1pp6.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "2jid61pa3zctu.js",
+   "own": true,
+   "usesLocationSearch": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "2vweiiemukwjb.js",
+   "own": true,
+   "flags": [
+    "disableStaticImages@10599"
+   ],
+   "routes": [
+    "/_next/image@10537"
+   ],
+   "mimes": [
+    "image/avif",
+    "image/jxl",
+    "image/webp",
+    "image/jpeg",
+    "image/png",
+    "image/heic"
+   ]
+  },
+  {
+   "file": "2wyr94ecbwkst.js",
+   "own": true,
+   "flags": [
+    "showMissingIcons@18494"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "3-ld_63ntdd9v.js",
+   "own": true,
+   "params": [
+    "dpl@15425"
+   ],
+   "flags": [
+    "disableStaticImages@24594"
+   ],
+   "routes": [
+    "/_next/image@8652"
+   ],
+   "apis": [
+    "Picture in picture"
+   ],
+   "mimes": [
+    "image/avif",
+    "image/jxl",
+    "image/webp",
+    "image/jpeg",
+    "image/png",
+    "image/heic"
+   ]
+  },
+  {
+   "file": "30ugxxy3m9qvj.js",
+   "own": true,
+   "routes": [
+    "/dashboard/cdn@24214"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "3an6hqu3w7ili.js",
+   "own": true,
+   "routes": [
+    "/_next/image@10073"
+   ],
+   "apis": [
+    "Compresses data in the browser",
+    "Picture in picture",
+    "Syncs between tabs"
+   ],
+   "usesLocationSearch": true
+  },
+  {
+   "file": "3edc-2hjsrewp.js",
+   "own": true,
+   "apiPaths": [
+    "/api@36533"
+   ],
+   "keydownHandlers": 2
+  },
+  {
+   "file": "3m1_a8umvmtyd.js",
+   "own": true,
+   "graphql": true
+  },
+  {
+   "file": "3sh9zf70dlnlc.js",
+   "own": true,
+   "graphql": true
+  },
+  {
+   "file": "3uk0ajwzuz2uy.js",
+   "own": true,
+   "websocket": true,
+   "usesLocationSearch": true
+  },
+  {
+   "file": "3vyjty0c64vh8.js",
+   "own": true,
+   "keydownHandlers": 1
+  },
+  {
+   "file": "42zvdxbv_sgea.js",
+   "own": true,
+   "routes": [
+    "/blog/@16068",
+    "/signup@19749",
+    "/dashboard/overview@21014"
+   ],
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "graphql": true,
+   "keydownHandlers": 1,
+   "media": [
+    "reduced"
+   ]
+  },
+  {
+   "file": "43w8ao5oh4vci.js",
+   "own": true,
+   "apiPaths": [
+    "/api/surveys@199294",
+    "/api/early_access_features@238073",
+    "/api/product_tours@241109",
+    "/api/web_experiments@244612"
+   ],
+   "flags": [
+    "disableDeviceModel@132267",
+    "disableCaptureUrlHashes@185005",
+    "debugEnabled@216447"
+   ],
+   "storage": [
+    "lastSeenSurveyDate@197380",
+    "test@279423"
+   ],
+   "apis": [
+    "Compresses data in the browser"
+   ],
+   "usesLocationSearch": true
+  }
+ ],
+ "hosts": [
+  {
+   "host": "360playvid.info",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 40831
+  },
+  {
+   "host": "[token].widget.cluster.groovehq.com",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 40116
+  },
+  {
+   "host": "analytics.google.com",
+   "file": "090flhr2eym0m.js",
+   "at": 19660
+  },
+  {
+   "host": "app.posthog.com",
+   "file": "43w8ao5oh4vci.js",
+   "at": 49570
+  },
+  {
+   "host": "assets.endorsely.com",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 42366
+  },
+  {
+   "host": "b4bkdh6p.tinifycdn.com",
+   "file": "0p7g0sdg2dujl.js",
+   "at": 32066
+  },
+  {
+   "host": "cdn.jsdelivr.net",
+   "file": "090flhr2eym0m.js",
+   "at": 23427
+  },
+  {
+   "host": "consent.cookiebot.com",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 38234
+  },
+  {
+   "host": "cp.dnsmadeeasy.com",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 13586
+  },
+  {
+   "host": "dcc.godaddy.com",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 14188
+  },
+  {
+   "host": "developers.google.com",
+   "file": "090flhr2eym0m.js",
+   "at": 22167
+  },
+  {
+   "host": "drupal.org",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 31171
+  },
+  {
+   "host": "extensions.joomla.org",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 34164
+  },
+  {
+   "host": "graphql-listen.datocms.com",
+   "file": "090flhr2eym0m.js",
+   "at": 12689
+  },
+  {
+   "host": "hlnc7768.tinifycdn.com",
+   "file": "0p7g0sdg2dujl.js",
+   "at": 32022
+  },
+  {
+   "host": "jcgt.org",
+   "file": "1tp7ecdv3x-7t.js",
+   "at": 372150
+  },
+  {
+   "host": "marketplace.magento.com",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 35729
+  },
+  {
+   "host": "momentjs.com",
+   "file": "2jhgwq51navba.js",
+   "at": 240823
+  },
+  {
+   "host": "nextjs.org",
+   "file": "0p7g0sdg2dujl.js",
+   "at": 10331
+  },
+  {
+   "host": "ph.tinify.com",
+   "file": "3an6hqu3w7ili.js",
+   "at": 381
+  },
+  {
+   "host": "player.vimeo.com",
+   "file": "1zqfq1wt8s6xj.js",
+   "at": 12261
+  },
+  {
+   "host": "posthog.com",
+   "file": "43w8ao5oh4vci.js",
+   "at": 143448
+  },
+  {
+   "host": "pugjs.org",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 32402
+  },
+  {
+   "host": "react-dnd.github.io",
+   "file": "0k_wap_5vat_5.js",
+   "at": 81381
+  },
+  {
+   "host": "redux.js.org",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 565
+  },
+  {
+   "host": "schema.org",
+   "file": "3rzzc5l4rffn9.js",
+   "at": 15585
+  },
+  {
+   "host": "sentry.io",
+   "file": "43w8ao5oh4vci.js",
+   "at": 67219
+  },
+  {
+   "host": "support.hostinger.com",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 17313
+  },
+  {
+   "host": "tinypng.com",
+   "file": "0k_wap_5vat_5.js",
+   "at": 88113
+  },
+  {
+   "host": "twitter.com",
+   "file": "0k_wap_5vat_5.js",
+   "at": 48736
+  },
+  {
+   "host": "us.i.posthog.com",
+   "file": "43w8ao5oh4vci.js",
+   "at": 124055
+  },
+  {
+   "host": "us.posthog.com",
+   "file": "43w8ao5oh4vci.js",
+   "at": 124375
+  },
+  {
+   "host": "vtm-cdn.hbwrapper.com",
+   "file": "1g1wlmwggtw8_.js",
+   "at": 40699
+  },
+  {
+   "host": "wordpress.org",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 39020
+  },
+  {
+   "host": "www.datocms-assets.com",
+   "file": "0p7g0sdg2dujl.js",
+   "at": 31377
+  },
+  {
+   "host": "www.dropbox.com",
+   "file": "0k_wap_5vat_5.js",
+   "at": 88933
+  },
+  {
+   "host": "www.google.com",
+   "file": "090flhr2eym0m.js",
+   "at": 22295
+  },
+  {
+   "host": "www.googletagmanager.com",
+   "file": "090flhr2eym0m.js",
+   "at": 1946
+  },
+  {
+   "host": "www.ionos.com",
+   "file": "3m1_a8umvmtyd.js",
+   "at": 18101
+  },
+  {
+   "host": "www.linkedin.com",
+   "file": "3rzzc5l4rffn9.js",
+   "at": 14121
+  },
+  {
+   "host": "www.paypal.com",
+   "file": "23vh9or6c21yp.js",
+   "at": 16246
+  },
+  {
+   "host": "www.recaptcha.net",
+   "file": "1nswbz93tp0_p.js",
+   "at": 20908
+  },
+  {
+   "host": "www.youtube.com",
+   "file": "1zqfq1wt8s6xj.js",
+   "at": 12208
+  },
+  {
+   "host": "x.com",
+   "file": "3uk0ajwzuz2uy.js",
+   "at": 25232
+  },
+  {
+   "host": "yandex.com",
+   "file": "43w8ao5oh4vci.js",
+   "at": 4442
+  }
+ ],
+ "thirdParty": [
+  "11447344-c647-4855-9011-1d04bc920c8d.widget.cluster.groovehq.com",
+  "360playvid.info",
+  "[token].widget.cluster.groovehq.com",
+  "ad.doubleclick.net",
+  "analytics.google.com",
+  "app.posthog.com",
+  "assets.endorsely.com",
+  "b4bkdh6p.tinifycdn.com",
+  "cdn.jsdelivr.net",
+  "consent.cookiebot.com",
+  "consentcdn.cookiebot.com",
+  "cp.dnsmadeeasy.com",
+  "dcc.godaddy.com",
+  "developers.google.com",
+  "drupal.org",
+  "extensions.joomla.org",
+  "googleads.g.doubleclick.net",
+  "graphql-listen.datocms.com",
+  "graphql.production.groovehq.com",
+  "hlnc7768.tinifycdn.com",
+  "jcgt.org",
+  "marketplace.magento.com",
+  "momentjs.com",
+  "nextjs.org",
+  "pagead2.googlesyndication.com",
+  "ph.tinify.com",
+  "player.vimeo.com",
+  "posthog.com",
+  "pugjs.org",
+  "react-dnd.github.io",
+  "redux.js.org",
+  "schema.org",
+  "securepubads.g.doubleclick.net",
+  "sentry.io",
+  "support.hostinger.com",
+  "twitter.com",
+  "unpkg.com",
+  "us.i.posthog.com",
+  "us.posthog.com",
+  "vtm-a.hbwrapper.com",
+  "vtm-cdn.hbwrapper.com",
+  "wordpress.org",
+  "www.datocms-assets.com",
+  "www.dropbox.com",
+  "www.google-analytics.com",
+  "www.google.com",
+  "www.googletagmanager.com",
+  "www.ionos.com",
+  "www.linkedin.com",
+  "www.paypal.com",
+  "www.recaptcha.net",
+  "www.youtube.com",
+  "x.com",
+  "yandex.com"
+ ],
+ "services": [
+  "Ads",
+  "Captcha",
+  "Google Analytics",
+  "PayPal",
+  "Product analytics",
+  "Sentry",
+  "YouTube"
+ ],
+ "requests": [
+  "https://ad.doubleclick.net/ccm/s/collect?_gsid&auid&fmt&gtm",
+  "https://ad.doubleclick.net/ccm/s/collect?auid&fmt&gtm",
+  "https://cdn.jsdelivr.net/gh/prebid/currency-file@1/latest.json",
+  "https://consentcdn.cookiebot.[token].json",
+  "https://graphql.production.groovehq.com/graphql",
+  "https://pagead2.googlesyndication.com/ccm/collect?_tu&ae&apvc&dl&dma&dma_cps&en&ep.ads_data_redaction",
+  "https://pagead2.googlesyndication.com/ccm/collect?_tu&apvc&dl&dma&dma_cps&en&fmt&frm",
+  "https://ph.tinify.com/flags/?v",
+  "https://tinypng.[token].json",
+  "https://tinypng.[token].json?lang",
+  "https://tinypng.[token].json?slug",
+  "https://tinypng.[token].json?tier",
+  "https://tinypng.[token].json?tier&utm_campaign&utm_content&utm_medium&utm_source&utm_term",
+  "https://tinypng.com/web/session",
+  "https://vtm-a.hbwrapper.com/",
+  "https://vtm-a.hbwrapper.com/tis",
+  "https://www.google-analytics.com/g/collect?_eu&_fv&_nsi&_p&_s&_ss&_tu&cid",
+  "https://www.google.com/ccm/collect?_gsid&_tu&ae&apvc&auid&dl&dma&dt",
+  "https://www.google.com/ccm/collect?_tu&ae&apvc&auid&dl&dma&dt&en",
+  "https://www.google.com/rmkt/collect/691912621/?_tu&async&auid&bg&cv&data&dma&en"
+ ],
+ "storage": {
+  "local": [
+   "[token]",
+   "[token]",
+   "_gcl_ls",
+   "_pubcid",
+   "_pubcid_cst",
+   "_pubcid_exp",
+   "_vtm_anep_202610",
+   "_vtm_hbWrapperFpd",
+   "_vtm_uid"
+  ],
+  "session": [
+   "[token]",
+   "_vtm_sesdepth",
+   "_vtm_sid"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?dpl",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "0p7g0sdg2dujl.js@9967"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "1g1wlmwggtw8_.js@24264"
+  },
+  {
+   "name": "Opens files: .jpg, .jpeg, .png, .webp, .avif, .heif, .heic, .heix, .hif,",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Paste images or text straight in",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "0k_wap_5vat_5.js@87561"
+  },
+  {
+   "name": "Several files at once",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][multiple]"
+  },
+  {
+   "name": "Embeds [token].widget.cluster.groovehq.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds consentcdn.cookiebot.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call graphql.production.groovehq.com/graphql",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /api",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "10errumu3g5q_.js@41133"
+  },
+  {
+   "name": "API path /api/datocms/asset",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@4116"
+  },
+  {
+   "name": "API path /api/datocms/preview-links",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@4142"
+  },
+  {
+   "name": "API path /api/draft-mode/disable",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@4176"
+  },
+  {
+   "name": "API path /api/draft-mode/enable",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@4207"
+  },
+  {
+   "name": "API path /api/early_access_features",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "43w8ao5oh4vci.js@238073"
+  },
+  {
+   "name": "API path /api/health",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@4237"
+  },
+  {
+   "name": "API path /api/product_tours",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "43w8ao5oh4vci.js@241109"
+  },
+  {
+   "name": "API path /api/surveys",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "43w8ao5oh4vci.js@199294"
+  },
+  {
+   "name": "API path /api/web_experiments",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "43w8ao5oh4vci.js@244612"
+  },
+  {
+   "name": "GraphQL API",
+   "kind": "api",
+   "tag": "inferred",
+   "evidence": "1zqfq1wt8s6xj.js"
+  },
+  {
+   "name": "Feature flag allowClick",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "22ea7tvam9n66.js@40385"
+  },
+  {
+   "name": "Feature flag allowFullScreen",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1zqfq1wt8s6xj.js@12397"
+  },
+  {
+   "name": "Feature flag allowOverride",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1tp7ecdv3x-7t.js@355339"
+  },
+  {
+   "name": "Feature flag allowSlideNext",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "22ea7tvam9n66.js@22526"
+  },
+  {
+   "name": "Feature flag allowSlidePrev",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "22ea7tvam9n66.js@22508"
+  },
+  {
+   "name": "Feature flag allowTouchCallbacks",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "22ea7tvam9n66.js@35525"
+  },
+  {
+   "name": "Feature flag allowTouchMove",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "22ea7tvam9n66.js@22120"
+  },
+  {
+   "name": "Feature flag debugEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "43w8ao5oh4vci.js@216447"
+  },
+  {
+   "name": "Feature flag disableCaptureUrlHashes",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "43w8ao5oh4vci.js@185005"
+  },
+  {
+   "name": "Feature flag disableDeviceModel",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "43w8ao5oh4vci.js@132267"
+  },
+  {
+   "name": "Feature flag disableStaticImages",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "0p7g0sdg2dujl.js@19136"
+  },
+  {
+   "name": "Feature flag showMissingIcons",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "2wyr94ecbwkst.js@18494"
+  },
+  {
+   "name": "Feature flag useArrayDepthTexture",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "1tp7ecdv3x-7t.js@37255"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "0k_wap_5vat_5.js@87033"
+  },
+  {
+   "name": "Picture in picture",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "1tqqxntu2m17e.js@810"
+  },
+  {
+   "name": "Input of type email",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=email] x1"
+  },
+  {
+   "name": "Remembers a setting in the browser: [token]",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _gcl_ls",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _pubcid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _pubcid_cst",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _pubcid_exp",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _vtm_anep_202610",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _vtm_hbWrapperFpd",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _vtm_uid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Interface languages: 24 (aa, ab, ac, ad, ae, af)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "1tp7ecdv3x-7t.js@2542"
+  },
+  {
+   "name": "Interface languages: 7 (en, zh, fr, es, pt, ar)",
+   "kind": "i18n",
+   "tag": "read",
+   "evidence": "1w-f2luv7yx28.js@119429"
+  },
+  {
+   "name": "Language versions in the sitemap: 4",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Language versions: 5 (en, es, fr, zh, x-default)",
+   "kind": "i18n",
+   "tag": "observed",
+   "evidence": "link[hreflang]"
+  },
+  {
+   "name": "Compresses data in the browser",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "3an6hqu3w7ili.js@26698"
+  },
+  {
+   "name": "Live updates over a WebSocket",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "3uk0ajwzuz2uy.js"
+  },
+  {
+   "name": "Off-thread image drawing",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "1tp7ecdv3x-7t.js@455254"
+  },
+  {
+   "name": "Syncs between tabs",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "3an6hqu3w7ili.js@26651"
+  },
+  {
+   "name": "Uses PayPal",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  },
+  {
+   "name": "Uses YouTube",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "script hosts"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "1dkbpr41krbcc.css@261"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Path kept from crawlers /account",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /backend",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /dashboard",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /developers/subscription",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /photoshop/license",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

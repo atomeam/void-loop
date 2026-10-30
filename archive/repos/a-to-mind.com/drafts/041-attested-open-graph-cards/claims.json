@@ -1,0 +1,34 @@
+{
+  "slug": "attested-open-graph-cards",
+  "run": "041",
+  "status": "candidate-draft",
+  "promoted": false,
+  "used_row": false,
+  "reviewed_at": null,
+  "sealed_by": null,
+  "contract": "og#041|kind:attested-open-graph-cards|tags:absent-until-seal|og:title:equals-h1|og:url:no-query|image:first-party-hashed|twitter:omit-unless-image|article-time:deny|fb-app-id:deny|generator:deny|hash:sha256|seal:human",
+  "contract_sha256": "6d9ea843dd1a04ab7fd87b4ec0b2879b7842173d5fe7d274e144bf57d4cf2a57",
+  "observed_live": {
+    "url": "https://a-to-mind.com/",
+    "observed_on": "2026-10-01",
+    "document_title": "Void \u00b7 A-to-Mind",
+    "h1": "Void",
+    "meta_description": null,
+    "canonical": null,
+    "og_tags": [],
+    "twitter_tags": [],
+    "note": "Observation is data. It is not permission to emit tags."
+  },
+  "denies": [
+    "partial Open Graph (title without a sealed image)",
+    "og:url with query or fragment, including cache-bust ?v=",
+    "og:title that is not the visible h1",
+    "article:published_time and article:modified_time",
+    "fb:app_id",
+    "twitter:site without a sealed handle",
+    "twitter:card=summary_large_image without a hashed image",
+    "dynamic OG image generators",
+    "third-party scraper debuggers as instructions",
+    "rel=canonical invented in this draft"
+  ]
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg: #0a0a0f; --fg: #e8e8ef; --accent: #6cf; --win: #4f4; --lose: #f46; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  header { padding: 8px 12px; background: #111; border-bottom: 1px solid #222; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  h1 { font-size: 14px; margin: 0; font-weight: 500; }
+  button, label { background: #222; color: var(--fg); border: 1px solid #333; padding: 4px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; }
+  button:hover { background: #333; }
+  button.primary { background: #1a3a4a; border-color: var(--accent); }
+  canvas { flex: 1; width: 100%; display: block; background: #05050a; cursor: crosshair; }
+  #status { padding: 6px 12px; background: #0d0d12; border-top: 1px solid #222; font-size: 11px; font-family: ui-monospace, monospace; display: flex; gap: 16px; flex-wrap: wrap; }
+  .agent { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  #log { max-height: 80px; overflow-y: auto; font-size: 10px; color: #888; flex: 1; min-width: 200px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Multi-Agent Sealed Genome Competition · Verse lab</title>
+<meta name="description" content="8–16 agents with compact 6-float genomes control attraction, speed, noise, etc.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Multi-Agent Sealed Genome Competition · Verse lab">
+<meta property="og:description" content="8–16 agents with compact 6-float genomes control attraction, speed, noise, etc.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f201-webgpu-multiagent-sealed-genome-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f201-webgpu-multiagent-sealed-genome-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>F201 · WebGPU Multi-Agent Sealed Genome Competition</h1>
+  <button id="start" class="primary">Start / Reset</button>
+  <button id="pause">Pause</button>
+  <label><input type="checkbox" id="tilt"> DeviceOrientation tilt</label>
+  <button id="seal">Seal Winner Genome</button>
+  <button id="inject">Inject Sealed Genome</button>
+  <span id="dbstatus">IDB: …</span>
+</header>
+<canvas id="c"></canvas>
+<div id="status">
+  <span>Agents: <b id="nAgents">0</b></span>
+  <span>Resources: <b id="nRes">0</b></span>
+  <span>Gen: <b id="gen">0</b></span>
+  <span>Winner: <b id="winner">—</b></span>
+  <span id="log"></span>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

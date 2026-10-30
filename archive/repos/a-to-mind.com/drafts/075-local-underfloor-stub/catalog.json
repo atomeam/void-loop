@@ -1,0 +1,27 @@
+{
+  "slug": "local-underfloor-stub",
+  "floor_label": "0.22",
+  "floor_note": "Design-material weight. Not a noise measurement. Not a radio calibration.",
+  "amplitude_step": "0.01",
+  "amplitude_max": "1.00",
+  "above_floor": "held",
+  "at_or_under": "stub",
+  "bands": [
+    {
+      "id": "bin-a",
+      "label": "Allowlisted label. Not a frequency. Not a tuner."
+    },
+    {
+      "id": "bin-b",
+      "label": "Allowlisted label. Empty when the stub hashes."
+    },
+    {
+      "id": "bin-c",
+      "label": "Allowlisted label. A metaphor collision does not select this bin."
+    },
+    {
+      "id": "above-hold",
+      "label": "Typed amplitude over the floor. Held. No stub id."
+    }
+  ]
+}

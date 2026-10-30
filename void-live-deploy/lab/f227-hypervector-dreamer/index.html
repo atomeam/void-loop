@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;height:100%;background:#020207;color:#d8dcff;font:14px/1.45 system-ui,sans-serif;overflow:hidden}
+#world{position:fixed;inset:0;width:100%;height:100%;display:block}
+#panel{position:fixed;left:12px;top:12px;width:min(300px,calc(100vw - 24px));background:#0a0b18cc;border:1px solid #2a2d55;border-radius:12px;padding:10px;backdrop-filter:blur(6px);max-height:calc(100vh - 24px);overflow:auto;box-sizing:border-box}
+h1{font-size:15px;margin:0 0 4px}
+p{margin:4px 0;color:#a8acd8;font-size:12.5px}
+#sample{width:100%;aspect-ratio:1;image-rendering:pixelated;border-radius:6px;cursor:crosshair;touch-action:none;display:block;margin:6px 0}
+#palette{display:flex;flex-wrap:wrap;gap:4px}
+#palette button{flex:1 0 30%;border:2px solid transparent;border-radius:6px;padding:4px 2px;font-size:12px;color:#000;cursor:pointer}
+#palette button.on{border-color:#fff}
+.row{display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.row label{font-size:12px;color:#a8acd8}
+button.act{background:#22265a;color:#e6e8ff;border:1px solid #3a3f86;border-radius:6px;padding:5px 9px;cursor:pointer}
+#rules{width:100%;image-rendering:pixelated;border-radius:6px;display:block}
+#stats{font:12px/1.5 ui-monospace,monospace;color:#c9ccf5;white-space:pre-wrap;word-break:break-word}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Hypervector Dreamer · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Hypervector Dreamer.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Hypervector Dreamer · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Hypervector Dreamer.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f227-hypervector-dreamer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f227-hypervector-dreamer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="world"></canvas>
+<div id="panel">
+  <h1>Hypervector Dreamer</h1>
+  <p>Paint a little land. A hyperdimensional memory learns which tiles sit next to which, then dreams a bigger world from what it remembers. Tall see-through pillars are cells still undecided: the taller, the more options are left.</p>
+  <canvas id="sample" width="24" height="24" aria-label="Example map you can paint"></canvas>
+  <div id="palette"></div>
+  <div class="row"><button class="act" id="dream">Dream again</button>
+    <label>Memory size <select id="dim"><option>512</option><option>2048</option><option selected>8192</option></select></label></div>
+  <div class="row"><label for="dmg">Damage the memory: <span id="dmgv">0%</span></label><input id="dmg" type="range" min="0" max="48" value="0" style="flex:1"></div>
+  <div class="row"><label><input type="checkbox" id="bin"> Squash to 1 bit per dimension</label></div>
+  <p>Learned neighbour rules (rows: tile, columns: neighbour; brightness is the estimated count the memory recovered):</p>
+  <canvas id="rules" width="8" height="8"></canvas>
+  <div id="stats"></div>
+</div>
+<script type="module" src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

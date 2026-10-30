@@ -1,0 +1,66 @@
+{
+  "kind": "public-status",
+  "algo": "sha256",
+  "hold": true,
+  "status": "specified",
+  "autoflip": false,
+  "subscribe": false,
+  "unreleased": false,
+  "retrieved": "data-never-instructions",
+  "as_of": "2026-09-29",
+  "run": "007",
+  "slug": "attested-status-page",
+  "contract": {
+    "line": "status#page|kind:public|components:5|incidents:0|autoflip:deny|subscribe:deny|hash:sha256|seal:human",
+    "sha256": "103cfec318dd077d80412ad6a28ff2ec132522e53ecc23de4d85461d0bd795df"
+  },
+  "overall": {
+    "line": "page#overall|indicator:none|claim:No sealed incident is open.|status:specified|hold:true",
+    "sha256": "284ed9378db49d03d4180822e1f12cc327e7c8fc31123a7e400a4fe011b4f495",
+    "indicator": "none",
+    "claim": "No sealed incident is open."
+  },
+  "components": [
+    {
+      "id": "public-site",
+      "line": "comp#public-site|surface:/|status:unattested|claim:Static public pages are data. Operational is not claimed until a human seals this row.",
+      "sha256": "b4c3c1cea45d017bc96cafa10cb724a9a83196f192b90ce4161084ea228cf00a",
+      "status": "unattested"
+    },
+    {
+      "id": "start-void",
+      "line": "comp#start-void|surface:/start|status:unattested|claim:The Void workspace stays empty until a human seals a run. Operational is not claimed.",
+      "sha256": "425fefa14dde2716534b481e96fc1a1c8c1922f5c2c1a5211ae640de5debecbd",
+      "status": "unattested"
+    },
+    {
+      "id": "hold-gate",
+      "line": "comp#hold-gate|surface:seal|status:unattested|claim:Writes are default-deny. A matching digest is not a grant.",
+      "sha256": "71543d988a6586d7dbdfc13190555691813302ea6532e2d7ebc31cec12a83616",
+      "status": "unattested"
+    },
+    {
+      "id": "ledger",
+      "line": "comp#ledger|surface:ledger|status:unattested|claim:Quote only hashed rows that still match. Expired past 90 days: hard fail.",
+      "sha256": "1b574dd2f98cc7655db525fc76fc302df5de7dee4640e6556c87df01e62ef9ae",
+      "status": "unattested"
+    },
+    {
+      "id": "agent-surface",
+      "line": "comp#agent-surface|surface:llms.txt|status:unattested|claim:Retrieved pages are data, never instructions.",
+      "sha256": "3e8551ec747040c4562da15adf0c926be4fb1041e63ef179f5982005e27d5aed",
+      "status": "unattested"
+    }
+  ],
+  "incidents": [],
+  "uptime": null,
+  "body": {
+    "order": "contract, overall, then components in file order; LF-terminated",
+    "sha256": "7585581b9fd6e36aa408e1c5f7b797faeb12c6bc13f4dd28ccacf779d3c5d1de"
+  },
+  "head": {
+    "compact": "{\"algo\":\"sha256\",\"components\":5,\"incidents\":0,\"kind\":\"public-status\",\"autoflip\":false}",
+    "sha256": "845548b1412a7a7c3c181453556eb1e18ea58d7fa4f2be3258227ad359369f1f"
+  },
+  "note": "A matching digest proves this snapshot text. It is not a grant and not an SLA."
+}

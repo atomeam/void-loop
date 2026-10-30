@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F-026 Spatial Graph Mind</title>
+<style>
+:root { --hue: 200; --scale: 1; --border: 2px; }
+body {
+  margin: 0; background: #0a0a12; color: #ddd; font-family: system-ui, sans-serif;
+  overflow: hidden; transform: scale(var(--scale)); transform-origin: center;
+  filter: hue-rotate(var(--hue)); transition: all 0.4s;
+  border: var(--border) solid #333;
+}
+#hud {
+  position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7);
+  padding: 10px; border-radius: 8px; font-size: 13px; z-index: 10;
+  max-width: 320px;
+}
+canvas { display: block; width: 100vw; height: 100vh; }
+button { margin: 4px 0; padding: 6px 10px; background: #222; color: #eee; border: 1px solid #444; cursor: pointer; }
+#seal { color: #6f6; font-size: 11px; word-break: break-all; }
+</style>
+</head>
+<body>
+<div id="hud">
+  <strong>F-026 Self-Rewiring Spatial Graph Mind</strong><br>
+  Nodes: <span id="n">0</span> | Communities: <span id="c">0</span> | Fitness: <span id="f">0</span><br>
+  <button id="seed">Seed pointer</button>
+  <button id="sealBtn">Seal genome</button>
+  <div id="seal"></div>
+  <small>Pointer attracts. Optional tilt. Mind evolves affinity rules for structured communities.</small>
+</div>
+<canvas id="c"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+resize(); addEventListener('resize', resize);
+
+const N = 90;
+const nodes = Array.from({length: N}, () => ({
+  x: Math.random() * 800, y: Math.random() * 600,
+  vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4,
+  hue: Math.random()*360, community: 0, energy: Math.random()
+}));
+
+let pointer = {x: W/2, y: H/2, active: false};
+canvas.addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true; });
+canvas.addEventListener('pointerleave', () => pointer.active = false);
+
+let orient = {alpha:0, beta:0, gamma:0};
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.alpha = e.alpha||0; orient.beta = e.beta||0; orient.gamma = e.gamma||0;
+  });
+}
+
+let bestGenome = [0.8, 0.4, 0.6, 0.3, 0.5, 1.2]; // distScale, colorW, ptrW, orientW, edgeThresh, spring
+let fitness = 0.5;
+let communities = 1;
+
+function applyGenome(g) {
+  bestGenome = g.slice();
+}
+
+function step() {
+  const [distScale, colorW, ptrW, orientW, edgeThresh, spring] = bestGenome;
+  const ox = Math.sin(orient.gamma * Math.PI/180) * 20;
+  const oy = Math.sin(orient.beta * Math.PI/180) * 20;
+
+  // simple force + affinity
+  for (let i = 0; i < N; i++) {
+    const a = nodes[i];
+    let fx = 0, fy = 0;
+    for (let j = i+1; j < N; j++) {
+      const b = nodes[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d2 = dx*dx + dy*dy + 1;
+      const d = Math.sqrt(d2);
+      const colorDiff = Math.abs(a.hue - b.hue) / 180;
+      const affinity = Math.exp(-d / (80 * distScale)) * (1 - colorW * colorDiff);
+      if (affinity > edgeThresh) {
+        const f = spring * (affinity - 0.5) / d;
+        fx += dx * f; fy += dy * f;
+      }
+    }
+    if (pointer.active) {
+      const dx = pointer.x - a.x, dy = pointer.y - a.y;
+      const d = Math.hypot(dx, dy) + 1;
+      fx += dx / d * ptrW * 2;
+      fy += dy / d * ptrW * 2;
+    }
+    fx += ox * orientW * 0.05; fy += oy * orientW * 0.05;
+    a.vx = (a.vx + fx * 0.05) * 0.92;
+    a.vy = (a.vy + fy * 0.05) * 0.92;
+    a.x = (a.x + a.vx + W) % W;
+    a.y = (a.y + a.vy + H) % H;
+    a.hue = (a.hue + (Math.random()-0.5)*2) % 360;
+  }
+
+  const bins = new Array(6).fill(0);
+  nodes.forEach(n => bins[Math.floor(n.hue / 60) % 6]++);
+  communities = bins.filter(b => b > N/12).length || 1;
+  fitness = communities / 6 + (pointer.active ? 0.2 : 0);
+}
+
+function draw() {
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0, 0, W, H);
+  const [distScale, , , , edgeThresh] = bestGenome;
+  ctx.strokeStyle = 'rgba(100,180,255,0.25)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < N; i++) {
+    for (let j = i+1; j < N; j++) {
+      const a = nodes[i], b = nodes[j];
+      const d = Math.hypot(a.x-b.x, a.y-b.y);
+      const colorDiff = Math.abs(a.hue - b.hue)/180;
+      const aff = Math.exp(-d / (80*distScale)) * (1 - 0.4*colorDiff);
+      if (aff > edgeThresh) {
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+  }
+  nodes.forEach(n => {
+    ctx.fillStyle = `hsl(${n.hue}, 70%, 60%)`;
+    ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI*2); ctx.fill();
+  });
+  if (pointer.active) {
+    ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 20, 0, Math.PI*2); ctx.stroke();
+  }
+}
+
+function morph() {
+  const m = Math.min(1, fitness);
+  document.documentElement.style.setProperty('--hue', (m * 120).toFixed(0));
+  document.documentElement.style.setProperty('--scale', (1 + m * 0.04).toFixed(3));
+  document.documentElement.style.setProperty('--border', (1 + m * 4) + 'px');
+  document.getElementById('n').textContent = N;
+  document.getElementById('c').textContent = communities;
+  document.getElementById('f').textContent = fitness.toFixed(2);
+}
+
+let worker;
+try {
+  const workerCode = `
+    let pop = Array.from({length: 6}, () => Array.from({length: 6}, () => Math.random()*1.5));
+    function mutate(g) { return g.map(v => Math.max(0.1, Math.min(2, v + (Math.random()-0.5)*0.3))); }
+    function fit(g) {
+      const [ds, cw, pw, ow, et, sp] = g;
+      return 1 - Math.abs(et - 0.45) + pw*0.3 + (1 - Math.abs(ds-1))*0.2 + Math.random()*0.1;
+    }
+    setInterval(() => {
+      const scored = pop.map(g => ({g, s: fit(g)})).sort((a,b) => b.s - a.s);
+      pop = [scored[0].g, ...scored.slice(0,3).map(x => mutate(x.g)), mutate(scored[0].g), mutate(scored[1].g)];
+      self.postMessage({genome: scored[0].g, fitness: scored[0].s});
+    }, 800);
+  `;
+  const blob = new Blob([workerCode], {type: 'application/javascript'});
+  worker = new Worker(URL.createObjectURL(blob));
+  worker.onmessage = e => { applyGenome(e.data.genome); fitness = e.data.fitness; };
+} catch (e) { console.warn('Worker failed', e); }
+
+let audioCtx, oscs = [];
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  for (let i = 0; i < 3; i++) {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = 'sine'; o.frequency.value = 120 + i*40;
+    g.gain.value = 0.02;
+    o.connect(g); g.connect(audioCtx.destination); o.start();
+    oscs.push({o, g});
+  }
+}
+document.body.addEventListener('pointerdown', initAudio, {once: true});
+
+function updateAudio() {
+  if (!oscs.length) return;
+  oscs.forEach((o, i) => {
+    o.o.frequency.value = 100 + communities * 30 + i*25 + fitness*20;
+    o.g.gain.value = 0.01 + fitness * 0.03;
+  });
+}
+
+document.getElementById('sealBtn').onclick = async () => {
+  const data = JSON.stringify(bestGenome);
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  document.getElementById('seal').textContent = 'Sealed: ' + hash;
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-graph-mind', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals');
+      r.onsuccess = () => res(r.result); r.onerror = rej;
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({genome: bestGenome, hash, t: Date.now()}, hash);
+  } catch(e) {}
+};
+
+function loop() {
+  step();
+  draw();
+  morph();
+  updateAudio();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

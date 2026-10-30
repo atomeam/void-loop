@@ -315,5 +315,680 @@
    "benchTotal": 2368,
    "probeFixes": 2
   }
+ },
+ {
+  "at": "2026-10-21T12:28:20.483Z",
+  "score": 77,
+  "parts": {
+   "self": 83,
+   "asks": 91,
+   "friction": 93,
+   "bench": 99,
+   "probes": 20
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 75
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 89
+   },
+   {
+    "id": "numbers",
+    "health": 88
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 95
+   },
+   {
+    "id": "sky",
+    "health": 87
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 83
+   },
+   {
+    "id": "words",
+    "health": 82
+   }
+  ],
+  "facts": {
+   "week": 449,
+   "owner": 75,
+   "askedBuilt": 41,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 303,
+   "failing": 7,
+   "unsure": 28,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 2
+  }
+ },
+ {
+  "at": "2026-10-22T12:30:52.283Z",
+  "score": 77,
+  "parts": {
+   "self": 85,
+   "asks": 91,
+   "friction": 92,
+   "bench": 99,
+   "probes": 20
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 97
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 83
+   },
+   {
+    "id": "numbers",
+    "health": 88
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 93
+   },
+   {
+    "id": "sky",
+    "health": 92
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 84
+   },
+   {
+    "id": "words",
+    "health": 84
+   }
+  ],
+  "facts": {
+   "week": 410,
+   "owner": 62,
+   "askedBuilt": 44,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 321,
+   "failing": 7,
+   "unsure": 35,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 2
+  }
+ },
+ {
+  "at": "2026-10-23T12:12:01.528Z",
+  "score": 73,
+  "parts": {
+   "self": 85,
+   "asks": 91,
+   "friction": 92,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 97
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 83
+   },
+   {
+    "id": "numbers",
+    "health": 88
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 93
+   },
+   {
+    "id": "sky",
+    "health": 92
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 84
+   },
+   {
+    "id": "words",
+    "health": 83
+   }
+  ],
+  "facts": {
+   "week": 357,
+   "owner": 53,
+   "askedBuilt": 44,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 322,
+   "failing": 7,
+   "unsure": 36,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-24T11:40:14.325Z",
+  "score": 75,
+  "parts": {
+   "self": 90,
+   "asks": 91,
+   "friction": 94,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 86
+   },
+   {
+    "id": "numbers",
+    "health": 89
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 96
+   },
+   {
+    "id": "sky",
+    "health": 92
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 95
+   }
+  ],
+  "facts": {
+   "week": 289,
+   "owner": 28,
+   "askedBuilt": 42,
+   "medianLagDays": 0.3,
+   "open": 2,
+   "oldestOpenDays": 0.6,
+   "skills": 331,
+   "failing": 7,
+   "unsure": 23,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-25T12:04:35.462Z",
+  "score": 76,
+  "parts": {
+   "self": 96,
+   "asks": 91,
+   "friction": 94,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 97
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 85
+   },
+   {
+    "id": "numbers",
+    "health": 89
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 96
+   },
+   {
+    "id": "sky",
+    "health": 92
+   },
+   {
+    "id": "stage",
+    "health": 98
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 95
+   }
+  ],
+  "facts": {
+   "week": 230,
+   "owner": 10,
+   "askedBuilt": 43,
+   "medianLagDays": 0.3,
+   "open": 1,
+   "oldestOpenDays": 0.6,
+   "skills": 336,
+   "failing": 7,
+   "unsure": 25,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-26T13:37:44.703Z",
+  "score": 75,
+  "parts": {
+   "self": 95,
+   "asks": 90,
+   "friction": 93,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 83
+   },
+   {
+    "id": "numbers",
+    "health": 87
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 97
+   },
+   {
+    "id": "sky",
+    "health": 93
+   },
+   {
+    "id": "stage",
+    "health": 97
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 89
+   }
+  ],
+  "facts": {
+   "week": 199,
+   "owner": 9,
+   "askedBuilt": 43,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.7,
+   "skills": 351,
+   "failing": 7,
+   "unsure": 36,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-27T12:43:59.442Z",
+  "score": 76,
+  "parts": {
+   "self": 95,
+   "asks": 91,
+   "friction": 93,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 83
+   },
+   {
+    "id": "numbers",
+    "health": 87
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 97
+   },
+   {
+    "id": "sky",
+    "health": 93
+   },
+   {
+    "id": "stage",
+    "health": 97
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 89
+   }
+  ],
+  "facts": {
+   "week": 154,
+   "owner": 8,
+   "askedBuilt": 43,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 351,
+   "failing": 7,
+   "unsure": 36,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-28T13:35:04.910Z",
+  "score": 76,
+  "parts": {
+   "self": 95,
+   "asks": 91,
+   "friction": 93,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 98
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 83
+   },
+   {
+    "id": "numbers",
+    "health": 87
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 96
+   },
+   {
+    "id": "sky",
+    "health": 93
+   },
+   {
+    "id": "stage",
+    "health": 97
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 89
+   }
+  ],
+  "facts": {
+   "week": 147,
+   "owner": 8,
+   "askedBuilt": 40,
+   "medianLagDays": 0.3,
+   "open": 3,
+   "oldestOpenDays": 0.6,
+   "skills": 352,
+   "failing": 7,
+   "unsure": 37,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
+ },
+ {
+  "at": "2026-10-29T13:46:26.701Z",
+  "score": 73,
+  "parts": {
+   "self": 97,
+   "asks": 77,
+   "friction": 92,
+   "bench": 99,
+   "probes": 0
+  },
+  "families": [
+   {
+    "id": "body",
+    "health": 100
+   },
+   {
+    "id": "decide",
+    "health": 100
+   },
+   {
+    "id": "games",
+    "health": 97
+   },
+   {
+    "id": "life",
+    "health": 100
+   },
+   {
+    "id": "make",
+    "health": 84
+   },
+   {
+    "id": "numbers",
+    "health": 88
+   },
+   {
+    "id": "safety-play",
+    "health": 100
+   },
+   {
+    "id": "self",
+    "health": 97
+   },
+   {
+    "id": "sky",
+    "health": 93
+   },
+   {
+    "id": "stage",
+    "health": 97
+   },
+   {
+    "id": "time",
+    "health": 85
+   },
+   {
+    "id": "words",
+    "health": 83
+   }
+  ],
+  "facts": {
+   "week": 205,
+   "owner": 7,
+   "askedBuilt": 23,
+   "medianLagDays": 1.2,
+   "open": 2,
+   "oldestOpenDays": 0.6,
+   "skills": 365,
+   "failing": 7,
+   "unsure": 44,
+   "benchScore": 2345,
+   "benchTotal": 2368,
+   "probeFixes": 0
+  }
  }
 ]

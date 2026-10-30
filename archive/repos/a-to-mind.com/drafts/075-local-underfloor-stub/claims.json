@@ -1,0 +1,27 @@
+{
+  "slug": "local-underfloor-stub",
+  "run": 75,
+  "date": "2026-10-05",
+  "status": "unattested",
+  "message": "not-claimed",
+  "voice": "not-decoded",
+  "glyph": "denied",
+  "emit": false,
+  "hypothesis": "A typed amplitude at or under a sealed floor hashes to a band-refusal id. The band stays empty. Under the floor is not a message and not a decoded voice.",
+  "floor_label": "0.22",
+  "above_floor_hashes": false,
+  "sources": [
+    {
+      "id": "bl-lhs1140-nondetection-label",
+      "label": "A 2026 Breakthrough Listen archival note on LHS 1140 reports hits above an S/N cut, then attributes the remaining events to RFI. Label only. Not fetched. Not a seal."
+    },
+    {
+      "id": "bl-anomaly-rank-label",
+      "label": "An anomaly-ranking note (arXiv:2505.03927) says no inspected candidate survived scrutiny. Quieter is a rank, not a decoded band. Label only."
+    },
+    {
+      "id": "gbt-archive-rfi-label",
+      "label": "A Green Bank archive search notes the radio-quiet zone still contends with human RFI. A quiet zone is not a message. Label only."
+    }
+  ]
+}

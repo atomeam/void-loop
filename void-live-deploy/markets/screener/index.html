@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Screener: filter stocks, indices and coins by move, high and volume · Verse</title>
+<meta name="description" content="Filter a small fixed universe of 12 large US stocks, 4 indices and 30 coins by the day’s move, distance from the high and volume against average. Not every listed company. Prices may be delayed. No ads, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Screener · Verse">
+<meta property="og:description" content="Filter a small fixed universe of 12 large US stocks, 4 indices and 30 coins by the day’s move, distance from the high and volume against average. Not every listed company. Prices may be delayed. No ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/markets/screener/">
+<meta property="og:image" content="https://a-to-mind.com/og/markets.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://a-to-mind.com/og/markets.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/markets/screener/">
+<style>
+  /* a-to-mind.com/markets/screener/ (a page of the markets floor): one file and lib/markets.js; nothing is kept on the device */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  input, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 8px 0 0; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  label.f { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--soft); } label.f input, label.f select { width: 8.5em; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; table-layout: fixed; }
+  th, td { text-align: right; padding: 0 3px; overflow: hidden; height: 56px; border-top: 1px solid var(--line); white-space: nowrap; }
+  th { white-space: normal; line-height: 1.15; font-size: 12px; font-weight: 600; color: var(--soft); border-top: 0; height: 40px; } th button { border: 0; padding: 4px 6px; min-height: 40px; font-size: 12px; font-weight: 600; color: var(--soft); border-radius: 8px; }
+  td:nth-child(2), th:nth-child(2) { text-align: left; } td:first-child, th:first-child { text-align: left; width: 2.2em; color: var(--soft); }
+  td small { color: var(--soft); font-size: 12px; margin-left: 4px; } td a { color: inherit; text-decoration: none; font-weight: 600; }
+  .wide { display: none; } @media (min-width: 600px) { .wide { display: table-cell; } }
+  .box { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 4px 8px; margin-top: 12px; }
+  .note { font-size: 13px; color: var(--soft); margin: 8px 0 0; min-height: 1.5em; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a, footer a { color: inherit; } footer { font-size: 12px; color: var(--soft); margin-top: 18px; text-align: center; }
+  th:nth-child(1) { width: 33%; } th:nth-child(2) { width: 19%; } th:nth-child(3) { width: 21%; } th:nth-child(4), th:nth-child(5) { width: 13.5%; } td div, td.l small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } td.l small { display: block; margin: 0 0 0 28px; } td > div > svg { display: block; margin-left: auto; }
+  td.l, th.l { text-align: left; } td.l a { color: inherit; font-weight: 600; text-decoration: none; } td.l small { margin-left: 4px; color: var(--soft); font-size: 12px; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Screener</h1>
+  <p class="sub" id="sub">Filter a small, fixed universe by the day’s move, how close it is to its high and its volume. Prices may be delayed. No ads, no account.</p>
+  <p class="note" id="uni" style="margin-top:0">Universe: 12 large US stocks (AAPL, MSFT, NVDA, AMZN, GOOGL, META, TSLA, JPM, V, WMT, NFLX, AMD), 4 indices (S&amp;P 500, Dow, Nasdaq 100, Nasdaq Composite) and 30 large coins. It is not every listed company.</p>
+  <form id="f" class="row" autocomplete="off">
+    <label class="f"><span>Show</span><select id="group"><option value="all">Everything</option><option value="stocks">Stocks</option><option value="indices">Indices</option><option value="coins">Coins</option></select></label>
+    <label class="f"><span>Move at least (%)</span><input id="min" inputmode="decimal" placeholder="-100" maxlength="7"></label>
+    <label class="f"><span>Move at most (%)</span><input id="max" inputmode="decimal" placeholder="100" maxlength="7"></label>
+    <label class="f"><span>Within % of high</span><input id="near" inputmode="decimal" placeholder="any" maxlength="7"></label>
+    <label class="f"><span>Volume at least (× avg)</span><input id="vol" inputmode="decimal" placeholder="any" maxlength="7"></label>
+    <label class="f"><span>Sort by</span><select id="sort"><option value="pct">Biggest gain</option><option value="-pct">Biggest fall</option><option value="below">Closest to high</option><option value="volX">Most volume</option><option value="sym">Symbol</option></select></label>
+    <button type="submit" class="go">Screen</button>
+  </form>
+  <p class="note" id="count" role="status">Loading the universe</p>
+  <div class="box" style="height:460px;overflow:auto" tabindex="0" role="region" aria-label="Results"><table id="t"><caption class="vh">Screener results</caption><thead><tr><th scope="col" style="text-align:left">Symbol</th><th scope="col">Price</th><th scope="col">Move and chart</th><th scope="col">Below high</th><th scope="col">Vol ×</th></tr></thead><tbody id="tb"></tbody></table></div>
+  <p class="note">The small line under each move is its chart (a year for stocks and indices, seven days for coins). Press ☆ beside a symbol to keep it on your watchlist, on this device (the watchlist is on the <a href="/markets/">quotes page</a>). “Below high” is the distance under the 52-week high for stocks and indices, and under the all-time high for coins. “Volume ×” is today’s volume over the 30-day average and is only known for stocks and indices.</p>
+  <div class="row"><button type="button" id="share">Share link</button></div>
+  <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
+  <p class="srcs">Shares and indices come from Stooq (Yahoo Finance’s public chart feed fills in when it is down), coins from CoinGecko; all may be delayed. Not financial advice.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  addEventListener('load', async () => {
+    const M = await import('/lib/markets.js'), $ = (id) => document.getElementById(id), qs = new URLSearchParams(location.search);
+    $('share').addEventListener('click', async () => { const b = $('share'), url = location.href; if (navigator.share) { try { await navigator.share({ title: document.title, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } const w = b.textContent; try { await navigator.clipboard.writeText(url); b.textContent = 'Copied'; } catch (_) { b.textContent = 'Select the address bar'; } setTimeout(() => { b.textContent = w; }, 1200); });
+    for (const [id, k] of [['group', 'group'], ['min', 'min'], ['max', 'max'], ['near', 'near'], ['vol', 'vol'], ['sort', 'sort']]) if (qs.has(k)) $(id).value = qs.get(k);
+    let all = [], total = 0, lastTag = '';
+    const KEY = 'a2m.void.markets.v1', mine = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'); return Array.isArray(v.list) ? v.list : []; } catch (_) { return []; } };
+    const toggle = (sym) => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'), l = Array.isArray(v.list) ? v.list : []; v.list = l.includes(sym) ? l.filter((x) => x !== sym) : l.concat(sym).slice(0, 20); localStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
+    const spark = (vals, up) => { const td = document.createElement('td'); td.className = 'wide'; const d = M.sparkD(vals); if (!d) return td; const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), p = document.createElementNS(NS, 'path'); svg.setAttribute('viewBox', '0 0 80 24'); svg.setAttribute('width', '80'); svg.setAttribute('height', '24'); svg.setAttribute('aria-hidden', 'true'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.6'); p.style.stroke = up ? 'var(--up)' : 'var(--down)'; svg.append(p); td.append(svg); return td; };
+    const pct = (v) => (v >= 0 ? '▲ +' : '▼ −') + Math.abs(v).toFixed(2) + '%';
+    function draw(tag = '') {
+      const f = { group: $('group').value, minPct: $('min').value, maxPct: $('max').value, nearHigh: $('near').value, minVolX: $('vol').value, sort: $('sort').value }, rows = M.screen(all, f);
+      $('count').textContent = rows.length + ' of ' + all.length + ' symbols match' + (total ? ' · live, as of ' + new Date(total).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : '') + (tag || lastTag);
+      lastTag = tag || lastTag;
+      $('tb').replaceChildren(...rows.map((r) => { const tr = document.createElement('tr'), c = () => document.createElement('td'), a = document.createElement('a'), s = document.createElement('small'), t0 = c(), t1 = c(), t2 = c(), t3 = c(), t4 = c();
+        const star = document.createElement('button'), on = mine().includes(r.sym); star.type = 'button'; star.textContent = on ? '★' : '☆'; star.setAttribute('aria-pressed', String(on)); star.setAttribute('aria-label', (on ? 'Remove ' : 'Add ') + r.sym + (on ? ' from' : ' to') + ' the watchlist'); star.style.cssText = 'border:0;padding:0;min-width:40px'; star.addEventListener('click', () => { toggle(r.sym); draw(); }); t0.className = 'l'; a.href = '/markets/?s=' + encodeURIComponent(r.sym); a.textContent = r.sym; s.textContent = r.name; const hd = document.createElement('div'); hd.append(star, a, ' '); t0.append(hd, s); t1.textContent = M.fmtPrice(r.price); t2.textContent = pct(r.pct); t2.className = r.pct >= 0 ? 'up' : 'down'; { const sp = document.createElement('div'); const q = spark(r.spark, r.pct >= 0); sp.append(...q.childNodes); t2.append(sp); }
+        t3.textContent = r.below == null ? '–' : r.below.toFixed(1) + '%'; t3.title = 'below the ' + r.basis; t4.textContent = r.volX == null ? '–' : r.volX.toFixed(1) + '×'; tr.append(t0, t1, t2, t3, t4); return tr; }));
+    }
+    $('f').addEventListener('submit', (ev) => { ev.preventDefault(); const p = new URLSearchParams(); for (const id of ['group', 'min', 'max', 'near', 'vol', 'sort']) if ($(id).value) p.set(id, $(id).value); history.replaceState(null, '', '/markets/screener/' + (p.toString() ? '?' + p : '')); draw(); });
+    // the coins first from the daily snapshot (labelled, never live), so a coin row is always there; shares and indices need the live sources
+    const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.scan) && snap.scan.length >= 10;
+    let tag = '';
+    if (have) { all = M.scanRows([], snap.scan); total = 0; tag = ' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices are loading'; draw(tag); }
+    let j; try { j = await (await fetch('/api/markets?scan=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2500)); j = await (await fetch('/api/markets?scan=1')).json(); } } catch (_) { j = { ok: false }; }
+    if (j.ok) {
+      all = j.rows; total = Date.parse(j.at); lastTag = '';
+      // the live answer can come back without its coins (CoinGecko busy): the snapshot's coins stay, said to be a snapshot, so the coin rows never vanish
+      if (have && !all.some((r) => r.group === 'coins')) { all = all.concat(M.scanRows([], snap.scan)); draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live'); return; }
+      draw(''); return;
+    }
+    if (have) { draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices could not be loaded just now'); return; }
+    $('count').textContent = j.say || 'The universe could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

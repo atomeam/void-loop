@@ -1,0 +1,36 @@
+{
+  "slug": "local-defer-not-dream",
+  "run": 128,
+  "family": "private incubation log",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A defer mark is not a dream and not a hypnagogic scene.",
+  "confidence": 0.22,
+  "confidence_note": "design-material weight, not a measurement",
+  "hash_preimage": "void-defer-not-dream|v1|class=<id>|status=unattested",
+  "excluded_from_hash": [
+    "dream_sentence",
+    "hypnagogic_scene",
+    "theme_cue",
+    "lucidity",
+    "illumination"
+  ],
+  "classes": [
+    {
+      "id": "withheld",
+      "label": "Withheld",
+      "note": "No defer is recorded."
+    },
+    {
+      "id": "closed",
+      "label": "Closed",
+      "note": "Latch stays shut. Not a blank dream."
+    },
+    {
+      "id": "deferred",
+      "label": "Deferred",
+      "note": "Latch closes. Dream sentence and scene refused."
+    }
+  ]
+}

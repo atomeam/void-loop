@@ -1,0 +1,102 @@
+{
+  "kind": "wcag-audit-badge",
+  "run": "026",
+  "slug": "wcag-3-continuous-audit-badge",
+  "status": "specified",
+  "hold": true,
+  "algo": "sha256",
+  "standard": "WCAG-2.2-AA",
+  "wcag3_claim": false,
+  "wcag3_status": "W3C Working Draft (snapshots through 2026-03-03; Sep 2026 W3C blog describes core requirements + supplemental reporting, not a Recommendation)",
+  "live_scan": false,
+  "overlay": false,
+  "remote_badge": false,
+  "autoflip": false,
+  "cookie": false,
+  "analytics": false,
+  "index": "noindex",
+  "route": "draft",
+  "target": {
+    "standard": "WCAG 2.2",
+    "level": "AA",
+    "note": "Legal and procurement references in 2026 still point at WCAG 2.1/2.2 AA and EN 301 549. WCAG 3 is not a sealed target."
+  },
+  "methods_allowed": [
+    "sealed-automated-screen",
+    "sealed-manual-keyboard",
+    "sealed-manual-names",
+    "sealed-manual-contrast"
+  ],
+  "methods_denied": [
+    "overlay-widget",
+    "remote-vendor-svg",
+    "client-axe-as-verdict",
+    "wcag3-bronze-silver-gold",
+    "percent-of-137-criteria"
+  ],
+  "snapshot": {
+    "page": "/",
+    "tested_at": null,
+    "scope": null,
+    "tool": null,
+    "automated_fail_count": null,
+    "manual": {
+      "keyboard": null,
+      "names": null,
+      "contrast": null,
+      "reviewed_at": null,
+      "reviewer": null
+    },
+    "verdict": null,
+    "status": "unattested",
+    "hold": true,
+    "claim": "No sealed audit snapshot exists. The public badge must not invent AA, a score, or a WCAG 3 level."
+  },
+  "head": {
+    "canonical": "{\"algo\":\"sha256\",\"kind\":\"wcag-audit-badge\",\"live_scan\":false,\"overlay\":false,\"standard\":\"WCAG-2.2-AA\",\"wcag3_claim\":false}",
+    "sha256": "54dc5849d7aab17a32383e523e45f1b2e531285b00aee0a9075457b4220d4b19"
+  },
+  "body_sha256": "c908b8cc8d7333d825f7804951484e3748a43cc45c12f291361411e674cccc9b",
+  "lines": [
+    {
+      "id": "contract",
+      "canonical": "a11y#026|kind:wcag-audit-badge|standard:WCAG-2.2-AA|wcag3-claim:deny|overlay:deny|live-scan:deny|hash:sha256|seal:human",
+      "sha256": "83ddc686a773e3a9e499d87b5e53231399df8c9285b612df9b278d0bd1d39406"
+    },
+    {
+      "id": "status",
+      "canonical": "claim#status|text:WCAG 3 is a W3C Working Draft. This badge does not claim WCAG 3 conformance.",
+      "sha256": "78e9cc8a6740e8302d4aa43da6a5cba3cc5120f2811c692722539400b43b085e"
+    },
+    {
+      "id": "target",
+      "canonical": "claim#target|text:The sealed target is WCAG 2.2 Level AA. Automated checks are a screen, not a verdict.",
+      "sha256": "9f145291eb757bdfd74ef6f35009ff0feb84e9e110776e155f2539314c2b29ac"
+    },
+    {
+      "id": "snapshot",
+      "canonical": "claim#snapshot|text:This badge publishes a sealed audit snapshot. It does not retest this visit.",
+      "sha256": "51bd217385a28bb38b693779e7394c7f66200c3abc31a6bd517bddbcbe185271"
+    },
+    {
+      "id": "manual",
+      "canonical": "claim#manual|text:A pass requires a dated human review of keyboard, names, and contrast. Automation alone cannot seal AA.",
+      "sha256": "6566a5b2b8bac346b1d7146cc459e36bea257eeb1907511bea5e65f3cb8abfd1"
+    },
+    {
+      "id": "deny",
+      "canonical": "claim#deny|text:No overlay widget, no remote vendor badge, no live axe score, no Bronze/Silver/Gold claim.",
+      "sha256": "edd2a825315014334e24052b920b001d527d323e5778a62111d3ac25f8936b26"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "id": "page",
+      "canonical": "page#a11y|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "bf6d0052443e3c5766810d38341e2d53632429a52834b02e8c3f91b874741433"
+    }
+  ]
+}

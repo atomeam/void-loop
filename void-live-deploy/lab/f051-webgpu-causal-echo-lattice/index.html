@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 220; --sat: 45%; --lit: 7%; --glow: 0.3; }
+  body { margin: 0; background: hsl(var(--hue), var(--sat), var(--lit)); color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.65); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; backdrop-filter: blur(6px); }
+  .anchor { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: hsla(var(--ah), 75%, 55%, .65); border: 2px solid rgba(255,255,255,.5); cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 9px; text-align: center; user-select: none; transform: translate(-50%, -50%); box-shadow: 0 0 16px hsla(var(--ah), 80%, 60%, calc(var(--glow) * 0.7)); }
+  .anchor:active { cursor: grabbing; }
+  #seal { position: absolute; bottom: 12px; right: 12px; padding: 8px 16px; background: #1a1a1a; color: #fff; border: 1px solid #444; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  #seal:hover { background: #2a2a2a; }
+  #status { position: absolute; bottom: 12px; left: 12px; font-size: 11px; opacity: .7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Causal Echo Lattice Mind · Verse lab</title>
+<meta name="description" content="WebGPU compute (with Canvas2D fallback) running a causal wave/echo lattice: each cell holds phase and amplitude that propagates from pointer and planted anchors">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Causal Echo Lattice Mind · Verse lab">
+<meta property="og:description" content="WebGPU compute (with Canvas2D fallback) running a causal wave/echo lattice: each cell holds phase and amplitude that propagates from pointer and planted anchors">
+<meta property="og:url" content="https://a-to-mind.com/lab/f051-webgpu-causal-echo-lattice/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f051-webgpu-causal-echo-lattice/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-051 Causal Echo Lattice<br>
+  residual: <span id="res">—</span> · conf: <span id="conf">—</span> · gen: <span id="gen">0</span> · mode: <span id="mode">…</span>
+</div>
+<div id="status">Click empty space to plant echo anchors · drag them</div>
+<button id="seal">Seal genome + anchors</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Causal Echo Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

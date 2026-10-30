@@ -24,3 +24,13 @@ test('merges: the card answers its own asks and leaves the rest', () => {
   for (const a of ['what did the bot merge today', 'What merged this week?', 'show me the merge log']) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
+
+test("Verse's own pull requests say what got better; a cycle that added nothing is left out", async () => {
+  const { plainTitle, mergedOf: of } = await import('../void-live-deploy/skills/merges.js');
+  assert.equal(plainTitle('Verse hardens itself: 9 benchmark ask(s) for fakeuser, wheel, gradient'), 'Better at fakeuser, wheel and gradient: 9 more ways of asking answered right');
+  assert.equal(plainTitle('Verse hardens itself: 1 benchmark ask(s) for baseconv'), 'Better at baseconv: 1 more way of asking answered right');
+  assert.equal(plainTitle('Verse hardens itself: nothing to add this cycle'), null);
+  assert.equal(plainTitle('Tower: one endless queue'), 'Tower: one endless queue');
+  const rows = of([{ number: 2, merged_at: '2026-10-24T15:18:00Z', title: 'Verse hardens itself: nothing to add this cycle' }, { number: 1, merged_at: '2026-10-24T15:00:00Z', title: 'Showcase' }]);
+  assert.deepEqual(rows.map((r) => r.number), [1]);
+});

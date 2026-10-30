@@ -80,11 +80,47 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
 const say = (s, p, text, extra = {}) => { s.log.push({ who: p == null ? null : s.players[p].name, text, ...extra }); if (s.log.length > 200) s.log.splice(0, s.log.length - 200); };
 export const owned = (s, p) => Object.keys(s.owner).map(Number).filter((i) => s.owner[i] === p);
 export const hasSet = (s, p, g) => GROUP[g].every((i) => s.owner[i] === p);
-export function worth(s, p) { return s.players[p].money + owned(s, p).reduce((a, i) => a + SPACES[i].p + (s.houses[i] || 0) * (SPACES[i].h || 0), 0); }
+export function worth(s, p) { return s.players[p].money + owned(s, p).reduce((a, i) => a + (s.mortgaged && s.mortgaged[i] ? SPACES[i].p / 2 : SPACES[i].p) + (s.houses[i] || 0) * (SPACES[i].h || 0), 0); }
+// mortgage: the bank lends half the price; the deed collects no rent until it is paid back with 10% on top
+export const mortgageValue = (i) => Math.floor((SPACES[i].p || 0) / 2);
+export const unmortgageCost = (i) => Math.ceil(mortgageValue(i) * 1.1);
+export function canMortgage(s, p, i) { const sp = SPACES[i]; return buyable(i) && s.owner[i] === p && !(s.mortgaged && s.mortgaged[i]) && !(sp.g && GROUP[sp.g].some((j) => s.houses[j])); }
+export function canUnmortgage(s, p, i) { return s.owner[i] === p && !!(s.mortgaged && s.mortgaged[i]) && s.players[p].money >= unmortgageCost(i); }
+export function mortgage(s0, i) {
+  const s = clone(s0), p = s.turn; if (s.players[p].out || !canMortgage(s, p, i)) return s0;
+  s.mortgaged = s.mortgaged || {}; s.mortgaged[i] = true; s.players[p].money += mortgageValue(i);
+  say(s, p, 'mortgaged ' + SPACES[i].n + ' for ' + mortgageValue(i)); return s;
+}
+export function unmortgage(s0, i) {
+  const s = clone(s0), p = s.turn; if (s.players[p].out || !canUnmortgage(s, p, i)) return s0;
+  delete s.mortgaged[i]; s.players[p].money -= unmortgageCost(i);
+  say(s, p, 'paid off the mortgage on ' + SPACES[i].n + ' for ' + unmortgageCost(i)); return s;
+}
+// a player's holdings grouped by colour set (stations and utilities as their own groups), for the always-visible panel
+export function holdings(s, p) {
+  const out = [];
+  const add = (key, label, ids) => { const mine = ids.filter((i) => s.owner[i] === p); if (mine.length) out.push({ key, label, of: ids.length, full: mine.length === ids.length, items: mine.map((i) => ({ i, n: SPACES[i].n, houses: s.houses[i] || 0, mortgaged: !!(s.mortgaged && s.mortgaged[i]) })) }); };
+  for (const g of Object.keys(GROUP)) add(g, g.replace('light', 'light ').replace('dark', 'dark '), GROUP[g]);
+  add('station', 'stations', SPACES.map((x, i) => (x.t === 'station' ? i : -1)).filter((i) => i >= 0));
+  add('utility', 'utilities', SPACES.map((x, i) => (x.t === 'utility' ? i : -1)).filter((i) => i >= 0));
+  return out;
+}
+// a deed in the shared card shape (kind, game, title, fields), so the card binder can store it like any other card
+export function deedCard(s, i, names = null) {
+  const sp = SPACES[i], n = names ? names[i] : sp.n, o = s.owner[i];
+  const fields = [['Price', sp.p], ['Mortgage value', mortgageValue(i)]];
+  if (sp.t === 'street') { ['Rent', 'With 1 house', 'With 2 houses', 'With 3 houses', 'With 4 houses', 'With a hotel'].forEach((l, k) => fields.push([l, sp.r[k]])); fields.push(['House cost', sp.h]); fields.push(['Rent doubles', 'when one player owns the whole set']); }
+  if (sp.t === 'station') fields.push(['Rent', '25 with one station, doubling for each more']);
+  if (sp.t === 'utility') fields.push(['Rent', '4 times the dice, or 10 times with both']);
+  if (o != null) fields.push(['Owner', s.players[o].name]);
+  if (s.mortgaged && s.mortgaged[i]) fields.push(['State', 'mortgaged: no rent until paid off for ' + unmortgageCost(i)]);
+  return { kind: 'deed', game: 'property', id: 'deed-' + i, title: n, color: sp.g || sp.t, fields };
+}
+
 
 export function rentFor(s, i, sum = 7) {
   const sp = SPACES[i], o = s.owner[i];
-  if (o == null) return 0;
+  if (o == null || (s.mortgaged && s.mortgaged[i])) return 0; // a mortgaged deed collects no rent
   if (sp.t === 'station') return 25 * 2 ** (owned(s, o).filter((j) => SPACES[j].t === 'station').length - 1);
   if (sp.t === 'utility') return sum * (owned(s, o).filter((j) => SPACES[j].t === 'utility').length === 2 ? 10 : 4);
   const h = s.houses[i] || 0;
@@ -101,8 +137,10 @@ function pay(s, p, amount, to = null, why = '') {
     while ((s.houses[i] || 0) > 0 && pl.money < 0) { s.houses[i]--; pl.money += SPACES[i].h / 2; say(s, p, 'sold a house on ' + SPACES[i].n + ' for ' + SPACES[i].h / 2 + ' to pay' + (why ? ' ' + why : ''), { forced: true }); }
   }
   if (pl.money >= 0) return;
+  for (const i of owned(s, p)) { if (pl.money >= 0) break; if (!(s.mortgaged && s.mortgaged[i])) { s.mortgaged = s.mortgaged || {}; s.mortgaged[i] = true; pl.money += mortgageValue(i); say(s, p, 'mortgaged ' + SPACES[i].n + ' for ' + mortgageValue(i) + ' to pay' + (why ? ' ' + why : ''), { forced: true }); } }
+  if (pl.money >= 0) return;
   pl.out = true;
-  for (const i of owned(s, p)) { if (to != null) s.owner[i] = to; else delete s.owner[i]; delete s.houses[i]; }
+  for (const i of owned(s, p)) { if (to != null) s.owner[i] = to; else { delete s.owner[i]; if (s.mortgaged) delete s.mortgaged[i]; } delete s.houses[i]; }
   if (to != null) s.players[to].money += pl.money; // the creditor gets what was left (the debt beyond it is lost)
   pl.money = 0;
   say(s, p, 'is out: could not pay' + (why ? ' ' + why : ''), { forced: true });

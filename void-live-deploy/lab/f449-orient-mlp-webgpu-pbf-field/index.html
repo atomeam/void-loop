@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0c0e0; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:6px; font-size:13px; max-width:280px; }
+button { margin:4px 4px 0 0; padding:4px 8px; background:#223; color:#adf; border:1px solid #445; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orient-MLP WebGPU PBF Field · Verse lab</title>
+<meta name="description" content="DeviceOrientation (or pointer proxy) is the causal input to a local tiny MLP that continuously modulates the viscosity and damping of a WebGPU compute-based">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orient-MLP WebGPU PBF Field · Verse lab">
+<meta property="og:description" content="DeviceOrientation (or pointer proxy) is the causal input to a local tiny MLP that continuously modulates the viscosity and damping of a WebGPU compute-based">
+<meta property="og:url" content="https://a-to-mind.com/lab/f449-orient-mlp-webgpu-pbf-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f449-orient-mlp-webgpu-pbf-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div><b>F449 Orient-MLP PBF Field</b></div>
+  <div id="status">Initializing…</div>
+  <div>Tilt device or drag to stir. MLP modulates viscosity from orientation history.</div>
+  <button id="seed">Seed particles</button>
+  <button id="reset">Reset field</button>
+  <div id="stats"></div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orient-MLP WebGPU PBF Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

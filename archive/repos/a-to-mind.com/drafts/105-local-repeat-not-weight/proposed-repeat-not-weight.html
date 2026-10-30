@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Repeat not weight — draft 105 — unattested</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { --ink:#1a2428; --paper:#eef2f1; --line:#b7c4c2; --deny:#6e3a3a; --muted:#5c6b6e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink:#e6eeec; --paper:#141c1e; --line:#3a4a4c; --deny:#e0b4b0; --muted:#9aadaf; }
+    }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    main { max-width:38rem; margin:2rem auto; padding:0 1rem 3rem; }
+    .status { letter-spacing:.04em; text-transform:uppercase; font-size:.78rem; color:var(--muted); }
+    h1 { font-size:1.6rem; font-weight:600; margin:.2rem 0 .6rem; }
+    .lede { margin:0 0 1rem; }
+    dl { display:grid; grid-template-columns:9rem 1fr; gap:.35rem .75rem; margin:0 0 1.2rem; }
+    dt { color:var(--muted); }
+    dd { margin:0; }
+    dd.empty { color:var(--deny); }
+    fieldset { border:1px solid var(--line); margin:0 0 1rem; padding:.6rem .8rem; }
+    legend { padding:0 .3rem; }
+    label { display:block; margin:.25rem 0; }
+    input[type="text"], input[type="number"], select, button {
+      font:inherit; color:inherit; background:transparent; border:1px solid var(--line); padding:.35rem .5rem;
+    }
+    input[type="number"] { width:6rem; }
+    button { margin-top:.4rem; cursor:pointer; }
+    output { display:block; white-space:pre-wrap; margin-top:.8rem; font-family:ui-monospace, monospace; font-size:.85rem; }
+    .note { color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">unattested · draft 105 · not a seal</p>
+    <h1>Repeat not weight</h1>
+    <p class="lede">A repeat class is a label. It does not become a weight, a prior, or a detection. Scratch text and the tally are cleared and are not hashed.</p>
+    <dl>
+      <dt>weight</dt><dd class="empty">empty</dd>
+      <dt>prior</dt><dd class="empty">empty</dd>
+      <dt>posterior</dt><dd class="empty">empty</dd>
+      <dt>snr</dt><dd class="empty">empty</dd>
+      <dt>detection</dt><dd class="empty">empty</dd>
+      <dt>technosignature</dt><dd class="empty">empty</dd>
+      <dt>beacon</dt><dd class="empty">empty</dd>
+      <dt>tally store</dt><dd class="empty">empty</dd>
+    </dl>
+    <form id="repeat">
+      <fieldset>
+        <legend>Repeat class</legend>
+        <label><input type="radio" name="repeat" value="sky-follow" required> sky-follow</label>
+        <label><input type="radio" name="repeat" value="site-split"> site-split</label>
+        <label><input type="radio" name="repeat" value="polarization-split"> polarization-split</label>
+        <label><input type="radio" name="repeat" value="neighbor-beam"> neighbor-beam</label>
+        <label><input type="radio" name="repeat" value="non-repeat"> non-repeat</label>
+      </fieldset>
+      <label>Weight sentence (cleared, not hashed)
+        <input type="text" name="scratch" id="scratch" autocomplete="off" placeholder="typed text is discarded">
+      </label>
+      <label>Tally (cleared, not hashed)
+        <input type="number" name="tally" id="tally" min="0" step="1" inputmode="numeric" placeholder="0">
+      </label>
+      <label>Disconfirm line (not hashed)
+        <select name="disconfirm" id="disconfirm">
+          <option value="none">none selected</option>
+          <option value="second-look-absent">second look does not reproduce the event</option>
+          <option value="neighbor-match">neighbor beam shows the same feature</option>
+          <option value="site-disagree">separated site does not match</option>
+        </select>
+      </label>
+      <p><button type="submit">Hash repeat class</button></p>
+      <output id="out" for="repeat">No hash yet. Default status unattested.</output>
+    </form>
+    <p class="note">Posts and pages stay off this page. A count of mentions is not a row. No receiver opens.</p>
+  </main>
+  <script>
+    const form = document.getElementById("repeat");
+    const out = document.getElementById("out");
+    const scratch = document.getElementById("scratch");
+    const tally = document.getElementById("tally");
+    const allow = new Set(["sky-follow","site-split","polarization-split","neighbor-beam","non-repeat"]);
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const repeat = data.get("repeat");
+      const discarded = scratch.value.length;
+      const tallyChars = tally.value.length;
+      scratch.value = "";
+      tally.value = "";
+      if (!allow.has(repeat)) {
+        out.textContent = "class-denied. status unattested.";
+        return;
+      }
+      const canonical = "repeat-not-weight|v1|" + repeat + "|weight-refusal";
+      const hash = await sha256(canonical);
+      const disconfirm = data.get("disconfirm");
+      out.textContent = [
+        "status: unattested",
+        "seal: false",
+        "repeat: " + repeat,
+        "canonical: " + canonical,
+        "sha256: " + hash,
+        "scratch-discarded-chars: " + discarded,
+        "tally-discarded-chars: " + tallyChars,
+        "disconfirm-not-hashed: " + disconfirm,
+        "denied: weight, prior, posterior, snr, detection, technosignature, beacon, tally"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

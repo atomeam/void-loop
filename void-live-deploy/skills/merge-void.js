@@ -21,6 +21,9 @@ function mount(th, stageApi) {
   let you, vs, result = '', stop = null, started = false;
   const grid = (px) => { const g = document.createElement('div'); g.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:' + px + 'px'; return g; };
   const big = grid(4); big.className = 'mv-you'; big.style.touchAction = 'none';
+  // the board takes the room above the ask bar, like the marble board (.ag-wrap): at full width the card stood 587 px tall, more than the
+  // 583 px a 720 px window leaves above the bar, so New game sat under the ask bar and a press went to the bar (main ac07cc0, shard 4)
+  big.style.width = 'min(100%, max(180px, calc(100dvh - var(--dock-space, 120px) - 350px)))'; big.style.margin = '0 auto';
   const mini = grid(2); mini.className = 'mv-verse'; mini.style.cssText += ';width:96px;flex:none';
   const tiles = (g, n, size) => Array.from({ length: n }, () => { const d = document.createElement('div'); d.style.cssText = 'aspect-ratio:1;border-radius:' + (size ? 3 : 8) + 'px;display:flex;align-items:center;justify-content:center;font:700 ' + (size ? 9 : 20) + 'px system-ui;color:#fff'; g.appendChild(d); return d; });
   const yt = tiles(big, 16, false), vt = tiles(mini, 16, true);

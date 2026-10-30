@@ -3,7 +3,7 @@
 // (skills/appraise.js). People are never priced, in the photo or in the ask.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd, makeableIn, subjectOf } from '../void-live-deploy/lib/appraise-photo.js';
+import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd, makeableIn, subjectOf, bullionOf, BULLION } from '../void-live-deploy/lib/appraise-photo.js';
 import { THINGS } from '../void-live-deploy/skills/forge-rules.js';
 import forge from '../void-live-deploy/skills/forge.js';
 import { imageBytes, onRequestPost, MAX_IMAGE_CHARS } from '../void-live-deploy/functions/api/appraise.js';
@@ -13,7 +13,7 @@ import { models, PATHS, VISION_FALLBACK } from '../void-live-deploy/lib/models.j
 const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
 test('appraise: one value, the reasons, and an expert line when the kind calls for one; never a range', () => {
-  const coin = valueFrom('A worn silver coin, 1921 Morgan dollar, with scratches on the face.');
+  const coin = valueFrom('A worn silver coin with scratches on the face.');
   assert.equal(coin.kind, 'coin'); assert.ok(coin.cents > 0); assert.match(coin.text, /^\$/); assert.ok(coin.expert, 'silver: an expert in hand');
   assert.ok(coin.says.some((s) => /wear or damage/.test(s)) && coin.says.some((s) => /silver/.test(s)));
   const t = appraisalText(coin);
@@ -79,4 +79,46 @@ test('appraise: a photo of something the forge can model links to its make recip
     assert.equal(makeableIn(d, THINGS), null, String(d));
   assert.equal(makeableIn('A vase.', null), null, 'no recipes passed, no link');
   for (const k of Object.keys(THINGS)) assert.deepEqual(forge.forgeOf('make me a ' + k), { make: k }, 'the link\'s ask reaches the forge: ' + k);
+});
+
+
+test('appraise: a named bullion coin prices at the metal spot — a 1 oz Krugerrand is an ounce of gold, never a pocket-coin multiple (owner, 2026-10-26: "that \$20 estimate is way off")', () => {
+  const gold = 265000; // \$2,650 per troy ounce, in cents
+  const k = valueFrom('A coin; in mint or sealed condition; gold.', 'a Krugerrand coin', { gold, source: 'Stooq', at: '2026-10-26' });
+  assert.equal(k.cents, 265000, 'the spot times one troy ounce'); assert.equal(k.text, '\$2,650');
+  assert.ok(k.expert); assert.ok(k.bullion && k.bullion.metal === 'gold' && k.bullion.ozt === 1);
+  assert.ok(k.says.some((x) => /one troy ounce of gold/.test(x)) && k.says.some((x) => /Stooq/.test(x)) && k.says.some((x) => /condition barely moves it/.test(x)));
+  const t = appraisalText(k);
+  assert.match(t, /^Verse values this at \$2,650\./); assert.ok(!/range|between/.test(t), t, 'one number, the reasons around it');
+  assert.match(t, /looked at in hand/); assert.match(t, /not a certified appraisal/);
+  assert.equal(valueFrom('a half krugerrand', '', { gold }).cents, 132500, 'a fractional names its size');
+  assert.equal(valueFrom('an american silver eagle', '', { silver: 3150 }).cents, 3200, 'silver prices at silver');
+  assert.equal(bullionOf('A worn silver coin, 1921 Morgan dollar, with scratches.').metal, 'silver');
+  assert.equal(valueFrom('A worn silver coin, 1921 Morgan dollar, with scratches on the face.', '', { silver: 3150 }).cents, 2400, 'the melt value, not the heuristic: 0.7735 ozt at \$31.50 is about \$24');
+  const quiet = valueFrom('a coin; gold.', 'a krugerrand coin', null);
+  assert.equal(quiet.cents, 0); assert.equal(quiet.text, '', 'no live spot, no invented number');
+  assert.match(appraisalText(quiet), /not inventing a number/); assert.match(appraisalText(quiet), /spot/);
+  assert.equal(valueFrom('a 1 oz gold coin', '', { gold }).cents, 265000, 'a stated weight, no named coin');
+  const q = valueFrom('A shiny quarter.'); assert.equal(q.kind, 'coin'); assert.ok(q.cents > 0 && q.cents < 50000, 'a pocket coin keeps the heuristic');
+  assert.ok(BULLION.length >= 10);
+});
+
+test('appraise: a Krugerrand reads the metal spot once from Stooq and prices at it; nothing bullion-named never touches the feed', async () => {
+  const realFetch = global.fetch; let stooqCalls = 0;
+  const csv = { xauusd: 'Symbol,Date,Time,Open,High,Low,Close,Volume\nXAUUSD,2026-10-26,22:00:00,2648.1,2661.4,2640.0,2650.55,0', xagusd: 'Symbol,Date,Time,Open,High,Low,Close,Volume\nXAGUSD,2026-10-26,22:00:00,31.2,31.8,31.0,31.5,0', xptusd: 'Symbol,Date,Time,Open,High,Low,Close,Volume\nXPTUSD,2026-10-26,22:00:00,990.0,995.0,988.0,992.4,0' };
+  global.fetch = async (u) => { if (String(u).includes('stooq.com')) { stooqCalls++; const sym = String(u).match(/s=([a-z]+)/i)[1].toLowerCase(); return { text: async () => csv[sym] || '' }; } return realFetch(u); };
+  try {
+    const req = (body) => new Request('http://x/api/appraise', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const env = { AI: { run: async () => ({ description: 'A coin; in mint or sealed condition; gold.' }) } };
+    const r = await onRequestPost({ request: req({ image: PNG, note: 'a Krugerrand coin' }), env }); const j = await r.json();
+    assert.equal(r.status, 200); assert.equal(j.value.cents, 265000, 'spot 2650.55 rounds to the nearest \$25: \$2,650');
+    assert.match(j.text, /Verse values this at \$2,650\./); assert.match(j.text, /Stooq/);
+    const calls = stooqCalls;
+    const j2 = await (await onRequestPost({ request: req({ image: PNG, note: 'a krugerrand coin' }), env })).json();
+    assert.equal(stooqCalls, calls, 'the ten-minute cache answers the second ask');
+    assert.equal(j2.value.cents, 265000);
+    const before = stooqCalls;
+    await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => ({ description: 'A vintage Omega wristwatch with a gold case.' }) } } });
+    assert.equal(stooqCalls, before, 'no bullion named, no spot fetch');
+  } finally { global.fetch = realFetch; }
 });

@@ -1,0 +1,4333 @@
+{
+ "floor": "photos",
+ "verse_page": "/photos/",
+ "researched": "2026-10-26",
+ "sites": {
+  "photos.google.com": {
+   "sources": [
+    "https://www.google.com/photos/about",
+    "https://support.google.com/photos",
+    "https://photos.google.com/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Upload and back up",
+     "detail": "Upload from computer/phone, automatic backup from devices",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/photos.js: Verse Photos, a device-only library in IndexedDB grouped by EXIF day, found by year/month/album/caption, lightbox with prev/next; added from the device, kept only in this browser, no backup"
+    },
+    {
+     "group": "core",
+     "name": "Timeline by date",
+     "detail": "All photos grouped by day/month/year with scrubber",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/photos.js: Verse Photos, a device-only library in IndexedDB grouped by EXIF day, found by year/month/album/caption, lightbox with prev/next"
+    },
+    {
+     "group": "core",
+     "name": "Viewer",
+     "detail": "Full-size view, swipe/arrows, zoom, info panel with EXIF and map",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js lightbox with arrows, swipe and Esc; no zoom/info map shown"
+    },
+    {
+     "group": "core",
+     "name": "Albums",
+     "detail": "Create albums, add/remove, cover photo, sort",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js groups by album name"
+    },
+    {
+     "group": "core",
+     "name": "Search by content",
+     "detail": "Find \"dog\", \"beach\", text in photos, places, dates",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js finds by year, month, album or caption; not by what is in the picture"
+    },
+    {
+     "group": "core",
+     "name": "Favourites",
+     "detail": "Star photos and see them in one place",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Trash and archive",
+     "detail": "Trash kept 60 days, archive hides from timeline",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Download",
+     "detail": "Download originals or a zip",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "photos.js saves a copy without location (stripMeta)"
+    },
+    {
+     "group": "core",
+     "name": "Basic editor",
+     "detail": "Crop, rotate, filters, light/colour/pop adjustments",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/resize-image/ resizes to exact size; no crop/filters on photos"
+    },
+    {
+     "group": "core",
+     "name": "Video playback",
+     "detail": "Play uploaded videos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Face grouping",
+     "detail": "Group people and pets, name them",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Memories",
+     "detail": "Resurfaced past moments, highlight videos, collages",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Places map",
+     "detail": "Photos on a map by location",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Duplicate handling",
+     "detail": "Same photo kept once",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "photos.js: the same picture added twice is kept once"
+    },
+    {
+     "group": "power",
+     "name": "Location privacy on share",
+     "detail": "Remove location when sharing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "photos.js and skills/photo-scrub.js strip EXIF location without recompressing"
+    },
+    {
+     "group": "power",
+     "name": "Magic Eraser / Unblur / Magic Editor",
+     "detail": "AI object removal, deblur, generative edits",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Ask Photos",
+     "detail": "Natural-language questions about your library",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Locked folder",
+     "detail": "Hidden, passcode-protected photos",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Animations and collages",
+     "detail": "Make GIF-like animations, collages, movies",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Document scanning and text copy",
+     "detail": "Copy text from photos (Lens)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Shared albums",
+     "detail": "Albums others can add to and comment on",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share link",
+     "detail": "Share photos with a link to people without accounts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Partner sharing",
+     "detail": "Auto-share chosen photos with a partner",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app",
+     "detail": "Auto backup, on-device editing, offline view of device photos",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "library lives in the browser so it works offline on that device"
+    },
+    {
+     "group": "accessibility",
+     "name": "Alt text and screen reader",
+     "detail": "Descriptions and keyboard navigation",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "keyboard arrows and Esc in the lightbox"
+    },
+    {
+     "group": "paid",
+     "name": "Google One storage",
+     "detail": "More than the free 15 GB, plus premium editing effects",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Photo books and prints",
+     "detail": "Order prints and books",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  },
+  "squoosh.app": {
+   "sources": [
+    "https://web.dev/blog/squoosh-v2",
+    "https://9to5google.com/2018/11/12/google-chrome-labs-releases-open-source-browser-based-image-optimization-tool-squoosh/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Compress with a quality slider",
+     "detail": "MozJPEG/WebP/AVIF quality 0-100 with live size",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Quality slider 5-100 with the browser's JPEG, WebP and AVIF encoders; size shown live"
+    },
+    {
+     "group": "core",
+     "name": "Formats JPEG, PNG, WebP, AVIF out",
+     "detail": "Codecs incl. WebAssembly ones for browsers lacking them",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "JPEG, PNG, WebP always; AVIF where the browser can write it; no WebAssembly codecs (no MozJPEG, JPEG XL, QOI)"
+    },
+    {
+     "group": "core",
+     "name": "Before and after compare slider",
+     "detail": "Drag to compare original and result 1:1",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compare slider on Compress and convert (original file against the result)"
+    },
+    {
+     "group": "core",
+     "name": "Resize",
+     "detail": "Width/height, methods, premultiply",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Width, height, percent and 1080/2048 px presets; no choice of resize method"
+    },
+    {
+     "group": "core",
+     "name": "Palette PNG (OxiPNG, quantize)",
+     "detail": "Reduce colours, dithering",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "PNG colours 256 to 16, median cut, written as an indexed PNG on the device; no dithering, no OxiPNG pass"
+    },
+    {
+     "group": "core",
+     "name": "Size saved readout",
+     "detail": "Shows result size and percent saved",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "'715 KB → 238 KB · 67% saved'"
+    },
+    {
+     "group": "core",
+     "name": "Works offline",
+     "detail": "Installs and caches itself",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Service worker keeps the page and its modules after one visit"
+    },
+    {
+     "group": "core",
+     "name": "Drag and drop, paste, open from file",
+     "detail": "Any image file",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Choose, drop and paste"
+    },
+    {
+     "group": "core",
+     "name": "Rotate",
+     "detail": "Rotate 90 degrees steps",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate left and right, flip both ways"
+    },
+    {
+     "group": "core",
+     "name": "Reduce palette / quantize",
+     "detail": "Colours slider",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PNG colours"
+    },
+    {
+     "group": "other",
+     "name": "Command-line tool",
+     "detail": "npm CLI for build pipelines",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not a page feature; skipped: a CLI is not a browser tool"
+    },
+    {
+     "group": "core",
+     "name": "Side-by-side two settings",
+     "detail": "Two panels with different settings at once",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "One result at a time; the compare slider is original against result"
+    }
+   ]
+  },
+  "tinypng.com": {
+   "sources": [
+    "https://tinypng.com/",
+    "https://tinify.com/blog/compress-convert-images-web-ultra"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Compress PNG, JPEG, WebP, AVIF",
+     "detail": "Smart lossy compression, up to 20 files of 5 MB on the free web tool",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "All four in, JPEG/PNG/WebP/AVIF out, no 5 MB or 20 file cap"
+    },
+    {
+     "group": "core",
+     "name": "Batch of many files",
+     "detail": "Multiple files in one go",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Choose or drop several; every one is made with the same settings"
+    },
+    {
+     "group": "core",
+     "name": "Download all as a zip",
+     "detail": "Bulk download",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Download all as a zip, made on the device"
+    },
+    {
+     "group": "core",
+     "name": "Percent saved per file",
+     "detail": "Shows the saving",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Size before and after with percent saved"
+    },
+    {
+     "group": "core",
+     "name": "Convert between formats",
+     "detail": "WebP/AVIF conversion",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Format select"
+    },
+    {
+     "group": "core",
+     "name": "Resize and crop smartly (Tinify API)",
+     "detail": "Smart crop by focal point (API, paid)",
+     "paid": true,
+     "verse": "partial",
+     "verse_evidence": "Resize and manual crop; no focal-point detection"
+    },
+    {
+     "group": "other",
+     "name": "Developer API, plugins, Photoshop plugin",
+     "detail": "WordPress, Photoshop, CLI plugins",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "Skipped: integrations, not a page"
+    },
+    {
+     "group": "core",
+     "name": "Palette reduction for PNG",
+     "detail": "Lossy PNG by reducing colours",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PNG colours 256 to 16 as an indexed PNG"
+    }
+   ]
+  },
+  "exif.tools": {
+   "sources": [
+    "https://exif.tools/",
+    "https://exif.tools/strip",
+    "https://exif.tools/optimize",
+    "https://exif.tools/resize"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "View EXIF",
+     "detail": "Camera, lens, exposure, date",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "EXIF and privacy tab: camera, lens, serial number, exposure, date"
+    },
+    {
+     "group": "core",
+     "name": "View GPS position",
+     "detail": "Coordinates",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "GPS position shown as coordinates; no map is loaded (nothing leaves the device)"
+    },
+    {
+     "group": "core",
+     "name": "Read XMP, IPTC, ICC",
+     "detail": "Other metadata families",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "XMP, IPTC and ICC detected and named; XMP creator read; their full contents are not listed"
+    },
+    {
+     "group": "core",
+     "name": "Strip metadata",
+     "detail": "Remove EXIF, GPS, XMP, IPTC",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Strip metadata only keeps the exact pixels; every re-encoded copy is also clean"
+    },
+    {
+     "group": "core",
+     "name": "Export metadata as JSON",
+     "detail": "Save the readout",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Save the metadata as JSON"
+    },
+    {
+     "group": "core",
+     "name": "Edit EXIF fields",
+     "detail": "Change date, author, GPS",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built: editing metadata is the opposite of the privacy promise; viewing and stripping only"
+    },
+    {
+     "group": "core",
+     "name": "File hashes and magic bytes",
+     "detail": "MD5/SHA, signature",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built"
+    },
+    {
+     "group": "core",
+     "name": "PDF metadata",
+     "detail": "Strip or edit PDF fields",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Skipped: not a photo"
+    },
+    {
+     "group": "core",
+     "name": "Runs in the browser, no upload",
+     "detail": "Local processing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Nothing leaves the device, said on the page"
+    },
+    {
+     "group": "core",
+     "name": "Lossless optimize, resize, invert",
+     "detail": "Companion tools on the same site",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Resize and a strip-only copy; no lossless re-pack of JPEG, no invert filter button (Filters has Invert)"
+    }
+   ]
+  },
+  "exifeditor.io": {
+   "sources": [
+    "https://exifeditor.io/",
+    "https://exifeditor.io/exif-viewer/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "EXIF viewer",
+     "detail": "Metadata table",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "EXIF and privacy tab"
+    },
+    {
+     "group": "core",
+     "name": "Remove metadata",
+     "detail": "One-click clean",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Strip metadata only"
+    },
+    {
+     "group": "core",
+     "name": "Edit metadata",
+     "detail": "Change fields before saving",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built, as above"
+    },
+    {
+     "group": "core",
+     "name": "No sign-up, no upload",
+     "detail": "Client side",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "On the page"
+    }
+   ]
+  },
+  "photopea.com": {
+   "sources": [
+    "https://www.techradar.com/how-to/how-to-edit-photos-online-with-photopea",
+    "https://digitalproduction.com/2019/06/25/photopea-kostenloses-online-photoshop-tool/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Layers",
+     "detail": "Layer stack with opacity, blend modes, folders",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built: Verse keeps one picture with undo and redo (a layered editor is a different product)"
+    },
+    {
+     "group": "core",
+     "name": "PSD, AI, Sketch, XCF, SVG open and save",
+     "detail": "40 formats",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Skipped: opens and saves JPEG, PNG, WebP, GIF, BMP, AVIF (read); PSD needs a full parser"
+    },
+    {
+     "group": "core",
+     "name": "Crop and rotate",
+     "detail": "Tools with ratios",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop with 9 shapes, rotate, flip"
+    },
+    {
+     "group": "core",
+     "name": "Adjustments",
+     "detail": "Brightness, contrast, curves, levels, hue/saturation",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Brightness, contrast, saturation; no curves, levels or hue"
+    },
+    {
+     "group": "core",
+     "name": "Filters",
+     "detail": "Blur, sharpen, noise, pixelate, distort, stylize",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Blur and sharpen sliders and 12 looks; no noise, pixelate or distort"
+    },
+    {
+     "group": "core",
+     "name": "Selections and masks",
+     "detail": "Lasso, magic wand, quick select, masks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built"
+    },
+    {
+     "group": "core",
+     "name": "Text tool",
+     "detail": "Fonts, styles",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Text with colour and size, stroked; one font"
+    },
+    {
+     "group": "core",
+     "name": "Brush and drawing",
+     "detail": "Brush, eraser, pencil, shapes",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Freehand brush with colour and size; no eraser, shapes or pressure"
+    },
+    {
+     "group": "core",
+     "name": "Undo history",
+     "detail": "History panel",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Undo, redo and a step count; Ctrl+Z / Ctrl+Y"
+    },
+    {
+     "group": "core",
+     "name": "Smart objects and layer styles",
+     "detail": "Non-destructive",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built"
+    },
+    {
+     "group": "core",
+     "name": "Image resize and canvas size",
+     "detail": "Image menu",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Resize, crop"
+    },
+    {
+     "group": "core",
+     "name": "Export JPEG, PNG, WebP with quality",
+     "detail": "Save as",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress and convert"
+    },
+    {
+     "group": "other",
+     "name": "Free with ads, premium removes them",
+     "detail": "Pricing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Free, no ads, no sign-up"
+    }
+   ]
+  },
+  "iloveimg.com": {
+   "sources": [
+    "https://chromewebstore.google.com/detail/cfjmmannfmgianghochcmbldommiefec",
+    "https://postmake.io/tools/iloveimg"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Compress JPG, PNG, GIF",
+     "detail": "Pick a level",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "JPEG, PNG, WebP, AVIF; GIF is read as a still"
+    },
+    {
+     "group": "core",
+     "name": "Resize by pixels or percent",
+     "detail": "Batch",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Resize with percent and pixel presets; batch"
+    },
+    {
+     "group": "core",
+     "name": "Crop with ratios",
+     "detail": "Social sizes",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop shapes 1:1, 4:3, 3:2, 16:9, 3:4, 2:3, 4:5, 9:16"
+    },
+    {
+     "group": "core",
+     "name": "Convert to and from JPG",
+     "detail": "PNG, GIF, TIFF, PSD, SVG, WebP, RAW",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "JPEG, PNG, WebP, AVIF, GIF, BMP in; JPEG, PNG, WebP, AVIF out; no TIFF, PSD, SVG, RAW, HEIC"
+    },
+    {
+     "group": "core",
+     "name": "Rotate",
+     "detail": "Many images at once",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate and flip, with batch output"
+    },
+    {
+     "group": "core",
+     "name": "Watermark",
+     "detail": "Text or logo on images",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Text stamped where you tap; no logo, no tiling, no opacity"
+    },
+    {
+     "group": "core",
+     "name": "Photo editor",
+     "detail": "Text, stickers, effects, filters",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Text, drawing, filters, adjustments; no stickers"
+    },
+    {
+     "group": "core",
+     "name": "Meme generator",
+     "detail": "Text over a picture",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Text over a photo does it; no meme templates"
+    },
+    {
+     "group": "core",
+     "name": "Upscale image (AI)",
+     "detail": "Increase resolution",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "Skipped: needs a model; the page does no AI edits"
+    },
+    {
+     "group": "core",
+     "name": "Remove background (AI)",
+     "detail": "Cut-out",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "Skipped: needs a model"
+    },
+    {
+     "group": "core",
+     "name": "Blur faces (AI)",
+     "detail": "Face detection blur",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Not built: Draw can paint over a face"
+    },
+    {
+     "group": "core",
+     "name": "HTML to image, web page screenshot",
+     "detail": "Capture",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "Skipped: not a photo editing tool"
+    },
+    {
+     "group": "other",
+     "name": "Free tier with limits, premium for more",
+     "detail": "Pricing",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "No limits, no price"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "sync across devices / backup",
+  "search by what is in the picture",
+  "shared album by link",
+  "basic editor (crop, rotate, light)",
+  "favourites and trash",
+  "places map",
+  "faces"
+ ],
+ "verse_extra": [
+  "nothing ever leaves the device",
+  "location stripped from any copy you share",
+  "exact-size resizer with KB limit (/resize-image/)",
+  "no file size or count limit, no ads, no sign-up",
+  "indexed PNG written on the device (TinyPNG's trick, no upload)",
+  "every saved copy is drawn again from the pixels: no camera or place data",
+  "German and English"
+ ],
+ "first_page": "Photo tools page /photos/ for people who want their pictures private: compress and convert, resize, crop, rotate, adjust, filters, text, draw, undo, EXIF view and strip, batch zip. The library (timeline, albums, favourites, trash, places) stays Verse Photos on the stage ('my photos'). Will not build: cloud backup, face recognition, AI edits, layers/PSD (partial), prints.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "exifeditor.io": {
+    "url": "https://exifeditor.io/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://exifeditor.io/",
+     "https://exifeditor.io/faq",
+     "https://exifeditor.io/guides",
+     "https://exifeditor.io/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Choose a photo metadata tool",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"choose\", \"metadata\""
+     },
+     {
+      "name": "photo_camera Upload Image(s)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"camera\", \"upload\", \"image\""
+     },
+     {
+      "name": "map Location(s)",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"map\", \"location\""
+     },
+     {
+      "name": "tag Metadata",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"tag\", \"metadata\""
+     },
+     {
+      "name": "Common questions about EXIF metadata",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"common\", \"question\", \"about\", \"exif\""
+     },
+     {
+      "name": "EXIFEditor.io vs Alternatives",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exifeditor\", \"alternative\""
+     },
+     {
+      "name": "Keep exploring",
+      "detail": "a heading on /faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"keep\", \"explor\""
+     },
+     {
+      "name": "The Complete EXIF Guide",
+      "detail": "a heading on /guides",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"complete\", \"exif\", \"guide\""
+     },
+     {
+      "name": "How to Use EXIFEditor.io",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"how\", \"exifeditor\""
+     },
+     {
+      "name": "Learn About EXIF & Image Metadata",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"learn\", \"about\", \"exif\", \"image\""
+     },
+     {
+      "name": "Popular next steps",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"popular\", \"next\", \"step\""
+     },
+     {
+      "name": "Our Commitment to Privacy",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"our\", \"commitment\""
+     },
+     {
+      "name": "EXIFEditor.io – Fast, private, no uploads, works in your browser",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exifeditor\", \"fast\", \"private\", \"upload\""
+     },
+     {
+      "name": "Metadata2Go – Online metadata viewer and analyzer",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"metadata2go\", \"metadata\", \"viewer\", \"analyzer\""
+     },
+     {
+      "name": "ExifTool – Powerful command-line EXIF tool for advanced users",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exiftool\", \"powerful\", \"command\", \"line\""
+     },
+     {
+      "name": "Jimpl – Simple online EXIF viewer and editor",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"jimpl\", \"simple\", \"exif\", \"viewer\""
+     },
+     {
+      "name": "Exif.tools – Free online EXIF data viewer",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exif\", \"data\", \"viewer\""
+     },
+     {
+      "name": "100% free and no registration required",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"100\", \"registration\", \"requir\""
+     },
+     {
+      "name": "Modern, easy-to-use interface for both desktop and mobile",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"modern\", \"easy\", \"interface\", \"both\""
+     },
+     {
+      "name": "Open to feedback and suggestions from our users",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"open\", \"feedback\", \"suggestion\", \"our\""
+     },
+     {
+      "name": "Download your updated image instantly—no data ever leaves your browser",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"download\", \"updat\", \"image\", \"instantly\""
+     },
+     {
+      "name": "Read our step-by-step guides for beginners and professionals",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"read\", \"our\", \"step\", \"guide\""
+     },
+     {
+      "name": "See our Further Reading for authoritative resources and standards",
+      "detail": "a list item on /about",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"see\", \"our\", \"further\", \"read\""
+     },
+     {
+      "name": "info File Information expand_more",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"info\", \"file\", \"information\", \"expand\""
+     },
+     {
+      "name": "MakeImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"makeimage\", \"text\""
+     },
+     {
+      "name": "ModelImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"modelimage\", \"text\""
+     },
+     {
+      "name": "SoftwareImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"softwareimage\", \"text\""
+     },
+     {
+      "name": "Focal LengthCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"focal\", \"lengthcamera\", \"exposure\", \"fraction\""
+     },
+     {
+      "name": "Exposure TimeCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"exposure\", \"timecamera\", \"fraction\""
+     },
+     {
+      "name": "F-NumberCamera & exposure · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"numbercamera\", \"exposure\", \"fraction\""
+     },
+     {
+      "name": "ISO SpeedCamera & exposure · Number",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"iso\", \"speedcamera\", \"exposure\", \"number\""
+     },
+     {
+      "name": "Shutter SpeedCamera & exposure · 10",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"shutter\", \"speedcamera\", \"exposure\", \"10\""
+     },
+     {
+      "name": "Date TakenCamera & exposure · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"date\", \"takencamera\", \"exposure\", \"text\""
+     },
+     {
+      "name": "Date ModifiedImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"date\", \"modifiedimage\", \"text\""
+     },
+     {
+      "name": "LatitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"latitudelocation\", \"fraction\""
+     },
+     {
+      "name": "LongitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"longitudelocation\", \"fraction\""
+     },
+     {
+      "name": "AltitudeLocation · Fraction",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"altitudelocation\", \"fraction\""
+     },
+     {
+      "name": "Image DescriptionImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"descriptionimage\", \"text\""
+     },
+     {
+      "name": "ArtistImage · Text",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"artistimage\", \"text\""
+     }
+    ]
+   },
+   "exif.tools": {
+    "url": "https://exif.tools/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://exif.tools/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Take a closer look",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"take\", \"closer\", \"look\""
+     },
+     {
+      "name": "Behind the lens",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"behind\", \"len\""
+     },
+     {
+      "name": "Put it on the map",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"put\", \"map\""
+     },
+     {
+      "name": "Know your image",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"know\", \"image\""
+     },
+     {
+      "name": "Choose a file ↗",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"file\""
+     },
+     {
+      "name": "Paste a link",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"paste\", \"link\""
+     }
+    ]
+   },
+   "tinypng.com": {
+    "url": "https://tinypng.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://tinypng.com/",
+     "https://tinypng.com/cdn/documentation",
+     "https://tinypng.com/pricing/web",
+     "https://tinypng.com/developers/how-it-works",
+     "https://tinypng.com/pricing/api",
+     "https://tinypng.com/cdn/how-it-works",
+     "https://tinypng.com/pricing/cdn"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "OUR PRODUCTS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"our\", \"product\""
+     },
+     {
+      "name": "Smart AVIF, WebP, PNG and JPEG Compression for Faster Websites",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"smart\", \"avif\", \"webp\", \"png\""
+     },
+     {
+      "name": "IMAGE COMPRESSION AND CONVERSION WITHOUT VISIBLE QUALITY LOSS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"compression\", \"conversion\", \"visible\""
+     },
+     {
+      "name": "TESTIMONIALS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"testimonial\""
+     },
+     {
+      "name": "What our customers say",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"what\", \"our\", \"customer\", \"say\""
+     },
+     {
+      "name": "Speed up your website with Tinify",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"speed\", \"website\", \"tinify\""
+     },
+     {
+      "name": "General",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"general\""
+     },
+     {
+      "name": "Tinify CDN documentation",
+      "detail": "a heading on /cdn/documentation",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"tinify\", \"cdn\", \"documentation\""
+     },
+     {
+      "name": "Most relevant articles",
+      "detail": "a heading on /cdn/documentation",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"relevant\", \"article\""
+     },
+     {
+      "name": "Choose the right plan for the online optimizer",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"right\", \"plan\", \"optimizer\""
+     },
+     {
+      "name": "Web Free",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words"
+     },
+     {
+      "name": "Web Pro",
+      "detail": "a heading on /pricing/web",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pro\""
+     },
+     {
+      "name": "Web Ultra",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"ultra\""
+     },
+     {
+      "name": "Discover More About Tinify's Online Tool",
+      "detail": "a heading on /pricing/web",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"discover\", \"about\", \"tinify\""
+     },
+     {
+      "name": "Compress, resize and convert your images with Tinify's Developer API",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"compress\", \"resize\", \"convert\", \"image\""
+     },
+     {
+      "name": "Same API for all image formats",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"same\", \"api\", \"image\", \"format\""
+     },
+     {
+      "name": "Convert to AVIF, WebP, JPEG or PNG",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"avif\", \"webp\", \"jpeg\""
+     },
+     {
+      "name": "Perfect image resizing",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"perfect\", \"image\", \"resiz\""
+     },
+     {
+      "name": "Area of interest detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"area\", \"interest\", \"detection\""
+     },
+     {
+      "name": "Freestanding image detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"freestand\", \"image\", \"detection\""
+     },
+     {
+      "name": "Upload directly or provide a URL to the image",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upload\", \"directly\", \"provide\", \"url\""
+     },
+     {
+      "name": "Preserve metadata",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"preserve\", \"metadata\""
+     },
+     {
+      "name": "Amazon S3 and Google Cloud Storage",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"amazon\", \"google\", \"cloud\", \"storage\""
+     },
+     {
+      "name": "Smart area of interest detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"smart\", \"area\", \"interest\", \"detection\""
+     },
+     {
+      "name": "Freestanding object detection",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"freestand\", \"object\", \"detection\""
+     },
+     {
+      "name": "Get your API key now",
+      "detail": "a heading on /developers/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"api\", \"key\", \"now\""
+     },
+     {
+      "name": "Developer API pricing that scales with you",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"developer\", \"api\", \"pric\", \"scale\""
+     },
+     {
+      "name": "Pricing Calculator",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pric\", \"calculator\""
+     },
+     {
+      "name": "Pricing explained",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pric\", \"explain\""
+     },
+     {
+      "name": "Pay per compression",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"pay\", \"compression\""
+     },
+     {
+      "name": "First 500 images per month",
+      "detail": "a heading on /pricing/api",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"first\", \"500\", \"image\", \"month\""
+     },
+     {
+      "name": "Next 9 500 compressions",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"next\", \"9\", \"500\", \"compression\""
+     },
+     {
+      "name": "Next 10 000 compression per month",
+      "detail": "a heading on /pricing/api",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"next\", \"10\", \"000\", \"compression\""
+     },
+     {
+      "name": "WordPress plugin",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"wordpress\", \"plugin\""
+     },
+     {
+      "name": "Discover what Tinify's Developer API can do",
+      "detail": "a heading on /pricing/api",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"discover\", \"what\", \"tinify\", \"developer\""
+     },
+     {
+      "name": "Faster content delivery with our Multi-CDN network",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"faster\", \"content\", \"delivery\", \"our\""
+     },
+     {
+      "name": "3 global distribution networks",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"3\", \"global\", \"distribution\", \"network\""
+     },
+     {
+      "name": "Great coverage on all continents",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"great\", \"coverage\", \"continent\""
+     },
+     {
+      "name": "128 server locations",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"128\", \"server\", \"location\""
+     },
+     {
+      "name": "Automatic image optimization",
+      "detail": "a heading on /cdn/how-it-works",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"automatic\", \"image\", \"optimization\""
+     }
+    ]
+   },
+   "squoosh.app": {
+    "url": "https://squoosh.app/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://squoosh.app/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Small",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"small\""
+     },
+     {
+      "name": "Simple",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"simple\""
+     },
+     {
+      "name": "Secure",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"secure\""
+     },
+     {
+      "name": "2.8MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"2\", \"8mb\""
+     },
+     {
+      "name": "2.9MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"2\", \"9mb\""
+     },
+     {
+      "name": "1.6MB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"1\", \"6mb\""
+     },
+     {
+      "name": "13KB",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"13kb\""
+     }
+    ]
+   },
+   "photopea.com": {
+    "url": "https://www.photopea.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.photopea.com/"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Free Online Photo Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\""
+     },
+     {
+      "name": "Unlock your creativity with the best free photo editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"unlock\", \"creativity\", \"best\""
+     },
+     {
+      "name": "Fully Local",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"fully\", \"local\""
+     },
+     {
+      "name": "Cost-Effective",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"cost\", \"effective\""
+     },
+     {
+      "name": "Convenient Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convenient\", \"editor\""
+     },
+     {
+      "name": "Runs Everywhere",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"run\", \"everywhere\""
+     },
+     {
+      "name": "Professional Editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"professional\", \"editor\""
+     },
+     {
+      "name": "Full PSD support",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"full\", \"psd\", \"support\""
+     },
+     {
+      "name": "Swiss knife for graphics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"swiss\", \"knife\", \"graphic\""
+     },
+     {
+      "name": "Perfect RAW support",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"perfect\", \"raw\", \"support\""
+     },
+     {
+      "name": "State-of-the-art AI",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"state\", \"art\""
+     },
+     {
+      "name": "All Essential Features",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"essential\", \"feature\""
+     },
+     {
+      "name": "Adjustments and Filters",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"adjustment\", \"filter\""
+     },
+     {
+      "name": "Vector Graphics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"vector\", \"graphic\""
+     },
+     {
+      "name": "Social Media Enthusiasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"social\", \"media\", \"enthusiast\""
+     },
+     {
+      "name": "Students and Educators",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"student\", \"educator\""
+     },
+     {
+      "name": "Small Business Owners",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"small\", \"busi\", \"owner\""
+     },
+     {
+      "name": "Graphic Designers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"graphic\", \"designer\""
+     },
+     {
+      "name": "Start using Photopea",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"start\", \"photopea\""
+     }
+    ]
+   },
+   "iloveimg.com": {
+    "url": "https://www.iloveimg.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.iloveimg.com/",
+     "https://www.iloveimg.com/features",
+     "https://www.iloveimg.com/pricing",
+     "https://www.iloveimg.com/user/premium",
+     "https://www.iloveimg.com/help/faq",
+     "https://www.iloveimg.com/help/security",
+     "https://www.iloveimg.com/help/about"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Every tool you could want to edit images in bulk",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"every\", \"could\", \"want\", \"edit\""
+     },
+     {
+      "name": "Your online photo editor is here and forever free",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\", \"here\", \"forever\""
+     },
+     {
+      "name": "Compress IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"compress\", \"image\""
+     },
+     {
+      "name": "Resize IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"resize\", \"image\""
+     },
+     {
+      "name": "Crop IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"crop\", \"image\""
+     },
+     {
+      "name": "Convert to JPG",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"jpg\""
+     },
+     {
+      "name": "Convert from JPG",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"convert\", \"jpg\""
+     },
+     {
+      "name": "Photo editor",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"photo\"; not \"editor\""
+     },
+     {
+      "name": "Upscale Image",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upscale\", \"image\""
+     },
+     {
+      "name": "Remove background",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"remove\", \"background\""
+     },
+     {
+      "name": "Watermark IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"watermark\", \"image\""
+     },
+     {
+      "name": "Meme generator",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"meme\", \"generator\""
+     },
+     {
+      "name": "Rotate IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"rotate\", \"image\""
+     },
+     {
+      "name": "HTML to IMAGE",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"html\", \"image\""
+     },
+     {
+      "name": "Blur face",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"blur\", \"face\""
+     },
+     {
+      "name": "Get more with Premium",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"premium\""
+     },
+     {
+      "name": "Simple solutions with user-friendly tools",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"simple\", \"solution\", \"user\", \"friendly\""
+     },
+     {
+      "name": "What matters to you, matters to us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"what\", \"matter\""
+     },
+     {
+      "name": "Profit from time well spent",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"profit\", \"time\", \"well\", \"spent\""
+     },
+     {
+      "name": "We'll help you save time and effort",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"help\", \"save\", \"time\", \"effort\""
+     },
+     {
+      "name": "Manage your images with freedom",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"manage\", \"image\", \"freedom\""
+     },
+     {
+      "name": "Don’t worry, you’re safe with us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"don\", \"worry\", \"safe\""
+     },
+     {
+      "name": "Save data working straight from the cloud",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"save\", \"data\", \"work\", \"straight\""
+     },
+     {
+      "name": "Your artwork is safe with us",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"artwork\", \"safe\""
+     },
+     {
+      "name": "Get even more with Premium",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"even\", \"premium\""
+     },
+     {
+      "name": "Create a team",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"create\", \"team\""
+     },
+     {
+      "name": "Power up your tools",
+      "detail": "a heading on /features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"power\""
+     },
+     {
+      "name": "Choose the plan that suits you",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"choose\", \"plan\", \"suit\""
+     },
+     {
+      "name": "Free",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words"
+     },
+     {
+      "name": "Let's talk",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"let\", \"talk\""
+     },
+     {
+      "name": "Automate document processes with iLoveIMG API",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"automate\", \"document\", \"processe\", \"iloveimg\""
+     },
+     {
+      "name": "Your images are in good hands",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"image\", \"good\", \"hand\""
+     },
+     {
+      "name": "Trusted by well known companies",
+      "detail": "a heading on /pricing",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"trust\", \"well\", \"known\", \"company\""
+     },
+     {
+      "name": "Upgrade to Premium",
+      "detail": "a heading on /user/premium",
+      "paid": true,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"upgrade\", \"premium\""
+     },
+     {
+      "name": "We get asked a lot of questions",
+      "detail": "a heading on /help/faq",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"asked\", \"lot\", \"question\""
+     },
+     {
+      "name": "Security and data protection",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"security\", \"data\", \"protection\""
+     },
+     {
+      "name": "Data Privacy and Security",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"data\", \"security\""
+     },
+     {
+      "name": "iLoveIMG's Privacy Policy",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/photos/ shows \"privacy\"; not \"iloveimg\", \"policy\""
+     },
+     {
+      "name": "Security Policy Overview",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"security\", \"policy\", \"overview\""
+     },
+     {
+      "name": "Ongoing Evaluation and Improvement",
+      "detail": "a heading on /help/security",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/photos/ shows none of its words; not \"ongo\", \"evaluation\", \"improvement\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "map Location(s)",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "tag Metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Common questions about EXIF metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "EXIFEditor.io vs Alternatives",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Keep exploring",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "The Complete EXIF Guide",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "How to Use EXIFEditor.io",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Learn About EXIF & Image Metadata",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Popular next steps",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "EXIFEditor.io – Fast, private, no uploads, works in your browser",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Metadata2Go – Online metadata viewer and analyzer",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ExifTool – Powerful command-line EXIF tool for advanced users",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Jimpl – Simple online EXIF viewer and editor",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Exif.tools – Free online EXIF data viewer",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "100% free and no registration required",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Modern, easy-to-use interface for both desktop and mobile",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Open to feedback and suggestions from our users",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Download your updated image instantly—no data ever leaves your browser",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Read our step-by-step guides for beginners and professionals",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "See our Further Reading for authoritative resources and standards",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "info File Information expand_more",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "MakeImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ModelImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "SoftwareImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Focal LengthCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Exposure TimeCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "F-NumberCamera & exposure · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ISO SpeedCamera & exposure · Number",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Shutter SpeedCamera & exposure · 10",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Date TakenCamera & exposure · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Date ModifiedImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "LatitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "LongitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "AltitudeLocation · Fraction",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Image DescriptionImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "ArtistImage · Text",
+    "sites": [
+     "exifeditor.io"
+    ]
+   },
+   {
+    "name": "Take a closer look",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Behind the lens",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Put it on the map",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Know your image",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Choose a file ↗",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "Paste a link",
+    "sites": [
+     "exif.tools"
+    ]
+   },
+   {
+    "name": "OUR PRODUCTS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Smart AVIF, WebP, PNG and JPEG Compression for Faster Websites",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "IMAGE COMPRESSION AND CONVERSION WITHOUT VISIBLE QUALITY LOSS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "TESTIMONIALS",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "What our customers say",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Speed up your website with Tinify",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "General",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Tinify CDN documentation",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Most relevant articles",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Choose the right plan for the online optimizer",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Free",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Pro",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Web Ultra",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Discover More About Tinify's Online Tool",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Compress, resize and convert your images with Tinify's Developer API",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Same API for all image formats",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Convert to AVIF, WebP, JPEG or PNG",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Perfect image resizing",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Area of interest detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Freestanding image detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Upload directly or provide a URL to the image",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Preserve metadata",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Amazon S3 and Google Cloud Storage",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Smart area of interest detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Freestanding object detection",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Get your API key now",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Developer API pricing that scales with you",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pricing Calculator",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pricing explained",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Pay per compression",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "First 500 images per month",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Next 9 500 compressions",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Next 10 000 compression per month",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "WordPress plugin",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Discover what Tinify's Developer API can do",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Faster content delivery with our Multi-CDN network",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "3 global distribution networks",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Great coverage on all continents",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "128 server locations",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Automatic image optimization",
+    "sites": [
+     "tinypng.com"
+    ]
+   },
+   {
+    "name": "Small",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Simple",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Secure",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "2.8MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "2.9MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "1.6MB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "13KB",
+    "sites": [
+     "squoosh.app"
+    ]
+   },
+   {
+    "name": "Fully Local",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Cost-Effective",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Convenient Editor",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Runs Everywhere",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Professional Editor",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Full PSD support",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Swiss knife for graphics",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Perfect RAW support",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "State-of-the-art AI",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "All Essential Features",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Adjustments and Filters",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Vector Graphics",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Social Media Enthusiasts",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Students and Educators",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Small Business Owners",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Graphic Designers",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Start using Photopea",
+    "sites": [
+     "photopea.com"
+    ]
+   },
+   {
+    "name": "Every tool you could want to edit images in bulk",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Compress IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Resize IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Crop IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Convert to JPG",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Convert from JPG",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Upscale Image",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Remove background",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Watermark IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Meme generator",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Rotate IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "HTML to IMAGE",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Blur face",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Get more with Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Simple solutions with user-friendly tools",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "What matters to you, matters to us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Profit from time well spent",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "We'll help you save time and effort",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Manage your images with freedom",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Don’t worry, you’re safe with us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Save data working straight from the cloud",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Your artwork is safe with us",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Get even more with Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Create a team",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Power up your tools",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Choose the plan that suits you",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Free",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Let's talk",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Automate document processes with iLoveIMG API",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Your images are in good hands",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Trusted by well known companies",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Upgrade to Premium",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "We get asked a lot of questions",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Security and data protection",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Security Policy Overview",
+    "sites": [
+     "iloveimg.com"
+    ]
+   },
+   {
+    "name": "Ongoing Evaluation and Improvement",
+    "sites": [
+     "iloveimg.com"
+    ]
+   }
+  ],
+  "queued": []
+ },
+ "method": "Lane sites researched 2026-10-26 from web-search results of each site (outbound fetches are refused in the build sandbox, so a feature a search result did not confirm is marked in its detail); Verse side read from lib/photo-edit.js and photos/index.html.",
+ "union_gaps": [
+  {
+   "name": "Layers (opacity, blend modes) and PSD open/save",
+   "sites": [
+    "photopea.com"
+   ]
+  },
+  {
+   "name": "Selections, masks, lasso, magic wand",
+   "sites": [
+    "photopea.com"
+   ]
+  },
+  {
+   "name": "Curves, levels, hue, noise, pixelate, distort",
+   "sites": [
+    "photopea.com"
+   ]
+  },
+  {
+   "name": "Eraser, shapes and a font choice",
+   "sites": [
+    "photopea.com"
+   ]
+  },
+  {
+   "name": "Open HEIC, TIFF, RAW, SVG",
+   "sites": [
+    "iloveimg.com",
+    "photopea.com"
+   ]
+  },
+  {
+   "name": "Edit EXIF fields",
+   "sites": [
+    "exif.tools",
+    "exifeditor.io"
+   ]
+  },
+  {
+   "name": "WebAssembly codecs (MozJPEG, OxiPNG, JPEG XL), PNG dithering, resize methods",
+   "sites": [
+    "squoosh.app"
+   ]
+  },
+  {
+   "name": "Watermark logo and tiling; meme templates; stickers",
+   "sites": [
+    "iloveimg.com"
+   ]
+  },
+  {
+   "name": "AI: upscale, background removal, face blur",
+   "sites": [
+    "iloveimg.com"
+   ]
+  }
+ ],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "exif.tools": {
+    "url": "https://exif.tools/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?debug",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exiftool-viewer.min.js@626"
+     },
+     {
+      "name": "URL parameter ?handoff",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "file-receiver-20260802.min.js@168"
+     },
+     {
+      "name": "URL parameter ?shared",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "file-receiver-20260802.min.js@4097"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exiftool-viewer.min.js@36866"
+     },
+     {
+      "name": "Paste images or text straight in",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exiftool-viewer.min.js@34752"
+     },
+     {
+      "name": "App shortcut Metadata Viewer",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest.shortcuts"
+     },
+     {
+      "name": "Install prompt (beforeinstallprompt)",
+      "detail": "pwa, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "site-runtime.min.js"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Works offline (service worker)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "service worker sw.js"
+     },
+     {
+      "name": "Receives shared files (share target)",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest.share_target"
+     },
+     {
+      "name": "API path /embed",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "homepage-i18n.min.js@112"
+     },
+     {
+      "name": "Feature flag disableAutoFetch",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "exiftool-viewer.min.js@21669"
+     },
+     {
+      "name": "Feature flag disableStream",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "exiftool-viewer.min.js@21652"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Interface languages: 8 (de, fr, pl, es, id, ru)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "homepage-i18n.min.js@3338"
+     },
+     {
+      "name": "Language versions in the sitemap: 26",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Language versions: 27 (en, id, es, pt, fr, de)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Background worker threads",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exiftool-viewer.min.js@26393"
+     },
+     {
+      "name": "Uses Maps",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script hosts"
+     },
+     {
+      "name": "Respects high-contrast settings",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "home.bundle.min.61cee06844b6.css@1491"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "photo-summary.min.js@455"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Section /de/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /es/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /fr/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /id/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /it/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /pl/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /pt/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /ru/ (22 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "exifeditor.io": {
+    "url": "https://exifeditor.io/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exif-tool.js@21838"
+     },
+     {
+      "name": "Opens files: image/*",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Several files at once",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][multiple]"
+     },
+     {
+      "name": "Exports a file named like exif-hex-dump.txt",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exif-tool.js@40872"
+     },
+     {
+      "name": "Exports a file named like image-metadata.json",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exif-tool.js@39796"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "exif-tool.js@39061"
+     },
+     {
+      "name": "Input of type range",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=range] x1"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x2"
+     },
+     {
+      "name": "Language versions: 2 (en, x-default)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Compresses data in the browser",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "metadata-reader.js@1160"
+     },
+     {
+      "name": "Skip to content link",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[href^=\"#main\"]"
+     },
+     {
+      "name": "Path kept from crawlers /admin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Route /about",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@350"
+     },
+     {
+      "name": "Route /blog/",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@404"
+     },
+     {
+      "name": "Route /exif-quiz",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@517"
+     },
+     {
+      "name": "Route /exif-viewer",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@153"
+     },
+     {
+      "name": "Route /faq",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@578"
+     },
+     {
+      "name": "Route /guides",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@456"
+     },
+     {
+      "name": "Route /photo-location-finder",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "footer-nav.js@220"
+     },
+     {
+      "name": "Section /blog/ (5 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "iloveimg.com": {
+    "url": "https://www.iloveimg.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "web.beac31e.css"
+     },
+     {
+      "name": "API path /api",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "web.beac31e.js@171458"
+     },
+     {
+      "name": "API path /auth/auth",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "web.beac31e.js@43560"
+     },
+     {
+      "name": "Feature flag allowEmpty",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@21060"
+     },
+     {
+      "name": "Feature flag allowHTML",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@28788"
+     },
+     {
+      "name": "Feature flag allowSecretKey",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@266520"
+     },
+     {
+      "name": "Feature flag isEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@227322"
+     },
+     {
+      "name": "Feature flag showInitial",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@21074"
+     },
+     {
+      "name": "Feature flag showOnCreate",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@224481"
+     },
+     {
+      "name": "Feature flag showPaletteOnly",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@20404"
+     },
+     {
+      "name": "Feature flag useFlex",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "web.beac31e.js@237804"
+     },
+     {
+      "name": "Path kept from crawlers /upload/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /ar/ (62 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /ca/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /de/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /es/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /fr/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /it/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /pt/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /ru/ (63 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "photopea.com": {
+    "url": "https://www.photopea.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Opens as an app for .psd, .jpeg, .jpg, .png, .webp, .bmp",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest.file_handlers"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Receives shared files (share target)",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest.share_target"
+     },
+     {
+      "name": "Language versions: 67 (en, x-default, af, ar, az, bg)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     }
+    ]
+   },
+   "squoosh.app": {
+    "url": "https://squoosh.app/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Works offline (service worker)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "service worker serviceworker.js"
+     },
+     {
+      "name": "Receives shared files (share target)",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest.share_target"
+     },
+     {
+      "name": "Feature flag allowChangeEvent",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "Compress-5b50107e.js@48540"
+     },
+     {
+      "name": "Feature flag enableSharpYUV",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "Compress-5b50107e.js@5859"
+     },
+     {
+      "name": "Feature flag showAdvanced",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "Compress-5b50107e.js@21725"
+     },
+     {
+      "name": "Feature flag showLoadingState",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "Compress-5b50107e.js@90716"
+     },
+     {
+      "name": "Keeps a database in the browser: keyval-store",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "indexedDB"
+     },
+     {
+      "name": "Background worker threads",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "Compress-5b50107e.js@93267"
+     },
+     {
+      "name": "Fast image decoding",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "Compress-5b50107e.js@94472"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     }
+    ]
+   },
+   "tinypng.com": {
+    "url": "https://tinypng.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?dpl",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0p7g0sdg2dujl.js@9967"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1g1wlmwggtw8_.js@24264"
+     },
+     {
+      "name": "Opens files: .jpg, .jpeg, .png, .webp, .avif, .heif, .heic, .heix, .hif,",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Paste images or text straight in",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0k_wap_5vat_5.js@87561"
+     },
+     {
+      "name": "Several files at once",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][multiple]"
+     },
+     {
+      "name": "Embeds [token].widget.cluster.groovehq.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds consentcdn.cookiebot.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call graphql.production.groovehq.com/graphql",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /api",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10errumu3g5q_.js@41133"
+     },
+     {
+      "name": "API path /api/datocms/asset",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@4116"
+     },
+     {
+      "name": "API path /api/datocms/preview-links",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@4142"
+     },
+     {
+      "name": "API path /api/draft-mode/disable",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@4176"
+     },
+     {
+      "name": "API path /api/draft-mode/enable",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@4207"
+     },
+     {
+      "name": "API path /api/early_access_features",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "43w8ao5oh4vci.js@238073"
+     },
+     {
+      "name": "API path /api/health",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@4237"
+     },
+     {
+      "name": "API path /api/product_tours",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "43w8ao5oh4vci.js@241109"
+     },
+     {
+      "name": "API path /api/surveys",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "43w8ao5oh4vci.js@199294"
+     },
+     {
+      "name": "API path /api/web_experiments",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "43w8ao5oh4vci.js@244612"
+     },
+     {
+      "name": "GraphQL API",
+      "detail": "api, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1zqfq1wt8s6xj.js"
+     },
+     {
+      "name": "Feature flag allowClick",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "22ea7tvam9n66.js@40385"
+     },
+     {
+      "name": "Feature flag allowFullScreen",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1zqfq1wt8s6xj.js@12397"
+     },
+     {
+      "name": "Feature flag allowOverride",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1tp7ecdv3x-7t.js@355339"
+     },
+     {
+      "name": "Feature flag allowSlideNext",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "22ea7tvam9n66.js@22526"
+     },
+     {
+      "name": "Feature flag allowSlidePrev",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "22ea7tvam9n66.js@22508"
+     },
+     {
+      "name": "Feature flag allowTouchCallbacks",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "22ea7tvam9n66.js@35525"
+     },
+     {
+      "name": "Feature flag allowTouchMove",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "22ea7tvam9n66.js@22120"
+     },
+     {
+      "name": "Feature flag debugEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "43w8ao5oh4vci.js@216447"
+     },
+     {
+      "name": "Feature flag disableCaptureUrlHashes",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "43w8ao5oh4vci.js@185005"
+     },
+     {
+      "name": "Feature flag disableDeviceModel",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "43w8ao5oh4vci.js@132267"
+     },
+     {
+      "name": "Feature flag disableStaticImages",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0p7g0sdg2dujl.js@19136"
+     },
+     {
+      "name": "Feature flag showMissingIcons",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "2wyr94ecbwkst.js@18494"
+     },
+     {
+      "name": "Feature flag useArrayDepthTexture",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1tp7ecdv3x-7t.js@37255"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0k_wap_5vat_5.js@87033"
+     },
+     {
+      "name": "Picture in picture",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1tqqxntu2m17e.js@810"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: [token]",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _gcl_ls",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _pubcid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _pubcid_cst",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _pubcid_exp",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _vtm_anep_202610",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _vtm_hbWrapperFpd",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _vtm_uid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Interface languages: 24 (aa, ab, ac, ad, ae, af)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1tp7ecdv3x-7t.js@2542"
+     },
+     {
+      "name": "Interface languages: 7 (en, zh, fr, es, pt, ar)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1w-f2luv7yx28.js@119429"
+     },
+     {
+      "name": "Language versions in the sitemap: 4",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Language versions: 5 (en, es, fr, zh, x-default)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Compresses data in the browser",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3an6hqu3w7ili.js@26698"
+     },
+     {
+      "name": "Live updates over a WebSocket",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3uk0ajwzuz2uy.js"
+     },
+     {
+      "name": "Off-thread image drawing",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1tp7ecdv3x-7t.js@455254"
+     },
+     {
+      "name": "Syncs between tabs",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "3an6hqu3w7ili.js@26651"
+     },
+     {
+      "name": "Uses PayPal",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script hosts"
+     },
+     {
+      "name": "Uses YouTube",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script hosts"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1dkbpr41krbcc.css@261"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Path kept from crawlers /account",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /backend",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /dashboard",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /developers/subscription",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /photoshop/license",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   }
+  }
+ }
+}

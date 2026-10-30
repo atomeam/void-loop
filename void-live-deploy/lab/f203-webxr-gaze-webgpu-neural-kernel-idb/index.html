@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #c { display: block; width: 100vw; height: 100vh; }
+  #ui { position: fixed; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { margin: 2px; padding: 4px 8px; background: #223; color: #cce; border: 1px solid #445; cursor: pointer; }
+  .probe { position: absolute; width: 80px; height: 50px; background: rgba(40,60,100,0.7); border: 1px solid #66a; border-radius: 6px; font-size: 11px; padding: 4px; pointer-events: none; transition: transform 0.1s; }
+  #status { font-size: 11px; color: #8af; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze-Driven WebGPU Neural Kernel Field with IndexedDB Persistence · Verse lab</title>
+<meta name="description" content="Gaze/pointer deposits causal energy; DeviceOrientation adds tilt bias to the kernel.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze-Driven WebGPU Neural Kernel Field with IndexedDB Persistence · Verse lab">
+<meta property="og:description" content="Gaze/pointer deposits causal energy; DeviceOrientation adds tilt bias to the kernel.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f203-webxr-gaze-webgpu-neural-kernel-idb/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f203-webxr-gaze-webgpu-neural-kernel-idb/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="status">Initializing…</div>
+  <button id="seal">Seal Genome</button>
+  <button id="inject">Inject Sealed</button>
+  <button id="clear">Clear Field</button>
+  <div>Gaze: pointer. Tilt if available. Offline OK.</div>
+</div>
+<div class="probe" id="p1">Probe A</div>
+<div class="probe" id="p2">Probe B</div>
+<div class="probe" id="p3">Probe C</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze-Driven WebGPU Neural Kernel Field with IndexedDB Persistence</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

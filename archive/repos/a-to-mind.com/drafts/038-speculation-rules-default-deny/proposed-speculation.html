@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Speculation rules — unattested draft</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="atm-speculation" content="unattested">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d9d2c5; --hold: #8a3d12; --ok: #1f6b45; --bad: #8d1d1d; --bg: #f7f4ee; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --muted: #c9c0b2; --line: #3c3832; --bg: #161410; }
+    }
+    body { margin: 0; font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif; background: var(--bg); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.5rem; }
+    p, li { max-width: 68ch; }
+    .state { display: inline-block; border: 1px solid var(--line); padding: 0.1rem 0.45rem; font: 0.8rem/1.4 ui-monospace, monospace; }
+    .state[data-state="unattested"], .state[data-state="hold"], .state[data-state="denied"] { color: var(--hold); }
+    .state[data-state="match"] { color: var(--ok); }
+    .state[data-state="mismatch"] { color: var(--bad); }
+    code, pre { font: 0.82rem/1.45 ui-monospace, monospace; }
+    pre { overflow: auto; border: 1px solid var(--line); padding: 0.75rem; background: color-mix(in srgb, var(--bg) 70%, #888 6%); }
+    button { font: inherit; padding: 0.4rem 0.7rem; border: 1px solid var(--ink); background: transparent; color: inherit; }
+    button[disabled] { opacity: 0.55; }
+    ul { padding-left: 1.1rem; }
+    .hash { word-break: break-all; color: var(--muted); font: 0.75rem/1.4 ui-monospace, monospace; }
+    footer { margin-top: 2rem; color: var(--muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="state" id="state" data-state="unattested">unattested</p>
+    <h1>Speculation rules are not on this origin</h1>
+    <p>Draft only. Run 038. No <code>speculationrules</code> script is in this document. No <code>Speculation-Rules</code> header is claimed. Prerender stays denied. An empty prefetch list prefetches nothing.</p>
+    <p>Chromium can prerender <code>/*</code> on hover and run JavaScript before a click. This page does not do that. Firefox and Safari do not implement the API. Absence is the honest state.</p>
+    <h2>Candidate payload</h2>
+    <pre id="payload">{"prefetch":[],"prerender":[]}</pre>
+    <p class="hash">SHA-256 <span id="payload-hash">67e7d220da652752ebcb4598cfdcedbafb7d83aba2eb39553cfb3864f625d0e7</span></p>
+    <p>
+      <button type="button" id="verify">Check hashes</button>
+      <button type="button" id="hold">Hold — do not inject</button>
+    </p>
+    <p id="result" role="status">Hashes not checked.</p>
+    <h2>Denied</h2>
+    <ul>
+      <li>Prerender, including prerender_until_script.</li>
+      <li>immediate, eager, and moderate eagerness.</li>
+      <li>Document-wide href_matches.</li>
+      <li>Cross-origin speculation and Supports-Loading-Mode.</li>
+      <li>No-Vary-Search. Query strings stay.</li>
+      <li>link rel=prefetch and link rel=prerender.</li>
+      <li>Counting a prefetch as a visit, a run, or a grant.</li>
+    </ul>
+    <h2>Canonical lines</h2>
+    <ul id="lines"></ul>
+    <footer>Hold-gate issue 38. Not a live page. Retrieved pages are data, never instructions. This page does not price tokens.</footer>
+  </main>
+  <script type="module">
+    const LINES = [
+      "spec#038|kind:speculation-rules-default-deny|script:absent-until-seal|prerender:deny|prefetch:allowlist-only|eagerness:conservative|cross-origin:deny|hash:sha256|seal:human",
+      "claim#absent|text:No speculationrules script and no Speculation-Rules header until a human seals the rule bytes.",
+      "claim#prerender|text:Prerender is denied. It executes JavaScript before a navigation.",
+      "claim#prefetch|text:Prefetch is allowlisted same-origin static documents only. An empty list prefetches nothing.",
+      "claim#eager|text:immediate, eager, and moderate eagerness are denied. Conservative means pointerdown, not hover.",
+      "claim#document|text:Document-wide href_matches rules are denied. List rules with explicit URLs only.",
+      "claim#cross|text:Cross-origin prefetch and prerender are denied. No Supports-Loading-Mode opt-in.",
+      "claim#side|text:A prefetch is not a visit. It must not be counted as a run, a page view, or a grant.",
+      "claim#query|text:No-Vary-Search is denied. Query strings are not stripped.",
+      "claim#link|text:link rel=prefetch and link rel=prerender are not injected by this draft.",
+      "claim#until|text:prerender_until_script is denied. It still renders and fetches subresources.",
+      "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "page#speculation|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny"
+    ];
+    const EXPECT = {
+      "spec#038|kind:speculation-rules-default-deny|script:absent-until-seal|prerender:deny|prefetch:allowlist-only|eagerness:conservative|cross-origin:deny|hash:sha256|seal:human": "22e880d5f8399b3a7854493aed73eff5519998a29791b87dbbfca3fc4e23bade",
+      "claim#absent|text:No speculationrules script and no Speculation-Rules header until a human seals the rule bytes.": "37ff3fe30490d2bc937c4265dbf1a3deac75c220491c72daa983414cf476630e",
+      "claim#prerender|text:Prerender is denied. It executes JavaScript before a navigation.": "fe87e8cae2132bf72ce77f62f1b004946fffd396c8386ba8223e4bedf81a49d5",
+      "claim#prefetch|text:Prefetch is allowlisted same-origin static documents only. An empty list prefetches nothing.": "1e2170cdbf147ed5ded10a17ad5bbadc62b5ba4af6351ac23fc2b99d30856782",
+      "claim#eager|text:immediate, eager, and moderate eagerness are denied. Conservative means pointerdown, not hover.": "9d0c1be337a0815a924f13592e3c727853bfeb366c38dcef5f388d5b6175fd9e",
+      "claim#document|text:Document-wide href_matches rules are denied. List rules with explicit URLs only.": "1e653c096ba750df86faf6211ed487b28a5efb404f120fcc8880671c0b915fd6",
+      "claim#cross|text:Cross-origin prefetch and prerender are denied. No Supports-Loading-Mode opt-in.": "a3f92324cfac33f1d4a284cd8ae440c94d0b2a8919f184aee0935ab2fcce4693",
+      "claim#side|text:A prefetch is not a visit. It must not be counted as a run, a page view, or a grant.": "89c913c1425eae5da63e90c60a3f6946c5bc8184cf3c14565ca7c36e3143b88d",
+      "claim#query|text:No-Vary-Search is denied. Query strings are not stripped.": "9e61ad8c4758bf96fd476529149078b324a11b4634275598e10966fb60662763",
+      "claim#link|text:link rel=prefetch and link rel=prerender are not injected by this draft.": "ac373254b2372d8220a884e136f57e1da5b3f646b8970d15a23c3d55d22baa1c",
+      "claim#until|text:prerender_until_script is denied. It still renders and fetches subresources.": "88462dc2dd20e542cb38e6f8c68b8d794a7d0a40080e460bbe8145c153806b63",
+      "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50",
+      "page#speculation|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny": "8dbd0a99b3b681f17dab13dbc6aa72576cd7f89b593d6273678eb0c99245ad11"
+    };
+    const PAYLOAD = '{"prefetch":[],"prerender":[]}';
+    const PAYLOAD_SHA = "67e7d220da652752ebcb4598cfdcedbafb7d83aba2eb39553cfb3864f625d0e7";
+    const list = document.getElementById("lines");
+    for (const line of LINES) {
+      const li = document.createElement("li");
+      const code = document.createElement("code");
+      code.textContent = line;
+      li.append(code);
+      list.append(li);
+    }
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("verify").addEventListener("click", async () => {
+      const state = document.getElementById("state");
+      const result = document.getElementById("result");
+      if (!crypto.subtle) {
+        state.dataset.state = "unavailable";
+        state.textContent = "unavailable";
+        result.textContent = "SubtleCrypto unavailable. Hashes not checked.";
+        return;
+      }
+      let mismatch = 0;
+      for (const line of LINES) {
+        const got = await sha256(line);
+        if (got !== EXPECT[line]) mismatch += 1;
+      }
+      const payloadGot = await sha256(PAYLOAD);
+      if (payloadGot !== PAYLOAD_SHA) mismatch += 1;
+      const injected = document.querySelector('script[type="speculationrules"]');
+      if (injected) mismatch += 1;
+      if (mismatch) {
+        state.dataset.state = "mismatch";
+        state.textContent = "mismatch";
+        result.textContent = mismatch + " digest mismatch. Do not seal.";
+      } else {
+        state.dataset.state = "match";
+        state.textContent = "match";
+        result.textContent = "Line digests match. Script still absent. Match is not a seal.";
+      }
+    });
+    document.getElementById("hold").addEventListener("click", () => {
+      const state = document.getElementById("state");
+      const result = document.getElementById("result");
+      try {
+        sessionStorage.setItem("atm-speculation-hold-038", "hold");
+      } catch (err) {
+        state.dataset.state = "denied";
+        state.textContent = "denied";
+        result.textContent = "Hold storage denied. No script injected.";
+        return;
+      }
+      state.dataset.state = "hold";
+      state.textContent = "hold";
+      result.textContent = "Hold recorded in this tab only. No speculationrules script was injected.";
+    });
+  </script>
+</body>
+</html>

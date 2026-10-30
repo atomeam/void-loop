@@ -64,7 +64,7 @@ export const RULES_CSS = [
   '.tome-rx-cap{grid-row:1/3;width:5.4cqh;height:5.4cqh;display:flex;align-items:center;justify-content:center;font-size:3.9cqh;font-weight:700;line-height:1;color:#f1d47a;border-radius:2px;'
     + 'box-shadow:inset 0 0 0 1px rgba(241,212,122,.85),inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 0 4px rgba(241,212,122,.45),0 1px 2px rgba(40,20,5,.45);text-shadow:0 1px 0 rgba(0,0,0,.45);'
     + 'background-image:radial-gradient(circle at 30% 25%,rgba(255,240,200,.28),rgba(255,240,200,0) 60%)}',
-  '.tome-rx-head{font-size:2.05cqh;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tome-rx-no{font-variant:small-caps;letter-spacing:.12em;color:#7a4a22;font-size:1.65cqh}',
+  '.tome-rx-head{font-size:2.05cqh;line-height:1.2;overflow-wrap:anywhere}.tome-rx-no{font-variant:small-caps;letter-spacing:.12em;color:#7a4a22;font-size:1.65cqh}',
   '.tome-rx-name{font-weight:600;color:#2b1b0e}',
-  '.tome-rx-catch{font-size:1.75cqh;line-height:1.25;font-style:italic;color:#4f3418;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+  '.tome-rx-catch{font-size:1.75cqh;line-height:1.25;font-style:italic;color:#4f3418;overflow-wrap:anywhere}',
 ].join('');

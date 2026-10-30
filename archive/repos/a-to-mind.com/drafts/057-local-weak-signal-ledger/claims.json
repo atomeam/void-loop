@@ -1,0 +1,39 @@
+{
+  "slug": "local-weak-signal-ledger",
+  "run": "057",
+  "family": "weak-signal hypothesis ledger",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "default": "deny",
+  "hypothesis": "A faint public note can be stored as a hashed hypothesis with a required disconfirm path. Intensity, co-occurrence, and an early-warning product claim are not measurements and do not become attested.",
+  "sources": [
+    {
+      "id": "ansoff-1975",
+      "label": "H. Igor Ansoff, weak signals and strategic surprise, mid-1970s, as restated in later early-warning frameworks",
+      "observation": "Strategy writing treats some disruptions as visible first in faint, ambiguous clues rather than in settled indicators.",
+      "claim": "A weak signal is an early warning that should trigger management action once a threshold is crossed.",
+      "inference": "Design material for a local split of observation, claim, inference, and disconfirm. Not a reason to ship an action trigger or a radar score.",
+      "confidence": 0.3,
+      "status": "unattested"
+    },
+    {
+      "id": "window-product-alerts",
+      "label": "Public posts 2106308283086553348, 2106283353460601035, 2106079413909725294, 2026-10-02 to 2026-10-03",
+      "observation": "Product posts in the window describe AI avalanche alerts, soil-stress robots, and Wi-Fi weak-signal fixes as early warning.",
+      "claim": "A faint pattern is already an operational alert with a stated lead time or savings figure.",
+      "inference": "Void keeps the figure inside the claim field. It does not promote the figure to a watched fact without a disconfirm path.",
+      "confidence": 0.22,
+      "status": "unattested"
+    },
+    {
+      "id": "window-jspace",
+      "label": "Public post 2106001223698571421, @virakandah, 2026-10-02",
+      "observation": "A long post reads reported LLM internal geometry and aversive-axis tests as a weak signal of conscious access.",
+      "claim": "Workspace-like geometry in a text model is becoming significantly likely evidence of a different conscious state.",
+      "inference": "Design material only. The ledger can hold the split. It cannot set attested, and it does not treat a geometry note as contact or as felt experience.",
+      "confidence": 0.18,
+      "status": "unattested"
+    }
+  ]
+}

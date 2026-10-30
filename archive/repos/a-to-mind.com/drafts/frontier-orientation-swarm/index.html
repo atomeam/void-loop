@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Void Frontier: Orientation Particle Swarm</title>
+<style>
+body { margin:0; background:#000; color:#fff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.6); padding:15px; border-radius:8px; max-width:300px; transition:all 0.5s; }
+#ui.high { background:rgba(100,0,50,0.7); transform:scale(1.05); }
+button { background:#333; color:#fff; border:none; padding:8px 12px; margin:5px; cursor:pointer; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3>Orientation Swarm</h3>
+  <p>Tilt your device or use mouse to influence the local AI rules. Swarm density morphs the UI.</p>
+  <button onclick="reset()">Reset</button>
+  <div id="stats">Particles: 0 | Energy: 0</div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ui = document.getElementById('ui');
+const stats = document.getElementById('stats');
+let gl, particles = [], N = 2000;
+let mouseX = 0, mouseY = 0, tiltX = 0, tiltY = 0;
+
+function init() {
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+  if (!gl) { alert('WebGL required'); return; }
+  for (let i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random()-0.5)*2,
+      vy: (Math.random()-0.5)*2,
+      rule: Math.random()
+    });
+  }
+  window.addEventListener('deviceorientation', e => {
+    tiltX = (e.gamma || 0) / 90;
+    tiltY = (e.beta || 0) / 90;
+  });
+  canvas.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+  });
+  requestAnimationFrame(loop);
+}
+function loop() {
+  let energy = 0;
+  for (let p of particles) {
+    const dx = mouseX - p.x, dy = mouseY - p.y;
+    const dist = Math.hypot(dx, dy) + 1;
+    p.vx += (dx / dist) * 0.1 * (tiltX + 0.5) + (Math.random()-0.5)*0.1 * p.rule;
+    p.vy += (dy / dist) * 0.1 * (tiltY + 0.5) + (Math.random()-0.5)*0.1 * p.rule;
+    p.vx *= 0.98; p.vy *= 0.98;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    energy += Math.hypot(p.vx, p.vy);
+    p.rule = (p.rule + 0.001 * (tiltX + tiltY)) % 1;
+  }
+  energy /= N;
+  gl.viewport(0,0,canvas.width,canvas.height);
+  gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+  stats.textContent = `Particles: ${N} | Energy: ${energy.toFixed(2)} | Tilt: ${tiltX.toFixed(2)},${tiltY.toFixed(2)}`;
+  if (energy > 1.5) ui.classList.add('high'); else ui.classList.remove('high');
+  requestAnimationFrame(loop);
+}
+function reset() {
+  particles.forEach(p => { p.x = Math.random()*canvas.width; p.y = Math.random()*canvas.height; p.rule = Math.random(); });
+}
+window.onload = init;
+</script>
+</body>
+</html>

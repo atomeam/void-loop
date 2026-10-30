@@ -1,33 +1,33 @@
 {
- "at": "2026-10-20T12:18:29.942Z",
- "score": 77,
+ "at": "2026-10-29T13:46:26.701Z",
+ "score": 73,
  "parts": {
-  "self": 81,
-  "asks": 96,
-  "friction": 89,
+  "self": 97,
+  "asks": 77,
+  "friction": 92,
   "bench": 99,
-  "probes": 20
+  "probes": 0
  },
  "families": [
   {
    "id": "body",
-   "health": 95
+   "health": 100
   },
   {
    "id": "decide",
-   "health": 75
+   "health": 100
   },
   {
    "id": "games",
-   "health": 98
+   "health": 97
   },
   {
    "id": "life",
-   "health": 88
+   "health": 100
   },
   {
    "id": "make",
-   "health": 87
+   "health": 84
   },
   {
    "id": "numbers",
@@ -39,48 +39,48 @@
   },
   {
    "id": "self",
-   "health": 92
+   "health": 97
   },
   {
    "id": "sky",
-   "health": 87
+   "health": 93
   },
   {
    "id": "stage",
-   "health": 89
+   "health": 97
   },
   {
    "id": "time",
-   "health": 81
+   "health": 85
   },
   {
    "id": "words",
-   "health": 82
+   "health": 83
   }
  ],
  "facts": {
-  "week": 480,
-  "owner": 93,
-  "askedBuilt": 41,
-  "medianLagDays": 0.3,
-  "open": 0,
-  "oldestOpenDays": 0,
-  "skills": 303,
+  "week": 205,
+  "owner": 7,
+  "askedBuilt": 23,
+  "medianLagDays": 1.2,
+  "open": 2,
+  "oldestOpenDays": 0.6,
+  "skills": 365,
   "failing": 7,
-  "unsure": 54,
+  "unsure": 44,
   "benchScore": 2345,
   "benchTotal": 2368,
-  "probeFixes": 2
+  "probeFixes": 0
  },
  "trend": {
-  "score": 77,
-  "day": 2,
-  "week": null,
+  "score": 73,
+  "day": -3,
+  "week": -4,
   "weakest": "probes",
-  "at": "2026-10-20T12:18:29.942Z",
-  "frictionWeek": null
+  "at": "2026-10-29T13:46:26.701Z",
+  "frictionWeek": -9
  },
- "summary": "better: 77 of 100 (up 2 since yesterday); weakest: probes",
+ "summary": "better: 73 of 100 (down 3 since yesterday) (down 4 on the week); weakest: probes",
  "means": {
   "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
   "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",

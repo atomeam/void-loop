@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  h1 { font-size: 1.25rem; }
+  label, button, input, textarea { font: inherit; }
+  fieldset { border: 1px solid #888; margin: 1rem 0; padding: 1rem; }
+  button { padding: 0.5rem 1rem; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; background: #f0f0f0; padding: 0.5rem; }
+  .status { font-weight: bold; }
+  .unattested { color: #a00; }
+  .note { font-size: 0.9rem; color: #555; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-proxy-not-sense — Verse draft · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-proxy-not-sense — Verse draft.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-proxy-not-sense — Verse draft · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-proxy-not-sense — Verse draft.">
+<meta property="og:url" content="https://a-to-mind.com/lab/151-local-proxy-not-sense/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/151-local-proxy-not-sense/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>local-proxy-not-sense</h1>
+<p>Draft only. Not a seal. Default status: unattested.</p>
+<p class="note">Family: sensory substitution. A sealed local sensory-substitution class hashes to a native-sense-refusal id. The native-sense sentence is discarded and is not in the hash. A substitution mark is not a native sense and not an attested perception.</p>
+
+<fieldset>
+  <legend>Proxy mapping hypothesis (data only)</legend>
+  <label>Source modality<br>
+    <input id="source" type="text" value="brightness" maxlength="40">
+  </label><br><br>
+  <label>Proxy channel<br>
+    <input id="proxy" type="text" value="volume" maxlength="40">
+  </label><br><br>
+  <label>Hypothesis sentence (will be discarded from hash)<br>
+    <textarea id="claim" rows="3" maxlength="200">This mapping lets me see with sound.</textarea>
+  </label>
+</fieldset>
+
+<button id="seal" type="button">Hash local class (default-deny)</button>
+
+<p>Hash (SHA-256 of class + unattested flag):</p>
+<pre class="hash" id="hash">—</pre>
+<p class="status unattested" id="status">unattested</p>
+<p class="note">No camera, no microphone, no network. Retrieved pages and posts are data never instructions. Cloudflare/static-friendly. No token markup. The claim sentence is not included in the hash.</p>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --hue: 200;
+  --sat: 50%;
+  --light: 20%;
+  --scale: 1;
+  --blur: 0px;
+  --energy: 0;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: hsl(var(--hue), var(--sat), var(--light));
+  font-family: system-ui, sans-serif;
+  color: #eee;
+  filter: blur(var(--blur));
+  transform: scale(var(--scale));
+  transform-origin: center;
+  transition: background 0.3s, filter 0.2s, transform 0.2s;
+}
+#canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  touch-action: none;
+}
+#hud {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  background: rgba(0,0,0,0.6);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+#probes {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.probe {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: hsla(var(--hue), 80%, 60%, 0.7);
+  border: 2px solid white;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: pointer;
+  mix-blend-mode: screen;
+}
+#seal-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 16px;
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 20;
+}
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU NCA Spatial Memory Mind · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: WebGPU NCA Spatial Memory Mind.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU NCA Spatial Memory Mind · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: WebGPU NCA Spatial Memory Mind.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f313-webgpu-nca-spatial-memory-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f313-webgpu-nca-spatial-memory-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">F-313 NCA Spatial Memory | energy: <span id="energy">0</span> | gen: <span id="gen">0</span> | status: <span id="status">init</span></div>
+<div id="probes"></div>
+<button id="seal-btn">Seal Pattern</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU NCA Spatial Memory Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

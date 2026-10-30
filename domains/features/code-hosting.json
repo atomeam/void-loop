@@ -1,0 +1,237 @@
+{
+ "floor": "code hosting",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "github.com": {
+   "sources": [
+    "https://github.com/",
+    "https://docs.github.com/en",
+    "https://github.com/features",
+    "https://github.com/pricing"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Repositories",
+     "detail": "Git hosting, public/private repos, branches, tags, releases",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/repo.js: card of a public GitHub repo (description, languages, recent commits, files, README, issue/PR counts) via /api/repo; skills/gh-file.js: one file coloured and numbered with linked lines lit; /g/: gists with passphrase lock and a diff view; read-only views of public repos"
+    },
+    {
+     "group": "core",
+     "name": "Code browser",
+     "detail": "File tree, syntax-highlighted files, blame, history, permalinks to lines",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "gh-file.js shows one file with lines lit; repo.js top-level files"
+    },
+    {
+     "group": "core",
+     "name": "Commits and history",
+     "detail": "Commit list, diffs, compare branches",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "repo.js recent commits; /g/ diff view for gists"
+    },
+    {
+     "group": "core",
+     "name": "Pull requests",
+     "detail": "Propose changes, review with comments and suggestions, checks, merge strategies",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "repo.js shows open PR count only"
+    },
+    {
+     "group": "core",
+     "name": "Issues",
+     "detail": "Issues with labels, assignees, milestones, templates, sub-issues",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "repo.js shows open issue count only"
+    },
+    {
+     "group": "core",
+     "name": "README and markdown rendering",
+     "detail": "Rendered README, markdown everywhere",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "repo.js shows the README opening"
+    },
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Code search across repos with regex and symbols",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Profiles and organisations",
+     "detail": "User/org pages, contribution graph, teams",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Gists",
+     "detail": "Shareable snippets with revisions",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/g/ makes gists with no account, passphrase lock and what-changed view; \"Edit a copy\" of a GitHub file"
+    },
+    {
+     "group": "power",
+     "name": "GitHub Actions",
+     "detail": "CI/CD workflows, runners, marketplace",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Projects",
+     "detail": "Boards and tables over issues and PRs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Code review tools",
+     "detail": "Suggested changes, required reviews, CODEOWNERS",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Codespaces and web editor",
+     "detail": "Cloud dev environments; github.dev editor",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/g/ edits a copy of a file in the browser"
+    },
+    {
+     "group": "power",
+     "name": "Copilot",
+     "detail": "AI completion, chat, code review and coding agent",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Security",
+     "detail": "Dependabot, secret scanning, code scanning, advisories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Releases and packages",
+     "detail": "Release notes, binaries, package registry",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Discussions and wiki",
+     "detail": "Community forum and wiki per repo",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Pages",
+     "detail": "Static site hosting from a repo",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Insights",
+     "detail": "Contributors, traffic, dependency graph",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "repo.js language mix"
+    },
+    {
+     "group": "sharing",
+     "name": "Fork, star, watch",
+     "detail": "Fork repos, star, notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Embeds and permalinks",
+     "detail": "Line permalinks, embeddable gists",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "gh-file.js opens #L10-L20 permalinks with lines lit"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Mobile app, CLI, Desktop",
+     "detail": "gh CLI, GitHub Desktop, mobile app for reviews and notifications",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible UI and keyboard shortcuts",
+     "detail": "Screen reader support, shortcuts, high-contrast themes",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Pro/Team/Enterprise",
+     "detail": "Private repo features, more Actions minutes, protected branches on private repos, SSO",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Copilot plans",
+     "detail": "Copilot Pro/Business/Enterprise",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Advanced Security",
+     "detail": "Code scanning and secret protection for private repos",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "full repo browser: file tree, any file, history",
+  "read a pull request with its diff and comments",
+  "read issues list and one issue",
+  "commit diff view",
+  "code search in one repo"
+ ],
+ "verse_extra": [
+  "gists with no account and a passphrase lock",
+  "every view read live with nothing stored and no token"
+ ],
+ "first_page": "Repo reader page /repo/ for people who want to read a public repository fast. First: a-to-mind.com/repo/?r=owner/name opens the file tree, any file through the existing gh-file viewer, the commit list with one commit's diff, and open issues and PRs as readable lists, all read live from public GitHub with no token and cached at the edge. Will not build: hosting, pushing, Actions, reviews or accounts."
+}

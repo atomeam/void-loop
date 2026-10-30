@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boards: anonymous image and text boards anyone can start · Verse</title>
+<meta name="description" content="Anonymous image and text boards anyone can start. Post threads with a picture, reply with quotes and search every board. No account needed.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Boards · Verse">
+<meta property="og:description" content="Anonymous image and text boards anyone can start: catalog, archive, >>quotes, greentext, tripcodes, sage, spoilers, search and a thread watcher.">
+<meta property="og:url" content="https://a-to-mind.com/boards/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>document.documentElement.classList.add('pre'); // the list, the board or the thread is drawn after load: until then what follows the title is held unpainted, so nothing on the page jumps (html.pre)</script>
+<style>
+  /* a-to-mind.com/boards/ (owner, 2026-10-25: "Let's go after the chans next"): one file and two small modules; the server keeps the posts
+     (functions/api/boards/[[path]].js), this device keeps only the watcher, your own post numbers, the 18+ answer and the name you post as */
+  :root { color-scheme: dark; --bg: #f3f1f8; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; --green: #3d7a1c; --quote: #c0392b; --hi: #fff6c8; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --green: #8fcf5f; --quote: #ff8a7a; --hi: #2d2840; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 14px 16px 90px; }
+  h1 { font-size: 22px; margin: 0 0 2px; font-weight: 700; overflow-wrap: anywhere; }
+  .sub { font-size: 14px; color: var(--soft); margin: 0 0 10px; }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  a { color: var(--accent); }
+  input, textarea, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; width: 100%; box-sizing: border-box; }
+  textarea { min-height: 110px; resize: vertical; }
+  input[type=checkbox], input[type=radio] { width: 24px; height: 24px; min-height: 0; margin: 0; accent-color: var(--accent); flex: none; }
+  input:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; }
+  button.go, .btn.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .row > input, .row > select { flex: 1 1 160px; width: auto; }
+  label.ck { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; min-height: 40px; cursor: pointer; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.4em; } .note.bad { color: var(--bad); }
+  .crumbs { font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; } .crumbs a { min-height: 32px; display: inline-flex; align-items: center; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .tabs a[aria-current] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); }
+  .badge { font-size: 11px; font-weight: 700; border: 1px solid currentColor; border-radius: 6px; padding: 0 5px; margin-left: 4px; vertical-align: 2px; color: var(--soft); }
+  .badge.adult { color: var(--bad); }
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  ul.list li { border-top: 1px solid var(--line); padding: 10px 0; display: flex; gap: 10px; align-items: flex-start; }
+  ul.list li:first-child { border-top: 0; }
+  ul.list li .main { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  ul.list li .main a.title { font-weight: 600; text-decoration: none; color: var(--ink); display: inline-block; min-height: 28px; padding: 2px 0; box-sizing: border-box; }
+  ul.list li small { color: var(--soft); font-size: 12px; display: block; }
+  .empty { border: 1px dashed var(--line); border-radius: 14px; padding: 18px; text-align: center; color: var(--soft); }
+  .panel { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 12px 14px; margin: 10px 0; }
+  details.panel > summary { cursor: pointer; font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+  fieldset { border: 0; padding: 0; margin: 8px 0 0; } legend { font-size: 13px; color: var(--soft); padding: 0; }
+  .field { margin: 8px 0 0; } .field > span { display: block; font-size: 13px; color: var(--soft); margin: 0 0 2px; }
+  /* catalog: thumbnails in a grid, two across on a phone */
+  .cat { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+  .cat a.th { display: flex; flex-direction: column; gap: 4px; text-decoration: none; color: var(--ink); background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px; min-width: 0; overflow-wrap: anywhere; font-size: 13px; line-height: 1.35; }
+  .cat .pic { width: 100%; aspect-ratio: 1; object-fit: contain; background: var(--bg); border-radius: 8px; display: block; }
+  .cat .meta { color: var(--soft); font-size: 12px; } .cat b { font-weight: 600; }
+  /* posts */
+  article.post { background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 8px 0; overflow-wrap: anywhere; }
+  article.post.op { border-color: transparent; background: transparent; padding: 4px 2px; }
+  article.post:target, article.post.hl { background: var(--hi); }
+  article.post.mine { border-left: 3px solid var(--accent); }
+  .ph { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; font-size: 13px; color: var(--soft); }
+  .ph .subj { color: var(--accent); font-weight: 700; font-size: 15px; } .ph .nm { color: var(--green); font-weight: 700; } .ph .trip { color: var(--green); }
+  .ph a.num { color: inherit; text-decoration: none; min-height: 28px; display: inline-flex; align-items: center; }
+  .acts { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 0; } .acts button { font-size: 12px; min-height: 32px; padding: 2px 10px; }
+  figure.file { margin: 6px 12px 4px 0; float: left; max-width: 100%; }
+  figure.file figcaption { font-size: 12px; color: var(--soft); overflow-wrap: anywhere; }
+  figure.file img { display: block; max-width: min(100%, 250px); height: auto; border-radius: 6px; cursor: zoom-in; background: var(--bg); }
+  figure.file.open { float: none; } figure.file.open img { max-width: 100%; cursor: zoom-out; }
+  .spoil { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; text-align: center; background: var(--ink); color: var(--bg); border-radius: 6px; font-size: 13px; cursor: pointer; border: 0; }
+  .blur { filter: blur(14px); cursor: pointer; }
+  blockquote.body { margin: 6px 0 2px; font-size: 15px; line-height: 1.45; }
+  blockquote.body::after, article.post::after { content: ''; display: block; clear: both; }
+  .gt { color: var(--green); }
+  code.cd { font: 13px/1.4 ui-monospace, monospace; background: var(--bg); border-radius: 4px; padding: 0 3px; white-space: pre-wrap; }
+  .ph .uid { font-size: 11px; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+  .filtered { font-size: 13px; color: var(--soft); }
+  a.ql { color: var(--quote); }
+  .sp { background: var(--ink); color: transparent; border-radius: 3px; cursor: pointer; } .sp:hover, .sp.on { color: var(--bg); } .sp a { color: inherit; }
+  .backs { font-size: 12px; color: var(--soft); margin: 2px 0 0; } .backs a { margin-right: 6px; }
+  .hiddenpost { font-size: 13px; color: var(--soft); font-style: italic; }
+  #pop { position: fixed; z-index: 20; max-width: min(560px, calc(100vw - 24px)); max-height: 60vh; overflow: auto; box-shadow: 0 8px 30px #0005; pointer-events: none; }
+  #pop article.post { margin: 0; background: var(--box); border-color: var(--line); padding: 8px 12px; }
+  .inl { margin: 6px 0 6px 8px; border-left: 2px solid var(--quote); padding-left: 6px; } .inl article.post { margin: 0; }
+  .upd { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--soft); margin: 10px 0; }
+  .notice { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 14px; background: var(--box); margin: 8px 0; }
+  .notice.bad { border-color: var(--bad); }
+  #gate { position: fixed; inset: 0; z-index: 30; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
+  #gate .box { max-width: 460px; text-align: center; } #gate h2 { font-size: 22px; color: var(--ink); }
+  .bot { min-height: 0; margin: 6px 0 0; font-size: 12px; color: var(--soft); }
+  #replyBar { position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 16px calc(8px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); display: flex; justify-content: center; gap: 8px; z-index: 5; }
+  .preview { margin-top: 8px; }
+  .pages { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  [hidden] { display: none !important; }
+  html.pre main > :not(#crumbs):not(h1):not(.sub):not(#topRow), html.pre footer { visibility: hidden; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 26px; text-align: center; } footer a { color: inherit; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/boards/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Boards: anonymous image and text boards","url":"https://a-to-mind.com/boards/","description":"Anonymous image and text boards anyone can start: make a board with a short code, post threads with a picture, reply with quotes and greentext, a catalog, an archive, tripcodes, sage, spoilers, search across every board, a thread watcher on your device and threads that update themselves. Pictures lose their hidden location data before they are kept.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"image board, anonymous message board, text board, make your own board, anonymous forum, imageboard catalog, post anonymously","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/boards/?q={words}"},"words-input":"required name=words"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Boards: anonymous image and text boards","item":"https://a-to-mind.com/boards/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <nav class="crumbs" id="crumbs" aria-label="Where you are"><a href="/boards/">All boards</a><a href="/boards/rules/">Rules</a></nav>
+  <h1 id="title">Boards</h1>
+  <p class="sub" id="sub">Post to topic boards, start a discussion thread, or create your own board, no account required.</p>
+  <div class="row" id="topRow" style="margin:0 0 8px"><button type="button" id="shareTop" title="Share a link to this page: a board, a thread or the list">Share this page</button></div>
+
+  <!-- the list of boards, the search across all of them, and making a board -->
+  <section id="home">
+    <p class="note" id="subMore">Each board is marked work-safe or 18+ by the person who makes it. Every board has a catalog of its threads, index pages in bump order, threads that open with a picture, replies with &gt;&gt;quotes and greentext, an archive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on your device. Pictures lose their hidden data (camera, time, GPS place) before they are kept.</p>
+    <div class="row" id="starters" role="group" aria-labelledby="startersH"><span class="tk-label" id="startersH">Start with a general board:</span><a class="btn" data-code="qa" data-title="Questions and answers" data-about="Ask anything, answer what you know" href="/boards/?new=1&amp;code=qa">Q&amp;A</a><a class="btn" data-code="projects" data-title="Projects" data-about="Show what you are making and get help finishing it" href="/boards/?new=1&amp;code=projects">Projects</a><a class="btn" data-code="music" data-title="Music" data-about="Songs, gear, gigs and recommendations" href="/boards/?new=1&amp;code=music">Music</a><a class="btn" data-code="tech" data-title="Technology" data-about="Computers, phones and the people who fix them" href="/boards/?new=1&amp;code=tech">Tech</a></div>
+    <form id="sf" role="search" class="row" autocomplete="off">
+      <label class="vh" for="sq">Search every board</label>
+      <input type="search" id="sq" placeholder="Search every board" maxlength="200" enterkeyhint="search">
+      <button type="submit" class="go">Search</button>
+    </form>
+    <div id="results" hidden></div>
+    <div class="row" id="sorts">
+      <label class="vh" for="sort">Sort the boards</label>
+      <select id="sort"><option value="active">New posts first</option><option value="new">Newest boards first</option><option value="posts">Most posts first</option><option value="code">By code</option></select>
+      <label class="ck"><input type="checkbox" id="sfw"> Work-safe boards only (hide 18+)</label>
+    </div>
+    <p class="row"><a class="btn" href="/boards/?all=1">Every board's new threads</a></p>
+    <details class="panel" id="filterP"><summary>Hide posts with these words</summary>
+      <p class="note">Posts with any of these words are folded away everywhere, on this device only. One word or phrase a line.</p>
+      <label class="vh" for="filt">Words to hide</label><textarea id="filt" maxlength="2000" style="min-height:70px"></textarea>
+      <div class="row"><button type="button" id="filtSave">Keep</button><span class="note" id="filtNote"></span></div>
+    </details>
+    <h2 id="boardsH">The boards</h2>
+    <ul class="list" id="boards"></ul>
+    <div class="empty" id="none">
+      <p>There are no boards yet. Every board here is made by someone who wanted it, work-safe or 18+.</p>
+      <button type="button" class="go" id="first">Make the first board</button>
+    </div>
+    <h2 id="watchH" hidden>Watching</h2>
+    <ul class="list" id="watching" hidden></ul>
+    <details class="panel" id="new">
+      <summary>Make a board</summary>
+      <form id="nf" autocomplete="off" novalidate>
+        <label class="field"><span>Code: 1 to 10 lowercase letters or digits; the board is /code/</span><input id="nCode" maxlength="10" inputmode="latin" pattern="[a-z0-9]{1,10}" placeholder="tech" autocapitalize="none" spellcheck="false" required></label>
+        <label class="field"><span>Title</span><input id="nTitle" maxlength="40" placeholder="Technology" required></label>
+        <label class="field"><span>What it is for (one line)</span><input id="nAbout" maxlength="200" placeholder="Computers, phones and the people who fix them"></label>
+        <fieldset><legend>Rating, said once for everyone who opens it</legend>
+          <label class="ck"><input type="radio" name="nRate" value="sfw" checked> Work-safe</label>
+          <label class="ck"><input type="radio" name="nRate" value="adult"> 18+ (adult pictures and words, behind an 18+ question)</label>
+        </fieldset>
+        <fieldset><legend>Posts</legend>
+          <label class="ck"><input type="radio" name="nMode" value="images" checked> Pictures and text (a thread starts with a picture)</label>
+          <label class="ck"><input type="radio" name="nMode" value="text"> Text only (threads run to 1,000 posts)</label>
+          <label class="ck"><input type="checkbox" id="nIds"> Poster IDs: each poster gets a short ID in a thread, the same all day, so you can tell people apart without names</label>
+        </fieldset>
+        <div class="bot" id="nBot"></div>
+        <div class="row"><button type="submit" class="go" id="nGo">Make the board</button></div>
+        <p class="note" id="nNote" role="status">By making a board you agree to the <a href="/boards/rules/">rules</a>. Anyone can post on it.</p>
+      </form>
+    </details>
+    <details class="panel" id="previewP">
+      <summary>Try the formatting</summary>
+      <p class="note">How a post will look, here on your device, posted nowhere: a line that starts with &gt; is greentext, &gt;&gt;123 quotes post 123, &gt;&gt;&gt;/code/ links a board, [spoiler]words[/spoiler] hides words until tapped, [code]text[/code] keeps code as typed, and name#password signs a post with a tripcode.</p>
+      <ul class="note" id="pvKey"><li><b>Quote line (&gt;)</b>: start a line with &gt; to show it as a quote.</li><li><b>Reply to a post (&gt;&gt;123)</b>: links post 123.</li><li><b>Hide words ([spoiler]…[/spoiler])</b>: shown only when tapped.</li><li><b>Author code (#name#pass)</b>: sign as name#password so people know later posts are yours.</li></ul>
+      <label class="vh" for="pvText">Text to preview</label>
+      <textarea id="pvText" maxlength="4000">&gt;be me
+&gt;make a board
+&gt;&gt;1 yes, this
+[spoiler]it was Verse all along[/spoiler]</textarea>
+      <div class="preview" id="pvOut"></div>
+    </details>
+  </section>
+
+  <!-- one board: catalog, index pages, archive, search, a new thread -->
+  <section id="board" hidden>
+    <nav class="tabs" aria-label="Board views"><a class="btn" id="tCat" href="#">Catalog</a><a class="btn" id="tIdx" href="#">Index</a><a class="btn" id="tArc" href="#">Archive</a><button type="button" id="newT" class="go">New thread</button></nav>
+    <div id="threadForm"></div>
+    <div class="row" id="catTools">
+      <label class="vh" for="cq">Search this board</label><input type="search" id="cq" placeholder="Search this board" maxlength="200">
+      <label class="vh" for="csort">Sort the catalog</label><select id="csort"><option value="bump">Recently replied (bump order)</option><option value="new">Newest threads</option><option value="replies">Most replies</option></select>
+    </div>
+    <div class="note" id="bNote" role="status"></div>
+    <div class="cat" id="cat"></div>
+    <div id="idx"></div>
+    <ul class="list" id="arc" hidden></ul>
+    <div id="bResults"></div>
+    <div id="modBoard" hidden class="panel"></div>
+  </section>
+
+  <!-- one thread -->
+  <section id="thread" hidden>
+    <div id="tNotice"></div>
+    <div id="posts"></div>
+    <div class="upd" id="upd"><label class="ck"><input type="checkbox" id="auto" checked> Update by itself</label><span id="updNote" role="status"></span><button type="button" id="updNow">Update now</button><button type="button" id="watchBtn">Watch</button><a class="btn" id="toTop" href="#top">Top</a></div>
+    <div id="replyForm"></div>
+  </section>
+
+  <section id="over" hidden><p class="note">The newest bumped threads of every board. Pictures from 18+ boards stay blurred until tapped.</p><label class="ck"><input type="checkbox" id="oSfw"> Safe-for-work boards only</label><div class="cat" id="oCat"></div></section>
+  <section id="review" hidden><h2>Reported and hidden posts (the owner)</h2><div id="revList"></div></section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/boards/?new=1">Make a board</a><a href="/boards/?sort=active">Boards with new posts</a><a href="/boards/?sort=new">Newest boards</a><a href="/boards/?sort=posts">Busiest boards</a><a href="/boards/?sfw=1">Safe-for-work boards only</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/fanfic/">Fan fiction</a> <a href="/resize-image/">Resize an image</a> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>
+    <p><a href="/boards/rules/">The rules</a>: anything legal. Illegal content is removed and reported. No doxxing. Takedown requests and reports of illegal content: <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> (we answer fast).</p>
+    <p>Posts are anonymous. Verse keeps a keyed hash of your connection for limits and bans, never the address; your tripcode password is never kept. <a href="/privacy/">Privacy</a> · <a href="/">Verse</a> · <a href="/tools/">every tool</a></p>
+  </footer>
+</main>
+
+<div id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gateH">
+  <div class="box">
+    <h2 id="gateH">This board is 18+</h2>
+    <p id="gateP">The person who made it marked it for adults: it may show adult pictures and words. Are you 18 or older, and do you want to see it?</p>
+    <div class="row" style="justify-content:center"><button type="button" class="go" id="gateYes">I am 18 or older: show it</button><a class="btn" href="/boards/" id="gateNo">Take me back</a></div>
+    <p class="note">Your answer is kept on this device only.</p>
+  </div>
+</div>
+<div id="pop" hidden></div>
+<div id="replyBar" hidden><button type="button" class="go" id="replyOpen">Reply</button></div>
+
+<template id="formT">
+  <form class="panel pf" autocomplete="off" novalidate>
+    <label class="field"><span>Author code (#name#pass): leave blank to post as Anonymous, or type name#password to sign your posts (a tripcode; the password is never kept)</span><input name="name" maxlength="80" placeholder="Anonymous" autocapitalize="none"></label>
+    <label class="ck"><input type="checkbox" name="sage"> Don't bump thread (sage): your reply will not move the thread to the top</label>
+    <label class="field"><span>Options, typed (sage, watch; the box above sets sage for you)</span><input name="options" maxlength="20" placeholder="sage" autocapitalize="none" spellcheck="false"></label>
+    <label class="field sub-f"><span>Subject</span><input name="sub" maxlength="100"></label>
+    <label class="field"><span>Comment</span><textarea name="body" maxlength="4000"></textarea></label>
+    <div class="field file-f"><span>Picture (JPEG, PNG, GIF or WebP, up to 4 MB; its hidden data is removed on your device and again on ours)</span><input type="file" name="file" accept="image/jpeg,image/png,image/gif,image/webp"></div>
+    <label class="ck file-f"><input type="checkbox" name="spoiler"> Spoiler the picture</label>
+    <div class="bot"></div>
+    <div class="row"><button type="submit" class="go">Post</button><button type="button" class="pv">Preview</button><button type="button" class="x">Close</button></div>
+    <div class="preview"></div>
+    <p class="note" role="status">By posting you agree to the <a href="/boards/rules/">rules</a>.</p>
+  </form>
+</template>
+
+<script>addEventListener('load', () => { import('/boards/app.js').catch(() => document.documentElement.classList.remove('pre')); setTimeout(() => document.documentElement.classList.remove('pre'), 2500); }); // the module after load: nothing fetched holds the load event back (Versus measures speed)</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

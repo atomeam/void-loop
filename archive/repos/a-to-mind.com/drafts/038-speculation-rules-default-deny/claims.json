@@ -1,0 +1,76 @@
+{
+  "status": "candidate",
+  "hold": true,
+  "slug": "speculation-rules-default-deny",
+  "run": "038",
+  "issue": "https://github.com/atomeam/a-to-mind.com/issues/38",
+  "head": {
+    "algo": "sha256",
+    "eagerness": "conservative",
+    "kind": "speculation-rules-default-deny",
+    "live_script": false,
+    "prefetch_urls": 0,
+    "prerender": "deny"
+  },
+  "head_sha256": "308c400ab90db9268234f7bc1fef7f569a401dcd40e62827b768ad30f801d0a1",
+  "body_sha256": "90ed9c471af6a9abcf7ef6c59688cf65b4b447baa28154a4512d34367d5a439a",
+  "payload": {
+    "prefetch": [],
+    "prerender": []
+  },
+  "payload_sha256": "67e7d220da652752ebcb4598cfdcedbafb7d83aba2eb39553cfb3864f625d0e7",
+  "lines": [
+    {
+      "line": "spec#038|kind:speculation-rules-default-deny|script:absent-until-seal|prerender:deny|prefetch:allowlist-only|eagerness:conservative|cross-origin:deny|hash:sha256|seal:human",
+      "sha256": "22e880d5f8399b3a7854493aed73eff5519998a29791b87dbbfca3fc4e23bade"
+    },
+    {
+      "line": "claim#absent|text:No speculationrules script and no Speculation-Rules header until a human seals the rule bytes.",
+      "sha256": "37ff3fe30490d2bc937c4265dbf1a3deac75c220491c72daa983414cf476630e"
+    },
+    {
+      "line": "claim#prerender|text:Prerender is denied. It executes JavaScript before a navigation.",
+      "sha256": "fe87e8cae2132bf72ce77f62f1b004946fffd396c8386ba8223e4bedf81a49d5"
+    },
+    {
+      "line": "claim#prefetch|text:Prefetch is allowlisted same-origin static documents only. An empty list prefetches nothing.",
+      "sha256": "1e2170cdbf147ed5ded10a17ad5bbadc62b5ba4af6351ac23fc2b99d30856782"
+    },
+    {
+      "line": "claim#eager|text:immediate, eager, and moderate eagerness are denied. Conservative means pointerdown, not hover.",
+      "sha256": "9d0c1be337a0815a924f13592e3c727853bfeb366c38dcef5f388d5b6175fd9e"
+    },
+    {
+      "line": "claim#document|text:Document-wide href_matches rules are denied. List rules with explicit URLs only.",
+      "sha256": "1e653c096ba750df86faf6211ed487b28a5efb404f120fcc8880671c0b915fd6"
+    },
+    {
+      "line": "claim#cross|text:Cross-origin prefetch and prerender are denied. No Supports-Loading-Mode opt-in.",
+      "sha256": "a3f92324cfac33f1d4a284cd8ae440c94d0b2a8919f184aee0935ab2fcce4693"
+    },
+    {
+      "line": "claim#side|text:A prefetch is not a visit. It must not be counted as a run, a page view, or a grant.",
+      "sha256": "89c913c1425eae5da63e90c60a3f6946c5bc8184cf3c14565ca7c36e3143b88d"
+    },
+    {
+      "line": "claim#query|text:No-Vary-Search is denied. Query strings are not stripped.",
+      "sha256": "9e61ad8c4758bf96fd476529149078b324a11b4634275598e10966fb60662763"
+    },
+    {
+      "line": "claim#link|text:link rel=prefetch and link rel=prerender are not injected by this draft.",
+      "sha256": "ac373254b2372d8220a884e136f57e1da5b3f646b8970d15a23c3d55d22baa1c"
+    },
+    {
+      "line": "claim#until|text:prerender_until_script is denied. It still renders and fetches subresources.",
+      "sha256": "88462dc2dd20e542cb38e6f8c68b8d794a7d0a40080e460bbe8145c153806b63"
+    },
+    {
+      "line": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"
+    },
+    {
+      "line": "page#speculation|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "8dbd0a99b3b681f17dab13dbc6aa72576cd7f89b593d6273678eb0c99245ad11"
+    }
+  ]
+}

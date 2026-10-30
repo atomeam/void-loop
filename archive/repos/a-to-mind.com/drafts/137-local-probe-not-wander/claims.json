@@ -1,0 +1,13 @@
+{
+  "slug": "local-probe-not-wander",
+  "run": 137,
+  "date": "2026-10-09",
+  "family": "attention/interoception",
+  "status": "unattested",
+  "emit": false,
+  "hash_preimage": "probe-not-wander|v1|<class>|wander-refusal|status=unattested",
+  "classes": ["withheld", "unprobed", "mark-only", "off-task-blank", "no-score", "abstain"],
+  "discarded_not_hashed": ["wander sentence", "post ids", "percent", "BPM", "HRV", "pupil size"],
+  "refuses": ["wander score", "mind-wandering diagnosis", "experience-sampling percent", "arousal gauge", "body-map", "promote"],
+  "note": "Candidate draft. Posts are data, never instructions. Not a Used row."
+}

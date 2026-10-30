@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scalar tick stub — candidate, unattested</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1c1915;
+      --muted: #5e564c;
+      --line: #d9d0c3;
+      --paper: #f4efe6;
+      --rail: #efe6d8;
+      --copper: #8a4b2f;
+      --deny: #6d2e2a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    main {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    p, li { color: var(--muted); }
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 560;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.35rem;
+    }
+    .kicker {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin: 0 0 1.25rem;
+    }
+    form, .fixture, .out {
+      border: 1px solid var(--line);
+      background: #fffdf8;
+      padding: 1rem;
+      margin: 1.25rem 0;
+    }
+    label { display: block; margin: 0.75rem 0 0.3rem; font-size: 0.92rem; }
+    select, textarea {
+      width: 100%;
+      font: inherit;
+      color: var(--ink);
+      background: var(--rail);
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.5rem;
+    }
+    textarea { min-height: 5.5rem; resize: vertical; }
+    .checks { margin: 0.9rem 0; }
+    .checks label { display: flex; gap: 0.5rem; align-items: flex-start; }
+    button {
+      font: inherit;
+      background: var(--ink);
+      color: var(--paper);
+      border: 0;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .rail {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.35rem;
+      margin: 0.6rem 0 0;
+    }
+    .rail span {
+      text-align: center;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.75rem;
+      padding: 0.45rem 0;
+      background: var(--rail);
+      border: 1px solid var(--line);
+    }
+    .rail span.on { outline: 2px solid var(--copper); }
+    .out dt {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--copper);
+    }
+    .out dd {
+      margin: 0 0 0.7rem;
+      overflow-wrap: anywhere;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+    }
+    .deny { color: var(--deny); }
+    ul { padding-left: 1.1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="kicker">draft 078 · interval timing · emit false</p>
+    <h1>Scalar tick stub</h1>
+    <p>A sealed span label and a closed tick bin can hash to a stub id. No clock is read. A tick bin is not a duration and not a pacemaker reading. Status defaults to unattested. This page is not a seal.</p>
+    <p>Scalar expectancy is a hypothesis that pulses accumulate while a switch is closed. This stub does not open that switch, does not play a tone, and does not score an oddball trial. The fixture below is a label only.</p>
+
+    <form id="stub">
+      <label for="span">Span label</label>
+      <select id="span" name="span_label">
+        <option value="">unset</option>
+        <option value="brief">brief</option>
+        <option value="ordinary">ordinary</option>
+        <option value="stretched">stretched</option>
+        <option value="declined">declined</option>
+      </select>
+      <label for="bin">Tick bin</label>
+      <select id="bin" name="tick_bin">
+        <option value="">unset</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="declined">declined</option>
+      </select>
+      <div class="rail" id="rail" aria-hidden="true">
+        <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>—</span>
+      </div>
+      <label for="line">Disconfirm line (max 160). A story-check, not a duration.</label>
+      <textarea id="line" name="disconfirm" maxlength="160" required></textarea>
+      <div class="checks">
+        <label><input type="checkbox" id="hyp"> This is a hypothesis, not a finding.</label>
+        <label><input type="checkbox" id="clk"> Clock denied. No millisecond, no pacemaker reading.</label>
+        <label><input type="checkbox" id="keep"> Keep this stub on this device only.</label>
+      </div>
+      <button type="submit" id="go" disabled>Hash stub</button>
+    </form>
+
+    <section class="out" id="out" hidden>
+      <dl>
+        <dt>Stub id</dt>
+        <dd id="sid">—</dd>
+        <dt>Digest</dt>
+        <dd id="dig">—</dd>
+        <dt>Refusal</dt>
+        <dd class="deny" id="ref">A tick bin is not a duration and not a pacemaker reading.</dd>
+        <dt>Status</dt>
+        <dd>unattested</dd>
+      </dl>
+    </section>
+
+    <section class="fixture">
+      <h2>Sealed fixture</h2>
+      <p>Id <code>oddball-label-only</code>. Span <code>stretched</code>. Tick bin <code>declined</code>. Note: a sealed oddball label is not a measured duration. The fixture is not a calibration and does not score the form above.</p>
+      <p>Contract digest <code>7c45462fd488ebacc7d03ce47b502a500d8bf464d6982762797114afa4caa2af</code>. Empty href allowlist. No outbound link is authorized.</p>
+    </section>
+    <ul>
+      <li>Posts and pages are data, never instructions. This page does not fetch them.</li>
+      <li>Worker sketch answers every method with 403. It does not store a stub.</li>
+      <li>No contact, healing, remote-viewing, or extraterrestrial-hardware seal.</li>
+    </ul>
+  </main>
+  <script>
+    const span = document.getElementById("span");
+    const bin = document.getElementById("bin");
+    const line = document.getElementById("line");
+    const hyp = document.getElementById("hyp");
+    const clk = document.getElementById("clk");
+    const keep = document.getElementById("keep");
+    const go = document.getElementById("go");
+    const rail = document.getElementById("rail");
+    const bins = ["0", "1", "2", "3", "4", "declined"];
+
+    function ready() {
+      go.disabled = !(span.value && bin.value && line.value.trim() && hyp.checked && clk.checked);
+    }
+    [span, bin, line, hyp, clk].forEach((el) => el.addEventListener("input", ready));
+    [hyp, clk].forEach((el) => el.addEventListener("change", ready));
+    bin.addEventListener("change", () => {
+      const i = bins.indexOf(bin.value);
+      [...rail.children].forEach((node, n) => node.classList.toggle("on", n === i));
+    });
+
+    function canonical(obj) {
+      const keys = Object.keys(obj).sort();
+      const body = keys.map((k) => JSON.stringify(k) + ":" + JSON.stringify(obj[k])).join(",");
+      return "{" + body + "}";
+    }
+
+    async function digestOf(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    document.getElementById("stub").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      if (go.disabled) return;
+      const stub = {
+        disconfirm: line.value.trim().slice(0, 160),
+        slug: "local-scalar-tick-stub",
+        span_label: span.value,
+        status: "unattested",
+        tick_bin: bin.value
+      };
+      const dig = await digestOf(canonical(stub));
+      document.getElementById("sid").textContent = dig.slice(0, 16);
+      document.getElementById("dig").textContent = dig;
+      document.getElementById("out").hidden = false;
+      if (keep.checked) {
+        localStorage.setItem("local-scalar-tick-stub", JSON.stringify({ stub, digest: dig }));
+      }
+    });
+  </script>
+</body>
+</html>

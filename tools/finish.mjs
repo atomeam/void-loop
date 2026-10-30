@@ -2,7 +2,7 @@
 // order, stopping at the first that fails, so no run forgets one and none is done by hand.
 //   node tools/finish.mjs <kind> "what changed, in plain words" [--log "the agent-log line, if it should say more"]
 //        [--by claude] [--title "commit and PR title"] [--brief "who it is for; the problem; what it will not build"] [--body "more commit message"]
-//        [--evolve "wish; wish"] [--test "<browser-suite words>"]... [--show "the change in plain words"] [--try "an ask that shows it"] [--asked ask-…] [--job <id>] [--dry] [--from N]
+//        [--evolve "wish; wish"] [--test "<browser-suite words>"]... [--show "the change in plain words"] [--try "an ask that shows it"] [--about "words its answer shows"] [--asked ask-…] [--job <id>] [--full] [--dry] [--from N]
 // --show and --try go on the ledger line, so the "look what I made" walkthrough can put the change on the stage the next
 // time someone comes back (skills/showcase.js); a grow or build that reaches the site without --try is reminded.
 // --job <id> (a build-queue job this run claimed, tools/job-link.mjs): the PR body ends with `Job: <id>`, the job moves to
@@ -15,7 +15,7 @@
 //   1. the growth ledger line (tools/grow.mjs)          2. the agent-log line (domains/void.agents.log.md)
 //   3. the map covers every skill, miniature, workflow and tool (tools/map-coverage.test.mjs; add a line to docs/MAP.md if not)
 //   4. commit everything                                5. bring main in (tools/merge-main.mjs)
-//   6. the fast checks (tools/checks.mjs)               7. push (tools/push.mjs)
+//   6. the fast checks (tools/checks.mjs --changed: only what covers the changed files; --full runs them all)   7. push (tools/push.mjs)
 //   8. the PR, with a B.I.T.E. body, labelled automerge (gh, when it is signed in; otherwise the body is printed to paste)
 // --dry prints the steps and runs none of them. --from N starts at step N, after a stop, so the ledger and log lines are not
 // written twice. Nothing here edits an old ledger or log line.
@@ -42,7 +42,7 @@ export function parseArgs(argv) {
   if (/\basked by (?:verse|void)\b/i.test(what) && !opt('--asked')) return { error: 'this says "asked by Verse": name the ask so the self page counts it built: --asked ask-… (its id) or --asked "Verse\'s words for it"' };
   const tests = rest.flatMap((x, i) => (x === '--test' && rest[i + 1] && !rest[i + 1].startsWith('--') ? [rest[i + 1]] : []));
   if (rest.includes('--job') && !JOB_ID.test(opt('--job'))) return { error: '--job is the queue job\'s id (4 to 16 lowercase letters and digits, as /api/queue shows it)' };
-  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), evolve: opt('--evolve'), show: opt('--show'), try: opt('--try'), asked: opt('--asked'), job: opt('--job'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
+  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), evolve: opt('--evolve'), show: opt('--show'), try: opt('--try'), about: opt('--about'), asked: opt('--asked'), job: opt('--job'), tests, dry: rest.includes('--dry'), full: rest.includes('--full'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
 }
 
 /** the changed files that reach the site: the page and its copies, skills, the server and its shared code. Pure. */
@@ -67,24 +67,47 @@ function firstShot(a) {
   // the --try ask is what "look what I made" plays for this line, so a skill on this very tree has to answer it (owner,
   // 2026-10-16: "the preview is supposed to actually preview what it says"): typed into the page with outside services blocked
   if (a.try) {
-    console.log('  ask.mjs "' + a.try + '" (the preview has to show something)');
+    console.log('  ask.mjs "' + a.try + '" (the preview has to show something, and something about the ask: open the screenshot it saves and look)');
     const r = spawnSync(process.execPath, [resolve(root, 'tools', 'ask.mjs'), a.try], { encoding: 'utf8', timeout: 180e3, env: process.env });
     const text = (r.stdout || '') + (r.stderr || '');
     process.stdout.write(text);
-    const p = tryProblem(text);
+    const p = tryProblem(text, a.about);
     if (p) { console.error('  --try "' + a.try + '": ' + p + '\n  Give --try an ask this change answers (node tools/ask.mjs "<ask>" shows who answers), or fix the matcher.'); return 1; }
   }
   return 0;
 }
 
-/** what is wrong with ask.mjs's report on the --try ask, or '' when a skill answered it. Pure. */
-export function tryProblem(report) {
+/** what is wrong with ask.mjs's report on the --try ask, or '' when a skill answered it with something about the ask. Pure. */
+export function tryProblem(report, about = '') {
   const t = String(report || '');
   if (/\n\s*ERROR: /.test(t)) return 'the page threw an error on it';
   const by = /\n\s*by: (.*)/.exec(t);
   if (!by || /^\((?:nothing logged|no note)\)/.test(by[1])) return 'nothing answered it (no skill logged the ask)';
   if (/^(?:article|answer|short topic|article fallback)$|^miss/.test(by[1].trim())) return 'it fell through to the generic answer (' + by[1].trim() + ')';
-  return '';
+  return offTopic(t, about);
+}
+
+// the words of an ask that say WHAT it is about, not how it is asked ("draw a cartoon cat" -> cat). Owner, 2026-10-23: "add a testing step
+// to yourself that checks the result of everything to see if it even does what you expect or want ... i can tell you now cartoon is not what
+// it should be" ("draw a toon cat" drew the same "Cartoon Lump" as every other subject, and every check passed because something answered).
+const HOW = new Set(('a an the of to for me my mine your our us we i you it its this that these those is are was be am do does did can could would should will '
+  + 'please and or with in on at by from as into about up out off now just some any one new show tell give make draw create put add open start play get find '
+  + 'let lets let\'s what whats what\'s how why when where who which want need like turn set see look run build bring keep use say ask cartoon toon version '
+  + 'card picture image photo thing stuff here there today verse void v01d').split(' '));
+/** the content words of an ask. Pure. */
+export const askWords = (ask) => [...new Set(String(ask || '').toLowerCase().replace(/[\u2019']/g, "'").split(/[^a-z0-9']+/).filter((w) => w.length > 2 && !HOW.has(w) && !/^\d+$/.test(w)))];
+const stem = (w) => w.replace(/'s$/, '').replace(/(?:ing|es|s)$/, '');
+/** '' when what the page showed (its text, its pictures' alt text) names at least one content word of the ask, else what is missing. An
+ *  ask with no content words ("make a clock" has one: clock; "what's new" none) passes. `about` replaces the words when the right answer
+ *  names none of them on purpose (finish.mjs --about "words it does show"). Pure. */
+export function offTopic(report, about = '') {
+  const t = String(report || ''), ask = (/^> (.*)$/m.exec(t) || [])[1] || '';
+  const words = about ? askWords(about) : askWords(ask);
+  if (!words.length) return '';
+  const seen = ['said', 'shows', 'pictures'].map((k) => (new RegExp('\\n\\s*' + k + ': (.*)').exec(t) || [])[1] || '').join(' ').toLowerCase();
+  if (words.some((w) => seen.includes(stem(w)))) return '';
+  return 'what it showed is not about what was asked: nothing on the stage or the card names ' + words.map((w) => '"' + w + '"').join(' or ')
+    + ' (it showed: ' + (seen.trim().slice(0, 120) || 'nothing') + '). Look at the screenshot; if the answer is right, pass --about "<words it shows>"';
 }
 
 /** the agent-log line, in the log's own shape. Pure. */
@@ -94,7 +117,7 @@ export const logLine = ({ by, kind, log }, at = new Date()) => `${at.toISOString
 export function prBody({ what, brief, kind, tests, job, evolve }) {
   return ['## Brief (B.I.T.E.)', brief || '- **For:** \n- **Problem:** \n- **First version:** ' + what + '\n- **Will not build:** ', '',
     '## Implement', `${kind}: ${what}`, '', '## Test', ...(tests && tests.length ? tests.map((t) => '- in a real browser before the push: `node tools/test_void.mjs --only "' + t + '"` passes') : []),
-    '- `VOID_SKIP_BENCH=1 node tools/checks.mjs` passes (run by tools/finish.mjs)', '- Used as a person would: ', '',
+    '- `VOID_SKIP_BENCH=1 node tools/checks.mjs --changed` passes (run by tools/finish.mjs; main runs every check)', '- Used as a person would: ', '',
     '## Evolve', ...(evolve ? evolve.split(';').map((w) => w.trim()).filter(Boolean).map((w) => '- ' + w) : ['- ']), ...(job ? ['', jobLine(job)] : [])].join('\n');
 }
 
@@ -108,9 +131,9 @@ export function steps(a) {
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
     // a new skill file is registered before it is committed (Verse's ask: the skills/ manifest registers every new skill; the fast checks then run the router test on it)
     // the book's pages and the families they come from are generated: written here so a new skill is in the book's index without a manual step (owner, 2026-10-17: the book shows every update immediately)
-    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
+    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || (spawnSync('git', ['diff', '--cached', '--quiet'], { cwd: root }).status === 0 ? (console.log('  nothing new to commit: already committed'), 0) : git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : []))))], // a tree committed by hand is not a failure (2026-10-23)
     ['bring main in', node('merge-main.mjs')],
-    ['fast checks', node('checks.mjs')],
+    ['fast checks', node('checks.mjs', ...(a.full ? [] : ['--changed']))], // only what covers the changed files (tools/checks-changed.mjs); --full runs all 425
     ['push', node('push.mjs')],
     ['pull request', () => openPr(a)],
   ];
@@ -138,7 +161,10 @@ function openPr(a) {
 
 function main(argv) {
   const a = parseArgs(argv.slice(2));
-  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--asked ask-…] [--job <id>] [--dry] [--from N]'); return 2; }
+  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--about "..."] [--asked ask-…] [--job <id>] [--full] [--dry] [--from N]'); return 2; }
+  // the ledger's limits, checked before any step runs (a show line one character over used to surface only after the browser check, 2026-10-23)
+  if (a.show && (a.show.length < 1 || a.show.length > 70)) { console.error('finish: --show must be 1 to 70 characters (it is ' + a.show.length + ')'); return 2; }
+  if (a.try && (a.try.length < 1 || a.try.length > 120)) { console.error('finish: --try must be 1 to 120 characters (it is ' + a.try.length + ')'); return 2; }
   if (!a.try && (a.kind === 'grow' || a.kind === 'build') && a.from === 0) console.log('finish: no --try: the "look what I made" walkthrough cannot show this one on the stage (add --show "plain words" --try "an ask that shows it" if people can see it)');
   for (const [i, [label, step]] of steps(a).entries()) {
     const shown = typeof step === 'function' ? '' : ': ' + [step[0] === process.execPath ? 'node' : step[0], ...step[1].map((x) => x.replace(root + '/', ''))].join(' ');

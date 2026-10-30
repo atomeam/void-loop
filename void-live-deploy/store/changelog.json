@@ -1,17 +1,25 @@
 {
  "changelog": [
   {
+   "at": "2026-10-21T22:28:32.773Z",
+   "id": "remix-kit",
+   "name": "Verse Remix Kit",
+   "what": "published by Verse: 6 files, 5.4 MB",
+   "price": "Free · pay what you want",
+   "status": "live"
+  },
+  {
    "at": "2026-10-15T06:34:28.905Z",
    "id": "site-tester",
-   "name": "V01D Site Tester",
+   "name": "Verse Site Tester",
    "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)",
-   "price": "$24",
-   "status": "needs-gumroad"
+   "price": "Free · pay what you want",
+   "status": "live"
   },
   {
    "at": "2026-10-15T06:08:38.111Z",
    "id": "v01d-clips-pack",
-   "name": "V01D Clips Pack (10 shorts)",
+   "name": "Verse Clips Pack (10 shorts)",
    "what": "published by V01D: 11 files, 37.8 MB",
    "price": "Free · pay what you want",
    "status": "live"
@@ -19,7 +27,7 @@
   {
    "at": "2026-10-15T06:08:27.657Z",
    "id": "v01d-forge-printables",
-   "name": "V01D Forge Printables (10 STLs)",
+   "name": "VERSE Forge Printables (10 STLs)",
    "what": "published by V01D: 11 files, 19.7 MB",
    "price": "Free · pay what you want",
    "status": "live"

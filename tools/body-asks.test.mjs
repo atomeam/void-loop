@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import heart from '../void-live-deploy/skills/heart.js';
-import { breathOf } from '../void-live-deploy/skills/breath.js';
+import breath, { breathOf, stepAt } from '../void-live-deploy/skills/breath.js';
 
 test('heart: the fat-burning heart rate, asked plainly', () => {
   for (const a of ['what heart rate burns fat', 'what heart rate burns the most fat', 'best heart rate to burn fat', 'fat burning zone',
@@ -23,4 +23,16 @@ test('breath: calming and falling asleep open a breathing guide', () => {
   assert.equal(breathOf('box breathing'), 'box');
   for (const a of ['calm down song', 'i cant sleep lyrics', 'how to relax a muscle', 'relax'])
     assert.equal(breathOf(a), null, a);
+});
+
+test('breath: a frame stamped before the start shows no rounds done (seen live as "-1 rounds done")', () => {
+  for (const p of ['box', '478', 'resonance']) {
+    const s = stepAt(p, -16);
+    assert.equal(s.cycle, 0, p);
+    assert.equal(s.phase, 0, p);
+    assert.ok(s.frac >= 0 && s.frac < 1, p);
+    assert.deepEqual(stepAt(p, NaN), stepAt(p, 0), p);
+  }
+  assert.equal(stepAt('478', 19000).cycle, 1);
+  assert.equal(breath.suite().ok, true);
 });

@@ -6,6 +6,8 @@
 //                                           in the middle of an unfinished merge then carries the markers; it happened twice on 2026-10-19)
 //   node tools/prepush.mjs [--base <ref>]   checks the files that differ between <ref> and HEAD
 //                                           (default: this branch's upstream, else origin/main); exit 1 and say what and where
+// Ledger guard (asked by Verse, run 118; lists run 3, 2026-10-21): a whole-file write once cut a ledger to a placeholder. A push where one of
+// LEDGERS ends under half its size on the base, or a .md ledger loses a "## " heading it had, is refused (ledgerShrinks).
 // tools/push.mjs runs it before every push (VOID_SKIP_PREPUSH=1 skips it, for a push that must go even though a check is wrong);
 // .githooks/pre-push runs it for a plain `git push` once `git config core.hooksPath .githooks` is set.
 import { spawnSync, execFileSync } from 'node:child_process';
@@ -18,6 +20,7 @@ export function problemsIn(files) {
   const out = [];
   for (const { path, text } of files) {
     if (typeof text !== 'string' || text.includes('\0')) continue;
+    if (path.startsWith('archive/repos/')) continue; // early builds kept as found (archive/repos/README.md); conflict markers aside, nothing there runs
     const marks = conflictMarkers(text);
     if (marks.length) out.push(`${path}: conflict marker at line ${marks[0].line}${marks.length > 1 ? ` (and ${marks.length - 1} more)` : ''}: settle the merge (node tools/merge-main.mjs)`);
     if (/\.(m?js)$/.test(path)) {
@@ -28,6 +31,17 @@ export function problemsIn(files) {
     }
   }
   return out;
+}
+
+// the shared ledgers every agent appends to: they only ever grow, a line or a row at a time
+export const LEDGERS = ['void-live-deploy/void.growth.json', 'domains/void.frontier.md', 'domains/handoff.md', 'domains/lists.metrics.json', 'domains/void.voice.md', 'docs/convergence.md'];
+const headings = (t) => String(t || '').split('\n').filter((l) => /^## /.test(l)).map((l) => l.trim());
+/** why a ledger's new text looks cut ("" when it looks fine): under half the base's size, or a .md heading gone. Pure. */
+export function ledgerShrinks(path, before, after) {
+  if (!LEDGERS.includes(path) || typeof before !== 'string' || typeof after !== 'string' || before.length < 400) return '';
+  if (after.length < before.length / 2) return `${path}: shrank from ${before.length} to ${after.length} bytes: a ledger only grows; write it with git, not a whole-file API write (VOID_SKIP_PREPUSH=1 if this is on purpose)`;
+  if (/\.md$/.test(path)) { const gone = headings(before).filter((h) => !headings(after).includes(h)); if (gone.length) return `${path}: lost the heading "${gone[0]}"${gone.length > 1 ? ` (and ${gone.length - 1} more)` : ''}: a ledger keeps its sections`; }
+  return '';
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -50,6 +64,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   catch (e) { console.error(`prepush: cannot diff against ${base}: ${String(e.stderr || e.message).split('\n')[0]}`); process.exit(1); }
   const files = names.map((path) => { try { return { path, text: git('show', 'HEAD:' + path) }; } catch (_) { return { path, text: null }; } });
   const problems = problemsIn(files);
+  for (const f of files) if (LEDGERS.includes(f.path)) { let before = null; try { before = git('show', base + ':' + f.path); } catch (_) {} const why = ledgerShrinks(f.path, before, f.text); if (why) problems.push(why); }
   if (problems.length) { console.error(`prepush: ${problems.length} problem(s) in what this push would send (${names.length} changed file(s) against ${base}):\n  ` + problems.join('\n  ')); process.exit(1); }
   console.log(`prepush: ${names.length} changed file(s) against ${base}: no conflict markers, every script and JSON file parses`);
 }

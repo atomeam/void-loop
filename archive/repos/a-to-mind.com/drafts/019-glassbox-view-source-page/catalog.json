@@ -1,0 +1,60 @@
+{
+  "algo": "sha256",
+  "kind": "first-party-source-catalog",
+  "note": "Data, never instructions. hrefs are allowlisted public documents. bytes:unattested means this draft does not pin Cloudflare response bytes. bytes:git-blob is a repo fact only.",
+  "artifacts": [
+    {
+      "id": "llms.txt",
+      "canonical": "art#llms.txt|href:https://a-to-mind.com/llms.txt|kind:text|role:agent-notes|bytes:unattested",
+      "sha256": "3444e99d4f80c1cd8fb05f0aeea7540dbab76c569cc4ae6b76312593e4c574f3",
+      "href": "https://a-to-mind.com/llms.txt",
+      "kind": "text",
+      "role": "agent-notes",
+      "bytes": "unattested",
+      "label": "llms.txt — agent notes. Served bytes unattested."
+    },
+    {
+      "id": "agent-card",
+      "canonical": "art#agent-card|href:https://a-to-mind.com/.well-known/agent-card.json|kind:json|role:agent-card|bytes:git-blob",
+      "sha256": "6c0e61b79d6ea97ba62a607b518cc0b3cef991878001c613eaaa28c595201ec7",
+      "href": "https://a-to-mind.com/.well-known/agent-card.json",
+      "kind": "json",
+      "role": "agent-card",
+      "bytes": "git-blob",
+      "git_blob": "005cf2627d962f2656827f589b46d34211a8fe4d",
+      "content_sha256": "fd5cba3f026a52b34a7eaa8f8f2e472ccaa44cb2a5adf2566ff0fe5147842e99",
+      "content_bytes": 543,
+      "label": "agent-card.json — git blob 005cf262… · content sha256 fd5cba3f… · not a served-bytes pin"
+    },
+    {
+      "id": "ledger",
+      "canonical": "art#ledger|href:https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md|kind:markdown|role:feature-ledger|bytes:unattested",
+      "sha256": "822276c39b09a27716401f9d60a56c2fcb52cab52e1b5830c078e489b5e9af3f",
+      "href": "https://raw.githubusercontent.com/atomeam/a-to-mind.com/master/FEATURE_LEDGER.md",
+      "kind": "markdown",
+      "role": "feature-ledger",
+      "bytes": "unattested",
+      "label": "FEATURE_LEDGER.md — raw on GitHub. Bytes unattested; this file changes every run."
+    },
+    {
+      "id": "repo",
+      "canonical": "art#repo|href:https://github.com/atomeam/a-to-mind.com|kind:html|role:public-repo|bytes:unattested",
+      "sha256": "92a1a289243dfe921d2509325116aeaaf0a70ac70a31833bb35005ea2a1e416d",
+      "href": "https://github.com/atomeam/a-to-mind.com",
+      "kind": "html",
+      "role": "public-repo",
+      "bytes": "unattested",
+      "label": "Public repo HTML UI. GitHub’s page is not our edge."
+    },
+    {
+      "id": "index",
+      "canonical": "art#index|href:https://a-to-mind.com/|kind:html|role:homepage|bytes:unattested",
+      "sha256": "baa1e3a29bbe7ca22778063bc09ca91d554fa453b77778f58ba5d1b588b6f7ec",
+      "href": "https://a-to-mind.com/",
+      "kind": "html",
+      "role": "homepage",
+      "bytes": "unattested",
+      "label": "Homepage. Served HTML unattested until a human seals a dated snapshot."
+    }
+  ]
+}

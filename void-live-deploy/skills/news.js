@@ -4,8 +4,19 @@
  * "news today", "what's in the news", "headlines".
  * Every news card stays current on its own (skills/live.js): headlines and topic stories re-fetch every 30 minutes,
  * the tech front page every 10, for as long as the card is up.
+ * The tech card opens the News page on its Technology section, and a topic card opens it searched for that topic (data-page);
+ * the News page's own card asks the stage for the same views back (lib/news-card.js). The topic stories come from lib/news-week.js, which the
+ * News page also uses when its headlines miss a search, so the page and the card show the same stories.
  */
 import { keepLive } from './live.js';
+import { weekUrl, weekItems } from '../lib/news-week.js';
+/** the News page for a stage card: the topic searched (or, with no topic, the Technology section) as a plain query the card frame
+ *  takes (lib/card-frame.js pageOfCard), or '' when the topic does not fit one. Pure. */
+export function pageOfNews(topic) {
+  if (topic == null) return '/news/?sec=tech';
+  const q = encodeURIComponent(String(topic).trim());
+  return /^[A-Za-z0-9_.%-]{1,120}$/.test(q) ? '/news/?q=' + q : '';
+}
 const list = (esc, items) => '<ul>' + items.map((h) => { const u = /^https:\/\//.test(h.url || '') ? h.url : 'https://news.ycombinator.com/item?id=' + encodeURIComponent(h.objectID || '');
   return '<li style="margin:6px 0"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(h.title) + '</a> <span style="color:#8a8a8a">· ' + esc(String(h.points || 0)) + ' points</span></li>'; }).join('') + '</ul>';
 // "tech news", "technology news today", "hacker news": the Hacker News front page (Algolia API, no key). Other topics
@@ -27,7 +38,7 @@ async function liveCard(api, el, name, every, draw) {
 }
 async function runTech(api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; if (p.dataset) p.dataset.page = pageOfNews(null); });
   el._title = 'Tech news'; el._feed = 'tech news feed';
   return liveCard(api, el, 'news', 10 * 60e3, async () => {
     const j = await fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10').then((r) => r.json());
@@ -46,20 +57,19 @@ export function topicNewsOf(text) {
 }
 async function runTopic(topic, api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page && p.dataset) p.dataset.page = page; });
   el._title = 'News about ' + topic; el._feed = 'news search';
   return liveCard(api, el, 'news', 30 * 60e3, async () => {
-    const since = Math.floor(Date.now() / 1000) - 7 * 86400;
-    const j = await fetch('https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=10&numericFilters=created_at_i>' + since + '&query=' + encodeURIComponent(topic)).then((r) => r.json());
+    const j = await fetch(weekUrl(topic)).then((r) => r.json());
     if (!api._pageStill(el)) return;
-    const items = ((j && j.hits) || []).filter((h) => h.title).slice(0, 10);
+    const items = weekItems(j);
     if (!items.length) { el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><p>No Hacker News stories mention “' + esc(topic) + '” this past week. For general headlines, ask “news today”.</p>'; return; }
     el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">Hacker News stories from the past week</div>' + list(esc, items)
       + '<div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a> (tech-leaning; for world headlines ask “news today”)</div>';
   });
 }
 export function isNews(text) {
-  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?(?:\s+today)?)|what\s+is\s+in\s+the\s+news(?:\s+today)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?)(?:\s+today|\s+now|\s+right\s+now)?|what\s+is\s+in\s+the\s+news(?:\s+today|\s+now|\s+right\s+now)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 async function run(text, api) {
   if (isTechNews(text)) return runTech(api);

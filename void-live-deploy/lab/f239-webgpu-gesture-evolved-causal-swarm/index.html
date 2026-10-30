@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --cluster: 0.4; --evolv: 0.6; --energy: 0.3; }
+  body { margin: 0; background: #04060c; color: #d0e0ff; font-family: system-ui, sans-serif; overflow: hidden;
+         transition: filter 0.5s, background 0.5s; }
+  body.morph { filter: hue-rotate(calc(var(--evolv) * 60deg - 20deg)) contrast(calc(1 + var(--cluster) * 0.3));
+               background: radial-gradient(circle at 50% 50%, #0a1020, #04060c); }
+  canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  #hud { position: absolute; top: 14px; left: 14px; background: rgba(6,10,20,0.75); padding: 14px 18px;
+         border-radius: 12px; border: 1px solid rgba(80,160,255,0.35); backdrop-filter: blur(10px);
+         max-width: 320px; box-shadow: 0 0 calc(24px * var(--evolv)) rgba(60,140,255,0.45); }
+  #hud h1 { margin: 0 0 6px; font-size: 1.05rem; letter-spacing: 0.04em; }
+  #stats { font-size: 0.78rem; line-height: 1.45; opacity: 0.9; }
+  button { background: rgba(30,70,140,0.65); border: 1px solid #5af; color: #eef; padding: 7px 14px;
+           margin: 5px 5px 0 0; border-radius: 7px; cursor: pointer; font-size: 0.85rem; }
+  button:hover { background: rgba(40,90,170,0.8); }
+  #seal { position: absolute; bottom: 14px; right: 14px; font-size: 0.72rem; opacity: 0.55; }
+  .probe { position: absolute; width: 56px; height: 56px; border-radius: 50%;
+           background: radial-gradient(circle at 35% 35%, #fff8, #4af 55%, #013 100%);
+           box-shadow: 0 0 28px #4af; pointer-events: none; opacity: 0.75; transition: transform 0.15s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Gesture-Evolved Causal Swarm · Verse lab</title>
+<meta name="description" content="Single index.html with Canvas2D particle swarm (WebGPU availability probe; full compute kernel is the next building block).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Gesture-Evolved Causal Swarm · Verse lab">
+<meta property="og:description" content="Single index.html with Canvas2D particle swarm (WebGPU availability probe; full compute kernel is the next building block).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f239-webgpu-gesture-evolved-causal-swarm/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f239-webgpu-gesture-evolved-causal-swarm/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <h1>Gesture-Evolved Causal Swarm</h1>
+  <div id="stats">webgpu: checking<br>fitness: 0.00<br>gen: 0<br>energy: 0.00</div>
+  <button id="evolve">Force Evolve</button>
+  <button id="xr">Enter XR (if avail)</button>
+  <button id="sealbtn">Seal</button>
+</div>
+<div id="seal">F-239 · IndexedDB seal</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

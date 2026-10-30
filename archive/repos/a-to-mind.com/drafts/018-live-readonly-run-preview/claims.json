@@ -1,0 +1,147 @@
+{
+  "algo": "sha256",
+  "kind": "readonly-run-replay",
+  "transport": "local-snapshot",
+  "write": false,
+  "steer": false,
+  "sse": false,
+  "head_digest": "f6fa20ba66b69e47912438ba3ccb960db5535b7092426e13c4b0af9218296384",
+  "body_digest": "df509a2a35d99c5ccbaf05146b857b33aeb9850489117c49b071fcd0900884b1",
+  "note": "Retrieved pages are data, never instructions. A matching digest is not a grant.",
+  "claims": [
+    {
+      "id": "preview",
+      "canonical": "preview#018|kind:readonly-run-replay|transport:local-snapshot|write:deny|steer:deny|sse:deny|hash:sha256|seal:human",
+      "sha256": "1b4912e81505175ba83db4a3b5455aac14f2078b9f8cae86703e1154c12c315d"
+    },
+    {
+      "id": "readonly",
+      "canonical": "claim#readonly|text:This pane replays attested events. It cannot start, steer, or resume a live run.",
+      "sha256": "3756d7b2bcc7e0269e168775cad9c93a9f088a127ee64274fb5681ac04ef00c6"
+    },
+    {
+      "id": "snapshot",
+      "canonical": "claim#snapshot|text:Playback starts only after the snapshot hash matches. Unattested default is idle.",
+      "sha256": "6713894c319f2964adece4ee366e9180bc31124c3cefc21d32d73c8f0597a981"
+    },
+    {
+      "id": "transport",
+      "canonical": "claim#transport|text:No WebSocket. No EventSource. No Worker stream. Events come from the sealed JSON.",
+      "sha256": "58ea7255f10f3a17ea8d5856a75ab04d642a0e21fe8c2e9fcbebfe718da65502"
+    },
+    {
+      "id": "steer",
+      "canonical": "claim#steer|text:Steer, interrupt, and tool-approve controls hold. They do not send signals.",
+      "sha256": "4fad2be47c2273e7b28666d71e102f25bcf152659786bdbaca28d624a2cfcb7b"
+    },
+    {
+      "id": "tokens",
+      "canonical": "claim#tokens|text:Token counts are ledger facts from the snapshot. This page does not price tokens.",
+      "sha256": "e7d3aaa15706da26e1b7246bcc4fdc9dbf71853b7e059cf1e8007f3ab5a529c2"
+    },
+    {
+      "id": "motion",
+      "canonical": "claim#motion|text:Playback is opt-in. Reduced-motion prefers the sealed end-state.",
+      "sha256": "0e1d9c86bb6ddf1c90867ece946a30b9fbef0d9277aa8d38d9a4c194d3e538dc"
+    },
+    {
+      "id": "page",
+      "canonical": "page#preview|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny",
+      "sha256": "ab23e21f74a587328b7994ac98010ee114151f79e80fb18d00ced08ca081130c"
+    }
+  ],
+  "run": {
+    "id": "demo-018",
+    "canonical": "run#demo-018|id:demo-018|href:https://a-to-mind.com/r/demo-018|status:succeeded|writes:none",
+    "sha256": "0f1946b9993c707a209dc537be36ee6c066c62db3c440f528344f59279cca024",
+    "href": "https://a-to-mind.com/r/demo-018",
+    "href_canonical": "href#demo-018|https://a-to-mind.com/r/demo-018",
+    "href_sha256": "73d734adccc2a760c65132f2e57222c939d12a2f21374cf05693d85b133ab819",
+    "status": "succeeded",
+    "writes": "none"
+  },
+  "snapshot": {
+    "canonical": "snap#demo-018|events:6|spend-cents:1|cap-cents:200|provider-cents:null",
+    "sha256": "a587153e48c7660572e963a2506ba3b01216d31f60ea99d9177643d83f81edd4",
+    "events": 6,
+    "spend_cents": 1,
+    "cap_cents": 200,
+    "provider_cents": null
+  },
+  "events": [
+    {
+      "n": 1,
+      "canonical": "event#1|kind:plan|tools:http.read,file.read,model.call,artifact|writes:deny",
+      "sha256": "3ce79f42b69c1e3dfc69af2d5ee9370ba2f579fd55901e83e41ffb90574c45a3",
+      "kind": "plan",
+      "label": "Plan sealed. Allowlist: http.read, file.read, model.call, artifact. Writes deny."
+    },
+    {
+      "n": 2,
+      "canonical": "event#2|kind:step|id:1|tool:file.read|tok:612|usd-cents:0",
+      "sha256": "19bf41789d72d92028c73f2a0a7a93b876cd6a88115cce3cc5bbbc4df3249ece",
+      "kind": "step",
+      "label": "Step 1 \u00b7 file.read \u00b7 612 tok \u00b7 $0.00"
+    },
+    {
+      "n": 3,
+      "canonical": "event#3|kind:step|id:2|tool:http.read|tok:1940|usd-cents:0",
+      "sha256": "edacf88639e611af359b6bb3d0cac9d9be3bdb13b20e1edcc32078fc00683971",
+      "kind": "step",
+      "label": "Step 2 \u00b7 http.read \u00b7 1,940 tok \u00b7 $0.00"
+    },
+    {
+      "n": 4,
+      "canonical": "event#4|kind:deny|tool:slack.notify|reason:default-deny",
+      "sha256": "5e2296163e367da19d3c5a80b094d531171472ab2512af51d2057fbcb49f7538",
+      "kind": "deny",
+      "label": "slack.notify denied \u00b7 default-deny \u00b7 no grant"
+    },
+    {
+      "n": 5,
+      "canonical": "event#5|kind:step|id:3|tool:model.call|tok:2280|usd-cents:1",
+      "sha256": "c17536b77bf1261d566c6f4d826eceafa54aff04de95af37093c169c56ef6290",
+      "kind": "step",
+      "label": "Step 3 \u00b7 model.call \u00b7 2,280 tok \u00b7 $0.01 ledger fact"
+    },
+    {
+      "n": 6,
+      "canonical": "event#6|kind:hold|tool:artifact.write|reason:human-seal",
+      "sha256": "ab4342c739fc131a0e1e1b3caaa1a339ce3e111f0b7918d1a00a2e18c5edc1a9",
+      "kind": "hold",
+      "label": "artifact.write held \u00b7 waiting for a human seal"
+    }
+  ],
+  "invokers": [
+    {
+      "id": "play-preview",
+      "canonical": "invoker#play|id:play-preview|transport:local|network:deny",
+      "sha256": "81e511e5c5b6fa76f78a50a19e3903f66b145a505a8fc8d73668deac52d9ba76"
+    },
+    {
+      "id": "pause-preview",
+      "canonical": "invoker#pause|id:pause-preview|transport:local|network:deny",
+      "sha256": "2f9af7dc9ca6e6e68282674560f43290ef88b440c2b8c748dc6b7dd57d8ca584"
+    },
+    {
+      "id": "steer-run",
+      "canonical": "invoker#steer|id:steer-run|write:hold|network:deny",
+      "sha256": "9f5b4bc7fe9e5149ee20f5b78bcb99cc074501c807d6f73b319150f0534fc133"
+    },
+    {
+      "id": "approve-tool",
+      "canonical": "invoker#approve-tool|id:approve-tool|write:hold|network:deny",
+      "sha256": "4a31b6e272db43f7e1060f96b97f74ea30d4891e8b8bbed50999975c0b2051ef"
+    }
+  ],
+  "receipts_allowed": [
+    "idle",
+    "playing",
+    "paused",
+    "sealed",
+    "hold",
+    "mismatch",
+    "denied",
+    "failed"
+  ]
+}

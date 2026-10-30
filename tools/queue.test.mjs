@@ -95,3 +95,20 @@ test('the owner view names its columns one by one: exactly the listed ones, so a
   assert.deepEqual(Object.keys(items[0]).sort(), ['ask', 'at', 'draft', 'id', 'note', 'state', 'target', 'updated']);
   assert.ok(!JSON.stringify(items).includes('not for any view'));
 });
+
+test('GET ?state= lists every job in those states, oldest first, past the view\'s 20; unknown states fall back to the view', async () => {
+  const env = envOf();
+  for (let i = 0; i < 25; i++) env.DB.raw.prepare('INSERT INTO void_queue VALUES (?, ?, ?, ?, ?, ?, ?)').run('q' + i, 'ask ' + i, 'feature:' + i, i % 5 ? 'queued' : 'building', '', '2026-10-' + String(10 + i).padStart(2, '0') + 'T00:00:00Z', '2026-10-26T00:00:00Z');
+  job(env, 'f1', 'probe:x', 'failed');
+  const get = (q) => Q.onRequestGet({ env, request: new Request('https://x/api/queue' + q, { headers: { authorization: 'Bearer ' + TOKEN } }) });
+  const all = await (await get('?state=queued,building&limit=200')).json();
+  assert.equal(all.items.length, 25, 'all 25 open jobs, not the newest 20');
+  assert.equal(all.items[0].id, 'q0', 'oldest first');
+  assert.ok(all.items.every((r) => r.state === 'queued' || r.state === 'building'));
+  const two = await (await get('?state=queued&limit=2')).json();
+  assert.equal(two.items.length, 2);
+  const fallback = await (await get('?state=nonsense')).json();
+  assert.ok('heartbeat' in fallback, 'an unknown state is the owner view');
+  const denied = await Q.onRequestGet({ env, request: new Request('https://x/api/queue?state=queued') });
+  assert.equal(denied.status, 401, 'still owner-only');
+});

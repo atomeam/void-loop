@@ -50,7 +50,7 @@ const hostOf = (u) => { try { const x = new URL(u); return x.protocol === 'https
 /** an https url on one of the hosts, else '' (artwork and trailers come only from the sources' own CDNs). Pure. */
 export const onHost = (u, hosts) => { const h = hostOf(u); return h && hosts.some((x) => h === x || h.endsWith('.' + x)) ? String(u) : ''; };
 const APPLE_MEDIA = ['mzstatic.com'], APPLE_PAGES = ['apple.com'];
-const firstSentences = (s, n = 220) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); if (t.length <= n) return t; const cut = t.slice(0, n); const i = cut.lastIndexOf('. '); return (i > 80 ? cut.slice(0, i + 1) : cut.replace(/\s+\S*$/, '') + '…'); };
+const firstSentences = (s) => String(s || '').replace(/\s+/g, ' ').trim(); // the whole text (owner, 2026-10-21)
 
 /** the iTunes result that is this movie: same normalised title, and the year within one when both are known. Pure. */
 export function pickItunes(results, title, year) {
@@ -82,6 +82,29 @@ export function pickFile(files) {
 }
 export const archiveFileUrl = (id, name) => 'https://archive.org/download/' + encodeURIComponent(id) + '/' + encodeURIComponent(name);
 /** where-to-watch links that are searches on legal services: never a stream. Pure. */
+// Wikidata, the second source (2026-10-30: iTunes refuses shared cloud addresses, and every well-known pick, "The Grand Budapest Hotel (2014)",
+// "Parasite (2019)", came back "not verified" on a-to-mind.com). Keyless SPARQL: a film is an item labelled with this exact English title that is
+// an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director and the runtime, never a poster.
+export const WIKIDATA = 'https://query.wikidata.org/sparql?format=json&query=';
+/** the SPARQL that finds the films with this English label. The title goes through cleanTitle (no quote or backslash can reach the literal). Pure. */
+export function wikidataQuery(title) {
+  const t = cleanTitle(title).replace(/["\\]/g, '');
+  // SPARQL, not SQL: t passed cleanTitle, which keeps only letters, digits, spaces and .,:;'’&!?- , so no quote or backslash can end the literal
+  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.' // void-review: ok (SPARQL literal of a cleanTitle value, see above)
+    + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } } GROUP BY ?f LIMIT 10';
+}
+/** the Wikidata row that is this movie: the year within one when it is known, else the most recent film of that name; or null. Pure. */
+export function pickWikidata(json, title, year) {
+  const v = (b, k) => (b && b[k] && typeof b[k].value === 'string' ? b[k].value : '');
+  const rows = ((json && json.results && json.results.bindings) || []).map((b) => ({
+    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))),
+  })).filter((r) => r.id && r.year);
+  const y = cleanYear(year);
+  const r = y ? rows.find((x) => Math.abs(x.year - y) <= 1) : rows.sort((a, b) => b.year - a.year)[0];
+  if (!r) return null;
+  return { title: cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, page: 'https://www.wikidata.org/wiki/' + r.id };
+}
+
 export function watchLinks(title, year, store) {
   const q = encodeURIComponent(cleanTitle(title) + (cleanYear(year) ? ' ' + cleanYear(year) : ''));
   const l = [];

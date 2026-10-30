@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; background:#0a0a12; color:#e8e8f0; font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+  #hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(10,10,20,.8); padding:8px 12px; border-radius:8px; max-width:340px; }
+  button { background:#2a2a4a; color:#fff; border:1px solid #555; padding:6px 12px; margin:2px; border-radius:4px; cursor:pointer; }
+  button:hover { background:#3a3a6a; }
+  #stage { position:relative; width:100vw; height:100vh; }
+  canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  .agent {
+    position:absolute; width:80px; height:52px; border-radius:10px;
+    background:linear-gradient(135deg,#1a2a3a,#2a1a3a); border:1px solid #4affaa;
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+    user-select:none; box-shadow:0 4px 12px rgba(0,0,0,.4);
+  }
+  .agent.leader { border-color:#ffcc44; box-shadow:0 0 16px rgba(255,204,68,.7); }
+  .status { font-size:12px; opacity:.85; margin-top:4px; }
+  .tilt { font-family:monospace; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation Causal Sealed DOM Agents · Verse lab</title>
+<meta name="description" content="Verse landing: local-AI + DeviceOrientation skill under void-live-deploy/skills/;">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation Causal Sealed DOM Agents · Verse lab">
+<meta property="og:description" content="Verse landing: local-AI + DeviceOrientation skill under void-live-deploy/skills/;">
+<meta property="og:url" content="https://a-to-mind.com/lab/f228-orientation-sealed-dom-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f228-orientation-sealed-dom-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <div><strong>F228 Orientation Causal · Sealed DOM Agents</strong></div>
+  <div class="status" id="status">Tilt device or drag to simulate. Agents correct via local MLPs.</div>
+  <div class="tilt" id="tilt">β: — γ: —</div>
+  <button id="sealBtn">Seal Leader</button>
+  <button id="shareBtn">Broadcast Seal</button>
+  <button id="resetBtn">Reset</button>
+  <div class="status" id="fit">Fitness: —</div>
+</div>
+<div id="stage">
+  <canvas id="c"></canvas>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation Causal Sealed DOM Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

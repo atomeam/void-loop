@@ -4,7 +4,30 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss: blob: data:; frame-src https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self' https://gumroad.com https://*.gumroad.com https://checkout.stripe.com; upgrade-insecure-requests
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Strict-Transport-Security: max-age=63072000
-  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+
+
+# the boards: Turnstile, Cloudflare's bot check on every post, loads its own script (functions/api/boards/[[path]].js); only these pages allow it
+/boards/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss: blob: data:; frame-src https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self' https://gumroad.com https://*.gumroad.com https://checkout.stripe.com; upgrade-insecure-requests
+
+# the fan fiction archive (fanfic/) posts through the boards, so it loads the same Turnstile check.
+/fanfic/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https: wss: blob: data:; frame-src https:; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self' https://gumroad.com https://*.gumroad.com https://checkout.stripe.com; upgrade-insecure-requests
+
+# the calendar embed (calendar/embed/): a read-only list of a calendar shared by its view link, made to sit in another site's page.
+# It is the one page other sites may frame, and it has no inline script, no form and no picture; it can only read the calendar its link names (functions/api/calshare.js)
+/calendar/embed/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors *; upgrade-insecure-requests
+
+# the lab (/lab/*, tools/lab-import.mjs): small experiments that read the device's tilt and motion (deviceorientation, devicemotion); the site policy
+# blocks those sensors, so here, and only here, the page itself may use them. Nothing else in the policy changes.
+/lab/*
+  ! Permissions-Policy
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(self), gyroscope=(self), magnetometer=(self), browsing-topics=()
 
 /sw.js
   Cache-Control: no-cache
@@ -12,6 +35,10 @@
 
 /build.json
   Cache-Control: no-cache
+
+# the visit beacon (functions/api/visit.js): one small file every page loads deferred; a day in the cache, so a returning visitor never fetches it again
+/visit.js
+  Cache-Control: public, max-age=86400
 
 /vendor/*
   Cache-Control: public, max-age=31536000, immutable
@@ -47,3 +74,11 @@
   Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=300
+
+/podcast/rss.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=600
+
+/podcast/*.mp3
+  Content-Type: audio/mpeg
+  Access-Control-Allow-Origin: *

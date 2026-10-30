@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emoji counts · Verse</title>
+<meta name="description" content="A ranked wall of emoji, counted as they are copied here: tap one to copy it and the count goes up, ranked today and all time, searchable, refreshed while the page is open. No account, no ads, no text ever sent, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Emoji counts · Verse">
+<meta property="og:description" content="A ranked wall of emoji, counted as they are copied here: ranked today and all time, searchable, refreshed while open. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/emojis/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/emojis/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --line:#2a2a35; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  .sub { color:var(--soft); margin:0 0 14px; font-size:14px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }
+  button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:6px 14px; cursor:pointer; }
+  button[aria-pressed="true"] { border-color:var(--accent); background:#251c46; }
+  .search { flex:1 1 220px; min-width:180px; position:relative; }
+  .search input { width:100%; font:inherit; font-size:15px; color:var(--ink); background:#12111c; border:1px solid var(--line); border-radius:999px; padding:7px 14px; }
+  .search input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  #stat { color:var(--soft); font-size:13px; font-variant-numeric:tabular-nums; }
+  #wall { list-style:none; padding:0; margin:12px 0 0; }
+  #wall li { margin:0 0 4px; }
+  #wall button { display:grid; grid-template-columns:2.4em 2.2em 1fr 6.5em; align-items:center; gap:10px; width:100%; text-align:left; background:#12111c; border:1px solid var(--line); border-radius:12px; padding:7px 12px; font-size:16px; }
+  #wall button:hover { border-color:#3b3b4d; }
+  #wall .rank { color:var(--soft); font-variant-numeric:tabular-nums; font-size:13px; }
+  #wall .glyph { font-size:22px; line-height:1; }
+  #wall .name { font-size:15px; }
+  #wall .n { font-variant-numeric:tabular-nums; font-size:15px; color:#cfcbe6; text-align:right; }
+  #wall .bar { grid-column:3 / -1; height:3px; border-radius:99px; background:#1c1b28; overflow:hidden; margin-top:4px; }
+  #wall .bar i { display:block; height:100%; background:linear-gradient(90deg,#8b7bff,#5ad1ff); }
+  #empty { color:var(--soft); padding:14px 2px; }
+  .pick[hidden] { display:none; }
+  .pick { display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; margin:12px 0; padding:12px 14px; background:#12111c; border:1px solid #3b3b4d; border-radius:12px; }
+  .pick .pglyph { font-size:40px; line-height:1; }
+  .pick .pname { margin:0 0 6px; font-size:16px; }
+  .pick .pfacts { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:4px 14px; margin:0; }
+  .pick .pfacts div { display:flex; justify-content:space-between; gap:8px; border-bottom:1px solid #23222f; padding:2px 0; }
+  .pick dt { color:#b9b9c8; font-size:12px; }
+  .pick dd { margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#ecebf5; font-variant-numeric:tabular-nums; }
+  .pick .pcopy, .pick .plink { margin:6px 0 0; font-size:13px; color:#b9b9c8; }
+  .pick .pcopy code { color:#ecebf5; font-size:15px; }
+  .pick .plink a, .bridge a { color:#cfc6ff; }
+  .fmt { display:inline-flex; align-items:center; gap:8px; color:#b9b9c8; font-size:13px; }
+  .fmt select { font:inherit; font-size:14px; color:#ecebf5; background:#171624; border:1px solid #2a2a35; border-radius:999px; padding:6px 10px; }
+  .bridge { margin:10px 0 0; }
+  .say { color:var(--soft); font-size:14px; min-height:1.4em; }
+  .handoff { margin:10px 0 4px; padding:10px 12px; background:#12111c; border:1px solid #3b3b4d; border-radius:12px; }
+  .handoff h2 { font-size:14px; margin:0 0 7px; color:#b9b9c8; font-weight:600; }
+  .handoff h2 span { color:#ecebf5; }
+  .handoff-links { display:flex; flex-wrap:wrap; gap:8px; }
+  .handoff-links a { display:inline-block; font-size:13px; color:#cfc6ff; background:#171624; border:1px solid #2a2a35; border-radius:999px; padding:7px 12px; min-height:34px; text-decoration:none; }
+  .handoff-links a:hover { border-color:var(--accent); }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 6px; min-width:24px; }
+  footer { margin-top:24px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a { color:inherit; }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Emoji counts: a ranked wall of emoji to copy","url":"https://a-to-mind.com/emojis/","description":"A ranked wall of 134 emoji, counted as they are copied here: tap one to copy it as the emoji, its U+ codepoint or its HTML entity, and its count goes up. Ranked today or all time, searched by name, with each emoji's Unicode, UTF-8 bytes and entity. Only copies made on this page are counted and nothing else is sent; no account, and it works offline with the counts it last saw.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"copy and paste emoji, emoji counter, most copied emoji, emoji unicode codepoint, emoji html entity, emoji utf-8 bytes, emoji search by name","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/emojis/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Emoji counts: a ranked wall of emoji to copy","item":"https://a-to-mind.com/emojis/"}]}]}</script>
+<!-- /seo -->
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/emoji.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Emoji counts</h1>
+  <p class="sub">A ranked wall of emoji, counted as they are copied here. Tap one to copy it and its count goes up. Ranked today or all time, searched by name, and the counts refresh while this page is open.</p>
+
+  <section class="handoff" aria-labelledby="handoff-h">
+    <h2 id="handoff-h">Send <span id="handoff-name">fire</span> to</h2>
+    <div class="handoff-links">
+      <a id="send-count" href="/word-count/?t=%F0%9F%94%A5">Count its characters</a>
+      <a id="send-translate" href="/translate/?q=fire&amp;to=es">Translate its name</a>
+      <a id="send-base64" href="/base64/?t=%F0%9F%94%A5">Encode it in Base64</a>
+      <a id="send-gist" href="/g/?text=%F0%9F%94%A5%20fire&amp;name=emoji.txt">Save it in a gist</a>
+      <a id="send-combos" href="/emoji-combos/?q=fire">Find combos with it</a>
+      <a id="send-stage" href="/?ask=emoji%20fire">See it on the stage</a>
+    </div>
+    <p class="note">These follow the emoji you picked: tap another on the wall and every link here changes with it.</p>
+  </section>
+
+  <div class="row">
+    <div class="search"><input id="q" type="search" placeholder="Search the wall by name" aria-label="Search the wall by name" autocomplete="off"></div>
+    <button type="button" id="today" aria-pressed="true">Today</button>
+    <button type="button" id="all" aria-pressed="false">All time</button>
+  </div>
+  <section id="pick" class="pick" hidden aria-live="polite" aria-label="The emoji you picked">
+    <div class="pglyph" id="pick-glyph" aria-hidden="true"></div>
+    <div class="pbody">
+      <p class="pname"><strong id="pick-name"></strong></p>
+      <dl class="pfacts">
+        <div><dt>Unicode</dt><dd id="pick-cp"></dd></div>
+        <div><dt>UTF-8 bytes</dt><dd id="pick-bytes"></dd></div>
+        <div><dt>HTML entity</dt><dd id="pick-ent"></dd></div>
+        <div><dt>Copied on this device</dt><dd id="pick-device"></dd></div>
+        <div><dt>Everyone today</dt><dd id="pick-today"></dd></div>
+        <div><dt>All time</dt><dd id="pick-all"></dd></div>
+      </dl>
+      <p class="pcopy">A tap copies <code id="pick-short"></code></p>
+      <p class="plink"><a id="pick-link" href="/emojis/">Share this emoji</a></p>
+    </div>
+  </section>
+
+  <div class="row">
+    <label class="fmt"><span>Copy as</span>
+      <select id="fmt" aria-label="What a tap copies">
+        <option value="char">the emoji</option>
+        <option value="code">the U+ codepoint</option>
+        <option value="html">the HTML entity</option>
+      </select>
+    </label>
+  </div>
+  <p id="stat">Loading the counts.</p>
+  <p class="say" id="say" aria-live="polite"></p>
+  <ul id="wall" aria-label="Emoji, ranked">
+    <!-- rows: tools/emoji-wall.mjs writes them here, so the wall is on the page before any script runs -->
+    <li><button type="button" data-c="😀" aria-label="Copy grinning face, 0 copies today"><span class="rank">1.</span><span class="glyph" aria-hidden="true">😀</span><span class="name">grinning face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😃" aria-label="Copy grinning face with big eyes, 0 copies today"><span class="rank">2.</span><span class="glyph" aria-hidden="true">😃</span><span class="name">grinning face with big eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😄" aria-label="Copy grinning face with smiling eyes, 0 copies today"><span class="rank">3.</span><span class="glyph" aria-hidden="true">😄</span><span class="name">grinning face with smiling eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😁" aria-label="Copy beaming face, 0 copies today"><span class="rank">4.</span><span class="glyph" aria-hidden="true">😁</span><span class="name">beaming face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😆" aria-label="Copy grinning squinting face, 0 copies today"><span class="rank">5.</span><span class="glyph" aria-hidden="true">😆</span><span class="name">grinning squinting face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😅" aria-label="Copy grinning face with sweat, 0 copies today"><span class="rank">6.</span><span class="glyph" aria-hidden="true">😅</span><span class="name">grinning face with sweat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤣" aria-label="Copy rolling on the floor laughing, 0 copies today"><span class="rank">7.</span><span class="glyph" aria-hidden="true">🤣</span><span class="name">rolling on the floor laughing</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😂" aria-label="Copy face with tears of joy, 0 copies today"><span class="rank">8.</span><span class="glyph" aria-hidden="true">😂</span><span class="name">face with tears of joy</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙂" aria-label="Copy slightly smiling face, 0 copies today"><span class="rank">9.</span><span class="glyph" aria-hidden="true">🙂</span><span class="name">slightly smiling face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙃" aria-label="Copy upside down face, 0 copies today"><span class="rank">10.</span><span class="glyph" aria-hidden="true">🙃</span><span class="name">upside down face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😉" aria-label="Copy winking face, 0 copies today"><span class="rank">11.</span><span class="glyph" aria-hidden="true">😉</span><span class="name">winking face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😊" aria-label="Copy smiling face with smiling eyes, 0 copies today"><span class="rank">12.</span><span class="glyph" aria-hidden="true">😊</span><span class="name">smiling face with smiling eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😇" aria-label="Copy smiling face with halo, 0 copies today"><span class="rank">13.</span><span class="glyph" aria-hidden="true">😇</span><span class="name">smiling face with halo</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥰" aria-label="Copy smiling face with hearts, 0 copies today"><span class="rank">14.</span><span class="glyph" aria-hidden="true">🥰</span><span class="name">smiling face with hearts</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😍" aria-label="Copy heart eyes, 0 copies today"><span class="rank">15.</span><span class="glyph" aria-hidden="true">😍</span><span class="name">heart eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤩" aria-label="Copy star struck, 0 copies today"><span class="rank">16.</span><span class="glyph" aria-hidden="true">🤩</span><span class="name">star struck</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😘" aria-label="Copy face blowing a kiss, 0 copies today"><span class="rank">17.</span><span class="glyph" aria-hidden="true">😘</span><span class="name">face blowing a kiss</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😗" aria-label="Copy kissing face, 0 copies today"><span class="rank">18.</span><span class="glyph" aria-hidden="true">😗</span><span class="name">kissing face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😚" aria-label="Copy kissing face with closed eyes, 0 copies today"><span class="rank">19.</span><span class="glyph" aria-hidden="true">😚</span><span class="name">kissing face with closed eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😋" aria-label="Copy face savouring food, 0 copies today"><span class="rank">20.</span><span class="glyph" aria-hidden="true">😋</span><span class="name">face savouring food</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😛" aria-label="Copy face with tongue, 0 copies today"><span class="rank">21.</span><span class="glyph" aria-hidden="true">😛</span><span class="name">face with tongue</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😜" aria-label="Copy winking face with tongue, 0 copies today"><span class="rank">22.</span><span class="glyph" aria-hidden="true">😜</span><span class="name">winking face with tongue</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤪" aria-label="Copy zany face, 0 copies today"><span class="rank">23.</span><span class="glyph" aria-hidden="true">🤪</span><span class="name">zany face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😝" aria-label="Copy squinting face with tongue, 0 copies today"><span class="rank">24.</span><span class="glyph" aria-hidden="true">😝</span><span class="name">squinting face with tongue</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤑" aria-label="Copy money mouth face, 0 copies today"><span class="rank">25.</span><span class="glyph" aria-hidden="true">🤑</span><span class="name">money mouth face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤗" aria-label="Copy hugging face, 0 copies today"><span class="rank">26.</span><span class="glyph" aria-hidden="true">🤗</span><span class="name">hugging face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤭" aria-label="Copy face with hand over mouth, 0 copies today"><span class="rank">27.</span><span class="glyph" aria-hidden="true">🤭</span><span class="name">face with hand over mouth</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤫" aria-label="Copy shushing face, 0 copies today"><span class="rank">28.</span><span class="glyph" aria-hidden="true">🤫</span><span class="name">shushing face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤔" aria-label="Copy thinking face, 0 copies today"><span class="rank">29.</span><span class="glyph" aria-hidden="true">🤔</span><span class="name">thinking face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤐" aria-label="Copy zipper mouth face, 0 copies today"><span class="rank">30.</span><span class="glyph" aria-hidden="true">🤐</span><span class="name">zipper mouth face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤨" aria-label="Copy raised eyebrow, 0 copies today"><span class="rank">31.</span><span class="glyph" aria-hidden="true">🤨</span><span class="name">raised eyebrow</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😐" aria-label="Copy neutral face, 0 copies today"><span class="rank">32.</span><span class="glyph" aria-hidden="true">😐</span><span class="name">neutral face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😑" aria-label="Copy expressionless face, 0 copies today"><span class="rank">33.</span><span class="glyph" aria-hidden="true">😑</span><span class="name">expressionless face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😶" aria-label="Copy face without mouth, 0 copies today"><span class="rank">34.</span><span class="glyph" aria-hidden="true">😶</span><span class="name">face without mouth</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😏" aria-label="Copy smirking face, 0 copies today"><span class="rank">35.</span><span class="glyph" aria-hidden="true">😏</span><span class="name">smirking face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😒" aria-label="Copy unamused face, 0 copies today"><span class="rank">36.</span><span class="glyph" aria-hidden="true">😒</span><span class="name">unamused face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙄" aria-label="Copy face with rolling eyes, 0 copies today"><span class="rank">37.</span><span class="glyph" aria-hidden="true">🙄</span><span class="name">face with rolling eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😬" aria-label="Copy grimacing face, 0 copies today"><span class="rank">38.</span><span class="glyph" aria-hidden="true">😬</span><span class="name">grimacing face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😮‍💨" aria-label="Copy face exhaling, 0 copies today"><span class="rank">39.</span><span class="glyph" aria-hidden="true">😮‍💨</span><span class="name">face exhaling</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤥" aria-label="Copy lying face, 0 copies today"><span class="rank">40.</span><span class="glyph" aria-hidden="true">🤥</span><span class="name">lying face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😌" aria-label="Copy relieved face, 0 copies today"><span class="rank">41.</span><span class="glyph" aria-hidden="true">😌</span><span class="name">relieved face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😔" aria-label="Copy pensive face, 0 copies today"><span class="rank">42.</span><span class="glyph" aria-hidden="true">😔</span><span class="name">pensive face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😪" aria-label="Copy sleepy face, 0 copies today"><span class="rank">43.</span><span class="glyph" aria-hidden="true">😪</span><span class="name">sleepy face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤤" aria-label="Copy drooling face, 0 copies today"><span class="rank">44.</span><span class="glyph" aria-hidden="true">🤤</span><span class="name">drooling face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😴" aria-label="Copy sleeping face, 0 copies today"><span class="rank">45.</span><span class="glyph" aria-hidden="true">😴</span><span class="name">sleeping face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😷" aria-label="Copy face with medical mask, 0 copies today"><span class="rank">46.</span><span class="glyph" aria-hidden="true">😷</span><span class="name">face with medical mask</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤒" aria-label="Copy face with thermometer, 0 copies today"><span class="rank">47.</span><span class="glyph" aria-hidden="true">🤒</span><span class="name">face with thermometer</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤕" aria-label="Copy face with head bandage, 0 copies today"><span class="rank">48.</span><span class="glyph" aria-hidden="true">🤕</span><span class="name">face with head bandage</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤢" aria-label="Copy nauseated face, 0 copies today"><span class="rank">49.</span><span class="glyph" aria-hidden="true">🤢</span><span class="name">nauseated face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤮" aria-label="Copy vomiting face, 0 copies today"><span class="rank">50.</span><span class="glyph" aria-hidden="true">🤮</span><span class="name">vomiting face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤧" aria-label="Copy sneezing face, 0 copies today"><span class="rank">51.</span><span class="glyph" aria-hidden="true">🤧</span><span class="name">sneezing face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥵" aria-label="Copy hot face, 0 copies today"><span class="rank">52.</span><span class="glyph" aria-hidden="true">🥵</span><span class="name">hot face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥶" aria-label="Copy cold face, 0 copies today"><span class="rank">53.</span><span class="glyph" aria-hidden="true">🥶</span><span class="name">cold face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥴" aria-label="Copy woozy face, 0 copies today"><span class="rank">54.</span><span class="glyph" aria-hidden="true">🥴</span><span class="name">woozy face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😵" aria-label="Copy dizzy face, 0 copies today"><span class="rank">55.</span><span class="glyph" aria-hidden="true">😵</span><span class="name">dizzy face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤯" aria-label="Copy exploding head, 0 copies today"><span class="rank">56.</span><span class="glyph" aria-hidden="true">🤯</span><span class="name">exploding head</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤠" aria-label="Copy cowboy hat face, 0 copies today"><span class="rank">57.</span><span class="glyph" aria-hidden="true">🤠</span><span class="name">cowboy hat face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥳" aria-label="Copy partying face, 0 copies today"><span class="rank">58.</span><span class="glyph" aria-hidden="true">🥳</span><span class="name">partying face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😎" aria-label="Copy smiling face with sunglasses, 0 copies today"><span class="rank">59.</span><span class="glyph" aria-hidden="true">😎</span><span class="name">smiling face with sunglasses</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤓" aria-label="Copy nerd face, 0 copies today"><span class="rank">60.</span><span class="glyph" aria-hidden="true">🤓</span><span class="name">nerd face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🧐" aria-label="Copy face with monocle, 0 copies today"><span class="rank">61.</span><span class="glyph" aria-hidden="true">🧐</span><span class="name">face with monocle</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😕" aria-label="Copy confused face, 0 copies today"><span class="rank">62.</span><span class="glyph" aria-hidden="true">😕</span><span class="name">confused face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😟" aria-label="Copy worried face, 0 copies today"><span class="rank">63.</span><span class="glyph" aria-hidden="true">😟</span><span class="name">worried face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙁" aria-label="Copy slightly frowning face, 0 copies today"><span class="rank">64.</span><span class="glyph" aria-hidden="true">🙁</span><span class="name">slightly frowning face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😮" aria-label="Copy face with open mouth, 0 copies today"><span class="rank">65.</span><span class="glyph" aria-hidden="true">😮</span><span class="name">face with open mouth</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😯" aria-label="Copy hushed face, 0 copies today"><span class="rank">66.</span><span class="glyph" aria-hidden="true">😯</span><span class="name">hushed face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😲" aria-label="Copy astonished face, 0 copies today"><span class="rank">67.</span><span class="glyph" aria-hidden="true">😲</span><span class="name">astonished face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😳" aria-label="Copy flushed face, 0 copies today"><span class="rank">68.</span><span class="glyph" aria-hidden="true">😳</span><span class="name">flushed face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥺" aria-label="Copy pleading face, 0 copies today"><span class="rank">69.</span><span class="glyph" aria-hidden="true">🥺</span><span class="name">pleading face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😦" aria-label="Copy frowning face with open mouth, 0 copies today"><span class="rank">70.</span><span class="glyph" aria-hidden="true">😦</span><span class="name">frowning face with open mouth</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😧" aria-label="Copy anguished face, 0 copies today"><span class="rank">71.</span><span class="glyph" aria-hidden="true">😧</span><span class="name">anguished face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😨" aria-label="Copy fearful face, 0 copies today"><span class="rank">72.</span><span class="glyph" aria-hidden="true">😨</span><span class="name">fearful face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😰" aria-label="Copy anxious face with sweat, 0 copies today"><span class="rank">73.</span><span class="glyph" aria-hidden="true">😰</span><span class="name">anxious face with sweat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😥" aria-label="Copy sad but relieved face, 0 copies today"><span class="rank">74.</span><span class="glyph" aria-hidden="true">😥</span><span class="name">sad but relieved face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😢" aria-label="Copy crying face, 0 copies today"><span class="rank">75.</span><span class="glyph" aria-hidden="true">😢</span><span class="name">crying face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😭" aria-label="Copy loudly crying face, 0 copies today"><span class="rank">76.</span><span class="glyph" aria-hidden="true">😭</span><span class="name">loudly crying face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😱" aria-label="Copy screaming in fear, 0 copies today"><span class="rank">77.</span><span class="glyph" aria-hidden="true">😱</span><span class="name">screaming in fear</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😖" aria-label="Copy confounded face, 0 copies today"><span class="rank">78.</span><span class="glyph" aria-hidden="true">😖</span><span class="name">confounded face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😣" aria-label="Copy persevering face, 0 copies today"><span class="rank">79.</span><span class="glyph" aria-hidden="true">😣</span><span class="name">persevering face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😞" aria-label="Copy disappointed face, 0 copies today"><span class="rank">80.</span><span class="glyph" aria-hidden="true">😞</span><span class="name">disappointed face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😓" aria-label="Copy downcast face with sweat, 0 copies today"><span class="rank">81.</span><span class="glyph" aria-hidden="true">😓</span><span class="name">downcast face with sweat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😩" aria-label="Copy weary face, 0 copies today"><span class="rank">82.</span><span class="glyph" aria-hidden="true">😩</span><span class="name">weary face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😫" aria-label="Copy tired face, 0 copies today"><span class="rank">83.</span><span class="glyph" aria-hidden="true">😫</span><span class="name">tired face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🥱" aria-label="Copy yawning face, 0 copies today"><span class="rank">84.</span><span class="glyph" aria-hidden="true">🥱</span><span class="name">yawning face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😤" aria-label="Copy face with steam from nose, 0 copies today"><span class="rank">85.</span><span class="glyph" aria-hidden="true">😤</span><span class="name">face with steam from nose</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😡" aria-label="Copy enraged face, 0 copies today"><span class="rank">86.</span><span class="glyph" aria-hidden="true">😡</span><span class="name">enraged face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😠" aria-label="Copy angry face, 0 copies today"><span class="rank">87.</span><span class="glyph" aria-hidden="true">😠</span><span class="name">angry face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤬" aria-label="Copy face with symbols on mouth, 0 copies today"><span class="rank">88.</span><span class="glyph" aria-hidden="true">🤬</span><span class="name">face with symbols on mouth</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😈" aria-label="Copy smiling face with horns, 0 copies today"><span class="rank">89.</span><span class="glyph" aria-hidden="true">😈</span><span class="name">smiling face with horns</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👿" aria-label="Copy angry face with horns, 0 copies today"><span class="rank">90.</span><span class="glyph" aria-hidden="true">👿</span><span class="name">angry face with horns</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💀" aria-label="Copy skull, 0 copies today"><span class="rank">91.</span><span class="glyph" aria-hidden="true">💀</span><span class="name">skull</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💩" aria-label="Copy pile of poo, 0 copies today"><span class="rank">92.</span><span class="glyph" aria-hidden="true">💩</span><span class="name">pile of poo</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤡" aria-label="Copy clown face, 0 copies today"><span class="rank">93.</span><span class="glyph" aria-hidden="true">🤡</span><span class="name">clown face</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👻" aria-label="Copy ghost, 0 copies today"><span class="rank">94.</span><span class="glyph" aria-hidden="true">👻</span><span class="name">ghost</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👽" aria-label="Copy alien, 0 copies today"><span class="rank">95.</span><span class="glyph" aria-hidden="true">👽</span><span class="name">alien</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤖" aria-label="Copy robot, 0 copies today"><span class="rank">96.</span><span class="glyph" aria-hidden="true">🤖</span><span class="name">robot</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😺" aria-label="Copy grinning cat, 0 copies today"><span class="rank">97.</span><span class="glyph" aria-hidden="true">😺</span><span class="name">grinning cat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😹" aria-label="Copy cat with tears of joy, 0 copies today"><span class="rank">98.</span><span class="glyph" aria-hidden="true">😹</span><span class="name">cat with tears of joy</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😻" aria-label="Copy heart eyes cat, 0 copies today"><span class="rank">99.</span><span class="glyph" aria-hidden="true">😻</span><span class="name">heart eyes cat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙀" aria-label="Copy weary cat, 0 copies today"><span class="rank">100.</span><span class="glyph" aria-hidden="true">🙀</span><span class="name">weary cat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="😿" aria-label="Copy crying cat, 0 copies today"><span class="rank">101.</span><span class="glyph" aria-hidden="true">😿</span><span class="name">crying cat</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙈" aria-label="Copy see no evil monkey, 0 copies today"><span class="rank">102.</span><span class="glyph" aria-hidden="true">🙈</span><span class="name">see no evil monkey</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙉" aria-label="Copy hear no evil monkey, 0 copies today"><span class="rank">103.</span><span class="glyph" aria-hidden="true">🙉</span><span class="name">hear no evil monkey</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙊" aria-label="Copy speak no evil monkey, 0 copies today"><span class="rank">104.</span><span class="glyph" aria-hidden="true">🙊</span><span class="name">speak no evil monkey</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="❤️" aria-label="Copy red heart, 0 copies today"><span class="rank">105.</span><span class="glyph" aria-hidden="true">❤️</span><span class="name">red heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🧡" aria-label="Copy orange heart, 0 copies today"><span class="rank">106.</span><span class="glyph" aria-hidden="true">🧡</span><span class="name">orange heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💛" aria-label="Copy yellow heart, 0 copies today"><span class="rank">107.</span><span class="glyph" aria-hidden="true">💛</span><span class="name">yellow heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💚" aria-label="Copy green heart, 0 copies today"><span class="rank">108.</span><span class="glyph" aria-hidden="true">💚</span><span class="name">green heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💙" aria-label="Copy blue heart, 0 copies today"><span class="rank">109.</span><span class="glyph" aria-hidden="true">💙</span><span class="name">blue heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💜" aria-label="Copy purple heart, 0 copies today"><span class="rank">110.</span><span class="glyph" aria-hidden="true">💜</span><span class="name">purple heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🖤" aria-label="Copy black heart, 0 copies today"><span class="rank">111.</span><span class="glyph" aria-hidden="true">🖤</span><span class="name">black heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤍" aria-label="Copy white heart, 0 copies today"><span class="rank">112.</span><span class="glyph" aria-hidden="true">🤍</span><span class="name">white heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💔" aria-label="Copy broken heart, 0 copies today"><span class="rank">113.</span><span class="glyph" aria-hidden="true">💔</span><span class="name">broken heart</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💯" aria-label="Copy hundred points, 0 copies today"><span class="rank">114.</span><span class="glyph" aria-hidden="true">💯</span><span class="name">hundred points</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🔥" aria-label="Copy fire, 0 copies today"><span class="rank">115.</span><span class="glyph" aria-hidden="true">🔥</span><span class="name">fire</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="✨" aria-label="Copy sparkles, 0 copies today"><span class="rank">116.</span><span class="glyph" aria-hidden="true">✨</span><span class="name">sparkles</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🎉" aria-label="Copy party popper, 0 copies today"><span class="rank">117.</span><span class="glyph" aria-hidden="true">🎉</span><span class="name">party popper</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👍" aria-label="Copy thumbs up, 0 copies today"><span class="rank">118.</span><span class="glyph" aria-hidden="true">👍</span><span class="name">thumbs up</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👎" aria-label="Copy thumbs down, 0 copies today"><span class="rank">119.</span><span class="glyph" aria-hidden="true">👎</span><span class="name">thumbs down</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👏" aria-label="Copy clapping hands, 0 copies today"><span class="rank">120.</span><span class="glyph" aria-hidden="true">👏</span><span class="name">clapping hands</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🙏" aria-label="Copy folded hands, 0 copies today"><span class="rank">121.</span><span class="glyph" aria-hidden="true">🙏</span><span class="name">folded hands</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="💪" aria-label="Copy flexed biceps, 0 copies today"><span class="rank">122.</span><span class="glyph" aria-hidden="true">💪</span><span class="name">flexed biceps</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🤝" aria-label="Copy handshake, 0 copies today"><span class="rank">123.</span><span class="glyph" aria-hidden="true">🤝</span><span class="name">handshake</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="👀" aria-label="Copy eyes, 0 copies today"><span class="rank">124.</span><span class="glyph" aria-hidden="true">👀</span><span class="name">eyes</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🧠" aria-label="Copy brain, 0 copies today"><span class="rank">125.</span><span class="glyph" aria-hidden="true">🧠</span><span class="name">brain</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🚀" aria-label="Copy rocket, 0 copies today"><span class="rank">126.</span><span class="glyph" aria-hidden="true">🚀</span><span class="name">rocket</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="☕" aria-label="Copy hot beverage, 0 copies today"><span class="rank">127.</span><span class="glyph" aria-hidden="true">☕</span><span class="name">hot beverage</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🍕" aria-label="Copy pizza, 0 copies today"><span class="rank">128.</span><span class="glyph" aria-hidden="true">🍕</span><span class="name">pizza</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🍰" aria-label="Copy shortcake, 0 copies today"><span class="rank">129.</span><span class="glyph" aria-hidden="true">🍰</span><span class="name">shortcake</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🌈" aria-label="Copy rainbow, 0 copies today"><span class="rank">130.</span><span class="glyph" aria-hidden="true">🌈</span><span class="name">rainbow</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🌙" aria-label="Copy crescent moon, 0 copies today"><span class="rank">131.</span><span class="glyph" aria-hidden="true">🌙</span><span class="name">crescent moon</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="⭐" aria-label="Copy star, 0 copies today"><span class="rank">132.</span><span class="glyph" aria-hidden="true">⭐</span><span class="name">star</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🌊" aria-label="Copy water wave, 0 copies today"><span class="rank">133.</span><span class="glyph" aria-hidden="true">🌊</span><span class="name">water wave</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <li><button type="button" data-c="🌸" aria-label="Copy cherry blossom, 0 copies today"><span class="rank">134.</span><span class="glyph" aria-hidden="true">🌸</span><span class="name">cherry blossom</span><span class="n">0</span><span class="bar"><i style="width:0%"></i></span></button></li>
+    <!-- /rows -->
+  </ul>
+  <p id="empty" hidden></p>
+
+  <footer>
+    <p>This is not a feed of anyone's messages. It counts copies of these emoji made on this page, when someone taps one; nothing else is sent, and there is no text to send. No account, no ads, and it works offline with the counts it last saw. The list of emoji is a closed list in the code, so only those can ever be counted.</p>
+    <p>Counted here as emojis are copied — your copies on this device plus everyone today and all time on Verse. No account, nothing personal stored, works offline.</p>
+    <nav class="siblings" aria-label="Use together with">
+      <a href="/word-count/?t=%F0%9F%94%A5">Word count</a>
+      <a href="/translate/?q=fire&amp;to=es">Translate</a>
+      <a href="/base64/?t=%F0%9F%94%A5">Base64</a>
+      <a href="/g/?text=%F0%9F%94%A5%20fire&amp;name=emoji.txt">Gist</a>
+      <a href="/flip/">Coin flip</a>
+      <a href="/paint/">Paint</a>
+      <a href="/tournaments/">Tournaments</a>
+      <a href="/tools/">All tools</a>
+      <a href="/?ask=emoji%20counts">See it as a card on the stage</a>
+      <a href="/">Back to Verse</a>
+    </nav>
+  </footer>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/emojis/?q=heart">Every heart</a><a href="/emojis/?q=cat">Cats</a><a href="/emojis/?q=hand">Hands</a><a href="/emojis/?q=star">Stars</a><a href="/emojis/?pick=%F0%9F%94%A5">The fire emoji</a><a href="/emojis/?pick=%E2%9D%A4%EF%B8%8F">The red heart</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emoji-combos/">Emoji combos</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/translate/">Translate</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script type="module">
+  import { EMOJI } from '/lib/emoji.js';
+
+  const $ = (id) => document.getElementById(id);
+  const wall = $('wall'), say = $('say'), stat = $('stat');
+  const state = { counts: { all: {}, today: {} }, mode: 'today', q: '', seen: null, online: true, busy: false, pick: '', fmt: 'char', mine: {} };
+
+  const EM = new Map(EMOJI.map((e) => [e.c, e]));
+  const fmt = (n) => Number(n || 0).toLocaleString('en');
+  const total = (mode) => EMOJI.reduce((a, e) => a + (state.counts[mode][e.c] || 0), 0);
+  const rowOf = (e) => ({ e, n: state.counts[state.mode][e.c] || 0 });
+
+  // the facts a copy is usually made for: the character, its Unicode, its UTF-8 bytes and an HTML entity
+  const codepoint = (c) => Array.from(c).map((ch) => 'U+' + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')).join(' ');
+  const bytes = (c) => Array.from(new TextEncoder().encode(c)).map((b) => b.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+  const entity = (c) => Array.from(c).map((ch) => '&#' + ch.codePointAt(0) + ';').join('');
+  const asText = (c) => state.fmt === 'code' ? codepoint(c) : state.fmt === 'html' ? entity(c) : c;
+
+  // the handoff (owner, 2026-10-27): the emoji picked on the wall is carried to the tools that can use it, in the link itself
+  function handoff(c, name) {
+    const enc = encodeURIComponent(c), nm = encodeURIComponent(name);
+    $('handoff-name').textContent = name;
+    $('send-count').href = '/word-count/?t=' + enc;
+    $('send-translate').href = '/translate/?q=' + nm + '&to=es';
+    $('send-base64').href = '/base64/?t=' + enc;
+    $('send-gist').href = '/g/?text=' + encodeURIComponent(c + ' ' + name) + '&name=emoji.txt';
+    // the combos it goes in (/emoji-combos/): searched by the last word of its name ("grinning cat" -> cat, "red heart" -> heart)
+    $('send-combos').href = '/emoji-combos/?q=' + encodeURIComponent(String(name).split(' ').filter((w) => !/^(?:face|with|and|of|the|button)$/.test(w)).pop() || name);
+    $('send-stage').href = '/?ask=emoji%20' + nm;
+  }
+
+  function showPick() {
+    const box = $('pick'), c = state.pick, e = EM.get(c);
+    if (!c || !e) { box.hidden = true; return; }
+    box.hidden = false;
+    $('pick-glyph').textContent = c;
+    $('pick-name').textContent = e.n;
+    $('pick-cp').textContent = codepoint(c);
+    $('pick-bytes').textContent = bytes(c);
+    $('pick-ent').textContent = entity(c);
+    $('pick-device').textContent = fmt(state.mine[c] || 0);
+    $('pick-today').textContent = fmt(state.counts.today[c] || 0);
+    $('pick-all').textContent = fmt(state.counts.all[c] || 0);
+    $('pick-short').textContent = asText(c);
+    const u = new URL(location.href); u.search = '?pick=' + encodeURIComponent(c);
+    $('pick-link').href = u.pathname + u.search;
+    $('pick-link').textContent = 'Share this emoji: ' + u.pathname + u.search;
+    handoff(c, e.n);
+  }
+
+  function render() {
+    const q = state.q.trim().toLowerCase();
+    const rows = EMOJI.map(rowOf).sort((a, b) => b.n - a.n || a.e.n.localeCompare(b.e.n));
+    const most = rows.length ? Math.max(1, rows[0].n) : 1;
+    // the rows are already on the page (tools/emoji-wall.mjs): this fills them in and moves them into rank order
+    const byChar = new Map([...wall.children].map((li) => [li.firstElementChild.dataset.c, li]));
+    let shown = 0;
+    rows.forEach((r, i) => {
+      const li = byChar.get(r.e.c);
+      if (!li) return;
+      const b = li.firstElementChild;
+      const match = !q || r.e.n.includes(q) || r.e.c === q;
+      li.hidden = !match;
+      if (!match) return;
+      shown++;
+      b.setAttribute('aria-label', 'Copy ' + r.e.n + ', ' + fmt(r.n) + ' ' + (state.mode === 'today' ? 'copies today' : 'copies all time'));
+      b.children[0].textContent = String(i + 1) + '.';
+      b.children[3].textContent = fmt(r.n);
+      b.children[4].firstElementChild.style.width = Math.round(r.n / most * 100) + '%';
+      wall.appendChild(li);   // same nodes, new order: nothing is created or destroyed, so the page does not move
+    });
+    $('empty').hidden = shown > 0;
+    $('empty').textContent = shown ? '' : 'Nothing on the wall matches "' + state.q + '".';
+    const t = total(state.mode);
+    stat.textContent = t
+      ? fmt(t) + ' copies counted ' + (state.mode === 'today' ? 'today' : 'in all') + ' — ' + fmt(total('all')) + ' in all — refreshed ' + when()
+      : 'Nothing counted ' + (state.mode === 'today' ? 'today yet' : 'yet') + ' - tap an emoji to copy it and start the count.';
+    $('today').setAttribute('aria-pressed', String(state.mode === 'today'));
+    $('all').setAttribute('aria-pressed', String(state.mode === 'all'));
+    showPick();
+  }
+
+  const when = () => (state.seen ? new Date(state.seen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'never');
+
+  async function read() {
+    try {
+      const r = await fetch('/api/tally?of=emoji', { headers: { accept: 'application/json' } });
+      const b = await r.json();
+      if (!b || !b.ok) throw new Error('no counts');
+      state.counts = b.counts; state.seen = Date.now(); state.online = true;
+      try { localStorage.setItem('void-emoji', JSON.stringify({ counts: b.counts, at: state.seen })); } catch (_) {}
+    } catch (_) {
+      // offline: the counts this device last saw, said plainly rather than shown as if they were live
+      state.online = false;
+      try {
+        const kept = JSON.parse(localStorage.getItem('void-emoji') || 'null');
+        if (kept && kept.counts) { state.counts = kept.counts; state.seen = kept.at; }
+      } catch (_) {}
+    }
+    render();
+  }
+
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '-1000px';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (_) {}
+    ta.remove();
+    return ok;
+  }
+
+  function setPick(c) {
+    state.pick = c;
+    const u = new URL(location.href); u.search = '?pick=' + encodeURIComponent(c);
+    try { history.replaceState(null, '', u.pathname + u.search); } catch (_) {}
+    showPick();
+  }
+
+  wall.addEventListener('click', async (ev) => {
+    const b = ev.target.closest('button[data-c]');
+    if (!b || state.busy) return;
+    const c = b.dataset.c, name = (EM.get(c) || { n: 'that emoji' }).n;
+    state.busy = true;
+    setPick(c);
+    const copied = await copy(asText(c));
+    state.mine[c] = (state.mine[c] || 0) + 1;
+    try { localStorage.setItem('void-emoji-mine', JSON.stringify(state.mine)); } catch (_) {}
+    // the count follows the copy: +1 for this copy, then the server's own numbers are read back
+    state.counts.today[c] = (state.counts.today[c] || 0) + 1;
+    state.counts.all[c] = (state.counts.all[c] || 0) + 1;
+    render();
+    say.textContent = copied ? 'Copied ' + name + ' - its count is one higher.' : 'That emoji is on the clipboard if your browser allowed it; its count is one higher here.';
+    try {
+      await fetch('/api/tally', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ of: 'emoji', v: c, n: 1 }) });
+    } catch (_) { /* counted on this device and sent next time is a lie; the line below says so */ }
+    state.busy = false;
+    setTimeout(read, 900);
+  });
+
+  $('q').addEventListener('input', (e) => { state.q = e.target.value; render(); });
+  $('today').onclick = () => { state.mode = 'today'; render(); };
+  $('all').onclick = () => { state.mode = 'all'; render(); };
+  $('fmt').addEventListener('change', (e) => { state.fmt = e.target.value; showPick(); });
+
+  // a seeded ask: /emojis/?q=heart searches, /emojis/?pick=🔥 opens that emoji's record
+  const params = new URLSearchParams(location.search);
+  const seedQ = params.get('q') || '', seedPick = params.get('pick') || '';
+  if (seedQ) { state.q = seedQ; $('q').value = seedQ; }
+  if (seedPick && EM.has(seedPick)) state.pick = seedPick;
+  // the handoff starts on the seeded emoji, else the top of the wall; the inspector itself opens only when one is picked
+  if (!state.pick) { const exact = EMOJI.find((e) => e.c === seedQ.trim() || e.n === seedQ.trim().toLowerCase()), top = document.querySelector('#wall button[data-c]'); const c = (exact && exact.c) || (top && top.dataset.c) || '🔥'; handoff(c, (EM.get(c) || { n: 'fire' }).n); }
+  try { const m = JSON.parse(localStorage.getItem('void-emoji-mine') || 'null'); if (m && typeof m === 'object') state.mine = m; } catch (_) {}
+
+  // refresh while the page is open and visible; nothing polls in a background tab
+  let timer = setInterval(() => { if (document.visibilityState === 'visible') read(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') read(); });
+
+  render();
+  read();
+  // the toolkit's "Use with" row (lib/toolkit.js): this page's card on the stage, the tools that go with it, the ask bar
+  import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/emojis/')).catch(() => {});
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

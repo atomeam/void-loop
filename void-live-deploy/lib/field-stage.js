@@ -2,7 +2,7 @@
 // mountField(th, stageApi, idea) puts a small Canvas2D card on the stage and runs the idea's step law on it:
 //   - one requestAnimationFrame loop, paused while the tab is hidden and gone when the card leaves the page;
 //     with prefers-reduced-motion the field is warmed up once and then moves only when you touch it (no loop);
-//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale and shift of the card's body,
+//   - the field's metrics become a morph of THE CARD ONLY (hue-rotate, corner radius, glow, a scale of the card's field and a shift,
 //     a blur on the canvas): never the page around it;
 //   - sound stays OFF until you tap "Sound on" (a Web Audio spectrum drone that follows the metrics); no Web Audio: the button says so;
 //   - "Tilt" asks for the device orientation only on a tap (iOS asks permission, others just start); no sensor: the button says so;
@@ -14,7 +14,11 @@
 // mount?(ctx) is also allowed: it adds the idea's own controls and background thinking (a Worker mind) and returns { dispose() }.
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
-import { motionThrottle } from './motion-throttle.js'; // asked by Verse: chaotic motion slows to a quarter while someone types in another card
+import { motionThrottle } from './motion-throttle.js';
+import * as Field from './shared-field.js'; // the one shared field (also skills/field.js): every Mind Field mode's card is felt by Verse Brain there
+import { linkMode } from './mode-field.js';
+import { keepWhile } from './live-cards.js'; // a field card keeps running when the stage redraws (render() in void.html puts it back)
+import { MODES, BRAIN, isMode } from './mind-field-modes.js'; // every field mind is a Mind Field mode: its card gets the Mode switcher // asked by Verse: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
 
@@ -65,7 +69,7 @@ function subLine(sub, text) {
 
 /** mount a field card for an idea on the stage; returns { el, state, tick(n) }. */
 export function mountField(th, stageApi, idea) {
-  const W = idea.W || 320, H = idea.H || 240, cls = 'field-card ff-' + idea.id;
+  let W = idea.W || 320, H = idea.H || 240; const cls = 'field-card ff-' + idea.id; // let: resize(w, h) below gives a full-screen page its own size
   // the state is not enumerable: the stage saves its things with JSON.stringify, and a field's typed arrays must not be written out with them
   const setState = (v) => { Object.defineProperty(th, 'state', { value: v, writable: true, enumerable: false, configurable: true }); return v; };
   setState(idea.create((Date.now() & 0xffff) || 1));
@@ -89,10 +93,10 @@ export function mountField(th, stageApi, idea) {
   cv.style.cssText = 'display:block;width:100%;aspect-ratio:' + W + '/' + H + ';background:#05040c;touch-action:none;cursor:crosshair';
   if (idea.vars) cv.style.filter = 'contrast(calc(0.9 + var(--ink-density, 0) * 0.6)) blur(calc((1 - var(--ink-density, 0)) * 0.7px))'; // --ink-density: sharp and high-contrast when high, soft charcoal when low
   const g = cv.getContext('2d'); if (g) g.scale(dpr, dpr);
-  q('.ff-frame').appendChild(cv);
-  const body = q('.ff-body'), hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
+  const frame = q('.ff-frame'); frame.appendChild(cv); // kept by reference: a page may move the frame out of the card (the full-screen brain, /brain/)
+  const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
-  stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  stageApi.bindDrag(el, th); keepWhile(el, th); stageApi.stage.appendChild(el);
 
   const input = { x: 0.5, y: 0.5, over: false, down: false, tiltX: 0, tiltY: 0, tilting: false };
   const at = (e) => { const p = pointerIn(e.clientX, e.clientY, cv.getBoundingClientRect()); input.x = p.x; input.y = p.y; };
@@ -103,16 +107,20 @@ export function mountField(th, stageApi, idea) {
   cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
   cv.addEventListener('pointerleave', () => { input.over = false; input.down = false; });
 
-  let metrics = idea.metrics(th.state), frames = 0;
+  let metrics = idea.metrics(th.state), frames = 0, morphs = 0;
+  // every Mind Field mode is part of Verse Brain: its card's numbers sit in one slot of the shared field (lib/mode-field.js), where the
+  // brain feels them; the memory orbs write their own orbs, and the brain is the one feeling
+  const modeLink = isMode(idea.id) && idea.id !== 'agent-fluid-memory-orbs' ? (() => { try { return linkMode(Field, idea.id); } catch (_) { return null; } })() : null;
   const morph = () => {
     metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
-    body.style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter;
+    frame.style.transform = css.transform; hud.style.transform = css.hud; frame.style.filter = css.canvasFilter; // the field breathes, the buttons hold still under a finger (a scaled body kept Law, Mode and New game moving)
     for (const [k, v] of Object.entries({ ...css.vars, ...extra })) el.style.setProperty(k, v);
     if (extra['--ink-density'] != null) el.dataset.ink = extra['--ink-density'];
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
     hud.textContent = idea.status ? idea.status(th.state, metrics) : '';
     if (sound) sound.update(metrics);
+    if (modeLink && (morphs++ % 8 === 0 || still)) { try { modeLink.write(metrics, input); el.dataset.fieldSlot = String(modeLink.slot); } catch (_) { /* the field's own problem */ } }
   };
   const draw = () => { if (g) { g.save(); if (!idea.trails) g.clearRect(0, 0, W, H); idea.draw(g, th.state, W, H, input); g.restore(); } };
   const tick = (n = 1, dt = 1 / 60) => { for (let i = 0; i < n; i++) { idea.step(th.state, dt, input); frames++; } morph(); draw(); };
@@ -148,17 +156,51 @@ export function mountField(th, stageApi, idea) {
   // an idea may add its own controls and think in the background: idea.mount({ el, q, th, input, cv, W, H, tick, redraw, still }) -> { dispose() }
   let hook = null;
   if (typeof idea.mount === 'function') { try { hook = idea.mount({ el, q, th, input, cv, W, H, tick, redraw: () => { morph(); draw(); }, still: () => still }) || null; } catch (_) { hook = null; } }
+  // Mind Field (owner, 2026-10-21: "combine anything that can be without taking away"): a mode's card switches to any other mode in
+  // place; the old card leaves and the new one opens where it was, by the new mode's own ask (so its words, log and tests are its own)
+  // a family of its own (Tilt Arena) passes idea.modes = { list, label, ask(m) } and gets the same switcher
+  // every mode's switcher ends with Verse Brain, which feels all of them; idea.modes.beside opens the choice next to the card instead
+  const MT = idea.modes || (isMode(idea.id) ? { list: [...MODES, BRAIN], label: 'Mind Field mode', ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) } : null);
+  if (MT) {
+    const row = document.createElement('label'), pick = document.createElement('select');
+    row.className = 'mf-mode-row'; row.style.cssText = 'display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%;font-size:12px';
+    row.append('Mode', pick); pick.className = 'mf-mode'; pick.setAttribute('aria-label', MT.label);
+    pick.style.cssText = 'max-width:100%;min-width:0;font:inherit;font-size:12px;padding:3px 6px;border-radius:7px;background:rgba(0,0,0,.25);color:inherit;border:1px solid rgba(255,255,255,.25)';
+    row.firstChild.textContent = MT.beside ? 'Open' : 'Mode';
+    for (const m of MT.list) { const o = document.createElement('option'); o.value = m.id; o.textContent = m.title; o.selected = m.id === idea.id; pick.appendChild(o); }
+    for (const n of [row, pick]) n.addEventListener('pointerdown', (e) => e.stopPropagation());
+    pick.addEventListener('change', () => {
+      const m = MT.list.find((x) => x.id === pick.value); if (!m || m.id === idea.id || !stageApi.ask) return;
+      if (MT.beside) { pick.value = idea.id; Promise.resolve(stageApi.ask(MT.ask(m))).catch(() => {}); return; } // the card stays; the choice opens beside it
+      const things = stageApi.things(), at = { x: th.x, y: th.y };
+      delete things[th.id]; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
+      Promise.resolve(stageApi.ask(MT.ask(m))).then(() => {
+        const now = Object.values(stageApi.things()).filter((t) => t.kind === m.id).pop(); if (!now) return;
+        now.x = at.x; now.y = at.y; if (stageApi.save) stageApi.save(); if (stageApi.render) stageApi.render();
+      }).catch(() => {});
+    });
+    q('.ff-btns').prepend(row); el.dataset.mode = idea.id;
+    const cur = MT.list.find((x) => x.id === idea.id);
+    if (cur && cur.link) { const a = document.createElement('a'); a.href = cur.link.href; a.target = '_blank'; a.rel = 'noopener'; a.className = 'mf-link'; a.textContent = cur.link.text; a.style.cssText = 'font-size:12px;max-width:100%'; q('.ff-btns').appendChild(a); }
+  }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
-  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; };
+  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
-  let raf = 0, last = 0; const thr = motionThrottle();
-  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt * thr.scale(el)); raf = requestAnimationFrame(loop); };
+  let raf = 0, last = 0, cost = 0, gap = 16.7; const thr = motionThrottle(); // frame time is measured (data-frame-ms: the field's own work a frame; data-fps)
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
-  return { el, state: th.state, tick, input, get still() { return still; } };
+  // resize(w, h): a page that shows the field at its own size (the full-screen brain, /brain/) gives the canvas that size in CSS pixels, drawn at the
+  // device's pixel ratio (2 at most) so it stays sharp; the idea draws in 0..W, 0..H, so it fills the new size. A card never calls it.
+  const resize = (w, h) => {
+    W = Math.max(60, Math.round(w)); H = Math.max(60, Math.round(h)); const d = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d); cv.style.aspectRatio = W + '/' + H; if (g) g.setTransform(d, 0, 0, d, 0, 0); draw();
+    return { W, H, dpr: d };
+  };
+  return { el, state: th.state, tick, input, resize, get still() { return still; } };
 }
 
 /** the whole skill for an idea: { name, examples, nearMisses, match, run, stageKinds }. words is the regexp body for the ask (anchored here). */

@@ -7,6 +7,7 @@ import { levelPick } from './game-level.js';
 import * as K from './connect4-rules.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function connect4Of(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -69,7 +70,7 @@ function mount(th, stageApi) {
     earlier.style.display = moves.length > 1 ? '' : 'none';
     sum.textContent = 'Earlier moves (' + (moves.length - 1) + ')';
   }
-  el.append(wrap, status, again, log);
+  el.append(wrap, status, again, log, rulesLine('drop a disc in a column; the first to line up four across, down or diagonally wins. You are red.'));
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

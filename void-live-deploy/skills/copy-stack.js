@@ -48,7 +48,7 @@ async function run(text, api) {
     api.say(ok ? 'copied again' : 'tap copy on the stack card');
     return 'copy-stack';
   }
-  listPage(api, 'Clipboard stack', stack.map((t, i) => ({ text: t.length > 120 ? t.slice(0, 119) + '…' : t, sub: i === 0 ? 'newest' : '#' + (i + 1), full: t })), {
+  listPage(api, 'Clipboard stack', stack.map((t, i) => ({ text: t, sub: i === 0 ? 'newest' : '#' + (i + 1), full: t })), {
     action: 'copy', empty: 'Nothing copied on this page yet. The last ' + COPIES_MAX + ' copies show up here.', foot: 'The last ' + COPIES_MAX + ' copies made on this page, kept for this tab only. Keys and passwords are never kept.',
     onPick: async (r, b) => { let ok = false; try { await navigator.clipboard.writeText(r.full); ok = true; } catch (_) { /* no clipboard */ } b.textContent = ok ? 'copied' : 'not allowed'; },
   });

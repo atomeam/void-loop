@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Base64 encode and decode, live as you type · Verse</title>
+<meta name="description" content="Encode text to Base64 and decode Base64 to text as you type, in both directions: RFC 4648 Base64 and URL-safe Base64URL, with or without padding, exact for emoji and accents (44 character sets both ways: UTF-8, UTF-16, ISO-8859, Windows, KOI8, DOS, EBCDIC, Shift_JIS, GBK, GB18030, Big5, EUC-KR and more). Each line on its own, LF or CRLF, MIME lines of 76. Bad input is named, not turned into garbage. Files of any size become Base64 and data: URLs on this device, ready to download. Works offline, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Base64 encode and decode · Verse">
+<meta property="og:description" content="Base64 and Base64URL both ways, live as you type, exact for emoji and accents; files to data: URLs on the device. Offline, nothing sent.">
+<meta property="og:url" content="https://a-to-mind.com/base64/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/base64/ (the tower's base64encode.org floor): one file and one small module, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b3261e; --good: #1f7a45; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a80; --good: #6fd49a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  label.head { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 600; color: var(--soft); margin: 12px 0 4px; }
+  label.head span { font-weight: 400; font-variant-numeric: tabular-nums; }
+  textarea { box-sizing: border-box; width: 100%; font: 15px/1.5 ui-monospace, Menlo, Consolas, monospace; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; resize: vertical; overflow-wrap: anywhere; }
+  #text { min-height: 200px; font-family: system-ui, sans-serif; font-size: 16px; }
+  #b64 { min-height: 150px; }
+  #b64[aria-invalid="true"] { border-color: var(--bad); }
+  #text.stale { opacity: .55; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .opts { font-size: 14px; gap: 6px 14px; }
+  .opts label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; }
+  select, button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  select { border-radius: 10px; padding: 6px 10px; max-width: 100%; min-width: 0; } select option, select optgroup { background: var(--bg); color: var(--ink); }
+  .opts label { max-width: 100%; } #cs { width: 15em; }
+  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 1.5em; }
+  .note.bad { color: var(--bad); } .note.good { color: var(--good); }
+  output.hex { display: block; font: 13px/1.6 ui-monospace, Menlo, Consolas, monospace; border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; overflow-wrap: anywhere; color: var(--soft); white-space: pre-wrap; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 14px; text-align: center; }
+  .drop.over { border-color: var(--accent); }
+  .drop input[type=file] { font-size: 14px; max-width: 100%; }
+  #fileout { min-height: 90px; font-size: 13px; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/base64/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Base64 encode and decode","url":"https://a-to-mind.com/base64/","description":"Encode text to Base64 and decode Base64 to text as you type, Base64 and Base64URL, with or without padding, exact for emoji and accents in 44 character sets; files of any size become Base64 and data: URLs on your device. Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"base64 encode, base64 decode, base64 to text, text to base64, base64url, file to base64, image to data url, base64 decode online","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/base64/?t={text}"},"text-input":"required name=text"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Base64 encode and decode","item":"https://a-to-mind.com/base64/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/base64.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Base64 encode and decode</h1>
+  <div class="row opts" role="group" aria-label="Options">
+    <label>Alphabet <select id="alpha"><option value="std">Standard (+ /)</option><option value="url">URL-safe Base64URL (- _)</option></select></label>
+    <label><input type="checkbox" id="pad" checked> = padding</label>
+    <label><input type="checkbox" id="wrap"> Lines of 76 (MIME)</label>
+    <label><input type="checkbox" id="lines"> Encode each line separately</label>
+    <label>Newline <select id="eol"><option value="lf">LF (Unix)</option><option value="crlf">CRLF (Windows)</option></select></label>
+    <label>Character set <select id="cs"><option value="auto">Auto (detected)</option></select></label>
+    <label><input type="checkbox" id="showhex"> Bytes in hex</label>
+  </div>
+  <label class="head" for="text">Text <span id="tcount"></span></label>
+  <textarea id="text" spellcheck="false" placeholder="Type or paste text: it is encoded as you type"></textarea>
+  <label class="head" for="b64">Base64 <span id="bcount"></span></label>
+  <textarea id="b64" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Or paste Base64 (or a data: URL) here: it is decoded as you type"></textarea>
+  <p class="note" id="note" role="status" aria-live="polite"></p>
+  <output class="hex" id="hex" hidden aria-label="The bytes in hex"></output>
+  <div class="row">
+    <button type="button" id="copyb">Copy Base64</button><button type="button" id="copyt">Copy text</button><button type="button" id="link">Copy link</button>
+    <button type="button" id="dlb">Download</button><button type="button" id="dl" hidden>Download file</button><button type="button" id="clear">Clear</button>
+  </div>
+  <h2>A file to Base64</h2>
+  <div class="drop" id="drop">
+    <input type="file" id="file" aria-label="Choose a file to turn into Base64">
+    <p class="note">Or drop a file here, of any size. It is read on this device a slice at a time and never uploaded.</p>
+  </div>
+  <p class="note" id="fnote"></p>
+  <div id="fbox" hidden>
+    <label class="head" for="fileout">data: URL <span id="fcount"></span></label>
+    <textarea id="fileout" readonly></textarea>
+    <p class="note" id="fprev" hidden></p>
+    <div class="row"><button type="button" id="copyu">Copy data: URL</button><button type="button" id="copyf">Copy Base64 only</button><button type="button" id="dlf">Download</button></div>
+  </div>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/base64/?mode=decode">Decode Base64</a><a href="/base64/?t=Hello%2C+world">Encode &quot;Hello, world&quot;</a><a href="/base64/?b=SGVsbG8sIHdvcmxk">Decode SGVsbG8sIHdvcmxk</a><a href="/base64/?a=url">Base64URL</a><a href="/base64/?pad=0">Without padding</a><a href="/base64/?wrap=1">MIME lines of 76</a><a href="/base64/?lines=1">Each line on its own</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/base-converter/">Base converter</a> <a href="/g/">Snippet / Note in a link</a> <a href="/emojis/">Emoji counts</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Encoded and decoded on this device as you type, in both directions on one page: what base64encode.org and its sister site base64decode.org split across two addresses lives in two boxes here. Nothing is sent anywhere, and the page works offline after one visit. Base64 and Base64URL as RFC 4648 writes them: decoding takes either alphabet, with or without padding, ignores spaces and line breaks, takes a whole data: URL, and names the character that is wrong instead of guessing. Text is UTF-8 unless you pick another of the 44 character sets (Unicode, the ISO-8859 family, the Windows code pages, KOI8, Mac, DOS, EBCDIC, and Shift_JIS, EUC-JP, ISO-2022-JP, GBK, GB18030, Big5 and EUC-KR), every one both ways, so emoji and accents come back exactly; a character the set cannot hold is named, never turned into ?. The Asian sets are written from the browser's own decoder, swept once and turned around on this device: no table is downloaded. A file of any size is read a slice at a time; a long result is kept whole behind Copy and Download while the box shows its start. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { encodeText, decodeText, decodeLines, encodeBytes, base64Chunks, hexOf, sizeOf, CHARSETS, CHARSET_GROUPS, cardAsk } from '/lib/base64.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.base64.v1', text = $('text'), b64 = $('b64'), note = $('note');
+  const q = new URLSearchParams(location.search);
+  let kept = {}; try { kept = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (_) {}
+  const pick = (k, d) => (q.has(k) ? q.get(k) : kept[k] ?? d);
+  $('alpha').value = pick('a', 'std') === 'url' ? 'url' : 'std'; $('pad').checked = pick('pad', '1') !== '0'; $('wrap').checked = pick('wrap', '0') === '1';
+  $('lines').checked = pick('lines', '0') === '1'; $('eol').value = pick('eol', 'lf') === 'crlf' ? 'crlf' : 'lf';
+  // every character set, grouped
+  for (const g of CHARSET_GROUPS) { const og = document.createElement('optgroup'); og.label = g.group; for (const [v, l] of g.sets) og.append(new Option(l, v)); $('cs').append(og); }
+  $('cs').value = CHARSETS[pick('cs', 'auto')] ? pick('cs', 'auto') : 'auto'; $('showhex').checked = kept.hex === '1';
+  const opts = () => ({ url: $('alpha').value === 'url', pad: $('pad').checked, wrap: $('wrap').checked ? 76 : 0, lines: $('lines').checked, eol: $('eol').value, charset: $('cs').value === 'auto' ? 'utf-8' : $('cs').value });
+  const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ a: $('alpha').value, pad: $('pad').checked ? '1' : '0', wrap: $('wrap').checked ? '1' : '0', cs: $('cs').value, hex: $('showhex').checked ? '1' : '0', lines: $('lines').checked ? '1' : '0', eol: $('eol').value })); } catch (_) {} };
+  const chars = (s) => Array.from(s).length.toLocaleString('en');
+  let last = 'text', bytes = new Uint8Array(0), binary = false, mime = null, raw = '';
+  // a text box keeps only LF line breaks: the Base64 as written (CR LF when chosen) is what Copy and Download give
+  const written = () => (raw && raw.replace(/\r\n?/g, '\n') === b64.value ? raw : b64.value);
+  function say(msg, cls) { note.textContent = msg; note.className = 'note' + (cls ? ' ' + cls : ''); }
+  function counts() {
+    $('tcount').textContent = text.value ? chars(text.value) + ' characters' + (text.classList.contains('stale') ? ' (not from this Base64)' : ' · ' + sizeOf(bytes.length)) : '';
+    $('bcount').textContent = b64.value ? chars(b64.value.replace(/\s/g, '')) + ' characters' : '';
+    $('hex').hidden = !$('showhex').checked; $('hex').textContent = bytes.length ? hexOf(bytes.length > 4096 ? bytes.subarray(0, 4096) : bytes) + (bytes.length > 4096 ? '\n(the first 4,096 of ' + bytes.length.toLocaleString('en') + ' bytes)' : '') : 'No bytes yet';
+    $('dl').hidden = !(last === 'b64' && bytes.length); $('dlb').hidden = !b64.value;
+  }
+  function fromText() {
+    last = 'text'; text.classList.remove('stale'); b64.removeAttribute('aria-invalid'); binary = false;
+    const r = encodeText(text.value, opts());
+    if (!r.ok) { bytes = new Uint8Array(0); b64.value = ''; say('Not encoded: ' + r.error + '.', 'bad'); return counts(); }
+    bytes = r.bytes; b64.value = raw = r.base64;
+    say(text.value ? 'Encoded' + (r.lines > 1 ? ' ' + r.lines + ' lines, each on its own' : '') + ': ' + sizeOf(bytes.length) + ' of ' + ($('cs').value === 'auto' ? 'UTF-8' : $('cs').selectedOptions[0].textContent) + ' as ' + (opts().url ? 'Base64URL' : 'Base64') + (opts().pad ? '' : ', no padding') + '.' : '', 'good'); counts();
+  }
+  function fromB64() {
+    last = 'b64'; const r = $('lines').checked ? decodeLines(b64.value, $('cs').value, $('eol').value) : decodeText(b64.value, $('cs').value); binary = false; mime = r.mime || null;
+    if (r.ok) {
+      bytes = r.bytes; text.value = r.text; text.classList.remove('stale'); b64.removeAttribute('aria-invalid');
+      say(b64.value.trim() ? 'Decoded' + (r.lines > 1 ? ' ' + r.lines + ' lines, each on its own' : '') + ': ' + sizeOf(bytes.length) + ', ' + (r.alphabet === 'url' ? 'URL-safe alphabet' : 'standard alphabet') + (r.padded ? ', padded' : '') + ($('cs').value === 'auto' && r.charset ? ', read as ' + CHARSETS[r.charset] : '') + (r.mime ? ', a data: URL of ' + r.mime : '') + '.' + (r.note ? ' Note: ' + r.note + '.' : '') : '', 'good');
+    } else {
+      bytes = r.bytes || new Uint8Array(0); binary = !!r.binary; text.classList.add('stale'); b64.setAttribute('aria-invalid', 'true');
+      say((r.binary ? 'Decoded, but not text: ' : 'Not Base64: ') + r.error + '.', 'bad');
+    }
+    counts();
+  }
+  text.addEventListener('input', fromText); b64.addEventListener('input', fromB64);
+  // a new character set reads the same Base64 again (or encodes the same text again); a new alphabet, padding or wrapping rewrites the Base64
+  $('cs').addEventListener('change', () => { keep(); (last === 'b64' ? fromB64 : fromText)(); });
+  $('lines').addEventListener('change', () => { keep(); (last === 'b64' ? fromB64 : fromText)(); });
+  for (const id of ['alpha', 'pad', 'wrap', 'eol']) $(id).addEventListener('change', () => { keep(); (last === 'b64' ? reencode : fromText)(); });
+  // the alphabet, padding or wrapping changed while Base64 was being read: write the same bytes again in the new form (the text stays as it is)
+  function reencode() { if (b64.getAttribute('aria-invalid') === 'true' && !binary) return; if ($('lines').checked && !binary) return fromText(); b64.value = encodeBytes(bytes, opts()); fromB64(); }
+  $('showhex').addEventListener('change', () => { keep(); counts(); });
+  const toast = (b, t) => { const w = b.textContent; b.textContent = t; setTimeout(() => { b.textContent = w; }, 1200); };
+  const copy = async (b, v, said = 'Copied') => { try { await navigator.clipboard.writeText(v); toast(b, said); } catch (_) { toast(b, 'Select and copy it by hand'); } };
+  $('copyb').addEventListener('click', () => copy($('copyb'), written())); $('copyt').addEventListener('click', () => copy($('copyt'), text.value));
+  $('link').addEventListener('click', () => {
+    const o = opts(), u = new URLSearchParams(); const fits = (s) => s && s.length <= 2000;
+    if (last === 'b64' && fits(b64.value)) u.set('b', b64.value); else if (fits(text.value)) u.set('t', text.value);
+    if (o.url) u.set('a', 'url'); if (!o.pad) u.set('pad', '0'); if (o.wrap) u.set('wrap', '1'); if (o.lines) u.set('lines', '1'); if (o.eol === 'crlf') u.set('eol', 'crlf'); if (o.charset !== 'utf-8') u.set('cs', o.charset);
+    const s = u.toString(), short = u.has('t') || u.has('b') || !(text.value || b64.value);
+    copy($('link'), location.origin + location.pathname + (s ? '?' + s : ''), short ? 'Copied' : 'Copied (too long to carry the text)');
+  });
+  // a download of a Blob, named; the encoded text as name.b64.txt, the decoded bytes as a file of their type
+  const save = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/svg+xml': 'svg', 'application/pdf': 'pdf', 'text/plain': 'txt', 'application/zip': 'zip', 'application/json': 'json', 'audio/mpeg': 'mp3', 'video/mp4': 'mp4' };
+  $('dlb').addEventListener('click', () => save(new Blob([written()], { type: 'text/plain' }), 'base64.b64.txt'));
+  $('dl').addEventListener('click', () => save(new Blob([bytes], { type: mime || 'application/octet-stream' }), 'decoded.' + (EXT[String(mime || '').split(';')[0]] || (binary ? 'bin' : 'txt'))));
+  $('clear').addEventListener('click', () => { text.value = ''; b64.value = ''; fromText(); text.focus(); });
+  // a file of any size, read here a slice at a time (File.slice, FILE_CHUNK: whole 3-byte groups and whole 76-character lines, so the slices join
+  // exactly): its Base64 in the options chosen and its data: URL kept as Blobs behind Copy and Download; past 256 KB the box shows only the start
+  const BIG = 256 * 1024, PREVIEW = 8192; let fileB64 = new Blob([]), fileUrl = new Blob([]), fileName = 'file', reading = 0;
+  async function takeFile(f) {
+    if (!f) return; const run = ++reading, o = opts(), plain = !o.url && o.pad && !o.wrap; fileName = f.name || 'file';
+    const parts = [], url = ['data:' + (f.type || 'application/octet-stream') + ';base64,']; let done = 0;
+    for await (const part of base64Chunks(f, o)) { if (run !== reading) return; parts.push(part); done = Math.min(f.size, done + 3 * 76 * 16384); if (f.size > BIG) $('fnote').textContent = 'Reading ' + fileName + ': ' + Math.round(done / f.size * 100) + '%'; }
+    if (plain) url.push(...parts); else for await (const part of base64Chunks(f, {})) { if (run !== reading) return; url.push(part); }
+    fileB64 = new Blob(parts, { type: 'text/plain' }); fileUrl = new Blob(url, { type: 'text/plain' });
+    const whole = fileUrl.size <= BIG;
+    $('fileout').value = whole ? await fileUrl.text() : (await fileUrl.slice(0, PREVIEW).text()) + '…';
+    $('fprev').hidden = whole; $('fprev').textContent = whole ? '' : 'Only the start is shown here: the whole data: URL is ' + fileUrl.size.toLocaleString('en') + ' characters (' + sizeOf(fileUrl.size) + '). Copy and Download take all of it.';
+    $('fbox').hidden = false; $('fcount').textContent = fileUrl.size.toLocaleString('en') + ' characters';
+    $('fnote').textContent = fileName + ': ' + sizeOf(f.size) + ' of ' + (f.type || 'unknown type') + ', ' + sizeOf(fileB64.size) + ' as Base64 (a third larger, as Base64 always is).';
+  }
+  $('file').addEventListener('change', (e) => takeFile(e.target.files[0]));
+  const drop = $('drop');
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); }); drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); takeFile(e.dataTransfer.files[0]); });
+  $('copyu').addEventListener('click', async () => copy($('copyu'), await fileUrl.text())); $('copyf').addEventListener('click', async () => copy($('copyf'), await fileB64.text()));
+  $('dlf').addEventListener('click', () => save(fileB64, fileName + '.b64.txt'));
+  if (q.has('b')) { b64.value = q.get('b'); fromB64(); } else { text.value = q.get('t') || ''; fromText(); }
+  // /base64/?mode=decode opens on the decode side: the Base64 box focused, ready for a paste
+  if (q.get('mode') === 'decode') { b64.focus(); b64.scrollIntoView({ block: 'center' }); }
+  mountRelated($('related'), '/base64/', [
+    { label: 'Count the words of the text', href: () => (text.value ? '/word-count/?t=' + encodeURIComponent(text.value.slice(0, 4000)) : null) },
+    { label: 'Its bytes as one hex number', href: () => (bytes.length && bytes.length <= 1000 ? '/base-converter/?v=' + hexOf(bytes).replace(/ /g, '') + '&b=16' : null) },
+  ], { card: () => (text.classList.contains('stale') ? '' : cardAsk(text.value)) });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

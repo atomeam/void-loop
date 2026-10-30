@@ -1,0 +1,24 @@
+{
+  "slug": "local-bin-not-arrow",
+  "run": 73,
+  "date": "2026-10-05",
+  "status": "unattested",
+  "cause": "not-claimed",
+  "principle": "not-sealed",
+  "arrow": "denied",
+  "emit": false,
+  "hypothesis": "Two local minute stamps that fall in the same allowlisted bin are a hashed co-bin hypothesis. A shared bin is not a cause and not an acausal principle.",
+  "bin_widths_min": [5, 15, 60],
+  "default_width_min": 15,
+  "order_is_not_cause": true,
+  "sources": [
+    {
+      "id": "jung-1952-label",
+      "label": "Jung 1952 essay title is a public book label for an acausal-connecting-principle claim. Not fetched. Not a principle seal."
+    },
+    {
+      "id": "xiong-2019-label",
+      "label": "arXiv:1908.00215 is a chart-causality paper label. Aggregation raised perceived causality in that study. Not fetched. Not a measurement of this card."
+    }
+  ]
+}
