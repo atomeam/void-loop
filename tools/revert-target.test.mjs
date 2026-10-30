@@ -174,8 +174,9 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
   assert.deepEqual(verify.match(/^\s+needs:.*$/gm).map((x) => x.trim()), ['needs: browser-suite'], 'only the incident job waits (for every shard, so a red head writes one incident)');
-  assert.match(verify, /group: void-verify-fast\n\s+cancel-in-progress: false/, 'one shared group for the fast tests: a started run finishes, only the newest head waits behind it (2026-10-26)');
-  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}\n\s+cancel-in-progress: false/, 'one shared group per shard for the suite, never cancelled: a started run finishes, only the newest head waits (three shards since 2026-10-16)');
+  // a group per head (2026-10-30): a shared group kept only the newest pending run, so the heads between were never verified and a red suite could not name its commit
+  assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}[^\n]*\n\s+cancel-in-progress: false/, 'the fast tests run on every head, never cancelled');
+  assert.match(verify, /group: void-verify-\$\{\{ matrix\.shard \}\}-\$\{\{ github\.sha \}\}[^\n]*\n\s+cancel-in-progress: false/, 'every shard of the suite runs on every head, never cancelled (shards since 2026-10-16, a group per head since 2026-10-30)');
   assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3, 4\]/, 'the suite runs as four shards (three until 2026-10-29, when shard 1 outgrew the budget)'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/4/, 'each job gets its shard');
   assert.ok(isSuiteJob('browser-suite') && isSuiteJob('browser-suite (2)') && isSuiteJob('verify-main') && !isSuiteJob('python-tests') && !isSuiteJob('browser-suite-x'), 'a shard job counts as the suite job');
   assert.match(verify, /part: fast/); assert.match(verify, /part: suite/);
