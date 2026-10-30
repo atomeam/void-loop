@@ -97,6 +97,16 @@ export function regionsOf(loc) {
   const out = REGION_RE.filter(([, re]) => re.test(s)).map(([k]) => k);
   return out.length ? (out.length > 1 && out[0] === 'worldwide' && /\bremote\b/i.test(s) && !/worldwide|anywhere|global/i.test(s) ? out.slice(1) : out) : ['other'];
 }
+// a country (ISO 3166 two-letter code, as /local/ and /flights/ know a place) as the narrowest region the listings name, so another page can open
+// the remote jobs open to people there; a country no region here covers gives ''. Austria and Switzerland are Europe, not Germany: a listing open in
+// Germany is not open in them.
+const COUNTRY_REGION = { US: 'usa', CA: 'canada', GB: 'uk', DE: 'germany', AU: 'oceania', NZ: 'oceania' };
+for (const [region, codes] of Object.entries({ latam: 'MX GT BZ SV HN NI CR PA CU DO HT JM PR TT BS BB CO VE EC PE BO BR PY UY AR CL GY SR',
+  europe: 'IE FR ES PT NL BE LU AT CH IT MT PL CZ SK HU SI HR RO BG GR CY DK SE NO FI IS EE LV LT RS BA ME MK AL MD UA LI MC SM AD',
+  emea: 'TR IL AE SA QA KW BH OM JO LB IQ IR YE', asia: 'IN SG JP PH ID VN CN KR PK MY TH HK TW BD LK NP KH MM LA MN',
+  africa: 'NG KE EG ZA GH MA DZ TN ET TZ UG RW SN CI CM ZW ZM BW NA MU' })) for (const c of codes.split(' ')) COUNTRY_REGION[c] = region;
+/** the region of a two-letter country code: regionOfCountry('GB') → 'uk', regionOfCountry('PT') → 'europe', an unknown code → ''. Pure. */
+export const regionOfCountry = (cc) => (/^[a-z]{2}$/i.test(String(cc || '')) && COUNTRY_REGION[String(cc).toUpperCase()]) || '';
 // a job open in a wider region is open in the narrower one inside it
 const WITHIN = { usa: ['americas'], canada: ['americas'], latam: ['americas'], uk: ['europe', 'emea'], germany: ['europe', 'emea'], europe: ['emea'], africa: ['emea'] };
 /** whether a job may be done from a region. Pure. */
@@ -196,7 +206,7 @@ export function toQuery(s) { const q = new URLSearchParams(); for (const [k, v] 
 export function fromQuery(qs) {
   const q = new URLSearchParams(qs), s = { ...EMPTY }, txt = (k, n = 60) => String(q.get(k) || '').replace(/[\u0000-\u001f]/g, '').slice(0, n);
   for (const k of ['q', 'loc', 'tag', 'cat', 'level', 'company']) s[k] = txt(k);
-  if (REGIONS[q.get('region')]) s.region = q.get('region'); if (TYPES[q.get('type')]) s.type = q.get('type'); if (SOURCES[q.get('src')]) s.src = q.get('src'); if (SORTS[q.get('sort')]) s.sort = q.get('sort');
+  if (REGIONS[q.get('region')]) s.region = q.get('region'); else if (regionOfCountry(q.get('cc'))) s.region = regionOfCountry(q.get('cc')); /* ?cc= from /local/ or /flights/ */ if (TYPES[q.get('type')]) s.type = q.get('type'); if (SOURCES[q.get('src')]) s.src = q.get('src'); if (SORTS[q.get('sort')]) s.sort = q.get('sort');
   s.min = Math.max(0, Math.min(1e7, Math.round(+q.get('min') || 0))); s.days = [1, 3, 7, 14, 30].includes(+q.get('days')) ? +q.get('days') : 0; s.salaryOnly = q.get('salaryOnly') === '1'; s.visa = q.get('visa') === '1';
   return s;
 }
