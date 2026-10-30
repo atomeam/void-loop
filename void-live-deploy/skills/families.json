@@ -14,7 +14,7 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 0,
   "checked": 6,
   "proven": 374
  },
@@ -1624,7 +1624,7 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
     "proven": 42
    },
@@ -1634,10 +1634,8 @@
     "second": 14,
     "answered": 0,
     "points": 1.46,
-    "one_live_from_proven": [
-     "local-stations"
-    ],
-    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.46 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
+    "one_live_from_proven": [],
+    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.46 of 3 on average)."
    },
    "skills": [
     {
@@ -1904,24 +1902,6 @@
      }
     },
     {
-     "name": "local-stations",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-10-30",
-     "last_tested_by": "its tests",
-     "source": {
-      "sites": [
-       "open-meteo.com"
-      ],
-      "named": true,
-      "second": false,
-      "answered": false,
-      "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: open-meteo.com; named on the card; no second source; no kept live answer yet. One kept live answer from open-meteo.com would make it proven"
-     }
-    },
-    {
      "name": "joke",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
@@ -1987,7 +1967,17 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "wikiquote.org"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: wikiquote.org; named on the card; no second source; no kept live answer yet"
+     }
     },
     {
      "name": "magic8",
