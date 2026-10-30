@@ -130,7 +130,8 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/random\/\?list=/), p.locator('#related a', { hasText: 'Pick one of these players at random' }).click()]); await p.waitForSelector('#list');
     const list = (await p.locator('#list').inputValue()).split('\n');
     if (list.length !== 8 || list[0] !== 'Cy Dee') throw new Error('the random page opened with ' + list.length + ' names starting "' + list[0] + '", not the 8 players of the board best first');
-    await check('the random page opened with the 8 players of the draft board, Cy Dee first');
+    if ((new URL(p.url()).searchParams.get('list') || '').split('\n').length !== 8) throw new Error('the random page dropped the list from its address (' + p.url() + '), so a reload or a copied link loses it');
+    await check('the random page opened with the 8 players of the draft board, Cy Dee first, and keeps them in its link');
   },
 };
 
