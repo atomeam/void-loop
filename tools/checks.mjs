@@ -562,6 +562,7 @@ for (const [name, file] of [
   ['baseconv', 'baseconv.test.mjs'],
   ['imgfit', 'imgfit.test.mjs'],
   ['arrange', 'arrange.test.mjs'],
+  ['sing', 'sing.test.mjs'],
   ['wiki-look', 'wiki-look.test.mjs'],
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],

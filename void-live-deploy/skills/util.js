@@ -1,15 +1,18 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, hashes, diffs, Markdown
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, hashes, diffs, Markdown, CSV, CSS
  * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes, lib/textdiff.js
- * for the diff checker, lib/markdown.js for Markdown); nothing is sent anywhere.
+ * for the diff checker, lib/markdown.js for Markdown, lib/csvjson.js for CSV and JSON,
+ * lib/cssmin.js for CSS); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';
 import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
 import { diffTexts, diffCounts, withContext, MAX_LINES } from '../lib/textdiff.js';
 import { mdToHtml } from '../lib/markdown.js';
+import { csvToJson, jsonToCsv } from '../lib/csvjson.js';
+import { minifyCss } from '../lib/cssmin.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -48,6 +51,9 @@ export function utilOf(text) {
   // a diff checker and Markdown to HTML, asked for by name (2026-10-30: "diff checker" and "markdown to html" fell to an article that answered nothing)
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+|line\s+)?(?:diff|difference)\s+(?:checker|tool|finder|viewer)$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text|string)\s+(?:compare|comparison|diff)(?:\s+tool)?$|^(?:compare|diff)\s+(?:two\s+)?(?:texts|text|lists)$/.test(l)) return { kind: 'diffmaker' };
   if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:markdown|md)\s+(?:to\s+html(?:\s+converter)?|converter|preview(?:er)?|editor|viewer|renderer)$|^convert\s+markdown(?:\s+to\s+html)?$/.test(l)) return { kind: 'mdmaker' };
+  m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv|json)\s+(?:file\s+)?to\s+(csv|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv)\s+(?:to\s+)?json\s+converter$/);
+  if (m && (m[3] || m[1] !== m[2])) return { kind: 'csvjson', dir: m[3] || m[1] };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:css\s+(?:minifier|minify|minification|compressor|compress|optimizer)(?:\s+tool)?|(?:minify|compress)\s+(?:my\s+|this\s+)?css)$/.test(l)) return { kind: 'cssmin' };
   // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
   // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
   m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
@@ -214,6 +220,48 @@ async function run(text, api) {
           + num(r) + ' ' + (r.t === 'del' ? '−' : r.t === 'add' ? '+' : ' ') + ' ' + esc(r.s) + '</span>').join('\n') : '';
     };
     for (const t of [A, B]) if (t) t.addEventListener('input', paint);
+  } else if (q.kind === 'csvjson') {
+    // one card both ways: CSV to JSON, or JSON to CSV after a press on the arrow (lib/csvjson.js); cells that are plain numbers, true, false or null become those values
+    let dir = q.dir;
+    const title = () => (dir === 'csv' ? 'CSV to JSON' : 'JSON to CSV');
+    const hint = () => (dir === 'csv' ? 'name,age&#10;Ann,30&#10;Bo,25' : '[{&quot;name&quot;: &quot;Ann&quot;, &quot;age&quot;: 30}]');
+    el = showPage((p) => { p.innerHTML = '<h2>' + title() + '</h2><textarea class="util-in" rows="6" maxlength="2000000" placeholder="' + hint() + '" aria-label="' + (dir === 'csv' ? 'CSV' : 'JSON') + '" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (title() is one of two fixed headings; typed text goes to the textarea value only)
+      + '<p style="margin:8px 0 4px"><button type="button" class="util-flip" aria-label="Swap the direction">⇄ swap</button> <span class="util-say" aria-live="polite">Paste ' + (dir === 'csv' ? 'CSV with a header row' : 'a JSON array') + '</span></p>'
+      + '<pre class="util-out" style="margin:0;max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Commas, semicolons or tabs, with quotes kept. The first row names the fields. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say'), flip = el && el.querySelector && el.querySelector('.util-flip'), head = el && el.querySelector && el.querySelector('h2');
+    const n = (k, w) => k + ' ' + w + (k === 1 ? '' : 's');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste ' + (dir === 'csv' ? 'CSV with a header row' : 'a JSON array'); return; }
+      const r = dir === 'csv' ? csvToJson(box.value) : jsonToCsv(box.value);
+      if (r.error) { out.textContent = ''; say.textContent = r.error; return; }
+      out.textContent = dir === 'csv' ? r.json : r.csv;
+      say.textContent = n(r.rows, 'row') + ', ' + n(r.cols, dir === 'csv' ? 'field' : 'column');
+    };
+    if (box) box.addEventListener('input', paint);
+    if (flip) flip.addEventListener('click', () => {
+      // the output becomes the new input, so a round trip is one press
+      dir = dir === 'csv' ? 'json' : 'csv';
+      if (head) head.textContent = title();
+      if (box) { if (out && out.textContent) box.value = out.textContent; box.setAttribute && box.setAttribute('aria-label', dir === 'csv' ? 'CSV' : 'JSON'); }
+      paint();
+    });
+  } else if (q.kind === 'cssmin') {
+    // safe only: comments and spaces go, nothing is renamed, merged or moved (lib/cssmin.js)
+    el = showPage((p) => { p.innerHTML = '<h2>CSS minifier</h2><textarea class="util-in" rows="6" maxlength="2000000" placeholder="a {&#10;  color: red;&#10;}" aria-label="CSS" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
+      + '<p class="util-say" aria-live="polite" style="margin:8px 0 4px">Paste CSS</p>'
+      + '<pre class="util-out" style="margin:0;max-height:220px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Removes comments (a /*! note stays) and the spaces CSS does not need. Rules are never renamed, merged or moved, so the page looks the same. Minified in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste CSS'; return; }
+      const r = minifyCss(box.value);
+      out.textContent = r.css;
+      say.textContent = r.before + ' bytes to ' + r.after + ' bytes (' + Math.round((1 - r.after / r.before) * 100) + '% smaller)';
+    };
+    if (box) box.addEventListener('input', paint);
   } else if (q.kind === 'mdmaker') {
     el = showPage((p) => { p.innerHTML = '<h2>Markdown to HTML</h2><textarea class="util-in" rows="6" maxlength="200000" placeholder="# A heading&#10;&#10;Some **bold** text and a [link](https://a-to-mind.com)" aria-label="Markdown" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
       + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">Preview</div><div class="util-md" style="max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2px 10px"></div>'
@@ -278,8 +326,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', '16 character password', 'strong password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax'],
+  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html'],
+  nearMisses: ['what is csv', 'csv vs json', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

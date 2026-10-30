@@ -164,7 +164,37 @@ export const JOURNEYS = {
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
   },
-  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto': async (p, check) => {
+  'search the sports database for a match still to come and put it on the calendar (a past match gets no link)': async (p, check) => {
+    const d = new Date(Date.now() + 9 * 86400000), soon = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const ev = (id, name, date, hs, as) => ({ id, name, date, league: 'English Premier League', sport: 'Soccer', home: 'Arsenal', away: 'Chelsea', hs, as, src: 'TheSportsDB' });
+    await p.route('**/api/sportsearch?**', (r) => r.fulfill({ json: { ok: true, teams: [], events: [ev('1', 'Arsenal vs Chelsea', '2019-05-01', '3', '1'), ev('2', 'Arsenal vs Chelsea', soon, '', '')], venues: [], players: [], source: 'TheSportsDB' } }));
+    await p.goto(ORIGIN + '/sports/?q=Arsenal%20vs%20Chelsea', { waitUntil: 'load' }); await p.waitForSelector('ul.ev li a[href^="/calendar/?e="]');
+    const links = await p.locator('ul.ev li', { hasText: 'Arsenal vs Chelsea' }).evaluateAll((ls) => ls.map((l) => !!l.querySelector('a[href^="/calendar/"]')));
+    if (links.join() !== 'false,true') throw new Error('the calendar links on the two matches are ' + links.join() + ', not only on the one still to come');
+    await check('the search shows the match on ' + soon + ' with a link to the calendar, and the 2019 match without one');
+    await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('ul.ev li a', { hasText: 'Add to my calendar' }).click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    await Promise.all([p.waitForURL(/\/calendar\/\?d=/), p.locator('#invAdd').click()]);
+    if (!(await p.evaluate(() => document.body.innerText.includes('Arsenal vs Chelsea')))) throw new Error('the calendar does not show the added match');
+    if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not the day of the match');
+    await check('the sports page put "Arsenal vs Chelsea" on ' + soon + ' in the calendar');
+  },
+  'show an event in every city on the time page, put it on the calendar, and see the matches that day': async (p, check) => {
+    const d = new Date(Date.now() + 9 * 86400000), soon = d.toISOString().slice(0, 10), rel = (t) => p.locator('#related a', { hasText: t }).getAttribute('href');
+    const at = '/time/?at=' + soon + 'T15:00:00Z&cities=Kyoto@Asia/Tokyo,London';
+    await p.goto(ORIGIN + '/time/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await p.locator('#related a', { hasText: 'Put the event on my calendar' }).getAttribute('aria-disabled')) !== 'true') throw new Error('with no event shown, "Put the event on my calendar" is not off');
+    await check('with no event shown, the calendar link reads as off');
+    await p.goto(ORIGIN + at, { waitUntil: 'load' }); await p.waitForSelector('#event:not([hidden])');
+    if ((await rel('Matches that day')) !== '/scores/?date=' + soon) throw new Error('"Matches that day" goes to "' + (await rel('Matches that day')) + '", not /scores/?date=' + soon);
+    await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#related a', { hasText: 'Put the event on my calendar' }).click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    const card = await p.locator('#invBody').innerText();
+    if (!card.includes('Event in Kyoto, London') || !card.includes('3:00')) throw new Error('the invite reads "' + card.replace(/\s+/g, ' ').slice(0, 160) + '", not the event in Kyoto and London at 3:00 PM');
+    await check('the calendar opened on "Event in Kyoto, London" at 3:00 PM on ' + soon);
+    await Promise.all([p.waitForURL(/\/calendar\/\?d=/), p.locator('#invAdd').click()]);
+    if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not ' + soon);
+    await check('the event is on the calendar on ' + soon);
+  },
+  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto and the remote jobs open in Japan (none offered for UTC)': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the time page opened on Kyoto');
     await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#related a', { hasText: 'The weather in this city' }).click()]); await p.waitForSelector('#q');
@@ -173,6 +203,15 @@ export const JOURNEYS = {
     await open(); await Promise.all([p.waitForURL(/\/local\/\?place=/), p.locator('#related a', { hasText: 'Radio and TV in this city' }).click()]); await p.waitForSelector('#q');
     if ((await p.locator('#q').inputValue()) !== 'Kyoto') throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '", not Kyoto');
     await check('the local radio and TV page opened on Kyoto');
+    // the remote jobs open to people in Japan: the zone Asia/Tokyo is in JP, and /jobs/ reads JP as its Asia and Pacific region
+    await open(); if ((await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('href')) !== '/jobs/?cc=JP') throw new Error('the jobs link is "' + (await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('href')) + '", not /jobs/?cc=JP');
+    await Promise.all([p.waitForURL(/\/jobs\//), p.locator('#related a', { hasText: 'Remote jobs open in this country' }).click()]); await p.waitForSelector('#jb-region');
+    await p.waitForFunction(() => document.getElementById('jb-region').value === 'asia', null, { timeout: 10000 }).catch(() => {});
+    if ((await p.locator('#jb-region').inputValue()) !== 'asia') throw new Error('the jobs page opened with the region "' + (await p.locator('#jb-region').inputValue()) + '", not asia');
+    await check('the jobs page opened on the remote jobs open in Asia and Pacific (' + new URL(p.url()).search + ')');
+    await p.goto(ORIGIN + '/time/?c=UTC@UTC', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    if ((await p.locator('#related a', { hasText: 'Remote jobs open in this country' }).getAttribute('aria-disabled')) !== 'true') throw new Error('UTC, which is no country, still offers remote jobs');
+    await check('UTC is no country, so the jobs link reads as off');
   },
   'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));

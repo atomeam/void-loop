@@ -141,6 +141,52 @@ const COORDS = Object.fromEntries(('tokyo 35.69 139.69;osaka 34.69 135.50;kyoto 
   + 'rio de janeiro -22.91 -43.17;rio -22.91 -43.17;havana 23.11 -82.37;panama 8.98 -79.52;sydney -33.87 151.21;melbourne -37.81 144.96;brisbane -27.47 153.03;'
   + 'perth -31.95 115.86;adelaide -34.93 138.60;darwin -12.46 130.84;hobart -42.88 147.33;canberra -35.28 149.13;auckland -36.85 174.76;wellington -41.29 174.78;'
   + 'fiji -18.14 178.44;longyearbyen 78.22 15.65').split(';').map((r) => { const m = /^(.+) (-?[\d.]+) (-?[\d.]+)$/.exec(r); return [m[1], [+m[2], +m[3]]]; }));
+// the country of each zone, from the IANA time zone database's zone.tab (public domain) with its older names (Asia/Calcutta, Europe/Kiev, America/Buenos_Aires),
+// because browsers still give some zones by those. Grouped as "Area/CC:City,City CC:City;Area/...". Zones of no one country (UTC, Etc/) are not here.
+const ZONE_CC = 'Africa/AO:Luanda BF:Ouagadougou BI:Bujumbura BJ:Porto-Novo BW:Gaborone CD:Kinshasa,Lubumbashi CF:Bangui CG:Brazzaville CI:Abidjan CM:Douala '
+  + 'DJ:Djibouti DZ:Algiers EG:Cairo EH:El_Aaiun ER:Asmara,Asmera ES:Ceuta ET:Addis_Ababa GA:Libreville GH:Accra GM:Banjul GN:Conakry GQ:Malabo GW:Bissau '
+  + 'KE:Nairobi LR:Monrovia LS:Maseru LY:Tripoli MA:Casablanca ML:Bamako,Timbuktu MR:Nouakchott MW:Blantyre MZ:Maputo NA:Windhoek NE:Niamey NG:Lagos '
+  + 'RW:Kigali SD:Khartoum SL:Freetown SN:Dakar SO:Mogadishu SS:Juba ST:Sao_Tome SZ:Mbabane TD:Ndjamena TG:Lome TN:Tunis TZ:Dar_es_Salaam UG:Kampala '
+  + 'ZA:Johannesburg ZM:Lusaka ZW:Harare;America/AG:Antigua AI:Anguilla '
+  + 'AR:Argentina/Buenos_Aires,Argentina/Catamarca,Argentina/ComodRivadavia,Argentina/Cordoba,Argentina/Jujuy,Argentina/La_Rioja,Argentina/Mendoza,Argentina/Rio_Gallegos,Argentina/Salta,Argentina/San_Juan,Argentina/San_Luis,Argentina/Tucuman,Argentina/Ushuaia,Buenos_Aires,Catamarca,Cordoba,Jujuy,Mendoza,Rosario '
+  + 'AW:Aruba BB:Barbados BL:St_Barthelemy BO:La_Paz BQ:Kralendijk '
+  + 'BR:Araguaina,Bahia,Belem,Boa_Vista,Campo_Grande,Cuiaba,Eirunepe,Fortaleza,Maceio,Manaus,Noronha,Porto_Acre,Porto_Velho,Recife,Rio_Branco,Santarem,Sao_Paulo '
+  + 'BS:Nassau BZ:Belize '
+  + 'CA:Atikokan,Blanc-Sablon,Cambridge_Bay,Coral_Harbour,Creston,Dawson,Dawson_Creek,Edmonton,Fort_Nelson,Glace_Bay,Goose_Bay,Halifax,Inuvik,Iqaluit,Moncton,Montreal,Nipigon,Pangnirtung,Rainy_River,Rankin_Inlet,Regina,Resolute,St_Johns,Swift_Current,Thunder_Bay,Toronto,Vancouver,Whitehorse,Winnipeg,Yellowknife '
+  + 'CL:Coyhaique,Punta_Arenas,Santiago CO:Bogota CR:Costa_Rica CU:Havana CW:Curacao DM:Dominica DO:Santo_Domingo EC:Guayaquil GD:Grenada GF:Cayenne '
+  + 'GL:Danmarkshavn,Godthab,Nuuk,Scoresbysund,Thule GP:Guadeloupe GT:Guatemala GY:Guyana HN:Tegucigalpa HT:Port-au-Prince JM:Jamaica KN:St_Kitts KY:Cayman '
+  + 'LC:St_Lucia MF:Marigot MQ:Martinique MS:Montserrat '
+  + 'MX:Bahia_Banderas,Cancun,Chihuahua,Ciudad_Juarez,Ensenada,Hermosillo,Matamoros,Mazatlan,Merida,Mexico_City,Monterrey,Ojinaga,Santa_Isabel,Tijuana '
+  + 'NI:Managua PA:Panama PE:Lima PM:Miquelon PR:Puerto_Rico PY:Asuncion SR:Paramaribo SV:El_Salvador SX:Lower_Princes TC:Grand_Turk TT:Port_of_Spain '
+  + 'US:Adak,Anchorage,Atka,Boise,Chicago,Denver,Detroit,Fort_Wayne,Indiana/Indianapolis,Indiana/Knox,Indiana/Marengo,Indiana/Petersburg,Indiana/Tell_City,Indiana/Vevay,Indiana/Vincennes,Indiana/Winamac,Indianapolis,Juneau,Kentucky/Louisville,Kentucky/Monticello,Knox_IN,Los_Angeles,Louisville,Menominee,Metlakatla,New_York,Nome,North_Dakota/Beulah,North_Dakota/Center,North_Dakota/New_Salem,Phoenix,Shiprock,Sitka,Yakutat '
+  + 'UY:Montevideo VC:St_Vincent VE:Caracas VG:Tortola '
+  + 'VI:St_Thomas,Virgin;Antarctica/AQ:Casey,Davis,DumontDUrville,Mawson,McMurdo,Palmer,Rothera,South_Pole,Syowa,Troll,Vostok '
+  + 'AU:Macquarie;Arctic/SJ:Longyearbyen;Asia/AE:Dubai AF:Kabul AM:Yerevan AZ:Baku BD:Dacca,Dhaka BH:Bahrain BN:Brunei BT:Thimbu,Thimphu '
+  + 'CN:Chongqing,Chungking,Harbin,Kashgar,Shanghai,Urumqi CY:Famagusta,Nicosia GE:Tbilisi HK:Hong_Kong '
+  + 'ID:Jakarta,Jayapura,Makassar,Pontianak,Ujung_Pandang IL:Jerusalem,Tel_Aviv IN:Calcutta,Kolkata IQ:Baghdad IR:Tehran JO:Amman JP:Tokyo KG:Bishkek '
+  + 'KH:Phnom_Penh KP:Pyongyang KR:Seoul KW:Kuwait KZ:Almaty,Aqtau,Aqtobe,Atyrau,Oral,Qostanay,Qyzylorda LA:Vientiane LB:Beirut LK:Colombo '
+  + 'MM:Rangoon,Yangon MN:Choibalsan,Hovd,Ulaanbaatar,Ulan_Bator MO:Macao,Macau MY:Kuala_Lumpur,Kuching NP:Kathmandu,Katmandu OM:Muscat PH:Manila '
+  + 'PK:Karachi PS:Gaza,Hebron QA:Qatar '
+  + 'RU:Anadyr,Barnaul,Chita,Irkutsk,Kamchatka,Khandyga,Krasnoyarsk,Magadan,Novokuznetsk,Novosibirsk,Omsk,Sakhalin,Srednekolymsk,Tomsk,Ust-Nera,Vladivostok,Yakutsk,Yekaterinburg '
+  + 'SA:Riyadh SG:Singapore SY:Damascus TH:Bangkok TJ:Dushanbe TL:Dili TM:Ashgabat,Ashkhabad TR:Istanbul TW:Taipei UZ:Samarkand,Tashkent '
+  + 'VN:Ho_Chi_Minh,Saigon YE:Aden;Atlantic/BM:Bermuda CV:Cape_Verde ES:Canary FK:Stanley FO:Faeroe,Faroe GS:South_Georgia IS:Reykjavik NO:Jan_Mayen '
+  + 'PT:Azores,Madeira '
+  + 'SH:St_Helena;Australia/AU:ACT,Adelaide,Brisbane,Broken_Hill,Canberra,Currie,Darwin,Eucla,Hobart,LHI,Lindeman,Lord_Howe,Melbourne,NSW,North,Perth,Queensland,South,Sydney,Tasmania,Victoria,West,Yancowinna;Europe/AD:Andorra '
+  + 'AL:Tirane AT:Vienna AX:Mariehamn BA:Sarajevo BE:Brussels BG:Sofia BY:Minsk CH:Zurich CY:Nicosia CZ:Prague DE:Berlin,Busingen DK:Copenhagen EE:Tallinn '
+  + 'ES:Madrid FI:Helsinki FR:Paris GB:Belfast,London GG:Guernsey GI:Gibraltar GR:Athens HR:Zagreb HU:Budapest IE:Dublin IM:Isle_of_Man IT:Rome JE:Jersey '
+  + 'LI:Vaduz LT:Vilnius LU:Luxembourg LV:Riga MC:Monaco MD:Chisinau,Tiraspol ME:Podgorica MK:Skopje MT:Malta NL:Amsterdam NO:Oslo PL:Warsaw PT:Lisbon '
+  + 'RO:Bucharest RS:Belgrade RU:Astrakhan,Kaliningrad,Kirov,Moscow,Samara,Saratov,Ulyanovsk,Volgograd SE:Stockholm SI:Ljubljana SK:Bratislava '
+  + 'SM:San_Marino TR:Istanbul UA:Kiev,Kyiv,Simferopol,Uzhgorod,Zaporozhye VA:Vatican;Indian/CC:Cocos CX:Christmas IO:Chagos KM:Comoro MG:Antananarivo '
+  + 'MU:Mauritius MV:Maldives RE:Reunion SC:Mahe TF:Kerguelen YT:Mayotte;Pacific/AS:Pago_Pago,Samoa CK:Rarotonga CL:Easter EC:Galapagos FJ:Fiji '
+  + 'FM:Chuuk,Kosrae,Pohnpei,Ponape,Truk,Yap GU:Guam KI:Enderbury,Kanton,Kiritimati,Tarawa MH:Kwajalein,Majuro MP:Saipan NC:Noumea NF:Norfolk NR:Nauru '
+  + 'NU:Niue NZ:Auckland,Chatham PF:Gambier,Marquesas,Tahiti PG:Bougainville,Port_Moresby PN:Pitcairn PW:Palau SB:Guadalcanal TK:Fakaofo TO:Tongatapu '
+  + 'TV:Funafuti UM:Midway,Wake US:Honolulu,Johnston VU:Efate WF:Wallis WS:Apia';
+let zoneCc = null;
+/** the two-letter country (ISO 3166) a zone is in: countryOf('Asia/Tokyo') -> 'JP', countryOf('Asia/Calcutta') -> 'IN', a zone of no one country -> ''. Pure. */
+export function countryOf(tz) {
+  if (!zoneCc) { zoneCc = Object.create(null); for (const g of ZONE_CC.split(';')) { const i = g.indexOf('/'), area = g.slice(0, i); for (const e of g.slice(i + 1).split(' ')) { const [cc, cities] = e.split(':'); for (const c of cities.split(',')) zoneCc[area + '/' + c] = cc; } } }
+  return zoneCc[String(tz || '')] || '';
+}
 /** where a place stands: { lat, lon } from the table by its own name, else by the city its zone is named after when the name is that city; or null. Pure. */
 export function coordsOf(place) {
   if (!place) return null; const n = key(place.name), z = key(cityOf(place.tz || ''));

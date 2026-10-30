@@ -55,7 +55,7 @@ test('the reality card re-reads GitHub only while checks still run, at most 4 mo
   assert.equal(stillRunning([{ text: 'main is at bffbcd82 (…): 1 passed · 9 still running' }]), true);
   assert.equal(stillRunning([{ text: 'main is at bffbcd82 (…): 10 passed' }, { text: '#1176 merged' }]), false);
   assert.equal(stillRunning(null), false);
-  assert.ok(REFRESH_MS >= 60000 && (REFRESH_MAX + 1) * 10 <= 60, 'the first read and every re-read stay within the 60 calls an hour GitHub gives a visitor');
+  assert.ok(REFRESH_MS >= 60000 && (REFRESH_MAX + 1) * 11 <= 60, 'the first read and every re-read stay within the 60 calls an hour GitHub gives a visitor');
 });
 
 test('main as it was on 2026-10-19 19:35: four record commits over a merge whose browser suite failed; the card names the merge and the failure', async () => {
@@ -88,4 +88,27 @@ test('incident notes count only for the commit they name', async () => {
   assert.equal(incidentOf([n('Incident: the browser suite failed on bffbcd82 (x)')], 'bffbcd82aa').count, 1);
   assert.equal(isRecord(n('Merge pull request #1')), false);
   assert.equal(isRecord(n('reinvest: today\'s plan for Verse\'s money')), true);
+});
+
+// main as it was on 2026-10-30 15:48: its head still waited in a queue hours long, four heads below it had passed every shard, and the report
+// named 2fbc0ee8, the 05:44Z head that failed shard 1 and was fixed long before. The card showed only "9 still running" and a ✗ on the old commit.
+test('while main\'s head still runs, the newest finished suite says how main stands; a named commit older than main reads as a past result', async () => {
+  const replies = {
+    '/commits?sha=main&per_page=12': [{ sha: '69119ee0c0', commit: { message: 'Merge pull request #1967', committer: { date: '2026-10-30T15:45:00Z' } } }],
+    '/commits/69119ee0c0/check-runs?per_page=100': { check_runs: [run('browser-suite (1)', 'queued', null), run('python-tests', 'queued', null)] },
+    '/actions/workflows/verify.yml/runs?branch=main&status=completed&per_page=1': { workflow_runs: [{ id: 41065949248, head_sha: '1d67a5a1aa', conclusion: 'cancelled', updated_at: '2026-10-30T15:49:07Z' }] },
+    '/actions/runs/41065949248/jobs?per_page=50': { jobs: ['python-tests', 'browser-suite (1)', 'browser-suite (2)', 'browser-suite (3)', 'browser-suite (4)'].map((n) => run(n, 'completed', 'success', '2026-10-30T15:18:00Z')).concat(run('incident', 'completed', 'cancelled', '2026-10-30T15:44:00Z')) },
+    '/commits/2fbc0ee8/check-runs?per_page=100': { check_runs: [run('browser-suite (1)', 'completed', 'failure', '2026-10-30T05:46:00Z'), run('deploy', 'completed', 'success', '2026-10-30T05:45:00Z')] },
+  };
+  const fake = async (u) => { const p = u.replace('https://api.github.com/repos/' + REPO, ''); return p in replies ? new Response(JSON.stringify(replies[p])) : new Response('{}', { status: 404 }); };
+  const lines = await liveLines({ prs: [], shas: ['2fbc0ee8'] }, fake);
+  assert.match(lines[0].text, /^main is at 69119ee0 .*still running/);
+  assert.equal(lines[1].text, 'the newest suite that finished on main ran on 1d67a5a1 (2026-10-30 15:49 UTC): 5 passed');
+  assert.equal(lines[1].ok, true);
+  assert.match(lines[2].text, /^2fbc0ee8: 1 passed · 1 failed \(browser-suite \(1\)\) · a past result: main has moved on since/);
+  assert.equal(lines[2].ok, null);
+  const { finishedLine } = await import('../void-live-deploy/lib/telemetry-live.js');
+  assert.equal(finishedLine({ head_sha: 'aa', updated_at: 'x' }, { jobs: [run('browser-suite (1)', 'completed', 'skipped')] }), null, 'a run whose suite was skipped says nothing');
+  const head = await liveLines({ shas: ['69119ee0'] }, fake);
+  assert.ok(!/past result/.test(head[head.length - 1].text), 'main\'s own head is never a past result');
 });
