@@ -3,7 +3,8 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
-import { writeVideo, writeStill, soundOf48 } from '/lib/video-write.js';
+import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write.js';
+import { flac, opusFile } from '/lib/audio-write.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
@@ -13,7 +14,7 @@ const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'vi
 const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND };
 // how many files a tool needs, and what to say about them
 const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'] };
-const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
+const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
 let cur = null, files = [], heads = [], lastQ = '', results = [], urls = [];
@@ -60,7 +61,7 @@ function field(label, input) { return make('label', {}, label, input); }
 const num = (id, value, step = 'any', min = '', max = '') => make('input', { id, type: 'number', value: String(value), step, ...(min !== '' ? { min } : {}), ...(max !== '' ? { max } : {}), inputMode: 'decimal' });
 const pick = (id, options, value) => { const s = make('select', { id }); for (const [v, t] of options) s.append(make('option', { value: v, textContent: t })); if (value) s.value = value; return s; };
 const val = (id, d = 0) => { const e = $(id); const n = e ? parseFloat(e.value) : NaN; return isFinite(n) ? n : d; };
-const SOUND_AS = () => field('Save as', pick('as', [['wav', 'WAV'], ['aiff', 'AIFF']], 'wav'));
+const SOUND_AS = () => field('Save as', pick('as', [['wav', 'WAV'], ['aiff', 'AIFF'], ['flac', 'FLAC (lossless, smaller)'], ['ogg', 'OGG (Opus)'], ['opus', 'OPUS']], 'wav'));
 
 function opts() {
   const t = cur, run = t && t.run, to = t ? t.to : ($('to') && $('to').value) || '', o = $('opts'); o.replaceChildren();
@@ -191,7 +192,11 @@ async function docOf(f) {
 }
 
 // ---- writers ------------------------------------------------------------------------------------------------------------------------------
-const soundFile = (s, as) => (as === 'aiff' ? aiff(s.channels, s.rate) : wav(s.channels, s.rate));
+// a sound as the file asked for; { bytes, notes }. Opus needs the browser's encoder, so this waits
+async function soundFile(s, as) {
+  if (as === 'ogg' || as === 'opus') return opusFile(s, encodeSound);
+  return { bytes: as === 'aiff' ? aiff(s.channels, s.rate) : as === 'flac' ? flac(s.channels, s.rate) : wav(s.channels, s.rate), notes: [] };
+}
 const soundNote = (s) => seconds(s).toFixed(2) + ' s, ' + s.rate + ' Hz, ' + (s.channels.length === 1 ? 'mono' : s.channels.length === 2 ? 'stereo' : s.channels.length + ' channels');
 async function pictureFile(c, to, q) {
   if (to === 'bmp') return bmp(pixels(c));
@@ -235,7 +240,7 @@ async function convertTo(f, fmt, to, taken, say = () => {}) {
     const r = await writeVideo(f, { container: to, quality: ($('vq') && $('vq').value) || 'medium', onProgress: (x) => say(Math.round(x * 100) + '%') });
     return { name: outName(f.name, to, taken), ext: to, bytes: r.bytes, notes: r.notes };
   }
-  if (SOUND_OUT.includes(to)) { if (k && k !== 'sound' && k !== 'video') throw new Error('this is not a sound or a video.'); const s = await soundOf(f); return { name: outName(f.name, to, taken), ext: to, bytes: soundFile(s, to), notes: [soundNote(s)] }; }
+  if (SOUND_OUT.includes(to)) { if (k && k !== 'sound' && k !== 'video') throw new Error('this is not a sound or a video.'); const s = await soundOf(f), o = await soundFile(s, to); return { name: outName(f.name, to, taken), ext: to, bytes: o.bytes, notes: [soundNote(s), ...o.notes] }; }
   if (TEXT_OUT.includes(to) && k !== 'picture') { const { doc } = await docOf(f); if (fmt === to) throw new Error('this is already a ' + to.toUpperCase() + ' file.'); const r = await docFile(doc, to, f.name); return { name: outName(f.name, to, taken), ext: to, bytes: r.bytes, notes: [doc.paras.length + ' paragraph' + (doc.paras.length === 1 ? '' : 's')].concat(r.notes || []) }; }
   if (PICTURE_OUT.includes(to)) { if (k !== 'picture') throw new Error('this is not a picture.'); if (fmt === to) throw new Error('this is already a ' + to.toUpperCase() + ' picture.'); if (to === 'pdf') return { name: outName(f.name, 'pdf', taken), ext: 'pdf', bytes: await picturesPdf([{ f, fmt }]), notes: ['1 page'] }; const c = await canvasOf(f), bytes = await pictureFile(c, to, val('qual', 90) / 100); return { name: outName(f.name, to, taken), ext: to, bytes, notes: [c.width + ' x ' + c.height + ' pixels'] }; }
   throw new Error('Verse cannot make ' + to.toUpperCase() + ' from this file.');
@@ -253,13 +258,13 @@ async function go() {
         const { f } = list[i]; say('Working on ' + (i + 1) + ' of ' + list.length + ': ' + f.name);
         try {
           const s = await soundOf(f), r = t.run === 'cut' ? cut(s, val('from', 0), $('upto').value) : t.run === 'speed' ? speed(s, val('factor', 1.5)) : t.run === 'gain' ? gain(s, val('db', 6)) : t.run === 'silence' ? removeSilence(s, val('thr', -45), val('minms', 400)) : { ...s, notes: [] };
-          add({ name: outName(f.name, as, taken), ext: as, bytes: soundFile(r, as), notes: [...r.notes, soundNote(r)] });
+          const o = await soundFile(r, as); add({ name: outName(f.name, as, taken), ext: as, bytes: o.bytes, notes: [...r.notes, soundNote(r), ...o.notes] });
         } catch (e) { fail(f, e); }
       }
     } else if (['merge', 'mix', 'crossfade'].includes(t.run)) {
       say('Reading ' + list.length + ' sounds'); const all = []; for (const { f } of list) all.push(await soundOf(f).catch((e) => { throw new Error(f.name + ': ' + e.message); }));
-      const r = t.run === 'mix' ? mix(all) : merge(all, t.run === 'crossfade' ? val('xfade', 2) : 0);
-      add({ name: outName(base(list[0].f.name) + (t.run === 'mix' ? ' mix' : ' joined') + '.' + as, as, taken), ext: as, bytes: soundFile(r, as), notes: [...r.notes, soundNote(r)] });
+      const r = t.run === 'mix' ? mix(all) : merge(all, t.run === 'crossfade' ? val('xfade', 2) : 0), o = await soundFile(r, as);
+      add({ name: outName(base(list[0].f.name) + (t.run === 'mix' ? ' mix' : ' joined') + '.' + as, as, taken), ext: as, bytes: o.bytes, notes: [...r.notes, soundNote(r), ...o.notes] });
     } else if (t.run === 'gif-speed') {
       for (const { f, fmt } of list) { try { if (fmt !== 'gif') throw new Error('this is not a GIF.'); const r = gifSpeed(await bytesOf(f), val('factor', 2)); add({ name: outName(f.name, 'gif', taken), ext: 'gif', bytes: r.bytes, notes: r.notes }); } catch (e) { fail(f, e); } }
     } else if (t.run === 'frame') {
@@ -376,7 +381,7 @@ function show() {
     const li = make('li', {}, make('a', { class: 'dl', href: url, download: r.name, textContent: 'Download ' + r.name }), make('span', { class: 'sz' }, sizeText(r.bytes.length)));
     if (r.notes && r.notes.length) li.append(make('p', { class: 'notes' }, r.notes.join(' · ')));
     if (SHOWN.has(r.ext)) li.append(make('img', { src: url, alt: 'The new picture: ' + r.name }));
-    if (r.ext === 'wav') li.append(make('audio', { controls: true, src: url, preload: 'metadata' }));
+    if (['wav', 'flac', 'ogg', 'opus'].includes(r.ext)) li.append(make('audio', { controls: true, src: url, preload: 'metadata' }));
     if (VIDEO_OUT.includes(r.ext)) li.append(make('video', { controls: true, src: url, preload: 'metadata', playsInline: true }));
     ul.append(li);
   }

@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T15:21:07Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,16 +550,16 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "Team join page: the Join button works (same-origin referrer policy, so the form sends its real Origin)"
-  },
-  {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "team-live: write the check's lines as one annotation too, so they can be read without the log"
-  },
-  {
    "at": "2026-10-30T04:53:12Z",
    "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
+  },
+  {
+   "at": "2026-10-30T04:51:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:51:04Z",
+   "subject": "Markets: its stage card shows the coin open on the page"
   },
   {
    "at": "2026-10-30T04:51:00Z",
