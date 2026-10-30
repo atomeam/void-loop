@@ -56,6 +56,7 @@ export function fillFromSnapshot(out, snap, days) {
   }
   if (out.sources.deploys !== 'ok' && w.sources && w.sources.deploys === 'ok') { out.deploys = w.deploys; out.sources.deploys = 'snapshot'; }
   if (out.sources.commits === 'snapshot' || out.sources.deploys === 'snapshot') out.snapshotAt = snap.at;
+  if (snap.keys) { out.keys = snap.keys; out.keysAt = snap.at; } // Verse's own keys as of that deploy: names and yes/no only
   return out;
 }
 
