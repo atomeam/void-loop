@@ -7,8 +7,9 @@
 //   GET  /api/team?activity             the messages that mention the caller, newest first (members only)
 //   GET  /api/team?me                   who the caller is: the owner, an agent, or nobody
 //   POST /api/team {do: ...}            members only, JSON:
-//     invite {name, about?}             the owner: a new agent and its key, shown once (vt1.<id>.<secret>); kept only as a keyed hash
-//     remove {name}                     the owner: an agent leaves (its job goes back to the queue)
+//     invite {name, about?, again?}     the owner: a join link for a new agent (a-to-mind.com/team/join/vj1-<code>), good once for a day.
+//                                       again: true makes a new link for an agent already in the team, and its old key stops at once
+//     remove {name}                     the owner: an agent leaves (its job goes back to the queue, its links and MCP sessions end)
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
 //                                       (the owner's post at the top of #work is a job on the build queue, feature:team-<id>, handed out in its thread)
@@ -16,9 +17,17 @@
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
 //     next                              an agent asks for its next job now
 //     done {ok, note?, link?}           an agent closes its job: done, or given back (a failure counts a try)
+//   POST /api/team {do: 'join', code}   anyone holding a join link: the agent's key, once (vt1.<id>.<secret>; only its keyed hash is kept).
+//                                       The same as POST /team/join/<code> (functions/team/join/[code].js) and the join tool of /team/mcp.
+// Every way in (the join link, plain HTTP, MCP at /team/mcp, the script at /team/agent.mjs) is the same workspace: one set of channels
+// where the owner and every agent read and write the same messages, each under its own name (owner, 2026-10-30: "make sure any agent can
+// join and all be in the same chat"). How an agent joins and talks: /team/agents.txt.
 //
 // WHAT A STRANGER COULD MAKE EACH ENDPOINT DO, AND WHY IT IS BOUNDED (AGENTS.md "Never": an unauthenticated POST is thought through first).
 //   - GET /api/team: names of channels and agents, counts, and presence. No message, job text or key is in it.
+//   - A join link is the one thing a stranger can send: 128 random bits, kept as a keyed hash, used once (one statement), good for a day,
+//     and only the owner makes one. A wrong code is a 401, which the guard's wrong-key brake counts. Opening the link (GET) uses nothing up,
+//     so a chat app's link preview cannot spend it.
 //   - Every other GET and every POST needs the owner (READ_TOKEN or an owner session) or an agent key the owner made. Without one: 401, and the
 //     guard's wrong-key brake counts it. There is no open write: a stranger can write nothing.
 //   - An agent key is 128 random bits; only its HMAC (keyed with SALT) is stored, compared in constant time. The owner removes an agent at once.
@@ -46,6 +55,9 @@ const TABLES = [
   'CREATE INDEX IF NOT EXISTS void_team_msgs_channel ON void_team_msgs (channel, thread, id)',
   'CREATE INDEX IF NOT EXISTS void_team_msgs_thread ON void_team_msgs (thread, id)',
   'CREATE TABLE IF NOT EXISTS void_team_reacts (msg INTEGER NOT NULL, by TEXT NOT NULL, emoji TEXT NOT NULL, at INTEGER NOT NULL, PRIMARY KEY (msg, by, emoji))',
+  // join links (code: the keyed hash of the code) and MCP sessions bound to an agent (sid: the keyed hash of the Mcp-Session-Id)
+  'CREATE TABLE IF NOT EXISTS void_team_joins (code TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, expires INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0)',
+  'CREATE TABLE IF NOT EXISTS void_team_mcp (sid TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, seen INTEGER NOT NULL)',
 ];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
@@ -59,6 +71,66 @@ async function keyHash(env, secret) {
   const k = await crypto.subtle.importKey('raw', enc.encode('verse-team:' + (env.SALT || '') + '|' + (env.READ_TOKEN || '')), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   return hex(await crypto.subtle.sign('HMAC', k, enc.encode(secret)));
 }
+// a new key for an agent: its old one (if any) stops now; -> the key, to hand over once
+async function newKey(env, id) {
+  const secret = hex(crypto.getRandomValues(new Uint8Array(16)));
+  await env.DB.prepare('UPDATE void_team_agents SET key = ? WHERE id = ?').bind(await keyHash(env, secret), id).run();
+  return 'vt1.' + id + '.' + secret;
+}
+const ORIGIN = 'https://a-to-mind.com';
+const linkOf = (origin, code) => (origin || ORIGIN) + '/team/join/' + code;
+// a join link for an agent: good once, for a day; any older link of the same agent stops
+async function mintJoin(env, agent, origin, now) {
+  const code = 'vj1-' + hex(crypto.getRandomValues(new Uint8Array(16)));
+  await env.DB.prepare('DELETE FROM void_team_joins WHERE agent = ? OR expires < ?').bind(agent, now - T.JOIN_TTL_MS).run();
+  await env.DB.prepare('INSERT INTO void_team_joins (code, agent, made, expires) VALUES (?, ?, ?, ?)').bind(await keyHash(env, 'join:' + code), agent, now, now + T.JOIN_TTL_MS).run();
+  return { link: linkOf(origin, code), expires: now + T.JOIN_TTL_MS };
+}
+/** the agent a join link is for, without using it (the join page shows the name) -> { name, about } or null */
+export async function peekJoin(env, code, now = Date.now()) {
+  if (!env.DB || !T.JOIN_RE.test(code || '')) return null;
+  await tables(env, now);
+  return env.DB.prepare('SELECT a.name, a.about FROM void_team_joins j JOIN void_team_agents a ON a.id = j.agent WHERE j.code = ? AND j.used = 0 AND j.expires > ? AND a.off = 0').bind(await keyHash(env, 'join:' + code), now).first();
+}
+/** a join link used: claimed in one statement (so it works once), the agent gets a new key. how: 'HTTP', 'MCP', 'the browser' or 'the script'.
+ *  -> { ok, status, name, id, key } or { ok: false, status, say } */
+export async function redeem(env, code, how, now = Date.now()) {
+  if (!env.DB) return { ok: false, status: 503, say: 'storage not bound' };
+  await tables(env, now);
+  const gone = { ok: false, status: 401, say: 'that join link is used, ended or wrong: ask the owner of Verse for a new one' };
+  if (!T.JOIN_RE.test(code || '')) return gone;
+  const h = await keyHash(env, 'join:' + code);
+  const took = await env.DB.prepare('UPDATE void_team_joins SET used = ? WHERE code = ? AND used = 0 AND expires > ?').bind(now, h, now).run();
+  if (took.meta.changes !== 1) return gone;
+  const a = await env.DB.prepare('SELECT a.* FROM void_team_joins j JOIN void_team_agents a ON a.id = j.agent WHERE j.code = ? AND a.off = 0').bind(h).first();
+  if (!a) return gone;
+  const back = !!a.key, key = await newKey(env, a.id);
+  await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(a.id).run(); // a new key ends the old way in, MCP sessions too
+  await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, a.id).run();
+  await write(env, { c: 'general', by: 'verse', body: '@' + a.name + (back ? ' is back with a new key' : ' joined the team') + (how ? ' (over ' + how + ')' : '') + '.', now });
+  return { ok: true, status: 201, name: a.name, id: a.id, key };
+}
+/** an MCP session bound to an agent (functions/team/mcp.js: the join tool binds it, so the key never travels in the chat) */
+export async function bindSession(env, sid, agent, now = Date.now()) {
+  await tables(env, now);
+  await env.DB.prepare('DELETE FROM void_team_mcp WHERE seen < ?').bind(now - T.MCP_IDLE_MS).run();
+  await env.DB.prepare('INSERT OR REPLACE INTO void_team_mcp (sid, agent, made, seen) VALUES (?, ?, ?, ?)').bind(await keyHash(env, 'mcp:' + sid), agent, now, now).run();
+}
+/** the agent an MCP session is bound to, or null */
+export async function sessionAgent(env, sid, now = Date.now()) {
+  if (!env.DB || !/^[0-9a-f]{32}$/.test(sid || '')) return null;
+  await tables(env, now);
+  const h = await keyHash(env, 'mcp:' + sid);
+  const row = await env.DB.prepare('SELECT m.agent FROM void_team_mcp m JOIN void_team_agents a ON a.id = m.agent WHERE m.sid = ? AND m.seen > ? AND a.off = 0 AND a.key != \'\'').bind(h, now - T.MCP_IDLE_MS).first();
+  if (row) await env.DB.prepare('UPDATE void_team_mcp SET seen = ? WHERE sid = ?').bind(now, h).run();
+  return row ? row.agent : null;
+}
+// the caller, given: an agent already known (the MCP route's session or key), or else from the request
+async function caller(request, env, as) {
+  if (!as) return whoIs(request, env);
+  const agent = await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ? AND off = 0').bind(as).first();
+  return agent && agent.key ? { kind: 'agent', agent } : null;
+}
 const sameHex = (a, b) => { if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false; let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i); return d === 0; };
 
 /** who is asking: { kind: 'owner' } | { kind: 'agent', agent } | null */
@@ -66,7 +138,7 @@ export async function whoIs(request, env) {
   const h = request.headers.get('authorization') || '', m = h.startsWith('Bearer ') ? T.KEY_RE.exec(h.slice(7)) : null;
   if (m) {
     const a = await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(m[1]).first();
-    if (a && !a.off && sameHex(await keyHash(env, m[2]), a.key)) return { kind: 'agent', agent: a };
+    if (a && !a.off && a.key && sameHex(await keyHash(env, m[2]), a.key)) return { kind: 'agent', agent: a };
     return null;
   }
   if (await ownerOk(request, env)) return { kind: 'owner' };
@@ -165,7 +237,8 @@ async function rated(env, a, now) {
   return null;
 }
 
-export async function onRequestGet({ request, env, now = Date.now() }) {
+// as: an agent's id the caller already proved (functions/team/mcp.js); the platform never passes it
+export async function onRequestGet({ request, env, now = Date.now(), as = null }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   const sp = new URL(request.url).searchParams;
@@ -178,7 +251,7 @@ export async function onRequestGet({ request, env, now = Date.now() }) {
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
-  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null;
+  const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
   if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}) });
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
@@ -211,12 +284,16 @@ export async function onRequestGet({ request, env, now = Date.now() }) {
   return json({ ok: true, channel: ch, messages: await shape(env, results, me), moved, names: list });
 }
 
-export async function onRequestPost({ request, env, now = Date.now() }) {
+export async function onRequestPost({ request, env, now = Date.now(), as = null }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   let p; try { p = await request.json(); } catch (_) { return bad(400, 'send JSON'); }
   if (!p || typeof p !== 'object') return bad(400, 'send JSON');
-  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
+  if (p.do === 'join') { // the one write without a key: the join link is the key to its own key
+    const r = await redeem(env, T.joinCode(p.code), ['HTTP', 'the script', 'the browser'].includes(p.via) ? p.via : 'HTTP', now);
+    return r.ok ? json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name) }, 201) : bad(r.status, r.say);
+  }
+  const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
@@ -226,19 +303,27 @@ export async function onRequestPost({ request, env, now = Date.now() }) {
       if (me.kind !== 'owner') return bad(403, 'only the owner invites an agent');
       const name = T.clean(p.name, 24), why = T.nameProblem(name); if (why) return bad(400, why);
       const { n } = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_team_agents WHERE off = 0').first(); if (n >= T.RATES.agents) return bad(429, T.RATES.agents + ' agents at most');
-      const taken = await env.DB.prepare('SELECT id, off FROM void_team_agents WHERE name = ?').bind(name).first();
-      if (taken && !taken.off) return bad(409, 'an agent with that name is in the workspace already');
+      const taken = await env.DB.prepare('SELECT id, off, name FROM void_team_agents WHERE name = ?').bind(name).first(), origin = new URL(request.url).origin;
+      if (taken && !taken.off) { // a new link for an agent already here: its old key stops now (a key that was shown somewhere it should not be)
+        if (p.again !== true) return bad(409, 'an agent with that name is in the workspace already (again: true makes it a new join link, and its old key stops)');
+        await env.DB.prepare('UPDATE void_team_agents SET key = \'\' WHERE id = ?').bind(taken.id).run();
+        await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(taken.id).run();
+        const j = await mintJoin(env, taken.id, origin, now);
+        return json({ ok: true, name: taken.name, join: j.link, expires: j.expires, again: true, say: T.inviteSay(taken.name) }, 201);
+      }
       if (taken) await env.DB.prepare('DELETE FROM void_team_agents WHERE id = ?').bind(taken.id).run(); // a removed agent's name is free again (its old key is gone with it)
-      const id = hex(crypto.getRandomValues(new Uint8Array(6))), secret = hex(crypto.getRandomValues(new Uint8Array(16)));
-      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined) VALUES (?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), await keyHash(env, secret), now).run();
-      await write(env, { c: 'general', by: 'verse', body: '@' + name + ' joined the team.', now });
-      return json({ ok: true, name, key: 'vt1.' + id + '.' + secret, say: 'Shown once: give it to the agent as VERSE_TEAM_KEY.' }, 201);
+      const id = hex(crypto.getRandomValues(new Uint8Array(6)));
+      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined) VALUES (?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), '', now).run(); // no key until the link is used
+      const j = await mintJoin(env, id, origin, now);
+      return json({ ok: true, name, join: j.link, expires: j.expires, say: T.inviteSay(name) }, 201);
     }
     case 'remove': {
       if (me.kind !== 'owner') return bad(403, 'only the owner removes an agent');
       const x = await env.DB.prepare('SELECT * FROM void_team_agents WHERE name = ? AND off = 0').bind(T.clean(p.name, 24)).first(); if (!x) return bad(404, 'no such agent');
       if (x.job) await giveBack(env, x, now, '@' + x.name + ' left the team', false);
       await env.DB.prepare('UPDATE void_team_agents SET off = 1, key = \'\' WHERE id = ?').bind(x.id).run();
+      await env.DB.prepare('DELETE FROM void_team_joins WHERE agent = ?').bind(x.id).run();
+      await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(x.id).run();
       return json({ ok: true });
     }
     case 'channel': {
@@ -300,6 +385,6 @@ export async function onRequestPost({ request, env, now = Date.now() }) {
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? null : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: invite, remove, channel, post, react, here, next or done');
+    default: return bad(400, 'do: join, invite, remove, channel, post, react, here, next or done');
   }
 }

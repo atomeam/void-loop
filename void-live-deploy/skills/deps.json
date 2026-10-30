@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 998,
+ "counted": 1002,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -167,7 +167,7 @@
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 19,
+   "dependants": 21,
    "tests": 1
   },
   {
@@ -251,7 +251,7 @@
    "file": "lib/card-mini.js",
    "skills": 9,
    "direct": 5,
-   "dependants": 15,
+   "dependants": 17,
    "tests": 0
   },
   {
@@ -433,6 +433,13 @@
    "file": "lib/colour.js",
    "skills": 5,
    "direct": 1,
+   "dependants": 15,
+   "tests": 1
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 5,
+   "direct": 2,
    "dependants": 13,
    "tests": 1
   },
@@ -442,13 +449,6 @@
    "direct": 1,
    "dependants": 11,
    "tests": 2
-  },
-  {
-   "file": "lib/pwcheck.js",
-   "skills": 5,
-   "direct": 2,
-   "dependants": 11,
-   "tests": 1
   },
   {
    "file": "lib/card-forge.js",
@@ -531,7 +531,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 75,
+   "dependants": 78,
    "tests": 1
   },
   {
@@ -657,7 +657,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 73,
+   "dependants": 76,
    "tests": 9
   },
   {
@@ -885,6 +885,13 @@
    "tests": 0
   },
   {
+   "file": "lib/gumroad.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 4
+  },
+  {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
@@ -892,24 +899,17 @@
    "tests": 6
   },
   {
-   "file": "lib/gumroad.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 4
-  },
-  {
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 19,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 17,
    "tests": 3
   },
   {
@@ -923,7 +923,7 @@
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 5,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -1123,6 +1123,13 @@
    "tests": 4
   },
   {
+   "file": "lib/writing-aids.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 2
+  },
+  {
    "file": "lib/boards.js",
    "skills": 1,
    "direct": 0,
@@ -1219,13 +1226,6 @@
    "direct": 1,
    "dependants": 5,
    "tests": 4
-  },
-  {
-   "file": "lib/writing-aids.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 2
   },
   {
    "file": "lib/appraise-photo.js",
@@ -1896,49 +1896,49 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 74,
    "tests": 28
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 54,
    "tests": 10
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 42,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 41,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 40,
    "tests": 7
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 37,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 36,
    "tests": 6
   },
   {
@@ -2141,7 +2141,7 @@
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 8,
+   "dependants": 10,
    "tests": 0
   },
   {
@@ -2152,6 +2152,13 @@
    "tests": 4
   },
   {
+   "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/image-gen.js",
    "skills": 0,
    "direct": 0,
@@ -2159,11 +2166,32 @@
    "tests": 2
   },
   {
+   "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/film-reviews.js",
    "skills": 0,
    "direct": 0,
    "dependants": 4,
    "tests": 0
+  },
+  {
+   "file": "lib/mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 3
   },
   {
    "file": "lib/wiki-look.js",
@@ -2180,25 +2208,11 @@
    "tests": 1
   },
   {
-   "file": "lib/drive.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/listgen.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
    "tests": 3
-  },
-  {
-   "file": "lib/mcp-skills.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/sale-jobs.js",
@@ -2208,7 +2222,7 @@
    "tests": 1
   },
   {
-   "file": "lib/seo-audit.js",
+   "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2255,13 +2269,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/mcp.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 3
   },
   {
    "file": "lib/music-tools.js",
@@ -2474,11 +2481,11 @@
    "tests": 2
   },
   {
-   "file": "lib/team.js",
+   "file": "lib/team-mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 0
   },
   {
    "file": "lib/translate-docs.js",
@@ -3649,7 +3656,9 @@
    ],
    "reachedBy": [
     "functions/api/film-views.js",
-    "functions/films/rss.js"
+    "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "functions/api/tally.js": {
@@ -3667,7 +3676,10 @@
     "lib/automation-fix.js",
     "lib/team.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
+   ]
   },
   "functions/api/tower-self.js": {
    "imports": [
@@ -3795,6 +3807,27 @@
   "functions/is-it/[what].js": {
    "imports": [
     "skills/is-it.js"
+   ],
+   "importedBy": []
+  },
+  "functions/team/_middleware.js": {
+   "imports": [
+    "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/team/join/[code].js": {
+   "imports": [
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "importedBy": []
+  },
+  "functions/team/mcp.js": {
+   "imports": [
+    "lib/team-mcp.js",
+    "functions/api/team.js",
+    "lib/team.js"
    ],
    "importedBy": []
   },
@@ -4278,6 +4311,8 @@
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/built-detail.js",
     "lib/clef.js",
@@ -4289,6 +4324,7 @@
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
+    "lib/team-mcp.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -5074,9 +5110,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/languages.js",
@@ -5355,10 +5393,13 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/coins.js": {
@@ -5377,8 +5418,10 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
@@ -5699,7 +5742,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/duel-rules.js": {
@@ -6370,6 +6415,7 @@
     "functions/api/watch.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
+    "functions/team/_middleware.js",
     "lib/automations-run.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -6396,6 +6442,8 @@
     "functions/api/weather.js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js"
    ]
   },
@@ -6484,6 +6532,8 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/paid-access.js",
     "lib/products.js",
     "skills/shop.js"
@@ -7073,7 +7123,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/mcp.js": {
@@ -7089,7 +7141,11 @@
    ],
    "importedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
+   ],
+   "reachedBy": [
+    "functions/team/mcp.js"
    ]
   },
   "lib/md.js": {
@@ -7386,12 +7442,15 @@
     "functions/api/team.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/approval-gate.js",
     "lib/bench-asks.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/motion-throttle.js": {
@@ -7772,6 +7831,8 @@
     "functions/api/watch.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -7794,7 +7855,9 @@
     "functions/api/films.js",
     "functions/api/mcp.js",
     "functions/api/team.js",
-    "functions/films/rss.js"
+    "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "lib/palettes.js": {
@@ -8272,6 +8335,8 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "skills/shop.js"
    ]
   },
@@ -8342,9 +8407,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/lorem.js",
@@ -8695,7 +8762,10 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
-    "functions/tools.json.js"
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/ritual.js": {
@@ -9007,7 +9077,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/seo.js": {
@@ -9131,7 +9203,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -9219,9 +9293,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/skyfacts.js",
     "lib/sun-day.js",
+    "lib/team-mcp.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -9660,6 +9736,8 @@
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
     "skills/services.js",
@@ -9869,10 +9947,20 @@
     "skills/pick-for-me.js"
    ]
   },
+  "lib/team-mcp.js": {
+   "imports": [
+    "lib/mcp.js"
+   ],
+   "importedBy": [
+    "functions/team/mcp.js"
+   ]
+  },
   "lib/team.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/team.js"
+    "functions/api/team.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "lib/technical-context.js": {
@@ -9940,6 +10028,8 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -9963,6 +10053,7 @@
     "lib/routine-skill.js",
     "lib/self-context.js",
     "lib/shared-routines.js",
+    "lib/team-mcp.js",
     "lib/voice.js",
     "skills/repo.js",
     "skills/routine.js",
@@ -10343,6 +10434,8 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js"
    ]
   },
@@ -10488,6 +10581,8 @@
     "functions/api/watch.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -10598,7 +10693,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/zones.js": {
@@ -14225,9 +14322,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "skills/writing-aids.js"
    ]
   },
