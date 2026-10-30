@@ -542,13 +542,37 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T04:27:53Z",
+   "subject": "Recipes card shows the recipe open on the page"
+  },
+  {
+   "at": "2026-10-30T04:26:57Z",
+   "subject": "Tower size: how heavy each Versus site really is"
+  },
+  {
+   "at": "2026-10-30T04:25:46Z",
+   "subject": "Keep main's self.json"
+  },
+  {
+   "at": "2026-10-30T04:25:34Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:24:38Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:24:11Z",
+   "subject": "Hand-off links follow the page as it is: a note's typed title, the rap form before a rap, the metronome's tempo"
+  },
   {
    "at": "2026-10-30T04:23:14Z",
    "subject": "Regenerate the generated files after the merge"
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T04:13:20Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:12:55Z",
-   "subject": "PR guard: the shared tool-page chain must match the browser suite's list before merge"
-  },
-  {
-   "at": "2026-10-30T04:12:51Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:12:08Z",
-   "subject": "Verse Brain watches Verse's own health and raises breaks on /brain/"
-  },
-  {
-   "at": "2026-10-30T04:10:49Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T04:09:53Z",
-   "subject": "Every page stays deep space in a light-mode browser"
-  },
-  {
-   "at": "2026-10-30T04:09:53Z",
-   "subject": "One owner across Verse: the owner's signed-in account is the owner on every page"
   }
  ],
  "builders": {
@@ -866,9 +866,9 @@
   "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "serverdiscounter.com",
-   "wheeloutlet.com",
-   "ndscalc.ru"
+   "howsecureismypassword.net",
+   "ndscalc.ru",
+   "emojicombos.com"
   ],
   "beaten": 0,
   "total": 1270
