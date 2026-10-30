@@ -2,7 +2,7 @@
 // /api/answer mode 'rap' (lib/rap.js), and the rap that comes back is drawn and performed by lib/rap-stage.js. A link carries the settings (?t= topic,
 // s, m, f, v, w, k) and, once shared, the whole rap (?r=), which opens with no model call. The page hands its rap to the other tools (lib/toolkit.js)
 // and tells Verse Brain the topic when one is open in this browser (lib/brain-bridge.js).
-import { settingsOf, linkOf, fromLink, rapText } from '/lib/rap.js';
+import { settingsOf, linkOf, fromLink, rapText, beatFor, cardAsk } from '/lib/rap.js';
 import { mountRap } from '/lib/rap-stage.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
@@ -23,7 +23,8 @@ function drawRelated() {
     { label: 'Count the words', href: () => (text() && encodeURIComponent(text()).length <= LINK_MAX ? '/word-count/?t=' + encodeURIComponent(text()) : null) },
     { label: 'Translate it', href: () => (text() ? '/translate/?q=' + encodeURIComponent(text().slice(0, 5000)) : null) },
     { label: 'Make a song of it', href: () => '/?q=' + encodeURIComponent('make a hip hop song about ' + (settings.topic || rap.title || 'verse')) },
-  ]);
+    { label: 'Practise at its tempo', href: () => '/metronome/?bpm=' + beatFor(settings).bpm },
+  ], { card: () => cardAsk(settings) });
 }
 
 function readForm() { return settingsOf({ topic: $('topic').value, style: $('style').value, mood: $('mood').value, flow: $('flow').value, view: $('view').value, words: $('words').value, seed: settings ? settings.seed : 0 }); }

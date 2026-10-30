@@ -1869,7 +1869,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 16
+   "tests": 17
   },
   {
    "file": "lib/tower-rank.js",
