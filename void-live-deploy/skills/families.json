@@ -1376,10 +1376,13 @@
     {
      "name": "loan",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 15 real asks in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 16 real asks in the benchmark",
+     "failing": [
+      "how long to pay off 100 at 200 a month at 20%"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.938,
      "streak": 12
     },
     {
@@ -2130,10 +2133,13 @@
     {
      "name": "book",
      "tier": "proven",
-     "why": "a self-test, 6 real asks in the benchmark",
+     "why": "a self-test, 7 real asks in the benchmark",
+     "failing": [
+      "who wrote hamlet"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.857,
      "streak": 12,
      "source": {
       "sites": [
@@ -2546,10 +2552,13 @@
     {
      "name": "notes-fill",
      "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
+     "why": "a self-test, 5 real asks in the benchmark",
+     "failing": [
+      "take a note: buy batteries"
+     ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1,
+     "success_rate": 0.8,
      "promoted": "2026-10-29",
      "streak": 4
     },

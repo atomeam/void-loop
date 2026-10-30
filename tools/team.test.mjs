@@ -390,8 +390,9 @@ test('Verse pushes the job to an agent\'s address, signed; a failed push goes ba
 test('a push address with the join: over do:join and over a POST to the join link; a bad address is said before the link is used up', async () => {
   const env = world([JOBS[0]]); const got = [];
   env.TEAM_FETCH = async (url, init) => { got.push(JSON.parse(init.body)); return new Response('ok'); };
-  const inv = await post(env, { do: 'invite', name: 'Hooky' }, OWNER), code = T.joinCode(inv.join);
-  assert.equal((await post(env, { do: 'join', code, hook: 'http://plain.dev/in' })).status, 400);
+  // the join link's own handler reads the real clock, so the invite is made now: made at T0 it ended 24 h later (2026-10-30 16:00 UTC) and this test failed from then on
+  const now = Date.now(), inv = await post(env, { do: 'invite', name: 'Hooky' }, OWNER, now), code = T.joinCode(inv.join);
+  assert.equal((await post(env, { do: 'join', code, hook: 'http://plain.dev/in' }, undefined, now)).status, 400);
   const at = (body) => new Request('https://verse.test/team/join/' + code, { method: 'POST', headers: { 'content-type': 'application/json' }, body });
   assert.equal((await JOIN.onRequestPost({ request: at('{"hook":"https://localhost/in"}'), env, params: { code } })).status, 400);
   const r = await JOIN.onRequestPost({ request: at('{"hook":"https://hooky.dev/in"}'), env, params: { code } }); const j = await r.json();

@@ -57,10 +57,11 @@ export function incidentHits(incidents, names) {
   return hit;
 }
 
-/** Every skill scored, most lacking first. { name, score, reasons[], examples[] }; a skill with no example asks cannot be hardened here and is left out. Pure. */
+/** Every skill scored, most lacking first. { name, score, reasons[], examples[] }; a skill with no example asks of its own cannot be hardened here and is left out
+ *  (examples the guide quoted from a header, examplesFrom: 'header', are labels or the owner's words, never asks that skill routes). Pure. */
 export function rank({ guide, families, bench, incidents } = {}) {
   const pages = guide && Array.isArray(guide.pages) ? guide.pages : [];
-  const skills = pages.filter((p) => p && p.kind === 'skill' && typeof p.name === 'string' && Array.isArray(p.examples) && p.examples.length);
+  const skills = pages.filter((p) => p && p.kind === 'skill' && typeof p.name === 'string' && Array.isArray(p.examples) && p.examples.length && p.examplesFrom !== 'header');
   const tiers = tiersOf(families), benched = benchedCount(Array.isArray(bench) ? bench : (bench && (bench.asks || bench.items)) || []);
   const hits = incidentHits(incidents, skills.map((s) => s.name));
   return skills.map((s) => {
@@ -163,12 +164,28 @@ export function settle(candidates, log) {
   return { passing, failed };
 }
 
+/** a row that routed must also answer (PR #1987, 2026-10-30: a "fixed" distance skill took its ask and the card said it could not find it):
+ * check(skill, ask) runs the skill on the ask with a bare page (tools/propose-fix.mjs answers). A card that says it found nothing leaves the
+ * benchmark list and is named in the report; a row the bare page cannot run stays, since its bench row claims routing only. */
+export async function answered(passing, check) {
+  const keep = [], silent = [];
+  for (const c of passing || []) {
+    let a; try { a = await check(String(c.want || '').replace(/^skill:/, '').split('|')[0], c.ask); } catch (e) { a = { outcome: 'not run' }; }
+    if (a && a.outcome === 'no answer') silent.push({ ask: c.ask, want: c.want, why: String(a.why || '').slice(0, 120) }); else keep.push(c);
+  }
+  return { passing: keep, silent };
+}
+
 /** the words under a pull request or in a run summary. Pure. */
-export function report({ picks, passing, failed }) {
+export function report({ picks, passing, failed, silent = [] }) {
   const L = ['Verse looked at its own files for what is least proven and tried the asks each skill already claims.', '', '| skill | score | why |', '|---|---|---|'];
   for (const p of picks) L.push('| ' + p.name + ' | ' + p.score + ' | ' + p.reasons.join('; ') + ' |');
-  L.push('', passing.length + ' ask' + (passing.length === 1 ? '' : 's') + ' routed to the skill that claims them in the real page, and are added to tools/bench.json:');
+  L.push('', passing.length + ' ask' + (passing.length === 1 ? '' : 's') + ' routed to the skill that claims them in the real page, answered there, and are added to tools/bench.json:');
   for (const c of passing) L.push('- `' + c.ask + '` → ' + c.want);
+  if (silent.length) {
+    L.push('', silent.length + ' routed but the card did not answer, and are not added (the skill needs the answer, not the route):');
+    for (const f of silent) L.push('- `' + f.ask + '` → ' + f.want + (f.why ? '; the card said: ' + f.why : ''));
+  }
   if (failed.length) {
     L.push('', failed.length + ' did not, and are not added (each is a routing gap or an ask that needs the network; a builder looks):');
     for (const f of failed) L.push('- `' + f.ask + '` wanted ' + f.want + (f.got ? '; the page said: ' + f.got.slice(0, 120) : ''));
@@ -190,12 +207,15 @@ async function main(argv) {
     const [candFile, logFile] = argv.slice(1).filter((a) => !a.startsWith('--') && a !== opt('--out') && a !== opt('--report') && a !== opt('--failed'));
     if (!candFile || !logFile || !existsSync(candFile) || !existsSync(logFile)) { console.error('usage: lacks.mjs settle cand.json probe.log --out passing.json --report report.md'); return 2; }
     const cands = JSON.parse(readFileSync(candFile, 'utf8')), data = JSON.parse(readFileSync(candFile + '.plan', 'utf8').toString());
-    const s = settle(cands, readFileSync(logFile, 'utf8'));
+    const s0 = settle(cands, readFileSync(logFile, 'utf8'));
+    const { answers } = await import('./propose-fix.mjs');
+    const check = (name, ask) => { const f = resolve(root, 'void-live-deploy', 'skills', name + '.js'); return existsSync(f) ? answers(f, ask, { timeoutMs: 8000 }) : { outcome: 'not run' }; };
+    const s = { ...s0, ...(await answered(s0.passing, check)) };
     if (opt('--out')) writeFileSync(opt('--out'), JSON.stringify(s.passing, null, 1));
     if (opt('--failed')) writeFileSync(opt('--failed'), JSON.stringify(s.failed.map((f) => ({ ask: f.ask, want: f.want })), null, 1));
     const rep = report({ picks: data.picks, ...s });
     if (opt('--report')) writeFileSync(opt('--report'), rep); else console.log(rep);
-    console.log('passing ' + s.passing.length + ' failed ' + s.failed.length);
+    console.log('passing ' + s.passing.length + ' failed ' + s.failed.length + ' no answer ' + s.silent.length);
     return 0;
   }
   if (cmd === 'queue') {

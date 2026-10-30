@@ -23,6 +23,7 @@ import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
+import { wikiquote, markets, openLibrary } from './bench-standins.mjs';
 // how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
 // (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
 const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
@@ -141,6 +142,7 @@ async function one(ctx, { ask: a, want, says, before }) {
   const tOpen = Date.now(); const miss = [];
   // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
   const external = (r) => { const u = r.request().url();
+    const wq = wikiquote(u); if (wq) return r.fulfill(json(wq)); // before the Wikipedia search below, which shares its /w/api.php path
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));
     // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
@@ -174,6 +176,7 @@ async function one(ctx, { ask: a, want, says, before }) {
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked
       return r.fulfill(json(Object.fromEntries(ids.map((id) => [id, { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 }])))); }
     if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
+    const ol = openLibrary(u); if (ol) return r.fulfill(json(ol)); // a title search answers with that book
     if (u.includes('openlibrary.org/search.json')) return r.fulfill(json({ docs: [{ key: '/works/OL1W', title: 'Kindred', author_name: ['Octavia E. Butler'], first_publish_year: 1979, subject: ['Science fiction', 'Time travel'] }, { key: '/works/OL2W', title: 'Hyperion', author_name: ['Dan Simmons'], first_publish_year: 1989, subject: ['Science fiction'] }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
@@ -182,6 +185,7 @@ async function one(ctx, { ask: a, want, says, before }) {
     // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
     if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
+    const mk = markets(u); if (mk) return r.fulfill(json(mk)); // a stock or index card reads its price here (skills/stocks.js)
     return r.fulfill({ status: 204, body: '' }); };
   ctx.handlers = { api, external }; const tab = await tabOf(ctx), { p, cdp } = tab;
   for (const q of ctx.pages()) if (q !== p) await q.close().catch(() => {}); // a window an earlier ask opened
@@ -196,7 +200,9 @@ async function one(ctx, { ask: a, want, says, before }) {
   for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400);
     // Esc only closes an open page: pressed after every setup ask it is a double Esc (two within 450 ms), which undoes the last thing made, so a fast run lost the sticky a group or label ask needed
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
-  await p.evaluate(() => { window.__said = ''; });
+  // the echo card waits 4 s after the first answer before it asks for the second view (skills/echo-disagrees.js), as long as this
+  // wait for the log: the ask logged too late and read "said". Its own test knob takes the pause out here, as tools/test_void.mjs does.
+  await p.evaluate(() => { window.__said = ''; window.__a2mEchoDelay = 0; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
   if (!(await p.evaluate(() => document.documentElement.dataset.skills === 'ready').catch(() => false))) pace.early++; // asked before every skill file was in: the answer may wait on them
   const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
