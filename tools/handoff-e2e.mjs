@@ -59,6 +59,24 @@ export const JOURNEYS = {
     if (on.join(' ') !== 'C E G') throw new Error('the chord finder picked ' + on.join(' ') + ', not C E G');
     await check('the chord finder named C E G as C major');
   },
+  'add an invited event to the calendar, see its moment in other cities on the time page, then the weather where it happens': async (p, check) => {
+    const ev = { title: 'Team lunch', start: '2026-11-03T12:30', end: '2026-11-03T13:30', allDay: false, location: 'Berlin' };
+    await p.goto(ORIGIN + '/calendar/?e=' + Buffer.from(JSON.stringify(ev)).toString('base64url'), { waitUntil: 'load' }); await p.waitForSelector('#invAdd', { state: 'visible' });
+    await check('the calendar opened on the invite'); await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
+    const timeHref = await p.locator('#detTime').getAttribute('href'), want = await p.evaluate(() => new Date('2026-11-03T12:30').toISOString().replace(/\.000Z$/, 'Z'));
+    if (new URL(timeHref, ORIGIN).searchParams.get('at') !== want) throw new Error('the time link carries "' + timeHref + '", not the event at ' + want);
+    if (new URL(await p.locator('#detWeather').getAttribute('href'), ORIGIN).searchParams.get('place') !== 'Berlin') throw new Error('the weather link does not carry the event place Berlin');
+    await check('the event details link to the time page at ' + want + ' and the weather in Berlin');
+    await Promise.all([p.waitForURL(/\/time\/\?at=/), p.locator('#detTime').click()]); await p.waitForSelector('#event:not([hidden])');
+    const when = await p.locator('#evwhen').textContent(), utc = await p.evaluate((w) => new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'short', timeZone: 'UTC' }).format(Date.parse(w)), want);
+    if (!when.startsWith(utc)) throw new Error('the time page showed "' + when + '", not ' + utc + ' UTC');
+    if (!(await p.locator('#evlist li').count())) throw new Error('the time page lists no city for the event');
+    await check('the time page opened on the event moment (' + utc + ' UTC) in every city');
+    await p.goto(ORIGIN + '/calendar/?d=2026-11-03&view=day', { waitUntil: 'load' }); await p.locator('#view button', { hasText: 'Team lunch' }).first().click();
+    await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#detWeather').click()]); await p.waitForSelector('#q');
+    if ((await p.locator('#q').inputValue()) !== 'Berlin') throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not Berlin');
+    await check('the weather page opened on Berlin');
+  },
 };
 
 async function run() {

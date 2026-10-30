@@ -430,6 +430,13 @@ if (/[?&](?:q|e|d|show|view)=/.test(location.search)) document.documentElement.c
       if (o.location) { const dd = el('dd', '', o.location + ' · '), a = el('a', '', W.map), dr = el('a', '', W.directions); a.href = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(o.location); dr.href = 'https://www.openstreetmap.org/directions?to=' + encodeURIComponent(o.location); for (const x of [a, dr]) { x.target = '_blank'; x.rel = 'noopener'; } dd.append(a, ' · ', dr); dl.append(el('dt', '', W.location), dd); }
       { const tv = baseOf(o).travel; if (tv && !o.allDay) add(W.travel.replace(/ \(.*\)$/, ''), tv + ' min · ' + W.leaveBy + ' ' + C.fmtTime(new Date(C.parseLocal(o.start).getTime() - tv * 60000), lang)); }
       if (o.wallStart) add(W.tz, C.tzCity(baseOf(o).tz) + ': ' + C.fmtTime(C.parseLocal(o.wallStart), lang) + ' – ' + C.fmtTime(C.parseLocal(o.wallEnd), lang) + ' ' + W.tzThere);
+      { // hand-offs (lib/handoff: the link carries it): the moment on /time/ in other cities, and the weather where it happens on /weather/
+        const dd = el('dd'), go = [], at = !o.allDay && !o.task ? C.parseLocal(o.start) : null, tz = baseOf(o).tz;
+        if (at && Number.isFinite(at.getTime())) go.push(['detTime', "/time/?at=" + encodeURIComponent(at.toISOString().replace(/\.000Z$/, 'Z')) + (tz ? '&cities=' + encodeURIComponent(C.tzCity(tz)) : ''), de ? 'Diese Uhrzeit in anderen Städten' : 'This time in other cities']);
+        if (o.location) go.push(['detWeather', "/weather/?place=" + encodeURIComponent(o.location), (de ? 'Wetter in ' : 'Weather in ') + o.location]);
+        go.forEach(([id, href, label], i) => { const a = el('a', '', label); a.id = id; a.href = href; if (i) dd.append(' · '); dd.append(a); });
+        if (go.length) dl.append(el('dt', '', de ? 'Weiter' : 'Open in'), dd);
+      }
       add(W.invite, o.invitees.join(', ')); add(W.calendar, C.calendarOf(cals(), o).name + (o.ro ? ' (' + W.readOnly + ')' : ''));
       const b0 = baseOf(o); if (b0.rsvp) { const dt = el('dt', '', W.replies), dd = el('dd', '', '…'); dl.append(dt, dd); rsvpCall('GET', { id: b0.rsvp.id, key: b0.rsvp.owner }).then((r) => { dd.textContent = r.j.ok ? (r.j.replies.length ? R.tally(r.j.replies, RW) + ': ' + r.j.replies.map((x) => x.name + ' (' + W[x.answer] + ')').join(', ') : W.noReplies) : '—'; }); }
       $('detMail').hidden = !!o.ro; $('detEdit').hidden = !!o.ro; $('detDup').hidden = !!o.ro; $('detMoveBox').hidden = !!o.ro || !!o.task; $('detMove').value = o.start.slice(0, 10); $('detDel').hidden = !!o.ro; /* a holiday or a view-only shared event is read only */ $('detail').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); $('detTitle').focus && $('detail').setAttribute('tabindex', '-1');
