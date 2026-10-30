@@ -19,8 +19,9 @@
 <pre id="out" hidden></pre>
 </main>
 <script>
-(() => {
-  const tok = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
+(async () => {
+  // the owner's signed-in account brings an owner session first (lib/owner-link.js)
+  const tok = (await import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => '')) || (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
   const $ = (id) => document.getElementById(id), msg = $('msg');
   if (!tok) { msg.textContent = 'Sign in as the owner on the main page first, then come back here.'; return; }
   const get = (q) => fetch('/api/studies' + q, { headers: { authorization: 'Bearer ' + tok }, cache: 'no-store' }).then((r) => r.ok ? r.json() : Promise.reject(r.status));
