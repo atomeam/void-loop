@@ -3,11 +3,18 @@
  * peak, with the moon's light at the peak and whether the radiant is up tonight where you are. lib/showers.js is a typed-in table (good to a day);
  * the moon and the radiant are computed (lib/astro.js).
  */
-import * as A from '../lib/astro.js';
+import { loadLater } from '../lib/load-later.js';
 import { SHOWERS, activeShowers, nextShower } from '../lib/showers.js';
-import { compassWord, pct } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
 import { splitPlace, SKY_LINK } from '../lib/skyask.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first meteor answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); meteorAnswer reads them, so a caller awaits ready first. The shower table stays: meteorAsk reads its names
+let A, compassWord, pct, whereAmI, findPlace;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ compassWord, pct } = f); ({ whereAmI, findPlace } = w); }));
 
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 const NAME_KEYS = SHOWERS.map((s) => s[0].toLowerCase());
@@ -53,6 +60,7 @@ export function meteorAnswer(date, place, ask) {
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = meteorAsk(text) || { kind: 'month' };
   const el = showPage((p) => { p.innerHTML = '<h2>Meteor showers</h2><div class="sub">…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI().catch(() => null);
   if (!api._pageStill(el)) return 'meteors';
   const a = meteorAnswer(new Date(), place, ask), title = ask.kind === 'one' ? ask.shower.replace(/\b\w/g, (c) => c.toUpperCase()) : 'Meteor showers';
@@ -68,4 +76,5 @@ export default {
   nearMisses: ['meteor shower wallpaper', 'meteor garden', 'meteorology degree', 'shooting star lyrics', 'shooting stars bk', 'what causes a meteor shower', 'how fast is a meteor', 'meteor crater arizona', 'the meteors'],
   match(lower, text) { return !!meteorAsk(text); },
   run,
+  ready,
 };

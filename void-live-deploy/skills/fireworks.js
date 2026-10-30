@@ -4,8 +4,14 @@
  * Tap one of your cards to play or discard it, or one of Verse's to tell it a colour or a number. Each seat moves only its
  * own cards; Verse's every choice says why. The table stands in the void in 3D (mini/fireworks.js) with this card beside it.
  */
-import * as F from './fireworks-rules.js';
-import { lift3d } from './lift3d.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules and the 3D lift load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let F, lift3d;
+export const ready = loadLater(() => Promise.all([
+  import('./fireworks-rules.js'),
+  import('./lift3d.js'),
+]).then(([f, l]) => { F = f; ({ lift3d } = l); }));
 
 export function fireworksOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -87,6 +93,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!fireworksOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'fireworks');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'fireworks'; }
   api.summon('fireworks', { state: F.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 50 });
@@ -101,5 +108,6 @@ export default {
   nearMisses: ['fireworks', 'fireworks tonight', 'what is hanabi', 'buy fireworks', 'play chess'],
   match(lower, text) { return !!fireworksOf(text); },
   run,
-  stageKinds: { fireworks: { mount } },
+  ready,
+  stageKinds: { fireworks: { mount: ready.mount(mount) } },
 };

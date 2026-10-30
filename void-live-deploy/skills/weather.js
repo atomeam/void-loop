@@ -8,7 +8,6 @@
  * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
  * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).
  */
-import { keepLive } from './live.js';
 const WX = {
   0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
@@ -162,6 +161,7 @@ async function run(text, api) {
         + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     };
     await draw();
+    const { keepLive } = await import('./live.js'); // the refresher loads with the first forecast, not with the routing order (owner 2026-10-30)
     if (!api._pageStill(el)) return 'weather';
     keepLive(api, el, { name: 'weather', every: 15 * 60e3, refresh: draw });
     return 'weather';
