@@ -160,6 +160,18 @@ export const JOURNEYS = {
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
   },
+  'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); const sent = (new URL(await p.locator('#related a', { hasText: 'Pick one of these names at random' }).getAttribute('href'), ORIGIN).searchParams.get('list') || '').split('\n');
+    if (sent.length !== 5 || sent.some((n) => !/\S \S/.test(n))) throw new Error('the random people page sends "' + sent.join(', ') + '", not 5 full names');
+    await check('the random people page made 5 people (' + sent.join(', ') + ')');
+    await Promise.all([p.waitForURL(/\/random\/\?list=/), p.locator('#related a', { hasText: 'Pick one of these names at random' }).click()]); await p.waitForSelector('#list');
+    if ((await p.locator('#list').inputValue()) !== sent.join('\n')) throw new Error('the random page opened with "' + (await p.locator('#list').inputValue()) + '", not the 5 names');
+    await check('the random page opened with the 5 names to pick from');
+    await open(); await Promise.all([p.waitForURL(/\/prizes\/\?s=/), p.locator('#related a', { hasText: 'Prize odds for these names' }).click()]); await p.waitForSelector('#slices');
+    if ((await p.locator('#slices').inputValue()).trim() !== sent.join('\n')) throw new Error('the prizes page opened with the slices "' + (await p.locator('#slices').inputValue()) + '", not the 5 names');
+    await check('the prizes page opened with a slice for each of the 5 names');
+  },
   'pick two players on the fantasy page, spin them on the wheel, and pick one of the draft board at random': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/fantasy/', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await p.locator('#example').click(); await p.waitForSelector('.pick button'); await check('the fantasy page opened the example sheet');
