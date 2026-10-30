@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1044,
+ "counted": 1045,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1394,6 +1394,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/flv.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/keep-going.js",
@@ -6688,6 +6695,17 @@
    ],
    "importedBy": []
   },
+  "lib/flv.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
+  },
   "lib/forge-duel.js": {
    "imports": [],
    "importedBy": [
@@ -11311,6 +11329,7 @@
   "lib/video-write.js": {
    "imports": [
     "lib/avi.js",
+    "lib/flv.js",
     "lib/video-mux.js",
     "lib/converter.js"
    ],

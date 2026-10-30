@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:10:15Z",
+   "subject": "converter: 3GP writer (H.264 pictures, AAC sound where the browser codes it)"
+  },
+  {
+   "at": "2026-10-30T07:07:33Z",
+   "subject": "converter: FLV writer (H.264 pictures, AAC or 16-bit PCM sound)"
+  },
+  {
+   "at": "2026-10-30T07:07:12Z",
+   "subject": "Better at emoji, flights and scores: 4 more ways of asking answered right — new phrases: “random emoji” now opens emoji; “give me an…"
+  },
+  {
+   "at": "2026-10-30T07:06:38Z",
+   "subject": "Lab pages: end blurbs that stopped on a comma or semicolon"
+  },
+  {
+   "at": "2026-10-30T07:05:13Z",
+   "subject": "deps.json: the gate's test reads lib/team.js"
+  },
+  {
+   "at": "2026-10-30T07:03:24Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T07:03:04Z",
    "subject": "Reduced motion: the 3D calendar opens at rest and holds still"
+  },
+  {
+   "at": "2026-10-30T07:01:28Z",
+   "subject": "Coin table keeps answering, Wikipedia cached at the edge, plain status card words"
   },
   {
    "at": "2026-10-30T06:59:00Z",
@@ -560,6 +588,14 @@
   {
    "at": "2026-10-30T06:56:27Z",
    "subject": "Unit converter page: end its cut-off sentence; /tools/ lists a tool built twice once"
+  },
+  {
+   "at": "2026-10-30T06:56:01Z",
+   "subject": "Team gate: read the live pages at once, and time out gh"
+  },
+  {
+   "at": "2026-10-30T06:55:24Z",
+   "subject": "Team jobs are done only when the merged PR did the job"
   },
   {
    "at": "2026-10-30T06:55:05Z",
@@ -590,44 +626,8 @@
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T06:44:28Z",
-   "subject": "Markets: a coin's price comes from Yahoo when CoinGecko does not answer"
-  },
-  {
-   "at": "2026-10-30T06:43:58Z",
-   "subject": "converter: ALAC (Apple Lossless) writer, its own encoder, in an .m4a"
-  },
-  {
-   "at": "2026-10-30T06:43:47Z",
-   "subject": "team-live: send the reopen calls together"
-  },
-  {
-   "at": "2026-10-30T06:43:04Z",
-   "subject": "Team: work --run hands the whole job to a one-shot agent, so agents keep going with nobody pressing Continue"
-  },
-  {
-   "at": "2026-10-30T06:42:53Z",
-   "subject": "Use the paid tier's name, MultiVerse, where pages still said Verse Pro"
-  },
-  {
-   "at": "2026-10-30T06:42:46Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:42:28Z",
-   "subject": "Memory orbs stir where Verse remembers, and rest off screen"
-  },
-  {
-   "at": "2026-10-30T06:42:06Z",
-   "subject": "Verse's own coder gets the full Versus spec too"
-  },
-  {
-   "at": "2026-10-30T06:39:47Z",
-   "subject": "Members: the MultiVerse mark on a member's published page"
-  },
-  {
-   "at": "2026-10-30T06:37:42Z",
-   "subject": "Studios take their natural names, and own-parts gets a browser check"
+   "at": "2026-10-30T06:46:00Z",
+   "subject": "Self-check: flag pages that look unfinished"
   }
  ],
  "builders": {
