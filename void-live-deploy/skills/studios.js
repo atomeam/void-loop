@@ -11,11 +11,11 @@ import { FLOORS } from '../lib/tower.js?v=ladder-67';
 // the studios, by page; `say` is the ask each page's own stage link sends, `also` other short names people use
 export const STUDIOS = Object.freeze([
   { page: '/paint/', say: ['paint by numbers', 'paint by number'] },
-  { page: '/cpan/', say: ['cpan testers', 'cpan studio'] },
+  { page: '/cpan/', say: ['cpan testers', 'cpan studio', 'cpan testers results', 'cpan test results'] },
   { page: '/books/', say: ['ai book writer studio', 'verse bookshelf', 'bookshelf studio'] },
   { page: '/identity/', say: ['identity sso profile', 'identity studio'] },
   { page: '/hosting/', say: ['web hosting sizing', 'hosting sizer', 'hosting and domain studio'] },
-  { page: '/tournaments/', say: ['tournament scorer', 'tournament scoring'] },
+  { page: '/tournaments/', say: ['tournament scorer', 'tournament scoring', 'score my tournament', 'score a tournament'] },
   { page: '/prizes/', say: ['prize wheel odds', 'prize wheel odds and payout calculator'] },
   { page: '/obituaries/', say: ['obituaries', 'obituaries and lineage'], label: 'Obituaries & Lineage', what: 'a respectful archive of every tool Verse has surpassed: their history, their contribution, and the studio that carries their work forward' },
 ]);
@@ -36,7 +36,8 @@ const LIST = studios();
 /** the studio an ask names, or null. Pure. */
 export function studioOf(text, list = LIST) {
   const t = norm(text), bare = t.replace(OPEN, ''), lead = t.replace(/^(?:(?:open|show(?: me)?|go to|take me to)\s+)?(?:the\s+)?/, ''); // "verse bookshelf" is a name, "open verse bookshelf" too
-  return list.find((s) => s.asks.includes(bare) || s.asks.includes(lead)) || null;
+  const tail = (x) => x.replace(/\s+(?:studio|page)$/, ''); // "paint by numbers studio" names the same studio (2026-10-30: on a-to-mind.com it gave a web article)
+  return list.find((s) => s.asks.includes(bare) || s.asks.includes(lead)) || list.find((s) => s.asks.includes(tail(bare)) || s.asks.includes(tail(lead))) || null;
 }
 
 function run(text, api) {

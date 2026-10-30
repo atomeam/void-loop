@@ -29,9 +29,9 @@
    "kind": "games",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 37
+    "proven": 38
    },
    "from": 66,
    "to": 106
@@ -141,9 +141,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 1,
-    "proven": 46
+    "tested": 0,
+    "checked": 2,
+    "proven": 47
    },
    "from": 338,
    "to": 387
@@ -2122,8 +2122,10 @@
     "emoji combos for birthday",
     "kaomoji happy"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the games, tested each day before the sun is up. Let the stage be the proof.",
+   "glow": 100,
    "n": 103
   },
   {
@@ -6334,8 +6336,10 @@
     "paint by numbers",
     "tournament scorer"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Say the words below and it answers.",
+   "glow": 100,
    "n": 341
   },
   {
@@ -6725,7 +6729,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Say the words below and it answers.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
    "n": 364
   },
@@ -6994,8 +6998,8 @@
     "the site test card",
     "open the site test"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 380
   },
   {
