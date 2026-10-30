@@ -888,21 +888,21 @@
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 4
   },
   {
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 1
   },
   {
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 13,
+   "dependants": 14,
    "tests": 3
   },
   {
@@ -1896,42 +1896,42 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 50,
+   "dependants": 51,
    "tests": 10
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 7
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 6
   },
   {
@@ -2134,7 +2134,7 @@
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7,
+   "dependants": 8,
    "tests": 0
   },
   {
@@ -3634,7 +3634,8 @@
    ],
    "importedBy": [
     "functions/api/film-review.js",
-    "functions/api/films.js"
+    "functions/api/films.js",
+    "functions/api/team.js"
    ],
    "reachedBy": [
     "functions/api/film-views.js",
@@ -3651,6 +3652,8 @@
   "functions/api/team.js": {
    "imports": [
     "lib/guard.js",
+    "lib/void-me.js",
+    "functions/api/support.js",
     "lib/automation-fix.js",
     "lib/team.js"
    ],
@@ -5326,6 +5329,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
@@ -6453,6 +6457,7 @@
     "functions/api/miss.js",
     "functions/api/review.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/products.js",
@@ -7348,6 +7353,7 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
     "functions/tools.json.js",
@@ -7728,6 +7734,7 @@
     "functions/api/share/index.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/watch.js",
     "functions/api/weather.js",
@@ -7753,6 +7760,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/mcp.js",
+    "functions/api/team.js",
     "functions/films/rss.js"
    ]
   },
@@ -8228,6 +8236,7 @@
     "functions/api/handoff.js",
     "functions/api/mcp.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/films/rss.js",
     "skills/shop.js"
    ]
@@ -8648,6 +8657,7 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
+    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
@@ -9610,6 +9620,7 @@
     "functions/api/mcp.js",
     "functions/api/review.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
@@ -10263,6 +10274,7 @@
     "functions/api/review.js",
     "functions/api/share/index.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/watch.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -10431,6 +10443,7 @@
     "functions/api/share/index.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
+    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/watch.js",
     "functions/api/weather.js",

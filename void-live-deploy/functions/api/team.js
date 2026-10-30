@@ -27,6 +27,8 @@
 //     at a time, claimed in one statement so two agents never hold the same job; a job of an agent away 30 minutes goes back to the queue.
 // Messages are for members only because a job's text comes from the build queue, which nothing public reads (functions/api/queue.js).
 import { ownerOk } from '../../lib/guard.js';
+import { session } from '../../lib/void-me.js';
+import { ownerAccount } from './support.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 
@@ -66,7 +68,13 @@ export async function whoIs(request, env) {
     if (a && !a.off && sameHex(await keyHash(env, m[2]), a.key)) return { kind: 'agent', agent: a };
     return null;
   }
-  return (await ownerOk(request, env)) ? { kind: 'owner' } : null;
+  if (await ownerOk(request, env)) return { kind: 'owner' };
+  // the owner is an account (functions/api/passkey.js ownerFor, functions/api/support.js payer): a signed-in session of the account whose
+  // passkey was bound as the owner's is the owner here too, so an owner session that ran out does not leave the owner reading as a visitor
+  // (owner, 2026-10-30: "it says reading as a visitor it should know im the owner im signed in")
+  const s = await session(request, env).catch(() => null);
+  if (s && await ownerAccount(env, s.userId)) return { kind: 'owner' };
+  return s ? { kind: 'member' } : null;
 }
 const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
 
@@ -156,8 +164,8 @@ export async function onRequestGet({ request, env, now = Date.now() }) {
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
-  const me = await whoIs(request, env);
-  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null });
+  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null;
+  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}) });
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   const { list } = await namesOf(env);
@@ -194,7 +202,7 @@ export async function onRequestPost({ request, env, now = Date.now() }) {
   await tables(env, now);
   let p; try { p = await request.json(); } catch (_) { return bad(400, 'send JSON'); }
   if (!p || typeof p !== 'object') return bad(400, 'send JSON');
-  const me = await whoIs(request, env);
+  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
