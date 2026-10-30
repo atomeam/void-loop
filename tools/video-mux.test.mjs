@@ -99,6 +99,7 @@ test('codecs and sizes: H.264 level by picture size, even sides, a bit rate by q
 test('MOV and MKV: the same boxes and elements with the QuickTime brand and the matroska doctype', () => {
   const v = { codec: 'avc1.42e01f', width: 64, height: 64, description: AVCC, samples: [frame(0, 10, true)] };
   const mov = mp4(v, null, { qt: true }); assert.equal(type(mov, 0), 'ftyp'); assert.equal(String.fromCharCode(...mov.subarray(8, 12)), 'qt  ');
+  const gp = mp4(v, null, { gp: true }); assert.equal(type(gp, 0), 'ftyp'); assert.equal(String.fromCharCode(...gp.subarray(8, 32)), '3gp6\0\0\x01\x003gp6isomiso2avc1'); // 3GPP release 6, as ffmpeg writes it
   assert.deepEqual(boxes(mov).map((x) => x.type), ['ftyp', 'moov', 'mdat']);
   const mkv = webm({ codec: 'vp09.00.41.08', width: 64, height: 64, samples: [frame(0, 10, true)] }, null, { mkv: true });
   const s = Buffer.from(mkv).toString('latin1'); assert.ok(s.includes('matroska') && !s.includes('webm'));

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1043,
+ "counted": 1044,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -545,7 +545,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 9
   },
   {
@@ -1378,6 +1378,13 @@
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/avi.js",
+   "skills": 1,
+   "direct": 0,
    "dependants": 4,
    "tests": 1
   },
@@ -2453,6 +2460,13 @@
    "tests": 1
   },
   {
+   "file": "lib/members.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -2566,13 +2580,6 @@
   },
   {
    "file": "lib/lap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3185,7 +3192,8 @@
   "functions/[handle].js": {
    "imports": [
     "lib/pages.js",
-    "lib/void-me.js"
+    "lib/void-me.js",
+    "lib/members.js"
    ],
    "importedBy": []
   },
@@ -4565,6 +4573,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -4710,6 +4719,17 @@
    "imports": [],
    "importedBy": [
     "skills/tower.js"
+   ]
+  },
+  "lib/avi.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/backdrop.js": {
@@ -7782,6 +7802,7 @@
     "lib/automation-fix.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/members.js"
    ]
   },
@@ -10907,6 +10928,7 @@
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
@@ -11288,6 +11310,7 @@
   },
   "lib/video-write.js": {
    "imports": [
+    "lib/avi.js",
     "lib/video-mux.js",
     "lib/converter.js"
    ],
