@@ -107,6 +107,13 @@ test('sends at the same moment cannot pass the daily limit: the count is checked
   assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, DAILY, 'no queue job without its idea row');
 });
 
+test('two ideas in the same millisecond are two queue jobs: neither is lost to a clash of job ids', async () => {
+  const DB = d1(); await signIn(DB, 'paid');
+  const now = Date.now(), a = await queueIdea({ DB }, USER, IDEA + ' First.', now), b = await queueIdea({ DB }, 'another-member-0002', IDEA + ' Second.', now);
+  assert.ok(a && b && a.job !== b.job, JSON.stringify([a, b]));
+  assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, 2);
+});
+
 // The owner bought their own membership while signed in to Gumroad as the creator: Gumroad sends that as a test ping. It was recorded
 // before such a ping was trusted, so the purchase is applied when their Verse next loads /members/ (functions/api/gumroad.js relinkRecorded).
 test('a recorded purchase from before today\'s rules unlocks its own Verse on the next load, and nobody else\'s', async () => {
