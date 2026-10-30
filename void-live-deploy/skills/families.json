@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 1,
+  "tested": 0,
   "checked": 7,
-  "proven": 378
+  "proven": 379
  },
  "families": [
   {
@@ -945,9 +945,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
-    "proven": 19
+    "proven": 20
    },
    "skills": [
     {
@@ -962,11 +962,12 @@
     },
     {
      "name": "baggage",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
+     "promoted": "2026-10-30",
      "streak": 1
     },
     {

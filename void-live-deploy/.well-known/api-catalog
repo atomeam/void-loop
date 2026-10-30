@@ -4,7 +4,7 @@
       "anchor": "https://a-to-mind.com/",
       "service-desc": [{ "href": "https://a-to-mind.com/openapi.json", "type": "application/vnd.oai.openapi+json;version=3.1" }],
       "service-doc": [{ "href": "https://a-to-mind.com/llms.txt", "type": "text/plain" }, { "href": "https://a-to-mind.com/code-review/", "type": "text/html" }],
-      "service-meta": [{ "href": "https://a-to-mind.com/tools.json", "type": "application/json" }],
+      "service-meta": [{ "href": "https://a-to-mind.com/tools.json", "type": "application/json" }, { "href": "https://a-to-mind.com/api/mcp/server-card", "type": "application/json" }],
       "item": [
         { "href": "https://a-to-mind.com/api/review" },
         { "href": "https://a-to-mind.com/api/mcp" },
