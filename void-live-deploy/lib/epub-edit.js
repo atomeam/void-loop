@@ -1,4 +1,4 @@
-// EPUB edits on the device (/converter/): the change of a book's cover. Pure: no DOM; the page passes in the picture, already in the format
+// EPUB edits on the device (/converter/): the change of a book's cover, and the merge of 2 or more books into one. Pure: no DOM; the page passes in the picture, already in the format
 // the book needs, so the same code runs in node tests. A book is read with its own zip directory and written again with the mimetype first and
 // stored, as the EPUB container standard (OCF) asks. Every file the edit does not touch keeps its bytes exactly.
 import { unzip, crc32, xml } from './translate-docs.js';
@@ -98,4 +98,111 @@ export async function changeCover(bytes, encode) {
   const was = new Map(book.files.map((x) => [x.name, x.data])), same = files.filter((x) => { const d = was.get(x.name); return d && d.length === x.data.length && d.every((v, i) => v === x.data[i]); }).length;
   notes.push(same + ' of the ' + book.files.length + ' files the book had are byte for byte as they were' + (opf !== book.opf ? ' (the package file names the cover)' : ''));
   return { bytes: await writeBook(files), notes };
+}
+
+// ---- Merge EPUB --------------------------------------------------------------------------------------------------------------------------
+const NCX = 'application/x-dtbncx+xml', IDPF_OBF = 'http://www.idpf.org/2008/embedding', ADOBE_OBF = 'http://ns.adobe.com/pdf/enc#RC'; // void-review: ok (algorithm names in encryption.xml, never fetched)
+const sha1 = async (b) => new Uint8Array(await crypto.subtle.digest('SHA-1', b));
+const unent = (s) => s.replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos);/gi, (m, e) => (e[0] === '#' ? String.fromCodePoint(e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : +e.slice(1)) : { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }[e.toLowerCase()]));
+const plainText = (s) => unent(s.replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+/** the book's unique identifier, the one font obfuscation uses as its key */
+export function identifierOf(opf) {
+  const uid = attrs((opf.match(/<package\b[^>]*>/) || [''])[0])['unique-identifier'];
+  const ids = [...opf.matchAll(/<dc:identifier\b([^>]*)>([\s\S]*?)<\/dc:identifier>/g)], m = ids.find((x) => attrs('<x' + x[1] + '>').id === uid) || ids[0];
+  return m ? unent(m[2]).trim() : '';
+}
+/** the font obfuscation of the IDPF (SHA-1 of the identifier, 1040 bytes) and of Adobe (the UUID's 16 bytes, 1024 bytes): the same XOR undoes it. */
+export async function obfuscate(data, id, alg = IDPF_OBF) {
+  let key, n;
+  if (alg === IDPF_OBF) { key = await sha1(te.encode(id.replace(/[ \u0009\u000d\u000a]/g, ''))); n = 1040; }
+  else { const hex = id.replace(/^urn:uuid:/i, '').replace(/[^0-9a-f]/gi, ''); if (hex.length !== 32) throw new Error('the book names Adobe font obfuscation, but its identifier is not a UUID'); key = Uint8Array.from(hex.match(/../g), (h) => parseInt(h, 16)); n = 1024; }
+  const out = data.slice(); for (let i = 0; i < Math.min(n, out.length); i++) out[i] ^= key[i % key.length]; return out;
+}
+/** the parts of META-INF/encryption.xml: [{ alg, path }]. */
+export function encryptedOf(files) {
+  const f = files.find((x) => x.name === 'META-INF/encryption.xml'); if (!f) return [];
+  return [...td.decode(f.data).matchAll(/<(?:\w+:)?EncryptedData\b[\s\S]*?<\/(?:\w+:)?EncryptedData>/g)].map((m) => ({ alg: attrs((m[0].match(/<(?:\w+:)?EncryptionMethod\b[^>]*>/) || [''])[0]).Algorithm || '', path: decodeURIComponent(attrs((m[0].match(/<(?:\w+:)?CipherReference\b[^>]*>/) || [''])[0]).URI || '') }));
+}
+// a table of contents as a tree [{ label, href, kids }], from an EPUB 3 nav document or an EPUB 2 NCX; each href made a path in the zip (with its #part)
+function tocTree(s, from, kind) {
+  const root = { kids: [] }, stack = [root]; const at = (href) => (href ? resolve(from, href) + (href.includes('#') ? href.slice(href.indexOf('#')) : '') : '');
+  if (kind === 'nav') {
+    const nav = (s.match(/<nav\b[^>]*epub:type\s*=\s*["'][^"']*\btoc\b[^"']*["'][^>]*>([\s\S]*?)<\/nav>/) || [])[1]; if (!nav) return [];
+    for (const m of nav.matchAll(/<li\b[^>]*>|<\/li>|<a\b([^>]*)>([\s\S]*?)<\/a>|<span\b[^>]*>([\s\S]*?)<\/span>/g)) {
+      if (m[0].startsWith('<li')) { const n = { label: '', href: '', kids: [] }; stack[stack.length - 1].kids.push(n); stack.push(n); }
+      else if (m[0] === '</li>') { if (stack.length > 1) stack.pop(); }
+      else if (stack.length > 1 && !stack[stack.length - 1].label) { const n = stack[stack.length - 1]; n.label = plainText(m[2] != null ? m[2] : m[3]); if (m[1] != null) n.href = at(unent(attrs('<a' + m[1] + '>').href || '')); }
+    }
+  } else {
+    for (const m of s.matchAll(/<navPoint\b[^>]*>|<\/navPoint>|<text>([\s\S]*?)<\/text>|<content\b[^>]*>/g)) {
+      if (m[0].startsWith('<navPoint')) { const n = { label: '', href: '', kids: [] }; stack[stack.length - 1].kids.push(n); stack.push(n); }
+      else if (m[0] === '</navPoint>') { if (stack.length > 1) stack.pop(); }
+      else if (stack.length > 1 && m[1] != null && !stack[stack.length - 1].label) stack[stack.length - 1].label = plainText(m[1]);
+      else if (stack.length > 1 && m[0].startsWith('<content')) stack[stack.length - 1].href = at(unent(attrs(m[0]).src || ''));
+    }
+  }
+  return root.kids;
+}
+const countToc = (t) => t.reduce((n, x) => n + 1 + countToc(x.kids), 0);
+const hrefOf = (path) => path.split('/').map((s) => encodeURIComponent(s)).join('/');
+const metaAll = (opf, tag) => [...opf.matchAll(new RegExp('<dc:' + tag + '\\b[^>]*>([\\s\\S]*?)<\\/dc:' + tag + '>', 'g'))].map((m) => unent(m[1]).trim()).filter(Boolean);
+
+/** books [{ name, bytes }] -> one EPUB 3 book: each book's files in a folder of their own (b1/, b2/, ...), so every link inside a book still works;
+ * one reading order, the books one after another; one table of contents with a part for each book. Obfuscated fonts are obfuscated again with
+ * the new book's identifier. -> { bytes, notes } */
+export async function mergeBooks(list, title = '', now = new Date()) {
+  if (list.length < 2) throw new Error('pick 2 or more EPUB files to merge.');
+  const id = 'urn:uuid:' + crypto.randomUUID(), files = [], items = [], spine = [], tree = [], creators = [], encOut = [], langs = [];
+  let first = '', cover = '', dir = '', chapters = 0, fonts = 0;
+  for (let k = 0; k < list.length; k++) {
+    const name = list[k].name, pre = 'b' + (k + 1) + '/', p = 'b' + (k + 1) + '-'; let book;
+    try { book = await readBook(list[k].bytes); } catch (e) { throw new Error(name + ': ' + e.message); }
+    const enc = encryptedOf(book.files), bad = enc.find((e) => e.alg !== IDPF_OBF && e.alg !== ADOBE_OBF);
+    if (bad) throw new Error(name + ': parts of this book are encrypted (DRM), so Verse cannot read them to merge.');
+    const bookId = identifierOf(book.opf), encBy = new Map(enc.map((e) => [e.path, e.alg]));
+    const bookTitle = metaAll(book.opf, 'title')[0] || name.replace(/\.epub$/i, '');
+    if (!k) { first = bookTitle; dir = attrs((book.opf.match(/<spine\b[^>]*>/) || [''])[0])['page-progression-direction'] || ''; }
+    for (const c of metaAll(book.opf, 'creator')) if (!creators.includes(c)) creators.push(c);
+    for (const l of metaAll(book.opf, 'language')) if (!langs.includes(l)) langs.push(l);
+    for (const f of book.files) {
+      if (f.name === 'mimetype' || f.name.startsWith('META-INF/') || f.name === book.opfPath) continue;
+      let data = f.data; const alg = encBy.get(f.name);
+      if (alg) { data = await obfuscate(await obfuscate(data, bookId, alg), id, IDPF_OBF); encOut.push(pre + f.name); fonts++; }
+      files.push({ name: pre + f.name, data });
+    }
+    const fixed = /<meta\b[^>]*property\s*=\s*["']rendition:layout["'][^>]*>\s*pre-paginated\s*</.test(book.opf), ids = new Set(book.items.map((i) => i.id));
+    let navItem = null, ncxItem = null; const cv = coverOf(book);
+    for (const it of book.items) {
+      if (it.type === NCX) { ncxItem = it; continue; }
+      if (it.props.includes('nav')) navItem = it;
+      const props = it.props.filter((x) => x !== 'nav' && x !== 'cover-image'); if (!cover && cv && it.id === cv.id) { cover = p + it.id; props.push('cover-image'); }
+      const a = attrs(it.tag), extra = ['fallback', 'media-overlay'].filter((x) => a[x] && ids.has(a[x])).map((x) => ' ' + x + '="' + p + xml(a[x]) + '"').join('');
+      items.push('<item id="' + p + xml(it.id) + '" href="' + xml(hrefOf(pre + it.path)) + '" media-type="' + xml(it.type || 'application/octet-stream') + '"' + extra + (props.length ? ' properties="' + props.join(' ') + '"' : '') + '/>');
+    }
+    const refs = [...book.opf.matchAll(/<itemref\b[^>]*>/g)].map((m) => attrs(m[0])).filter((a) => ids.has(a.idref) && (!ncxItem || a.idref !== ncxItem.id));
+    let start = '';
+    for (const a of refs) {
+      const props = (a.properties || '').split(/\s+/).filter(Boolean); if (fixed && !props.some((x) => x.startsWith('rendition:layout'))) props.push('rendition:layout-pre-paginated');
+      spine.push('<itemref idref="' + p + xml(a.idref) + '"' + (a.linear === 'no' ? ' linear="no"' : '') + (props.length ? ' properties="' + props.join(' ') + '"' : '') + '/>');
+      if (!start && a.linear !== 'no') start = pre + book.items.find((i) => i.id === a.idref).path; chapters++;
+    }
+    const src = navItem ? book.files.find((f) => f.name === navItem.path) : ncxItem ? book.files.find((f) => f.name === ncxItem.path) : null;
+    const own = src ? tocTree(td.decode(src.data), src.name, navItem ? 'nav' : 'ncx') : [], fix = (t) => t.map((x) => ({ ...x, href: x.href ? pre + x.href : '', kids: fix(x.kids) }));
+    tree.push({ label: bookTitle, href: start, kids: fix(own) });
+  }
+  const bookTitle = title.trim() || first + (list.length > 1 ? ' and ' + (list.length - 1) + ' more' : ''), when = now.toISOString().replace(/\.\d+Z$/, 'Z');
+  const li = (t, d) => t.map((x) => d + '<li>' + (x.href ? '<a href="' + xml(hrefOf(x.href.split('#')[0]) + (x.href.includes('#') ? x.href.slice(x.href.indexOf('#')) : '')) + '">' + xml(x.label || 'Untitled') + '</a>' : '<span>' + xml(x.label || 'Untitled') + '</span>') + (x.kids.length ? '\n' + d + '<ol>\n' + li(x.kids, d + '  ') + d + '</ol>' : '') + '</li>\n').join('');
+  // an NCX point needs a link: a heading with none (a <span> in the nav) takes its first entry's link
+  let order = 0; const firstHref = (t) => { for (const x of t) { const h = x.href || firstHref(x.kids); if (h) return h; } return ''; };
+  const np = (t) => t.map((x) => { const h = x.href || firstHref(x.kids); return h ? '<navPoint id="n' + ++order + '" playOrder="' + order + '"><navLabel><text>' + xml(x.label || 'Untitled') + '</text></navLabel><content src="' + xml(hrefOf(h.split('#')[0]) + (h.includes('#') ? h.slice(h.indexOf('#')) : '')) + '"/>' + np(x.kids) + '</navPoint>' : ''; }).join('\n');
+  const t = xml(bookTitle), nav = '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head><title>' + t + '</title></head>\n<body>\n<nav epub:type="toc" id="toc"><h1>' + t + '</h1>\n<ol>\n' + li(tree, '') + '</ol>\n</nav>\n</body>\n</html>\n';
+  const ncx = '<?xml version="1.0" encoding="utf-8"?>\n<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">\n<head><meta name="dtb:uid" content="' + xml(id) + '"/></head>\n<docTitle><text>' + t + '</text></docTitle>\n<navMap>\n' + np(tree) + '\n</navMap>\n</ncx>\n';
+  const opf = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="id">\n<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n<dc:identifier id="id">' + xml(id) + '</dc:identifier>\n<dc:title>' + t + '</dc:title>\n' + creators.map((c) => '<dc:creator>' + xml(c) + '</dc:creator>\n').join('') + (langs.length ? langs : ['en']).map((l) => '<dc:language>' + xml(l) + '</dc:language>\n').join('') + '<meta property="dcterms:modified">' + when + '</meta>\n' + (cover ? '<meta name="cover" content="' + xml(cover) + '"/>\n' : '') + '</metadata>\n<manifest>\n<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>\n<item id="ncx" href="toc.ncx" media-type="' + NCX + '"/>\n' + items.join('\n') + '\n</manifest>\n<spine toc="ncx"' + (dir ? ' page-progression-direction="' + xml(dir) + '"' : '') + '>\n' + spine.join('\n') + '\n</spine>\n</package>\n';
+  const container = '<?xml version="1.0" encoding="utf-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n<rootfiles><rootfile full-path="content.opf" media-type="application/oebps-package+xml"/></rootfiles>\n</container>\n';
+  const out = [{ name: 'META-INF/container.xml', data: te.encode(container) }, { name: 'content.opf', data: te.encode(opf) }, { name: 'nav.xhtml', data: te.encode(nav) }, { name: 'toc.ncx', data: te.encode(ncx) }, ...files];
+  if (encOut.length) out.splice(1, 0, { name: 'META-INF/encryption.xml', data: te.encode('<?xml version="1.0" encoding="utf-8"?>\n<encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n' + encOut.map((u) => '<EncryptedData xmlns="http://www.w3.org/2001/04/xmlenc#"><EncryptionMethod Algorithm="' + IDPF_OBF + '"/><CipherData><CipherReference URI="' + xml(hrefOf(u)) + '"/></CipherData></EncryptedData>').join('\n') + '\n</encryption>\n') });
+  const notes = [list.length + ' books in one, in the order you picked them: ' + chapters + ' parts of the reading order, ' + files.length + ' files', 'the table of contents has a part for each book, with ' + countToc(tree.flatMap((x) => x.kids)) + ' entries from the books\' own contents'];
+  if (fonts) notes.push(fonts + ' obfuscated font' + (fonts > 1 ? 's' : '') + ' obfuscated again for the new book, as the font licence asks');
+  if (cover) notes.push('the cover is the cover of the first book');
+  return { bytes: await writeBook(out), notes, title: bookTitle };
 }

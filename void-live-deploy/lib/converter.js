@@ -2,7 +2,7 @@
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
 // format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF; FLAC and Ogg in audio-write.js); the sound edits (cut,
 // speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4, MOV, WEBM and MKV video and the video edits (run by /lib/video-write.js, written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
-// and written; an EPUB's cover (changed by /lib/epub-edit.js). Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
+// and written; an EPUB's cover and the merge of EPUBs (/lib/epub-edit.js). Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
 // 'no' not on Verse yet. A tool is never shown as done when it is not.
 import { unzip, paragraphsOf, OFFICE, docxOf, xml, unxml, pdfParagraphs } from './translate-docs.js';
@@ -88,7 +88,8 @@ export const CATALOG = Object.freeze([
     ? conv('Ebook', f, 'no', { note: 'Not on Verse yet: Verse cannot write Kindle files.' })
     : conv('Ebook', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of an EPUB, DOCX, PDF, RTF or HTML file as plain text.' : WORDS }))),
   tool('Ebook', 'Change EPUB Cover', 'here', { run: 'epub-cover', from: 'epub+picture', note: 'Puts a picture on an EPUB as its cover, the one readers show in the library and on the first page. An old cover keeps its file, so every page that showed it shows the new one; a book with no cover gets a cover page first. The text, the chapters and the other files stay byte for byte as they were.' }),
-  ...['Compress AZW3', 'Compress CBZ/CBR', 'Compress EPUB', 'Merge EPUB'].map((n) => tool('Ebook', n, 'no', { note: NO })),
+  tool('Ebook', 'Merge EPUB', 'here', { run: 'epub-merge', from: 'epub', many: true, note: 'Joins 2 or more EPUB books into one, in the order you pick them. Each book keeps its own pages, pictures, styles and fonts, so it looks as it did; the table of contents has a part for each book, with its own chapters. A book with DRM cannot be read, so it cannot be merged.' }),
+  ...['Compress AZW3', 'Compress CBZ/CBR', 'Compress EPUB'].map((n) => tool('Ebook', n, 'no', { note: NO })),
   ...['PDF', 'DOCX', 'HTML', 'TXT'].map((f) => conv('Document', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of a PDF, DOCX, EPUB, RTF or HTML file as plain text.' : WORDS })),
   tool('Document', 'Add Image to PDF', 'here', { run: 'pdf-image', from: 'pdf+picture', note: 'Puts a picture on a page of a PDF, at the place and size you pick; the rest of the PDF stays as it was.' }),
   tool('Document', 'Compress PDF', 'verse', { href: '/pdf/?tool=compress', note: 'On Verse PDF tools.' }),

@@ -7,14 +7,14 @@ import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write
 import { flac, opusFile } from '/lib/audio-write.js';
 import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
 import { denoise } from '/lib/denoise.js';
-import { changeCover } from '/lib/epub-edit.js';
+import { changeCover, mergeBooks } from '/lib/epub-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*' };
+const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*', 'epub+picture': 'application/epub+zip,.epub,image/*', epub: 'application/epub+zip,.epub' };
 // how many files a tool needs, and what to say about them
 const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'], 'epub+picture': [2, ' Pick one EPUB and one picture.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
@@ -84,6 +84,7 @@ function opts() {
   if (run === 'silence') o.append(field('Quiet under (dB)', num('thr', -45, 'any', -90, -10)), field('Longer than (ms)', num('minms', 400, '50', 50)), SOUND_AS());
   if (run === 'crossfade') o.append(field('Crossfade (seconds)', num('xfade', 2, 'any', 0, 30)), SOUND_AS());
   if (run === 'merge' || run === 'mix' || run === 'extract-audio') o.append(SOUND_AS());
+  if (run === 'epub-merge') o.append(field('Title of the new book (empty: the first book\'s title and how many more)', make('input', { id: 'btitle', type: 'text', maxLength: 300 })));
   if (run === 'gif-speed') o.append(field('Times as fast', num('factor', 2, 'any', 0.1, 10)));
   if (run === 'frame') o.append(field('At second', num('at', 1, 'any', 0)));
   if (run === 'merge-images') o.append(field('Put them', pick('dir', [['row', 'side by side'], ['column', 'one above the other']], 'row')));
@@ -295,6 +296,11 @@ async function go() {
       const raw = await bytesOf(pic.f), jpgOrPng = pic.fmt === 'jpg' || pic.fmt === 'png', cover = jpgOrPng ? raw : await pictureFile(await canvasOf(pic.f), 'jpg', 0.92);
       const r = addCover(await bytesOf(m.f), cover, pic.fmt === 'png' ? 'image/png' : 'image/jpeg');
       add({ name: outName(m.f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: (jpgOrPng ? [] : [pic.fmt.toUpperCase() + ' picture made a JPEG, the format players read']).concat(r.notes) });
+    } else if (t.run === 'epub-merge') {
+      const bad = list.find((x) => x.fmt !== 'epub'); if (bad) throw new Error(bad.f.name + ' is not an EPUB file. Pick only EPUB books to merge.');
+      say('Merging ' + list.length + ' books');
+      const r = await mergeBooks(await Promise.all(list.map(async (x) => ({ name: x.f.name, bytes: await bytesOf(x.f) }))), $('btitle').value);
+      add({ name: outName(r.title.slice(0, 80) + '.epub', 'epub', taken), ext: 'epub', bytes: r.bytes, notes: r.notes });
     } else if (t.run === 'epub-cover') {
       const e = list.find((x) => x.fmt === 'epub'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!e || !pic) throw new Error('pick one EPUB and one picture.');
