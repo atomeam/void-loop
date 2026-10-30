@@ -540,12 +540,20 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
+   "at": "2026-10-30T18:18:40Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:17:57Z",
    "subject": "guide.json after the benchmark rows this PR moved (loan, book, notes-fill counts)"
   },
   {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-30T18:16:58Z",
+   "subject": "Image: \"Change it\" changes a picture Verse painted with one typed line"
   },
   {
    "at": "2026-10-30T18:15:33Z",
@@ -600,20 +608,12 @@
    "subject": "Five benchmark rows match the answers other laps sourced today, and a title search answers with that book"
   },
   {
-   "at": "2026-10-30T17:58:07Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T17:56:28Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T17:51:38Z",
    "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP skill tools run each skill's own code on the server"
   }
  ],
  "builders": {
