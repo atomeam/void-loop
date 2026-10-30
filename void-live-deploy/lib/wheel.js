@@ -77,6 +77,6 @@ export function askWheel(text) {
   if (t.length > 400) return null;
   const m = /^(?:spin|make|create|build)\s+(?:me\s+)?(?:a|the)\s+(?:prize\s+|random\s+|decision\s+)?wheel\s+(?:with|of|for)\s*:?\s+(.+)$/i.exec(t);
   if (m) { const e = entriesOf(m[1].replace(/\s+(?:and|or)\s+/gi, ', ')); return e.length >= 2 ? { entries: e } : null; }
-  if (/^(?:spin\s+(?:the|a)\s+wheel|wheel\s+(?:of|for)\s+names|(?:random\s+)?(?:name|names)\s+(?:picker\s+)?wheel|(?:spinner|spinning|prize|decision|random|picker)\s+wheel|wheel\s+(?:spinner|picker|decide|of\s+fortune\s+spinner)|spin\s+(?:the|a)\s+wheel\s+(?:of\s+names|to\s+(?:decide|pick|choose)))$/.test(l)) return { entries: [] };
+  if (/^(?:spin\s+(?:the|a)\s+wheel|wheel\s+(?:of|for)\s+names|(?:random\s+)?(?:name|names)\s+(?:picker\s+)?wheel|(?:random\s+)?names?\s+(?:picker|chooser|selector)|(?:spinner|spinning|prize|decision|random|picker)\s+wheel|wheel\s+(?:spinner|picker|decide|of\s+fortune\s+spinner)|spin\s+(?:the|a)\s+wheel\s+(?:of\s+names|to\s+(?:decide|pick|choose)))$/.test(l)) return { entries: [] };
   return null;
 }

@@ -14,8 +14,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/image/ (the random generators floor's text-to-image page): one file; the picture comes from /api/image */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 22px; margin: 0 0 4px; text-align: center; font-weight: 650; }
@@ -66,6 +66,7 @@
 <link rel="modulepreload" href="/lib/art-rules.js">
 <link rel="modulepreload" href="/lib/merge-rules.js">
 <link rel="modulepreload" href="/lib/keeper.js">
+<link rel="modulepreload" href="/lib/image-handoff.js">
 <script src="/visit.js" defer></script>
 </head>
 <body>
@@ -112,7 +113,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/image/?prompt=a%20red%20fox%20curled%20up%20in%20the%20snow&amp;style=watercolor&amp;go=1">A red fox in the snow, watercolour</a><a href="/image/?prompt=a%20castle%20on%20a%20cliff%20at%20sunset&amp;style=fantasy&amp;shape=landscape&amp;go=1">A castle on a cliff, fantasy art</a><a href="/image/?prompt=a%20cozy%20cabin%20in%20a%20snowy%20forest&amp;style=photo&amp;go=1">A cozy cabin, photo</a><a href="/image/?prompt=a%20robot%20cat&amp;style=pixel&amp;go=1">A robot cat, pixel art</a><a href="/image/?prompt=a%20friendly%20dragon&amp;style=anime&amp;shape=portrait&amp;go=1">A dragon, anime, portrait</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/generators/">Generators</a> <a href="/resize-image/">Resize an image</a> <a href="/color/">Colour codes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/video/">AI video generator</a> <a href="/generators/">Generators</a> <a href="/resize-image/">Resize an image</a> <a href="/color/">Colour codes</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer id="foot">Your words go to the painter and nowhere else; nothing typed is stored. Pictures are made by Verse's own image model while today's share lasts, then by a free open painter (Pollinations) with its safety filter on. Real people and adult pictures are not made. Kept pictures stay in this browser.</footer>
 </main>
 <script type="module" src="/image/app.js"></script>

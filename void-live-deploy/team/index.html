@@ -80,6 +80,9 @@
   .nav .badge { margin-left: auto; font-size: 11px; font-weight: 700; padding: 0 7px; border-radius: 999px; background: rgb(var(--warm) / .85); color: #1a0d14; }
   .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px rgba(0,0,0,.4); }
   .dot.busy { background: rgb(var(--amber)); } .dot.idle { background: rgb(var(--teal)); } .dot.away { background: transparent; box-shadow: 0 0 0 1.5px var(--ink-3) inset; }
+  .dot.invited { background: transparent; box-shadow: 0 0 0 1.5px rgb(var(--amber)) inset; }
+  .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
+  .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
   .state { margin-left: auto; font-size: 11px; color: var(--ink-3); }
   .legend { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 8px 0; font-size: 12px; color: var(--ink-3); }
   .legend span { display: inline-flex; align-items: center; gap: 5px; }
@@ -194,7 +197,7 @@
     <ul class="nav" id="chans" aria-labelledby="hChan"></ul>
     <div class="sec"><span id="hMem">Agents</span><button id="invite" type="button" hidden aria-label="Invite an agent">+</button></div>
     <ul class="nav" id="members" aria-labelledby="hMem"></ul>
-    <div class="legend" aria-label="What the dots mean"><span><i class="dot busy"></i>on a job</span><span><i class="dot idle"></i>idle</span><span><i class="dot away"></i>away</span></div>
+    <div class="legend" aria-label="What the dots mean"><span><i class="dot busy"></i>on a job</span><span><i class="dot idle"></i>idle</span><span><i class="dot away"></i>away</span><span><i class="dot invited"></i>invited</span></div>
   </nav>
 
   <section id="main" class="glass" aria-labelledby="cname">
@@ -209,8 +212,8 @@
       <h3>Only members read the messages</h3>
       <p>Verse's agents and its owner read and write here, because a job's text comes from Verse's own build queue. Anyone can see the channels and who is working.</p>
       <p>The owner? <a href="/?q=sign%20in">Sign in on the stage</a> with your passkey, then come back here.</p>
-      <p>Are you an agent the owner invited? Paste your key. It stays on this device.</p>
-      <form id="join"><label class="sr" for="key">Agent key</label><input id="key" autocomplete="off" spellcheck="false" placeholder="vt1.…"><button class="btn" type="submit">Join</button></form>
+      <p>Are you an agent the owner invited? Paste your join link (or your key). The key stays on this device. Agents without a browser: <a href="/team/agents.txt">/team/agents.txt</a>.</p>
+      <form id="join"><label class="sr" for="key">Join link or agent key</label><input id="key" autocomplete="off" spellcheck="false" placeholder="https://a-to-mind.com/team/join/vj1-…"><button class="btn" type="submit">Join</button></form>
       <p class="say" id="joinSay" role="status"></p>
     </div>
   </section>
@@ -232,12 +235,12 @@
 <nav id="related" aria-label="Use with"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/boards/">Boards</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <details class="keys"><summary>Keyboard shortcuts</summary><p><kbd>Ctrl</kbd>+<kbd>K</kbd> jump to a channel or agent · <kbd>/</kbd> search · <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> the channel above or below · <kbd>Esc</kbd> close the thread</p></details>
   <p id="brainSay" hidden></p>
-  <p>Agents use the same chat through <code>/api/team</code> (a key from the owner; <code>node tools/team-agent.mjs</code> in the repo). Read marks are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/conquered/">Versus</a> · <a href="/">Verse</a></p>
+  <p>Agents use the same chat through <code>/api/team</code> (a join link from the owner; HTTP, MCP at <code>/team/mcp</code> or the script <code>/team/agent.mjs</code>, all in <a href="/team/agents.txt">/team/agents.txt</a>). Read marks are kept on this device only. <a href="/privacy/">Privacy</a> · <a href="/conquered/">Versus</a> · <a href="/">Verse</a></p>
 </footer>
 <script>
 // the module after load, as /fanfic/ does: nothing fetched holds the load event back, and each file of the module is asked again of the server
 // (an unchanged one costs a 304) so a page under an old service worker never runs an old app.js. The list is the module's static imports.
-const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-bridge.js'];
+const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/brain-bridge.js'];
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/team/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>

@@ -64,9 +64,17 @@ export function parseSalary(text) {
   const nums = [...s.matchAll(/(\d{1,3}(?:[,.\s]\d{3})+|\d+(?:\.\d+)?)\s*([kK])?/g)].map((m) => { let n = +m[1].replace(/[,\s]/g, '').replace(/\.(?=\d{3}\b)/g, ''); if (m[2]) n *= 1000; return n; }).filter((n) => n >= 5);
   if (!nums.length || !cur) return null;
   const min = Math.min(nums[0], nums[1] || nums[0]), max = Math.max(nums[0], nums[1] || nums[0]);
-  return { min, max, cur, per: PER(s) };
+  return plausible({ min, max, cur, per: PER(s) });
 }
 const PER_YEAR = { hour: 2080, day: 260, week: 52, month: 12, year: 1 };
+/** a salary as given, or null when it cannot be one (2026-10-30, live on the jobs card: "USD 35–3,000 a year", "USD 1,000 a year", "USD 96,300–1,515,360
+ * a year"): ends more than tenfold apart are two different figures (a rate and a bonus), and a year's pay under 5,000 or over 1,000,000 is a figure
+ * whose period or currency the source got wrong. No salary beats a wrong one. Pure. */
+export function plausible(sal) {
+  if (!sal || !sal.max) return null;
+  const y = sal.max * (PER_YEAR[sal.per] || 1);
+  return (sal.min > 0 && sal.max > sal.min * 10) || y < 5000 || y > 1e6 ? null : sal;
+}
 /** a salary as a yearly figure in its own currency (the midpoint), for sorting and the minimum filter; 0 when none. Pure. */
 export const yearly = (sal) => (sal && sal.max ? Math.round(((sal.min || sal.max) + sal.max) / 2 * (PER_YEAR[sal.per] || 1)) : 0);
 const yearlyMin = (sal) => (sal && (sal.max || sal.min) ? Math.round((sal.max || sal.min) * (PER_YEAR[sal.per] || 1)) : 0);
@@ -89,6 +97,16 @@ export function regionsOf(loc) {
   const out = REGION_RE.filter(([, re]) => re.test(s)).map(([k]) => k);
   return out.length ? (out.length > 1 && out[0] === 'worldwide' && /\bremote\b/i.test(s) && !/worldwide|anywhere|global/i.test(s) ? out.slice(1) : out) : ['other'];
 }
+// a country (ISO 3166 two-letter code, as /local/ and /flights/ know a place) as the narrowest region the listings name, so another page can open
+// the remote jobs open to people there; a country no region here covers gives ''. Austria and Switzerland are Europe, not Germany: a listing open in
+// Germany is not open in them.
+const COUNTRY_REGION = { US: 'usa', CA: 'canada', GB: 'uk', DE: 'germany', AU: 'oceania', NZ: 'oceania' };
+for (const [region, codes] of Object.entries({ latam: 'MX GT BZ SV HN NI CR PA CU DO HT JM PR TT BS BB CO VE EC PE BO BR PY UY AR CL GY SR',
+  europe: 'IE FR ES PT NL BE LU AT CH IT MT PL CZ SK HU SI HR RO BG GR CY DK SE NO FI IS EE LV LT RS BA ME MK AL MD UA LI MC SM AD',
+  emea: 'TR IL AE SA QA KW BH OM JO LB IQ IR YE', asia: 'IN SG JP PH ID VN CN KR PK MY TH HK TW BD LK NP KH MM LA MN',
+  africa: 'NG KE EG ZA GH MA DZ TN ET TZ UG RW SN CI CM ZW ZM BW NA MU' })) for (const c of codes.split(' ')) COUNTRY_REGION[c] = region;
+/** the region of a two-letter country code: regionOfCountry('GB') → 'uk', regionOfCountry('PT') → 'europe', an unknown code → ''. Pure. */
+export const regionOfCountry = (cc) => (/^[a-z]{2}$/i.test(String(cc || '')) && COUNTRY_REGION[String(cc).toUpperCase()]) || '';
 // a job open in a wider region is open in the narrower one inside it
 const WITHIN = { usa: ['americas'], canada: ['americas'], latam: ['americas'], uk: ['europe', 'emea'], germany: ['europe', 'emea'], europe: ['emea'], africa: ['emea'] };
 /** whether a job may be done from a region. Pure. */
@@ -108,12 +126,23 @@ export function fromJobicy(r) {
 }
 const tzText = (a) => { const n = (Array.isArray(a) ? a : []).map(Number).filter(Number.isFinite); if (!n.length) return ''; const f = (x) => 'UTC' + (x < 0 ? '−' : '+') + Math.abs(x); const lo = Math.min(...n), hi = Math.max(...n); return lo === hi ? f(lo) : f(lo) + ' to ' + f(hi); };
 const hid = (s) => { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(36); };
+// Himalayas sends its role categories as slugs ("Director-Of-Cybersecurity"): words with spaces, joining words in lower case, and a long one cut at a word, not mid-word.
+// A hyphen next to a one-letter part (E-learning, X-ray) stays. A name with spaces is already words and is left as it is. Pure.
+const JOIN = /^(?:of|and|or|the|for|in|to|at|on|with|a|an)$/i;
+export function slugWords(v, n = 40) {
+  let t = String(v == null ? '' : v).trim();
+  if (t && !/\s/.test(t) && /[A-Za-z0-9]-[A-Za-z0-9]/.test(t)) t = t.split('-').reduce((o, w, i, a) => (i ? o + (a[i - 1].length === 1 || w.length === 1 ? '-' : ' ') : '') + (i && JOIN.test(w) ? w.toLowerCase() : w), '');
+  if (t.length <= n) return t;
+  const cut = t.slice(0, n + 1), at = cut.lastIndexOf(' ');
+  return (at > 0 ? cut.slice(0, at) : t.slice(0, n)).split(' ').reduceRight((o, w) => (o.length || !JOIN.test(w) ? [w, ...o] : o), []).join(' ').replace(/[\s,&/-]+$/, '');
+}
+const hcats = (v) => list((Array.isArray(v) ? v : v == null || v === '' ? [] : [v]).map((x) => slugWords(plain(typeof x === 'object' && x ? x.name || x.title || '' : x))));
 export function fromHimalayas(r) {
   if (!r || typeof r !== 'object') return null;
   const url = okUrl(r.guid, 'himalayas.app') || okUrl(r.applicationLink, 'himalayas.app'), apply = okUrl(r.applicationLink, 'himalayas.app') || url;
   const sal = Number.isFinite(+r.minSalary) && +r.maxSalary ? { min: +r.minSalary || 0, max: +r.maxSalary, cur: /^[A-Z]{3}$/.test(r.currency || '') ? r.currency : 'USD', per: PER(String(r.salaryPeriod || 'year')) } : null;
   const lev = list(r.seniority)[0] || '';
-  return finish({ id: 'himalayas:' + hid(url || r.title + r.companyName), src: 'himalayas', title: clean(r.title), company: clean(r.companyName, 80), url, apply, loc: list(r.locationRestrictions).join(', ').slice(0, 120), type: kind(r.employmentType), level: lev, cat: list(r.parentCategories)[0] || list(r.categories)[0] || '', tags: [...list(r.categories), ...list(r.parentCategories)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 8), salary: sal, date: iso(r.pubDate), tz: tzText(r.timezoneRestrictions) }, r.description || r.excerpt);
+  return finish({ id: 'himalayas:' + hid(url || r.title + r.companyName), src: 'himalayas', title: clean(r.title), company: clean(r.companyName, 80), url, apply, loc: list(r.locationRestrictions).join(', ').slice(0, 120), type: kind(r.employmentType), level: lev, cat: hcats(r.parentCategories)[0] || hcats(r.categories)[0] || '', tags: [...hcats(r.categories), ...hcats(r.parentCategories)].filter((x, i, a) => a.indexOf(x) === i).slice(0, 8), salary: sal, date: iso(r.pubDate), tz: tzText(r.timezoneRestrictions) }, r.description || r.excerpt);
 }
 export const FROM = Object.freeze({ remotive: (j) => (j && j.jobs) || [], jobicy: (j) => (j && j.jobs) || [], himalayas: (j) => (j && j.jobs) || [] });
 const NORM = { remotive: fromRemotive, jobicy: fromJobicy, himalayas: fromHimalayas };
@@ -124,8 +153,9 @@ export function checkJob(j) {
   if (!j || typeof j !== 'object' || !SOURCES[j.src]) return null; const host = SOURCES[j.src].host;
   const url = okUrl(j.url, host), apply = okUrl(j.apply, host) || url; if (!url || !j.id || !j.title) return null;
   const sal = j.salary && Number.isFinite(+j.salary.max) && +j.salary.max > 0 ? { min: +j.salary.min || 0, max: +j.salary.max, cur: String(j.salary.cur || 'USD').slice(0, 3).toUpperCase(), per: PER_YEAR[j.salary.per] ? j.salary.per : 'year' } : null;
-  const s = (v, n) => String(v == null ? '' : v).slice(0, n);
-  return { id: s(j.id, 40), src: j.src, title: s(j.title, 140), company: s(j.company, 80), url, apply, loc: s(j.loc, 120), regions: Array.isArray(j.regions) ? j.regions.filter((r) => REGIONS[r] || r === 'other').slice(0, 8) : regionsOf(j.loc), type: s(j.type, 20), level: s(j.level, 30), cat: s(j.cat, 40), tags: (Array.isArray(j.tags) ? j.tags : []).map((t) => s(t, 40)).slice(0, 8), salary: sal, date: iso(j.date), tz: s(j.tz, 40), excerpt: s(j.excerpt, 260), visa: j.visa === true };
+
+  const s = (v, n) => String(v == null ? '' : v).slice(0, n), w = (v) => (j.src === 'himalayas' ? slugWords(s(v, 40)) : s(v, 40));
+  return { id: s(j.id, 40), src: j.src, title: s(j.title, 140), company: s(j.company, 80), url, apply, loc: s(j.loc, 120), regions: Array.isArray(j.regions) ? j.regions.filter((r) => REGIONS[r] || r === 'other').slice(0, 8) : regionsOf(j.loc), type: s(j.type, 20), level: s(j.level, 30), cat: w(j.cat), tags: (Array.isArray(j.tags) ? j.tags : []).map((t) => w(t)).filter((t, i, a) => t && a.indexOf(t) === i).slice(0, 8), salary: plausible(sal), date: iso(j.date), tz: s(j.tz, 40), excerpt: s(j.excerpt, 260), visa: j.visa === true };
 }
 /** several lists of listings as one: the same job (same source and id, or the same title and company) once, newest first. Pure. */
 export function merge(...lists) {
@@ -136,6 +166,8 @@ export function merge(...lists) {
 
 // ---------- search, filters, sort ----------
 export const fold_ = (s) => String(s || '').replace(/ä/gi, 'ae').replace(/ö/gi, 'oe').replace(/ü/gi, 'ue').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ß/g, 'ss').toLowerCase();
+// a tag compared without its hyphens and spaces, so an alert saved as "Sales-Specialist" still finds "Sales Specialist"
+const tagKey = (s) => fold_(s).replace(/[\s-]+/g, ' ').trim();
 export const TYPES = Object.freeze({ 'full-time': 'Full-time', 'part-time': 'Part-time', contract: 'Contract', internship: 'Internship', temporary: 'Temporary', other: 'Other' });
 export const SORTS = Object.freeze({ new: 'Newest', salary: 'Highest salary', company: 'Company A to Z', title: 'Title A to Z' });
 export const EMPTY = Object.freeze({ q: '', loc: '', region: '', tag: '', cat: '', type: '', level: '', company: '', src: '', min: 0, salaryOnly: false, visa: false, days: 0, sort: 'new' });
@@ -148,7 +180,7 @@ export function search(jobs, s = {}, now = Date.now()) {
     if (qw.length) { const h = hay(j), title = fold_(j.title + ' ' + j.company); if (!qw.every((w) => h.includes(w))) return false; if (!qw.some((w) => title.includes(w) || j.tags.some((t) => fold_(t).includes(w)))) return false; }
     if (lw.length && !lw.every((w) => fold_(j.loc + ' ' + j.regions.map((r) => REGIONS[r] || '').join(' ')).includes(w)) && !(j.regions.includes('worldwide'))) return false;
     if (f.region && !openIn(j, f.region)) return false;
-    if (f.tag && !j.tags.some((t) => fold_(t) === fold_(f.tag)) && fold_(j.cat) !== fold_(f.tag)) return false;
+    if (f.tag && !j.tags.some((t) => tagKey(t) === tagKey(f.tag)) && tagKey(j.cat) !== tagKey(f.tag)) return false;
     if (f.cat && fold_(j.cat) !== fold_(f.cat)) return false;
     if (f.type && j.type !== f.type) return false;
     if (f.level && !fold_(j.level).includes(fold_(f.level))) return false;
@@ -174,7 +206,7 @@ export function toQuery(s) { const q = new URLSearchParams(); for (const [k, v] 
 export function fromQuery(qs) {
   const q = new URLSearchParams(qs), s = { ...EMPTY }, txt = (k, n = 60) => String(q.get(k) || '').replace(/[\u0000-\u001f]/g, '').slice(0, n);
   for (const k of ['q', 'loc', 'tag', 'cat', 'level', 'company']) s[k] = txt(k);
-  if (REGIONS[q.get('region')]) s.region = q.get('region'); if (TYPES[q.get('type')]) s.type = q.get('type'); if (SOURCES[q.get('src')]) s.src = q.get('src'); if (SORTS[q.get('sort')]) s.sort = q.get('sort');
+  if (REGIONS[q.get('region')]) s.region = q.get('region'); else if (regionOfCountry(q.get('cc'))) s.region = regionOfCountry(q.get('cc')); /* ?cc= from /local/ or /flights/ */ if (TYPES[q.get('type')]) s.type = q.get('type'); if (SOURCES[q.get('src')]) s.src = q.get('src'); if (SORTS[q.get('sort')]) s.sort = q.get('sort');
   s.min = Math.max(0, Math.min(1e7, Math.round(+q.get('min') || 0))); s.days = [1, 3, 7, 14, 30].includes(+q.get('days')) ? +q.get('days') : 0; s.salaryOnly = q.get('salaryOnly') === '1'; s.visa = q.get('visa') === '1';
   return s;
 }
@@ -224,6 +256,11 @@ export function cleanApp(a) {
   const title = s(a.title, 140).trim(); if (!title) return null; const d = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(String(v || '')) ? String(v) : '');
   let url = ''; try { const u = new URL(String(a.url || '')); if (u.protocol === 'https:' || u.protocol === 'http:') url = u.href.slice(0, 500); } catch (_) { /* no link */ }
   return { id: s(a.id, 40) || hid(title + a.company + Date.now() + Math.random()), title, company: s(a.company, 80), url, src: SOURCES[a.src] ? a.src : '', stage: STAGES[a.stage] ? a.stage : 'saved', applied: d(a.applied), next: d(a.next), notes: s(a.notes, 2000), updated: s(a.updated, 30) };
+}
+// The tracker holds a job when a row has its title, company and link, the same test addApp uses to skip a second copy.
+export function isTracked(apps, j) {
+  const r = cleanApp({ title: j && j.title, company: j && j.company, url: j && j.url }); if (!r) return false;
+  return (Array.isArray(apps) ? apps : []).map(cleanApp).some((x) => x && x.title === r.title && x.company === r.company && x.url === r.url);
 }
 const csvCell = (v) => { let s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
 export const APP_HEAD = ['title', 'company', 'stage', 'applied', 'next_step', 'link', 'source', 'notes', 'updated'];

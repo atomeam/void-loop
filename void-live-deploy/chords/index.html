@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: text, music; out: music">
 <title>Chord and scale finder for piano and guitar · Verse</title>
 <meta name="description" content="A free chord and scale finder: pick a chord to see its notes, piano keys and guitar fingerings and hear it, name a chord from the notes you pick, find every scale that holds them, see the chords of a key with roman numerals, the circle of fifths and chord progressions.">
 <meta property="og:type" content="website">
@@ -13,8 +14,8 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; } }
+  :root { color-scheme: light; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
+  :root:not([data-theme=light]) { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
   :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
@@ -90,6 +91,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/music-ui.js">
 <link rel="modulepreload" href="/lib/music-de.js">
 <!-- /modulepreload -->
@@ -106,6 +109,7 @@
     <h2>On the piano keyboard</h2>
     <div class="kb" id="cKb" style="height:130px" aria-label="Chord on a piano keyboard"><div class="kbi" id="cKbi"></div></div>
     <div class="row c"><button type="button" id="cPlay" class="go">Play the chord</button><button type="button" id="cArp">Play it broken</button></div>
+    <p class="note" style="text-align:center"><a id="toPiano" href="/piano/">Play this chord on the piano</a></p>
     <h2>Guitar fingerings</h2>
     <div class="grid2" id="gtr" aria-live="polite"></div>
   </section>
@@ -131,6 +135,7 @@
     <h2>On the guitar neck</h2>
     <div class="neck" id="neck" aria-label="The scale on a guitar fretboard, 12 frets, root notes filled"></div>
     <div class="row c"><button type="button" id="sPlay" class="go">Play the scale</button></div>
+    <p class="note" style="text-align:center"><a id="toPianoScale" href="/piano/">Play this scale on the piano</a></p>
     <h2>Chords in this key</h2>
     <div class="row"><label class="chk"><input type="checkbox" id="sev"> Seventh chords</label></div>
     <table id="keyChords"><thead><tr><th>Step</th><th>Chord</th><th>Notes</th><th>Often goes to</th></tr></thead><tbody></tbody></table>

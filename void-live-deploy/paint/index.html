@@ -15,6 +15,7 @@
 <link rel="canonical" href="https://a-to-mind.com/paint/">
 <meta name="verse-handoff" content="in: image, color, palette; out: image">
 <link rel="modulepreload" href="/paint/app.js">
+<link rel="modulepreload" href="/lib/image-handoff.js">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <style>
   :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --line:#2a2a35; --accent:#8b7bff; --paper:#fcfbf7; }
@@ -86,6 +87,11 @@
     .keys { display:none; }
   }
   @media (prefers-reduced-motion: reduce) { #bar i, #palette button.nudge, #reveal.play canvas { transition:none; animation:none; } }
+  /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
+  #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
+  #related .tk-label { color:var(--soft); }
+  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 </style>
 <script src="/visit.js" defer></script>
 </head>
@@ -145,8 +151,9 @@
 
   <footer>
     <p>Areas are numbered in the colour order of the palette; tap one with the matching colour chosen and it fills, and when a colour's numbered areas are done its tiny specks fill themselves. Hints are free and unlimited. No account, no ads, and it works offline once the painting has loaded. The paintings are public domain and the original pictures are free to use (CC0), cut into areas by <a href="https://a-to-mind.com/">Verse</a>.</p>
-    <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/g/">Gist</a> · <a href="/flip/">Coin flip</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=paint">See it on the stage</a> · <a href="/">Back to Verse</a></p>
+    <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/g/">Gist</a> · <a href="/flip/">Coin flip</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=paint%20by%20numbers">See it on the stage</a> · <a href="/">Back to Verse</a></p>
   </footer>
+  <nav id="related" class="tk-row" aria-label="Related tools"><span class="tk-label">Use with</span> <a href="/color/">Colour codes</a> <a href="/gradient/">Gradient</a> <a href="/learn-to-draw/">Learn to draw</a> <a href="/image/">AI image generator</a> <a href="/tools/">All tools</a></nav>
 </main>
 <script type="module" src="/paint/app.js"></script>
 </body>

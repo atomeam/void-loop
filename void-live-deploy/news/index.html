@@ -14,8 +14,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/news/ (Versus' BBC News floor): one file and two small modules; stored on the device: followed topics and sources, the read-later list, the last headlines */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --fs: 16px; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --fs: 16px; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: var(--fs)/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -32,6 +32,7 @@
   #secs button { flex: 0 0 auto; }
   #status { font-size: 13px; color: var(--soft); min-height: 20px; margin: 6px 0; }
   #list { list-style: none; margin: 0; padding: 0; min-height: 704px; }
+  #week h2 { font-size: 15px; margin: 8px 0; } #week ul { margin: 0 0 12px; padding-left: 20px; } #week li { margin: 6px 0; } #week span { color: var(--soft); }
   .story { display: grid; grid-template-columns: 1fr auto; gap: 0 6px; border-top: 1px solid var(--line); padding: 8px 0; min-height: 87px; box-sizing: border-box; align-content: start; }
   .story .main { min-width: 0; }
   .story .t { color: var(--ink); font-weight: 600; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; overflow-wrap: anywhere; }
@@ -94,22 +95,23 @@
   <p class="sub" id="artCredit" style="margin:2px 0 0;min-height:20px"></p>
   <p id="status" role="status" aria-live="polite">Loading the headlines…</p>
   <ol id="list" aria-label="Headlines"><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li><li class="sk"><i></i><i></i><i></i></li></ol>
+  <div id="week" hidden></div>
   <div id="reportBox" hidden></div>
   <div class="row"><button type="button" id="follow">Follow topics</button><button type="button" id="copyLink">Copy link to this view</button></div>
 
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/news/?sec=world">World</a><a href="/news/?sec=tech">Technology</a><a href="/news/?sec=science">Science</a><a href="/news/?sec=business">Business</a><a href="/news/?sec=sport">Sport</a><a href="/news/?lang=es">Noticias en español</a></nav>
 <!-- /asks -->
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/weather/">Weather</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/translate/">Translate</a> <a href="/notes/">Notes</a> <a href="/weather/">Weather</a> <a href="/local/">Local TV and radio</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
-  <p class="srcs" id="srcs">Sources: BBC News, The Guardian, NPR, Al Jazeera, DW, France 24, CBC, ABC Australia, Sky News, Euronews and more, each through its public feed. Only headlines, links and the short summaries the feeds carry are shown; open the story at the source to read it.</p>
+  <p class="srcs" id="srcs">Sources: BBC News, The Guardian, NPR, Al Jazeera, DW, France 24, CBS News, ABC Australia, Sky News, Euronews and more, each through its public feed. Only headlines, links and the short summaries the feeds carry are shown; open the story at the source to read it.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 
 <script type="module">
   // everything after the first paint: the page shows its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, L] = await Promise.all([import('/lib/toolkit.js'), import('/lib/news.js')]);
+    const [{ mountRelated }, L, { cardAsk }, W] = await Promise.all([import('/lib/toolkit.js'), import('/lib/news.js'), import('/lib/news-card.js'), import('/lib/news-week.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.news.v1';
     const el = (tag, cls, text) => { const x = document.createElement(tag); if (cls) x.className = cls; if (text != null) x.textContent = text; return x; };
     // the device's memory: followed topics and sources, the saved stories, the text size, the language, and the last headlines per section
@@ -169,6 +171,18 @@
       sel.value = st.sources.some((s) => s.src === want) ? want : ''; st.src = sel.value;
       $('followSrc').hidden = !st.src; if (st.src) $('followSrc').textContent = mem.sources.includes(st.src) ? 'Following ' + (L.SOURCES[st.src] || [st.src])[0] : 'Follow ' + (L.SOURCES[st.src] || [st.src])[0];
     }
+    // a search the headlines miss: the past week's Hacker News stories about it, the same ones the stage's "news about" card shows (lib/news-week.js)
+    let weekQ = '', weekHits = [];
+    function drawWeek(q) {
+      const box = $('week'); box.textContent = ''; box.hidden = !q || q !== weekQ || !weekHits.length; if (box.hidden) return;
+      const ul = el('ul'); box.append(el('h2', null, 'Stories from the past week about “' + q + '” (Hacker News)'), ul);
+      for (const h of weekHits) { const li = el('li'), a = el('a', null, h.title); a.href = h.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; li.append(a, el('span', null, ' · ' + h.points + ' points')); ul.append(li); }
+      status('No headline matches “' + q + '”. Below: stories from the past week on Hacker News.');
+    }
+    function week(q) {
+      if (q && q !== weekQ) { weekQ = q; weekHits = []; fetch(W.weekUrl(q)).then((r) => r.json()).then((j) => { if (weekQ !== q) return; weekHits = W.weekItems(j, q); drawWeek(st.q === q ? q : ''); }).catch(() => {}); }
+      drawWeek(q);
+    }
     function draw() {
       const now = Date.now(); let list = st.sec === 'saved' ? mem.saved : st.sec === 'my' ? L.followed(known(), mem.topics, mem.sources) : st.list;
       if (st.src) list = list.filter((s) => s.src === st.src || (s.also || []).some((a) => a.src === st.src));
@@ -179,6 +193,7 @@
       if (!list.length) status(st.sec === 'saved' ? 'Nothing saved yet. Tap the star on a story to keep it for later.' : st.sec === 'my' ? (mem.topics.length || mem.sources.length ? 'No story matches what you follow right now.' : 'Follow a topic or a source and the stories that match appear here.') : st.q ? 'No headline matches “' + st.q + '”.' : st.at ? 'No stories.' : 'Loading the headlines…');
       else if (st.sec === 'saved') status(list.length + ' saved, on this device.');
       else status((st.offline ? 'Offline: the headlines kept ' + L.ageText(st.at, now) + '. ' : '') + list.length + ' ' + (list.length === 1 ? 'story' : 'stories') + (st.at && !st.offline ? ', updated ' + L.ageText(st.at, now) : '') + '.');
+      week(!list.length && st.q && st.at && st.sec !== 'saved' && st.sec !== 'my' ? st.q : '');
       const ok = st.sources.filter((s) => s.ok);
       $('srcs').textContent = ''; if (st.sources.length) { $('srcs').append(document.createTextNode('Sources (' + ok.length + ' of ' + st.sources.length + ' answered): ')); st.sources.forEach((s, i) => { const a = el('a', null, s.name + (s.ok ? ' ' + s.count : ' (no answer)')); a.href = (L.SOURCES[s.src] || [])[1] || '#'; a.target = '_blank'; a.rel = 'noopener noreferrer'; $('srcs').append(a, document.createTextNode(i < st.sources.length - 1 ? ', ' : '. ')); }); $('srcs').append(document.createTextNode('Headlines, links and short summaries as the feeds publish them; read the story at the source.')); }
       const u = L.shareLink(st, location.origin); try { history.replaceState(null, '', u.replace(location.origin, '')); } catch (_) { /* a sandboxed frame */ }
@@ -253,7 +268,7 @@
     let tm; $('q').oninput = () => { clearTimeout(tm); tm = setTimeout(() => { st.q = $('q').value.trim(); draw(); }, 120); };
     $('copyLink').onclick = async () => { const u = L.shareLink(st, location.origin); try { await navigator.clipboard.writeText(u); status('Copied the link to this view.'); } catch (_) { status(u); } };
     if (st.lang !== 'en') { for (const b of $('secs').children) b.hidden = !['top', 'my', 'saved'].includes(b.dataset.sec); document.documentElement.lang = st.lang; }
-    chips(); mountRelated($('related'), '/news/', []);
+    chips(); mountRelated($('related'), '/news/', [], { card: () => cardAsk(st.sec, $('q').value) });
     await pick(st.sec);
     addEventListener('online', () => pick(st.sec));
     setInterval(() => { if (!document.hidden && st.sec !== 'saved') pick(st.sec); }, 10 * 60e3); // the edge keeps it seven minutes, so this costs the publishers nothing extra

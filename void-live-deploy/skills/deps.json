@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 996,
+ "counted": 1071,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -10,25 +10,25 @@
    "tests": 6
   },
   {
-   "file": "lib/state.js",
-   "skills": 32,
-   "direct": 4,
-   "dependants": 67,
-   "tests": 4
+   "file": "lib/ask-text.js",
+   "skills": 33,
+   "direct": 23,
+   "dependants": 37,
+   "tests": 2
   },
   {
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 66,
+   "dependants": 71,
    "tests": 8
   },
   {
-   "file": "lib/ask-text.js",
+   "file": "lib/state.js",
    "skills": 32,
-   "direct": 23,
-   "dependants": 34,
-   "tests": 2
+   "direct": 4,
+   "dependants": 70,
+   "tests": 4
   },
   {
    "file": "lib/placement.js",
@@ -46,23 +46,23 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 21,
+   "skills": 23,
    "direct": 0,
-   "dependants": 70,
+   "dependants": 83,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 21,
+   "skills": 23,
    "direct": 1,
-   "dependants": 70,
+   "dependants": 83,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 21,
+   "skills": 23,
    "direct": 0,
-   "dependants": 69,
+   "dependants": 82,
    "tests": 5
   },
   {
@@ -77,20 +77,20 @@
    "skills": 21,
    "direct": 2,
    "dependants": 22,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 49,
+   "dependants": 52,
    "tests": 2
   },
   {
    "file": "lib/mind-field-modes.js",
    "skills": 20,
    "direct": 2,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 2
   },
   {
@@ -116,73 +116,80 @@
   },
   {
    "file": "lib/reactions.js",
-   "skills": 15,
+   "skills": 16,
    "direct": 1,
-   "dependants": 56,
+   "dependants": 64,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 53,
+   "dependants": 56,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 52,
+   "dependants": 55,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 54,
    "tests": 4
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 15,
+   "direct": 0,
+   "dependants": 53,
+   "tests": 3
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 49,
+   "dependants": 52,
    "tests": 4
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 14,
-   "direct": 0,
-   "dependants": 47,
-   "tests": 3
+   "file": "lib/autopsy.js",
+   "skills": 15,
+   "direct": 5,
+   "dependants": 49,
+   "tests": 6
   },
   {
-   "file": "lib/autopsy.js",
-   "skills": 14,
-   "direct": 5,
-   "dependants": 43,
-   "tests": 6
+   "file": "lib/qr.js",
+   "skills": 13,
+   "direct": 3,
+   "dependants": 25,
+   "tests": 3
   },
   {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 19,
+   "dependants": 21,
+   "tests": 1
+  },
+  {
+   "file": "lib/self-sites.js",
+   "skills": 12,
+   "direct": 0,
+   "dependants": 20,
    "tests": 1
   },
   {
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 39,
+   "dependants": 42,
    "tests": 3
-  },
-  {
-   "file": "lib/self-sites.js",
-   "skills": 10,
-   "direct": 0,
-   "dependants": 18,
-   "tests": 1
   },
   {
    "file": "lib/astro.js",
@@ -199,60 +206,74 @@
    "tests": 1
   },
   {
+   "file": "lib/joins.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 42,
+   "tests": 1
+  },
+  {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 42,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 41,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 40,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/card-mini.js",
    "skills": 9,
    "direct": 5,
-   "dependants": 15,
+   "dependants": 17,
    "tests": 0
+  },
+  {
+   "file": "lib/flight-sites.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 14,
+   "tests": 1
   },
   {
    "file": "lib/game-kit.js",
@@ -262,10 +283,10 @@
    "tests": 1
   },
   {
-   "file": "lib/qr.js",
+   "file": "lib/job-sites.js",
    "skills": 9,
-   "direct": 2,
-   "dependants": 13,
+   "direct": 1,
+   "dependants": 14,
    "tests": 2
   },
   {
@@ -304,11 +325,11 @@
    "tests": 1
   },
   {
-   "file": "lib/flight-sites.js",
+   "file": "lib/tool-sites.js",
    "skills": 8,
-   "direct": 1,
-   "dependants": 13,
-   "tests": 1
+   "direct": 2,
+   "dependants": 12,
+   "tests": 4
   },
   {
    "file": "lib/bridges.js",
@@ -339,25 +360,18 @@
    "tests": 1
   },
   {
+   "file": "lib/movies.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
    "file": "lib/art-source.js",
    "skills": 7,
    "direct": 0,
    "dependants": 12,
    "tests": 1
-  },
-  {
-   "file": "lib/job-sites.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 12,
-   "tests": 1
-  },
-  {
-   "file": "lib/tool-sites.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 11,
-   "tests": 4
   },
   {
    "file": "lib/card-image.js",
@@ -426,6 +440,13 @@
    "file": "lib/colour.js",
    "skills": 5,
    "direct": 1,
+   "dependants": 15,
+   "tests": 1
+  },
+  {
+   "file": "lib/pwcheck.js",
+   "skills": 5,
+   "direct": 2,
    "dependants": 13,
    "tests": 1
   },
@@ -434,14 +455,14 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 2
+   "tests": 4
   },
   {
-   "file": "lib/pwcheck.js",
+   "file": "lib/success-pulse.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 11,
-   "tests": 1
+   "dependants": 8,
+   "tests": 2
   },
   {
    "file": "lib/card-forge.js",
@@ -458,6 +479,13 @@
    "tests": 1
   },
   {
+   "file": "lib/media.js",
+   "skills": 5,
+   "direct": 3,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
    "file": "lib/prints.js",
    "skills": 5,
    "direct": 3,
@@ -469,7 +497,7 @@
    "skills": 5,
    "direct": 4,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-doodle.js",
@@ -517,42 +545,63 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 75,
+   "dependants": 83,
    "tests": 1
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 29,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
-   "tests": 2
+   "dependants": 29,
+   "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 29,
    "tests": 1
-  },
-  {
-   "file": "lib/movies.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 10,
-   "tests": 0
   },
   {
    "file": "lib/field-resonance.js",
    "skills": 4,
    "direct": 1,
+   "dependants": 11,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-controls.js",
+   "skills": 4,
+   "direct": 0,
    "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/gate-badge.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-journeys.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 2
+  },
+  {
+   "file": "lib/tower-weight.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -584,6 +633,13 @@
    "tests": 1
   },
   {
+   "file": "lib/tower.js",
+   "skills": 4,
+   "direct": 3,
+   "dependants": 6,
+   "tests": 29
+  },
+  {
    "file": "lib/void-seal.js",
    "skills": 4,
    "direct": 0,
@@ -595,14 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 9
-  },
-  {
-   "file": "lib/success-pulse.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 5,
-   "tests": 2
+   "tests": 19
   },
   {
    "file": "lib/field-cards.js",
@@ -650,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 73,
+   "dependants": 81,
    "tests": 9
   },
   {
@@ -675,13 +724,6 @@
    "tests": 3
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
@@ -689,32 +731,39 @@
    "tests": 1
   },
   {
-   "file": "lib/gate-badge.js",
+   "file": "lib/fincalc.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
    "tests": 1
   },
   {
-   "file": "lib/tower-journeys.js",
+   "file": "lib/local-ask.js",
    "skills": 3,
    "direct": 0,
    "dependants": 6,
-   "tests": 2
+   "tests": 0
   },
   {
-   "file": "lib/tower-weight.js",
+   "file": "lib/selfcheck.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
    "tests": 1
   },
   {
-   "file": "lib/tower.js",
+   "file": "lib/book-news.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-bridge.js",
    "skills": 3,
    "direct": 2,
    "dependants": 5,
-   "tests": 28
+   "tests": 2
   },
   {
    "file": "lib/arena-say.js",
@@ -724,11 +773,18 @@
    "tests": 1
   },
   {
-   "file": "lib/book-news.js",
+   "file": "lib/brain-ask.js",
    "skills": 3,
    "direct": 1,
    "dependants": 4,
-   "tests": 2
+   "tests": 1
+  },
+  {
+   "file": "lib/converter-ask.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/field-vector.js",
@@ -763,7 +819,14 @@
    "skills": 3,
    "direct": 1,
    "dependants": 4,
-   "tests": 2
+   "tests": 3
+  },
+  {
+   "file": "lib/wheel.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 3
   },
   {
    "file": "lib/chat-calendar.js",
@@ -843,59 +906,66 @@
    "tests": 1
   },
   {
+   "file": "lib/compose.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 33,
+   "tests": 2
+  },
+  {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 29,
    "tests": 1
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 28,
    "tests": 1
   },
   {
-   "file": "lib/compose.js",
+   "file": "lib/markets.js",
    "skills": 2,
-   "direct": 1,
-   "dependants": 25,
-   "tests": 2
+   "direct": 2,
+   "dependants": 28,
+   "tests": 5
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 28,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 24,
+   "dependants": 27,
    "tests": 6
   },
   {
    "file": "lib/gumroad.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 22,
+   "dependants": 21,
    "tests": 4
   },
   {
    "file": "lib/store-db.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 19,
-   "tests": 2
+   "dependants": 18,
+   "tests": 3
   },
   {
    "file": "lib/products.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 15,
+   "dependants": 14,
    "tests": 3
   },
   {
@@ -906,32 +976,53 @@
    "tests": 2
   },
   {
+   "file": "lib/rap-kit.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
+   "file": "lib/rap-piano.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
+   "file": "lib/recipes.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
+   "file": "lib/emoji.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter-ask.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/field-fluid-orbs.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
    "tests": 2
   },
   {
    "file": "lib/generators.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3,
+   "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/field-fluid-orbs.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 3
   },
   {
    "file": "lib/list-goal.js",
@@ -941,11 +1032,25 @@
    "tests": 2
   },
   {
-   "file": "lib/media.js",
+   "file": "lib/photo-ask.js",
    "skills": 2,
    "direct": 2,
    "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/prizes.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 3,
    "tests": 2
+  },
+  {
+   "file": "lib/rentbuy.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/video.js",
@@ -990,6 +1095,13 @@
    "tests": 1
   },
   {
+   "file": "lib/handoff.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/list-ops.js",
    "skills": 2,
    "direct": 2,
@@ -1015,14 +1127,14 @@
    "skills": 2,
    "direct": 1,
    "dependants": 2,
-   "tests": 2
+   "tests": 3
   },
   {
-   "file": "lib/photo-ask.js",
+   "file": "lib/orb-memories.js",
    "skills": 2,
-   "direct": 2,
+   "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/template-list.js",
@@ -1030,6 +1142,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/toolkit.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2,
+   "tests": 18
   },
   {
    "file": "lib/translate-card.js",
@@ -1046,11 +1165,53 @@
    "tests": 1
   },
   {
+   "file": "lib/story.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 30,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 29,
+   "tests": 5
+  },
+  {
+   "file": "lib/calc-units.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 28,
+   "tests": 2
+  },
+  {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 28,
    "tests": 2
+  },
+  {
+   "file": "lib/proposal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 26,
+   "tests": 2
+  },
+  {
+   "file": "lib/repo-look.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 25,
+   "tests": 1
+  },
+  {
+   "file": "lib/plan.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 1
   },
   {
    "file": "lib/actions.js",
@@ -1060,46 +1221,11 @@
    "tests": 2
   },
   {
-   "file": "lib/proposal.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 2
-  },
-  {
-   "file": "lib/story.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 23,
-   "tests": 1
-  },
-  {
-   "file": "lib/rap.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/repo-look.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
-   "file": "lib/plan.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 21,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 15,
-   "tests": 1
+   "dependants": 20,
+   "tests": 2
   },
   {
    "file": "lib/automations.js",
@@ -1107,6 +1233,125 @@
    "direct": 0,
    "dependants": 10,
    "tests": 4
+  },
+  {
+   "file": "lib/image-gen.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-creature.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-current.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-formula.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-gardener.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-grains.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-grower.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-hearing.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-mind.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-organs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 2
+  },
+  {
+   "file": "lib/brain-painter.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-pool.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-route.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 3
+  },
+  {
+   "file": "lib/brain-synapses.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-trace.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-watch.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 2
+  },
+  {
+   "file": "lib/writing-aids.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7,
+   "tests": 2
   },
   {
    "file": "lib/boards.js",
@@ -1123,93 +1368,65 @@
    "tests": 0
   },
   {
-   "file": "lib/brain-creature.js",
+   "file": "lib/pdf-tools.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap-beat.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
+   "file": "lib/rap-fft.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 0
+  },
+  {
+   "file": "lib/translate-docs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
+   "file": "lib/avi.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
    "tests": 1
   },
   {
-   "file": "lib/brain-current.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-formula.js",
+   "file": "lib/rap-ears.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
+   "tests": 3
   },
   {
-   "file": "lib/brain-gardener.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-grains.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-grower.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-hearing.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-mind.js",
+   "file": "lib/rap-voice.js",
    "skills": 1,
    "direct": 0,
    "dependants": 5,
    "tests": 2
   },
   {
-   "file": "lib/brain-organs.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-painter.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain-synapses.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 1
-  },
-  {
    "file": "lib/scores.js",
    "skills": 1,
    "direct": 1,
    "dependants": 5,
-   "tests": 4
+   "tests": 5
   },
   {
-   "file": "lib/writing-aids.js",
+   "file": "lib/video-mux.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 5,
    "tests": 2
   },
@@ -1221,11 +1438,25 @@
    "tests": 1
   },
   {
-   "file": "lib/calc-units.js",
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 21
+  },
+  {
+   "file": "lib/converter.js",
    "skills": 1,
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/flv.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/keep-going.js",
@@ -1235,16 +1466,51 @@
    "tests": 2
   },
   {
-   "file": "lib/recipes.js",
+   "file": "lib/rap-song.js",
    "skills": 1,
    "direct": 0,
    "dependants": 4,
    "tests": 2
   },
   {
-   "file": "lib/emoji.js",
+   "file": "lib/stabilize.js",
    "skills": 1,
    "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/transition.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-everywhere.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-glow.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-host.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 5
+  },
+  {
+   "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
    "dependants": 3,
    "tests": 1
   },
@@ -1254,13 +1520,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 2
-  },
-  {
-   "file": "lib/fincalc.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
   },
   {
    "file": "lib/formulas-1.js",
@@ -1291,6 +1550,13 @@
    "tests": 3
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1305,25 +1571,25 @@
    "tests": 1
   },
   {
-   "file": "lib/brain-bridge.js",
+   "file": "lib/tally.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
+   "file": "lib/video-write.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 0
+  },
+  {
+   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/brain-store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/brain.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 13
   },
   {
    "file": "lib/fakeuser.js",
@@ -1354,6 +1620,27 @@
    "tests": 1
   },
   {
+   "file": "lib/imgfit.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
+   "file": "lib/local-media.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
+   "file": "lib/news-week.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/note-extras.js",
    "skills": 1,
    "direct": 0,
@@ -1361,9 +1648,9 @@
    "tests": 1
   },
   {
-   "file": "lib/tally.js",
+   "file": "lib/rap-video.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 2,
    "tests": 1
   },
@@ -1375,11 +1662,11 @@
    "tests": 1
   },
   {
-   "file": "lib/wheel.js",
+   "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
+   "tests": 1
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1438,13 +1725,6 @@
    "tests": 2
   },
   {
-   "file": "lib/brain-host.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
@@ -1456,7 +1736,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 7
+   "tests": 9
   },
   {
    "file": "lib/chat-generators.js",
@@ -1481,13 +1761,6 @@
   },
   {
    "file": "lib/chess-replay.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1564,6 +1837,13 @@
    "tests": 1
   },
   {
+   "file": "lib/emoji-combos.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/event-date.js",
    "skills": 1,
    "direct": 1,
@@ -1610,7 +1890,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/gradient.js",
@@ -1628,13 +1908,6 @@
   },
   {
    "file": "lib/heat-dose.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1799,7 +2072,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/tasks.js",
@@ -1858,13 +2131,6 @@
    "tests": 1
   },
   {
-   "file": "lib/toolkit.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 15
-  },
-  {
    "file": "lib/tower-rank.js",
    "skills": 1,
    "direct": 1,
@@ -1886,256 +2152,270 @@
    "tests": 1
   },
   {
+   "file": "lib/owner-accounts.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 85,
+   "tests": 0
+  },
+  {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
-   "tests": 28
+   "dependants": 84,
+   "tests": 30
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 51,
-   "tests": 10
+   "dependants": 57,
+   "tests": 12
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40,
-   "tests": 0
+   "dependants": 45,
+   "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 45,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
-   "tests": 7
+   "dependants": 44,
+   "tests": 8
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 38,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 37,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 33,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 32,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 31,
    "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 29,
    "tests": 3
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 28,
    "tests": 7
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
-   "tests": 5
-  },
-  {
-   "file": "lib/markets.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 22,
-   "tests": 3
+   "dependants": 26,
+   "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 25,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 25,
    "tests": 0
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 1
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 24,
    "tests": 7
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
-   "tests": 1
+   "dependants": 23,
+   "tests": 2
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 2
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
+   "tests": 1
+  },
+  {
+   "file": "lib/measure-ask.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 8,
+   "dependants": 7,
    "tests": 0
+  },
+  {
+   "file": "lib/studio.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/automations-run.js",
@@ -2145,11 +2425,32 @@
    "tests": 4
   },
   {
-   "file": "lib/image-gen.js",
+   "file": "lib/drive.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 2
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/seo-audit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/wiki-look.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/film-reviews.js",
@@ -2159,21 +2460,28 @@
    "tests": 0
   },
   {
-   "file": "lib/wiki-look.js",
+   "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
    "dependants": 4,
-   "tests": 1
+   "tests": 2
   },
   {
-   "file": "lib/comments.js",
+   "file": "lib/mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 3
+  },
+  {
+   "file": "lib/brain-dream.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
    "tests": 1
   },
   {
-   "file": "lib/drive.js",
+   "file": "lib/comments.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2187,13 +2495,6 @@
    "tests": 3
   },
   {
-   "file": "lib/mcp-skills.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -2201,11 +2502,11 @@
    "tests": 1
   },
   {
-   "file": "lib/seo-audit.js",
+   "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
-   "tests": 1
+   "tests": 3
   },
   {
    "file": "lib/translate-langs.js",
@@ -2219,7 +2520,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/calshare.js",
@@ -2250,21 +2551,14 @@
    "tests": 1
   },
   {
-   "file": "lib/mcp.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 3
-  },
-  {
-   "file": "lib/music-tools.js",
+   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
    "tests": 1
   },
   {
-   "file": "lib/pdf-tools.js",
+   "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -2282,10 +2576,17 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/aurora-feed.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/autopilot.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2355,6 +2656,13 @@
    "tests": 1
   },
   {
+   "file": "lib/image-handoff.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/job-draft.js",
    "skills": 0,
    "direct": 0,
@@ -2383,13 +2691,6 @@
    "tests": 1
   },
   {
-   "file": "lib/members.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/misskey.js",
    "skills": 0,
    "direct": 0,
@@ -2402,20 +2703,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/podcasts.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/prizes.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/probe-asks.js",
@@ -2467,18 +2754,11 @@
    "tests": 2
   },
   {
-   "file": "lib/team.js",
+   "file": "lib/team-mcp.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/translate-docs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/translate-web.js",
@@ -2520,7 +2800,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 2
+   "tests": 4
   },
   {
    "file": "lib/ai-generators.js",
@@ -2551,6 +2831,13 @@
    "tests": 1
   },
   {
+   "file": "lib/audio-write.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/base64.js",
    "skills": 0,
    "direct": 0,
@@ -2559,6 +2846,13 @@
   },
   {
    "file": "lib/beacon.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-map.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2600,13 +2894,6 @@
    "tests": 1
   },
   {
-   "file": "lib/converter.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/correction-fix.js",
    "skills": 0,
    "direct": 0,
@@ -2621,6 +2908,13 @@
    "tests": 2
   },
   {
+   "file": "lib/denoise.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/drawing-drills.js",
    "skills": 0,
    "direct": 0,
@@ -2629,6 +2923,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/epub-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2670,7 +2971,21 @@
    "tests": 0
   },
   {
+   "file": "lib/flip-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2684,18 +2999,18 @@
    "tests": 1
   },
   {
-   "file": "lib/handoff.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/jobs-ui.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
    "tests": 0
+  },
+  {
+   "file": "lib/join-watch.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/kanban-ui.js",
@@ -2726,6 +3041,13 @@
    "tests": 1
   },
   {
+   "file": "lib/markets-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/matchgfx.js",
    "skills": 0,
    "direct": 0,
@@ -2734,6 +3056,20 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp3-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp4-repair.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2754,11 +3090,25 @@
    "tests": 0
   },
   {
+   "file": "lib/news-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/obituary.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
    "tests": 1
+  },
+  {
+   "file": "lib/owner-link.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/page-picture.js",
@@ -2810,6 +3160,13 @@
    "tests": 2
   },
   {
+   "file": "lib/podcasts-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/progress-chart.js",
    "skills": 0,
    "direct": 0,
@@ -2831,7 +3188,21 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-listen.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/rating-note.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/recipe-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2846,6 +3217,13 @@
   },
   {
    "file": "lib/reinvest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/resize-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2870,7 +3248,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 10
+   "tests": 12
   },
   {
    "file": "lib/speak.js",
@@ -2932,7 +3310,9 @@
  "files": {
   "functions/[handle].js": {
    "imports": [
-    "lib/pages.js"
+    "lib/pages.js",
+    "lib/void-me.js",
+    "lib/members.js"
    ],
    "importedBy": []
   },
@@ -2970,6 +3350,7 @@
     "lib/self-context.js",
     "lib/own-card.js",
     "lib/answer-honesty.js",
+    "lib/measure-ask.js",
     "lib/draft.js",
     "lib/memory-scope.js",
     "lib/memory-core.js",
@@ -2992,11 +3373,13 @@
    "importedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3009,6 +3392,7 @@
    ],
    "reachedBy": [
     "functions/api/answer.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js"
@@ -3058,6 +3442,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/autopilot.js": {
+   "imports": [
+    "lib/autopilot.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/bench.js": {
    "imports": [
     "lib/guard.js",
@@ -3104,6 +3494,7 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/gallery.js"
    ]
   },
@@ -3112,6 +3503,20 @@
     "lib/guard.js",
     "lib/gumroad.js",
     "lib/store-db.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/clip.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js",
+    "lib/automation-fix.js",
+    "lib/keeper.js",
+    "lib/image-gen.js",
+    "lib/studio.js",
+    "lib/video-gen.js",
+    "functions/api/studio.js",
+    "functions/api/image.js"
    ],
    "importedBy": []
   },
@@ -3269,6 +3674,10 @@
    ],
    "importedBy": []
   },
+  "functions/api/holidays.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "functions/api/hook/[id].js": {
    "imports": [
     "lib/automations-run.js"
@@ -3293,10 +3702,12 @@
     "lib/models.js",
     "lib/art-rules.js",
     "functions/api/card-art.js",
+    "functions/api/studio.js",
     "lib/image-gen.js"
    ],
    "importedBy": [
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js"
    ],
@@ -3307,6 +3718,19 @@
   "functions/api/jobs.js": {
    "imports": [
     "lib/jobs-core.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/joins.js": {
+   "imports": [
+    "lib/joins.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/local.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/local-media.js"
    ],
    "importedBy": []
   },
@@ -3322,14 +3746,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3479,6 +3906,16 @@
    ],
    "importedBy": []
   },
+  "functions/api/rapvoice.js": {
+   "imports": [
+    "lib/models.js",
+    "lib/rap.js",
+    "lib/daily-cap.js",
+    "lib/shortfall.js",
+    "functions/api/answer.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/react.js": {
    "imports": [
     "lib/guard.js",
@@ -3589,6 +4026,13 @@
     "functions/api/report.js"
    ]
   },
+  "functions/api/selfcheck.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/selfcheck.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/share/[room].js": {
    "imports": [
     "lib/share.js"
@@ -3627,6 +4071,25 @@
    ],
    "importedBy": []
   },
+  "functions/api/studio.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js",
+    "lib/automation-fix.js",
+    "lib/models.js",
+    "lib/studio.js",
+    "lib/image-gen.js"
+   ],
+   "importedBy": [
+    "functions/api/clip.js",
+    "functions/api/image.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js"
+   ]
+  },
   "functions/api/support.js": {
    "imports": [
     "lib/void-me.js",
@@ -3637,8 +4100,7 @@
    ],
    "importedBy": [
     "functions/api/film-review.js",
-    "functions/api/films.js",
-    "functions/api/team.js"
+    "functions/api/films.js"
    ],
    "reachedBy": [
     "functions/api/film-views.js",
@@ -3656,11 +4118,15 @@
    "imports": [
     "lib/guard.js",
     "lib/void-me.js",
-    "functions/api/support.js",
     "lib/automation-fix.js",
-    "lib/team.js"
+    "lib/team.js",
+    "lib/job-guide.js",
+    "lib/brain-dream.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
+   ]
   },
   "functions/api/tower-self.js": {
    "imports": [
@@ -3791,6 +4257,27 @@
    ],
    "importedBy": []
   },
+  "functions/team/_middleware.js": {
+   "imports": [
+    "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/team/join/[code].js": {
+   "imports": [
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "importedBy": []
+  },
+  "functions/team/mcp.js": {
+   "imports": [
+    "lib/team-mcp.js",
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "importedBy": []
+  },
   "functions/tools.json.js": {
    "imports": [
     "lib/mcp.js"
@@ -3869,14 +4356,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3906,14 +4396,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3935,14 +4428,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -4018,7 +4514,9 @@
   },
   "lib/arrange.js": {
    "imports": [
-    "lib/compose.js"
+    "lib/compose.js",
+    "lib/rap-piano.js",
+    "lib/rap-kit.js"
    ],
    "importedBy": [
     "skills/music.js"
@@ -4061,14 +4559,17 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4076,21 +4577,29 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
+    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
     "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/comments-ui.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
+    "lib/video-gen.js",
     "lib/voice.js",
     "skills/about-skill.js",
     "skills/cartoon.js",
@@ -4113,6 +4622,8 @@
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
+    "skills/verse-brain.js",
+    "skills/video-gen.js",
     "skills/walker.js"
    ]
   },
@@ -4164,6 +4675,8 @@
     "skills/zoom-figure.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "skills/codex.js",
     "skills/constellation-weaver.js",
     "skills/dates.js",
@@ -4173,6 +4686,7 @@
     "skills/own-parts.js",
     "skills/pulse.js",
     "skills/time-capsule.js",
+    "skills/verse-brain.js",
     "skills/whisper-network.js"
    ]
   },
@@ -4197,6 +4711,12 @@
     "skills/time.js"
    ]
   },
+  "lib/audio-write.js": {
+   "imports": [
+    "lib/video-mux.js"
+   ],
+   "importedBy": []
+  },
   "lib/aurora-feed.js": {
    "imports": [
     "skills/aurora.js"
@@ -4212,6 +4732,7 @@
    "importedBy": [
     "functions/api/answer.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/figurescript.js",
@@ -4223,6 +4744,7 @@
     "functions/api/merge.js",
     "functions/api/miss.js",
     "functions/api/rehearsal.js",
+    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/will.js",
@@ -4241,6 +4763,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -4248,6 +4771,7 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -4257,6 +4781,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4271,6 +4796,8 @@
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/built-detail.js",
     "lib/clef.js",
@@ -4282,6 +4809,7 @@
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
+    "lib/team-mcp.js",
     "skills/repo.js",
     "skills/routine.js",
     "skills/work.js"
@@ -4321,6 +4849,12 @@
     "skills/approve-card.js"
    ]
   },
+  "lib/autopilot.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/autopilot.js"
+   ]
+  },
   "lib/autopsy.js": {
    "imports": [
     "lib/corrections.js",
@@ -4339,14 +4873,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4360,6 +4897,8 @@
     "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/self-context.js",
     "lib/voice.js",
@@ -4372,6 +4911,7 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js",
+    "skills/verse-brain.js",
     "skills/walker.js"
    ]
   },
@@ -4379,6 +4919,18 @@
    "imports": [],
    "importedBy": [
     "skills/tower.js"
+   ]
+  },
+  "lib/avi.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/mp4-repair.js",
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/backdrop.js": {
@@ -4430,14 +4982,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4489,6 +5044,7 @@
   "lib/book-news.js": {
    "imports": [],
    "importedBy": [
+    "lib/tome.js",
     "skills/guide.js"
    ],
    "reachedBy": [
@@ -4497,11 +5053,27 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/brain-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/toolkit.js",
+    "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "skills/open-tool.js",
+    "skills/toolkit.js"
+   ]
+  },
   "lib/brain-bridge.js": {
    "imports": [],
    "importedBy": [
+    "lib/brain-everywhere.js",
     "lib/brain-host.js",
+    "skills/agent-fluid-memory-orbs.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
    ]
   },
   "lib/brain-creature.js": {
@@ -4515,7 +5087,10 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4531,7 +5106,33 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js"
+   ]
+  },
+  "lib/brain-dream.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/team.js"
+   ],
+   "reachedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
+   ]
+  },
+  "lib/brain-everywhere.js": {
+   "imports": [
+    "lib/brain-bridge.js",
     "lib/brain-host.js"
+   ],
+   "importedBy": [
+    "lib/brain-host.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/brain-field.js": {
@@ -4554,7 +5155,10 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4569,7 +5173,22 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-glow.js": {
+   "imports": [
+    "lib/brain.js"
+   ],
+   "importedBy": [
+    "lib/brain-host.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4584,7 +5203,10 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4599,7 +5221,10 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4615,18 +5240,34 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-host.js"
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js"
    ]
   },
   "lib/brain-host.js": {
    "imports": [
     "lib/brain.js",
     "lib/brain-store.js",
-    "lib/brain-bridge.js"
+    "lib/brain-glow.js",
+    "lib/brain-bridge.js",
+    "lib/brain-route.js",
+    "lib/brain-watch.js",
+    "lib/brain-everywhere.js",
+    "skills/status.js"
    ],
    "importedBy": [
+    "lib/brain-everywhere.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-host.js"
    ]
+  },
+  "lib/brain-map.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/brain-mind.js": {
    "imports": [
@@ -4640,15 +5281,22 @@
     "lib/brain-grower.js",
     "lib/brain-formula.js",
     "lib/brain-current.js",
-    "lib/brain-grains.js"
+    "lib/brain-grains.js",
+    "lib/brain-pool.js",
+    "lib/brain-trace.js",
+    "lib/brain-route.js",
+    "lib/brain-watch.js"
    ],
    "importedBy": [
     "lib/brain-organs.js",
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
+    "lib/brain-route.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4666,13 +5314,18 @@
     "lib/brain-formula.js",
     "lib/brain-current.js",
     "lib/brain-grains.js",
+    "lib/brain-pool.js",
+    "lib/brain-trace.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
     "lib/brain-mind.js",
+    "lib/brain-route.js",
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-organs.js",
     "skills/verse-brain.js"
@@ -4690,7 +5343,45 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-host.js"
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js"
+   ]
+  },
+  "lib/brain-pool.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-route.js": {
+   "imports": [
+    "lib/brain-organs.js"
+   ],
+   "importedBy": [
+    "lib/brain-host.js",
+    "lib/brain-mind.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-organs.js",
+    "lib/brain-route.js",
+    "lib/brain.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/brain-store.js": {
@@ -4698,6 +5389,9 @@
    "importedBy": [
     "lib/brain-host.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js"
    ]
   },
   "lib/brain-synapses.js": {
@@ -4710,8 +5404,44 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-trace.js": {
+   "imports": [
+    "lib/field-kit.js",
+    "lib/brain-workspace.js"
+   ],
+   "importedBy": [
+    "lib/brain-mind.js",
+    "lib/brain-organs.js",
+    "lib/brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-watch.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/brain-host.js",
+    "lib/brain-mind.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-organs.js",
+    "lib/brain-route.js",
+    "lib/brain.js",
     "skills/verse-brain.js"
    ]
   },
@@ -4731,12 +5461,17 @@
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-painter.js",
+    "lib/brain-pool.js",
     "lib/brain-synapses.js",
+    "lib/brain-trace.js",
     "lib/brain.js",
     "skills/verse-brain.js"
    ],
    "reachedBy": [
-    "lib/brain-host.js"
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
+    "lib/brain-host.js",
+    "lib/brain-route.js"
    ]
   },
   "lib/brain.js": {
@@ -4753,11 +5488,17 @@
     "lib/brain-grower.js",
     "lib/brain-formula.js",
     "lib/brain-current.js",
-    "lib/brain-grains.js"
+    "lib/brain-grains.js",
+    "lib/brain-pool.js",
+    "lib/brain-trace.js"
    ],
    "importedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js"
    ]
   },
   "lib/bridges.js": {
@@ -4800,9 +5541,33 @@
    "importedBy": [
     "lib/calculators.js",
     "lib/formula-engine.js",
-    "lib/keypad.js"
+    "lib/keypad.js",
+    "lib/measure-ask.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js",
     "skills/formulas.js"
    ]
   },
@@ -4816,6 +5581,7 @@
    "imports": [
     "lib/calc-units.js",
     "lib/fincalc.js",
+    "lib/rentbuy.js",
     "lib/date-math.js",
     "lib/formula-engine.js",
     "lib/formulas.js"
@@ -4867,14 +5633,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5006,14 +5775,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5056,9 +5828,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/languages.js",
@@ -5116,14 +5890,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5173,14 +5950,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5251,14 +6031,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5281,14 +6064,17 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5313,18 +6099,21 @@
     "functions/api/actions.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5333,20 +6122,24 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/coins.js": {
    "imports": [],
    "importedBy": [
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/colour.js": {
@@ -5359,8 +6152,10 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/gradient.js",
@@ -5389,7 +6184,7 @@
    "imports": [],
    "importedBy": [
     "lib/arrange.js",
-    "lib/rap-stage.js",
+    "lib/rap-beat.js",
     "lib/rap.js",
     "skills/music.js"
    ],
@@ -5397,14 +6192,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5414,6 +6212,11 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ]
   },
@@ -5442,6 +6245,7 @@
     "skills/converter.js"
    ],
    "reachedBy": [
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -5450,7 +6254,14 @@
     "lib/translate-docs.js",
     "lib/pdf-tools.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
   },
   "lib/cook-flow.js": {
    "imports": [],
@@ -5487,14 +6298,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5508,6 +6322,8 @@
     "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/fix-audit.js",
     "lib/self-context.js",
@@ -5526,6 +6342,7 @@
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
+    "skills/verse-brain.js",
     "skills/walker.js"
    ]
   },
@@ -5550,13 +6367,16 @@
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/daily-art.js",
+    "functions/api/rapvoice.js",
     "functions/api/report.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -5631,6 +6451,10 @@
     "skills/decide-cards.js"
    ]
   },
+  "lib/denoise.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/dev-tools.js": {
    "imports": [],
    "importedBy": [
@@ -5651,14 +6475,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5681,7 +6508,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/duel-rules.js": {
@@ -5706,15 +6535,18 @@
     "functions/api/approval.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5751,18 +6583,32 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/emoji-combos.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/emoji-combos.js"
+   ]
+  },
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
-    "lib/tally.js"
+    "lib/tally.js",
+    "skills/emoji.js"
    ],
    "reachedBy": [
     "functions/api/tally.js",
+    "lib/flip-card.js",
     "skills/coin.js"
    ]
   },
   "lib/empty-state.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/epub-edit.js": {
+   "imports": [
+    "lib/translate-docs.js"
+   ],
    "importedBy": []
   },
   "lib/event-date.js": {
@@ -5873,7 +6719,9 @@
     "lib/brain-mind.js",
     "lib/brain-organs.js",
     "lib/brain-painter.js",
+    "lib/brain-pool.js",
     "lib/brain-synapses.js",
+    "lib/brain-trace.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
     "lib/council-law.js",
@@ -5896,8 +6744,11 @@
     "skills/feud.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
     "lib/brain-field.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
+    "lib/brain-route.js",
     "lib/field-vector-worker.js",
     "lib/orb-field.js",
     "lib/tilt-arena-idea.js",
@@ -5954,8 +6805,11 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
+    "lib/brain-route.js",
     "lib/brain.js",
     "skills/mind-field-mode.js",
     "skills/mind-field.js",
@@ -6079,10 +6933,13 @@
    "imports": [],
    "importedBy": [
     "lib/calc-panels.js",
-    "lib/calculators.js"
+    "lib/calculators.js",
+    "lib/rentbuy.js",
+    "skills/loan.js"
    ],
    "reachedBy": [
-    "skills/formulas.js"
+    "skills/formulas.js",
+    "skills/rentbuy.js"
    ]
   },
   "lib/fix-audit.js": {
@@ -6109,6 +6966,7 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
     "skills/toolkit.js"
    ]
@@ -6140,6 +6998,23 @@
     "lib/flights-coast.js"
    ],
    "importedBy": []
+  },
+  "lib/flip-card.js": {
+   "imports": [
+    "skills/coin.js"
+   ],
+   "importedBy": []
+  },
+  "lib/flv.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
   },
   "lib/forge-duel.js": {
    "imports": [],
@@ -6194,13 +7069,16 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -6263,13 +7141,22 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
+    "skills/studios.js",
     "skills/walker.js"
    ]
+  },
+  "lib/generators-card.js": {
+   "imports": [
+    "lib/generators.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
   },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
     "lib/chat-generators.js",
+    "lib/generators-card.js",
     "skills/textgen.js"
    ],
    "reachedBy": [
@@ -6304,7 +7191,9 @@
    "importedBy": []
   },
   "lib/guard.js": {
-   "imports": [],
+   "imports": [
+    "lib/owner-accounts.js"
+   ],
    "importedBy": [
     "functions/api/_middleware.js",
     "functions/api/actions.js",
@@ -6315,6 +7204,7 @@
     "functions/api/boards/[[path]].js",
     "functions/api/calshare.js",
     "functions/api/catalog.js",
+    "functions/api/clip.js",
     "functions/api/coder.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
@@ -6339,9 +7229,11 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/rsvp.js",
+    "functions/api/selfcheck.js",
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
+    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/tally.js",
     "functions/api/team.js",
@@ -6352,32 +7244,42 @@
     "functions/api/watch.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
+    "functions/team/_middleware.js",
     "lib/automations-run.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/hook/[id].js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
+    "functions/api/mine.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/publish.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
+    "functions/api/share/index.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/fanfic/rss.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js"
    ]
   },
@@ -6397,14 +7299,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -6464,7 +7369,6 @@
     "functions/api/miss.js",
     "functions/api/review.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/products.js",
@@ -6476,7 +7380,12 @@
     "lib/wheel.js",
     "lib/prizes.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/agent-fluid-memory-orbs.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
+   ]
   },
   "lib/health-habits.js": {
    "imports": [],
@@ -6538,18 +7447,29 @@
     "lib/keeper.js"
    ],
    "importedBy": [
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
-    "lib/daily-photo.js"
+    "functions/api/studio.js",
+    "lib/daily-photo.js",
+    "lib/video-gen.js"
    ],
    "reachedBy": [
-    "functions/api/card-art.js"
+    "functions/api/card-art.js",
+    "skills/video-gen.js"
+   ]
+  },
+  "lib/image-handoff.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/pdf-ui.js"
    ]
   },
   "lib/imgfit.js": {
    "imports": [],
    "importedBy": [
+    "lib/resize-card.js",
     "skills/imgfit.js"
    ]
   },
@@ -6562,14 +7482,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -6607,11 +7530,23 @@
     "functions/api/queue.js"
    ]
   },
+  "lib/job-guide.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "reachedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
+   ]
+  },
   "lib/job-sites.js": {
    "imports": [],
    "importedBy": [
     "lib/tool-sites.js",
-    "lib/toolkit.js"
+    "lib/toolkit.js",
+    "skills/work.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -6622,6 +7557,7 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
     "skills/toolkit.js"
    ]
@@ -6649,6 +7585,61 @@
     "lib/jobs-de.js"
    ],
    "importedBy": []
+  },
+  "lib/join-watch.js": {
+   "imports": [
+    "lib/joins.js"
+   ],
+   "importedBy": []
+  },
+  "lib/joins.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/joins.js",
+    "lib/join-watch.js",
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/voice-reply.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "lib/about-skill.js",
+    "lib/bench-asks.js",
+    "lib/built-detail.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/about-skill.js",
+    "skills/cartoon.js",
+    "skills/growth-tree.js",
+    "skills/guide.js",
+    "skills/merges.js",
+    "skills/mini/growthtree.js",
+    "skills/own-parts.js",
+    "skills/showcase.js",
+    "skills/walker.js"
+   ]
   },
   "lib/kanban-ui.js": {
    "imports": [
@@ -6683,6 +7674,7 @@
    "importedBy": [
     "functions/api/answer.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
@@ -6696,16 +7688,19 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/daily-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
+    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -6713,6 +7708,8 @@
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/card-forge.js",
     "lib/card-frame.js",
@@ -6725,10 +7722,15 @@
     "lib/daily-photo.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
+    "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
@@ -6752,6 +7754,8 @@
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
+    "skills/verse-brain.js",
+    "skills/video-gen.js",
     "skills/walker.js"
    ]
   },
@@ -6788,14 +7792,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -6851,14 +7858,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -6971,6 +7981,36 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/local-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/local-media.js",
+    "lib/toolkit.js"
+   ],
+   "reachedBy": [
+    "functions/api/local.js",
+    "skills/local-stations.js",
+    "skills/open-tool.js",
+    "skills/toolkit.js"
+   ]
+  },
+  "lib/local-media.js": {
+   "imports": [
+    "lib/local-ask.js"
+   ],
+   "importedBy": [
+    "functions/api/local.js",
+    "skills/local-stations.js"
+   ]
+  },
+  "lib/markets-card.js": {
+   "imports": [
+    "lib/markets.js",
+    "skills/crypto.js",
+    "skills/stocks.js"
+   ],
+   "importedBy": []
+  },
   "lib/markets-record.js": {
    "imports": [],
    "importedBy": [
@@ -6980,13 +8020,16 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7002,20 +8045,26 @@
    "imports": [],
    "importedBy": [
     "functions/api/markets.js",
+    "lib/markets-card.js",
     "lib/report-run.js",
-    "lib/report.js"
+    "lib/report.js",
+    "skills/crypto.js",
+    "skills/stocks.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7055,7 +8104,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/mcp.js": {
@@ -7071,12 +8122,48 @@
    ],
    "importedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
+   ],
+   "reachedBy": [
+    "functions/team/mcp.js"
    ]
   },
   "lib/md.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/measure-ask.js": {
+   "imports": [
+    "lib/calc-units.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/clip.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/news.js",
+    "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/scores.js",
+    "functions/api/sportsearch.js",
+    "functions/api/translate.js",
+    "functions/api/weather.js",
+    "lib/bench-asks.js"
+   ]
   },
   "lib/media-local.js": {
    "imports": [
@@ -7092,8 +8179,13 @@
    ],
    "importedBy": [
     "functions/api/media.js",
+    "skills/calendar.js",
     "skills/media-pick.js",
     "skills/pick-for-me.js"
+   ],
+   "reachedBy": [
+    "skills/calendar-fill.js",
+    "skills/dates.js"
    ]
   },
   "lib/members.js": {
@@ -7101,6 +8193,7 @@
     "lib/automation-fix.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/members.js"
    ]
   },
@@ -7114,14 +8207,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7154,14 +8250,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7184,16 +8283,19 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/gen-data.js",
     "functions/api/generators.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7201,6 +8303,7 @@
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
+    "functions/api/studio.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
     "functions/api/weather.js",
@@ -7208,6 +8311,8 @@
     "lib/about-skill.js",
     "lib/autopsy.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/card-forge.js",
     "lib/card-frame.js",
@@ -7221,10 +8326,15 @@
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/image-gen.js",
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
+    "lib/video-gen.js",
     "lib/voice.js",
     "lib/wiki-look.js",
     "skills/about-skill.js",
@@ -7247,6 +8357,8 @@
     "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js",
+    "skills/verse-brain.js",
+    "skills/video-gen.js",
     "skills/walker.js"
    ]
   },
@@ -7255,6 +8367,7 @@
    "importedBy": [
     "lib/brain-field.js",
     "lib/field-stage.js",
+    "lib/orb-memories.js",
     "skills/mind-field-mode.js",
     "skills/verse-brain.js"
    ],
@@ -7327,9 +8440,11 @@
     "functions/api/merge.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/reflect.js",
     "functions/api/report.js",
+    "functions/api/studio.js",
     "functions/api/tower-self.js",
     "functions/api/translate.js",
     "functions/api/voice-reply.js",
@@ -7338,16 +8453,19 @@
     "lib/clef.js",
     "lib/review-api.js",
     "lib/router.js",
-    "lib/self-context.js"
+    "lib/self-context.js",
+    "lib/studio.js"
    ],
    "reachedBy": [
     "functions/api/actions.js",
     "functions/api/approval.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/gallery.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -7360,15 +8478,16 @@
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/approval-gate.js",
     "lib/bench-asks.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js"
+    "lib/paid-access.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/motion-throttle.js": {
@@ -7413,9 +8532,22 @@
    ],
    "reachedBy": [
     "functions/api/filmfind.js",
+    "skills/calendar-fill.js",
+    "skills/calendar.js",
+    "skills/dates.js",
     "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
+  },
+  "lib/mp3-edit.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/mp4-repair.js": {
+   "imports": [
+    "lib/avi.js"
+   ],
+   "importedBy": []
   },
   "lib/music-audio.js": {
    "imports": [
@@ -7451,14 +8583,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7470,6 +8605,12 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/news-card.js": {
+   "imports": [
+    "skills/news.js"
+   ],
+   "importedBy": []
+  },
   "lib/news-report.js": {
    "imports": [
     "lib/news.js"
@@ -7480,14 +8621,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7497,6 +8641,15 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/news-week.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/news.js"
+   ],
+   "reachedBy": [
+    "lib/news-card.js"
    ]
   },
   "lib/news.js": {
@@ -7509,13 +8662,16 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7536,14 +8692,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7646,6 +8805,17 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/orb-memories.js": {
+   "imports": [
+    "lib/mind-field-modes.js"
+   ],
+   "importedBy": [
+    "skills/agent-fluid-memory-orbs.js"
+   ],
+   "reachedBy": [
+    "skills/mind-field.js"
+   ]
+  },
   "lib/own-card.js": {
    "imports": [
     "lib/repo-look.js"
@@ -7656,14 +8826,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7680,6 +8853,102 @@
    "importedBy": [
     "skills/own-parts.js"
    ]
+  },
+  "lib/owner-accounts.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/guard.js"
+   ],
+   "reachedBy": [
+    "functions/[handle].js",
+    "functions/api/_middleware.js",
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/bench.js",
+    "functions/api/boards/[[path]].js",
+    "functions/api/calshare.js",
+    "functions/api/card-art.js",
+    "functions/api/catalog.js",
+    "functions/api/clip.js",
+    "functions/api/coder.js",
+    "functions/api/comments.js",
+    "functions/api/daily-art.js",
+    "functions/api/earnings.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/gallery.js",
+    "functions/api/gen-data.js",
+    "functions/api/generators.js",
+    "functions/api/gumroad.js",
+    "functions/api/hook/[id].js",
+    "functions/api/icsfeed.js",
+    "functions/api/image.js",
+    "functions/api/local.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/members.js",
+    "functions/api/memory.js",
+    "functions/api/merge.js",
+    "functions/api/mine.js",
+    "functions/api/misses.js",
+    "functions/api/news.js",
+    "functions/api/passkey.js",
+    "functions/api/podcasts.js",
+    "functions/api/probe-asks.js",
+    "functions/api/probe-log.js",
+    "functions/api/propose-fix.js",
+    "functions/api/publish.js",
+    "functions/api/queue.js",
+    "functions/api/rapvoice.js",
+    "functions/api/react.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/api/rsvp.js",
+    "functions/api/scores.js",
+    "functions/api/selfcheck.js",
+    "functions/api/share/index.js",
+    "functions/api/sportsearch.js",
+    "functions/api/store/[[path]].js",
+    "functions/api/studies.js",
+    "functions/api/studio.js",
+    "functions/api/support.js",
+    "functions/api/tally.js",
+    "functions/api/team.js",
+    "functions/api/tower-self.js",
+    "functions/api/translate.js",
+    "functions/api/v01d-fixes.js",
+    "functions/api/visit.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watch.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "functions/c/[clip].js",
+    "functions/fanfic/rss.js",
+    "functions/films/rss.js",
+    "functions/team/_middleware.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
+    "lib/automations-run.js",
+    "lib/bench-asks.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js",
+    "lib/void-me.js"
+   ]
+  },
+  "lib/owner-link.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/pack5-ui.js": {
    "imports": [],
@@ -7716,6 +8985,7 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -7723,6 +8993,7 @@
     "functions/api/gallery.js",
     "functions/api/gumroad.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -7732,6 +9003,7 @@
     "functions/api/news.js",
     "functions/api/passkey.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7746,6 +9018,8 @@
     "functions/api/watch.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -7767,7 +9041,6 @@
     "functions/api/film-views.js",
     "functions/api/films.js",
     "functions/api/mcp.js",
-    "functions/api/team.js",
     "functions/films/rss.js"
    ]
   },
@@ -7837,14 +9110,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7864,14 +9140,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7894,14 +9173,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7927,11 +9209,18 @@
    "importedBy": [
     "lib/converter.js",
     "lib/pdf-ui.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/video-write.js",
+    "skills/rap.js"
    ]
   },
   "lib/pdf-ui.js": {
    "imports": [
-    "lib/pdf-tools.js"
+    "lib/pdf-tools.js",
+    "lib/image-handoff.js"
    ],
    "importedBy": []
   },
@@ -7954,9 +9243,11 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -7964,6 +9255,7 @@
     "functions/api/podcasts.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7983,6 +9275,9 @@
    "importedBy": [
     "skills/imgfit.js",
     "skills/photo-tools.js"
+   ],
+   "reachedBy": [
+    "lib/resize-card.js"
    ]
   },
   "lib/photo-edit.js": {
@@ -8045,14 +9340,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8064,10 +9362,20 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/podcasts-card.js": {
+   "imports": [
+    "skills/podcast-search.js"
+   ],
+   "importedBy": []
+  },
   "lib/podcasts.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/podcasts.js"
+    "functions/api/podcasts.js",
+    "skills/podcast-search.js"
+   ],
+   "reachedBy": [
+    "lib/podcasts-card.js"
    ]
   },
   "lib/practice.js": {
@@ -8086,14 +9394,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8130,15 +9441,18 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8156,6 +9470,10 @@
    "imports": [],
    "importedBy": [
     "lib/handoff.js"
+   ],
+   "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/probe-asks.js": {
@@ -8178,14 +9496,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -8240,7 +9561,6 @@
     "functions/api/mcp.js",
     "functions/api/members.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
     "skills/shop.js"
    ]
@@ -8259,15 +9579,18 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8312,9 +9635,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "lib/wordcount.js",
     "lib/writing-aids.js",
     "skills/lorem.js",
@@ -8327,19 +9652,31 @@
    "importedBy": [
     "lib/card-image.js",
     "skills/spectators.js",
-    "skills/stage-image.js"
+    "skills/stage-image.js",
+    "skills/util.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/lorem.js",
     "skills/merge.js",
     "skills/oracle.js",
-    "skills/rally.js"
+    "skills/password.js",
+    "skills/rally.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/rally-rules.js": {
@@ -8368,12 +9705,148 @@
    "imports": [],
    "importedBy": []
   },
-  "lib/rap-stage.js": {
+  "lib/rap-beat.js": {
    "imports": [
     "lib/compose.js",
-    "lib/rap.js"
+    "lib/rap-kit.js",
+    "lib/rap-piano.js"
    ],
    "importedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-ears.js": {
+   "imports": [
+    "lib/rap-fft.js"
+   ],
+   "importedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-song.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-fft.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/rap-ears.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-kit.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arrange.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
+    "skills/music.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-listen.js": {
+   "imports": [
+    "lib/rap-ears.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js"
+   ],
+   "importedBy": []
+  },
+  "lib/rap-piano.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arrange.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
+    "skills/music.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-song.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js",
+    "lib/rap-kit.js",
+    "lib/rap-piano.js",
+    "lib/rap-voice.js",
+    "lib/rap-ears.js"
+   ],
+   "importedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-stage.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js",
+    "lib/rap-video.js"
+   ],
+   "importedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-video.js": {
+   "imports": [
+    "lib/video-mux.js",
+    "lib/video-write.js",
+    "lib/rap.js",
+    "lib/rap-song.js",
+    "lib/rap-fft.js",
+    "lib/rap-beat.js",
+    "lib/rap-voice.js"
+   ],
+   "importedBy": [
+    "lib/rap-stage.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-voice.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js"
+   ],
+   "importedBy": [
+    "lib/rap-song.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-stage.js",
     "skills/rap.js"
    ]
   },
@@ -8384,15 +9857,21 @@
    ],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/rapvoice.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
@@ -8406,7 +9885,8 @@
     "functions/api/sportsearch.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/rap-listen.js"
    ]
   },
   "lib/rating-note.js": {
@@ -8433,6 +9913,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/calshare.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
@@ -8443,6 +9924,7 @@
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/rsvp.js",
+    "functions/api/studio.js",
     "functions/api/visit.js",
     "lib/autopsy.js",
     "lib/reaction-bar.js",
@@ -8453,11 +9935,13 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
@@ -8471,8 +9955,11 @@
     "functions/api/will.js",
     "lib/about-skill.js",
     "lib/bench-asks.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/fix-audit.js",
+    "lib/flip-card.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -8489,8 +9976,15 @@
     "skills/own-parts.js",
     "skills/service-health.js",
     "skills/status.js",
+    "skills/verse-brain.js",
     "skills/walker.js"
    ]
+  },
+  "lib/recipe-card.js": {
+   "imports": [
+    "lib/recipes.js"
+   ],
+   "importedBy": []
   },
   "lib/recipeimport.js": {
    "imports": [],
@@ -8503,7 +9997,9 @@
    "importedBy": [
     "functions/api/recipes.js",
     "lib/chat-recipes.js",
-    "lib/kitchen.js"
+    "lib/kitchen.js",
+    "lib/recipe-card.js",
+    "skills/recipe.js"
    ],
    "reachedBy": [
     "skills/recipes-fill.js"
@@ -8525,6 +10021,18 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/rentbuy.js": {
+   "imports": [
+    "lib/fincalc.js"
+   ],
+   "importedBy": [
+    "lib/calculators.js",
+    "skills/rentbuy.js"
+   ],
+   "reachedBy": [
+    "skills/formulas.js"
+   ]
+  },
   "lib/repo-look.js": {
    "imports": [
     "lib/automation-fix.js"
@@ -8538,14 +10046,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/report.js",
@@ -8567,14 +10078,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8597,14 +10111,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8623,6 +10140,13 @@
    "importedBy": [
     "functions/api/report.js"
    ]
+  },
+  "lib/resize-card.js": {
+   "imports": [
+    "lib/imgfit.js",
+    "skills/imgfit.js"
+   ],
+   "importedBy": []
   },
   "lib/review-api.js": {
    "imports": [
@@ -8645,27 +10169,31 @@
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/report.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
-    "functions/api/team.js",
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/ritual.js": {
@@ -8691,14 +10219,17 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8763,14 +10294,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -8887,14 +10421,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -8925,14 +10462,17 @@
    ],
    "reachedBy": [
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8962,10 +10502,25 @@
     "skills/forge-table.js",
     "skills/kanban-board.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/pdf-tools.js",
+    "skills/studios.js",
     "skills/toolkit.js",
     "skills/tower.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/selfcheck.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/selfcheck.js",
+    "skills/status.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
+    "skills/own-parts.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/seo-audit.js": {
@@ -8977,7 +10532,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/seo.js": {
@@ -9067,6 +10624,7 @@
     "functions/api/mcp.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/reflect.js",
     "functions/api/tower-self.js",
     "functions/api/voice-reply.js",
@@ -9075,9 +10633,11 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/merge.js",
     "functions/api/news.js",
@@ -9101,7 +10661,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -9123,14 +10685,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9189,9 +10754,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/skyfacts.js",
     "lib/sun-day.js",
+    "lib/team-mcp.js",
     "skills/aurora-tonight.js",
     "skills/constellation.js",
     "skills/eclipse.js",
@@ -9248,14 +10815,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9291,6 +10861,17 @@
    "imports": [],
    "importedBy": [
     "skills/sprite-sheet.js"
+   ]
+  },
+  "lib/stabilize.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/stage-camera.js": {
@@ -9533,14 +11114,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9628,7 +11212,6 @@
     "functions/api/members.js",
     "functions/api/review.js",
     "functions/api/support.js",
-    "functions/api/team.js",
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/sale-jobs.js",
@@ -9645,14 +11228,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9683,14 +11269,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9714,14 +11303,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9731,7 +11323,11 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-listen.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ]
   },
@@ -9743,6 +11339,21 @@
     "skills/dim-void.js",
     "skills/merge-void.js",
     "skills/null-sweep.js"
+   ]
+  },
+  "lib/studio.js": {
+   "imports": [
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/clip.js",
+    "functions/api/studio.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "functions/api/daily-art.js",
+    "functions/api/gallery.js",
+    "functions/api/image.js"
    ]
   },
   "lib/study-cards.js": {
@@ -9760,14 +11371,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9792,8 +11406,11 @@
    ],
    "reachedBy": [
     "lib/about-skill.js",
+    "lib/brain-everywhere.js",
+    "lib/brain-host.js",
     "skills/about-skill.js",
-    "skills/own-parts.js"
+    "skills/own-parts.js",
+    "skills/verse-brain.js"
    ]
   },
   "lib/sun-day.js": {
@@ -9821,6 +11438,9 @@
    "importedBy": [
     "functions/api/tally.js",
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/tasks.js": {
@@ -9839,10 +11459,22 @@
     "skills/pick-for-me.js"
    ]
   },
-  "lib/team.js": {
-   "imports": [],
+  "lib/team-mcp.js": {
+   "imports": [
+    "lib/mcp.js"
+   ],
    "importedBy": [
-    "functions/api/team.js"
+    "functions/team/mcp.js"
+   ]
+  },
+  "lib/team.js": {
+   "imports": [
+    "lib/job-guide.js"
+   ],
+   "importedBy": [
+    "functions/api/team.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "lib/technical-context.js": {
@@ -9864,11 +11496,13 @@
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/comments.js",
     "functions/api/daily-art.js",
     "functions/api/figurescript.js",
@@ -9881,6 +11515,7 @@
     "functions/api/handoff.js",
     "functions/api/image.js",
     "functions/api/jobs.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -9892,6 +11527,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9903,6 +11539,7 @@
     "functions/api/routines.js",
     "functions/api/scores.js",
     "functions/api/sportsearch.js",
+    "functions/api/studio.js",
     "functions/api/support.js",
     "functions/api/team.js",
     "functions/api/translate.js",
@@ -9910,6 +11547,8 @@
     "functions/api/weather.js",
     "functions/api/will.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/bench-asks.js",
     "lib/built-detail.js",
@@ -9933,6 +11572,7 @@
     "lib/routine-skill.js",
     "lib/self-context.js",
     "lib/shared-routines.js",
+    "lib/team-mcp.js",
     "lib/voice.js",
     "skills/repo.js",
     "skills/routine.js",
@@ -10037,7 +11677,8 @@
    "imports": [
     "lib/guide.js",
     "lib/card-art.js",
-    "lib/rule-registry.js"
+    "lib/rule-registry.js",
+    "lib/book-news.js"
    ],
    "importedBy": [
     "skills/guide.js"
@@ -10070,6 +11711,7 @@
     "skills/duel.js",
     "skills/forge-table.js",
     "skills/merge.js",
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -10078,9 +11720,12 @@
     "lib/tool-sites.js",
     "lib/flight-sites.js",
     "lib/job-sites.js",
-    "lib/converter-ask.js"
+    "lib/converter-ask.js",
+    "lib/brain-ask.js",
+    "lib/local-ask.js"
    ],
    "importedBy": [
+    "skills/open-tool.js",
     "skills/toolkit.js"
    ]
   },
@@ -10094,6 +11739,7 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
+    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ]
@@ -10109,6 +11755,7 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
+    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ]
@@ -10129,6 +11776,7 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
+    "skills/studios.js",
     "skills/walker.js"
    ]
   },
@@ -10146,11 +11794,23 @@
    "importedBy": [
     "functions/api/reflect.js",
     "functions/api/will.js",
+    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ],
    "reachedBy": [
     "skills/cartoon.js"
+   ]
+  },
+  "lib/transition.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/translate-card.js": {
@@ -10165,7 +11825,14 @@
   "lib/translate-docs.js": {
    "imports": [],
    "importedBy": [
-    "lib/converter.js"
+    "lib/converter.js",
+    "lib/epub-edit.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/video-write.js",
+    "skills/rap.js"
    ]
   },
   "lib/translate-extras.js": {
@@ -10214,6 +11881,44 @@
     "skills/v01d-fixes.js"
    ]
   },
+  "lib/video-gen.js": {
+   "imports": [
+    "lib/image-gen.js"
+   ],
+   "importedBy": [
+    "functions/api/clip.js",
+    "skills/video-gen.js"
+   ]
+  },
+  "lib/video-mux.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/audio-write.js",
+    "lib/rap-video.js",
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ]
+  },
+  "lib/video-write.js": {
+   "imports": [
+    "lib/avi.js",
+    "lib/flv.js",
+    "lib/video-mux.js",
+    "lib/converter.js",
+    "lib/transition.js",
+    "lib/stabilize.js"
+   ],
+   "importedBy": [
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ]
+  },
   "lib/video.js": {
    "imports": [],
    "importedBy": [
@@ -10247,14 +11952,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10269,9 +11977,11 @@
   "lib/void-me.js": {
    "imports": [
     "lib/webauthn.js",
-    "lib/pages.js"
+    "lib/pages.js",
+    "lib/guard.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
@@ -10292,16 +12002,19 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-views.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10311,6 +12024,8 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js"
    ]
   },
@@ -10369,14 +12084,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10422,10 +12140,12 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -10433,6 +12153,7 @@
     "functions/api/gallery.js",
     "functions/api/gumroad.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/members.js",
@@ -10442,6 +12163,7 @@
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/publish.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10456,6 +12178,8 @@
     "functions/api/watch.js",
     "functions/api/weather.js",
     "functions/films/rss.js",
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
@@ -10466,6 +12190,10 @@
    "importedBy": [
     "lib/handoff.js",
     "skills/wheel.js"
+   ],
+   "reachedBy": [
+    "skills/agent-fluid-memory-orbs.js",
+    "skills/mind-field.js"
    ]
   },
   "lib/where.js": {
@@ -10492,6 +12220,7 @@
     "functions/api/card-art.js"
    ],
    "reachedBy": [
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js"
@@ -10515,14 +12244,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -10566,7 +12298,9 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
-    "functions/tools.json.js"
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
    ]
   },
   "lib/zones.js": {
@@ -10617,7 +12351,10 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-fluid-orbs.js",
-    "lib/orb-field.js"
+    "lib/orb-field.js",
+    "lib/orb-memories.js",
+    "lib/brain-bridge.js",
+    "lib/handoff.js"
    ],
    "importedBy": [
     "skills/mind-field.js"
@@ -10757,6 +12494,10 @@
    ],
    "importedBy": []
   },
+  "skills/baggage.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/baseconv.js": {
    "imports": [
     "lib/baseconv.js"
@@ -10858,6 +12599,7 @@
    "imports": [
     "skills/calendar3d.js",
     "skills/countdown.js",
+    "lib/media.js",
     "lib/chat-calendar.js",
     "lib/agenda.js"
    ],
@@ -10984,7 +12726,9 @@
     "lib/tally.js",
     "lib/coins.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/flip-card.js"
+   ]
   },
   "skills/collectible.js": {
    "imports": [
@@ -11111,8 +12855,12 @@
    "importedBy": []
   },
   "skills/crypto.js": {
-   "imports": [],
-   "importedBy": []
+   "imports": [
+    "lib/markets.js"
+   ],
+   "importedBy": [
+    "lib/markets-card.js"
+   ]
   },
   "skills/csv-table.js": {
    "imports": [
@@ -11337,8 +13085,16 @@
     "skills/games.js"
    ]
   },
+  "skills/emoji-combos.js": {
+   "imports": [
+    "lib/emoji-combos.js"
+   ],
+   "importedBy": []
+  },
   "skills/emoji.js": {
-   "imports": [],
+   "imports": [
+    "lib/emoji.js"
+   ],
    "importedBy": []
   },
   "skills/error-garden.js": {
@@ -11761,14 +13517,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -11795,6 +13554,7 @@
   "skills/growth.js": {
    "imports": [
     "lib/probe-log.js",
+    "lib/joins.js",
     "lib/will-last.js",
     "lib/ledger-today.js",
     "lib/ladder.js",
@@ -11813,14 +13573,17 @@
     "functions/api/answer.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -12004,7 +13767,9 @@
     "lib/imgfit.js",
     "lib/photo-ask.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/resize-card.js"
+   ]
   },
   "skills/incident-autopsy.js": {
    "imports": [
@@ -12207,6 +13972,7 @@
     "skills/weather.js"
    ],
    "reachedBy": [
+    "lib/news-card.js",
     "skills/own-parts.js",
     "skills/time.js"
    ]
@@ -12223,11 +13989,19 @@
    ]
   },
   "skills/loan.js": {
-   "imports": [],
+   "imports": [
+    "lib/fincalc.js"
+   ],
    "importedBy": []
   },
   "skills/local-inference.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/local-stations.js": {
+   "imports": [
+    "lib/local-media.js"
+   ],
    "importedBy": []
   },
   "skills/lock-rules.js": {
@@ -12785,9 +14559,12 @@
   },
   "skills/news.js": {
    "imports": [
-    "skills/live.js"
+    "skills/live.js",
+    "lib/news-week.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/news-card.js"
+   ]
   },
   "skills/night-ritual.js": {
    "imports": [
@@ -12869,6 +14646,12 @@
    "importedBy": [
     "skills/heart.js"
    ]
+  },
+  "skills/open-tool.js": {
+   "imports": [
+    "lib/toolkit.js"
+   ],
+   "importedBy": []
   },
   "skills/oracle.js": {
    "imports": [
@@ -13013,6 +14796,14 @@
    ],
    "importedBy": []
   },
+  "skills/podcast-search.js": {
+   "imports": [
+    "lib/podcasts.js"
+   ],
+   "importedBy": [
+    "lib/podcasts-card.js"
+   ]
+  },
   "skills/podcast.js": {
    "imports": [],
    "importedBy": []
@@ -13104,7 +14895,9 @@
    "importedBy": []
   },
   "skills/proverb.js": {
-   "imports": [],
+   "imports": [
+    "skills/quote.js"
+   ],
    "importedBy": []
   },
   "skills/providers.js": {
@@ -13168,7 +14961,9 @@
   },
   "skills/quote.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/proverb.js"
+   ]
   },
   "skills/rack.js": {
    "imports": [
@@ -13226,7 +15021,8 @@
   "skills/recipe.js": {
    "imports": [
     "lib/card-mini.js",
-    "skills/swaps.js"
+    "skills/swaps.js",
+    "lib/recipes.js"
    ],
    "importedBy": []
   },
@@ -13250,6 +15046,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/rentbuy.js": {
+   "imports": [
+    "lib/rentbuy.js"
+   ],
+   "importedBy": []
   },
   "skills/repo.js": {
    "imports": [
@@ -13840,10 +15642,16 @@
    "imports": [
     "lib/ask-text.js",
     "lib/autopsy.js",
-    "lib/success-pulse.js"
+    "lib/success-pulse.js",
+    "lib/selfcheck.js"
    ],
    "importedBy": [
+    "lib/brain-host.js",
     "skills/own-parts.js"
+   ],
+   "reachedBy": [
+    "lib/brain-everywhere.js",
+    "skills/verse-brain.js"
    ]
   },
   "skills/sticky.js": {
@@ -13864,6 +15672,14 @@
    ],
    "importedBy": []
   },
+  "skills/stocks.js": {
+   "imports": [
+    "lib/markets.js"
+   ],
+   "importedBy": [
+    "lib/markets-card.js"
+   ]
+  },
   "skills/store.js": {
    "imports": [
     "lib/store.js"
@@ -13871,6 +15687,12 @@
    "importedBy": [
     "skills/shop.js"
    ]
+  },
+  "skills/studios.js": {
+   "imports": [
+    "lib/tower.js"
+   ],
+   "importedBy": []
   },
   "skills/study-cards.js": {
    "imports": [
@@ -13933,14 +15755,17 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/clip.js",
     "functions/api/daily-art.js",
     "functions/api/gallery.js",
     "functions/api/image.js",
+    "functions/api/local.js",
     "functions/api/markets.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -14016,7 +15841,9 @@
    "imports": [
     "lib/generators.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/generators-card.js"
+   ]
   },
   "skills/throw-off.js": {
    "imports": [],
@@ -14179,6 +16006,7 @@
   "skills/util.js": {
    "imports": [
     "lib/colour.js",
+    "lib/qr.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
    ],
@@ -14190,9 +16018,11 @@
    ],
    "reachedBy": [
     "functions/api/mcp.js",
+    "functions/team/mcp.js",
     "functions/tools.json.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
+    "lib/team-mcp.js",
     "skills/writing-aids.js"
    ]
   },
@@ -14235,6 +16065,7 @@
     "lib/brain-field.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
+    "lib/brain-ask.js",
     "lib/brain-current.js"
    ],
    "importedBy": []
@@ -14242,6 +16073,12 @@
   "skills/veto-council.js": {
    "imports": [
     "lib/council-law.js"
+   ],
+   "importedBy": []
+  },
+  "skills/video-gen.js": {
+   "imports": [
+    "lib/video-gen.js"
    ],
    "importedBy": []
   },
@@ -14347,12 +16184,17 @@
    ],
    "importedBy": []
   },
+  "skills/wordladder.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/words.js": {
    "imports": [],
    "importedBy": []
   },
   "skills/work.js": {
    "imports": [
+    "lib/job-sites.js",
     "lib/jobs-core.js"
    ],
    "importedBy": []

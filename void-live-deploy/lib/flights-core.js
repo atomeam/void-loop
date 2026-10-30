@@ -53,6 +53,14 @@ export const airportOf = (idx, code) => { const c = String(code || '').trim().to
 export function nearby(idx, a, radiusKm = 150, limit = 8) {
   return idx.list.filter((b) => b.iata !== a.iata).map((b) => ({ a: b, km: distanceKm(a, b) })).filter((x) => x.km <= radiusKm).sort((x, y) => x.km - y.km).slice(0, limit);
 }
+/** the airport to fly to for a point on the map (a place another page found): the nearest large airport within km, else the nearest
+ *  medium one, never a small field; null when none is that close, so the page asks instead of guessing. */
+export function airportNear(idx, lat, lon, km = 120) {
+  const p = { lat: +lat, lon: +lon }; if (!Number.isFinite(p.lat) || !Number.isFinite(p.lon) || Math.abs(p.lat) > 90 || Math.abs(p.lon) > 180) return null;
+  let best = null, bestKm = 0;
+  for (const b of idx.list) { if (b.size < 1) continue; const d = distanceKm(p, b); if (d > km) continue; if (!best || b.size > best.size || (b.size === best.size && d < bestKm)) { best = b; bestKm = d; } }
+  return best;
+}
 /** every airport that shares a metropolitan code with this one, as airports (not itself). */
 export const sameCity = (idx, a) => { const out = []; for (const [m, cs] of Object.entries(METRO)) if (cs.includes(a.iata)) for (const c of cs) if (c !== a.iata && idx.byIata.get(c)) out.push(idx.byIata.get(c)); return out; };
 
@@ -128,6 +136,24 @@ export function legFacts(a, b, depLocal, opts = {}) {
   const arrUtc = depUtc + minutes * 60000, arr = utcToLocal(b.tz, arrUtc), diff = offsetMin(b.tz, depUtc) - offsetMin(a.tz, depUtc);
   return { km, mi: km2mi(km), nm: km2nm(km), bearing: bearing(a, b), minutes, flownKm: km + detourKm(km), dep, depUtc, arrUtc, arrLocal: arr.local, arrDate: arr.date, arrTime: arr.time, dayShift: dayNum(arr.date) - dayNum(dep.slice(0, 10)), diffMin: diff, dateLine: crossesDateLine(a, b), co2: co2(km, opts.cabin || 'economy', opts.pax || 1, !!opts.ret) };
 }
+/**
+ * The links that carry a leg to Verse's other pages: { time, weather, calendar, local, jobs }. time opens /time/ on the landing moment in both cities (each as
+ * "City@Area/Zone", so a city the zone list does not know still gets its airport's zone); weather opens /weather/ on the arrival city at the
+ * airport's own position; calendar opens /calendar/ with the flight as an event to add, its wall clock in the departure zone; local opens /local/ on
+ * the radio and TV stations around the arrival airport (its point and country, so no name has to be looked up), or is '' with no country; jobs opens
+ * /jobs/ on the remote jobs open in the arrival country, or is '' with no country. Pure.
+ */
+export function legLinks(a, b, f) {
+  const at = new Date(f.arrUtc).toISOString().replace(/\.\d{3}Z$/, 'Z'), city = (x) => String(x.city || x.iata).replace(/[,;|@]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  const time = '/time/?at=' + encodeURIComponent(at) + '&cities=' + [a, b].map((x) => encodeURIComponent(city(x) + '@' + x.tz)).join(',');
+  const weather = '/weather/?place=' + encodeURIComponent(city(b) + (b.country ? ', ' + b.country : '')) + '&ll=' + (+b.lat).toFixed(4) + ',' + (+b.lon).toFixed(4);
+  const ev = { title: 'Flight ' + a.iata + ' → ' + b.iata, start: f.dep, end: utcToLocal(a.tz, f.arrUtc).local, tz: a.tz, allDay: false, location: city(a),
+    notes: 'Arrives ' + city(b) + ' (' + b.iata + ') ' + f.arrDate + ' ' + f.arrTime + ' local time. The flight time is typical, not a timetable.' };
+  const ll = (+b.lat).toFixed(4) + ',' + (+b.lon).toFixed(4), local = /^[A-Za-z]{2}$/.test(b.cc || '') ? '/local/?place=' + encodeURIComponent(city(b)) + '&ll=' + ll + '&cc=' + b.cc.toUpperCase() : '';
+  const jobs = /^[A-Za-z]{2}$/.test(b.cc || '') ? '/jobs/?cc=' + b.cc.toUpperCase() : ''; // the remote jobs open to people in the arrival country (/jobs/ reads the code as its region)
+  return { time, weather, calendar: '/calendar/?e=' + b64url(JSON.stringify(ev)), local, jobs };
+}
+const b64url = (s) => { let bin = ''; for (const c of new TextEncoder().encode(s)) bin += String.fromCharCode(c); return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
 export function defaultDep(now = new Date()) { const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 15)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-15T12:00'; }
 
 // ---------- CO2 ----------

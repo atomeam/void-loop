@@ -1,6 +1,307 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
+  {
+   "at": "2026-10-30T13:37:55.692Z",
+   "sha": "961bfbb2310d29582632388c1897bb2a80d03497",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41046328279",
+   "suite": "browser suite on main",
+   "checks": [
+    "local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+   ],
+   "touched": [
+    ".github/workflows/verify.yml",
+    "tools/test_void.mjs",
+    "docs/PARITY/github.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "tools/bench.json",
+    "tools/loan-payoff.test.mjs",
+    "tools/word-math.golden.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/index.html",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/loan.js"
+   ],
+   "shards": [
+    2,
+    4
+   ]
+  },
+  {
+   "at": "2026-10-30T12:13:24.946Z",
+   "sha": "37a659648a1955712671ed4e47970265160331ae",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41040216296",
+   "suite": "browser suite on main",
+   "checks": [
+    "local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia",
+    "semantic validator: \"how do i make guacamole\" answered with a pancakes card is reported once as ungrounded:recipe (no refusal shown); a guacamole card reports nothing"
+   ],
+   "touched": [
+    "tools/fact-topic.test.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/fact.js",
+    "void-live-deploy/skills/families.json",
+    "tools/compose.test.mjs",
+    "tools/recipes.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/compose.js",
+    "void-live-deploy/lib/recipes.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/music.js"
+   ],
+   "shards": [
+    2,
+    3
+   ],
+   "passed": [
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T11:25:10.005Z",
+   "sha": "d16874e2fe7d2fe8346c4a48cf778a3bdf551c47",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41036708883",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page"
+   ],
+   "touched": [
+    "tools/converter.test.mjs",
+    "void-live-deploy/converter/app.js",
+    "void-live-deploy/converter/index.html",
+    "void-live-deploy/lib/converter.js",
+    "void-live-deploy/lib/video-write.js",
+    ".github/workflows/brain-dream.yml",
+    ".github/workflows/studio-look.yml",
+    ".github/workflows/verify.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "domains/conductor.json",
+    "domains/handoff.md",
+    "domains/tower-self.json",
+    "domains/void.agents.log.md",
+    "growth/entries/20261030T073921Z-claude-83d771ea.json"
+   ],
+   "shards": [
+    3,
+    4
+   ],
+   "passed": [
+    3,
+    4
+   ],
+   "closedAt": "2026-10-30T13:37:55.737Z",
+   "closedBy": "961bfbb2310d29582632388c1897bb2a80d03497",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41046328279",
+   "minutes": 133
+  },
+  {
+   "at": "2026-10-30T10:41:01.255Z",
+   "sha": "c6ffa7bd72c4805c465a8b02c36f85f3ec3cb7c9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41035825694",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+   ],
+   "touched": [
+    "tools/handoff-e2e.mjs",
+    "void-live-deploy/piano/app.js",
+    ".github/workflows/brain-dream.yml",
+    "docs/MAP.md",
+    "tools/brain-dream.mjs",
+    "tools/brain-dream.test.mjs",
+    "tools/checks.mjs",
+    "tools/drum-kits.py",
+    "tools/rap-ears.test.mjs",
+    "tools/rap-kit.test.mjs",
+    "tools/rap-sound.test.mjs",
+    "tools/test_void.mjs",
+    "tools/toolkit.test.mjs",
+    "void-live-deploy/404.html",
+    "void-live-deploy/_headers"
+   ],
+   "shards": [
+    2,
+    4
+   ],
+   "passed": [
+    4
+   ]
+  },
+  {
+   "at": "2026-10-30T10:20:05.008Z",
+   "sha": "5b6f9243464224244200fad4a9c14db38cdf1e04",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41035390608",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "tools/checks.mjs",
+    "tools/drum-kits.py",
+    "tools/rap-ears.test.mjs",
+    "tools/rap-kit.test.mjs",
+    "void-live-deploy/_headers",
+    "void-live-deploy/lib/rap-beat.js",
+    "void-live-deploy/lib/rap-ears.js",
+    "void-live-deploy/lib/rap-kit.js",
+    "void-live-deploy/lib/rap-song.js",
+    "void-live-deploy/lib/rap-stage.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/sounds/drums/808/bass-1.wav",
+    "void-live-deploy/sounds/drums/808/bass-2.wav"
+   ],
+   "shards": [
+    2
+   ]
+  },
+  {
+   "at": "2026-10-30T08:34:27.681Z",
+   "sha": "e89cf1759b0e7bf60971654daa79eb5f1b9c3706",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41022463620",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+   ],
+   "touched": [
+    "tools/brain-map.test.mjs",
+    "void-live-deploy/brain/map.js",
+    "void-live-deploy/skills/deps.json",
+    "tools/proverb.test.mjs",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/proverb.js",
+    "void-live-deploy/skills/what.json"
+   ],
+   "shards": [
+    2,
+    4
+   ],
+   "passed": [
+    4
+   ]
+  },
+  {
+   "at": "2026-10-30T08:23:36.059Z",
+   "sha": "8491640e271712bd6818e9627e02ce3811cd2c90",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41022953581",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page"
+   ],
+   "touched": [
+    "tools/toolkit-skill.test.mjs",
+    "tools/toolkit.test.mjs",
+    "void-live-deploy/lib/toolkit.js",
+    "void-live-deploy/skills/toolkit.js",
+    ".github/workflows/studio-look.yml",
+    ".github/workflows/verify.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "growth/entries/20261030T073921Z-claude-83d771ea.json",
+    "tools/brain-map.test.mjs",
+    "tools/checks.mjs",
+    "tools/coder-route.test.mjs",
+    "tools/conductor-core.mjs"
+   ],
+   "shards": [
+    2,
+    4
+   ],
+   "passed": [
+    4
+   ]
+  },
+  {
+   "at": "2026-10-30T08:21:32.007Z",
+   "sha": "69f381cca178df113fa066fced8f8e7427bb5f0e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41022873385",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
+    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
+    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
+    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
+    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
+    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
+    "router: without D1 the answer still comes (the log is best effort)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+   ],
+   "touched": [
+    ".github/workflows/studio-look.yml",
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "growth/entries/20261030T073921Z-claude-83d771ea.json",
+    "tools/openapi-check.mjs",
+    "tools/studio-look.mjs",
+    "tools/studio.test.mjs",
+    "void-live-deploy/functions/api/studio.js",
+    "void-live-deploy/lib/guard.js",
+    "void-live-deploy/lib/models.js",
+    "void-live-deploy/lib/studio.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    ".github/workflows/verify.yml"
+   ],
+   "shards": [
+    2,
+    4
+   ],
+   "passed": [
+    4
+   ]
+  },
   {
    "at": "2026-10-30T02:37:47.980Z",
    "sha": "8379700457ad0d10509869248926ec0b8f0614dc",
@@ -16,7 +317,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T04:05:59.767Z",
+   "closedBy": "f85055a77733e7c027e0cf4b3560399cd828e593",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40998208515",
+   "minutes": 88
   },
   {
    "at": "2026-10-30T01:12:04.984Z",
@@ -33,7 +341,14 @@
    ],
    "shards": [
     4
-   ]
+   ],
+   "passed": [
+    4
+   ],
+   "closedAt": "2026-10-30T03:33:32.544Z",
+   "closedBy": "7ed8ce7b788eabb318fb600bbe1deae86f9bf15a",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40996034633",
+   "minutes": 141
   },
   {
    "at": "2026-10-30T00:51:50.499Z",
@@ -696,351 +1011,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 971
-  },
-  {
-   "at": "2026-10-29T02:38:25.025Z",
-   "sha": "7e681ad7200b1140036f6b1983035d17c6e9f540",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40803639605",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end"
-   ],
-   "touched": [
-    "void-live-deploy/tower.evidence.json",
-    ".github/workflows/verse-job.yml",
-    ".github/workflows/verse-loop.yml",
-    "docs/MAP.md",
-    "domains/verse-loop.pause",
-    "tools/checks.mjs",
-    "tools/conductor-core.mjs",
-    "tools/conductor.mjs",
-    "tools/conductor.test.mjs",
-    "tools/verse-job.mjs",
-    "tools/verse-job.test.mjs",
-    "void-live-deploy/self.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 978
-  },
-  {
-   "at": "2026-10-29T02:22:19.449Z",
-   "sha": "65e4a8c9395b431c1b2570a5e09fbf58638b1c76",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40803056940",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache"
-   ],
-   "touched": [
-    "tools/families.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1937-advice",
-    "void-live-deploy/skills/what.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 994
-  },
-  {
-   "at": "2026-10-29T02:21:33.551Z",
-   "sha": "0c9a63418ecfeddc198c02e3ba5982444a95e631",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40805274220",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/tower.evidence.json",
-    "docs/PARITY/calculator.net.md",
-    "docs/PARITY/convertlive.com.md",
-    "docs/PARITY/convertunits.com.md",
-    "tools/tower-gate.mjs",
-    "tools/tower-plan.test.mjs",
-    "tools/tower.test.mjs",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/tower.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 995
-  },
-  {
-   "at": "2026-10-29T01:19:06.114Z",
-   "sha": "56c92eefef15dbddf1a74fae1eabc76faf384181",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40797350030",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute"
-   ],
-   "touched": [
-    "domains/growth-inbox.md",
-    "void-live-deploy/skills/advice.js",
-    "void-live-deploy/skills/index.json",
-    "growth/entries/20261028T203236Z-box-34899143.json",
-    "growth/entries/20261028T203743Z-box-12d9f5a5.json",
-    "growth/entries/20261028T203836Z-box-8797df9c.json",
-    "growth/entries/20261028T204015Z-box-abd5bdbd.json",
-    "growth/entries/20261028T204245Z-box-e9c2fffc.json",
-    "growth/entries/20261028T204443Z-box-083b7c53.json",
-    "growth/entries/20261028T204743Z-box-a7ba4c84.json",
-    "growth/entries/20261028T205621Z-box-a2687e69.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/void.growth.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1058
-  },
-  {
-   "at": "2026-10-29T00:22:17.969Z",
-   "sha": "966dbc1c8c8685eaa14efaac20c6f4c5704f5a1c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40787423479",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before"
-   ],
-   "touched": [
-    ".github/workflows/verse-loop.yml",
-    "docs/MAP.md",
-    "docs/VERSE-LOOP.md",
-    "tools/verse-loop.mjs",
-    "tools/verse-loop.test.mjs"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1114
-  },
-  {
-   "at": "2026-10-28T21:53:58.480Z",
-   "sha": "fa0caa759f9320bedb56844dfefb06259f9c62b0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40768143472",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it"
-   ],
-   "touched": [
-    "tools/scrim.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/scrim.js",
-    "void-live-deploy/tournaments/index.html",
-    "domains/handoff.md",
-    "growth/entries/20261028T205621Z-box-a2687e69.json",
-    "tools/calculators.test.mjs",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/test_void.mjs",
-    "tools/tower-probes.mjs",
-    "void-live-deploy/calculator/index.html",
-    "void-live-deploy/calculators/index.html",
-    "void-live-deploy/flights/airports/app.js",
-    "void-live-deploy/flights/airports/index.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1263
-  },
-  {
-   "at": "2026-10-28T20:17:01.690Z",
-   "sha": "6c3dad22dce86ea1623d4287a2e8b8a926dc9288",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40757410187",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent as a noun: \"the product page launch on Friday\" plans \"launch the product page\": a countdown, a launch's own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)",
-    "open plan: \"plan my garden\" asks the answer engine (mode plan) for the steps and puts them up as one checklist, says they came from the engine; \"plan my day\" adds nothing",
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
-    "3D list: a grocery list gets one card and no clipboard beside it; rowsOf/newlyDone still find the ticked line (not a removed one) and the paper shows at most 7 lines",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "body: \"put it on the stage\" makes the meals checklist",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "intent without a day: \"plan my move\" brings the move's steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day",
-    "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
-    "intent preview: \"preview I need to ship the product page by Friday\" shows the goal, the dated steps and the pieces that would come with nothing on the stage, \"not what I meant\" sends the intent to the miss board tagged intent:misread, and \"put it on the stage\" then brings the countdown, the list and the calendar entry",
-    "plan history: the plan is kept with its goal and pieces"
-   ],
-   "touched": [
-    "tools/checks.mjs",
-    "tools/scrim.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/scrim.js",
-    "void-live-deploy/tournaments/index.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1360
-  },
-  {
-   "at": "2026-10-28T19:19:43.828Z",
-   "sha": "fca8d382229cc83b79e70f322c9ec2575a67c474",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40746247037",
-   "suite": "browser suite on main",
-   "checks": [
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
-    "the growth card shows friction (asked by Verse): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "Verse cards: a skill whose remembered rating was lower shows no \"Evolved\" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind's layout",
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn",
-    "3D tip: \"20% tip on 86.40 split between 3 people\" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
-    "password strength: /password-strength/ loads one page and one module (no third party), rates \"password\" Very weak and instantly cracked with its reason, rates a long random one Very strong, makes no request while typing, and \"Has it leaked?\" sends only the five-character prefix of the SHA-1 (5BAA6) and reports 10 million breaches",
-    "base converter: /base-converter/ loads one page and one module (no third party), typing ff in hex fills binary 1111 1111, octal 377 and decimal 255 with the signed reading, 20 hex digits are exact (1,208,925,819,614,629,174,706,175), a wrong digit is named and its red mark goes once any box holds a good number, and typing makes no request",
-    "tools pack 4 folder: three notes filed under errands, \"open folder errands\" shows only them and \"close folder\" brings the clock back",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse",
-    "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon"
-   ],
-   "touched": [
-    "domains/forethinkers/experiments/florida-heat-dose-2023-2026.csv",
-    "domains/forethinkers/experiments/florida-heat-dose.md",
-    "domains/forethinkers/index.md",
-    "domains/forethinkers/run-log.md",
-    "domains/forethinkers/tracks/planet-restoration.md",
-    "domains/void.growth.md"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 1417
   }
  ]
 }

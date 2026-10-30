@@ -2,7 +2,7 @@
 // which asks reach the rap card, how a written rap is read back and checked, its rhyme scheme and counts, the beat and timing, and a rap carried in a link
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rapAskOf, settingsOf, rapMessages, parseRap, rapText, schemeOf, rhymeKeyOf, syllablesOf, statsOf, beatFor, timingOf, lengthOf, linkOf, fromLink, cleanRap, cacheKeyOf, STYLES, MOODS, FLOWS, RAP_MAX } from '../void-live-deploy/lib/rap.js';
+import { rapAskOf, settingsOf, rapMessages, parseRap, rapText, schemeOf, rhymeKeyOf, syllablesOf, statsOf, beatFor, timingOf, lengthOf, linkOf, fromLink, cleanRap, cacheKeyOf, cardAsk, STYLES, MOODS, FLOWS, RAP_MAX } from '../void-live-deploy/lib/rap.js';
 import { PROBES, RAP_LINK } from './tower-probes.mjs';
 import { LANE_PAGES, LANE_EXTRAS } from '../void-live-deploy/lib/tower.js';
 import { JOURNEYS } from '../void-live-deploy/lib/tower-journeys.js';
@@ -43,6 +43,9 @@ test('a rap is read back from the model\'s text: its title, two verses and a hoo
 
 test('rhymes are found from the words: the scheme, the counts, and syllables', () => {
   assert.equal(rhymeKeyOf('low'), rhymeKeyOf('snow')); assert.equal(rhymeKeyOf('night'), rhymeKeyOf('light')); assert.notEqual(rhymeKeyOf('hand'), rhymeKeyOf('sky'));
+  // a soft c or g before a silent e, and a silent g before n, sound as they are said: race rhymes with base, page with cage, design with line
+  for (const [a, b] of [['race', 'base'], ['price', 'nice'], ['dance', 'chance'], ['page', 'cage'], ['design', 'line'], ['sign', 'divine'], ['reign', 'rain']]) assert.equal(rhymeKeyOf(a), rhymeKeyOf(b), a + ' rhymes with ' + b);
+  assert.notEqual(rhymeKeyOf('race'), rhymeKeyOf('rack')); assert.notEqual(rhymeKeyOf('design'), rhymeKeyOf('sigh'));
   assert.equal(syllablesOf('pepperoni'), 4); assert.equal(syllablesOf('cheese'), 1);
   const bars = SAMPLE.sections.flatMap((s) => s.bars), sc = schemeOf(bars);
   assert.equal(sc.letters.filter(Boolean).length, 18); assert.equal(sc.letters[0], sc.letters[1]);
@@ -90,4 +93,28 @@ test('the stage: the meta line is counted from the rap, English voices come firs
   const said = []; const p = performer(SAMPLE, s, { win: {}, onSay: (t) => said.push(t) });
   assert.equal(p.play('voice'), false); assert.match(said[0], /no Web Audio/); assert.equal(p.playing, false);
   assert.ok(p.total > 20 * 4 * 60 / 90, 'the whole rap fits: 20 bars and the count-in');
+});
+
+test('the rap is wired into the pages around it: its card follows the topic, its tempo goes to the metronome, a note hands it a topic', async () => {
+  const fs = await import('node:fs'), rd = (f) => fs.readFileSync(new URL('../void-live-deploy/' + f, import.meta.url), 'utf8');
+  // the page's "See it as a card" ask is read back by the stage as the same topic and style
+  for (const st of Object.keys(STYLES)) { const s = settingsOf({ topic: 'my cat', style: st }), q = cardAsk(s); assert.deepEqual(rapAskOf(q), { topic: 'my cat', style: st, mood: '' }, q); assert.equal(rap.match(q.toLowerCase(), q), true, q); }
+  assert.equal(cardAsk(settingsOf({ topic: '' })), '', 'no topic: the card link keeps its example'); assert.equal(cardAsk(null), '');
+  const page = rd('rap/app.js');
+  assert.ok(page.includes("'/metronome/?bpm=' + beatFor(settings).bpm"), 'the beat hands its tempo to the metronome, which reads ?bpm=');
+  assert.ok(page.includes('{ card: () => cardAsk(settings || readForm()) }'), 'the page gives its card the topic and style on it, the typed ones before a rap is written');
+  assert.ok(rd('metronome/app.js').includes("q.get('bpm')"), 'the metronome reads the tempo it is handed');
+  // a note's title opens /rap/ as the topic, and /rap/ reads ?t= as the topic
+  assert.match(rd('notes/index.html'), /const t = String\(\$\('dtitle'\)\.textContent \|\| ''\)\.trim\(\); return t \? '\/rap\/\?t=' \+ encodeURIComponent\(t\.slice\(0, 120\)\)/, 'the title as typed, not the copy saved 400 ms later');
+  assert.equal(fromLink('?t=' + encodeURIComponent('Groceries for Sunday')).settings.topic, 'Groceries for Sunday');
+  const { RELATED } = await import('../void-live-deploy/lib/toolkit.js');
+  for (const p of ['/notes/', '/metronome/']) assert.ok(RELATED[p].includes('/rap/'), p + ' lists the rap page back');
+  // a copied or saved stage card keeps the bars, not the buttons, the voice list, a status line or the scheme letters (lib/card-share.js)
+  const stage = rd('lib/rap-stage.js');
+  assert.ok(stage.includes("ctl.setAttribute('data-share-skip', '1'); msg.setAttribute('data-share-skip', '1');"));
+  assert.ok(stage.includes("tag.setAttribute('data-share-skip', '1')"));
+  assert.ok(rd('lib/card-share.js').includes('[data-share-skip]'), 'the card copier leaves out what is marked');
+  // the stage card copies the rap's own link, which carries the whole rap
+  const sk = rd('skills/rap.js'); assert.ok(sk.includes("'Copy its link'") && sk.includes('location.origin + linkOf(at, rap)'));
+  assert.deepEqual(fromLink(linkOf(settingsOf({ topic: 'pizza' }), SAMPLE).replace(/^[^?]*/, '')).rap, SAMPLE, 'the link reopens the same bars');
 });

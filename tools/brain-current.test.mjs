@@ -48,10 +48,10 @@ test('evolved swimmers gather more life than random search with the same scoring
   assert.ok(rows.every((r) => Math.abs(r.mass - K.NX * K.NY) < 1), 'the swimmers push the fluid without making or losing mass ' + say);
 });
 
-test('it runs in the brain as one of twenty organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-two organs: your drag stirs it, it evolves, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 20);
+  assert.ok(B.ORGAN_IDS.includes('current') && B.ORGAN_IDS.length === 22);
   assert.ok(b.current.lives >= 8 && b.runs.current > 200, 'lives ' + b.current.lives + ' runs ' + b.runs.current);
   assert.ok(b.current.fed > 0, 'it fed the tissue where it swam');
   assert.ok(b.board.current && b.board.current.lives === b.current.lives, JSON.stringify(b.board.current));
@@ -65,6 +65,9 @@ test('it runs in the brain as one of twenty organs: your drag stirs it, it evolv
   assert.ok(!B.embodiment(under).some((e) => e.key === 'current'), 'no orb when the swimmers do not beat the drifters');
   const self = B.selfSays(b).find((l) => /^Current:/.test(l)) || '';
   assert.match(self, /^Current: \d+ lives? of swimmers whose tiny networks evolve to ride a lattice-Boltzmann flow your drag stirs; (they gather \d+\.\d times the life of drifters in the same flow|they do not yet gather more life than drifters in the same flow)(\.|, and \d+% more than their first lives\.|, and not yet more than their first lives\.)$/);
+  // before both have lived enough to compare, the line says so (seen live 2026-10-30: it ended in "stirs; .")
+  const young = B.selfSays({ ...b, current: { ...b.current, gains: [], lives: Math.min(b.current.lives, 19) } }).find((l) => /^Current:/.test(l)) || '';
+  assert.match(young, /stirs; not yet enough lives to compare with drifters in the same flow\.$/, young);
   // your drag pushes the fluid: the same current, one run with a drag across it and one without
   const c1 = K.makeCurrent(3), c2 = K.makeCurrent(3), fake = (C, over) => ({ current: C, senses: { over, trail: [[0.3, 0.5, 0], [0.5, 0.5, 0]] }, ws: b.ws, board: {}, ticks: 0 });
   c1.since = c2.since = K.EVERY; K.current.run(fake(c1, true)); K.current.run(fake(c2, false));

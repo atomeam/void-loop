@@ -14,8 +14,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/time/ (the tower's timeanddate.com floor): one file and one small module, no third party, no time service */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --work: #cfeedd; --edge: #f6ecc8; --night: transparent; --bad: #c0392b; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --work: #173c28; --edge: #3a3315; --bad: #ff7a6e; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --work: #cfeedd; --edge: #f6ecc8; --night: transparent; --bad: #c0392b; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --work: #173c28; --edge: #3a3315; --bad: #ff7a6e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -56,6 +56,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/zones.js">
 <link rel="modulepreload" href="/skills/worldtime.js">
 <link rel="modulepreload" href="/lib/date-math.js">
@@ -123,7 +125,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk } from '/lib/zones.js';
+  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt } from '/lib/zones.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -132,7 +134,7 @@
   let main = null; // the city at the top: the one asked for in the link, else you
   const q = new URLSearchParams(location.search), asked = (q.get('c') || q.get('cities') || q.get('q') || '').split(/\s*[,;|]\s*/).filter(Boolean);
   const missing = [];
-  if (asked.length) { const found = asked.map((n) => findPlace(n, ZONES) || (missing.push(n), null)).filter(Boolean); if (found.length) { main = found[0]; places = found; } }
+  if (asked.length) { const found = asked.map((n) => placeAt(n) || findPlace(n, ZONES) || (missing.push(n), null)).filter(Boolean); if (found.length) { main = found[0]; places = found; } }
   if (q.get('h') === '24') h24 = true; else if (q.get('h') === '12') h24 = false;
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ h24, places })); } catch (_) {} };
   const all = () => [youPlace, ...places.filter((p) => p.tz !== you || p.name !== youPlace.name)];
@@ -143,22 +145,23 @@
 
   // sunrise, sunset and the day's length where the shown city stands, worked out once a day per city (lib/zones.js sunDay)
   const SUNMOON = [...$('sunmoon').children].map((n) => n.cloneNode(true)); // the rows as the page first paints them, dashes for every time
-  let sunKey = '', sunDay = null; // lib/sun-day.js, fetched after the page has loaded (the clock shows first)
+  let sunKey = '', sunDay = null, moonOfDay = null; // lib/sun-day.js, fetched after the page has loaded (the clock shows first)
   function drawSun(p, ymd) {
     const k = p.name + '|' + p.tz + '|' + ymd.join('-') + '|' + h24; if (k === sunKey) return; sunKey = k;
     // the sun and moon take a few tens of milliseconds to work out: after the page has loaded, so the clock shows first
-    if (document.readyState !== 'complete' || !sunDay) { const go = () => import('/lib/sun-day.js').then((m) => { sunDay = m.sunDay; sunKey = ''; drawSun(p, ymd); }).catch(() => { $('sun').textContent = 'Sunrise and sunset could not be worked out here: reload with the network on once.'; });
+    if (document.readyState !== 'complete' || !sunDay) { const go = () => import('/lib/sun-day.js').then((m) => { sunDay = m.sunDay; moonOfDay = m.moonOfDay; sunKey = ''; drawSun(p, ymd); }).catch(() => { $('sun').textContent = 'Sunrise and sunset could not be worked out here: reload with the network on once.'; });
       if (document.readyState === 'complete') go(); else addEventListener('load', () => setTimeout(go, 0), { once: true }); return; }
     const s = sunDay(p, ymd), at = (d) => { const x = wall(p.tz, d); return clockText(x.h, x.m, { h24 }); };
     $('sun').textContent = !s ? 'No sunrise and sunset for ' + p.name + ': it is a time zone, not a city whose place on the map is known here. Add a city in it to see them.'
       : s.state === 'always up' ? 'No sunset today: the sun stays up all day (midnight sun). Day length 24 hours.'
       : s.state === 'always down' ? 'No sunrise today: the sun stays below the horizon all day (polar night).'
       : (s.rise ? 'Sunrise ' + at(s.rise) : 'No sunrise today') + ' · ' + (s.set ? 'Sunset ' + at(s.set) : 'no sunset today') + (s.dayMin !== null ? ' · day length ' + lengthText(s.dayMin) : '');
-    $('sh').textContent = s ? 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1') : 'Sun and moon: not known for a time zone with no city';
+    $('sh').textContent = s ? 'Sun and moon today in ' + p.name.replace(/^Your time \((.*)\)$/, '$1') : 'Sun and moon today: the moon, and the sun once a city is added';
     const t = (d, none) => (d ? at(d) : none), pair = (a, b, none) => (a || b ? t(a, '(none)') + ' to ' + t(b, '(none)') : none);
+    const phaseText = (m) => m.name[0].toUpperCase() + m.name.slice(1) + ', ' + m.illumination + '% lit';
     // the list's rows are in the page from the first paint (SUNMOON, dashes), so nothing below moves when they are filled; a time zone with no
-    // city keeps the dashes, its heading and the line under the clock saying why
-    if (!s) { $('sunmoon').replaceChildren(...SUNMOON.map((n) => n.cloneNode(true))); return; }
+    // city has no place to work the sun and the moon's rise from, so those rows say so, and the phase (the same everywhere on Earth) is real
+    if (!s) { $('sunmoon').replaceChildren(...SUNMOON.flatMap((n) => n.tagName === 'DD' ? [] : [n.cloneNode(true), Object.assign(document.createElement('dd'), { textContent: n.textContent === 'Moon phase' ? phaseText(moonOfDay(p.tz, ymd)) : 'needs a city in this zone' })])); return; }
     const rows = [
       ['Sunrise', t(s.rise, s.state === 'always up' ? 'up all day' : 'none today')], ['Sunset', t(s.set, s.state === 'always up' ? 'up all day' : 'none today')],
       ['Solar noon', at(s.noon) + ' (the sun ' + s.noonAlt + '° high)'], ['Day length', s.dayMin === null ? 'not a whole day of sun' : lengthText(s.dayMin)],
@@ -166,7 +169,7 @@
       ['Astronomical dawn and dusk', pair(s.astronomical.dawn, s.astronomical.dusk, 'never fully dark today')],
       ['Golden hour', [s.golden.morning, s.golden.evening].filter((g) => g[0] || g[1]).map((g) => pair(g[0], g[1], '')).join(' and ') || 'none today'],
       ['Moonrise', t(s.moon.rise, s.moon.state === 'always up' ? 'up all day' : 'none today')], ['Moonset', t(s.moon.set, s.moon.state === 'always up' ? 'up all day' : 'none today')],
-      ['Moon phase', s.moon.name[0].toUpperCase() + s.moon.name.slice(1) + ', ' + s.moon.illumination + '% lit']];
+      ['Moon phase', phaseText(s.moon)]];
     $('sunmoon').replaceChildren(...rows.flatMap(([k, v]) => [Object.assign(document.createElement('dt'), { textContent: k }), Object.assign(document.createElement('dd'), { textContent: v })]));
   }
   // date to date (lib/date-math.js counts, through lib/zones.js dateSpan), and n business days on
@@ -180,7 +183,9 @@
   }
   const n2 = (k) => Math.abs(k) + ' business day' + (Math.abs(k) === 1 ? '' : 's');
   // the event announcer: one moment, in every chosen city
-  function eventLink(ms) { return location.origin + location.pathname + '?at=' + encodeURIComponent(new Date(ms).toISOString().replace(/\.000Z$/, 'Z')) + '&cities=' + places.map((p) => encodeURIComponent(p.name)).join(',') + (h24 ? '&h=24' : ''); }
+  // a city in a link: its name, plus @zone when the name alone would not find the same zone again (an airport's city from the flights page)
+  const cityParam = (p) => { const f = findPlace(p.name, ZONES); return encodeURIComponent(f && f.tz === p.tz ? p.name : p.name.replace(/[,;|@]/g, ' ') + '@' + p.tz); };
+  function eventLink(ms) { return location.origin + location.pathname + '?at=' + encodeURIComponent(new Date(ms).toISOString().replace(/\.000Z$/, 'Z')) + '&cities=' + places.map(cityParam).join(',') + (h24 ? '&h=24' : ''); }
   function eventMs() { const list = all(), from = list[+$('evfrom').value || 0] || list[0], v = $('evt').value; if (!v) return null; const [d, tm] = v.split('T'), [y, mo, dd] = d.split('-').map(Number);
     const at0 = instantOf(tm, from.tz, [y, mo - 1, dd]); return at0 ? at0.getTime() : null; }
   function drawEvent(ms) {
@@ -252,14 +257,14 @@
   $('h24').addEventListener('click', () => { h24 = !h24; save(); drawAll(); });
   for (const id of ['ct', 'cfrom']) $(id).addEventListener('input', drawConvert);
   $('pday').addEventListener('input', drawPlan);
-  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + '?c=' + places.map((p) => encodeURIComponent(p.name)).join(',') + (h24 ? '&h=24' : ''); try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + '?c=' + places.map(cityParam).join(',') + (h24 ? '&h=24' : ''); try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
   if (missing.length) $('addnote').textContent = 'Not found: ' + missing.join(', ') + '.';
   const evAt = Date.parse(q.get('at') || ''); let evShown = Number.isFinite(evAt) ? evAt : null;
   $('evgo').addEventListener('click', () => { const ms = eventMs(); if (ms === null) { $('evnote').textContent = 'Pick the day and time of the event first, then its city.'; $('evt').focus(); return; } $('evnote').textContent = ''; evShown = ms; drawEvent(ms); $('event').scrollIntoView({ behavior: 'smooth' }); });
   $('evlink').addEventListener('click', async () => { const ms = eventMs() ?? evShown; if (ms === null) return; try { await navigator.clipboard.writeText(eventLink(ms)); const w = $('evlink').textContent; $('evlink').textContent = 'Copied'; setTimeout(() => { $('evlink').textContent = w; }, 1200); } catch (_) {} });
   $('d1').value = todayIso(); { const t = new Date(Date.parse(todayIso() + 'T00:00:00Z') + 30 * 86400000); $('d2').value = t.toISOString().slice(0, 10); }
   for (const id of ['d1', 'd2', 'bn']) $(id).addEventListener('input', drawDates);
-  drawAll(); drawDates();
+  drawAll(); drawDates(); if (evShown !== null) $('event').scrollIntoView({ block: 'start' }); // a link that carries ?at= (the calendar's event) opens on that moment
   setInterval(() => { drawTop(); if (new Date().getSeconds() === 0) drawClocks(); }, 1000);
   mountRelated(document.getElementById('related'), '/time/', [], { card: () => timeAsk(main, places) });
 </script>

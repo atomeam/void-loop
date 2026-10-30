@@ -58,7 +58,9 @@ export const FLIGHT_ASK = new RegExp('^(?:please\\s+)?(?:'
   + ')(?:\\s+please)?$', 'i');
 export const FLIGHT_TIME_ASK = new RegExp('^(?:please\\s+)?(?:(?:how long is )?(?:the )?flight (?:time|duration|length)|how long (?:is|does) (?:the |a )?flight (?:take )?)\\s*(?:from\\s+(' + PLACE + ')\\s+to\\s+(' + PLACE + ')|between\\s+(' + PLACE + ')\\s+and\\s+(' + PLACE + ')|(' + PLACE + ')\\s+(?:to\\s+)?(' + PLACE + '))?$', 'i');
 export const FLIGHT_DIST_ASK = new RegExp('^(?:please\\s+)?(?:(?:flight |air )?distance (?:from\\s+(' + PLACE + ')\\s+to\\s+(' + PLACE + ')|between\\s+(' + PLACE + ')\\s+and\\s+(' + PLACE + '))|how far is (' + PLACE + ') from (' + PLACE + ')(?: by (?:air|plane))?)$', 'i');
-export const FLIGHT_PAGE_ASK = /^(?:an? |the |free |online |my )*(?:flight\s+(?:search|finder|tracker|price tracker|price alert|itinerary|planner)|airfare\s+(?:tracker|search)|trip\s+itinerary|layover\s+(?:calculator|checker)|airport\s+codes?(?:\s+lookup)?|iata\s+codes?|flight\s+co2(?:\s+calculator)?|flight\s+carbon\s+footprint|air\s+miles\s+calculator|great\s+circle\s+(?:map|mapper|distance))$/i;
+export const FLIGHT_PAGE_ASK = /^(?:an? |the |free |online |my )*(?:flight\s+(?:search|finder|tracker|price tracker|price alert|itinerary|planner|distance)|air\s+distance|airfare\s+(?:tracker|search)|trip\s+itinerary|layover\s+(?:calculator|checker)|airport\s+codes?(?:\s+lookup)?|iata\s+codes?|flight\s+co2(?:\s+calculator)?|flight\s+carbon\s+footprint|air\s+miles\s+calculator|great\s+circle\s+(?:map|mapper|distance))$/i;
+// "where can i fly", "where can i fly from berlin", "destinations from lisbon", "airports within 3 hours of london": the airports a flight time reaches (/flights/routes/)
+export const FLIGHT_ROUTES_ASK = new RegExp('^(?:please\\s+)?(?:where\\s+can\\s+i\\s+fly(?:\\s+to)?(?:\\s+from\\s+(' + PLACE + '))?|(?:nonstop|direct)\\s+(?:destinations|flights?\\s+routes?)(?:\\s+from\\s+(' + PLACE + '))?|(?:destinations|places\\s+to\\s+fly|flights?\\s+routes?)\\s+from\\s+(' + PLACE + ')|places\\s+to\\s+fly|airports\\s+within\\s+\\d{1,2}\\s+hours?(?:\\s+(?:of|from)\\s+(' + PLACE + '))?|explore\\s+destinations(?:\\s+by\\s+flight\\s+time)?)$', 'i');
 const clean = (s) => (s ? String(s).replace(/\s+/g, ' ').replace(/\b(?:tomorrow|today|next week|this weekend)\b.*$/i, '').trim() : '');
 /** where an ask about flights goes: the page's address with the places in it (fromq and toq are names the page looks up in its airport list), or '' when it is not a flight ask. Pure. */
 export function flightAskOf(text) {
@@ -67,6 +69,7 @@ export function flightAskOf(text) {
   if ((m = FLIGHT_TIME_ASK.exec(t))) { const a = m[1] || m[3] || m[5], b = m[2] || m[4] || m[6]; return q(a, b, '/flights/time/'); }
   if ((m = FLIGHT_DIST_ASK.exec(t))) { const a = m[1] || m[3] || m[6], b = m[2] || m[4] || m[5]; return q(a, b, '/flights/distance/'); }
   if ((m = FLIGHT_ASK.exec(t))) { let a = m[1] || m[4] || m[3] || m[6], b = m[2] || m[5]; const sp = b && /^(.+?)\s+from\s+(.+)$/i.exec(b); if (sp) { b = sp[1]; a = sp[2]; } return q(a, b); }
-  if (FLIGHT_PAGE_ASK.test(t)) { const k = t.toLowerCase(); return /itinerary|layover/.test(k) ? '/flights/trip/' : /airport|iata/.test(k) ? '/flights/airports/' : /co2|carbon/.test(k) ? '/flights/co2/' : /air miles|great circle (?:distance)/.test(k) ? '/flights/distance/' : /great circle/.test(k) ? '/flights/map/' : '/flights/'; }
+  if ((m = FLIGHT_ROUTES_ASK.exec(t))) return q(m[1] || m[2] || m[3] || m[4], '', '/flights/routes/');
+  if (FLIGHT_PAGE_ASK.test(t)) { const k = t.toLowerCase(); return /itinerary|layover/.test(k) ? '/flights/trip/' : /airport|iata/.test(k) ? '/flights/airports/' : /co2|carbon/.test(k) ? '/flights/co2/' : /air miles|great circle (?:distance)|distance/.test(k) ? '/flights/distance/' : /great circle/.test(k) ? '/flights/map/' : '/flights/'; }
   return '';
 }

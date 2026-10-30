@@ -192,11 +192,15 @@ export function stabilityHtml(g, esc = escHtml) {
   const col = g.label === 'steady' ? '#3fbf6a' : g.label === 'wobbly' ? '#d9a441' : '#e0584a';
   return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
     + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
-    + '<span class="sub">' + (g.capped ? 'At least ' : '') + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day)'
-    + (g.fixed ? ' not yet fixed by a later green run' : '')
-    + (g.week && g.checks ? ', with ' + esc(g.checks) + ' different check' + (g.checks === 1 ? '' : 's') + ' failing' : '')
-    + (g.fixed ? '; ' + esc(g.fixed) + ' more that a later green run fixed no longer count' : '') + ', from <code>incidents.json</code>'
-    + (g.capped ? ', which keeps only the newest ' + esc(INCIDENTS_KEPT) : '') + '.</span></div>';
+    + '<span class="sub">' + stabilityLine(g, esc) + '</span></div>';
+}
+/** the gauge's sentence in plain words: no file names, and "No failing checks" when the week has none that count. Pure. */
+export function stabilityLine(g, esc = escHtml) {
+  const fixed = g.fixed ? ' ' + esc(g.fixed) + ' earlier red run' + (g.fixed === 1 ? ' was' : 's were') + ' fixed by a later green run.' : '';
+  if (!g.week) return 'No failing checks on main this week.' + fixed;
+  // the log keeps only the newest INCIDENTS_KEPT red runs: a full week may hold more, so it says "at least"
+  return (g.capped ? 'At least ' : '') + esc(g.week) + ' red run' + (g.week === 1 ? '' : 's') + ' of the browser checks on main this week (' + esc(g.day) + ' in the last 24 hours)'
+    + (g.checks ? ', with ' + esc(g.checks) + ' different check' + (g.checks === 1 ? '' : 's') + ' failing' : '') + '.' + fixed;
 }
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
 

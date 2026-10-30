@@ -4,6 +4,7 @@
 import * as T from '/lib/team.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
+import { ownerLink } from '/lib/owner-link.js';
 
 const $ = (id) => document.getElementById(id);
 const OWNER_KEY = 'a2m.void.owner.v1', AGENT_KEY = 'a2m.team.key.v1', READ = 'a2m.team.read.v1', ME_KEY = 'a2m.void.me.v1';
@@ -56,7 +57,7 @@ const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minut
 const dayOf = (t) => { const d = new Date(t), today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
   return d.toDateString() === today.toDateString() ? 'Today' : d.toDateString() === y.toDateString() ? 'Yesterday' : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }); };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'just now' : m < 60 ? m + ' min' : m < 1440 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' d'; };
-const stateWord = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : 'away';
+const stateWord = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
 
 function msgHtml(m, prev, { inThread = false } = {}) {
   const cont = prev && prev.by === m.by && m.at - prev.at < 5 * 60e3 && !(m.replies && !inThread) && new Date(prev.at).toDateString() === new Date(m.at).toDateString();
@@ -91,7 +92,7 @@ function drawSide() {
     const cur = S.view.kind === 'channel' && S.view.c === c.code ? ' aria-current="page"' : '';
     return '<li><a href="#c=' + esc(c.code) + '"' + cur + (unread ? ' class="unread"' : '') + '># ' + esc(c.title) + (unread ? '<span class="badge">' + Math.min(99, c.msgs - (S.read[c.code] || 0)) + '</span>' : '<span class="n">' + (c.msgs || '') + '</span>') + '</a></li>';
   }).join('');
-  $('members').innerHTML = sh.members.length ? sh.members.map((m) => '<li><span class="row" title="' + esc(m.about || '') + '"><i class="dot ' + m.state + '" aria-hidden="true"></i>' + esc(m.name) + '<span class="state">' + esc(stateWord(m)) + (m.done ? ' · ' + m.done + ' done' : '') + '</span></span></li>').join('')
+  $('members').innerHTML = sh.members.length ? sh.members.map((m) => '<li><span class="row" title="' + esc(m.about || '') + '"><i class="dot ' + m.state + '" aria-hidden="true"></i>' + esc(m.name) + '<span class="state">' + esc(stateWord(m)) + (m.done ? ' · ' + m.done + ' done' : '') + '</span>' + (S.me && S.me.kind === 'owner' ? '<button class="relink" type="button" data-relink="' + esc(m.name) + '" title="A new join link for ' + esc(m.name) + '. Its old key and link stop working.">New link</button>' : '') + '</span></li>').join('')
     : '<li><span class="row muted">No agent has joined yet.</span></li>';
   $('newChan').hidden = !S.me; $('invite').hidden = !(S.me && S.me.kind === 'owner');
   $('actLink').toggleAttribute('aria-current', S.view.kind === 'activity');
@@ -110,7 +111,7 @@ async function openChannel(c, { keep = false, scroll = null } = {}) {
   S.view = { kind: 'channel', c }; drawSide();
   const ch = S.shell && S.shell.channels.find((x) => x.code === c);
   head('#' + c, ch && ch.msgs ? ch.msgs + (ch.msgs === 1 ? ' message' : ' messages') : '', ch ? ch.about : '');
-  $('text').placeholder = 'Message #' + c;
+  $('text').placeholder = c === 'work' && S.me && S.me.kind === 'owner' ? 'Ask for work: a post here goes on the build queue' : 'Message #' + c;
   if (!S.me) return gate();
   $('gate').hidden = true; $('compose').hidden = false;
   if (!keep) $('msgs').innerHTML = '<p class="empty muted">Reading #' + esc(c) + '…</p>';
@@ -241,12 +242,17 @@ $('tclose').addEventListener('click', closeThread);
 $('menu').addEventListener('click', () => { const on = $('app').classList.toggle('side'); $('menu').setAttribute('aria-expanded', String(on)); });
 $('find').addEventListener('submit', (e) => { e.preventDefault(); const q = $('q').value.trim(); if (q) location.hash = 'q=' + encodeURIComponent(q); });
 
-// joining with an agent key (kept on this device only, never in an address)
+// joining with an agent key or a join link (the key is kept on this device only, never in an address)
 $('join').addEventListener('submit', async (e) => {
-  e.preventDefault(); const k = $('key').value.trim();
-  if (!T.KEY_RE.test(k)) { $('joinSay').textContent = 'An agent key looks like vt1. then two groups of letters and digits.'; $('joinSay').className = 'say bad'; return; }
+  e.preventDefault(); const v = $('key').value.trim(); const bad = (t) => { $('joinSay').textContent = t; $('joinSay').className = 'say bad'; };
+  let k = v; const code = T.joinCode(v);
+  if (code) { // a join link from the owner: use it up once, keep the key it gives
+    const r = await api('', { do: 'join', code, via: 'the browser' }); if (!r.ok || !r.key) return bad(r.say || 'That join link did not work.');
+    k = r.key;
+  }
+  if (!T.KEY_RE.test(k)) return bad('Paste the join link the owner gave you, or an agent key (vt1. then two groups of letters and digits).');
   store.set(AGENT_KEY, k); $('key').value = ''; chosen = k;
-  const r = await api('?me'); if (!r.me) { store.set(AGENT_KEY, ''); chosen = ''; $('joinSay').textContent = 'That key is not a member\'s. Ask the owner for one.'; $('joinSay').className = 'say bad'; return; }
+  const r = await api('?me'); if (!r.me) { store.set(AGENT_KEY, ''); chosen = ''; return bad('That key is not a member\'s. Ask the owner for a join link.'); }
   start();
 });
 
@@ -259,14 +265,28 @@ $('newChan').addEventListener('click', () => dialog('<h3>Make a channel</h3><for
     const r = await api('', { do: 'channel', code, about: b.querySelector('#ca').value }); if (!r.ok) { b.querySelector('#cs').textContent = r.say; b.querySelector('#cs').className = 'say bad'; return; }
     $('dlg').close(); await shell(); location.hash = 'c=' + code; };
 }));
-$('invite').addEventListener('click', () => dialog('<h3>Invite an agent</h3><p class="muted">The agent gets a key, shown once. It joins, asks for work, and Verse hands it its next job.</p><form id="fi"><label for="iname">Name</label><input id="iname" required maxlength="24" placeholder="scout"><label for="iabout">What it does</label><input id="iabout" maxlength="160" placeholder="a coding agent"><p class="say" id="is" role="status"></p><div class="row"><button class="btn ghost" type="button" data-x>Cancel</button><button class="btn" type="submit">Invite</button></div></form>', (b) => {
+function linkShown(b, r, fresh) {
+  b.innerHTML = '<h3>' + esc(r.name) + (fresh ? ' is invited' : ' has a new link') + '</h3><p>Its join link, shown this once. It works one time, for 24 hours:</p><pre id="il">' + esc(r.join) + '</pre>'
+    + '<p class="muted">Give the link to the agent, in any form. It opens the link and joins: a browser shows a Join button; an HTTP agent POSTs to it; an MCP agent calls the join tool at /team/mcp. How each one works: <a href="/team/agents.txt">/team/agents.txt</a>.</p>'
+    + (fresh ? '' : '<p class="muted">Its old key and links stopped working just now.</p>')
+    + '<div class="row"><button class="btn ghost" type="button" id="icopy">Copy the link</button><button class="btn" type="button" data-x>Done</button></div>'; // void-review: ok (shows the link the server just made to the owner once, escaped; no link is in the code)
+  b.querySelector('#icopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(r.join).then(() => { b.querySelector('#icopy').textContent = 'Copied'; }); };
+  b.querySelector('[data-x]').onclick = () => { $('dlg').close(); shell(); };
+}
+$('invite').addEventListener('click', () => dialog('<h3>Invite an agent</h3><p class="muted">Verse makes a join link. Any agent that opens it joins this chat, sees the history, and asks Verse for its next job.</p><form id="fi"><label for="iname">Name</label><input id="iname" required maxlength="24" placeholder="scout"><label for="iabout">What it does</label><input id="iabout" maxlength="160" placeholder="a coding agent"><p class="say" id="is" role="status"></p><div class="row"><button class="btn ghost" type="button" data-x>Cancel</button><button class="btn" type="submit">Make the link</button></div></form>', (b) => {
   b.querySelector('[data-x]').onclick = () => $('dlg').close();
   b.querySelector('#fi').onsubmit = async (e) => { e.preventDefault();
     const r = await api('', { do: 'invite', name: b.querySelector('#iname').value.trim(), about: b.querySelector('#iabout').value }); if (!r.ok) { b.querySelector('#is').textContent = r.say; b.querySelector('#is').className = 'say bad'; return; }
-    b.innerHTML = '<h3>' + esc(r.name) + ' is invited</h3><p>Its key, shown this once. Keep it secret:</p><pre id="ik">' + esc(r.key) + '</pre><p class="muted">Give it to the agent as VERSE_TEAM_KEY, then run:</p><pre>VERSE_TEAM_KEY=… node tools/team-agent.mjs work</pre><div class="row"><button class="btn ghost" type="button" id="icopy">Copy the key</button><button class="btn" type="button" data-x>Done</button></div>'; // void-review: ok (shows the key the server just made to the owner once, escaped; no key is in the code)
-    b.querySelector('#icopy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(r.key).then(() => { b.querySelector('#icopy').textContent = 'Copied'; }); };
-    b.querySelector('[data-x]').onclick = () => { $('dlg').close(); shell(); }; };
+    linkShown(b, r, true); };
 }));
+// a new join link for a member (the owner): its old key, links and MCP sessions end
+document.addEventListener('click', (e) => {
+  const x = e.target.closest('[data-relink]'); if (!x || !(S.me && S.me.kind === 'owner')) return; const name = x.dataset.relink;
+  dialog('<h3>A new link for ' + esc(name) + '?</h3><p class="muted">Its old key and links stop working now. It joins again with the new link.</p><p class="say" id="rs" role="status"></p><div class="row"><button class="btn ghost" type="button" data-x>Cancel</button><button class="btn" type="button" id="rgo">Make a new link</button></div>', (b) => {
+    b.querySelector('[data-x]').onclick = () => $('dlg').close();
+    b.querySelector('#rgo').onclick = async () => { const r = await api('', { do: 'invite', name, again: true }); if (!r.ok) { b.querySelector('#rs').textContent = r.say; b.querySelector('#rs').className = 'say bad'; return; } linkShown(b, r, false); };
+  });
+});
 
 // Ctrl+K: jump to a channel or an agent's threads
 function switcher() {
@@ -297,10 +317,33 @@ function drawRelated() {
     { label: 'Translate it', href: () => (openText() ? '/translate/?q=' + encodeURIComponent(fit(openText())) : null) },
   ] : []);
 }
+// this browser's Verse account id (shown when the account is signed in but not the owner's, so the owner can name it: lib/owner-accounts.js)
+const ID_RE = /^[A-Za-z0-9_-]{16,64}$/;
+const myRecord = () => { try { return JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}; } catch (_) { return {}; } };
+// the id from this browser's record, or else from the server for the account's own session (/api/passkey 'tier' returns userId)
+async function myId() {
+  const rec = myRecord();
+  if (ID_RE.test(rec.userId || '')) return rec.userId;
+  if (!rec.token) return '';
+  try {
+    const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + rec.token }, body: JSON.stringify({ step: 'tier' }), cache: 'no-store' });
+    const j = r.ok ? await r.json() : null;
+    return j && ID_RE.test(j.userId || '') ? j.userId : '';
+  } catch (_) { return ''; }
+}
+// the id as text with a Copy button, so it can be sent on a phone with one tap
+function showId(el, id) {
+  const label = document.createElement('span'); label.textContent = '. This account\'s Verse id: ';
+  const code = document.createElement('code'); code.textContent = id; code.style.userSelect = 'all';
+  const copy = document.createElement('button'); copy.type = 'button'; copy.textContent = 'Copy'; copy.style.marginLeft = '.5em';
+  copy.addEventListener('click', async () => { try { await navigator.clipboard.writeText(id); copy.textContent = 'Copied'; } catch (_) { copy.textContent = 'Select it to copy'; } });
+  el.append(label, code, copy);
+}
 const incoming = new URLSearchParams(location.search).get('q'); // text another page handed over (/team/?q=...) waits in the message box
 
 // ---- start ----
 async function start() {
+  await ownerLink(); // the owner's signed-in account brings an owner session first (lib/owner-link.js)
   const sh = await shell();
   let me = null, signedIn = false; chosen = '';
   for (const t of tokens()) { // the first one the server knows wins
@@ -312,7 +355,8 @@ async function start() {
   }
   S.me = me;
   $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
-    : signedIn ? 'Signed in, but not as the owner' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+  if (!S.me && signedIn) myId().then((id) => { if (id) showId($('who'), id); });
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
   route(); drawRelated();

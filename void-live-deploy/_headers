@@ -82,3 +82,15 @@
 /podcast/*.mp3
   Content-Type: audio/mpeg
   Access-Control-Allow-Origin: *
+
+/sounds/drums/808/*
+  Content-Type: audio/wav
+  Cache-Control: public, max-age=604800
+
+/sounds/drums/kit/*
+  Content-Type: audio/wav
+  Cache-Control: public, max-age=604800
+
+/sounds/piano/*
+  Content-Type: audio/wav
+  Cache-Control: public, max-age=604800

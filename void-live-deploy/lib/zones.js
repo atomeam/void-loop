@@ -38,10 +38,13 @@ export function timeAsk(main, places = []) {
 const key = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
 
 /** a city, zone id or zone abbreviation typed by a person -> { name, tz }, or null: "tokyo", "Asia/Tokyo", "san francisco", "EST", "são paulo". */
+const realZone = (tz) => { try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return true; } catch (_) { return false; } };
 export function findPlace(text, zones = allZones()) {
   const raw = String(text || '').trim(); if (!raw) return null;
   const k = key(raw.replace(/^(?:the\s+)?time\s+in\s+/i, '').replace(/\s+time$/i, ''));
   const exact = zones.find((z) => z.toLowerCase() === raw.toLowerCase()); if (exact) return { name: cityOf(exact), tz: exact };
+  const named = /^(.+?)@([A-Za-z_]+(?:\/[A-Za-z0-9_+-]+)*)$/.exec(raw); // "Kyoto@Asia/Tokyo", from a card's link (skills/worldtime.js timePage): its own name, in that zone
+  if (named && (zones.includes(named[2]) || realZone(named[2]))) return { name: named[1].trim(), tz: named[2] }; // a geocoder's zone may be an alias the list leaves out (Asia/Ho_Chi_Minh)
   if (ALIAS[k]) return { name: title(k), tz: ALIAS[k] };
   const byCity = zones.find((z) => key(cityOf(z)) === k); if (byCity) return { name: cityOf(byCity), tz: byCity };
   const z = zoneOf(k); if (z) return { name: z.name, tz: z.timezone };
@@ -49,6 +52,14 @@ export function findPlace(text, zones = allZones()) {
   if (off && +off[2] <= 14) { const tz = +off[2] === 0 ? 'UTC' : 'Etc/GMT' + (off[1] === '+' ? '-' : '+') + +off[2]; return { name: 'UTC' + off[1] + +off[2], tz }; }
   const starts = zones.find((z) => key(cityOf(z)).startsWith(k) && k.length >= 3); if (starts) return { name: cityOf(starts), tz: starts };
   return null;
+}
+/** a place a link names with its zone, "City@Area/Zone" (as the flights page writes for an airport's city): { name, tz }, or null when the text has no
+ *  "@" or the zone is not one this device's clock knows (an alias like Asia/Kolkata counts). The name keeps its own spelling, at most 60 characters. Pure. */
+export function placeAt(text) {
+  const raw = String(text || ''), i = raw.lastIndexOf('@'); if (i < 1) return null;
+  const tz = raw.slice(i + 1).trim(), name = raw.slice(0, i).replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if (!name || !/^[A-Za-z][\w+-]*(?:\/[\w+-]+){0,2}$/.test(tz)) return null;
+  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return { name, tz }; } catch (_) { return null; }
 }
 const title = (k) => k.replace(/\b\p{L}/gu, (c) => c.toUpperCase()).replace(/\bDc\b/, 'DC').replace(/\bNyc\b/, 'NYC').replace(/\bUk\b/, 'UK');
 

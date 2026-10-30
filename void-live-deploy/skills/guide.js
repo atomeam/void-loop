@@ -12,7 +12,8 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
-import { withNews, newSince } from '../lib/book-news.js';
+import { withNews, newSince, dayLabel } from '../lib/book-news.js';
+const cleanAsk = (s) => String(s || '').trim().toLowerCase().replace(/[\u2019']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 import { playable, start as showcase } from './showcase.js'; // What's new as a live walkthrough (asked by Verse)
 import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
 import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml, parchmentFilter } from '../lib/tome.js';
@@ -66,6 +67,9 @@ async function load() {
   // a build is played on the stage only when its ask answered with its own card, never the fallback (tools/claims-verify.mjs; owner, 2026-10-15)
   const base = await r.json(), book = withNews(base, led, { tryOf: (e) => (playable(e) || {}).ask }); // an entry with no try of its own gets showcase's
   book.verified = new Set(proof && Array.isArray(proof.ok) ? proof.ok : []);
+  // a line plays on the stage only when its ask answered live; its day offers "play all N on the stage" only for those (it used to offer the
+  // walkthrough for any try, then close the book and show nothing when none had answered)
+  if (book.news) for (const e of book.news.entries) e.live = !!e.try && e.try.charAt(0) !== '/' && book.verified.has(cleanAsk(e.try));
   if (book.news) { const seen = readSeen(); book.news.unseen = newSince(book.news.entries, seen); if (!seen) keepSeen(book.news.latest); } // a first visit has no "since": it just starts counting
   return book;
 }
@@ -226,11 +230,13 @@ function mount(book, api, startAt, text) {
     const t = e.target;
     if (tome.classList.contains('shut') && tome.contains(t)) { e.preventDefault(); e.stopPropagation(); openCover(); return; }
     // asked by Verse: "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive
-    // demonstration": a day's "show these on the stage" closes the book and walks through that day's changes, each one asked for real
+    // demonstration": a day's "play all N on the stage" closes the book and walks through that day's changes, each one asked for real
     const day = t.closest && t.closest('a[data-showcase-day]');
-    if (day) { e.preventDefault(); e.stopPropagation(); const d = day.getAttribute('data-showcase-day'), clean = (s) => String(s || '').trim().toLowerCase().replace(/[\u2019']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' '),
-        steps = ((book.news && book.news.entries) || []).filter((x) => x.day === d && x.try && book.verified.has(clean(x.try))).reverse().map((x) => ({ line: x.line, ask: x.try }));
-      closeTome('ask'); setTimeout(() => { try { if (steps.length) showcase(api.stage, steps, { label: 'What\u2019s new, ' + d }); } catch (_) {} }, 650); return; }
+    if (day) { e.preventDefault(); e.stopPropagation(); const d = day.getAttribute('data-showcase-day'),
+        steps = ((book.news && book.news.entries) || []).filter((x) => x.day === d && x.live).reverse().map((x) => ({ line: x.line, ask: x.try }));
+      if (!steps.length) return; // never close the book onto nothing
+      closeTome('ask'); setTimeout(() => { try { showcase(api.stage, steps, { label: 'What\u2019s new, ' + dayLabel(d) }); } catch (_) {} }, 650); return; }
+    if (t.closest && t.closest('a.tome-tryit[href^="/"]')) { e.stopPropagation(); return; } // a page of the site opens as a link, never turns the page
     const ask = t.closest && t.closest('a[data-ask]'); if (ask) { e.preventDefault(); e.stopPropagation(); const a = ask.getAttribute('data-ask'); closeTome('ask'); setTimeout(() => { try { api.stage.ask(a); } catch (_) {} }, 60); return; }
     const j = t.closest && t.closest('a[data-page]'); if (j) { e.preventDefault(); e.stopPropagation(); go(j.getAttribute('data-page')); return; }
     if (t.classList.contains('tome-dim') || t === root) { closeTome('tap'); return; }

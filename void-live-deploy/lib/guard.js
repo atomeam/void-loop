@@ -6,6 +6,7 @@
 // Every /api route gets: a per-connection budget per minute, a request-size cap, a brake on repeated wrong keys, no
 // cross-site writes from other websites' pages (Gumroad's server-to-server ping and Verse's own tools send no Origin), no CORS,
 // nosniff and no-store by default. Owner keys are compared in constant time.
+import { OWNER_ACCOUNTS, ACCOUNT_ID_RE } from './owner-accounts.js';
 
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
@@ -17,6 +18,7 @@ export const LIMITS = {
   'fanfic-hits': { rpm: 60, body: 0 }, // /fanfic/ read counts (functions/api/fanfic-hits.js): a POST has no body; one count per visitor, story and day, 30 a minute per connection in the route
   boards: { rpm: 600, body: 4700000 }, // the boards (functions/api/boards/[[path]].js): a catalog page loads up to 150 thumbnails; a post carries one picture of up to 4 MB and its thumbnail; posting, reporting and making boards are rate-limited per hashed address in the route itself, behind a bot check
   calshare: { rpm: 60, body: 200000 }, // a whole calendar shared by link (functions/api/calshare.js): one document of up to 1,000 events; 30 a minute and daily ceilings in the route itself
+  rapvoice: { rpm: 200, body: 0 }, // GET only: one bar of a rap in, Verse's voice saying it out (functions/api/rapvoice.js), edge-cached a week; a rap asks for every bar at once, so 200 a minute here and 120 new bars a minute and 2,500 a day in all in the route
   icsfeed: { rpm: 30, body: 0 }, // GET only: a calendar address in, its parsed events out (functions/api/icsfeed.js), edge-cached 30 minutes, 20 addresses a minute in the route
   rsvp: { rpm: 60, body: 2000 }, // replies to an invite (functions/api/rsvp.js): a name and yes, maybe or no; daily ceilings in the route
   podcasts: { rpm: 30, body: 0 }, // GET only: a search phrase, a chart, an iTunes id or a public https feed address in, normalised JSON out; SSRF-safe fetch, 3 MB and 8 s caps, edge-cached 15 min; 20 misses a minute in the route itself (functions/api/podcasts.js)
@@ -29,6 +31,7 @@ export const LIMITS = {
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number
+  joins: { rpm: 30, body: 0 }, // GET only, no input, one COUNT read, cached a minute: the member count and the newest join's time (functions/api/joins.js)
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
@@ -64,6 +67,8 @@ export const LIMITS = {
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
   image: { rpm: 30, body: 2000 }, // the text-to-image page (functions/api/image.js): a prompt of 400 characters in, one picture out; 6 a minute and 24 a day per hashed connection and the day's shared cap in the route itself
+  clip: { rpm: 30, body: 4000 }, // the video page (functions/api/clip.js): GET is the on/off state (and starts the six-hourly self-check while off); POST is one short clip, 2 a minute and 3 a day per hashed connection inside the day's public dollars
+  studio: { rpm: 30, body: 6000000 }, // the studio (functions/api/studio.js): GET is the scoreboard; every POST is owner-only (the bench's fixed prompts, a picture or four video frames to judge, a clip with an optional first frame of up to 4 MB) inside the bench's neuron cap and the video dollar cap
   'daily-art': { rpm: 240, body: 0 }, // the daily picture for the reports (functions/api/daily-art.js): GET (a picture, or its credit as JSON), closed lists, one painting per kind, key and day, a day's budget; photos only from three fixed APIs; the owner's refresh, diag and delete
   'gen-data': { rpm: 60, body: 4000 }, // a published generator's shared data (functions/api/gen-data.js): 5 small writes a call, 20 calls a minute per hashed connection in the route itself
   comments: { rpm: 60, body: 4000 }, // comments under a published generator and /image/ (functions/api/comments.js): 500 characters, a signed sum, 2 a minute and 15 a day per hashed connection in the route itself
@@ -75,16 +80,20 @@ export const LIMITS = {
   digest: { rpm: 6, body: 70000 }, // Verse reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
   video: { rpm: 30, body: 0 }, // Verse's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
   weather: { rpm: 30, body: 0 }, // the weather page's forecast for a place (functions/api/weather.js): GET, edge-cached ten minutes, 10 fresh lookups a minute, no model, no KV
+  autopilot: { rpm: 20, body: 0 }, // what Verse did on its own (functions/api/autopilot.js): GET, edge-cached ten minutes, reads GitHub and the conductor's record, no model, no write
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   filmfind: { rpm: 20, body: 0 }, // film discovery as JSON (functions/api/filmfind.js): GET only, one fixed host (iTunes), at most 10 upstream GETs per call, edge-cached a day, no KV, no model, nothing written
+  holidays: { rpm: 30, body: 0 }, // the next public holidays in one country (functions/api/holidays.js): GET only, two letters in, one fixed host (Nager.Date), edge-cached six hours, no KV, no model
   movies: { rpm: 30, body: 0 }, // real movies (functions/api/movies.js): GET only, a fixed list of sources, edge-cached, no KV, no model
+  local: { rpm: 30, body: 0 }, // the local TV and radio page (functions/api/local.js): GET, a place in or a point in, Radio Browser and Open-Meteo's geocoder at fixed hosts, edge-cached, 20 fresh lookups a minute, no model, no KV
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   jobs: { rpm: 60, body: 0 }, // GET only: the jobs pages' listings and a search's RSS (functions/api/jobs.js); three fixed upstream addresses, each edge-cached for as long as its terms ask (an hour to a day), nothing taken from the caller but a search read against the cached list
   markets: { rpm: 90, body: 0 }, // the crypto card's price list and the /markets/ page's quotes (functions/api/markets.js): GET, edge-cached two minutes (an hour for currencies), 40 fresh lookups a minute in the route itself, no KV
   hook: { rpm: 60, body: 64000 },
   routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },
+  selfcheck: { rpm: 30, body: 60000 }, // Verse's check of its own pages (functions/api/selfcheck.js): public GET of the newest report; only the owner's job POSTs one (80 pages at most)
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
@@ -105,12 +114,44 @@ export async function sameSecret(given, secret) {
   for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i];
   return d === 0;
 }
-// Bearer READ_TOKEN (the owner) or an owner session (below). Fails closed when READ_TOKEN isn't set.
+// The one owner check for the whole site (owner, 2026-10-30: "make it to where i have access to everything stop locking me out of
+// things"). The owner is: Bearer READ_TOKEN, an owner session (below), or the signed-in session of the owner's account, which is any
+// account with a passkey the owner bound with the key (void_owner_passkeys, /api/passkey 'owner-bind'). Every route that asks
+// "is this the owner?" asks ownerOk, so signing in with the owner's passkey opens every owner page. Fails closed on any error.
 export async function ownerOk(request, env) {
   const h = request.headers.get('authorization') || '';
   if (!h.startsWith('Bearer ')) return false;
   const t = h.slice(7);
-  return t.startsWith(OWNER_SESSION_PREFIX) ? ownerSessionOk(t, env) : sameSecret(t, env && env.READ_TOKEN);
+  if (t.startsWith(OWNER_SESSION_PREFIX)) return ownerSessionOk(t, env);
+  if (await sameSecret(t, env && env.READ_TOKEN)) return true;
+  return !!(await ownerAccountSession(t, env));
+}
+// An account is the owner's when the owner named it (lib/owner-accounts.js, or env.OWNER_ACCOUNTS, comma separated), or when one of
+// its passkeys was bound by the owner key. Any read error is false.
+export function ownerListed(env, userId) {
+  if (!ACCOUNT_ID_RE.test(String(userId || ''))) return false;
+  const extra = String((env && env.OWNER_ACCOUNTS) || '').split(',').map((x) => x.trim()).filter((x) => ACCOUNT_ID_RE.test(x));
+  return OWNER_ACCOUNTS.includes(userId) || extra.includes(userId);
+}
+export async function ownerAccount(env, userId) {
+  if (!userId) return false;
+  if (ownerListed(env, userId)) return true;
+  if (!env || !env.DB) return false;
+  try {
+    // void-review: ok (bound parameter)
+    const row = await env.DB.prepare('SELECT 1 AS y FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first();
+    return !!(row && row.y);
+  } catch (_) { return false; }
+}
+// A Verse account session token (the stage's a2m.void.me.v1) -> the owner's user id when it is a live session of the owner's account,
+// else null. Only the SHA-256 of a session token is stored (lib/void-me.js sessionId uses the same 'void-session:' prefix).
+export async function ownerAccountSession(token, env) {
+  if (!env || !env.DB || typeof token !== 'string' || !/^[A-Za-z0-9_-]{40,64}$/.test(token)) return null;
+  try {
+    const row = await env.DB.prepare('SELECT user_id, expires FROM void_sessions WHERE id = ?').bind(hex(await digest('void-session:' + token))).first();
+    if (!row || Number(row.expires) <= Date.now()) return null;
+    return (await ownerAccount(env, row.user_id)) ? row.user_id : null;
+  } catch (_) { return null; }
 }
 // The key itself, never a session. Binding a passkey as the owner's login needs this, so a copied session can't make itself permanent.
 export function ownerKeyOk(request, env) {

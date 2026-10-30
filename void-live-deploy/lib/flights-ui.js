@@ -31,7 +31,7 @@ function readState() {
   if (q.has('from')) state.from = code(q.get('from')); if (q.has('to')) state.to = code(q.get('to')); if (q.has('via')) state.via = code(q.get('via')); if (q.has('d')) state.depart = C.isoDate(q.get('d')); if (q.has('r')) state.ret = C.isoDate(q.get('r'));
   if (q.has('ow')) state.oneWay = q.get('ow') === '1'; if (q.has('ad')) state.ad = Math.min(9, Math.max(1, +q.get('ad') || 1)); if (q.has('ch')) state.ch = Math.min(8, Math.max(0, +q.get('ch') || 0)); if (q.has('cab') && C.CABINS[q.get('cab')]) state.cab = q.get('cab'); if (/^\d{2}:\d{2}$/.test(q.get('t') || '')) state.time = q.get('t');
   if (state.depart && state.depart < today()) { state.depart = ''; state.ret = ''; }
-  state.fromq = (q.get('fromq') || '').slice(0, 60); state.toq = (q.get('toq') || '').slice(0, 60);
+  state.fromq = (q.get('fromq') || '').slice(0, 60); state.toq = (q.get('toq') || '').slice(0, 60); { const m = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/.exec(q.get('tonear') || ''); state.tonear = m ? [+m[1], +m[2]] : null; if (state.tonear && !q.has('to')) state.to = ''; } // a place another page found (/local/): the airport near it, once the list is in
 }
 const ap = (code) => (idx && code ? idx.byIata.get(code) : null);
 const apName = (a) => (a ? a.city + ' (' + a.iata + ')' : '');
@@ -130,7 +130,10 @@ PANELS.facts = (cfg) => {
       [t('Date line'), f.dateLine ? t('the great circle crosses the date line') : t('not crossed')],
       [t('CO2 per ticket'), num(f.co2.kg) + ' kg (' + num(f.co2.low) + ' – ' + num(f.co2.high) + ') · ' + t('with high-altitude effects') + ' ' + num(f.co2.withNonCo2) + ' kg'],
     ];
-    out.innerHTML = '<dl class="dl">' + rows.map((r) => '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>').join('') + '</dl>' + ((a.approx || b.approx) ? '<p class="note">' + esc(t('The time zone of an airport in a country with several zones is placed by its position and can be an hour out.')) + '</p>' : '') + '<p class="note">' + esc(t('The flight time is typical (half an hour plus the distance at 805 km/h), not a timetable. The CO2 figure is an estimate; the method is on the CO2 page.')) + '</p>';
+    out.innerHTML = '<dl class="dl">' + rows.map((r) => '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>').join('') + '</dl>' + ((a.approx || b.approx) ? '<p class="note">' + esc(t('The time zone of an airport in a country with several zones is placed by its position and can be an hour out.')) + '</p>' : '') + '<p class="note">' + esc(t('The flight time is typical (half an hour plus the distance at 805 km/h), not a timetable. The CO2 figure is an estimate; the method is on the CO2 page.')) + '</p>'
+    // the leg carried on to Verse's own pages: the landing moment in both cities, the weather where it lands, the flight as a calendar event, the local radio and TV
+    const go = C.legLinks(a, b, f);
+    out.insertAdjacentHTML('beforeend', '<p class="chips" id="fa-go"><a class="btn" id="fa-time" href="' + esc(go.time) + '">' + esc(t('Landing time in both cities')) + '</a><a class="btn" id="fa-weather" href="' + esc(go.weather) + '">' + esc(t('Weather where it lands')) + '</a><a class="btn" id="fa-cal" href="' + esc(go.calendar) + '">' + esc(t('Add the flight to my calendar')) + '</a>' + (go.local ? '<a class="btn" id="fa-local" href="' + esc(go.local) + '">' + esc(t('Radio and TV where it lands')) + '</a>' : '') + (go.jobs ? '<a class="btn" id="fa-jobs" href="' + esc(go.jobs) + '">' + esc(t('Remote jobs open there')) + '</a>' : '') + '</p>');
     const na = C.nearby(idx, a, 150, 4), nb = C.nearby(idx, b, 150, 4);
     if (na.length || nb.length) { near.innerHTML = '<h3>' + esc(t('Nearby airports')) + '</h3>' + [[a, na], [b, nb]].filter((x) => x[1].length).map(([x, l]) => '<p class="chips">' + esc(x.city) + ': ' + l.map((n) => '<button type="button" class="chip" data-code="' + n.a.iata + '" data-of="' + (x === a ? 'from' : 'to') + '">' + esc(n.a.iata + ' · ' + num(n.km) + ' km') + '</button>').join('') + '</p>').join(''); }
   };
@@ -308,7 +311,7 @@ PANELS.trip = () => {
 
 // ---------- the page ----------
 function loadIndex() {
-  return fetch('/flights/airports.json').then((r) => r.json()).then((d) => { idx = C.makeIndex(d); document.documentElement.dataset.flightsReady = '1'; for (const k of ['from', 'to']) { const w = state[k + 'q']; if (w) { const r = C.searchAirports(idx, w, 1)[0]; if (r) state[k] = r.iata; state[k + 'q'] = ''; } } if (state.from || state.to) emit(); for (const f of subs) f(); }).catch(() => { const n = document.getElementById('fl-err'); if (n) n.hidden = false; });
+  return fetch('/flights/airports.json').then((r) => r.json()).then((d) => { idx = C.makeIndex(d); document.documentElement.dataset.flightsReady = '1'; for (const k of ['from', 'to']) { const w = state[k + 'q']; if (w) { const r = C.searchAirports(idx, w, 1)[0]; if (r) state[k] = r.iata; state[k + 'q'] = ''; } } if (state.tonear) { const a = state.to ? null : C.airportNear(idx, state.tonear[0], state.tonear[1]); if (a) state.to = a.iata; state.tonear = null; } if (state.from || state.to) emit(); for (const f of subs) f(); }).catch(() => { const n = document.getElementById('fl-err'); if (n) n.hidden = false; });
 }
 // the page keeps itself, its code and the airport list in the service worker's cache (sw.js CACHE, 'void-shell-v2': keep the two names the same), so a reload with the
 // network cut shows the whole page even when the worker took over a moment ago and has not fetched the page yet (the worker answers a page from this cache by its path)

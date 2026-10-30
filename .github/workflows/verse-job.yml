@@ -31,7 +31,6 @@ permissions:
   actions: write
   checks: read
   statuses: read
-  models: read # GitHub Models, a second free model pool for the coder
 
 jobs:
   gate:
@@ -98,7 +97,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
-          GH_MODELS_TOKEN: ${{ github.token }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

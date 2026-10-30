@@ -22,6 +22,15 @@ export function controlsOf(html = '') {
 /** the controls count a ranking may trust, else null: a home page whose html holds fewer than 2 controls is the shell a script builds the page in,
  *  a sign-in wall or a stub, not the page (2026-10-29: linkedin.com/jobs read 1 control over 19 scripts and put the jobs lane first). Pure. */
 export const trustedControls = (row) => { const c = row && row.controls; return c === null || c === undefined || !Number.isFinite(+c) || +c < 2 ? null : +c; };
+/** the controls count the queue may rank on, else null: a trusted count read on the rendered page of the site itself. A row the browser could not
+ *  render (counted 'unrendered') or read without a browser (counted 'html') is a raw-html guess, and a page tools/tower-size.mjs found to be a bot
+ *  wall or a country or language picker (shell 'wall' or 'gateway') is a door, not the site: each sorts behind every rendered row, so a failed render
+ *  or a splash page never jumps the queue as a fake small site (owner review, 2026-10-30: howsecureismypassword.net read 3 raw controls, 9 rendered;
+ *  serverdiscounter.com's 3 were a bot check's links, wheeloutlet.com's 6 a country picker). Pure. */
+// a rendered page with under 20 controls and under half the controls its raw html had is not the page the site served: the browser met a block or
+// a check (2026-10-30: coinflip.tech rendered 5 of 149, generatorguru.com 4 of 356, an "access temporarily denied" page), so it ranks behind too
+export const renderDrop = (row) => !!row && row.counted === 'rendered' && Number.isFinite(+row.htmlControls) && Number.isFinite(+row.controls) && +row.controls < 20 && +row.controls * 2 < +row.htmlControls;
+export const rankableControls = (row) => (!row || ['unrendered', 'html'].includes(row.counted) || ['wall', 'gateway'].includes(row.shell) || renderDrop(row) ? null : trustedControls(row));
 /** what one home page is made of, from its html text, the sizes of what it loads and its sitemap: { bytes, controls, scripts, styles, nodes, routes }.
  *  `assets` is [{ url, bytes }] for the same-site scripts, stylesheets and images the html names; `sitemapUrls` the count of urls its sitemap lists
  *  (null when it has none: the page's own internal links stand in). `controls` is controlsOf's total. Pure. */

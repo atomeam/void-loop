@@ -68,9 +68,9 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /photos/iloveimg/ | A public API | missing | iloveimg.com |
 | 1 | /flights/trip/ | A public API | missing | tripwaffle.com |
 | 1 | /flights/airports/ | A public API | missing | aruljohn.com |
+| 1 | /hosting/ | A public API | missing | thunit.com |
 | 1 | /bpm/ | A public API | missing | anotherproducer.com |
 | 1 | /g/ | A public API | missing | codebasehq.com |
-| 1 | /hosting/ | A public API | missing | thunit.com |
 | 1 | /tournaments/ | A public API | missing | yunite.xyz |
 | 1 | /pdf/editor/ | A public API | missing | sejda.com |
 | 1 | /pdf/studio/ | A public API | missing | smallpdf.com |
@@ -111,8 +111,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
-| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA | partial | onlineconverter.com |
-| 1 | /converter/ | Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair | partial | onlineconverter.com |
+| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet) | partial | onlineconverter.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |
 | 1 | /stopwatch/ | Classroom timers with themes and sounds | missing | online-stopwatch.com |
@@ -124,3 +123,4 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /calendar/ | Dark mode | missing | calendar.online |
 | 1 | /kanban/quick/ | Dark mode | missing | abacktools.com |
 | 1 | /jobs/regions/ | Dark mode | missing | jobicy.com |
+| 1 | /jobs/tags/ | Dark mode | missing | remoteok.com |

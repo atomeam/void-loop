@@ -8,7 +8,7 @@
  */
 const SHARED = ['search', 'saved', 'alerts', 'tracker', 'feed', 'sources'];
 export const JOB_SITES = Object.freeze([
-  { path: '/jobs/', tag: 'Remote jobs from three free feeds, with alerts and a tracker on your device', card: 'jobs', lane: 'jobs', name: 'Jobs', h1: 'Jobs', panels: SHARED,
+  { path: '/jobs/', tag: 'Remote jobs from three free feeds, with alerts and a tracker on your device', card: 'remote jobs', lane: 'jobs', name: 'Jobs', h1: 'Jobs', panels: SHARED,
     intro: 'Search remote jobs by keyword, place, tag and salary, filter and sort them, save jobs and searches, see what is new since your last visit, and keep your applications (applied, interview, offer) with notes in a tracker that never leaves this device. Listings come from Remotive, Jobicy and Himalayas; you apply on the original posting.',
     does: 'A job search on your device: remote jobs from Remotive, Jobicy and Himalayas with keyword, place, tag, category, type, level and salary filters and sorting; saved jobs and searches, alerts as new matches since your last visit and an RSS feed; an application tracker with notes, a calendar file and CSV export. No account, no profile, nothing about you stored on a server; English and German.',
     asks: ['jobs', 'find jobs', 'job search', 'remote jobs', 'remote job board', 'job alerts', 'job application tracker', 'remote developer jobs'],

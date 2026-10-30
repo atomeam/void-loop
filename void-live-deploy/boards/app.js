@@ -10,8 +10,10 @@
     try { me = { ...me, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
     const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(me)); } catch (_) {} };
     if (!me.pw) { const r = new Uint8Array(12); crypto.getRandomValues(r); me.pw = [...r].map((x) => x.toString(16).padStart(2, '0')).join(''); keep(); } // this device's delete password: sent with each post, kept by Verse only as a keyed hash
-    const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
+    let owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
     const auth = owner ? { authorization: 'Bearer ' + owner } : {};
+    // the owner's signed-in account brings an owner session (lib/owner-link.js); later calls carry it
+    import('/lib/owner-link.js').then((m) => m.ownerLink()).then((t) => { if (t && t !== owner) { owner = t; auth.authorization = 'Bearer ' + t; } }).catch(() => {});
     const api = async (qs, init = {}) => { const r = await fetch(API + qs, { ...init, headers: { ...auth, ...(init.headers || {}) } }); let j = {}; try { j = await r.json(); } catch (_) {} return { status: r.status, ...j }; };
     const ago = (t) => { const s = Math.max(0, (Date.now() - t) / 1000); return s < 60 ? 'just now' : s < 3600 ? Math.floor(s / 60) + ' min ago' : s < 86400 ? Math.floor(s / 3600) + ' h ago' : Math.floor(s / 86400) + ' d ago'; };
     const when = (t) => new Date(t).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });

@@ -187,8 +187,13 @@ test('after a reload the card shows what the host kept and gets back what it was
   assert.ok(b.restored.length > 0, 'the host lists what it kept');
   assert.ok(!B.isCold(b.brain), 'this page\'s ask warmed it');
   assert.ok(b.onlyHere(), 'it holds only this page\'s asks');
-  const done = B.loadWorking(b.brain, working); b.warm(b.brain);
+  const done = B.loadWorking(b.brain, working), back = b.brain.concepts.words.slice(-6); b.warm(b.brain);
   assert.ok(done.includes('workspace'));
+  // "Back from before the reload" names the words read before warm(): from before the reload, not this page's opening ask (2026-10-30)
+  assert.ok(back.includes('romance') && !back.includes('brain'), back.join(','));
+  assert.ok(b.brain.concepts.words.slice(-6).includes('brain'), 'after warm() the newest words are this page\'s ask, so the line must not read them');
+  const card = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/skills/verse-brain.js', import.meta.url), 'utf8');
+  assert.match(card, /const words = S\(\)\.b\.concepts\.words\.slice\(-6\);\s*if \(here\) host\.warm\(S\(\)\.b\);/);
   for (const w of ['romance', 'knights', 'brain']) assert.ok(b.brain.concepts.words.includes(w), w);
   assert.ok(!b.onlyHere(), 'given back once');
   b.stop();

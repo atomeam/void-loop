@@ -1,15 +1,16 @@
 // /rap/ (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is"): the form's settings go to
-// /api/answer mode 'rap' (lib/rap.js), and the rap that comes back is drawn and performed by lib/rap-stage.js. A link carries the settings (?t= topic,
+// /api/answer mode 'rap' (lib/rap.js), and the rap that comes back is drawn and performed by lib/rap-stage.js, and heard against other tracks by lib/rap-listen.js. A link carries the settings (?t= topic,
 // s, m, f, v, w, k) and, once shared, the whole rap (?r=), which opens with no model call. The page hands its rap to the other tools (lib/toolkit.js)
 // and tells Verse Brain the topic when one is open in this browser (lib/brain-bridge.js).
-import { settingsOf, linkOf, fromLink, rapText } from '/lib/rap.js';
+import { settingsOf, linkOf, fromLink, rapText, beatFor, cardAsk } from '/lib/rap.js';
 import { mountRap } from '/lib/rap-stage.js';
+import { mountEars } from '/lib/rap-listen.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
 
 const $ = (id) => document.getElementById(id);
 const form = $('rapForm'), out = $('out'), note = $('formNote');
-let settings = null, rap = null, stage = null, busy = false;
+let settings = null, rap = null, stage = null, ears = null, busy = false;
 
 const brain = connectBrain();
 brain.on((m) => { const p = $('brainSay'); if (!p) return; const t = m.thinking || (m.words && m.words[m.words.length - 1]); p.hidden = !t; if (t) p.textContent = 'Verse Brain, open in another tab, is thinking about "' + t + '"' + (m.related && m.related.length ? ', near ' + m.related.map((r) => r.word).join(', ') : '') + '.'; });
@@ -23,17 +24,20 @@ function drawRelated() {
     { label: 'Count the words', href: () => (text() && encodeURIComponent(text()).length <= LINK_MAX ? '/word-count/?t=' + encodeURIComponent(text()) : null) },
     { label: 'Translate it', href: () => (text() ? '/translate/?q=' + encodeURIComponent(text().slice(0, 5000)) : null) },
     { label: 'Make a song of it', href: () => '/?q=' + encodeURIComponent('make a hip hop song about ' + (settings.topic || rap.title || 'verse')) },
-  ]);
+    { label: 'Practise at its tempo', href: () => '/metronome/?bpm=' + beatFor(settings).bpm },
+  ], { card: () => cardAsk(settings || readForm()) });
 }
 
 function readForm() { return settingsOf({ topic: $('topic').value, style: $('style').value, mood: $('mood').value, flow: $('flow').value, view: $('view').value, words: $('words').value, seed: settings ? settings.seed : 0 }); }
 function fillForm(s) { $('topic').value = s.topic; $('style').value = s.style; $('mood').value = s.mood; $('flow').value = s.flow; $('view').value = s.view; $('words').value = s.words; }
 
 function show(r, s, from) {
-  rap = r; settings = s; if (stage) stage.stop();
+  rap = r; settings = s; if (stage) stage.stop(); if (ears) ears.stop();
   out.hidden = false; $('title').textContent = r.title || (s.topic ? 'A rap about ' + s.topic : 'A rap from Verse');
   stage = mountRap($('rap'), r, s);
   if (from) stage.say(from);
+  // Verse's ears (lib/rap-listen.js): it listens to a track the visitor gives it, scores its own take against it and retunes the take
+  try { ears = mountEars($('ears'), { stage: () => stage, settings: () => settings, writeFlow: (f) => { $('flow').value = f; write({ ...readForm(), seed: 0 }, f === 'double' ? 'Writing it again in double time, to match the track.' : 'Writing it again laid back, to match the track.'); } }); } catch (_) { ears = null; }
   document.title = ($('title').textContent) + ' · Verse raps';
   history.replaceState(null, '', linkOf(s, null));
   drawRelated();

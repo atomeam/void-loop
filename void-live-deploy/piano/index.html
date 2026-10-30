@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: music; out: music">
 <title>Online piano: play with your keyboard or touch · Verse</title>
 <meta name="description" content="A free online piano you play with the computer keyboard, the mouse, a touch screen or a MIDI keyboard: twelve instruments, a sustain pedal, key labels, sheet music in plain letters, record and replay, transpose and reverb. No account; it works offline.">
 <meta property="og:type" content="website">
@@ -13,8 +14,8 @@
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; } }
+  :root { color-scheme: light; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
+  :root:not([data-theme=light]) { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
   :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
@@ -90,6 +91,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/music-ui.js">
 <link rel="modulepreload" href="/lib/music-de.js">
 <!-- /modulepreload -->
@@ -104,6 +107,7 @@
     <div class="kb" id="kb" role="group" aria-label="Piano keyboard, press a key"><div class="kbi" id="kbi"></div></div>
     <div class="row"><button type="button" id="sus" aria-pressed="false">Sustain (hold the space bar)</button><label class="chk"><input type="checkbox" id="lab" checked> Show the computer key on each note</label><label class="chk"><input type="checkbox" id="rev"> Reverb</label><label class="chk"><input type="checkbox" id="midi"> MIDI keyboard</label></div>
     <p class="note" id="status" role="status" aria-live="polite">Play with the keys 1 2 3 4 5 6 7 8 9 0 q w e r t y u i o p a s d f g h j k l z x c v b n m. Hold Shift for a sharp. Tap or click the keys on a touch screen.</p>
+    <p class="note" style="text-align:center"><a id="toChords" href="/chords/" hidden>Name the notes you just played on the chord finder</a></p>
   </section>
   <section class="pane" aria-label="Record and replay">
     <h2>Record and replay</h2>

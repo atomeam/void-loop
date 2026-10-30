@@ -11,10 +11,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Forecasts by place | Weather | have | its live page (2026-10-28): "nic and Atmospheric Administration HOME FORECAST Local Graphical Aviation Marine Rivers and Lakes Hurricanes S" | void-live-deploy/weather/index.html:76 `<footer>Forecasts from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>;` |
-| Warnings and alerts | Weather | have | its live page (2026-10-28): "a SAFETY INFORMATION Wireless Emergency Alerts Brochures Weather-Ready Nation Cooperative Observers Daily Brie" | void-live-deploy/weather/index.html:59 `d sunset, the chance of rain, alerts and radar.</p>` |
-| Radar | Weather | have | its live page (2026-10-28): "DING... --> ACTIVE ALERTS FORECAST MAPS RADAR Standard Radar (Low Bandwidth) Enhanced Radar RIVERS, LAKES, RAI" | void-live-deploy/weather/index.html:59 `he chance of rain, alerts and radar.</p>` |
-| Hourly forecast | Weather | have | every site of this kind offers it | void-live-deploy/lib/weather.js:29 `+ '&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_ma` |
+| Forecasts by place | Weather | have | its live page (2026-10-28): "nic and Atmospheric Administration HOME FORECAST Local Graphical Aviation Marine Rivers and Lakes Hurricanes S" | void-live-deploy/weather/index.html:78 `<footer>Forecasts from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>;` |
+| Warnings and alerts | Weather | have | its live page (2026-10-28): "a SAFETY INFORMATION Wireless Emergency Alerts Brochures Weather-Ready Nation Cooperative Observers Daily Brie" | void-live-deploy/weather/index.html:61 `d sunset, the chance of rain, alerts and radar.</p>` |
+| Radar | Weather | have | its live page (2026-10-28): "DING... --> ACTIVE ALERTS FORECAST MAPS RADAR Standard Radar (Low Bandwidth) Enhanced Radar RIVERS, LAKES, RAI" | void-live-deploy/weather/index.html:61 `he chance of rain, alerts and radar.</p>` |
+| Hourly forecast | Weather | have | every site of this kind offers it | void-live-deploy/lib/weather.js:29 `+ '&hourly=temperature_2m,precipitation_probability,precipitation,weather_code&daily=tem` |
 | Forecaster discussions | Weather | missing | studied by hand: weather.gov offers this (https://www.weather.gov/) | no sign of it in the source of /weather/ |
 | Marine, aviation and fire weather | Weather | missing | its live page (2026-10-28): "istration HOME FORECAST Local Graphical Aviation Marine Rivers and Lakes Hurricanes Severe Weather Fire Weathe" | no sign of it in the source of /weather/ |
 | Climate records | Weather | missing | its live page (2026-10-28): "her Sunrise/Sunset Long Range Forecasts Climate Prediction Space Weather PAST WEATHER Past Weather Astronomica" | no sign of it in the source of /weather/ |

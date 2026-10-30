@@ -1,9 +1,10 @@
 /**
  * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
+ * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
+import { qrMatrix, qrSvg } from '../lib/qr.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -117,9 +118,14 @@ async function run(text, api) {
     const pw = Array.from(a, (x) => set[x % set.length]).join('');
     el = showPage((p) => { p.innerHTML = '<h2>Password</h2>' + big(pw, 26) + copyBtn + '<p style="color:#8a8a8a">' + q.n + ' characters, made in your browser and never sent anywhere · ask again for another</p>'; });
   } else if (q.kind === 'qr') {
-    const src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=' + encodeURIComponent(q.data);
-    el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div><img alt="QR code for ' + esc(q.data) + '" src="' + esc(src) + '" style="float:none;max-width:240px;max-height:240px;background:#fff;border-radius:8px;margin:8px 0">'
-      + '<div class="src">Source: <a href="https://goqr.me/api/" target="_blank" rel="noopener">goqr.me</a></div>'; });
+    // 2026-10-30: drawn here (lib/qr.js), not fetched from goqr.me. The fetched picture was an https image, so the card frame made it the art and
+    // cropped it to 16:10 (lib/card-frame.js), which cut the finder squares off and left a code no phone could scan. An inline SVG stays whole.
+    const code = qrMatrix(q.data, { ecl: 'M' });
+    const svg = code ? qrSvg(code, { margin: 4, label: 'QR code' }) : ''; // void-review: ok (qrSvg is built from numbers and a fixed label only)
+    el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div>'
+      + (svg ? '<div class="util-qr" style="width:min(240px,100%);aspect-ratio:1;margin:8px 0;border-radius:8px;overflow:hidden;background:#fff">' + svg.replace('<svg ', '<svg width="100%" height="100%" ') + '</div>'
+        + '<p style="color:#8a8a8a">Made in your browser and never sent anywhere · error correction M · scan it with a phone camera</p>'
+        : '<p>That text is too long for one QR code (a version 40 code holds about 2,300 characters).</p>'); });
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'

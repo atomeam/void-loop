@@ -24,6 +24,10 @@ export const PERKS = Object.freeze([
   { id: 'follow', title: 'Your Verse follows you', text: 'Sign in with a passkey and your stage, memory and kept cards sync to every device.' },
   { id: 'watch', title: 'Watches', text: 'Ask Verse to keep an eye on something and tell you when it changes.' },
   { id: 'review', title: 'Code Review Pro', text: 'A Verse key for the AI closer read on your pull requests, with a daily allowance.' },
+  { id: 'films', title: 'Review Verse\'s films', text: 'Rate each new Verse film on the films page and leave a note. The owner reads every one.' },
+  { id: 'mark', title: 'The MultiVerse mark', text: 'Your stage and your published page show the MultiVerse mark in the corner. It opens this page.' },
+  { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
+  { id: 'share', title: 'Your page shares as yours', text: 'A link to your published page shows your name and your cards in iMessage, Discord, X and Slack, not the Verse home card.' },
 ]);
 export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
@@ -75,7 +79,8 @@ export const jobAsk = (text) => 'A paid member asked Verse to add this (their wo
  * and the queue row is written only when the idea row was, in one batch (one transaction), so two sends at the same moment
  * cannot both pass a count read before either was written. */
 export async function queueIdea(env, userId, text, now = Date.now()) {
-  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm';
+  // the job id carries the idea's own random tail: two ideas in the same millisecond (two members, or one quick sender) are two jobs, not a clash that loses the second
+  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm' + id.slice(-4);
   const r = await env.DB.batch([
     env.DB.prepare('INSERT INTO void_member_ideas (id, user_id, text, at, job) SELECT ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 10) = ?) < ? AND (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 7) = ?) < ?')
       .bind(id, userId, text, at, job, userId, at.slice(0, 10), DAILY, userId, at.slice(0, 7), MONTHLY),
@@ -98,6 +103,14 @@ export function stateText(state, note) {
 export async function mine(env, userId) {
   const { results } = await env.DB.prepare('SELECT i.id, i.text, i.at, q.state, q.note FROM void_member_ideas i LEFT JOIN void_queue q ON q.id = i.job WHERE i.user_id = ? ORDER BY i.at DESC LIMIT 50').bind(userId).all();
   return (results || []).map((r) => ({ id: r.id, text: r.text, at: r.at, ...stateText(r.state, r.note) }));
+}
+
+/** Built by @name: the shipped ideas of one published page's owner, newest first, for that page (members perk, 2026-10-30). */
+export async function builtBy(env, handle, limit = 6) {
+  try {
+    const { results } = await env.DB.prepare("SELECT i.text, q.updated AS at, q.note FROM void_pages p JOIN void_member_ideas i ON i.user_id = p.user_id JOIN void_queue q ON q.id = i.job WHERE p.handle = ? AND q.state IN ('done','live') ORDER BY q.updated DESC LIMIT ?").bind(handle, limit).all();
+    return (results || []).map((r) => ({ text: String(r.text).slice(0, 200), at: r.at, pr: stateText('done', r.note).pr }));
+  } catch (_) { return []; }
 }
 
 /** Built by members: shipped ideas, newest first, credited to the member's published @name when they have one. */

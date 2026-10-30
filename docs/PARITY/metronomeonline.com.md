@@ -11,5 +11,5 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Set the tempo | Tempo | have | its live page (2026-10-28): "Free Online Metronome – Accurate BPM Tempo Tool / Metronome Online Loading..." | void-live-deploy/metronome/index.html:111 `ue="120" step="1" aria-label="Beats per minute" style="flex:1 1 120px"><button type="butto` |
-| Time signatures and accents | Tempo | have | every site of this kind offers it | void-live-deploy/metronome/index.html:106 `aria-label="Beats of the bar, press one to change its accent"><button class="dot" type="bu` |
+| Set the tempo | Tempo | have | its live page (2026-10-28): "Free Online Metronome – Accurate BPM Tempo Tool / Metronome Online Loading..." | void-live-deploy/metronome/index.html:113 `ue="120" step="1" aria-label="Beats per minute" style="flex:1 1 120px"><button type="butto` |
+| Time signatures and accents | Tempo | have | every site of this kind offers it | void-live-deploy/metronome/index.html:108 `aria-label="Beats of the bar, press one to change its accent"><button class="dot" type="bu` |

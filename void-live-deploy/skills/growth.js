@@ -5,6 +5,7 @@
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
+import { communityHtml } from '../lib/joins.js'; // the community line: members on MultiVerse and the join link (GET /api/joins)
 import { lastRunHtml } from '../lib/will-last.js'; // the will's last run: shipped with its PR, or why not (GET /api/will lastRun)
 import { PROOF_URL, todayCheck, todayHtml } from '../lib/ledger-today.js'; // today's lines with their hashes, checked here against /growth.proof.json
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
@@ -22,8 +23,9 @@ export const PAGE_SIZE = 40;
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/[’]/g, "'").replace(/\s+/g, ' ');
 const ASK_RE = /^(?:(?:show|open|summon|give)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:(?:verse|void)(?:'s)?\s+)?growth(?:\s+(?:ledger|log|panel|history))?$|^(?:how\s+(?:have\s+you|has\s+(?:verse|void))\s+grown|how\s+did\s+(?:you|(?:verse|void))\s+grow|what\s+(?:have\s+you|has\s+(?:verse|void))\s+learned\s+lately|what'?s\s+new\s+(?:in|with)\s+(?:verse|void))$/;
-// "what just shipped?" is about Verse here, not the Just Cause video games (2026-10-19: it came back as a Wikipedia sentence about copies shipped)
-const SHIPPED_RE = /^what(?:'s|\s+has|\s+have\s+you)?\s+(?:just\s+)?shipped(?:\s+(?:today|lately|recently|yesterday|so\s+far))?$|^what\s+did\s+you\s+(?:just\s+)?(?:ship|build)(?:\s+(?:today|lately|recently|yesterday))?$|^what\s+have\s+you\s+just\s+(?:shipped|built)$|^what\s+(?:was|has\s+been)\s+(?:just\s+)?(?:shipped|built)(?:\s+(?:today|lately|recently))?$/;
+// "what just shipped?" is about Verse here, not the Just Cause video games (2026-10-19: it came back as a Wikipedia sentence about copies shipped);
+// "what got built" too (2026-10-30: on a-to-mind.com it gave "Not found ... Did you mean Built to Spill?")
+const SHIPPED_RE = /^what(?:'s|\s+has|\s+have\s+you)?\s+(?:just\s+)?shipped(?:\s+(?:today|lately|recently|yesterday|so\s+far))?$|^what\s+did\s+you\s+(?:just\s+)?(?:ship|build)(?:\s+(?:today|lately|recently|yesterday))?$|^what\s+have\s+you\s+just\s+(?:shipped|built)$|^what\s+(?:was|has\s+been|got)\s+(?:just\s+)?(?:shipped|built)(?:\s+(?:today|lately|recently))?$/;
 export function growthOf(text) { const t = CLEAN(text); return ASK_RE.test(t) || SHIPPED_RE.test(t); }
 // "what can you do now that you couldn't last week?": the same card, opening on the last 7 days (weekSummary) with the tree
 // set to a week ago, so this week's tips grow in as it answers
@@ -249,12 +251,18 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Verse has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list) + '<div data-today></div>' + '<div data-will-last></div>' + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
+  el.innerHTML = growthHead(esc, list) + '<div data-today></div>' + '<div data-will-last></div>' + '<div data-join></div>' + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
   // the verifiable ledger's "today" view (lib/ledger-today.js; the frontier's growth ledger): today's lines (UTC) with their line hashes, and the
   // whole chain recomputed in this browser against the proof the deploy wrote; with no proof served, no block
   fetch(PROOF_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((proof) => (proof ? todayCheck(list, proof) : null)).then((res) => {
     const slot = el.querySelector('[data-today]'), html = todayHtml(esc, res, { label: KIND_LABEL, color: KIND_COLOR, text: plainly });
     if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: todayHtml escapes every value (lib/ledger-today.js, tested with markup in an entry)
+  }).catch(() => {});
+  // the community line (asked by Verse: the join v01d store link in the growth card): how many members MultiVerse has, when the newest
+  // joined, and the join link (lib/joins.js, GET /api/joins); no members is said as it is, and a read failure shows nothing
+  fetch('/api/joins', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((stats) => {
+    const slot = el.querySelector('[data-join]'), html = stats && communityHtml(esc, stats);
+    if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: communityHtml escapes the count and the time and writes a fixed link (lib/joins.js, tested with markup in a value)
   }).catch(() => {});
   // the will's last run under the day's lines: what it last tried, and the PR it shipped or the reason it did not (lib/will-last.js)
   fetch('/api/will', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((w) => {

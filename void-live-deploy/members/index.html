@@ -33,6 +33,9 @@
   .perks span { color: var(--dim); font-size: 14px; }
   .buy { display: inline-block; margin: 16px 0 4px; padding: 12px 20px; border-radius: 999px; background: linear-gradient(135deg, #6b55ff, #a06bff); color: #fff; font-weight: 600; text-decoration: none; box-shadow: 0 0 24px #7b61ff55; }
   .muted { color: var(--dim); font-size: 14px; }
+  input { width: 100%; box-sizing: border-box; margin-top: 8px; background: #0d0b18; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+  input:focus { outline: 2px solid var(--glow); outline-offset: 1px; }
+  #claim { margin-top: 18px; }
   textarea { width: 100%; box-sizing: border-box; min-height: 120px; background: #0d0b18; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; resize: vertical; }
   textarea:focus { outline: 2px solid var(--glow); outline-offset: 1px; }
   button { margin-top: 10px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--glow); background: #1a1630; color: var(--ink); font: inherit; cursor: pointer; }
@@ -53,8 +56,19 @@
   <h1>MultiVerse</h1>
   <h2>What it adds</h2>
   <ul class="perks" id="perks"></ul>
-  <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj">Join MultiVerse<span id="price"></span></a>
-  <p class="muted" id="how">Sign in on Verse with a passkey first, then join from this page, so the membership unlocks your Verse.</p>
+  <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" target="_blank" rel="noopener">Join MultiVerse<span id="price"></span></a>
+  <p class="muted" id="how">Sign in on Verse with a passkey first, then come back here to join, so the membership unlocks your Verse.</p>
+
+  <section class="panel" id="claim" hidden>
+    <b>Already joined?</b>
+    <p class="muted">Paste the Order ID from your Gumroad receipt email and the email you paid with. Verse then links the membership to this Verse.</p>
+    <label for="order" class="muted">Order ID</label>
+    <input id="order" autocomplete="off" spellcheck="false" maxlength="80" placeholder="N6blWbTnSDY7nQYhsLEGrg==">
+    <label for="email" class="muted">Email you paid with</label>
+    <input id="email" type="email" autocomplete="email" maxlength="200">
+    <button id="claimgo" type="button">Unlock my Verse</button>
+    <p id="claimsay" aria-live="polite"></p>
+  </section>
 
   <section id="lab" hidden>
     <h2>Send an idea</h2>

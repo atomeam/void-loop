@@ -3,7 +3,7 @@
 // the edges, bobs as it steps, casts a shadow, and stands still under reduced motion.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { step, startState, shadowOf, factLines, pickLine, recordOf, parseRecord, SPRITE, FLOOR, SPEED, BOB, TURN_PAUSE, STORE_KEY } from '../void-live-deploy/lib/walker.js';
+import { step, startState, shadowOf, factLines, pickLine, recordOf, parseRecord, tossOf, fly, dropX, SPRITE, FLOOR, SPEED, BOB, TURN_PAUSE, STORE_KEY, TOSS_SPEED, GRAVITY, LIFT } from '../void-live-deploy/lib/walker.js';
 import walker, { walkOf } from '../void-live-deploy/skills/walker.js';
 
 const walk = (s, ms, w, dt = 16) => { for (let t = 0; t < ms; t += dt) s = step(s, dt, w); return s; };
@@ -90,9 +90,28 @@ test('the record kept in this browser: a small data-URL picture (or none), the e
 
 test('the asks: let it walk, make him walk around, walk around, take a walk start it; stop walking, sit him down stop it; walking directions and "walk me through it" are not it', () => {
   for (const a of ['let it walk', 'Make him walk around', 'walk around', 'take a walk', 'let the cartoon walk', 'have it stroll', 'start walking', 'please let it walk!']) assert.equal(walkOf(a), 'walk', a);
-  for (const a of ['stop walking', 'stop the walker', 'sit him down', 'enough walking', 'put it away']) assert.equal(walkOf(a), 'stop', a);
+  for (const a of ['stop walking', 'stop the walker', 'sit him down', 'enough walking', 'put it away', 'remove the walker', 'clear the walking cartoon', 'get rid of the cartoon walking around', 'hide the walker']) assert.equal(walkOf(a), 'stop', a);
+  for (const a of ['remove the cartoon', 'clear the cartoon card', 'remove it']) assert.equal(walkOf(a), null, a + ': the cartoon card or the selected thing, not the walker');
   for (const a of ['walk me through it', 'how far did i walk today', 'walking directions to the station', 'walk', 'walk the dog', 'walking dead', 'a walk in the park', 'make it bigger']) assert.equal(walkOf(a), null, a);
   for (const e of walker.examples) assert.ok(walker.match(e.toLowerCase(), e), e);
   for (const n of walker.nearMisses) assert.ok(!walker.match(n.toLowerCase(), n), n);
   assert.ok(walker.suite().ok);
+});
+
+test('thrown like any thing on the stage (owner, 2026-10-30: "the cartoon walking around wont clear and cant be thrown"): the stage\'s flick speed, gravity and friction; a slow drop lands on the floor inside the stage', () => {
+  assert.equal(TOSS_SPEED, 0.9, 'the same flick as index.html TOSS_SPEED'); assert.equal(GRAVITY, 0.0016); assert.equal(LIFT, 5);
+  const box = { x: 200, y: 300, w: SPRITE, h: SPRITE, stageW: 400, stageH: 700 };
+  assert.equal(tossOf({ ...box, vx: 0.2, vy: -0.1 }).thrown, false, 'a slow drop sets it down');
+  assert.equal(tossOf({ ...box, vx: 1.5, vy: 0 }).thrown, true, 'a flick throws it');
+  assert.equal(tossOf({ ...box, vx: 0, vy: -0.9 }).thrown, true, 'a flick straight up throws it too');
+  assert.equal(tossOf({ ...box, x: -SPRITE - 1, vx: 0 }).thrown, true, 'let go off the left edge: thrown');
+  assert.equal(tossOf({ ...box, x: 401, vx: 0 }).thrown, true, 'off the right edge: thrown');
+  assert.equal(tossOf({ ...box, y: -SPRITE - 1, vx: 0 }).thrown, true, 'off the top: thrown');
+  let f = { x: 0, y: 0, vx: 1.2, vy: -0.4, spin: 0 }, t = 0;
+  for (; t < 5000 && f.y < 800 && f.x < 1000; t += 16) f = fly(f, 16, 0.995);
+  assert.ok(t < 5000, 'a throw leaves the stage within seconds');
+  assert.ok(f.vx < 1.2 && f.vy > 0 && f.spin > 0, 'friction slows it, gravity pulls it down, it spins the way it flies');
+  const a = fly({ x: 0, y: 0, vx: 1, vy: 0, spin: 0 }, 1000, 0.995); assert.ok(a.x <= 32, 'a long frame counts as 32 ms at most: ' + a.x);
+  assert.equal(fly({ x: 0, y: 0, vx: 1, vy: 0, spin: 0 }, 16, 0.9).vx, 0.9, 'the friction slider\'s setting');
+  assert.equal(dropX(150.4, 400), 150); assert.equal(dropX(-30, 400), 0, 'never off the left'); assert.equal(dropX(390, 400), 400 - SPRITE, 'never off the right');
 });

@@ -26,14 +26,17 @@ function showPerks(list) {
   for (const p of list) { const li = el('li'); li.append(el('b', null, p.title), el('span', null, p.text)); ul.append(li); }
 }
 showPerks(perksOf(LIVE));
-$('buy').href = buyLink(BUY);
+// a membership belongs to a Verse, so a signed-out visitor signs in first: then every purchase made here carries the Verse's id
+if (me && me.userId) $('buy').href = buyLink(BUY);
+else { $('buy').href = '/?q=' + encodeURIComponent('remember me'); $('buy').removeAttribute('target'); $('buy').firstChild.textContent = 'Sign in to join MultiVerse'; }
 
 async function load() {
   let j = null;
   try { j = await (await fetch('/api/members', { headers: auth(), cache: 'no-store' })).json(); } catch (_) { j = null; }
   if (j && Array.isArray(j.perks) && j.perks.length) showPerks(j.perks);
-  if (me && me.userId) $('how').textContent = 'You are signed in, so joining unlocks this Verse.';
+  if (me && me.userId) $('how').textContent = 'You are signed in, so joining unlocks this Verse. After you pay, come back to this tab.';
   const paid = j && j.signedIn && j.tier === 'paid';
+  $('claim').hidden = !(j && j.signedIn && !paid); // a purchase that did not carry this Verse's id is linked with the receipt
   if (paid) { $('buy').hidden = true; $('how').textContent = 'You are a member. Thank you for building Verse.'; }
   const open = j && (j.live || PILOT);
   $('lab').hidden = !(paid && open);
@@ -62,4 +65,20 @@ $('send').addEventListener('click', async () => {
   await load();
 });
 
+// the buyer pays in a new tab; when they come back here, the page reads the tier again (the ping lands within seconds)
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') load(); });
+
+$('claimgo').addEventListener('click', async () => {
+  const order = $('order').value.trim(), email = $('email').value.trim(), say = $('claimsay');
+  if (!order || !email) { say.textContent = 'Give the Order ID and the email first.'; return; }
+  $('claimgo').disabled = true; say.textContent = 'Checking your order…';
+  let r = null, j = null;
+  try { r = await fetch('/api/members', { method: 'POST', headers: auth(), body: JSON.stringify({ do: 'claim', order, email }) }); j = await r.json(); } catch (_) { j = null; }
+  $('claimgo').disabled = false;
+  if (r && r.ok && j && j.ok) say.textContent = 'Done. MultiVerse is on for this Verse.';
+  else say.textContent = (j && j.error) || 'Verse could not check that order; try again.';
+  await load();
+});
+
+import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => {}); // one owner identity: the owner's account carries owner pages too
 load();

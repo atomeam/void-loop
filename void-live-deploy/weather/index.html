@@ -15,8 +15,8 @@
 <style>
   /* a-to-mind.com/weather/ (the tower's weather floor against weather.gov, 2026-10-25): one page, the Open-Meteo forecast for any place with
      both scales side by side, the US weather service's alerts and radar, the last forecast kept on the device so the page opens offline */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --warn: #d6334a; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --warn: #ff6b7e; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --warn: #d6334a; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --warn: #ff6b7e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 620px; margin: 0 auto; padding: 22px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -49,6 +49,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/weather.js">
 <!-- /modulepreload -->
 </head>
@@ -77,7 +79,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words } from '/lib/weather.js';
+  import { placeOf, weatherAsk, geocodeUrl, forecastUrl, pointUrl, alertsUrl, radarLoop, locOf, viewOf, alertsOf, both, words, amount } from '/lib/weather.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.weather.v1', esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   let shown = null; // the view on the page, for the share text and the hand-off
   let cardAsk = ''; // the stage card for the place looked up last ('' until one is drawn: the example)
@@ -88,8 +90,8 @@
     shown = v; $('out').hidden = false; $('place').textContent = v.place; $('temp').textContent = both(v.now.temp);
     $('now').textContent = 'Now: ' + words(v.now.code) + ', feels like ' + both(v.now.feels) + (Number.isFinite(v.now.humidity) ? ', humidity ' + Math.round(v.now.humidity) + '%' : '') + (Number.isFinite(v.now.windKmh) ? ', wind ' + v.now.windMph + ' mph / ' + Math.round(v.now.windKmh) + ' km/h' : '');
     $('sun').textContent = v.sunrise || v.sunset ? 'Sunrise ' + v.sunrise + ' · Sunset ' + v.sunset : '';
-    $('hours').innerHTML = v.hours.map((h) => '<div><span>' + esc(h.at) + '</span><b>' + esc(both(h.temp)) + '</b><span>' + (Number.isFinite(h.rain) ? h.rain + '% chance of rain' : '') + '</span><br><span>' + esc(words(h.code)) + '</span></div>').join('');
-    $('days').innerHTML = v.days.map((d) => '<div' + (d.today ? ' class="today"' : '') + '><b>' + esc(d.name) + (d.today ? ' (today)' : '') + '</b><span>' + esc(both(d.hi)) + ' high</span><span>' + esc(words(d.code)) + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + '</span><span>' + esc(both(d.lo)) + ' low</span></div>').join('');
+    $('hours').innerHTML = v.hours.map((h) => '<div><span>' + esc(h.at) + '</span><b>' + esc(both(h.temp)) + '</b><span>' + (Number.isFinite(h.rain) ? h.rain + '% chance of rain' : '') + (amount(h.mm) ? ' · ' + esc(amount(h.mm)) : '') + '</span><br><span>' + esc(words(h.code)) + '</span></div>').join('');
+    $('days').innerHTML = v.days.map((d) => '<div' + (d.today ? ' class="today"' : '') + '><b>' + esc(d.name) + (d.today ? ' (today)' : '') + '</b><span>' + esc(both(d.hi)) + ' high</span><span>' + esc(words(d.code)) + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + (amount(d.mm) ? ', ' + esc(amount(d.mm)) : '') + '</span><span>' + esc(both(d.lo)) + ' low</span></div>').join('');
     $('status').textContent = kept ? 'Kept from ' + kept + ': the network did not answer, so this is the last forecast seen here.' : 'Forecast at ' + v.at.replace('T', ' ') + ', the place\'s own time.';
     document.title = 'Weather in ' + v.place.split(',')[0] + ' · Verse';
   }
@@ -112,7 +114,7 @@
       if (!w) w = await get(forecastUrl(loc.lat, loc.lon));
       const v = viewOf(w, loc);
       if (!v.hours.length) throw new Error('no forecast');
-      draw(v); cardAsk = weatherAsk(coords ? '' : place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
+      draw(v); cardAsk = weatherAsk(place); document.dispatchEvent(new Event('tk:card')); try { localStorage.setItem(KEY, JSON.stringify({ v, loc, at: new Date().toISOString() })); } catch (_) {}
       extras(loc);
     } catch (_) {
       let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {}
@@ -128,7 +130,10 @@
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(linkOf()); $('link').textContent = 'Link copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1500); } catch (_) {} });
   $('share').addEventListener('click', async () => { const text = shown ? shown.place + ': ' + both(shown.now.temp) + ', ' + words(shown.now.code) : 'Weather'; try { if (navigator.share) await navigator.share({ title: document.title, text, url: linkOf() }); else { await navigator.clipboard.writeText(text + ' ' + linkOf()); $('share').textContent = 'Copied'; setTimeout(() => { $('share').textContent = 'Share'; }, 1500); } } catch (_) {} });
   mountRelated($('related'), '/weather/', [{ label: 'The time in this place', href: () => (shown ? '/time/?c=' + encodeURIComponent(shown.place.split(',')[0]) : null) }], { card: () => cardAsk });
-  if (asked) look(asked);
+  // ?ll=lat,lon with ?place= (the flights page sends an airport's own position): the forecast for that point under that name, no name search
+  const ll = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/.exec(q.get('ll') || ''), at = ll && Math.abs(+ll[1]) <= 90 && Math.abs(+ll[2]) <= 180 ? { lat: +ll[1], lon: +ll[2] } : null;
+  if (asked && at) look(asked, { name: asked, lat: at.lat, lon: at.lon, us: /,\s*united states$/i.test(asked) });
+  else if (asked) look(asked);
   else { let kept = null; try { kept = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) {} if (kept && kept.v) { $('q').value = kept.v.place.split(',')[0]; look($('q').value); } }
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

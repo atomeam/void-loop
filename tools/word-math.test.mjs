@@ -14,3 +14,8 @@ test('each part answers its own asks and passes others on', () => {
   for (const p of PARTS.slice(0, -1)) assert.equal(W[p]('tell me a joke', 'tell me a joke'), W.WM_NEXT, p + ' passes a non-math ask on'); // the last part, the expression parser, ends the chain with null
   assert.equal(answer(W.wordMath, 'tell me a joke'), null);
 });
+test('roman numerals with no "for" (2026-10-30: live, "roman numeral 2024" went to the web and came back as a guess)', () => {
+  for (const a of ['roman numeral 2024', 'roman numerals 2024', '2024 roman numeral', '2024 roman numerals']) assert.deepEqual(JSON.parse(JSON.stringify(answer(W.wordMath, a))), { value: 'MMXXIV', note: '2024 in Roman numerals' }, a);
+  assert.deepEqual(JSON.parse(JSON.stringify(answer(W.wordMath, 'roman numeral mmxxiv'))), { value: '2024', note: 'MMXXIV = 2024' });
+  for (const a of ['roman numeral 4000', 'roman numeral 0', 'roman numerals', 'roman numeral history']) assert.equal(answer(W.wordMath, a), null, a);
+});

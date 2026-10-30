@@ -167,3 +167,15 @@ test('self card copy text (2026-10-22): no empty "- " bullets, a deep folded ite
   const t = tidy(textOf(document.querySelector('div')));
   assert.equal((t.match(/^- *$/gm) || []).length, 0); assert.ok(!/characters kept/.test(t));
 });
+test('the screen-reader line reads the card\'s own words, not its frame (2026-10-30: it read "Answer from Verse … copy card save card share")', async () => {
+  const { readFileSync } = await import('node:fs');
+  const src = readFileSync(new URL('../void.html', import.meta.url), 'utf8');
+  const fn = src.slice(src.indexOf('function srAnnounce(el)'), src.indexOf('function showPage(build)'));
+  assert.match(fn, /import\('\/lib\/card-share\.js'\)\.catch\(\(\) => null\)\.then\(\(sh\) => \{ if \(vpageEl !== el\) return;/, 'it waits for the module and still checks the card is the one on show');
+  assert.match(fn, /sh\.readCard\(el\)/, 'the text comes from readCard, which leaves out the type line, the badges, the buttons and the reply box');
+  assert.doesNotMatch(fn, /t = \(el\.innerText/, 'the whole card, frame and all, is no longer the first choice');
+
+  // a card with no heading still gets a name (the translation card is drawn without an h2): its first line of text
+  assert.match(fn, /const name = h \? h\.textContent\.trim\(\) : \(d && d\.b \? d\.b\.split\('\\n'\)\[0\]/, 'a card with no heading is named by its first line');
+  assert.match(fn, /if \(name\) el\.setAttribute\('aria-label', name\)/);
+});

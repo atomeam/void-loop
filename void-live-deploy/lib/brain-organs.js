@@ -18,6 +18,8 @@ import { grower } from './brain-grower.js';
 import { formula } from './brain-formula.js';
 import { current } from './brain-current.js';
 import { grains } from './brain-grains.js';
+import { pool } from './brain-pool.js';
+import { trace } from './brain-trace.js';
 import { GW, GH, CELLS, RG, RH, EMB, KIND, REGIONS_X, REGIONS_Y, deposit, writeCell, readRegion, regionMeans, regionCenter, regionOf, addNode, nodesOf, cellOf } from './brain-workspace.js';
 
 const TAU = Math.PI * 2;
@@ -206,17 +208,32 @@ export const STOP = new Set('and the an of to in on at is are was it its for wit
 export const cleanWords = (text) => String(text || '').toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').split(/\s+/).map((w) => w.replace(/^'+|'+$/g, '')).filter((w) => w.length > 1 && w.length < 24 && !STOP.has(w)).slice(0, 8); // little words carry no idea of their own
 export const makeConcepts = () => ({ words: [], hv: [], node: [], edges: new Map(), ppm: makePpm(), pending: [], lastBits: 0 });
 const eKey = (a, b) => (a < b ? a + ':' + b : b + ':' + a);
-/** add a phrase's words: new words become nodes placed near the brain's focus; words typed together are linked. Returns the words. */
+/** the index of the dimmest concept not in keep, or -1. Pure. */
+function dimmest(C, N, keep) { let k = -1, lo = Infinity; for (let j = 0; j < C.words.length; j++) { if (keep.includes(j)) continue; const a = N.act[C.node[j]]; if (a < lo) { lo = a; k = j; } } return k; }
+/** forget concept k: its word, its links and the goals on it go; the later concepts move down one, their links and goals with them. */
+function forgetConcept(b, k) {
+  const C = b.concepts, sh = (j) => (j > k ? j - 1 : j), edges = new Map();
+  C.words.splice(k, 1); C.hv.splice(k, 1); C.node.splice(k, 1);
+  for (const [key, v] of C.edges) { const [a, c] = key.split(':').map(Number); if (a !== k && c !== k) edges.set(eKey(sh(a), sh(c)), v); }
+  C.edges = edges;
+  if (b.mind && Array.isArray(b.mind.goals)) b.mind.goals = b.mind.goals.filter((g) => g.idx !== k).map((g) => ({ ...g, idx: sh(g.idx) }));
+}
+/** add a phrase's words: new words become nodes placed near the brain's focus (on a full brain, in place of its dimmest idea); words typed together are linked. Returns the words. */
 export function addPhrase(b, text) {
   const C = b.concepts, ws = b.ws, words = cleanWords(text), ids = [];
   for (const w of words) {
     const bits = ppmBits(C.ppm, w) / Math.max(1, w.length); ppmLearn(C.ppm, w); C.lastBits = Math.round(bits * 100) / 100;
     let i = C.words.indexOf(w);
     if (i < 0) {
-      if (C.words.length >= MAX_CONCEPTS) continue;
       const hv = hypervector(w), emb = new Float32Array(EMB); for (let k = 0; k < HV; k++) emb[k % EMB] += hv[k] / (HV / EMB);
       const h = fnv(w), x = clamp(b.focus.x + ((h & 255) / 255 - 0.5) * 0.3, 0.05, 0.95), y = clamp(b.focus.y + (((h >>> 8) & 255) / 255 - 0.5) * 0.3, 0.05, 0.95);
-      const n = addNode(ws, { x, y, kind: KIND.concept, act: 1, emb, label: w, organ: 'concepts' }); if (n < 0) continue;
+      let n;
+      if (C.words.length >= MAX_CONCEPTS) { // a full brain gives the new word the place of its dimmest idea, so what it was just told stays
+        const k = dimmest(C, ws.nodes, ids); if (k < 0) continue;
+        n = C.node[k]; forgetConcept(b, k); for (let j = 0; j < ids.length; j++) if (ids[j] > k) ids[j]--;
+        const N = ws.nodes; N.x[n] = x; N.y[n] = y; N.vx[n] = 0; N.vy[n] = 0; N.act[n] = 1; N.label[n] = w; for (let k2 = 0; k2 < EMB; k2++) N.emb[n * EMB + k2] = emb[k2];
+      } else n = addNode(ws, { x, y, kind: KIND.concept, act: 1, emb, label: w, organ: 'concepts' });
+      if (n < 0) continue;
       C.words.push(w); C.hv.push(hv); C.node.push(n); i = C.words.length - 1;
       deposit(ws, 'surprise', x, y, clamp(bits / 6, 0, 1) * 0.6, 3, 'concepts'); // a word the character model did not expect is a surprise
     } else ws.nodes.act[C.node[i]] = 1;
@@ -416,7 +433,7 @@ const arena = {
   }
 };
 
-export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, will, arena];
+export const ORGANS = [senses, predictor, gestures, memory, concepts, tissue, gardener, rhythm, synapses, creature, hearing, swarm, membrane, painter, grower, formula, current, grains, pool, trace, will, arena];
 export const ORGAN_IDS = ORGANS.map((o) => o.id);
 export { randomGenome };
 export const _private = { kuramoto, idx, writeCell, regionOf, nodesOf };

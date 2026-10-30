@@ -8,6 +8,7 @@
  */
 import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
+import { pickKind } from '../lib/media.js';
 import { mirror } from '../lib/chat-calendar.js';
 import * as A from '../lib/agenda.js';
 // the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
@@ -85,6 +86,8 @@ export function parseCalendar(text) {
   // "days until new year", "days until december 25": that is a countdown, not an agenda.
   // The ask carries a date, so parseWhenText would claim it - hand it to the countdown skill.
   if (countdownOf(t)) return null;
+  // "good movies to watch tonight" asks for a pick, not an event called "Good movies to watch" (2026-10-30: it was saved as one)
+  if (pickKind(t)) return null;
   // "add dentist to my calendar Oct 12 at 3" / "put lunch with Ana on my calendar tomorrow at noon": your own calendar, saved here
   const own = t.match(/^(?:please\s+)?(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+my\s+(?:calendar|calender|agenda)(?:\s+(.+))?$/i);
   if (own) {
@@ -96,7 +99,8 @@ export function parseCalendar(text) {
   if (/^(?:show\s+(?:me\s+)?)?(?:my\s+)?(?:the\s+)?(?:calender|calendar|agenda)\b/i.test(t)
     || /^(?:what'?s|whats)\s+(?:next|on(?:\s+today)?|coming\s+up)\b/i.test(t)
     || /^(?:upcoming|my agenda)\b(?!\s+(?:public\s+|bank\s+)?holidays?\b)/i.test(t)) { // "upcoming holidays" is the holiday list
-    return { kind: 'show' };
+    const focus = A.cardDayOf(t); // "my calendar on 2026-12-03": the Calendar page's card, so the wall calendar opens on the day the page shows
+    return focus ? { kind: 'show', focus } : { kind: 'show' };
   }
   // "clear calendar" / "delete all my events": empties it, after one tap (it can't be undone)
   if (/^(?:clear|empty|wipe|erase|reset|delete\s+all(?:\s+of)?)\s+(?:out\s+)?(?:my\s+|the\s+)?(?:calender|calendar|agenda)(?:\s+events)?$/i.test(t)
@@ -187,7 +191,7 @@ async function run(text, api) {
     if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()) + (line ? ' (in the Calendar page: ' + line + ')' : ''));
   }
   if (api.summon) api.summon('calendar'); // the card on the stage (mount below)
-  if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
+  if (q.kind === 'show') show3d(api, q.focus ? A.dayOfKey(q.focus) : undefined); // and the 3D wall calendar; an add only says so (the card shows it)
   return 'calendar';
 }
 

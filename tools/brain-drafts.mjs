@@ -20,6 +20,7 @@ export const TECHNIQUES = [
   ['expression tree', /expression[ -]tree[ -](?:spatial|evo)|symbolic regression/, 'formula'], // F458's list of "recent clusters" names expression trees, not its idea
   ['lattice boltzmann', /lattice[ -]boltzmann|\blbm\b/, 'current'], // F308's wind tunnel is in LEFT, a physics toy for a different job
   ['granular contact genes', /discrete[ -]element|granular discrete|webgpu granular/, 'grains'], // F456; later drafts name its "granular broadcast" only as a cluster they branch away from
+  ['smoothed particle hydrodynamics', /\bsph\b|smoothed[ -]particle/, 'pool'], // F184, F432, F459; many later specs name SPH only as a cluster they branch away from, so it counts only in a draft's name
   ['reservoir', /reservoir|echo[ -]state|\besn\b/, 'predictor'],
   ['online k-means', /k-?means/, 'gestures'],
   ['compression oracle', /compression|\bncd\b|kolmogorov/, 'gestures'],
@@ -37,7 +38,7 @@ export const TECHNIQUES = [
   ['physarum', /physarum|slime/, 'swarm'],
   ['softbody', /soft-?body|spring-?mass|mass-spring|cloth|membrane|\bchain\b|verlet|muscle/, 'membrane'],
   ['reaction-diffusion', /reaction[ -]diffusion|gray-?scott|\brd\b|autopoiesis|catalyst/, 'tissue'],
-  ['neural cellular automata', /\bnca\b|cellular automat/, 'tissue'],
+  ['neural cellular automata', /\bnca\b|cellular automat/, 'trace'], // the NCA drafts' rule tuned to hold where the focus was (lib/brain-trace.js)
   ['lattice field', /lattice|density field|memory field|deposit|causal (?:energy|density|memory)/, 'tissue'],
   ['attention', /attention|transformer/, 'attention'],
   ['imagined futures', /imagin|rollout|what if/, 'imagination'],
@@ -79,10 +80,10 @@ function textOf(dir) {
 export function classify(folder, text) {
   const slug = slugOf(folder), name = slug.replace(/-/g, ' '), body = String(text).toLowerCase().replace(/\[[^\]]*\]\([^)]*\)/g, ' ');
   const inName = TECHNIQUES.filter(([, re]) => re.test(name)).map(([t]) => t), inBody = TECHNIQUES.filter(([, re]) => re.test(body)).map(([t]) => t);
-  const techniques = [...new Set([...inName, ...inBody])].filter((t) => !['seal', 'dom embodiment', 'tilt'].includes(t) || inName.includes(t));
+  const NAMED = ['seal', 'dom embodiment', 'tilt', 'smoothed particle hydrodynamics'], techniques = [...new Set([...inName, ...inBody])].filter((t) => !NAMED.includes(t) || inName.includes(t));
   const n = +(folder.match(/^F-?0*(\d+)/) || [])[1];
   if (LEFT[slug]) return { folder, number: n, techniques, organ: null, left: LEFT[slug] };
-  const main = inName.find((t) => !['seal', 'dom embodiment', 'shared pages'].includes(t)) || inBody.find((t) => !['seal', 'dom embodiment', 'shared pages'].includes(t));
+  const main = inName.find((t) => !['seal', 'dom embodiment', 'shared pages'].includes(t)) || inBody.find((t) => !['seal', 'dom embodiment', 'shared pages', 'smoothed particle hydrodynamics'].includes(t));
   if (!main) return { folder, number: n, techniques, organ: null, left: 'no technique the brain could run was found in its name, spec or page' };
   return { folder, number: n, techniques, organ: TECHNIQUES.find(([t]) => t === main)[2], main };
 }

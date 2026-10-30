@@ -8,7 +8,7 @@
 //   GET                                 (the owner)           -> { open, tickets } every ticket, open first
 //   POST { action: 'answer', id, answer, status? }  (the owner) -> { ok, id, status }
 import { bad, good, session, tierOf } from '../../lib/void-me.js';
-import { ownerOk } from '../../lib/guard.js';
+import { ownerOk, ownerAccount } from '../../lib/guard.js';
 import { redact } from '../../lib/automation-fix.js';
 import { access } from '../../lib/paid-access.js';
 import { BUY_URL } from '../../lib/review-api.js';
@@ -24,11 +24,7 @@ const OWN_KEYS = [/\bvr1\.[A-Za-z0-9_-]{43}\b/g, /\b[A-Z0-9]{8}(?:-[A-Z0-9]{8}){
 export const clean = (t, max) => OWN_KEYS.reduce((x, re) => x.replace(re, '[redacted key]'), redact(String(t || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim())).slice(0, max);
 
 /** who is asking: { owner: true } | { who } for someone who pays | null */
-export async function ownerAccount(env, userId) {
-  if (!env.DB || !userId) return false;
-  const row = await env.DB.prepare('SELECT o.id FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first().catch(() => null); // void-review: ok (bound parameter)
-  return !!row;
-}
+export { ownerAccount }; // the shared check (lib/guard.js), kept here for the routes that import it from support.js
 export async function payer(request, env) {
   if (await ownerOk(request, env)) return { owner: true, who: 'owner' };
   const s = await session(request, env).catch(() => null); // a signed-in account first, so its token never reaches access()'s log as an unknown key
@@ -41,7 +37,7 @@ export async function payer(request, env) {
   return a && a.tier === 'pro' && a.who ? { who: a.who } : null;
 }
 
-const notPaying = () => bad(401, 'the support desk is for people who pay for Verse: send your Verse Pro key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
+const notPaying = () => bad(401, 'the support desk is for people who pay for Verse: send your MultiVerse key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
 
 export async function onRequestPost({ request, env }) {
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return bad(400, 'bad json'); }

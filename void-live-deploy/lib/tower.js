@@ -16,7 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
-import { bytesLabel, trustedControls, weightBand, weightOf } from './tower-weight.js';
+import { bytesLabel, rankableControls, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -35,6 +35,10 @@ const HAND_FLOORS = [
   // found by data, not by feel (owner, 2026-10-24: "find the real life actual easiest site"): `easiest-sites.mjs --tools` ranked howsecureismypassword.net the easiest real one-tool site
   // Verse had no floor for (rank 155,868 of the top million; one box); its home page now points to another site, asks about cookies and loads analytics, tag-manager and widget scripts
   { id: 'password strength', learned: "a checker is trusted only when nothing leaves the device: the password never goes in a link, the leak list is asked with five characters of a fingerprint, and the reasons and the fixes stand beside the time to crack; and the gate learned to type a question into Verse's own box when the address must not carry it", site: 'howsecureismypassword.net', url: 'https://www.howsecureismypassword.net/', ask: 'how secure is my password', page: '/password-strength/', label: 'Password strength', glyph: '⚿', fatality: 'it names what is weak and how to fix it, and asks the leaked-password list whether it is known without ever sending it (five characters of a fingerprint), with nothing third-party loaded', extra: ['crack time', 'reasons and fixes', 'leak check'] },
+  // emojicombos.com (2026-10-30): the next site of the ranking smallest first (tower.size.json, rendered controls) after ndscalc.ru, which is on hold.
+  // A search of tagged combos, kaomoji and dot art with a copy button on each, a collect-by-long-press picker, fancy text and a picture-to-dot-art
+  // tool; Verse writes its own catalog and counts it as it is, never copying the site's database
+  { id: 'emoji combos', learned: "a combo site is judged on finding and carrying: the tags and the words people type for them, a box that collects several into one, and a link that carries what was collected; and its catalog says how many combos it holds instead of padding it", site: 'emojicombos.com', url: 'https://emojicombos.com/', ask: 'emoji combos', page: '/emoji-combos/', label: 'Emoji combos', glyph: '☺', fatality: 'a tagged catalog counted as it is, a box that collects several into one and a link that carries it, fancy text in 16 styles and a picture drawn in dots, all on the device with nothing sent', extra: ['fancy text', 'text art from an image', 'collect and copy'] },
   // second floor chosen by data (`easiest-sites.mjs --tools`): hextobinary.com, Tranco 136,997, a hex-to-binary box among AdSense, tag-manager, consent and maths-typesetting scripts
   { id: 'base converter', learned: "a converter that rounds is wrong: every base exact at any size (BigInt), with the signed two's-complement reading at any width, and the gate learned to type into a site's own box", site: 'hextobinary.com', url: 'https://hextobinary.com/', ask: 'ff hex to binary', page: '/base-converter/', label: 'Base converter', glyph: '⇄', fatality: 'every base at once for one number, exact at any size, with its signed two\'s-complement reading and its text, and no ads or third-party scripts', extra: ['all four bases', 'huge numbers', 'signed reading'] },
   // third floor from the data (`easiest-sites.mjs --tools`): pancardresizer.com, a three-step wizard that resizes a photo or signature to a size in cm and a limit in KB, behind AdSense, tag-manager, jQuery, Bootstrap and Croppie
@@ -185,8 +189,6 @@ const HAND_LANES = Object.freeze({
   photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // music (owner, 2026-10-26: "we have to have everything all the sites have"): small music tools, smallest first, Spotify (the floor itself) last. metronomeonline.com and virtualpiano.net are the owner's; the others were found by search as live, real, no-sign-in pages (a tuner, a BPM counter, a chord finder). Each has a page of its own (LANE_PAGES) and aspects named for what that site does (LANE_EXTRAS)
   music: ['https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/', 'https://anotherproducer.com/online-tools-for-musicians/bpm-counter/', 'https://chordchord.com/chord-finder', 'https://metronomeonline.com/', 'https://virtualpiano.net/', 'https://www.neuralframes.com/tools/rap-lyrics-generator'],
-  // photos (owner, 2026-10-26: "we have to have everything all the sites have"): the small photo tools, smallest first, Google Photos (the floor itself) last; each is measured at its own url by the photos probe against /photos/. All six verified live by search, none parked, none behind a sign-in; photopea.com and iloveimg.com are the big ones of the lane
-  photos: ['https://exifeditor.io/', 'https://exif.tools/', 'https://tinypng.com/', 'https://squoosh.app/', 'https://www.photopea.com/', 'https://www.iloveimg.com/'],
   // travel (owner, 2026-10-26: "need a flights page"): the small flight and trip tools, smallest first, Google Flights (the floor itself) last; each found alive by a web search on 2026-10-26 (a fetch from the builder's network is closed). tripwaffle.com asks for an account to keep a trip (its public side is a page about forwarding booking emails); the others are open pages. Each gets a page of its own (LANE_PAGES)
   travel: ['https://tripwaffle.com/', 'https://aruljohn.com/airport-codes/', 'https://www.clock7.com/flight-calculator/', 'https://www.airmilescalculator.com/', 'https://www.gcmap.com/', 'https://co2.myclimate.org/en/flight_calculators/new', 'https://www.flightconnections.com/'],
   // jobs (owner, 2026-10-26: "we have to have everything all the sites have"): small job boards, smallest first by a guess (Tranco was out of reach from the builder's
@@ -210,7 +212,7 @@ export function selfLanes(lanes, rows) {
 export const LANE_PAGES = Object.freeze({ ...Object.fromEntries((SELF_SITES || []).filter((r) => r && r.lane && r.page).map((r) => [r.lane, r.page])),
   'photos: exifeditor.io': '/photos/exifeditor/', 'photos: exif.tools': '/photos/exif/', 'photos: tinypng.com': '/photos/tinypng/', 'photos: squoosh.app': '/photos/squoosh/', 'photos: photopea.com': '/photos/photopea/', 'photos: iloveimg.com': '/photos/iloveimg/',
   'pdf: codeshack.io': '/pdf/merge/', 'pdf: 10015.io': '/pdf/organize/', 'pdf: pdfcandy.com': '/pdf/toolbox/', 'pdf: sejda.com': '/pdf/editor/', 'pdf: tools.pdf24.org': '/pdf/suite/', 'pdf: smallpdf.com': '/pdf/studio/',
-  'sports: thesportsdb.com': '/sports/',
+  'sports: thesportsdb.com': '/sports/', emojis: '/emojis/', // emojitracker.com's own page (2026-10-30: the floor came with /emojis/ but no row here, so the lane-page ratchet failed on main)
   'kanban: jasperbernaers.com': '/kanban/simple/', 'kanban: abacktools.com': '/kanban/quick/', 'kanban: wekan.fi': '/kanban/teams/', 'kanban: kanbanflow.com': '/kanban/flow/',
   'music: jasperbernaers.com': '/tuner/', 'music: anotherproducer.com': '/bpm/', 'music: chordchord.com': '/chords/', 'music: metronomeonline.com': '/metronome/', 'music: virtualpiano.net': '/piano/',
   // neuralframes.com's rap lyrics generator (owner, 2026-10-29: "Verse should learn to rap for those who hear the name and think thats what it is") is assimilated by /rap/ (domains/targets/neuralframes.json)
@@ -353,7 +355,7 @@ export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant'])
 export function easeLine(f) {
   if (f.held) return 'held, not beaten: ' + f.held;
   const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
-  const tc = trustedControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
+  const tc = rankableControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
   const how = f.weight !== null && f.size ? ctl + 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
     : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
   const bar = (f.barred || []).length;
@@ -392,7 +394,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
   const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
-  const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
+  const counted = (f) => !!f.size && rankableControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2), a row not rendered, a bot wall or a country picker is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
   const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);

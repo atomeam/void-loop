@@ -23,7 +23,7 @@ await page.waitForFunction(() => document.querySelector('#artBox img'), null, { 
 ok(await page.evaluate(() => { const i = document.querySelector('#artBox img'); return !!i && i.alt === 'Illustration by Verse: ' + i.alt.split(': ')[1] && /kind=news&key=world/.test(i.src); }), 'the day\'s illustration for the section loads after the first draw, with its alt'); ok(/Illustration by Verse/.test(await page.locator('#artCredit').innerText()), 'and its credit line');
 const rows = await page.locator('#list .story').count(); ok(rows >= 8, rows + ' headline rows');
 const text = await page.locator('main').innerText();
-const names = new Set([...text.matchAll(/(BBC News|The Guardian|NPR|DW|Al Jazeera|CBC News) · (?:just now|\d+ (?:min|h|d) ago)/g)].map((m) => m[1])); ok(names.size >= 3, 'source and age on rows from ' + names.size + ' sources: ' + [...names].join(', '));
+const names = new Set([...text.matchAll(/(BBC News|The Guardian|NPR|DW|Al Jazeera|CBS News) · (?:just now|\d+ (?:min|h|d) ago)/g)].map((m) => m[1])); ok(names.size >= 3, 'source and age on rows from ' + names.size + ' sources: ' + [...names].join(', '));
 ok(/Sources \((\d+) of \d+ answered\)/.test(text), 'the sources line: ' + (text.match(/Sources \(\d+ of \d+ answered\)/) || [''])[0]);
 ok((await page.locator('.story .more', { hasText: '3 sources' }).count()) === 1, 'the quake story is one row with "3 sources"');
 await page.locator('.story .more', { hasText: '3 sources' }).click(); ok((await page.locator('.also li').count()) === 3 && (await page.locator('.also a').first().getAttribute('href')).startsWith('https://'), 'it lists the three outlets, each linking out');
