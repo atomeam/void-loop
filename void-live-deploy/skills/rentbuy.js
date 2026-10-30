@@ -49,7 +49,7 @@ function run(text, api) {
     el.dataset.page = href; // the card's full-page link opens the calculator on these numbers
     el.innerHTML = '<h2>Rent or buy</h2>'
       + '<div class="sub">' + esc(usd(I.price)) + ' home or ' + esc(usd(I.rent)) + ' a month in rent, worked out month by month</div>'
-      + '<div style="font-size:34px;font-weight:300;line-height:1.2;margin:6px 0 4px">' + esc(head) + '</div>'
+      + '<div style="font-size:26px;font-weight:300;line-height:1.25;margin:6px 0 4px">' + esc(head) + '</div>'
       + '<p>With these numbers, buying costs ' + esc(usd(o.buyFirst)) + ' the first month (' + esc(usd(o.pay)) + ' mortgage and ' + esc(usd(o.ownFirst)) + ' tax, insurance and upkeep). Renting costs ' + esc(usd(o.rentFirst)) + '.' + esc(after) + '</p>'
       + '<table style="border-collapse:collapse;width:100%;font-size:.92em"><tr><th style="text-align:left;padding:3px 6px 3px 0">After</th><th style="text-align:right;padding:3px 6px">Buyer’s wealth</th><th style="text-align:right;padding:3px 0">Renter’s wealth</th></tr>'
       + show.map((y) => '<tr><td style="padding:3px 6px 3px 0">' + esc(y.year + (y.year === 1 ? ' year' : ' years')) + '</td><td style="padding:3px 6px;text-align:right;' + (y.buy >= y.rent ? 'font-weight:600' : '') + '">' + esc(usd(y.buy)) + '</td><td style="padding:3px 0;text-align:right;' + (y.rent > y.buy ? 'font-weight:600' : '') + '">' + esc(usd(y.rent)) + '</td></tr>').join('')
