@@ -1109,7 +1109,7 @@
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 20
+    "proven": 19
    },
    "skills": [
     {
@@ -1213,16 +1213,6 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1
-    },
-    {
-     "name": "work",
-     "tier": "proven",
-     "why": "a self-test, 4 real asks in the benchmark",
-     "last_tested": "2026-10-30",
-     "last_tested_by": "the benchmark",
-     "success_rate": 1,
-     "promoted": "2026-10-29",
-     "streak": 11
     },
     {
      "name": "routine",
@@ -2355,12 +2345,12 @@
   {
    "id": "life",
    "name": "Out in the world",
-   "for": "food delivery, rides and Waymo, social feeds and dating",
+   "for": "food delivery, rides and Waymo, remote jobs, social feeds and dating",
    "count": {
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 6
+    "proven": 7
    },
    "skills": [
     {
@@ -2370,6 +2360,16 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
+     "streak": 11
+    },
+    {
+     "name": "work",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "the benchmark",
+     "success_rate": 1,
+     "promoted": "2026-10-29",
      "streak": 11
     },
     {
