@@ -21,10 +21,9 @@ const call = async (method, q, body, key = OWNER) => {
 };
 
 // 0. the pages any agent opens first
-for (const [path, want, test] of [['/team/agents.txt', 200, /team\/mcp/], ['/team/agent.mjs', 200, /export \{ main \}/], ['/team/join/vj1-' + '0'.repeat(32), 410, /ended|used/], ['/team/mcp', 405, /MCP/]]) {
-  const r = await fetch(SITE + path); const t = await r.text();
-  if (r.status === want && test.test(t)) ok(path + ' ' + r.status); else fail(path + ' answered ' + r.status);
-}
+const pages = [['/team/agents.txt', 200, /team\/mcp/], ['/team/agent.mjs', 200, /export \{ main \}/], ['/team/join/vj1-' + '0'.repeat(32), 410, /ended|used/], ['/team/mcp', 405, /MCP/]];
+const got = await Promise.all(pages.map(async ([path]) => { const r = await fetch(SITE + path); return [r.status, await r.text()]; }));
+pages.forEach(([path, want, test], i) => { const [status, t] = got[i]; if (status === want && test.test(t)) ok(path + ' ' + status); else fail(path + ' answered ' + status); });
 
 // 1. the owner is the owner
 const me = await call('GET', '?me');
