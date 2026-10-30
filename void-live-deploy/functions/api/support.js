@@ -37,7 +37,7 @@ export async function payer(request, env) {
   return a && a.tier === 'pro' && a.who ? { who: a.who } : null;
 }
 
-const notPaying = () => bad(401, 'the support desk is for people who pay for Verse: send your Verse Pro key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
+const notPaying = () => bad(401, 'the support desk is for people who pay for Verse: send your MultiVerse key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
 
 export async function onRequestPost({ request, env }) {
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return bad(400, 'bad json'); }
