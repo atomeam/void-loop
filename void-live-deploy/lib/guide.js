@@ -41,6 +41,7 @@ function firstSentence(t) {
 /** the one line a page says about a skill: the first sentence of its header after the skill's name. Pure.
  *  "weather skill — Open-Meteo, no key" -> "Open-Meteo, no key"; "sky — "sky", ...: the stage becomes ..." keeps the whole sentence.
  *  A line that is only a frontier number or a quoted ask carries the next sentence with it, so the page still says what the skill does. */
+const OPEN_END = /\b(?:a|an|the|and|or|nor|of|to|from|with|by|into|onto|than|its|their|your|our|my)$/i;
 export function oneLine(src, name) {
   const lines = headerLines(src);
   if (!lines.length) return '';
@@ -49,7 +50,9 @@ export function oneLine(src, name) {
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i], next = lines[i + 1] || '';
     cur = (cur ? cur + ' ' : '') + l;
-    if (/[.!?]["”)]?$/.test(l) || !next || (!/[,;:(—–-]$/.test(l) && /^(?:[A-Z"“]|Contract:|api:)/.test(next))) { sentences.push(cur); cur = ''; if (sentences.length >= 3) break; }
+    // a line that ends on a word no sentence ends on ("read from", "as an", "choose a") runs on into the next, even when that one starts
+    // with a capital (a name: "read from / Verse's own records"); the card showed "... read from" as its whole Adds line (2026-10-30)
+    if (/[.!?]["”)]?$/.test(l) || !next || (!/[,;:(—–-]$/.test(l) && !OPEN_END.test(l) && /^(?:[A-Z"“]|Contract:|api:)/.test(next))) { sentences.push(cur); cur = ''; if (sentences.length >= 3) break; }
   }
   if (cur) sentences.push(cur);
   let h = tidy(sentences[0] || '');

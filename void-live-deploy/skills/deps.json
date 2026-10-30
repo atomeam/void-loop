@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1084,
+ "counted": 1086,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -392,7 +392,7 @@
    "skills": 7,
    "direct": 1,
    "dependants": 10,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/card-share.js",
@@ -559,8 +559,8 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 84,
-   "tests": 1
+   "dependants": 85,
+   "tests": 2
   },
   {
    "file": "lib/card-kinds.js",
@@ -707,7 +707,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 19
+   "tests": 20
   },
   {
    "file": "lib/field-cards.js",
@@ -748,14 +748,14 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 84,
+   "dependants": 85,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 83,
+   "dependants": 84,
    "tests": 1
   },
   {
@@ -1984,6 +1984,13 @@
    "tests": 2
   },
   {
+   "file": "lib/ground.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/health-habits.js",
    "skills": 1,
    "direct": 1,
@@ -2177,7 +2184,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/term-orbits-law.js",
@@ -3076,13 +3083,6 @@
    "tests": 1
   },
   {
-   "file": "lib/ground.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/jobs-ui.js",
    "skills": 0,
    "direct": 0,
@@ -3221,6 +3221,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/paste-kind.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/pdf-ui.js",
@@ -3453,6 +3460,7 @@
     "lib/free-pics.js",
     "lib/answer-edge.js",
     "lib/note-ask.js",
+    "lib/telemetry.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -7356,7 +7364,9 @@
   },
   "lib/ground.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/recipe.js"
+   ]
   },
   "lib/guard.js": {
    "imports": [
@@ -9011,7 +9021,8 @@
    ],
    "importedBy": [
     "functions/api/answer.js",
-    "lib/automation-fix.js"
+    "lib/automation-fix.js",
+    "lib/paste-kind.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
@@ -9482,6 +9493,13 @@
   },
   "lib/password.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/paste-kind.js": {
+   "imports": [
+    "lib/telemetry.js",
+    "lib/note-ask.js"
+   ],
    "importedBy": []
   },
   "lib/patch-guard.js": {
@@ -11919,13 +11937,14 @@
   "lib/telemetry.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/answer.js",
     "lib/automation-fix.js",
+    "lib/paste-kind.js",
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
     "functions/[handle].js",
     "functions/api/actions.js",
-    "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
     "functions/api/card-art.js",
@@ -12412,6 +12431,7 @@
     "lib/memory-scope.js",
     "lib/own-card.js",
     "lib/paid-access.js",
+    "lib/paste-kind.js",
     "lib/privacy.js",
     "lib/probe-asks.js",
     "lib/propose-fix.js",
@@ -15644,7 +15664,8 @@
    "imports": [
     "lib/card-mini.js",
     "skills/swaps.js",
-    "lib/recipes.js"
+    "lib/recipes.js",
+    "lib/ground.js"
    ],
    "importedBy": []
   },

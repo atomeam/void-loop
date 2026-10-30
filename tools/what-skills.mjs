@@ -8,14 +8,16 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { addsLine } from '../void-live-deploy/lib/card-frame.js';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const FILE = resolve(root, 'void-live-deploy/skills/what.json'), MAX = 110;
+export const FILE = resolve(root, 'void-live-deploy/skills/what.json'), MAX = 160;
 
-/** a description made short and plain: one line, the book's own trailing ellipsis dropped, cut at a word. Pure. */
+/** a description made short and plain: one line, the book's own trailing ellipsis dropped; a long one ends at its last whole sentence,
+ *  else its last whole clause, else its last whole word, with no ellipsis (owner: no line cut with "..."; the inventory card showed 159
+ *  rows ending in "…", 2026-10-30). Pure. */
 export function tidy(line) {
-  let s = String(line == null ? '' : line).replace(/\s+/g, ' ').trim().replace(/…$/, '').replace(/\.\.\.$/, '').trim();
-  if (s.length > MAX) { s = s.slice(0, MAX); const i = s.lastIndexOf(' '); s = (i > 40 ? s.slice(0, i) : s).replace(/[,;:(\s]+$/, '') + '…'; }
-  return s;
+  const s = String(line == null ? '' : line).replace(/\s+/g, ' ').trim().replace(/…$/, '').replace(/\.\.\.$/, '').trim();
+  return addsLine(s, MAX);
 }
 
 /** { skill name: line } from the book's pages, sorted by name; a skill whose line is only its own name says nothing and is left out. Pure. */
