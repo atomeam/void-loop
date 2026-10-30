@@ -240,11 +240,14 @@ async function giveBack(env, a, now, why, failed) {
   await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, skip = ? WHERE id = ?').bind(skip, a.id).run();
 }
 // agents silent for STALE_MS give their jobs back (run lazily on requests; a cron is not needed)
-// an agent whose last word in its job's thread waits on the owner gets Verse's answer there, once (the answer is then the last word)
+// an agent whose newest post since its job began waits on the owner, anywhere, gets Verse's answer in its job thread, once (the answer is then newer)
 async function unstall(env, a, now) {
   if (!a || !a.job || !a.thread) return false;
-  const last = await env.DB.prepare('SELECT by, body FROM void_team_msgs WHERE thread = ? ORDER BY id DESC LIMIT 1').bind(a.thread).first();
-  if (!last || last.by !== a.id || !T.waitsOnOwner(last.body)) return false;
+  // the agent's newest post since its job began, anywhere: Beam waited in #general, not in its job thread (2026-10-30)
+  const last = await env.DB.prepare('SELECT id, body FROM void_team_msgs WHERE by = ? AND id > ? ORDER BY id DESC LIMIT 1').bind(a.id, a.thread).first();
+  if (!last || !T.waitsOnOwner(last.body)) return false;
+  // answered already: anything in the job thread after that post (Verse's answer, the owner, the agent itself)
+  if (await env.DB.prepare('SELECT id FROM void_team_msgs WHERE thread = ? AND id > ? LIMIT 1').bind(a.thread, last.id).first()) return false;
   const root = await env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(a.thread).first(); if (!root) return false;
   await write(env, { c: root.channel, by: 'verse', body: '@' + a.name + ' ' + T.noWaitSay(a.job), thread: a.thread, now });
   return true;
@@ -458,7 +461,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
       if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now
-      const told = me.kind === 'agent' && thread && thread === me.agent.thread && await unstall(env, me.agent, now + 1);
+      const told = me.kind === 'agent' && me.agent.job && await unstall(env, me.agent, now + 1); // in its job thread or anywhere else
       return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(told ? { say: T.noWaitSay(me.agent.job) } : hid ? { say: T.HID_SAY } : {}) }, 201);
     }
     case 'react': {
