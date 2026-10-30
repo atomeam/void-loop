@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1053,
+ "counted": 1054,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1134,7 +1134,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 27,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/calc-units.js",
@@ -1312,6 +1312,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-piano.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
@@ -1344,7 +1351,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 6,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/rap-fft.js",
@@ -1372,7 +1379,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/scores.js",
@@ -9429,7 +9436,8 @@
   "lib/rap-beat.js": {
    "imports": [
     "lib/compose.js",
-    "lib/rap-kit.js"
+    "lib/rap-kit.js",
+    "lib/rap-piano.js"
    ],
    "importedBy": [
     "lib/rap-listen.js",
@@ -9491,11 +9499,26 @@
    ],
    "importedBy": []
   },
+  "lib/rap-piano.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/rap-beat.js",
+    "lib/rap-song.js"
+   ],
+   "reachedBy": [
+    "lib/rap-listen.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
+    "skills/rap.js"
+   ]
+  },
   "lib/rap-song.js": {
    "imports": [
     "lib/rap.js",
     "lib/rap-beat.js",
     "lib/rap-kit.js",
+    "lib/rap-piano.js",
     "lib/rap-voice.js",
     "lib/rap-ears.js"
    ],
