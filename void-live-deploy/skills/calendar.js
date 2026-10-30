@@ -8,6 +8,7 @@
  */
 import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
+import { pickKind } from '../lib/media.js';
 import { mirror } from '../lib/chat-calendar.js';
 import * as A from '../lib/agenda.js';
 // the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
@@ -85,6 +86,8 @@ export function parseCalendar(text) {
   // "days until new year", "days until december 25": that is a countdown, not an agenda.
   // The ask carries a date, so parseWhenText would claim it - hand it to the countdown skill.
   if (countdownOf(t)) return null;
+  // "good movies to watch tonight" asks for a pick, not an event called "Good movies to watch" (2026-10-30: it was saved as one)
+  if (pickKind(t)) return null;
   // "add dentist to my calendar Oct 12 at 3" / "put lunch with Ana on my calendar tomorrow at noon": your own calendar, saved here
   const own = t.match(/^(?:please\s+)?(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+my\s+(?:calendar|calender|agenda)(?:\s+(.+))?$/i);
   if (own) {

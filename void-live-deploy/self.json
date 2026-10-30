@@ -542,13 +542,41 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T17:49:46Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T03:15:41Z",
+   "subject": "Words and the world: 7 common asks reach their skills"
+  },
+  {
+   "at": "2026-10-30T03:09:16Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T03:08:11Z",
+   "subject": "Word ladder: finish the skill (order, Games family, MAP, test); a bare \"ladder\" is no longer its"
+  },
+  {
+   "at": "2026-10-30T03:04:40Z",
+   "subject": "team: an owner's post in #work is a job on the build queue"
+  },
+  {
+   "at": "2026-10-30T03:03:24Z",
+   "subject": "brain: build the live numbers and says lines with textContent"
+  },
+  {
+   "at": "2026-10-30T03:00:20Z",
+   "subject": "Better at backdrop and stl check: 5 more ways of asking answered right — new phrases: “set the stage to a retro server room” now opens…"
+  },
+  {
+   "at": "2026-10-30T02:56:52Z",
+   "subject": "brain: Verse Brain full screen at /brain/"
+  },
   {
    "at": "2026-10-30T02:51:41Z",
    "subject": "Verse loop: task, Queue job mvpur47q (versus: uptimer.dev): Versus: uptimer.de"
@@ -600,34 +628,6 @@
   {
    "at": "2026-10-30T02:26:15Z",
    "subject": "Services card names MultiVerse and links its page, not \"your own custom Verse\""
-  },
-  {
-   "at": "2026-10-30T02:24:21Z",
-   "subject": "Regenerate churn after the merge"
-  },
-  {
-   "at": "2026-10-30T02:24:17Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T02:23:50Z",
-   "subject": "voice test: its own held list, so lifting a real hold keeps it green"
-  },
-  {
-   "at": "2026-10-30T02:20:46Z",
-   "subject": "Verse loop: task, Queue job mvpur3cd (versus: font.im): Versus: font.im (Googl"
-  },
-  {
-   "at": "2026-10-30T02:16:29Z",
-   "subject": "Base converter: \"what is 101010 in decimal\" reads 0s and 1s as binary"
-  },
-  {
-   "at": "2026-10-30T02:16:20Z",
-   "subject": "STL checker: lift the hold, the owner said ship it"
-  },
-  {
-   "at": "2026-10-30T02:11:20Z",
-   "subject": "Verse loop: task, Queue job mvpur2xc (versus: notepad-plus-plus.org): Versus:"
   }
  ],
  "builders": {

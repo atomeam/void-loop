@@ -2595,7 +2595,7 @@
   },
   {
     "ask": "tell me a fun fact",
-    "want": "said|answer|skill:joke"
+    "want": "said|answer|skill:joke|skill:fact"
   },
   {
     "ask": "motivate me",
@@ -6936,5 +6936,14 @@
   {"ask": "stage: an atmospheric study", "want": "skill:backdrop"},
   {"ask": "check my stl file", "want": "skill:stl-check"},
   {"ask": "is my stl watertight", "want": "skill:stl-check"},
-  {"ask": "stl checker", "want": "skill:stl-check"}
+  {"ask": "stl checker", "want": "skill:stl-check"},
+  {"ask": "whats in the news today", "want": "skill:news"},
+  {"ask": "what is in the news right now", "want": "skill:news"},
+  {"ask": "give me a motivational quote", "want": "skill:quote"},
+  {"ask": "famous quotes", "want": "skill:quote"},
+  {"ask": "what can i make with chicken and rice", "want": "skill:recipe"},
+  {"ask": "good movies to watch tonight", "want": "skill:media-pick|skill:movie"},
+  {"ask": "what should i watch on netflix", "want": "skill:media-pick|skill:movie|skill:show"},
+  {"ask": "convert hello to morse code", "want": "skill:morse"},
+  {"ask": "magic 8 ball will i pass my test", "want": "skill:magic8"}
 ]
