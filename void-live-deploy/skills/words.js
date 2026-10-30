@@ -86,16 +86,21 @@ async function listRun(q, api) {
   const src = '<div class="src">Source: <a href="https://www.datamuse.com/api/" target="_blank" rel="noopener">Datamuse</a> (common English words)</div>';
   const get = (sp, max) => fetch('https://api.datamuse.com/words?max=' + max + '&sp=' + encodeURIComponent(sp)).then((x) => x.json()).then((r) => (r || []).map((x) => x.word));
   try {
-    let list;
+    let list, missed = 0, nAsk = 0;
     if (q.kind === 'ana') {
+      // 2026-10-30: each lookup's failure counted as "no words", so with the service down the card said no common word uses the letters
+      // of LISTEN (silent, enlist, tinsel). Now no answer at all is the service's failure, and a partial answer says it may be short.
       const firsts = Array.from(new Set(q.word.split('')));
-      list = anagramsIn((await Promise.all(firsts.map((c) => get(c + '?'.repeat(q.word.length - 1), 1000).catch(() => [])))).flat(), q.word);
+      const got = await Promise.all(firsts.map((c) => get(c + '?'.repeat(q.word.length - 1), 1000).catch(() => null)));
+      missed = got.filter((x) => x === null).length; nAsk = got.length;
+      list = anagramsIn(got.filter(Boolean).flat(), q.word);
+      if (missed && !list.length) throw 0;
     } else {
       const re = new RegExp('^' + q.sp.replace(/\?/g, '[a-z]').replace(/\*/g, '[a-z]*') + '$');
       list = Array.from(new Set((await get(q.sp, 80)).filter((w) => re.test(w)))).slice(0, 60);
     }
     if (!api._pageStill(el)) return 'words';
-    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map((w) => wordLink(w, esc)).join(' · ') + '</p><p style="color:#8a8a8a">Tap a word for a cartoon of it on the stage.</p>'
+    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map((w) => wordLink(w, esc)).join(' · ') + '</p><p style="color:#8a8a8a">Tap a word for a cartoon of it on the stage.</p>' + (missed ? '<p style="color:#8a8a8a">' + missed + ' of ' + nAsk + ' lookups did not answer, so this list may be short.</p>' : '')
       : '<p>' + (q.kind === 'ana' ? 'No common English word uses exactly the letters ' + esc(up(q.word)) + '.' : 'I didn\'t find common words like that.') + '</p>') + src;
     return 'words'; // an empty list is still an answer: no common word fits
   } catch (_) {
