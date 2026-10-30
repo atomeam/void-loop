@@ -3228,6 +3228,7 @@ say('nothing selected to remove');
     const SOUND = [['The Physics Factbook: speed of sound in air', 'https://hypertextbook.com/facts/2000/CheukWong.shtml'], ['The Physics Factbook: speed of sound in water', 'https://hypertextbook.com/facts/2000/NickyDu.shtml']];
     const LUMENS = [['Energy Saver: buy lumens, not watts', 'https://www.energy.gov/node/380665']];
     const DRINKS = [['NIAAA: what is a standard drink', 'https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink']];
+    const WATER_POINTS = [['USDA FSIS: High Altitude Cooking', 'https://www.fsis.usda.gov/es/node/3340']];
     // cooking amounts, read 2026-10-30: USA Rice for the water ratios and the 1 cup dry = 3 cups cooked yield (and 7 oz to a cup of dry rice),
     // MSU Extension for the MyPlate ½ cup serving, the National Coffee Association for its 1–2 tablespoons per 6 oz golden ratio (it gives
     // no cups per pound, so the old "about 48" is gone) and CSU Extension for meat per person (the old ½ lb had nothing behind it)
@@ -3456,7 +3457,7 @@ say('nothing selected to remove');
       // "boiling point of water in fahrenheit", "what temperature does water freeze": at sea level
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(boiling|freezing)\s+point\s+(?:of\s+)?water(?:\s+(?:in|at)\s+(fahrenheit|celsius|centigrade|kelvin|f|c|k))?$|^(?:at\s+)?what\s+temp(?:erature)?\s+does\s+water\s+(boil|freeze)(?:\s+(?:in|at)\s+(fahrenheit|celsius|kelvin|f|c|k))?$/);
       if (m) { const boil = /boil/.test(m[1] || m[3]), u = (m[2] || m[4] || '').charAt(0), F = boil ? 212 : 32, C = boil ? 100 : 0, K = boil ? 373.15 : 273.15;
-        return { value: u === 'c' ? C + ' °C' : u === 'k' ? K + ' K' : u === 'f' ? F + ' °F' : F + ' °F (' + C + ' °C)', note: 'water ' + (boil ? 'boils' : 'freezes') + ' at ' + F + ' °F = ' + C + ' °C = ' + K + ' K at sea level' + (boil ? '; lower up high (about 203 °F in Denver)' : '') }; }
+        return { value: u === 'c' ? C + ' °C' : u === 'k' ? K + ' K' : u === 'f' ? F + ' °F' : F + ' °F (' + C + ' °C)', note: 'water ' + (boil ? 'boils' : 'freezes') + ' at ' + F + ' °F = ' + C + ' °C = ' + K + ' K at sea level' + (boil ? '; lower up high: just under 1 °F less for each 500 ft of elevation, so 208 °F at 2,000 ft and about 198 °F at 7,500 ft' : ''), ...(boil ? { src: WATER_POINTS, read: '2026-10-30' } : {}) }; }
       // height: "5 feet 10 inches in cm", "6'2 in cm", "5 ft 10 in to meters"
       m = t.match(/^(?:convert\s+)?(\d{1,2})\s*(?:'|’|ft|feet|foot)\s*(?:and\s+)?(\d{1,2}(?:\.\d+)?)?\s*(?:"|”|''|in|inch|inches)?\s+(?:in|to|into)\s+(cm|centimet(?:er|re)s?|m|met(?:er|re)s?)$/);
       if (m) { const inch = +m[1] * 12 + +(m[2] || 0), cm = Math.round(inch * 2.54 * 10) / 10, toM = /^m/.test(m[3]);
