@@ -68,10 +68,11 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-29 | password skill: generate a random secure password | new idea by growth agent; helper/growth-password |
 | building | 2026-10-29 | shuffle skill: shuffle a list of items | new idea by growth agent; helper/shuffle |
 | building | 2026-10-29 | random emoji skill: pick a random emoji or a few | new idea by growth agent; helper/emoji |
-| open | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent |
-| open | 2026-10-29 | rock paper scissors skill: play a quick game | new idea by growth agent |
-| open | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent |
+| building | 2026-10-29 | timer skill: a simple countdown timer on the stage | new idea by growth agent; helper/timer |
+| building | 2026-10-29 | rock paper scissors skill: play a quick game | new idea by growth agent; helper/rps |
+| building | 2026-10-29 | stopwatch skill: a simple stopwatch on the stage | new idea by growth agent; helper/stopwatch |
 | building | 2026-10-29 | anagram skill: scramble a word or check if two words are anagrams | new idea by growth agent; helper/anagram |
 | open | 2026-10-29 | palindrome skill: check if a word or phrase is a palindrome | new idea by growth agent |
 | building | 2026-10-29 | hangman skill: play a simple word-guessing game | new idea by growth agent; helper/hangman |
 | open | 2026-10-29 | word ladder skill: transform one word to another by changing one letter at a time | new idea by growth agent |
+| open | 2026-10-30 | coin flip skill: flip a coin or best of three | new idea by growth agent |
