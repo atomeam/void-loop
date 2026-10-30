@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
-      group: void-verify-fast
+      group: void-verify-fast-${{ github.sha }} # one per head: a shared job group keeps only the newest pending run and cancels the rest
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -87,7 +87,7 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     concurrency:
-      group: void-verify-${{ matrix.shard }}
+      group: void-verify-${{ matrix.shard }}-${{ github.sha }} # one per head (2026-10-30): a shared group cancelled older heads' pending shards
       cancel-in-progress: false
     permissions:
       contents: write # push the revert

@@ -19,6 +19,15 @@ export async function cap(env, key, limit, now = Date.now()) {
     return row ? { ok: true, n: Number(row.n) } : { ok: false, n: 0 };
   } catch (_) { return { ok: false, n: 0 }; }
 }
+/** how many places `key` has taken today, without taking one: a number, or null when D1 is missing or errs. `now` is for tests. */
+export async function peek(env, key, now = Date.now()) {
+  try {
+    const db = env && env.DB; if (!db || !/^[a-z0-9:_-]{1,60}$/i.test(String(key))) return null;
+    if (!ready.has(db)) { await db.prepare(TABLE).run(); ready.add(db); }
+    const row = await db.prepare('SELECT n FROM void_daily_cap WHERE day = ? AND key = ?').bind(dayOf(now), String(key)).first();
+    return row ? Number(row.n) || 0 : 0;
+  } catch (_) { return null; }
+}
 /** take a place under every [key, limit] pair in order; refused, with nothing more taken, at the first that is full. List the short windows (an hour) before the day, so a full hour never uses up a place in the day. */
 export async function capAll(env, pairs, now = Date.now()) {
   for (const [key, limit] of pairs) { const r = await cap(env, key, limit, now); if (!r.ok) return { ok: false, key }; }

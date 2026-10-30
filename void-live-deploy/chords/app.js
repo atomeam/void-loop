@@ -5,6 +5,8 @@ import { mountRelated } from '/lib/toolkit.js';
 import { $, boot, t, wire, num } from '/lib/music-ui.js';
 
 const say_ = () => {};
+/** the piano opened with a sheet in its link (/piano/ reads ?sheet= and ?bpm=) */
+const pianoLink = (sheet, bpm) => '/piano/?sheet=' + encodeURIComponent(sheet) + '&bpm=' + bpm;
 const q = new URLSearchParams(location.search);
 /** draws a keyboard from C3 to B5 into an inner element, lighting the given MIDI notes (exact) or pitch classes. */
 function kb(inner, lit, byPc = false) {
@@ -32,11 +34,13 @@ function chordView() {
   if (!vs.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = t('No easy guitar shape for this chord in the first 12 frets.'); box.append(p); }
   for (const v of vs) { const d = document.createElement('div'); d.append(guitarSvg(v)); const p = document.createElement('p'); p.className = 'note'; p.style.textAlign = 'center'; p.textContent = v.label; d.append(p); box.append(d); }
   $('cInv').querySelectorAll('option').forEach((o, i) => { o.disabled = i >= c.pcs.length; }); if (inv >= c.pcs.length) $('cInv').value = '0';
+  $('toPiano').href = pianoLink('[' + mids.map((x) => noteName(x)).join(' ') + ']:2 ' + mids.map((x) => noteName(x) + ':0.5').join(' '), 90);
 }
 const playMidis = (mids, gap = 0) => { if (!audio()) return; const t0 = audio().currentTime + 0.05; mids.forEach((m, i) => startNote(m, 'piano', 0.7, t0 + i * gap, gap ? 0.5 : 1.8)); };
 function scaleView() {
   const root = $('sRoot').value, type = $('sType').value, s = scaleOf(root, type); if (!s) return;
   $('sName').firstChild.nodeValue = s.name + ' '; $('sNotes').textContent = s.notes.join(' '); $('sSteps').textContent = s.steps; kb($('sKbi'), new Set(s.pcs), true);
+  { const up = [...s.intervals.map((i) => 60 + s.root + i), 72 + s.root]; $('toPianoScale').href = pianoLink(up.concat(up.slice(0, -1).reverse()).map((x) => noteName(x) + ':0.5').join(' '), 100); }
   const minor = type === 'minor', sev = $('sev').checked, ch = chordsInKey(root, minor, sev), bySym = Object.fromEntries(ch.map((c) => [c.roman.replace(/7$/, ''), c.symbol])), tb = $('keyChords').tBodies[0]; tb.textContent = '';
   const major7 = ['major', 'minor'].includes(type);
   $('keyChords').hidden = !major7; if (!major7) { $('sig').textContent = t('Chords of a key are shown for major and natural minor.'); } else {
@@ -91,6 +95,9 @@ const sym = (q.get('chord') || q.get('q') || '').trim(), m = /^([A-Ga-g][#b]?)(.
 if (m) { const root = NOTE_NAMES.includes(m[1].toUpperCase()) ? m[1].toUpperCase() : NOTE_NAMES[pitchClass(m[1])]; if (CHORD_TYPES[m[2]] && root) { $('cRoot').value = root; $('cType').value = m[2]; } }
 const sc = (q.get('scale') || '').trim(), sm = /^([A-Ga-g][#b]?)\s*(.*)$/.exec(sc);
 if (sm) { const r = NOTE_NAMES[pitchClass(sm[1])]; const key = Object.keys(SCALE_TYPES).find((k) => SCALE_TYPES[k].name.toLowerCase().startsWith(sm[2].toLowerCase()) && sm[2]) || (/^min/i.test(sm[2]) ? 'minor' : 'major'); if (r) { $('sRoot').value = r; $('sType').value = key; } }
+// notes another page heard together (/piano/ sends ?notes=C,E,G): picked here, so the chord is named and its scales listed
+for (const n of (q.get('notes') || '').split(/[,\s]+/).slice(0, 12)) { const pc = /^[A-Ga-g][#b]?$/.test(n) ? pitchClass(n) : -1; if (pc >= 0) picked.add(pc); }
+for (const b of $('pickNotes').children) b.setAttribute('aria-pressed', String(picked.has(pitchClass(b.dataset.pc))));
 for (const id of ['cRoot', 'cType', 'cInv']) wire($(id), 'change', chordView); for (const id of ['sRoot', 'sType', 'sev']) wire($(id), 'change', scaleView);
 wire($('cPlay'), 'click', () => playMidis(chordMidi($('cRoot').value, $('cType').value, 3, +$('cInv').value))); wire($('cArp'), 'click', () => playMidis(chordMidi($('cRoot').value, $('cType').value, 3, +$('cInv').value), 0.22));
 wire($('sPlay'), 'click', () => { const s = scaleOf($('sRoot').value, $('sType').value); if (s) playMidis([...s.intervals.map((i) => 60 + s.root + i), 72 + s.root], 0.28); });
@@ -99,3 +106,4 @@ wire($('trIn'), 'input', transposeView); wire($('trBy'), 'change', transposeView
 for (const sel of $('neckSel').querySelectorAll('select')) wire(sel, 'change', () => { held[+sel.dataset.s] = sel.value === 'x' ? null : +sel.value; neckSync(); });
 wire($('neckClear'), 'click', () => { held.fill(null); neckSync(); });
 chordView(); scaleView(); pickView(); circle(); transposeView(); neckView(); pickNeck();
+if (picked.size) $('pickNotes').scrollIntoView({ block: 'center' });
