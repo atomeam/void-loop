@@ -2,7 +2,9 @@
  * crypto skill — the price of a cryptocurrency now, from CoinGecko (no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "bitcoin price", "price of ethereum in euros", "how much is solana".
+ * Its card opens the Markets page on the same coin (data-page), and the Markets page's card asks for this one (lib/markets-card.js).
  */
+import { COINS as LISTED } from '../lib/markets.js';
 const COINS = { bitcoin: 'bitcoin', btc: 'bitcoin', ethereum: 'ethereum', eth: 'ethereum', ether: 'ethereum', solana: 'solana', sol: 'solana', dogecoin: 'dogecoin', doge: 'dogecoin',
   cardano: 'cardano', ada: 'cardano', xrp: 'ripple', ripple: 'ripple', litecoin: 'litecoin', ltc: 'litecoin', tether: 'tether', usdt: 'tether', bnb: 'binancecoin', polkadot: 'polkadot', dot: 'polkadot', monero: 'monero', xmr: 'monero' };
 const VS = { usd: 'usd', dollars: 'usd', dollar: 'usd', eur: 'eur', euros: 'eur', euro: 'eur', gbp: 'gbp', pounds: 'gbp', pound: 'gbp', jpy: 'jpy', yen: 'jpy',
@@ -13,6 +15,8 @@ const VS = { usd: 'usd', dollars: 'usd', dollar: 'usd', eur: 'eur', euros: 'eur'
 const CODES = 'aed ars aud bdt bhd bmd brl cad chf clp cny czk dkk eur gbp gel hkd huf idr ils inr jpy krw kwd lkr mmk mxn myr ngn nok nzd php pkr pln rub sar sek sgd thb try twd uah usd vnd zar'.split(' ');
 // the currency a word names, or null; a word it does not know is kept so the card can say the price is in dollars instead
 const vsOf = (w) => (!w ? 'usd' : VS[w] || (CODES.includes(w) ? w : null));
+/** the Markets page for a CoinGecko id ('/markets/?s=BTC'), or '' for a coin the page does not list. Pure. */
+export function pageOfCoin(id) { const sym = Object.keys(LISTED).find((s) => LISTED[s][0] === id); return sym ? '/markets/?s=' + sym : ''; }
 export function coinOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?(?:(?:current\s+)?price\s+of\s+|how\s+much\s+is\s+(?:one\s+|a\s+|1\s+)?)?([a-z]{2,10})(?:\s+(?:price|worth|value|now|today))*(?:\s+in\s+([a-z]{3,7}))?$/);
@@ -29,7 +33,7 @@ async function run(text, api) {
   const q = coinOf(text);
   if (!q) return 'none';
   const nice = q.id.charAt(0).toUpperCase() + q.id.slice(1);
-  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(nice) + '</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(nice) + '</h2><div class="sub">…</div>'; const page = pageOfCoin(q.id); if (page && p.dataset) p.dataset.page = page; });
   try {
     const j = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=' + q.id + '&vs_currencies=' + q.vs + '&include_24hr_change=true&include_last_updated_at=true').then((r) => r.json());
     if (!api._pageStill(el)) return 'crypto';
