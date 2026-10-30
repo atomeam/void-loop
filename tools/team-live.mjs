@@ -133,12 +133,9 @@ for (const n of retire) {
   if (r.status === 201) ok(n + ': old key stopped (press New link beside ' + n + ' on /team/ for its join link)'); else console.log('skip ' + n + ': ' + r.status + ' ' + (r.say || ''));
 }
 // 5. done jobs that were not done go back on the queue, one statement each (only a job that is still done moves)
-for (const id of (arg('--reopen', '') || '').split(',').map((s) => s.trim()).filter(Boolean)) {
-  if (!/^[\w-]{1,40}$/.test(id)) { console.log('skip a job id that is not one'); continue; }
-  // void-review: ok: a few ids the owner typed, one at a time, so each answer is reported on its own
-  const r = await fetch(SITE + '/api/queue', { method: 'PATCH', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ id, from: 'done', state: 'queued', note: 'reopened by the owner: its pull request did not do the job' }) });
-  if (r.ok) ok(id + ': back on the queue'); else console.log('skip ' + id + ': ' + r.status + (r.status === 409 ? ' (not done now)' : ''));
-}
+const reopen = (arg('--reopen', '') || '').split(',').map((s) => s.trim()).filter((id) => /^[\w-]{1,40}$/.test(id));
+const reopened = await Promise.all(reopen.map((id) => fetch(SITE + '/api/queue', { method: 'PATCH', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ id, from: 'done', state: 'queued', note: 'reopened by the owner: its pull request did not do the job' }) }).then((r) => [id, r.status], () => [id, 0])));
+for (const [id, status] of reopened) if (status >= 200 && status < 300) ok(id + ': back on the queue'); else console.log('skip ' + id + ': ' + status + (status === 409 ? ' (not done now)' : ''));
 const after = await team('after');
 console.log('waiting: ' + before.waiting + ' before, ' + after.waiting + ' after');
 if (!process.exitCode) console.log('team live: any agent joins, all in the same chat, at ' + SITE);
