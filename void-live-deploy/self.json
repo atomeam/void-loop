@@ -550,6 +550,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T05:13:43Z",
+   "subject": "Put /emojis/ and /g/ back in the sitemap: the merge with main took main's copy"
+  },
+  {
+   "at": "2026-10-30T05:12:22Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T05:11:56Z",
+   "subject": "The last breaks the full self-check found: a lab crash, a light lab page, the old name on /store/"
+  },
+  {
+   "at": "2026-10-30T05:10:53Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:10:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:09:41Z",
+   "subject": "quote: mark the retry loop as right for the review"
+  },
+  {
    "at": "2026-10-30T05:09:38Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -604,30 +628,6 @@
   {
    "at": "2026-10-30T05:00:03Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:58:32Z",
-   "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
-  },
-  {
-   "at": "2026-10-30T04:53:12Z",
-   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
-  },
-  {
-   "at": "2026-10-30T04:51:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:51:04Z",
-   "subject": "Markets: its stage card shows the coin open on the page"
-  },
-  {
-   "at": "2026-10-30T04:51:00Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
