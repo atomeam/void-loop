@@ -1320,7 +1320,7 @@
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 829 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 831 real asks in the benchmark",
      "failing": [
       "how much luggage weight allowed"
      ],
