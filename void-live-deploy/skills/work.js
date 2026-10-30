@@ -66,7 +66,10 @@ async function run(text, api) {
     // a lane page reads the same query as /jobs/ (lib/jobs-ui.js), so the place carries over: "job alerts in Berlin" opens alerts for Berlin
     const page = lane ? lane + (loc ? '?' + C.toQuery({ loc }) : '') : '/jobs/?' + C.toQuery({ q, loc });
     // a place may mean on-site work too, which these remote listings do not hold: the same search on two big boards, opened by the visitor
-    const there = loc ? '<p style="color:#8a8a8a;font-size:13px">The same search for ' + esc(loc) + ' on the big job boards: ' + C.searchLinks({ q, loc }).filter((x) => x.id === 'linkedin' || x.id === 'indeed').map((x) => '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p>' : '';
+    const boards = (lead, ids) => '<p style="color:#8a8a8a;font-size:13px">' + esc(lead) + ': ' + C.searchLinks({ q, loc }).filter((x) => ids.includes(x.id)).map((x) => '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p>';
+    // a role these feeds hold few of (2026-10-30, live: "remote python jobs" found 1 of about 280 listings): the same remote search where there are more, on the two boards whose search address is partly confirmed (lib/jobs-core.js searchLinks)
+    const there = loc ? boards('The same search for ' + loc + ' on the big job boards', ['linkedin', 'indeed'])
+      : q && jobs.length < 5 ? boards('These feeds hold few ' + q + ' jobs right now. The same remote search on the big job boards', ['linkedin', 'himalayas']) : '';
     if (!jobs.length) { el.innerHTML = '<h2>Work</h2><p>No remote listings matched that right now. Try a shorter role name, or <a href="' + esc(page) + '">open the jobs page</a> to search every way.</p>' + there; return 'work'; }
     const rows = jobs.slice(0, 8).map((d) => {
       const bits = [d.company, d.loc || 'Anywhere', (C.TYPES[d.type] || ''), C.salaryText(d.salary)].filter(Boolean).join(' · ');
