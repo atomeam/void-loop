@@ -1,5 +1,5 @@
 // The Art Forge backfill (owner, 2026-10-17: "fix the art for everything once Verse can generate its own unique art that fits"): walks every skill card (skills/index.json),
-// every miniature (skills/mini/*.js; the Verse Book's pages are these same skills), and any subjects in --file, and paints what is not painted yet, a few at a time, under the
+// every miniature (skills/mini/*.js; the Book of Verse's pages are these same skills), and any subjects in --file, and paints what is not painted yet, a few at a time, under the
 // route's own daily cap (30) and kill switch. The record of what is painted IS the server's cache (D1 void_art), so a rerun never repaints and any machine can resume.
 // Real art stays real: a name that is a film, show, song, album or book is skipped (its poster or cover is the art, as the card frame already does).
 //   node tools/prepaint-art.mjs --status           "N of M cards painted", what is left and how many days that takes at the cap (reads only, free)

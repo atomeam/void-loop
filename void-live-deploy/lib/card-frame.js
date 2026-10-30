@@ -4,7 +4,7 @@
 // with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to Verse" line, and a footer with a collector
 // number and a power/toughness plate. Nothing is invented: the rarity is the skill's evidence rating (proven mythic, checked rare, tested
 // uncommon, experiment common); the cost is how many words you say to play it; power is its success rate out of nine and toughness the
-// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Verse Book; "adds" is the one line the book says it does. An answer
+// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Book of Verse; "adds" is the one line the book says it does. An answer
 // fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how fresh the
 // source is (freshness). The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls

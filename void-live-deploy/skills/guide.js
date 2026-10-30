@@ -21,10 +21,10 @@ import { loadHealth } from '../lib/success-pulse.js';
 
 export { pageHtml, tocHtml };
 
-const BOOK_WORDS = '(?:book|guide|manual|handbook|strategy guide|book of everything|book of all)';
+const BOOK_WORDS = '(?:book of (?:the\\s+)?verse|book|guide|manual|handbook|strategy guide|book of everything|book of all)';
 const OPEN = '(?:(?:open|show(?:\\s+me)?|read|flip through|browse|bring|summon|let me see|see|get)\\s+(?:up\\s+)?)?';
 const WHOSE = '(?:the\\s+|your\\s+|(?:verse|v01d)\\s*\'?s?\\s+|(?:verse|void)\\s*\'?s?\\s+|a-to-mind\'?s?\\s+)';
-const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|(?:verse|void)\\s+)?' + BOOK_WORDS + '|(?:v01d|(?:verse|void)|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|(?:verse|v01d)|(?:verse|void)|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
+const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|(?:verse|void)\\s+)?' + BOOK_WORDS + '|(?:v01d|(?:verse|void)|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything|book of (?:the\\s+)?verse)(?:\\s+of\\s+everything(?:\\s+(?:you|it|(?:verse|v01d)|(?:verse|void)|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
 const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|(?:verse|void)\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
 const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|verse|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
 const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|(?:verse|void)\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|(?:verse|void)\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
@@ -125,7 +125,7 @@ export function closeTome(why = 'esc') {
 function mount(book, api, startAt, text) {
   const { esc } = api;
   const old = current(); if (old) { old._cleanup && old._cleanup(); old.remove(); }
-  book.title = book.title || 'The Verse Book';
+  book.title = book.title || 'The Book of Verse';
   const total = book.pages.length;
   let cur = Math.min(Math.max(startAt || readKept() || 1, 1), total), turning = false;
   const root = document.createElement('div'); root.id = 'vtome'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-label', book.title); root.setAttribute('aria-modal', 'true');
@@ -292,7 +292,7 @@ function run(text, api) {
 
 export default {
   name: 'guide',
-  examples: ['open the book', 'the guide', 'show me everything you can do', 'the book at chess', 'everything you can do', 'the manual', 'flip through the book', 'what\'s in the book', 'rule registry', 'show the router rules'],
+  examples: ['open the book', 'open the book of verse', 'the guide', 'show me everything you can do', 'the book at chess', 'everything you can do', 'the manual', 'flip through the book', 'what\'s in the book', 'rule registry', 'show the router rules'],
   nearMisses: ['what can you do', 'books by octavia butler', 'book called dune', 'open a notepad', 'a book about dogs', 'the book thief', 'menu', 'help', 'guide me to the station', 'make a book', 'the rules of chess', 'house rules'],
   match(lower, text) { return !!guideOf(text || lower); },
   run,
