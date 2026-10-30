@@ -154,14 +154,17 @@ export function parseSpark(j) {
   else if (j && typeof j === 'object') for (const [sym, x] of Object.entries(j)) if (x && Array.isArray(x.close)) put(sym, null, x.close, x.chartPreviousClose);
   return out;
 }
+/** a close Yahoo rounded too far to measure a move from: it keeps six decimals, so a coin under a tenth of a cent comes back with one or two digits that mean anything
+ *  (live 2026-10-30: Shiba Inu's closes read 0.000005, and its 24h and 7d moves both read -6.2%). Pure. */
+export const coarse = (v) => v > 0 && v < 0.001 && String(+v.toPrecision(12)).replace(/e.*$/, '').replace(/[-.]/g, '').replace(/^0+|0+$/g, '').length < 3;
 /** the snapshot's coins with the live prices laid over them: a price is taken only within 40% of the snapshot's (a Yahoo ticker can name another coin); market cap scales
  *  with the price (the supply barely moves in a day), the distance below the all-time high is measured from the new price, the volume stays the snapshot's. { coins, live } with live the count that got a price. Pure. */
 export function overlay(caps, prices) {
   let live = 0;
   const coins = (caps || []).map((c) => { const p = prices[c.sym + '-USD']; if (!p || !(c.price > 0) || Math.abs(p.price / c.price - 1) > 0.4) return c; live++;
-    const k = p.closes.slice(-8), first = k[0];
+    const k = p.closes.slice(-8), first = k[0], fine = (v) => v > 0 && !coarse(v);
     const ath = c.athPct != null && c.athPct > -100 ? c.price / (1 + c.athPct / 100) : null;
-    return { ...c, price: p.price, pct24: p.prev ? (p.price / p.prev - 1) * 100 : c.pct24, pct7: first ? (p.price / first - 1) * 100 : c.pct7, cap: c.cap != null ? c.cap * p.price / c.price : null, athPct: ath ? Math.min(0, (p.price / ath - 1) * 100) : c.athPct, spark: k.length > 2 ? k : c.spark, live: true }; });
+    return { ...c, price: p.price, pct24: fine(p.prev) ? (p.price / p.prev - 1) * 100 : c.pct24, pct7: fine(first) ? (p.price / first - 1) * 100 : c.pct7, cap: c.cap != null ? c.cap * p.price / c.price : null, athPct: ath ? Math.min(0, (p.price / ath - 1) * 100) : c.athPct, spark: k.length > 2 && k.every(fine) ? k : c.spark, live: true }; });
   return { coins, live };
 }
 // the top 50: CoinGecko live; when it does not answer (its free API often refuses shared Cloudflare addresses), the daily snapshot (data/coins.json, made by a GitHub

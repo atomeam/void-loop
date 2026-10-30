@@ -16,8 +16,8 @@ const ALT = { perseid: 'perseids', geminid: 'geminids', leonid: 'leonids', orion
 // { kind: 'month' | 'next' | 'one', shower?, place } or null
 export function meteorAsk(text) {
   const { core, place } = splitPlace(text); const t = core.replace(/['’]s\b/g, 's');
-  if (/^(?:meteor showers?|shooting stars?|falling stars?)(?: this month| tonight| now| today| this week| right now| coming up| this year| to see| to watch| happening| dates)?$/.test(t) || /^(?:what|which) meteor showers? (?:is|are) (?:on|active|happening|coming)(?: this month| tonight| now| today| this week| right now)?$/.test(t)
-    || /^(?:are there|is there) (?:any |a )?(?:meteor showers?|shooting stars?)(?: on| happening| active)?(?: this month| tonight| now| today| this week)?$/.test(t) || /^(?:will|can) (?:i|we) (?:see|spot) (?:any |a )?(?:meteors?|shooting stars?)(?: tonight| this month| today)?$/.test(t)) return { kind: /tonight|now|today/.test(t) ? 'tonight' : 'month', place };
+  if (/^(?:meteor showers?|shooting stars?|falling stars?)(?: this month| tonight| now| today| this week| right now| coming up| this year| to see| to watch| happening| dates| soon)?$/.test(t) || /^(?:what|which) meteor showers? (?:is|are) (?:on|active|happening|coming)(?: this month| tonight| now| today| this week| right now)?$/.test(t)
+    || /^(?:are there|is there) (?:any |a )?(?:meteor showers?|shooting stars?)(?: on| happening| active| soon)?(?: this month| tonight| now| today| this week)?$/.test(t) || /^(?:is there) (?:meteor showers?|shooting stars?)(?: soon)?$/.test(t) || /^(?:will|can) (?:i|we) (?:see|spot) (?:any |a )?(?:meteors?|shooting stars?)(?: tonight| this month| today)?$/.test(t)) return { kind: /tonight|now|today|soon/.test(t) ? 'tonight' : 'month', place };
   if (/^(?:when(?:s| is) |what(?:s| is) )?(?:the )?next (?:meteor shower|shooting stars?)$/.test(t) || /^(?:when is|when(?:s)?) the next meteor shower$/.test(t)) return { kind: 'next', place };
   let m = /^(?:when(?:s| is| are| will be)?|what(?:s| is| day is)|tell me about|how (?:good|big) (?:is|are)|best time to see|how to see|where to look for|when to see|can i see)\s+(?:the\s+)?([a-z ]+?)(?: meteor shower| meteors| shower| peak)?(?: peak| this year| tonight| best| date| dates| this month)*$/.exec(t) || /^(?:the\s+)?([a-z ]+?) meteor shower(?: peak| this year| tonight| date| dates| this month)*$/.exec(t) || /^(?:the\s+)?(perseids?|geminids?|leonids?|orionids?|lyrids?|quadrantids?|draconids?|taurids?|ursids?|eta aquari+ds?|delta aquari+ds?)(?: peak| this year| tonight| date| dates| meteor shower)*$/.exec(t);
   if (m) { const k = m[1].trim().replace(/\s+/g, ' '), name = NAME_KEYS.includes(k) ? k : ALT[k] || ALT[k.replace(/s$/, '')]; if (name) return { kind: 'one', shower: name, place }; }
@@ -64,7 +64,7 @@ async function run(text, api) {
 export default {
   name: 'meteors',
   meteorAsk,
-  examples: ['meteor showers this month', 'next meteor shower', 'when is the next meteor shower', 'when are the perseids', 'geminids meteor shower', 'shooting stars tonight', 'are there any meteor showers tonight', 'meteor showers', 'when is the leonid meteor shower', 'best time to see the perseids', 'can i see meteors tonight', 'meteor shower dates'],
+  examples: ['meteor showers this month', 'next meteor shower', 'when is the next meteor shower', 'when are the perseids', 'geminids meteor shower', 'shooting stars tonight', 'are there any meteor showers tonight', 'meteor showers', 'when is the leonid meteor shower', 'best time to see the perseids', 'can i see meteors tonight', 'meteor shower dates', 'is there a meteor shower soon'],
   nearMisses: ['meteor shower wallpaper', 'meteor garden', 'meteorology degree', 'shooting star lyrics', 'shooting stars bk', 'what causes a meteor shower', 'how fast is a meteor', 'meteor crater arizona', 'the meteors'],
   match(lower, text) { return !!meteorAsk(text); },
   run,
