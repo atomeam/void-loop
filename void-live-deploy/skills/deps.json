@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1058,
+ "counted": 1059,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1450,6 +1450,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/stabilize.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/transition.js",
@@ -10664,6 +10671,17 @@
     "skills/sprite-sheet.js"
    ]
   },
+  "lib/stabilize.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
+   ]
+  },
   "lib/stage-camera.js": {
    "imports": [],
    "importedBy": [
@@ -11680,7 +11698,8 @@
     "lib/flv.js",
     "lib/video-mux.js",
     "lib/converter.js",
-    "lib/transition.js"
+    "lib/transition.js",
+    "lib/stabilize.js"
    ],
    "importedBy": [
     "lib/rap-video.js"
