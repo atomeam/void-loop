@@ -1,16 +1,16 @@
 /**
  * toolkit skill: "what tools do you have", "all tools" (owner, 2026-10-25: "and vice versa , should be a card for all too"): the tool pages as one
- * card on the stage, each a link to its full page, and the card itself links to /tools/. The list is lib/toolkit.js TOOLS, so a new tool page
- * shows up here the day it lands. Made with tools/new-skill.mjs (docs/UPGRADING.md).
+ * card on the stage, each a link to its full page, and the card itself links to /tools/. The list is lib/toolkit.js allTools() (TOOLS and
+ * MORE_PAGES), the same pages /tools/ lists, so a new tool page shows up on both the day it lands. Made with tools/new-skill.mjs (docs/UPGRADING.md).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { TOOLS } from '../lib/toolkit.js';
+import { allTools } from '../lib/toolkit.js';
 
 const WHEN = /^(?:(?:what|which) tools (?:do you have|are there|can i use|)?|(?:show me |list )?(?:all|every|your) (?:the )?tools|every tool|show me your tools|tool list|list of tools|how many rolls of tape for .+)$/i; // only tape: "how many rolls of wallpaper", paint, tiles and drywall belong to walls and home (tools/skill-overlap.mjs)
 
 function run(text, api) {
   const { showPage, esc } = api;
-  const list = Object.entries(TOOLS).filter(([href]) => href !== '/tools/');
+  const list = allTools();
   showPage((el) => {
     el.dataset.page = '/tools/';
     el.innerHTML = '<h2>' + list.length + ' tools</h2>' // void-review: ok: a fixed table, escaped
