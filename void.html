@@ -4863,7 +4863,8 @@ say('nothing selected to remove');
         if (el.dataset && el.dataset.grounded) return; // the skill opened what the ask named (a lab tool by its own pattern)
         const r = g.judgeCard(text, el.innerText || '', skill);
         if (!r.unmet) return;
-        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing }]).slice(-20);
+        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing, refused: r.refuse }]).slice(-20);
+        if (r.refuse) { const t = el.querySelector('h2'); el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + esc(g.refusalLine(text, r.missing, t && t.textContent)) + '</p>'; } // a skill that looks a named thing up refuses a card about something else
         try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
       }, 1500)).catch(() => {});
     }

@@ -77,7 +77,17 @@ export function skillTriggers(skill) {
 
 /** the page's check (void.html, after a skill draws a card): { unmet, subject, missing }. Stricter than the benchmark's on purpose:
  *  only a card that shows none of the ask's subject is unmet, so what reaches the miss list is a card about something else. */
+// A skill that looks a named thing up (refuseUngrounded: true, as the recipe skill does) refuses a card about something else
+// (Adam's incident card, 2026-10-30: "how do i make guacamole" got a pancakes card, reported only quietly). Every other skill is
+// reported quietly as before: a tip card for "calculate a 20% tip on 45" shows none of "calculate", and refusing it would be wrong.
 export function judgeCard(ask, cardText, skill) {
   const g = grounded(ask, cardText, skillTriggers(skill));
-  return { unmet: g.subject.length > 0 && g.found.length === 0, subject: g.subject, missing: g.missing };
+  const unmet = g.subject.length > 0 && g.found.length === 0;
+  return { unmet, refuse: unmet && !!(skill && skill.refuseUngrounded), subject: g.subject, missing: g.missing };
+}
+/** the line said in place of a refused card: what was asked, what the card was about, that the miss is noted. Pure. */
+export function refusalLine(ask, missing, title) {
+  const want = (Array.isArray(missing) && missing.length ? missing.join(' ') : String(ask || '')).trim();
+  const was = String(title || '').trim().slice(0, 60);
+  return 'I don\'t have ' + want + ' yet' + (was ? ': the card I found was ' + was + ', so I did not show it' : '') + '. I\'ve noted it, so I can learn it.';
 }
