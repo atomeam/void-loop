@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1070,
+ "counted": 1071,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -651,7 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 17
+   "tests": 18
   },
   {
    "file": "lib/field-cards.js",
@@ -934,6 +934,13 @@
    "tests": 1
   },
   {
+   "file": "lib/markets.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 28,
+   "tests": 5
+  },
+  {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
@@ -1191,13 +1198,6 @@
    "direct": 0,
    "dependants": 28,
    "tests": 2
-  },
-  {
-   "file": "lib/markets.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 27,
-   "tests": 5
   },
   {
    "file": "lib/proposal.js",
@@ -8006,7 +8006,8 @@
   "lib/markets-card.js": {
    "imports": [
     "lib/markets.js",
-    "skills/crypto.js"
+    "skills/crypto.js",
+    "skills/stocks.js"
    ],
    "importedBy": []
   },
@@ -8047,7 +8048,8 @@
     "lib/markets-card.js",
     "lib/report-run.js",
     "lib/report.js",
-    "skills/crypto.js"
+    "skills/crypto.js",
+    "skills/stocks.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -15673,6 +15675,14 @@
     "lib/stl-check.js"
    ],
    "importedBy": []
+  },
+  "skills/stocks.js": {
+   "imports": [
+    "lib/markets.js"
+   ],
+   "importedBy": [
+    "lib/markets-card.js"
+   ]
   },
   "skills/store.js": {
    "imports": [

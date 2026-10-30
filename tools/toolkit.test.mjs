@@ -326,7 +326,7 @@ test('a recipe ask for a dish the page has built in shows that recipe with the n
   } finally { globalThis.fetch = was; }
 });
 
-test('the markets page\'s card shows the coin open there, not the board of top coins; its card opens Markets on that coin', async () => {
+test('the markets page\'s card shows the coin or the stock open there, not the board of top coins; its card opens Markets on that symbol', async () => {
   const C = await import('../void-live-deploy/lib/markets-card.js'), M = await import('../void-live-deploy/lib/markets.js'), mod = await import('../void-live-deploy/skills/crypto.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
   const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) }); try { await S.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; } return el; };
   let priced = 0;
@@ -341,7 +341,17 @@ test('the markets page\'s card shows the coin open there, not the board of top c
   }
   assert.ok(priced >= 10, 'the coins the stage prices: ' + priced);
   assert.equal(C.cardAsk('BTC'), 'bitcoin price'); assert.equal(C.cardAsk('BNB'), 'bnb price', 'by its ticker where the stage does not know its id');
-  for (const s of ['AAPL', 'SPX', 'EURUSD', 'TSLA', '', 'AVAX', 'not a symbol!']) assert.equal(C.cardAsk(s), '', 'the example ask stays: ' + s);
+  for (const s of ['EURUSD', '', 'AVAX', 'not a symbol!']) assert.equal(C.cardAsk(s), '', 'the example ask stays: ' + s);
+  // a stock, an ETF or an index goes to the stocks card, which opens Markets on the same symbol
+  const ST = (await import('../void-live-deploy/skills/stocks.js')).default;
+  for (const [s, want] of [['AAPL', 'AAPL stock price'], ['tsla', 'TSLA stock price'], ['BRK-B', 'BRK-B stock price'], ['VOD.L', 'VOD.L stock price'], ['SPY', 'SPY stock price'], ['ABCD', 'ABCD stock price'], ...M.INDICES.map(([x, , , , al]) => [x, al[0] + ' today'])]) {
+    const ask = C.cardAsk(s); assert.equal(ask, want, s);
+    assert.equal(await firstSkill(ask), 'stocks', 'the stage gives it to the stocks card: ' + ask);
+    const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) });
+    try { await ST.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; }
+    const sym = M.resolve(s).sym; assert.equal(el.dataset.page, '/markets/?s=' + encodeURIComponent(sym), 'its card opens Markets on the same symbol: ' + ask);
+    assert.deepEqual(pageOfCard('stocks', el.dataset.page), ['/markets/?s=' + encodeURIComponent(sym), 'Markets']);
+  }
   assert.equal(mod.pageOfCoin('nothing-listed'), '', 'a coin Markets does not list: no page link');
   const page = fs.readFileSync(new URL('../void-live-deploy/markets/index.html', import.meta.url), 'utf8');
   assert.ok(page.includes('{ card: () => cardAsk(state.sym) }'), 'the page gives the card the symbol open on it');
