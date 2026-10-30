@@ -6404,6 +6404,15 @@ say('nothing selected to remove');
       };
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
+    // the community milestone card (asked by Verse, 2026-10-17; lib/join-watch.js): when someone joins MultiVerse, one quiet line under the
+    // stage with the join link. Read once the page is idle, then every 5 minutes while visible; the first ask clears it.
+    if (!PAGE) {
+      const startJoins = () => import('/lib/join-watch.js').then((J) => {
+        J.watch(document, awayNote);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') for (const c of document.querySelectorAll('.join-card')) c.remove(); });
+      }).catch(() => {});
+      if ('requestIdleCallback' in window) requestIdleCallback(() => skillsReady.then(startJoins), { timeout: 8000 }); else setTimeout(() => skillsReady.then(startJoins), 4000);
+    }
     // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of the build it
     // loaded with (lib/stale-tab.js: the commit the deploy writes to /build.json, else the page's ETag) and looks again when it comes back into view and about every
     // ten minutes, one small GET each. A different id shows one non-blocking line that reloads on tap; the page never reloads by itself, so nobody loses what they were typing.
