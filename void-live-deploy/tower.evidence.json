@@ -22525,11 +22525,12 @@
   },
   "onlineconverter.com": {
    "speed": {
-    "verdict": "equal-and-better",
-    "verse": 179,
-    "best": 45,
-    "evidence": "Verse (/converter/) 179 ms to the load event (median of 3, phone width) vs onlineconverter.com 45 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "verdict": "worse",
+    "verse": 243,
+    "best": 59,
+    "evidence": "Verse (/converter/) 243 ms to the load event (median of 3, phone width) vs onlineconverter.com 59 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-30T18:12:42.110Z",
+    "was": "equal-and-better",
     "siteRead": true
    },
    "reliability": {
@@ -22537,15 +22538,15 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/converter/) 3 of 3 loads answered vs onlineconverter.com 3 of 3 loads answered",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "mobile": {
-    "verdict": "worse",
-    "verse": 29,
+    "verdict": "equal-and-better",
+    "verse": 0,
     "best": 0,
-    "evidence": "Verse (/converter/) 29 px sideways overflow at 390 px vs onlineconverter.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-30T13:43:53.385Z",
+    "evidence": "Verse (/converter/) 0 px sideways overflow at 390 px vs onlineconverter.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "accessibility": {
@@ -22553,15 +22554,15 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/converter/) 0 unnamed controls or images vs onlineconverter.com 0 unnamed controls or images",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "offline": {
-    "verdict": "equal",
-    "verse": 0,
+    "verdict": "better",
+    "verse": 1,
     "best": 0,
-    "evidence": "Verse (/converter/) 0 (1: the page shows itself again with the network cut) vs onlineconverter.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "evidence": "Verse (/converter/) 1 (1: the page shows itself again with the network cut) vs onlineconverter.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "sharing": {
@@ -22569,15 +22570,15 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onlineconverter.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "wider use": {
     "verdict": "better",
-    "verse": 6.5,
+    "verse": 7.5,
     "best": 6,
-    "evidence": "Verse (/converter/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs onlineconverter.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "evidence": "Verse (/converter/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs onlineconverter.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "accuracy": {
@@ -22585,7 +22586,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/converter/) 4 of 4 right against the worked-out answer; judged against the standard, not onlineconverter.com (the site is not asked)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "of": 4
    },
    "design polish": {
@@ -22593,7 +22594,7 @@
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/converter/) 0 design defects vs onlineconverter.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), onlineconverter.com (1 low-contrast texts, 17 small tap targets, layout shift 0.00)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "siteRead": true
    },
    "completeness": {
@@ -22601,7 +22602,7 @@
     "verse": 10,
     "best": 9,
     "evidence": "Verse (/converter/) 10 of 10 things a full answer shows vs onlineconverter.com 9 of 10 things a full answer shows (Verse lacks: none; site lacks: nothing to install)",
-    "at": "2026-10-30T13:43:53.385Z",
+    "at": "2026-10-30T18:12:42.110Z",
     "of": 10,
     "siteRead": true
    },
@@ -22618,7 +22619,7 @@
      "after press Convert: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/converter/): 4 steps, every negative control held",
-    "at": "2026-10-30T07:30:54.186Z"
+    "at": "2026-10-30T18:13:30.524Z"
    },
    "journey: find a tool and share it, then reopen it from the link": {
     "verdict": "pass",
@@ -22642,7 +22643,7 @@
      "after open /converter/?t=cut-mp3: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/converter/): 9 steps, every negative control held",
-    "at": "2026-10-30T07:30:54.186Z"
+    "at": "2026-10-30T18:13:30.524Z"
    }
   },
   "emoji combos": {
