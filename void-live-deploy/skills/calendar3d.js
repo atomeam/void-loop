@@ -88,7 +88,9 @@ function monthCells(y, m) {
 export function show3d(api, focus) {
   const { showPage, esc } = api;
   ensureStyle();
-  const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // the system setting, or Verse's own Reduced motion hard switch (lib/a11y-modes.js), read live: the switch can go on while the card is open
+  const calm = () => (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) || document.documentElement.classList.contains('a11y-motion');
+  const reduce = calm();
   const f = focus ? new Date(focus) : new Date();
   let y = f.getFullYear(), m = f.getMonth(), sel = dayKey(focus ? f : new Date());
   const el = showPage((p) => {
@@ -166,17 +168,20 @@ export function show3d(api, focus) {
   // turning: drag sets the angle; letting go keeps a little spin that slows, then it eases back to face you.
   // It sways a little while it is new or just turned, then settles still and the frame loop stops: a still card
   // costs a phone nothing, and the days hold still under a finger or a pointer. A drag wakes it again.
-  let rx = -8, ry = -16, vx = 0, vy = 0, drag = null, moved = false, flip = 0, running = false;
+  let rx = reduce ? -6 : -8, ry = reduce ? -10 : -16, vx = 0, vy = 0, drag = null, moved = false, flip = 0, running = false; // held still, it opens at rest
   const t0 = performance.now();
   let woke = t0;
   const apply = () => { rig.style.transform = 'translateX(-50%) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; page.style.transform = flip ? 'rotateX(' + flip + 'deg)' : ''; };
   function tick(now) {
     if (!el.isConnected) { running = false; return; }
     let rest = false;
-    if (!drag) {
+    if (!drag && calm()) {
+      // held still: no spin after a drag and no easing back, the card stands at the nearest front-facing turn at once
+      vx = vy = 0; ry = Math.round((ry + 10) / 360) * 360 - 10; rx = -6; rest = !flip;
+    } else if (!drag) {
       rx += vx; ry += vy; vx *= 0.92; vy *= 0.92;
       if (Math.abs(vx) + Math.abs(vy) < 0.05) {
-        const amp = reduce ? 0 : swayAmp(now - woke);
+        const amp = calm() ? 0 : swayAmp(now - woke);
         const sway = amp * Math.sin((now - t0) / 1800);
         const target = Math.round((ry + 10) / 360) * 360 - 10 + sway; // the nearest front-facing turn
         ry += (target - ry) * 0.04; rx += (-6 - rx) * 0.04;
@@ -206,7 +211,7 @@ export function show3d(api, focus) {
   // a month turns over the rings like a real page
   function go(dir) {
     const swap = () => { m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } sel = null; build(); aimPage(); };
-    if (reduce) { swap(); return; }
+    if (calm()) { swap(); return; }
     const t1 = performance.now(), dur = 520; let swapped = false;
     const step = (now) => {
       const t = Math.min(1, (now - t1) / dur);

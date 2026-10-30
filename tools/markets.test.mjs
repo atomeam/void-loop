@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { capsRows, scanRows, screen, resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES } from '../void-live-deploy/lib/markets.js';
-import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP } from '../void-live-deploy/functions/api/markets.js';
+import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP, parseSpark, overlay } from '../void-live-deploy/functions/api/markets.js';
 import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 
@@ -127,6 +127,27 @@ test('the strip and the watchlist cannot starve the quote: each counts against i
     assert.equal((await ask('?s=aapl&r=1y')).status, 200); assert.deepEqual([...bucketsUsed()].sort(), ['markets', 'markets-batch']);
     const before = kept.size; await ask('?strip=1'); await ask('?s=aapl&r=1y'); assert.equal(kept.size, before, 'repeats are answered from the cache and count nothing');
   } finally { globalThis.caches = had; }
+});
+test('the coin table when CoinGecko does not answer: the snapshot with Yahoo prices over it, then the snapshot alone, never a 503', async () => {
+  const snap = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/data/coins.json', import.meta.url), 'utf8')); if (!snap.ok) return;
+  const env = { ASSETS: { fetch: async (rq) => (new URL(rq.url).pathname === '/data/coins.json' ? new Response(JSON.stringify(snap)) : new Response('', { status: 404 })) } };
+  const by = Object.fromEntries(snap.caps.map((c) => [c.sym + '-USD', c]));
+  const spark = (shape) => async (url) => { const u = new URL(url); if (u.host === 'api.coingecko.com') return resp('', false); if (!u.pathname.endsWith('/spark')) return resp('', false);
+    const syms = u.searchParams.get('symbols').split(','); // BTC up 10% from the snapshot, a coin far off (another asset with the same ticker) is left as it was
+    const one = (s) => { const c = by[s], p = s === 'BTC-USD' ? c.price * 1.1 : s === 'ETH-USD' ? c.price * 3 : c.price; return { close: [p * 0.9, p * 0.95, p * 0.97, p], chartPreviousClose: p * 0.98 }; };
+    return resp(shape === 'old' ? Object.fromEntries(syms.map((s) => [s, one(s)])) : { spark: { result: syms.map((s) => ({ symbol: s, response: [{ meta: { regularMarketPrice: one(s).close[3], chartPreviousClose: one(s).chartPreviousClose }, indicators: { quote: [{ close: one(s).close }] } }] })) } }); };
+  for (const shape of ['old', 'new']) {
+    const r = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env, fetchFn: spark(shape) }), j = await r.json();
+    assert.equal(r.status, 200); assert.equal(j.ok, true); assert.equal(j.snapshot, snap.day); assert.equal(j.coins.length, snap.caps.length); assert.equal(j.live, snap.caps.length - 1, 'every coin but the one that is far off');
+    const btc = j.coins.find((c) => c.sym === 'BTC'), eth = j.coins.find((c) => c.sym === 'ETH');
+    assert.ok(Math.abs(btc.price / snap.caps[0].price - 1.1) < 1e-9); assert.ok(Math.abs(btc.cap / snap.caps[0].cap - 1.1) < 1e-6, 'the cap scales with the price'); assert.equal(btc.pct24.toFixed(2), '2.04');
+    assert.equal(eth.price, snap.caps.find((c) => c.sym === 'ETH').price, 'a price three times the snapshot is not taken'); assert.match(j.source, /Yahoo/); assert.match(j.source, new RegExp(snap.day));
+  }
+  const none = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env, fetchFn: fake({ down: ['api.coingecko.com'] }) }), n = await none.json();
+  assert.equal(none.status, 200); assert.equal(n.ok, true); assert.equal(n.live, 0); assert.deepEqual(n.coins, snap.caps); assert.match(n.source, /snapshot/);
+  const gone = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env: {}, fetchFn: fake({ down: ['api.coingecko.com'] }) });
+  assert.equal(gone.status, 503, 'no snapshot and no live list: said so');
+  assert.deepEqual(overlay([{ sym: 'X', price: 0, cap: 1 }], { 'X-USD': { price: 5, prev: 4, closes: [5] } }).live, 0); assert.deepEqual(parseSpark(null), {});
 });
 test('the coin table and the screener: rows, filters and the endpoint', async () => {
   const ask = (qs) => onRequestGet({ request: new Request('https://a-to-mind.com/api/markets' + qs), env: {}, fetchFn: fake() });

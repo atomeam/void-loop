@@ -49,12 +49,14 @@ export function voicesOf(synth) {
  *  is 'verse', else the browser voice it returns), 'self' lights them with no voice. onBar(i) is called as each bar starts (-1 for the
  *  count-in, null at the end); onSay(text) for a status line. */
 export function performer(r, s, { win = window, onBar = () => {}, onSay = () => {}, voice = () => 'verse', volume = () => 0.8, song = null } = {}) {
-  const beat = beatFor(s), timing = timingOf(r, beat, s.flow), total = lengthOf(timing, beat), the = song || songOf(r, s, { win });
+  let the = song || songOf(r, s, { win }), beat = the.plan.beat, timing = the.plan.timing, total = lengthOf(timing, beat);
   let ac = null, timers = [], beatGain = null, token = 0;
   const synth = win.speechSynthesis || null;
   const end = () => { token++; for (const t of timers) clearTimeout(t); timers = []; try { synth && synth.cancel(); } catch (_) {} try { ac && ac.close(); } catch (_) {} ac = null; beatGain = null; onBar(null); };
   const api = {
-    beat, timing, total, song: the,
+    get beat() { return beat; }, get timing() { return timing; }, get total() { return total; }, get song() { return the; },
+    /** play another take of the same rap from now on (a take Verse retuned from what it heard, lib/rap-listen.js) */
+    setSong(next) { end(); the = next; beat = the.plan.beat; timing = the.plan.timing; total = lengthOf(timing, beat); },
     get playing() { return !!ac; },
     stop: end,
     setVolume(v) { if (beatGain) beatGain.gain.value = v; },
@@ -65,8 +67,10 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
       try { ac = new AC(); if (ac.resume) ac.resume(); } catch (_) { onSay('Could not start sound.'); ac = null; return false; }
       const pick = mode === 'voice' ? voice() : null, own = pick === 'verse';
       (async () => {
-        let vox = null, note = '';
-        if (own) {
+        let vox = null, note = '', whole = null;
+        // a retuned take is mastered as a whole, so it plays as the rendered mix (the Beat slider sets its level)
+        if (own && the.tune) { onSay('Getting my new take ready.'); const m = await the.mix(true); if (my !== token) return; whole = m; note = (await the.voice()).note; }
+        else if (own) {
           onSay('Getting my voice ready.');
           const v = await the.voice((d, n) => { if (my === token) onSay('Getting my voice ready: ' + d + ' of ' + n + ' bars.'); });
           if (my !== token) return;
@@ -76,8 +80,9 @@ export function performer(r, s, { win = window, onBar = () => {}, onSay = () => 
         const out = ac.createGain(); out.gain.value = 1; out.connect(ac.destination);
         beatGain = ac.createGain(); beatGain.gain.value = volume(); beatGain.connect(out);
         const t0 = ac.currentTime + 0.2;
-        produce(ac, beat, { measures: the.plan.measures, t0, dest: beatGain });
-        if (vox) { const b = ac.createBuffer(2, vox[0].length, RATE); b.getChannelData(0).set(vox[0]); b.getChannelData(1).set(vox[1]); const src = ac.createBufferSource(); src.buffer = b; src.connect(out); src.start(t0); }
+        if (whole) { const b = ac.createBuffer(2, whole[0].length, RATE); b.getChannelData(0).set(whole[0]); b.getChannelData(1).set(whole[1]); const src = ac.createBufferSource(); src.buffer = b; src.connect(beatGain); beatGain.gain.value = 1; src.start(t0); vox = whole; }
+        else produce(ac, beat, { measures: the.plan.measures, t0, dest: beatGain });
+        if (vox && !whole) { const b = ac.createBuffer(2, vox[0].length, RATE); b.getChannelData(0).set(vox[0]); b.getChannelData(1).set(vox[1]); const src = ac.createBufferSource(); src.buffer = b; src.connect(out); src.start(t0); }
         const speak = !vox && mode === 'voice' && synth && typeof win.SpeechSynthesisUtterance === 'function';
         if (mode === 'voice' && !vox && !speak) onSay('This browser has no voice to rap with, so the beat plays and the bars light up: rap it yourself.');
         else if (own && !vox) onSay('My own voice is not answering right now (' + (note || 'no bars came back') + '), so this browser\'s voice raps it.');
@@ -105,7 +110,7 @@ const fileName = (r, s, what) => ((r.title || s.topic || 'verse') + ' ' + what).
 function download(doc, bytes, type, name) { const u = URL.createObjectURL(bytes instanceof Blob ? bytes : new Blob([bytes], { type })), a = doc.createElement('a'); a.href = u; a.download = name; doc.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
 
 /** the rap, drawn and playable, inside `box`: the bars, a meta line, and the controls (Perform, Rap it yourself, voice, beat volume, Copy the
- *  lyrics, Save the beat, Save the song, Make the video, and the page's own extra buttons). Returns { perf, stop(), say }. */
+ *  lyrics, Save the beat, Save the song, Make the video, and the page's own extra buttons). Returns { perf, stop(), say, song, useSong(next) }. */
 export function mountRap(box, r, s, { doc = document, win = window, extra = [] } = {}) {
   box.textContent = '';
   const perf0 = beatFor(s), meta = el(doc, 'p', 'rp-meta', metaLine(r, s, perf0)), lyr = el(doc, 'div', 'rp-lyrics'), ctl = el(doc, 'div', 'rp-ctl'), msg = el(doc, 'p', 'rp-msg'), vid = el(doc, 'div', 'rp-video');
@@ -122,7 +127,7 @@ export function mountRap(box, r, s, { doc = document, win = window, extra = [] }
   const fill = () => { const was = vsel.value; voices = voicesOf(synth); vsel.textContent = ''; const d = el(doc, 'option', '', 'Voice: Verse'); d.value = 'verse'; vsel.append(d); voices.slice(0, 12).forEach((v, k) => { const o = el(doc, 'option', '', 'Voice: ' + v.name + ' (this browser)'); o.value = 'b' + k; vsel.append(o); }); if (was && [...vsel.options].some((o) => o.value === was)) vsel.value = was; };
   fill(); if (synth && 'onvoiceschanged' in synth) synth.addEventListener('voiceschanged', fill);
   const say = (t) => { msg.textContent = t || ''; };
-  const song = songOf(r, s, { win });
+  let song = songOf(r, s, { win });
   const perf = performer(r, s, { win, song, onSay: say, voice: () => (vsel.value === 'verse' || !vsel.value ? 'verse' : voices[+vsel.value.slice(1)] || null), volume: () => +vol.value,
     onBar: (i) => { for (const b of bars) b.classList.toggle('on', +b.dataset.i === i); if (i == null) { play.textContent = 'Perform it'; self.textContent = 'Rap it yourself'; } } });
   vol.addEventListener('input', () => perf.setVolume(+vol.value));
@@ -131,7 +136,7 @@ export function mountRap(box, r, s, { doc = document, win = window, extra = [] }
   copy.addEventListener('click', async () => { try { await win.navigator.clipboard.writeText(rapText(r)); say('Copied the lyrics.'); } catch (_) { say('Select the lyrics and copy them.'); } });
   wavB.addEventListener('click', async () => {
     say('Rendering the beat.');
-    try { const bytes = await perf.wav(false); if (!bytes) { say('This browser cannot render audio offline.'); return; } download(doc, bytes, 'audio/wav', fileName(r, s, 'beat') + '.wav'); say('Saved the beat: ' + song.plan.measures + ' measures at ' + perf0.bpm + ' BPM, with its intro and outro, in stereo.'); } catch (_) { say('Could not render the beat.'); }
+    try { const bytes = await perf.wav(false); if (!bytes) { say('This browser cannot render audio offline.'); return; } download(doc, bytes, 'audio/wav', fileName(r, s, 'beat') + '.wav'); say('Saved the beat: ' + song.plan.measures + ' measures at ' + song.plan.beat.bpm + ' BPM, with its intro and outro, in stereo.'); } catch (_) { say('Could not render the beat.'); }
   });
   songB.addEventListener('click', async () => {
     say('Rendering the song: the beat, then my voice.');
@@ -159,6 +164,8 @@ export function mountRap(box, r, s, { doc = document, win = window, extra = [] }
   for (const b of extra) { b.addEventListener('pointerdown', stop); b.addEventListener('keydown', stop); }
   ctl.append(row, row2);
   box.append(meta, ctl, msg, vid, lyr);
-  return { perf, stop: () => perf.stop(), say };
+  /** the take the page plays, saves and films from now on: the same rap, retuned (lib/rap-listen.js "Keep this take") */
+  const useSong = (next) => { song = next; perf.setSong(next); meta.textContent = metaLine(r, s, next.plan.beat) + (next.tune ? ' · Retuned by ear' : ''); };
+  return { perf, stop: () => perf.stop(), say, get song() { return song; }, useSong };
 }
 export { MOODS, STYLES };

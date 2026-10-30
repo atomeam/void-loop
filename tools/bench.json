@@ -6997,5 +6997,9 @@
   {"ask": "score my tournament", "want": "skill:studios"},
   {"ask": "dog emoji combos", "want": "skill:emoji-combos"},
   {"ask": "emoji combos for christmas", "want": "skill:emoji-combos"},
-  {"ask": "sad kaomoji", "want": "skill:emoji-combos"}
+  {"ask": "sad kaomoji", "want": "skill:emoji-combos"},
+  {"ask": "random emoji", "want": "skill:emoji"},
+  {"ask": "give me an emoji", "want": "skill:emoji"},
+  {"ask": "flight time london new york", "want": "skill:flights"},
+  {"ask": "bundesliga results", "want": "skill:scores"}
 ]
