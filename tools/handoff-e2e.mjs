@@ -203,7 +203,7 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
-  'edit a photo in the photo tools, then save the edit as a PDF, paint it by number and take its colours as a gradient': async (p, check) => {
+  'edit a photo in the photo tools, then save the edit as a PDF, paint it by number, take its colours as a gradient and look up its main colour': async (p, check) => {
     const toPhotos = async () => {
       await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
       await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
@@ -222,6 +222,12 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
     await p.waitForFunction(() => location.hash.split('-').length > 2 && !location.search, null, { timeout: 15000 });
     await check('the gradient page read the edit into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
+    // the main colour: the link carries it from the start, and the colour page opens on it
+    await toPhotos(); const href = await p.locator('#related a', { hasText: 'Look up its main colour' }).getAttribute('href');
+    if (!/^\/color\/\?c=[0-9a-f]{6}$/.test(href || '')) throw new Error('the main colour link is ' + href);
+    await Promise.all([p.waitForURL(/\/color\//), p.locator('#related a', { hasText: 'Look up its main colour' }).click()]);
+    await p.waitForFunction((c) => document.getElementById('in').value.toLowerCase() === '#' + c, href.split('=')[1], { timeout: 15000 });
+    await check('the colour page opened on the edit\u2019s main colour ' + (await p.locator('#in').inputValue()));
   },
   'turn a PDF page into a picture, then paint it by number, edit it in the photo tools, take its colours as a gradient and resize it': async (p, check) => {
     // a one-page PDF of the gradient, made on the PDF page itself
