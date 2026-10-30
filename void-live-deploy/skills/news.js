@@ -4,8 +4,17 @@
  * "news today", "what's in the news", "headlines".
  * Every news card stays current on its own (skills/live.js): headlines and topic stories re-fetch every 30 minutes,
  * the tech front page every 10, for as long as the card is up.
+ * The tech card opens the News page on its Technology section, and a topic card opens it searched for that topic (data-page);
+ * the News page's own card asks the stage for the same views back (lib/news-card.js).
  */
 import { keepLive } from './live.js';
+/** the News page for a stage card: the topic searched (or, with no topic, the Technology section) as a plain query the card frame
+ *  takes (lib/card-frame.js pageOfCard), or '' when the topic does not fit one. Pure. */
+export function pageOfNews(topic) {
+  if (topic == null) return '/news/?sec=tech';
+  const q = encodeURIComponent(String(topic).trim());
+  return /^[A-Za-z0-9_.%-]{1,120}$/.test(q) ? '/news/?q=' + q : '';
+}
 const list = (esc, items) => '<ul>' + items.map((h) => { const u = /^https:\/\//.test(h.url || '') ? h.url : 'https://news.ycombinator.com/item?id=' + encodeURIComponent(h.objectID || '');
   return '<li style="margin:6px 0"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(h.title) + '</a> <span style="color:#8a8a8a">· ' + esc(String(h.points || 0)) + ' points</span></li>'; }).join('') + '</ul>';
 // "tech news", "technology news today", "hacker news": the Hacker News front page (Algolia API, no key). Other topics
@@ -27,7 +36,7 @@ async function liveCard(api, el, name, every, draw) {
 }
 async function runTech(api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; if (p.dataset) p.dataset.page = pageOfNews(null); });
   el._title = 'Tech news'; el._feed = 'tech news feed';
   return liveCard(api, el, 'news', 10 * 60e3, async () => {
     const j = await fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10').then((r) => r.json());
@@ -46,7 +55,7 @@ export function topicNewsOf(text) {
 }
 async function runTopic(topic, api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page && p.dataset) p.dataset.page = page; });
   el._title = 'News about ' + topic; el._feed = 'news search';
   return liveCard(api, el, 'news', 30 * 60e3, async () => {
     const since = Math.floor(Date.now() / 1000) - 7 * 86400;

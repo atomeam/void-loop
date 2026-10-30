@@ -323,6 +323,28 @@ test('the weather page\'s card opens on the place looked up there, not Boston; w
   assert.match(src, /\{ card: \(\) => cardAsk \}/, 'the weather page gives its card the place open on it');
 });
 
+test('the news page\'s card shows the topic searched there or the Technology section, not always today\'s headlines; its card opens News on the same view', async () => {
+  const { cardAsk } = await import('../void-live-deploy/lib/news-card.js'), mod = await import('../void-live-deploy/skills/news.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x);
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => false }); return el; };
+  const was = globalThis.fetch; globalThis.fetch = async () => { throw new Error('no network in this test'); };
+  try {
+  for (const [sec, q, ask, page] of [['top', 'spacex', 'news about spacex', '/news/?q=spacex'], ['world', '  climate   change ', 'news about climate change', '/news/?q=climate%20change'], ['tech', 'Rust', 'news about Rust', '/news/?q=Rust'], ['tech', '', 'tech news', '/news/?sec=tech']]) {
+    assert.equal(cardAsk(sec, q), ask, sec + ' / ' + q);
+    assert.equal(await firstSkill(ask), 'news', ask + ' reaches the news skill');
+    const el = await show(ask); assert.equal(el.dataset.page, page, 'its card opens News on the same view: ' + ask);
+    assert.deepEqual(pageOfCard('news', el.dataset.page), [page, 'News']);
+  }
+  for (const [sec, q] of [['top', ''], ['my', ''], ['saved', ''], ['science', ''], ['top', 'x'], ['top', 'a'.repeat(41)], ['top', 'what?'], [undefined, undefined]]) assert.equal(cardAsk(sec, q), '', 'the example ask stays: ' + sec + ' / ' + q);
+  assert.equal(cardAsk('tech', 'x'), 'tech news', 'a search too short for a topic card leaves the section');
+  assert.equal((await show('news today')).dataset.page, undefined, 'the headlines card keeps the plain News link');
+  assert.equal(mod.pageOfNews("rock 'n' roll"), '', 'a topic that does not fit a plain query keeps the plain News link');
+  } finally { globalThis.fetch = was; }
+  const page = fs.readFileSync(new URL('../void-live-deploy/news/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes("{ card: () => cardAsk(st.sec, $('q').value) }"), 'the page asks for its own card, from the box as typed');
+  assert.doesNotMatch(page.match(/card: \(\) => [^}]*\}/)[0], /mem\./, 'followed topics and saved stories stay on the device');
+});
+
 test('the time page\'s card opens on the city asked for, else the clocks on the page, not Tokyo', async () => {
   const Z = await import('../void-live-deploy/lib/zones.js'), { parseWorldTime } = await import('../void-live-deploy/skills/worldtime.js'), all = Z.allZones();
   const paris = Z.findPlace('Paris', all), nyc = Z.findPlace('NYC', all), mumbai = Z.findPlace('Mumbai', all);

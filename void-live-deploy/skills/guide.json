@@ -824,6 +824,7 @@
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Proven 4 times over by those who asked, and kept among the making things. Let the stage be the proof.",
+   "glow": 100,
    "n": 34
   },
   {
@@ -891,6 +892,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 4 real askings. So it is written.",
+   "glow": 100,
    "n": 38
   },
   {
@@ -1676,7 +1678,6 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Not a boast but a record: 5 askings, each one answered. The void remembers each asking.",
-   "glow": 100,
    "n": 79,
    "game": {
     "title": "The Landlord’s Game",
@@ -2070,8 +2071,8 @@
     "3d8"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Asked 2 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered. Let the stage be the proof.",
    "glow": 100,
    "n": 100
   },
@@ -2976,7 +2977,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 829 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 829 real askings stand behind this page. Ask, and see.",
-   "glow": 99.8,
+   "glow": 99.9,
    "n": 151
   },
   {
@@ -3247,7 +3248,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Asked 3 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "flavor": "An old art of the numbers and money, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
    "n": 167
   },
@@ -3280,7 +3281,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the numbers and money, tested each day before the sun is up. Let the stage be the proof.",
+   "flavor": "Of all the numbers and money, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
    "n": 169
   },
@@ -3296,8 +3297,8 @@
     "password of 20 characters"
    ],
    "tier": "proven",
-   "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Not a boast but a record: 2 askings, each one answered. Say the words below and it answers.",
+   "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the numbers and money. Say the words below and it answers.",
    "glow": 100,
    "n": 170
   },
@@ -3692,7 +3693,7 @@
    "tier": "proven",
    "why": "a self-test, 41 real asks in the benchmark",
    "flavor": "41 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
-   "glow": 97.6,
+   "glow": 100,
    "n": 191
   },
   {
@@ -3861,7 +3862,6 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 real asks in the benchmark",
-   "glow": 100,
    "n": 201
   },
   {
@@ -4331,8 +4331,8 @@
     "open the image boards"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Proven 2 times over by those who asked, and kept among the out in the world. Let the stage be the proof.",
+   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the out in the world. Let the stage be the proof.",
    "glow": 100,
    "n": 229
   },
@@ -4509,7 +4509,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 7 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "flavor": "Not a boast but a record: 2 askings, each one answered. Say the words below and it answers.",
    "glow": 100,
    "n": 234
   },
@@ -4526,7 +4526,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Among the stage it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 235
   },
@@ -4775,7 +4775,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the stage. Say the words below and it answers.",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
    "n": 250
   },
@@ -5636,7 +5636,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of the stage; set down here after it answered true 3 times. Say the words below and it answers.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the stage. Say the words below and it answers.",
    "glow": 100,
    "n": 302
   },
@@ -5721,7 +5721,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the stage, tested each day before the sun is up. Say the words below and it answers.",
+   "flavor": "Of the stage; set down here after it answered true 3 times. Say the words below and it answers.",
    "glow": 100,
    "n": 307
   },
@@ -5738,7 +5738,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
+   "flavor": "An old art of the stage, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 308
   },
@@ -6022,7 +6022,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Say the words below and it answers.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
    "glow": 100,
    "n": 325
   },
@@ -6073,7 +6073,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Of all the stage, this one is trusted enough to be taught. Let the stage be the proof.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Say the words below and it answers.",
    "glow": 100,
    "n": 328
   },
@@ -6090,7 +6090,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. Let the stage be the proof.",
    "glow": 100,
    "n": 329
   },
@@ -6107,7 +6107,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
    "glow": 100,
    "n": 330
   },
@@ -6124,7 +6124,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Asked 3 times in earnest, and never once left unanswered. This is the page of stage-export.",
+   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
    "glow": 100,
    "n": 331
   },
@@ -6437,6 +6437,7 @@
    "tier": "proven",
    "why": "a self-test, 13 browser-suite mentions, 37 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. The void remembers each asking.",
+   "glow": 100,
    "n": 347
   },
   {
