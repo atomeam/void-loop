@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1010,
+ "counted": 1011,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,7 +20,7 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 67,
+   "dependants": 68,
    "tests": 8
   },
   {
@@ -573,7 +573,7 @@
    "file": "lib/field-resonance.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 9,
+   "dependants": 10,
    "tests": 1
   },
   {
@@ -1078,7 +1078,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/photo-ask.js",
@@ -1161,7 +1161,7 @@
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 16,
+   "dependants": 17,
    "tests": 1
   },
   {
@@ -1172,102 +1172,102 @@
    "tests": 4
   },
   {
-   "file": "lib/boards.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 2
-  },
-  {
    "file": "lib/brain-creature.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-current.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-formula.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-gardener.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-grains.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-grower.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-hearing.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-mind.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 2
   },
   {
    "file": "lib/brain-organs.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-painter.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-route.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 2
   },
   {
    "file": "lib/brain-synapses.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
   },
   {
    "file": "lib/brain-watch.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6,
+   "dependants": 7,
    "tests": 1
+  },
+  {
+   "file": "lib/boards.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
   },
   {
    "file": "lib/noise.js",
@@ -1317,6 +1317,13 @@
    "direct": 0,
    "dependants": 4,
    "tests": 2
+  },
+  {
+   "file": "lib/brain.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 17
   },
   {
    "file": "lib/emoji.js",
@@ -1382,18 +1389,18 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-glow.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-store.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/brain.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 16
   },
   {
    "file": "lib/fakeuser.js",
@@ -1505,7 +1512,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 3
+   "tests": 4
   },
   {
    "file": "lib/calc-more.js",
@@ -4623,6 +4630,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
     "skills/verse-brain.js"
@@ -4640,6 +4648,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
    ]
@@ -4664,6 +4673,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
     "skills/verse-brain.js"
@@ -4680,8 +4690,20 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
+    "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-glow.js": {
+   "imports": [
+    "lib/brain.js"
+   ],
+   "importedBy": [
+    "lib/brain-host.js"
+   ],
+   "reachedBy": [
     "skills/verse-brain.js"
    ]
   },
@@ -4696,6 +4718,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
     "skills/verse-brain.js"
@@ -4712,6 +4735,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
     "skills/verse-brain.js"
@@ -4729,6 +4753,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
    ]
@@ -4737,6 +4762,7 @@
    "imports": [
     "lib/brain.js",
     "lib/brain-store.js",
+    "lib/brain-glow.js",
     "lib/brain-bridge.js",
     "lib/brain-route.js",
     "lib/brain-watch.js",
@@ -4767,6 +4793,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
     "lib/brain-route.js",
@@ -4795,6 +4822,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-organs.js",
     "skills/verse-brain.js"
@@ -4812,6 +4840,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
    ]
@@ -4825,6 +4854,7 @@
     "lib/brain-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-organs.js",
     "lib/brain-route.js",
     "lib/brain.js",
@@ -4848,6 +4878,7 @@
     "lib/brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
     "lib/brain-route.js",
@@ -4861,6 +4892,7 @@
     "lib/brain-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-organs.js",
     "lib/brain-route.js",
     "lib/brain.js",
@@ -4888,6 +4920,7 @@
     "skills/verse-brain.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js"
    ]
@@ -4909,6 +4942,7 @@
     "lib/brain-grains.js"
    ],
    "importedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "skills/verse-brain.js"
    ]
@@ -6052,6 +6086,7 @@
    ],
    "reachedBy": [
     "lib/brain-field.js",
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-route.js",
     "lib/field-vector-worker.js",
@@ -6110,6 +6145,7 @@
     "skills/resonance-mind.js"
    ],
    "reachedBy": [
+    "lib/brain-glow.js",
     "lib/brain-host.js",
     "lib/brain-mind.js",
     "lib/brain-route.js",
