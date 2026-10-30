@@ -1,31 +1,46 @@
 /**
  * stopwatch skill — a simple stopwatch on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "stopwatch", "start stopwatch", "time me".
+ * "stopwatch", "start a stopwatch", "open the stopwatch".
  */
 export function isStopwatch(text) {
-  return /^(?:please\s+)?(?:(?:start\s+)?stopwatch|time\s+me|stop\s+watch)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:start|open|make|show)\s+(?:a\s+)?)?stopwatch(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
   const { showPage } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>Stopwatch</h2><p id="sw" style="font-size:48px;text-align:center;font-weight:300">0.0</p><div class="sub">say “stopwatch” to start</div>'; });
-  let start = Date.now(), id = setInterval(() => {
-    if (!api._pageStill(el)) { clearInterval(id); return; }
-    const t = el.querySelector('#sw');
-    if (t) t.textContent = ((Date.now() - start) / 1000).toFixed(1);
-  }, 100);
+  let running = false, startTime = 0, elapsed = 0, interval;
+  const update = (p) => {
+    const now = running ? elapsed + (Date.now() - startTime) : elapsed;
+    const secs = Math.floor(now / 1000);
+    const ms = Math.floor((now % 1000) / 10);
+    const display = String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0') + '.' + String(ms).padStart(2, '0');
+    p.innerHTML = '<h2>Stopwatch</h2><p style="font-size:48px;text-align:center;font-family:monospace">' + display + '</p>'
+      + '<div style="text-align:center"><button id="sw-toggle" class="g-btn">' + (running ? 'Stop' : 'Start') + '</button> <button id="sw-reset" class="g-btn">Reset</button></div>'
+      + '<div class="sub">say “stopwatch” for a new one</div>';
+    p.querySelector('#sw-toggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (running) { elapsed += Date.now() - startTime; running = false; clearInterval(interval); }
+      else { startTime = Date.now(); running = true; interval = setInterval(() => update(p), 50); }
+      update(p);
+    });
+    p.querySelector('#sw-reset').addEventListener('click', (e) => {
+      e.stopPropagation();
+      running = false; elapsed = 0; clearInterval(interval); update(p);
+    });
+  };
+  showPage((p) => update(p));
   return 'stopwatch';
 }
 
 export default {
   name: 'stopwatch',
-  examples: ['stopwatch', 'start stopwatch', 'time me'],
-  nearMisses: ['what is a stopwatch', 'stop the watch', 'watch the time'],
+  examples: ['stopwatch', 'start a stopwatch', 'open the stopwatch'],
+  nearMisses: ['what is a stopwatch', 'stopwatch online', 'timer'],
   match(lower, text) { return isStopwatch(text); },
   run,
   suite() {
-    const ok = isStopwatch('stopwatch') && isStopwatch('time me') && !isStopwatch('what is a stopwatch');
+    const ok = isStopwatch('stopwatch') && isStopwatch('start a stopwatch') && !isStopwatch('what is a stopwatch');
     return { ok, got: 'match works' };
   }
 };
