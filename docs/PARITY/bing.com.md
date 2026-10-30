@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: bing.com (https://www.bing.com/translator)
-- Verse: /translate/?q=hello&to=es (translate: bing.com, tower gate 12 of 15)
+- Verse: /translate/?q=hello&to=es (translate: bing.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Microsoft Translator"
 - History: [docs/HISTORY/bing.com.md](../HISTORY/bing.com.md)
 

@@ -77,12 +77,16 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   };
 }
 
-/** the Adds to Verse line: one line of plain spaces, at most n letters. A longer line ends at its last whole clause (a comma, semicolon or
- *  colon) or else its last whole word, never in the middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
-export function addsLine(s, n = 120) {
+/** the Adds to Verse line: one line of plain spaces, at most n letters, so most lines show whole (owner, 2026-10-30: "instead of" ended one). A
+ *  longer line ends at its last whole sentence, else its last whole clause (a comma, semicolon or colon), else its last whole word, never in the
+ *  middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
+export function addsLine(s, n = 240) {
   const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   if (t.length <= n) return t;
-  const head = t.slice(0, n + 1); let end = -1, m; const re = /[,;:](?=\s)/g;
+  const head = t.slice(0, n + 1); let end = -1, m; const stop = /[.!?](?=\s)/g;
+  while ((m = stop.exec(head))) if (m.index > 40) end = m.index + 1;
+  if (end > 0) return t.slice(0, end);
+  const re = /[,;:](?=\s)/g;
   while ((m = re.exec(head))) if (m.index > 40) end = m.index;
   if (end < 0) { const sp = head.lastIndexOf(' '); end = sp > 40 ? sp : n; }
   return t.slice(0, end).replace(/[\s,;:(“-]+$/, '');

@@ -47,6 +47,13 @@ export const LONG_MIN_FS = 16;
 /** a long answer's card (owner, 2026-10-17: "copy card should show the rest of the info, either make a long card or multiple"): the text at the
  * largest size from 23 down to LONG_MIN_FS that fits `h`; when even that is too long, every line at LONG_MIN_FS and `extra` px more card
  * below the art to hold them, so nothing is cut and nothing is too small to read. { lines, fs, lh, extra }. Pure. */
+/** the Adds to Verse line laid out whole (owner, 2026-10-30: it ended "telemetry\u2026"): the largest size from 19 px that holds it on 3 lines,
+ *  else every line it needs at 14 px. { lines, fs, lh, h }: h is the room it takes below the text (the rule, its lines and a margin). Pure. */
+export function fitAdds(text, w = 624) {
+  const t = String(text || '').replace(/\s+/g, ' ').trim(), at = (fs) => { const lh = Math.round(fs * 1.26), lines = wrap(t, Math.floor(w / (fs * 0.566)), 9999); return { lines, fs, lh, h: 30 + (lines.length - 1) * lh + 10 }; };
+  for (let fs = 19; fs > 14; fs--) { const a = at(fs); if (a.lines.length <= (fs >= 18 ? 2 : 3)) return a; }
+  return at(14);
+}
 export function fitLong(text, h, w = 624) {
   for (let fs = 23; fs >= LONG_MIN_FS; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999); if (l.length * lh <= h) return { lines: l, fs, lh, extra: 0 }; }
   const fs = LONG_MIN_FS, lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999);
@@ -106,7 +113,8 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   const title = String(d.title || d.name || 'Verse').replace(/\s+/g, ' ').trim();
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
   const { lines: tl, fs } = fitTitle(title, 620 - cost * 24), T = titleExtra(tl.length, fs); // T: how much taller a long ask makes the title bar; everything below moves down by it
-  const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
+  const adds = d.adds ? fitAdds('Adds to Verse: ' + d.adds) : null, AT = adds ? 246 - Math.max(74, adds.h) : 246; // AT: where the text stops and the Adds rule sits, from the top of the text box
+  const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : fitLong(d.text, AT), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
   const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — Verse card">';
@@ -152,7 +160,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   if (box.els) box.els.forEach((e) => { s += e.k === 'rect' ? '<rect x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" width="' + e.w + '" height="' + e.h + '" rx="' + (e.rx || 0) + '" fill="' + esc(e.fill) + '"/>'
     : '<text x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + e.fs + '"' + (e.bold ? ' font-weight="700"' : '') + (e.italic ? ' font-style="italic"' : '') + ' fill="' + esc(e.fill) + '">' + esc(e.text) + '</text>'; }); // the self card (selfLayout)
   else box.lines.forEach((l, i) => { s += '<text x="60" y="' + (644 + box.fs + i * box.lh) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + box.fs + '" fill="#e6e1d3">' + esc(l) + '</text>'; });
-  if (d.adds) { const a = wrap('Adds to Verse: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
+  if (adds) { const top = 644 + AT + 12 + X; adds.lines.forEach((l, i) => { s += '<text x="60" y="' + (top + 18 + i * adds.lh) + '" font-family="Georgia,serif" font-style="italic" font-size="' + adds.fs + '" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + top + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; } // the whole line, never cut (fitAdds)
   // footer: collector number and the three plates
   const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'Verse', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');

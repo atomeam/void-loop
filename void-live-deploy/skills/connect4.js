@@ -3,11 +3,14 @@
  * Verse looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
  * (mini/connect4.js), lifted by skills/lift3d.js with this card beside it; the flat grid here is the fallback.
  */
-import { levelPick } from './game-level.js';
-import * as K from './connect4-rules.js';
-import { lift3d } from './lift3d.js';
-import { showArena } from '../lib/arena-say.js';
-import { rulesLine } from './game-rules-line.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules engine, the 3D lift, the level and the arena line
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let K, lift3d, levelPick, showArena, rulesLine;
+export const ready = loadLater(() => Promise.all([
+  import('./connect4-rules.js'), import('./lift3d.js'), import('./game-level.js'), import('../lib/arena-say.js'), import('./game-rules-line.js'),
+]).then(([k, l, g, a, r]) => { K = k; ({ lift3d } = l); ({ levelPick } = g); ({ showArena } = a); ({ rulesLine } = r); }));
 
 export function connect4Of(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -82,6 +85,7 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const ask = connect4Of(text);
   if (!ask) return 'none';
+  await ready();
   if (ask.kind === 'rating') { // the record the self-play arena wrote (tools/arena.mjs, frontier #5), fetched from this site
     showArena(api, '/arena.json', 'connect4');
     return 'connect4';
@@ -100,5 +104,6 @@ export default {
   nearMisses: ['who invented connect four', 'connect 4 rules', 'connect four strategy', 'play chess'],
   match(lower, text) { return !!connect4Of(text); },
   run,
-  stageKinds: { connect4: { mount } },
+  ready,
+  stageKinds: { connect4: { mount: ready.mount(mount) } },
 };

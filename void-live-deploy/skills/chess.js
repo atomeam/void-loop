@@ -5,10 +5,17 @@
  * in a Web Worker (skills/chess-worker.js) so the pieces keep moving smoothly while it thinks.
  * Where WebGL can't run, the same game shows as a flat board of buttons, so the card always works.
  */
-import { levelPick } from './game-level.js';
-import { grip, sideCard } from './side-card.js';
-import * as R from './chess-rules.js';
-import { finish, minutesSince, load as loadGames, summary, summaryLine } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
+import { loadLater } from '../lib/load-later.js';
+
+// the rules, the level, the side card and the match history (a finished game goes on this device's record, asked by Verse)
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let levelPick, grip, sideCard, R, finish, minutesSince, loadGames, summary, summaryLine;
+export const ready = loadLater(() => Promise.all([
+  import('./chess-rules.js'),
+  import('./game-level.js'),
+  import('./side-card.js'),
+  import('../lib/match-history.js'),
+]).then(([r, g, c, h]) => { R = r; ({ levelPick } = g); ({ grip, sideCard } = c); ({ finish, minutesSince, load: loadGames, summary, summaryLine } = h); }));
 
 export function chessOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -199,6 +206,7 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const q = chessOf(text);
   if (!q) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'chess');
   if (existing) { if (q.fresh) existing.state = freshState(); api.stage.render(); return 'chess'; } // one board at a time
   const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 420) : 560;
@@ -212,10 +220,12 @@ export default {
   name: 'chess',
   chessOf,
   /** the about card's line (skills/about-skill.js aboutText): what the game is, and your record on this device when there is one */
-  get about() { const sum = summary(loadGames(), { game: 'chess' }); return 'A real wooden chess set on the stage, played against Verse: you are white; tap a piece, then a square. Every rule is in (castling, en passant, promotion, check, mate, the draws).' + (sum.played ? ' Your record against Verse on this device: ' + summaryLine(sum) + '.' : ''); },
+  get about() { const sum = ready.done ? summary(loadGames(), { game: 'chess' }) : { played: 0 }; // the record once the match history is in (the about card awaits ready)
+    return 'A real wooden chess set on the stage, played against Verse: you are white; tap a piece, then a square. Every rule is in (castling, en passant, promotion, check, mate, the draws).' + (sum.played ? ' Your record against Verse on this device: ' + summaryLine(sum) + '.' : ''); },
   examples: ['play chess', 'chess', 'lets play chess', 'a game of chess', 'play chess against void', 'new chess game', 'start a chess game', '3d chess'],
   nearMisses: ['who invented chess', 'chess rules', 'chess openings', 'magnus carlsen', 'play checkers', 'chess.com'],
   match(lower, text) { return !!chessOf(text); },
   run,
-  stageKinds: { chess: { mount } },
+  ready,
+  stageKinds: { chess: { mount: ready.mount(mount) } },
 };
