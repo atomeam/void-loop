@@ -2,7 +2,7 @@
  * web4 skill — the four steps of the web, in Verse's plain words: Web 1 read, Web 2 write and share, Web 3 own, Web 4 ask and it appears. "what is web4", "are you web4", "web 1 2 3 4".
  * One card with the four steps as a ladder, a line each on what that step was and where to see it in Verse today, the honest sentence
  * that Web4 is the owner's name and nobody has defined it, and a tappable ask for each step. The words are lib/web4.js (also read by the
- * Verse Book page, the tests and frontier #37). Asked for by the owner, 2026-10-16: "now Verse is Web4". Says nothing about blockchain, tokens or any crypto.
+ * Book of Verse page, the tests and frontier #37). Asked for by the owner, 2026-10-16: "now Verse is Web4". Says nothing about blockchain, tokens or any crypto.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { LAYERS, HONEST, WHOSE } from '../lib/web4.js';

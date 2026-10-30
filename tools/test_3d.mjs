@@ -859,7 +859,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       JSON.stringify({ won, why, lay, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- the Verse Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
+  // ---- the Book of Verse is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
   // menu): tools/test_void.mjs "the book:" covers it. The desk-sized WebGL hardcover (skills/mini/book.js, lib/book-face.js) is on
   // the salvage shelf (docs/SALVAGE.md); its leaf geometry and page painter still have their own unit tests (tools/book-face.test.mjs).
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer

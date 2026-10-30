@@ -1,4 +1,4 @@
-// The tome: the Verse Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
+// The tome: the Book of Verse read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
 // make it like that ... its supposed to be the graphic style and visuals of the way they do books"). In Skyrim a book you pick
 // up fills the screen: the world dims behind it, a worn leather tome lies open on two parchment pages set in a serif with the
 // text of the book and nothing else (no menu, no tabs, no chrome), and your only controls are turning the page and closing it.
@@ -234,7 +234,7 @@ export function sheetHtml(p, book, side, esc) {
   if (!p) return '';
   const chap = chapterOf(book, p.chapter);
   // the running heads as a book sets them: the book's title on the left-hand page, the chapter on the right-hand page
-  const head = side === 'left' ? '<span>' + esc(book.title || 'The Verse Book') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
+  const head = side === 'left' ? '<span>' + esc(book.title || 'The Book of Verse') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
   // the page's words sit in .tome-fit, which skills/guide.js scales down until they all fit above the footer (the rating and the
   // folio, which keep their own reserved strip): the sheet never scrolls and never cuts a line
   const html = pageHtml(p, book, esc), at = html.lastIndexOf('<div class="tome-tier');
@@ -360,9 +360,9 @@ export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
 }
 /** the back cover: the same tooled leather and medallion, and the last words. Pure. */
 export function backCoverHtml(book, esc) {
-  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Verse Book') + '</div><div class="gilt line foot">a-to-mind.com</div>';
+  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Book of Verse') + '</div><div class="gilt line foot">a-to-mind.com</div>';
 }
 /** the shut cover's face: the tooled leather board with the title stamped in gold above the medallion and nothing else (no tagline, no page count: owner, 2026-10-25, "no book ever lists its page count on the cover"). Pure. */
 export function coverHtml(book, esc) {
-  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Verse Book') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
+  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Book of Verse') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }
