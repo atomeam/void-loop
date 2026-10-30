@@ -15,6 +15,9 @@ const NOT_PLACE = /^(?:me|my area|here|home)$/i;
 const WFH = '(?:remote|work[- ]from[- ]home|wfh)';
 // a jobs page's own view, not a role: each jobs page's stage ask ("remote jobs by salary", "job alerts", "remote companies hiring", lib/job-sites.js) opens that page
 const LANE_PAGES = new Set(['/jobs/alerts/', '/jobs/salary/', '/jobs/regions/', '/jobs/categories/', '/jobs/tags/', '/jobs/companies/']);
+// a lane's words where a role would stand: "highest paying jobs", "jobs by salary", "job categories", "job alerts"
+const LANE_ROLE = [[/^(?:alerts?|job\s+alerts?)$/i, '/jobs/alerts/'], [/^(?:by\s+salary|with\s+salar(?:y|ies)|(?:highest|best|top|well)[- ]paying|high[- ]paying|paying)$/i, '/jobs/salary/'],
+  [/^(?:by\s+)?(?:regions?)$/i, '/jobs/regions/'], [/^(?:by\s+)?(?:categor(?:y|ies))$/i, '/jobs/categories/'], [/^(?:by\s+)?tags?$/i, '/jobs/tags/'], [/^(?:by\s+)?compan(?:y|ies)$/i, '/jobs/companies/']];
 const ANY_ROLE = new RegExp('^(?:(?:find|search(?:\\s+for)?|look(?:\\s+for)?|hunt\\s+for)\\s+(?:me\\s+)?(?:some\\s+)?(?:' + WFH + '\\s+)?(?:jobs?|work|a\\s+job|a\\s+' + WFH + '\\s+job)'
   + '|(?:show|list)\\s+(?:me\\s+)?' + WFH + '\\s+(?:jobs?|work)|' + WFH + '\\s+jobs?|(?:' + WFH + '\\s+)?job\\s+(?:search|hunt(?:ing)?|listings?|openings))$', 'i');
 /** a jobs ask as { q, loc }: the role (may be '') and the place (may be ''). Null when the text is not a jobs ask. Pure. */
@@ -22,23 +25,26 @@ export function workAsk(text) {
   let t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), loc = '', placed = false;
   // "... in Boston", "... near me": the place comes off the end first
   const at = t.match(/^(.+?)\s+(?:in|near|around|based in)\s+(?:the\s+)?([a-z][a-z .'-]{1,30})$/i);
-  if (at && /\b(?:jobs?|work|positions|openings|vacancies)\b/i.test(at[1])) { t = at[1]; placed = true; loc = NOT_PLACE.test(at[2].trim()) ? '' : at[2].trim(); }
+  if (at && /\b(?:jobs?|work|positions|openings|vacancies|hiring)\b/i.test(at[1])) { t = at[1]; placed = true; loc = NOT_PLACE.test(at[2].trim()) ? '' : at[2].trim(); }
   // 2026-10-30: no role at all, "find remote jobs", "find me a job", "work from home jobs", "job search": every role. Checked before the
   // role rules, which read "search" in "job search" as a role. A bare "jobs" or "show me jobs" stays out: Verse has jobs of its own (the misses queue)
   if (ANY_ROLE.test(t)) return { q: '', loc };
-  { const lane = placed ? '' : jobAskOf(t); if (LANE_PAGES.has(lane)) return { q: '', loc, lane }; }
+  // the place stays with the lane: "job alerts in Berlin" is the alerts page's view of Berlin, not a role called "alerts"
+  { const lane = jobAskOf(t); if (LANE_PAGES.has(lane)) return { q: '', loc, lane }; }
   const role = (q, bare) => {
     q = String(q || '').replace(/^(?:a|an|the)\s+/i, '').trim();
+    const lane = LANE_ROLE.find(([re]) => re.test(q));
+    if (lane) return { lane: lane[1] };
     if (!q || /^(?:me|you|(?:verse|void)|it|that|this)$/i.test(q)) return null;
     if (/^(?:table|flight|hotel|meeting|appointment)\b/i.test(q) || NOT_ROLE.test(q) || NOT_ROLE.test(q.split(' ')[0]) || (bare && NOT_TOPIC.test(q))) return null;
     return q;
   };
   let m = t.match(/^(?:find\s+(?:me\s+)?(?:work|jobs?|a\s+job)|remote\s+jobs?(\s+for)?|jobs?(\s+for)?)\s+(as\s+(?:a\s+|an\s+)?)?(.{2,40})$/i);
-  if (m) { const q = role(m[4], !m[1] && !m[2] && !m[3] && /^jobs?\s/i.test(t)); return q ? { q, loc } : null; }
+  if (m) { const q = role(m[4], !m[1] && !m[2] && !m[3] && /^jobs?\s/i.test(t)); return q && q.lane ? { q: '', loc, lane: q.lane } : q ? { q, loc } : null; }
   // "software jobs", "remote designer jobs", "python developer positions", "teacher job openings"
   m = t.match(/^(?:find\s+(?:me\s+)?|show\s+(?:me\s+)?|any\s+)?(?:remote\s+)?((?:[a-z+#.]+\s+){0,3}?[a-z+#.]+)\s+(?:jobs|positions|job\s+openings|openings|vacancies)$/i);
   // a role is a noun phrase: "turn the misses into jobs" and "queue these as jobs" are not
-  if (m && !/\b(?:into|to|the|of|my|your|our|from|and|with|me|us|as|these|those|them)\b/i.test(m[1])) { const q = role(m[1]); if (q) return { q, loc }; }
+  if (m && !/\b(?:into|to|the|of|my|your|our|from|and|with|me|us|as|these|those|them)\b/i.test(m[1])) { const q = role(m[1]); if (q && q.lane) return { q: '', loc, lane: q.lane }; if (q) return { q, loc }; }
   // "jobs in Berlin", "remote jobs near me": the place alone
   if (placed && /^(?:find\s+(?:me\s+)?|show\s+(?:me\s+)?)?(?:remote\s+)?(?:jobs|job\s+openings)$/i.test(t)) return { q: '', loc };
   return null;
@@ -57,7 +63,8 @@ async function run(text, api) {
     const [j, C, snap] = await Promise.all([fetch('/api/jobs').then((r) => r.json()), import('../lib/jobs-core.js'), snapOf]);
     if (!api._pageStill(el)) return 'work';
     const jobs = C.search(C.merge((snap && snap.jobs) || [], (j && j.jobs) || []), pay ? { q, loc, salaryOnly: true, sort: 'salary' } : { q, loc });
-    const page = lane || '/jobs/?' + C.toQuery({ q, loc });
+    // a lane page reads the same query as /jobs/ (lib/jobs-ui.js), so the place carries over: "job alerts in Berlin" opens alerts for Berlin
+    const page = lane ? lane + (loc ? '?' + C.toQuery({ loc }) : '') : '/jobs/?' + C.toQuery({ q, loc });
     // a place may mean on-site work too, which these remote listings do not hold: the same search on two big boards, opened by the visitor
     const there = loc ? '<p style="color:#8a8a8a;font-size:13px">The same search for ' + esc(loc) + ' on the big job boards: ' + C.searchLinks({ q, loc }).filter((x) => x.id === 'linkedin' || x.id === 'indeed').map((x) => '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.name) + '</a>').join(' · ') + '</p>' : '';
     if (!jobs.length) { el.innerHTML = '<h2>Work</h2><p>No remote listings matched that right now. Try a shorter role name, or <a href="' + esc(page) + '">open the jobs page</a> to search every way.</p>' + there; return 'work'; }

@@ -104,6 +104,19 @@ test('every jobs page card ask is a jobs ask; a page view opens that page, not a
   assert.deepEqual(workAsk('remote jobs'), { q: '', loc: '' });
 });
 
+// 2026-10-30: "job alerts in berlin" searched for the role "alerts", and "highest paying jobs in london" for the role "highest paying".
+test('a page view with a place keeps the place; lane words never become the role', () => {
+  assert.deepEqual(workAsk('job alerts in berlin'), { q: '', loc: 'berlin', lane: '/jobs/alerts/' });
+  assert.deepEqual(workAsk('remote jobs by salary in germany'), { q: '', loc: 'germany', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('highest paying jobs in london'), { q: '', loc: 'london', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('highest paying jobs'), { q: '', loc: '', lane: '/jobs/salary/' });
+  assert.deepEqual(workAsk('remote companies hiring in europe'), { q: '', loc: 'europe', lane: '/jobs/companies/' });
+  assert.deepEqual(workAsk('job categories near me'), { q: '', loc: '', lane: '/jobs/categories/' });
+  assert.deepEqual(workAsk('python jobs in berlin'), { q: 'python', loc: 'berlin' });
+  assert.deepEqual(workAsk('senior python jobs'), { q: 'senior python', loc: '' });
+  assert.equal(workAsk('turn the misses into jobs'), null);
+});
+
 const byUrl = async (map, fn) => { const real = globalThis.fetch; globalThis.fetch = async (u) => { const b = map[String(u)]; if (b === undefined) return { ok: false, json: async () => null }; return { ok: true, json: async () => b }; }; try { return await fn(); } finally { globalThis.fetch = real; } };
 
 test('run: the card counts the snapshot listings as the jobs page does', async () => {
@@ -127,6 +140,10 @@ test('run: a page view lists for that page and links it; by salary keeps the pai
     assert.ok(h.includes('<h2>Remote work · every role · with pay, highest first</h2>') && h.includes('>2 remote jobs<'), h);
     assert.ok(h.indexOf('Staff Engineer') < h.indexOf('Senior Python Developer') && !h.includes('Product Designer'), h);
     assert.ok(h.includes('href="/jobs/salary/"'), h);
+  });
+  await byUrl({ '/api/jobs': { jobs: [...JOBS, paid] } }, async () => {
+    const api = apiOf(); assert.equal(await work.run('job alerts in berlin', api), 'work');
+    assert.ok(api.pages[0].innerHTML.includes('href="/jobs/alerts/?loc=berlin"'), api.pages[0].innerHTML);
   });
   await byUrl({ '/api/jobs': { jobs: JOBS } }, async () => {
     const api = apiOf(); assert.equal(await work.run('job alerts', api), 'work');
