@@ -32,7 +32,7 @@ export const GENES = HID * IN + HID + OUT * HID + OUT; // 123 numbers a network
 // the settings the outputs map to (tanh -1..1 onto these ranges), and the starter setting (the middle of each)
 export const RANGE = { visc: [0.002, 0.2], stiff: [0.2, 6], size: [0.75, 1.35] };
 const H0 = 0.12, DT = 0.01, PULL = 30, AMAX = 6, DRAG = 150, VMAX = 1.5, WALL = 0.4, WMAX = 4, SPACE = H0 * 0.5, MASS = 1, WD = 1, WS = 2, WK = 20, SPOON = 40, SPOON_R = 0.15;
-const r3 = (v) => Math.round(v * 1000) / 1000;
+const r3 = (v) => Math.round(v * 1000) / 1000 || 0; // never -0: it does not survive JSON
 const mean = (v) => (v.length ? v.reduce((a, x) => a + x, 0) / v.length : null);
 const lerp = ([lo, hi], t) => lo + (hi - lo) * (t + 1) / 2;
 export const STARTER = { visc: lerp(RANGE.visc, 0), stiff: lerp(RANGE.stiff, 0), size: lerp(RANGE.size, 0) };
