@@ -8,11 +8,13 @@
 //   answers   "what are you thinking?" is answered from its own state (answer), and the Verse Brain card shows this same brain
 //   runs      2 ticks a second (1 on a phone) in the browser's idle time, while the page is visible and no card drives it: about 6 ms a
 //             tick, so about 1% of the main thread; the open card runs it at full speed
-//   keeps     what it learned, on this device: every 30 seconds after a change, and when the page hides
+//   keeps     what it learned, on this device: every 30 seconds after a change, and when the page hides; and which ideas were lit
+//             (lib/brain-glow.js), so a reload keeps the words it was just told as bright as they were, dimmed by the time away
 //   bridges   other Verse pages in this browser reach it (lib/brain-bridge.js hostBrain, window.verseBrain)
 // Nothing is sent anywhere. The asks it keeps are the visitor's own, on their own device; Forget on the card clears them.
 import * as B from './brain.js';
-import { loadKept, keep } from './brain-store.js';
+import { loadKept, keep, loadGlow, keepGlow } from './brain-store.js';
+import * as Glow from './brain-glow.js';
 import { hostBrain } from './brain-bridge.js';
 import * as Route from './brain-route.js';
 
@@ -31,9 +33,9 @@ export function ensureHost(opts = {}) {
 /** start a host (use ensureHost: one a page). Returns the host. */
 export function startHost(opts = {}) {
   const doc = opts.doc || (typeof document !== 'undefined' ? document : null), win = opts.win || (typeof window !== 'undefined' ? window : null);
-  const store = opts.store || { loadKept, keep }, phone = !!(win && typeof win.matchMedia === 'function' && win.matchMedia('(pointer: coarse)').matches);
+  const store = opts.store || { loadKept, keep, loadGlow, keepGlow }, now = () => (opts.now ? opts.now() : Date.now()), phone = !!(win && typeof win.matchMedia === 'function' && win.matchMedia('(pointer: coarse)').matches);
   const fresh = (seed) => B.createBrain(seed || ((Date.now() & 0xffff) || 1), { phone });
-  const host = { brain: fresh(opts.seed), adopted: false, changed: false, kept: null, verse: null, listeners: new Set(), alive: true, startedAt: Date.now(), restored: [], heardHere: [], told: false };
+  const host = { brain: fresh(opts.seed), adopted: false, changed: false, kept: null, verse: null, listeners: new Set(), alive: true, startedAt: Date.now(), restored: [], heardHere: [], told: false, glow: null, lit: [], glowing: false, glowSaved: '' };
   const emit = (type, detail) => { for (const f of host.listeners) { try { f(type, detail); } catch (_) { /* a listener's own problem */ } } };
   const bind = (b) => { if (host.kept) B.loadKnowledge(b, host.kept); if (host.verse) B.knowVerse(b, host.verse); return b; };
 
@@ -42,7 +44,7 @@ export function startHost(opts = {}) {
     const t = String(text == null ? '' : text).trim(); if (!t) return null;
     const b = host.brain, h = B.heardAsk(b, t), r = B.ask(b, t);
     host.heardHere.push(t); if (host.heardHere.length > 24) host.heardHere.shift();
-    host.changed = true; emit('ask', { text: t, hit: h.hit, guess: h.guess, words: r.words || [] });
+    host.changed = true; host.glowing = true; emit('ask', { text: t, hit: h.hit, guess: h.guess, words: r.words || [] });
     return { ...h, answer: r.answer || null, words: r.words || [] };
   };
   /** more than one skill can answer `text`: the brain picks (lib/brain-route.js). names: the skills that match, in the page's order.
@@ -69,16 +71,29 @@ export function startHost(opts = {}) {
   /** true while its brain holds only what this page heard on the stage: the card may then give back what it was thinking before a reload,
    *  and the asks heard here are told again on top of it (warm), so nothing of this page is lost. */
   host.onlyHere = () => !host.told;
-  host.warm = (b) => { for (const t of host.heardHere) B.ask(b, t); host.told = true; };
+  host.warm = (b) => { if (host.glow) Glow.loadGlow(b, host.glow, now()); for (const t of host.heardHere) B.ask(b, t); host.told = true; };
   host.on = (fn) => { host.listeners.add(fn); return () => host.listeners.delete(fn); };
-  host.save = async () => { if (!host.changed) return false; host.changed = false; host.kept = JSON.parse(JSON.stringify(B.knowledgeOf(host.brain))); return !!(await store.keep(host.kept)); };
+  /** keep which ideas are lit, when it changed (or always, with force: the page is hiding, so the time it was kept is now). */
+  host.saveGlow = async (force) => {
+    if (!host.glowing || !store.keepGlow) return false;
+    const g = Glow.glowOf(host.brain, now()), key = Glow.glowKey(g); if (!force && key === host.glowSaved) return false;
+    host.glowSaved = key; return !!(await store.keepGlow(g));
+  };
+  host.save = async (force) => {
+    const glow = host.saveGlow(force).catch(() => false);
+    if (!host.changed) { await glow; return false; }
+    host.changed = false; host.kept = JSON.parse(JSON.stringify(B.knowledgeOf(host.brain))); const ok = !!(await store.keep(host.kept)); await glow; return ok;
+  };
   /** Forget on the card: what it kept is gone, and nothing is kept again until it hears something new. */
-  host.forgot = () => { host.kept = null; host.changed = false; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; host.brain.routes = Route.createRoutes(); };
+  host.forgot = () => { host.kept = null; host.changed = false; host.glow = null; host.glowing = false; host.glowSaved = ''; host.brain.mind.asks = { last: null, next: {}, guess: null, guessed: 0, hits: 0, heard: 0 }; host.brain.routes = Route.createRoutes(); };
 
   // what it kept on this device comes back before the asks heard meanwhile are learned, so they are added to it
   const early = Array.isArray(opts.early) ? opts.early.slice() : [];
-  host.ready = Promise.resolve(store.loadKept()).catch(() => null).then((k) => {
+  host.ready = Promise.resolve(store.loadKept()).catch(() => null).then(async (k) => {
     if (k && k.v === 1) { host.kept = k; host.restored = B.loadKnowledge(host.brain, k); }
+    // the ideas that were lit before the reload come back lit, before the asks heard meanwhile (those are the newest)
+    const g = store.loadGlow ? await Promise.resolve(store.loadGlow()).catch(() => null) : null;
+    if (g) { host.lit = Glow.loadGlow(host.brain, g, now()); if (host.lit.length) { host.glow = g; host.glowing = true; } }
     for (const t of early) host.hear(t);
     // asks typed on tool pages since it last ran (lib/toolkit.js keeps them on this device): it hears each, and logs where the page sent it
     const ls = win && (() => { try { return win.localStorage; } catch (_) { return null; } })();
@@ -97,10 +112,10 @@ export function startHost(opts = {}) {
   const idle = (win && win.requestIdleCallback) ? () => win.requestIdleCallback(tick, { timeout: 400 }) : tick;
   if (opts.ticking !== false) { timer = setInterval(idle, phone ? TICK_MS_PHONE : TICK_MS); saver = setInterval(() => { host.save().catch(() => {}); }, SAVE_MS); }
   const onAsk = (e) => { const t = e && e.detail && e.detail.text; if (t) host.ready.then(() => host.hear(t)); };
-  const onHide = () => { if (!doc || doc.visibilityState === 'hidden') host.save().catch(() => {}); };
+  const onHide = () => { if (!doc || doc.visibilityState === 'hidden') host.save(true).catch(() => {}); };
   if (doc) { doc.addEventListener('void:ask', onAsk); doc.addEventListener('visibilitychange', onHide); }
   if (win && win.addEventListener) win.addEventListener('pagehide', onHide);
-  if (opts.bridge !== false) bridge = hostBrain(B, () => host.brain, { onWords: (t, from) => { host.changed = true; host.told = true; emit('words', { text: t, from }); } });
+  if (opts.bridge !== false) bridge = hostBrain(B, () => host.brain, { onWords: (t, from) => { host.changed = true; host.told = true; host.glowing = true; emit('words', { text: t, from }); } });
   host.publish = (force) => (bridge ? bridge.publish(force) : null);
   host.stop = () => {
     host.alive = false; if (win && win.verseBrainHost === host) delete win.verseBrainHost; clearInterval(timer); clearInterval(saver); if (bridge) bridge.close();
