@@ -83,3 +83,10 @@ test('the page wires it: the map, its box and its button are on /brain/, and app
   assert.match(html, /body\.map-on #field \{ left: var\(--mapw, 0px\); \}/, 'the tissue moves over by the map, so neither covers the other');
   assert.match(readFileSync(new URL('../void-live-deploy/brain/app.js', import.meta.url), 'utf8'), /window\.verseBrainField = th;/);
 });
+
+test('the map never freezes: a frame that meets a dropped layout builds it again, and the next frame is asked for whatever happened', () => {
+  const js = readFileSync(new URL('../void-live-deploy/brain/map.js', import.meta.url), 'utf8');
+  assert.match(js, /const frame = \(now\) => \{\n  try \{ draw\(now\); \} catch \(err\) \{[^}]*\}\n  requestAnimationFrame\(frame\);\n\};/, 'the next frame is asked for outside the try');
+  assert.match(js, /if \(on && !layoutNow && parts\) \{ const b = brain\(\); if \(b\) build\(b\); \}/, 'a dropped layout is built again before sparks are drawn');
+  assert.match(js, /const center = \(id\) => \(!layoutNow \? null/, 'a spark with no layout is skipped, not thrown on');
+});

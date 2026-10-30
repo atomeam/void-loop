@@ -76,8 +76,8 @@ const build = (b) => {
 
 // ---- the reads: four a second; the sparks and lights between them come from what each read found -----------------------------------------
 let last = null, lastAt = 0, live = [], flash = {}, trace = null;
-const center = (id) => (id === 'attention' || id === 'you' ? layoutNow.hub : layoutNow.nodes[id]);
-const cellCenter = (r) => { const c = layoutNow.grid.cells[r]; return { x: c.x + c.w / 2, y: c.y + c.h / 2 }; };
+const center = (id) => (!layoutNow ? null : id === 'attention' || id === 'you' ? layoutNow.hub : layoutNow.nodes[id]);
+const cellCenter = (r) => { const c = layoutNow && layoutNow.grid.cells[r]; return c ? { x: c.x + c.w / 2, y: c.y + c.h / 2 } : null; };
 const spark = (from, to, hue, born) => { if (live.length < 90) live.push({ from, to, hue, born, life: 650 + Math.random() * 250 }); };
 const paintCells = (b, flow) => {
   if (!parts) return;
@@ -111,7 +111,7 @@ const read = (now) => {
   if (trace) { trace.events.push(...events); if (now - trace.at > 4500 || M.pathOf(trace.events, trace.text).length >= 6) endTrace(); }
   if (last) {
     const c = M.countsOf(last, z, dt, flow);
-    counts.textContent = c.tps + ' thoughts a second · ' + c.turns + ' organ turns a second · ' + c.cells.toLocaleString() + ' memory cells written a second · ' + c.futures + ' futures imagined a second · ' + c.words + ' words, ' + c.goals + ' goals, ' + c.moments + ' moments held';
+    counts.textContent = c.tps + (c.tps === 1 ? ' thought' : ' thoughts') + ' a second · ' + c.turns + ' organ turns a second · ' + c.cells.toLocaleString() + ' memory cells written a second · ' + c.futures + ' futures imagined a second · ' + c.words + ' words, ' + c.goals + ' goals, ' + c.moments + ' moments held';
     parts.hubSub.textContent = c.turns + ' turns a second';
   }
   for (const [id, n] of Object.entries(parts.node)) { if (id === 'attention') continue; const share = b.recent[id] || 0; n.c.setAttribute('r', (layoutNow.unit * (0.014 + 0.03 * Math.min(1, share * 2.2))).toFixed(1)); }
@@ -146,10 +146,17 @@ form.addEventListener('submit', (e) => {
 // ---- the frames: sparks fly, lights fade ------------------------------------------------------------------------------------------------
 const pos = (k) => (k[0] === 'r' && /^r\d+$/.test(k) ? cellCenter(+k.slice(1)) : center(k));
 let nextRead = 0;
+// a resize or a new dock drops the layout (layoutNow = null): it is built again here before a spark is drawn, and the next frame is asked for
+// whatever this one met (2026-10-30: a resize between two reads threw in the spark loop and stopped every frame after it, so the map froze)
 const frame = (now) => {
+  try { draw(now); } catch (err) { console.error('brain map', err); }
+  requestAnimationFrame(frame);
+};
+const draw = (now) => {
   dock();
+  if (on && !layoutNow && parts) { const b = brain(); if (b) build(b); }
   if (on && now >= nextRead) { nextRead = now + 250; try { read(now); } catch (err) { console.error('brain map', err); } }
-  if (on && parts) {
+  if (on && parts && layoutNow) {
     for (const [id, n] of Object.entries(parts.node)) { const a = flash[id] ? Math.max(0, 1 - (now - flash[id]) / 700) : 0; n.g.style.setProperty('--lit', a.toFixed(2)); }
     if (still) live.length = 0;
     live = live.filter((s) => now - s.born < s.life);
@@ -163,7 +170,6 @@ const frame = (now) => {
       c.setAttribute('cx', x.toFixed(1)); c.setAttribute('cy', y.toFixed(1)); c.setAttribute('opacity', (Math.sin(Math.PI * k) * 0.95).toFixed(2)); c.style.setProperty('--h', s.hue);
     }
   }
-  requestAnimationFrame(frame);
 };
 addEventListener('resize', () => { layoutNow = null; });
 if (typeof ResizeObserver === 'function') new ResizeObserver(() => { layoutNow = null; }).observe(svg);
