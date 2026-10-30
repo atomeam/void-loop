@@ -545,7 +545,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 79,
+   "dependants": 80,
    "tests": 1
   },
   {
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 77,
+   "dependants": 78,
    "tests": 9
   },
   {
@@ -2446,6 +2446,13 @@
    "tests": 1
   },
   {
+   "file": "lib/members.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/music-tools.js",
    "skills": 0,
    "direct": 0,
@@ -2559,13 +2566,6 @@
   },
   {
    "file": "lib/lap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/members.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3171,7 +3171,8 @@
   "functions/[handle].js": {
    "imports": [
     "lib/pages.js",
-    "lib/void-me.js"
+    "lib/void-me.js",
+    "lib/members.js"
    ],
    "importedBy": []
   },
@@ -4550,6 +4551,7 @@
     "lib/voice.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
@@ -7787,6 +7789,7 @@
     "lib/automation-fix.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/members.js"
    ]
   },
@@ -10869,6 +10872,7 @@
     "skills/telemetry-route.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/approval.js",
