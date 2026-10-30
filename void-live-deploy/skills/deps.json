@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1072,
+ "counted": 1074,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -567,6 +567,27 @@
    "skills": 4,
    "direct": 0,
    "dependants": 29,
+   "tests": 1
+  },
+  {
+   "file": "lib/hash.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 13,
+   "tests": 1
+  },
+  {
+   "file": "lib/markdown.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
+   "tests": 1
+  },
+  {
+   "file": "lib/textdiff.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -4713,7 +4734,8 @@
   },
   "lib/audio-write.js": {
    "imports": [
-    "lib/video-mux.js"
+    "lib/video-mux.js",
+    "lib/hash.js"
    ],
    "importedBy": []
   },
@@ -7387,6 +7409,26 @@
     "skills/mind-field.js"
    ]
   },
+  "lib/hash.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/audio-write.js",
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/health-habits.js": {
    "imports": [],
    "importedBy": [
@@ -8001,6 +8043,25 @@
    "importedBy": [
     "functions/api/local.js",
     "skills/local-stations.js"
+   ]
+  },
+  "lib/markdown.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/markets-card.js": {
@@ -11612,6 +11673,25 @@
     "skills/text-tools.js"
    ]
   },
+  "lib/textdiff.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/util.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/seo-audit.js",
+    "lib/team-mcp.js",
+    "lib/wordcount.js",
+    "lib/writing-aids.js",
+    "skills/lorem.js",
+    "skills/password.js",
+    "skills/writing-aids.js"
+   ]
+  },
   "lib/tilt-arena-idea.js": {
    "imports": [
     "lib/tilt-arena.js",
@@ -15085,10 +15165,6 @@
     "skills/mind-field.js"
    ]
   },
-  "skills/reverse.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "skills/rides.js": {
    "imports": [
     "skills/providers.js"
@@ -16017,6 +16093,9 @@
    "imports": [
     "lib/colour.js",
     "lib/qr.js",
+    "lib/hash.js",
+    "lib/textdiff.js",
+    "lib/markdown.js",
     "lib/card-mini.js",
     "lib/pwcheck.js"
    ],

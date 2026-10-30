@@ -175,3 +175,16 @@ test('ESPN refuses a range of days (October 2026): a week is read day by day and
   await assert.rejects(board(async () => res({}, 500), base, '2025-05-21', '2025-05-27'), 'nothing answered: the page is told the feed is away');
   const a = await lookScores(askIn('https://x.test/api/scores?league=epl&date=2025-05-21&span=7', NOW), feed, NOW); assert.equal(a.ok, true); assert.equal(a.games.length, 3);
 });
+
+test('a game opens on Verse\'s own calendar: the link carries its title, its wall clock in the visitor\'s zone and the same length as the .ics', async () => {
+  const { calendarEvent } = await import('../void-live-deploy/lib/scores.js');
+  const { eventFromLink } = await import('../void-live-deploy/lib/calendar.js');
+  const g = readScoreboard(SCOREBOARD)[2], e = calendarEvent(g, leagueOf('epl'), 'America/New_York');
+  assert.match(e, /^[\w-]+$/, 'base64url, safe in a link as it is');
+  const ev = eventFromLink(e);
+  assert.equal(ev.title, 'Chelsea vs Nottingham Forest'); assert.equal(ev.tz, 'America/New_York');
+  assert.equal(ev.start, '2025-05-25T14:30'); assert.equal(ev.end, '2025-05-25T16:30'); // 18:30 UTC, two hours, as icsOf
+  assert.match(ev.notes, /typical length, not a schedule/);
+  assert.equal(eventFromLink(calendarEvent(g, leagueOf('nfl'), 'UTC')).end, '2025-05-25T21:30', 'an NFL game runs three hours, as in the .ics');
+  assert.equal(calendarEvent({ start: 'x' }, leagueOf('epl'), 'UTC'), ''); assert.equal(calendarEvent(g, leagueOf('epl'), 'Not/AZone'), ''); assert.equal(calendarEvent(g, leagueOf('epl'), ''), '');
+});

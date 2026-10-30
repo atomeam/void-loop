@@ -14,7 +14,7 @@
   "/convert/unit-converter-2/": "in: number; out: number",
   "/convert/unit-converter/": "in: number; out: number",
   "/emojis/": "in: text; out: text",
-  "/fantasy/": "in: names; out: table, names",
+  "/fantasy/": "in: none; out: table, names",
   "/films/": "in: text; out: items",
   "/flights/": "in: location, date; out: location, event",
   "/flights/airports/": "in: location, date; out: location, event",

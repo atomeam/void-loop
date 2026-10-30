@@ -10,7 +10,7 @@
   "source": "source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating",
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
- "smoke_at": "2026-10-29",
+ "smoke_at": "2026-10-30",
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
@@ -37,7 +37,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "photo-tools",
@@ -47,7 +47,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "converter",
@@ -56,7 +56,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "sprite-sheet",
@@ -66,7 +67,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "gradient",
@@ -75,7 +76,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 4
+     "streak": 5
     },
     {
      "name": "color",
@@ -85,7 +86,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "fakeuser",
@@ -95,7 +96,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 4
+     "streak": 5
     },
     {
      "name": "textgen",
@@ -105,7 +106,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "forge",
@@ -114,7 +115,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "make",
@@ -123,7 +124,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "music",
@@ -132,7 +133,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "rap",
@@ -141,7 +142,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "music-tools",
@@ -151,7 +153,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "figure",
@@ -160,7 +162,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "figures",
@@ -169,7 +171,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "zoom-figure",
@@ -178,7 +180,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "figure-can",
@@ -187,7 +189,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "cartoon",
@@ -196,7 +198,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "video-gen",
@@ -205,7 +207,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "walker",
@@ -215,7 +218,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 4
+     "streak": 5
     },
     {
      "name": "part",
@@ -224,7 +227,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "together",
@@ -233,7 +236,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "gears",
@@ -242,7 +245,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "motorbody",
@@ -251,7 +254,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "printedmotor",
@@ -260,7 +263,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "magnetize",
@@ -269,7 +272,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "print-file",
@@ -278,7 +281,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "print-download",
@@ -287,7 +290,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "inventory",
@@ -296,7 +299,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "splat",
@@ -305,7 +308,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "poster",
@@ -314,7 +317,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "draw",
@@ -323,7 +326,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "shape",
@@ -332,7 +335,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "image",
@@ -342,7 +345,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "throw-off",
@@ -351,7 +354,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "swarm",
@@ -360,7 +363,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "vector-field-mind",
@@ -385,7 +388,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "attention-field-mind",
@@ -403,7 +406,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "rts",
@@ -412,7 +415,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "nca-mind",
@@ -533,7 +536,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stigmergy-board",
@@ -543,7 +546,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stl-check",
@@ -552,7 +555,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "term-orbits",
@@ -562,7 +566,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "palette",
@@ -571,7 +575,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     }
    ]
   },
@@ -593,7 +598,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 4
+     "streak": 5
     },
     {
      "name": "coin",
@@ -603,7 +608,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "yesno",
@@ -613,7 +618,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "aggravation",
@@ -737,13 +742,13 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "eightball",
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
-     "last_tested": "2026-10-29",
+     "last_tested": "2026-10-30",
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-29"
     },
@@ -762,7 +767,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "challenge",
@@ -771,7 +776,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "pong",
@@ -780,7 +785,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "snake",
@@ -789,7 +794,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "null-sweep",
@@ -798,7 +803,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "merge-void",
@@ -807,7 +812,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "dim-void",
@@ -816,7 +821,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "void-breaker",
@@ -825,7 +830,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "duel",
@@ -834,7 +839,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "rally",
@@ -843,7 +848,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "gamebox",
@@ -852,7 +857,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "merge",
@@ -861,7 +866,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "zorbleflux",
@@ -870,7 +875,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "random",
@@ -879,7 +884,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "shuffle",
@@ -888,7 +894,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "emoji",
@@ -897,7 +904,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "emoji-combos",
@@ -906,7 +914,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "hangman",
@@ -915,7 +924,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "wordladder",
@@ -924,7 +934,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     }
    ]
   },
@@ -947,7 +958,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "baggage",
@@ -958,7 +969,8 @@
      ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0.667
+     "success_rate": 0.667,
+     "streak": 1
     },
     {
      "name": "sky",
@@ -1072,7 +1084,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "night-sky",
@@ -1090,7 +1102,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "worldtime",
@@ -1108,7 +1120,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "country",
@@ -1117,7 +1129,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     }
    ]
   },
@@ -1139,7 +1151,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "calendar-file",
@@ -1148,7 +1160,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "ritual-template",
@@ -1157,7 +1169,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "timer",
@@ -1190,7 +1202,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "show-countdown",
@@ -1199,7 +1211,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "calendar",
@@ -1241,7 +1253,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "deadlines",
@@ -1250,7 +1262,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "shortcut",
@@ -1259,7 +1271,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "time-math",
@@ -1268,7 +1280,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "busy-blocks",
@@ -1277,7 +1289,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "date-calc",
@@ -1286,7 +1298,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "date-grid",
@@ -1295,7 +1307,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     }
    ]
   },
@@ -1318,7 +1330,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "toolkit",
@@ -1328,7 +1340,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "open-tool",
@@ -1337,16 +1349,17 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 833 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "convert",
@@ -1355,7 +1368,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "loan",
@@ -1364,7 +1377,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "rentbuy",
@@ -1373,7 +1386,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "savings",
@@ -1382,7 +1396,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "fuel",
@@ -1392,7 +1406,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "tip",
@@ -1401,7 +1415,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "crypto",
@@ -1411,7 +1425,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "stocks",
@@ -1419,7 +1433,8 @@
      "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 1
+     "success_rate": 1,
+     "streak": 1
     },
     {
      "name": "markets",
@@ -1428,7 +1443,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "grades",
@@ -1437,7 +1452,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "util",
@@ -1446,7 +1461,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "counter",
@@ -1455,7 +1470,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "room",
@@ -1488,7 +1503,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "calc-more",
@@ -1497,17 +1512,17 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "formulas",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
+     "why": "a self-test, 11 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "dev-tools",
@@ -1517,7 +1532,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "uuid",
@@ -1526,7 +1541,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "password",
@@ -1535,7 +1551,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     }
    ]
   },
@@ -1557,7 +1574,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "ovulation",
@@ -1566,7 +1583,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "period",
@@ -1575,7 +1592,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "pregnancy",
@@ -1584,7 +1601,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "nutrition",
@@ -1593,7 +1610,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "food",
@@ -1602,7 +1619,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "eat",
@@ -1611,7 +1628,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "recipe",
@@ -1620,7 +1637,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "heart",
@@ -1629,7 +1646,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "breath",
@@ -1638,7 +1655,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "feelings",
@@ -1647,7 +1664,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "health-habits",
@@ -1656,7 +1673,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     }
    ]
   },
@@ -1687,7 +1704,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "github.com"
@@ -1707,7 +1724,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 5,
+     "streak": 6,
      "source": {
       "sites": [
        "github.com",
@@ -1727,7 +1744,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "archive.org",
@@ -1748,7 +1765,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "apple.com",
@@ -1768,7 +1785,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "apple.com",
@@ -1789,7 +1806,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "archive.org",
@@ -1813,7 +1830,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "define",
@@ -1822,7 +1839,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "wiktionary.org"
@@ -1841,7 +1858,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "words",
@@ -1850,7 +1867,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "datamuse.com"
@@ -1908,7 +1925,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "algolia.com",
@@ -1930,6 +1947,7 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-30",
+     "streak": 1,
      "source": {
       "sites": [
        "apple.com",
@@ -1951,6 +1969,7 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-30",
+     "streak": 1,
      "source": {
       "sites": [
        "open-meteo.com"
@@ -1969,7 +1988,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "icanhazdadjoke.com"
@@ -1988,7 +2007,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 6,
+     "streak": 7,
      "source": {
       "sites": [
        "wikiquote.org"
@@ -2008,7 +2027,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 5,
+     "streak": 6,
      "source": {
       "sites": [
        "jsph.pl",
@@ -2029,7 +2048,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1,
+     "streak": 2,
      "source": {
       "sites": [
        "wikiquote.org"
@@ -2049,7 +2068,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "swaps",
@@ -2058,7 +2077,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "film-metadata",
@@ -2067,7 +2086,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "media-pick",
@@ -2076,7 +2095,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "apple.com",
@@ -2097,7 +2116,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "openlibrary.org"
@@ -2116,7 +2135,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "tvmaze.com"
@@ -2135,7 +2154,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "thesportsdb.com",
@@ -2156,7 +2175,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3,
+     "streak": 4,
      "source": {
       "sites": [
        "espn.com",
@@ -2178,7 +2197,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "fantasy",
@@ -2188,7 +2207,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "pdf-card",
@@ -2197,7 +2216,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "pdf-tools",
@@ -2207,7 +2226,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "kanban-board",
@@ -2217,7 +2236,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "coral",
@@ -2226,7 +2245,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "doi.org",
@@ -2247,7 +2266,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "clinicaltrials.gov"
@@ -2266,7 +2285,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "clinicaltrials.gov"
@@ -2285,7 +2304,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11,
+     "streak": 12,
      "source": {
       "sites": [
        "conventionalcommits.org",
@@ -2305,7 +2324,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "text-tools",
@@ -2314,7 +2333,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "morse",
@@ -2324,7 +2343,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "ascii",
@@ -2334,7 +2353,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "leet",
@@ -2344,7 +2363,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "lorem",
@@ -2354,7 +2373,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "study-cards",
@@ -2363,7 +2382,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     }
    ]
   },
@@ -2385,7 +2404,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "work",
@@ -2395,7 +2414,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "social",
@@ -2404,7 +2423,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "boards",
@@ -2414,7 +2433,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "fanfic",
@@ -2424,7 +2443,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "dating",
@@ -2433,7 +2452,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "service-health",
@@ -2442,7 +2461,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     }
    ]
   },
@@ -2465,7 +2484,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "file-sorter",
@@ -2474,7 +2493,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "sticky",
@@ -2483,7 +2502,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "photos",
@@ -2492,7 +2511,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 8
+     "streak": 9
     },
     {
      "name": "notebook",
@@ -2501,7 +2520,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "notes-fill",
@@ -2511,7 +2530,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "calendar-fill",
@@ -2521,7 +2540,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "recipes-fill",
@@ -2531,7 +2550,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "generators-fill",
@@ -2541,7 +2560,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 3
+     "streak": 4
     },
     {
      "name": "terminal",
@@ -2550,7 +2569,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "notepad",
@@ -2559,7 +2578,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "pulse",
@@ -2569,7 +2588,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "friction",
@@ -2578,7 +2597,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "collide",
@@ -2587,7 +2606,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "bench",
@@ -2596,7 +2615,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "link",
@@ -2606,7 +2625,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "kept",
@@ -2615,7 +2634,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "list",
@@ -2624,16 +2643,16 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "tab",
      "tier": "checked",
      "why": "a self-test, 3 browser-suite mentions",
-     "last_tested": "2026-10-29",
+     "last_tested": "2026-10-30",
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-29",
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "group",
@@ -2642,7 +2661,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "layer",
@@ -2651,7 +2670,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "label",
@@ -2660,7 +2679,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "dismiss",
@@ -2669,7 +2688,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "lock",
@@ -2678,7 +2697,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "light-look",
@@ -2687,7 +2706,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "dark-look",
@@ -2696,7 +2715,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "recent",
@@ -2705,7 +2724,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "showcase",
@@ -2714,7 +2733,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "type-filter",
@@ -2723,7 +2742,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "collectible",
@@ -2732,7 +2751,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "fly",
@@ -2741,7 +2760,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "riot",
@@ -2751,7 +2770,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "mutate",
@@ -2760,7 +2779,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "sudden-death",
@@ -2769,7 +2788,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "overload",
@@ -2778,7 +2797,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "extinction",
@@ -2787,7 +2806,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "feud",
@@ -2796,7 +2815,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "oracle",
@@ -2805,7 +2824,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "crowd",
@@ -2814,7 +2833,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "unkeepable",
@@ -2823,7 +2842,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "spectators",
@@ -2832,7 +2851,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "negative-summons",
@@ -2841,7 +2860,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "echo-disagrees",
@@ -2851,7 +2870,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "near-choir",
@@ -2861,7 +2880,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "minimap",
@@ -2870,7 +2889,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "ask-clipboard",
@@ -2879,7 +2898,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "habit-ring",
@@ -2888,7 +2907,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "recipe-stack",
@@ -2897,7 +2916,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "constellation-weaver",
@@ -2906,7 +2925,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "forge-table",
@@ -2915,7 +2934,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "night-ritual",
@@ -2924,7 +2943,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "archive-of-one",
@@ -2933,7 +2952,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "codex",
@@ -2942,7 +2961,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "echo-chamber",
@@ -2951,7 +2970,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "time-capsule",
@@ -2960,7 +2979,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "whisper-network",
@@ -2969,7 +2988,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "sheaf-check",
@@ -2978,7 +2997,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "spectral-review",
@@ -2987,7 +3006,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "task-diagram",
@@ -2996,7 +3015,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "gauge-feedback",
@@ -3005,7 +3024,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "eigenwork",
@@ -3014,7 +3033,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "homotopy-edit",
@@ -3024,7 +3043,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "plan-stability",
@@ -3033,7 +3052,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "anneal-ambition",
@@ -3043,7 +3062,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "partial-answer",
@@ -3052,7 +3071,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "draft-triad",
@@ -3061,7 +3080,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stale-work",
@@ -3070,7 +3089,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "certainty-budget",
@@ -3079,7 +3098,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "interrupt-priority",
@@ -3088,7 +3107,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "causal-scars",
@@ -3097,7 +3116,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "counterfactual-draft",
@@ -3106,7 +3125,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "witness-claims",
@@ -3115,7 +3134,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "task-board",
@@ -3124,7 +3143,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "template-list",
@@ -3141,7 +3160,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "idea-certificate",
@@ -3150,7 +3169,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "noun-heat",
@@ -3159,7 +3178,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "hunting-question",
@@ -3168,7 +3187,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "contradiction-lamp",
@@ -3177,7 +3196,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "ask-diff",
@@ -3186,7 +3205,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "family-gravity",
@@ -3195,7 +3214,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "deep-work",
@@ -3204,7 +3223,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "soundscape",
@@ -3213,7 +3232,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-print",
@@ -3230,7 +3249,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "outline-note",
@@ -3239,7 +3258,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "csv-table",
@@ -3248,7 +3267,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "qr-scan",
@@ -3257,7 +3276,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "list-tools",
@@ -3266,7 +3285,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "list-templates",
@@ -3283,7 +3302,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-style",
@@ -3292,7 +3311,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-organize",
@@ -3301,7 +3320,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "accessibility-modes",
@@ -3310,7 +3329,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-find",
@@ -3319,7 +3338,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "dismissed-pile",
@@ -3328,7 +3347,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "bookmarks",
@@ -3337,7 +3356,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-export",
@@ -3354,7 +3373,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-image",
@@ -3363,7 +3382,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "media-object",
@@ -3372,7 +3391,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "backdrop",
@@ -3382,7 +3401,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 4
+     "streak": 5
     }
    ]
   },
@@ -3408,7 +3427,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "promoted": "2026-10-29"
+     "promoted": "2026-10-29",
+     "streak": 1
     },
     {
      "name": "tower",
@@ -3417,7 +3437,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "studios",
@@ -3426,7 +3446,8 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-30"
+     "promoted": "2026-10-30",
+     "streak": 1
     },
     {
      "name": "dependency-health",
@@ -3435,7 +3456,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 9
+     "streak": 10
     },
     {
      "name": "backlog-digest",
@@ -3444,7 +3465,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "remediation-velocity",
@@ -3453,7 +3474,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "guide",
@@ -3462,7 +3483,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "growth",
@@ -3471,7 +3492,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "v01d-fixes",
@@ -3480,7 +3501,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "merges",
@@ -3489,7 +3510,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "goal",
@@ -3498,7 +3519,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "intent",
@@ -3507,7 +3528,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "different",
@@ -3516,7 +3537,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "know",
@@ -3525,7 +3546,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "state",
@@ -3534,7 +3555,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "memory",
@@ -3543,7 +3564,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "watch",
@@ -3552,7 +3573,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "status",
@@ -3561,7 +3582,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "incident",
@@ -3570,7 +3591,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "actions",
@@ -3579,7 +3600,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "automations",
@@ -3588,7 +3609,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "proposal",
@@ -3597,7 +3618,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "services",
@@ -3622,7 +3643,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "web4",
@@ -3631,7 +3652,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "invite",
@@ -3640,7 +3661,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "local-inference",
@@ -3649,7 +3670,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "rebuild-map",
@@ -3658,7 +3679,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "films",
@@ -3667,7 +3688,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "app",
@@ -3676,7 +3697,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "family-health",
@@ -3685,7 +3706,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "incident-autopsy",
@@ -3694,7 +3715,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "fix-audit",
@@ -3703,7 +3724,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "deps",
@@ -3712,7 +3733,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "fringe-to-skill",
@@ -3721,7 +3742,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 11
+     "streak": 12
     },
     {
      "name": "skill-eclipse",
@@ -3730,7 +3751,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "miss-jobs",
@@ -3740,7 +3761,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-30",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "ask-immune",
@@ -3749,7 +3770,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "four-channels",
@@ -3758,7 +3779,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stakes-phase",
@@ -3767,7 +3788,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "own-parts",
@@ -3776,15 +3797,15 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "its tests",
      "promoted": "2026-10-30",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "about-skill",
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
-     "last_tested": "2026-10-29",
+     "last_tested": "2026-10-30",
      "last_tested_by": "the daily smoke test",
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "similar",
@@ -3793,7 +3814,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "approve-card",
@@ -3802,7 +3823,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "memory-graph",
@@ -3811,7 +3832,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "memory-preview",
@@ -3820,7 +3841,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     },
     {
      "name": "wants",
@@ -3829,7 +3850,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "podcast",
@@ -3838,7 +3859,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 5
+     "streak": 6
     }
    ]
   },
@@ -3860,7 +3881,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "decision-matrix",
@@ -3869,7 +3890,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "triangulate",
@@ -3878,7 +3899,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 7
+     "streak": 8
     }
    ]
   },
@@ -3901,7 +3922,7 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29",
-     "streak": 1
+     "streak": 2
     },
     {
      "name": "pwcheck",
@@ -3910,7 +3931,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 5
+     "streak": 6
     },
     {
      "name": "safety-kit",
@@ -3919,7 +3940,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "photo-scrub",
@@ -3928,7 +3949,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "stage-fx",
@@ -3937,7 +3958,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     },
     {
      "name": "card-play",
@@ -3946,7 +3967,7 @@
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
-     "streak": 10
+     "streak": 11
     }
    ]
   }

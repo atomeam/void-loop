@@ -2,6 +2,35 @@
  "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T15:08:02.597Z",
+   "sha": "38b22922641aa783815cb62abe6e33feebc254b3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41052608483",
+   "suite": "browser suite on main",
+   "checks": [
+    "local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia"
+   ],
+   "touched": [
+    "docs/PARITY/clock7.com.md",
+    "docs/PARITY/co2.myclimate.org.md",
+    "docs/PARITY/google-flights.md",
+    "docs/PARITY/tripwaffle.com.md",
+    "tools/flights.test.mjs",
+    "tools/handoff-e2e.mjs",
+    "tools/toolkit.test.mjs",
+    "tools/zones.test.mjs",
+    "void-live-deploy/lib/flights-core.js",
+    "void-live-deploy/lib/flights-de.js",
+    "void-live-deploy/lib/flights-ui.js",
+    "void-live-deploy/lib/zones.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/time/index.html",
+    "void-live-deploy/weather/index.html"
+   ],
+   "shards": [
+    2
+   ]
+  },
+  {
    "at": "2026-10-30T13:37:55.692Z",
    "sha": "961bfbb2310d29582632388c1897bb2a80d03497",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41046328279",
@@ -29,6 +58,9 @@
    ],
    "shards": [
     2,
+    4
+   ],
+   "passed": [
     4
    ]
   },
@@ -974,43 +1006,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 966
-  },
-  {
-   "at": "2026-10-29T02:45:34.486Z",
-   "sha": "aacf622314849ed8de00a76a5de6a8f157432869",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40807783914",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/art-floor.json",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tower.evidence.json",
-    "void-live-deploy/void.growth.json",
-    ".github/workflows/tower-size.yml",
-    "docs/MAP.md",
-    "docs/PARITY/emojitracker.com.md",
-    "docs/PARITY/isitchristmas.com.md",
-    "docs/PARITY/justflipacoin.com.md",
-    "docs/PARITY/timeanddate.com.md",
-    "docs/PARITY/unitconverters.net.md"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 971
   }
  ]
 }

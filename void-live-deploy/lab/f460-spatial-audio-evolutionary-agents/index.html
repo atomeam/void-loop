@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#adf; border:1px solid #45a; border-radius:4px; cursor:pointer; }
+.card { position:absolute; width:90px; height:70px; background:rgba(40,20,60,0.75); border:1px solid #8af; border-radius:6px; padding:6px; font-size:11px; z-index:5; cursor:grab; user-select:none; }
+.card.seal { border-color:#fa4; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Audio Evolutionary Agents · Verse lab</title>
+<meta name="description" content="Novel combination: Canvas2D multi-agent spatial field with per-agent Web Audio oscillators spatialized via HRTF PannerNodes (position mapped from canvas">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Audio Evolutionary Agents · Verse lab">
+<meta property="og:description" content="Novel combination: Canvas2D multi-agent spatial field with per-agent Web Audio oscillators spatialized via HRTF PannerNodes (position mapped from canvas">
+<meta property="og:url" content="https://a-to-mind.com/lab/f460-spatial-audio-evolutionary-agents/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f460-spatial-audio-evolutionary-agents/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <div>F460 Spatial Audio Evo Agents</div>
+  <div id="status">init</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <div id="sealid" style="font-size:10px;opacity:0.7"></div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial Audio Evolutionary Agents</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

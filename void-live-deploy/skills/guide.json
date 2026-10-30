@@ -3027,8 +3027,8 @@
     "give me a calc"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 833 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 833 real askings stand behind this page. Ask, and see.",
+   "why": "a self-test, 2 browser-suite mentions, 839 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 839 real askings stand behind this page. Ask, and see.",
    "glow": 100,
    "n": 154
   },
@@ -3207,11 +3207,11 @@
    "chapter": "numbers",
    "name": "util",
    "title": "Util",
-   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text",
+   "line": "Small tools: passwords, QR codes, colours, word counts, text case, moon phase, hashes, diffs, Markdown",
    "examples": [
     "generate a password",
-    "qr code for a-to-mind.com",
-    "what color is #ff8800"
+    "16 character password",
+    "strong password"
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 71 real asks in the benchmark",
@@ -3333,8 +3333,8 @@
     "calculator for molar mass"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "An old art of the numbers and money, tested each day before the sun is up. Let the stage be the proof.",
+   "why": "a self-test, 11 real asks in the benchmark",
+   "flavor": "Asked 11 times in earnest, and never once left unanswered. Let the stage be the proof.",
    "glow": 100,
    "n": 172
   },
@@ -3350,7 +3350,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 4 real askings stand behind this page. Let the stage be the proof.",
+   "flavor": "An old art of the numbers and money, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
    "n": 173
   },

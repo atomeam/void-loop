@@ -1,6 +1,7 @@
 // the sound files Verse writes on the device beside WAV and AIFF: FLAC and ALAC (its own lossless encoders, pure) and Ogg Opus (.ogg and .opus: the
 // browser's own Opus encoder, in Verse's own Ogg pages). Every byte is written here; nothing is uploaded.
 import { opusHead, opusHeadOf, mp4 } from './video-mux.js';
+import { md5 } from './hash.js';
 
 // ---- bits ---------------------------------------------------------------------------------------------------------------------------------
 class Bits {
@@ -24,24 +25,8 @@ export const crc16 = (b) => { let c = 0; for (const x of b) c = ((c << 8) ^ T16[
 /** the Ogg page check: CRC-32, polynomial 0x04c11db7, not reflected, starts at 0 */
 export const crc32ogg = (b) => { let c = 0; for (const x of b) c = ((c << 8) ^ T32[((c >>> 24) ^ x) & 255]) >>> 0; return c >>> 0; };
 
-/** MD5 of bytes (RFC 1321): FLAC keeps the MD5 of the samples so a player can check the file */
-export function md5(bytes) {
-  const S = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21], K = Array.from({ length: 64 }, (_, i) => Math.floor(Math.abs(Math.sin(i + 1)) * 2 ** 32) >>> 0);
-  const n = bytes.length, total = ((n + 8) >>> 6) + 1, w = new Uint32Array(total * 16);
-  for (let i = 0; i < n; i++) w[i >> 2] |= bytes[i] << ((i % 4) * 8);
-  w[n >> 2] |= 0x80 << ((n % 4) * 8); w[total * 16 - 2] = (n * 8) >>> 0; w[total * 16 - 1] = Math.floor(n / 2 ** 29);
-  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
-  for (let o = 0; o < w.length; o += 16) {
-    let a = a0, b = b0, c = c0, d = d0;
-    for (let i = 0; i < 64; i++) {
-      let f, g; const r = i >> 4;
-      if (r === 0) { f = (b & c) | (~b & d); g = i; } else if (r === 1) { f = (d & b) | (~d & c); g = (5 * i + 1) % 16; } else if (r === 2) { f = b ^ c ^ d; g = (3 * i + 5) % 16; } else { f = c ^ (b | ~d); g = (7 * i) % 16; }
-      const t = d; d = c; c = b; const x = (a + f + K[i] + w[o + g]) >>> 0, s = S[r * 4 + (i % 4)]; b = (b + ((x << s) | (x >>> (32 - s)))) >>> 0; a = t;
-    }
-    a0 = (a0 + a) >>> 0; b0 = (b0 + b) >>> 0; c0 = (c0 + c) >>> 0; d0 = (d0 + d) >>> 0;
-  }
-  const out = new Uint8Array(16); [a0, b0, c0, d0].forEach((v, k) => { for (let j = 0; j < 4; j++) out[k * 4 + j] = (v >>> (8 * j)) & 255; }); return out;
-}
+/** MD5 of bytes (RFC 1321): FLAC keeps the MD5 of the samples so a player can check the file. It lives in lib/hash.js with the SHA digests. */
+export { md5 };
 
 // ---- FLAC ---------------------------------------------------------------------------------------------------------------------------------
 const s16 = (x) => { const y = Math.max(-1, Math.min(1, x)); return Math.round(y < 0 ? y * 32768 : y * 32767); };

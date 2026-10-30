@@ -76,9 +76,9 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { receiveImage } from '/lib/image-handoff.js';
+  import { receiveImage, sendImage } from '/lib/image-handoff.js';
   import { toPx, fitBox, fitSize, pdfOfJpeg, cropBox } from '/lib/imgfit.js';
-  const $ = (id) => document.getElementById(id); let bmp = null, src = null, rot = 0, view = { zoom: 1, cx: 0.5, cy: 0.5 }, token = 0, urls = [], later = 0;
+  const $ = (id) => document.getElementById(id); let bmp = null, src = null, rot = 0, view = { zoom: 1, cx: 0.5, cy: 0.5 }, token = 0, urls = [], later = 0, made = null;
   // the picture turned a quarter at a time: drawn once onto a canvas that is the source from then on
   function turn() { if (!bmp) return; if (!rot) { src = bmp; return; } const c = document.createElement('canvas'), side = rot % 2; c.width = side ? bmp.height : bmp.width; c.height = side ? bmp.width : bmp.height;
     const x = c.getContext('2d'); x.translate(c.width / 2, c.height / 2); x.rotate(rot * Math.PI / 2); x.drawImage(bmp, -bmp.width / 2, -bmp.height / 2); src = c; }
@@ -89,7 +89,7 @@
   async function render(quick) {
     const mine = ++token; if (!bmp) return; if (!src) turn();
     const unit = $('u').value, w = toPx($('w').value, unit, $('dpi').value), h = toPx($('h').value, unit, $('dpi').value);
-    if (!w || !h) { $('result').hidden = false; $('line').textContent = ''; $('line').className = ''; $('note').textContent = 'Type a width and a height (up to 8,000 pixels a side).'; return; }
+    if (!w || !h) { made = null; $('result').hidden = false; $('line').textContent = ''; $('line').className = ''; $('note').textContent = 'Type a width and a height (up to 8,000 pixels a side).'; return; }
     const fill = $('fit').value === 'fill', box = fill ? cropBox(src.width, src.height, w, h, view) : fitBox(src.width, src.height, w, h, $('fit').value), c = $('pv');
     if (fill) view = { zoom: box.zoom, cx: box.cx, cy: box.cy };
     for (const id of ['zoom', 'recrop']) $(id).disabled = !fill; $('crophint').textContent = fill ? 'Drag the picture to move the crop; zoom to crop tighter.' : 'Moving the crop works with “Crop to fill the size”.'; c.classList.toggle('grab', fill);
@@ -105,9 +105,11 @@
     $('line').className = limit ? (r.fits ? 'ok' : 'bad') : '';
     $('note').textContent = !limit ? 'JPEG at a good quality.' : r.fits ? 'JPEG quality ' + Math.round(r.quality * 100) + '%, the highest that fits the limit.' : 'Even at the lowest quality it is ' + kbText(r.smallest) + ': ask for a smaller size, or a larger limit.';
     $('result').dataset.bytes = String(r.bytes.length); $('result').dataset.fits = String(r.fits);
+    // the copy just made is what the hand-off links below carry to the next picture page
+    made = { bytes: r.bytes, name: $('dj').download }; document.dispatchEvent(new Event('tk:card'));
   }
   // a photo chosen here, or handed over by another page (lib/image-handoff.js, ?img=handoff)
-  const loadFile = async (f) => { try { bmp = await createImageBitmap(f); rot = 0; src = null; view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } };
+  const loadFile = async (f) => { try { bmp = await createImageBitmap(f); rot = 0; src = null; view = { zoom: 1, cx: 0.5, cy: 0.5 }; $('zoom').value = '1'; const base = f.name.replace(/\.[^.]+$/, '').replace(/[^\w.-]/g, '_').slice(0, 40) || 'photo'; $('dj').download = base + '-resized.jpg'; $('dp').download = base + '-resized.pdf'; render(); } catch (_) { bmp = null; made = null; $('result').hidden = false; $('line').textContent = ''; $('note').textContent = 'That file could not be read as a picture.'; } };
   $('file').addEventListener('change', (e) => { const f = e.target.files[0]; if (f) loadFile(f); });
   receiveImage(loadFile);
   for (const id of ['w', 'h', 'u', 'dpi', 'kb', 'fit']) $(id).addEventListener('input', () => render());
@@ -137,7 +139,9 @@
   // page, not with it, so opening the resizer costs no file beyond its own (tools/test_void.mjs "photo resizer": 3 own loads at most);
   // until then the link keeps the example card, and tk:card points it at the size once the module is in
   let rc = null;
-  mountRelated(document.getElementById('related'), '/resize-image/', [], { card: () => rc ? rc.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) : '' });
+  // the resized copy, already open on the next picture page: a press keeps one copy on this device and opens the page
+  mountRelated(document.getElementById('related'), '/resize-image/', [['Edit the resized photo', '/photos/?img=handoff'], ['Add it to a PDF', '/pdf/?img=handoff'], ['Paint it by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff']].map(([label, path]) => ({ label, href: () => (made ? path : null),
+    go: () => { const got = made; if (!got) return false; sendImage(path, () => new Blob([got.bytes], { type: 'image/jpeg' }), { name: got.name, fromPage: '/resize-image/' }).then((ok) => { if (!ok) $('note').textContent = 'This browser could not keep the picture for the next page.'; }); return false; } })), { card: () => rc ? rc.cardAsk({ w: $('w').value, h: $('h').value, u: $('u').value, kb: $('kb').value }) : '' });
   const TOUCH = ['pointerdown', 'pointerover', 'keydown', 'focusin', 'input', 'change'];
   const loadCard = () => { for (const ev of TOUCH) removeEventListener(ev, loadCard, true); import('/lib/resize-card.js').then((m) => { rc = m; document.dispatchEvent(new Event('tk:card')); }).catch(() => {}); };
   for (const ev of TOUCH) addEventListener(ev, loadCard, true);

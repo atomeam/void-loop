@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,.5); padding:8px; border-radius:6px; font-size:13px; }
+.orb { position:absolute; width:40px; height:40px; border-radius:50%; background:hsla(var(--h),70%,50%,.8); border:2px solid #fff; cursor:grab; display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center; user-select:none; z-index:5; transition:transform .1s; }
+.orb:active { cursor:grabbing; }
+button { margin:4px; padding:4px 8px; background:#222; color:#fff; border:1px solid #555; border-radius:4px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Bayesian Wave Collapse Mind · Verse lab</title>
+<meta name="description" content="Canvas2D discrete 2D wave lattice (N≈64, WebGPU compute path prepared via note) whose driving sources are biased by a local Bayesian particle-filter mind (32">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Bayesian Wave Collapse Mind · Verse lab">
+<meta property="og:description" content="Canvas2D discrete 2D wave lattice (N≈64, WebGPU compute path prepared via note) whose driving sources are biased by a local Bayesian particle-filter mind (32">
+<meta property="og:url" content="https://a-to-mind.com/lab/f466-webgpu-bayesian-wave-collapse-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f466-webgpu-bayesian-wave-collapse-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  Entropy: <span id="ent">0.00</span> | Particles: <span id="np">32</span><br>
+  <button id="seal">Seal Belief</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Bayesian Wave Collapse Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
