@@ -14,7 +14,7 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 0,
+  "tested": 1,
   "checked": 6,
   "proven": 374
  },
@@ -1624,18 +1624,20 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 1,
     "proven": 42
    },
    "sources": {
-    "read": 26,
-    "named": 24,
-    "second": 15,
+    "read": 27,
+    "named": 25,
+    "second": 14,
     "answered": 0,
-    "points": 1.5,
-    "one_live_from_proven": [],
-    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.5 of 3 on average)."
+    "points": 1.44,
+    "one_live_from_proven": [
+     "local-stations"
+    ],
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 14 have a second source, 0 have a kept live answer from it (1.44 of 3 on average). One kept live answer each would make 1 more proven: local-stations."
    },
    "skills": [
     {
@@ -1902,6 +1904,24 @@
      }
     },
     {
+     "name": "local-stations",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
+     "source": {
+      "sites": [
+       "open-meteo.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: open-meteo.com; named on the card; no second source; no kept live answer yet. One kept live answer from open-meteo.com would make it proven"
+     }
+    },
+    {
      "name": "joke",
      "tier": "proven",
      "why": "a self-test, 10 real asks in the benchmark",
@@ -1950,14 +1970,13 @@
      "streak": 5,
      "source": {
       "sites": [
-       "jsph.pl",
-       "wikipedia.org"
+       "jsph.pl"
       ],
       "named": true,
-      "second": true,
+      "second": false,
       "answered": false,
-      "points": 2,
-      "words": "source 2 of 3: jsph.pl, wikipedia.org; named on the card; a second source; no kept live answer yet"
+      "points": 1,
+      "words": "source 1 of 3: jsph.pl; named on the card; no second source; no kept live answer yet"
      }
     },
     {
