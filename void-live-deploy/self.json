@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T04:47:44Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,32 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T03:57:27Z",
+   "subject": "MultiVerse: the owner is always a member"
+  },
+  {
+   "at": "2026-10-30T03:57:26Z",
+   "subject": "converter: refresh parity and the dependency map for video"
+  },
+  {
+   "at": "2026-10-30T03:55:52Z",
+   "subject": "converter: write MP4 and WEBM video on the device"
+  },
+  {
+   "at": "2026-10-30T03:54:11Z",
+   "subject": "Movie lookup: the void-review marker on the line it covers"
+  },
+  {
+   "at": "2026-10-30T03:51:25Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T03:51:07Z",
    "subject": "Memory orbs show Verse's real memories"
+  },
+  {
+   "at": "2026-10-30T03:50:16Z",
+   "subject": "Metronome related line: mark BPM label text as a review false positive, as on /music/"
   },
   {
    "at": "2026-10-30T03:49:47Z",
@@ -562,8 +586,20 @@
    "subject": "Promote 11 more skills to proven on evidence, link the shipped STL and promotion asks"
   },
   {
+   "at": "2026-10-30T03:48:24Z",
+   "subject": "Rap: true rhymes for soft c, soft g and silent g; clean shared card; wired to notes, metronome and its own card"
+  },
+  {
+   "at": "2026-10-30T03:48:23Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T03:45:10Z",
    "subject": "Verse Brain full screen: nothing covers the field"
+  },
+  {
+   "at": "2026-10-30T03:43:39Z",
+   "subject": "Movie lookup: guard the archive title read, and note why the SPARQL literal is safe"
   },
   {
    "at": "2026-10-30T03:41:39Z",
@@ -579,6 +615,10 @@
   },
   {
    "at": "2026-10-30T03:32:55Z",
+   "subject": "Movie pick: Wikidata verifies films when iTunes refuses, and a refusal is no longer cached as \"not verified\""
+  },
+  {
+   "at": "2026-10-30T03:32:55Z",
    "subject": "What's new in the book reads for visitors, by their own day"
   },
   {
@@ -588,46 +628,6 @@
   {
    "at": "2026-10-30T03:32:50Z",
    "subject": "MultiVerse owner link: mark the one-at-a-time writes in the loop for Verse's review"
-  },
-  {
-   "at": "2026-10-30T03:31:02Z",
-   "subject": "Verse fixes its quote skill: learn to handle \"quote about perseverance\""
-  },
-  {
-   "at": "2026-10-30T03:30:26Z",
-   "subject": "MultiVerse: the owner's own purchase links itself; signed-out Join asks to sign in first"
-  },
-  {
-   "at": "2026-10-30T03:25:26Z",
-   "subject": "MultiVerse: a buyer unlocks their Verse with the receipt Order ID and email"
-  },
-  {
-   "at": "2026-10-30T03:22:55Z",
-   "subject": "Recipe: \"what can I make with chicken and rice\" finds meals with both"
-  },
-  {
-   "at": "2026-10-30T03:16:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T03:15:41Z",
-   "subject": "Words and the world: 7 common asks reach their skills"
-  },
-  {
-   "at": "2026-10-30T03:09:16Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T03:08:11Z",
-   "subject": "Word ladder: finish the skill (order, Games family, MAP, test); a bare \"ladder\" is no longer its"
-  },
-  {
-   "at": "2026-10-30T03:04:40Z",
-   "subject": "team: an owner's post in #work is a job on the build queue"
-  },
-  {
-   "at": "2026-10-30T03:03:24Z",
-   "subject": "brain: build the live numbers and says lines with textContent"
   }
  ],
  "builders": {
