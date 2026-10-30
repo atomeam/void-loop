@@ -10,21 +10,21 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-29. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-30. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Provide a list of the 20 checked and 43 tested skills that can be promoted to proven status. *(small)* (daily, 2026-10-29) `ask-20261029-2241-2`
-- Build a browser-based utility to check the watertightness of STL print files. (daily, 2026-10-29) `ask-20261029-2241-3`
-- Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js *(small)* (daily, 2026-10-29) `ask-20261029-2241-1`
-- Absorb every repository on the account into the core code (daily, 2026-10-28)
-- Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins. *(small)* (after a build, 2026-10-17)
+- Update the self-skill router so identity-based probes trigger self-portraits instead of being processed as questions. *(small)* (daily, 2026-10-30) `ask-20261030-2212-2`
+- Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. (daily, 2026-10-30) `ask-20261030-2212-1`
+- Address the least-checked skills: video-gen and baggage. (daily, 2026-10-30) `ask-20261030-2212-3`
+- Absorb every repository on the account into the core code. (after a build, 2026-10-30) `ask-20261030-1312-3`
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261029-2241-2` queued, not decided yet
-- `ask-20261029-2241-3` queued, not decided yet
-- `ask-20261029-2241-1` queued, not decided yet
+- `ask-20261030-2212-2` queued, not decided yet
+- `ask-20261030-2212-1` queued, not decided yet
+- `ask-20261030-2212-3` queued, not decided yet
+- `ask-20261030-1312-3` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -6672,6 +6672,358 @@ Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small)
 > **Next video trick:** a transition where a 3D model from the forge morphs into a real-world object via a stage-fx wipe.
 
 Asks: "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" (small); "Provide a list of the 16 checked and 5 tested skills that can be promoted to proven status" (small); "Build a browser-based utility to check the watertightness of STL print files"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T16:05:15.165Z -->
+### 2026-10-30 16:05 UTC · after a build
+
+**Asked:** This just shipped: "Cite the Better Sleep Council for the bed size answers". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. Recent shipments include citing the Better Sleep Council for bed size answers [Fact: Just shipped].
+>
+> **How I would make it better:** Identify and implement the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to reduce KV writes [S3].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Identify the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T16:16:54.402Z -->
+### 2026-10-30 16:16 UTC · after a build
+
+**Asked:** This just shipped: "CSV to JSON both ways and a CSS minifier". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The recent shipment of CSV to JSON and CSS minification adds to the 'convert' and 'text-tools' capabilities [Fact: Just shipped].
+>
+> **How I would make it better:** Identify and implement the two specific aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to reduce KV writes [S3].
+>
+> **Next video trick:** Learn a new video effect for clips, such as a seamless transition between a 2D sprite-sheet and a 3D forge model.
+
+Asks: "Identify the two specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T16:36:41.478Z -->
+### 2026-10-30 16:36 UTC · after a build
+
+**Asked:** This just shipped: "Dev tools: a JWT decoder, HTML entities and an XML formatter". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The recent shipment of dev tools (JWT decoder, HTML entities, and XML formatter) adds to the 'util' and 'text-tools' capabilities [Fact: Just shipped].
+>
+> **How I would make it better:** Identify and implement the two specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S3].
+>
+> **Next video trick:** learn to use a physical prop to create a sudden color change during a card reveal.
+
+Asks: "Identify the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T16:42:29.724Z -->
+### 2026-10-30 16:42 UTC · after a build
+
+**Asked:** This just shipped: "Time page: flights to the city; scores page: the weather at the game's ground". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The recent shipment of 'Time page: flights to the city' and 'scores page: the weather at the game's ground' expands the 'time' and 'sky' family capabilities [Fact: Just shipped].
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S3].
+>
+> **Next video trick:** learn a new video effect for clips that uses the video-gen skill [Fact: Just shipped].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T16:42:43.948Z -->
+### 2026-10-30 16:42 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3].
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S4]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S3].
+>
+> **Weakest operational area:** Sky and earth is the weakest family by proven share, with 19 of 21 skills proven [S5].
+>
+> **Next targeted capability:** onlineconverter.com is the current target because Verse must remain ahead of it until it is beaten [S1].
+>
+> **Next video trick:** I do not know this, as no new video trick or effect was specified in the facts.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T17:06:16.192Z -->
+### 2026-10-30 17:06 UTC · after a build
+
+**Asked:** This just shipped: "Close the video dollar-cap race; The stage reads a copied chat right". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3].
+>
+> **How I would make it better:** Identify and implement the two missing aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S4]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S3].
+>
+> **Next video trick:** A video-gen skill refinement to improve the quality of generated clips.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T17:24:15.619Z -->
+### 2026-10-30 17:24 UTC · after a build
+
+**Asked:** This just shipped: "Distance reads "is nyc → london"; a Verse fix counts only when its card answers". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. 10 of 12 aspects are currently ahead of the tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3].
+>
+> **How I would make it better:** Identify and implement the two missing aspects needed to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S4]. Implement edge caching for counters and caches to reduce KV writes below 1k/day [S3].
+>
+> **Next video trick:** Learn to generate a video clip of a 3D model spinning on the stage using a new video-gen skill [S2, S4].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T17:36:17.972Z -->
+### 2026-10-30 17:36 UTC · after a build
+
+**Asked:** This just shipped: "Card headings end at a whole sentence, not mid-word". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. Verse is 10 of 12 aspects ahead of the current tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3].
+>
+> **How I would make it better:** Identify and implement the two missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S4]. Implement edge caching for counters and caches to protect systems by keeping KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn a new video effect for clips using the video skill [S2].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T17:52:40.165Z -->
+### 2026-10-30 17:52 UTC · after a build
+
+**Asked:** This just shipped: "Name the real Modal secrets now that the sing workflow reads them". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. Verse is 10 of 12 aspects ahead of the current tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3].
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to keep KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn a new video effect to expand the video-gen skill capabilities [S3].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:03:32.341Z -->
+### 2026-10-30 18:03 UTC · after a build
+
+**Asked:** This just shipped: "Handed pictures, built-ask count, autopsy mapping, Versus laps, The Book of Verse". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 skills are active across 12 families, with 378 proven [S4]. Verse is 10 of 12 aspects ahead of the current tower target, onlineconverter.com [S1]. The growth ledger shows 278 changes in the last 7 days, including 76 new capabilities and 113 fixes [S3]. Recent shipments include handed pictures, built-ask count, autopsy mapping, Versus laps, and The Book of Verse.
+>
+> **How I would make it better:** Implement edge caching for counters and caches to keep KV writes below the daily limit [S3]. Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3].
+>
+> **Next video trick:** Learn a new video effect for clips that utilizes the recently shipped autopsy mapping [S3].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:13:00.215Z -->
+### 2026-10-30 18:13 UTC · after a build
+
+**Asked:** This just shipped: "MCP skill tools run each skill's own code on the server". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The system has 386 active skills across 12 families, with 378 rated as proven [S4]. Verse is currently 10 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. Recent growth includes the shipment of MCP skill tools that run each skill's own code on the server.
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to keep KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn to use the 'pointing arrow' from the lab as a core skill for high-frequency interaction [my will, 2026-10-30].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:28:03.204Z -->
+### 2026-10-30 18:28 UTC · after a build
+
+**Asked:** This just shipped: "Become card reads as a list; growth card shows each entry once". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The system has 386 active skills across 12 families, with 379 proven [S4]. Verse is 11 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. Recent growth includes the shipment of the growth card, which now shows each entry once, and the become card, which now reads as a list [S4].
+>
+> **How I would make it better:** Identify and implement the two missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to keep KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn the 'card-play' skill to animate a 3D miniature transitioning from a list view to a stage-style view.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:44:43.355Z -->
+### 2026-10-30 18:44 UTC · after a build
+
+**Asked:** This just shipped: "Quiz card: an ask right after a reload waits for the saved cards". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The system has 386 active skills across 12 families, with 379 proven [S4]. Verse is 11 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. The recent shipment of the Quiz card enables an ask immediately after a reload to wait for saved cards [S4].
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to keep KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn a new video effect for a clip, such as a seamless mask transition.
+
+Asks: "Identify and implement the two missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:49:43.354Z -->
+### 2026-10-30 18:49 UTC · after a build
+
+**Asked:** This just shipped: "Image: "Change it" changes a picture Verse painted with one typed line". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 active skills across 12 families are present, with 379 proven [S4]. The system is 11 of 12 aspects ahead of the tower target, onlineconverter.com [S1]. A new image skill allows changing a picture previously painted with one typed line.
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]. Implement edge caching for counters and caches to keep KV writes below the daily limit [S3].
+>
+> **Next video trick:** Learn a new video effect to enhance the video-gen skill [S3].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T18:59:24.260Z -->
+### 2026-10-30 18:59 UTC · after a build
+
+**Asked:** This just shipped: "Music: score each song against real songs of its kind". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 active skills across 12 families are present, with 379 proven. The system is 11 of 12 aspects ahead of the tower target, onlineconverter.com. The recently shipped music skill now allows scoring songs against real songs of its kind.
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. Implement edge caching for counters and caches to keep KV writes below the daily limit.
+>
+> **Next video trick:** Learn a new video effect to expand the video-gen skill [S3].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T19:21:16.211Z -->
+### 2026-10-30 19:21 UTC · after a build
+
+**Asked:** This just shipped: "Show whole lines on the wants card and the inventory card". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 active skills exist across 12 families, with 379 proven. Verse is currently 11 of 12 aspects ahead of the tower target, onlineconverter.com. The recently shipped update allows for showing whole lines on the wants and inventory cards.
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. Implement edge caching for counters and caches to keep KV writes below the daily limit.
+>
+> **Next video trick:** Learn a new video effect for clips that is not currently in the library [N/A].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T19:40:03.205Z -->
+### 2026-10-30 19:40 UTC · after a build
+
+**Asked:** This just shipped: "Better at coin: 1 more way of asking answered right — new phrases: “heads or tails” now opens coin". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 active skills exist across 12 families, with 379 proven. The system is currently 11 of 12 aspects ahead of the tower target, onlineconverter.com. Recent shipping improved the coin skill to handle the "heads or tails" phrase.
+>
+> **How I would make it better:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. Implement edge caching for counters and caches to keep KV writes below the daily limit.
+>
+> **Next video trick:** Learn a new video effect like a seamless transition between a 2D sprite and a 3D mesh [S2].
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T19:49:55.787Z -->
+### 2026-10-30 19:49 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "flight status nyc to lon" to its flights skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 386 active skills exist across 12 families, with 379 proven. The tower target onlineconverter.com is currently 11 of 12 aspects ahead, with the next unbeaten sites being ndscalc.ru, emojicombos.com, and thunit.com. Recent shipping enables flight status routing to the flights skill, though the answer is not yet checked.
+>
+> **How I would make it better:** Identify and implement the two missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day.
+>
+> **Next video trick:** A video effect where a 3D miniature card explodes into particles upon a tap.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T19:50:01.665Z -->
+### 2026-10-30 19:50 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> 386 active skills exist across 12 families, with 379 proven. Verse is 11 of 12 aspects ahead of the current tower target, onlineconverter.com. The growth ledger shows 282 changes in the last 7 days, including 77 new capabilities and 114 fixes.
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day. Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com.
+>
+> **Weakest operational area:** Sky and earth is the weakest family with a 20/21 proven share.
+>
+> **Next targeted capability:** ndscalc.ru, as it is the next smallest unbeaten site after the current target.
+>
+> **Next video trick:** motion blur transitions.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-30T22:12:50.720Z -->
+### 2026-10-30 22:12 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> 386 active skills exist across 12 families, with 379 proven. 273 changes occurred in the last 7 days, including 75 new capabilities, 65 improvements, and 110 fixes. Verse is 11 of 12 aspects ahead of the current tower target, onlineconverter.com.
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day. Move the two non-V01D workers off the shared namespace.
+>
+> **Weakest operational area:** Sky and earth is the weakest family with a 20/21 proven share.
+>
+> **Next targeted capability:** Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com [S1, S3]
+>
+> **Next video trick:** A liquid metal morph effect for 3D models.
+
+Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
 
 *Verse flagged this one for Adam.*
 
