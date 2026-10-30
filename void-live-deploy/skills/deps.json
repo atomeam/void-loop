@@ -2247,7 +2247,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 85,
-   "tests": 30
+   "tests": 31
   },
   {
    "file": "lib/models.js",
@@ -2380,7 +2380,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 25,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/answer-edge.js",

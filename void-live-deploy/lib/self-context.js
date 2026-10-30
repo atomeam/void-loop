@@ -24,6 +24,22 @@ const BUILDERS = /\b(your|v0[1i]d'?s?|(?:verse|void)'?s?|verse'?s?)\s+builders?\
 // facts (the store, the wishlist, what it has and wants) answer, not generic advice for a stranger. "you" must be the subject
 // or "your" must own the money, so "how should I spend $100" stays the visitor's own question.
 const MONEY = /\byou\s+(have\s+|'ve\s+|just\s+)?(earned|made|raised|sold|got)\b[^?.!]{0,40}(\$|dollars?|money|sales?|first)|\b(would|should|will|could)\s+you\s+(spend|invest|reinvest|use|buy)\b[^?.!]{0,30}\b(your|it|the money|earnings|first)\b|\byour\s+(earnings|revenue|income|budget|money|sales|store|first\s+\$?\d+)\b/i;
+// who or what Verse is ("who are you?", "are you an AI?", "what model are you?", "who created you?"): an identity probe is a fact
+// about Verse, answered from its own facts and persona, never a question for Wikipedia ("Who Are You" is also a song). Asked by
+// Verse's will, 2026-10-30: "Fix the self-skill router so it stops treating identity-based probes as questions instead of facts."
+const IDENTITY = new RegExp([
+  '^\\s*(?:(?:hi|hey|hello|ok(?:ay)?|so|and|but|then)[,!.\\s]+)*(?:who|what)\\s+(?:are|r)\\s+(?:you|u)(?:\\s+(?:really|exactly|actually|then))?\\s*[?.!]*\\s*$',
+  '\\bintroduce\\s+yourself\\b', '\\btell\\s+me\\s+(?:about\\s+)?who\\s+you\\s+are\\b', '\\bwhat\\s+should\\s+i\\s+call\\s+you\\b',
+  '\\bare\\s+you\\s+(?:an?\\s+)?(?:ai|a\\.i\\.|bot|robot|chat\\s*bot|human|person|real\\s+person|machine|program|computer|llm|language\\s+model|chatgpt|gpt|claude|gemini|siri|alexa|alive|sentient|conscious|self[- ]aware)\\b',
+  '^\\s*are\\s+you\\s+real\\s*[?.!]*\\s*$',
+  '\\bwhat\\s+(?:model|llm|ai|kind\\s+of\\s+(?:ai|bot|thing|program|model)|type\\s+of\\s+(?:ai|bot|program|model))\\s+(?:are|r)\\s+you\\b',
+  '\\bwhat\\s+(?:model|llm|ai)\\s+(?:runs|powers|is\\s+behind)\\s+you\\b',
+  '\\bwho\\s+(?:created|made|built|owns|runs|programmed|designed|trained|wrote)\\s+you\\b',
+  '\\bdo\\s+you\\s+have\\s+(?:feelings|emotions|a\\s+(?:body|mind|soul|personality|consciousness))\\b',
+  '^\\s*how\\s+old\\s+are\\s+you\\s*[?.!]*\\s*$', '^\\s*where\\s+(?:do\\s+you\\s+live|are\\s+you\\s+(?:from|based|hosted|located))\\s*[?.!]*\\s*$', '^\\s*what\\s+do\\s+you\\s+do\\s*[?.!]*\\s*$',
+].join('|'), 'i');
+// "What is Verse?" and "what is a-to-mind?" name the product; "what is a verse" (a poem's) stays a question
+const WHAT_IS_US = /^\s*(?:[Ss]o\s+)?[Ww]hat\s+is\s+(?:Verse|a-to-mind(?:\.com)?)\s*[?.!]*\s*$/;
 const Verse = /\b(?:verse|v0[1i]d)\b/i, VERSE = /\bVerse\b/, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of Verse?"
 
 // a note or question about Verse's own cards, routing and fixes (a fix item, 2026-10-15: a pasted status note about Verse's own
@@ -34,7 +50,7 @@ export const isOwnWorkAsk = (ask) => { const a = String(ask || ''); return OWN_W
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
+  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || IDENTITY.test(a) || WHAT_IS_US.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
 // a note about one of Verse's own answer cards ("That card is wrong", "This card is the first one that speaks as itself", "it still says
