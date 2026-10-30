@@ -3063,9 +3063,9 @@
     "loan payment $15000 at 5.9% over 36 months"
    ],
    "tier": "proven",
-   "why": "a self-test, 5 browser-suite mentions, 15 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 16 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. Turn the page when you are done.",
-   "glow": 100,
+   "glow": 93.8,
    "n": 156
   },
   {
@@ -4066,9 +4066,8 @@
     "books by octavia butler"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 6 real askings stand behind this page. Ask, and see.",
-   "glow": 100,
+   "why": "a self-test, 7 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 7 real askings stand behind this page. Ask, and see.",
    "n": 213
   },
   {
@@ -4732,9 +4731,8 @@
     "add eggs to my shopping list"
    ],
    "tier": "proven",
-   "why": "a self-test, 4 real asks in the benchmark",
-   "flavor": "Of the stage; set down here after it answered true 4 times. Turn the page when you are done.",
-   "glow": 100,
+   "why": "a self-test, 5 real asks in the benchmark",
+   "flavor": "Proven 5 times over by those who asked, and kept among the stage. Turn the page when you are done.",
    "n": 247
   },
   {
@@ -6677,7 +6675,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 7 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 7 real askings stand behind this page. Ask, and see.",
+   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Ask, and see.",
    "glow": 100,
    "n": 361
   },
@@ -6949,7 +6947,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Of all the verse itself, this one is trusted enough to be taught. Ask, and see.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
    "glow": 100,
    "n": 377
   },
@@ -7130,7 +7128,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Ask, and see.",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
    "glow": 100,
    "n": 388
   },
@@ -7163,7 +7161,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Of the verse itself; set down here after it answered true 3 times. Ask, and see.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Turn the page when you are done.",
    "glow": 100,
    "n": 390
   },
