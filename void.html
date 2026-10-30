@@ -5402,13 +5402,15 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
-    // the MultiVerse mark on a member's own stage (members perk, 2026-10-30): one tier read after load, only when this device is signed in,
-    // never on a published page (/@name shows someone else's Verse); the server's word decides, a free or failed read shows nothing
+    // the MultiVerse mark (members perk, 2026-10-30): on a member's own stage, one tier read after load, only when this device is signed in;
+    // on a published page (/@name), when the server said its owner is a member (functions/[handle].js), with no read at all.
+    // The server's word decides: a free or failed read shows nothing
     async function memberMark() {
-      if (PAGE || !me || !me.token || document.getElementById('void-member')) return;
-      if ((await meTier()) !== 'paid' || document.getElementById('void-member')) return;
+      if (document.getElementById('void-member')) return;
+      const label = PAGE ? (PAGE.member ? 'Made with MultiVerse: see what members get' : '') : (me && me.token && (await meTier()) === 'paid' ? 'MultiVerse member: your perks' : '');
+      if (!label || document.getElementById('void-member')) return;
       const a = document.createElement('a'); a.id = 'void-member'; a.href = '/members/'; a.textContent = 'MultiVerse';
-      a.title = 'MultiVerse member: your perks'; a.setAttribute('aria-label', 'MultiVerse member: your perks'); document.body.append(a);
+      a.title = label; a.setAttribute('aria-label', label); document.body.append(a);
     }
     setTimeout(() => { memberMark().catch(() => {}); }, 0);
     async function paidLine() { // what paid Verse costs and adds, from the live store

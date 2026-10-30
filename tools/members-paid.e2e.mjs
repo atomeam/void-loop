@@ -6,6 +6,7 @@
 //   2. After a reload the member view stays (the tier is read from the server, not from the page)
 //   3. The idea box: on /members/?pilot (or once LIVE) a member sends an idea; it is queued for the coder and listed under their ideas
 //   4. The MultiVerse mark: the member's stage (/) shows the mark that opens /members/; a free account's stage does not
+//   5. A member's published page (/@name) shows the mark to every visitor; a free account's page does not
 // Run: node --test tools/members-paid.e2e.mjs   (Chromium from VOID_TEST_BROWSER, else Playwright's own)
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -16,6 +17,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { chromium } from 'playwright-core';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/members.js';
 import { onRequestPost as passkeyPost } from '../void-live-deploy/functions/api/passkey.js';
+import { onRequestGet as handleGet } from '../void-live-deploy/functions/[handle].js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 import { ensureStoreTables } from '../void-live-deploy/lib/store-db.js';
 import { LIVE } from '../void-live-deploy/lib/members.js';
@@ -77,6 +79,11 @@ async function serve(route) {
     if (u.pathname === '/api/passkey' && q.method() === 'POST') { // the stage reads the tier here (functions/api/passkey.js step 'tier')
       const res = await passkeyPost({ request: new Request(u.href, { method: 'POST', headers: { ...(await q.allHeaders()), 'cf-connecting-ip': '10.9.1.' + (++ip) }, body: q.postData() || '' }), env: { DB } });
       return route.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
+    }
+    if (u.pathname.startsWith('/@')) { // a published page (functions/[handle].js), built on the shipped homepage
+      const ASSETS = { fetch: async () => new Response(fs.readFileSync(path.join(ROOT, 'index.html'))) };
+      const res = await handleGet({ request: new Request(u.href), env: { DB, ASSETS }, params: { handle: decodeURIComponent(u.pathname.slice(1)) }, next: async () => new Response('', { status: 404 }) });
+      return route.fulfill({ status: res.status, contentType: 'text/html', body: await res.text() });
     }
     if (u.pathname === '/api/catalog') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ products: [{ slug: 'yinmj', price_cents: 4900, recurrence: 'monthly' }] }) });
     if (u.pathname.startsWith('/api/')) return route.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false}' });
@@ -162,5 +169,19 @@ test('the MultiVerse mark: the member\'s stage shows it and it opens /members/; 
   const asked = f.waitForRequest((r) => r.url().endsWith('/api/passkey') && /"tier"/.test(r.postData() || ''), { timeout: 15000 });
   await f.goto(ORIGIN + '/'); await asked; await f.waitForTimeout(800);
   assert.equal(await mark(f), null, 'no mark for a free account');
+  await free.close();
+});
+
+test('the mark on a published page: a member\'s /@name shows it to every visitor; a free account\'s page does not', async () => {
+  const data = JSON.stringify({ look: { bg: '#050505', glow: '#0b0b10', stars: 'off', fx: 'off' }, cards: [{ name: 'Hello', ask: '', text: 'A test page.' }] });
+  DB.raw.prepare('CREATE TABLE IF NOT EXISTS void_pages (handle TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE, data TEXT NOT NULL, updated TEXT NOT NULL)').run();
+  for (const [h, u] of [['e2e_member', USER], ['e2e_free', FREE_USER]]) DB.raw.prepare('INSERT OR REPLACE INTO void_pages (handle, user_id, data, updated) VALUES (?, ?, ?, ?)').run(h, u, data, new Date().toISOString());
+  const free = await context(FREE_TOKEN, FREE_USER); // the visitor is a free account, so the mark is the page owner's, not the viewer's
+  const p = await free.newPage();
+  await p.goto(ORIGIN + '/@e2e_member'); await p.waitForSelector('#void-member', { timeout: 15000 });
+  const m = await p.evaluate(() => { const a = document.getElementById('void-member'); return { href: a.getAttribute('href'), text: a.textContent, label: a.getAttribute('aria-label'), shown: a.getClientRects().length > 0, page: window.__VOID_PAGE__.member }; });
+  assert.deepEqual(m, { href: '/members/', text: 'MultiVerse', label: 'Made with MultiVerse: see what members get', shown: true, page: true });
+  await p.goto(ORIGIN + '/@e2e_free'); await p.waitForFunction(() => window.__VOID_PAGE__ && window.__VOID_PAGE__.handle === 'e2e_free'); await p.waitForTimeout(800);
+  assert.deepEqual(await p.evaluate(() => [!!document.getElementById('void-member'), 'member' in window.__VOID_PAGE__]), [false, false], 'no mark on a free account\'s page');
   await free.close();
 });
