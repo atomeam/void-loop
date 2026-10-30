@@ -550,8 +550,44 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:51:12Z",
+   "subject": "Reduced motion switch holds the stage still"
+  },
+  {
+   "at": "2026-10-30T06:50:33Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T06:44:28Z",
+   "subject": "Markets: a coin's price comes from Yahoo when CoinGecko does not answer"
+  },
+  {
+   "at": "2026-10-30T06:43:58Z",
+   "subject": "converter: ALAC (Apple Lossless) writer, its own encoder, in an .m4a"
+  },
+  {
+   "at": "2026-10-30T06:43:47Z",
+   "subject": "team-live: send the reopen calls together"
+  },
+  {
+   "at": "2026-10-30T06:43:04Z",
+   "subject": "Team: work --run hands the whole job to a one-shot agent, so agents keep going with nobody pressing Continue"
+  },
+  {
+   "at": "2026-10-30T06:42:53Z",
+   "subject": "Use the paid tier's name, MultiVerse, where pages still said Verse Pro"
+  },
+  {
+   "at": "2026-10-30T06:42:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T06:42:28Z",
    "subject": "Memory orbs stir where Verse remembers, and rest off screen"
+  },
+  {
+   "at": "2026-10-30T06:42:06Z",
+   "subject": "Verse's own coder gets the full Versus spec too"
   },
   {
    "at": "2026-10-30T06:39:47Z",
@@ -580,42 +616,6 @@
   {
    "at": "2026-10-30T06:28:51Z",
    "subject": "versus: add drawspace target (online drawing school)"
-  },
-  {
-   "at": "2026-10-30T06:26:49Z",
-   "subject": "converter: Watermark Image with words or a picture, on the device"
-  },
-  {
-   "at": "2026-10-30T06:26:41Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
-  },
-  {
-   "at": "2026-10-30T06:26:11Z",
-   "subject": "Team agent script prints each job's brief"
-  },
-  {
-   "at": "2026-10-30T06:24:46Z",
-   "subject": "Podcast: the page shows the name Verse, not V01D"
-  },
-  {
-   "at": "2026-10-30T06:24:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:24:04Z",
-   "subject": "Test the paid MultiVerse paths in a browser on every PR"
-  },
-  {
-   "at": "2026-10-30T06:23:47Z",
-   "subject": "Every Versus job Verse hands out carries a full spec"
-  },
-  {
-   "at": "2026-10-30T06:22:48Z",
-   "subject": "rap: ad-libs come off the main vocal onto their own track"
-  },
-  {
-   "at": "2026-10-30T06:22:10Z",
-   "subject": "converter: Compress CBZ on the device"
   }
  ],
  "builders": {
