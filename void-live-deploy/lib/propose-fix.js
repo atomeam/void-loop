@@ -64,14 +64,19 @@ export function skillOf(want) {
 
 /** The question: the ask, the skill and its file (clipped to MAX_SOURCE), with the contract reminder. In 'narrow' mode the ask is
  * one the skill took wrongly, with the owner's words on why when there are any. tried: what the collision check said about the last
- * proposal (settleNote), so a second try fixes what the first broke instead of guessing again. */
-export function fixPrompt(ask, skill, source, mode = 'learn', said = '', tried = '') {
+ * proposal (settleNote), so a second try fixes what the first broke instead of guessing again. lessons: what Verse learned from
+ * the things it consumed that bear on this ask (lib/brain-recall.js); '' leaves the prompt byte for byte what it was. */
+export function fixPrompt(ask, skill, source, mode = 'learn', said = '', tried = '', lessons = '') {
+  // the lessons sit between the question and the file, so the file still ends the prompt and is the last thing read
+  const carry = String(lessons || '').trim() ? String(lessons).trim() + '\n\n' : '';
   const src = String(source || ''), clip = src.length > MAX_SOURCE ? src.slice(0, MAX_SOURCE) + '\n// … (clipped)' : src;
   const shown = (tried ? 'Your last try did not pass. ' + String(tried).replace(/\s+/g, ' ').slice(0, MAX_TRIED) + '\n\n' : '') + clip;
   if (mode === 'narrow') return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask it answered but should not have: "' + ask + '"\n'
     + (said ? 'What your owner said about it: "' + String(said).replace(/\s+/g, ' ').slice(0, 300) + '"\n' : '')
+    + carry
     + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
   return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask that did not reach it: "' + ask + '"\n'
+    + carry
     + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
 }
 
