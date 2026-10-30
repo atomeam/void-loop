@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1088,
+ "counted": 1089,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -41,7 +41,7 @@
    "file": "lib/load-later.js",
    "skills": 27,
    "direct": 23,
-   "dependants": 28,
+   "dependants": 34,
    "tests": 1
   },
   {
@@ -181,7 +181,7 @@
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
@@ -202,7 +202,7 @@
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
-   "dependants": 12,
+   "dependants": 18,
    "tests": 2
   },
   {
@@ -272,8 +272,22 @@
    "file": "lib/card-mini.js",
    "skills": 9,
    "direct": 5,
-   "dependants": 17,
+   "dependants": 18,
    "tests": 0
+  },
+  {
+   "file": "lib/skyfacts.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 15,
+   "tests": 1
+  },
+  {
+   "file": "lib/where.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 15,
+   "tests": 1
   },
   {
    "file": "lib/flight-sites.js",
@@ -318,24 +332,17 @@
    "tests": 1
   },
   {
-   "file": "lib/skyfacts.js",
-   "skills": 9,
-   "direct": 8,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
-   "file": "lib/where.js",
-   "skills": 9,
-   "direct": 8,
-   "dependants": 9,
-   "tests": 1
-  },
-  {
    "file": "lib/note-tools.js",
    "skills": 8,
    "direct": 4,
    "dependants": 17,
+   "tests": 1
+  },
+  {
+   "file": "lib/skyask.js",
+   "skills": 8,
+   "direct": 7,
+   "dependants": 14,
    "tests": 1
   },
   {
@@ -357,13 +364,6 @@
    "skills": 8,
    "direct": 3,
    "dependants": 10,
-   "tests": 1
-  },
-  {
-   "file": "lib/skyask.js",
-   "skills": 8,
-   "direct": 7,
-   "dependants": 8,
    "tests": 1
   },
   {
@@ -633,6 +633,13 @@
    "tests": 1
   },
   {
+   "file": "lib/stars.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 10,
+   "tests": 2
+  },
+  {
    "file": "lib/tower-controls.js",
    "skills": 4,
    "direct": 0,
@@ -738,13 +745,6 @@
    "tests": 1
   },
   {
-   "file": "lib/stars.js",
-   "skills": 4,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 2
-  },
-  {
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
@@ -766,6 +766,20 @@
    "tests": 9
   },
   {
+   "file": "lib/share.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 13,
+   "tests": 3
+  },
+  {
+   "file": "lib/share-client.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 10,
+   "tests": 1
+  },
+  {
    "file": "lib/ics.js",
    "skills": 3,
    "direct": 1,
@@ -785,13 +799,6 @@
    "direct": 0,
    "dependants": 7,
    "tests": 0
-  },
-  {
-   "file": "lib/share.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 3
   },
   {
    "file": "lib/date-words.js",
@@ -851,13 +858,6 @@
   },
   {
    "file": "lib/field-vector.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/share-client.js",
    "skills": 3,
    "direct": 1,
    "dependants": 4,
@@ -1060,6 +1060,27 @@
    "tests": 2
   },
   {
+   "file": "lib/cook-flow.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/eclipses.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-card.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -1137,20 +1158,6 @@
    "tests": 1
   },
   {
-   "file": "lib/cook-flow.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/eclipses.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
@@ -1219,13 +1226,6 @@
    "direct": 2,
    "dependants": 2,
    "tests": 18
-  },
-  {
-   "file": "lib/translate-card.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/walker.js",
@@ -2510,6 +2510,13 @@
   },
   {
    "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5,
@@ -4852,6 +4859,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -5988,6 +6001,7 @@
     "functions/api/mcp.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/seo-audit.js",
     "lib/team-mcp.js",
@@ -6439,6 +6453,12 @@
     "skills/swaps.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/recipe.js"
    ]
   },
@@ -6792,6 +6812,12 @@
     "skills/eclipse.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -8277,7 +8303,13 @@
     "skills/tictactoe.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
     "lib/arena.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/games.js",
     "skills/rebuild-map.js",
     "skills/sky-card.js",
@@ -8425,8 +8457,31 @@
    "imports": [],
    "importedBy": []
   },
-  "lib/mcp-skills.js": {
+  "lib/mcp-run.js": {
    "imports": [],
+   "importedBy": [
+    "lib/mcp.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/team-mcp.js"
+   ]
+  },
+  "lib/mcp-skills.js": {
+   "imports": [
+    "skills/constellation.js",
+    "skills/country.js",
+    "skills/define.js",
+    "skills/distance.js",
+    "skills/eclipse.js",
+    "skills/joke.js",
+    "skills/quote.js",
+    "skills/swaps.js",
+    "skills/translate.js",
+    "skills/words.js"
+   ],
    "importedBy": [
     "lib/mcp.js"
    ],
@@ -8443,6 +8498,7 @@
     "lib/sky-math.js",
     "lib/showers.js",
     "lib/mcp-skills.js",
+    "lib/mcp-run.js",
     "lib/drive.js",
     "lib/seo-audit.js",
     "lib/writing-aids.js",
@@ -11075,7 +11131,13 @@
     "skills/is-it.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/is-it/[what].js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/languages.js",
     "skills/translate.js"
    ]
@@ -11088,7 +11150,13 @@
     "lib/share-client.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
     "functions/is-it/[what].js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/is-it.js",
     "skills/languages.js",
     "skills/translate.js"
@@ -11284,6 +11352,7 @@
     "functions/api/mcp.js",
     "functions/team/mcp.js",
     "functions/tools.json.js",
+    "lib/mcp-skills.js",
     "lib/skyfacts.js",
     "lib/sun-day.js",
     "lib/team-mcp.js",
@@ -11312,6 +11381,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -11330,6 +11405,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -11623,6 +11704,12 @@
     "skills/sky-world.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/sky.js",
     "skills/time.js"
    ]
@@ -12381,6 +12468,12 @@
     "skills/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/languages.js"
    ]
   },
@@ -12893,6 +12986,12 @@
     "skills/suntimes.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/time.js"
    ]
   },
@@ -13497,7 +13596,15 @@
     "lib/stars.js"
    ],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/time.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/contradiction-lamp.js": {
@@ -13558,7 +13665,16 @@
    "imports": [
     "skills/distance.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/mcp-skills.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
+   ]
   },
   "skills/crowd.js": {
    "imports": [
@@ -13642,7 +13758,16 @@
   },
   "skills/define.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/mcp-skills.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
+   ]
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -13701,7 +13826,15 @@
   "skills/distance.js": {
    "imports": [],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/country.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/doodle-mind.js": {
@@ -13781,7 +13914,15 @@
     "lib/where.js"
    ],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/time.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/eigenwork.js": {
@@ -14574,12 +14715,27 @@
     "skills/translate.js"
    ],
    "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp-skills.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js",
     "skills/languages.js"
    ]
   },
   "skills/joke.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/mcp-skills.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
+   ]
   },
   "skills/kanban-board.js": {
    "imports": [
@@ -15719,7 +15875,15 @@
   "skills/quote.js": {
    "imports": [],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/proverb.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/rack.js": {
@@ -16485,7 +16649,15 @@
     "lib/cook-flow.js"
    ],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/recipe.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/swarm-mind.js": {
@@ -16746,7 +16918,15 @@
     "lib/translate-card.js"
    ],
    "importedBy": [
+    "lib/mcp-skills.js",
     "skills/languages.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/trialwatch.js": {
@@ -16963,7 +17143,16 @@
   },
   "skills/words.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/mcp-skills.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/team-mcp.js"
+   ]
   },
   "skills/work.js": {
    "imports": [
