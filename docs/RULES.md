@@ -10,6 +10,18 @@ is never a cost to cut: Verse grows toward doing everything. Nothing is retired,
 salvage shelf because people did not use it or because there are many: real use only ever adds (an experiment opened on
 many days becomes a candidate for a core skill, `tools/lab-use.mjs`), it never takes away.
 
+## A paste is a report, an ask or unclear; never a guess (owner, 2026-10-30)
+Adam pasted a copied "What is really true now" card with a long note under it. Verse reopened the frozen card, still at
+"checking GitHub", and dropped the note. An earlier status note came back as a stock answer about Verse's secret names.
+Verse sorts every paste before it answers (`lib/paste-kind.js`, tests in `tools/paste-kind.test.mjs`):
+- A report (a status report, a CI log, or a copied report card) is taken in as context. Verse checks what it names against
+  GitHub and shows what is true now (`skills/telemetry-route.js`). A report never gets secret names or a stock answer.
+- An ask (the first or the last line is a question, a command or a request) gets an answer, as any ask does.
+- A note to someone, or a copied chat, is read as a note (`lib/note-ask.js`). A copied card with nothing more opens as that card.
+- An unclear paste gets one line: "That reads as pasted text with no ask in it. Say "sum it up", or tell me what you want
+  done with it." Verse guesses nothing. "sum it up" within ten minutes sums the paste up from its own words.
+A typed ask is not a paste: one line under 400 characters is routed as before.
+
 ## The ladder a person sees is Versus; the code keeps `tower` (owner, 2026-10-25)
 "the tower rename is easy its versus" and "just thought it was right there because Verse". Done the way V01D became Verse
 (`AGENTS.md`): everything a person reads says Versus (the card's head, the spoken line "Versus: now ...", /conquered/ and

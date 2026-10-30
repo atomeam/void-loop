@@ -158,5 +158,5 @@ test('the answer route finishes every note answer with noteFinish', () => {
   const src = read('../void-live-deploy/functions/api/answer.js');
   assert.match(src, /const noteFacts = note \? setupFacts\(ask\) : \[\]/);
   assert.match(src, /noteRule\(notePage, noteFacts\)/);
-  assert.match(src, /if \(!answer && note\) answer = noteReading\(ask, notePage, noteFacts\);\n\s*else if \(note \|\| isPaste\(ask\)\) answer = noteFinish\(answer, ask, note \? noteFacts : setupFacts\(ask\)\);/);
+  assert.match(src, /if \(!answer && note\) answer = noteReading\(ask, notePage, noteFacts\);\n\s*else if \(note \|\| isPaste\(ask\)\) answer = noteFinish\(answer, ask, note \? noteFacts : telemetryOf\(ask\) \? \[\] : setupFacts\(ask\)\);/); // a pasted status report gets no secret names (tools/paste-kind.test.mjs)
 });
