@@ -226,7 +226,17 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.equal(sent.length, 1); assert.equal(sent[0][1].authorization, 'Bearer ' + 'o'.repeat(30)); assert.match(odd.last, /^verse /);
   const html = stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html; charset=utf-8' }), json: async () => { throw new SyntaxError('Unexpected token <'); } }) });
   const said = (await html([])).error;
-  assert.equal(said, 'no model answered (github-models 200 not JSON (text/html))'); assert.doesNotMatch(said, /Unexpected token/);
+  assert.equal(said, 'no model answered (github-models 200 text/html not JSON)'); assert.doesNotMatch(said, /Unexpected token/);
+  // a body read as text: JSON parses, a stream of data: lines joins, anything else is named by status, type and size first
+  const page = '<!doctype html><title>x</title>';
+  const asText = (body, type) => async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': type }), text: async () => body });
+  const htmlText = await stackModel(own.slice(2, 3), { fetchImpl: asText(page, 'text/html') })([]);
+  assert.equal(htmlText.error, 'no model answered (github-models 200 text/html ' + page.length + 'B not JSON)'); assert.doesNotMatch(htmlText.error, /doctype/);
+  assert.equal((await stackModel(own.slice(2, 3), { fetchImpl: asText('OK\n', 'text/plain') })([])).error, 'no model answered (github-models 200 text/plain 2B not JSON "OK")', 'a short body is shown, escaped');
+  assert.match((await stackModel(own.slice(2, 3), { fetchImpl: asText('ghs_' + 'k'.repeat(36), 'text/plain') })([])).error, /"\[masked\]"\)$/, 'a key-like run in a short body is masked');
+  assert.deepEqual(await stackModel(own.slice(2, 3), { fetchImpl: asText(JSON.stringify({ choices: [{ message: { content: call('finish') } }], usage: { total_tokens: 9 } }), 'text/plain') })([]), { text: call('finish'), tokens: 9 }, 'JSON under the wrong type still reads');
+  const sse = ['data: {"choices":[{"delta":{"content":"' + 'he' + '"}}]}', '', 'data: {"choices":[{"delta":{"content":"llo"}}],"usage":{"total_tokens":5}}', '', 'data: [DONE]', ''].join('\n');
+  assert.deepEqual(await stackModel(own.slice(2, 3), { fetchImpl: asText(sse, 'text/event-stream') })([]), { text: 'hello', tokens: 5 }, 'a streamed reply joins its deltas');
   const seen = [];
   const fakeFetch = async (url, init) => {
     seen.push(url);

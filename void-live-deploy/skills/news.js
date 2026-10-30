@@ -5,9 +5,11 @@
  * Every news card stays current on its own (skills/live.js): headlines and topic stories re-fetch every 30 minutes,
  * the tech front page every 10, for as long as the card is up.
  * The tech card opens the News page on its Technology section, and a topic card opens it searched for that topic (data-page);
- * the News page's own card asks the stage for the same views back (lib/news-card.js).
+ * the News page's own card asks the stage for the same views back (lib/news-card.js). The topic stories come from lib/news-week.js, which the
+ * News page also uses when its headlines miss a search, so the page and the card show the same stories.
  */
 import { keepLive } from './live.js';
+import { weekUrl, weekItems } from '../lib/news-week.js';
 /** the News page for a stage card: the topic searched (or, with no topic, the Technology section) as a plain query the card frame
  *  takes (lib/card-frame.js pageOfCard), or '' when the topic does not fit one. Pure. */
 export function pageOfNews(topic) {
@@ -58,10 +60,9 @@ async function runTopic(topic, api) {
   const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page && p.dataset) p.dataset.page = page; });
   el._title = 'News about ' + topic; el._feed = 'news search';
   return liveCard(api, el, 'news', 30 * 60e3, async () => {
-    const since = Math.floor(Date.now() / 1000) - 7 * 86400;
-    const j = await fetch('https://hn.algolia.com/api/v1/search?tags=story&hitsPerPage=10&numericFilters=created_at_i>' + since + '&query=' + encodeURIComponent(topic)).then((r) => r.json());
+    const j = await fetch(weekUrl(topic)).then((r) => r.json());
     if (!api._pageStill(el)) return;
-    const items = ((j && j.hits) || []).filter((h) => h.title).slice(0, 10);
+    const items = weekItems(j);
     if (!items.length) { el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><p>No Hacker News stories mention “' + esc(topic) + '” this past week. For general headlines, ask “news today”.</p>'; return; }
     el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">Hacker News stories from the past week</div>' + list(esc, items)
       + '<div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a> (tech-leaning; for world headlines ask “news today”)</div>';

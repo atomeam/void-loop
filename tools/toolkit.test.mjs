@@ -360,6 +360,20 @@ test('the time page\'s card opens on the city asked for, else the clocks on the 
   assert.match(src, /\{ card: \(\) => timeAsk\(main, places\) \}/, 'the time page gives its card the clocks open on it');
 });
 
+test('the podcasts page\'s card shows the search open there as shows on the stage, not a fixed example; that card opens Podcasts searched for the same words', async () => {
+  const { cardAsk } = await import('../void-live-deploy/lib/podcasts-card.js'), { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), { pageOfPodcasts } = await import('../void-live-deploy/skills/podcast-search.js');
+  for (const [search, ask, page] of [['?q=history', 'podcasts about history', '/podcasts/?q=history'], ['?q=true+crime', 'podcasts about true crime', '/podcasts/?q=true%20crime'], ['?q=%20serial%20%20killers%20', 'podcasts about serial killers', '/podcasts/?q=serial%20killers']]) {
+    assert.equal(cardAsk(search), ask, search);
+    assert.equal(await firstSkill(ask), 'podcast-search', ask + ' reaches the podcast search');
+    assert.deepEqual(pageOfCard('podcast-search', pageOfPodcasts(ask.slice(15))), [page, 'Podcasts'], 'its card opens Podcasts searched: ' + ask);
+  }
+  for (const search of ['', '?id=123', '?feed=https%3A%2F%2Fa.example%2Ff', '?show=verse&ep=ep1', '?q=x', '?q=' + 'a'.repeat(41), '?q=%3F%3F', undefined]) assert.equal(cardAsk(search), '', 'the example ask stays: ' + search);
+  assert.equal(CARD_ASK['/podcasts/'], 'podcasts about history'); assert.equal(await firstSkill(CARD_ASK['/podcasts/']), 'podcast-search', 'the example ask has a card on the stage too');
+  assert.deepEqual(pageOfCard('podcast-search', ''), ['/podcasts/', 'Podcasts']);
+  const pg = fs.readFileSync(new URL('../void-live-deploy/podcasts/index.html', import.meta.url), 'utf8');
+  assert.ok(pg.includes("{ card: () => cardAsk(location.search) }"), 'the page asks for its own card, from its address');
+});
+
 test('the base converter\'s card opens on the number typed there, in the base it was typed in, not 255', async () => {
   const B = await import('../void-live-deploy/lib/baseconv.js');
   const cases = [['ff', 16, 'ff hex to decimal'], ['1111 0000', 2, '11110000 binary to decimal'], ['777', 8, '777 octal to decimal'], ['4096', 10, '4096 decimal to binary'], ['0xBEEF', 16, 'beef hex to decimal']];
@@ -449,4 +463,17 @@ test('the Base64 page\'s card holds the text in the box, exactly as typed, and i
   assert.equal(B.cardAsk('x'.repeat(1501)), '', 'past 1500 characters: the example, so a long paste does not go in a link');
   const src = fs.readFileSync(new URL('../void-live-deploy/base64/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*\(text\.classList\.contains\('stale'\)\s*\?\s*''\s*:\s*cardAsk\(text\.value\)\)/, 'the page gives its card the text box, unless the box is not the text of this Base64');
+});
+
+// emoji counts and the snippet in a link (2026-10-30): reached only from the tower before; now in the kit, and each page's stage ask is
+// answered by the skill whose card links back to that page
+test('the emoji and snippet pages: the stage ask goes to the skill whose card opens the page, and the snippet card opens the GitHub file open there', async () => {
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { PAGE_OF, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const [page, skill] of [['/emojis/', 'emoji'], ['/g/', 'gh-file']]) {
+    assert.equal(await firstSkill(CARD_ASK[page]), skill, page + ': ' + CARD_ASK[page]); assert.equal(PAGE_OF[skill][0], page, skill + ' links back to ' + page);
+  }
+  const { ghFileOf, ghFilePage } = await import('../void-live-deploy/lib/gist.js'), f = ghFileOf('https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/gist.js#L5-L12');
+  assert.deepEqual(pageOfCard('gh-file', ghFilePage(f)), [ghFilePage(f), 'Snippet / Note in a link'], 'the card\'s page link opens that same file');
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/skills/gh-file.js', import.meta.url), 'utf8'), /card\.dataset\.page = ghFilePage\(f\)/);
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/g/index.html', import.meta.url), 'utf8'), /card: \(\) => \(gh \? gh\.page/, 'the page gives the stage the GitHub file open on it');
 });

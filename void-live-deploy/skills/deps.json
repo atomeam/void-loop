@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1020,
+ "counted": 1027,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -118,7 +118,7 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 58,
+   "dependants": 59,
    "tests": 1
   },
   {
@@ -616,7 +616,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 10
+   "tests": 13
   },
   {
    "file": "lib/field-cards.js",
@@ -962,6 +962,20 @@
    "tests": 3
   },
   {
+   "file": "lib/emoji.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/brain-ask.js",
    "skills": 2,
    "direct": 1,
@@ -983,18 +997,18 @@
    "tests": 3
   },
   {
-   "file": "lib/generators.js",
+   "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
    "dependants": 3,
    "tests": 2
   },
   {
-   "file": "lib/list-goal.js",
+   "file": "lib/photo-ask.js",
    "skills": 2,
-   "direct": 1,
+   "direct": 2,
    "dependants": 3,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/prizes.js",
@@ -1086,13 +1100,6 @@
    "direct": 1,
    "dependants": 2,
    "tests": 2
-  },
-  {
-   "file": "lib/photo-ask.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/template-list.js",
@@ -1333,13 +1340,6 @@
    "tests": 17
   },
   {
-   "file": "lib/emoji.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/fanfic.js",
    "skills": 1,
    "direct": 1,
@@ -1382,6 +1382,13 @@
    "tests": 3
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1396,6 +1403,13 @@
    "tests": 1
   },
   {
+   "file": "lib/tally.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-glow.js",
    "skills": 1,
    "direct": 0,
@@ -1404,6 +1418,13 @@
   },
   {
    "file": "lib/brain-store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2,
@@ -1438,16 +1459,23 @@
    "tests": 1
   },
   {
-   "file": "lib/note-extras.js",
+   "file": "lib/imgfit.js",
    "skills": 1,
-   "direct": 0,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
+  },
+  {
+   "file": "lib/news-week.js",
+   "skills": 1,
+   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
   {
-   "file": "lib/tally.js",
+   "file": "lib/note-extras.js",
    "skills": 1,
-   "direct": 1,
+   "direct": 0,
    "dependants": 2,
    "tests": 1
   },
@@ -1558,13 +1586,6 @@
   },
   {
    "file": "lib/chess-replay.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/coins.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1687,7 +1708,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/gradient.js",
@@ -1705,13 +1726,6 @@
   },
   {
    "file": "lib/heat-dose.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/imgfit.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2502,13 +2516,6 @@
    "tests": 1
   },
   {
-   "file": "lib/podcasts.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2562,7 +2569,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/translate-web.js",
@@ -2754,7 +2761,21 @@
    "tests": 0
   },
   {
+   "file": "lib/flip-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2825,6 +2846,13 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp3-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2915,6 +2943,13 @@
    "tests": 2
   },
   {
+   "file": "lib/podcasts-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
    "file": "lib/progress-chart.js",
    "skills": 0,
    "direct": 0,
@@ -2958,6 +2993,13 @@
   },
   {
    "file": "lib/reinvest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/resize-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5610,6 +5652,9 @@
    "imports": [],
    "importedBy": [
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/colour.js": {
@@ -6025,10 +6070,12 @@
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
-    "lib/tally.js"
+    "lib/tally.js",
+    "skills/emoji.js"
    ],
    "reachedBy": [
     "functions/api/tally.js",
+    "lib/flip-card.js",
     "skills/coin.js"
    ]
   },
@@ -6416,6 +6463,12 @@
    ],
    "importedBy": []
   },
+  "lib/flip-card.js": {
+   "imports": [
+    "skills/coin.js"
+   ],
+   "importedBy": []
+  },
   "lib/forge-duel.js": {
    "imports": [],
    "importedBy": [
@@ -6541,10 +6594,18 @@
     "skills/walker.js"
    ]
   },
+  "lib/generators-card.js": {
+   "imports": [
+    "lib/generators.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
     "lib/chat-generators.js",
+    "lib/generators-card.js",
     "skills/textgen.js"
    ],
    "reachedBy": [
@@ -6839,6 +6900,7 @@
   "lib/imgfit.js": {
    "imports": [],
    "importedBy": [
+    "lib/resize-card.js",
     "skills/imgfit.js"
    ]
   },
@@ -7787,6 +7849,10 @@
     "skills/media-pick.js"
    ]
   },
+  "lib/mp3-edit.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/music-audio.js": {
    "imports": [
     "lib/music-tools.js"
@@ -7873,6 +7939,15 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/news-week.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/news.js"
+   ],
+   "reachedBy": [
+    "lib/news-card.js"
    ]
   },
   "lib/news.js": {
@@ -8465,6 +8540,9 @@
    "importedBy": [
     "skills/imgfit.js",
     "skills/photo-tools.js"
+   ],
+   "reachedBy": [
+    "lib/resize-card.js"
    ]
   },
   "lib/photo-edit.js": {
@@ -8546,10 +8624,20 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/podcasts-card.js": {
+   "imports": [
+    "skills/podcast-search.js"
+   ],
+   "importedBy": []
+  },
   "lib/podcasts.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/podcasts.js"
+    "functions/api/podcasts.js",
+    "skills/podcast-search.js"
+   ],
+   "reachedBy": [
+    "lib/podcasts-card.js"
    ]
   },
   "lib/practice.js": {
@@ -8965,6 +9053,7 @@
     "lib/brain-host.js",
     "lib/built-detail.js",
     "lib/fix-audit.js",
+    "lib/flip-card.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -9124,6 +9213,13 @@
    "importedBy": [
     "functions/api/report.js"
    ]
+  },
+  "lib/resize-card.js": {
+   "imports": [
+    "lib/imgfit.js",
+    "skills/imgfit.js"
+   ],
+   "importedBy": []
   },
   "lib/review-api.js": {
    "imports": [
@@ -10342,6 +10438,9 @@
    "importedBy": [
     "functions/api/tally.js",
     "skills/coin.js"
+   ],
+   "reachedBy": [
+    "lib/flip-card.js"
    ]
   },
   "lib/tasks.js": {
@@ -11552,7 +11651,9 @@
     "lib/tally.js",
     "lib/coins.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/flip-card.js"
+   ]
   },
   "skills/collectible.js": {
    "imports": [
@@ -11910,7 +12011,9 @@
    ]
   },
   "skills/emoji.js": {
-   "imports": [],
+   "imports": [
+    "lib/emoji.js"
+   ],
    "importedBy": []
   },
   "skills/error-garden.js": {
@@ -12577,7 +12680,9 @@
     "lib/imgfit.js",
     "lib/photo-ask.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/resize-card.js"
+   ]
   },
   "skills/incident-autopsy.js": {
    "imports": [
@@ -13359,7 +13464,8 @@
   },
   "skills/news.js": {
    "imports": [
-    "skills/live.js"
+    "skills/live.js",
+    "lib/news-week.js"
    ],
    "importedBy": [
     "lib/news-card.js"
@@ -13588,6 +13694,14 @@
     "lib/stage-pack.js"
    ],
    "importedBy": []
+  },
+  "skills/podcast-search.js": {
+   "imports": [
+    "lib/podcasts.js"
+   ],
+   "importedBy": [
+    "lib/podcasts-card.js"
+   ]
   },
   "skills/podcast.js": {
    "imports": [],
@@ -14598,7 +14712,9 @@
    "imports": [
     "lib/generators.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/generators-card.js"
+   ]
   },
   "skills/throw-off.js": {
    "imports": [],

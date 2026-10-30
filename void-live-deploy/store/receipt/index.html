@@ -51,7 +51,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 </head>
 <body>
 <main>
-<header><a class="logo" href="/">V<b>0</b>1D <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
+<header><a class="logo" href="/">Verse <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
 <p class="sub" id="rlead" hidden><b>Your receipt.</b> Your order code, license keys and download links show here. Keep the order code: with your email, it finds this receipt again any time, on any device.</p>
 <div id="receipt" role="status" aria-live="polite" tabindex="-1" hidden></div>
 <h1>Made by Verse. Sold by Verse.</h1>
@@ -175,8 +175,8 @@ $('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch
 { const q = new URLSearchParams(location.search), code = q.get('code'); if (code) { $('#lc').value = code.slice(0, 8); $('#rlead').hidden = false; } if (/\/receipt\//.test(location.pathname) || q.has('session')) $('#rlead').hidden = false; } // a receipt link fills the order code (never the email)
 async function news() {
   const r = await fetch('/store/changelog.json').then((r) => r.json()).catch(() => null), l = (r && r.changelog) || [];
-  if (!l.length) return; $('#new').hidden = false;
-  $('#log').innerHTML = l.slice(0, 12).map((x) => `<li><b>${esc(x.name)}</b> · ${esc(x.what)} · ${esc(x.price)} <span>(${esc(new Date(x.at).toLocaleDateString())})</span></li>`).join('');
+  if (!l.length) return; $('#new').hidden = false; // the log keeps its old lines as written (AGENTS.md); a person reads the name Verse
+  $('#log').innerHTML = l.slice(0, 12).map((x) => `<li><b>${esc(x.name)}</b> · ${esc(String(x.what || '').replace(/\bV01D\b/g, 'Verse'))} · ${esc(x.price)} <span>(${esc(new Date(x.at).toLocaleDateString())})</span></li>`).join('');
 }
 async function previews() {
   const els = [...document.querySelectorAll('[data-glb]')]; if (!els.length) return;

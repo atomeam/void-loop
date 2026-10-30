@@ -52,6 +52,11 @@
   .wk .preview { margin-top: 8px; font-size: 14px; }
   .wk .preview p { margin: 6px 0; }
 </style>
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Snippet / Note in a link: a gist with no account","url":"https://a-to-mind.com/g/","description":"Paste a snippet, note or checklist, up to eight files, and get a link that holds it all, compressed: no account and no server copy. Lock it with a passphrase, see what changed in an edited copy, start from a meeting timer, locked note or code template, and open a public GitHub file here, coloured and numbered. Works offline after one visit.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"share code snippet online, pastebin without account, gist without github account, encrypted note link, share a note by link, view github file","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/g/?text={text}"},"text-input":"required name=text"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Snippet / Note in a link: a gist with no account","item":"https://a-to-mind.com/g/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/gist.js">
 <!-- /modulepreload -->
@@ -66,7 +71,11 @@
   <div class="bar" id="bar"></div>
   <div id="note" aria-live="polite"></div>
   <section id="work" hidden aria-label="Tasks, timer and notes beside this snippet"></section>
-  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. It works offline after one visit, and a GitHub file opens here too: <a href="/g/?gh=atomeam/void-loop/blob/main/README.md">GitHub file as a gist</a>. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=gist">See it on the stage</a> · <a href="/">Ask Verse anything</a></p></footer>
+  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. It works offline after one visit, and a GitHub file opens here too: <a href="/g/?gh=atomeam/void-loop/main/README.md">GitHub file as a gist</a>. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=https%3A%2F%2Fgithub.com%2Fatomeam%2Fvoid-loop%2Fblob%2Fmain%2FREADME.md">See it on the stage</a> · <a href="/">Ask Verse anything</a></p></footer>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/g/?gh=atomeam%2Fvoid-loop%2Fmain%2FREADME.md">Verse's README from GitHub</a><a href="/g/?gh=atomeam%2Fvoid-loop%2Fmain%2Fvoid-live-deploy%2Flib%2Fgist.js&amp;L=1-20">Lines 1 to 20 of gist.js</a><a href="/g/?text=Milk%0AEggs%0ABread&amp;name=list.md">A shopping list</a><a href="/g/?text=console.log(%22hello%22)%3B&amp;name=hello.js">A code snippet</a><a href="/g/?text=The%20meeting%20moved%20to%203pm%20in%20room%202.&amp;name=note.txt">A note to share</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/">Base64</a> <a href="/word-count/">Word counter</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script type="module">
   import { pack, open, isLocked, lineDiff, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
@@ -246,6 +255,8 @@
     code: () => { files = [['snippet.js', '// paste or type code here\n']]; draw(); note('Name the file with its ending (.py, .js, .css…) so it is coloured. Tab indents.'); const t = $('ta'); if (t) t.focus(); },
   };
   for (const b of $('tpl').querySelectorAll('button')) b.addEventListener('click', () => { at = 0; TPL[b.dataset.t](); });
+  // the toolkit's "Use with" row (lib/toolkit.js): the GitHub file open here as a card on the stage (skills/gh-file.js), else Verse's README
+  import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/g/', [], { card: () => (gh ? gh.page + (gh.lines ? '#L' + gh.lines[0] + '-L' + gh.lines[1] : '') : '') })).catch(() => {});
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

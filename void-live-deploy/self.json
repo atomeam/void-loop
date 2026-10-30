@@ -550,83 +550,83 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:09:38Z",
+   "at": "2026-10-30T05:43:24Z",
+   "subject": "Store: the changelog list shows the name Verse, not V01D"
+  },
+  {
+   "at": "2026-10-30T05:43:08Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T05:41:41Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:09:37Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T05:09:21Z",
-   "subject": "tower queue: rendered rows that lost most raw controls are block pages, not rankable"
-  },
-  {
-   "at": "2026-10-30T05:08:53Z",
-   "subject": "News: set the card's page link only when the card has a dataset (a test stub has none)"
-  },
-  {
-   "at": "2026-10-30T05:05:23Z",
-   "subject": "What's new: \"play all N\" counts the whole day, as the stage plays it"
-  },
-  {
-   "at": "2026-10-30T05:05:08Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-30T05:03:40Z",
-   "subject": "Better at password, random and boards: 3 more ways of asking answered right — new phrases: “password of 20 characters” now opens password…"
-  },
-  {
-   "at": "2026-10-30T05:03:06Z",
+   "at": "2026-10-30T05:41:38Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:02:43Z",
-   "subject": "Safety-check: run a lib's own tests before the far ones, and openapi-check for an /api route"
+   "at": "2026-10-30T05:41:25Z",
+   "subject": "News: fix the page script so the headlines load again"
   },
   {
-   "at": "2026-10-30T05:02:35Z",
-   "subject": "Team chat: a mangled body is read, ?t= takes the job id, here says to work the job, an agent changes its own key"
-  },
-  {
-   "at": "2026-10-30T05:01:38Z",
+   "at": "2026-10-30T05:40:36Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T05:01:23Z",
-   "subject": "News: the stage card shows the topic searched or the Technology section"
-  },
-  {
-   "at": "2026-10-30T05:00:57Z",
-   "subject": "Hand off the code-review MultiVerse card to /members/"
-  },
-  {
-   "at": "2026-10-30T05:00:03Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T04:58:43Z",
+   "at": "2026-10-30T05:39:51Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T04:58:32Z",
-   "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
+   "at": "2026-10-30T05:39:49Z",
+   "subject": "Walker: copy the clear event into void.html, the source of index.html"
   },
   {
-   "at": "2026-10-30T04:53:12Z",
-   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
+   "at": "2026-10-30T05:36:28Z",
+   "subject": "Coder: show a short non-JSON model reply, escaped and masked"
   },
   {
-   "at": "2026-10-30T04:51:18Z",
+   "at": "2026-10-30T05:36:04Z",
+   "subject": "Team chat: Verse answers an agent that waits on the owner anywhere, not only in its job thread"
+  },
+  {
+   "at": "2026-10-30T05:35:56Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T04:51:04Z",
-   "subject": "Markets: its stage card shows the coin open on the page"
+   "at": "2026-10-30T05:35:50Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T04:51:00Z",
+   "at": "2026-10-30T05:35:37Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:35:35Z",
+   "subject": "converter: Add Image to MP3 on the device"
+  },
+  {
+   "at": "2026-10-30T05:35:26Z",
+   "subject": "Stage links from /emojis/ and /g/ open real cards; /g/ footer link opens the README"
+  },
+  {
+   "at": "2026-10-30T05:35:22Z",
+   "subject": "Walker: the walking cartoon can be thrown and clear clears it"
+  },
+  {
+   "at": "2026-10-30T05:35:21Z",
+   "subject": "Resize image: the page card carries the size, the stage card opens the page at it"
+  },
+  {
+   "at": "2026-10-30T05:33:47Z",
+   "subject": "Tower gate: password strength measured against their live sites"
+  },
+  {
+   "at": "2026-10-30T05:33:37Z",
+   "subject": "Bench: the V01D ask logged as typed, the 8 ball row checks the question on the ball, \"how much\" is a buy only for a price"
+  },
+  {
+   "at": "2026-10-30T05:32:43Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
@@ -866,11 +866,11 @@
   "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "howsecureismypassword.net",
    "ndscalc.ru",
-   "emojicombos.com"
+   "emojicombos.com",
+   "thunit.com"
   ],
-  "beaten": 0,
+  "beaten": 1,
   "total": 1269
  }
 }

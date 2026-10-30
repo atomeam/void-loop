@@ -7,8 +7,11 @@
 //   GET  /api/team?activity             the messages that mention the caller, newest first (members only)
 //   GET  /api/team?me                   who the caller is: the owner, an agent, or nobody
 //   POST /api/team {do: ...}            members only, JSON:
-//     invite {name, about?, again?}     the owner: a join link for a new agent (a-to-mind.com/team/join/vj1-<code>), good once for a day.
-//                                       again: true makes a new link for an agent already in the team, and its old key stops at once
+//     invite {name, about?, again?, auto?} the owner: a join link for a new agent (a-to-mind.com/team/join/vj1-<code>), good once for a day.
+//                                       again: true makes a new link for an agent already in the team, and its old key stops at once;
+//                                       auto: false, the agent is handed no job until it says here {auto: true} (the live checks' probes)
+// An idle agent with jobs on is handed its next job without asking: with the answer to any read (GET ?c, ?t, ?q, ?activity), and when
+// anyone opens the team page while it is here (handIdle; a push agent gets it pushed). Jobs go in the queue's order (lib/team.js rank).
 //     remove {name}                     the owner: an agent leaves (its job goes back to the queue, its links and MCP sessions end)
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
@@ -61,10 +64,14 @@ const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_team_joins (code TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, expires INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0)',
   'CREATE TABLE IF NOT EXISTS void_team_mcp (sid TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, seen INTEGER NOT NULL)',
 ];
+// push (lib/team.js HOOK): an agent's https address, the secret Verse signs each push with, failures in a row, when to try next, last answer,
+// when the address was last set
+const COLUMNS = ["hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
   if (ready.has(env.DB)) return;
   for (const t of TABLES) await env.DB.prepare(t).run();
+  for (const c of COLUMNS) await env.DB.prepare('ALTER TABLE void_team_agents ADD COLUMN ' + c).run().catch(() => null); // void-review: ok (six fixed columns, once per isolate; an error means the column is there already)
   for (const c of T.HOME) await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(c.code, c.title, c.about, now, 'verse').run();
   ready.add(env.DB);
 }
@@ -148,6 +155,8 @@ export async function whoIs(request, env) {
   const s = await session(request, env).catch(() => null);
   return s ? { kind: 'member' } : null;
 }
+// a well-formed agent key that matched no agent: the caller hears why, not only that the workspace is closed
+const staleKey = (request) => { const h = request.headers.get('authorization') || ''; return h.startsWith('Bearer ') && T.KEY_RE.test(h.slice(7).trim()); };
 const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
 
 // the names a message shows: an agent's id -> its name ('verse' and 'owner' as they are)
@@ -162,7 +171,7 @@ async function reactsOf(env, ids) {
 }
 async function shape(env, rows, me) {
   const { by } = await namesOf(env), rx = await reactsOf(env, rows.map((r) => r.id)), mine = byOf(me);
-  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : 'agent', body: r.body, job: r.job || null,
+  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : 'agent', body: T.hideSecrets(r.body), job: r.job || null,
     replies: r.replies, lastReply: r.last_reply || null, reacts: Object.entries(rx[r.id] || {}).map(([e, who]) => ({ e, n: who.length, me: who.includes(mine), who: who.map((w) => by[w] || 'gone') })) }));
 }
 
@@ -231,11 +240,86 @@ async function giveBack(env, a, now, why, failed) {
   await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, skip = ? WHERE id = ?').bind(skip, a.id).run();
 }
 // agents silent for STALE_MS give their jobs back (run lazily on requests; a cron is not needed)
+// an agent whose newest post since its job began waits on the owner, anywhere, gets Verse's answer in its job thread, once (the answer is then newer)
+async function unstall(env, a, now) {
+  if (!a || !a.job || !a.thread) return false;
+  // the agent's newest post since its job began, anywhere: Beam waited in #general, not in its job thread (2026-10-30)
+  const last = await env.DB.prepare('SELECT id, body FROM void_team_msgs WHERE by = ? AND id > ? ORDER BY id DESC LIMIT 1').bind(a.id, a.thread).first();
+  if (!last || !T.waitsOnOwner(last.body)) return false;
+  // answered already: anything in the job thread after that post (Verse's answer, the owner, the agent itself)
+  if (await env.DB.prepare('SELECT id FROM void_team_msgs WHERE thread = ? AND id > ? LIMIT 1').bind(a.thread, last.id).first()) return false;
+  const root = await env.DB.prepare('SELECT channel FROM void_team_msgs WHERE id = ? AND thread = 0').bind(a.thread).first(); if (!root) return false;
+  await write(env, { c: root.channel, by: 'verse', body: '@' + a.name + ' ' + T.noWaitSay(a.job), thread: a.thread, now });
+  return true;
+}
 export async function sweep(env, now) {
+  const { results: busy } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND off = 0 AND seen >= ?').bind(now - T.STALE_MS).all();
+  for (const a of busy) await unstall(env, a, now);
   const { results } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE job IS NOT NULL AND seen < ?').bind(now - T.STALE_MS).all();
   for (const a of results) await giveBack(env, a, now, '@' + a.name + ' went quiet for 30 minutes', false);
   return results.length;
 }
+
+// ---- push: Verse sends a job to an agent's own https address (lib/team.js HOOK), signed, so the agent need not stay online ----
+// One POST, JSON { type, agent, job?, api, at }, with x-verse-time and x-verse-signature: sha256=<hex HMAC of "<time>.<body>" with the agent's
+// push secret>. A 2xx answer is delivered. No redirects are followed, and it waits HOOK.timeoutMs at most. A job that does not reach the
+// agent goes straight back to the queue (no try counted) and the next push to that address waits longer (lib/team.js hookWait);
+// after HOOK.tries failures in a row Verse stops pushing there and says so in #general.
+async function deliver(env, a, payload, now) {
+  const f = env.TEAM_FETCH || fetch, body = JSON.stringify({ ...payload, agent: a.name, api: ORIGIN + '/api/team', at: now }), time = String(now);
+  try {
+    const r = await f(a.hook, { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(T.HOOK.timeoutMs), body,
+      headers: { 'content-type': 'application/json', 'user-agent': 'Verse-team-push/1', 'x-verse-event': payload.type, 'x-verse-time': time, 'x-verse-signature': 'sha256=' + await T.hookSign(a.hook_secret, time, body) } });
+    if (r.status >= 200 && r.status < 300) { await env.DB.prepare('UPDATE void_team_agents SET hook_fails = 0, hook_next = 0, hook_ok = ? WHERE id = ?').bind(now, a.id).run(); return true; }
+  } catch (_) { /* no answer in time, or no such host: a failure like any other */ }
+  const fails = (a.hook_fails || 0) + 1;
+  await env.DB.prepare('UPDATE void_team_agents SET hook_fails = ?, hook_next = ? WHERE id = ?').bind(fails, now + T.hookWait(fails), a.id).run();
+  if (fails === T.HOOK.tries) await write(env, { c: 'general', by: 'verse', body: '@' + a.name + '\'s push address did not answer ' + fails + ' times in a row, so Verse stopped sending jobs there. Set it again with hook to start again.', now });
+  return false;
+}
+/** every idle agent with a push address that is due gets its next job sent there; at most `max` agents a call. -> the number delivered */
+export async function pushAll(env, now, max = 4) {
+  let rows = [];
+  try { rows = (await env.DB.prepare("SELECT * FROM void_team_agents WHERE off = 0 AND key != '' AND hook != '' AND hook_fails < ? AND hook_next <= ? AND job IS NULL AND auto = 1 ORDER BY hook_ok ASC LIMIT ?").bind(T.HOOK.tries, now, max).all()).results; } catch (_) { return 0; }
+  let sent = 0;
+  for (const a of rows) {
+    const job = await handOut(env, a, now); // void-review: ok (at most `max` agents, each claimed in one statement as for a pull)
+    if (!job) break; // the queue has nothing for an agent: the rest have nothing either
+    if (await deliver(env, a, { type: 'job', job }, now)) { sent++; continue; } // void-review: ok (one push per agent, at most `max`)
+    await giveBack(env, { ...a, job: job.job, thread: job.thread }, now, 'its push address did not answer, so the job went back on the queue', false);
+    await env.DB.prepare('UPDATE void_team_agents SET skip = ? WHERE id = ?').bind(a.skip || '', a.id).run(); // void-review: ok (once per failed push) a push that did not arrive is not the agent passing on the job
+  }
+  return sent;
+}
+/** every idle agent that pulls (no push address that answers) and spoke in the last AWAY_MS gets its next job too, in the queue's order: the
+ *  job is its thread in #work that @mentions it, and its next read carries the job. At most `max` agents a call. -> the number handed a job */
+export async function handIdle(env, now, max = 4) {
+  let rows = [];
+  try { rows = (await env.DB.prepare("SELECT * FROM void_team_agents WHERE off = 0 AND key != '' AND (hook IS NULL OR hook = '' OR hook_fails >= ?) AND job IS NULL AND auto = 1 AND seen >= ? ORDER BY seen DESC LIMIT ?").bind(T.HOOK.tries, now - T.AWAY_MS, max).all()).results; } catch (_) { return 0; }
+  let n = 0;
+  for (const a of rows) { if (!(await handOut(env, a, now))) break; n++; } // void-review: ok (at most `max` agents, each claimed in one statement as for a pull)
+  return n;
+}
+/** an agent's push address set ('' or none takes it off), then a first push with no job in it: -> { ok, hook, secret, answered, say } */
+async function setHook(env, a, raw, now, pushLater) {
+  const url = String(raw == null ? '' : raw).trim();
+  if (!url) { await env.DB.prepare("UPDATE void_team_agents SET hook = '', hook_secret = '', hook_fails = 0, hook_next = 0 WHERE id = ?").bind(a.id).run(); return { ok: true, hook: null, say: 'push off: ask for jobs with here and next' }; }
+  const why = T.hookProblem(url); if (why) return { ok: false, say: why };
+  if (now - (a.hook_at || 0) < T.HOOK.gapMs) return { ok: false, say: 'one new push address a minute: wait a moment' }; // each new address gets a push
+  const secret = hex(crypto.getRandomValues(new Uint8Array(32)));
+  await env.DB.prepare('UPDATE void_team_agents SET hook = ?, hook_secret = ?, hook_fails = 0, hook_next = 0, hook_ok = 0, hook_at = ? WHERE id = ?').bind(url, secret, now, a.id).run();
+  const hello = await deliver(env, { ...a, hook: url, hook_secret: secret, hook_fails: 0 }, { type: 'hello' }, now);
+  if (hello && a.auto && !a.job) await pushLater();
+  return { ok: true, hook: url, secret, answered: hello, say: (hello ? 'Your address answered. ' : 'Your address did not answer the first push; Verse tries again later. ') + 'Each push is signed: check x-verse-signature against this secret (shown once). Keep it like your key.' };
+}
+/** a push address set as an agent joins (do:join here, or a POST to its join link): -> { hook, secret, answered } */
+export async function joinHook(env, id, raw, now, waitUntil) {
+  const a = await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(id).first();
+  if (!a) return null;
+  const h = await setHook(env, a, raw, now, () => (waitUntil ? later({ waitUntil }, pushAll(env, now)) : pushAll(env, now)));
+  return h.ok ? { hook: h.hook, secret: h.secret, answered: h.answered } : null;
+}
+const later = (ctx, p) => { const q = p.catch(() => 0); try { if (ctx && typeof ctx.waitUntil === 'function') ctx.waitUntil(q); } catch (_) { /* q runs anyway */ } return q; };
 
 async function rated(env, a, now) {
   const day = Math.floor(now / DAY), posts = a.day === day ? a.posts : 0;
@@ -246,13 +330,15 @@ async function rated(env, a, now) {
 }
 
 // as: an agent's id the caller already proved (functions/team/mcp.js); the platform never passes it
-export async function onRequestGet({ request, env, now = Date.now(), as = null }) {
+export async function onRequestGet({ request, env, now = Date.now(), as = null, waitUntil }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   const sp = new URL(request.url).searchParams;
   const open = !['c', 't', 'q', 'activity', 'me'].some((k) => sp.has(k));
   if (open) {
     await sweep(env, now);
+    if (!waitUntil) await pushAll(env, now); else later({ waitUntil }, pushAll(env, now));
+    await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
     const members = ags.map((a) => ({ name: a.name, about: a.about, state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
@@ -260,26 +346,29 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null }
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
-  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}) });
-  if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
+  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
+  if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
+  // an idle agent that reads is handed its next job with the answer (jobs off with here auto:false); a job it already holds is not repeated
+  const handed = me.kind === 'agent' && !me.agent.job && me.agent.auto ? await handOut(env, me.agent, now) : null;
+  const out = (o) => json({ ...o, ...(handed ? { job: handed, say: T.workSay(handed) } : {}) });
   const { list } = await namesOf(env);
   if (sp.has('t')) {
     const id = await threadId(env, sp.get('t'), me); if (!id) return bad(400, 'which thread? Give its number (?t=12) or your job (?t=team-1)');
     const root = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE id = ? AND thread = 0').bind(id).first(); if (!root) return bad(404, 'no such thread');
     const { results } = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE thread = ? ORDER BY id ASC LIMIT ?').bind(id, T.LIMITS.thread).all();
-    return json({ ok: true, root: (await shape(env, [root], me))[0], replies: await shape(env, results, me), names: list });
+    return out({ ok: true, root: (await shape(env, [root], me))[0], replies: await shape(env, results, me), names: list });
   }
   if (sp.has('q')) {
-    const words = T.searchWords(sp.get('q')); if (!words.length) return json({ ok: true, hits: [] });
+    const words = T.searchWords(sp.get('q')); if (!words.length) return out({ ok: true, hits: [] });
     const c = sp.get('c'), where = words.map(() => "lower(body) LIKE ? ESCAPE '\\'").join(' AND ') + (c ? ' AND channel = ?' : '');
     const { results } = await env.DB.prepare(`SELECT * FROM void_team_msgs WHERE ${where} ORDER BY id DESC LIMIT 50`).bind(...words.map((w) => '%' + w + '%'), ...(c ? [c] : [])).all(); // void-review: ok (where is fixed text with ? placeholders only; the words are bound)
-    return json({ ok: true, hits: await shape(env, results, me), names: list });
+    return out({ ok: true, hits: await shape(env, results, me), names: list });
   }
   if (sp.has('activity')) {
     const name = me.kind === 'owner' ? 'owner' : me.agent.name.toLowerCase();
     const { results } = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE (mentions LIKE ? OR mentions LIKE \'% here %\') AND by != ? ORDER BY id DESC LIMIT 50').bind('% ' + name + ' %', byOf(me)).all();
-    return json({ ok: true, hits: await shape(env, results, me), names: list });
+    return out({ ok: true, hits: await shape(env, results, me), names: list });
   }
   const c = sp.get('c'); if (T.codeProblem(c) && !T.HOME.some((h) => h.code === c)) return bad(400, 'which channel?');
   const ch = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels WHERE code = ?').bind(c).first(); if (!ch) return bad(404, 'no such channel');
@@ -289,22 +378,26 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null }
     : await env.DB.prepare('SELECT * FROM (SELECT * FROM void_team_msgs WHERE channel = ? AND thread = 0 ORDER BY id DESC LIMIT ?) ORDER BY id ASC').bind(c, T.LIMITS.page).all();
   // the threads that moved since `since` (a reply landed), so the page updates their counts
   const { results: moved } = since ? await env.DB.prepare('SELECT id, replies, last_reply FROM void_team_msgs WHERE channel = ? AND thread = 0 AND last_reply > ? LIMIT 100').bind(c, now - 120e3).all() : { results: [] };
-  return json({ ok: true, channel: ch, messages: await shape(env, results, me), moved, names: list });
+  return out({ ok: true, channel: ch, messages: await shape(env, results, me), moved, names: list });
 }
 
-export async function onRequestPost({ request, env, now = Date.now(), as = null }) {
+export async function onRequestPost({ request, env, now = Date.now(), as = null, waitUntil }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   const p = T.looseBody(await request.text().catch(() => '')); // JSON, or JSON a shell mangled (lib/team.js looseBody)
   if (!p) return bad(400, 'send JSON, for example {"do":"here"}. In PowerShell: $body = @{ do = "here" } | ConvertTo-Json; then -d $body (see /team/agents.txt)');
   if (p.do === 'join') { // the one write without a key: the join link is the key to its own key
+    if (p.hook != null && T.hookProblem(p.hook)) return bad(400, T.hookProblem(p.hook)); // a bad address is said before the link is used up
     const r = await redeem(env, T.joinCode(p.code), ['HTTP', 'the script', 'the browser'].includes(p.via) ? p.via : 'HTTP', now);
-    return r.ok ? json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name) }, 201) : bad(r.status, r.say);
+    if (!r.ok) return bad(r.status, r.say);
+    const hook = p.hook != null ? await joinHook(env, r.id, p.hook, now, waitUntil) : null;
+    return json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name), ...(hook || {}) }, 201);
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
-  if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
+  if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
+  const pushLater = () => (waitUntil ? later({ waitUntil }, pushAll(env, now)) : pushAll(env, now)); // after the answer when the platform can
   const a = me.kind === 'agent' ? await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(me.agent.id).first() : null;
   switch (p.do) {
     case 'invite': {
@@ -321,7 +414,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       }
       if (taken) await env.DB.prepare('DELETE FROM void_team_agents WHERE id = ?').bind(taken.id).run(); // a removed agent's name is free again (its old key is gone with it)
       const id = hex(crypto.getRandomValues(new Uint8Array(6)));
-      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined) VALUES (?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), '', now).run(); // no key until the link is used
+      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined, auto) VALUES (?, ?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), '', now, p.auto === false ? 0 : 1).run(); // no key until the link is used
       const j = await mintJoin(env, id, origin, now);
       return json({ ok: true, name, join: j.link, expires: j.expires, say: T.inviteSay(name) }, 201);
     }
@@ -347,12 +440,12 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const { n, today } = await env.DB.prepare('SELECT COUNT(*) AS n, SUM(created > ?) AS today FROM void_team_channels').bind(now - DAY).first();
       if (n >= T.RATES.channels) return bad(429, T.RATES.channels + ' channels at most');
       if (me.kind === 'agent' && today >= T.RATES.channelsDay) return bad(429, T.RATES.channelsDay + ' new channels a day');
-      const r = await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(code, code, T.clean(redact(p.about || ''), T.LIMITS.about), now, byOf(me)).run();
+      const r = await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(code, code, T.clean(T.hideSecrets(redact(p.about || '')), T.LIMITS.about), now, byOf(me)).run();
       if (r.meta.changes !== 1) return bad(409, 'that channel is there already');
       return json({ ok: true, code }, 201);
     }
     case 'post': {
-      const c = String(p.c || ''), body = T.cleanBody(redact(String(p.body || ''))); if (!body) return bad(400, 'say something');
+      const c = String(p.c || ''), plain = T.cleanBody(redact(String(p.body || ''))), body = T.hideSecrets(plain), hid = body !== plain; if (!body) return bad(400, 'say something');
       const ch = await env.DB.prepare('SELECT code FROM void_team_channels WHERE code = ?').bind(c).first(); if (!ch) return bad(404, 'no such channel');
       let thread = 0;
       if (p.thread != null) {
@@ -367,7 +460,9 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
       if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
-      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}) }, 201);
+      if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now
+      const told = me.kind === 'agent' && me.agent.job && await unstall(env, me.agent, now + 1); // in its job thread or anywhere else
+      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(told ? { say: T.noWaitSay(me.agent.job) } : hid ? { say: T.HID_SAY } : {}) }, 201);
     }
     case 'react': {
       const id = parseInt(p.id, 10), e = String(p.emoji || ''); if (!T.EMOJI.includes(e)) return bad(400, 'that reaction is not on the list');
@@ -376,6 +471,11 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const had = await env.DB.prepare('DELETE FROM void_team_reacts WHERE msg = ? AND by = ? AND emoji = ?').bind(id, byOf(me), e).run();
       if (had.meta.changes !== 1) await env.DB.prepare('INSERT INTO void_team_reacts (msg, by, emoji, at) VALUES (?, ?, ?, ?)').bind(id, byOf(me), e, now).run();
       return json({ ok: true, on: had.meta.changes !== 1 });
+    }
+    case 'hook': { // an agent's push address: Verse sends each job there, signed with the secret this answer shows once ('' takes it off)
+      if (!a) return bad(403, 'only an agent has a push address');
+      const h = await setHook(env, a, p.url, now, pushLater);
+      return h.ok ? json(h) : bad(400, h.say);
     }
     case 'here': case 'next': {
       if (!a) return bad(403, 'only an agent takes jobs');
@@ -393,7 +493,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
     case 'done': {
       if (!a) return bad(403, 'only an agent closes a job');
       if (!a.job) return bad(409, 'you hold no job');
-      const note = T.clean(redact(p.note || ''), 200), link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
+      const note = T.clean(T.hideSecrets(redact(p.note || '')), 200), link = /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/pull\/\d+$/.test(String(p.link || '')) ? p.link : '';
       if (p.ok) {
         await setJob(env, a.job, 'done', ('done by team:' + a.name + (link ? ' · ' + link : '') + (note ? ' · ' + note : '')).slice(0, 300), a.name);
         await write(env, { c: 'work', by: a.id, body: 'Done.' + (link ? ' ' + link : '') + (note ? '\n' + note : ''), thread: a.thread, now });
@@ -406,6 +506,6 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, invite, remove, channel, post, react, here, next, done or rekey');
+    default: return bad(400, 'do: join, invite, remove, channel, post, react, hook, here, next, done or rekey');
   }
 }

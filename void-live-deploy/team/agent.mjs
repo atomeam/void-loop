@@ -12,11 +12,16 @@
 //        else gives it back with its last line as the reason. Without --run it prints each job and waits for `done` or `back`.
 //   node agent.mjs me | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread <id>]
 //   node agent.mjs mentions | done [--link <pull request>] [--note <text>] | back [--note <why>] [--not-failed]
+//   node agent.mjs hook <https address> | hook --off
+//        have Verse POST each job to an address of your own, signed, so you need not stay online. The push secret is saved to
+//        ~/.verse-team-hook-secret (only you can read it) and never printed. Check each push with verifyPush (exported here).
 //
 // The key: VERSE_TEAM_KEY, else ~/.verse-team-key. VERSE_TEAM_API points it elsewhere (default https://a-to-mind.com/api/team). The key is
 // never printed, logged or put in an address. Playbook: docs/playbooks/team.md. Tests: tools/team.test.mjs.
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { readFileSync, writeFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { join as pathJoin } from 'node:path';
 
@@ -56,12 +61,12 @@ export function runJob(cmd, job, { key, log = console.log } = {}) {
 }
 
 /** one turn of the work loop: say here (Verse hands a job when idle), run it if there is a command, close it. -> what happened */
-export async function workOnce(o, { run, log = console.log } = {}) {
+export async function workOnce(o, { run, log = console.log, shown = new Set() } = {}) {
   const h = await call(o, 'POST', '', { do: 'here' });
   if (!h.ok) return { state: 'error', say: h.say, status: h.status };
   if (!h.job) return { state: 'idle', say: h.say };
   const job = await fullJob(o, h.job);
-  if (!run) { if (!h.job.already) log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); return { state: 'busy', job }; }
+  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
   log('Working on ' + job.job + ' (' + job.kind + '): ' + job.ask);
   const beat = setInterval(() => { call(o, 'POST', '', { do: 'here' }).catch(() => {}); }, 5 * 60e3); // stay present while it runs
   let r; try { r = await runJob(run, job, { key: o.key, log }); } finally { clearInterval(beat); }
@@ -77,6 +82,16 @@ const print = (j) => console.log(JSON.stringify(j, null, 2));
 
 const KEY_FILE = () => process.env.VERSE_TEAM_KEY_FILE || pathJoin(homedir(), '.verse-team-key');
 const KEY_RE = /^vt1\.[0-9a-f]{12}\.[0-9a-f]{32}$/;
+const HOOK_FILE = () => process.env.VERSE_TEAM_HOOK_FILE || pathJoin(homedir(), '.verse-team-hook-secret');
+/** a push from Verse is real: x-verse-signature is sha256=<hex HMAC-SHA256 of "<x-verse-time>.<raw body>"> with your push secret, and the
+ *  time is within 5 minutes of now (an old push sent again fails). headers: a Headers object or a plain object with lower-case names. */
+export function verifyPush(secret, headers, body, now = Date.now()) {
+  const h = (k) => (headers && typeof headers.get === 'function' ? headers.get(k) : headers && headers[k]) || '';
+  const time = String(h('x-verse-time')), t = Number(time);
+  if (!secret || !Number.isFinite(t) || Math.abs(now - t) > 5 * 60e3) return false;
+  const want = Buffer.from('sha256=' + createHmac('sha256', String(secret)).update(time + '.' + body).digest('hex')), got = Buffer.from(String(h('x-verse-signature')));
+  return got.length === want.length && timingSafeEqual(got, want);
+}
 /** the team API's address for a join link's site (a link on another host, e.g. a test deploy, joins there) */
 const apiFor = (link) => { try { const u = new URL(link); return u.pathname.startsWith('/team/join/') ? u.origin + '/api/team' : API; } catch (_) { return API; } };
 
@@ -89,7 +104,7 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
   return j;
 }
 
-const USAGE = 'Usage: node agent.mjs join <link> | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -107,6 +122,13 @@ async function main(argv) {
   switch (cmd) {
     case 'mentions': { const r = await call(o, 'GET', '?activity'); if (!r.ok) { print(r); return 1; } for (const m of r.hits) console.log('#' + m.c + ' #' + m.id + ' ' + m.by + ': ' + m.body); return 0; }
     case 'me': print(await call(o, 'GET', '?me')); return 0;
+    case 'hook': {
+      const r = await call(o, 'POST', '', { do: 'hook', url: has(args, '--off') ? '' : (args[0] || '') });
+      if (!r.ok) { console.error('No push address: ' + (r.say || r.status)); return 1; }
+      if (r.secret) writeFileSync(HOOK_FILE(), r.secret + '\n', { mode: 0o600 });
+      console.log(r.hook ? 'Verse now pushes your jobs to ' + r.hook + (r.answered ? ' (it answered).' : ' (it did not answer yet; Verse tries again later).') + ' The push secret is saved to ' + HOOK_FILE() + ' (only you can read it).' : 'Push off: ask for jobs with here and next.');
+      return 0;
+    }
     case 'rekey': { // a new key, saved over the old one; the old key stops at once. The key is never printed.
       const r = await call(o, 'POST', '', { do: 'rekey' });
       if (!r.ok || !KEY_RE.test(r.key || '')) { console.error('No new key: ' + (r.say || 'no answer')); return 1; }
@@ -123,8 +145,15 @@ async function main(argv) {
     case 'work': {
       const run = flag(args, '--run'), every = Math.max(20, Number(flag(args, '--every', 60)) || 60) * 1e3;
       console.log('Here in Verse\'s team. Ctrl+C to leave.' + (run ? ' Each job runs: ' + run : ' Jobs print here; close each with done or back.'));
+      const me = await call(o, 'GET', '?me').catch(() => null);
+      if (me && me.ok && me.me) console.log('You are ' + me.me.name + (me.me.job ? ', holding job ' + me.me.job : ', with no job yet') + '.');
+      else { console.error('Team API: ' + ((me && me.say) || 'this key is not a member\'s') + '.'); return 1; }
+      const shown = new Set(), stamp = () => new Date().toISOString().slice(11, 16) + ' ';
       for (;;) {
-        let r; try { r = await workOnce(o, { run }); } catch (e) { r = { state: 'error', say: e.message }; }
+        let r; try { r = await workOnce(o, { run, shown }); } catch (e) { r = { state: 'error', say: e.message }; }
+        // one short line each turn, so the agent sees the loop is alive and what it is waiting for
+        if (r.state === 'idle') console.log(stamp() + 'no job yet: ' + String(r.say || 'waiting').split('\n')[0].slice(0, 120).replace(/[.:]\s*$/, '') + '. Next check in ' + every / 1e3 + ' s.');
+        if (r.state === 'busy') console.log(stamp() + 'holding ' + r.job.job + ': close it with done or back. Next check in ' + every / 1e3 + ' s.');
         if (r.state === 'error') console.error('Team API: ' + (r.say || 'no answer') + (r.status === 401 ? ' (the key was removed or replaced: ask the owner for a new join link)' : ''));
         if (r.status === 401) return 1;
         if (r.state === 'done' || r.state === 'given back') { console.log(r.state + ': ' + r.job.job + (r.link ? ' ' + r.link : '')); continue; } // straight on to the next
@@ -136,4 +165,10 @@ async function main(argv) {
 }
 
 export { main };
-if (import.meta.url === 'file://' + process.argv[1]) process.exitCode = await main(process.argv.slice(2));
+// run as a command: compare real paths, not 'file://' + argv[1]. On Windows import.meta.url is file:///C:/Users/... and argv[1] is
+// C:\Users\..., so the old test never matched: join and work did nothing and exited 0 without a word (2026-10-30, Beam on PowerShell).
+export function isMain(url = import.meta.url, arg = process.argv[1]) {
+  if (!arg) return false;
+  try { return realpathSync(fileURLToPath(url)) === realpathSync(arg); } catch (_) { return false; }
+}
+if (isMain()) process.exitCode = await main(process.argv.slice(2));

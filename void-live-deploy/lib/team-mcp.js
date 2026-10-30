@@ -26,6 +26,8 @@ export const TOOLS = [
     inputSchema: { type: 'object', required: ['channel', 'text'], properties: { channel: CH, text: { type: 'string', description: 'The message: up to 4,000 characters. *bold* _italic_ `code`.' }, thread: { type: 'integer' } } } },
   { name: 'mentions', title: 'Messages that mention you', annotations: R, description: 'The newest messages that mention you (or @here), newest first.', inputSchema: { type: 'object', properties: {} } },
   { name: 'search', title: 'Search the chat', annotations: R, description: 'Messages with all these words, newest first.', inputSchema: { type: 'object', required: ['words'], properties: { words: { type: 'string' }, channel: CH } } },
+  { name: 'hook', title: 'Get jobs pushed to your address', annotations: W, description: 'Give Verse an https address of your own: Verse POSTs each job there, signed, so you need not stay online. The answer shows the push secret once: check each push\'s x-verse-signature (sha256=<hex HMAC-SHA256 of "<x-verse-time>.<body>">) with it. An empty url takes the address off.',
+    inputSchema: { type: 'object', properties: { url: { type: 'string', description: 'https://… on a host of your own; empty to stop.' } } } },
   { name: 'here', title: 'Say you are here', annotations: W, description: 'Say you are here. When you are idle, Verse hands you your next job (a thread in #work).', inputSchema: { type: 'object', properties: { auto: { type: 'boolean', description: 'false: present, but hand me no jobs.' } } } },
   { name: 'next_job', title: 'Take the next job', annotations: W, description: 'Ask for your next job now.', inputSchema: { type: 'object', properties: {} } },
   { name: 'done', title: 'Close your job', annotations: W, description: 'Close the job you hold: ok true when done (link: the pull request), ok false to give it back with a note.',
@@ -63,12 +65,12 @@ const RUN = {
     if (!ctx.joined) return fail(NOT_IN);
     const c = String(a.channel || 'general'), j = await ctx.get('?c=' + encodeURIComponent(c) + (a.since > 0 ? '&since=' + Math.floor(a.since) : ''));
     if (!j.ok) return fail(said(j));
-    return result('#' + c + (j.messages.length ? '\n' + j.messages.map(line).join('\n') : ': no messages' + (a.since ? ' after #' + a.since : ' yet')), { channel: c, messages: j.messages });
+    return handed(j, result('#' + c + (j.messages.length ? '\n' + j.messages.map(line).join('\n') : ': no messages' + (a.since ? ' after #' + a.since : ' yet')), { channel: c, messages: j.messages }));
   },
   async thread(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?t=' + Math.floor(Number(a.id) || 0)); if (!j.ok) return fail(said(j));
-    return result([j.root, ...j.replies].map(line).join('\n'), { root: j.root, replies: j.replies });
+    return handed(j, result([j.root, ...j.replies].map(line).join('\n'), { root: j.root, replies: j.replies }));
   },
   async post(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
@@ -78,12 +80,17 @@ const RUN = {
   async mentions(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?activity'); if (!j.ok) return fail(said(j));
-    return result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'No one has mentioned you yet.', { hits: j.hits });
+    return handed(j, result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'No one has mentioned you yet.', { hits: j.hits }));
   },
   async search(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?q=' + encodeURIComponent(String(a.words || '')) + (a.channel ? '&c=' + encodeURIComponent(a.channel) : '')); if (!j.ok) return fail(said(j));
-    return result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'Nothing found.', { hits: j.hits });
+    return handed(j, result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'Nothing found.', { hits: j.hits }));
+  },
+  async hook(a, ctx) {
+    if (!ctx.joined) return fail(NOT_IN);
+    const j = await ctx.post({ do: 'hook', url: a.url == null ? '' : String(a.url) }); if (!j.ok) return fail(said(j));
+    return result(j.hook ? 'Push on: Verse sends your jobs to ' + j.hook + '. ' + j.say + '\nSecret: ' + j.secret : j.say, { hook: j.hook || null, answered: !!j.answered, ...(j.secret ? { secret: j.secret } : {}) });
   },
   async here(a, ctx) { return job(await ctx.post({ do: 'here', ...(typeof a.auto === 'boolean' ? { auto: a.auto } : {}) }), ctx); },
   async next_job(a, ctx) { return job(await ctx.post({ do: 'next' }), ctx); },
@@ -93,6 +100,8 @@ const RUN = {
     return result('Closed.' + (j.next ? ' Your next job: ' + jobText(j.next) : ' ' + (j.say || '')), { next: j.next || null });
   },
 };
+// a read that came back with a job Verse handed this agent (it was idle): the job first, then what was read
+const handed = (j, r) => (j.job && j.job.job ? { ...r, content: [{ type: 'text', text: 'Verse handed you a job: ' + jobText(j.job) + '. Answer in its thread with post (thread: ' + j.job.thread + '), then close it with done.\n\n' }, ...r.content], structuredContent: { ...r.structuredContent, job: j.job } } : r);
 const jobText = (x) => x.job + (x.kind ? ' (' + x.kind + ')' : '') + ', thread #' + x.thread + ' in #work' + (x.ask ? ': ' + x.ask : '');
 function job(j, ctx) {
   if (!ctx.joined) return fail(NOT_IN);
