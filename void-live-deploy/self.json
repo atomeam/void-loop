@@ -542,13 +542,29 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T05:13:28Z",
+   "subject": "Podcasts: a stage card for podcast searches, and the page's card shows its search"
+  },
+  {
+   "at": "2026-10-30T05:12:22Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T05:10:35Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T05:09:41Z",
+   "subject": "quote: mark the retry loop as right for the review"
+  },
   {
    "at": "2026-10-30T05:09:38Z",
    "subject": "Regenerate the generated files after the merge"
@@ -606,27 +622,11 @@
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
+   "at": "2026-10-30T04:58:44Z",
+   "subject": "quote: show a Wikiquote quote of the day, with its source, instead of one fixed line"
+  },
+  {
    "at": "2026-10-30T04:58:43Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:58:32Z",
-   "subject": "Verse Brain: watch skills lean again on top of the page-order fix, and the reload line names only the words from before"
-  },
-  {
-   "at": "2026-10-30T04:53:12Z",
-   "subject": "Self-check: a deploy's run waits for a full check instead of cancelling it"
-  },
-  {
-   "at": "2026-10-30T04:51:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:51:04Z",
-   "subject": "Markets: its stage card shows the coin open on the page"
-  },
-  {
-   "at": "2026-10-30T04:51:00Z",
    "subject": "Regenerate the generated files after the merge"
   }
  ],
