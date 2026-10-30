@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-30T04:04:48Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:49:25Z",
+   "subject": "The studio's route limit and its openapi note"
+  },
+  {
+   "at": "2026-10-30T07:47:19Z",
+   "subject": "Brain map: never freeze after a resize"
+  },
+  {
+   "at": "2026-10-30T07:44:44Z",
+   "subject": "proverb: a proverb from Wikiquote's English proverbs page, linked to its keyword"
+  },
+  {
+   "at": "2026-10-30T07:43:29Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:39:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T07:39:21Z",
    "subject": "The studio: a bench that paints the reference prompts with every image model and judges each picture"
+  },
+  {
+   "at": "2026-10-30T07:39:09Z",
+   "subject": "converter: Add Transition to Video (58 transitions, drawn on the device)"
+  },
+  {
+   "at": "2026-10-30T07:38:17Z",
+   "subject": "Sitemap: list /privacy/, /boards/rules/ and the four /generators/ pages so the self-check opens them"
   },
   {
    "at": "2026-10-30T07:36:50Z",
@@ -600,34 +628,6 @@
   {
    "at": "2026-10-30T07:26:48Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:25:43Z",
-   "subject": "rap: fit the master by ear (separate sub and low bands, peaking EQ), share renders across master-only retunes, hide the action row until a…"
-  },
-  {
-   "at": "2026-10-30T07:25:20Z",
-   "subject": "SEO table matches the live /converter/ and /rap/ pages, so a refresh no longer rolls them back"
-  },
-  {
-   "at": "2026-10-30T07:24:08Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:21:54Z",
-   "subject": "cards: show the answer's photo once, in the art box"
-  },
-  {
-   "at": "2026-10-30T07:21:32Z",
-   "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
-  },
-  {
-   "at": "2026-10-30T07:21:06Z",
-   "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
-  },
-  {
-   "at": "2026-10-30T07:18:41Z",
-   "subject": "markets: 24h move from yesterday's close, screener coins fall back to snapshot + Yahoo, honest sources"
   }
  ],
  "builders": {
