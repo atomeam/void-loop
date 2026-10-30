@@ -542,13 +542,33 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T04:07:55Z",
+   "subject": "Confirm line: pin what #1444 changed in the approval gate, and what it did not"
+  },
+  {
+   "at": "2026-10-30T04:06:07Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:06:00Z",
+   "subject": "Incidents closed: shard(s) 2 passed on f85055a7 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-30T04:05:57Z",
+   "subject": "deps.json after main came in"
+  },
+  {
+   "at": "2026-10-30T04:05:29Z",
+   "subject": "Verse checks its own pages after each deploy and shows them on the status card"
+  },
   {
    "at": "2026-10-30T04:05:14Z",
    "subject": "Regenerate the generated files after the merge"
@@ -608,26 +628,6 @@
   {
    "at": "2026-10-30T03:49:31Z",
    "subject": "Promote 11 more skills to proven on evidence, link the shipped STL and promotion asks"
-  },
-  {
-   "at": "2026-10-30T03:48:24Z",
-   "subject": "Rap: true rhymes for soft c, soft g and silent g; clean shared card; wired to notes, metronome and its own card"
-  },
-  {
-   "at": "2026-10-30T03:48:23Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T03:45:10Z",
-   "subject": "Verse Brain full screen: nothing covers the field"
-  },
-  {
-   "at": "2026-10-30T03:43:39Z",
-   "subject": "Movie lookup: guard the archive title read, and note why the SPARQL literal is safe"
-  },
-  {
-   "at": "2026-10-30T03:41:39Z",
-   "subject": "Site tester: keep the claims check running when the test pass is slow or the screenshot upload times out"
   }
  ],
  "builders": {

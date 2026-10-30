@@ -2016,7 +2016,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 23,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/markets.js",
@@ -2261,7 +2261,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/calshare.js",
@@ -2324,7 +2324,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/aurora-feed.js",
