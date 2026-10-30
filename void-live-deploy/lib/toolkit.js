@@ -288,15 +288,29 @@ const ROUTES = [
 // 'open' or 'the' before it or 'tool' or 'page' after it. A plain word the stage answers itself stays with the stage, whose card links the page:
 // 'verse brain' (skills/verse-brain.js), 'news' (the headlines card), 'time' (the clock), 'flip' (the coin), 'rap' (a rap), and words that say too little.
 const STAGE_KEEPS = new Set(['verse brain', 'brain', 'news', 'time', 'random', 'flip', 'rap', 'color', 'convert', 'music', 'image', 'team', 'identity', 'fix']);
+const STAGE_KEEPS_JOINED = new Set([...STAGE_KEEPS].map((k) => k.replace(/ /g, '')));
 const plainName = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 let toolNames = null;
 function toolNamed(t) {
   if (!toolNames) {
     toolNames = new Map();
-    for (const [p, label] of allTools()) for (const k of [plainName(label), plainName(p)]) if (k.length > 2 && !toolNames.has(k)) toolNames.set(k, p);
+    // a name run together ('wordcount', as typed into an address) counts too, from five letters up
+    for (const [p, label] of allTools()) for (const w of [plainName(label), plainName(p)]) for (const k of [w, w.replace(/ /g, '')]) if (k.length > (k === w ? 2 : 4) && !toolNames.has(k)) toolNames.set(k, p);
   }
   const n = plainName(t).replace(/^(?:open |show |go to )?(?:the |my |a |an )?/, '');
-  for (const k of [n, n.replace(/ (?:tool|page|app)$/, '')]) if (!STAGE_KEEPS.has(k) && toolNames.has(k)) return toolNames.get(k);
+  for (const k of [n, n.replace(/ (?:tool|page|app)$/, '')]) if (!STAGE_KEEPS.has(k) && !STAGE_KEEPS_JOINED.has(k) && toolNames.has(k)) return toolNames.get(k);
+  return null;
+}
+/** the tool a missing address, or the words asked there, names ('/wordcount', '/password-generator/', '/search/?q=word+count'), as { href, label },
+ * or null. For the 404 page (2026-10-30): a typed address one letter or one dash off a tool led to a page with nothing on it. Pure. */
+export function toolNear(pathname, q) {
+  let path = String(pathname || ''); try { path = decodeURIComponent(path); } catch { /* a broken escape stays as typed */ }
+  const segs = path.replace(/\.html?$/i, '').split('/').map(plainName).filter(Boolean);
+  for (const words of [String(q || '').trim(), segs.join(' '), segs[segs.length - 1] || '', segs[0] || '']) {
+    if (!words) continue;
+    const to = toolNamed(words);
+    if (to) return { href: to, label: (allTools().find(([p]) => p === to) || [to, to])[1] };
+  }
   return null;
 }
 /** where an ask goes: the tool's link with the ask in it, the tool a name names, or the stage for anything else. Pure. */
