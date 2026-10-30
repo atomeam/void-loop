@@ -536,7 +536,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/cheat-codes/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -584,13 +584,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/films/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/podcast/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -605,6 +605,42 @@
     <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/privacy/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/boards/rules/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/generators/make/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/generators/chat/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/generators/story/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/generators/forum/</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/paint/</loc>
@@ -644,7 +680,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/cpan/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -770,7 +806,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -812,7 +848,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/149-local-intero-not-claim/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -890,7 +926,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/171-webgpu-resonance-agent/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1202,7 +1238,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f178-webgpu-rnn-softbody-dom/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1238,7 +1274,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f184-webgpu-sph-vortex-portals/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1304,7 +1340,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f194-webxr-gaze-rnn-hybrid-sculpt/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1448,13 +1484,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f210-compression-oracle-world/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f211-webxr-hand-rnn-dom-curators/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1472,7 +1508,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f215-codec-retina-gardener/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1496,13 +1532,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f219-webgpu-spatial-attention-mind/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f220-webgpu-mlp-sph-genome-competition/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1526,7 +1562,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f223-webgpu-neural-kernel-competition/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1562,7 +1598,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f228-orientation-sealed-dom-agents/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1652,25 +1688,25 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f240-webgpu-neural-dom-policy-arena/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f241-webgpu-memory-consolidation-lattice/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f242-acoustic-orientation-crystal-mind/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f243-sealed-genome-webrtc-dom-arena/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1694,7 +1730,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f247-webxr-gaze-rnn-dom-portals/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1712,7 +1748,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f250-webgpu-intent-flow-hypothesis-mind/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1832,7 +1868,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f265-webgpu-intent-rnn-fluid-memory-orbs/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -1964,7 +2000,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f286-webgpu-online-learning-spatial-agent/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2150,7 +2186,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f313-webgpu-latent-dream-volume-curator/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2360,7 +2396,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f428-webgpu-acoustic-attention-orbs/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2384,7 +2420,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f432-webgpu-mlp-sph-genome-competition/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2432,7 +2468,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f440-webgpu-online-learning-spatial-agent/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2474,13 +2510,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f447-webgpu-lbm-evolved-swimmers-mind/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/f448-webxr-hand-verlet-genome-portal/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
