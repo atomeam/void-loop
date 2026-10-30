@@ -164,6 +164,16 @@ export const JOURNEYS = {
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
   },
+  'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto': async (p, check) => {
+    const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    await open(); await check('the time page opened on Kyoto');
+    await Promise.all([p.waitForURL(/\/weather\/\?place=/), p.locator('#related a', { hasText: 'The weather in this city' }).click()]); await p.waitForSelector('#q');
+    if ((await p.locator('#q').inputValue()) !== 'Kyoto') throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not Kyoto');
+    await check('the weather page opened on Kyoto');
+    await open(); await Promise.all([p.waitForURL(/\/local\/\?place=/), p.locator('#related a', { hasText: 'Radio and TV in this city' }).click()]); await p.waitForSelector('#q');
+    if ((await p.locator('#q').inputValue()) !== 'Kyoto') throw new Error('the local page opened on "' + (await p.locator('#q').inputValue()) + '", not Kyoto');
+    await check('the local radio and TV page opened on Kyoto');
+  },
   'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); const sent = (new URL(await p.locator('#related a', { hasText: 'Pick one of these names at random' }).getAttribute('href'), ORIGIN).searchParams.get('list') || '').split('\n');

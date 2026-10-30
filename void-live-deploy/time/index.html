@@ -125,7 +125,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt } from '/lib/zones.js';
+  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt, cityName } from '/lib/zones.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
   const saved = load(), you = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -266,7 +266,12 @@
   for (const id of ['d1', 'd2', 'bn']) $(id).addEventListener('input', drawDates);
   drawAll(); drawDates(); if (evShown !== null) $('event').scrollIntoView({ block: 'start' }); // a link that carries ?at= (the calendar's event) opens on that moment
   setInterval(() => { drawTop(); if (new Date().getSeconds() === 0) drawClocks(); }, 1000);
-  mountRelated(document.getElementById('related'), '/time/', [], { card: () => timeAsk(main, places) });
+  // the city at the top (the one asked for, else your own clock's city) carried to its weather and its local radio and TV, as /weather/ links back here
+  const topCity = () => cityName(main || youPlace);
+  mountRelated(document.getElementById('related'), '/time/', [
+    { label: 'The weather in this city', href: () => (topCity() ? '/weather/?place=' + encodeURIComponent(topCity()) : null) },
+    { label: 'Radio and TV in this city', href: () => (topCity() ? '/local/?place=' + encodeURIComponent(topCity()) : null) },
+  ], { card: () => timeAsk(main, places) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
