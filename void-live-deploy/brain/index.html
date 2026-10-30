@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: none">
+<meta name="theme-color" content="#05040c">
+<title>Verse Brain full screen: watch a mind think · Verse</title>
+<meta name="description" content="Verse Brain on the whole screen: one workspace that twenty organs share, its attention, its surprise, its memory and its will, live. Move over it, tell it words, drag what it holds, hum to it. Every number shown is its real state. No account; nothing is sent.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Verse Brain full screen: watch a mind think · Verse">
+<meta property="og:description" content="Verse Brain on the whole screen: one workspace that twenty organs share, its attention, its surprise, its memory and its will, live. Every number shown is its real state.">
+<meta property="og:url" content="https://a-to-mind.com/brain/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { color-scheme: dark; --bg: #05040c; --ink: #eceaf7; --soft: #a9a5bf; --line: rgba(255,255,255,.16); --glass: rgba(12,10,26,.72); --accent: #a58bff; --on-accent: #120f20; --warm: #ffbe5a; --hot: #ff5d7a; --cool: #7fd8ff; --pw: min(400px, 92vw); }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, sans-serif; }
+  * { box-sizing: border-box; }
+  a { color: var(--accent); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /* the field: the whole screen, under everything */
+  #field { position: fixed; inset: 0; z-index: 0; background: radial-gradient(120% 90% at 50% 40%, #0b0820 0%, #05040c 70%); overflow: hidden; }
+  #field .ff-frame { position: absolute !important; inset: 0; border-radius: 0 !important; transform: none !important; filter: none !important; } /* full screen stays sharp: no breathing scale, no blur on the canvas; its tissue still moves */
+  #field canvas { width: 100% !important; height: 100% !important; background: transparent !important; outline: none; }
+  #field canvas:focus-visible { box-shadow: inset 0 0 0 3px var(--accent); }
+  #field .vb-orb { box-shadow: 0 0 18px rgba(165,139,255,.35); backdrop-filter: blur(2px); }
+  #you { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 2px solid var(--cool); border-radius: 50%; pointer-events: none; display: none; z-index: 2; box-shadow: 0 0 12px var(--cool); }
+  /* the top bar */
+  #bar { position: fixed; top: 0; left: 0; right: 0; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: max(10px, env(safe-area-inset-top)) 12px 10px; pointer-events: none; }
+  #bar > * { pointer-events: auto; }
+  #brand { font-weight: 700; letter-spacing: .02em; font-size: 15px; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 12px rgba(165,139,255,.6); margin-right: auto; }
+  #pulse { width: 9px; height: 9px; border-radius: 50%; background: var(--hot); box-shadow: 0 0 10px var(--hot); }
+  .tb { font: inherit; font-size: 14px; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; min-height: 40px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .tb[aria-pressed=true], .tb[aria-expanded=true] { border-color: var(--accent); }
+  .tb:disabled { opacity: .55; cursor: default; }
+  .tb:focus-visible, button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* the live numbers: top left, read from the brain itself */
+  #live { position: fixed; z-index: 2; left: 12px; top: 64px; width: min(360px, calc(100vw - 24px)); padding: 10px 12px; background: var(--glass); border: 1px solid var(--line); border-radius: 14px; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: none; }
+  #live dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 0; }
+  #live dt { color: var(--soft); } #live dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+  #live h2 { font: 600 11px/1.2 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); margin: 8px 0 4px; }
+  #live h2:first-child { margin-top: 0; }
+  #live .bar-i { display: block; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--cool), var(--accent), var(--hot)); transform-origin: 0 50%; margin-top: 2px; }
+  #bar .hint { text-shadow: 0 1px 6px #000, 0 0 2px #000; }
+  /* the side panel: everything the card has, plus all it says about itself */
+  #panel { position: fixed; z-index: 4; top: 0; right: 0; bottom: 0; width: var(--pw); background: var(--glass); border-left: 1px solid var(--line); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: max(12px, env(safe-area-inset-top)) 14px 24px; transition: transform .28s ease; }
+  #panel[hidden] { display: block; transform: translateX(105%); visibility: hidden; }
+  #panelHead { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+  #panelHead h1 { font-size: 17px; margin: 0; flex: 1; }
+  .lede { font-size: 13px; color: var(--soft); margin: 0 0 8px; }
+  #card .thing { position: static !important; width: 100% !important; filter: none !important; box-shadow: none !important; border-radius: 0 !important; }
+  #card .g-head { display: none; }
+  #card .ff-hud { transform: none !important; font-size: 13.5px !important; }
+  #card .g-btn, #card .mf-mode { font: inherit; font-size: 13px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; min-height: 40px; cursor: pointer; }
+  #card .g-btn[aria-pressed=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  #card .g-btn:disabled { opacity: .55; cursor: default; }
+  #card input.vb-word { font-size: 16px !important; min-height: 40px; }
+  #card table { font-size: 12px; } #card td { border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+  #card summary, #saysBox summary { cursor: pointer; min-height: 40px; display: flex; align-items: center; font-weight: 600; }
+  #saysBox ul { margin: 4px 0; padding-left: 18px; font-size: 13px; } #saysBox li { margin: 3px 0; }
+  #related, #asks { margin-top: 14px; font-size: 13px; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; color: var(--soft); } .tk-row a { color: var(--soft); }
+  .note { font-size: 12.5px; color: var(--soft); }
+  footer { font-size: 12.5px; color: var(--soft); margin-top: 10px; } footer a { color: var(--soft); }
+  /* a phone: the panel is a sheet from the bottom, the numbers a strip */
+  @media (max-width: 720px) {
+    #panel { top: auto; left: 0; width: auto; max-height: 58dvh; border-left: 0; border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding-bottom: max(18px, env(safe-area-inset-bottom)); }
+    #panel[hidden] { transform: translateY(105%); }
+    #live { top: auto; bottom: max(64px, calc(env(safe-area-inset-bottom) + 56px)); left: 8px; width: calc(100vw - 16px); font-size: 11px; padding: 8px 10px; }
+    #live .more { display: none; }
+    #live dt:nth-of-type(n+4), #live dd:nth-of-type(n+4) { display: none; } /* a phone keeps focus, will and surprise in view; the rest is in the panel's lines */
+    .lede { display: none; }
+    #bar .hint { display: none; }
+  }
+  body.panel-open #live { right: auto; }
+  @media (min-width: 721px) { body.panel-open #bar, body.panel-open #field { right: var(--pw); } } /* nothing of the field hides under the panel: it fills what is left, and all of the screen once the panel is hidden */
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/brain/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Verse Brain, full screen: a mind you can watch think","url":"https://a-to-mind.com/brain/","description":"Verse Brain on the whole screen: one workspace that twenty organs share, its attention spotlight, surprise in red, what its memory expects, a swarm, a creature, a plant, a painter and a flow, all live. Move over it and it predicts you; tell it words and drag what it holds; say Good when it does something you like, ask it why, hum to it or play it a tune. Its focus, its will, its surprise and what each organ has gained are shown as they are. The same brain as its card on the Verse stage; what it learns is kept on this device. No account; nothing is sent.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"verse brain, ai brain simulation, artificial brain online, watch an ai think, neural workspace visualization, global workspace theory demo, full screen brain","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/brain/?t={t}"},"t-input":"required name=t"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Verse Brain, full screen: a mind you can watch think","item":"https://a-to-mind.com/brain/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/brain/app.js">
+<link rel="modulepreload" href="/skills/verse-brain.js">
+<link rel="modulepreload" href="/lib/field-stage.js">
+<link rel="modulepreload" href="/lib/field-kit.js">
+<link rel="modulepreload" href="/lib/motion-throttle.js">
+<link rel="modulepreload" href="/lib/shared-field.js">
+<link rel="modulepreload" href="/lib/mode-field.js">
+<link rel="modulepreload" href="/lib/live-cards.js">
+<link rel="modulepreload" href="/lib/mind-field-modes.js">
+<link rel="modulepreload" href="/lib/brain.js">
+<link rel="modulepreload" href="/lib/brain-workspace.js">
+<link rel="modulepreload" href="/lib/brain-organs.js">
+<link rel="modulepreload" href="/lib/brain-mind.js">
+<link rel="modulepreload" href="/lib/brain-creature.js">
+<link rel="modulepreload" href="/lib/brain-hearing.js">
+<link rel="modulepreload" href="/lib/brain-painter.js">
+<link rel="modulepreload" href="/lib/brain-gardener.js">
+<link rel="modulepreload" href="/lib/brain-grower.js">
+<link rel="modulepreload" href="/lib/brain-formula.js">
+<link rel="modulepreload" href="/lib/brain-current.js">
+<link rel="modulepreload" href="/lib/brain-grains.js">
+<link rel="modulepreload" href="/lib/field-resonance.js">
+<link rel="modulepreload" href="/lib/brain-synapses.js">
+<link rel="modulepreload" href="/lib/brain-bridge.js">
+<link rel="modulepreload" href="/lib/brain-host.js">
+<link rel="modulepreload" href="/lib/brain-store.js">
+<link rel="modulepreload" href="/lib/brain-field.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<div id="field" aria-label="Verse Brain, live"><div id="you" aria-hidden="true"></div></div>
+<header id="bar">
+  <span id="brand"><span id="pulse" aria-hidden="true"></span>Verse Brain</span>
+  <span class="note hint">Move over it · arrows move you · Esc leaves</span>
+  <button type="button" class="tb" id="fs" aria-pressed="false">Fill the screen</button>
+  <button type="button" class="tb" id="panelBtn" aria-controls="panel" aria-expanded="true">Hide panel</button>
+  <a class="tb" id="exit" href="/">Leave</a>
+</header>
+<section id="live" aria-label="Live numbers from the brain" aria-live="off">
+  <h2>Live, from the brain itself</h2>
+  <dl id="liveNow"><dt>Starting</dt><dd>the brain wakes up</dd></dl>
+  <div class="more"><h2>Measured gains</h2><dl id="liveGains"><dt>None yet</dt><dd>each organ is shown once it has a score</dd></dl></div>
+</section>
+<main id="panel" aria-label="Verse Brain controls, organs and what it says">
+  <div id="panelHead"><h1>Verse Brain, full screen</h1></div>
+  <p class="lede">The same brain as its card on the Verse stage: one workspace that twenty organs share. Move over the field and it predicts you; where it guessed wrong turns red and its attention moves there. Tell it words, drag what it holds, say Good, ask it why, hum to it.</p>
+  <div id="card"></div>
+  <details id="saysBox" open><summary>What it says about itself</summary><ul id="says"><li>Waking up.</li></ul></details>
+  <noscript><p>Verse Brain runs in your browser with JavaScript; with it off there is no brain to show.</p></noscript>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/brain/?t=what%20are%20you%20doing%3F">Ask what it is doing</a><a href="/brain/?t=why%20did%20that%20form%3F">Ask why that formed</a><a href="/brain/?t=what%20just%20happened%3F">Ask what just happened</a><a href="/brain/?t=ocean">Tell it: ocean</a><a href="/brain/?t=music%20memory">Tell it: music and memory</a><a href="/brain/?t=dream%20of%20flying">Tell it: a dream of flying</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/piano/">Piano</a> <a href="/tuner/">Tuner</a> <a href="/notes/">Notes</a> <a href="/rap/">Verse raps</a> <a href="/learn-to-draw/">Learn to draw</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="note" id="trust">Free, no account, no ads. It runs in your browser: what it learns is kept on this device, and nothing is sent. Forget clears it.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: the brain itself is a module its head preloads
+  import '/brain/app.js';
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

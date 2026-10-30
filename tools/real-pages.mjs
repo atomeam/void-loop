@@ -135,6 +135,34 @@ export const SPECS = {
   },
   // the file converter (onlineconverter.com assimilated, 2026-10-29): a search opens the tool, a real HTML file becomes plain text on the device,
   // the text file is checked word for word, and the share link opens the same tool with no file in it
+  // Verse Brain full screen (owner, 2026-10-30): the field fills the window at the device's pixel ratio, a word told becomes an orb on it, the live
+  // numbers and what it says about itself are the brain's own, Good is heard, the panel folds away, and a smaller window refits the field
+  '/brain/': async (t) => {
+    await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
+    const fit = () => t.p.evaluate(() => { const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); return { w: Math.round(r.width), h: Math.round(r.height), vw: innerWidth, vh: innerHeight, cw: c.width, ch: c.height, d, sw: document.documentElement.scrollWidth }; });
+    const side = await fit(), pw = await t.p.locator('#panel').evaluate((e) => e.getBoundingClientRect().width);
+    t.ok(Math.abs(side.w + pw - side.vw) <= 2 && Math.abs(side.cw - side.w * side.d) <= 2, 'with the panel open the field fills the rest of the window, nothing under the panel: ' + JSON.stringify(side));
+    await t.click('#panelBtn'); await t.p.waitForTimeout(400);
+    const a = await fit();
+    t.ok(Math.abs(a.w - a.vw) <= 2 && Math.abs(a.h - a.vh) <= 2 && Math.abs(a.cw - a.vw * a.d) <= 2 && Math.abs(a.ch - a.vh * a.d) <= 2 && a.sw <= a.vw, 'the field fills the window, drawn at the pixel ratio: ' + JSON.stringify(a));
+    t.ok(await t.p.locator('#panel').evaluate((e) => e.hidden), 'the panel folds away'); await t.click('#panelBtn'); await t.p.waitForTimeout(400);
+    await t.fill('.vb-word', 'ocean memory'); await t.click('.vb-tell'); await t.p.waitForTimeout(900);
+    const orbs = await t.p.evaluate(() => [...document.querySelectorAll('#field .vb-orb')].map((o) => o.textContent));
+    t.ok(orbs.some((x) => /ocean|memory/i.test(x)), 'a word told becomes an orb on the field: ' + JSON.stringify(orbs).slice(0, 90));
+    t.ok(/region \d+ of 12/.test(await t.text('#liveNow')) && /utility/.test(await t.text('#liveNow')), 'the live numbers show its focus and will: ' + (await t.text('#liveNow')).slice(0, 80));
+    const lines = await t.p.evaluate(() => [...document.querySelectorAll('#says li')].map((l) => l.textContent));
+    t.ok(lines.length >= 3 && /^Focus: region \d+ of 12/.test(lines[0]) && lines.some((l) => /^Genome /.test(l)), 'what it says about itself is listed: ' + lines.length + ' lines');
+    t.ok((await t.p.locator('.vb-organs tr').count()) >= 20, 'the organ table lists every organ');
+    await t.click('.vb-good'); t.ok(/Rewarded/.test(await t.waitText('.vb-said', /Rewarded/, 3000)), 'Good rewards the will');
+    await t.p.setViewportSize({ width: 390, height: 780 }); await t.p.waitForTimeout(500);
+    const b = await fit();
+    t.ok(Math.abs(b.w - 390) <= 2 && Math.abs(b.h - 780) <= 2 && b.sw <= 390, 'a phone-sized window refits the field with no sideways scroll: ' + JSON.stringify(b));
+    await t.p.setViewportSize({ width: 1200, height: 900 }); await t.p.waitForTimeout(300);
+    // a link that asks it something (?t=, the common asks): answered from its own state on load
+    const p2 = await t.p.context().newPage(); await p2.goto(new URL('/brain/?t=' + encodeURIComponent('what are you doing?'), t.p.url()).href, { waitUntil: 'load' });
+    const ans = await p2.waitForFunction(() => { const e = document.querySelector('.vb-said'); return e && e.textContent.length > 20 && e.textContent; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+    t.ok(/\w/.test(ans) && !/Nothing it could hold/.test(ans), 'a ?t= link is answered on load: ' + String(ans).slice(0, 90)); await p2.close();
+  },
   '/converter/': async (t) => {
     t.ok(/106 tools: 21 on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/.test(await t.text('#counts')), 'all 106 tools counted: ' + (await t.text('#counts')).slice(0, 80));
     await t.fill('#q', 'epub to txt'); await t.click('#find button[type=submit]'); await t.p.waitForTimeout(300);

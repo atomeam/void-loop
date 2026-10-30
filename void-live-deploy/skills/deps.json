@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 993,
+ "counted": 994,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -588,7 +588,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 9
+   "tests": 10
   },
   {
    "file": "lib/success-pulse.js",
@@ -910,6 +910,13 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
+   "tests": 1
+  },
+  {
+   "file": "lib/brain-ask.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
    "tests": 1
   },
   {
@@ -1848,7 +1855,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 14
+   "tests": 15
   },
   {
    "file": "lib/tower-rank.js",
@@ -2856,7 +2863,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 10
+   "tests": 11
   },
   {
    "file": "lib/speak.js",
@@ -4473,6 +4480,16 @@
     "lib/about-skill.js",
     "skills/about-skill.js",
     "skills/own-parts.js"
+   ]
+  },
+  "lib/brain-ask.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/toolkit.js",
+    "skills/verse-brain.js"
+   ],
+   "reachedBy": [
+    "skills/toolkit.js"
    ]
   },
   "lib/brain-bridge.js": {
@@ -10036,7 +10053,8 @@
     "lib/tool-sites.js",
     "lib/flight-sites.js",
     "lib/job-sites.js",
-    "lib/converter-ask.js"
+    "lib/converter-ask.js",
+    "lib/brain-ask.js"
    ],
    "importedBy": [
     "skills/toolkit.js"
@@ -14140,6 +14158,7 @@
     "lib/brain-field.js",
     "lib/brain-hearing.js",
     "lib/brain-painter.js",
+    "lib/brain-ask.js",
     "lib/brain-current.js"
    ],
    "importedBy": []
