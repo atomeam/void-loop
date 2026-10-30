@@ -4,9 +4,11 @@
 // play says so on its row and offers the station's own link. Saved stations stay on this device.
 import { tvNear, groupTv, placeName, linkOf, httpsOf, placeFromLink, flightsLink } from '/lib/local-media.js';
 import { mountRelated } from '/lib/toolkit.js';
+import { mountWorld } from '/local/world.js';
 
 const $ = (id) => document.getElementById(id);
-const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.3/hls.light.min.mjs';
+// TV plays through the full hls.js build, the one that reads the stations' closed captions (CEA-608), so Verse can follow what is said (local/watch.js)
+const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.3/hls.light.min.mjs', HLS_CAPTIONS = '/vendor/hls.js-1.7.3/hls.min.mjs';
 const audio = $('audio'), video = $('video');
 let place = null, from = '', tab = 'radio', radio = [], tv = [], tvIndex = null, hls = null, current = null, watchdog = 0;
 
@@ -28,6 +30,7 @@ async function setPlace(p, how) {
   place = p; from = how; showWhere();
   if (how !== 'link') history.replaceState(null, '', how === 'connection' ? linkOf({ tab: tab === 'tv' ? 'tv' : '' }) : linkOf({ place: p.city || placeName(p), tab: tab === 'tv' ? 'tv' : '' }));
   await Promise.all([loadRadio(), loadTv()]);
+  world.setCountry(p.country); // the rest of the world goes under the local lists, the visitor's own country first
 }
 async function findPlace(name) {
   $('where').textContent = 'Looking for ' + name + '…';
@@ -131,10 +134,11 @@ function setNow(st) {
   $('toggle').textContent = st === 'playing' || st === 'loading' ? 'Pause' : 'Play'; $('toggle').setAttribute('aria-label', $('toggle').textContent);
   const site = $('now-site'); site.hidden = !current.site; if (current.site) site.href = current.site;
   markPlaying();
+  document.dispatchEvent(new CustomEvent('local:now', { detail: { station: current.station, state: st, media: current.media, name: current.name } })); // watch with Verse (local/watch.js)
 }
 async function attach(media, url, isHls, onFail) {
   if (!isHls || (media.canPlayType('application/vnd.apple.mpegurl') && !window.MediaSource)) { media.src = url; return; }
-  let Hls; try { ({ default: Hls } = await import(HLS)); } catch (_) { media.src = url; return; }
+  let Hls; try { ({ default: Hls } = await import(media === video ? HLS_CAPTIONS : HLS)); } catch (_) { media.src = url; return; }
   if (!Hls.isSupported()) { media.src = url; return; }
   hls = new Hls({ enableWorker: true, lowLatencyMode: false, maxBufferLength: 20 });
   hls.on(Hls.Events.ERROR, (_, d) => { if (d && d.fatal) onFail(); });
@@ -155,11 +159,11 @@ function begin(media, item, urls) {
   go();
 }
 function playRadio(r) {
-  stop(); current = { kind: 'radio', id: r.id, name: r.name, sub: [r.codec, r.kbps ? r.kbps + ' kbps' : ''].filter(Boolean).join(' '), site: r.home || r.stream, media: audio };
+  stop(); current = { kind: 'radio', id: r.id, name: r.name, sub: [r.codec, r.kbps ? r.kbps + ' kbps' : ''].filter(Boolean).join(' '), site: r.home || r.stream, media: audio, station: { kind: 'radio', id: r.id, name: r.name } };
   begin(audio, r, [r.play]);
 }
 function playTv(g, s) {
-  stop(); current = { kind: 'tv', id: g.t, name: g.t + (s.n ? ' · ' + s.n : ''), sub: s.n, site: s.w, media: video };
+  stop(); current = { kind: 'tv', id: g.t, name: g.t + (s.n ? ' · ' + s.n : ''), sub: s.n, site: s.w, media: video, station: { kind: 'tv', cc: g.cc || (place && place.country) || '', id: s.id, name: g.t, network: s.n || '' } };
   const urls = s.s.map(httpsOf).filter(Boolean); if (!urls.length) { setNow('failed'); return; }
   begin(video, { hls: true }, urls);
   $('screen').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -170,6 +174,7 @@ $('toggle').addEventListener('click', () => {
   if (m.paused) { m.play().catch(() => {}); setNow('loading'); } else { m.pause(); setNow('paused'); }
 });
 $('vol').addEventListener('input', () => { audio.volume = video.volume = Number($('vol').value); });
+const world = mountWorld({ el, getJson, host, playTv, playRadio, markPlaying, localRadio: () => radio });
 
 // ---- tabs, the form, the start
 function setTab(t) {
@@ -202,5 +207,5 @@ drawRadio();
 const linked = placeFromLink(location.search);
 if (linked) { $('q').value = linked.city; setPlace(linked, 'link'); }
 else if (params.get('place')) { $('q').value = params.get('place'); findPlace(params.get('place')); }
-else getJson('/api/local').then((j) => { if (j.ok) setPlace(j.place, 'connection'); else { $('where').textContent = j.say || 'Type a town or city to find its stations.'; } })
-  .catch(() => { $('where').textContent = 'Verse could not reach the station directory just now, so it does not know where you are. Type a town or city to try again.'; });
+else getJson('/api/local').then((j) => { if (j.ok) setPlace(j.place, 'connection'); else { $('where').textContent = j.say || 'Type a town or city to find its stations.'; world.setCountry(''); } })
+  .catch(() => { $('where').textContent = 'Verse could not reach the station directory just now, so it does not know where you are. Type a town or city to try again.'; world.setCountry(''); });
