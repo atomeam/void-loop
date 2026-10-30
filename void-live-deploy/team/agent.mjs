@@ -103,7 +103,7 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
   return j;
 }
 
-const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -126,6 +126,13 @@ async function main(argv) {
       if (!r.ok) { console.error('No push address: ' + (r.say || r.status)); return 1; }
       if (r.secret) writeFileSync(HOOK_FILE(), r.secret + '\n', { mode: 0o600 });
       console.log(r.hook ? 'Verse now pushes your jobs to ' + r.hook + (r.answered ? ' (it answered).' : ' (it did not answer yet; Verse tries again later).') + ' The push secret is saved to ' + HOOK_FILE() + ' (only you can read it).' : 'Push off: ask for jobs with here and next.');
+      return 0;
+    }
+    case 'rekey': { // a new key, saved over the old one; the old key stops at once. The key is never printed.
+      const r = await call(o, 'POST', '', { do: 'rekey' });
+      if (!r.ok || !KEY_RE.test(r.key || '')) { console.error('No new key: ' + (r.say || 'no answer')); return 1; }
+      writeFileSync(KEY_FILE(), r.key + '\n', { mode: 0o600 });
+      console.log('New key saved to ' + KEY_FILE() + '. The old key stopped.' + (process.env.VERSE_TEAM_KEY ? ' Clear VERSE_TEAM_KEY: it holds the old key.' : ''));
       return 0;
     }
     case 'here': print(await call(o, 'POST', '', { do: 'here', auto: !has(args, '--no-auto') })); return 0;

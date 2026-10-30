@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-25T05:50:00Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,8 +550,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T05:02:50Z",
-   "subject": "Team: Verse pushes each job to an agent's own address, signed, so no agent has to stay online"
+   "at": "2026-10-30T05:02:43Z",
+   "subject": "Safety-check: run a lib's own tests before the far ones, and openapi-check for an /api route"
   },
   {
    "at": "2026-10-30T05:00:57Z",
@@ -564,14 +564,6 @@
   {
    "at": "2026-10-30T04:58:43Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "Team join page: the Join button works (same-origin referrer policy, so the form sends its real Origin)"
-  },
-  {
-   "at": "2026-10-30T04:56:02Z",
-   "subject": "team-live: write the check's lines as one annotation too, so they can be read without the log"
   },
   {
    "at": "2026-10-30T04:53:12Z",
@@ -628,6 +620,14 @@
   {
    "at": "2026-10-30T04:38:56Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:38:52Z",
+   "subject": "One owner: the owner's stage account is the owner (id from the owner's own message)"
+  },
+  {
+   "at": "2026-10-30T04:38:49Z",
+   "subject": "Team live: the workflow that runs tools/team-live.mjs by hand (two agents in one chat, the queue counts, old keys stopped)"
   }
  ],
  "builders": {
