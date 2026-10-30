@@ -148,7 +148,7 @@ test('a status read needs both a change and a wait, and never takes a complaint 
 });
 
 // The report behind the card the owner pasted on 2026-10-30 (lines joined by ⏎, as a copied chat joins them). The card read its closing checks and a
-// time stamp back as "Changed:" lines, and "4 things still failing" over a main that had passed every shard: the noun "the red", a sentence on what
+// time stamp back as "Changed:" lines, and said four were still failing over a main that had passed every shard: the noun "the red", a sentence on what
 // the suite does, and a red the report itself bounds in time.
 test('the 2026-10-30 report: closing checks and time stamps are not changes, and "the red", a suite rule and a bounded red are not failing', async () => {
   const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');

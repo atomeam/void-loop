@@ -83,7 +83,7 @@ export function summaryOf(t) {
     for (const w of t.read.waits) out.push('Waiting: ' + w);
     if (t.read.next) out.push('Next step: ' + t.read.next);
   }
-  // the report's word, not the state: the live lines above say what is true now (2026-10-30: "4 things still failing" over a green main)
+  // the report's word, not the state: the live lines above say what is true now (2026-10-30: the card said four were still failing over a green main)
   out.push(t.failures.length ? 'It names ' + t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' as failing' : 'Nothing in it names a failure');
   return out;
 }
