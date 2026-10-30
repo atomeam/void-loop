@@ -1,6 +1,7 @@
 // lib/image-handoff.js: one picture carried from one page to the next through this browser's IndexedDB (run: node --test tools/image-handoff.test.mjs)
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { imageLink, wantsImage, withoutImage, fileNameOf, usable, putImage, takeImage, sendImage, receiveImage, MAX_AGE, MAX_BYTES } from '../void-live-deploy/lib/image-handoff.js';
+import { imageLink, wantsImage, withoutImage, fileNameOf, usable, putImage, takeImage, sendImage, receiveImage, MAX_AGE, MAX_BYTES,
+  docLink, wantsDoc, docNameOf, usableDoc, putDoc, takeDoc, sendDoc, receiveDoc } from '../void-live-deploy/lib/image-handoff.js';
 
 const mem = () => { let v; return { get: async () => v, set: async (x) => { v = x; } }; };
 const png = (n = 10) => new Blob([new Uint8Array(n)], { type: 'image/png' });
@@ -61,4 +62,34 @@ test('a receiving page opens the kept picture and tidies its address', async () 
   assert.deepEqual(got, ['fox.png', '/image/']); assert.deepEqual(seen, ['/paint/']);
   got = null; assert.equal(await receiveImage(() => { got = 1; }, { search: '', pathname: '/paint/', hash: '' }, hist, st), false); assert.equal(got, null);
   assert.equal(await receiveImage(() => {}, loc, hist, mem()), false, 'nothing kept');
+});
+
+const pdf = (n = 10) => new Blob([new Uint8Array(n)], { type: 'application/pdf' });
+
+test('a PDF goes by ?doc=handoff, with a safe .pdf name, and only a recent PDF is offered', () => {
+  assert.equal(docLink('/translate/'), '/translate/?doc=handoff');
+  assert.equal(docLink('/translate/?to=de'), '/translate/?to=de&doc=handoff');
+  assert.equal(docLink('/translate/?doc=handoff'), '/translate/?doc=handoff');
+  assert.ok(wantsDoc('?doc=handoff')); assert.ok(!wantsDoc('?img=handoff')); assert.ok(!wantsImage('?doc=handoff'));
+  assert.equal(docNameOf('Q3 report: final.pdf'), 'Q3-report-final.pdf'); assert.equal(docNameOf(''), 'document.pdf'); assert.equal(docNameOf('../../x.pdf'), 'x.pdf');
+  const now = 1_000_000_000;
+  assert.ok(usableDoc({ blob: pdf(), at: now }, now));
+  assert.ok(!usableDoc({ blob: pdf(), at: now - MAX_AGE - 1 }, now), 'older than an hour');
+  assert.ok(!usableDoc({ blob: png(), at: now }, now), 'a picture is not a document');
+  assert.ok(!usable({ blob: pdf(), at: now }, now), 'and a document is not a picture');
+  assert.ok(!usableDoc({ blob: { type: 'application/pdf', size: MAX_BYTES + 1 }, at: now }, now), 'too big');
+});
+
+test('a kept PDF comes back to the page that asks for it, and the address is tidied', async () => {
+  const st = mem(), now = Date.now();
+  assert.ok(await putDoc(pdf(64), { name: 'hello-rotated.pdf', fromPage: '/pdf/' }, st, now));
+  assert.ok(!(await putDoc(png(), {}, mem(), now)), 'a picture is not kept as a document');
+  const got = await takeDoc(st, now + 1000); assert.equal(got.file.name, 'hello-rotated.pdf'); assert.equal(got.file.type, 'application/pdf'); assert.equal(got.fromPage, '/pdf/');
+  const seen = [], hist = { state: null, replaceState: (s, t, u) => seen.push(u) };
+  let opened = null; assert.ok(await receiveDoc((f, from) => { opened = [f.name, from]; }, { search: '?to=de&doc=handoff', pathname: '/translate/', hash: '' }, hist, st));
+  assert.deepEqual(opened, ['hello-rotated.pdf', '/pdf/']); assert.deepEqual(seen, ['/translate/?to=de']);
+  assert.equal(await receiveDoc(() => {}, { search: '', pathname: '/translate/', hash: '' }, hist, st), false);
+  assert.equal(await receiveDoc(() => {}, { search: '?doc=handoff', pathname: '/translate/', hash: '' }, hist, mem()), false, 'nothing kept');
+  const went = []; assert.ok(await sendDoc('/translate/', () => pdf(), { name: 'a.pdf' }, (u) => went.push(u), mem())); assert.deepEqual(went, ['/translate/?doc=handoff']);
+  assert.equal(await sendDoc('/translate/', async () => null, {}, (u) => went.push(u), mem()), false); assert.equal(went.length, 1);
 });

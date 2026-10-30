@@ -532,8 +532,8 @@
       } finally { task.destroy(); }
     }
     $('file').addEventListener('click', () => $('doc').click());
-    $('doc').addEventListener('change', async () => {
-      const f = $('doc').files && $('doc').files[0]; $('doc').value = ''; if (!f) return;
+    $('doc').addEventListener('change', () => { const f = $('doc').files && $('doc').files[0]; $('doc').value = ''; if (f) translateDoc(f); });
+    async function translateDoc(f) {
       const base = f.name.replace(/\.[a-z0-9]+$/i, ''), ext = (f.name.match(/\.[a-z0-9]+$/i) || [''])[0].toLowerCase(), label = W.translatingDoc + ' ' + f.name;
       try {
         const D = await docs(), kind = D.kindOf(f.name);
@@ -557,7 +557,13 @@
         download(fp.rebuild(out), base + '.' + state.to + (ext || '.txt'), fp.kind === 'json' ? 'application/json' : 'text/plain');
         say((de ? 'Fertig: ' : 'Done: ') + base + '.' + state.to + (ext || '.txt') + ' (' + fp.parts.length + (de ? ' Teile' : ' parts') + ')');
       } catch (e) { say(String(e.message || e), true); }
-    });
+    }
+    // a PDF handed over by PDF tools (lib/image-handoff.js, ?doc=handoff): it waits here for the language and one press, so nothing is sent before then
+    if (new URLSearchParams(location.search).get('doc') === 'handoff') import('/lib/image-handoff.js').then(({ receiveDoc }) => receiveDoc((f) => {
+      const b = el('button', { type: 'button', id: 'handed', className: 'go', textContent: (de ? 'Übersetzen: ' : 'Translate ') + f.name });
+      b.addEventListener('click', () => { b.remove(); translateDoc(f); });
+      $('note').after(b); say(de ? f.name + ' ist da. Sprache wählen, dann „' + b.textContent + '" drücken.' : f.name + ' is here from PDF tools. Choose the language, then press ' + b.textContent + '.');
+    })).then((got) => { if (got === false) say(de ? 'Das PDF ist nicht mehr da (älter als eine Stunde?). Mit „' + W.file + '" wählen.' : 'The PDF is no longer kept (older than an hour?). Choose it with ' + W.file + '.', true); }).catch(() => {});
 
     // ---- a word of the result: other words for it, each rewriting the sentence, and its dictionary ----
     let popFor = null;

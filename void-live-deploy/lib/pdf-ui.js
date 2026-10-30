@@ -5,7 +5,7 @@
  * with its size. The pages tool is the visual one: thumbnails of every page of every file, each turned, deleted or moved by pointer, drag or keyboard.
  */
 import { tools, loadJs, renderPage, parsePages, sizeText, zip, compressByPictures, pagesToImages, toPdfImage, imageKind } from './pdf-tools.js';
-import { wantsImage, receiveImage, sendImage } from './image-handoff.js';
+import { wantsImage, receiveImage, sendImage, sendDoc } from './image-handoff.js';
 
 const h = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);
@@ -49,7 +49,10 @@ export function mountPdf(root, cfg) {
   const downloads = new Set();
   const offer = (name, bytes, type, note) => {
     const url = URL.createObjectURL(new Blob([bytes], { type })); downloads.add(url);
-    results.append(h('p', { class: 'result' }, h('a', { class: 'dl', href: url, download: name }, 'Download ' + name), ' ', h('span', { class: 'note' }, sizeText(bytes.length) + (note ? ' · ' + note : ''))));
+    // a PDF made here goes on to the translate page (lib/image-handoff.js, ?doc=handoff): the press keeps it on this device and opens the page with it ready
+    const tr = type === 'application/pdf' ? h('a', { href: '/translate/?doc=handoff', onclick: (e) => { e.preventDefault();
+      sendDoc('/translate/', () => new Blob([bytes], { type }), { name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the PDF for the translate page.', true); }); } }, 'Translate it') : null;
+    results.append(h('p', { class: 'result' }, h('a', { class: 'dl', href: url, download: name }, 'Download ' + name), ' ', h('span', { class: 'note' }, sizeText(bytes.length) + (note ? ' · ' + note : '')), tr ? ' · ' : null, tr));
   };
   const reset = () => { for (const u of downloads) URL.revokeObjectURL(u); downloads.clear(); results.replaceChildren(); status(''); };
 
