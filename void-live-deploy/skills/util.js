@@ -1,5 +1,6 @@
 /**
  * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text
+ * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes); nothing is sent anywhere.
  */
@@ -26,6 +27,9 @@ export function utilOf(text) {
   if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +m[1] || 20)) };
   m = t.match(/^(?:make\s+(?:me\s+)?|create\s+|generate\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|with)\s+(.{1,300})$/i);
   if (m) return { kind: 'qr', data: m[1].trim() };
+  // the tool asked for by its name, with no text yet (2026-10-30: "qr code generator" and "case converter" fell to an article): a card that does it as you type
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?qr(?:\s*code)?\s+(?:generator|maker|creator)$|^(?:make|create|generate)\s+(?:me\s+)?(?:an?\s+)?qr(?:\s*code)?$/.test(l)) return { kind: 'qrmaker' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+)?case\s+(?:converter|changer)$|^(?:convert|change)\s+(?:text\s+)?case$|^(?:upper|lower|title)\s*case\s+(?:converter|generator)$|^(?:upper\s*case\s+to\s+lower\s*case|lower\s*case\s+to\s+upper\s*case)$/.test(l)) return { kind: 'casemaker' };
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
   m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
@@ -88,7 +92,7 @@ export function utilOf(text) {
   if (m) { const f = t.match(/^\S+(?:\s+case)?\s*:?\s+(this:?\s+)/i); if (f && f[1].trim().replace(/:$/, '') !== 'this') m[2] = f[1] + m[2]; }
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
   // the moon (phase, next full and new) is skills/moontonight.js now: lib/astro.js, good to minutes; the mean-cycle sum below was off by hours
-  m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
+  m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(?:generator|maker))?(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
 }
@@ -126,6 +130,29 @@ async function run(text, api) {
       + (svg ? '<div class="util-qr" style="width:min(240px,100%);aspect-ratio:1;margin:8px 0;border-radius:8px;overflow:hidden;background:#fff">' + svg.replace('<svg ', '<svg width="100%" height="100%" ') + '</div>'
         + '<p style="color:#8a8a8a">Made in your browser and never sent anywhere · error correction M · scan it with a phone camera</p>'
         : '<p>That text is too long for one QR code (a version 40 code holds about 2,300 characters).</p>'); });
+  } else if (q.kind === 'qrmaker') {
+    el = showPage((p) => { p.innerHTML = '<h2>QR code maker</h2><textarea class="util-in" rows="2" maxlength="2300" placeholder="a link or any text" aria-label="Text for the QR code" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<div class="util-qr" style="width:min(240px,100%);aspect-ratio:1;margin:8px 0;border-radius:8px;overflow:hidden;background:#fff;display:none"></div>'
+      + '<p class="util-qr-say" style="color:#8a8a8a">Type a link or any text and the code draws here. Made in your browser and never sent anywhere · error correction M</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), pic = el && el.querySelector && el.querySelector('.util-qr'), say = el && el.querySelector && el.querySelector('.util-qr-say');
+    if (box && pic) box.addEventListener('input', () => {
+      const s = box.value.trim(), code = s ? qrMatrix(s, { ecl: 'M' }) : null;
+      pic.innerHTML = code ? qrSvg(code, { margin: 4, label: 'QR code' }).replace('<svg ', '<svg width="100%" height="100%" ') : ''; // void-review: ok (qrSvg is built from numbers and a fixed label only)
+      pic.style.display = code ? '' : 'none';
+      if (say) say.textContent = !s ? 'Type a link or any text and the code draws here. Made in your browser and never sent anywhere · error correction M'
+        : code ? 'Scan it with a phone camera. Made in your browser and never sent anywhere · error correction M' : 'That text is too long for one QR code (a version 40 code holds about 2,300 characters).';
+    });
+  } else if (q.kind === 'casemaker') {
+    const HOWS = ['uppercase', 'lowercase', 'title case', 'capitalize words', 'reverse'];
+    el = showPage((p) => { p.innerHTML = '<h2>Case converter</h2><textarea class="util-in" rows="3" placeholder="your text" aria-label="Text to change" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<p>' + HOWS.map((k) => '<button type="button" class="util-case" data-how="' + esc(k) + '">' + esc(k.charAt(0).toUpperCase() + k.slice(1)) + '</button>').join(' ') + '</p>'
+      + '<div class="util-out" style="font-size:20px;line-height:1.4;margin:8px 0;word-break:break-word;white-space:pre-wrap"></div>' + copyBtn
+      + '<p style="color:#8a8a8a">Changed in your browser and never sent anywhere</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out');
+    let how = 'uppercase';
+    const paint = () => { if (out && box) out.textContent = CASES[how](box.value); };
+    if (box) box.addEventListener('input', paint);
+    for (const b of (el && el.querySelectorAll ? el.querySelectorAll('.util-case') : [])) b.addEventListener('click', () => { how = b.dataset.how; paint(); });
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
@@ -181,8 +208,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight'],
+  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter'],
   match(lower, text) { return !!utilOf(text); },
   run
 };
