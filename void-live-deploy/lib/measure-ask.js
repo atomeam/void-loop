@@ -47,10 +47,11 @@ export function measureOf(ask) {
 /** the rule the model reads when the ask states a quantity: the computed conversion is a fact, and a stated quantity is fixed. Pure. */
 export const measureRule = (m) => m ? 'The question states a quantity. Computed exactly (not from a source): ' + m.sentence + ' Say this conversion in your first sentence. A stated quantity is fixed: never say it varies, is approximate or depends on anything, and never answer it with a different quantity from a source (a 5000 metres race is not a 3 mile run).' : '';
 
-/** the answer led by the conversion when the model left the converted value out. Pure. */
+/** the answer led by the conversion when the model left the converted value out; with no answer left, the conversion alone. Pure. */
 export function withMeasure(answer, m) {
   const a = String(answer || '').trim();
-  if (!m || !a) return a;
+  if (!m) return a;
+  if (!a) return m.sentence; // the sources did not name the quantity, but the computed conversion still answers the ask
   const num = m.out.split(' ')[0];
   return a.includes(num) || a.includes(num.replace(/,/g, '')) ? a : m.sentence + ' ' + a;
 }
