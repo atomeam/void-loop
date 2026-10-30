@@ -47,7 +47,7 @@ function radioItem(r, { mine = false } = {}) {
       !r.play && (r.home || r.stream) ? el('a', { className: 'btn go', href: r.home || r.stream, target: '_blank', rel: 'noopener', textContent: 'Listen on its site' }) : null,
       r.play && r.home ? el('a', { className: 'btn', href: r.home, target: '_blank', rel: 'noopener', textContent: host(r.home) || 'Station site' }) : null,
       el('button', { type: 'button', textContent: kept ? '★ Saved' : '☆ Save', 'aria-pressed': String(kept), onclick: () => toggleSave(r) })));
-  if (!r.play) li.append(el('span', { className: 'why', textContent: 'This station's stream cannot play inside a secure page. Its own site plays it.' }));
+  if (!r.play) li.append(el('span', { className: 'why', textContent: "This station's stream cannot play inside a secure page. Its own site plays it." }));
   if (mine) li.dataset.mine = '1';
   return li;
 }
