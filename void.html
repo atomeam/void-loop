@@ -3359,16 +3359,21 @@ say('nothing selected to remove');
       if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
         return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (about ' + g + ' g a cup, spooned and levelled; scooping packs more in)' }; } }
       // food safety: "what temperature to cook chicken", "safe internal temp for pork"
-      m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+beef|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temperature\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey)\s+(?:done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$/);
-      if (m) { const k = (m[1] || m[2] || m[3]).replace(/s$/, '');
-        if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)' };
-        const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
-        return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)' }; }
+      m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temp(?:erature)?\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey|lamb)\s+(?:done|be\s+done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$|^how\s+hot\s+(?:should|does|do)\s+(chicken|turkey|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|fish|salmon|leftovers)\s+(?:need\s+to\s+)?be\s+cooked(?:\s+to)?$/);
+      // the chart's own page (FoodSafety.gov, last reviewed 2024-11-21, read 2026-10-30): the card said "(USDA)" with no link before
+      const FS = [['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']];
+      if (m) { const k = (m[1] || m[2] || m[3] || m[4]).replace(/s$/, '');
+        if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)', src: FS, read: '2026-10-30' };
+        const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger|sausage/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
+        return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)', src: FS, read: '2026-10-30' }; }
       // steak doneness: "medium rare steak temperature", "steak doneness temps", "temperature for a well done steak"
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(?:(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+)?(?:steak|beef)\s+(?:doneness\s+)?(?:internal\s+)?(?:temperatures?|temps?)$|^(?:what\s+)?(?:internal\s+)?(?:temperature|temp)\s+(?:for|is)\s+(?:a\s+)?(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+(?:steak|beef)$|^steak\s+doneness(?:\s+chart)?$/);
-      if (m) { const DONE = { rare: [125, 52], 'medium rare': [135, 57], medium: [145, 63], 'medium well': [150, 66], 'well done': [160, 71] }, k = (m[1] || m[2] || '').replace(/-/g, ' ');
-        const row = (d) => d + ' ' + DONE[d][0] + ' °F (' + DONE[d][1] + ' °C)';
-        return { value: k ? row(k) : Object.keys(DONE).map(row).join('\n'), note: 'internal temperature of a steak' + (k ? ' cooked ' + k : '') + ' after resting; take it off the heat about 5 °F (3 °C) sooner. USDA safe minimum for whole beef cuts is 145 °F (63 °C) with a 3-minute rest' }; }
+      // rare to medium well from Certified Angus Beef's doneness page; it gives no well-done steak temperature, so well done is ThermoWorks' "155 °F and up" (both read 2026-10-30)
+      if (m) { const DONE = { rare: [125, 52], 'medium rare': [135, 57], medium: [145, 63], 'medium well': [150, 66], 'well done': [155, 68] }, k = (m[1] || m[2] || '').replace(/-/g, ' ');
+        const row = (d) => d + ' ' + DONE[d][0] + ' °F (' + DONE[d][1] + ' °C)' + (d === 'well done' ? ' and up' : '');
+        const CAB = ['Certified Angus Beef: degree of doneness', 'https://www.certifiedangusbeef.com/en/cooking/degree-of-doneness'], TW = ['ThermoWorks: doneness temperatures', 'https://www.thermoworks.com/blogs/thermoblog/chef-recommended-tw-approved'];
+        return { value: k ? row(k) : Object.keys(DONE).map(row).join('\n'), note: 'internal temperature of a steak' + (k ? ' cooked ' + k : '') + ' after resting; take it off the heat about 5 °F (3 °C) sooner. USDA safe minimum for whole beef cuts is 145 °F (63 °C) with a 3-minute rest',
+          src: [...(k === 'well done' ? [] : [CAB]), ...(!k || k === 'well done' ? [TW] : []), ['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']], read: '2026-10-30' }; }
       // grams to cups: "how many cups is 500g of flour", "250 g sugar in cups"
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
       if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
@@ -3392,8 +3397,10 @@ say('nothing selected to remove');
       if (m) { const k = (m[1] || m[2]), half = /^how\s+many\s+(?:[a-z]+\s+)?(?:is|are|in|make)\s+half/.test(t) || /half/.test(k), base = /baker/.test(k) ? 13 : /gross/.test(k) ? 144 : /score/.test(k) ? 20 : 12, v = half ? base / 2 : base;
         return { value: String(v), note: (half ? 'half ' : 'a ') + k.replace(/^half\s+/, '') + ' is ' + v + ({ 13: ' (twelve plus one: bakers added an extra loaf)', 144: ' (a dozen dozens)', 20: '' }[base] || '') }; }
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
-      if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
-        return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
+      // the times are the egg boards' own (read 2026-10-30); before that the card gave soft 6, medium 8 and hard 10 to 12 minutes with no source
+      if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$|^how\s+(?:to|do\s+(?:you|i))\s+(?:hard[\s-]|soft[\s-])?boil\s+(?:an?\s+|the\s+)?eggs?$|^how\s+to\s+make\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
+        return { value: 'hard 12 min off the heat\nsoft 4–6 min', note: 'hard: large eggs in one layer, cold water 1 inch over them, heated just to a boil, then covered off the heat for 12 minutes (9 for medium eggs, 15 for extra large) and cooled in cold water (American Egg Board). Lowered into simmering water instead: 10 minutes (British Egg Information Service). Soft, with a runny yolk: 4 to 6 minutes (Egg Farmers of Canada)',
+          src: [['American Egg Board: hard-boiled eggs', 'https://www.incredibleegg.org/recipe/how-to-make-hard-boiled-eggs/'], ['British Egg Information Service: hard boiled eggs', 'https://www.egginfo.co.uk/recipes/how-hard-boil-eggs'], ['Egg Farmers of Canada: boiled eggs', 'https://eggs.ca/eggs101/how-to-make-the-perfect-hard-boiled-egg/']], read: '2026-10-30' };
       // "2 hours and 15 minutes in minutes", "1 hr 30 min to hours"
       m = t.match(/^(?:what(?:'s|\s+is)\s+|convert\s+)?(\d+)\s*(?:hours?|hrs?|h)\s*(?:and\s+)?(\d+)\s*(?:minutes?|mins?|m)\s+(?:in|to|into)\s+(minutes?|mins|seconds?|secs|hours?|hrs)$/);
       if (m) { const min = +m[1] * 60 + +m[2], u = m[3].charAt(0) === 's' ? 'seconds' : m[3].charAt(0) === 'h' ? 'hours' : 'minutes';
@@ -4142,7 +4149,10 @@ say('nothing selected to remove');
         // a unit answer from word maths ("5 miles to km" is read here first) opens the unit converter on the same ask, as the unit branch below does;
         // not the tail of a fraction ("3/4 cup in ml" would hand over "4 cup in ml")
         const wu = lower.match(CALC_UNIT_RE); if (wu && !/[\d./]$/.test(lower.slice(0, wu.index))) el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());
-        setV(wm.value, wm.note); cookFlow(el, query); return 'calc';
+        // a kitchen fact names the pages it came from, so the card is sourced and dated, not "from Verse"
+        const wsrc = Array.isArray(wm.src) && wm.src.length ? 'Source: ' + wm.src.filter((x) => /^https:\/\/[^\s"'<>]+$/.test(x[1])).map((x) => '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>').join(' · ') + (wm.read ? ' · read ' + esc(wm.read) : '') : '';
+        if (wsrc) el.dataset.cardKept = ''; // read on a date and kept, not fetched for this ask (lib/card-frame.js)
+        setV(wm.value, wm.note, wsrc); cookFlow(el, query); return 'calc';
       }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
