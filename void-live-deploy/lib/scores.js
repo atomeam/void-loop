@@ -310,6 +310,36 @@ export function scoresAsk(text) {
   if (!m) return null; const k = m[1].toLowerCase().replace(/^la ?liga$/, 'la liga'); return { league: ALIAS[k], tab: /stand|table/i.test(m[2]) ? 'standings' : 'scores' };
 }
 
+// "lakers score last night", "how did the arsenal do yesterday", "did the yankees win": one team's game (2026-10-30: these fell to an article).
+const NOT_TEAM = /^(?:my|your|our|their|his|her|the|a|an|what|whats|credit|fico|test|sat|act|gre|gmat|lsat|mcat|quiz|exam|final|game|high|top|best|live|bowling|golf|wordle|chess|match|team|sports?|tennis)$/i;
+/** an ask for one team's game -> { team, day: 'yesterday' | 'today' | '' } | null; never a league ("nba scores" is scoresAsk's) and never a credit or test score. Pure. */
+export function teamScoreAsk(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase(), D = '(?: (last night|yesterday|today|tonight))';
+  const pats = [
+    '^(?:what was|what\'?s|what is) the ([a-z][a-z .\'&-]{1,30}?) (?:game )?(?:score|result)' + D + '?$',
+    '^how did the ([a-z][a-z .\'&-]{1,30}?) do' + D + '?$',
+    '^did the ([a-z][a-z .\'&-]{1,30}?) win' + D + '?$',
+    '^(?:the )?([a-z][a-z .\'&-]{1,30}?) (?:game )?(?:score|scores|result|final score)' + D + '?$',
+  ];
+  let team = '', day = '';
+  for (const p of pats) {
+    const m = new RegExp(p).exec(t);
+    if (!m) continue;
+    const c = m[1].trim(), words = c.split(' ');
+    if (words.length > 3 || words.some((w) => NOT_TEAM.test(w)) || ALIAS[c] || /^(?:la ?liga|formula (?:1|one))$/.test(c)) continue;
+    team = c; day = m[2] || ''; break;
+  }
+  if (!team) return null;
+  return { team, day: /last night|yesterday/.test(day) ? 'yesterday' : day ? 'today' : '' };
+}
+/** the game a team played on a set of scoreboards ([{ league, games }]): the first whose home or away name, short name or abbreviation holds the team as whole words. Pure. */
+export function teamGame(boards, team) {
+  const want = String(team || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim(); if (!want) return null;
+  const has = (side) => side && [side.name, side.short, side.abbr].some((n) => (' ' + String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ') + ' ').includes(' ' + want + ' '));
+  for (const b of Array.isArray(boards) ? boards : []) for (const g of Array.isArray(b && b.games) ? b.games : []) if (g && g.kind !== 'race' && (has(g.home) || has(g.away))) return { league: b.league, game: g };
+  return null;
+}
+
 /** a snake draft's order: teams 0..n-1 each round, the direction flipping every round; [{ pick, round, team }]. Pure. */
 export function draftOrder(teams, rounds) {
   const out = []; for (let r = 0; r < rounds; r++) for (let i = 0; i < teams; i++) out.push({ pick: out.length + 1, round: r + 1, team: r % 2 ? teams - 1 - i : i }); return out;
