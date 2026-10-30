@@ -12,7 +12,9 @@
 //             (lib/brain-glow.js), so a reload keeps the words it was just told as bright as they were, dimmed by the time away
 //   bridges   other Verse pages in this browser reach it (lib/brain-bridge.js hostBrain, window.verseBrain)
 //   watches   Verse's own health every 15 minutes while the page is visible (lib/brain-watch.js): runs on main, open pull requests
-//             and issues, read from GitHub's public API and /incidents.json; a break is an action in its log and pulls its attention
+//             and issues, read from GitHub's public API and /incidents.json; a break is an action in its log and pulls its attention.
+//             The same look reads what Verse decided (/api/will: its top want, the site it is assimilating, its last run) and its team
+//             (/api/team: jobs waiting, agents here): a new decision is an action in its log, a stuck will or an unstaffed queue a break
 // Nothing is sent anywhere. The asks it keeps are the visitor's own, on their own device; Forget on the card clears them.
 import * as B from './brain.js';
 import { loadKept, keep, loadGlow, keepGlow } from './brain-store.js';
@@ -69,13 +71,16 @@ export function startHost(opts = {}) {
     host.watching = true;
     try {
       const S = await import('../skills/status.js'), api = 'https://api.github.com/repos/' + S.REPO;
-      const [rows, inc, prs, issues] = await Promise.all([S.buildState(fetchFn).catch(() => null), json(fetchFn, '/incidents.json'), json(fetchFn, api + '/pulls?state=open&per_page=50'), json(fetchFn, api + '/issues?state=open&per_page=50')]);
-      const r = Watch.takeIn(watch(), Watch.observe({ rows: rows ? S.causesOf(rows, inc) : null, prs: Array.isArray(prs) ? prs : null, issues: Array.isArray(issues) ? issues : null }));
+      const [rows, inc, prs, issues, will, team] = await Promise.all([S.buildState(fetchFn).catch(() => null), json(fetchFn, '/incidents.json'), json(fetchFn, api + '/pulls?state=open&per_page=50'), json(fetchFn, api + '/issues?state=open&per_page=50'), json(fetchFn, '/api/will'), json(fetchFn, '/api/team')]);
+      const W = watch(), r = Watch.takeIn(W, Watch.observe({ rows: rows ? S.causesOf(rows, inc) : null, prs: Array.isArray(prs) ? prs : null, issues: Array.isArray(issues) ? issues : null, will, team: team && team.ok ? team : null }));
+      const d = Watch.decide(W, Watch.decisionOf(will)); if (d) r.news.push(d);
       host.changed = true; for (const n of r.news) emit('watch', n);
       return r;
     } finally { host.watching = false; }
   };
   host.breaks = () => Watch.breaksOf(watch());
+  /** what Verse decided to do next, as its will said at the last look: { want, because, site, tower, at } or null. */
+  host.decision = () => (watch().next ? { ...watch().next } : null);
   host.dismiss = (id) => { const ok = Watch.dismiss(watch(), id); if (ok) { host.changed = true; emit('dismissed', { id }); } return ok; };
   host.undismiss = (id) => { const ok = Watch.undismiss(watch(), id); if (ok) { host.changed = true; emit('undismissed', { id }); } return ok; };
   host.watchStats = () => { const W = watch(); return { reads: W.reads, at: W.at, breaks: Watch.breaksOf(W).length }; };

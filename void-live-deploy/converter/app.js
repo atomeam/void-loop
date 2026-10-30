@@ -3,14 +3,17 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
-import { writeVideo } from '/lib/video-write.js';
+import { writeVideo, writeStill, soundOf48 } from '/lib/video-write.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
-const ACCEPT = { sound: 'audio/*,video/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', video: 'video/*,.mp4,.mov,.webm,.mkv', picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*' };
-const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'webm'];
+const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
+const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND };
+// how many files a tool needs, and what to say about them
+const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'] };
+const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
 let cur = null, files = [], heads = [], lastQ = '', results = [], urls = [];
@@ -65,11 +68,11 @@ function opts() {
     const fmt = heads[0] || '', can = fmt ? targetsOf(fmt) : [];
     if (fmt && !can.length) o.append(make('p', { class: 'lead' }, 'Verse cannot convert a ' + fmt.toUpperCase() + ' file yet. Search above for the tool you need: the list says what Verse has.'));
     if (can.length) o.append(field('Make it', pick('to', can.map((x) => [x, x.toUpperCase()]), can.includes(to) ? to : can[0])));
-    if (VIDEO_OUT.includes(($('to') && $('to').value) || '')) o.append(field('Quality', pick('vq', [['high', 'High (larger file)'], ['medium', 'Medium'], ['small', 'Small file']], 'medium')));
+    if (VIDEO_OUT.includes(($('to') && $('to').value) || '')) o.append(QUALITY());
     const s = $('to'); if (s) s.onchange = () => opts();
     qual(); ready(); return;
   }
-  if (VIDEO_OUT.includes(to)) o.append(field('Quality', pick('vq', [['high', 'High (larger file)'], ['medium', 'Medium'], ['small', 'Small file']], 'medium')));
+  if (VIDEO_OUT.includes(to)) o.append(QUALITY());
   if (run === 'cut') o.append(field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), SOUND_AS());
   if (run === 'speed') o.append(field('Times as fast', num('factor', 1.5, 'any', 0.25, 4)), SOUND_AS());
   if (run === 'gain') o.append(field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40)), SOUND_AS());
@@ -79,8 +82,37 @@ function opts() {
   if (run === 'gif-speed') o.append(field('Times as fast', num('factor', 2, 'any', 0.1, 10)));
   if (run === 'frame') o.append(field('At second', num('at', 1, 'any', 0)));
   if (run === 'merge-images') o.append(field('Put them', pick('dir', [['row', 'side by side'], ['column', 'one above the other']], 'row')));
+  if (run === 'video') videoOpts(t.vop, o);
   if (run === 'pdf-image') o.append(field('Page', num('page', 1, '1', 1)), field('From the left (%)', num('px', 5, 'any', 0, 100)), field('From the top (%)', num('py', 5, 'any', 0, 100)), field('Width (% of the page)', num('pw', 30, 'any', 1, 100)));
   qual(); ready();
+}
+const QUALITY = (v = 'medium') => field('Quality', pick('vq', [['high', 'High (larger file)'], ['medium', 'Medium'], ['small', 'Small file']], v));
+const txt = (id, value = '', ph = '') => make('input', { id, type: 'text', value, placeholder: ph });
+const colour = (id, value) => make('input', { id, type: 'color', value });
+const WHEN = () => [field('From second (empty: the start)', make('input', { id: 'ofrom', type: 'number', step: 'any', min: '0', inputMode: 'decimal' })), field('To second (empty: the end)', make('input', { id: 'oto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' }))];
+// the options of each video tool; every one also has Save as and Quality
+function videoOpts(vop, o) {
+  const f = {
+    cut: () => [field('From (seconds)', num('from', 0, 'any', 0)), field('To (seconds, empty: the end)', make('input', { id: 'upto', type: 'number', step: 'any', min: '0', inputMode: 'decimal' }))],
+    speed: () => [field('Times as fast', num('factor', 1.5, 'any', 0.25, 4))],
+    gain: () => [field('Louder by (dB, minus: quieter)', num('db', 6, 'any', -40, 40))],
+    shift: () => [field('Move the sound by (seconds; minus: earlier)', num('shift', 0.2, 'any', -10, 10))],
+    resize: () => [field('Width (pixels)', num('vw', 1280, '2', 16, 3840))],
+    rotate: () => [field('Turn', pick('rot', [['90', '90 degrees to the right'], ['180', '180 degrees'], ['270', '90 degrees to the left']], '90'))],
+    blur: () => [field('Blur (1-20)', num('blur', 6, 'any', 1, 20))],
+    bright: () => [field('Brightness (%: 100 is as it is)', num('bright', 130, '1', 10, 300))],
+    compress: () => [field('Size', pick('vmax', [['0', 'As it is'], ['1080', '1080p'], ['720', '720p'], ['480', '480p']], '720'))],
+    text: () => [field('Words', txt('words', '', 'Your words')), field('Where', pick('wpos', [['12', 'At the top'], ['50', 'In the middle'], ['88', 'At the bottom']], '88')), field('Size (% of the width)', num('wsize', 6, 'any', 1, 30)), field('Colour', colour('wcol', '#ffffff')), ...WHEN()],
+    image: () => [field('From the left (%, its centre)', num('px', 50, 'any', 0, 100)), field('From the top (%, its centre)', num('py', 50, 'any', 0, 100)), field('Width (% of the video)', num('pw', 25, 'any', 1, 100)), field('Seen (%: 100 is solid)', num('alpha', 100, '1', 5, 100)), ...WHEN()],
+    watermark: () => [field('Words (if you add no picture)', txt('words', '', 'Your name')), field('Corner', pick('corner', [['br', 'Bottom right'], ['bl', 'Bottom left'], ['tr', 'Top right'], ['tl', 'Top left']], 'br')), field('Size (% of the width)', num('pw', 15, 'any', 1, 60)), field('Seen (%: 100 is solid)', num('alpha', 60, '1', 5, 100))],
+    background: () => [field('Shape', pick('shape', [['1:1', 'Square (1:1)'], ['9:16', 'Tall (9:16)'], ['16:9', 'Wide (16:9)']], '1:1')), field('Background', pick('backdrop', [['blur', 'The video, blurred'], ['color', 'A colour'], ['picture', 'The picture you add']], 'blur')), field('Colour', colour('bcol', '#000000'))],
+    'add-sound': () => [field('The new sound', pick('amode', [['replace', 'In place of the video\'s sound'], ['mix', 'Mixed with the video\'s sound']], 'replace'))],
+    'sound-video': () => [field('Colour (if you add no picture)', colour('bcol', '#101425'))],
+    'gif-video': () => [field('See-through parts become', colour('bcol', '#ffffff'))],
+    'pictures-video': () => [field('Seconds for each picture', num('each', 2, 'any', 0.1, 600))],
+    'pdf-video': () => [field('Seconds for each page', num('each', 3, 'any', 0.1, 600))],
+  }[vop];
+  o.append(...(f ? f() : []), field('Save as', pick('vfmt', VIDEO_OUT.map((x) => [x, x.toUpperCase()]), 'mp4')), QUALITY(vop === 'compress' ? 'small' : 'medium'));
 }
 // a quality slider for JPG and WebP only
 function qual() {
@@ -91,7 +123,7 @@ function qual() {
 function openTool(t, push = true) {
   if (!runnable(t)) return;
   cur = t; $('tName').textContent = t.kind === 'converter' ? (t.cat === 'Document' || t.cat === 'Ebook' ? t.cat + ' to ' : 'To ') + t.name : t.name;
-  $('tNote').textContent = t.note + (t.many ? ' Pick 2 or more files.' : t.run === 'pdf-image' ? ' Pick one PDF and one picture.' : '');
+  $('tNote').textContent = t.note.replace(/ Pick one video and one (sound|picture)\.$/, '') + (t.many ? ' Pick 2 or more files.' : t.run === 'pdf-image' ? ' Pick one PDF and one picture.' : NEED[t.from] ? NEED[t.from][1] : '');
   $('files').accept = ACCEPT[t.from] || '';
   if (push) history.replaceState(null, '', '/converter/?t=' + t.id);
   opts(); clearOut();
@@ -111,7 +143,7 @@ async function setFiles(list) {
   clearOut();
 }
 function ready() {
-  const need = cur && (cur.many || cur.run === 'pdf-image') ? 2 : 1, auto = !cur && !($('to') && $('to').value);
+  const need = cur && (cur.many || cur.run === 'pdf-image') ? 2 : cur && NEED[cur.from] ? NEED[cur.from][0] : 1, auto = !cur && !($('to') && $('to').value);
   $('go').disabled = files.length < need || auto;
   $('status').textContent = files.length && files.length < need ? 'Pick ' + need + ' or more files for this tool.' : '';
 }
@@ -239,6 +271,7 @@ async function go() {
       const out = make('canvas', { width: W, height: H }), x = out.getContext('2d'); let at = 0;
       for (const c of cs) { if (row) { x.drawImage(c, at, Math.round((H - c.height) / 2)); at += c.width; } else { x.drawImage(c, Math.round((W - c.width) / 2), at); at += c.height; } }
       add({ name: outName(base(list[0].f.name) + ' joined.png', 'png', taken), ext: 'png', bytes: new Uint8Array(await (await blobOf(out, 'image/png')).arrayBuffer()), notes: [cs.length + ' pictures ' + (row ? 'side by side' : 'one above the other'), W + ' x ' + H + ' pixels'] });
+    } else if (t.run === 'video') { await runVideo(t, list, taken, add, fail, say);
     } else if (t.run === 'pdf-image') {
       const p = list.find((x) => x.fmt === 'pdf'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!p || !pic) throw new Error('pick one PDF and one picture.');
@@ -254,6 +287,87 @@ async function go() {
   show(); $('go').disabled = false;
 }
 $('go').onclick = go;
+
+// ---- the video tools: each plays the video once (or draws the pictures) and codes it on this device ----------------------------------------
+const opt = (id) => { const e = $(id); return e && e.value !== '' && isFinite(+e.value) ? +e.value : null; };
+const bitmapOf = async (f) => { try { return await createImageBitmap(f); } catch (_) { throw new Error(f.name + ': this browser cannot open this picture.'); } };
+const plain = (W, H, color) => { const c = new OffscreenCanvas(W, H), x = c.getContext('2d'); x.fillStyle = color; x.fillRect(0, 0, W, H); return c; };
+// the frames of an animated GIF, each with its time, read by the browser's ImageDecoder
+async function gifFrames(f) {
+  if (typeof ImageDecoder !== 'function') throw new Error('this browser cannot read the frames of a GIF (it has no ImageDecoder). Chrome and Edge can.');
+  const dec = new ImageDecoder({ data: await f.arrayBuffer(), type: 'image/gif' }); await dec.tracks.ready;
+  const n = dec.tracks.selectedTrack.frameCount, out = [];
+  for (let i = 0; i < n; i++) { const { image } = await dec.decode({ frameIndex: i }); out.push({ pic: await createImageBitmap(image), d: image.duration ? image.duration / 1e6 : 0.1 }); image.close(); }
+  dec.close(); return out;
+}
+// the pages of a PDF as pictures 1280 pixels wide (pdf.js)
+async function pdfPages(f, say) {
+  const js = await loadJs(); let doc;
+  try { doc = await js.getDocument({ data: await bytesOf(f) }).promise; } catch (e) { throw new Error(/password|encrypt/i.test(String(e && e.message)) ? 'this PDF is protected with a password.' : 'this PDF did not open.'); }
+  if (doc.numPages > 300) throw new Error('this PDF has ' + doc.numPages + ' pages; Verse makes a video of 300 pages at most.');
+  const out = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    say('Drawing page ' + i + ' of ' + doc.numPages); const pg = await doc.getPage(i), v0 = pg.getViewport({ scale: 1 }), vp = pg.getViewport({ scale: 1280 / v0.width });
+    const c = make('canvas', { width: Math.round(vp.width), height: Math.round(vp.height) }), x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+    await pg.render({ canvasContext: x, viewport: vp }).promise; out.push(c);
+  }
+  return out;
+}
+async function runVideo(t, list, taken, add, fail, say) {
+  const ext = ($('vfmt') && $('vfmt').value) || 'mp4', q = ($('vq') && $('vq').value) || 'medium', v = t.vop;
+  const vids = list.filter((x) => kindOf(x.fmt) === 'video'), pics = list.filter((x) => kindOf(x.fmt) === 'picture'), snds = list.filter((x) => kindOf(x.fmt) === 'sound');
+  const when = () => ({ from: opt('ofrom'), to: opt('oto') }), alpha = () => Math.max(0.05, Math.min(1, val('alpha', 100) / 100));
+  const result = (name, suffix, r, extra = []) => ({ name: outName(base(name) + ' ' + suffix + '.' + ext, ext, taken), ext, bytes: r.bytes, notes: [...r.notes, ...extra] });
+  const progress = (w, plays = true) => (x) => say(w + ' (' + Math.round(x * 100) + '%' + (plays ? ', the video plays through once' : '') + ')');
+  const still = async (pictures, o, name, suffix, w) => { say(w); add(result(name, suffix, await writeStill(pictures, { container: ext, quality: q, ...o, onProgress: progress(w, false) }))); };
+  if (v === 'sound-video') {
+    const s = snds[0] || vids[0]; if (!s) throw new Error('pick a sound.');
+    const sound = await soundOf48(s.f); if (!sound) throw new Error(s.f.name + ': this browser cannot play this sound.');
+    const pic = pics[0] ? await bitmapOf(pics[0].f) : plain(1280, 720, $('bcol').value);
+    return still([{ pic, d: sound.channels[0].length / sound.rate }], { sound, fitSound: 'sound', fps: 10, color: $('bcol').value }, s.f.name, 'video', 'Making a video of ' + s.f.name);
+  }
+  if (v === 'pictures-video') {
+    if (!pics.length) throw new Error('pick 1 or more pictures.');
+    const each = Math.max(0.1, val('each', 2)), all = []; for (const p of pics) all.push({ pic: await bitmapOf(p.f), d: each });
+    const sound = snds[0] ? await soundOf48(snds[0].f) : null; if (snds[0] && !sound) throw new Error(snds[0].f.name + ': this browser cannot play this sound.');
+    return still(all, { sound, fitSound: 'pictures' }, pics[0].f.name, 'video', 'Making a video of ' + pics.length + ' picture' + (pics.length === 1 ? '' : 's'));
+  }
+  if (v === 'gif-video') { for (const { f, fmt } of list) { try { if (fmt !== 'gif') throw new Error('this is not a GIF.'); const fr = await gifFrames(f); await still(fr, { color: $('bcol').value }, f.name, 'video', 'Making a video of ' + f.name + ' (' + fr.length + ' frames)'); } catch (e) { fail(f, e); } } return; }
+  if (v === 'pdf-video') { for (const { f, fmt } of list) { try { if (fmt !== 'pdf') throw new Error('this is not a PDF.'); const pages = await pdfPages(f, say), each = Math.max(0.1, val('each', 3)); await still(pages.map((pic) => ({ pic, d: each })), { color: '#fff' }, f.name, 'video', 'Making a video of ' + pages.length + ' page' + (pages.length === 1 ? '' : 's')); } catch (e) { fail(f, e); } } return; }
+  if (!vids.length) throw new Error('pick a video.');
+  if (v === 'merge') { const w = 'Joining ' + vids.length + ' videos'; say(w); add(result(vids[0].f.name, 'joined', await writeVideo(vids.map((x) => x.f), { container: ext, quality: q, onProgress: progress(w) }), [vids.length + ' videos one after another'])); return; }
+  // one video with a second file: a sound, or a picture
+  if (v === 'add-sound') {
+    const s = snds[0] || vids[1]; if (!s) throw new Error('pick a sound too (a video\'s sound works).');
+    const addSound = await soundOf48(s.f); if (!addSound) throw new Error(s.f.name + ': this browser cannot play this sound.');
+    const w = 'Putting ' + s.f.name + ' on ' + vids[0].f.name; say(w);
+    add(result(vids[0].f.name, 'with sound', await writeVideo(vids[0].f, { container: ext, quality: q, addSound, addMode: $('amode').value, sound: $('amode').value === 'mix' ? 'keep' : 'none', onProgress: progress(w) }))); return;
+  }
+  const pic = pics[0] ? await bitmapOf(pics[0].f) : null;
+  if (v === 'image' && !pic) throw new Error('pick a picture too.');
+  if (v === 'watermark' && !pic && !$('words').value.trim()) throw new Error('write the words of the watermark, or add a picture.');
+  if (v === 'text' && !$('words').value.trim()) throw new Error('write the words to put on the video.');
+  if (v === 'background' && $('backdrop').value === 'picture' && !pic) throw new Error('add a picture for the background, or pick another background.');
+  const edit = {
+    cut: () => ({ from: val('from', 0), to: opt('upto') }), speed: () => ({ speed: val('factor', 1.5) }), gain: () => ({ gainDb: val('db', 6) }), shift: () => ({ shift: val('shift', 0.2) }),
+    resize: () => ({ width: Math.round(val('vw', 1280)) }), rotate: () => ({ rotate: +$('rot').value }), blur: () => ({ blur: val('blur', 6) }), bright: () => ({ bright: val('bright', 130) }),
+    compress: () => ({ short: +$('vmax').value || 0 }), mute: () => ({ sound: 'none' }),
+    text: () => ({ over: [{ text: $('words').value, x: 50, y: +$('wpos').value, size: val('wsize', 6), color: $('wcol').value, ...when() }] }),
+    image: () => ({ over: [{ pic, x: val('px', 50), y: val('py', 50), size: val('pw', 25), alpha: alpha(), ...when() }] }),
+    watermark: () => ({ over: [pic ? { pic, corner: $('corner').value, size: val('pw', 15), alpha: alpha() } : { text: $('words').value, corner: $('corner').value, size: val('pw', 15) / 4, alpha: alpha() }] }),
+    background: () => ({ shape: $('shape').value.split(':').map(Number), backdrop: $('backdrop').value, backdropPic: pic, color: $('bcol').value }),
+  }[v];
+  if (!edit) throw new Error('Verse does not know this video tool.');
+  const SUFFIX = { cut: 'cut', speed: val('factor', 1.5) + 'x', gain: 'louder', shift: 'synced', resize: 'resized', rotate: 'turned', blur: 'blurred', bright: 'brighter', compress: 'smaller', mute: 'no sound', text: 'with text', image: 'with picture', watermark: 'watermarked', background: 'on background' };
+  for (const { f } of vids) {
+    const w = 'Working on ' + f.name; say(w);
+    try {
+      const r = await writeVideo(f, { container: ext, quality: q, ...edit(), onProgress: progress(w) }), extra = [];
+      if (v === 'compress') extra.push(sizeText(f.size) + ' became ' + sizeText(r.bytes.length) + (r.bytes.length < f.size ? ' (' + Math.round(100 - 100 * r.bytes.length / f.size) + '% smaller)' : ': no smaller, the video was already small for its size; try Small file and fewer pixels'));
+      add(result(f.name, SUFFIX[v], r, extra));
+    } catch (e) { fail(f, e); }
+  }
+}
 function show() {
   const ok = results.filter((r) => r.bytes), bad = results.length - ok.length, ul = $('out'); ul.replaceChildren();
   for (const r of results) {

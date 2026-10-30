@@ -9,15 +9,19 @@
 //              a break seen, and take the mark back (dismiss, undismiss)
 //   attention  while a break stands the brain attends to the skills that answer for it (status, incident, merges), so an ask that more
 //              than one skill can answer leans toward them (lib/brain-route.js attention)
+//   decisions  what Verse decided to do next, read from its will (/api/will: its top want, the site it is assimilating, its last run) and
+//              its team (/api/team: jobs waiting, agents here). A new top want is an action in the log ('decided'); a will run that failed
+//              twice or more without shipping, and jobs that wait with no agent here, are breaks (kinds 'will' and 'team')
 // Pure: no fetch, no DOM, no storage (lib/brain-host.js reads, lib/brain-mind.js keeps). Check names and pull request numbers only.
 
 export const WATCH_MS = 15 * 60 * 1000, PR_OLD_H = 3, MAX_LOG = 40, MAX_CHECKS = 3;
-const KINDS = ['ci', 'prs', 'issues'];
+const KINDS = ['ci', 'prs', 'issues', 'will', 'team'], LOGGED = ['watch', 'recovered', 'decided'];
 /** the skills that answer for each kind of break (names in skills/index.json), for the brain's attention. */
-export const ANSWERS = { ci: ['status', 'incident'], prs: ['merges'], issues: ['merges'] };
+export const ANSWERS = { ci: ['status', 'incident'], prs: ['merges'], issues: ['merges'], will: ['wants', 'tower'], team: ['team-chat'] };
+export const WILL_TRIES = 2;
 
 /** a fresh watch. */
-export const createWatch = () => ({ seen: {}, log: [], seq: 0, at: 0, reads: 0 });
+export const createWatch = () => ({ seen: {}, log: [], seq: 0, at: 0, reads: 0, next: null });
 
 const s = (x, n = 120) => String(x == null ? '' : x).slice(0, n);
 const gh = (u) => (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(u || '') ? s(u, 200) : '');
@@ -25,7 +29,7 @@ const gh = (u) => (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(u || '') 
 /** what was read, as observations: [{ key, kind, ok, what, why, url }]. rows: the status card's build rows (buildState, with causesOf
  *  checks); prs: open pull requests [{ number, created_at, html_url }]; issues: open issues [{ number, html_url, pull_request }]
  *  (GitHub lists pull requests as issues too: those are left out). A part that could not be read is left out, never called ok. Pure. */
-export function observe({ rows = null, prs = null, issues = null } = {}, at = Date.now()) {
+export function observe({ rows = null, prs = null, issues = null, will = null, team = null } = {}, at = Date.now()) {
   const out = [];
   for (const r of Array.isArray(rows) ? rows : []) {
     if (!r || !r.file || (r.state !== 'failed' && r.state !== 'passed' && !(r.state === 'running' && r.last))) continue;
@@ -47,7 +51,38 @@ export function observe({ rows = null, prs = null, issues = null } = {}, at = Da
     out.push({ key: 'issues', kind: 'issues', ok: !open.length, what: open.length ? open.length + ' open issue' + (open.length > 1 ? 's' : '') : 'no open issues',
       why: open.length ? 'the newest is #' + Number(open[0].number) + '; the goal is 0 open' : 'the goal of 0 open issues holds', url: open.length ? gh(open[0].html_url) : '' });
   }
+  const run = will && will.lastRun && typeof will.lastRun === 'object' ? will.lastRun : null;
+  if (run && run.title) {
+    const tries = Math.max(0, Math.round(+run.tries || 0)), stuck = !run.shipped && tries >= WILL_TRIES && run.state !== 'done';
+    out.push({ key: 'will', kind: 'will', ok: !stuck, what: stuck ? 'Verse\'s will is stuck on "' + s(run.title, 70) + '"' : 'Verse\'s will ' + (run.shipped ? 'shipped "' : 'is on "') + s(run.title, 70) + '"',
+      why: stuck ? tries + ' tries, nothing shipped' + (run.why ? '; the last said: ' + s(run.why, 140) : '') : run.shipped ? 'its last run shipped' : 'fewer than ' + WILL_TRIES + ' tries so far', url: gh(run.pr) });
+  }
+  if (team && Number.isFinite(+team.waiting) && Array.isArray(team.members)) {
+    const n = Math.max(0, Math.round(+team.waiting)), here = team.members.filter((m) => m && m.state === 'here').length, stuck = n > 0 && !here;
+    out.push({ key: 'team', kind: 'team', ok: !stuck, what: stuck ? n + ' job' + (n === 1 ? '' : 's') + ' wait on the team and no agent is here' : n + ' job' + (n === 1 ? '' : 's') + ' waiting, ' + here + ' agent' + (here === 1 ? '' : 's') + ' here',
+      why: stuck ? team.members.length + ' agent' + (team.members.length === 1 ? ' is' : 's are') + ' on the team, all away' : 'the team is taking jobs', url: '' });
+  }
   return out;
+}
+
+/** what Verse decided to do next, from its will: { want, because, site, tower } or null. Pure. */
+export function decisionOf(will) {
+  if (!will || typeof will !== 'object') return null;
+  const w = Array.isArray(will.wants) ? will.wants.find((x) => x && x.title) : null, t = will.lap && will.lap.tower;
+  const site = t && typeof t.line === 'string' ? (t.line.match(/now ([a-z0-9.-]+\.[a-z]{2,})/i) || [])[1] || '' : '';
+  if (!w && !site) return null;
+  return { want: w ? s(w.title, 120) : '', because: w ? s(w.because || w.evidence, 160) : '', site: s(site, 60), tower: t ? s(t.line, 160) : '' };
+}
+
+/** take what Verse decided: a new top want (or a new site) is an action in the log. Returns the action, or null when nothing changed. */
+export function decide(W, d, at = Date.now()) {
+  if (!d) return null;
+  const was = W.next, same = was && was.want === d.want && was.site === d.site;
+  W.next = { ...d, at };
+  if (same) return null;
+  const what = d.want ? 'Verse decided next: "' + d.want + '"' : 'Verse is assimilating ' + d.site;
+  const why = (d.because ? d.because : 'its will chose it') + (d.tower ? '; ' + d.tower : '');
+  return log(W, { kind: 'decided', what, why, url: '', key: 'will' }, at);
 }
 
 /** take observations into the watch: a part that turns from ok (or unknown) to a break, or from a break to ok, is an action in the log.
@@ -88,14 +123,16 @@ export function undismiss(W, id) { const a = W.log.find((x) => x.id === id); if 
 export const due = (W, at = Date.now()) => !W.at || at - W.at >= WATCH_MS;
 
 /** what to keep on this device. */
-export const watchOf = (W) => ({ seen: W.seen, log: W.log.slice(-MAX_LOG), seq: W.seq, at: W.at, reads: W.reads });
+export const watchOf = (W) => ({ seen: W.seen, log: W.log.slice(-MAX_LOG), seq: W.seq, at: W.at, reads: W.reads, next: W.next || null });
 /** put a kept watch back; wrong shapes are ignored. */
 export function loadWatch(W, k) {
   if (!k || typeof k !== 'object' || !k.seen || typeof k.seen !== 'object') return false;
   const n = (x) => (Number.isFinite(x) && x >= 0 ? Math.round(x) : 0), seen = {};
   for (const [key, v] of Object.entries(k.seen).slice(0, 12)) if (v && typeof v === 'object' && KINDS.includes(v.kind)) seen[s(key, 40)] = { ok: !!v.ok, kind: v.kind, what: s(v.what), why: s(v.why, 200), url: gh(v.url), at: n(v.at) };
   W.seen = seen; W.seq = n(k.seq); W.at = n(k.at); W.reads = n(k.reads);
-  W.log = (Array.isArray(k.log) ? k.log : []).filter((a) => a && typeof a.id === 'string' && (a.kind === 'watch' || a.kind === 'recovered')).slice(-MAX_LOG)
+  const d = k.next && typeof k.next === 'object' ? k.next : null;
+  W.next = d ? { want: s(d.want, 120), because: s(d.because, 160), site: s(d.site, 60), tower: s(d.tower, 160), at: n(d.at) } : null;
+  W.log = (Array.isArray(k.log) ? k.log : []).filter((a) => a && typeof a.id === 'string' && LOGGED.includes(a.kind)).slice(-MAX_LOG)
     .map((a) => ({ id: s(a.id, 12), at: n(a.at), kind: a.kind, ask: '', cands: [], pick: s(a.pick, 40), first: '', what: s(a.what), why: s(a.why, 200), url: gh(a.url), outcome: a.outcome === 'seen' ? 'seen' : null }));
   return true;
 }

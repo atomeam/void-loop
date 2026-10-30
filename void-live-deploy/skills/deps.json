@@ -1949,6 +1949,13 @@
    "tests": 1
   },
   {
+   "file": "lib/owner-accounts.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 77,
+   "tests": 0
+  },
+  {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
@@ -2257,6 +2264,13 @@
    "tests": 1
   },
   {
+   "file": "lib/pdf-tools.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -2327,11 +2341,11 @@
    "tests": 1
   },
   {
-   "file": "lib/pdf-tools.js",
+   "file": "lib/translate-docs.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/used.js",
@@ -2363,6 +2377,13 @@
   },
   {
    "file": "lib/book-face.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/converter.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2530,13 +2551,6 @@
    "tests": 1
   },
   {
-   "file": "lib/translate-docs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 2
-  },
-  {
    "file": "lib/translate-web.js",
    "skills": 0,
    "direct": 0,
@@ -2657,13 +2671,6 @@
   },
   {
    "file": "lib/comments-ui.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5644,7 +5651,9 @@
     "lib/translate-docs.js",
     "lib/pdf-tools.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/video-write.js"
+   ]
   },
   "lib/cook-flow.js": {
    "imports": [],
@@ -6504,7 +6513,9 @@
    "importedBy": []
   },
   "lib/guard.js": {
-   "imports": [],
+   "imports": [
+    "lib/owner-accounts.js"
+   ],
    "importedBy": [
     "functions/api/_middleware.js",
     "functions/api/actions.js",
@@ -7967,6 +7978,90 @@
     "skills/own-parts.js"
    ]
   },
+  "lib/owner-accounts.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/guard.js"
+   ],
+   "reachedBy": [
+    "functions/api/_middleware.js",
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/bench.js",
+    "functions/api/boards/[[path]].js",
+    "functions/api/calshare.js",
+    "functions/api/card-art.js",
+    "functions/api/catalog.js",
+    "functions/api/coder.js",
+    "functions/api/comments.js",
+    "functions/api/daily-art.js",
+    "functions/api/earnings.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/gallery.js",
+    "functions/api/gen-data.js",
+    "functions/api/generators.js",
+    "functions/api/gumroad.js",
+    "functions/api/hook/[id].js",
+    "functions/api/icsfeed.js",
+    "functions/api/image.js",
+    "functions/api/markets.js",
+    "functions/api/mcp.js",
+    "functions/api/members.js",
+    "functions/api/memory.js",
+    "functions/api/merge.js",
+    "functions/api/mine.js",
+    "functions/api/misses.js",
+    "functions/api/news.js",
+    "functions/api/passkey.js",
+    "functions/api/podcasts.js",
+    "functions/api/probe-asks.js",
+    "functions/api/probe-log.js",
+    "functions/api/propose-fix.js",
+    "functions/api/publish.js",
+    "functions/api/queue.js",
+    "functions/api/react.js",
+    "functions/api/recipeimport.js",
+    "functions/api/recipes.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/repo.js",
+    "functions/api/report.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/api/rsvp.js",
+    "functions/api/scores.js",
+    "functions/api/selfcheck.js",
+    "functions/api/share/index.js",
+    "functions/api/sportsearch.js",
+    "functions/api/store/[[path]].js",
+    "functions/api/studies.js",
+    "functions/api/support.js",
+    "functions/api/tally.js",
+    "functions/api/team.js",
+    "functions/api/tower-self.js",
+    "functions/api/translate.js",
+    "functions/api/v01d-fixes.js",
+    "functions/api/visit.js",
+    "functions/api/voice-reply.js",
+    "functions/api/watch.js",
+    "functions/api/weather.js",
+    "functions/api/will.js",
+    "functions/c/[clip].js",
+    "functions/fanfic/rss.js",
+    "functions/films/rss.js",
+    "lib/automations-run.js",
+    "lib/bench-asks.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js",
+    "lib/void-me.js"
+   ]
+  },
   "lib/owner-link.js": {
    "imports": [],
    "importedBy": []
@@ -8217,6 +8312,9 @@
    "importedBy": [
     "lib/converter.js",
     "lib/pdf-ui.js"
+   ],
+   "reachedBy": [
+    "lib/video-write.js"
    ]
   },
   "lib/pdf-ui.js": {
@@ -10490,6 +10588,9 @@
    "imports": [],
    "importedBy": [
     "lib/converter.js"
+   ],
+   "reachedBy": [
+    "lib/video-write.js"
    ]
   },
   "lib/translate-extras.js": {
@@ -10546,7 +10647,8 @@
   },
   "lib/video-write.js": {
    "imports": [
-    "lib/video-mux.js"
+    "lib/video-mux.js",
+    "lib/converter.js"
    ],
    "importedBy": []
   },
