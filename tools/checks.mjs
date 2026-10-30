@@ -435,6 +435,7 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
+  ['baggage-live', 'baggage-live.test.mjs'],
   ['video-gen-live', 'video-gen-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],

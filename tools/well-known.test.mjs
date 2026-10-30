@@ -51,6 +51,7 @@ export function parseSecurityTxt(text) {
 const siteLinks = (text) => [...text.matchAll(/https:\/\/a-to-mind\.com(\/[^\s"'<>)]*)?/g)].map((m) => m[1] || '/');
 
 test('exists() knows files, folders with index.html and function routes, and refuses what is not there', () => {
+  assert.ok(exists('/api/mcp/server-card'), 'the MCP Server Card route');
   assert.ok(exists('/') && exists('/privacy/') && exists('/llms.txt') && exists('/api/mcp') && exists('/tools.json') && exists('/@someone'));
   assert.ok(!exists('/no-such-page-anywhere') && !exists('/api/no-such-route'));
 });
@@ -101,6 +102,11 @@ test('every JSON file in .well-known parses, and the api-catalog points only at 
     const g = JSON.parse(read('.well-known/gpc.json'));
     assert.equal(typeof g.gpc, 'boolean');
     assert.match(String(g.lastUpdate), /^\d{4}-\d{2}-\d{2}/);
+    // the promise is kept only while nothing is sold or shared: the privacy page says both, and links the file
+    const priv = read('privacy/index.html');
+    assert.match(priv, /do not sell your data and we do not share it for advertising/);
+    assert.match(priv, /Global Privacy Control/);
+    assert.ok(priv.includes('href="/.well-known/gpc.json"'));
   }
 });
 

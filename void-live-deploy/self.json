@@ -327,22 +327,8 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "The growth inbox, deeper",
    "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
-   "waits": "the owner"
   },
   {
    "state": "open",
@@ -550,8 +536,28 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T17:59:25Z",
+   "subject": "Gradient hands its picture to a board"
+  },
+  {
+   "at": "2026-10-30T17:51:38Z",
+   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
+  },
+  {
+   "at": "2026-10-30T17:51:38Z",
+   "subject": "MCP skill tools run each skill's own code on the server"
+  },
+  {
    "at": "2026-10-30T17:48:01Z",
    "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
+  },
+  {
+   "at": "2026-10-30T17:46:38Z",
+   "subject": "Regenerate deps.json and families.json"
+  },
+  {
+   "at": "2026-10-30T17:44:53Z",
+   "subject": "A pasted progress list is no failure on the report card"
   },
   {
    "at": "2026-10-30T17:44:46Z",
@@ -608,26 +614,6 @@
   {
    "at": "2026-10-30T17:16:07Z",
    "subject": "Incident autopsy: map every check to its family and owning files"
-  },
-  {
-   "at": "2026-10-30T17:16:05Z",
-   "subject": "Local: list /api/watchalong as Verse's own in the openapi check"
-  },
-  {
-   "at": "2026-10-30T17:15:58Z",
-   "subject": "Refuse a recipe card about another dish instead of showing it"
-  },
-  {
-   "at": "2026-10-30T17:15:21Z",
-   "subject": "Card notes are no near miss of the self skill"
-  },
-  {
-   "at": "2026-10-30T17:13:03Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T17:12:29Z",
-   "subject": "Read a paste as a report, an ask or unclear, never a guess"
   }
  ],
  "builders": {

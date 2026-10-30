@@ -6153,7 +6153,11 @@ try {
     // D is held at least half a second and until the eye has gone the given way (a slow headless frame never fails it); the streak is sampled while held
     const holdD = async (page, far) => { let streak = 0; const t0 = Date.now(); await page.keyboard.down('d');
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
-      const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
+      // a slow frame draws the streak one frame after the move it shows (void.html's drawStars runs skyTick), so D stays held
+      // for two more frames and the streak drawn for the last move is sampled too (main's verify, 2026-10-30: x jumped to -181
+      // in one capped step and the hold ended before the next draw)
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {});
+      const v = await stars(page); streak = Math.max(streak, v.streak.dx); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
     await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
