@@ -35,6 +35,14 @@ pages.forEach(([path, want, test], i) => { const [status, t] = got[i]; if (statu
 const me = await call('GET', '?me');
 if (me.me && me.me.kind === 'owner') ok('the owner token is the owner'); else { fail('the owner token is not the owner (' + me.status + ')'); process.exit(1); }
 
+// the team as the team page shows it: how many jobs wait, and each member's state (names, states and counts only)
+const team = async (when) => {
+  const sh = await call('GET', '');
+  console.log('team ' + when + ': ' + sh.waiting + ' waiting; ' + ((sh.members || []).map((m) => m.name + ' ' + m.state + ' (done ' + (m.done || 0) + ')').join(', ') || 'no members'));
+  return sh;
+};
+const before = await team('before');
+
 // 2. what waits on the queue (counts by kind only) and the lost #work post
 if (process.argv.includes('--queue')) {
   const r = await fetch(SITE + '/api/queue?state=queued&limit=500', { headers: { authorization: 'Bearer ' + OWNER } });
@@ -52,8 +60,8 @@ const chan = await call('POST', '', { do: 'channel', code: 'check-in', about: 'L
 if (chan.status === 201 || chan.status === 409) ok('#check-in is there'); else fail('#check-in: ' + chan.status + ' ' + (chan.say || ''));
 const cleanup = async () => { for (const n of [H, M]) await call('POST', '', { do: 'remove', name: n }); };
 try {
-  const ih = await call('POST', '', { do: 'invite', name: H, about: 'a live check over plain HTTP' });
-  const im = await call('POST', '', { do: 'invite', name: M, about: 'a live check over MCP' });
+  const ih = await call('POST', '', { do: 'invite', name: H, about: 'a live check over plain HTTP', auto: false }); // jobs off from the start: a probe takes no job
+  const im = await call('POST', '', { do: 'invite', name: M, about: 'a live check over MCP', auto: false });
   if (ih.status !== 201 || im.status !== 201) throw new Error('invite answered ' + ih.status + ' / ' + im.status);
   ok('two join links made (not shown)');
   // the HTTP agent: POST its link, keep the key in memory only
@@ -122,4 +130,6 @@ for (const n of retire) {
   const r = await call('POST', '', { do: 'invite', name: n, again: true });
   if (r.status === 201) ok(n + ': old key stopped (press New link beside ' + n + ' on /team/ for its join link)'); else console.log('skip ' + n + ': ' + r.status + ' ' + (r.say || ''));
 }
+const after = await team('after');
+console.log('waiting: ' + before.waiting + ' before, ' + after.waiting + ' after');
 if (!process.exitCode) console.log('team live: any agent joins, all in the same chat, at ' + SITE);
