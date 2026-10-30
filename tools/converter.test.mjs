@@ -17,7 +17,7 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 63, verse: 18, part: 11, no: 14, all: 106 });
+  assert.deepEqual(C.counts(), { here: 63, verse: 18, part: 13, no: 12, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');
@@ -25,8 +25,10 @@ test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the 
   }
   // video: MP4, MOV, WEBM and MKV are written here and 15 edits run here (WebCodecs, /lib/video-write.js, /lib/video-mux.js); the rest are
   // honestly not on Verse yet, each with why
-  const NOT_YET = ['video-wmv', 'repair-mp4'];
-  for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) { assert.equal(t.status, NOT_YET.includes(t.id) ? 'no' : t.id === 'video-3gp' ? 'part' : 'here', t.id); if (t.status === 'no') assert.doesNotMatch(t.note, /does not do this yet/, t.id + ' says the real reason'); }
+  const NOT_YET = ['video-wmv'], PART = ['video-3gp', 'repair-mp4'];
+  for (const t of C.CATALOG.filter((x) => x.cat === 'Video')) { assert.equal(t.status, NOT_YET.includes(t.id) ? 'no' : PART.includes(t.id) ? 'part' : 'here', t.id); if (t.status === 'no') assert.doesNotMatch(t.note, /does not do this yet/, t.id + ' says the real reason'); }
+  // Repair MP4 and Repair M4A: in part, as AAC sound cannot be found in data that lost its index (tools/mp4-repair.test.mjs)
+  for (const id of ['repair-mp4', 'repair-m4a']) { assert.equal(C.toolOf(id).status, 'part', id); assert.equal(C.toolOf(id).run, 'repair', id); assert.match(C.toolOf(id).note, /AAC/, id); }
   for (const id of ['audio-to-video', 'remove-audio-from-video', 'gif-to-video', 'image-to-video', 'pdf-to-video']) { assert.equal(C.toolOf(id).status, 'here', id); assert.equal(C.toolOf(id).run, 'video', id); }
   // sound: WAV, AIFF, FLAC and ALAC with Verse's own encoders, OGG and OPUS with the browser's Opus encoder, M4A and M4R with its AAC
   // encoder (M4A falls back to ALAC; M4R is in part, as it needs AAC); MP3, AMR and WMA not yet
