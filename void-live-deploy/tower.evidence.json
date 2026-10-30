@@ -1192,59 +1192,66 @@
   "password strength": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 146,
-    "best": 23822,
-    "evidence": "Verse (/password-strength/) 146 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 23822 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:00:24.103Z"
+    "verse": 111,
+    "best": 17538,
+    "evidence": "Verse (/password-strength/) 111 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 17538 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/password-strength/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/password-strength/) 0 design defects vs howsecureismypassword.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.07), howsecureismypassword.net (0 low-contrast texts, 1 small tap targets, layout shift 0.16)",
-    "at": "2026-10-28T13:00:24.103Z"
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/password-strength/) 5 of 5 right against the worked-out answer; judged against the standard, not howsecureismypassword.net (the site is not asked)",
-    "at": "2026-10-28T13:00:24.103Z",
+    "at": "2026-10-30T04:33:31.998Z",
     "of": 5
    },
    "leak check": {
@@ -1252,16 +1259,17 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 of 1 shown vs howsecureismypassword.net 0 of 1 shown (Verse lacks: none; site lacks: a leak check)",
-    "at": "2026-10-28T13:00:24.103Z",
+    "at": "2026-10-30T04:33:31.998Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "crack time": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:00:24.103Z",
+    "at": "2026-10-30T04:33:31.998Z",
     "of": 2,
     "part": true
    },
@@ -1270,7 +1278,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:00:24.103Z",
+    "at": "2026-10-30T04:33:31.998Z",
     "of": 2,
     "part": true
    },
@@ -1279,8 +1287,17 @@
     "verse": 11,
     "best": 1,
     "evidence": "Verse (/password-strength/) 11 of 13 things a full answer shows vs howsecureismypassword.net 1 of 13 things a full answer shows (Verse lacks: Tips to improve, Leak / breach check; site lacks: a strength rating, the time to crack, why it is weak, how to fix it, a leak check, nothing sent anywhere, show the password, Time to crack as you type, Strength checks list, Tips to improve, Leak / breach check, Password generator link)",
-    "at": "2026-10-28T13:00:24.103Z",
-    "of": 13
+    "at": "2026-10-30T04:33:31.998Z",
+    "of": 13,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 4,
+    "evidence": "Verse (/password-strength/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs howsecureismypassword.net 4 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-30T04:33:31.998Z",
+    "siteRead": true
    }
   },
   "base converter": {
@@ -20610,53 +20627,59 @@
   },
   "hosting": {
    "speed": {
-    "verdict": "better",
-    "verse": 211,
-    "best": 606,
-    "evidence": "Verse (/hosting/) 211 ms to the load event (median of 3, phone width) vs thunit.com 606 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T19:54:22.993Z"
+    "verdict": "equal-and-better",
+    "verse": 86,
+    "best": 583,
+    "evidence": "Verse (/hosting/) 86 ms to the load event (median of 3, phone width) vs thunit.com 583 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/hosting/) 3 of 3 loads answered vs thunit.com 3 of 3 loads answered",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/hosting/) 0 px sideways overflow at 390 px vs thunit.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/hosting/) 0 unnamed controls or images vs thunit.com 8 unnamed controls or images",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/hosting/) 1 (1: the page shows itself again with the network cut) vs thunit.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 0,
     "evidence": "Verse (/hosting/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs thunit.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 14,
     "best": 14,
     "evidence": "Verse (/hosting/) 14 of 14 right against the worked-out answer; judged against the standard, not thunit.com (the site is not asked)",
-    "at": "2026-10-28T19:54:22.993Z",
+    "at": "2026-10-30T04:37:57.188Z",
     "of": 14
    },
    "design polish": {
@@ -20664,14 +20687,15 @@
     "verse": 0,
     "best": 9,
     "evidence": "Verse (/hosting/) 0 design defects vs thunit.com 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), thunit.com (8 low-contrast texts, 1 small tap targets, layout shift 0.01)",
-    "at": "2026-10-28T19:54:22.993Z"
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    },
    "capacity sizing": {
     "verdict": "equal-and-better",
     "verse": 6,
     "best": 6,
     "evidence": "Verse (/hosting/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:54:22.993Z",
+    "at": "2026-10-30T04:37:57.188Z",
     "of": 6,
     "part": true
    },
@@ -20680,7 +20704,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/hosting/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:54:22.993Z",
+    "at": "2026-10-30T04:37:57.188Z",
     "of": 4,
     "part": true
    },
@@ -20689,7 +20713,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/hosting/) 5 of 5 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:54:22.993Z",
+    "at": "2026-10-30T04:37:57.188Z",
     "of": 5,
     "part": true
    },
@@ -20698,7 +20722,7 @@
     "verse": 6,
     "best": 6,
     "evidence": "Verse (/hosting/) 6 of 6 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T19:54:22.993Z",
+    "at": "2026-10-30T04:37:57.188Z",
     "of": 6,
     "part": true
    },
@@ -20707,8 +20731,17 @@
     "verse": 24,
     "best": 0,
     "evidence": "Verse (/hosting/) 24 of 24 things a full answer shows vs thunit.com 0 of 24 things a full answer shows (Verse lacks: none; site lacks: requests per second, bandwidth, megabits, monthly transfer, virtual cores, memory, concurrent workers, shared vs exclusive, uptime, an SLA of 99.9%, allowed downtime, NGINX, Caddy, TLS 1.3, Strict-Transport-Security, Content-Security-Policy, X-Content-Type-Options, a rate limit, Copy, Download, Share link, on this device, works offline, no account)",
-    "at": "2026-10-28T19:54:22.993Z",
-    "of": 24
+    "at": "2026-10-30T04:37:57.188Z",
+    "of": 24,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 5,
+    "evidence": "Verse (/hosting/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs thunit.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-30T04:37:57.188Z",
+    "siteRead": true
    }
   },
   "identity": {
@@ -21766,6 +21799,128 @@
     "evidence": "INCOMPLETE, not a pass: the archive has no stories yet, so there is none to open (it is never seeded)",
     "at": "2026-10-29T14:09:13.717Z"
    }
+  },
+  "onlineconverter.com": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 163,
+    "best": 37,
+    "evidence": "Verse (/converter/) 163 ms to the load event (median of 3, phone width) vs onlineconverter.com 37 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/converter/) 3 of 3 loads answered vs onlineconverter.com 3 of 3 loads answered",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "mobile": {
+    "verdict": "worse",
+    "verse": 29,
+    "best": 0,
+    "evidence": "Verse (/converter/) 29 px sideways overflow at 390 px vs onlineconverter.com 0 px sideways overflow at 390 px",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "accessibility": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/converter/) 0 unnamed controls or images vs onlineconverter.com 0 unnamed controls or images",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "offline": {
+    "verdict": "equal",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/converter/) 0 (1: the page shows itself again with the network cut) vs onlineconverter.com 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onlineconverter.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 6.5,
+    "best": 6,
+    "evidence": "Verse (/converter/) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs onlineconverter.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 4,
+    "best": 4,
+    "evidence": "Verse (/converter/) 4 of 4 right against the worked-out answer; judged against the standard, not onlineconverter.com (the site is not asked)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "of": 4
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 18,
+    "evidence": "Verse (/converter/) 0 design defects vs onlineconverter.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), onlineconverter.com (1 low-contrast texts, 17 small tap targets, layout shift 0.00)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "siteRead": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 10,
+    "best": 9,
+    "evidence": "Verse (/converter/) 10 of 10 things a full answer shows vs onlineconverter.com 9 of 10 things a full answer shows (Verse lacks: none; site lacks: nothing to install)",
+    "at": "2026-10-30T04:32:28.478Z",
+    "of": 10,
+    "siteRead": true
+   },
+   "journey: convert a file and download the result": {
+    "verdict": "pass",
+    "steps": [
+     "open /converter/?t=image-png",
+     "sees the PNG tool open",
+     "press Convert",
+     "sees one PNG made on the device, offered as cover-256.png"
+    ],
+    "negatives": [
+     "after open /converter/?t=image-png: no stub, placeholder, error or empty page",
+     "after press Convert: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "Verse (/converter/): 4 steps, every negative control held",
+    "at": "2026-10-30T04:38:58.425Z"
+   },
+   "journey: find a tool and share it, then reopen it from the link": {
+    "verdict": "pass",
+    "steps": [
+     "open /converter/",
+     "type cut mp3",
+     "press Find",
+     "sees Cut MP3 found, and marked in part",
+     "press the share link control",
+     "takes the link /converter/?t=cut-mp3",
+     "open /word-count/",
+     "open /converter/?t=cut-mp3",
+     "sees the same tool back from its link"
+    ],
+    "negatives": [
+     "after open /converter/: no stub, placeholder, error or empty page",
+     "after type cut mp3: no stub, placeholder, error or empty page",
+     "after press Find: no stub, placeholder, error or empty page",
+     "after press the share link control: no stub, placeholder, error or empty page",
+     "after open /word-count/: no stub, placeholder, error or empty page",
+     "after open /converter/?t=cut-mp3: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "Verse (/converter/): 9 steps, every negative control held",
+    "at": "2026-10-30T04:38:58.425Z"
+   }
   }
  },
  "icons": {
@@ -21953,6 +22108,7 @@
   "cpantesters.org": "tower.icons/cpantesters.org.ico",
   "sudowrite.com": "tower.icons/sudowrite.com.png",
   "inkfluenceai.com": "tower.icons/inkfluenceai.com.png",
-  "nameunit.com": "tower.icons/nameunit.com.ico"
+  "nameunit.com": "tower.icons/nameunit.com.ico",
+  "onlineconverter.com": "tower.icons/onlineconverter.com.png"
  }
 }
