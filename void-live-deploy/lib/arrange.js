@@ -126,9 +126,11 @@ export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = 
   };
   const keys = !!(piano && piano.buffers && piano.buffers.size), drumKit = kit && kit.buffers && kit.buffers.size && kit.name === 'kit' ? kit : null;
   const sample = (buf, at, rate, gain, dest, off = null) => {
+    // start before stop: Web Audio throws InvalidStateError when stop() comes first, and the whole song then never plays
     const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf; s.playbackRate.value = rate; g.gain.setValueAtTime(gain, at);
+    s.connect(g); g.connect(dest); s.start(at);
     if (off != null) { g.gain.setValueAtTime(gain, off); g.gain.exponentialRampToValueAtTime(0.0001, off + 0.3); s.stop(off + 0.32); }
-    s.connect(g); g.connect(dest); s.start(at); return s;
+    return s;
   };
   if (keys) { // the pad on the grand piano: each bar's chord rolled once, louder as the section's tension rises, held under the bar
     const bars = new Map(); for (const n of p.pad) { if (!bars.has(n.step)) bars.set(n.step, []); bars.get(n.step).push(n.midi); }
