@@ -171,6 +171,8 @@ for (const [name, file] of [
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
@@ -327,6 +329,7 @@ for (const [name, file] of [
   ['brain-current', 'brain-current.test.mjs'], // F447's lattice-Boltzmann flow and evolved swimmers: mass and momentum kept, evolution beats random search and drifters, your drag stirs it, it is kept
   ['brain-grains', 'brain-grains.test.mjs'], // F456's granular grains: genes passed on touch from the nearer lander beat random passing and none, it runs in the brain, it is kept
   ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
+  ['brain-glow', 'brain-glow.test.mjs'], // a reload keeps what Verse Brain was just told: its lit ideas come back as bright as they were, dimmed by the time away
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],

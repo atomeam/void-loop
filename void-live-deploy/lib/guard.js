@@ -30,6 +30,7 @@ export const LIMITS = {
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
   aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number
+  joins: { rpm: 30, body: 0 }, // GET only, no input, one COUNT read, cached a minute: the member count and the newest join's time (functions/api/joins.js)
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },

@@ -16,7 +16,7 @@ import { SELF_SITES } from './self-sites.js';
 import { badgeOf, buildable } from './gate-badge.js';
 import { isJourney, journeyPasses, incompleteRow, zeroRivalUnread } from './tower-controls.js';
 import { journeyAspects } from './tower-journeys.js';
-import { bytesLabel, trustedControls, weightBand, weightOf } from './tower-weight.js';
+import { bytesLabel, rankableControls, weightBand, weightOf } from './tower-weight.js';
 
 export const COMMON_ASPECTS = ['speed', 'accuracy', 'completeness', 'mobile', 'accessibility', 'offline', 'sharing', 'design polish', 'reliability', 'wider use'];
 // easiest at the bottom (index 0) to hardest at the top; extra aspects are generic names for what the best site in the category offers
@@ -354,7 +354,7 @@ export const TIER_WORDS = Object.freeze(['small', 'mid-size', 'large', 'giant'])
 export function easeLine(f) {
   if (f.held) return 'held, not beaten: ' + f.held;
   const left = Math.max(0, (f.m || 0) - (f.n || 0)), sc = f.size ? f.size.scripts : 0;
-  const tc = trustedControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
+  const tc = rankableControls(f.size), ctl = tc !== null ? 'has ' + tc + ' controls on its home page and ' : '';
   const how = f.weight !== null && f.size ? ctl + 'weighs ' + bytesLabel(f.size.bytes) + ' over ' + sc + (sc === 1 ? ' script' : ' scripts') + ', ' + f.size.nodes + ' elements and ' + f.size.routes + ' routes (' + ['1 KB club', 'light', 'medium', 'heavy'][weightBand(f.weight)] + ')'
     : 'not weighed yet' + (f.rank ? ' (ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited)' : '');
   const bar = (f.barred || []).length;
@@ -393,7 +393,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   // unmeasured one by its size tier; then what Verse loses on, aspects still to pass, a site with a page before one without, then the order they
   // came. Without it the old order stands.
   const pinned = (f) => (target && f.id === target && !f.held ? 0 : 1); // the site being assimilated stays first until Verse surpasses it
-  const counted = (f) => !!f.size && trustedControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2) is not counted
+  const counted = (f) => !!f.size && rankableControls(f.size) !== null && Number.isFinite(+f.size.bytes); // a shell count (under 2), a row not rendered, a bot wall or a country picker is not counted
   const tierOf = (f) => (rank ? (counted(f) ? 0 : f.weight !== null ? 1 : 2 + f.tier) : 0), ctrlOf = (f) => (counted(f) ? +f.size.controls : 0);
   const lightOf = (f) => (counted(f) ? +f.size.bytes : f.weight !== null ? f.weight : 0), pageless = (f) => (rank && !f.page ? 1 : 0);
   const queue = all.filter((f) => !f.beaten).sort((a, b) => { const x = key(a), y = key(b); return pinned(a) - pinned(b) || gated(a) - gated(b) || far(a) - far(b) || waiting(a) - waiting(b) || tierOf(x) - tierOf(y) || ctrlOf(x) - ctrlOf(y) || lightOf(x) - lightOf(y) || broad(x) - broad(y) || hard(x) - hard(y) || (x.m - x.n) - (y.m - y.n) || pageless(x) - pageless(y) || x.order - y.order || a.order - b.order; }), won = all.filter((f) => f.beaten), floors = won.concat(queue);
