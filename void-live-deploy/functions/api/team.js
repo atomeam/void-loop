@@ -18,6 +18,8 @@
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
 //     next                              an agent asks for its next job now
 //     done {ok, note?, link?}           an agent closes its job: done, or given back (a failure counts a try)
+//     rekey                             an agent: a new key for itself; the key it sends stops at once
+// A body that is not JSON (a shell mangled the quotes) is read loosely: lib/team.js looseBody. ?t= and thread take the job id too.
 //   POST /api/team {do: 'join', code}   anyone holding a join link: the agent's key, once (vt1.<id>.<secret>; only its keyed hash is kept).
 //                                       The same as POST /team/join/<code> (functions/team/join/[code].js) and the join tool of /team/mcp.
 // Every way in (the join link, plain HTTP, MCP at /team/mcp, the script at /team/agent.mjs) is the same workspace: one set of channels
@@ -183,6 +185,15 @@ async function write(env, { c, by, body, thread = 0, job = null, now }) {
   return r.id;
 }
 
+// a thread an agent names: its number, or the job it is for (the caller's own job first, else the newest thread of that job). -> id or 0
+async function threadId(env, v, me) {
+  const r = T.threadRef(v); if (!r) return 0;
+  if (r.id) return r.id;
+  if (me && me.kind === 'agent' && me.agent.job === r.job && me.agent.thread > 0) return me.agent.thread;
+  const row = await env.DB.prepare('SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 ORDER BY id DESC LIMIT 1').bind(r.job).first();
+  return row ? row.id : 0;
+}
+
 // Verse hands an idle agent its next job: claimed in one statement, posted as a thread in #work. -> the assignment, or null with why
 export async function handOut(env, a, now) {
   if (a.job) return { job: a.job, thread: a.thread, already: true };
@@ -254,7 +265,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null }
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   const { list } = await namesOf(env);
   if (sp.has('t')) {
-    const id = parseInt(sp.get('t'), 10); if (!(id > 0)) return bad(400, 'which thread?');
+    const id = await threadId(env, sp.get('t'), me); if (!id) return bad(400, 'which thread? Give its number (?t=12) or your job (?t=team-1)');
     const root = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE id = ? AND thread = 0').bind(id).first(); if (!root) return bad(404, 'no such thread');
     const { results } = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE thread = ? ORDER BY id ASC LIMIT ?').bind(id, T.LIMITS.thread).all();
     return json({ ok: true, root: (await shape(env, [root], me))[0], replies: await shape(env, results, me), names: list });
@@ -284,8 +295,8 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null }
 export async function onRequestPost({ request, env, now = Date.now(), as = null }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
-  let p; try { p = await request.json(); } catch (_) { return bad(400, 'send JSON'); }
-  if (!p || typeof p !== 'object') return bad(400, 'send JSON');
+  const p = T.looseBody(await request.text().catch(() => '')); // JSON, or JSON a shell mangled (lib/team.js looseBody)
+  if (!p) return bad(400, 'send JSON, for example {"do":"here"}. In PowerShell: $body = @{ do = "here" } | ConvertTo-Json; then -d $body (see /team/agents.txt)');
   if (p.do === 'join') { // the one write without a key: the join link is the key to its own key
     const r = await redeem(env, T.joinCode(p.code), ['HTTP', 'the script', 'the browser'].includes(p.via) ? p.via : 'HTTP', now);
     return r.ok ? json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name) }, 201) : bad(r.status, r.say);
@@ -345,7 +356,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       const ch = await env.DB.prepare('SELECT code FROM void_team_channels WHERE code = ?').bind(c).first(); if (!ch) return bad(404, 'no such channel');
       let thread = 0;
       if (p.thread != null) {
-        thread = parseInt(p.thread, 10);
+        thread = await threadId(env, p.thread, me);
         const root = thread > 0 ? await env.DB.prepare('SELECT id FROM void_team_msgs WHERE id = ? AND thread = 0 AND channel = ?').bind(thread, c).first() : null;
         if (!root) return bad(404, 'no such thread in that channel');
         const { replies } = await env.DB.prepare('SELECT replies FROM void_team_msgs WHERE id = ?').bind(thread).first();
@@ -371,7 +382,13 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       if (p.do === 'here' && typeof p.auto === 'boolean') await env.DB.prepare('UPDATE void_team_agents SET auto = ? WHERE id = ?').bind(p.auto ? 1 : 0, a.id).run();
       const auto = p.do === 'next' || (typeof p.auto === 'boolean' ? p.auto : !!a.auto);
       const job = auto ? await handOut(env, a, now) : (a.job ? { job: a.job, thread: a.thread, already: true } : null);
-      return json({ ok: true, state: job ? 'busy' : 'idle', job, say: job ? null : (auto ? 'no job for an agent on the queue right now' : 'idle; jobs off (auto: false)') });
+      return json({ ok: true, state: job ? 'busy' : 'idle', job, thread: job ? job.thread : null, say: job ? T.workSay(job) : (auto ? 'no job for an agent on the queue right now' : 'idle; jobs off (auto: false)') });
+    }
+    case 'rekey': { // an agent's own new key: the one it sends stops at once (a key that was shown in a chat or a log)
+      if (!a) return bad(403, 'only an agent has a key to change');
+      const key = await newKey(env, a.id);
+      await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(a.id).run();
+      return json({ ok: true, name: a.name, key, say: 'Your old key stopped now. Save this one straight to your key file; never print it, paste it or put it on a command line.' }, 201);
     }
     case 'done': {
       if (!a) return bad(403, 'only an agent closes a job');
@@ -387,8 +404,8 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null 
       }
       const fresh = await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(a.id).first();
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
-      return json({ ok: true, next, say: next ? null : 'no job for an agent on the queue right now' });
+      return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, invite, remove, channel, post, react, here, next or done');
+    default: return bad(400, 'do: join, invite, remove, channel, post, react, here, next, done or rekey');
   }
 }
