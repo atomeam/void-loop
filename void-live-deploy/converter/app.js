@@ -3,13 +3,18 @@
 // the results.
 import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf, search, decodePcm, wav, aiff, seconds, cut, speed, gain, removeSilence, merge, mix, bmp, tiff, dng, gif, gifSpeed, textParas, htmlParas, rtfParas, docxParas, epubParas, pdfParas, txtOf, htmlOf, rtfOf, docxBytesOf, epubOf, pdfOf, outName, MIME } from '/lib/converter.js';
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
-import { writeVideo, writeStill, writeSplit, writeStabilize, soundOf48, encodeSound, drawOver } from '/lib/video-write.js';
-import { flac, alacFile, opusFile, m4aFile } from '/lib/audio-write.js';
-import { addCover, cutMp3, gainMp3 } from '/lib/mp3-edit.js';
-import { denoise } from '/lib/denoise.js';
 import { TRANSITIONS } from '/lib/transition.js';
-import { changeCover, mergeBooks, compressBook, compressComic } from '/lib/epub-edit.js';
-import { repair } from '/lib/mp4-repair.js';
+// the encoders (video, sound, MP3, ebook, MP4 repair: about 300 KB) are not on the page's first load (owner, 2026-10-30: the conversion route
+// in its weight class on a phone): the page is the catalog and the file picker, and the encoders arrive once a file is picked or a tool opens,
+// and at the latest when Convert is pressed. Once the service worker runs the page they are fetched through it, so they are kept and every
+// tool converts offline (warm() below).
+let writeVideo, writeStill, writeSplit, writeStabilize, soundOf48, encodeSound, drawOver, flac, alacFile, opusFile, m4aFile, addCover, cutMp3, gainMp3, denoise, changeCover, mergeBooks, compressBook, compressComic, repair;
+const ENGINES = ['/lib/video-write.js', '/lib/audio-write.js', '/lib/mp3-edit.js', '/lib/denoise.js', '/lib/epub-edit.js', '/lib/mp4-repair.js'];
+let engineLoad = null;
+const engines = () => engineLoad || (engineLoad = Promise.all(ENGINES.map((u) => import(u))).then(([v, a, m, d, e, r]) => {
+  ({ writeVideo, writeStill, writeSplit, writeStabilize, soundOf48, encodeSound, drawOver } = v); ({ flac, alacFile, opusFile, m4aFile } = a);
+  ({ addCover, cutMp3, gainMp3 } = m); ({ denoise } = d); ({ changeCover, mergeBooks, compressBook, compressComic } = e); ({ repair } = r);
+}).catch((err) => { engineLoad = null; throw err; }));
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
@@ -152,6 +157,7 @@ $('any').onclick = () => anyFile();
 
 // ---- picked files -------------------------------------------------------------------------------------------------------------------------
 async function setFiles(list) {
+  engines().catch(() => {});
   files = [...list]; heads = await Promise.all(files.map(async (f) => formatOf(new Uint8Array(await f.slice(0, 4096).arrayBuffer()), f.name)));
   $('picked').replaceChildren(...files.map((f, i) => make('li', {}, f.name + ' · ' + sizeText(f.size) + (heads[i] ? ' · ' + heads[i].toUpperCase() : ' · not a format Verse knows'))));
   if (!cur) opts(); else ready();
@@ -276,6 +282,7 @@ async function convertTo(f, fmt, to, taken, say = () => {}) {
   throw new Error('Verse cannot make ' + to.toUpperCase() + ' from this file.');
 }
 async function go() {
+  try { await engines(); } catch (_) { $('status').textContent = 'The converters did not load: check the connection once, then they are kept on this device.'; return; }
   clearOut(); const t = cur, list = files.map((f, i) => ({ f, fmt: heads[i] })), taken = new Set(), add = (r) => results.push(r), fail = (f, e) => results.push({ name: f.name, error: (e && e.message) || String(e) });
   const as = ($('as') && $('as').value) || 'wav', say = (s) => { $('status').textContent = s; };
   $('go').disabled = true;
@@ -517,5 +524,16 @@ catalog();
   if (t && !runnable(t)) { $('found').replaceChildren(rowOf(t)); }
   if (q.get('q')) find(q.get('q'), !t);
   if (q.get('t') || q.get('q')) requestAnimationFrame(() => $('panel').scrollIntoView({ block: 'start' }));
+}
+// offline: once the service worker runs this page, every script it uses (its own, the shared ones, and the encoders) is asked for through the
+// worker, which keeps /lib/ and this page's app.js, so the page and every converter open and run with the network cut. Only a script the
+// worker has not kept yet is asked for, at an idle moment after the first paint; on the first visit this happens once the worker takes over.
+const keepForOffline = () => (window.requestIdleCallback || setTimeout)(() => engines().then(() => {
+  const own = [...new Set(performance.getEntriesByType('resource').map((r) => r.name).filter((u) => u.startsWith(location.origin) && /\.js(\?|$)/.test(u)))];
+  return Promise.all(own.map((u) => caches.match(u).then((hit) => hit || fetch(u).then(() => null)).catch(() => null)));
+}).catch(() => {}));
+if (navigator.serviceWorker && window.caches) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+  if (navigator.serviceWorker.controller) addEventListener('load', keepForOffline); else navigator.serviceWorker.addEventListener('controllerchange', keepForOffline, { once: true });
 }
 addEventListener('load', () => { import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/converter/', [{ label: 'Share this tool', run: share }, { label: 'Edit a picture', href: () => '/photos/' }], { card: () => lastQ || (cur ? (cur.kind === 'converter' ? 'to ' + cur.name.toLowerCase() : cur.name.toLowerCase()) : '') })).catch(() => {}); });
