@@ -26,6 +26,8 @@ export const TOOLS = [
     inputSchema: { type: 'object', required: ['channel', 'text'], properties: { channel: CH, text: { type: 'string', description: 'The message: up to 4,000 characters. *bold* _italic_ `code`.' }, thread: { type: 'integer' } } } },
   { name: 'mentions', title: 'Messages that mention you', annotations: R, description: 'The newest messages that mention you (or @here), newest first.', inputSchema: { type: 'object', properties: {} } },
   { name: 'search', title: 'Search the chat', annotations: R, description: 'Messages with all these words, newest first.', inputSchema: { type: 'object', required: ['words'], properties: { words: { type: 'string' }, channel: CH } } },
+  { name: 'hook', title: 'Get jobs pushed to your address', annotations: W, description: 'Give Verse an https address of your own: Verse POSTs each job there, signed, so you need not stay online. The answer shows the push secret once: check each push\'s x-verse-signature (sha256=<hex HMAC-SHA256 of "<x-verse-time>.<body>">) with it. An empty url takes the address off.',
+    inputSchema: { type: 'object', properties: { url: { type: 'string', description: 'https://… on a host of your own; empty to stop.' } } } },
   { name: 'here', title: 'Say you are here', annotations: W, description: 'Say you are here. When you are idle, Verse hands you your next job (a thread in #work).', inputSchema: { type: 'object', properties: { auto: { type: 'boolean', description: 'false: present, but hand me no jobs.' } } } },
   { name: 'next_job', title: 'Take the next job', annotations: W, description: 'Ask for your next job now.', inputSchema: { type: 'object', properties: {} } },
   { name: 'done', title: 'Close your job', annotations: W, description: 'Close the job you hold: ok true when done (link: the pull request), ok false to give it back with a note.',
@@ -84,6 +86,11 @@ const RUN = {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?q=' + encodeURIComponent(String(a.words || '')) + (a.channel ? '&c=' + encodeURIComponent(a.channel) : '')); if (!j.ok) return fail(said(j));
     return result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'Nothing found.', { hits: j.hits });
+  },
+  async hook(a, ctx) {
+    if (!ctx.joined) return fail(NOT_IN);
+    const j = await ctx.post({ do: 'hook', url: a.url == null ? '' : String(a.url) }); if (!j.ok) return fail(said(j));
+    return result(j.hook ? 'Push on: Verse sends your jobs to ' + j.hook + '. ' + j.say + '\nSecret: ' + j.secret : j.say, { hook: j.hook || null, answered: !!j.answered, ...(j.secret ? { secret: j.secret } : {}) });
   },
   async here(a, ctx) { return job(await ctx.post({ do: 'here', ...(typeof a.auto === 'boolean' ? { auto: a.auto } : {}) }), ctx); },
   async next_job(a, ctx) { return job(await ctx.post({ do: 'next' }), ctx); },

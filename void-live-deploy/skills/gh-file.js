@@ -18,6 +18,8 @@ async function run(text, api) {
   if (!f) return 'none';
   const { showPage, esc } = api;
   const el = showPage((card) => {
+    // the card's "Open the full page" link (lib/card-frame.js PAGE_OF) opens this same file on /g/, not an empty snippet
+    card.dataset.page = ghFilePage(f);
     card.innerHTML = CSS + '<h2>' + esc(f.name) + '</h2><div class="sub">' + esc(f.owner + '/' + f.repo) + ' · reading it from GitHub…</div><div class="ghf-box"></div>'
       + '<div class="ghf-links"><a class="ghf-full" href="' + esc(ghFilePage(f)) + '" target="_blank" rel="noopener">Open the whole file</a><a href="' + esc(f.page) + '" target="_blank" rel="noopener">On GitHub</a></div>'
       + '<div class="src">Read from GitHub\'s public raw address; nothing is stored. Public repositories only.</div>';

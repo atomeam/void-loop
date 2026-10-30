@@ -66,6 +66,9 @@
   footer a { color:inherit; }
 </style>
 <script src="/visit.js" defer></script>
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Emoji counts: a ranked wall of emoji to copy","url":"https://a-to-mind.com/emojis/","description":"A ranked wall of 134 emoji, counted as they are copied here: tap one to copy it as the emoji, its U+ codepoint or its HTML entity, and its count goes up. Ranked today or all time, searched by name, with each emoji's Unicode, UTF-8 bytes and entity. Only copies made on this page are counted and nothing else is sent; no account, and it works offline with the counts it last saw.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"copy and paste emoji, emoji counter, most copied emoji, emoji unicode codepoint, emoji html entity, emoji utf-8 bytes, emoji search by name","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/emojis/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Emoji counts: a ranked wall of emoji to copy","item":"https://a-to-mind.com/emojis/"}]}]}</script>
+<!-- /seo -->
 
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/emoji.js">
@@ -277,6 +280,10 @@
       <a href="/">Back to Verse</a>
     </nav>
   </footer>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/emojis/?q=heart">Every heart</a><a href="/emojis/?q=cat">Cats</a><a href="/emojis/?q=hand">Hands</a><a href="/emojis/?q=star">Stars</a><a href="/emojis/?pick=%F0%9F%94%A5">The fire emoji</a><a href="/emojis/?pick=%E2%9D%A4%EF%B8%8F">The red heart</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/translate/">Translate</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script type="module">
   import { EMOJI } from '/lib/emoji.js';
@@ -437,6 +444,8 @@
 
   render();
   read();
+  // the toolkit's "Use with" row (lib/toolkit.js): this page's card on the stage, the tools that go with it, the ask bar
+  import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/emojis/')).catch(() => {});
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
