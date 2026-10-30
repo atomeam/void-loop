@@ -46,6 +46,11 @@ export function compound({ principal = 0, monthly = 0, ratePct = 0, years = 10, 
 }
 
 /** the three percentage questions: x % of y, x is what % of y, the % change from x to y. Pure. */
+/** a whole number of months as words: "3 years 10 months", "1 year", "9 months", "1 year 1 month" (no "1 years" and no "0 years"). Pure. */
+export function yearsMonths(months) {
+  const m = Math.max(0, Math.round(Number(months) || 0)), y = Math.floor(m / 12), r = m % 12, w = (n, u) => n + ' ' + u + (n === 1 ? '' : 's');
+  return y && r ? w(y, 'year') + ' ' + w(r, 'month') : y ? w(y, 'year') : w(r, 'month');
+}
 export const percentOf = (x, y) => (Number(x) / 100) * Number(y);
 export const whatPercent = (x, y) => (Number(y) ? (Number(x) / Number(y)) * 100 : null);
 export const change = (x, y) => (Number(x) ? ((Number(y) - Number(x)) / Math.abs(Number(x))) * 100 : null);

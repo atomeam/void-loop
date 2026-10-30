@@ -47,7 +47,7 @@ export const CATALOG = Object.freeze([
   tool('Video', 'Repair MP4', 'no', { note: 'Not on Verse yet: Verse reads a video through the browser, which cannot open a broken MP4; a repair rebuilds the index from the raw data, which Verse does not do.' }),
   vid('Video', 'Resize Video', 'resize', 'Makes the video the width you set; the height follows, so the shape stays.'),
   vid('Video', 'Rotate Video', 'rotate', 'Turns the video 90, 180 or 270 degrees.'),
-  tool('Video', 'Stabilize Video', 'no', { note: 'Not on Verse yet: stabilizing needs motion tracking across the pictures, which Verse does not do.' }),
+  vid('Video', 'Stabilize Video', 'stabilize', 'Takes the shake out of a hand-held video. The video plays twice: the first time Verse follows how each picture moves (a move, a turn and a change of size, matched on a small gray copy), the second it turns and moves each picture onto a smooth path, zoomed in just enough to hide the edges. Stable to Most Stable average the path over a longer time (0.25 to 4 s) and allow more zoom (6% to 20%). The sound stays as it was.'),
   vid('Video', 'Sync Audio and Video', 'shift', 'Moves the sound earlier or later against the pictures, by the seconds you set.'),
   vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
