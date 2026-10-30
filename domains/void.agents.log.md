@@ -1168,3 +1168,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T06:00:59Z | claude | fix | News: CBC refuses every request from a server, so CBS News takes its place and all 10 top-story sources load
 2026-10-30T06:19:28Z | claude | fix | Calendar card: the Calendar page's own card on the stage now opens the 3D calendar on the day the page shows, and the card's link back opens the page on the day you picked
 2026-10-30T06:33:43Z | claude | fix | Stage calendar card settles still after its first sway (days hold under a pointer, frame loop stops on phones); the tools page card follows the tool opened last on the bench
+2026-10-30T06:42:03Z | claude | fix | Memory orbs: what Verse newly remembers stirs the fluid where its word sits, so an orb rises there and its chip pulses; each orb is named by the word it sits near; the card rests while scrolled away, and only writes styles that changed, so it stays fast on phones

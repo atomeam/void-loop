@@ -185,12 +185,16 @@ export function mountField(th, stageApi, idea) {
   }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
-  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
+  let endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
+  // idea.restOffscreen: a card that only needs its loop while seen (the memory orbs) rests while it is scrolled out of view, so a phone does not
+  // spend frames on a card nobody sees; other cards keep running there because some feed the brain while unseen.
+  let away = false;
+  if (idea.restOffscreen && typeof IntersectionObserver === 'function') { try { const io = new IntersectionObserver((es) => { for (const e of es) away = !e.isIntersecting; el.dataset.away = away ? '1' : '0'; }); io.observe(el); const stop = endHook; endHook = () => { try { io.disconnect(); } catch (_) { /* gone */ } stop(); }; } catch (_) { away = false; } }
   let raf = 0, last = 0, cost = 0, gap = 16.7; const thr = motionThrottle(); // frame time is measured (data-frame-ms: the field's own work a frame; data-fps)
-  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still && !away) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
   // resize(w, h): a page that shows the field at its own size (the full-screen brain, /brain/) gives the canvas that size in CSS pixels, drawn at the

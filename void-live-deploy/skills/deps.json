@@ -2050,14 +2050,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 81,
+   "dependants": 82,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 80,
+   "dependants": 81,
    "tests": 29
   },
   {
@@ -2078,14 +2078,14 @@
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 42,
    "tests": 8
   },
   {
@@ -3163,7 +3163,8 @@
  "files": {
   "functions/[handle].js": {
    "imports": [
-    "lib/pages.js"
+    "lib/pages.js",
+    "lib/void-me.js"
    ],
    "importedBy": []
   },
@@ -6875,6 +6876,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
     "functions/api/film-review.js",
@@ -8391,6 +8393,7 @@
     "lib/guard.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/_middleware.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -11289,6 +11292,7 @@
     "lib/guard.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
@@ -11443,6 +11447,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
