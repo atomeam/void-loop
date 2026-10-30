@@ -18,10 +18,18 @@ const unb64 = (c) => { const bin = atob(String(c).replace(/-/g, '+').replace(/_/
 // the saved picture grows longer to hold it (lib/card-image.js fitLong) and the code line still carries only its start
 export const BODY_MAX = 4e6; // no cut-off (owner, 2026-10-22: "first 8000 of 724820 characters kept" is forbidden); only the code line is short
 export const TITLE_MAX = 600; // the whole ask shows as the title (owner, 2026-10-18: "make it show the whole ask"); it was 120
+// a title past TITLE_MAX ends at its last whole sentence, or else at a whole word, never mid-word (owner, 2026-10-30: a pasted note's card title
+// stopped at "The Versus jo")
+export const cutWhole = (t, n) => {
+  const s = String(t || ''); if (s.length <= n) return s;
+  const cut = s.slice(0, n + 1), ends = [...cut.matchAll(/[.!?\u3002\uff01\uff1f]["'\u201d\u2019)\]]*(?=\s|$)/g)].map((m) => m.index + m[0].length).filter((i) => i <= n);
+  const end = ends.length ? ends[ends.length - 1] : -1;
+  return end > n * 0.4 ? s.slice(0, end).trim() : cutAtWord(s, n);
+};
 /** the facts a card carries, cleaned and capped: { v, t, k, b, src: [{ t, u }] }. Pure. */
 export function dataOf({ title, kind, body, sources, n } = {}) {
   const gen = Math.floor(+n); // version history: how many times this card has been copied on from a pasted one (2 = the copy of a pasted card); only 2..99 ride along
-  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: clip(title, TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.u) }; // a source with no https link cannot be checked, so it is not carried (owner, 2026-10-26)
+  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: cutWhole(clip(title, 4 * TITLE_MAX), TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.u) }; // a source with no https link cannot be checked, so it is not carried (owner, 2026-10-26)
 }
 /** the code line for a card. Pure. */
 // short on purpose (owner, 2026-10-17: "are the letters necessary to copy along with the card?"): the readable text above it already holds the

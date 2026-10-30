@@ -36,8 +36,9 @@ export function fitTitle(title, avail) {
   for (let fs = 38; fs >= 22; fs--) if (t.length * fs * W <= avail) return { lines: [t], fs };
   for (let fs = 28; fs >= 12; fs--) { const l = wrap(t, Math.floor(avail / (fs * W)), 99); if (l.length <= 2) return { lines: l, fs }; }
   // a long ask (owner, 2026-10-18: "make it show the whole ask"): it keeps its whole length, wrapped at a readable 16 px on as many lines as it needs
-  // (the title bar grows: titleExtra, used by cardSvg); only an absurd ask is stopped, at 14 lines
-  return { lines: wrap(t, Math.floor(avail / (16 * W)), 14), fs: 16 };
+  // (the title bar grows: titleExtra, used by cardSvg); a card's title is at most TITLE_MAX (600) characters and ends at a whole sentence or word
+  // (lib/card-share.js cutWhole), so 24 lines hold it at the narrowest bar (cost 9); only a longer title from elsewhere is stopped, at 24 lines
+  return { lines: wrap(t, Math.floor(avail / (16 * W)), 24), fs: 16 };
 }
 /** how much taller the title bar must be for `lines` lines at `fs` px: nothing for one or two lines. Pure. */
 export const titleExtra = (lines, fs) => (lines > 2 ? (lines - 2) * (fs + 3) : 0);
