@@ -1,5 +1,5 @@
 /**
- * fact skill — a random fun fact from a public API (no key)
+ * fact skill — a fun fact, about a topic from its Wikipedia article or a random one from a public API (no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "tell me a fact", "fun fact", "random fact".
  */

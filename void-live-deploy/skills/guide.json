@@ -3872,7 +3872,7 @@
    "chapter": "words",
    "name": "fact",
    "title": "Fact",
-   "line": "A random fun fact from a public API",
+   "line": "A fun fact, about a topic from its Wikipedia article or a random one from a public API",
    "examples": [
     "tell me a fact",
     "fun fact",
