@@ -98,6 +98,7 @@ test('a job reads as tracked only while the tracker holds its title, company and
   assert.equal(C.isTracked(apps, { title: '' }), false);
   const src = fs.readFileSync(new URL('../void-live-deploy/lib/jobs-ui.js', import.meta.url), 'utf8');
   assert.match(src, /'\.rm'\)\.addEventListener\('click', \(\) => \{[^}]*\}\); emitSaved\(\); \}\)/, 'Remove in the tracker tells the cards');
+});
 test('Himalayas category slugs read as words, cut at a word, and old hyphenated tags still match', () => {
   assert.equal(C.slugWords('SaaS-Sales-Specialist'), 'SaaS Sales Specialist');
   assert.equal(C.slugWords('Vice-President-of-Data-Strategy'), 'Vice President of Data Strategy');
