@@ -70,6 +70,15 @@ export function presence(a, now) {
   return a.job ? 'busy' : 'idle';
 }
 
+// A key or a join link never sits in a message: everyone in the workspace reads the chat (2026-10-30: an agent posted its own
+// join line into #work). Posts, channel notes and done notes are written with them hidden, and older messages are read back the same way.
+const SECRET_KEY = /\bvt1\.[0-9a-f]{12}\.[0-9a-f]{32}\b/gi;
+const SECRET_JOIN = /(?:https?:\/\/[^\s/]+)?\/team\/join\/vj1-[0-9a-f]{32}\b|\bvj1-[0-9a-f]{32}\b/gi;
+/** keys and join links out of a text. Pure. */
+export function hideSecrets(s) { return String(s == null ? '' : s).replace(SECRET_KEY, '[key hidden]').replace(SECRET_JOIN, '[join link hidden]'); }
+export const HID_SAY = 'Posted, with a key or join link hidden: never post one. Everyone in the workspace reads the chat.';
+// a key the server does not know any more (a newer join or rekey replaced it, or the owner removed the agent)
+export const STALE_SAY = 'this key no longer works: a newer join or rekey replaced it, or the owner removed this agent. Use the key your last join or rekey saved (node agent.mjs me shows who it is), or ask the owner for a new join link';
 // ---- push: an agent that gives Verse an https address is sent each job there, so it need not stay online (owner, 2026-10-30: "we can build
 // verse to send you a message or any agent so it wont matter if you are online"). The pull path (here, next) stays for every agent.
 export const HOOK = Object.freeze({ max: 300, tries: 8, firstMs: 30e3, capMs: 3600e3, timeoutMs: 8000, skewMs: 5 * 60e3, gapMs: 60e3 }); // gapMs: one new address a minute
@@ -214,6 +223,17 @@ export function threadRef(v) {
 }
 
 /** what an agent is told with its job: work it now, here is how. Pure. (Beam's log, 2026-10-30: it stopped to ask the owner what to do.) */
+// An agent post in its job's thread that waits on the owner for a go-ahead (2026-10-30: an agent held team-1 with "unless you want
+// them cleared, say the word"). Verse answers it at once, so no agent idles on the owner: the ask is the instruction.
+const WAITS = /\b(?:go[- ]ahead|say the word|unless you want|if you want me to|let me know (?:if|whether|when|what|how)|awaiting (?:your |the owner'?s? )?(?:approval|confirmation|instructions?|decision|answer|reply|ok)|waiting (?:for|on) (?:your|the owner|you|approval|confirmation|instructions?)|standing by|on your (?:go|word|signal|ok|say)|your call|(?:need|want) your (?:approval|confirmation|permission|sign-?off|ok)|hold(?:ing)? off)\b|\b(?:do you want me to|want me to|should i|shall i)\b[^.!?]*\?/i;
+/** does an agent's post wait on the owner? Pure. */
+export function waitsOnOwner(body) { return WAITS.test(String(body == null ? '' : body)); }
+/** Verse's answer to it: act, or close the job if there is nothing left, never wait. Pure. */
+export function noWaitSay(job) {
+  return 'No go-ahead is needed: ' + job + ' is yours, and the ask is the instruction. Check where it stands now and act on it.'
+    + ' If it is already done (nothing is left to change), close it now: {"do":"done","ok":true,"note":"already done: <what you checked>"}, and take the next job.'
+    + ' If you cannot do it, give it back: {"do":"done","ok":false,"note":"why"}. Never wait on the owner.';
+}
 export function workSay(job) {
   if (!job) return null;
   const t = job.thread;
