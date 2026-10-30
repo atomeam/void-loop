@@ -4,11 +4,18 @@
  * where on earth the eclipse is greatest and whether the sun is even above your horizon then: the path of totality is not computed here, so it
  * points to where to check rather than guessing.
  */
-import * as A from '../lib/astro.js';
-import { LUNAR, SOLAR } from '../lib/eclipses.js';
-import { dayWord, inWords, fmtTime, compassWord } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
 import { splitPlace, SKY_LINK } from '../lib/skyask.js';
+
+// the eclipse table (lib/eclipses.js), the almanac and the place lookup load with the first eclipse answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); nextEclipses and eclipseLine read them, so a caller awaits ready first
+let A, LUNAR, SOLAR, dayWord, inWords, fmtTime, compassWord, whereAmI, findPlace; // void-review: ok (filled when the helpers load, below)
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/eclipses.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, e, f, w]) => { A = a; ({ LUNAR, SOLAR } = e); ({ dayWord, inWords, fmtTime, compassWord } = f); ({ whereAmI, findPlace } = w); })); // void-review: ok (the names are declared on the let line above)
 
 // { which: 'any' | 'solar' | 'lunar', kind?: 'total' | 'annular' | 'partial' | 'penumbral', place, year? } or null
 export function eclipseAsk(text) {
@@ -52,6 +59,7 @@ export function eclipseLine(r, date, place) {
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = eclipseAsk(text) || { which: 'any' };
   const el = showPage((p) => { p.innerHTML = '<h2>Eclipses</h2><div class="sub">…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI().catch(() => null);
   if (!api._pageStill(el)) return 'eclipse';
   const date = new Date(), rows = nextEclipses(date, ask).slice(0, ask.which === 'any' && !ask.kind && !ask.year ? 4 : 3);
@@ -69,4 +77,5 @@ export default {
   nearMisses: ['what is an eclipse', 'eclipse chrome browser', 'eclipse ide download', 'twilight eclipse', 'how does a solar eclipse work', 'can i look at the eclipse', 'eclipse glasses', 'eclipse of the heart lyrics', 'ford eclipse cross'],
   match(lower, text) { return !!eclipseAsk(text); },
   run,
+  ready,
 };

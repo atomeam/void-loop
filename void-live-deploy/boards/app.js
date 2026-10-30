@@ -20,6 +20,9 @@
     const size = (n) => (n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
     const link = (b, t, no) => '/boards/?b=' + b + (t ? '&t=' + t : '') + (no ? '#p' + no : '');
     const code = (q.get('b') || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 10), tno = +(q.get('t') || 0) || 0;
+    // a picture handed over by another page (lib/image-handoff.js, ?img=handoff): the board list keeps it on each board's link, and a board
+    // that takes pictures opens its New thread form with it. Nothing is posted until the person writes and presses Post.
+    const IH = q.get('img') === 'handoff' ? await import('/lib/image-handoff.js') : null;
 
     // ---- the bot check: Turnstile when the site has it, else a proof of work done in the background ----
     let cfg = null; const cfgP = api('?config').then((c) => (cfg = c)).catch(() => (cfg = {}));
@@ -162,7 +165,7 @@
         e.preventDefault(); note.classList.remove('bad'); send.disabled = true;
         try {
           const data = { do: 'post', b, t, password: me.pw, name: f.elements.name.value, options: f.elements.options.value, sub: t ? '' : f.elements.sub.value, body: f.elements.body.value, spoiler: f.elements.spoiler.checked };
-          const file = !board.textOnly && f.elements.file.files[0];
+          const file = !board.textOnly && (f.elements.file.files[0] || f.handed || null);
           if (!t && !board.textOnly && !file) throw new Error('a new thread here starts with a picture');
           note.textContent = file ? 'Making the picture safe…' : 'Checking…';
           const prep = file ? await prepare(file) : null; data.proof = await bot.proof(); note.textContent = 'Posting…';
@@ -173,7 +176,7 @@
           if (!r.ok) { bot.reset(); throw new Error(r.say || 'not posted'); }
           me.name = f.elements.name.value.split('#')[0]; (me.mine[b] = me.mine[b] || []).push(r.no); me.mine[b] = me.mine[b].slice(-300);
           if (!t || /\bwatch\b/i.test(data.options)) watchSet(b, r.thread, data.sub || B.excerpt(data.body, 60), true);
-          keep(); f.reset(); f.elements.name.value = me.name; bot.reset(); note.textContent = 'Posted: No. ' + r.no;
+          keep(); f.reset(); f.handed = null; f.elements.name.value = me.name; bot.reset(); note.textContent = 'Posted: No. ' + r.no;
           if (!t) location.href = link(b, r.thread); else { await update(true); const n = $('p' + r.no); if (n) n.scrollIntoView({ block: 'center' }); }
         } catch (err) { note.textContent = err.message; note.classList.add('bad'); }
         finally { send.disabled = false; }
@@ -211,8 +214,11 @@
       $('none').hidden = !!list.length; $('boardsH').textContent = list.length ? 'The boards (' + list.length + ')' : 'The boards';
       if (!r.ok && (r.status || r.say)) { $('none').hidden = false; $('none').querySelector('p').textContent = r.say || 'The boards could not be read just now.'; }
       const have = new Map((r.boards || []).map((x) => [x.code, x])); // a general board that exists opens; one that does not yet opens the form, filled in
-      for (const a of document.querySelectorAll('#starters a')) if (have.has(a.dataset.code)) a.href = link(a.dataset.code);
-      for (const x of list) { const li = el('li'), m = el('div', 'main'), a = el('a', 'title', '/' + x.code + '/ · ' + x.title); a.href = link(x.code);
+      const got = IH && await IH.takeImage(), carry = (h) => (got ? IH.imageLink(h) : h);
+      if (got) $('boardsH').before(el('p', 'notice', 'Your picture ' + got.file.name + ' is ready. Open a board that takes pictures: its New thread form starts with it, and nothing is posted until you press Post.'));
+      else if (IH) history.replaceState(history.state, '', IH.withoutImage(location.pathname + location.search + location.hash));
+      for (const a of document.querySelectorAll('#starters a')) if (have.has(a.dataset.code)) a.href = carry(link(a.dataset.code));
+      for (const x of list) { const li = el('li'), m = el('div', 'main'), a = el('a', 'title', '/' + x.code + '/ · ' + x.title); a.href = x.textOnly || x.locked ? link(x.code) : carry(link(x.code));
         if (x.nsfw) a.append(el('span', 'badge adult', '18+')); if (x.textOnly) a.append(el('span', 'badge', 'text')); if (x.locked) a.append(el('span', 'badge', 'locked'));
         m.append(a); if (x.about) m.append(el('small', '', x.about)); m.append(el('small', '', x.posts + ' posts · last ' + ago(x.last))); li.append(m); ul.append(li); }
       // make a board
@@ -258,6 +264,16 @@
       crumbs([['All boards', '/boards/'], ['/' + bd.code + '/', link(bd.code)], ['Rules', '/boards/rules/']]);
       for (const [id, v, h] of [['tCat', 'cat', link(bd.code)], ['tIdx', 'idx', link(bd.code) + '&page=1'], ['tArc', 'arc', link(bd.code) + '&archive=1']]) { $(id).href = h; if (v === view) $(id).setAttribute('aria-current', 'page'); }
       $('newT').hidden = bd.locked; $('newT').onclick = () => { postForm($('threadForm'), bd.code, bd, 0); $('threadForm').querySelector('textarea').focus(); };
+      if (IH) IH.receiveImage((file, from) => {
+        const say = (t, bad) => { const n = el('p', 'notice' + (bad ? ' bad' : ''), t); $('threadForm').before(n); };
+        if (bd.locked || bd.textOnly) return say('/' + bd.code + '/ ' + (bd.locked ? 'is locked' : 'takes text only') + ', so your picture was not added. Pick another board from All boards.', true);
+        if (!B.TYPES[file.type]) return say('Boards take JPEG, PNG, GIF and WebP pictures; ' + file.name + ' is another kind.', true);
+        const f = postForm($('threadForm'), bd.code, bd, 0); f.handed = file;
+        try { const dt = new DataTransfer(); dt.items.add(file); f.elements.file.files = dt.files; } catch (_) { /* the line below still names it, and Post sends it */ }
+        f.elements.file.closest('.field').append(el('small', 'handed', 'Picture: ' + file.name + (from ? ' (from ' + from + ')' : '') + '. Choose another file to replace it.'));
+        f.elements.file.addEventListener('change', () => { f.handed = null; const s = f.querySelector('.handed'); if (s) s.remove(); });
+        f.querySelector('textarea').focus();
+      });
       $('catTools').hidden = view !== 'cat'; $('cat').hidden = view !== 'cat'; $('idx').hidden = view !== 'idx'; $('arc').hidden = view !== 'arc';
       if (view === 'cat') {
         const draw = () => { const qq = $('cq').value.trim(), list = B.order(r.threads, $('csort').value).filter((t) => !qq || B.matches(qq, t)); const g = $('cat'); g.replaceChildren();

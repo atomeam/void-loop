@@ -8,7 +8,7 @@
  * classic 20 -> shown on the ball -> kept in th.history (the last 20) and in the page's ask history (stageApi.log).
  * The ball never presents an answer as knowledge: its caption says it is a random pick.
  */
-import { grip } from './side-card.js';
+import { grip } from './grip.js';
 
 // the classic 20, in their usual order: 10 yes, 5 non-committal, 5 no
 export const ANSWERS = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes',

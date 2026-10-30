@@ -1,0 +1,20 @@
+What is really true now
+Skill — The stage
+
+checking GitHub for main, the pull requests and the commits it names…
+
+What the report said
+
+Pull requests: #1980, #1981, #1982, #1991, #1992
+Changed: #1980, #1981, #1982 merged and deployed.
+Waiting: YAML to JSON card opened as #1993, waiting on CI.
+Nothing in it names a failure
+
+Verse card from a-to-mind.com
+VERSE-CARD:eyJ2IjoxLCJ0IjoiV2hhdCBpcyByZWFsbHkgdHJ1ZSBub3ciLCJrIjoiU2tpbGwg4oCUIFRoZSBzdGFnZSIsImIiOiJjaGVja2luZyBHaXRIdWIgZm9yIG1haW4sIHRoZSBwdWxsIHJlcXVlc3RzIGFuZCB0aGUgY29tbWl0cyBpdCBuYW1lc-KAplxuXG5XaGF0IHRoZSByZXBvcnQgc2FpZFxuXG5QdWxsIHJlcXVlc3RzOiAjMTk4MCwgIzE5ODEsICMxOTgyLCAjMTk5MSwgIzE5OTJcbkNoYW5nZWQ6ICMxOTgwLCAjMTk4MSwgIzE5ODIgbWVyZ2VkIGFuZCBkZXBsb3llZC4iLCJzcmMiOltdfQ Noted and saved to [Verse agent project](knowledge://knowledge/verse-agent-project/KNOWLEDGE.md). Both faults are worth fixing, and they're actually the same fault wearing two hats:
+
+1. **The paste misread is the more interesting one.** Verse read a *status note* as a *request for its keys* and gave a stock answer. That's a genre-detection failure — the card can't tell "here's context about my state" from "here's an ask." That distinction matters more now that Autopilot runs unattended: if it misclassifies owner notes, it can misclassify asks too. The fix worth aiming for isn't just correcting this one reply, it's a **paste-classification rule** — a pasted report gets ingested as context, an ask gets answered, and an ambiguous paste gets a one-line "did you mean to ask this?" before acting. Worth writing into the rule file so the rewrite survives, per the failure-driven-rules pattern.
+
+2. **The mid-word truncation ("The Versus jo") is a repeat offender family.** The ellipsis/wrap fix on long recent asks was already one merge; this is the same bug in a different surface (card notes vs. ask list). When #1992 lands, the guarding test should cover both surfaces so it can't come back on a third one.
+
+Otherwise the Claude stream looks clean — #1980–#1982 merged and live, four more tool families verified, and #1993 correctly waiting on CI instead of deploying around it. Once #1992 is verified live, that report-to-Adam step closes the loop.

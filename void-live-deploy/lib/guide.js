@@ -130,7 +130,7 @@ export function miniOwners(names, read) {
 const NAMED = { 'mind-field-mode': 'Mind Field', 'tilt-arena-mode': 'Tilt Arena', 'doodle-mind': 'Doodle Mind', 'echo-field': 'Echo Field', 'resonant-membrane': 'Resonant Membrane', 'gaze-chase': 'Gaze Chase', 'gpu-swarm': 'GPU Swarm', 'hand-arena': 'Hand Arena' }; // a family's front page carries the family's own name (owner, 2026-10-21: "make them all easier to find")
 const title = (s) => NAMED[s] || String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
 
-// Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
+// Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Book of Verse
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
 // epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
 // it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.
@@ -197,7 +197,7 @@ export function compose({ names = [], read = () => '', families = { families: []
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
-  page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
+  page({ kind: 'cover', chapter: 'front', title: 'The Book of Verse', line: 'Everything Verse can do, one page each, nothing left out.' });
   // the first asks over two pages (owner, 2026-10-21: the book cut the bottom of this page): the welcome and the first half, then the rest and the store
   const coreAll = core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })), half = Math.ceil(coreAll.length / 2);
   if (coreAll.length > 3) { page({ kind: 'how', chapter: 'front', title: 'How to ask', part: 1, core: coreAll.slice(0, half) }); page({ kind: 'how', chapter: 'front', title: 'More to ask', part: 2, core: coreAll.slice(half) }); }

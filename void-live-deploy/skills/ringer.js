@@ -6,10 +6,17 @@
  * own); this card keeps the one state (th.state), steps it while marbles roll, and the flat board and the 3D ring
  * (mini/ringer.js, lifted by lift3d) both pose themselves from it.
  */
-import * as R from './ringer-rules.js';
-import { marbleLook } from './figures.js';
-import { lift3d } from './lift3d.js';
-import { rulesLine } from './game-rules-line.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules, the marbles' look, the 3D lift and the rules line
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let R, marbleLook, lift3d, rulesLine, SPAN; // void-review: ok (filled when the helpers load, below)
+export const ready = loadLater(() => Promise.all([
+  import('./ringer-rules.js'),
+  import('./figures.js'),
+  import('./lift3d.js'),
+  import('./game-rules-line.js'),
+]).then(([r, f, l, x]) => { R = r; SPAN = R.RING + 0.05; ({ marbleLook } = f); ({ lift3d } = l); ({ rulesLine } = x); })); // void-review: ok (the names are declared on the let line above)
 
 export function ringerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -17,7 +24,7 @@ export function ringerOf(text) {
 }
 
 const loops = new Map(); // th.id -> the frame loop stepping a roll, so a re-render never runs two
-const PX = 360, SPAN = R.RING + 0.05; // the flat board shows the ring and a little dirt round it
+const PX = 360; // the flat board shows the ring and a little dirt round it (SPAN, set when the rules load)
 
 function mount(th, stageApi) {
   if (!th.state || th.state.v !== 1) th.state = R.create((Math.random() * 4294967296) >>> 0);
@@ -112,6 +119,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!ringerOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'ringer');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'ringer'; }
   api.summon('ringer', { state: R.create((Math.random() * 4294967296) >>> 0), x: Math.max(10, Math.round(innerWidth / 2 - 220)), y: 50 });
@@ -126,5 +134,6 @@ export default {
   nearMisses: ['lose my marbles', 'marble countertop', 'marble cake', 'star marbles', 'play star marbles', 'what are marbles made of', 'turn off the ringer'],
   match(lower, text) { return !!ringerOf(text); },
   run,
-  stageKinds: { ringer: { mount } },
+  ready,
+  stageKinds: { ringer: { mount: ready.mount(mount) } },
 };

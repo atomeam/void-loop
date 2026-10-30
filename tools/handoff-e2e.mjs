@@ -405,6 +405,52 @@ export const JOURNEYS = {
     if (!doc.includes('GOOD MORNING') || !doc.includes('THE SHOP OPENS AT NINE')) throw new Error('the translated document does not hold the translated words: ' + doc.slice(0, 200));
     await check('one press translated it (' + asked + ' request) into ' + dl.suggestedFilename() + ', which holds GOOD MORNING and THE SHOP OPENS AT NINE');
   },
+  'resize a picture, then translate the words in it: the translate page waits for the language and one press': async (p, check) => {
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your painting' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
+    await check('the resize page made a copy of the painting');
+    // nothing may reach the translator before the press: count every call from here on
+    let asked = 0, sent = {}; await p.route('**/api/translate', async (r) => { asked++; sent = JSON.parse(r.request().postData() || '{}'); await r.fulfill({ json: { text: 'GOOD MORNING', read: 'Good morning' } }); });
+    await Promise.all([p.waitForURL(/\/translate\//), p.locator('#related a', { hasText: 'Translate the words in it' }).click()]);
+    await p.waitForSelector('#handed', { timeout: 15000 });
+    if (/img=handoff/.test(p.url())) throw new Error('the address still asks for the picture: ' + p.url());
+    if (asked) throw new Error('the picture went to the translator before any press');
+    await check('the translate page holds ' + (await p.locator('#handed').textContent()) + ' and waits for a press');
+    await p.locator('#handed').click();
+    await p.waitForFunction(() => document.getElementById('out').textContent.includes('GOOD MORNING'), null, { timeout: 15000 });
+    if (asked !== 1 || !/^data:image\/jpeg;base64,/.test(String(sent.image))) throw new Error('the press sent ' + asked + ' request(s), the picture ' + (sent.image ? 'as ' + String(sent.image).slice(0, 30) : 'missing'));
+    if ((await p.locator('#in').inputValue()) !== 'Good morning') throw new Error('the words read from the picture are not in the box: ' + (await p.locator('#in').inputValue()));
+    await check('one press read the picture (1 request) and showed GOOD MORNING, with the words it read, Good morning, in the box');
+  },
+  'paint a picture, then post it on a board: the board list keeps it, and the New thread form waits for words and one press': async (p, check) => {
+    const now = Date.now(), posts = [];
+    const boards = [{ code: 'art', title: 'Art', about: 'Pictures you made', posts: 3, last: now, created: now, nsfw: false, textOnly: false, locked: false }, { code: 'words', title: 'Words', about: '', posts: 1, last: now, created: now, nsfw: false, textOnly: true, locked: false }];
+    await p.route('**/api/boards**', async (r) => { const u = new URL(r.request().url()), q = u.searchParams;
+      if (r.request().method() === 'POST') { posts.push(r.request().postDataBuffer() || Buffer.alloc(0)); return r.fulfill({ json: { ok: true, no: 5, thread: 5 } }); }
+      if (q.has('config')) return r.fulfill({ json: { ok: true } });
+      if (q.has('challenge')) return r.fulfill({ json: { ok: true, c: 'test', sig: 'test', bits: 1 } });
+      if (q.get('b') === 'art' && !q.get('t')) return r.fulfill({ json: { ok: true, board: boards[0], threads: [], pages: 1, page: 1 } });
+      if (q.get('b')) return r.fulfill({ json: { ok: false, say: 'not in this test' } });
+      return r.fulfill({ json: { ok: true, boards } }); });
+    await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/boards\/\?img=handoff/), p.locator('#related a', { hasText: 'Post your painting on a board' }).click()]);
+    await p.waitForSelector('#home p.notice', { timeout: 15000 });
+    const art = await p.locator('#boards a', { hasText: '/art/' }).getAttribute('href'), words = await p.locator('#boards a', { hasText: '/words/' }).getAttribute('href');
+    if (!/img=handoff/.test(art) || /img=handoff/.test(words)) throw new Error('the board links do not carry the picture to picture boards only: ' + art + ' / ' + words);
+    await check('the board list says ' + JSON.stringify((await p.locator('#home p.notice').textContent()).slice(0, 60) + '...') + ', and only the picture board carries it');
+    await Promise.all([p.waitForURL(/b=art/), p.locator('#boards a', { hasText: '/art/' }).click()]);
+    await p.waitForSelector('#threadForm .handed', { timeout: 15000 });
+    if (/img=handoff/.test(p.url())) throw new Error('the address still asks for the picture: ' + p.url());
+    const files = await p.locator('#threadForm input[name=file]').evaluate((i) => i.files.length);
+    if (posts.length) throw new Error('something was posted before any press');
+    await check('the New thread form opened with ' + (await p.locator('#threadForm .handed').textContent()) + ' (' + files + ' file in the picker), nothing posted');
+    await p.locator('#threadForm textarea').fill('Painted by number on Verse');
+    await Promise.all([p.waitForURL(/b=art&t=5/, { timeout: 20000 }), p.locator('#threadForm button[type=submit]').click()]);
+    const body = posts.length === 1 ? posts[0].toString('latin1') : '';
+    if (posts.length !== 1 || !/name="file"; filename="[^"]+\.png"/.test(body) || !/Painted by number on Verse/.test(body)) throw new Error('the press sent ' + posts.length + ' post(s); the picture ' + (/name="file"/.test(body) ? 'was' : 'was not') + ' in it');
+    await check('one press posted the words with the painting as a PNG (1 request), and the page opened the new thread');
+  },
   'pick a palette for a colour, then paint a picture by number in it, and go back to the picture’s own colours': async (p, check) => {
     await p.goto(ORIGIN + '/color/?c=e4572e', { waitUntil: 'load' }); await p.waitForSelector('#pals a');
     const href = await p.locator('#pals a').first().getAttribute('href'), given = href.split('colours=')[1].split(',');

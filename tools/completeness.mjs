@@ -71,7 +71,8 @@ export async function loadGames() {
     let src = read(name + '.js'); if (!src) continue;
     // a game's own rules file and the shared frames it imports count as part of it (the frame may give every game its New game button)
     src += read(name + '-rules.js');
-    for (const m of src.matchAll(/from '\.\/((?:side-card|game-kit|game-frame)[\w-]*\.js)'/g)) src += read(m[1]);
+    // a frame loaded later with import('./side-card.js') (lib/load-later.js, owner 2026-10-30) is as much the game's as one imported at the top
+    for (const m of src.matchAll(/(?:from |import\()'\.\/((?:side-card|game-kit|game-frame)[\w-]*\.js)'/g)) src += read(m[1]);
     out.push({ file: name + '.js', name, src });
   }
   return out;

@@ -12,8 +12,14 @@
  * then the players tap dead groups and count. Counting is area scoring (stones + surrounded empty points) with 7 komi
  * for White. Before both have passed a count is an estimate of the position, never a result. Not covered: superko.
  */
-import { grip, sideCard } from './side-card.js';
-import { think } from '../lib/go-ai.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the side card and Verse's player (lib/go-ai.js) load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let grip, sideCard, think;
+export const ready = loadLater(() => Promise.all([
+  import('./side-card.js'),
+  import('../lib/go-ai.js'),
+]).then(([c, a]) => { ({ grip, sideCard } = c); ({ think } = a); }));
 const LETTERS = 'ABCDEFGHJKLMNOPQRST'; // Go skips I
 export const VOID_PLAYOUTS = 2000; // Verse's budget per move: well under a second in a browser (tools/go-ai.test.mjs times it)
 export const KOMI = 7;
@@ -298,6 +304,7 @@ function style() {
 async function run(text, api) {
   const asked = goOf(text);
   if (!asked) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'go');
   if (existing) { // one board at a time
     if (api.stage.center) api.stage.center(existing.id); else api.stage.render();
@@ -350,5 +357,6 @@ export default {
   nearMisses: ['go to the store', 'play go fish', "let's go", 'go home', 'how far did you go', 'go go go', 'pokemon go'],
   match(lower, text) { return !!goOf(text); },
   run,
-  stageKinds: { go: { mount } },
+  ready,
+  stageKinds: { go: { mount: ready.mount(mount) } },
 };

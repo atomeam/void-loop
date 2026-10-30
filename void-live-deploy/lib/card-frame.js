@@ -4,7 +4,7 @@
 // with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to Verse" line, and a footer with a collector
 // number and a power/toughness plate. Nothing is invented: the rarity is the skill's evidence rating (proven mythic, checked rare, tested
 // uncommon, experiment common); the cost is how many words you say to play it; power is its success rate out of nine and toughness the
-// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Verse Book; "adds" is the one line the book says it does. An answer
+// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Book of Verse; "adds" is the one line the book says it does. An answer
 // fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how fresh the
 // source is (freshness). The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
@@ -77,12 +77,16 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   };
 }
 
-/** the Adds to Verse line: one line of plain spaces, at most n letters. A longer line ends at its last whole clause (a comma, semicolon or
- *  colon) or else its last whole word, never in the middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
-export function addsLine(s, n = 120) {
+/** the Adds to Verse line: one line of plain spaces, at most n letters, so most lines show whole (owner, 2026-10-30: "instead of" ended one). A
+ *  longer line ends at its last whole sentence, else its last whole clause (a comma, semicolon or colon), else its last whole word, never in the
+ *  middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
+export function addsLine(s, n = 240) {
   const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
   if (t.length <= n) return t;
-  const head = t.slice(0, n + 1); let end = -1, m; const re = /[,;:](?=\s)/g;
+  const head = t.slice(0, n + 1); let end = -1, m; const stop = /[.!?](?=\s)/g;
+  while ((m = stop.exec(head))) if (m.index > 40) end = m.index + 1;
+  if (end > 0) return t.slice(0, end);
+  const re = /[,;:](?=\s)/g;
   while ((m = re.exec(head))) if (m.index > 40) end = m.index;
   if (end < 0) { const sp = head.lastIndexOf(' '); end = sp > 40 ? sp : n; }
   return t.slice(0, end).replace(/[\s,;:(“-]+$/, '');

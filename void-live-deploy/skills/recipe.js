@@ -6,6 +6,7 @@
 import { bandMini } from '../lib/card-mini.js';
 import { swapAsk } from './swaps.js'; // "how to make buttermilk" is a pantry swap, not a dish
 import { BUILT_IN, exactly, fromMeal, scale, swapUnits } from '../lib/recipes.js';
+import { grounded } from '../lib/ground.js';
 // what "make" and "cook" take that is not food ("how do i make money", "what can i make with my time")
 const NOT_FOOD = /\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i;
 // the recipes page's own card (lib/recipe-card.js cardAsk): the recipe open there, a built-in one by its name or a TheMealDB one by its id,
@@ -101,7 +102,15 @@ async function run(text, api) {
     }
     // the first meal as the recipes page shows it: scaled to the servings asked, in US measures, and its page link opens this same recipe
     // (2026-10-30: "recipe for lasagna for 6" showed the meal unscaled, and its page link opened an empty /recipes/)
-    const m = meals[0];
+    // a meal whose name is not the dish asked for is refused, not shown as if it were (Adam's incident card, 2026-10-30: a question for
+    // one dish got another dish's card): the nearest meals are offered as choices, and the page reports the miss
+    const m = meals.find((x) => grounded(q.dish, x.strMeal || '').found.length > 0);
+    if (!m) {
+      el.innerHTML = '<h2>' + esc(q.dish) + '</h2><p>I don\'t have a recipe for “' + esc(q.dish) + '” yet. I\'ve noted it, so I can learn it.</p>'
+        + '<div class="sub">These are other dishes, not ' + esc(q.dish) + ':</div><ul class="choices">' + meals.slice(0, 4).map((x) => '<li><a href="#" data-ask="' + esc('recipe for ' + x.strMeal) + '">' + esc(x.strMeal) + '</a></li>').join('') + '</ul>' + src('');
+      if (api.say) api.say('no recipe for ' + q.dish + ' yet');
+      return 'none';
+    }
     return await pageRecipe({ dish: m.strMeal, by: 'mealdb', id: m.idMeal, servings: q.servings || 0, units: 'us' }, el, api, base, fromMeal(m));
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
@@ -111,6 +120,7 @@ async function run(text, api) {
 }
 export default {
   name: 'recipe',
+  refuseUngrounded: true, // lib/ground.js judgeCard: a recipe card about another dish is refused, not shown
   examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole', 'best way to make pasta carbonara'],
   nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza', 'how do i make money', 'how to make friends'],
   // a question about recipes ("what is a recipe") is not a request for one
