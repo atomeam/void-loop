@@ -431,3 +431,77 @@ test('a thread is named by its number or by the job it is for; "here" says plain
   assert.equal(me.me.name, 'Beam'); assert.equal(me.me.job, ask.job, 'and the job is still Beam\'s');
   assert.equal((await post(env, { do: 'rekey' }, OWNER, T0 + 9000)).status, 403, 'the owner has no agent key to change');
 });
+
+import { isMain, workOnce as scriptWorkOnce } from '../void-live-deploy/team/agent.mjs';
+import { pathToFileURL } from 'node:url';
+import os from 'node:os';
+import nodePath from 'node:path';
+import fs from 'node:fs';
+test('a key or a join link never sits in a message; a replaced key hears why; agent.mjs starts on Windows paths and says what it does', async () => {
+  // made-up values in the shapes of a key and a join link
+  const fakeKey = 'vt1.' + 'a'.repeat(12) + '.' + 'b'.repeat(32), fakeCode = 'vj1-' + 'c'.repeat(32);
+  assert.equal(T.hideSecrets('key ' + fakeKey + ' and https://a-to-mind.com/team/join/' + fakeCode + ' and ' + fakeCode), 'key [key hidden] and [join link hidden] and [join link hidden]');
+  assert.equal(T.hideSecrets('team-1 thread 1, vt1 is the key format'), 'team-1 thread 1, vt1 is the key format', 'plain words stay');
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const p = await post(env, { do: 'post', c: 'work', body: 'Rejoined. Link: https://a-to-mind.com/team/join/' + fakeCode + '. Key ' + fakeKey + '.' }, inv.key, T0 + 1000);
+  assert.equal(p.status, 201, p.say); assert.equal(p.say, T.HID_SAY, 'the answer says what was hidden');
+  const stored = env.DB.raw.prepare('SELECT body FROM void_team_msgs WHERE id = ?').get(p.id).body;
+  assert.doesNotMatch(stored, /vj1-|vt1\./, 'nothing of either is stored'); assert.match(stored, /\[join link hidden\].*\[key hidden\]/);
+  // an older message written before the server hid them is read back hidden too
+  env.DB.raw.prepare('UPDATE void_team_msgs SET body = ? WHERE id = ?').run('old line with ' + fakeCode, p.id);
+  const read = await get(env, '?c=work', OWNER, T0 + 2000);
+  assert.equal(read.messages.find((m) => m.id === p.id).body, 'old line with [join link hidden]');
+  const plain = await post(env, { do: 'post', c: 'work', body: 'on it' }, inv.key, T0 + 3000);
+  assert.equal(plain.say, undefined, 'a plain post says nothing extra');
+
+  const re = await post(env, { do: 'rekey' }, inv.key, T0 + 4000);
+  assert.equal(re.status, 201, re.say);
+  const old = await post(env, { do: 'post', c: 'work', body: 'hello' }, inv.key, T0 + 5000);
+  assert.equal(old.status, 401); assert.equal(old.say, T.STALE_SAY, 'a replaced key hears that it was replaced');
+  assert.equal((await get(env, '?me', inv.key, T0 + 5000)).say, T.STALE_SAY);
+  assert.notEqual((await get(env, '?c=work', null, T0 + 5000)).say, T.STALE_SAY, 'a stranger without a key hears only that the workspace is closed');
+
+  // agent.mjs runs as a command whatever the path looks like (Windows: file:///C:/... against C:\...): the real paths are compared
+  const dir = fs.mkdtempSync(nodePath.join(os.tmpdir(), 'agent-main-')), file = nodePath.join(dir, 'agent.mjs'), link = nodePath.join(dir, 'link.mjs');
+  fs.writeFileSync(file, ''); fs.symlinkSync(file, link);
+  assert.equal(isMain(pathToFileURL(file).href, file), true);
+  assert.equal(isMain(pathToFileURL(file).href, link), true, 'a link to the file is the file');
+  assert.equal(isMain(pathToFileURL(file).href, nodePath.join(dir, 'other.mjs')), false);
+  assert.equal(isMain(pathToFileURL(file).href, undefined), false, 'imported, not run');
+  fs.rmSync(dir, { recursive: true, force: true });
+
+  // work without a command: a job it already holds is shown on the first turn, then not again
+  const lines = [], o = { key: re.key, fetch: undefined };
+  const ask = await post(env, { do: 'post', c: 'work', body: 'fix the quiet join' }, OWNER, T0 + 6000);
+  const call = async (_api, init) => { const r = await API.onRequestPost({ env, request: new Request('https://verse.test/api/team', init), now: T0 + 7000 }); return r; };
+  const shown = new Set();
+  for (let i = 0; i < 2; i++) await scriptWorkOnce({ ...o, api: 'https://verse.test/api/team', fetch: (u, init) => (init.method === 'GET' ? API.onRequestGet({ env, request: new Request(u, init), now: T0 + 7000 }) : call(u, init)) }, { log: (l) => lines.push(l), shown });
+  assert.equal(lines.filter((l) => l.startsWith('Job ' + ask.job)).length, 1, 'the job is printed once: ' + lines.join(' | '));
+  assert.ok(lines.some((l) => /^Work it now/.test(l)));
+});
+
+test('an agent that waits on the owner for a go-ahead in its job thread is answered by Verse at once, and once', async () => {
+  for (const b of ['I\'ll hold off on the 11 conflicting PRs unless you want them cleared. Say the word.', 'Standing by on job team-1.', 'Should I close them?', 'Awaiting your approval.'])
+    assert.equal(T.waitsOnOwner(b), true, b);
+  for (const b of ['Opened #1729; CI is running.', 'should improve the load time', 'Closed the stale ones, merging the rest.'])
+    assert.equal(T.waitsOnOwner(b), false, b);
+  const env = world([]);
+  const inv = await admit(env, 'Beam');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'clear the conflicting pull requests' }, OWNER, T0 + 1000);
+  const here = await post(env, { do: 'here' }, inv.key, T0 + 2000); assert.equal(here.job.job, ask.job);
+  const wait = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'I\'ll hold off unless you want them cleared. Say the word.' }, inv.key, T0 + 3000);
+  assert.equal(wait.status, 201, wait.say); assert.equal(wait.say, T.noWaitSay(ask.job), 'the answer says not to wait');
+  const t = await get(env, '?t=' + ask.id, inv.key, T0 + 4000);
+  assert.equal(t.replies.at(-1).by, 'Verse'); assert.match(t.replies.at(-1).body, /^@Beam No go-ahead is needed/);
+  const n = t.replies.length;
+  await get(env, '?t=' + ask.id, inv.key, T0 + 5000); await get(env, '?c=work', OWNER, T0 + 5000);
+  assert.equal((await get(env, '?t=' + ask.id, inv.key, T0 + 6000)).replies.length, n, 'answered once, not on every read');
+  // a waiting post from before Verse answered them (written straight to the table) is answered on the next sweep
+  env.DB.raw.prepare('INSERT INTO void_team_msgs (channel, thread, at, by, body, job, mentions) VALUES (?, ?, ?, ?, ?, ?, ?)').run('work', ask.id, T0 + 7000, env.DB.raw.prepare('SELECT id FROM void_team_agents WHERE name = ?').get('Beam').id, 'Standing by on job ' + ask.job + '.', null, '');
+  await get(env, '', null, T0 + 7500); // the next sweep: any POST, or the workspace shell the team page loads
+  const after = await get(env, '?t=' + ask.id, inv.key, T0 + 8000);
+  assert.equal(after.replies.at(-1).by, 'Verse', 'the old waiting post got its answer');
+  const ok = await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'Checked: nothing left to close. Closing it.' }, inv.key, T0 + 9000);
+  assert.equal(ok.say, undefined, 'a post that acts gets no nudge');
+});
