@@ -2629,9 +2629,9 @@
     {
      "name": "showcase",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 11
     },

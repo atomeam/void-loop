@@ -8,6 +8,7 @@
 import { glyphSvg, openerSvg, TIERS, TIER_MEANING } from './guide.js';
 import { artSvg, seasonOf } from './card-art.js';
 import { rulesPageHtml, RULES_CSS } from './rule-registry.js';
+import { dayLabel } from './book-news.js';
 
 export const SERIF = '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", Georgia, "Times New Roman", serif';
 
@@ -197,10 +198,12 @@ export function pageHtml(p, book, esc) {
       + '<p class="tome-note">A page with a box drawn on it is a game on the rack; a page headed 3D is a miniature a card carries.</p></div>';
   }
   if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
-  if (p.kind === 'news') { // a page of the newest ledger entries (lib/book-news.js): by day, then by kind, each line its own words and an ask to try it
-    const when = (d) => { const t = new Date(d + 'T12:00:00Z'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
-    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
-      + (p.days || []).map((d) => '<div class="tome-day">' + esc(when(d.day)) + (d.groups.some((g) => g.items.some((e) => e.try)) ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">show these on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? ' <a href="#" class="tome-tryit" data-ask="' + esc(e.try) + '">try it</a>' : '') + '</li>').join('') + '</ul>').join('')).join('') + '</div>';
+  if (p.kind === 'news') { // a page of the newest changes a visitor can try (lib/book-news.js): by the visitor's own day, then by kind; an ask is
+    // touched to run it on the stage, a page of the site opens as a link; a day with asks that answered live (claims-verified.json) plays them all
+    const tryLink = (t) => (t.charAt(0) === '/' ? ' <a href="' + esc(t) + '" class="tome-tryit">open it</a>' : ' <a href="#" class="tome-tryit" data-ask="' + esc(t) + '">try it</a>');
+    return '<div class="tome-kicker">Just shipped</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
+      + (p.days || []).map((d) => { const live = d.groups.reduce((n, g) => n + g.items.filter((e) => e.live).length, 0);
+        return '<div class="tome-day">' + esc(dayLabel(d.day)) + (live ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">play ' + (live === 1 ? 'it' : 'all ' + live) + ' on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? tryLink(e.try) : '') + '</li>').join('') + '</ul>').join(''); }).join('') + '</div>';
   }
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
