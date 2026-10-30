@@ -119,6 +119,13 @@ export const JOURNEYS = {
     await p.waitForFunction((d) => document.getElementById('date').value === d, soon, { timeout: 10000 }).catch(() => {});
     if ((await p.locator('#date').inputValue()) !== soon) throw new Error('the scores page opened on "' + (await p.locator('#date').inputValue()) + '", not ' + soon);
     await check('the scores page opened on the matches of ' + soon);
+    // and back: a game that has not started goes on Verse's own calendar at its kick-off in this device's zone
+    await p.route('**/api/scores?**', (r) => r.fulfill({ json: { ok: true, game: { id: 'g1', state: 'pre', start: soon + 'T15:00:00Z', venue: 'Emirates Stadium', home: { name: 'Arsenal', short: 'ARS', score: '' }, away: { name: 'Chelsea', short: 'CHE', score: '' } }, events: [], last5: [], h2h: [], plays: [], stats: [], lineups: [], players: [] } }));
+    await p.goto(ORIGIN + '/scores/?league=epl&game=g1', { waitUntil: 'load' }); await p.waitForSelector('#vcal');
+    await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('#vcal').click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
+    if (!(await p.evaluate(() => document.body.innerText.includes('Arsenal vs Chelsea')))) throw new Error('the calendar does not show the added game');
+    await check('the scores page put "Arsenal vs Chelsea" on the calendar');
   },
   'work out a flight, see its landing in both cities on the time page, the weather, the local radio and TV and the remote jobs where it lands (and fly back there from it), and add it to the calendar': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
