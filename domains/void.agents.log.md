@@ -1166,3 +1166,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T06:06:20Z | claude | fix | Beacon: 4 pages (films, podcast, markets screener and caps) lost the visit counter, so their traffic was invisible; the tag is back and the beacon check is green
 2026-10-30T06:05:40Z | claude | build | /emoji-combos/ assimilates emojicombos.com: tag search over 185 combos, copy, collect, your own, fancy text, dot art from a picture, a stage card, wired into hand-off
 2026-10-30T06:00:59Z | claude | fix | News: CBC refuses every request from a server, so CBS News takes its place and all 10 top-story sources load
+2026-10-30T06:19:28Z | claude | fix | Calendar card: the Calendar page's own card on the stage now opens the 3D calendar on the day the page shows, and the card's link back opens the page on the day you picked
