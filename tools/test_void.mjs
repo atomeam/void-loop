@@ -6600,7 +6600,9 @@ try {
     await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
     const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
     const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    // every skill in before the reload is read (data-skills="ready", not a guessed 900 ms): the quiz skill is loaded and still draws no
+    // card, and the saved gears are up for the next "quiz me on this" (main's verify, 2026-10-30: at 900 ms the gears were not in yet)
+    await Z.p.reload(); await skillsUp(Z.p, 300);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
     await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in
