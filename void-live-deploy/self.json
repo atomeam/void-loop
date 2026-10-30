@@ -542,13 +542,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-18T08:58:46Z",
+  "at": "2026-10-29T04:47:44Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T05:47:14Z",
+   "subject": "Tools card lists every tool the Tools page lists"
+  },
+  {
+   "at": "2026-10-30T05:45:42Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
   {
    "at": "2026-10-30T05:43:24Z",
    "subject": "Store: the changelog list shows the name Verse, not V01D"
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T05:33:47Z",
    "subject": "Tower gate: password strength measured against their live sites"
-  },
-  {
-   "at": "2026-10-30T05:33:37Z",
-   "subject": "Bench: the V01D ask logged as typed, the 8 ball row checks the question on the ball, \"how much\" is a buy only for a price"
-  },
-  {
-   "at": "2026-10-30T05:32:43Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
