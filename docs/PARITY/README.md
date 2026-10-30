@@ -111,7 +111,7 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 1 | /sports/ | Anyone can add and correct data | missing | thesportsdb.com |
 | 1 | /kanban/teams/ | Attachments | missing | wekan.fi |
 | 1 | /kanban/flow/ | Attachments | missing | kanbanflow.com |
-| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA | partial | onlineconverter.com |
+| 1 | /converter/ | Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet) | partial | onlineconverter.com |
 | 1 | /converter/ | Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair | partial | onlineconverter.com |
 | 1 | /kanban/simple/ | Automation rules | missing | jasperbernaers.com |
 | 1 | /kanban/quick/ | Automation rules | missing | abacktools.com |

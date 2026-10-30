@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1017,
+ "counted": 1018,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2362,6 +2362,13 @@
    "tests": 0
   },
   {
+   "file": "lib/video-mux.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/approval-gate.js",
    "skills": 0,
    "direct": 0,
@@ -2572,13 +2579,6 @@
    "tests": 1
   },
   {
-   "file": "lib/video-mux.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/visits.js",
    "skills": 0,
    "direct": 0,
@@ -2629,6 +2629,13 @@
   },
   {
    "file": "lib/arena.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/audio-write.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4337,6 +4344,12 @@
    "reachedBy": [
     "skills/time.js"
    ]
+  },
+  "lib/audio-write.js": {
+   "imports": [
+    "lib/video-mux.js"
+   ],
+   "importedBy": []
   },
   "lib/aurora-feed.js": {
    "imports": [
@@ -10714,6 +10727,7 @@
   "lib/video-mux.js": {
    "imports": [],
    "importedBy": [
+    "lib/audio-write.js",
     "lib/video-write.js"
    ]
   },
