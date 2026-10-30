@@ -3820,7 +3820,7 @@
    "chapter": "words",
    "name": "news",
    "title": "News",
-   "line": "Today's headlines from Wikipedia's \"In the news\"",
+   "line": "World headlines from Wikipedia's \"In the news\", and tech and topic stories from Hacker News",
    "examples": [
     "news today",
     "what's in the news",
