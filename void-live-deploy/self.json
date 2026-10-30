@@ -574,6 +574,10 @@
    "subject": "team-live: check the push signature without importing the site's lib"
   },
   {
+   "at": "2026-10-30T05:19:31Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T05:19:07Z",
    "subject": "quote: a motivational or \"about X\" ask gets a quote from Wikiquote's page on that theme"
   },
@@ -624,10 +628,6 @@
   {
    "at": "2026-10-30T05:12:22Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T05:12:00Z",
-   "subject": "Verse Brain: /brain/ lines read whole, and the Current line says when it is too young to compare"
   }
  ],
  "builders": {
