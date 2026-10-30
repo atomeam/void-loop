@@ -1,7 +1,7 @@
 // tests for lib/epub-edit.js: an EPUB read and written again (mimetype first and stored), and the change of its cover
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readBook, writeBook, changeCover, coverOf, resolve } from '../void-live-deploy/lib/epub-edit.js';
+import { readBook, writeBook, changeCover, coverOf, resolve, mergeBooks, obfuscate, identifierOf, encryptedOf } from '../void-live-deploy/lib/epub-edit.js';
 import { epubOf, epubParas } from '../void-live-deploy/lib/converter.js';
 
 const te = new TextEncoder(), td = new TextDecoder();
@@ -76,4 +76,62 @@ test('a file that is not an EPUB, or names a cover it does not have, is refused 
   await assert.rejects(changeCover(te.encode('hello'), encode), /not an EPUB file/);
   const z = await writeBook([{ name: 'META-INF/container.xml', data: te.encode(container) }, { name: 'OPS/book.opf', data: te.encode('<package version="3.0"><metadata></metadata><manifest><item id="p" href="gone.jpg" media-type="image/jpeg" properties="cover-image"/></manifest><spine></spine></package>') }]);
   await assert.rejects(changeCover(z, encode), /names gone\.jpg as its cover, but that file is not in the book/);
+});
+
+// an EPUB 2 book with an NCX, and an obfuscated font (the IDPF algorithm, keyed by the book's identifier)
+async function ncxBook(id, font) {
+  const ncx = '<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><navMap><navPoint id="a" playOrder="1"><navLabel><text>Part one</text></navLabel><content src="text/one.xhtml"/><navPoint id="b" playOrder="2"><navLabel><text>A &amp; B</text></navLabel><content src="text/one.xhtml#b"/></navPoint></navPoint></navMap></ncx>';
+  const enc = '<encryption xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><EncryptedData xmlns="http://www.w3.org/2001/04/xmlenc#"><EncryptionMethod Algorithm="http://www.idpf.org/2008/embedding"/><CipherData><CipherReference URI="OPS/f.otf"/></CipherData></EncryptedData></encryption>';
+  return writeBook([
+    { name: 'META-INF/container.xml', data: te.encode(container) },
+    { name: 'META-INF/encryption.xml', data: te.encode(enc) },
+    { name: 'OPS/book.opf', data: te.encode('<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="id">' + id + '</dc:identifier><dc:title>NCX book</dc:title><dc:creator>Ann</dc:creator><dc:language>fr</dc:language></metadata><manifest><item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="t" href="text/one.xhtml" media-type="application/xhtml+xml"/><item id="f" href="f.otf" media-type="font/otf"/></manifest><spine toc="ncx"><itemref idref="t"/></spine></package>') },
+    { name: 'OPS/toc.ncx', data: te.encode(ncx) },
+    { name: 'OPS/text/one.xhtml', data: te.encode('<html xmlns="http://www.w3.org/1999/xhtml"><body><p>NCX words.</p><p id="b">More.</p></body></html>') },
+    { name: 'OPS/f.otf', data: await obfuscate(font, id) },
+  ]);
+}
+const FONT = Uint8Array.from({ length: 3000 }, (_, i) => (i * 7 + 3) & 255); FONT.set(te.encode('OTTO'));
+
+test('font obfuscation is its own inverse, keyed by the identifier without spaces', async () => {
+  const o = await obfuscate(FONT, ' urn:x 1 '), back = await obfuscate(o, 'urn:x1');
+  assert.ok(!same(o.subarray(0, 4), FONT.subarray(0, 4)));
+  assert.ok(same(o.subarray(1040), FONT.subarray(1040)), 'only the first 1040 bytes');
+  assert.ok(same(back, FONT));
+});
+
+test('two books merge into one: each in its own folder, one reading order, one table of contents, the words in order', async () => {
+  const a = await book2(), b = await ncxBook('urn:book:b', FONT);
+  const r = await mergeBooks([{ name: 'a.epub', bytes: a }, { name: 'b.epub', bytes: b }], '', new Date(0)), m = await readBook(r.bytes);
+  assert.equal(r.title, 'Two and 1 more');
+  assert.equal(m.opfPath, 'content.opf');
+  const spine = [...m.opf.matchAll(/<itemref\b[^>]*idref="([^"]+)"/g)].map((x) => x[1]);
+  assert.deepEqual(spine, ['b1-c', 'b1-t', 'b2-t']);
+  const have = new Set(m.files.map((f) => f.name));
+  for (const i of m.items) assert.ok(have.has(i.path), i.path + ' is in the book');
+  assert.ok(have.has('b1/OPS/images/front.jpg') && have.has('b2/OPS/text/one.xhtml'));
+  assert.equal(coverOf(m).id, 'b1-pic', 'the first book\'s cover');
+  assert.match(m.opf, /<dc:creator>Ann<\/dc:creator>/);
+  assert.match(m.opf, /<dc:language>fr<\/dc:language>/);
+  const nav = td.decode(m.files.find((f) => f.name === 'nav.xhtml').data);
+  assert.match(nav, /<a href="b2\/OPS\/text\/one\.xhtml">NCX book<\/a>/);
+  assert.match(nav, /<a href="b2\/OPS\/text\/one\.xhtml#b">A &amp; B<\/a>/, 'the NCX entries, nested, with their #part');
+  const ncx = td.decode(m.files.find((f) => f.name === 'toc.ncx').data);
+  assert.equal((ncx.match(/<navPoint\b/g) || []).length, 4, 'a part for each book, and the 2 entries of the second');
+  const words = (await epubParas(r.bytes)).paras, want = [...(await epubParas(a)).paras, ...(await epubParas(b)).paras];
+  assert.deepEqual(words, want);
+});
+
+test('an obfuscated font is obfuscated again with the new book\'s identifier, so a reader gets the same font', async () => {
+  const r = await mergeBooks([{ name: 'a.epub', bytes: await book2() }, { name: 'b.epub', bytes: await ncxBook('urn:book:b', FONT) }]), m = await readBook(r.bytes);
+  assert.deepEqual(encryptedOf(m.files), [{ alg: 'http://www.idpf.org/2008/embedding', path: 'b2/OPS/f.otf' }]);
+  const stored = m.files.find((f) => f.name === 'b2/OPS/f.otf').data;
+  assert.ok(same(await obfuscate(stored, identifierOf(m.opf)), FONT));
+  assert.match(r.notes.join(' '), /1 obfuscated font obfuscated again/);
+});
+
+test('a book with DRM, or fewer than 2 books, is refused with the reason', async () => {
+  await assert.rejects(mergeBooks([{ name: 'a.epub', bytes: await book2() }]), /pick 2 or more EPUB files/);
+  const drm = await writeBook([{ name: 'META-INF/container.xml', data: te.encode(container) }, { name: 'META-INF/encryption.xml', data: te.encode('<encryption><EncryptedData><EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/><CipherData><CipherReference URI="OPS/text/one.xhtml"/></CipherData></EncryptedData></encryption>') }, { name: 'OPS/book.opf', data: te.encode('<package version="2.0"><metadata></metadata><manifest></manifest><spine></spine></package>') }]);
+  await assert.rejects(mergeBooks([{ name: 'a.epub', bytes: await book2() }, { name: 'locked.epub', bytes: drm }]), /locked\.epub: parts of this book are encrypted \(DRM\)/);
 });

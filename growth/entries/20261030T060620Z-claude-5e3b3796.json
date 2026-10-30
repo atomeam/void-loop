@@ -1,0 +1,1 @@
+{"at":"2026-10-30T06:06:20Z","by":"claude","kind":"fix","what":"Beacon: 4 pages (films, podcast, markets screener and caps) lost the visit counter, so their traffic was invisible; the tag is back and the beacon check is green","show":"Films, Podcast and the two Markets pages count their visits again","try":"https://a-to-mind.com/films/"}
