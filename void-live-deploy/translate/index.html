@@ -475,8 +475,8 @@
 
     // camera or photo: a picture downsized on the device, read by Verse, then translated
     $('camera').addEventListener('click', () => $('pic').click());
-    $('pic').addEventListener('change', async () => {
-      const f = $('pic').files && $('pic').files[0]; if (!f) return;
+    $('pic').addEventListener('change', async () => { const f = $('pic').files && $('pic').files[0]; if (f) await translatePic(f); $('pic').value = ''; });
+    async function translatePic(f) {
       say(W.reading + '…'); $('out').className = 'big wait'; $('out').textContent = W.reading + '…';
       try {
         const img = await createImageBitmap(f); const s = Math.min(1, 1024 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
@@ -487,8 +487,13 @@
         const it = { q: $('in').value.trim(), out: j.text, from: state.from === 'auto' ? '' : state.from, detected: j.detected || '', to: state.to, at: Date.now() };
         store.hist = [it].concat(store.hist).slice(0, MAX_HIST); keep(); lists();
       } catch (e) { $('out').className = 'big'; $('out').textContent = ''; say(/no text/i.test(String(e.message)) ? W.nothingRead : W.none, true); }
-      $('pic').value = '';
-    });
+    }
+    // a picture handed over by a picture page (lib/image-handoff.js, ?img=handoff): it waits here for the language and one press, so nothing is sent before then
+    if (new URLSearchParams(location.search).get('img') === 'handoff') import('/lib/image-handoff.js').then(({ receiveImage }) => receiveImage((f, from) => {
+      const b = el('button', { type: 'button', id: 'handed', className: 'go', textContent: (de ? 'Text übersetzen: ' : 'Translate the words in ') + f.name });
+      b.addEventListener('click', () => { b.remove(); translatePic(f); });
+      $('note').after(b); say(de ? f.name + ' ist da. Sprache wählen, dann „' + b.textContent + '" drücken.' : f.name + ' is here. Choose the language, then press ' + b.textContent + '.');
+    })).then((got) => { if (got === false) say(de ? 'Das Bild ist nicht mehr da (älter als eine Stunde?). Mit „' + W.camera + '" wählen.' : 'The picture is no longer kept (older than an hour?). Choose it with ' + W.camera + '.', true); }).catch(() => {});
 
     // ---- many words at once: documents, websites, several languages. Chunks under the 5,000-character cap, with progress and a stop ----
     let stopped = false;

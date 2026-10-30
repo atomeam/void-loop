@@ -1,4 +1,4 @@
-// The faces of the 3D Verse Book (lib/book-face.js): every page of skills/guide.json lays out inside its sheet, asks and jumps are
+// The faces of the 3D Book of Verse (lib/book-face.js): every page of skills/guide.json lays out inside its sheet, asks and jumps are
 // where a tap can land, and the same page always draws the same. Run: node --test tools/book-face.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

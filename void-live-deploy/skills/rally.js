@@ -3,7 +3,7 @@
  * PLAYABLE", "a saved cards collection", "super fun and easy to learn"). "my cards", "saved cards", "my deck", "card binder" open the binder;
  * "play my cards", "card battle", "verse rally", "rally" open a match; "rally tutorial" / "how do i play rally" the guided first match;
  * "daily card challenge" today's match (the same for everyone on a UTC day). Rules and Verse's play: lib/rally-rules.js (pure). The cards:
- * lib/card-deck.js, the one card record every Verse card is noted in, on this device only. Verse's own deck is the Verse Book's skill pages
+ * lib/card-deck.js, the one card record every Verse card is noted in, on this device only. Verse's own deck is the Book of Verse's skill pages
  * (/skills/guide.json): real names and real lines, so its cards are earned the same way yours are. Design notes: docs/CARD-GAME.md.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */

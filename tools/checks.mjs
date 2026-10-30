@@ -43,6 +43,8 @@ const ONLY_WHEN = {
   // the card art on pixels: the art, the forge, the miniatures, the page
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
+  // /converter/ on a 390 px phone and with the network cut (tools/converter-phone.test.mjs): the page, its engines, the worker
+  'converter-phone.test.mjs': /void-live-deploy\/(?:converter\/|sw\.js$|lib\/(?:converter|pdf-tools|transition|video-write|audio-write|mp3-edit|denoise|epub-edit|mp4-repair)\.js$)|converter-phone/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
   // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
   // (<span class="gl ...">: skills/films.js and skills/is-it.js today, any file that gains one tomorrow); the styles are the page's
@@ -64,7 +66,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -115,6 +117,8 @@ for (const [name, file] of [
   ['rap-strings', 'rap-strings.test.mjs'],
   ['emoji-combos', 'emoji-combos.test.mjs'],
   ['local-media', 'local-media.test.mjs'],
+  ['watch-along', 'watch-along.test.mjs'],
+  ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
   ['team', 'team.test.mjs'],
@@ -237,6 +241,7 @@ for (const [name, file] of [
   ['glyphs', 'test_glyphs.mjs'],
   ['glitch-titles', 'glitch-titles.mjs'],
   ['perf3d', 'perf3d.test.mjs'],
+  ['converter-phone', 'converter-phone.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
   ['scene3d-detail', 'scene3d.test.mjs'],
@@ -429,6 +434,7 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
+  ['video-gen-live', 'video-gen-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
   ['print-file', 'print-file.test.mjs'],

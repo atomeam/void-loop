@@ -13,7 +13,27 @@ const SIGNALS = [
   ['run', /actions\/runs\/\d+|\brun\s+\d{6,}/i],
 ];
 
-const clean = (s) => String(s || '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`#>]+/g, '').replace(/\s+/g, ' ').trim();
+// a pull request keeps its "#" ("#2005 merge conflict cleared" came back as "2005 merge ...", 2026-10-30 card); a heading's "#" goes
+const clean = (s) => String(s || '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`>]+|#+(?!\d)/g, '').replace(/\s+/g, ' ').trim();
+// a line is shown whole (owner, 2026-10-22: no '...' anywhere); only one past LINE_MAX ends at its last whole sentence, else at a whole word
+export const LINE_MAX = 300;
+const cutLine = (s) => {
+  if (s.length <= LINE_MAX) return s;
+  const cut = s.slice(0, LINE_MAX + 1), ends = [...cut.matchAll(/[.!?;]["'\u201d\u2019)\]]*(?=\s|$)/g)].map((m) => m.index + m[0].length).filter((i) => i <= LINE_MAX);
+  if (ends.length && ends[ends.length - 1] > LINE_MAX * 0.4) return s.slice(0, ends[ends.length - 1]).trim();
+  const sp = cut.lastIndexOf(' ', LINE_MAX); return (sp > LINE_MAX * 0.5 ? cut.slice(0, sp) : cut.slice(0, LINE_MAX)).trim();
+};
+// a copied progress list ("Claude's progress: <task> Done: <step> Done: <step> In progress: <step>") is the builder's own checklist: each step is read
+// on its own, and a step marked done or in progress is no failure (2026-10-30 card: a pasted checklist came back as 2 things "named as failing")
+const STEP = /\s*\b(?:Done|Completed|In progress|Not started|To do|Next)\s*:\s*|^\s*(?:\S+['\u2019]s\s+)?progress\s*:\s*/gi;
+const DONE_STEP = /^(?:done|completed|in progress)\b|^\S+['\u2019]s\s+progress\b|^[\u2713\u2714\u2611]/i;
+const stepsOf = (l) => {
+  if (!/\b(?:Done|Completed|In progress|Not started)\s*:|^\s*\S+['\u2019]s\s+progress\s*:/i.test(l)) return DONE_STEP.test(l) ? [] : [l]; // "\u2713 #2005 merge conflict cleared" is a ticked step
+  const out = []; let last = 0, mark = '';
+  for (const m of l.matchAll(STEP)) { const t = l.slice(last, m.index).trim(); if (t) out.push(mark + t); mark = m[0].trim() + ' '; last = m.index + m[0].length; }
+  const t = l.slice(last).trim(); if (t) out.push(mark + t);
+  return out.filter((x) => !DONE_STEP.test(x)).map((x) => x.replace(/^(?:not started|to do|next)\s*:\s*/i, ''));
+};
 
 /** the kinds of evidence a text carries, by name. Pure. */
 export function signalsOf(text) { return SIGNALS.filter(([, re]) => re.test(text)).map(([n]) => n); }
@@ -26,8 +46,9 @@ const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|my|our|let me|now|next
 const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|(?<!\bthe\s)\bred\s*[:,.]/i; // "right about the red." names it, it is no state
 
 // a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
-// and a red the report bounds in time ("Main was red from about 05:44Z to 05:48Z", "was red for 4 minutes", "went red briefly") is over (2026-10-30 card)
-const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b|\b(?:was|were|went|turned)\s+red\s+(?:(?:from|between)\b[^.]{0,30}\b(?:to|and|until)\b|for\s+(?:about\s+)?\d+\s*(?:s|sec|seconds?|m|min|minutes?|h|hours?)\b|briefly\b)/i;
+// and a red the report bounds in time ("Main was red from about 05:44Z to 05:48Z", "was red for 4 minutes", "went red briefly") is over (2026-10-30 card),
+// and so is a conflict the report says was cleared ("#2005 merge conflict cleared", the 2026-10-30 card that named it as failing)
+const RESOLVED = /\b(?:merge\s+)?conflicts?\s+(?:(?:is|was|were|are)\s+)?(?:now\s+)?(?:cleared|resolved|fixed|gone|settled)\b|\b(?:cleared|resolved|fixed|settled)\s+(?:the\s+|a\s+)?(?:merge\s+)?conflicts?\b|\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b|\b(?:was|were|went|turned)\s+red\s+(?:(?:from|between)\b[^.]{0,30}\b(?:to|and|until)\b|for\s+(?:about\s+)?\d+\s*(?:s|sec|seconds?|m|min|minutes?|h|hours?)\b|briefly\b)/i;
 // a failure the builder caused on purpose to prove a check bites ("with the mutation it fails, as expected", "without the refusal, the check fails",
 // "with the line taken out, the new check fails") is the check working, not something failing (2026-10-18 card: two such lines read as failures)
 const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that|it)(?:\s+[\w-]+){0,2}\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
@@ -40,13 +61,14 @@ const HYPOTHETICAL = /^(?:if|when|whenever|should|unless|in case)\b|\b(?:would|w
 export function failuresOf(text) {
   const out = [], seen = new Set();
   for (const raw of String(text || '').split(/\n+|\s*⏎\s*|(?<=[.;!?])\s+(?=[A-Z-])/)) {
-    const l = clean(raw);
-    const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
-    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l) || PLANNED.test(l) || HYPOTHETICAL.test(body)) continue;
-    if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
-    const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
-    out.push(l.length > 110 ? l.slice(0, 107) + '...' : l);
-    if (out.length >= MAX_FAILURES) break;
+    for (const l of stepsOf(clean(raw))) {
+      const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
+      if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l) || PLANNED.test(l) || HYPOTHETICAL.test(body)) continue;
+      if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
+      const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
+      out.push(cutLine(l));
+      if (out.length >= MAX_FAILURES) return out;
+    }
   }
   return out;
 }
@@ -58,6 +80,49 @@ export function failuresOf(text) {
 const OURS = /github\.com\/atomeam\/void-loop\/(?:pull|commit)\/[0-9a-f]+|\batomeam\/void-loop#\d+/i;
 const ASKS_ABOUT_LINK = /^(?:please\s+)?(?:review|check|look(?:\s+at)?|summari[sz]e|explain|read|open|merge|close|approve|analy[sz]e|fix|show(?:\s+me)?|tell\s+me|what|why|how|can|could|is|does)\b/i;
 export function telemetryOf(raw) {
+  const card = reportCardOf(raw);
+  if (!card) return readingOf(raw);
+  // a copied report card, alone or with more pasted around it: the card's own lines say what the report said, and what is around it adds to that
+  const rest = readingOf(card.rest), seen = new Set(), add = (a, b) => [...a, ...b].filter((x) => { const k = x.toLowerCase(); return !seen.has(k) && seen.add(k); });
+  const r = (rest && rest.read) || { changed: [], waits: [], blocked: [], next: null };
+  const read = { changed: add(card.changed, r.changed), waits: add(card.waits, r.waits), blocked: add(card.blocked, r.blocked), next: card.next || r.next };
+  const prs = openFirst([...new Set([...card.prs, ...(rest ? rest.prs : [])])], read).slice(0, 5);
+  return { kind: 'status', signals: rest ? rest.signals : [], shas: [...new Set([...card.shas, ...(rest ? rest.shas : [])])].slice(0, 5), prs, failures: rest ? rest.failures : [], passed: rest ? rest.passed : null, read };
+}
+// the pull requests a report says still wait come first, then the ones it does not call done, and the done ones last: the card checks three, and the
+// open ones are the ones whose state may have changed since (2026-10-30: a report naming three merged pull requests and one waiting on CI was
+// checked on the three merged ones only)
+const openFirst = (prs, read) => {
+  const has = (lines, n) => new RegExp('#' + n + '\\b').test(((read && lines) || []).join(' ')), rank = (n) => (has(read && [...read.waits, ...(read.blocked || [])], n) ? 0 : has(read && read.changed, n) ? 2 : 1);
+  return prs.map((n, i) => [n, i]).sort((a, b) => rank(a[0]) - rank(b[0]) || a[1] - b[1]).map(([n]) => n);
+};
+
+// A copied "What is really true now" card pasted back (owner, 2026-10-30): its title, its kind line, its "checking GitHub" line and its code line are the
+// card's frame, not the report, and the copy alone is shorter than any report, so it was reopened as the frozen card it was copied from. Its own
+// "What the report said" lines are the report: they are read back, and the card is checked against GitHub again.
+const CARD_CODE = /(?:VERSE|Verse|V01D)-CARD:[A-Za-z0-9_-]{8,12000}/g;
+const CARD_FRAME = /^(?:What is really true now|What the report said|Verse card from a-to-mind\.com.*|Skill\s+[\u2014\u2013-]\s+.+|checking GitHub for main\b.*|Nothing in it names a failure\b.*|It names \d+ things? as failing|A (?:CI report|status update) from the builders\b.*|Named as failing in the report\b.*|Live state from GitHub's public API\b.*|Plant these in the error garden\b.*|[\u2713\u2717\u00b7]\s.*)$/;
+const CARD_LINE = /^(Pull requests|Commits|Changed|Waiting|Blocked|Next step)\s*:\s*(.+)$/;
+/** a copied report card inside a paste: { prs, shas, changed, waits, next, rest } with rest the paste without the card, or null. Pure. */
+export function reportCardOf(raw) {
+  const lines = String(raw || '').replace(/\s*\u23ce\s*/g, '\n').replace(CARD_CODE, '\n').split('\n').map((l) => l.trim());
+  if (!lines.includes('What the report said')) return null;
+  const out = { prs: [], shas: [], changed: [], waits: [], blocked: [], next: null }, rest = [];
+  for (const l of lines) {
+    const m = CARD_LINE.exec(l);
+    if (m && m[1] === 'Pull requests') out.prs.push(...(m[2].match(/\d{2,6}/g) || []));
+    else if (m && m[1] === 'Commits') out.shas.push(...(m[2].match(/\b[0-9a-f]{7,40}\b/g) || []));
+    else if (m && m[1] === 'Changed') out.changed.push(m[2]);
+    else if (m && m[1] === 'Waiting') out.waits.push(m[2]);
+    else if (m && m[1] === 'Blocked') out.blocked.push(m[2]);
+    else if (m) out.next = m[2];
+    else if (!CARD_FRAME.test(l)) rest.push(l);
+  }
+  for (const w of [...out.waits, ...out.blocked]) for (const n of w.match(/#(\d{2,6})\b/g) || []) if (!out.prs.includes(n.slice(1))) out.prs.push(n.slice(1));
+  return out.prs.length || out.shas.length || out.changed.length || out.waits.length || out.blocked.length ? { ...out, rest: rest.join('\n').trim() } : null;
+}
+
+function readingOf(raw) {
   const text = String(raw || '').trim();
   const ours = OURS.test(text) && text.length >= 60 && !ASKS_ABOUT_LINK.test(text);
   if ((text.length < MIN_CHARS && !ours) || text.length > 20000) return null;
@@ -66,7 +131,7 @@ export function telemetryOf(raw) {
   const signals = signalsOf(text), read = statusReadOf(text);
   if (signals.length < MIN_SIGNALS && !ours && !read) return null;
   const shas = [...new Set((text.match(/\b[0-9a-f]{7,40}\b/g) || []).filter((s) => /\d/.test(s) && /[a-f]/.test(s)))].slice(0, 5);
-  const prs = [...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))].slice(0, 5);
+  const prs = openFirst([...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))], read).slice(0, 5);
   const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*passed/i.exec(text);
   return { kind: read ? 'status' : signals.includes('run') || signals.includes('ci') ? 'ci' : 'status', signals, shas, prs, failures: failuresOf(text), passed: m ? { ok: +m[1], of: +m[2] } : null, read };
 }

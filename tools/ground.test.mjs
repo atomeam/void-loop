@@ -44,4 +44,13 @@ assert.equal(judgeCard('how do i make guacamole', 'Guacamole\n3 avocados', recip
 assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', recipe).unmet, true, 'still: a card about something else');
 assert.equal(judgeCard('lasagne', 'Pancakes\nflour', recipe).unmet, true, 'a near spelling only counts against what the card shows');
 assert.equal(judgeCard('cat', 'car parts', { name: 'x', examples: [] }).unmet, true, 'short words must match exactly');
+// a skill that looks a named thing up refuses a card about something else; every other skill is only reported (Adam's incident
+// card, 2026-10-30: "how do i make guacamole" got a pancakes card)
+const { refusalLine } = await import('../void-live-deploy/lib/ground.js');
+const strict = { ...recipe, refuseUngrounded: true };
+assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', strict).refuse, true);
+assert.equal(judgeCard('how do i make guacamole', 'Guacamole\n3 avocados', strict).refuse, false);
+assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', recipe).refuse, false, 'only a skill that says so refuses');
+assert.equal(judgeCard('calculate a 20% tip on 45', 'A 20% tip on $45.00 is $9.00', { name: 'tip', examples: [] }).refuse, false, 'a tip card is never refused');
+assert.equal(refusalLine('how do i make guacamole', ['guacamole'], 'Pancakes'), "I don't have guacamole yet: the card I found was Pancakes, so I did not show it. I've noted it, so I can learn it.");
 console.log('ground: ok');

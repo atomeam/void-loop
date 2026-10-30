@@ -2,7 +2,7 @@
 // node --test tools/telemetry-route.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { telemetryOf, failuresOf, summaryOf, signalsOf } from '../void-live-deploy/lib/telemetry.js';
+import { telemetryOf, failuresOf, summaryOf, signalsOf, LINE_MAX } from '../void-live-deploy/lib/telemetry.js';
 import skill from '../void-live-deploy/skills/telemetry-route.js';
 
 const LOG = `Fixes so far:
@@ -27,10 +27,23 @@ test('questions, instructions and short lines are never taken', () => {
   assert.equal(telemetryOf('a '.repeat(200)), null, 'long but no evidence');
 });
 
-test('failuresOf drops lines that say nothing failed, caps at six and clips long lines', () => {
+test('failuresOf drops lines that say nothing failed, caps at six and shows each line whole, never cut with "..."', () => {
   assert.deepEqual(failuresOf('no failures here at all, everything is fine today\nNothing red and no conflicts in this one'), []);
   const many = Array.from({ length: 9 }, (_, i) => 'FAIL check number ' + i + ' ' + 'x'.repeat(130)).join('\n');
-  const f = failuresOf(many); assert.equal(f.length, 6); assert.ok(f.every((l) => l.length <= 110));
+  const f = failuresOf(many); assert.equal(f.length, 6); assert.ok(f.every((l) => l.endsWith('x'.repeat(130))), 'a 150-letter line is whole: ' + f[0]);
+  const long = failuresOf('FAIL check ' + 'word '.repeat(80));
+  assert.equal(long.length, 1); assert.ok(long[0].length <= LINE_MAX && /word$/.test(long[0]), 'past LINE_MAX it ends at a whole word: ' + long[0]);
+  for (const l of [...f, ...long]) assert.ok(!/(?:\.\.\.|\u2026)$/.test(l), 'no "..." at the end: ' + l);
+});
+
+// the 2026-10-30 card: Adam pasted a builder's progress list, and the card named 2 things as failing: "Claude's progress: ... Done: Self probes
+// routed and ..." (a list of done steps, cut at 107 letters) and "2005 merge conflict cleared" (a cleared conflict, its "#" stripped)
+test('a pasted progress list is no failure: done steps, a cleared conflict and a ticked line are left out, and a "#" stays', () => {
+  const paste = ["Claude\u2019s progress: What I want to become: self probes, MCP skills, card fixes Done: Self probes routed and covered by regression tests (#1999 merged) Done: Card fixes: no stray line, clear asks list, repo ask shown done (PR #2005) Done: Cut-off note fix merged (#1992) In progress: MCP: the browser suite timed out once and passed again on a re-run",
+    '#2005 merge conflict cleared (generated deps file)', '\u2713 #2005 merge conflict cleared', 'Merge conflicts resolved on #1998 and pushed.'].join('\n');
+  assert.deepEqual(failuresOf(paste), [], JSON.stringify(failuresOf(paste)));
+  assert.deepEqual(failuresOf('Claude\u2019s progress: Ship the card Done: Card heading fixed Not started: #2010 is red on main since the deploy'), ['#2010 is red on main since the deploy'], 'a step not started that names a failure stays');
+  assert.deepEqual(failuresOf('#2005 has a merge conflict in deps.json'), ['#2005 has a merge conflict in deps.json'], 'an open conflict stays, with its "#"');
 });
 
 test('the skill takes its example and leaves its near misses; the card escapes what it shows', () => {
@@ -58,7 +71,7 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   assert.ok(t && t.prs.includes('1090') && t.shas.includes('92189bd'), 'still read as a report');
   assert.equal(t.failures.length, 2, 'two real ones, not six: ' + JSON.stringify(t.failures));
   assert.deepEqual(failuresOf('the error garden grows a sprout for every red check of the suite; red checks grow in it by themselves'), [], '"red checks" as a name is not a state');
-  assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since 411: the proposal card check FAILS on every head'], 'a state line stays (clean() strips the #)');
+  assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since #411: the proposal card check FAILS on every head'], 'a state line stays, with its "#"');
 });
 
 test('a builder\'s own sentence behind a list marker, and a failure that passed on its own, are not still failing (2026-10-18 card)', () => {
