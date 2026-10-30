@@ -3,6 +3,7 @@
 // pasted (error, config, steps), names the likely cause and gives the concrete fix or the corrected config. The fix is the answer.
 // Nothing here names or prices a product; any product line comes afterwards, from the live catalog (lib/gumroad.js).
 import { isBuildersReport, isStatusReport } from './telemetry.js';
+import { isChatLog } from './note-ask.js';
 
 const TROUBLE = /\b(broken|broke|breaks|breaking|fail(s|ed|ing|ure)?|not (working|running|firing|triggering|sending|syncing)|stopped (working|running|firing|triggering|sending|syncing)|(isn'?t|is not|aren'?t|doesn'?t|does not|won'?t|didn'?t|never) (work|run|fire|trigger|send|sync|start)s?|errors?|erroring|crash(es|ed|ing)?|stuck|dead|keeps? (failing|breaking|erroring|timing out)|times? out|timed out|timing out|returns? (a )?[45]\d\d|[45]\d\d error|fix|debug|repair|troubleshoot|double[- ]send(s|ing)?|duplicat(e|es|ing))\b/i;
 const THING = /\b(automations?|automated|workflows?|integrations?|webhooks?|web hooks?|scripts?|cron( jobs?)?|crontab|jobs?|scenarios?|zaps?|zapier|flows?|power automate|pipelines?|github actions?|actions? (workflow|run)|triggers?|bots?|syncs?|n8n|make\.com|make scenario|ifttt|applets?|apps script|lambdas?|cloud functions?|scheduled tasks?|task scheduler|macros?|api calls?|endpoints?|recipes?|pipedream|workato|tray\.io|airflow|dags?)\b/i;
@@ -31,6 +32,7 @@ export function errorEvidence(text) {
 const DESIGN = /\b(?:should|would|could|propos(?:e|al)|design|i think|we need|in order of|leverage|the point|the gap|i'?d (?:suggest|recommend)|rules?|router|routing|intent|types?|loop|feedback|correct(?:ion)?s?)\b/gi;
 export function intentOf(text) {
   const s = String(text || '').trim(), evidence = errorEvidence(s);
+  if (isChatLog(s)) return { intent: 'note', evidence }; // a copied chat (time stamps, "Edited", "You allowed this") is read as a chat, never as a broken automation (owner, 2026-10-30; lib/note-ask.js)
   if (isBuildersReport(s)) return { intent: 'report', evidence }; // a builder's report on CI and pull requests that quotes a timeout is the telemetry route's, not a fix (owner, 2026-10-18)
   if (evidence.length) return { intent: 'incident', evidence };
   if (isStatusReport(s) && [null, 'script'].includes(platformOf(s))) return { intent: 'report', evidence }; // a pasted status report: what changed, what waits, the next step (owner, 2026-10-29)
@@ -45,13 +47,13 @@ export function intentOf(text) {
 }
 export function isFixAsk(text) {
   const s = String(text || '');
-  if (['discussion', 'report'].includes(intentOf(s).intent)) return false; // talk about errors and fixes, or a progress note, is not a broken automation
+  if (['discussion', 'report', 'note'].includes(intentOf(s).intent)) return false; // talk about errors and fixes, a progress note or a copied chat is not a broken automation
   return TROUBLE.test(s) && (THING.test(s) || /\b(error|exception|traceback)\b[\s\S]*\b(https?:\/\/|\{|\bstatus\b)/i.test(s));
 }
 // Enough to work on (an error, a code, a config, a URL, steps), or should Verse ask for it first?
 export function hasDetails(text) {
   const s = String(text || '');
-  if (['discussion', 'report'].includes(intentOf(s).intent)) return false;
+  if (['discussion', 'report', 'note'].includes(intentOf(s).intent)) return false;
   return (s.length > 140 && s.length < 1500) || errorEvidence(s).length > 0 || /\n|```|[{}[\]<>]|https?:\/\/|\b[45]\d\d\b|\b(error|exception|traceback|status|unauthori[sz]ed|forbidden|not found|timeout|timed out|econn\w*|enotfound|undefined|null|invalid|denied|expired|rate limit|quota|syntax|unexpected|required|missing|permission|token|credential|mapping|field)\b/i.test(s);
 }
 export function platformOf(text) { for (const [name, re] of PLATFORMS) if (re.test(String(text || ''))) return name; return null; }

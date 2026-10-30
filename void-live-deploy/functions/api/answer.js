@@ -46,7 +46,7 @@ import { describeSection, seriesOfList, photoKindOf } from '../../lib/subject-ki
 import { kindOf as subjectKind } from '../../lib/card-kinds.js';
 import * as FP from '../../lib/free-pics.js';
 import { edgeCache, edgeGate, buildId, edgeKeyUrl, edgeGet, edgePut, edgeTtl, marked, storable, HIT, MISS, BYPASS, REFRESH } from '../../lib/answer-edge.js';
-import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading } from '../../lib/note-ask.js';
+import { isNote, noteRule, relatedPage, talksLimits, dropLimits, NO_LIMITS_RULE, noteReading, setupFacts, noteFinish } from '../../lib/note-ask.js';
 import { askWords, grounded, isNameAsk, isNoAnswer, sourcesMatch, guessOf, listRedirect, sectionHit, sectionText, linked } from '../../lib/no-answer.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
@@ -522,7 +522,7 @@ async function pageAnswer(request, env, ask, pg) {
 export const ANSWER_SYSTEM = 'You are Verse. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + HONEST_RULE + ' ' + PERSONA + ' ' + INJECTION_RULE;
 // A long pasted text is not a question (owner, 2026-10-16: Verse's own plan, pasted back, was answered with an invented "Card" definition and
 // "Frontier step 7"). Say what the text says, in its own words; never define its terms from general knowledge or invent content for it.
-export const PASTE_RULE = 'The ask is text someone pasted, not a question. Say in two to four sentences what it says and what it wants, using its own words. Do not define its terms from general knowledge, do not add steps, sections or facts it does not contain, and do not write a document in its name. If it is about Verse\'s own plans, say you only see what was pasted and that the plan itself is in the Verse book and the frontier.';
+export const PASTE_RULE = 'The ask is text someone pasted, not a question. Say in two to four sentences what it says and what it wants, using its own words. Do not define its terms from general knowledge, do not add steps, sections or facts it does not contain, and do not write a document in its name. If it is a status report, say what it shows as done or verified live, and what is still open or waiting, with the numbers it gives. Never answer it with advice about keys, secrets or safety that it did not ask for. If it is about Verse\'s own plans, say you only see what was pasted and that the plan itself is in the Verse book and the frontier.';
 export const isPaste = (ask) => { const t = String(ask || ''); return t.length > 400 && (t.match(/[.!:;]\s/g) || []).length >= 3 && !/^[^.!]{0,200}\?\s*$/.test(t); };
 // How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
 // a challenger is measured the way Verse runs it: thinking off, low reasoning effort, the same token budget.
@@ -552,6 +552,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // a paste is summarised from its own words (PASTE_RULE): a Wikipedia search on it only finds pages it never mentions
   // a note written to someone is read as a note (lib/note-ask.js): what it says, the step it asks for and whose it is, and the Verse page for it
   const note = !self && !told && isNote(ask), notePage = note ? relatedPage(ask) : null;
+  const noteFacts = note ? setupFacts(ask) : []; // a note about Verse's own setup is answered from the secret names its code reads, never a guessed one
   let src = self || isPaste(ask) || note ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
@@ -576,7 +577,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE + (isOwnCardNote(ask) ? ' ' + OWN_CARD_RULE : '') + honest },
     { role: 'user', content: `Question: ${ask}\n\nFacts about Verse:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
-    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (note ? ' ' + noteRule(notePage) : isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') + honest + (src.length ? ' ' + INVENT_RULE : '') + (measure ? ' ' + measureRule(measure) : '') },
+    { role: 'system', content: ANSWER_SYSTEM + (sectioned ? ' ' + SECTION_RULE : '') + (note ? ' ' + noteRule(notePage, noteFacts) : isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') + honest + (src.length ? ' ' + INVENT_RULE : '') + (measure ? ' ' + measureRule(measure) : '') },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;
@@ -646,7 +647,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     } catch (_) { /* the cut below still runs */ }
   }
   answer = dropLimits(answer);
-  if (!answer && note) answer = noteReading(ask, notePage);
+  if (!answer && note) answer = noteReading(ask, notePage, noteFacts);
+  else if (note || isPaste(ask)) answer = noteFinish(answer, ask, note ? noteFacts : setupFacts(ask)); // the cut line and the real secret names, whatever the model gave
   if (!answer) { log({ model, outcome: outcome + '; only limits lines' }); return Response.json({ answer: null, sources: [], note: 'nothing on the web', noAnswer: true, route: route.kind, ...nearOut }); }
   log({ model });
   // no claimed write and no filler (lib/answer-honesty.js); then only the sources the answer cited, and whose fetched text holds the
