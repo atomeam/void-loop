@@ -1087,7 +1087,7 @@ const PALETTES = [['shades', /\bshades?\b/i], ['tints', /\btints?\b/i], ['tones'
 // contrast: the colour floor's own aspect (lib/tower.js extra), whether the page says if text on the colour can be read (WCAG); only floors that list it are scored
 const COLOUR_PARTS = Object.freeze({ 'every colour model': MODELS, 'shades and palettes': PALETTES, contrast: [['text contrast', /\bcontrast\b|\bwcag\b/i], ['AA and AAA', /\bAAA?\b/]] });
 // the news floor's rows: "<source> · <age>" lines as the news page prints them (lib/news.js SOURCES names), read off a page's visible text. Pure.
-const NEWS_SOURCES = 'BBC News|The Guardian|NPR|Al Jazeera|DW|France 24|CBC News|ABC News Australia|Sky News|Euronews|RNZ|Ars Technica|The Verge|Hacker News|Nature|NASA|ScienceDaily|Africanews|El País|Le Monde|Tagesschau|Der Spiegel|RFI';
+const NEWS_SOURCES = 'BBC News|The Guardian|NPR|Al Jazeera|DW|France 24|CBS News|ABC News Australia|Sky News|Euronews|RNZ|Ars Technica|The Verge|Hacker News|Nature|NASA|ScienceDaily|Africanews|El País|Le Monde|Tagesschau|Der Spiegel|RFI';
 /** every "Source · 3 h ago" line in a text: [source, ...]. */
 export const rowsIn = (t) => [...String(t || '').matchAll(new RegExp('(' + NEWS_SOURCES + ') · (?:just now|\\d+ (?:min|h|d) ago)', 'g'))].map((m) => m[1]);
 /** how many different sources those rows name. */

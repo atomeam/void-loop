@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1033,
+ "counted": 1029,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -171,18 +171,18 @@
    "tests": 1
   },
   {
-   "file": "lib/self-sites.js",
-   "skills": 11,
-   "direct": 0,
-   "dependants": 19,
-   "tests": 1
-  },
-  {
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
    "dependants": 39,
    "tests": 3
+  },
+  {
+   "file": "lib/self-sites.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 18,
+   "tests": 1
   },
   {
    "file": "lib/astro.js",
@@ -577,34 +577,6 @@
    "tests": 1
   },
   {
-   "file": "lib/tower-controls.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 8,
-   "tests": 1
-  },
-  {
-   "file": "lib/gate-badge.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
-   "file": "lib/tower-journeys.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
-   "file": "lib/tower-weight.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -631,13 +603,6 @@
    "direct": 0,
    "dependants": 6,
    "tests": 1
-  },
-  {
-   "file": "lib/tower.js",
-   "skills": 4,
-   "direct": 3,
-   "dependants": 6,
-   "tests": 29
   },
   {
    "file": "lib/void-seal.js",
@@ -724,7 +689,35 @@
    "tests": 3
   },
   {
+   "file": "lib/tower-controls.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/date-words.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/gate-badge.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/tower-journeys.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 2
+  },
+  {
+   "file": "lib/tower-weight.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6,
@@ -743,6 +736,13 @@
    "direct": 1,
    "dependants": 5,
    "tests": 1
+  },
+  {
+   "file": "lib/tower.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 5,
+   "tests": 28
   },
   {
    "file": "lib/arena-say.js",
@@ -966,7 +966,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/generators.js",
@@ -1663,13 +1663,6 @@
   },
   {
    "file": "lib/eclipse.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/emoji-combos.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -6142,12 +6135,6 @@
     "functions/api/approval.js"
    ]
   },
-  "lib/emoji-combos.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/emoji-combos.js"
-   ]
-  },
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
@@ -6673,7 +6660,6 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/walker.js"
    ]
   },
@@ -9673,7 +9659,6 @@
     "skills/kanban-board.js",
     "skills/merge.js",
     "skills/pdf-tools.js",
-    "skills/studios.js",
     "skills/toolkit.js",
     "skills/tower.js",
     "skills/walker.js"
@@ -10842,7 +10827,6 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ]
@@ -10858,7 +10842,6 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ]
@@ -10879,7 +10862,6 @@
     "functions/api/reflect.js",
     "functions/api/will.js",
     "skills/cartoon.js",
-    "skills/studios.js",
     "skills/walker.js"
    ]
   },
@@ -10897,7 +10879,6 @@
    "importedBy": [
     "functions/api/reflect.js",
     "functions/api/will.js",
-    "skills/studios.js",
     "skills/tower.js",
     "skills/walker.js"
    ],
@@ -12126,12 +12107,6 @@
    "importedBy": [
     "skills/games.js"
    ]
-  },
-  "skills/emoji-combos.js": {
-   "imports": [
-    "lib/emoji-combos.js"
-   ],
-   "importedBy": []
   },
   "skills/emoji.js": {
    "imports": [
@@ -14690,12 +14665,6 @@
    "importedBy": [
     "skills/shop.js"
    ]
-  },
-  "skills/studios.js": {
-   "imports": [
-    "lib/tower.js"
-   ],
-   "importedBy": []
   },
   "skills/study-cards.js": {
    "imports": [
