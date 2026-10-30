@@ -13,7 +13,7 @@ async function runTeam(t, api) {
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">\u2026</div>'; });
   const dayOf = (n) => localDay(new Date(Date.now() - n * 864e5)), days = t.day === 'yesterday' ? [1] : t.day === 'today' ? [0] : [0, 1];
   let answered = 0, src = '', hit = null, when = 0;
-  for (const n of days) {
+  for (const n of days) { // void-review: ok (at most 2 days; each day's leagues are one Promise.all, and today's hit stops the loop)
     const boards = await Promise.all(LEAGUE_IDS.filter((id) => id !== 'f1').map((league) => fetch('/api/scores?' + new URLSearchParams({ league, date: dayOf(n) })).then((r) => r.json())
       .then((j) => { if (j && j.ok) { answered++; src = src || j.source || ''; return { league, games: j.games || [] }; } return null; }, () => null)));
     if (!api._pageStill(el)) return 'scores';

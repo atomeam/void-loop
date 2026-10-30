@@ -314,16 +314,16 @@ export function scoresAsk(text) {
 const NOT_TEAM = /^(?:my|your|our|their|his|her|the|a|an|what|whats|credit|fico|test|sat|act|gre|gmat|lsat|mcat|quiz|exam|final|game|high|top|best|live|bowling|golf|wordle|chess|match|team|sports?|tennis)$/i;
 /** an ask for one team's game -> { team, day: 'yesterday' | 'today' | '' } | null; never a league ("nba scores" is scoresAsk's) and never a credit or test score. Pure. */
 export function teamScoreAsk(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase(), D = '(?: (last night|yesterday|today|tonight))';
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   const pats = [
-    '^(?:what was|what\'?s|what is) the ([a-z][a-z .\'&-]{1,30}?) (?:game )?(?:score|result)' + D + '?$',
-    '^how did the ([a-z][a-z .\'&-]{1,30}?) do' + D + '?$',
-    '^did the ([a-z][a-z .\'&-]{1,30}?) win' + D + '?$',
-    '^(?:the )?([a-z][a-z .\'&-]{1,30}?) (?:game )?(?:score|scores|result|final score)' + D + '?$',
+    /^(?:what was|what'?s|what is) the ([a-z][a-z .'&-]{1,30}?) (?:game )?(?:score|result)(?: (last night|yesterday|today|tonight))?$/,
+    /^how did the ([a-z][a-z .'&-]{1,30}?) do(?: (last night|yesterday|today|tonight))?$/,
+    /^did the ([a-z][a-z .'&-]{1,30}?) win(?: (last night|yesterday|today|tonight))?$/,
+    /^(?:the )?([a-z][a-z .'&-]{1,30}?) (?:game )?(?:score|scores|result|final score)(?: (last night|yesterday|today|tonight))?$/,
   ];
   let team = '', day = '';
   for (const p of pats) {
-    const m = new RegExp(p).exec(t);
+    const m = p.exec(t);
     if (!m) continue;
     const c = m[1].trim(), words = c.split(' ');
     if (words.length > 3 || words.some((w) => NOT_TEAM.test(w)) || ALIAS[c] || /^(?:la ?liga|formula (?:1|one))$/.test(c)) continue;
