@@ -71,7 +71,9 @@ export async function readReply(r) {
     }
     if (any) return { choices: [{ message: { content: text } }], usage: usage || undefined };
   }
-  return bad(Buffer.byteLength(s));
+  // a body of 64 bytes or less with no markup is no page: show it, escaped, key-like runs masked, so "200 text/plain 2B" says which 2 bytes
+  const n = Buffer.byteLength(s);
+  return n <= 64 && !/[<>]/.test(s) ? { notJson: bad(n).notJson + ' ' + JSON.stringify(s.replace(/[A-Za-z0-9_\-]{20,}/g, '[masked]')) } : bad(n);
 }
 
 /** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
