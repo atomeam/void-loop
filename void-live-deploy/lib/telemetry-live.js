@@ -1,7 +1,7 @@
 // The developer-log card, checked against what is real (owner, 2026-10-19: the card only echoed the pasted words back, "these arent answering or
 // helping anything"). For each pull request and commit a pasted report names, GitHub's public API says what actually happened: merged, open or
 // closed, and how the checks on a commit ended. Main's newest commit and its checks come first, because "is it live and green?" is the question
-// behind every report. Read-only, no key: GitHub's unauthenticated API (60 calls an hour per visitor), at most 9 calls a card.
+// behind every report. Read-only, no key: GitHub's unauthenticated API (60 calls an hour per visitor), at most 11 calls a card.
 //   prLine(pr), checksLine(sha, runs), mainLine(commit, runs) are pure; liveLines(t, fetch) does the calls.
 export const REPO = 'atomeam/void-loop';
 const API = 'https://api.github.com/repos/' + REPO;
@@ -68,6 +68,27 @@ export function recordsLine(records) {
   return { text: (records.length === 1 ? 'The newest commit is' : 'The ' + records.length + ' newest commits are') + ' Verse\'s own records (' + parts.join(', ') + '): they run no checks, so main\'s state is the change below them', ok: null };
 }
 
+// the newest suite that finished on main (owner, 2026-10-30: the card read "0 passed · 9 still running" for main's head and nothing else, while
+// four heads below it had passed every shard; the queue runs hours behind, so the head is often still waiting). A run's own conclusion is no guide:
+// its incident job is cancelled by the next run, so a green run reads "cancelled". The suite's own jobs say how it ended.
+const SUITE_JOB = /browser-suite|python-tests/i;
+/** one line for a finished verify run on main from its jobs, or null when the suite did not run to the end in it. Pure. */
+export function finishedLine(run, jobs) {
+  const list = (jobs && Array.isArray(jobs.jobs) ? jobs.jobs : []).filter((j) => SUITE_JOB.test(String(j && j.name)));
+  if (!run || !run.head_sha || !list.length || list.some((j) => j.status !== 'completed' || !/^(?:success|failure|timed_out)$/.test(String(j.conclusion)))) return null;
+  const c = checksOf({ check_runs: list });
+  return { text: 'the newest suite that finished on main ran on ' + short(run.head_sha) + ' (' + when(run.updated_at) + '): ' + c.text, ok: okOf(c), failed: c.failed };
+}
+/** a commit a report names that is older than main's newest change: its checks are history, not main's state now. Pure. */
+export function pastNote(line, sha, recent, runs) {
+  if (!line || !Array.isArray(recent) || !recent.length) return line;
+  const head = recent[0], at = recent.findIndex((c) => c && String(c.sha || '').startsWith(String(sha)));
+  const headAt = String((head.commit && head.commit.committer && head.commit.committer.date) || '');
+  const lastRun = (runs && Array.isArray(runs.check_runs) ? runs.check_runs : []).map((r) => String(r.started_at || '')).sort().pop() || '';
+  if (at === 0 || (at < 0 && !(headAt && lastRun && lastRun < headAt))) return line;
+  return { ...line, text: line.text + ' · a past result: main has moved on since, see main above', ok: null };
+}
+
 /** the live lines for a reading: main first, then each named PR and commit. Never throws; a call GitHub refuses says so. */
 export async function liveLines(t, fetchFn = (u) => fetch(u, { headers: { accept: 'application/vnd.github+json' } })) {
   const get = async (path) => { try { const r = await fetchFn(API + path); return r && r.ok ? await r.json() : { __status: r ? r.status : 0 }; } catch (_) { return { __status: 0 }; } };
@@ -92,14 +113,20 @@ export async function liveLines(t, fetchFn = (u) => fetch(u, { headers: { accept
     break;
   }
   if (!out.length && recent[0]) out.push({ ...mainLine(recent[0], { check_runs: [] }), ok: null });
+  if (out[0] && out[0].ok === null) { // main's head has no verdict yet: still running, or its checks not even started
+    const runs = await get('/actions/workflows/verify.yml/runs?branch=main&status=completed&per_page=1');
+    const run = !refused(runs) && Array.isArray(runs.workflow_runs) ? runs.workflow_runs[0] : null;
+    const fl = run ? finishedLine(run, await get('/actions/runs/' + run.id + '/jobs?per_page=50')) : null;
+    if (fl) out.splice(1, 0, fl);
+  }
   for (const n of (t.prs || []).slice(0, 3)) { const pr = await get('/pulls/' + n); out.push(refused(pr) ? { text: '#' + n + ': not a pull request in ' + REPO, ok: null } : prLine(pr)); }
-  for (const sha of (t.shas || []).slice(0, 2)) { const runs = await get('/commits/' + sha + '/check-runs?per_page=100'); out.push(refused(runs) ? { text: short(sha) + ': not a commit in ' + REPO, ok: null } : checksLine(sha, runs)); }
+  for (const sha of (t.shas || []).slice(0, 2)) { const runs = await get('/commits/' + sha + '/check-runs?per_page=100'); out.push(refused(runs) ? { text: short(sha) + ': not a commit in ' + REPO, ok: null } : pastNote(checksLine(sha, runs), sha, recent, runs)); }
   return out.filter(Boolean);
 }
 
 /** true while a line still has checks running ("1 passed · 9 still running"): the card keeps re-reading GitHub until it is false. Pure. */
 export const stillRunning = (lines) => (Array.isArray(lines) ? lines : []).some((l) => l && /\bstill running\b/.test(String(l.text)));
 // how often and how many times an open card re-reads GitHub (owner, 2026-10-19: "all cards should constantly update"): once a minute while checks
-// still run, at most 4 times after the first read; a read costs up to 9 calls (main's commits, 3 of them asked about their checks, 3 pull requests, 2 commits), so the five reads
-// stay within the 60 an hour GitHub gives a visitor without a key
+// still run, at most 4 times after the first read; a read costs up to 11 calls (main's commits, 3 of them asked about their checks, the newest
+// finished suite and its jobs while main's head has no verdict, 3 pull requests, 2 commits), so the five reads stay within the 60 an hour GitHub gives a visitor without a key
 export const REFRESH_MS = 60000, REFRESH_MAX = 4;
