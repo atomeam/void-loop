@@ -134,6 +134,14 @@ jobs:
         if: ${{ inputs.report_only != true }}
         run: node --test tools/shared-chain.test.mjs || { echo "::error title=Shared tool-page chain::a module the toolkit chain loads is not in SHARED_TOOL_FILES (tools/test_void.mjs); see the test output above"; exit 1; }
 
+      # void.html is the page and void-live-deploy/index.html and void-live-deploy/void.html are its two deploy copies (checks.mjs 'copies').
+      # #1748 changed void.html and index.html but not void.html's second copy, and the copies check went red on main after the merge
+      # (2026-10-30, repaired by 2ea27ede). The same compare runs here, so a PR with a stale copy does not merge. Seconds, no browser.
+      - name: The page and its two deploy copies match
+        if: ${{ inputs.report_only != true }}
+        run: |
+          node -e "const fs=require('fs'),r=(f)=>fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n'),src=r('void.html'),stale=['void-live-deploy/index.html','void-live-deploy/void.html'].filter((f)=>r(f)!==src);if(stale.length){console.log('::error title=Page copies::'+stale.join(' and ')+' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html');process.exit(1)}console.log('void.html and both deploy copies match')"
+
       # A review the automerge bot dispatched (after merging main into the PR) was started with the workflow's token, so its end
       # fires no workflow_run and automerge never hears it passed; the hourly schedule rarely fires, so #598 sat green for hours
       # (2026-10-13). Wake automerge here, pass or fail: it reads the check itself and only merges a clean head.
