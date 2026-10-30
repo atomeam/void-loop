@@ -6,6 +6,7 @@
 //   node tools/lap-items.mjs           print the counts by group
 //   node tools/lap-items.mjs --write   write the file
 import { scan as handoffScan } from './handoff-scan.mjs';
+import { SURFACES } from '../void-live-deploy/lib/job-guide.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => { try { return fs.readFileSync(path.join(root, p), 'utf8'); } catch (_) { return ''; } };
@@ -14,12 +15,7 @@ const lines = (t) => (t ? t.split('\n').length : 0);
 const walk = (p, out = []) => { for (const f of ls(p)) { const q = p + '/' + f; let st; try { st = fs.statSync(path.join(root, q)); } catch (_) { continue; } if (st.isDirectory()) { if (!/^(node_modules|\.git)$/.test(f)) walk(q, out); } else out.push(q); } return out; };
 const testsOf = (name, tests) => tests.filter((t) => t.includes(name)).length;
 
-export const SURFACES = [
-  ['home', /^(home|look|showcase|what-can)/], ['ask', /^(answer|router|ask|route)/],
-  ['games', /game|chess|checkers|monopoly|poker|snake|pong|sorry|go\b|othello|mancala|battleship|connect4|ringer|tictactoe|duel|fireworks|aggravation|rally/],
-  ['cards', /card|rally|duel|collectible|binder/], ['book', /book/], ['store', /store|shop|gumroad/], ['films', /film|movie|poster|video/],
-  ['podcast', /podcast/], ['mind-field', /mind/], ['tilt-arena', /tilt|arena/], ['loop', /will|wants|lap|loop|churn|incident|completeness|persona|expectations/],
-];
+export { SURFACES }; // one list with the will's job spec (lib/job-guide.js willSpec)
 
 // "a-to-mind should be the only website you need" (owner, 2026-10-22): popular site categories, most used first, each with the Verse
 // skills that cover it. Status from facts only: missing (no skill), partial (one skill, or none of them tested), replaced (two or more

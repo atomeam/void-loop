@@ -10,6 +10,7 @@ import { INJECTION_RULE } from './automation-fix.js';
 export const MAX_EDITS = 4; // line replacements in one proposal
 export const MAX_REPLACE = 700; // characters in one replacement
 export const MAX_SOURCE = 30000; // characters of the skill file the model is shown
+export const MAX_TRIED = 700; // characters of feedback on the last try that the model is shown
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/;
 // what a matcher change never needs: anything that runs, loads, stores, or reaches out
 const FORBIDDEN = /\b(fetch|import|require|eval|Function|setTimeout|setInterval|XMLHttpRequest|WebSocket|navigator|location|document|window|globalThis|process|localStorage|sessionStorage|indexedDB|cookie|innerHTML|outerHTML|insertAdjacentHTML|postMessage|atob|btoa|crypto)\b|https?:|www\.|\$\{|`|<\/?script/i;
@@ -17,6 +18,7 @@ const FORBIDDEN = /\b(fetch|import|require|eval|Function|setTimeout|setInterval|
 export const FIX_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: a short ask that this skill should answer did not reach it, because its matcher (the match() function and the patterns it uses) does not recognise that wording. '
   + 'Propose the narrowest change that makes the matcher accept the ask and asks like it, without accepting asks that belong to other skills, and add the ask to the examples list. '
+  + 'An example only counts when match() takes it: adding the ask to the examples without changing the pattern match() uses always fails the collision check. '
   + 'Change only the matcher and the examples: never run(), never anything that fetches, imports, stores or draws. Keep every pattern anchored and specific; prefer adding one alternative to loosening an existing one. '
   + 'Reply with JSON only: {"why":"<one or two sentences: what did not match and what you changed>","confidence":<0.0-1.0: how sure you are this change makes the ask reach the skill without stealing another skill\'s asks>","edits":[{"find":"<one existing line, copied exactly, whole>","replace":"<that line as it should read; several lines joined with \\n are allowed>"}]} with at most ' + MAX_EDITS + ' edits. '
   + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
@@ -61,14 +63,34 @@ export function skillOf(want) {
 }
 
 /** The question: the ask, the skill and its file (clipped to MAX_SOURCE), with the contract reminder. In 'narrow' mode the ask is
- * one the skill took wrongly, with the owner's words on why when there are any. */
-export function fixPrompt(ask, skill, source, mode = 'learn', said = '') {
-  const src = String(source || ''), shown = src.length > MAX_SOURCE ? src.slice(0, MAX_SOURCE) + '\n// … (clipped)' : src;
+ * one the skill took wrongly, with the owner's words on why when there are any. tried: what the collision check said about the last
+ * proposal (settleNote), so a second try fixes what the first broke instead of guessing again. */
+export function fixPrompt(ask, skill, source, mode = 'learn', said = '', tried = '') {
+  const src = String(source || ''), clip = src.length > MAX_SOURCE ? src.slice(0, MAX_SOURCE) + '\n// … (clipped)' : src;
+  const shown = (tried ? 'Your last try did not pass. ' + String(tried).replace(/\s+/g, ' ').slice(0, MAX_TRIED) + '\n\n' : '') + clip;
   if (mode === 'narrow') return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask it answered but should not have: "' + ask + '"\n'
     + (said ? 'What your owner said about it: "' + String(said).replace(/\s+/g, ' ').slice(0, 300) + '"\n' : '')
     + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
   return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask that did not reach it: "' + ask + '"\n'
     + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
+}
+
+/** what to tell the model after a try that did not settle (2026-10-30: 95 of 136 probe fixes died at "collisions", most of them an
+ * example added while match() still rejected the ask, the rest a pattern loosened into another skill's asks). t: { applied, loadError,
+ * takes, by, lines }: whether the edits applied, the error when the edited file did not load, whether its match() takes the ask, the
+ * skill that reaches the ask first in the routing order, and the collision check's own lines. One short paragraph. Pure. */
+export function settleNote(skill, ask, t = {}) {
+  let out;
+  if (t.applied === false) out = 'Your edits did not apply: each find must be one existing line, copied whole.';
+  else if (t.loadError) out = 'The edited file did not load (' + String(t.loadError).replace(/\s+/g, ' ').slice(0, 160) + '). Keep every pattern a valid JavaScript regular expression.';
+  else if (!t.takes) out = 'match() still does not take "' + ask + '": change the pattern match() uses (not only the examples) so it does.';
+  else if (t.by && t.by !== skill) out = 'match() takes "' + ask + '" now, but the ' + t.by + ' skill comes earlier in the routing order and takes it first; that cannot be changed from this file.';
+  else {
+    const lines = (t.lines || []).filter((l) => !String(l).includes(ask)).slice(0, 6);
+    out = lines.length ? 'Your change also broke these, from the collision check (skill: "example" -> the skill it reaches now): ' + lines.join(' | ') + '. Make the pattern narrower: words only this skill uses, anchored, so other skills keep their asks.'
+      : 'The collision check failed; make the pattern narrower, so other skills keep their asks.';
+  }
+  return out.slice(0, MAX_TRIED);
 }
 
 /** One replacement that a matcher change could need: short, plain, nothing that runs or reaches out. */

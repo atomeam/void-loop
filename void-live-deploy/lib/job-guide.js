@@ -27,6 +27,50 @@ const START = Object.freeze({
   heal: 'The workflows are .github/workflows/; the failing run is named in the note.',
 });
 
+// the surfaces a will lap overhauls: a name and the skill files (void-live-deploy/skills/<name>.js) that make it up (tools/lap-items.mjs measures them)
+export const SURFACES = [
+  ['home', /^(home|look|showcase|what-can)/], ['ask', /^(answer|router|ask|route)/],
+  ['games', /game|chess|checkers|monopoly|poker|snake|pong|sorry|go\b|othello|mancala|battleship|connect4|ringer|tictactoe|duel|fireworks|aggravation|rally/],
+  ['cards', /card|rally|duel|collectible|binder/], ['book', /book/], ['store', /store|shop|gumroad/], ['films', /film|movie|poster|video/],
+  ['podcast', /podcast/], ['mind-field', /mind/], ['tilt-arena', /tilt|arena/], ['loop', /will|wants|lap|loop|churn|incident|completeness|persona|expectations/],
+];
+
+// where each kind of lap item lives (tools/lap-items.mjs inventory): the files a will job touches, by the item's group
+const ITEM_FILES = Object.freeze({
+  skill: (n) => ['void-live-deploy/skills/' + n + '.js', 'tools/' + n + '.test.mjs'],
+  tool: (n) => ['tools/' + n, 'tools/' + n.replace(/\.\w+$/, '') + '.test.mjs'],
+  doc: (n) => ['docs/' + n],
+  plan: (n) => ['domains/' + n],
+  research: (n) => ['domains/forethinkers/' + n],
+  archive: (n) => ['archive/repos/' + n + '/ (what to reuse)', 'docs/MAP.md (where the reuse is listed)'],
+  site: () => ['void-live-deploy/skills/ (the skills of that kind of site)', 'tools/lap-items.mjs SITE_CATEGORIES (how they are counted)'],
+  loop: () => ['the tool or page the item names, in tools/ or void-live-deploy/', 'tools/lap-items.mjs (how the item is measured)'],
+});
+
+/** the full spec of a will job (2026-10-30: a team agent gave back "No spec/template for 'will:overhaul-surface-cards'", because the
+ * brief said only what a surface means): the item, the files to touch, how it is measured, how to verify. Every will job that names a
+ * lap item ("Overhaul surface:cards ...", "Upgrade tool:x.mjs ...") gets one, so no will job goes out without a spec. skills: the skill
+ * file names (no .js), when the caller has them. '' for a will job that names no item. Pure. */
+export function willSpec(job, skills = []) {
+  const m = /^(?:overhaul|upgrade|improve|rebuild)\s+(surface|skill|tool|doc|plan|research|archive|site|loop):([\w./-]+?)(?=[:\s,]|$)/i.exec(String((job && job.ask) || '').trim());
+  if (!m) return '';
+  const group = m[1].toLowerCase(), name = m[2], before = /\(before: ([^)]*)\)/.exec(String((job && job.note) || ''));
+  let files;
+  if (group === 'surface') {
+    const sf = SURFACES.find(([n]) => n === name), parts = sf ? skills.filter((s) => sf[1].test(s)) : [];
+    files = !sf ? ['void-live-deploy/skills/ (no surface is named ' + name + ': read tools/lap-items.mjs and pick the closest)']
+      : parts.length ? parts.slice(0, 8).map((s) => 'void-live-deploy/skills/' + s + '.js').concat(parts.length > 8 ? [(parts.length - 8) + ' more of the same surface'] : [])
+      : ['the skill files whose names match ' + sf[1].source + ' (ls void-live-deploy/skills | grep -E \'' + sf[1].source + '\')'];
+  } else files = ITEM_FILES[group](name);
+  return [
+    'Target: ' + group + ':' + name + ', an item of Verse itself that its will chose to make better this lap.',
+    'What to build: first use it the way a person would (open the page, ask the skill, run the tool) and list what is weak or missing; then fix the weakest thing on that list. Add, never take away: no skill, test, page or example is removed or renamed.',
+    'Files to touch: ' + files.join('; ') + '; and a node:test file in tools/ for what you change.',
+    'Measured by: ' + (before ? before[1] + ' (node tools/lap-items.mjs prints the facts now). Ship when one rises and none falls.' : 'the facts node tools/lap-items.mjs prints for ' + group + ':' + name + '. Ship when one rises and none falls.'),
+    'Verify: node --test on the test files you touched; VOID_SKIP_BENCH=1 node tools/checks.mjs --changed; node tools/skills-check.mjs when a skill changed; after the deploy, ask https://a-to-mind.com/ the skill\'s first example once and read the answer.',
+  ].join('\n');
+}
+
 /** the target of a versus job: { host, aspect }. "versus:a.com" is a site no floor covers yet; "versus:a.com:speed" is one aspect of a
  * floor Verse lost or did not measure (tools/tower-self.mjs build and judge write both). Pure. */
 export function versusOf(target) {
@@ -61,7 +105,7 @@ export function briefOf(job, kind) {
     'The spec: this ask, the guide below and the playbooks it names. Nothing else is coming, so do not wait for more.',
     'Code: ' + REPO + ' (the site is void-live-deploy/; docs/MAP.md says where things are). Work on a branch from the newest main.',
     'This kind (' + k + '): ' + (GUIDE[k] || 'Do this, small and tested.'),
-    (k === 'versus' && versusSpec(job)) || START[k] || START[k.split('-')[0]] || '',
+    (k === 'versus' && versusSpec(job)) || (k === 'will' && willSpec(job)) || START[k] || START[k.split('-')[0]] || '',
     note && 'Note: ' + note.slice(0, 400),
     'Deliver: a pull request to atomeam/void-loop main with the label automerge (Verse reviews it and merges it on green), then close the job with its link (node agent.mjs done --link <pull request>). Verse checks it after the merge: the job is done only when the pull request changes the page itself (not only notes), takes nothing away from main, and the live page answers; otherwise it comes back on the queue with why. Give it back only if you cannot do it at all, and say why.',
   ].filter(Boolean).join('\n');

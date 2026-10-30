@@ -536,16 +536,8 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T18:18:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-30T18:16:58Z",
-   "subject": "Image: \"Change it\" changes a picture Verse painted with one typed line"
   },
   {
    "at": "2026-10-30T18:14:34Z",
@@ -556,8 +548,32 @@
    "subject": "Tower gate: onlineconverter.com measured against their live sites"
   },
   {
+   "at": "2026-10-30T18:13:14Z",
+   "subject": "Baggage gets a daily live check against the airline pages"
+  },
+  {
+   "at": "2026-10-30T18:12:03Z",
+   "subject": "Fly stars check: sample the streak drawn for the last move"
+  },
+  {
+   "at": "2026-10-30T18:11:41Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:07:29Z",
+   "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
+  },
+  {
+   "at": "2026-10-30T18:07:11Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T17:59:25Z",
    "subject": "Gradient hands its picture to a board"
+  },
+  {
+   "at": "2026-10-30T17:56:28Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T17:51:38Z",
@@ -566,6 +582,10 @@
   {
    "at": "2026-10-30T17:51:38Z",
    "subject": "MCP skill tools run each skill's own code on the server"
+  },
+  {
+   "at": "2026-10-30T17:49:25Z",
+   "subject": "Money near misses: formulas leaves the page's own compound interest ask"
   },
   {
    "at": "2026-10-30T17:48:01Z",
@@ -594,26 +614,6 @@
   {
    "at": "2026-10-30T17:33:31Z",
    "subject": "helper-pr: check the branch merged with main before opening a PR"
-  },
-  {
-   "at": "2026-10-30T17:31:42Z",
-   "subject": "Watch with Verse: keep a learn's notes in one batch; mark the two reviewed lines"
-  },
-  {
-   "at": "2026-10-30T17:31:32Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T17:27:49Z",
-   "subject": "Rename the book to The Book of Verse everywhere it is named"
-  },
-  {
-   "at": "2026-10-30T17:25:01Z",
-   "subject": "converter: phone weight class, offline conversions, installable; Versus card title"
-  },
-  {
-   "at": "2026-10-30T17:23:02Z",
-   "subject": "Versus by itself: let the model route take a full read, and name the target as next"
   }
  ],
  "builders": {

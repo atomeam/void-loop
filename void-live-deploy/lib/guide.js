@@ -190,9 +190,10 @@ export function compose({ names = [], read = () => '', families = { families: []
   const chapter = (c) => { c.from = pages.length + 1; chapters.push(c); return c; };
   const skillPage = (name, chap) => {
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
-    const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
+    const flavor = flavorOf(name, fam.name, r.why, r.tier, lore), own = listOf(src, 'examples');
+    // examples quoted from the header (button labels, the owner's words) show on the page but are not asks the skill answers: the hardening plan skips them
     return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of Verse.',
-      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
+      examples: (own.length ? own : asksInHeader(src)).slice(0, 3), ...(own.length ? {} : { examplesFrom: 'header' }), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });

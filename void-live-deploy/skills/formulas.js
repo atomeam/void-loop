@@ -30,6 +30,9 @@ const AMT = '\\$?(\\d[\\d,]*(?:\\.\\d+)?)\\s*(k|thousand|m|million)?', PCT = '(\
 const HOW = { daily: '365', weekly: '52', monthly: '12', quarterly: '4', 'semi-annually': '2', annually: '1', yearly: '1' };
 const money = (n, k) => String(parseFloat(n.replace(/,/g, '')) * (/^(?:k|thousand)$/.test(k || '') ? 1e3 : /^(?:m|million)$/.test(k || '') ? 1e6 : 1));
 /** a value ask a calculator answers with the asker's own numbers: { calc, given }, or null. "now" is passed in so a test gets one answer. Pure. */
+// the shape void.html's calc answers itself ("compound interest on <number> at <rate>% for <whole> years", yearly or monthly)
+const PAGE_COMPOUND = /^compound interest on \$?\d+(?:\.\d+)? (?:dollars )?at \d+(?:\.\d+)? ?% (?:interest )?(?:for|over) \d{1,3} years?(?: (?:monthly|yearly|annually|compounded monthly))?$/;
+
 export function filled(text, now = Date.now()) {
   const raw = String(text || '').trim().replace(/[?!]+$/, '').replace(/\s+/g, ' '), t = fold(raw).replace(/\.$/, '');
   let m;
@@ -45,6 +48,9 @@ export function filled(text, now = Date.now()) {
   // percent-encoding: "url encode hello world", "url decode a%20b" (the text keeps its own case)
   if ((m = raw.match(/^(?:url|uri|percent)[ -]?(encode|decode)\s*:?\s+(.+)$/i)) || (m = raw.match(/^(encode|decode) (?:for (?:a )?url|url)\s*:?\s+(.+)$/i)))
     return { calc: BY_ID.get('url-encode'), given: { s: m[2], how: /^decode$/i.test(m[1]) ? 'dec' : 'part' } };
+  // the page's own sum keeps "compound interest on 1000 at 5% for 10 years" (void.html: a plain number, whole years): formulas leaves it,
+  // as the header says, so the two never answer the same ask (main's verify, 2026-10-30: "money/GPA near misses (#110)" red)
+  if (PAGE_COMPOUND.test(t)) return null;
   // interest: "compound interest 1000 at 5% for 10 years", "simple interest on 5000 at 4% for 3 years", "compound interest on $10k at 6% for 18 months compounded daily"
   if ((m = t.match(new RegExp('^(?:what is )?(?:the )?(compound|simple) interest (?:on |for |of )?' + AMT + ' (?:at|@) ' + PCT + '(?: (?:a year|per year|annually|apr|apy|interest))? (?:for|over) ' + SPAN + '(?:,? compounded (daily|weekly|monthly|quarterly|semi-annually|annually|yearly))?$')))) {
     const given = { P: money(m[2], m[3]), r: m[4], t: m[5], 't.u': /^month/.test(m[6]) ? 'month' : 'yr' };
@@ -104,7 +110,7 @@ export default {
   examples: ['pipe surface area calculator', 'ohms law current calculator', 'calculator for molar mass', 'kinetic energy calculator', 'formula calculators',
     'unix timestamp 1700000000', 'timestamp converter 1700000000', 'epoch converter', 'url encode hello world', 'compound interest 1000 at 5% for 10 years', 'roman numeral converter'],
   nearMisses: ['calculator', 'open a calculator', 'what is 17% of 240', 'how do calculators work', 'calculator watch',
-    'what is unix', 'what is compound interest', 'url of the calculators page', 'encode', 'roman numerals for 1994'],
+    'what is unix', 'what is compound interest', 'url of the calculators page', 'encode', 'roman numerals for 1994', 'compound interest on 1000 at 5% for 10 years'],
   pick, isLibrary, filled,
   match(lower, text) { const t = text || lower; return isLibrary(t) || !!filled(t) || (!!pick(t) && !OWNED.has(asked(t))); },
   async run(text, api) {
