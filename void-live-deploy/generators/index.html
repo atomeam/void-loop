@@ -66,10 +66,12 @@
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
 <link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/generators-card.js">
+<link rel="modulepreload" href="/lib/generators.js">
+<link rel="modulepreload" href="/skills/textgen.js">
 <link rel="modulepreload" href="/lib/handoff.js">
 <link rel="modulepreload" href="/lib/wheel.js">
 <link rel="modulepreload" href="/lib/prizes.js">
-<link rel="modulepreload" href="/lib/generators.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -123,6 +125,7 @@
 <script type="module">
   // static imports so tools/preload.mjs lists them and sw.js keeps them whole: the page opens offline (a dynamic import was never cached)
   import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/generators-card.js';
   import { mountStrip } from '/lib/handoff.js';
   import * as G from '/lib/generators.js';
   // everything after the first paint: the page shows its words at once, the work lands after load (the gate measures speed)
@@ -189,7 +192,7 @@
     $('ownGo').addEventListener('click', () => { state.g = 'own'; state.seed = G.newSeed(); go(); });
     if (state.g === 'own') $('own').open = true;
     drawFavs(); go();
-    mountRelated($('related'), '/generators/');
+    mountRelated($('related'), '/generators/', [], { card: () => cardAsk(location.search) });
     mountStrip($('related'), '/generators/');
     // the hub: generators people published (functions/api/generators.js); titles only, as text; each opens in the editor
     async function hub(sort) {

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1020,
+ "counted": 1021,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -616,7 +616,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 10
+   "tests": 11
   },
   {
    "file": "lib/field-cards.js",
@@ -962,6 +962,13 @@
    "tests": 3
   },
   {
+   "file": "lib/generators.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/brain-ask.js",
    "skills": 2,
    "direct": 1,
@@ -981,13 +988,6 @@
    "direct": 1,
    "dependants": 3,
    "tests": 3
-  },
-  {
-   "file": "lib/generators.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 2
   },
   {
    "file": "lib/list-goal.js",
@@ -2755,6 +2755,13 @@
   },
   {
    "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/generators-card.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -6541,10 +6548,18 @@
     "skills/walker.js"
    ]
   },
+  "lib/generators-card.js": {
+   "imports": [
+    "lib/generators.js",
+    "skills/textgen.js"
+   ],
+   "importedBy": []
+  },
   "lib/generators.js": {
    "imports": [],
    "importedBy": [
     "lib/chat-generators.js",
+    "lib/generators-card.js",
     "skills/textgen.js"
    ],
    "reachedBy": [
@@ -14598,7 +14613,9 @@
    "imports": [
     "lib/generators.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/generators-card.js"
+   ]
   },
   "skills/throw-off.js": {
    "imports": [],
