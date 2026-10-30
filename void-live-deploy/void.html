@@ -5667,7 +5667,7 @@ say('nothing selected to remove');
     // the four libs and every module they import, all asked for at once: imported level by level, each level queued behind the skill files
     // the lanes had in flight (approval-core -> keep-going -> automations -> watch; on a busy page the gated check waited 3.3 s for the fourth level)
     // ask-libs: tools/preload.mjs /lib/approval-core.js /lib/gumroad.js /lib/automation-fix.js /lib/code-review.js
-    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/code-review.js'];
+    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/note-ask.js', '/lib/verse-secrets.js', '/lib/code-review.js'];
     const warmLibs = () => {
       for (const p of ASK_LIB_GRAPH) import(p).catch(() => null);
       const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);
