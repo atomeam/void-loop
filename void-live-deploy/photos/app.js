@@ -176,7 +176,7 @@
   await receiveImage((f) => add([f]));
   };
   // the edited photo, already open on the next picture page: a press keeps one copy on this device and opens the page
-  mountRelated(document.getElementById('related'), '/photos/', [['Save your edit as a PDF', '/pdf/?img=handoff'], ['Paint your edit by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff']].map(([label, path]) => ({ label, href: () => (edited() ? path : null),
+  mountRelated(document.getElementById('related'), '/photos/', [['Save your edit as a PDF', '/pdf/?img=handoff'], ['Paint your edit by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your edit', '/resize-image/?img=handoff']].map(([label, path]) => ({ label, href: () => (edited() ? path : null),
     go: () => { const got = edited(); if (!got) return false; sendImage(path, () => got.blob, { name: got.name, fromPage: '/photos/' }).then((ok) => { if (!ok) document.getElementById('line').textContent = 'This browser could not keep the photo for the next page.'; }); return false; } })).concat([
     // the photo's main colour, opened on the colour page: its codes, shades and palettes
     { label: 'Look up its main colour', href: () => { const m = mainHex(); return m ? '/color/?c=' + m.slice(1) : null; } }]));

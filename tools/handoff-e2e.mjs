@@ -225,7 +225,7 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
-  'edit a photo in the photo tools, then save the edit as a PDF, paint it by number, take its colours as a gradient and look up its main colour': async (p, check) => {
+  'edit a photo in the photo tools, then save the edit as a PDF, paint it by number, take its colours as a gradient, resize it and look up its main colour': async (p, check) => {
     const toPhotos = async () => {
       await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
       await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
@@ -244,6 +244,11 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
     await p.waitForFunction(() => location.hash.split('-').length > 2 && !location.search, null, { timeout: 15000 });
     await check('the gradient page read the edit into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
+    await toPhotos();
+    await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your edit' }).click()]);
+    await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
+    if (new URL(p.url()).searchParams.has('img')) throw new Error('the resize page kept ?img=handoff in its address, so a reload opens the edit again');
+    await check('the resize page opened the edit and made a ' + (await p.locator('#result').getAttribute('data-bytes')) + '-byte copy');
     // the main colour: the link carries it from the start, and the colour page opens on it
     await toPhotos(); const href = await p.locator('#related a', { hasText: 'Look up its main colour' }).getAttribute('href');
     if (!/^\/color\/\?c=[0-9a-f]{6}$/.test(href || '')) throw new Error('the main colour link is ' + href);
