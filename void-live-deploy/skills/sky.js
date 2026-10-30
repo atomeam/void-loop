@@ -12,7 +12,7 @@ import { whereAmI, findPlace, savePlace, latLonText } from '../lib/where.js';
 const PLACE = '(.+?)';
 // "sky", "the night sky", "show me the sky tonight", "what's in the sky", "sky over Tokyo": a place may follow
 const SKY = [
-  /^(?:(?:show|open|give)\s+(?:me\s+)?|let\s+me\s+see\s+)?(?:the\s+|my\s+)?(?:night\s+)?sky(?:\s+(?:tonight|now|right now|today|overhead|above|above me|above us|here))?$/,
+  /^(?:(?:show|open|give|current)\s+(?:me\s+)?|let\s+me\s+see\s+)?(?:the\s+|my\s+)?(?:night\s+)?sky(?:\s+(?:tonight|now|right now|today|overhead|above|above me|above us|here))?$/,
   /^(?:what'?s|what is|what do i see)\s+(?:in|up in|on)\s+(?:the\s+|my\s+)?(?:night\s+)?sky(?:\s+(?:tonight|now|right now|today|above me|overhead))?$/,
   /^(?:show\s+(?:me\s+)?)?(?:the\s+stars|stars\s+(?:tonight|now|right now|overhead|above me)|star map|star chart|sky map|planetarium)(?:\s+(?:tonight|now|right now|overhead|above me))?$/,
   /^look\s+up$/,
@@ -137,7 +137,7 @@ function wirePlaceForm(el, place, api, done) {
 export default {
   name: 'sky',
   skyOf,
-  examples: ['sky', 'the sky', 'show me the sky', 'the night sky', 'sky tonight', 'what\'s in the sky tonight', 'show me the stars', 'star map', 'look up', 'sky over Tokyo', 'night sky above me'],
+  examples: ['sky', 'the sky', 'show me the sky', 'the night sky', 'sky tonight', 'what\'s in the sky tonight', 'show me the stars', 'star map', 'look up', 'sky over Tokyo', 'night sky above me', 'current sky'],
   nearMisses: ['why is the sky blue', 'sky news', 'sky sports', 'sky blue', 'skyrim', 'is the sky clear tonight', 'sky ticket', 'the sky is falling', 'weather sky', 'stars', 'dancing with the stars'],
   match(lower, text) { return !!skyOf(text); },
   run,

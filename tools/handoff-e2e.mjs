@@ -41,6 +41,24 @@ export const JOURNEYS = {
     if (Math.abs(parseFloat(quarter) - 60000 / slower) > 1) throw new Error('a quarter note at ' + slower + ' BPM read ' + quarter + ' ms');
     await check('note lengths at ' + back + ' BPM (a quarter note ' + quarter + ' ms)');
   },
+  'pick a chord on the chord finder, play it on the piano, then play a chord there and have the chord finder name it': async (p, check) => {
+    await p.goto(ORIGIN + '/chords/?chord=Am7', { waitUntil: 'load' }); await p.waitForFunction(() => /sheet=/.test(document.getElementById('toPiano').href));
+    const name = (await p.locator('#cName').textContent()).trim(); if (!/^Am7\b/.test(name)) throw new Error('the chord finder opened on ' + name + ', not Am7');
+    await check('the chord finder opened on Am7');
+    await Promise.all([p.waitForURL(/\/piano\/\?sheet=/), p.locator('#toPiano').click()]); await p.waitForFunction(() => document.getElementById('song').value === 'own');
+    const sheet = await p.locator('#sheet').inputValue(), bpm = await p.locator('#songBpm').inputValue();
+    if (!sheet.startsWith('[A3 C4 E4 G4]:2')) throw new Error('the piano opened with the sheet "' + sheet.slice(0, 60) + '", not the Am7 chord');
+    if (bpm !== '90') throw new Error('the piano opened at ' + bpm + ' BPM, not the 90 the link carries');
+    if (await p.locator('#toChords').isVisible()) throw new Error('the chord finder link shows before any notes were played');
+    await check('the piano opened with the Am7 chord as a sheet at 90 BPM');
+    await p.locator('h1').click(); for (const k of ['KeyT', 'KeyU', 'KeyO']) await p.keyboard.down(k); for (const k of ['KeyT', 'KeyU', 'KeyO']) await p.keyboard.up(k);
+    if (!(await p.locator('#toChords').isVisible())) throw new Error('no link to the chord finder after C4 E4 G4 were held together');
+    await Promise.all([p.waitForURL(/\/chords\/\?notes=/), p.locator('#toChords').click()]); await p.waitForFunction(() => /\(major\)/.test(document.getElementById('idOut').textContent));
+    const said = await p.locator('#idOut').textContent(), on = await p.locator('#pickNotes [aria-pressed="true"]').allTextContents();
+    if (!/This is C \(major\)/.test(said)) throw new Error('the chord finder named the notes as "' + said + '"');
+    if (on.join(' ') !== 'C E G') throw new Error('the chord finder picked ' + on.join(' ') + ', not C E G');
+    await check('the chord finder named C E G as C major');
+  },
 };
 
 async function run() {
