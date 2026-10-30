@@ -8,14 +8,16 @@
 import { beatFor, timingOf, lengthOf } from './rap.js';
 import { produce, impulseOf } from './rap-beat.js';
 import { buildVocal, fetchVoice } from './rap-voice.js';
+import { master, isPlain, TUNE0 } from './rap-ears.js';
 
 export const RATE = 48000;
 export const TAIL = 1.5; // seconds after the last measure, for the reverb and the delay to ring out
 const OACof = (win) => (win && (win.OfflineAudioContext || win.webkitOfflineAudioContext)) || null;
 
-/** the song's plan, from the rap and its settings: { beat, timing, measure, measures, seconds }. Pure. */
-export function planOf(r, s) {
-  const beat = beatFor(s), timing = timingOf(r, beat, s.flow), measure = 240 / beat.bpm, measures = Math.max(2, Math.ceil(lengthOf(timing, beat) / measure - 1e-9));
+/** the song's plan, from the rap and its settings: { beat, timing, measure, measures, seconds }. A `tune` from Verse's ears (lib/rap-ears.js
+ *  tuneFor) sets the beat's tempo and swing before the bars are timed, so the voice lands on the new grid. Pure. */
+export function planOf(r, s, tune = null) {
+  const beat0 = beatFor(s), beat = tune && (tune.bpm || tune.swing != null) ? { ...beat0, ...(tune.bpm ? { bpm: tune.bpm } : {}), ...(tune.swing != null ? { swing: tune.swing } : {}) } : beat0, timing = timingOf(r, beat, s.flow), measure = 240 / beat.bpm, measures = Math.max(2, Math.ceil(lengthOf(timing, beat) / measure - 1e-9));
   return { beat, timing, measure, measures, seconds: measures * measure + TAIL };
 }
 
@@ -69,14 +71,21 @@ async function renderVocal(v, plan, OAC) {
 }
 
 /** Verse's voice for the whole rap: { stem: [L, R] | null, words, bars, voiced, note }. note says, in plain words, why a bar has no voice. */
-export async function renderVoice(plan, { win = globalThis, fetchFn = (u) => win.fetch(u), onProgress = () => {}, flow = 'steady' } = {}) {
+/** `clips` may be the promise of an earlier fetchVoice for the same bars, so a retuned take re-times the voice it already has. */
+export async function renderVoice(plan, { win = globalThis, fetchFn = (u) => win.fetch(u), onProgress = () => {}, flow = 'steady', clips: had = null } = {}) {
   const OAC = OACof(win); if (!OAC) return { stem: null, words: [], bars: [], voiced: 0, note: 'this browser cannot decode sound' };
-  const dec = new OAC(1, 1, RATE);
-  const decode = async (bytes) => (await dec.decodeAudioData(bytes)).getChannelData(0);
-  const { clips, adlibClips, note } = await fetchVoice(plan.timing.map((b) => b.text), { fetchFn, decode, onProgress });
+  const { clips, adlibClips, note } = await (had || clipsOf(plan, { win, fetchFn, onProgress }));
   const v = buildVocal(clips, plan.timing, plan.beat, flow, RATE, plan.seconds, adlibClips);
   if (!v.voiced) return { stem: null, words: [], bars: [], voiced: 0, note: note || 'no bars came back' };
   return { stem: await renderVocal(v, plan, OAC), words: v.words, bars: v.bars, voiced: v.voiced, note };
+}
+
+/** Verse's voice for each bar of the plan, fetched and decoded once: { clips, adlibClips, note }. */
+export function clipsOf(plan, { win = globalThis, fetchFn = (u) => win.fetch(u), onProgress = () => {} } = {}) {
+  const OAC = OACof(win); if (!OAC) return Promise.resolve({ clips: [], adlibClips: [], note: 'this browser cannot decode sound' });
+  const dec = new OAC(1, 1, RATE);
+  const decode = async (bytes) => (await dec.decodeAudioData(bytes)).getChannelData(0);
+  return fetchVoice(plan.timing.map((b) => b.text), { fetchFn, decode, onProgress });
 }
 
 /** the words' start times when there is no placed vocal (the browser's own voice, or none): each word evenly through its bar. Pure. */
@@ -86,14 +95,21 @@ export function evenWords(timing) {
   return out;
 }
 
-/** one song, made once and kept: song.beat() and song.voice() each render the first time they are asked and give the same answer after. */
+/** one song, made once and kept: song.beat() and song.voice() each render the first time they are asked and give the same answer after.
+ *  opts.tune (from Verse's ears) retimes the beat and masters the mix; song.retune(tune) is the same rap with another tune, sharing the voice
+ *  Verse already fetched, so a new take costs no new voice requests. */
 export function songOf(r, s, opts = {}) {
-  const plan = planOf(r, s); let beatP = null, voiceP = null;
+  const tune = opts.tune && !isPlain(opts.tune) ? { ...TUNE0, ...opts.tune } : null, plan = planOf(r, s, tune); let beatP = null, voiceP = null, clipsP = opts.clips || null;
+  const clips = (onProgress) => (clipsP = clipsP || clipsOf(plan, { ...opts, onProgress }).catch(() => ({ clips: [], adlibClips: [], note: 'the voice did not load' })));
   return {
-    plan,
+    plan, tune,
     beat: () => (beatP = beatP || renderBeat(plan, opts).catch(() => null)),
-    voice: (onProgress) => (voiceP = voiceP || renderVoice(plan, { ...opts, flow: s.flow, onProgress }).catch(() => ({ stem: null, words: [], bars: [], voiced: 0, note: 'the voice did not load' }))),
-    /** the whole song as a stereo WAV (the beat alone when there is no voice) */
-    async wav(withVoice = true) { const b = await this.beat(); if (!b) return null; const v = withVoice ? await this.voice() : null; const [L, R] = mixStems(b, v && v.stem); return wavStereo(L, R); },
+    voice: (onProgress) => (voiceP = voiceP || renderVoice(plan, { ...opts, flow: s.flow, onProgress, clips: clips(onProgress) }).catch(() => ({ stem: null, words: [], bars: [], voiced: 0, note: 'the voice did not load' }))),
+    /** the mixed song as [L, R] (the beat alone when there is no voice), mastered by the tune when there is one; null without offline audio */
+    async mix(withVoice = true) { const b = await this.beat(); if (!b) return null; const v = withVoice ? await this.voice() : null; const [L, R] = mixStems(b, v && v.stem); return tune ? master(L, R, RATE, tune) : [L, R]; },
+    /** the whole song as a stereo WAV */
+    async wav(withVoice = true) { const m = await this.mix(withVoice); return m ? wavStereo(m[0], m[1]) : null; },
+    /** the same rap with another tune */
+    retune: (next) => songOf(r, s, { ...opts, tune: next, clips: clips() }),
   };
 }

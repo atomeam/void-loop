@@ -8,6 +8,7 @@ import { mp4, avcCodecs, bitrateOf } from './video-mux.js';
 import { encodeSound } from './video-write.js';
 import { endWordOf, schemeOf, STYLES } from './rap.js';
 import { mixStems, evenWords, RATE } from './rap-song.js';
+import { fft } from './rap-fft.js';
 import { beatEvents } from './rap-beat.js';
 import { splitBar } from './rap-voice.js';
 
@@ -15,15 +16,7 @@ export const W = 1280, H = 720, FPS = 30, BANDS = 48;
 const KEY = '158,178,255', INK = '242,244,251', FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 export const canMakeVideo = (g = globalThis) => typeof g.VideoEncoder === 'function' && typeof g.VideoFrame === 'function' && typeof g.AudioEncoder === 'function' && (typeof g.OffscreenCanvas === 'function' || !!g.document);
 
-/** in-place radix-2 FFT of re/im (length a power of 2). Pure apart from writing its arrays. */
-export function fft(re, im) {
-  const n = re.length;
-  for (let i = 1, j = 0; i < n; i++) { let b = n >> 1; for (; j & b; b >>= 1) j ^= b; j ^= b; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
-  for (let len = 2; len <= n; len <<= 1) {
-    const a = -2 * Math.PI / len, wr = Math.cos(a), wi = Math.sin(a);
-    for (let i = 0; i < n; i += len) { let cr = 1, ci = 0; for (let k = 0; k < len / 2; k++) { const p = i + k, q = p + len / 2, tr = re[q] * cr - im[q] * ci, ti = re[q] * ci + im[q] * cr; re[q] = re[p] - tr; im[q] = im[p] - ti; re[p] += tr; im[p] += ti; const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr; } }
-  }
-}
+export { fft } from './rap-fft.js';
 
 /** the song's loudness in `n` bands from 40 Hz to 12 kHz (log spaced), 0..1, around time t. Pure. */
 export function bandsOf(L, R, rate, t, n = BANDS, size = 1024) {
@@ -127,7 +120,7 @@ export async function makeVideo(r, s, song, { onProgress = () => {}, doc = globa
   onProgress(0, 'the beat');
   const beat = await song.beat(); if (!beat) throw new Error('this browser cannot render the beat.');
   onProgress(0.02, 'the voice');
-  const voice = await song.voice(), [L, R] = mixStems(beat, voice.stem), plan = song.plan, timing = plan.timing;
+  const voice = await song.voice(), [L, R] = song.mix ? await song.mix(true) : mixStems(beat, voice.stem), plan = song.plan, timing = plan.timing;
   const texts = timing.map((b) => b.text), sc = schemeOf(texts), title = String(r.title || s.topic || 'A rap by Verse').slice(0, 80);
   const last = timing[timing.length - 1], v = {
     timing, seconds: plan.seconds, L, R, kicks: [...beatEvents(plan.beat, { measures: plan.measures }).kicks].sort((a, b) => a - b),

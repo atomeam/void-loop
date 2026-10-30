@@ -120,6 +120,7 @@ test('the model\'s answer is found however it is wrapped', () => {
 test('words are cut at a sentence, and an ask meets its family by the stem of its words', () => {
   assert.equal(sentences('One two three. Four five six seven eight nine ten eleven twelve.', 30), 'One two three.');
   assert.ok(!/,$/.test(sentences('a, '.repeat(200), 50)));
+  assert.equal(sentences('Type a value and every unit updates at once,', 320), 'Type a value and every unit updates at once.'); // a row cut before the sentence ended (/convert/unit-converter/)
   const conv = familiesOf().find((f) => f.id === 'unit converter'); assert.ok(sharesWords(conv, 'convert km to miles'));
 });
 

@@ -58,6 +58,7 @@ test('the related row in the HTML is the same links the script draws, and the se
   assert.equal(withRelated(once, '/word-count/'), once, 'written again, it is the same');
   assert.equal(withRelated('<main></main>', '/word-count/'), null);
   const more = moreTools('<a href="/color/">c</a>'); assert.ok(!more.includes('"/color/"') && more.includes('"/code-review/"') && more.includes('"/photos/"'));
+  const single = moreTools(''); assert.equal((single.match(/>Unit converter: every unit at once, exact</g) || []).length, 1, 'a tool built twice for two sites is listed once');
   for (const p of OFFER_PAGES) { const row = offersRow(p); assert.ok(!row.includes('href="' + p + '"'), p); assert.match(row, /href="\/fix\/"/); }
 });
 

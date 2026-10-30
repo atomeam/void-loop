@@ -35,7 +35,7 @@ export const stepTime = (step, sp, swing = 0.5) => step * sp + (step % 2 === 1 ?
  *  { t, kind, vel, midi?, dur?, from?, notes?, pan? } sorted by t; kinds: kick, snare, clap, hat, ohat, crash, 808, sub, keys, pad, bell,
  *  pluck. kicks are the kick times (the music is ducked under them). Pure. */
 export function beatEvents(beat, { measures = 10 } = {}) {
-  const style = beat.rapStyle || 'boom bap', sp = 60 / beat.bpm / 4, swing = SWING[style] || 0.5, measure = 16 * sp, r = rng(beat.seed ^ 0x51ed270b);
+  const style = beat.rapStyle || 'boom bap', sp = 60 / beat.bpm / 4, swing = beat.swing ?? (SWING[style] || 0.5), measure = 16 * sp, r = rng(beat.seed ^ 0x51ed270b);
   const of = (list, m) => list.filter((s) => Math.floor(s / 16) === m % 8).map((s) => s % 16);
   const ev = [], last = measures - 1, is808 = EIGHT08.has(style);
   const at = (m, step) => m * measure + stepTime(step, sp, swing);
