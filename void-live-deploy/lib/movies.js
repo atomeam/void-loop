@@ -82,6 +82,28 @@ export function pickFile(files) {
 }
 export const archiveFileUrl = (id, name) => 'https://archive.org/download/' + encodeURIComponent(id) + '/' + encodeURIComponent(name);
 /** where-to-watch links that are searches on legal services: never a stream. Pure. */
+// Wikidata, the second source (2026-10-30: iTunes refuses shared cloud addresses, and every well-known pick, "The Grand Budapest Hotel (2014)",
+// "Parasite (2019)", came back "not verified" on a-to-mind.com). Keyless SPARQL: a film is an item labelled with this exact English title that is
+// an instance of film (Q11424) or of a kind of film, with a publication date. It gives the year, the director and the runtime, never a poster.
+export const WIKIDATA = 'https://query.wikidata.org/sparql?format=json&query=';
+/** the SPARQL that finds the films with this English label. The title goes through cleanTitle (no quote or backslash can reach the literal). Pure. */
+export function wikidataQuery(title) {
+  const t = cleanTitle(title).replace(/["\\]/g, '');
+  return 'SELECT ?f (MIN(?d) AS ?date) (SAMPLE(?dl) AS ?dir) (SAMPLE(?dur) AS ?mins) WHERE { VALUES ?l { "' + t + '"@en } ?f rdfs:label ?l; wdt:P31/wdt:P279* wd:Q11424; wdt:P577 ?d.'
+    + ' OPTIONAL { ?f wdt:P57 ?di. ?di rdfs:label ?dl. FILTER(LANG(?dl) = "en") } OPTIONAL { ?f wdt:P2047 ?dur } } GROUP BY ?f LIMIT 10';
+}
+/** the Wikidata row that is this movie: the year within one when it is known, else the most recent film of that name; or null. Pure. */
+export function pickWikidata(json, title, year) {
+  const v = (b, k) => (b && b[k] && typeof b[k].value === 'string' ? b[k].value : '');
+  const rows = ((json && json.results && json.results.bindings) || []).map((b) => ({
+    id: (v(b, 'f').match(/\/entity\/(Q\d{1,12})$/) || [])[1] || '', year: cleanYear(v(b, 'date').slice(0, 4)), director: cleanTitle(v(b, 'dir')), mins: Math.round(Number(v(b, 'mins'))),
+  })).filter((r) => r.id && r.year);
+  const y = cleanYear(year);
+  const r = y ? rows.find((x) => Math.abs(x.year - y) <= 1) : rows.sort((a, b) => b.year - a.year)[0];
+  if (!r) return null;
+  return { title: cleanTitle(title), year: r.year, director: r.director, runtime: r.mins > 0 && r.mins < 1000 ? r.mins : null, page: 'https://www.wikidata.org/wiki/' + r.id };
+}
+
 export function watchLinks(title, year, store) {
   const q = encodeURIComponent(cleanTitle(title) + (cleanYear(year) ? ' ' + cleanYear(year) : ''));
   const l = [];
