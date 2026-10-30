@@ -327,7 +327,7 @@
    "page": "/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31",
    "words": "the family page's own (the model's were refused: says what the page does not do (between, global, accurate, custom, built))",
    "rows": "12/15",
-   "gated": "2026-10-30T22:41:11Z"
+   "gated": "2026-10-30T22:44:35Z"
   },
   "freefonts.co": {
    "at": "2026-10-28T22:47:31Z",
@@ -549,6 +549,15 @@
    "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows (also read: 7 no-family); next onlineconverter.com (the target)",
    "built": 1,
    "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "kingdraw.cn"
+  },
+  {
+   "at": "2026-10-30T22:44:35Z",
+   "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows; next onlineconverter.com (the target)",
+   "built": 0,
+   "queued": 0,
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "kingdraw.cn"

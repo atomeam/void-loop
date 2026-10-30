@@ -23301,10 +23301,10 @@
   "finance: getconverter.org": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 119,
-    "best": 323,
-    "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 119 ms to the load event (median of 3, phone width) vs getconverter.org 323 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "verse": 149,
+    "best": 324,
+    "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 149 ms to the load event (median of 3, phone width) vs getconverter.org 324 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "reliability": {
@@ -23312,7 +23312,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered vs getconverter.org 3 of 3 loads answered",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "mobile": {
@@ -23320,7 +23320,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs getconverter.org 0 px sideways overflow at 390 px",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "accessibility": {
@@ -23328,7 +23328,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs getconverter.org 0 unnamed controls or images",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "offline": {
@@ -23336,7 +23336,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs getconverter.org 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "sharing": {
@@ -23344,7 +23344,7 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs getconverter.org 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "wider use": {
@@ -23352,7 +23352,7 @@
     "verse": 6.5,
     "best": 7.5,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 6.5 of 11 wider-use points (docs/WIDER-USE.md) vs getconverter.org 7.5 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "accuracy": {
@@ -23360,7 +23360,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard, not getconverter.org (the site is not asked)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "of": 3
    },
    "design polish": {
@@ -23368,7 +23368,7 @@
     "verse": 0,
     "best": 6,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs getconverter.org 6 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), getconverter.org (3 low-contrast texts, 3 small tap targets, layout shift 0.00)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "siteRead": true
    },
    "live quotes": {
@@ -23376,7 +23376,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs getconverter.org 0 of 3 shown (Verse lacks: none; site lacks: a price with its move in percent, the source named)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "of": 3,
     "part": true,
     "siteRead": true
@@ -23386,7 +23386,7 @@
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs getconverter.org 0 of 3 shown (Verse lacks: none; site lacks: ranges from 1D to Max, a hover readout)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "of": 3,
     "part": true,
     "siteRead": true
@@ -23396,7 +23396,7 @@
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs getconverter.org 0 of 2 shown (Verse lacks: none; site lacks: a watchlist, kept on the device)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "of": 2,
     "part": true,
     "siteRead": true
@@ -23406,7 +23406,7 @@
     "verse": 21,
     "best": 0,
     "evidence": "Verse (/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs getconverter.org 0 of 21 things a full answer shows (Verse lacks: none; site lacks: the price and its change in percent, the previous close, the day range, the 52-week range, volume, market cap, chart ranges 1D to Max, a watchlist, compare two symbols, top movers, the main indices, a currency converter, a close on any day, a written market wrap, the source and the delay said, Watchlists, Compare symbols, Share quote or article, Links, Stock Market News, Sources & Further Reading)",
-    "at": "2026-10-30T22:40:23.049Z",
+    "at": "2026-10-30T22:43:49.210Z",
     "of": 21,
     "siteRead": true
    }
