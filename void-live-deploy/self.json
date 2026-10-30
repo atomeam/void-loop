@@ -550,84 +550,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T13:48:24Z",
-   "subject": "Pictures into a PDF: paint and image hand a picture to /pdf/'s images-to-PDF tool"
+   "at": "2026-10-30T16:36:38Z",
+   "subject": "brain: the conversation orb on the brain map, whole asks and answers in its note (no ellipsis cut)"
   },
   {
-   "at": "2026-10-30T13:46:52Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T16:35:15Z",
+   "subject": "Read a pasted status report as a report, not a broken automation"
   },
   {
-   "at": "2026-10-30T13:46:49Z",
-   "subject": "Stock and index asks get a quote card that opens Markets"
+   "at": "2026-10-30T16:33:19Z",
+   "subject": "Scores page: the weather at the game's ground"
   },
   {
-   "at": "2026-10-30T13:44:48Z",
-   "subject": "Verse fixes its constellation skill: learn to handle \"can u see cassiopeia tonight\""
+   "at": "2026-10-30T16:32:55Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after d0f883ca9412accf1ff4900e1c34f6c97683773e (tools/flakes.json)"
   },
   {
-   "at": "2026-10-30T13:43:42Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
+   "at": "2026-10-30T16:29:12Z",
+   "subject": "Let long recent asks wrap in the hints list, not end in a cut"
   },
   {
-   "at": "2026-10-30T13:43:07Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-30T16:29:11Z",
+   "subject": "Dev tools: a JWT decoder, HTML entities and an XML formatter"
   },
   {
-   "at": "2026-10-30T13:42:52Z",
-   "subject": "Gradients as pictures: send a gradient to paint, photos and resize; read a picture's colours from image and paint"
+   "at": "2026-10-30T16:29:05Z",
+   "subject": "Leave \"random uuid\" asks to the uuid skill"
   },
   {
-   "at": "2026-10-30T13:42:05Z",
-   "subject": "Site history: the next sites of the queue, each with a cited history"
+   "at": "2026-10-30T16:29:05Z",
+   "subject": "brain: organ 23, Dialogue, the conversation orb keeps this visitor's asks and Verse's answers on their device"
   },
   {
-   "at": "2026-10-30T13:41:28Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-10-30T16:29:05Z",
+   "subject": "Open the UUID card for \"uuid generator\" and convert \"timestamp converter 1700000000\""
   },
   {
-   "at": "2026-10-30T13:41:11Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
+   "at": "2026-10-30T16:28:45Z",
+   "subject": "End a long card title at a whole sentence, never mid-word"
   },
   {
-   "at": "2026-10-30T13:38:46Z",
-   "subject": "Weather card: keep the place on the full page and show the asked days"
+   "at": "2026-10-30T16:28:30Z",
+   "subject": "Time page: flights to the city asked for, on the event's day when it is ahead"
   },
   {
-   "at": "2026-10-30T13:37:55Z",
-   "subject": "Incident: the browser suite failed on 961bfbb2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T16:27:43Z",
+   "subject": "openapi-check: mark /api/sing as Verse's own (member-only, owner's Modal)"
   },
   {
-   "at": "2026-10-30T13:37:39Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-10-30T16:24:34Z",
+   "subject": "Read pasted chats and reports, never a keys refusal or a guessed secret name"
   },
   {
-   "at": "2026-10-30T13:33:49Z",
-   "subject": "Better at video gen, rentbuy and baggage: 5 more ways of asking answered right — new phrases: “animate a cat chasing yarn” now opens…"
+   "at": "2026-10-30T16:23:10Z",
+   "subject": "Time page: remote jobs open in the city's country"
   },
   {
-   "at": "2026-10-30T13:32:07Z",
-   "subject": "Clock: screen readers skip the ghost digits"
+   "at": "2026-10-30T16:19:50Z",
+   "subject": "Stage card: name the old count in words, so the critic reads no bare count"
   },
   {
-   "at": "2026-10-30T13:30:43Z",
-   "subject": "Word math: roman numeral asks with no \"for\""
-  },
-  {
-   "at": "2026-10-30T13:30:23Z",
-   "subject": "Tower: emojis lane opens its own page"
-  },
-  {
-   "at": "2026-10-30T13:28:21Z",
+   "at": "2026-10-30T16:19:22Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T13:27:53Z",
-   "subject": "Kept kitchen cards: fresh when read today, and the timer offers the card's own time"
+   "at": "2026-10-30T16:18:53Z",
+   "subject": "modal/verse_sing.py: mark the Secret's name as not a secret for Verse's review"
   },
   {
-   "at": "2026-10-30T13:23:38Z",
-   "subject": "Work card: a thin search offers the same remote search on the boards"
+   "at": "2026-10-30T16:17:47Z",
+   "subject": "Verse sings: ACE-Step 1.5 on the owner's Modal, behind /api/sing"
+  },
+  {
+   "at": "2026-10-30T16:14:18Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T16:10:52Z",
+   "subject": "Stage card: show how main stands now, not old failures"
   }
  ],
  "builders": {
