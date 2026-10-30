@@ -32,3 +32,46 @@ test('a short line stays whole, and a line with no sentence end in reach ends at
 test('the three page copies carry the same clipLine', () => {
   for (const p of pages) assert.ok(p.includes(src[0]), 'clipLine is the same in every page copy');
 });
+
+// The same family on other surfaces of one card (owner, 2026-10-30, the "What is really true now" card): the ask list, the Adds to Verse line
+// and the live GitHub line. Each one shows whole or ends where a sentence, clause or word ends, and the live line always comes to a result.
+test('a card note never ends in the middle of a word ("The Versus jo")', () => {
+  const note = 'The Versus job ran on both cards and the winner was saved to the ledger with its reason and the time it finished, for the record.';
+  for (const n of [40, 60, 80, 120]) {
+    const h = clipLine(note, n), body = h.replace(/…$/, '');
+    assert.ok(note.startsWith(body) && /[\s.,;:]/.test(note.charAt(body.length) || ' '), n + ': ' + h);
+  }
+});
+
+test('the ask list shows every ask whole: kept whole, drawn whole, wrapped and not cut', () => {
+  for (const p of pages) {
+    assert.match(p, /#hints div \{[^}]*overflow-wrap: anywhere[^}]*\}/, 'a long ask wraps');
+    assert.doesNotMatch(p.match(/#hints div \{[^}]*\}/)[0], /text-overflow|nowrap/, 'no ellipsis cut on an ask');
+    assert.match(p, /const t = String\(text \|\| ''\)\.trim\(\)\.slice\(0, 4000\);/, 'an ask is kept whole');
+    assert.match(p, /hintsEl\.innerHTML = hintList\.map\(\(h, i\) => '<div role="option" data-i="' \+ i \+ '">' \+ esc\(h\) \+ '<\/div>'\)/, 'an ask is drawn whole');
+  }
+});
+
+test('the Adds to Verse line shows whole on the card and on its picture ("telemetry…")', async () => {
+  const { addsLine } = await import('../void-live-deploy/lib/card-frame.js');
+  const { fitAdds, cardSvg } = await import('../void-live-deploy/lib/card-image.js');
+  const tel = "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of answering it like a coding question";
+  assert.equal(addsLine(tel), tel);
+  const a = fitAdds('Adds to Verse: ' + tel);
+  assert.equal(a.lines.join(' '), 'Adds to Verse: ' + tel, 'every word drawn');
+  assert.ok(a.lines.length <= 3 && a.fs >= 15, a.fs + ' px on ' + a.lines.length + ' lines');
+  const svg = cardSvg({ title: 'What is really true now', text: 'checked', adds: tel });
+  assert.ok(svg.includes('coding question'), 'the picture holds the end of the line');
+  assert.doesNotMatch(svg, /telemetry…/);
+  for (const n of [10, 60, 140, 400]) { const f = fitAdds('word '.repeat(n)); assert.equal(f.lines.join(' '), 'word '.repeat(n).trim()); assert.ok(f.lines.every((l) => !l.endsWith('…'))); }
+});
+
+test('the live GitHub line always ends: a call that hangs counts as GitHub not answering', async () => {
+  const { liveLines } = await import('../void-live-deploy/lib/telemetry-live.js');
+  const hang = () => new Promise(() => {});
+  const t0 = Date.now(), lines = await liveLines({ prs: ['1992'] }, hang, { callMs: 50 });
+  assert.ok(Date.now() - t0 < 2000);
+  assert.deepEqual(lines, [{ text: 'GitHub did not answer, so nothing here is checked', ok: null }]);
+  const route = readFileSync(new URL('../void-live-deploy/skills/telemetry-route.js', import.meta.url), 'utf8');
+  assert.match(route, /\}\)\.catch\(failed\);/, 'a read that throws replaces the checking line too');
+});

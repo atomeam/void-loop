@@ -15,7 +15,7 @@ test('a proven skill is a mythic card: cost in words said, power from its succes
   assert.equal(c.rarity, RARITY.proven); assert.equal(c.rarity.name, 'Mythic');
   assert.equal(c.power, 9); assert.equal(c.toughness, 4, 'forge: "10 real asks in the benchmark" read on 0-9');
   assert.ok(c.cost >= 1 && c.cost <= 6); assert.match(c.typeLine, /^Skill — Making things$/);
-  assert.match(c.number, /^\d{3}\/221$|^\d{3}\/\d{3}$/); assert.ok(c.adds.length > 10 && c.adds.length <= 120);
+  assert.match(c.number, /^\d{3}\/221$|^\d{3}\/\d{3}$/); assert.ok(c.adds.length > 10 && c.adds.length <= 240);
   assert.match(c.tested, /^2026-/);
 });
 
@@ -188,18 +188,24 @@ test('a card whose art box shows the answer\'s photo does not show the same phot
   assert.match(src, /if \(source !== 'photo' \|\| i !== photoImg\) delete i\.dataset\.vcArtSrc;/, 'a card that no longer shows that photo as art shows it in its body again');
 });
 
-test('the Adds to Verse line ends at a whole clause or word, never in the middle of a word (2026-10-30: the jobs card ended "or with a pl")', async () => {
+test('the Adds to Verse line ends at a whole sentence, clause or word, never in the middle of a word (2026-10-30: the jobs card ended "or with a pl")', async () => {
   const { addsLine } = await import('../void-live-deploy/lib/card-frame.js');
-  const long = 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer", and the role first or with a place';
-  assert.equal(addsLine(long), 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer"');
-  const words = 'A card that names every planet and every moon of the outer solar system in the order of their distance from the sun today';
-  const w = addsLine(words);
+  const jobs = 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer", and the role first or with a place';
+  assert.equal(addsLine(jobs), jobs, 'a line of 126 letters shows whole');
+  const tel = "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of answering it like a coding question";
+  assert.equal(addsLine(tel), tel, '2026-10-30: the telemetry card ended "instead of"');
+  const long = jobs + ', ' + 'with the pay, the hours and the company named on every row, and a link to the page that lists it, read live from the job board itself today';
+  assert.equal(addsLine(long, 120), 'Remote jobs: "find me work as a designer", "remote jobs for python", "jobs as a writer"');
+  const two = 'A card names every planet of the outer solar system. ' + 'It lists every moon in the order of their distance from the sun, with the year each was found and who found it, '.repeat(3);
+  assert.equal(addsLine(two), 'A card names every planet of the outer solar system.', 'a whole sentence first');
+  const words = 'A card that names every planet and every moon of the outer solar system in the order of their distance from the sun today and the next';
+  const w = addsLine(words, 120);
   assert.ok(w.length <= 120 && words.startsWith(w) && words.charAt(w.length) === ' ' && !w.endsWith('\u2026'), w);
   assert.equal(addsLine('A short line'), 'A short line');
   assert.equal(addsLine('  two   spaces  '), 'two spaces');
   assert.equal(addsLine(null), '');
-  const card = cardOf({ page: { line: long, chapter: 'world', n: 1 }, book: { pages: [{}] } });
-  assert.equal(card.adds, addsLine(long));
+  const card = cardOf({ page: { line: tel, chapter: 'world', n: 1 }, book: { pages: [{}] } });
+  assert.equal(card.adds, tel);
 });
 
 test('a holiday card opens its day on the Calendar (2026-10-30: live, "how many days until christmas" had no link to any page)', async () => {
