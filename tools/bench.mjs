@@ -44,14 +44,14 @@ if (probeFile) { const have = new Set(JSON.parse(fs.readFileSync(path.join(here,
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
 // the cache key: every file the benchmark serves or reads, plus the browser and the day
-function benchKey() {
+function benchKey(withDay = true) {
   const h = crypto.createHash('sha256');
   const walk = (d) => { for (const n of fs.readdirSync(d).sort()) { const f = path.join(d, n), rel = path.relative(root, f);
     if (rel === 'functions' || n.startsWith('.')) continue;
     if (fs.statSync(f).isDirectory()) walk(f); else { h.update(rel + '\0'); h.update(fs.readFileSync(f)); } } };
   walk(root);
   for (const f of ['bench.json', 'bench.mjs']) h.update(fs.readFileSync(path.join(here, f)));
-  h.update(String(exeForKey()) + '\0' + new Date().toISOString().slice(0, 10));
+  h.update(String(exeForKey()) + '\0' + (withDay ? new Date().toISOString().slice(0, 10) : ''));
   return h.digest('hex');
 }
 const exeForKey = () => [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
@@ -80,10 +80,11 @@ const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) 
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
 // A second run in the same CI run, after an inconclusive first one, runs again only the asks the first run missed (againOf, tools/bench-load.mjs).
-// The first run's results are kept for that in AGAIN_FILE, and the file is used once.
+// The first run's results are kept for that in AGAIN_FILE, and the file is used once. Its key leaves out the day: on 2026-10-30 the first run
+// ended after midnight UTC, the day in `key` changed, and the second run ran all the asks again.
 const AGAIN_FILE = CACHE.replace('void-bench-pass-', 'void-bench-again-'), ciRun = process.env.GITHUB_RUN_ID ? process.env.GITHUB_RUN_ID + '.' + (process.env.GITHUB_RUN_ATTEMPT || '1') : '';
-let prior = null; if (cacheable && ciRun) { try { prior = JSON.parse(fs.readFileSync(AGAIN_FILE, 'utf8')); } catch (_) {} try { fs.rmSync(AGAIN_FILE, { force: true }); } catch (_) {} }
-const again = againOf(prior, todo, { key, run: ciRun });
+const againKey = cacheable && ciRun ? benchKey(false) : ''; let prior = null; if (againKey) { try { prior = JSON.parse(fs.readFileSync(AGAIN_FILE, 'utf8')); } catch (_) {} try { fs.rmSync(AGAIN_FILE, { force: true }); } catch (_) {} }
+const again = againOf(prior, todo, { key: againKey, run: ciRun });
 if (again) { prior.out.forEach((x, i) => { out[i] = x; }); console.error('bench: second run after the inconclusive one of ' + prior.at + ': ' + again.length + ' of ' + todo.length + ' asks run again (the ones it missed); the rest keep their result'); }
 const order = again || todo.map((_, i) => i);
 // --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
@@ -145,6 +146,9 @@ async function one(ctx, { ask: a, want, says, before }) {
     // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
     if (u.includes('geocoding-api.open-meteo.com')) { const q = String(new URL(u).searchParams.get('name') || 'Paris').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
       return r.fulfill(json({ results: [{ name, country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] })); }
+    // the eat skill's map search (skills/eat.js findPlace): one restaurant named for what was asked, so "order food from lovebird" finds a place to order from
+    if (u.includes('nominatim.openstreetmap.org/search')) { const q = String(new URL(u).searchParams.get('q') || 'Restaurant').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
+      return r.fulfill(json([{ name, type: 'restaurant', display_name: name + ', Main Street', lat: '48.85', lon: '2.35', address: { house_number: '1', road: 'Main Street' }, extratags: { cuisine: 'chicken' } }])); }
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
@@ -265,7 +269,7 @@ if (process.argv.includes('--score')) {
   if (a.unreplayed) result.unreplayed = a.unreplayed;
   if (again) result.rerun = { of: prior.at, asks: again.length }; // the second run of an inconclusive one: only its misses ran again
   if (a.inconclusive) { result.inconclusive = true; result.note = a.note; }
-  if (cacheable && ciRun && a.inconclusive && !again) try { fs.writeFileSync(AGAIN_FILE, JSON.stringify({ key, run: ciRun, at: result.at, out: out.map(({ ask, by, want, right, ms }) => ({ ask, by, want, right, ms })) })); } catch (_) {}
+  if (againKey && a.inconclusive && !again) try { fs.writeFileSync(AGAIN_FILE, JSON.stringify({ key: againKey, run: ciRun, at: result.at, out: out.map(({ ask, by, want, right, ms }) => ({ ask, by, want, right, ms })) })); } catch (_) {}
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
   if (cacheable && !a.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: result.at, result })); } catch (_) {}
   console.log(JSON.stringify(result)); process.exit(a.failed ? 1 : 0); }

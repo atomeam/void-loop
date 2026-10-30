@@ -10,6 +10,8 @@ import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
 import { mirror } from '../lib/chat-calendar.js';
 import * as A from '../lib/agenda.js';
+// the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
+export const MAX_EVENT_WORDS = 16;
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
 function gated(text) {
@@ -113,6 +115,11 @@ export function parseCalendar(text) {
   if (/\bwhat\s+time\s+(?:is\s+it|will\s+it\s+be)\b/i.test(t)) return null; // "if it's 3pm in new york what time is it in paris" is world time
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   if (/^(?:please\s+)?(?:wake\s+me(?:\s+up)?|(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm)\s+(?:for|at)\s+\d/i.test(t)) return null; // an alarm rings: the timer counts down to it
+  // a request for work is not an event (owner's review, 2026-10-30: "Review what Verse's loop shipped since the last summary ..." was saved
+  // as a calendar event): an ask that opens with a work verb, or runs past MAX_EVENT_WORDS words, has no event in it; the explicit forms
+  // ("add X to my calendar", "remind me to ...") were taken above or below and keep any length
+  if (/^(?:please\s+)?(?:review|summari[sz]e|list|explain|analy[sz]e|compare|audit|describe|tell\s+me|give\s+me|look\s+at|go\s+through|walk\s+me)\b/i.test(t)) return null;
+  if (!/^(?:please\s+)?remind\s+me\b/i.test(t) && t.split(/\s+/).length > MAX_EVENT_WORDS) return null;
   const w = parseWhenText(t);
   // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
   if (!w) { const r = t.match(/^(?:please\s+)?remind\s+me\s+(?:to|about)\s+(.{2,80})$/i); if (r) { const d = new Date(); d.setHours(0, 0, 0, 0); return { kind: 'add', title: tidy(r[1]), at: d, allDay: true, raw: t }; } }

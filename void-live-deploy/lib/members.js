@@ -14,16 +14,18 @@ export const MONTHLY = 30; // and a month
 export const MIN_CHARS = 20, MAX_CHARS = 1200, MAX_LINKS = 2;
 export const BUY = 'https://moonbeam846.gumroad.com/l/yinmj'; // the paid Verse membership (lib/gumroad.js UNLOCKS)
 
-// What paid Verse gives, in the order the page lists it. live: true for what works today; the member lab's rows follow LIVE.
+// What paid Verse gives, in the order the page lists it. The member lab's rows (lab: true) are always listed, so the page says members
+// help build Verse (owner, 2026-10-30: "also needs to mention the build feature that allows members to help build features to verse");
+// until LIVE they say they open soon.
 export const PERKS = Object.freeze([
-  { id: 'build', title: 'Add to Verse', text: 'Send an idea and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
+  { id: 'build', title: 'Help build Verse', text: 'Send an idea for a feature and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
   { id: 'credit', title: 'Your name on what you add', text: 'Every idea of yours that ships is listed under Built by members, with your published Verse name if you have one.', lab: true },
   { id: 'publish', title: 'Publish your Verse', text: 'Your own page at a-to-mind.com/@name with your look and your cards.' },
   { id: 'follow', title: 'Your Verse follows you', text: 'Sign in with a passkey and your stage, memory and kept cards sync to every device.' },
   { id: 'watch', title: 'Watches', text: 'Ask Verse to keep an eye on something and tell you when it changes.' },
   { id: 'review', title: 'Code Review Pro', text: 'A Verse key for the AI closer read on your pull requests, with a daily allowance.' },
 ]);
-export const perks = (live = LIVE) => PERKS.filter((p) => live || !p.lab).map(({ id, title, text }) => ({ id, title, text }));
+export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
 // An idea that asks to take something away is refused before it is queued (the lap's add-only check is the second, binding wall).
 const SUBTRACT = /\b(?:remove|removing|delete|deleting|take (?:away|down|out|off)|get rid of|disable|turn off|switch off|shut (?:down|off)|hide|wipe|erase|strip out|rip out|drop (?:the|a|all|every)|kill (?:the|a|all|every)|ban|block (?:all|every|users?|visitors?)|lock (?:out|visitors?)|paywall|charge (?:visitors?|for)|make (?:\w+ ){0,3}paid|members?[- ]only|for members only|revert|roll back|undo|downgrade|lower (?:the )?(?:score|limit))\b/i;

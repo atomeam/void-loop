@@ -25,7 +25,7 @@ function run(text, api) {
 
 export default {
   name: 'converter',
-  examples: ['mp4 to mp3', 'file converter', 'audio converter', 'cut mp3', 'merge audio', 'mix audio', 'change gif speed', 'epub to txt', 'pdf to docx', 'extract audio from video', 'add image to pdf', 'remove silence from audio'],
+  examples: ['mp4 to mp3', 'mp3 to mp4', 'file converter', 'audio converter', 'cut mp3', 'merge audio', 'mix audio', 'change gif speed', 'epub to txt', 'pdf to docx', 'extract audio from video', 'add image to pdf', 'remove silence from audio'],
   nearMisses: ['png to jpg', 'jpg to pdf', 'merge pdf', 'compress pdf', '5 km to miles', 'unit converter', 'currency converter', 'convert png to webp', 'play some music', 'translate hello to french'],
   match(lower, text) { return !!converterAskOf(text || lower); },
   run
