@@ -20,7 +20,7 @@ from pathlib import Path
 import modal
 
 APP_NAME = "verse-sing"
-SECRET_NAME = "verse-sing"
+SECRET_NAME = "verse-sing"  # void-review: ok (the name of a Modal Secret; the key itself lives in Modal and is made by CI)
 
 # the most one request may ask for (the site asks for less: lib/sing.js)
 SECONDS_MIN, SECONDS_MAX = 10.0, 120.0
