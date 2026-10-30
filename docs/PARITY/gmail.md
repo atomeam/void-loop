@@ -12,4 +12,4 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
-| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "Gmail Loading Loading Sign in to continue to Gmail Email or phone Email or phone Forgot email? CAPTCHA image" | void-live-deploy//index.html:2598 `['on every device', 'remember me', 'a passkey, no password or email · sign in ·` |
+| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "Gmail Loading Loading Sign in to continue to Gmail Email or phone Email or phone Forgot email? CAPTCHA image" | void-live-deploy//index.html:2586 `['on every device', 'remember me', 'a passkey, no password or email · sign in ·` |
