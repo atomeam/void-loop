@@ -44,7 +44,24 @@ jobs:
           if [ "$open" -gt 0 ]; then echo "$BRANCH already has an open PR"; exit 0; fi
           git checkout -q --detach "origin/$BRANCH"
           if git diff --name-only origin/main...HEAD | grep -q '^void-live-deploy/skills/'; then
-            node tools/skills-index.mjs --adopt >/dev/null 2>&1 || true # a skill listed in the index by hand gets its order file
+            # check the branch as it would land, merged with main: a skill or tool page main gained since the branch started counts (2026-10-30:
+            # helper/stopwatch passed alone, then failed once merged, as main opens /stopwatch/ and the branch listed stopwatch twice in skills/order)
+            G="-c user.name=helper-gate -c user.email=helper-gate@users.noreply.github.com"
+            cp void-live-deploy/skills/index.json "$RUNNER_TEMP/branch-index.json"
+            if ! git $G merge -q --no-edit origin/main >/dev/null 2>&1; then
+              if git diff --name-only --diff-filter=U | grep -qE '^void-live-deploy/skills/[^/]+\.js$'; then
+                git merge --abort # a skill both sides changed: check the branch alone, as before
+              else
+                git diff --name-only --diff-filter=U | xargs -r git checkout -q --theirs -- && git add -A && git $G commit -q --no-edit
+              fi
+            fi
+            # main's index plus the names the branch adds, then a skill listed by hand gets its order file and the index is rebuilt from skills/order
+            node -e 'const fs = require("fs"), p = "void-live-deploy/skills/index.json", a = JSON.parse(fs.readFileSync(p, "utf8")); for (const n of JSON.parse(fs.readFileSync(process.argv[1], "utf8"))) if (!a.includes(n)) a.push(n); fs.writeFileSync(p, JSON.stringify(a))' "$RUNNER_TEMP/branch-index.json"
+            node tools/skills-index.mjs --adopt >/dev/null 2>&1 || true
+            if ! node tools/skills-index.mjs --write > skills-check.txt 2>&1; then
+              { echo "### No PR for $BRANCH: tools/skills-index.mjs fails on it merged with main"; echo '```'; grep -v '^    at ' skills-check.txt | tail -5; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+              cat skills-check.txt; exit 0
+            fi
             if ! node tools/skills-check.mjs > skills-check.txt 2>&1; then
               { echo "### No PR for $BRANCH: its skills fail tools/skills-check.mjs"; echo '```'; tail -20 skills-check.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
               cat skills-check.txt; exit 0
