@@ -1192,10 +1192,10 @@
   "password strength": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 111,
-    "best": 17538,
-    "evidence": "Verse (/password-strength/) 111 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 17538 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "verse": 105,
+    "best": 21621,
+    "evidence": "Verse (/password-strength/) 105 ms to the load event (median of 3, phone width) vs howsecureismypassword.net 21621 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "reliability": {
@@ -1203,7 +1203,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/password-strength/) 3 of 3 loads answered vs howsecureismypassword.net 3 of 3 loads answered",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "mobile": {
@@ -1211,7 +1211,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 px sideways overflow at 390 px vs howsecureismypassword.net 0 px sideways overflow at 390 px",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "accessibility": {
@@ -1219,7 +1219,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/password-strength/) 0 unnamed controls or images vs howsecureismypassword.net 0 unnamed controls or images",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "offline": {
@@ -1227,7 +1227,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 (1: the page shows itself again with the network cut) vs howsecureismypassword.net 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "sharing": {
@@ -1235,7 +1235,7 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/password-strength/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs howsecureismypassword.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "design polish": {
@@ -1243,7 +1243,7 @@
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/password-strength/) 0 design defects vs howsecureismypassword.net 2 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.07), howsecureismypassword.net (0 low-contrast texts, 1 small tap targets, layout shift 0.16)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
    },
    "accuracy": {
@@ -1251,7 +1251,7 @@
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/password-strength/) 5 of 5 right against the worked-out answer; judged against the standard, not howsecureismypassword.net (the site is not asked)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "of": 5
    },
    "leak check": {
@@ -1259,7 +1259,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/password-strength/) 1 of 1 shown vs howsecureismypassword.net 0 of 1 shown (Verse lacks: none; site lacks: a leak check)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "of": 1,
     "part": true,
     "siteRead": true
@@ -1269,7 +1269,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "of": 2,
     "part": true
    },
@@ -1278,7 +1278,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/password-strength/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "of": 2,
     "part": true
    },
@@ -1287,17 +1287,59 @@
     "verse": 11,
     "best": 1,
     "evidence": "Verse (/password-strength/) 11 of 13 things a full answer shows vs howsecureismypassword.net 1 of 13 things a full answer shows (Verse lacks: Tips to improve, Leak / breach check; site lacks: a strength rating, the time to crack, why it is weak, how to fix it, a leak check, nothing sent anywhere, show the password, Time to crack as you type, Strength checks list, Tips to improve, Leak / breach check, Password generator link)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "at": "2026-10-30T05:29:02.989Z",
     "of": 13,
     "siteRead": true
    },
    "wider use": {
     "verdict": "better",
     "verse": 7.5,
-    "best": 4,
-    "evidence": "Verse (/password-strength/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs howsecureismypassword.net 4 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-30T04:33:31.998Z",
+    "best": 4.5,
+    "evidence": "Verse (/password-strength/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs howsecureismypassword.net 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-30T05:29:02.989Z",
     "siteRead": true
+   },
+   "journey: do the main job and see the result": {
+    "verdict": "pass",
+    "steps": [
+     "open /password-strength/",
+     "type the common password \"password\"",
+     "sees Very weak, cracked instantly, the reason and a tip",
+     "type a 20-character random password",
+     "sees Very strong, more than a trillion years to crack"
+    ],
+    "negatives": [
+     "after open /password-strength/: no stub, placeholder, error or empty page",
+     "after type the common password \"password\": no stub, placeholder, error or empty page",
+     "after type a 20-character random password: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "Verse (/password-strength/): 5 steps, every negative control held",
+    "at": "2026-10-30T05:33:34.770Z"
+   },
+   "journey: share the result and reopen it from the link": {
+    "verdict": "pass",
+    "steps": [
+     "open /password-strength/",
+     "type the common password \"password\"",
+     "sees Very weak",
+     "press the share link control",
+     "takes the link /password-strength/",
+     "open /word-count/",
+     "open /password-strength/",
+     "sees the checker back from its link, empty: nothing typed came with it",
+     "type \"password\" again",
+     "sees the same answer again: Very weak, cracked instantly"
+    ],
+    "negatives": [
+     "after open /password-strength/: no stub, placeholder, error or empty page",
+     "after type the common password \"password\": no stub, placeholder, error or empty page",
+     "after press the share link control: no stub, placeholder, error or empty page",
+     "after open /word-count/: no stub, placeholder, error or empty page",
+     "after open /password-strength/: no stub, placeholder, error or empty page",
+     "after type \"password\" again: no stub, placeholder, error or empty page"
+    ],
+    "evidence": "Verse (/password-strength/): 10 steps, every negative control held",
+    "at": "2026-10-30T05:33:34.770Z"
    }
   },
   "base converter": {

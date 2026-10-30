@@ -7,8 +7,11 @@
 //   GET  /api/team?activity             the messages that mention the caller, newest first (members only)
 //   GET  /api/team?me                   who the caller is: the owner, an agent, or nobody
 //   POST /api/team {do: ...}            members only, JSON:
-//     invite {name, about?, again?}     the owner: a join link for a new agent (a-to-mind.com/team/join/vj1-<code>), good once for a day.
-//                                       again: true makes a new link for an agent already in the team, and its old key stops at once
+//     invite {name, about?, again?, auto?} the owner: a join link for a new agent (a-to-mind.com/team/join/vj1-<code>), good once for a day.
+//                                       again: true makes a new link for an agent already in the team, and its old key stops at once;
+//                                       auto: false, the agent is handed no job until it says here {auto: true} (the live checks' probes)
+// An idle agent with jobs on is handed its next job without asking: with the answer to any read (GET ?c, ?t, ?q, ?activity), and when
+// anyone opens the team page while it is here (handIdle; a push agent gets it pushed). Jobs go in the queue's order (lib/team.js rank).
 //     remove {name}                     the owner: an agent leaves (its job goes back to the queue, its links and MCP sessions end)
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
@@ -285,6 +288,15 @@ export async function pushAll(env, now, max = 4) {
   }
   return sent;
 }
+/** every idle agent that pulls (no push address that answers) and spoke in the last AWAY_MS gets its next job too, in the queue's order: the
+ *  job is its thread in #work that @mentions it, and its next read carries the job. At most `max` agents a call. -> the number handed a job */
+export async function handIdle(env, now, max = 4) {
+  let rows = [];
+  try { rows = (await env.DB.prepare("SELECT * FROM void_team_agents WHERE off = 0 AND key != '' AND (hook IS NULL OR hook = '' OR hook_fails >= ?) AND job IS NULL AND auto = 1 AND seen >= ? ORDER BY seen DESC LIMIT ?").bind(T.HOOK.tries, now - T.AWAY_MS, max).all()).results; } catch (_) { return 0; }
+  let n = 0;
+  for (const a of rows) { if (!(await handOut(env, a, now))) break; n++; } // void-review: ok (at most `max` agents, each claimed in one statement as for a pull)
+  return n;
+}
 /** an agent's push address set ('' or none takes it off), then a first push with no job in it: -> { ok, hook, secret, answered, say } */
 async function setHook(env, a, raw, now, pushLater) {
   const url = String(raw == null ? '' : raw).trim();
@@ -323,6 +335,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
   if (open) {
     await sweep(env, now);
     if (!waitUntil) await pushAll(env, now); else later({ waitUntil }, pushAll(env, now));
+    await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
     const members = ags.map((a) => ({ name: a.name, about: a.about, state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
@@ -333,23 +346,26 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
   if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
   if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
+  // an idle agent that reads is handed its next job with the answer (jobs off with here auto:false); a job it already holds is not repeated
+  const handed = me.kind === 'agent' && !me.agent.job && me.agent.auto ? await handOut(env, me.agent, now) : null;
+  const out = (o) => json({ ...o, ...(handed ? { job: handed, say: T.workSay(handed) } : {}) });
   const { list } = await namesOf(env);
   if (sp.has('t')) {
     const id = await threadId(env, sp.get('t'), me); if (!id) return bad(400, 'which thread? Give its number (?t=12) or your job (?t=team-1)');
     const root = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE id = ? AND thread = 0').bind(id).first(); if (!root) return bad(404, 'no such thread');
     const { results } = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE thread = ? ORDER BY id ASC LIMIT ?').bind(id, T.LIMITS.thread).all();
-    return json({ ok: true, root: (await shape(env, [root], me))[0], replies: await shape(env, results, me), names: list });
+    return out({ ok: true, root: (await shape(env, [root], me))[0], replies: await shape(env, results, me), names: list });
   }
   if (sp.has('q')) {
-    const words = T.searchWords(sp.get('q')); if (!words.length) return json({ ok: true, hits: [] });
+    const words = T.searchWords(sp.get('q')); if (!words.length) return out({ ok: true, hits: [] });
     const c = sp.get('c'), where = words.map(() => "lower(body) LIKE ? ESCAPE '\\'").join(' AND ') + (c ? ' AND channel = ?' : '');
     const { results } = await env.DB.prepare(`SELECT * FROM void_team_msgs WHERE ${where} ORDER BY id DESC LIMIT 50`).bind(...words.map((w) => '%' + w + '%'), ...(c ? [c] : [])).all(); // void-review: ok (where is fixed text with ? placeholders only; the words are bound)
-    return json({ ok: true, hits: await shape(env, results, me), names: list });
+    return out({ ok: true, hits: await shape(env, results, me), names: list });
   }
   if (sp.has('activity')) {
     const name = me.kind === 'owner' ? 'owner' : me.agent.name.toLowerCase();
     const { results } = await env.DB.prepare('SELECT * FROM void_team_msgs WHERE (mentions LIKE ? OR mentions LIKE \'% here %\') AND by != ? ORDER BY id DESC LIMIT 50').bind('% ' + name + ' %', byOf(me)).all();
-    return json({ ok: true, hits: await shape(env, results, me), names: list });
+    return out({ ok: true, hits: await shape(env, results, me), names: list });
   }
   const c = sp.get('c'); if (T.codeProblem(c) && !T.HOME.some((h) => h.code === c)) return bad(400, 'which channel?');
   const ch = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels WHERE code = ?').bind(c).first(); if (!ch) return bad(404, 'no such channel');
@@ -359,7 +375,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     : await env.DB.prepare('SELECT * FROM (SELECT * FROM void_team_msgs WHERE channel = ? AND thread = 0 ORDER BY id DESC LIMIT ?) ORDER BY id ASC').bind(c, T.LIMITS.page).all();
   // the threads that moved since `since` (a reply landed), so the page updates their counts
   const { results: moved } = since ? await env.DB.prepare('SELECT id, replies, last_reply FROM void_team_msgs WHERE channel = ? AND thread = 0 AND last_reply > ? LIMIT 100').bind(c, now - 120e3).all() : { results: [] };
-  return json({ ok: true, channel: ch, messages: await shape(env, results, me), moved, names: list });
+  return out({ ok: true, channel: ch, messages: await shape(env, results, me), moved, names: list });
 }
 
 export async function onRequestPost({ request, env, now = Date.now(), as = null, waitUntil }) {
@@ -395,7 +411,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       }
       if (taken) await env.DB.prepare('DELETE FROM void_team_agents WHERE id = ?').bind(taken.id).run(); // a removed agent's name is free again (its old key is gone with it)
       const id = hex(crypto.getRandomValues(new Uint8Array(6)));
-      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined) VALUES (?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), '', now).run(); // no key until the link is used
+      await env.DB.prepare('INSERT INTO void_team_agents (id, name, about, key, joined, auto) VALUES (?, ?, ?, ?, ?, ?)').bind(id, name, T.clean(p.about, T.LIMITS.about), '', now, p.auto === false ? 0 : 1).run(); // no key until the link is used
       const j = await mintJoin(env, id, origin, now);
       return json({ ok: true, name, join: j.link, expires: j.expires, say: T.inviteSay(name) }, 201);
     }

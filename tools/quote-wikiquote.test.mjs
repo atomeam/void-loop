@@ -75,7 +75,7 @@ const persevere = '<div class="mw-parser-output"><div class="mw-heading mw-headi
 
 test('a theme ask names its Wikiquote page; other asks name none', () => {
   assert.equal(themeOf('give me a motivational quote', () => 0), 'Perseverance');
-  assert.equal(themeOf('inspirational quote', () => 0.9), 'Effort');
+  assert.equal(themeOf('inspirational quote', () => 0.9), 'Courage');
   assert.equal(themeOf('quote about the sea'), 'Sea');
   assert.equal(themeOf('quotes about courage please'), 'Courage');
   for (const a of ['tell me a quote', 'random quote', 'another quote', 'famous quotes']) assert.equal(themeOf(a), null, a);
