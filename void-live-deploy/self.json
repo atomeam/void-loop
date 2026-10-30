@@ -550,8 +550,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T10:17:02Z",
+   "subject": "fact: a fact about a topic comes from that topic's Wikipedia article"
+  },
+  {
+   "at": "2026-10-30T10:11:30Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T10:09:22Z",
+   "subject": "loan payoff: say 11 months and 1 year, not 0 years 11 months and 1 years 0 months"
+  },
+  {
    "at": "2026-10-30T10:08:58Z",
    "subject": "Hand-off journeys: match broken words whole, so a scale named Lydian dominant is not read as NaN"
+  },
+  {
+   "at": "2026-10-30T10:08:53Z",
+   "subject": "converter: Make Stabilize Video (takes the shake out of a hand-held video, on the device)"
   },
   {
    "at": "2026-10-30T10:08:18Z",
@@ -612,22 +628,6 @@
   {
    "at": "2026-10-30T09:47:45Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T09:47:20Z",
-   "subject": "Router checks: the stub page backs the fake models' labelled replies"
-  },
-  {
-   "at": "2026-10-30T09:46:48Z",
-   "subject": "Team score asks: a sport's name is not a team (\"cricket scores\")"
-  },
-  {
-   "at": "2026-10-30T09:45:50Z",
-   "subject": "Unit converter pages: write the SEO block the table gives them"
-  },
-  {
-   "at": "2026-10-30T09:44:06Z",
-   "subject": "Chords and piano hand-off: the browser check reads the real chord name, and a linked sheet counts every note"
   }
  ],
  "builders": {
