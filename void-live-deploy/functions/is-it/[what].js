@@ -30,7 +30,9 @@ export function countdown(a) {
   return '<section id="any" aria-label="Holiday and event countdown"><p><b>Holiday &amp; event countdown</b>' + (days ? ' · ' + days + (days === 1 ? ' day' : ' days') + ' to ' + esc(a.what) : '') + '</p>'
     + '<form id="anyf" action="/time/" method="get"><label>Any date <input type="date" name="at" value="' + esc(iso) + '"></label> <button type="submit">Count down</button></form>'
     + '<p>' + OTHER_DAYS.map(([s, n]) => '<a href="/is-it/' + s + '">' + esc(n) + '</a>').join(' · ') + '</p>'
-    + (iso ? '<p><a href="/calendar/?d=' + iso + '&amp;view=day">Open ' + esc(iso) + ' in the calendar</a> · <a href="/time/?at=' + iso + 'T00:00">Countdown across time zones</a></p>' : '') + '</section>';
+    // the day's Use with row: the calendar and the time zones take the day over (lib/toolkit.js's ring of tools; the self-check counts #related)
+    + '<nav id="related" aria-label="Use with"><p>Use with ' + (iso ? '<a href="/calendar/?d=' + iso + '&amp;view=day">Open ' + esc(iso) + ' in the calendar</a> · <a href="/time/?at=' + iso + 'T00:00">Countdown across time zones</a>'
+      : '<a href="/calendar/">the calendar</a> · <a href="/time/">time zones</a>') + '</p></nav></section>';
 }
 export function page(slug, a, w, zone, origin = 'https://a-to-mind.com') {
   const url = origin + '/is-it/' + slug, said = w.word + ': ' + a.note;
