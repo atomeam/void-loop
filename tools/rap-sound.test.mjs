@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { settingsOf, beatFor, timingOf, fromLink, voiceText, STYLES } from '../void-live-deploy/lib/rap.js';
 import { beatEvents, seventhOf, stepTime, SWING } from '../void-live-deploy/lib/rap-beat.js';
-import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf, splitBar, endOf } from '../void-live-deploy/lib/rap-voice.js';
+import { chunksOf, placeBar, stretch, buildVocal, fetchVoice, envelopeOf, splitBar, endOf, pitchShift, pitchOf, shadowsOf, resample } from '../void-live-deploy/lib/rap-voice.js';
 import { planOf, mixStems, wavStereo, evenWords, RATE } from '../void-live-deploy/lib/rap-song.js';
 import { fft, bandsOf, kickPulse, frameState, linesOf } from '../void-live-deploy/lib/rap-video.js';
 import { RAP_LINK } from './tower-probes.mjs';
@@ -234,4 +234,34 @@ test('the rap page says what it does now, and hands its video on', async () => {
   assert.match(page, /music video/i); assert.match(page, /Verse's own voice/);
   const stage = rd('lib/rap-stage.js'); for (const b of ["'Save the song'", "'Make the video'", "'Voice: Verse'"]) assert.ok(stage.includes(b), b);
   const { TYPES } = await import('./handoff-scan.mjs'); assert.ok(TYPES.video > 0, 'a video is a type a page can hand on');
+});
+
+// Verse's haunting signature voice (owner, 2026-10-30: "verse can have a good sounding distinct haunting voice"): the shadow an octave under the
+// lead and the ghost an octave over it are the lead itself, moved in pitch and nothing else, so every syllable of all three lands together.
+test('pitch is read in Hz, and moved by semitones without changing the length', () => {
+  const R = 48000;
+  for (const f of [120, 180, 240]) assert.ok(Math.abs(pitchOf(sine(f, 0.4, R), R) - f) < 1, f + ' Hz');
+  assert.equal(pitchOf(new Float32Array(R * 0.4), R), null, 'silence has no pitch');
+  const x = sine(180, 0.5, R);
+  for (const [semis, want] of [[-12, 90], [12, 360], [7, 180 * 2 ** (7 / 12)], [-5, 180 * 2 ** (-5 / 12)]]) {
+    const y = pitchShift(x, semis, R);
+    assert.equal(y.length, x.length, semis + ': the same length');
+    assert.ok(Math.abs(pitchOf(y, R, { lo: 60, hi: 600 }) - want) / want < 0.01, semis + ' semitones: ' + want.toFixed(1) + ' Hz, heard ' + pitchOf(y, R, { lo: 60, hi: 600 }).toFixed(1));
+  }
+  assert.deepEqual(Array.from(resample(Float32Array.from([0, 1]), 3)), [0, 0.5, 1]);
+});
+
+test("the haunting layers are Verse's own lead an octave down and up, every syllable in time with it", () => {
+  const R = 48000, x = bursts(6, R), { low, halo } = shadowsOf(x, R);
+  assert.equal(low.length, x.length); assert.equal(halo.length, x.length);
+  const onsets = (y) => { const e = envelopeOf(y, R).env, top = Math.max(...e), out = []; let on = false; for (let i = 0; i < e.length; i++) { if (!on && e[i] > top * 0.3) { out.push(i * 0.005); on = true; } else if (on && e[i] < top * 0.1) on = false; } return out; };
+  const at = onsets(x);
+  assert.equal(at.length, 6, 'six syllables in the lead');
+  for (const [name, y, ratio] of [['shadow', low, 0.5], ['ghost', halo, 2]]) {
+    const theirs = onsets(y);
+    assert.equal(theirs.length, 6, name + ': six syllables');
+    theirs.forEach((t, k) => assert.ok(Math.abs(t - at[k]) <= 0.015, name + ' syllable ' + k + ' lands at ' + t.toFixed(3) + ' s, the lead at ' + at[k].toFixed(3)));
+    const a = Math.round((0.1 + 0.03) * R), seg = (z) => z.subarray(a, a + Math.round(0.1 * R));
+    assert.ok(Math.abs(pitchOf(seg(y), R, { lo: 60, hi: 600 }) / pitchOf(seg(x), R, { lo: 60, hi: 600 }) - ratio) < 0.02, name + ': an octave from the lead');
+  }
 });
