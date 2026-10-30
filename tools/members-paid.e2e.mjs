@@ -5,6 +5,7 @@
 //   1. Already joined: a signed-in free account sees the claim box, claims its receipt, and the page turns into the member view
 //   2. After a reload the member view stays (the tier is read from the server, not from the page)
 //   3. The idea box: on /members/?pilot (or once LIVE) a member sends an idea; it is queued for the coder and listed under their ideas
+//   4. The MultiVerse mark: the member's stage (/) shows the mark that opens /members/; a free account's stage does not
 // Run: node --test tools/members-paid.e2e.mjs   (Chromium from VOID_TEST_BROWSER, else Playwright's own)
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,13 +15,14 @@ import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { chromium } from 'playwright-core';
 import { onRequestGet, onRequestPost } from '../void-live-deploy/functions/api/members.js';
+import { onRequestPost as passkeyPost } from '../void-live-deploy/functions/api/passkey.js';
 import { sessionId } from '../void-live-deploy/lib/void-me.js';
 import { ensureStoreTables } from '../void-live-deploy/lib/store-db.js';
 import { LIVE } from '../void-live-deploy/lib/members.js';
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy');
 const ORIGIN = 'https://a-to-mind.test';
-const TOKEN = 'e'.repeat(43), USER = 'e2e-test-member-0001';
+const TOKEN = 'e'.repeat(43), USER = 'e2e-test-member-0001', FREE_TOKEN = 'f'.repeat(43), FREE_USER = 'e2e-test-free-0001';
 const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', SALE = 'E2eTestSaleNotRealXXXX==', MAIL = 'e2e-member@example.com';
 const IDEA = 'Add a star chart to the night sky page that shows which planets are up tonight.';
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2' };
@@ -41,7 +43,7 @@ async function seed() {
   const DB = d1();
   await onRequestGet({ request: new Request(ORIGIN + '/api/members'), env: { DB } }); // makes the tables
   await ensureStoreTables({ DB });
-  DB.raw.prepare('INSERT INTO void_sessions (id, user_id, at, expires) VALUES (?, ?, ?, ?)').run(await sessionId(TOKEN), USER, new Date().toISOString(), Date.now() + 864e5);
+  for (const [t, u] of [[TOKEN, USER], [FREE_TOKEN, FREE_USER]]) DB.raw.prepare('INSERT INTO void_sessions (id, user_id, at, expires) VALUES (?, ?, ?, ?)').run(await sessionId(t), u, new Date().toISOString(), Date.now() + 864e5);
   const ping = new URLSearchParams({ sale_id: SALE, order_number: '900000001', seller_id: SELLER, email: MAIL, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-e2e', test: 'true', resource_name: 'sale' }).toString();
   DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES (?, 'sale', ?, 'sub-e2e', 'yinmj', NULL, 1, 'verified, no Verse id: link by hand', ?, ?)").run('sale:' + SALE + ':t', SALE, ping, new Date().toISOString());
   return DB;
@@ -52,9 +54,16 @@ const calls = [];
 before(async () => {
   DB = await seed();
   browser = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || undefined, args: ['--no-sandbox'] });
-  ctx = await browser.newContext();
-  await ctx.addInitScript(([t, u]) => { try { localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: t, userId: u })); } catch (_) {} }, [TOKEN, USER]);
-  await ctx.route('**/*', async (route) => {
+  ctx = await context(TOKEN, USER);
+});
+// a browser signed in as one account; every request is answered here (route)
+async function context(token, user) {
+  const c = await browser.newContext();
+  await c.addInitScript(([t, u]) => { try { localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: t, userId: u })); } catch (_) {} }, [token, user]);
+  await c.route('**/*', serve);
+  return c;
+}
+async function serve(route) {
     const q = route.request(), u = new URL(q.url());
     if (u.origin !== ORIGIN) return route.fulfill({ status: 204, body: '' }); // nothing leaves the test
     if (u.pathname === '/api/members') {
@@ -65,6 +74,10 @@ before(async () => {
       const body = await res.text(); calls.push({ method: q.method(), status: res.status, body });
       return route.fulfill({ status: res.status, contentType: 'application/json', body });
     }
+    if (u.pathname === '/api/passkey' && q.method() === 'POST') { // the stage reads the tier here (functions/api/passkey.js step 'tier')
+      const res = await passkeyPost({ request: new Request(u.href, { method: 'POST', headers: { ...(await q.allHeaders()), 'cf-connecting-ip': '10.9.1.' + (++ip) }, body: q.postData() || '' }), env: { DB } });
+      return route.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
+    }
     if (u.pathname === '/api/catalog') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ products: [{ slug: 'yinmj', price_cents: 4900, recurrence: 'monthly' }] }) });
     if (u.pathname.startsWith('/api/')) return route.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false}' });
     let f = path.join(ROOT, decodeURIComponent(u.pathname));
@@ -72,8 +85,7 @@ before(async () => {
     if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
     if (!fs.existsSync(f)) return route.fulfill({ status: 404, body: '' });
     return route.fulfill({ status: 200, contentType: TYPES[path.extname(f)] || 'application/octet-stream', body: fs.readFileSync(f) });
-  });
-});
+}
 after(async () => { await browser?.close(); });
 
 const view = (p) => p.evaluate(() => {
@@ -137,4 +149,18 @@ test('the idea box: a member sends an idea, it is queued for the coder and liste
   assert.match(await p.textContent('#say'), /add/i);
   assert.equal(DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, 1);
   await p.close();
+});
+
+test('the MultiVerse mark: the member\'s stage shows it and it opens /members/; a free account\'s stage does not', async () => {
+  const mark = (p) => p.evaluate(() => { const a = document.getElementById('void-member'); return a ? { href: a.getAttribute('href'), text: a.textContent, shown: a.getClientRects().length > 0 } : null; });
+  const p = await ctx.newPage();
+  await p.goto(ORIGIN + '/'); await p.waitForSelector('#void-member', { timeout: 15000 });
+  assert.deepEqual(await mark(p), { href: '/members/', text: 'MultiVerse', shown: true });
+  await p.click('#void-member'); await p.waitForURL(ORIGIN + '/members/');
+  await p.close();
+  const free = await context(FREE_TOKEN, FREE_USER), f = await free.newPage();
+  const asked = f.waitForRequest((r) => r.url().endsWith('/api/passkey') && /"tier"/.test(r.postData() || ''), { timeout: 15000 });
+  await f.goto(ORIGIN + '/'); await asked; await f.waitForTimeout(800);
+  assert.equal(await mark(f), null, 'no mark for a free account');
+  await free.close();
 });

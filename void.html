@@ -1146,6 +1146,13 @@
     html.void-edge #void-anchor, #void-anchor:hover, #void-anchor:focus-visible { opacity: 1; transform: scale(1.1); }
     #void-anchor:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { #void-anchor { transition: none; } html.void-edge #void-anchor, #void-anchor:hover { transform: none; } }
+    /* the MultiVerse mark (members perk, 2026-10-30): a paid Verse's stage shows it beside the anchor; it opens /members/. Never shown signed out */
+    #void-member { position: fixed; right: 46px; bottom: 14px; z-index: 6; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; gap: 5px; border-radius: 999px;
+      border: 1px solid rgba(150,120,255,.55); background: rgba(20,18,34,.72); color: #d7d2ff; font: 600 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-decoration: none; opacity: .7; transition: opacity .2s; }
+    #void-member::before { content: "\2726"; color: rgba(170,140,255,.95); }
+    #void-member:hover, #void-member:focus-visible { opacity: 1; }
+    #void-member:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+    @media (max-width: 700px) { #void-member { right: 40px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); opacity: .45; } }
     @media (max-width: 700px) { #void-anchor { right: 8px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); opacity: .22; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
 </head>
@@ -5395,6 +5402,15 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
+    // the MultiVerse mark on a member's own stage (members perk, 2026-10-30): one tier read after load, only when this device is signed in,
+    // never on a published page (/@name shows someone else's Verse); the server's word decides, a free or failed read shows nothing
+    async function memberMark() {
+      if (PAGE || !me || !me.token || document.getElementById('void-member')) return;
+      if ((await meTier()) !== 'paid' || document.getElementById('void-member')) return;
+      const a = document.createElement('a'); a.id = 'void-member'; a.href = '/members/'; a.textContent = 'MultiVerse';
+      a.title = 'MultiVerse member: your perks'; a.setAttribute('aria-label', 'MultiVerse member: your perks'); document.body.append(a);
+    }
+    setTimeout(() => { memberMark().catch(() => {}); }, 0);
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
