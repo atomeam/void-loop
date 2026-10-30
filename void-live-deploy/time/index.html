@@ -126,7 +126,7 @@
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';
-  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt, cityName, countryOf } from '/lib/zones.js';
+  import { lengthText, dateSpan, businessDay, formatDay, allZones, findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, gmt, nextChange, timeAsk, placeAt, cityName, countryOf, coordsOf } from '/lib/zones.js';
   import { regionOfCountry } from '/lib/job-regions.js';
   const $ = (id) => document.getElementById(id), KEY = 'a2m.void.time.v1', ZONES = allZones();
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (_) { return {}; } };
@@ -283,6 +283,8 @@
     { label: 'Radio and TV in this city', href: () => (topCity() ? '/local/?place=' + encodeURIComponent(topCity()) : null) },
     { label: 'Remote jobs open in this country', href: () => { const cc = countryOf((main || youPlace).tz); return regionOfCountry(cc) ? '/jobs/?cc=' + cc : null; } }, // /jobs/ reads the country as the region its listings are open in; a country no region covers gets no link
     { label: 'Put the event on my calendar', href: eventCal },
+    // flights to the airport nearest the city asked for (the flights page reads ?tonear=, as /local/ sends it), on the event's day when it is still ahead
+    { label: 'Flights to this city', href: () => { const c = main && coordsOf(main); if (!c) return null; return '/flights/?tonear=' + c.lat + ',' + c.lon + (evShown !== null && evShown > Date.now() ? '&d=' + isoDay(main.tz, evShown) : ''); } },
     // the matches of the event's day, else of today where the top city is (the scores page reads ?date=)
     { label: 'Matches that day', href: () => '/scores/?date=' + (evShown !== null ? isoDay(you, evShown) : isoDay((main || youPlace).tz, Date.now())) },
   ], { card: () => timeAsk(main, places) });
