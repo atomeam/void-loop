@@ -2,6 +2,37 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-30T11:25:10.005Z",
+   "sha": "d16874e2fe7d2fe8346c4a48cf778a3bdf551c47",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41036708883",
+   "suite": "browser suite on main",
+   "checks": [
+    "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)",
+    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page"
+   ],
+   "touched": [
+    "tools/converter.test.mjs",
+    "void-live-deploy/converter/app.js",
+    "void-live-deploy/converter/index.html",
+    "void-live-deploy/lib/converter.js",
+    "void-live-deploy/lib/video-write.js",
+    ".github/workflows/brain-dream.yml",
+    ".github/workflows/studio-look.yml",
+    ".github/workflows/verify.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "domains/conductor.json",
+    "domains/handoff.md",
+    "domains/tower-self.json",
+    "domains/void.agents.log.md",
+    "growth/entries/20261030T073921Z-claude-83d771ea.json"
+   ],
+   "shards": [
+    3,
+    4
+   ]
+  },
+  {
    "at": "2026-10-30T10:41:01.255Z",
    "sha": "c6ffa7bd72c4805c465a8b02c36f85f3ec3cb7c9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41035825694",
@@ -990,38 +1021,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 994
-  },
-  {
-   "at": "2026-10-29T02:21:33.551Z",
-   "sha": "0c9a63418ecfeddc198c02e3ba5982444a95e631",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40805274220",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/tower.evidence.json",
-    "docs/PARITY/calculator.net.md",
-    "docs/PARITY/convertlive.com.md",
-    "docs/PARITY/convertunits.com.md",
-    "tools/tower-gate.mjs",
-    "tools/tower-plan.test.mjs",
-    "tools/tower.test.mjs",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/tower.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 995
   }
  ]
 }
