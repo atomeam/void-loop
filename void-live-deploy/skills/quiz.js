@@ -111,9 +111,19 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
 }
 
+/** a reload draws the saved cards as their skills load, and the quiz loads before most explainers (the gears): an ask made in
+ *  that moment waits until every card on the stage has its kind, so "quiz me on this" quizzes on the saved explainer instead of
+ *  saying there is nothing to quiz on (main's verify, 2026-10-30: the gears were not in 900 ms after a reload). At most `cap` ms. */
+export async function settled(api, cap = 6000) {
+  const missing = () => { const k = api.stage.kinds ? api.stage.kinds() : {}; return Object.values(api.stage.things() || {}).some((t) => t && !k[t.kind]); };
+  if (!missing() || !api.stage.ready) return;
+  let timer; await Promise.race([Promise.resolve(api.stage.ready()).catch(() => {}), new Promise((r) => { timer = setTimeout(r, cap); })]); clearTimeout(timer);
+}
+
 async function run(text, api) {
   const q = quizOf(text);
   if (!q) return 'none';
+  await settled(api);
   const things = api.stage.things(), kinds = api.stage.kinds ? api.stage.kinds() : {};
   const quiz = Object.values(things).find((t) => t.kind === 'quiz');
   if (q.keep) {

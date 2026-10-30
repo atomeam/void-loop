@@ -438,3 +438,21 @@ test('handoff/lock-to-challenge-no-adapter', () => {
   assert.equal(s.status, 'completed'); assert.match(C.summary(s), /3 of 3 predictions matched/);
   assert.match(C.summary(s), /Takeaway: Pin pair 1 is misaligned: its key pin still crosses the shear line/);
 });
+
+test('quiz: an ask right after a reload waits for the saved cards to get their kinds, then quizzes on the saved gears', async () => {
+  const { settled } = await import('../void-live-deploy/skills/quiz.js');
+  const things = { g: { id: 'g', kind: 'gears', state: G.create() } }, kinds = {};
+  let release; const ready = new Promise((r) => { release = r; });
+  let waited = false;
+  const api = { stage: { things: () => things, kinds: () => kinds, ready: () => ready } };
+  const p = settled(api).then(() => { waited = true; });
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(waited, false, 'it waits while the gears kind is not in');
+  Object.assign(kinds, gearsSkill.stageKinds); release();
+  await p; assert.equal(waited, true);
+  assert.equal(sourceOf(things, kinds, null), things.g, 'once in, the saved gears are the source');
+  // nothing missing: no wait at all; no ready on the stage: no wait; a ready that never comes: the cap
+  let n = 0; await settled({ stage: { things: () => things, kinds: () => kinds, ready: () => { n++; return new Promise(() => {}); } } }); assert.equal(n, 0);
+  await settled({ stage: { things: () => ({ x: { kind: 'later' } }), kinds: () => ({}) } });
+  const t0 = Date.now(); await settled({ stage: { things: () => ({ x: { kind: 'later' } }), kinds: () => ({}), ready: () => new Promise(() => {}) } }, 50); assert.ok(Date.now() - t0 >= 45);
+});

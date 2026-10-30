@@ -73,6 +73,8 @@ test('compose: a family skill opens into its members, each on one page in its fa
   const timer = b.pages.find((p) => p.name === 'timer');
   assert.equal(timer.chapter, 'time'); assert.equal(timer.line, 'Countdowns on the stage'); assert.deepEqual(timer.examples, ['set a timer for 5 minutes', 'make a timer', 'pause']); assert.equal(timer.tier, 'proven');
   assert.deepEqual(b.pages.find((p) => p.name === 'clock' && p.kind === 'skill').examples, ['make a clock'], 'an empty examples list falls back to the asks the header quotes');
+  assert.equal(b.pages.find((p) => p.name === 'clock' && p.kind === 'skill').examplesFrom, 'header', 'and the page says so, so the hardening plan never probes a quote');
+  assert.equal(timer.examplesFrom, undefined, 'a skill\'s own examples carry no mark');
   const chess = b.pages.find((p) => p.name === 'chess' && p.kind === 'skill');
   assert.equal(chess.title, 'Chess'); assert.equal(chess.game.ask, 'play chess'); assert.equal(chess.examples[0], 'play chess');
   const vq = b.pages.find((p) => p.kind === 'game'); assert.equal(vq.title, 'VoidQuest'); assert.equal(vq.chapter, 'games');
