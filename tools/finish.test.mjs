@@ -74,3 +74,16 @@ test('--evolve names what to build next: it fills the PR\'s Evolve heading and i
   assert.match(prBody(a), /## Evolve\n- a tide card for the harbour\n- a spectator mode/);
   assert.match(prBody(parseArgs(['build', 'x'])), /## Evolve\n- $/m);
 });
+
+test('the --try check: an answer has to be about the ask, not only an answer (owner, 2026-10-23: "checks the result ... to see if it even does what you expect")', async () => {
+  const { tryProblem, askWords, offTopic } = await import('./finish.mjs');
+  assert.deepEqual(askWords('draw a cartoon cat'), ['cat']);
+  assert.deepEqual(askWords("what's new"), []);
+  const lump = '> draw a toon cat\n  by: skill:cartoon\n  said: Cartoon Lump · a bright rubbery cartoon lump trips, bows, and throws a pie\n  shows: Cartoon Lump / a bright rubbery cartoon lump trips';
+  assert.match(tryProblem(lump), /not about what was asked.*"cat"/);
+  const cat = '> draw a cartoon cat\n  by: skill:cartoon\n  said: Drawing a cartoon cat.\n  shows: Cartoon cat\n  pictures: a 2D cartoon of cat';
+  assert.equal(tryProblem(cat), '');
+  assert.equal(offTopic('> make the clocks bigger\n  by: skill:stage-style\n  shows: Clock'), '', 'a plural ask matches its singular');
+  assert.equal(offTopic("> what's new\n  by: skill:showcase\n  shows: Built while you were away"), '', 'no content words: nothing to hold it to');
+  assert.equal(offTopic('> show me the vibe\n  by: skill:x\n  shows: Mood board', 'mood'), '', '--about names what the right answer shows');
+});

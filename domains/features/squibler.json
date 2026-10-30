@@ -1,0 +1,520 @@
+{
+ "floor": "squibler",
+ "verse_page": "/books/",
+ "researched": "2026-10-28",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "squibler.io": {
+   "url": "https://www.squibler.io/",
+   "scanned": "2026-10-28",
+   "leader": true,
+   "pages": [
+    "https://www.squibler.io/",
+    "https://www.squibler.io/knowledge-center/",
+    "https://www.squibler.io/pricing/",
+    "https://www.squibler.io/about-us/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "AI Book and Novel Writer",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"novel\", \"writer\""
+    },
+    {
+     "name": "Turn Your Idea into a Story",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"turn\", \"idea\", \"story\""
+    },
+    {
+     "name": "The AI Book & Novel Writer Built for Writers",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"novel\", \"writer\", \"built\""
+    },
+    {
+     "name": "Generate a full-length book",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"generate\", \"full\", \"length\""
+    },
+    {
+     "name": "Generate a full-length screenplay",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"generate\", \"full\", \"length\", \"screenplay\""
+    },
+    {
+     "name": "Generate your story outline",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"generate\", \"story\", \"outline\""
+    },
+    {
+     "name": "Write alongside an intelligent co-author",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"write\", \"alongside\", \"intelligent\", \"author\""
+    },
+    {
+     "name": "Create and edit different elements",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"create\", \"edit\", \"different\", \"element\""
+    },
+    {
+     "name": "Transform text into visuals",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"transform\", \"text\", \"visual\""
+    },
+    {
+     "name": "Writers worldwide choose Squibler",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"writer\", \"worldwide\", \"choose\", \"squibler\""
+    },
+    {
+     "name": "Experience Squibler Today",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"experience\", \"squibler\", \"today\""
+    },
+    {
+     "name": "About Squibler",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"about\", \"squibler\""
+    },
+    {
+     "name": "Legal",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"legal\""
+    },
+    {
+     "name": "Plans & Account",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"plan\", \"account\""
+    },
+    {
+     "name": "Resources",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"resource\""
+    },
+    {
+     "name": "Tutorials for Using Squibler",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"tutorial\", \"squibler\""
+    },
+    {
+     "name": "Welcome to Squibler! Let’s Get Started",
+     "detail": "a heading on /knowledge-center/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"welcome\", \"squibler\", \"let\", \"start\""
+    },
+    {
+     "name": "Pick a plan that fits your writing style",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"pick\", \"plan\", \"fit\", \"writ\""
+    },
+    {
+     "name": "Our Story",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"our\", \"story\""
+    },
+    {
+     "name": "Our Mission",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"our\", \"mission\""
+    },
+    {
+     "name": "To empower everyone to become great storytellers",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"empower\", \"everyone\", \"become\", \"great\""
+    },
+    {
+     "name": "Leadership",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"leadership\""
+    },
+    {
+     "name": "Josh Fechter",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"josh\", \"fechter\""
+    },
+    {
+     "name": "Peter Morrow",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"peter\", \"morrow\""
+    },
+    {
+     "name": "Moxie T. Anderson",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"moxie\", \"anderson\""
+    },
+    {
+     "name": "Dhaval Bhatt",
+     "detail": "a heading on /about-us/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"dhaval\", \"bhatt\""
+    },
+    {
+     "name": "1,000 AI credits/month",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"1\", \"000\", \"credit\", \"month\""
+    },
+    {
+     "name": "Test full book and screenplay creation",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"test\", \"full\", \"screenplay\""
+    },
+    {
+     "name": "See how your idea turns into a real manuscript",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"see\", \"how\", \"idea\", \"turn\""
+    },
+    {
+     "name": "10,000 AI credits/month",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"10\", \"000\", \"credit\", \"month\""
+    },
+    {
+     "name": "Generate full-length manuscripts",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"generate\", \"full\", \"length\", \"manuscript\""
+    },
+    {
+     "name": "Generate a full 200-300 page book",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"generate\", \"full\", \"200\", \"300\""
+    },
+    {
+     "name": "Keep characters, plot, and structure consistent (no rewrites)",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"keep\", \"character\", \"plot\", \"structure\""
+    },
+    {
+     "name": "Edit your entire manuscript instantly with AI",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"edit\", \"entire\", \"manuscript\", \"instantly\""
+    },
+    {
+     "name": "Export project to PDF and DOCX",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"export\", \"project\", \"pdf\", \"docx\""
+    },
+    {
+     "name": "All features from Plus",
+     "detail": "a list item on /pricing/",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"feature\", \"plu\""
+    },
+    {
+     "name": "Unlimited AI credits",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"unlimit\", \"credit\""
+    },
+    {
+     "name": "Generate as many books as you want",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/books/ shows \"book\"; not \"generate\", \"many\", \"want\""
+    },
+    {
+     "name": "Never run out of credits mid-project",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"never\", \"run\", \"out\", \"credit\""
+    },
+    {
+     "name": "Perfect for authors, creators, and businesses",
+     "detail": "a list item on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/books/ shows none of its words; not \"perfect\", \"author\", \"creator\", \"businesse\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Turn Your Idea into a Story",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Generate a full-length screenplay",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Generate your story outline",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Write alongside an intelligent co-author",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Create and edit different elements",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Transform text into visuals",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Writers worldwide choose Squibler",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Experience Squibler Today",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "About Squibler",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Legal",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Plans & Account",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Resources",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Tutorials for Using Squibler",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Welcome to Squibler! Let’s Get Started",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Pick a plan that fits your writing style",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Our Story",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Our Mission",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "To empower everyone to become great storytellers",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Leadership",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Josh Fechter",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Peter Morrow",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Moxie T. Anderson",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Dhaval Bhatt",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "1,000 AI credits/month",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "See how your idea turns into a real manuscript",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "10,000 AI credits/month",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Generate full-length manuscripts",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Generate a full 200-300 page book",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Keep characters, plot, and structure consistent (no rewrites)",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Edit your entire manuscript instantly with AI",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Export project to PDF and DOCX",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "All features from Plus",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Unlimited AI credits",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Never run out of credits mid-project",
+   "sites": [
+    "squibler.io"
+   ]
+  },
+  {
+   "name": "Perfect for authors, creators, and businesses",
+   "sites": [
+    "squibler.io"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-10-28",
+  "queued": []
+ }
+}

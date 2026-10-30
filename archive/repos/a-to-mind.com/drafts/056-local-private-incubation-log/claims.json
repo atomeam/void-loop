@@ -1,0 +1,30 @@
+{
+  "slug": "local-private-incubation-log",
+  "run": "056",
+  "family": "private incubation log",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "default": "deny",
+  "hypothesis": "A set-aside problem plus a later return note can be stored as a hashed hypothesis. Sleep-onset imagery is not treated as insight, contact, or a sleep-stage measurement.",
+  "sources": [
+    {
+      "id": "lacaux-2021-n1",
+      "label": "Lacaux et al., Science Advances 2021, eabj5866",
+      "observation": "In a number-reduction task, participants with at least 15 seconds of N1 during a break discovered a hidden rule more often than a wake group; the paper reports the gain disappeared in N2.",
+      "claim": "A brief sleep-onset window is a creative sweet spot.",
+      "inference": "Design material for a set-aside and return-note log. Not a general creativity law and not a reason to ship a sleep detector.",
+      "confidence": 0.34,
+      "status": "unattested"
+    },
+    {
+      "id": "edison-object-drop",
+      "label": "Historical object-drop anecdote, cited as a detection trick in Lacaux et al.",
+      "observation": "Public retellings say Edison and Dali held an object so a drop would wake them near sleep onset.",
+      "claim": "The drop detects the creative window.",
+      "inference": "Anecdote only. Void does not ship an audio drop, glove, or wearable.",
+      "confidence": 0.12,
+      "status": "unattested"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypto market caps: the 50 largest coins by market cap · Verse</title>
+<meta name="description" content="The 50 largest coins by market cap with price, 24 hour and 7 day moves and volume, sortable and searchable. Coins only: company market caps need data no free source gives. Prices may be delayed. No ads, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Crypto market caps · Verse">
+<meta property="og:description" content="The 50 largest coins by market cap with price, 24 hour and 7 day moves and volume, sortable and searchable. Coins only: company market caps need data no free source gives. Prices may be delayed. No ads, no account.">
+<meta property="og:url" content="https://a-to-mind.com/markets/caps/">
+<meta property="og:image" content="https://a-to-mind.com/og/markets.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://a-to-mind.com/og/markets.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/markets/caps/">
+<style>
+  /* a-to-mind.com/markets/caps/ (a page of the markets floor): one file and lib/markets.js; nothing is kept on the device */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 12px; }
+  input, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; min-height: 44px; box-sizing: border-box; }
+  input:focus-visible, button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin: 8px 0 0; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  label.f { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--soft); } label.f input, label.f select { width: 8.5em; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px; table-layout: fixed; }
+  th, td { text-align: right; padding: 0 3px; overflow: hidden; height: 56px; border-top: 1px solid var(--line); white-space: nowrap; }
+  th { height: 40px; font-size: 12px; font-weight: 600; color: var(--soft); border-top: 0; height: 40px; } th button { border: 0; padding: 4px 6px; min-height: 40px; font-size: 12px; font-weight: 600; color: var(--soft); border-radius: 8px; }
+  td:nth-child(2), th:nth-child(2) { text-align: left; width: 31%; } th:nth-child(3), th:nth-child(5) { width: 24%; } th:nth-child(4) { width: 19%; } td:nth-child(2) { line-height: 1.2; } td div, td small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } td > div > svg { display: block; margin-left: auto; } td:nth-child(2) small { display: block; margin-left: 0; font-size: 11px; } td small { line-height: 1.2; } th:first-child { width: 1.8em; } td:first-child, th:first-child { text-align: left; width: 2.2em; color: var(--soft); }
+  td small { color: var(--soft); font-size: 12px; margin-left: 4px; } td a { color: inherit; text-decoration: none; font-weight: 600; }
+  .wide { display: none; } @media (min-width: 600px) { .wide { display: table-cell; } }
+  .box { border: 1px solid var(--line); border-radius: 14px; background: var(--box); padding: 4px 8px; margin-top: 12px; }
+  .note { font-size: 13px; color: var(--soft); margin: 8px 0 0; min-height: 1.5em; }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 14px 0 4px; font-size: 13px; } .tk-label { color: var(--soft); }
+  .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
+  .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a, footer a { color: inherit; } footer { font-size: 12px; color: var(--soft); margin-top: 18px; text-align: center; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Crypto market caps</h1>
+  <p class="sub" id="sub">The 50 largest coins by market cap, in US dollars. Prices may be delayed. No ads, no account.</p>
+  <div class="row"><label class="f" style="flex:1 1 200px"><span>Find a coin</span><input type="search" id="q" placeholder="Bitcoin, ETH, ..." maxlength="40" autocapitalize="off" spellcheck="false" style="width:100%"></label><span id="total" class="note" style="margin:0 0 10px" role="status">Total market cap of these 50: –</span></div>
+  <div class="box"><table id="t"><caption class="vh">Coins by market cap</caption><thead><tr><th scope="col"><button type="button" data-k="rank" aria-label="Sort by rank">#</button></th><th scope="col"><button type="button" data-k="name">Coin</button></th><th scope="col"><button type="button" data-k="price">Price</button></th><th scope="col"><button type="button" data-k="pct24">24h</button></th><th scope="col"><button type="button" data-k="cap">Mkt cap</button></th></tr></thead><tbody id="tb"><tr><td>1</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>2</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>3</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>4</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>5</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>6</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>7</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>8</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>9</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>10</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>11</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>12</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>13</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>14</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>15</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>16</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>17</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>18</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>19</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>20</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>21</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>22</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>23</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>24</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>25</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>26</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>27</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>28</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>29</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>30</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>31</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>32</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>33</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>34</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>35</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>36</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>37</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>38</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>39</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>40</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>41</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>42</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>43</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>44</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>45</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>46</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>47</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>48</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>49</td><td>–</td><td>–</td><td>–</td><td>–</td></tr><tr><td>50</td><td>–</td><td>–</td><td>–</td><td>–</td></tr></tbody></table></div>
+  <p class="note">The small line under each 24h move is the 7d chart. Press ☆ beside a coin to keep it on your watchlist, on this device; the watchlist is on the <a href="/markets/">quotes page</a>.</p>
+  <p class="note" id="note" role="status">Coins only. Company market caps, the ranking of shares by size, need share counts that no free source gives without a key, so Verse does not list them: for one company’s price use <a href="/markets/">quotes</a>.</p>
+  <div class="row"><button type="button" id="share">Share link</button></div>
+  <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
+  <p class="srcs">Prices and market caps are CoinGecko’s free public data, kept two to five minutes and shown as they came; they may be delayed. Not financial advice.</p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  addEventListener('load', async () => {
+    const M = await import('/lib/markets.js'), $ = (id) => document.getElementById(id);
+    $('share').addEventListener('click', async () => { const b = $('share'), url = location.href; if (navigator.share) { try { await navigator.share({ title: document.title, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } } const w = b.textContent; try { await navigator.clipboard.writeText(url); b.textContent = 'Copied'; } catch (_) { b.textContent = 'Select the address bar'; } setTimeout(() => { b.textContent = w; }, 1200); });
+    let rows = [], key = 'rank', dir = 1;
+    const KEY = 'a2m.void.markets.v1', mine = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'); return Array.isArray(v.list) ? v.list : []; } catch (_) { return []; } };
+    const toggle = (sym) => { try { const v = JSON.parse(localStorage.getItem(KEY) || '{}'), l = Array.isArray(v.list) ? v.list : []; v.list = l.includes(sym) ? l.filter((x) => x !== sym) : l.concat(sym).slice(0, 20); localStorage.setItem(KEY, JSON.stringify(v)); } catch (_) {} };
+    const spark = (td, vals, up) => { td.replaceChildren(); const d = M.sparkD(vals); if (!d) return; const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), p = document.createElementNS(NS, 'path'); svg.setAttribute('viewBox', '0 0 80 24'); svg.setAttribute('width', '80'); svg.setAttribute('height', '24'); svg.setAttribute('aria-hidden', 'true'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.6'); p.style.stroke = up ? 'var(--up)' : 'var(--down)'; svg.append(p); td.append(svg); };
+    const cell = (td, t, cls) => { td.textContent = t; td.className = (td.className.replace(/\b(up|down)\b/g, '') + ' ' + (cls || '')).trim(); };
+    const pct = (v) => (v == null ? '–' : (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%');
+    const short = (v) => { for (const [n, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M']]) if (v >= n) return +(v / n).toPrecision(3) + u; return String(Math.round(v)); };
+    const usd = (v) => (v == null ? '–' : v >= 1000 ? '$' + Math.round(v).toLocaleString('en-US') : '$' + M.fmtPrice(v));
+    function draw() {
+      const f = $('q').value.trim().toLowerCase(), shown = rows.filter((r) => !f || r.name.toLowerCase().includes(f) || r.sym.toLowerCase() === f).sort((a, b) => (key === 'name' ? a.name.localeCompare(b.name) : (a[key] ?? -Infinity) - (b[key] ?? -Infinity)) * (key === 'rank' || key === 'name' ? dir : -dir));
+      const trs = [...$('tb').children];
+      trs.forEach((tr, i) => { const r = shown[i], td = tr.children; if (!r) { tr.hidden = true; return; } tr.hidden = false;
+        cell(td[0], String(r.rank)); td[1].replaceChildren(); const star = document.createElement('button'), on = mine().includes(r.sym); star.type = 'button'; star.textContent = on ? '★' : '☆'; star.setAttribute('aria-pressed', String(on)); star.setAttribute('aria-label', (on ? 'Remove ' : 'Add ') + r.name + ' ' + (on ? 'from' : 'to') + ' the watchlist'); star.style.cssText = 'border:0;padding:0;min-width:28px;min-height:32px;text-align:left;line-height:1'; star.addEventListener('click', () => { toggle(r.sym); draw(); }); const a = document.createElement('a'); a.href = '/markets/?s=' + encodeURIComponent(r.sym); a.textContent = r.name; const s = document.createElement('small'); s.textContent = r.sym; const nm = document.createElement('div'); nm.append(star, a); td[1].append(nm, s);
+        cell(td[2], usd(r.price)); cell(td[3], '', ''); td[3].replaceChildren(); const m = document.createElement('div'); m.textContent = pct(r.pct24); m.className = r.pct24 == null ? '' : r.pct24 >= 0 ? 'up' : 'down'; td[3].append(m); const sp = document.createElement('div'); spark(sp, r.spark, (r.pct7 ?? r.pct24 ?? 0) >= 0); td[3].append(sp);
+        td[4].replaceChildren(); const c = document.createElement('div'); c.textContent = r.cap == null ? '–' : '$' + short(r.cap); const v = document.createElement('small'); v.style.cssText = 'display:block;margin:0'; v.textContent = 'Vol 24h ' + (r.vol == null ? '–' : '$' + short(r.vol)); td[4].append(c, v);
+        const sm = td[1].querySelector('small'); sm.textContent = r.sym + ' · 7d ' + pct(r.pct7);; });
+    }
+    $('q').addEventListener('input', draw);
+    document.querySelector('thead').addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (!b) return; if (key === b.dataset.k) dir = -dir; else { key = b.dataset.k; dir = 1; } draw(); });
+    // the daily snapshot first (committed by .github/workflows/coins-snapshot.yml, labelled as a snapshot and never as live), then the live list when it answers
+    const label = (t, extra) => { $('total').textContent = 'Total market cap of these ' + rows.length + ': $' + M.fmtBig(rows.reduce((a, r) => a + (r.cap || 0), 0)) + ' · ' + t + (extra ? ' ' + extra : ''); };
+    const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.caps) && snap.caps.length >= 10;
+    if (have) { rows = snap.caps; label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices are loading.'); draw(); }
+    let j; try { j = await (await fetch('/api/markets?caps=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2000)); j = await (await fetch('/api/markets?caps=1')).json(); } } catch (_) { j = { ok: false }; }
+    if (j.ok) { rows = j.coins; label('Live, as of ' + new Date(j.at).toISOString().slice(0, 16).replace('T', ' ') + ' UTC.'); draw(); return; }
+    if (have) { label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices did not answer just now.'); return; }
+    $('note').textContent = 'The coin list could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

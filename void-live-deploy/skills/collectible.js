@@ -74,7 +74,8 @@ async function run(text, api) {
   let el = null; for (let i = 0; i < 60 && !el; i++) { const c = document.querySelector('.vpage.on.vcard'); if (c && c !== before && c._vcard) el = c; else await wait(100); } // the subject's own answer frames its card
   if (!el) { const c = document.querySelector('.vpage.on'); if (c && c !== before) el = c; } // not framed yet: the page frames it once this skill returns
   if (!el) { api.say('no card came back for ' + subject); return 'collectible'; }
-  el.dataset.collect = subject; el.classList.add('vc-collect'); strip(el);
+  el.dataset.collect = subject; el.dataset.deckKind = 'collectible'; // the binder files it as a collectible (lib/card-deck.js)
+  el.classList.add('vc-collect'); strip(el);
   let asked = false; const paintOnce = () => { if (!asked && el._vcard) { asked = true; paintNow(el); } }; // the real painting of the subject (lib/card-forge.js), over the void art once it lands
   setTimeout(paintOnce, 600);
   // the frame is rebuilt as the answer's facts arrive: put the strip back when that happens

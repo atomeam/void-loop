@@ -22,7 +22,7 @@ test('the one line is the first sentence of the header after the skill name, wit
   assert.equal(oneLine('/**\n * clock miniature — a brass desk clock that keeps real time.\n */', 'clock'), 'A brass desk clock that keeps real time');
   assert.equal(oneLine('/**\n * Card\'s miniature: a 12 cm hourglass, glass bulbs in a turned walnut frame.\n */', 'timer'), 'A 12 cm hourglass, glass bulbs in a turned walnut frame');
   assert.equal(oneLine('// no block comment', 'x'), '');
-  assert.ok(oneLine('/**\n * long skill — ' + 'word '.repeat(60) + '\n */', 'long').length <= 171, 'a long line is cut at a word');
+  assert.ok(oneLine('/**\n * long skill — ' + 'word '.repeat(60) + '\n */', 'long').endsWith('word'), 'a long line is kept whole (owner, 2026-10-21)');
 });
 
 test('examples, near misses, family parts and header asks are read off a skill file\'s text', () => {

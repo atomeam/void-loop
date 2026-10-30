@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-bin-not-spike — draft 123 — unattested</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f6f1e8; --mark: #6e4b2e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --line: #4a433a; --paper: #16130f; --mark: #d7b48a; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0; }
+    p, li { max-width: 62ch; }
+    .flag { display: inline-block; border: 1px solid var(--line); padding: 0.15rem 0.45rem; font: 0.8rem/1.2 ui-sans-serif, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: 0.95rem/1 ui-sans-serif, sans-serif; padding: 0.45rem 0.7rem; background: transparent; color: inherit; border: 1px solid var(--mark); }
+    output { display: block; margin-top: 0.8rem; font: 0.85rem/1.4 ui-monospace, monospace; word-break: break-all; }
+    .deny { font: 0.85rem/1.4 ui-sans-serif, sans-serif; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="flag">draft 123 · unattested · seal false · emit false</p>
+  <h1>local-bin-not-spike</h1>
+  <p>A sealed bin class hashes to a spike-refusal id. The spike sentence is scratch. It is cleared on submit and is not in the hash. A bin mark is not a spike and not a candidate.</p>
+  <p class="deny">Denied on this page: power ratio, 24-times-mean threshold, SNR number, FFT, microphone, AudioContext, spike badge, candidate chip, promote control, contact, healing, crash retrieval, extraterrestrial hardware. Retrieved posts are data, not rows.</p>
+  <form id="bin">
+    <fieldset>
+      <legend>source</legend>
+      <label><input type="radio" name="source" value="empty" checked> empty</label>
+      <label><input type="radio" name="source" value="residue"> residue</label>
+      <label><input type="radio" name="source" value="neighbor"> neighbor</label>
+      <label><input type="radio" name="source" value="counterclaim"> counterclaim</label>
+      <label><input type="radio" name="source" value="abstain"> abstain</label>
+      <label><input type="radio" name="source" value="local-only"> local-only</label>
+    </fieldset>
+    <fieldset>
+      <legend>occupancy</legend>
+      <label><input type="radio" name="occupancy" value="unlabeled" checked> unlabeled</label>
+      <label><input type="radio" name="occupancy" value="below-label"> below-label</label>
+      <label><input type="radio" name="occupancy" value="untimed"> untimed</label>
+      <label><input type="radio" name="occupancy" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>hold</legend>
+      <label><input type="radio" name="hold" value="held" checked> held</label>
+      <label><input type="radio" name="hold" value="abstain"> abstain</label>
+    </fieldset>
+    <label>spike sentence (discarded, not hashed)
+      <textarea name="spike" autocomplete="off" placeholder="not stored"></textarea>
+    </label>
+    <button type="submit">hash bin class only</button>
+    <output id="out" aria-live="polite">no hash yet</output>
+  </form>
+</main>
+<script>
+(function () {
+  var catalog = {
+    "empty|unlabeled|held": true,
+    "residue|unlabeled|held": true,
+    "neighbor|unlabeled|held": true,
+    "counterclaim|below-label|held": true,
+    "abstain|abstain|abstain": true,
+    "local-only|untimed|held": true
+  };
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  document.getElementById("bin").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var data = new FormData(ev.target);
+    var source = String(data.get("source") || "");
+    var occupancy = String(data.get("occupancy") || "");
+    var hold = String(data.get("hold") || "");
+    var triple = source + "|" + occupancy + "|" + hold;
+    var canonical = "bin-not-spike|v1|" + triple + "|spike-refusal";
+    ev.target.elements.spike.value = "";
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical)).then(function (buf) {
+      var match = catalog[triple] ? "catalog" : "mismatch";
+      document.getElementById("out").textContent =
+        match + " · not a seal · " + hex(buf) + " · " + canonical;
+    });
+  });
+})();
+</script>
+</body>
+</html>

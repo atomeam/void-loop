@@ -1,0 +1,71 @@
+{
+ "chars": 120000,
+ "orders": {
+  "0": {
+   "bpc": 4.875,
+   "contexts": 1,
+   "ms": 48
+  },
+  "1": {
+   "bpc": 3.881,
+   "contexts": 96,
+   "ms": 40
+  },
+  "2": {
+   "bpc": 3.128,
+   "contexts": 2372,
+   "ms": 67
+  },
+  "3": {
+   "bpc": 2.756,
+   "contexts": 12955,
+   "ms": 85
+  },
+  "4": {
+   "bpc": 2.73,
+   "contexts": 39786,
+   "ms": 198
+  },
+  "5": {
+   "bpc": 2.809,
+   "contexts": 85991,
+   "ms": 194
+  },
+  "6": {
+   "bpc": 2.896,
+   "contexts": 149193,
+   "ms": 307
+  }
+ },
+ "gzip9_bpc": 3.086,
+ "sweep": {
+  "0.35": {
+   "testChars": 15000,
+   "keystrokes": 11932,
+   "saved_pct": 20.5,
+   "accept_rate": 0.261,
+   "offers": 8359
+  },
+  "0.5": {
+   "testChars": 15000,
+   "keystrokes": 11776,
+   "saved_pct": 21.5,
+   "accept_rate": 0.453,
+   "offers": 5809
+  },
+  "0.65": {
+   "testChars": 15000,
+   "keystrokes": 12305,
+   "saved_pct": 18,
+   "accept_rate": 0.66,
+   "offers": 4080
+  },
+  "0.8": {
+   "testChars": 15000,
+   "keystrokes": 12991,
+   "saved_pct": 13.4,
+   "accept_rate": 0.828,
+   "offers": 2919
+  }
+ }
+}

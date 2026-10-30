@@ -1,0 +1,130 @@
+{
+  "floor": "is it",
+  "verse_page": "/is-it/christmas",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "isitchristmas.com": {
+      "sources": [
+        "https://isitchristmas.com/",
+        "https://github.com/isitchristmas",
+        "https://github.com/isitchristmas/flags",
+        "https://github.com/isitchristmas/data",
+        "https://github.blog/news-insights/is-it-christmas",
+        "https://changelog.com/news/nm0",
+        "https://web-rehearsal.ifttt.com/isitchristmas",
+        "https://obscure-internet-press.fandom.com/wiki/Isitchristmas.com"
+      ],
+      "features": [
+        {
+          "name": "One giant YES/NO word",
+          "detail": "the whole page is one word answering the question",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "functions/is-it/[what].js page(): <h1 id=\"w\"> sized to the screen"
+        },
+        {
+          "name": "Answer in the visitor's language",
+          "detail": "the word is localised (the site guesses from the IP / geolocation)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js WORDS: 60 languages from the browser's Accept-Language / navigator.languages"
+        },
+        {
+          "name": "Works with JavaScript off",
+          "detail": "the answer is in the served HTML",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "functions/is-it/[what].js renders the page on the server"
+        },
+        {
+          "name": "Live crowd of visitors' flags",
+          "detail": "in Christmas week every visitor is a moving flag of their country, live over websockets",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js \"Everyone here\" switch, public-is-it relay room, joins by itself 24-26 December"
+        },
+        {
+          "name": "Turn your own flag",
+          "detail": "scroll wheel / arrow keys turn your flag 15 degrees, middle click straightens it; others see it",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js turn(): wheel, ArrowLeft/Right, auxclick"
+        },
+        {
+          "name": "Country legend on hover",
+          "detail": "hovering a flag names its country",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js f.title = regionName(fl)"
+        },
+        {
+          "name": "Flag set covering territories",
+          "detail": "flags for sovereign nations plus gathered territory flags (isitchristmas/flags repo)",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "skills/is-it.js flagOf() draws emoji regional-indicator flags only; no custom territory flags"
+        },
+        {
+          "name": "RSS feed",
+          "detail": "a feed that says NO every day and YES on Christmas",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "functions/is-it/[what].js feed(): /is-it/<day>.rss and ?only=yes"
+        },
+        {
+          "name": "JSON / IFTTT answer service",
+          "detail": "an IFTTT service and API returning YES or NO",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "/is-it/<day>.json exists (answerJson); no IFTTT or other automation-platform listing"
+        },
+        {
+          "name": "Official iPhone and Android apps",
+          "detail": "open-sourced mobile apps that answer the question",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "no native app; the page installs offline via sw.js only"
+        },
+        {
+          "name": "Open-source code and published visit data",
+          "detail": "site, apps, flags and connection counts published on GitHub",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "this repository is public; no published per-country visit data"
+        },
+        {
+          "name": "Festive effects on the day",
+          "detail": "Christmas decorations / snow on the day",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js snowfall and the midnight wave 24-26 December"
+        },
+        {
+          "name": "Console easter eggs",
+          "detail": "messages for the curious in the browser console",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "skills/is-it.js window.verse.isIt()"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Any day, not only Christmas: Halloween, Easter, Thanksgiving, Fridays, leap years and more (skills/is-it.js DAYS)",
+    "Live countdown to the next one, flipping by itself at your midnight",
+    "The midnight wave: Christmas followed round 36 places from Kiritimati to Pago Pago",
+    "Language asked for in words (\"is it christmas in french\")",
+    "Language from the device, never guessed from the network",
+    "RSS that stays silent until the day (?only=yes)",
+    "Share button using the phone share sheet",
+    "Opens offline after one visit",
+    "Ripple on tap and a flag stamp on long press, shared with the crowd"
+  ],
+  "gaps": [
+    "Official iPhone and Android apps",
+    "Flag set covering territories",
+    "JSON / IFTTT answer service",
+    "Open-source code and published visit data"
+  ]
+}

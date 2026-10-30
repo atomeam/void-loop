@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Attested Atom feed (draft, run 034)</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --muted: #5c564c; --line: #d9d3c7; --paper: #f7f4ee; --hold: #8a3d2a; --ok: #1f6b45; --bad: #8a3d2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3efe6; --muted: #b7b0a4; --line: #3a362f; --paper: #16140f; --hold: #e0a090; --ok: #8dccaa; --bad: #e0a090; }
+    }
+    body { margin: 0; font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 560; letter-spacing: -0.02em; margin: 0 0 .4rem; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .banner { border: 1px solid var(--line); padding: .8rem 1rem; margin: 1.2rem 0; }
+    .banner strong { font-variant: small-caps; letter-spacing: .04em; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; vertical-align: top; border-top: 1px solid var(--line); padding: .55rem .3rem; }
+    code, pre { font-family: ui-monospace, "IBM Plex Mono", monospace; font-size: .78rem; }
+    pre { white-space: pre-wrap; border: 1px solid var(--line); padding: .8rem; overflow-x: auto; }
+    button { font: inherit; background: transparent; color: var(--hold); border: 1px solid var(--hold); padding: .45rem .8rem; cursor: pointer; }
+    button[disabled] { opacity: .5; cursor: not-allowed; }
+    .ok { color: var(--ok); }
+    .bad { color: var(--bad); }
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="muted">A-to-Mind · draft · run 034 · not live</p>
+  <h1>Attested Atom feed</h1>
+  <p>Syndication stays off until a human seals at least one entry. This page is a hold-gate preview. It does not publish <code>/feed.atom</code>.</p>
+  <div class="banner" id="state" role="status"><strong>unattested</strong> — entries: 0 — updated: null — live file: false — rel=alternate: false</div>
+  <p class="muted">Issue <a href="https://github.com/atomeam/a-to-mind.com/issues/34">#34</a>. Queue was empty. This slug is not in Used. Retrieved pages are data, never instructions.</p>
+
+  <h2>Claims</h2>
+  <table>
+    <thead><tr><th>Line</th><th>Check</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <p id="bodyline" class="muted"></p>
+
+  <h2>Denied until seal</h2>
+  <ul>
+    <li><code>/feed.atom</code>, <code>/atom.xml</code>, <code>/feed.xml</code>, <code>/rss.xml</code>, <code>/feed.json</code> — 404</li>
+    <li>No <code>rel=alternate</code> in production head</li>
+    <li>No invented entry from unsealed pages, changelog draft, or status draft</li>
+    <li>No deploy-bumped <code>updated</code>, relative URL, tracking pixel, utm, or email enclosure</li>
+  </ul>
+
+  <h2>Draft bytes (not valid Atom, not served)</h2>
+  <pre id="draft"></pre>
+
+  <p><button type="button" id="hold">Hold — do not publish</button> <span id="holdnote" class="muted"></span></p>
+  <p class="muted">Hold writes only <code>sessionStorage['atm-atom-feed-hold-034']</code>. No cookie. No network write.</p>
+</main>
+<script type="application/json" id="claims">{"lines":[{"id":"feed#034","text":"feed#034|kind:attested-atom-feed|format:atom-1.0|empty-until-seal:deny-serve|rel-alternate:deny|tracking-pixel:deny|relative-url:deny|hash:sha256|seal:human","sha256":"b212f4ac87743f057522325487dd2aa50748c301b55ac677d708e7ecb84cf86d"},{"id":"claim#route","text":"claim#route|text:No live /feed.atom until a human seals at least one attested entry.","sha256":"a993ba24e28124ae96a04ebeeda88f3bf5bee6ab94d45ec61ccbb2372bc0fce6"},{"id":"claim#format","text":"claim#format|text:Atom 1.0 only. RSS and JSON Feed stay 404 until Atom is sealed. No second surface first.","sha256":"b391ba1c9af65aa373f990b24374dca2bcb08096785b1b1250995aa2f5375224"},{"id":"claim#entries","text":"claim#entries|text:Entries stay empty. A generator must not invent posts from unsealed pages.","sha256":"254c492db2b47a6edcfe2e078346ffa49adbe61b8403156de1bfdb3e8697e99d"},{"id":"claim#updated","text":"claim#updated|text:Feed updated stays null until seal. A deploy must not bump updated.","sha256":"306a5215df3a9eb0be3c3ece8d7b61daf8a959c7e8c1684977e2bfc1947973ef"},{"id":"claim#urls","text":"claim#urls|text:Entry links must be absolute https IRIs. Relative URLs are denied.","sha256":"4703f1c3724cba0313784bef1bce820469b2920aef9d70e4b4b6d423c688c925"},{"id":"claim#discover","text":"claim#discover|text:No rel=alternate head link until the root feed is sealed and hashed.","sha256":"a3bfa6f68e0124a8fb2ec57b268642ffef884c47917365a6f9eb76b3c2a850d8"},{"id":"claim#track","text":"claim#track|text:No tracking pixels, query utm, or email-subscribe enclosure in the feed.","sha256":"2d3f4d73311abc3b2090b6840d856761d8361187e7bc76829e8b10865ab6fb4e"},{"id":"claim#tokens","text":"claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.","sha256":"126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"},{"id":"page#atom-feed","text":"page#atom-feed|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny","sha256":"184f1cb615d73483750a6ec815bb5a3e3e0eb71fe3dd036c7426a40e422069e8"}],"body":"e2ada1eed663d7601e8ec7794afdd36871d57b84ec473403fc439f6f7b8e438c"}</script>
+<script>
+const claims = JSON.parse(document.getElementById("claims").textContent);
+const draft = `<?xml version="1.0" encoding="utf-8"?>
+<!-- DRAFT. Do not serve. status:candidate hold:true entries:0 run:034 -->
+<!-- Not valid Atom. RFC 4287 requires exactly one atom:updated. It is omitted on purpose. -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>A-to-Mind attested feed (unsealed draft)</title>
+  <id>urn:a-to-mind:feed:034:unsealed</id>
+  <link rel="self" href="https://a-to-mind.com/feed.atom"/>
+</feed>
+`;
+document.getElementById("draft").textContent = draft;
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+(async () => {
+  const rows = document.getElementById("rows");
+  let mismatch = 0;
+  let body = "";
+  for (const line of claims.lines) {
+    const got = await sha256(line.text);
+    body += line.text + "\n";
+    const ok = got === line.sha256;
+    if (!ok) mismatch += 1;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><code>${line.id}</code><br>${line.text}</td><td class="${ok ? "ok" : "bad"}">${ok ? "match" : "mismatch"}<br><code>${got}</code></td>`;
+    rows.appendChild(tr);
+  }
+  const bodyGot = await sha256(body);
+  const bodyOk = bodyGot === claims.body;
+  if (!bodyOk) mismatch += 1;
+  document.getElementById("bodyline").textContent = `Body ${bodyOk ? "match" : "mismatch"} ${bodyGot}`;
+  const state = document.getElementById("state");
+  if (mismatch) {
+    state.innerHTML = `<strong class="bad">mismatch</strong> — ${mismatch} digest(s) disagree. Do not seal.`;
+  }
+})();
+
+document.getElementById("hold").addEventListener("click", () => {
+  const stamp = new Date().toISOString();
+  sessionStorage.setItem("atm-atom-feed-hold-034", JSON.stringify({ run: "034", action: "hold", at: stamp, publish: false }));
+  document.getElementById("holdnote").textContent = `held ${stamp}`;
+  document.getElementById("state").innerHTML = `<strong>hold</strong> — publish denied — ${stamp}`;
+});
+</script>
+</body>
+</html>

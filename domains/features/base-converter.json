@@ -1,0 +1,76 @@
+{
+  "floor": "base converter",
+  "verse_page": "/base-converter/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "hextobinary.com": {
+      "sources": [
+        "https://hextobinary.com/"
+      ],
+      "features": [
+        {
+          "name": "Hex to binary conversion",
+          "detail": "type hex, get binary",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Binary / Hex boxes follow each other"
+        },
+        {
+          "name": "Binary, octal, decimal, hex both ways",
+          "detail": "converter pages between each pair (unconfirmed list)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "four boxes, type in any"
+        },
+        {
+          "name": "Step-by-step working",
+          "detail": "how each digit maps (unconfirmed)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "How it is worked out: into decimal by place values (FF₁₆ = 15×16¹ + 15×16⁰), out of decimal by dividing with the remainders read upwards, hex and octal to binary a digit at a time, a fraction by multiplying (lib/baseconv.js stepsToDecimal, stepsFromDecimal, stepsFraction)"
+        },
+        {
+          "name": "Digit mapping table",
+          "detail": "hex digit to 4-bit binary table (unconfirmed)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Hex digits in binary and decimal: the 0 to F table"
+        },
+        {
+          "name": "Fractions and floating point",
+          "detail": "hex/binary fractions or IEEE 754 (unconfirmed)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "fractions in every base, exact, a repeating part in brackets (0.1 is 0.0(0011) in binary); no IEEE 754 view (lib/baseconv.js parseReal, formatReal)"
+        },
+        {
+          "name": "Other bases (3 to 36)",
+          "detail": "any radix (unconfirmed)",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "a fifth box with a base from 3 to 36"
+        },
+        {
+          "name": "Text / ASCII to hex and binary",
+          "detail": "(unconfirmed)",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"As text:\" shown for printable values; no text-in box"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Exact at any size (BigInt, 4,096 digits)",
+    "Signed two's-complement reading",
+    "Bits needed",
+    "0x / 0b / 0o prefixes and spaces understood",
+    "Copy each base",
+    "Link that opens on the number",
+    "No ads or third-party scripts"
+  ],
+  "gaps": [
+    "Text / ASCII to hex and binary"
+  ]
+}

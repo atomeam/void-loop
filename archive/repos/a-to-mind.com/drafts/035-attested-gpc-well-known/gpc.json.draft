@@ -1,0 +1,5 @@
+{
+  "do_not_publish": true,
+  "reason": "Run 035 candidate. Queue empty. Do not copy this object to /.well-known/gpc.json. Spec default is unknown when the resource is absent. gpc true is denied until a human seals sale and share behavior.",
+  "would_be_served": null
+}

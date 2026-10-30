@@ -23,8 +23,12 @@ export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   if (!m) { const sm = t.match(new RegExp('^(?:please\\s+)?(?:pick|choose|suggest|recommend|find)\\s+(?:me\\s+|us\\s+)?(?:a\\s+|an\\s+|some\\s+|the\\s+)?(?:good\\s+|great\\s+|nice\\s+)?(?:tv\\s+)?(?:shows?|series)(?:\\s+to\\s+watch)?' + tail + '$')); if (sm) return { kind: 'show', chosen: false }; }
   m = t.match(new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?|what\\s+(?:should|shall)\\s+(?:i|we)\\s+(?:do\\s+)?)?(?:something|anything)?\\s*(?:to\\s+)?(watch|listen\\s+to|hear)' + tail + '$'));
   if (m && /^(?:pick|choose|suggest|recommend|find|give)|something|anything|^what/.test(t)) return { kind: VERB[m[1].replace(/\s+to$/, '').replace('hear', 'listen')] || null, chosen: false };
-  m = t.match(new RegExp('^(?:please\\s+)?what\\s+should\\s+(?:i|we)\\s+(watch|listen\\s+to)' + tail + '$'));
+  const on = '(?:\\s+on\\s+(?:netflix|hulu|prime(?:\\s+video)?|disney\\+?|max|hbo(?:\\s+max)?|apple\\s+tv\\+?|peacock|paramount\\+?|youtube|spotify|tv))?';
+  m = t.match(new RegExp('^(?:please\\s+)?what\\s+should\\s+(?:i|we)\\s+(watch|listen\\s+to)' + on + tail + '$'));
   if (m) return { kind: VERB[m[1].replace(/\s+to$/, '')], chosen: false };
+  // "good movies to watch tonight", "some good songs to listen to": a pick asked by what it is, with no verb in front
+  m = t.match(new RegExp('^(?:some\\s+|any\\s+)?(?:good|great|best|fun|new)\\s+(\\w+)\\s+to\\s+(?:watch|stream|listen\\s+to|hear)' + on + tail + '$'));
+  if (m) for (const k of Object.keys(NOUN)) if (NOUN[k].test(m[1])) return { kind: k, chosen: false };
   if (new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?)?(?:something|anything)' + tail + '$').test(t) && /^(?:pick|choose|suggest|recommend|find|give)/.test(t)) {
     const ks = Object.keys(KINDS); return { kind: ks[((day % ks.length) + ks.length) % ks.length], chosen: true };
   }
@@ -120,7 +124,7 @@ export function pickShow(j, title, year) {
   if (!j || typeof j !== 'object' || normTitle(j.name) !== normTitle(title)) return null;
   const y = cleanYear(year), py = cleanYear(String(j.premiered || '').slice(0, 4)); if (y && py && Math.abs(py - y) > 1) return null;
   const seasons = (j._embedded && Array.isArray(j._embedded.seasons) ? j._embedded.seasons : []).filter((x) => x && x.number > 0), eps = seasons.reduce((n, x) => n + (+x.episodeOrder > 0 ? +x.episodeOrder : 0), 0);
-  const sum = strip(j.summary), cut = sum.length > 240 ? sum.slice(0, 240).replace(/\s+\S*$/, '') + '…' : sum, net = (j.network && j.network.name) || (j.webChannel && j.webChannel.name) || '';
+  const sum = strip(j.summary), cut = sum, net = (j.network && j.network.name) || (j.webChannel && j.webChannel.name) || '';
   return {
     title: cleanTitle(j.name), year: py, genres: (Array.isArray(j.genres) ? j.genres : []).map(cleanTitle).filter(Boolean).slice(0, 4), genre: cleanTitle((j.genres || [])[0] || ''), status: cleanTitle(j.status), network: cleanTitle(net),
     ended: cleanYear(String(j.ended || '').slice(0, 4)), overview: cut, seasons: seasons.length || null, episodes: eps || null, rating: j.rating && +j.rating.average > 0 ? Math.round(j.rating.average * 10) / 10 : null,

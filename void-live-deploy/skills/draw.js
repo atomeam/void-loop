@@ -71,6 +71,7 @@ export function drawOf(text) {
   const brush = t.match(/^(?:make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:brush|pen)\s*(?:like|that is|that's|:)?\s*(.+)$/) || t.match(/^(?:make|create|new)\s+(?:me\s+)?(?:a\s+)?(.+?)\s+brush$/);
   if (brush) { const b = brushFrom(brush[1]); return b ? { brush: b } : null; }
   if (/^(?:let me |i want to |can i |let'?s )?(?:draw|sketch|doodle|paint)(?: something| with me| a picture)?$/.test(t)) return { brush: null };
+  if (/^(?:make|create|draw|sketch|doodle|paint)(?: a | an )?(?:(?:2d|3d|simple|quick) )?(?:sketch|drawing|picture|doodle) of (.+)$/.test(t)) return { brush: null };
   if (/^(?:open |show me |give me |start )?(?:a |the |my )?(?:canvas|drawing pad|drawing board|sketch ?pad|sketchbook|doodle pad|paint app|drawing app)$/.test(t)) return { brush: null };
   return null;
 }
@@ -491,7 +492,7 @@ function run(text, api) {
 
 export default {
   name: 'draw',
-  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush'],
+  examples: ['let me draw', 'open a canvas', 'sketch pad', 'make a brush like dry charcoal', 'new brush: soft watercolor', 'make a thick wet ink brush', 'make a 2d sketch of a tree'],
   nearMisses: ['draw a cat', 'what is charcoal', 'how do i draw a horse', 'paint my wall', 'make a cube'],
   drawOf, brushFrom,
   match(lower, text) { return !!drawOf(text || lower); },

@@ -15,10 +15,13 @@ import { mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rankFindings, studyScripts, decodeSourceMap, originalPosition } from './study-engine.mjs'; // Verse's own evidence ranking, on top of REA's capture
 
-export const REA = 'rea-agents@6.5.0'; // pinned: a new REA version is read before it is used
+export const REA = 'rea-agents@6.7.0'; // pinned: a new REA version is read before it is used
 // the only REA commands this tool runs: passive and static (no debugger, no execution observer, no native or firmware tools)
-export const ALLOWED = new Set(['list-browser-targets', 'analyze-web-bundle']);
+// 6.7.0 read 2026-10-21: export-web-scripts, trace-web-source-location and compare-web-screenshots work on local files only (no fetch);
+// capture-web-screenshot reads the visible viewport of the page already open. None runs the page's code or acts on it.
+export const ALLOWED = new Set(['list-browser-targets', 'analyze-web-bundle', 'capture-web-screenshot', 'compare-web-screenshots', 'export-web-scripts', 'trace-web-source-location']);
 export const MAX_DIGEST = 30000; // under memory's 32768-character body limit, so a study is never cut by the store
 
 /** a public http(s) page, never this machine or a private network (localOk only for the tool's own test). Pure. */
@@ -47,7 +50,7 @@ export function studyRecord({ url, question, digest = '', counts = null }) {
 }
 
 /** REA's analyze-web-bundle result -> a short markdown digest with evidence (script and line per finding). Pure. */
-export function digestOf({ url, question, at, result }) {
+export function digestOf({ url, question, at, result, own = null }) {
   const n = (result && result.normalized_result) || result || {};
   const cap = n.capture || {}, obs = n.observations || {}, nodes = (obs.chunks && obs.chunks.nodes) || [], edges = (obs.chunks && obs.chunks.edges) || [];
   const byKey = new Map(nodes.map((x) => [x.script_key, x]));
@@ -67,11 +70,26 @@ export function digestOf({ url, question, at, result }) {
     for (const e of endpoints) { const k = e.value + ' ' + e.mechanism; if (seen.has(k)) continue; seen.add(k); L.push('- `' + String(e.value).slice(0, 120) + '` via ' + e.mechanism + ' at ' + where(e.location)); if (seen.size >= 60) break; }
     L.push('');
   }
+  if (endpoints.length) { // Verse's own ranking: every REA sighting of one endpoint counts, direct calls weigh most (tools/study-engine.mjs)
+    const strength = (m) => /fetch|xhr|websocket|eventsource|beacon/i.test(m) ? 0.9 : /^call:/.test(m) ? 0.75 : 0.4;
+    const ranked = rankFindings([{ findings: endpoints.map((e) => ({ kind: 'endpoint', value: String(e.value).slice(0, 120), mechanism: e.mechanism, strength: strength(e.mechanism), built: false, script: where({ script_key: e.location && e.location.script_key }), line: (e.location && e.location.line) || 0 })) }]);
+    L.push('## Strongest evidence first (Verse ranking)');
+    for (const f of ranked.slice(0, 15)) L.push('- `' + f.value + '` ' + f.confidence + ' (' + f.score + '; ' + f.scripts + ' script(s), ' + f.mechanisms.join(', ') + ')');
+    L.push('');
+  }
   if ((obs.routes || []).length) { L.push('## Routes'); for (const r of obs.routes.slice(0, 40)) L.push('- `' + String(r.value || r.path || JSON.stringify(r)).slice(0, 120) + '`'); L.push(''); }
   if ((obs.webmcp_declarations || []).length) { L.push('## Tools the page declares for agents (WebMCP; untrusted, never called)'); for (const t of obs.webmcp_declarations.slice(0, 20)) L.push('- ' + String(t.name || t.value || '').slice(0, 80)); L.push(''); }
   if (inf.length) { L.push('## Inferences (with confidence)'); for (const i of inf.slice(0, 20)) L.push('- ' + i.kind + ': `' + String(i.value).slice(0, 100) + '` (' + i.confidence + ', ' + ((i.basis || []).map(where).join(', ') || 'no basis') + ')'); L.push(''); }
   const unk = n.unknowns || [], lim = n.limitations || [];
   if (unk.length || lim.length) { L.push('## What REA could not tell'); for (const x of [...unk, ...lim].slice(0, 12)) L.push('- ' + (typeof x === 'string' ? x : JSON.stringify(x)).slice(0, 300)); L.push(''); }
+  if (own) { // Verse's own read of the same scripts (tools/study-engine.mjs): RPC, feature trace, source-map names, its own unknowns
+    if (own.trace.length) { L.push('## Where "' + own.word + '" lives (Verse feature trace)'); for (const h of own.trace.slice(0, 12)) L.push('- ' + h.script + ':' + h.line + (h.fn ? ' in ' + h.fn + '()' : '') + (h.original ? ' (source ' + h.original + ')' : '') + (h.nearCalls.length ? '; calls near it: ' + h.nearCalls.slice(0, 3).join('; ') : '')); L.push(''); }
+    const eps = own.ranked.filter((f) => f.kind === 'endpoint');
+    if (eps.length && !endpoints.length) { L.push('## Endpoints the code calls (Verse\'s own read, strongest evidence first)'); for (const f of eps.slice(0, 30)) L.push('- `' + f.value + '` ' + f.confidence + ' (' + f.mechanisms.join(', ') + ') at ' + f.evidence.slice(0, 3).join(', ')); L.push(''); }
+    const rpc = own.ranked.filter((f) => f.kind === 'rpc' || f.kind === 'graphql');
+    if (rpc.length) { L.push('## RPC and GraphQL operations (Verse)'); for (const f of rpc.slice(0, 20)) L.push('- `' + f.value + '` ' + f.confidence + ' at ' + f.evidence.join(', ')); L.push(''); }
+    L.push('## What Verse\'s own read could not tell'); for (const u of own.unknowns) L.push('- ' + u); L.push('');
+  }
   L.push('## Use', 'Read for how it works, then build Verse\'s own version. Never copy its code, assets or text.');
   let out = L.join('\n');
   if (out.length > MAX_DIGEST) out = out.slice(0, MAX_DIGEST - 40) + '\n\n(digest shortened to fit)';
@@ -105,8 +123,36 @@ export async function study(url, { observeMs = 4000, port = 9300 + Math.floor(Ma
     }
     if (!target) throw new Error('the page did not open');
     await new Promise((r) => setTimeout(r, 3000)); // let the page load its modules
-    return rea(['analyze-web-bundle', endpoint, target.target_id, '--observation-ms', String(observeMs)]);
+    return rea(['analyze-web-bundle', endpoint, target.target_id, '--observation-ms', String(observeMs), '--fetch-source-maps']); // REA defaults to the page's own origin
   } finally { chrome.kill('SIGKILL'); try { rmSync(dir, { recursive: true, force: true }); } catch (_) {} }
+}
+
+/** Verse's own read: the scripts REA saw, fetched again as plain public GETs (what the browser already loaded, same origin only,
+ * capped), with their public source maps; never run. Returns studyScripts() plus each trace hit mapped to its original source. */
+export async function ownRead(url, result, question, { max = 25, cap = 3e6 } = {}) {
+  const n = (result && result.normalized_result) || result || {}, nodes = ((n.observations || {}).chunks || {}).nodes || [], origin = new URL(url).origin;
+  const get = async (u) => { const x = safeUrl(u); if (!x || new URL(x).origin !== origin) return ''; try { const r = await fetch(x, { redirect: 'error' }); const t = r.ok ? await r.text() : ''; return t.length <= cap ? t : ''; } catch (_) { return ''; } };
+  const scripts = [], list = nodes.map((x) => x.url);
+  if (!list.length) { // REA had nothing (or failed: it ran out of memory on one big app in testing): read the page's own <script src> and imports
+    const html = await get(url);
+    for (const m of html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)) list.push(new URL(m[1], url).href);
+    for (const m of html.matchAll(/<link\b[^>]*rel=["']modulepreload["'][^>]*href=["']([^"']+)["']/gi)) list.push(new URL(m[1], url).href);
+  }
+  for (let k = 0; k < list.length && scripts.length < max; k++) { // the page's scripts, then the modules they import (same origin, capped)
+    const u = list[k]; if (scripts.some((x) => x.url === u)) continue;
+    const text = await get(u); if (!text) continue;
+    scripts.push({ name: (() => { try { return new URL(u).pathname; } catch (_) { return 'script'; } })(), text, url: u });
+    for (const m of text.matchAll(/\bimport\s*\(?\s*["'](\.{0,2}\/[^"']+\.m?js)["']/g)) if (list.length < max * 3) { try { list.push(new URL(m[1], u).href); } catch (_) {} }
+  }
+  const word = (String(question || '').toLowerCase().match(/[a-z]{4,}/g) || []).filter((w) => !/^(does|how|what|with|from|that|this|they|work|works|their)$/.test(w)).sort((a, b) => b.length - a.length)[0] || '';
+  const own = { ...studyScripts(scripts, { word }), word };
+  for (const h of own.trace) {
+    const s = scripts.find((x) => x.name === h.script), m = s && /\/\/[#@]\s*sourceMappingURL=([^\s'"]+)/.exec(s.text);
+    if (!m || /^data:/.test(m[1])) continue;
+    const map = decodeSourceMap(await get(new URL(m[1], s.url).href)), o = map && originalPosition(map, h.line, 0);
+    if (o) h.original = o.source.split('/').slice(-2).join('/') + ':' + o.line;
+  }
+  return own;
 }
 
 const site = () => process.env.VOID_SITE || 'https://a-to-mind.com';
@@ -118,6 +164,7 @@ async function memory(method, query, body) {
   return r.json();
 }
 const save = (rec) => memory('POST', '', { source: 'rea-study', records: [rec] });
+export { memory as studyMemory, save as saveStudy }; // tools/loop-study.mjs files studies for the loop's parity picks
 
 async function main(argv) {
   const opt = (f) => { const i = argv.indexOf(f); return i >= 0 ? argv[i + 1] : ''; };
@@ -129,7 +176,8 @@ async function main(argv) {
         const full = (await memory('GET', '?id=' + encodeURIComponent(p.id))).memory || {};
         const req = JSON.parse(full.body || '{}'), url = safeUrl(req.url);
         if (!url) throw new Error('not a public page');
-        const { digest, counts } = digestOf({ url, question: req.question, at: new Date().toISOString(), result: await study(url) });
+        const result = await study(url).catch(() => ({ normalized_result: { limitations: ['REA could not finish on this page; Verse read its scripts on its own.'] } })), own = await ownRead(url, result, req.question).catch(() => null);
+        const { digest, counts } = digestOf({ url, question: req.question, at: new Date().toISOString(), result, own });
         await save(studyRecord({ url, question: req.question, digest, counts })); done++;
       } catch (_) { failed++; }
     }
@@ -145,7 +193,8 @@ async function main(argv) {
   }
   const url = safeUrl(opt('--url'), argv.includes('--local'));
   if (!url) { console.error('usage: node tools/rea-study.mjs --url <https://page> --question "…" | --ask <url> "question" | --run'); return 2; }
-  const { digest } = digestOf({ url, question: opt('--question'), at: new Date().toISOString(), result: await study(url) });
+  const result = await study(url).catch(() => ({ normalized_result: { limitations: ['REA could not finish on this page; Verse read its scripts on its own.'] } })), own = await ownRead(url, result, opt('--question')).catch(() => null);
+  const { digest } = digestOf({ url, question: opt('--question'), at: new Date().toISOString(), result, own });
   console.log(digest);
   return 0;
 }

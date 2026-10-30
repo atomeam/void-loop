@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snippet / Note: a locked note, code snippet or checklist in a link (gist) · Verse</title>
+<meta name="description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
+<link rel="canonical" href="https://a-to-mind.com/g/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Snippet / Note · Verse">
+<meta property="og:description" content="Paste a snippet, get a link. No account, nothing stored: the snippet is in the link itself.">
+<meta property="og:url" content="https://a-to-mind.com/g/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/g/ (owner, 2026-10-24: "verse can eat github starting with the smallest"): GitHub's gist with no sign-in and no server */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --code: #fff;
+    --c: #7a7690; --s: #0a7d3e; --n: #b4531a; --k: #6d4aff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --code: #12111a; --c: #7f7b96; --s: #7ee0a0; --n: #ffb27a; --k: #b9a2ff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 14px 12px 40px; }
+  header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  h1 { font-size: 16px; margin: 0; color: var(--soft); font-weight: 600; } h1 b { color: var(--ink); }
+  .lead { margin: 0 0 8px; font-size: 14px; } .alias { font-weight: 400; font-size: 12px; } .tpl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; } .tpl[hidden] { display: none; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; } .tab { border: 1px solid var(--line); border-bottom: 0; border-radius: 8px 8px 0 0; padding: 4px 10px; font-size: 13px; cursor: pointer; background: transparent; color: var(--soft); }
+  .tab[aria-selected=true] { background: var(--code); color: var(--ink); font-weight: 600; }
+  .box { border: 1px solid var(--line); border-radius: 0 8px 8px 8px; background: var(--code); overflow: auto; }
+  textarea, pre { margin: 0; width: 100%; box-sizing: border-box; font: 13px/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; padding: 10px 12px; tab-size: 2; }
+  textarea { min-height: 320px; background: transparent; color: inherit; border: 0; resize: vertical; display: block; outline: none; }
+  pre { white-space: pre; display: grid; grid-template-columns: auto 1fr; gap: 0 14px; }
+  .ln { color: var(--soft); text-align: right; user-select: none; opacity: .6; } code { white-space: pre; }
+  .lit { background: rgba(255, 209, 102, .22); display: inline-block; min-width: 100%; }
+  .c { color: var(--c); font-style: italic; } .s { color: var(--s); } .n { color: var(--n); } .k { color: var(--k); font-weight: 600; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; }
+  button.go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  input.name { font: inherit; font-size: 13px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; width: 12em; }
+  #note { font-size: 13px; color: var(--soft); min-height: 1.3em; } #meter { font-size: 12px; color: var(--soft); margin-left: auto; }
+  .add { background: rgba(46, 160, 67, .18); } .del { background: rgba(248, 81, 73, .18); text-decoration: line-through; text-decoration-color: rgba(248, 81, 73, .5); }
+  .lock { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 18px 12px; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 18px; } footer a { color: inherit; }
+  .meta { font-size: 12px; color: var(--soft); text-align: center; margin: 8px 0 0; }
+  #work { margin-top: 16px; display: grid; gap: 12px; }
+  .wk { border: 1px solid var(--line, #2a2a35); border-radius: 10px; padding: 10px 12px; }
+  .wk b { display: block; margin-bottom: 6px; }
+  .wk .tasks, .wk .sizes { list-style: none; margin: 8px 0 0; padding: 0; }
+  .wk .tasks li, .wk .sizes li { display: flex; gap: 8px; align-items: center; padding: 3px 0; font-size: 14px; }
+  .wk .sizes li { justify-content: space-between; }
+  .wk .done { text-decoration: line-through; opacity: .6; }
+  .wk #elapsed { margin-left: 10px; font-variant-numeric: tabular-nums; }
+  .wk .preview { margin-top: 8px; font-size: 14px; }
+  .wk .preview p { margin: 6px 0; }
+</style>
+<!-- seo -->
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Snippet / Note in a link: a gist with no account","url":"https://a-to-mind.com/g/","description":"Paste a snippet, note or checklist, up to eight files, and get a link that holds it all, compressed: no account and no server copy. Lock it with a passphrase, see what changed in an edited copy, start from a meeting timer, locked note or code template, and open a public GitHub file here, coloured and numbered. Works offline after one visit.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"share code snippet online, pastebin without account, gist without github account, encrypted note link, share a note by link, view github file","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/g/?text={text}"},"text-input":"required name=text"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Snippet / Note in a link: a gist with no account","item":"https://a-to-mind.com/g/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/gist.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <header><h1><b>Snippet / Note</b> · no account, nothing stored <small class="alias">(a gist)</small></h1><a class="btn" href="/g/" id="new" hidden>New snippet</a></header>
+  <p class="lead" id="lead">Save a locked note, code snippet, timed checklist, or offline scratchpad on your device.</p>
+  <div class="tpl" id="tpl" role="group" aria-label="Start from a template"><span class="note">Templates:</span> <button type="button" data-t="meeting">Meeting &amp; task timer</button> <button type="button" data-t="locked">Locked note</button> <button type="button" data-t="code">Code snippet</button></div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="box" id="box"></div>
+  <div class="bar" id="bar"></div>
+  <div id="note" aria-live="polite"></div>
+  <section id="work" hidden aria-label="Tasks, timer and notes beside this snippet"></section>
+  <footer>The snippet is inside the link, compressed: there is no server copy, so there is nothing to delete and nothing to leak but the link. It works offline after one visit, and a GitHub file opens here too: <a href="/g/?gh=atomeam/void-loop/main/README.md">GitHub file as a gist</a>. Anyone with the link sees the text, drawn as text, unless it is locked: then the link alone is noise and only the passphrase opens it, here in the page. <p><strong>Use together with:</strong> <a href="/emojis/">Emoji counts</a> · <a href="/word-count/">Word count</a> · <a href="/base64/">Base64</a> · <a href="/tournaments/">Tournaments</a> · <a href="/?ask=https%3A%2F%2Fgithub.com%2Fatomeam%2Fvoid-loop%2Fblob%2Fmain%2FREADME.md">See it on the stage</a> · <a href="/">Ask Verse anything</a></p></footer>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/g/?gh=atomeam%2Fvoid-loop%2Fmain%2FREADME.md">Verse's README from GitHub</a><a href="/g/?gh=atomeam%2Fvoid-loop%2Fmain%2Fvoid-live-deploy%2Flib%2Fgist.js&amp;L=1-20">Lines 1 to 20 of gist.js</a><a href="/g/?text=Milk%0AEggs%0ABread&amp;name=list.md">A shopping list</a><a href="/g/?text=console.log(%22hello%22)%3B&amp;name=hello.js">A code snippet</a><a href="/g/?text=The%20meeting%20moved%20to%203pm%20in%20room%202.&amp;name=note.txt">A note to share</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/base64/">Base64</a> <a href="/word-count/">Word counter</a> <a href="/notes/">Notes</a> <a href="/ledger/">Repo activity ledger</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script type="module">
+  import { pack, open, isLocked, lineDiff, cleanFiles, cleanName, MAX_FILES, MAX_TEXT, ghFileOf, ghFileText, renderCode } from '/lib/gist.js';
+  const $ = (id) => document.getElementById(id), el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  // prev: the files an edited copy was made from (it travels in the link, so the copy can show what changed); pass: this gist's passphrase, kept only in this page
+  let files = [['snippet.txt', '']], at = 0, view = false, gh = null, prev = null, pass = '', diff = false, locked = false;
+  // a GitHub file (?gh=owner/repo/branch/path&L=10-20): read from GitHub's public raw address, shown as a gist; "Edit a copy" makes it one
+  const q = new URLSearchParams(location.search), ghp = q.get('gh'), L = /^(\d+)-(\d+)$/.exec(q.get('L') || '');
+  if (ghp) {
+    const parts = ghp.split('/'); gh = parts.length >= 4 ? ghFileOf('github.com/' + parts[0] + '/' + parts[1] + '/blob/' + parts.slice(2).join('/') + (L ? '#L' + L[1] + '-L' + L[2] : '')) : null;
+    if (!gh) $('note').textContent = 'That is not a GitHub file address.';
+    else {
+      document.title = gh.name + ' · ' + gh.owner + '/' + gh.repo + ' · Verse';
+      const h = document.querySelector('h1'); h.textContent = ''; const a = el('a', null, gh.owner + '/' + gh.repo); a.href = 'https://github.com/' + gh.owner + '/' + gh.repo; a.target = '_blank'; a.rel = 'noopener';
+      h.append(el('b', null, gh.name), ' · ', a, ' · read from GitHub, nothing stored');
+      const r = await ghFileText(gh);
+      if (r.error) { $('note').textContent = r.error; const o = el('a', null, ' Open it on GitHub.'); o.href = gh.page; o.target = '_blank'; o.rel = 'noopener'; $('note').appendChild(o); gh = null; }
+      else { files = [[gh.name, r.text]]; view = true; }
+    }
+  }
+  const loaded = gh ? null : await open(location.hash);
+  if (loaded) { files = loaded.files; prev = loaded.prev; view = true; }
+  else if (!gh && isLocked(location.hash)) locked = true;
+  else if (!gh && location.hash.length > 1) $('note').textContent = 'That link is not a gist (it may have been cut short when it was shared). Start a new one below.';
+  // a seeded gist (owner, 2026-10-26: the codebase floor's ask): ?text=&name= shows it the way a shared link does, so the page can be read at a known content
+  if (!gh && !loaded && !locked && q.get('text') != null) { files = [[cleanName(q.get('name') || 'snippet.txt') || 'snippet.txt', q.get('text')]]; view = true; }
+  const note = (t) => { $('note').textContent = t; };
+  // a locked gist: nothing is shown until the passphrase opens it, here in the page (the passphrase never leaves it)
+  function drawLock() {
+    $('tabs').textContent = ''; $('bar').textContent = ''; const box = $('box'); box.textContent = '';
+    const f = el('form', 'lock'), pw = el('input', 'name'); pw.type = 'password'; pw.id = 'pw'; pw.placeholder = 'Passphrase'; pw.autocomplete = 'off'; pw.setAttribute('aria-label', 'Passphrase');
+    const go = el('button', 'go', 'Open'); go.type = 'submit';
+    f.append(el('span', null, 'This note is locked.'), pw, go); box.appendChild(f); pw.focus();
+    f.onsubmit = async (e) => {
+      e.preventDefault(); go.disabled = true; note('Opening…');
+      const g = await open(location.hash, pw.value); go.disabled = false;
+      if (!g) { note('That passphrase does not open it.'); pw.select(); return; }
+      files = g.files; prev = g.prev; pass = pw.value; locked = false; view = true; at = 0; note(''); draw();
+    };
+  }
+  function drawDiff(box) {
+    const pre = el('pre'), signs = [], body = el('code'), old = new Map((prev || []).map((f) => [f[0], f[1]])), seen = new Set();
+    const line = (cls, sign, t) => { if (signs.length) body.appendChild(document.createTextNode('\n')); signs.push(sign); body.appendChild(el('span', cls, t)); };
+    for (const [name, text] of files) {
+      seen.add(name); line('k', '', old.has(name) ? name : name + ' (new file)');
+      for (const [op, t] of lineDiff(old.has(name) ? old.get(name) : '', text)) line(op === '+' ? 'add' : op === '-' ? 'del' : null, op === '=' ? ' ' : op, t);
+    }
+    for (const [name, text] of old) if (!seen.has(name)) { line('k', '', name + ' (removed)'); for (const t of text.split('\n')) line('del', '-', t); }
+    const nums = el('span', 'ln', signs.join('\n')); pre.append(nums, body); box.appendChild(pre);
+  }
+  function draw() {
+    if (locked) { drawLock(); return; }
+    const tabs = $('tabs'); tabs.textContent = '';
+    files.forEach(([name], i) => { const b = el('button', 'tab', name); b.type = 'button'; b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(i === at)); b.onclick = () => { keep(); at = i; draw(); }; tabs.appendChild(b); });
+    if (!view && files.length < MAX_FILES) { const b = el('button', 'tab', '+ file'); b.type = 'button'; b.onclick = () => { keep(); files.push(['file' + (files.length + 1) + '.txt', '']); at = files.length - 1; draw(); }; tabs.appendChild(b); }
+    const box = $('box'); box.textContent = ''; const [name, text] = files[at];
+    if (view && diff) drawDiff(box);
+    else if (view) {
+      renderCode(box, name, text, gh && gh.lines);
+      const first = box.querySelector('.lit'); if (first) requestAnimationFrame(() => first.scrollIntoView({ block: 'center' }));
+      const lines = text.split('\n').length;
+      box.appendChild(el('div', 'meta', text.length.toLocaleString() + ' characters \u00b7 ' + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ' \u00b7 ' + MAX_TEXT.toLocaleString() + ' characters is the limit \u00b7 the whole gist in the link'));
+    } else {
+      const ta = el('textarea'); ta.id = 'ta'; ta.value = text; ta.spellcheck = false; ta.setAttribute('aria-label', 'Contents of ' + name); ta.placeholder = 'Paste or type here: a note, a list, or code…';
+      ta.addEventListener('input', meter); ta.addEventListener('keydown', (e) => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); ta.setRangeText('  ', ta.selectionStart, ta.selectionEnd, 'end'); meter(); } });
+      box.appendChild(ta);
+    }
+    bar();
+    $('tpl').hidden = !!(view || gh || locked || files.some((f) => f[1].trim()));
+  }
+  function keep() { const ta = $('ta'); if (ta && !view) files[at][1] = ta.value; const nm = $('nm'); if (nm && !view) files[at][0] = cleanName(nm.value); }
+  const total = () => { keep(); return files.reduce((n, f) => n + f[1].length, 0); };
+  function meter() { const m = $('meter'); if (m) m.textContent = total().toLocaleString() + ' of ' + MAX_TEXT.toLocaleString() + ' characters'; }
+  const download = (name, text) => { const a = el('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' })); a.download = cleanName(name); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); };
+  const copy = (t, done) => { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => note(done), () => note('Select the text and copy it by hand.')); };
+  // Share link: the phone's own share sheet (navigator.share), and where there is none the link is copied (as /markets/caps/ does)
+  async function share() {
+    const url = location.href; if (navigator.share) { try { await navigator.share({ title: document.title, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    copy(url, 'Link copied: it holds the whole gist.');
+  }
+  function bar() {
+    const b = $('bar'); b.textContent = ''; $('new').hidden = !view;
+    if (view) {
+      const cp = el('button', null, 'Copy'); cp.onclick = () => copy(files[at][1], 'Copied ' + files[at][0] + '.');
+      // Raw: the file as plain text in a new tab (window.open: the imported open() is the gist reader, not the browser's)
+      const raw = el('button', null, 'Raw'); raw.onclick = () => {
+        const u = URL.createObjectURL(new Blob([files[at][1]], { type: 'text/plain;charset=utf-8' })), w = window.open(u, '_blank');
+        setTimeout(() => URL.revokeObjectURL(u), 60000);
+        note(w ? 'Opened ' + files[at][0] + ' as plain text in a new tab.' : 'The browser blocked the new tab for ' + files[at][0] + ': allow pop-ups here, or use Download.');
+      };
+      const dl = el('button', null, 'Download'); dl.onclick = () => download(files[at][0], files[at][1]);
+      const lk = el('button', 'go', 'Copy link'); lk.onclick = () => copy(location.href, 'Link copied. It holds the whole gist.');
+      const ed = el('button', null, 'Edit a copy'); ed.onclick = () => { prev = files.map((f) => f.slice()); diff = false; view = false; history.replaceState(null, '', '/g/'); draw(); note('This is your own copy: change it and get a new link. The original link stays as it was, and the new one shows what you changed.'); };
+      const sh = el('button', null, 'Share link'); sh.id = 'share'; sh.onclick = () => share();
+      b.append(cp, raw, dl, lk, sh, ed);
+      if (prev) { const ch = el('button', null, diff ? 'Show the files' : 'What changed'); ch.id = 'changed'; ch.onclick = () => { diff = !diff; draw(); }; b.appendChild(ch); }
+      if (pass) b.appendChild(el('span', null, 'Locked: the link opens only with the passphrase.'));
+    } else {
+      const nm = el('input', 'name'); nm.id = 'nm'; nm.value = files[at][0]; nm.maxLength = 60; nm.setAttribute('aria-label', 'File name'); nm.onchange = () => { keep(); draw(); };
+      const rm = el('button', null, 'Remove file'); rm.hidden = files.length < 2; rm.onclick = () => { files.splice(at, 1); at = Math.max(0, at - 1); draw(); };
+      const pw = el('input', 'name'); pw.id = 'lockpw'; pw.type = 'password'; pw.placeholder = 'Passphrase (optional)'; pw.autocomplete = 'new-password'; pw.value = pass; pw.setAttribute('aria-label', 'Lock it with a passphrase (optional)'); pw.oninput = () => { pass = pw.value; };
+      const go = el('button', 'go', 'Get link'); go.id = 'get';
+      // the gist made into its link: true when it was (the page then shows it), false with the reason said when not
+      const make = async () => {
+        keep(); if (!files.some((f) => f[1].trim())) { note('Write something first.'); return false; }
+        const s = await pack(files, { pass, prev }); if (!s) { note('That is more than a link can carry. Cut it down, or split it into files.'); return false; }
+        view = true; files = cleanFiles(files); history.replaceState(null, '', '/g/#' + s); draw(); return true;
+      };
+      go.onclick = async () => { if (await make()) copy(location.href, 'Link copied: ' + location.href.length.toLocaleString() + ' characters, the whole gist is in it' + (pass ? ', locked: send the passphrase another way.' : '.')); };
+      const sh = el('button', null, 'Share link'); sh.id = 'share'; sh.onclick = async () => { if (await make()) share(); };
+      b.append(nm, rm, pw, go, sh, el('span', null)); const m = el('span'); m.id = 'meter'; b.appendChild(m); meter();
+    }
+  }
+  addEventListener('hashchange', async () => {
+    const g = await open(location.hash); diff = false; at = 0;
+    if (g) { files = g.files; prev = g.prev; pass = ''; locked = false; view = true; draw(); } else if (isLocked(location.hash)) { locked = true; pass = ''; draw(); }
+  });
+  // work beside the gist (owner, 2026-10-26, the codebase floor's four extras): a task list, a timer and notes, kept on this device, with the
+  // code itself still only in the link. Nothing here is sent anywhere: it is the same rule the page states for the gist.
+  const WKEY = () => 'a2m.void.gistwork.v1:' + (location.hash.length > 1 ? location.hash.slice(1, 25) : 'seed');
+  let work = null; try { work = JSON.parse(localStorage.getItem(WKEY()) || 'null'); } catch (_) { work = null; }
+  work = work && typeof work === 'object' ? { tasks: Array.isArray(work.tasks) ? work.tasks : [], startedAt: +work.startedAt || 0, totalMs: +work.totalMs || 0, docs: String(work.docs || '') } : { tasks: [], startedAt: 0, totalMs: 0, docs: '' };
+  const saveWork = () => { try { localStorage.setItem(WKEY(), JSON.stringify(work)); } catch (_) {} };
+  const mmss = (ms) => Math.floor(ms / 60000) + ' m ' + Math.floor((ms % 60000) / 1000) + ' s';
+  let tick = null;
+  function sizes() { const s = $('sizes'); if (!s) return; s.textContent = ''; for (const [n, t] of files) { const li = el('li'); li.append(el('span', null, n), el('span', 'note', t.length.toLocaleString() + ' B')); s.appendChild(li); } }
+  function initWork() {
+    const w = $('work'); if (!w) return; w.hidden = false; w.textContent = '';
+    const tl = el('div', 'wk'); tl.appendChild(el('b', null, 'Task list'));
+    const list = el('ul', 'tasks'); list.id = 'tasks';
+    const count = el('span', 'note'); count.id = 'tasksleft';
+    const inp = el('input', 'name'); inp.id = 'tasknew'; inp.placeholder = 'What needs doing'; inp.maxLength = 120; inp.setAttribute('aria-label', 'A new task');
+    const add = el('button', null, 'Add a task'); add.type = 'button';
+    const renderTasks = () => {
+      list.textContent = '';
+      work.tasks.forEach((t) => { const li = el('li'); const cb = el('input'); cb.type = 'checkbox'; cb.checked = !!t.done; cb.setAttribute('aria-label', 'Done: ' + t.text);
+        cb.onchange = () => { t.done = cb.checked; saveWork(); renderTasks(); };
+        li.append(cb, el('span', t.done ? 'done' : null, t.text)); list.appendChild(li); });
+      count.textContent = work.tasks.filter((t) => !t.done).length + ' of ' + work.tasks.length + ' tasks left';
+    };
+    add.onclick = () => { const v = inp.value.trim(); if (!v) { inp.focus(); count.textContent = 'Type the task in the box first, then Add a task.'; return; } work.tasks.push({ text: v, done: false }); inp.value = ''; saveWork(); renderTasks(); };
+    tl.append(inp, add, list, count);
+    const tm = el('div', 'wk'); tm.appendChild(el('b', null, 'Timer'));
+    const shown = el('span'); shown.id = 'elapsed';
+    const totalLine = el('span', 'note'); totalLine.id = 'totaltime';
+    const start = el('button', null, 'Start'); start.type = 'button';
+    const stop = el('button', null, 'Stop'); stop.type = 'button';
+    const paint = () => { shown.textContent = mmss(work.totalMs + (work.startedAt ? Date.now() - work.startedAt : 0)); totalLine.textContent = 'Total ' + Math.floor(work.totalMs / 60000) + ' m'; };
+    start.onclick = () => { if (!work.startedAt) { work.startedAt = Date.now(); saveWork(); } clearInterval(tick); tick = setInterval(paint, 1000); paint(); };
+    stop.onclick = () => { if (work.startedAt) { work.totalMs += Date.now() - work.startedAt; work.startedAt = 0; saveWork(); } clearInterval(tick); paint(); };
+    tm.append(start, el('span', null, ' '), stop, el('span', null, ' '), shown, totalLine);
+    const dc = el('div', 'wk'); dc.appendChild(el('b', null, 'Notes and docs'));
+    const docs = el('textarea'); docs.id = 'docs'; docs.value = work.docs || ''; docs.placeholder = 'Notes for this gist'; docs.setAttribute('aria-label', 'Notes for this gist');
+    docs.oninput = () => { work.docs = docs.value; saveWork(); };
+    const prev = el('button', null, 'Preview'); prev.type = 'button';
+    const out = el('div', 'preview'); out.id = 'docout';
+    const md = (x) => x.split(/\n{2,}/).map((para) => { const esc2 = (y) => y.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+      const b = esc2(para).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>');
+      return /^#{1,3} /.test(para) ? '<b>' + b.replace(/^#+ /, '') + '</b>' : '<p>' + b + '</p>'; }).join('');
+    prev.onclick = () => { out.innerHTML = md(docs.value || ''); };
+    dc.append(docs, prev, out);
+    const fl = el('div', 'wk'); fl.appendChild(el('b', null, 'Files'));
+    const sz = el('ul', 'sizes'); sz.id = 'sizes';
+    const all = el('button', null, 'Download all'); all.type = 'button';
+    all.onclick = () => download('gist.txt', files.map(([n, t]) => '===== ' + n + ' =====\n' + t).join('\n\n'));
+    fl.append(sz, all);
+    w.append(tl, tm, dc, fl, el('p', 'note', 'Tasks, the timer and the notes are kept on this device; the code itself is only in the link.'));
+    renderTasks(); paint(); sizes();
+    if (work.startedAt) { clearInterval(tick); tick = setInterval(paint, 1000); }
+  }
+  draw();
+  initWork();
+  // templates for an empty page (wider use): a meeting checklist with the timer, a locked note, a code snippet; the page itself is unchanged
+  const TPL = {
+    meeting: () => { files = [['meeting.md', '# Meeting\n\nAgenda\n- \n\nDecisions\n- \n\nActions (who, what, by when)\n- \n']]; if (!work.tasks.length) { work.tasks = ['Agree the agenda', 'Write down the decisions', 'Send the actions'].map((text) => ({ text, done: false })); saveWork(); initWork(); } draw(); note('A meeting checklist: the task list and the timer are below. Press Start when it begins.'); const w = $('work'); if (w) w.scrollIntoView({ block: 'start' }); },
+    locked: () => { files = [['note.txt', '']]; draw(); note('Type the note, choose a passphrase, then Get link: only the passphrase opens it.'); const p = $('lockpw'); if (p) p.focus(); },
+    code: () => { files = [['snippet.js', '// paste or type code here\n']]; draw(); note('Name the file with its ending (.py, .js, .css…) so it is coloured. Tab indents.'); const t = $('ta'); if (t) t.focus(); },
+  };
+  for (const b of $('tpl').querySelectorAll('button')) b.addEventListener('click', () => { at = 0; TPL[b.dataset.t](); });
+  // the toolkit's "Use with" row (lib/toolkit.js): the GitHub file open here as a card on the stage (skills/gh-file.js), else Verse's README
+  import('/lib/toolkit.js').then((m) => m.mountRelated($('related'), '/g/', [], { card: () => (gh ? gh.page + (gh.lines ? '#L' + gh.lines[0] + '-L' + gh.lines[1] : '') : '') })).catch(() => {});
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

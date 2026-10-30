@@ -1,0 +1,1341 @@
+{
+ "floor": "kanban",
+ "verse_page": "void-live-deploy/kanban/index.html",
+ "researched": "2026-10-26",
+ "method": "Searched the web for each site (a fetch of the sites themselves fails from the builder's network), so features come from search results, vendor pages and third-party reviews; paid tiers and limits change often, confirm before any price claim.",
+ "sites": {
+  "trello.com": {
+   "leader": true,
+   "url": "https://trello.com/",
+   "sources": [
+    "https://clickup.com/learn/topic/project-management/tools/trello/",
+    "https://www.getmagical.com/blog/trello-tips-tricks-shortcuts"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Boards select, New board with four templates, rename, delete (pages /kanban/, /kanban/teams/, /kanban/flow/)"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "add, rename, move left/right, delete (cards go to the archive)"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "title, notes, labels, due, checklist, comments, assignee, colour, repeat, time"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mouse drag, touch drag from the grip, Move to menu"
+    },
+    {
+     "name": "Keyboard shortcuts and keyboard moves",
+     "detail": "Move and open cards without a mouse.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Alt+arrow moves a focused card; Enter opens it; Escape closes"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "six coloured labels per board, make more, filter by label"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "date per card, overdue/today/soon marks, filter by due"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "checklist with progress bar"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a name typed per card (no accounts, so no sharing between people); filter by it via swimlanes"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "dated comments on a card, searched by the filter"
+    },
+    {
+     "name": "Attachments and card covers",
+     "detail": "Files or images on a card.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a colour per card; no file attachments (nothing is stored but text)"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "search box, label, due date"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "archive a card, restore it, delete it for good"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JSON and CSV export; import this page's JSON and a Trello board export"
+    },
+    {
+     "name": "Calendar, timeline, table views",
+     "detail": "The same cards as a calendar, a roadmap or a table.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "not built: calendar, timeline and table views (the Calendar page shows dates)"
+    },
+    {
+     "name": "Automation (rules, buttons)",
+     "detail": "When X happens, do Y; run daily or weekly.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: rules need a server to run when the page is shut; repeating cards cover the common case"
+    },
+    {
+     "name": "Recurring cards",
+     "detail": "A card that comes back on a schedule.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "repeat daily, weekly or monthly: a fresh copy waits in the first column when it reaches the last"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "four starting boards: To do/Doing/Done, Backlog to Done, a week, empty"
+    },
+    {
+     "name": "Power-ups and integrations",
+     "detail": "Slack, Drive, GitHub and more.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: integrations need accounts and servers"
+    },
+    {
+     "name": "Share a board by link",
+     "detail": "A link that opens the board for others.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Share by link: the whole board in the link's # part, never sent to a server (small boards)"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "follows the device's dark mode; no board backgrounds"
+    }
+   ]
+  },
+  "kanbanflow.com": {
+   "url": "https://kanbanflow.com/",
+   "sources": [
+    "https://www.getapp.com/project-management-planning-software/a/kanbanflow/",
+    "https://www.helloleads.io/blog/?p=1849"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Boards select, New board with four templates, rename, delete (pages /kanban/, /kanban/teams/, /kanban/flow/)"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "add, rename, move left/right, delete (cards go to the archive)"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "title, notes, labels, due, checklist, comments, assignee, colour, repeat, time"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mouse drag, touch drag from the grip, Move to menu"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "six coloured labels per board, make more, filter by label"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "date per card, overdue/today/soon marks, filter by due"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "checklist with progress bar"
+    },
+    {
+     "name": "WIP limits",
+     "detail": "Cap the number of cards in a column and warn past it.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "per-column limit in the column menu; the count turns red past it and the column is outlined"
+    },
+    {
+     "name": "Swimlanes",
+     "detail": "Rows that group cards across columns.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "group by label or by person"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a name typed per card (no accounts, so no sharing between people); filter by it via swimlanes"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "dated comments on a card, searched by the filter"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "search box, label, due date"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "archive a card, restore it, delete it for good"
+    },
+    {
+     "name": "Time tracking and Pomodoro timer",
+     "detail": "Time spent on a card.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "card stopwatch and a 25 minute Pomodoro, time kept on the card"
+    },
+    {
+     "name": "Recurring cards",
+     "detail": "A card that comes back on a schedule.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "repeat daily, weekly or monthly: a fresh copy waits in the first column when it reaches the last"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "four starting boards: To do/Doing/Done, Backlog to Done, a week, empty"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "follows the device's dark mode; no board backgrounds"
+    }
+   ]
+  },
+  "wekan.fi": {
+   "url": "https://wekan.fi/",
+   "sources": [
+    "https://wekan.fi/",
+    "https://github.com/wekan/wekan"
+   ],
+   "features": [
+    {
+     "name": "Several boards",
+     "detail": "Make as many boards as you need and switch between them; free plans cap the count.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Boards select, New board with four templates, rename, delete (pages /kanban/, /kanban/teams/, /kanban/flow/)"
+    },
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "add, rename, move left/right, delete (cards go to the archive)"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "title, notes, labels, due, checklist, comments, assignee, colour, repeat, time"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mouse drag, touch drag from the grip, Move to menu"
+    },
+    {
+     "name": "Coloured labels",
+     "detail": "Tag cards with named colours and filter by them.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "six coloured labels per board, make more, filter by label"
+    },
+    {
+     "name": "Due dates",
+     "detail": "A due date on a card, shown as overdue or due soon.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "date per card, overdue/today/soon marks, filter by due"
+    },
+    {
+     "name": "Checklists with progress",
+     "detail": "Subtask lists inside a card with a progress bar.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "checklist with progress bar"
+    },
+    {
+     "name": "WIP limits",
+     "detail": "Cap the number of cards in a column and warn past it.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "per-column limit in the column menu; the count turns red past it and the column is outlined"
+    },
+    {
+     "name": "Swimlanes",
+     "detail": "Rows that group cards across columns.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "group by label or by person"
+    },
+    {
+     "name": "Members and assignees",
+     "detail": "Share a board and give cards to people.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a name typed per card (no accounts, so no sharing between people); filter by it via swimlanes"
+    },
+    {
+     "name": "Comments and activity log",
+     "detail": "Discuss on a card; see who did what.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "dated comments on a card, searched by the filter"
+    },
+    {
+     "name": "Attachments and card covers",
+     "detail": "Files or images on a card.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "a colour per card; no file attachments (nothing is stored but text)"
+    },
+    {
+     "name": "Search and filter",
+     "detail": "Find cards by words, label, date or member.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "search box, label, due date"
+    },
+    {
+     "name": "Archive cards and columns",
+     "detail": "Hide finished work without deleting it.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "archive a card, restore it, delete it for good"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JSON and CSV export; import this page's JSON and a Trello board export"
+    },
+    {
+     "name": "Board and card templates",
+     "detail": "Start from a ready board.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "four starting boards: To do/Doing/Done, Backlog to Done, a week, empty"
+    },
+    {
+     "name": "Dark mode and board backgrounds",
+     "detail": "Pick a background or a dark theme.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "follows the device's dark mode; no board backgrounds"
+    }
+   ]
+  },
+  "abacktools.com": {
+   "url": "https://abacktools.com/tools/productivity/planning/kanban-board",
+   "sources": [
+    "https://abacktools.com/tools/productivity/planning/kanban-board"
+   ],
+   "features": [
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "add, rename, move left/right, delete (cards go to the archive)"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "title, notes, labels, due, checklist, comments, assignee, colour, repeat, time"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mouse drag, touch drag from the grip, Move to menu"
+    },
+    {
+     "name": "Kept on the device, no account",
+     "detail": "Boards saved in the browser, nothing sent.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "localStorage only; the footer says so"
+    }
+   ]
+  },
+  "jasperbernaers.com": {
+   "url": "https://jasperbernaers.com/kanban-board/",
+   "sources": [
+    "https://jasperbernaers.com/kanban-board/"
+   ],
+   "features": [
+    {
+     "name": "Columns (lists) you name, add, move and delete",
+     "detail": "The stages a card moves through.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "add, rename, move left/right, delete (cards go to the archive)"
+    },
+    {
+     "name": "Cards with title and description",
+     "detail": "A card holds a title, text and details.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "title, notes, labels, due, checklist, comments, assignee, colour, repeat, time"
+    },
+    {
+     "name": "Drag and drop cards between columns",
+     "detail": "Move a card with the pointer, reorder inside a column.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "mouse drag, touch drag from the grip, Move to menu"
+    },
+    {
+     "name": "Import and export (JSON, CSV)",
+     "detail": "Take a board out as a file, or bring one in (Trello JSON among them).",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "JSON and CSV export; import this page's JSON and a Trello board export"
+    },
+    {
+     "name": "Kept on the device, no account",
+     "detail": "Boards saved in the browser, nothing sent.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "localStorage only; the footer says so"
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  {
+   "name": "Members and assignees",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Dark mode and board backgrounds",
+   "sites": [
+    "trello.com",
+    "kanbanflow.com",
+    "wekan.fi"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Attachments and card covers",
+   "sites": [
+    "trello.com",
+    "wekan.fi"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Calendar, timeline, table views",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Automation (rules, buttons)",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Power-ups and integrations",
+   "sites": [
+    "trello.com"
+   ],
+   "verse": "missing"
+  }
+ ],
+ "verse_extra": [
+  "Works offline"
+ ],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "abacktools.com": {
+    "url": "https://abacktools.[token]",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Accepts the file types .css,.scss,.sass,.less,.svg,.png,.jpg,.jpeg,.gif,.",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@26172"
+     },
+     {
+      "name": "Accepts the file types .md,.mdx,.html,.txt",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@26280"
+     },
+     {
+      "name": "Accepts the file types .ts,.tsx,.js,.jsx,.mjs,.cjs,.json",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@27367"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "API path /api/feedback",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@20429"
+     },
+     {
+      "name": "API path /api/subscribe",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@14314"
+     },
+     {
+      "name": "Feature flag allowPartialStream",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0suxhd9wfs7fu.js@82448"
+     },
+     {
+      "name": "Feature flag allowPinchZoom",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0p.3lz8-t_ju5.js@30687"
+     },
+     {
+      "name": "Feature flag disableOutsidePointerEvents",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0p.3lz8-t_ju5.js@31341"
+     },
+     {
+      "name": "Feature flag showCloseButton",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0jsjzcrhaf6vh.js@26207"
+     },
+     {
+      "name": "Feature flag showText",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "10dss59v7~csf.js@1390"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0rptz7yx.6qqt.js@513"
+     },
+     {
+      "name": "Picture in picture",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0rgyomk9_rp2d.js@171263"
+     },
+     {
+      "name": "Draggable items",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[draggable=true]"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: abacktools-kanban-board",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: mv_session",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Interface languages: 16 (px, py, ps, pe, pt, pr)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09-xv9ots19we.js@23608"
+     },
+     {
+      "name": "Interface languages: 7 (en, es, fr, pt, de, ru)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "110da4n.h-7k1.js@7965"
+     },
+     {
+      "name": "Language versions: 8 (en, es, fr, pt-BR, de, ru)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Compresses data in the browser",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@54346"
+     },
+     {
+      "name": "WebAssembly engine (heavy work runs in the browser)",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "turbopack-0y.vq8lfvgfk..js@10421"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "04litm7z_9za7.js"
+     },
+     {
+      "name": "Follows the system dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "04litm7z_9za7.js@37721"
+     },
+     {
+      "name": "Respects high-contrast settings",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css@344871"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "16zdj3zm99c98.css@353809"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Skip to content link",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[href^=\"#main\"]"
+     },
+     {
+      "name": "Path kept from crawlers /api/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Route /.[token]",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5554"
+     },
+     {
+      "name": "Route /about",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5698"
+     },
+     {
+      "name": "Route /ai.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5443"
+     },
+     {
+      "name": "Route /auth.md",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5514"
+     },
+     {
+      "name": "Route /blog",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12815"
+     },
+     {
+      "name": "Route /contact",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5875"
+     },
+     {
+      "name": "Route /dmca",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5989"
+     },
+     {
+      "name": "Route /docs/index.md",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5475"
+     },
+     {
+      "name": "Route /guides",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12462"
+     },
+     {
+      "name": "Route /llms-full.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5405"
+     },
+     {
+      "name": "Route /llms.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5365"
+     },
+     {
+      "name": "Route /privacy-policy",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5911"
+     },
+     {
+      "name": "Route /robots.txt",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5660"
+     },
+     {
+      "name": "Route /sitemap.xml",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5620"
+     },
+     {
+      "name": "Route /support",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@797"
+     },
+     {
+      "name": "Route /terms-of-service",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "10dss59v7~csf.js@5950"
+     },
+     {
+      "name": "Route /tools",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "0qdmpu2a3w408.js@12108"
+     },
+     {
+      "name": "Route /tools/productivity/games/2048",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@32765"
+     },
+     {
+      "name": "Route /tools/productivity/games/chess",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@27715"
+     },
+     {
+      "name": "Route [token]",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "09856qqg_trg4.js@1858"
+     }
+    ]
+   },
+   "jasperbernaers.com": {
+    "url": "https://jasperbernaers.com/kanban-board/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Opens files: .json,application/json",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Widget toolbar",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=toolbar] x1"
+     },
+     {
+      "name": "Edit in place",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[contenteditable]"
+     },
+     {
+      "name": "Input of type color",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=color] x1"
+     },
+     {
+      "name": "Input of type date",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=date] x1"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: jb-kanban-v2",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Path kept from crawlers /.fuse_hidden",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /CLAUDE.md",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /STYLE-TEMPLATE.html",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /analytics/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /webmastertools/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /365tips/ (1268 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /europe-power-grid/ (11 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /national-power-belgium/ (3 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /periodic-table/ (129 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /typing-speed-test/ (6 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "kanbanflow.com": {
+    "url": "https://kanbanflow.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Path kept from crawlers /health",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /io/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /unsupported-browser",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers [token]",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
+   "wekan.fi": {
+    "url": "https://wekan.fi/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css"
+     },
+     {
+      "name": "RSS or Atom feed",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type$=xml]"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bootstrap.min.css@2181"
+     }
+    ]
+   }
+  }
+ }
+}

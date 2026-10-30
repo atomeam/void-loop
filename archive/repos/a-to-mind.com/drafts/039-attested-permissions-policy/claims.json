@@ -1,0 +1,96 @@
+{
+  "status": "candidate",
+  "hold": true,
+  "slug": "attested-permissions-policy",
+  "run": "039",
+  "date": "2026-10-01",
+  "issue": "https://github.com/atomeam/a-to-mind.com/issues/39",
+  "live_header": false,
+  "algo": "sha256",
+  "head": "40f97c767e1893ac65039de75846a696c69e6573b4a260eaf38433cff16ced53",
+  "body": "e84f1e50b11a5d16e77de79fd2c0c42c5a2db76fb528ada8620b1c7d6887b901",
+  "policy_sha256": "cbf6dd54442bb654c4a83a85a258c5e64e13944b7559681b9587159f148087e1",
+  "policy": "accelerometer=(),attribution-reporting=(),autoplay=(),bluetooth=(),browsing-topics=(),camera=(),captured-surface-control=(),compute-pressure=(),display-capture=(),encrypted-media=(),fullscreen=(),gamepad=(),geolocation=(),gyroscope=(),hid=(),identity-credentials-get=(),idle-detection=(),language-detector=(),language-model=(),local-fonts=(),local-network-access=(),magnetometer=(),microphone=(),midi=(),on-device-speech-recognition=(),otp-credentials=(),payment=(),picture-in-picture=(),publickey-credentials-create=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),speaker-selection=(),storage-access=(),summarizer=(),translator=(),usb=(),web-share=(),window-management=(),xr-spatial-tracking=()",
+  "lines": [
+    {
+      "id": "perm#039",
+      "sha256": "1404308b4cb5aee8d8156b36f7169b3130a4956e2a8eb373f6459bb4ecaecc24",
+      "text": "perm#039|kind:attested-permissions-policy|header:absent-until-seal|allowlist:empty|report-to:deny|iframe-allow:none|hash:sha256|seal:human"
+    },
+    {
+      "id": "claim#absent",
+      "sha256": "a9cb19332963704dcdcbfe7aa7cb926ced83e5e655cd2a4cbf681cf653921195",
+      "text": "claim#absent|text:No Permissions-Policy response header until a human seals the exact header bytes."
+    },
+    {
+      "id": "claim#empty",
+      "sha256": "e6fcd87cac3f1e637608ac743413ef497de9dd06bc3c023912154a75c3ebe133",
+      "text": "claim#empty|text:An empty allowlist disables that named feature in this document and nested frames. It is not a grant."
+    },
+    {
+      "id": "claim#unlisted",
+      "sha256": "0e975fb550636d3f91d3b343b8f650b5d58b458a8924ec0c4ed250b2a674ab8f",
+      "text": "claim#unlisted|text:Unlisted directives keep the browser default. This draft does not claim every feature is off."
+    },
+    {
+      "id": "claim#report",
+      "sha256": "5643a46281454663ff022f1929e91ebc77178fad459ea489f906277370912f17",
+      "text": "claim#report|text:report-to and Reporting-Endpoints are denied. Violation reports are not sent."
+    },
+    {
+      "id": "claim#iframe",
+      "sha256": "b12eb7140cbd6aa085a06f446fbc73a9ec55b5059ab9f22698dc74d4f7ad33e8",
+      "text": "claim#iframe|text:iframe allow lists are denied. allow star and camera or microphone tokens are not emitted."
+    },
+    {
+      "id": "claim#mic",
+      "sha256": "cb73e6caaa045719c5c926b56b7e90aa4745ebe805082418c1d38153e4dfc1cc",
+      "text": "claim#mic|text:microphone is denied. The voice draft is not a grant to open getUserMedia."
+    },
+    {
+      "id": "claim#pay",
+      "sha256": "47b5cac1f4032309d648d94df59f2085ba81f235ddce98e1b53ab68a3dc02524",
+      "text": "claim#pay|text:payment is denied. Void Monthly checkout is not a Payment Request grant."
+    },
+    {
+      "id": "claim#share",
+      "sha256": "a74455132afeee487d1aabcdc592512ad05a5ac2318fe74223f9949e8a0390a7",
+      "text": "claim#share|text:web-share is denied. The share draft is not a grant to call navigator.share."
+    },
+    {
+      "id": "claim#webauthn",
+      "sha256": "6c1100403cf4819b952e039b1958f453868e47dc4b3e1de86bd2d6b305dd8f8a",
+      "text": "claim#webauthn|text:publickey-credentials create and get are denied until a human names a passkey document."
+    },
+    {
+      "id": "claim#topics",
+      "sha256": "a2f64a107a75bc14a500b1b620d47f293e8176185ccf0fa1a4c3e0dd9fa18b74",
+      "text": "claim#topics|text:browsing-topics and attribution-reporting are denied. interest-cohort is omitted because it is not a current MDN directive."
+    },
+    {
+      "id": "claim#model",
+      "sha256": "32e41f3a9d62b3998dce61d3c56331ea6ccedd3b5a7d96579663a043f955e305",
+      "text": "claim#model|text:language-model, summarizer, translator, and on-device-speech-recognition are denied."
+    },
+    {
+      "id": "claim#lan",
+      "sha256": "49f18148c09faabb90e2d93f850e7da1a5039ea1262e8562fc25ad7d848375a4",
+      "text": "claim#lan|text:local-network-access is denied. This origin does not probe the local network."
+    },
+    {
+      "id": "claim#meta",
+      "sha256": "c59271efe5bf115b6fc71f228f8f4007b28e170c50dbacde3d6f7db79ade40cf",
+      "text": "claim#meta|text:A meta tag is not this header. The preview does not pretend to set a response header."
+    },
+    {
+      "id": "claim#tokens",
+      "sha256": "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50",
+      "text": "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly."
+    },
+    {
+      "id": "page#permissions",
+      "sha256": "93f266178f5e7fa6493ee921adb70e6f802f84dfcefbc1cb476b064214ae3d6b",
+      "text": "page#permissions|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny"
+    }
+  ]
+}

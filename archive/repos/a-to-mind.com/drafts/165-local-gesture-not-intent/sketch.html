@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-gesture-not-intent · draft</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; line-height: 1.5; }
+.unattested { color: #666; font-size: 0.9rem; }
+.hash { font-family: monospace; word-break: break-all; background: #f4f4f4; padding: 0.5rem; }
+button { font: inherit; padding: 0.4rem 0.8rem; }
+.denied { border: 1px solid #ccc; padding: 1rem; margin-top: 1rem; }
+</style>
+</head>
+<body>
+<h1>Local gesture-not-intent</h1>
+<p class="unattested">Default status: unattested. This page does not access camera, gaze, or gesture sensors. No input is interpreted as intent or command.</p>
+
+<p>A local gesture class is a sealed mark only. Any sentence that would treat the mark as an intent, selection, or command is discarded and is not included in the hash.</p>
+
+<button id="mark" type="button">Seal local gesture class</button>
+
+<div id="out" hidden>
+  <p>Gesture mark sealed. Intent-refusal id:</p>
+  <div class="hash" id="hash"></div>
+  <div class="denied">
+    <p>Command sentence discarded. Not in hash.</p>
+    <p>A gesture mark is not an intent and not a command.</p>
+  </div>
+</div>
+
+<script>
+document.getElementById('mark').addEventListener('click', async () => {
+  const classId = 'gesture-class-' + crypto.randomUUID();
+  const payload = 'local-gesture-not-intent|' + classId + '|intent:denied|command:denied|status:unattested';
+  const buf = new TextEncoder().encode(payload);
+  const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  const hash = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  document.getElementById('hash').textContent = hash;
+  document.getElementById('out').hidden = false;
+  // Intentionally no further action. No selection, no navigation, no write.
+});
+</script>
+</body>
+</html>

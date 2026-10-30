@@ -1,0 +1,251 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const hud = document.getElementById('hud');
+
+let W = canvas.width = innerWidth;
+let H = canvas.height = innerHeight;
+window.addEventListener('resize', () => {
+  W = canvas.width = innerWidth;
+  H = canvas.height = innerHeight;
+});
+
+const GRID = 64;
+const cellW = () => W / GRID;
+const cellH = () => H / GRID;
+
+let field = new Float32Array(GRID * GRID);
+let next = new Float32Array(GRID * GRID);
+let kernel = [0.92, 0.18, 0.35, 0.04]; // decay, diffusion, injectGain, noise
+
+function idx(x, y) { return y * GRID + x; }
+function initField() {
+  field.fill(0);
+  next.fill(0);
+}
+initField();
+
+let trail = [];
+const TRAIL_MAX = 12;
+canvas.addEventListener('pointermove', e => {
+  trail.push({x: e.clientX, y: e.clientY, t: performance.now()});
+  if (trail.length > TRAIL_MAX) trail.shift();
+});
+canvas.addEventListener('pointerdown', e => {
+  trail = [{x: e.clientX, y: e.clientY, t: performance.now()}];
+});
+
+let orient = {beta: 0, gamma: 0};
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = (e.beta || 0) / 90;
+    orient.gamma = (e.gamma || 0) / 90;
+  });
+}
+
+// Audio with panning
+let audioCtx, osc, gain, panner;
+function startAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  osc = audioCtx.createOscillator();
+  gain = audioCtx.createGain();
+  panner = audioCtx.createPanner();
+  panner.panningModel = 'HRTF';
+  osc.type = 'sine';
+  osc.frequency.value = 110;
+  gain.gain.value = 0.03;
+  osc.connect(gain);
+  gain.connect(panner);
+  panner.connect(audioCtx.destination);
+  osc.start();
+}
+document.body.addEventListener('click', startAudio, {once: true});
+
+// Worker mind
+const workerCode = `
+let pop = [];
+const POP = 5;
+function randomKernel() {
+  return [
+    0.85 + Math.random()*0.12,
+    0.05 + Math.random()*0.3,
+    0.2 + Math.random()*0.4,
+    0.01 + Math.random()*0.08
+  ];
+}
+function mutate(k) {
+  return k.map((v,i) => {
+    const m = v + (Math.random()-0.5)* (i===0?0.04:0.08);
+    return Math.max(0.01, Math.min(i===0?0.99:0.8, m));
+  });
+}
+function fitness(stats) {
+  const structure = stats.var || 0;
+  const energy = stats.energy || 0;
+  const response = stats.newTrail || 0;
+  return structure * 0.5 + energy * 0.3 + response * 0.2;
+}
+self.onmessage = (e) => {
+  const {stats, current} = e.data;
+  if (!pop.length) {
+    pop = Array.from({length: POP}, () => ({k: randomKernel(), f: 0}));
+    if (current) pop[0].k = current;
+  }
+  const f = fitness(stats);
+  pop.forEach(p => { if (p.k === current) p.f = f; });
+  pop.sort((a,b) => b.f - a.f);
+  const best = pop[0];
+  const worst = pop[pop.length-1];
+  worst.k = mutate(best.k);
+  worst.f = 0;
+  self.postMessage({kernel: best.k, fitness: best.f});
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let mindFitness = 0.25;
+
+worker.onmessage = (e) => {
+  kernel = e.data.kernel;
+  mindFitness = e.data.fitness || mindFitness;
+};
+
+function updateMorph(cx, cy) {
+  const hue = 160 + mindFitness * 140;
+  const scale = 0.9 + mindFitness * 0.2;
+  document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--scale', scale);
+  document.documentElement.style.setProperty('--cx', (cx * 100) + 'vw');
+  document.documentElement.style.setProperty('--cy', (cy * 100) + 'vh');
+  hud.style.borderColor = `hsla(${hue}, 75%, 65%, 0.75)`;
+  if (osc && panner && audioCtx) {
+    const panX = (cx - 0.5) * 4;
+    const panY = (cy - 0.5) * 2;
+    panner.positionX.setTargetAtTime(panX, audioCtx.currentTime, 0.15);
+    panner.positionY.setTargetAtTime(panY, audioCtx.currentTime, 0.15);
+    osc.frequency.setTargetAtTime(90 + mindFitness * 180, audioCtx.currentTime, 0.2);
+    gain.gain.setTargetAtTime(0.02 + mindFitness * 0.03, audioCtx.currentTime, 0.2);
+  }
+}
+
+function step() {
+  const [decay, diff, inj, noise] = kernel;
+  let sum = 0, sum2 = 0, energy = 0, count = 0;
+  let cxSum = 0, cySum = 0, mass = 0;
+
+  // diffusion + decay
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = idx(x, y);
+      let v = field[i] * decay;
+      // simple 4-neighbor diffusion
+      const n = [
+        field[idx((x+1)%GRID, y)],
+        field[idx((x-1+GRID)%GRID, y)],
+        field[idx(x, (y+1)%GRID)],
+        field[idx(x, (y-1+GRID)%GRID)]
+      ];
+      v += (n.reduce((a,b)=>a+b,0)/4 - field[i]) * diff;
+      // orientation bias
+      v += orient.gamma * 0.008 * (x/GRID - 0.5) + orient.beta * 0.008 * (y/GRID - 0.5);
+      v += (Math.random()-0.5) * noise * 0.5;
+      v = Math.max(0, Math.min(1.2, v));
+      next[i] = v;
+      sum += v; sum2 += v*v; count++;
+      if (v > 0.05) {
+        energy += v;
+        cxSum += (x/GRID) * v;
+        cySum += (y/GRID) * v;
+        mass += v;
+      }
+    }
+  }
+
+  // pointer trail injection
+  let newTrail = 0;
+  const cw = cellW(), ch = cellH();
+  for (const p of trail) {
+    const gx = Math.min(GRID-1, Math.max(0, (p.x / cw)|0));
+    const gy = Math.min(GRID-1, Math.max(0, (p.y / ch)|0));
+    const i = idx(gx, gy);
+    const add = inj * 0.4;
+    next[i] = Math.min(1.2, next[i] + add);
+    newTrail += add;
+    // slight spread
+    for (let d = -1; d <= 1; d++) {
+      for (let e = -1; e <= 1; e++) {
+        if (d===0 && e===0) continue;
+        const ni = idx((gx+d+GRID)%GRID, (gy+e+GRID)%GRID);
+        next[ni] = Math.min(1.2, next[ni] + add * 0.25);
+      }
+    }
+  }
+
+  const tmp = field; field = next; next = tmp;
+
+  const mean = sum / count;
+  const variance = Math.max(0, sum2/count - mean*mean);
+  const centroidX = mass > 0.1 ? cxSum / mass : 0.5;
+  const centroidY = mass > 0.1 ? cySum / mass : 0.5;
+
+  if (Math.random() < 0.1) {
+    worker.postMessage({
+      stats: {var: variance, energy: energy/count, newTrail},
+      current: kernel
+    });
+  }
+
+  updateMorph(centroidX, centroidY);
+  statusEl.textContent = `fitness ${(mindFitness*100|0)/100}  energy ${(energy/count*100|0)/100}  var ${(variance*100|0)/100}`;
+}
+
+function draw() {
+  ctx.fillStyle = '#080812';
+  ctx.fillRect(0, 0, W, H);
+  const cw = cellW(), ch = cellH();
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const v = field[idx(x,y)];
+      if (v < 0.04) continue;
+      const hue = 180 + v * 60 + mindFitness * 40;
+      const light = 25 + v * 45;
+      ctx.fillStyle = `hsla(${hue}, 85%, ${light}%, ${0.35 + v*0.55})`;
+      ctx.fillRect(x * cw, y * ch, cw, ch);
+    }
+  }
+  // trail markers
+  ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+  ctx.lineWidth = 1.5;
+  if (trail.length > 1) {
+    ctx.beginPath();
+    trail.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.stroke();
+  }
+}
+
+function loop() {
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+document.getElementById('seal').onclick = async () => {
+  const data = JSON.stringify({kernel, fitness: mindFitness, t: Date.now()});
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  const hex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,16);
+  try {
+    const req = indexedDB.open('void-f030', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('seals', {keyPath: 'id'});
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction('seals', 'readwrite');
+      tx.objectStore('seals').put({id: hex, kernel, fitness: mindFitness, ts: Date.now()});
+      statusEl.textContent = `Sealed ${hex}`;
+    };
+  } catch(e) {
+    statusEl.textContent = `Seal hash ${hex} (IDB failed)`;
+  }
+};
+document.getElementById('reset').onclick = () => { initField(); trail = []; statusEl.textContent = 'Field reset'; };

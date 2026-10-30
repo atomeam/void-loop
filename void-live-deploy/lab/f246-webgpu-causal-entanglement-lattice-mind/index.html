@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root {
+  --bg: #04040c;
+  --fg: #c8d8ff;
+  --accent: #7af;
+  --hue: 240;
+  --blur: 0px;
+  --contrast: 1;
+  --residual: 0;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; background: hsl(var(--hue), 25%, 4%);
+  color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden;
+  filter: blur(var(--blur)) contrast(var(--contrast));
+  transition: filter 0.5s, background 0.7s;
+}
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.ui { position: absolute; z-index: 20; padding: 10px; pointer-events: none; }
+.ui > * { pointer-events: auto; }
+button, .status {
+  background: rgba(8,8,24,0.88); color: var(--fg); border: 1px solid #335;
+  border-radius: 6px; padding: 7px 11px; margin: 3px; font-size: 13px;
+}
+button:hover { border-color: var(--accent); }
+.status { font-size: 11px; opacity: 0.9; max-width: 340px; }
+.cards { position: absolute; inset: 0; pointer-events: none; }
+.card {
+  position: absolute; width: 64px; height: 36px;
+  background: hsla(var(--hue), 45%, 16%, 0.92);
+  border: 1px solid hsl(var(--hue), 75%, 58%);
+  border-radius: 7px; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; pointer-events: auto; cursor: pointer;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.2s, filter 0.25s, opacity 0.3s;
+  opacity: 0.85;
+}
+.card.cluster { border-color: #8f8; filter: brightness(1.3); }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Causal Entanglement Lattice Mind · Verse lab</title>
+<meta name="description" content="Discrete multi-channel lattice (Canvas2D progressive, WebGPU compute stub) where cells hold energy and pairwise entanglement scores with 4-neighbors">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Causal Entanglement Lattice Mind · Verse lab">
+<meta property="og:description" content="Discrete multi-channel lattice (Canvas2D progressive, WebGPU compute stub) where cells hold energy and pairwise entanglement scores with 4-neighbors">
+<meta property="og:url" content="https://a-to-mind.com/lab/f246-webgpu-causal-entanglement-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f246-webgpu-causal-entanglement-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="cards" id="cards"></div>
+<div class="ui">
+  <button id="xrBtn">Enter XR</button>
+  <button id="evolveBtn">Force Evolve</button>
+  <button id="sealBtn">Seal Policy</button>
+  <button id="resetBtn">Reset</button>
+  <div class="status" id="status">causal entanglement lattice · pointer mode</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Causal Entanglement Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

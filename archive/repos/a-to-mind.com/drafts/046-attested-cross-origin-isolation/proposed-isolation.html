@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-origin isolation — unpublished (draft 046)</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; }
+    body { font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; margin: 0; padding: 1.5rem; max-width: 42rem; }
+    h1 { font-size: 1.25rem; font-weight: 650; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { text-align: left; border-bottom: 1px solid #8884; padding: 0.35rem 0.4rem; vertical-align: top; }
+    code { font-family: ui-monospace, monospace; font-size: 0.9em; }
+    .absent { font-weight: 650; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    button:disabled { opacity: 0.55; }
+    #out { white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <p>Draft 046. Not a live page. Headers on this response are not a seal.</p>
+  <h1>Cross-origin isolation is unpublished</h1>
+  <p>Scanner checklists still bundle three headers and treat the bundle as a grade. This draft does not emit them. <code>window.crossOriginIsolated</code> on a preview is not a claim about a-to-mind.com.</p>
+  <table>
+    <thead><tr><th>Header</th><th>State</th><th>Why it stays off</th></tr></thead>
+    <tbody>
+      <tr><td><code>Cross-Origin-Opener-Policy</code></td><td class="absent">absent</td><td><code>same-origin</code> severs cross-origin popup opener references. No sealed popup flow was named, so neither <code>same-origin</code> nor <code>same-origin-allow-popups</code> is proposed.</td></tr>
+      <tr><td><code>Cross-Origin-Embedder-Policy</code></td><td class="absent">absent</td><td><code>require-corp</code> blocks no-cors cross-origin loads unless the resource sends an allowing CORP. <code>credentialless</code> strips credentials. Neither is proposed.</td></tr>
+      <tr><td><code>Cross-Origin-Resource-Policy</code></td><td class="absent">absent</td><td><code>same-origin</code> can break PDF rendering in Chrome and any intended cross-origin read. No consumer list is sealed.</td></tr>
+    </tbody>
+  </table>
+  <p>SharedArrayBuffer, unthrottled timers, and a Spectre-mitigation sentence are denied. A-to-Mind has no sealed need for cross-origin isolation. Report-Only headers and <code>report-to</code> are denied: this draft has no collector.</p>
+  <p>Catalog hash (SHA-256 of <code>isolation.catalog.json</code> bytes): <code id="expect">pending</code></p>
+  <p id="out">Hash not run.</p>
+  <p>
+    <button type="button" id="hold">Hold — record unpublished</button>
+    <button type="button" id="seal" disabled>Seal (disabled — human only)</button>
+  </p>
+  <script>
+    const expect = "9196f4cbeec06a3e642531be0433eed241309bd663fe6743e4d3432b7c76f2e0";
+    document.getElementById("expect").textContent = expect;
+    document.getElementById("hold").addEventListener("click", function () {
+      const rec = { run: "046", emit: false, at: new Date().toISOString(), note: "hold is not a seal" };
+      try { sessionStorage.setItem("atm-isolation-hold-046", JSON.stringify(rec)); }
+      catch (e) { document.getElementById("out").textContent = "sessionStorage blocked; hold not stored"; return; }
+      document.getElementById("out").textContent = "Hold stored in sessionStorage only. Headers remain unpublished.";
+    });
+  </script>
+</body>
+</html>

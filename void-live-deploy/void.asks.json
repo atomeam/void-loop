@@ -1857,11 +1857,416 @@
       "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'.",
       "ledgerAt": "2026-10-19T17:11:36Z",
       "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Build the 'decision-matrix' skill under the Deciding family",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S1, S2]",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle [S2]",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S2].",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S2]",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S1].",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill' [S2].",
+      "ledgerAt": "2026-10-19T17:11:36Z",
+      "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Implement a 'failure-signature' into the incident-autopsy skill.",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage",
+      "ledgerAt": "2026-10-21T16:30:48Z",
+      "why": "built: duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js: a slip of a skill's trigger word still activates the skill (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they are about to export before they trigger the full download.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family by developing and testing new skills in that category.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills within the Deciding family to increase its proven skill count",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see memory snippets",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to allow users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop new skills for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills specifically for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show user input snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'time-zone-detect' skill to the export so .ics files are automatically adjusted to the user's local browser time.",
+      "ledgerAt": "2026-10-22T01:23:42Z",
+      "why": "built: the .ics export writes the browser's time zone as X-WR-TIMEZONE and says it on the card; times stay absolute UTC (tools/ics.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Verify that every instance of 'Void' or 'V01D' in the user-facing text, including error messages and 'about' sections, has been successfully replaced with 'Verse'.",
+      "ledgerAt": "2026-10-22T01:23:43Z",
+      "why": "built: checked and fixed: published pages, the store's names and blurbs and the memory card no longer show Void or V01D (tools/verse-name.test.mjs); lineage and persona keep the history on purpose (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'similarity-score' field to the movie picks JSON so users can see how closely a pick matches their expressed intent.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the pick-for-me card shows 'Match N%' for how closely the pick touches the interests it was chosen on, and data-pick holds it as JSON (lib/taste.js pickRecord, tools/taste.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Add a 'reasoning-link' to the movie-pick JSON so the specific memory or skill used for the pick is visible to the user.",
+      "ledgerAt": "2026-10-22T01:23:41Z",
+      "why": "built: the same pick record names the skill and the one signal (thumbs-ups, a kept card, imported taste, recent asks) that chose it, matching the why line (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'ritual-template' skill that allows users to export a pre-set sequence of habits (e.g., 'Morning Routine') as a single block of calendar events.",
+      "ledgerAt": "2026-10-22T02:26:02Z",
+      "why": "built: ritual-template, asked by Verse: 'morning routine as calendar events' or 'ritual template: meditate 10, stretch 15 at 6:30am' lays the habits back to back and downloads one daily-repeating .ics (linked by tools/asks-link.mjs, shared words: ritual, template, skill, allow, us, export, pre, set, sequence, habit, morn, routine, calendar, event)"
+    },
+    {
+      "words": "Add a 'remediation-draft' field to the incident-autopsy output that proposes a code fix for the reported error.",
+      "ledgerAt": "2026-10-22T03:10:39Z",
+      "why": "built: asked by Verse: the incident autopsy gives each incident a remediation draft (the failing checks to re-run alone, the files to open first, how to put the likely file back if it still fails, the commit to read; a plan fro (linked by tools/asks-link.mjs, shared words: remedi, draft, field, incident, autopsy, output, code)"
+    },
+    {
+      "words": "Automate a 'post-fix' audit that checks if a shipped fix accidentally broke a skill in a different family.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: asked by Verse: a fix audit: 'audit your fixes' lists every fix in the growth ledger (last 30 days) with each fixed skill's evidence rating and whether it was re-rated on or after the fix day, flags any failing check in  (linked by tools/asks-link.mjs, shared words: post, fix, audit, check, shipp, accident, broke, skill, different, fami)"
+    },
+    {
+      "words": "Add an 'action' button to the Root cause view that sends the error context directly to the builder agents.",
+      "ledgerAt": "2026-10-22T03:10:39Z",
+      "why": "built: incident-autopsy, asked by Verse: each incident has a 'Send to builders' button that copies a builder brief (failing checks + remediation draft) or files it as a prefilled builder issue; 'send the root cause to the builders' opens it"
+    },
+    {
+      "words": "Verify if the newly shipped /fix/ pages are actually reducing the 'friction' metric in the growth logs, or if they are just moving the debt elsewhere.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'are the fix pages reducing friction' answers that the /fix/ pages explain outside tools' errors and map to no skill, so the friction line cannot show their effect, and what would"
+    },
+    {
+      "words": "Audit the 23 fixed skills to ensure their 'evidence' rating in skills/families.json was updated correctly based on the fix.",
+      "ledgerAt": "2026-10-22T03:30:45Z",
+      "why": "built: fix-audit, asked by Verse: 'fix evidence audit' lists each fixed skill's rating and flags one rated before its fix"
+    },
+    {
+      "words": "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for each upgrade.",
+      "ledgerAt": "2026-10-22T02:49:48Z",
+      "why": "built: wants, asked by Verse: a 'Why I want this' fold under each want and ask with the reflection behind it; 'show the reasoning behind your wants' opens it"
+    },
+    {
+      "words": "Integrate a 'suggested builder' tag to digest items, mapping specific fails to the builder who last touched that family.",
+      "ledgerAt": "2026-10-22T03:18:20Z",
+      "why": "built: backlog-digest, asked by Verse: each family shows a suggested builder with the skill and date; 'digest your backlog' opens it"
+    },
+    {
+      "words": "Implement a churn cap to stop proposing changes to files that change more than N times in M days.",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "built: Churn caps for the build loop: tools/churn.mjs lists the files changed more than 12 times in 7 days (leaving out the ledger and logs that change every ship), and the will's guard can now skip a want that names one. Teste (linked by tools/asks-link.mjs, shared words: churn, cap, chang, fil, change, tim, day)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' skill family.",
+      "ledgerAt": "2026-10-17T23:55:39Z",
+      "why": "built: asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would mak (linked by tools/asks-link.mjs, shared words: skill, within, word, world, fami)"
+    },
+    {
+      "words": "Strengthen the 'Words and the world' skill family by building more unproven skills.",
+      "ledgerAt": "2026-10-14T18:32:26Z",
+      "why": "built: Asked by Void: friction follow-through hears what already shipped (words links + free-text asked), and the growth card's friction line names each skill's family and leads with the least-proven family (Words and the world (linked by tools/asks-link.mjs, shared words: word, world, skill, fami)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within Workers AI's 10k neurons/day free limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day, free)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to maintain the 10k neurons/day limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, neuron, day)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to secure the 10k/day free neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, free, neuron)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day free neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, free, neuron)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to gemma to stay within the 10k/day neuron limit.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot, so the free 10k neurons a day hold (the owner's wishlist #1); and Verse's readout reports it (linked by tools/asks-link.mjs, shared words: answ, gpt, os, 120b, gemma, 10k, day, neuron)"
+    },
+    {
+      "words": "Strengthen the 'Words and the world' skill family by building out its unproven skills.",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "built: duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a churn cap to stop proposing changes to files that have changed more than N times in M days.",
+      "ledgerAt": "2026-10-18T16:51:30Z",
+      "why": "built: duplicate: tools/churn.mjs lists files changed more than 12 times in 7 days and the will's guard skips wants on them (2026-10-18) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build unproven skills within the 'Words and the world' family to increase the proven count.",
+      "ledgerAt": "2026-10-28T16:30:13Z",
+      "why": "built: duplicate: built in lists run 5, the family is 28 of 28 proven (tools/words-family.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page to clear the aria-busy state once the gate returns a result",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page so it clears the aria-busy state once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page aria-busy state so it clears once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the weather page so the aria-busy state clears once the gate returns a result.",
+      "ledgerAt": "2026-10-28T16:30:11Z",
+      "why": "built: built (lists run 6): every fetch on the weather page has a 12 s timeout and aria-busy clears in finally (tools/weather-busy.test.mjs); the other wordings are duplicates of ask-20261027-2205-2 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [S2, wishlist].",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement edge caching (caches.default) for counters and caches to reduce KV writes below 1k/day",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: built (lists run 6): Verse makes no KV writes (edge cache since 2026-09-27) and tools/kv-writes.test.mjs keeps it so; the other wordings are duplicates of ask-20261027-2205-1 (tools/asks-link.json)"
+    },
+    {
+      "words": "Move non-V01D workers off the shared namespace to reduce KV writes",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move non-V01D workers off the shared namespace",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace.",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to reduce KV writes [S2, wishlist].",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to reduce KV writes",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Move the two non-V01D workers off the shared namespace to improve efficiency.",
+      "ledgerAt": "2026-10-28T16:30:12Z",
+      "why": "built: decided (lists run 6): Verse's side of the KV limit is done (zero KV writes, kept by tools/kv-writes.test.mjs); moving other workers to another namespace cannot help because the free write limit is per account, so wishlist #2 no longer lists it and the rest is the owner's call on his own non-Verse workers (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'value-drift' tracker in the growth inbox that monitors how my appraisals of similar objects change over time.",
+      "ledgerAt": "2026-10-28T19:43:51Z",
+      "why": "built: tools/value-drift.mjs reads Verse's own store prices across the history of the store and flags any kind of product whose prices spread past a quarter (domains/value-drift.json, tools/value-drift.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to Gemma [What I want next].",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation from gpt-oss-120b to Gemma",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: Answers run on the free model first, asked by Verse: gemma answers every ask and gpt-oss-120b is the second try when it cannot (commit 630e666fb, lib/models.js); the bake-off of 2026-10-10 only measured the models (tools/asks-link.json)"
+    },
+    {
+      "words": "Migrate answer generation to Gemma to resolve the live outage and move away from gpt-oss-120b.",
+      "ledgerAt": "2026-10-25T01:16:56Z",
+      "why": "built: answers run on gemma-4-26b-a4b-it first and gpt-oss-120b is only the second try (commit 630e666fb, lib/models.js); wishlist #1 and Verse's facts about itself now say the move is done (tools/asks-link.json)"
+    }
+  ],
+  "held": [
+    {
+      "words": "Absorb every repository on the account into the core code",
+      "frontier": "Absorb and connect every repo",
+      "until": "sycophanthex.com",
+      "why": "held: it does not help Verse beat sycophanthex.com, the current Versus target; the tower goes every site ever made, smallest first (owner, 2026-10-29)"
     }
   ],
   "totals": {
-    "asked": 224,
-    "built": 206,
-    "through": "2026-10-18T20:31:00Z"
+    "asked": 241,
+    "built": 236,
+    "through": "2026-10-29T22:41:00Z",
+    "open": [
+      {
+        "ask": "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins.",
+        "at": "2026-10-17T12:33:00Z",
+        "kind": "build",
+        "small": true,
+        "times": 1
+      },
+      {
+        "ask": "Absorb every repository on the account into the core code",
+        "at": "2026-10-28T22:29:00Z",
+        "kind": "daily",
+        "small": false,
+        "times": 6
+      },
+      {
+        "ask": "Create a utility to check the watertightness of STL print files in the browser",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 6
+      },
+      {
+        "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 1
+      },
+      {
+        "ask": "Provide a list of the 17 checked and 6 tested skills that can be promoted to proven status",
+        "at": "2026-10-29T22:41:00Z",
+        "kind": "daily",
+        "small": true,
+        "times": 4
+      }
+    ]
   }
 }

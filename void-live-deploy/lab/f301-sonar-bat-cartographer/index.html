@@ -1,0 +1,48 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+html,body{margin:0;height:100%;background:#000;color:#cfe;font:14px system-ui,sans-serif;overflow:hidden}
+#hud.fold p,#hud.fold .row,#hud.fold label,#hud.fold #stats{display:none}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#mind{transition:transform .15s,border-radius .15s,box-shadow .15s;border-radius:10px;padding:4px}
+@media (prefers-reduced-motion:reduce){#mind{transform:none!important}}
+#hud{position:fixed;left:12px;top:12px;max-width:min(330px,calc(100vw - 24px));padding:12px 14px;background:rgba(6,14,20,.72);border:1px solid #2a5a6a;border-radius:12px;backdrop-filter:blur(6px);transition:transform .15s,border-radius .15s,box-shadow .15s}
+h1{font-size:15px;margin:0 0 6px;font-weight:600;letter-spacing:.04em}
+p{margin:4px 0;line-height:1.35;color:#9bc}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+button{background:#0d2a33;color:#cfe;border:1px solid #2f6b7c;border-radius:8px;padding:6px 9px;font:inherit;cursor:pointer}
+button:hover{background:#15404c}
+.bar{height:8px;background:#7ff;border-radius:4px;transition:width .1s;min-width:2px}
+.q{display:grid;grid-template-columns:62px 1fr;gap:4px 8px;align-items:center;margin-top:8px;font-size:12px}
+#stats{font-variant-numeric:tabular-nums;font-size:12px;margin-top:6px}
+label{font-size:12px;display:flex;gap:6px;align-items:center;margin-top:6px}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Sonar Bat Cartographer · Verse lab</title>
+<meta name="description" content="A pitch-dark procedural cave on The Verse canvas. A tabular Q-learning bat runs on-device and perceives only five echo rays plus a &quot;moth flutter&quot; bearing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sonar Bat Cartographer · Verse lab">
+<meta property="og:description" content="A pitch-dark procedural cave on The Verse canvas. A tabular Q-learning bat runs on-device and perceives only five echo rays plus a &quot;moth flutter&quot; bearing.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f301-sonar-bat-cartographer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f301-sonar-bat-cartographer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="c"></canvas>
+<div id="hud">
+<div id="mind"><h1 id="ttl" title="Tap to fold the panel" style="cursor:pointer">F301 · Sonar Bat Cartographer ▾</h1>
+<p>The cave is pitch dark. A small bat learns, on your device, to hunt moths using only echoes. Every echo paints a fading glimpse of the walls. Turn on sound to hear its chirps in stereo, with delay set by distance.</p>
+<div class="q"><span>forward</span><div class="bar" id="q0"></div><span>left</span><div class="bar" id="q1"></div><span>right</span><div class="bar" id="q2"></div></div></div>
+<div id="stats"></div>
+<label>Speed <input id="speed" type="range" min="1" max="60" value="6"></label>
+<div class="row">
+<button id="snd">Sound off</button><button id="train">Train 20k steps</button><button id="cave">New cave</button><button id="you">You fly</button><button id="share">Share</button><button id="forget">Forget</button>
+</div>
+<p id="note" style="font-size:12px"></p>
+</div>
+<script src="sonar-core.js"></script>
+<script src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

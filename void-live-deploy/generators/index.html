@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Random generators: names, ideas and stories · Verse</title>
+<meta name="description" content="27 random generators that run on your device: fantasy names, town names, band names, usernames, writing prompts, D&D NPCs, haiku, superpowers and more. The same link always gives the same result; keep favourites, copy, share, and turn any result into a cartoon. Works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Random generators · Verse">
+<meta property="og:description" content="27 generators for names, ideas and stories. Seeded links, favourites, a picture for any result; on your device, offline.">
+<meta property="og:url" content="https://a-to-mind.com/generators/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>if (navigator.onLine !== false && /[?&](?:g|seed|n)=/.test(location.search)) { document.documentElement.classList.add('pre'); setTimeout(function () { document.documentElement.classList.remove('pre'); }, 2500); } // the link carries a generator and a seed: hold the paint until the result is drawn (never for long: a page that cannot draw still shows its words; never offline, where a module the worker has not kept yet would hold it)</script>
+<style>
+  /* a-to-mind.com/generators/ (Versus' perchance.org floor): one file and one module; nothing leaves the device but a picture ask */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; text-align: center; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--soft); text-align: center; margin: 0 0 14px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; }
+  select, input, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  select { width: 100%; }
+  textarea { width: 100%; min-height: 96px; }
+  input[type=number] { width: 84px; }
+  select:focus-visible, input:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button.go, button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 10px 0 0; }
+  .row label { font-size: 14px; color: var(--soft); display: inline-flex; align-items: center; gap: 6px; }
+  .seed { font-size: 13px; color: var(--soft); margin-left: auto; font-variant-numeric: tabular-nums; }
+  .chips { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 6px; margin: 8px 0 0; height: 48px; padding-bottom: 6px; box-sizing: border-box; scrollbar-width: thin; } .chips a { flex: none; white-space: nowrap; }
+  .chips a { font-size: 13px; padding: 6px 12px; min-height: 36px; box-sizing: border-box; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; background: var(--box); }
+  .chips a[aria-current="true"] { background: var(--hi); border-color: var(--accent); font-weight: 600; }
+  ol.res { min-height: 330px; } ul.res, ol.res { list-style: none; margin: 10px 0 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  .res > li { padding: 10px 12px; border-top: 1px solid var(--line); }
+  .res > li:first-child { border-top: 0; }
+  .txt { font-size: 18px; overflow-wrap: anywhere; white-space: pre-line; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .acts button { font-size: 13px; padding: 4px 12px; min-height: 36px; }
+  .pic { margin-top: 8px; font-size: 13px; color: var(--soft); }
+  .pic img { display: block; width: 100%; max-width: 420px; border-radius: 12px; border: 1px solid var(--line); }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; }
+  details { margin-top: 18px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); }
+  summary { cursor: pointer; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  [hidden] { display: none !important; }
+  html.pre main { visibility: hidden; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+  @media print { button, #related, #asks, .chips, details { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/generators/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Generators","url":"https://a-to-mind.com/generators/","description":"27 random generators that run on your device: fantasy names, town names, band names, usernames, pet names, writing prompts, story prompts, D&D NPCs, haiku, limericks, superpowers, side quests and more. The same link always gives the same result, favourites are kept in the browser, and any result can be turned into a cartoon. Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"random name generator, fantasy name generator, writing prompt generator, band name generator, dnd npc generator, random haiku generator, random generators","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/generators/?g={generator}"},"generator-input":"required name=generator"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Generators","item":"https://a-to-mind.com/generators/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/generators-card.js">
+<link rel="modulepreload" href="/lib/generators.js">
+<link rel="modulepreload" href="/skills/textgen.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/prizes.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1 id="title">Random generators</h1>
+  <p class="sub" id="sub">Names, ideas and stories at a tap. The same link always shows the same result. Everything runs on your device, offline too.</p>
+  <p class="note" id="count" style="text-align:center">27 generators</p>
+
+  <label class="vh" for="gsel" id="gselL">Generator</label>
+  <select id="gsel"><option>Fantasy names</option></select>
+  <nav class="chips" id="chips" aria-label="Generators"></nav>
+
+  <div class="row">
+    <label><span id="nL">Results</span> <input type="number" id="n" min="1" max="20" value="5" inputmode="numeric"></label>
+    <button type="button" class="go" id="regen">Regenerate</button>
+    <button type="button" id="copyAll">Copy all</button>
+    <button type="button" id="share">Share link</button>
+    <span class="seed" id="seed" aria-live="polite">seed 0</span>
+  </div>
+  <div class="note" id="note" role="status"></div>
+  <ol class="res" id="res" aria-live="polite"></ol>
+
+  <section id="favBox" hidden>
+    <h2 id="favH">Kept</h2>
+    <ul class="res" id="favs"></ul>
+  </section>
+
+  <details id="own">
+    <summary id="ownH">Make your own generator</summary>
+    <label class="vh" for="ownText" id="ownL">One entry per line</label>
+    <textarea id="ownText" placeholder="One entry per line" maxlength="20000"></textarea>
+    <div class="row"><button type="button" class="go" id="ownGo">Regenerate</button></div>
+    <p class="note"><a href="/generators/make/" id="editorLink">Open the full editor: many lists, nested lists, odds, {a|b} choices, a live preview, share, publish and remix →</a></p>
+  </details>
+
+  <section id="hub" aria-labelledby="hubH">
+    <h2 id="hubH">People's generators</h2>
+    <p class="note" id="ownWords">Make your own in plain lists: [list] references, nested lists, odds and weights like ^2, inline choices {a|b|c}, ranges {1-10} and {a-z}, smart articles {a} and plurals {s}, all in <a href="/generators/make/">the editor</a>.</p>
+    <div class="row" role="group" aria-label="Order"><button type="button" id="hubNew" aria-pressed="true">Newest</button><button type="button" id="hubPop" aria-pressed="false">Most played</button><a href="/generators/make/" class="go" id="hubMake" style="font-size:14px;border-radius:999px;padding:7px 14px;min-height:40px;display:inline-flex;align-items:center;text-decoration:none;background:var(--accent);color:var(--on-accent,#fff)">Make and publish your own</a><a href="/image/" id="hubImage" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">AI image generator →</a><a href="/generators/chat/" id="hubChat" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">Character chat →</a><a href="/generators/story/" id="hubStory" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">Story writer →</a><a href="/generators/forum/" id="hubForum" style="font-size:14px;color:inherit;display:inline-flex;align-items:center;min-height:40px">Forum →</a></div>
+    <h2 id="aiH">AI name generators</h2>
+    <nav class="chips" id="aiGens" aria-labelledby="aiH"><a href="/generators/make/?t=ai-fantasy-names">AI fantasy names</a><a href="/generators/make/?t=ai-character-names">AI character names</a><a href="/generators/make/?t=ai-town-names">AI town names</a><a href="/generators/make/?t=ai-pet-names">AI pet names</a><a href="/generators/make/?t=ai-band-names">AI band names</a></nav>
+    <ul class="res" id="hubList"><li class="note">Loading…</li></ul>
+  </section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/generators/?g=fantasy-names">Fantasy names</a><a href="/generators/?g=town-names">Town names</a><a href="/generators/?g=band-names">Band names</a><a href="/generators/?g=writing-prompts">Writing prompts</a><a href="/generators/?g=dnd-npcs">D&amp;D NPCs</a><a href="/generators/?g=superpowers">Superpowers</a><a href="/generators/?g=haiku">Haiku</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/image/">AI image generator</a> <a href="/random/">Random number</a> <a href="/flip/">Coin flip</a> <a href="/wheel/">Wheel of names</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer id="foot">Nothing you make here is sent anywhere unless you ask for a picture or publish a generator.</footer>
+</main>
+<script type="module">
+  // static imports so tools/preload.mjs lists them and sw.js keeps them whole: the page opens offline (a dynamic import was never cached)
+  import { mountRelated } from '/lib/toolkit.js';
+  import { cardAsk } from '/lib/generators-card.js';
+  import { mountStrip } from '/lib/handoff.js';
+  import * as G from '/lib/generators.js';
+  // everything after the first paint: the page shows its words at once, the work lands after load (the gate measures speed)
+  addEventListener('load', async () => {
+    const $ = (id) => document.getElementById(id), lang = navigator.language || 'en', de = /^de\b/i.test(lang), W = G.wordsFor(lang);
+    const KEY = 'a2m.void.generators.v1';
+    let store = { favs: [] };
+    try { const s = JSON.parse(localStorage.getItem(KEY) || '{}'); if (s && Array.isArray(s.favs)) store = { favs: s.favs.filter((f) => f && typeof f.text === 'string').slice(0, 200) }; if (s && s.own && typeof s.own.text === 'string') store.own = { name: String(s.own.name || '').slice(0, 80), text: s.own.text.slice(0, 20000) }; } catch (_) {}
+    const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_) {} };
+    const q = new URLSearchParams(location.search);
+    const state = { g: G.byId(q.get('g')) ? q.get('g') : (G.byId(q.get('g')) ? q.get('g') : 'fantasy-names'), seed: /^\d{1,10}$/.test(q.get('seed') || '') ? +q.get('seed') : G.newSeed(), n: Math.max(1, Math.min(20, +q.get('n') || 5)), own: q.get('g') === 'own' };
+    if (q.get('g') === 'own') state.g = 'own';
+    if (store.own && store.own.text) { $('ownText').value = store.own.text; if (store.own.name) $('ownH').textContent = store.own.name; } // the list made by chat (skills/generators-fill.js), or typed here before
+    $('ownText').addEventListener('change', () => { store.own = { name: (store.own && store.own.name) || '', text: $('ownText').value }; keep(); });
+    if (de) { document.documentElement.lang = 'de'; document.title = 'Zufallsgeneratoren: Namen, Ideen und Geschichten · Verse'; }
+    const nameOf = (x) => (de ? x.de : x.en);
+    $('title').textContent = W.title; $('sub').textContent = W.sub; $('count').textContent = G.GENERATORS.length + ' ' + W.gens; $('nL').textContent = W.many; $('regen').textContent = W.regenerate; $('copyAll').textContent = W.copyAll; $('share').textContent = W.share;
+    $('favH').textContent = W.favs; $('ownH').textContent = W.own; $('ownL').textContent = W.ownHint; $('ownText').placeholder = W.ownHint; $('ownGo').textContent = W.regenerate; $('gselL').textContent = W.title; $('foot').textContent = de ? 'Es wird nichts gesendet, außer du willst ein Bild oder veröffentlichst einen Generator.' : 'Nothing you make here is sent anywhere unless you ask for a picture or publish a generator.';
+    for (const x of G.GENERATORS) { const o = document.createElement('option'); o.value = x.id; o.textContent = nameOf(x); $('gsel').append(o); const a = document.createElement('a'); a.href = '/generators/?g=' + x.id; a.textContent = nameOf(x); a.dataset.id = x.id; a.addEventListener('click', (e) => { e.preventDefault(); state.g = x.id; state.seed = G.newSeed(); go(); }); $('chips').append(a); }
+    $('n').value = state.n;
+    const link = () => location.origin + '/generators/?g=' + state.g + '&seed=' + state.seed + '&n=' + state.n;
+    const say = (t) => { $('note').textContent = t || ''; if (t) setTimeout(() => { if ($('note').textContent === t) $('note').textContent = ''; }, 2500); };
+    const copy = async (text, btn) => { try { await navigator.clipboard.writeText(text); } catch (_) { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); try { document.execCommand('copy'); } catch (__) {} t.remove(); } say(W.copied); if (btn) { const o = btn.textContent; btn.textContent = W.copied; setTimeout(() => { btn.textContent = o; }, 1200); } };
+    const isKept = (g, text) => store.favs.some((f) => f.g === g && f.text === text);
+    // the picture: the art forge (POST /api/card-art, kind cartoon), as a skill card asks it; an honest painting state, and a message when the forge is out for the day
+    const REFUSED = { brand: 1, person: 1, unsuitable: 1, kept: 1, secret: 1 };
+    async function picture(text, box) {
+      box.textContent = W.painting + '…'; box.setAttribute('role', 'status');
+      const subject = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N} ,.'-]/gu, '').slice(0, 80).trim();
+      const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 45000);
+      try {
+        const r = await fetch('/api/card-art', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject, kind: 'cartoon' }), signal: ctl.signal });
+        const j = await r.json();
+        if (j && j.state === 'art' && /^data:image\//.test(j.img || '')) { const im = document.createElement('img'); im.src = j.img; im.alt = (de ? 'Ein Cartoon: ' : 'A cartoon of: ') + subject; box.replaceChildren(im); return; }
+        box.textContent = REFUSED[j && j.why] ? (de ? 'Das male ich nicht.' : 'I won\'t draw that one.') : W.noArt;
+      } catch (_) { box.textContent = navigator.onLine ? W.noArt : (de ? 'Für ein Bild brauche ich Internet.' : 'A picture needs the internet.'); }
+      finally { clearTimeout(timer); }
+    }
+    function row(text, g, withPic) {
+      const li = document.createElement('li'); const t = document.createElement('div'); t.className = 'txt'; t.textContent = text;
+      const acts = document.createElement('div'); acts.className = 'acts'; const box = document.createElement('div'); box.className = 'pic';
+      const mk = (label, fn, pressed) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (pressed !== undefined) b.setAttribute('aria-pressed', String(pressed)); b.addEventListener('click', () => fn(b)); acts.append(b); return b; };
+      mk(W.copy, (b) => copy(text, b));
+      const k = mk(isKept(g, text) ? W.kept : W.keep, () => { if (isKept(g, text)) store.favs = store.favs.filter((f) => !(f.g === g && f.text === text)); else store.favs.unshift({ g, text }); keep(); drawFavs(); k.textContent = isKept(g, text) ? W.kept : W.keep; k.setAttribute('aria-pressed', String(isKept(g, text))); }, isKept(g, text));
+      if (withPic) mk(W.picture, () => picture(text, box)); else mk(W.remove, () => { store.favs = store.favs.filter((f) => !(f.g === g && f.text === text)); keep(); drawFavs(); draw(); });
+      li.append(t, acts, box); return li;
+    }
+    function drawFavs() { $('favBox').hidden = !store.favs.length; $('favs').replaceChildren(...store.favs.map((f) => row(f.text, f.g, true))); }
+    let current = [];
+    function draw() {
+      current = state.g === 'own' ? G.fromList($('ownText').value, state.seed, state.n) : G.generate(state.g, state.seed, state.n);
+      $('res').replaceChildren(...current.map((t) => row(t, state.g, true)));
+      $('seed').textContent = W.seed + ' ' + state.seed; $('gsel').value = state.g === 'own' ? '' : state.g;
+      for (const a of $('chips').children) a.setAttribute('aria-current', String(a.dataset.id === state.g));
+      const x = G.byId(state.g); document.title = (x ? nameOf(x) : W.own) + ' · ' + (de ? 'Zufallsgeneratoren' : 'Random generators') + ' · Verse';
+      if (state.g === 'own' && !current.length) $('res').replaceChildren(Object.assign(document.createElement('li'), { textContent: W.ownHint }));
+    }
+    function go() { try { history.replaceState(null, '', '/generators/?g=' + state.g + '&seed=' + state.seed + (state.n !== 5 ? '&n=' + state.n : '')); } catch (_) {} draw(); document.documentElement.classList.remove('pre'); }
+    $('gsel').addEventListener('change', () => { state.g = $('gsel').value; state.seed = G.newSeed(); go(); });
+    $('n').addEventListener('change', () => { state.n = Math.max(1, Math.min(20, +$('n').value || 5)); $('n').value = state.n; go(); });
+    $('regen').addEventListener('click', () => { state.seed = G.newSeed(); go(); });
+    $('copyAll').addEventListener('click', () => copy(current.join('\n'), $('copyAll')));
+    $('share').addEventListener('click', async () => { const url = link(); if (state.g !== 'own' && navigator.share) { try { await navigator.share({ title: 'Verse: ' + W.title, url }); return; } catch (_) {} } copy(url, null); say(W.linked); });
+    $('ownGo').addEventListener('click', () => { state.g = 'own'; state.seed = G.newSeed(); go(); });
+    if (state.g === 'own') $('own').open = true;
+    drawFavs(); go();
+    mountRelated($('related'), '/generators/', [], { card: () => cardAsk(location.search) });
+    mountStrip($('related'), '/generators/');
+    // the hub: generators people published (functions/api/generators.js); titles only, as text; each opens in the editor
+    async function hub(sort) {
+      $('hubNew').setAttribute('aria-pressed', String(sort === 'new')); $('hubPop').setAttribute('aria-pressed', String(sort === 'popular'));
+      try { const j = await (await fetch('/api/generators?sort=' + sort)).json(); const items = (j && j.items) || [];
+        $('hubList').replaceChildren(...(items.length ? items.map((g) => { const li = document.createElement('li'), a = document.createElement('a'); a.href = '/gen/' + encodeURIComponent(g.id); a.textContent = g.title; a.className = 'txt'; a.style.color = 'inherit';
+          const m = document.createElement('div'); m.className = 'pic'; m.textContent = (de ? g.plays + '× gespielt · ' : 'played ' + g.plays + ' times · ') + g.day;
+          const acts = document.createElement('div'); acts.className = 'acts'; const rb = document.createElement('button'); rb.type = 'button'; rb.textContent = de ? 'Melden' : 'Report'; rb.setAttribute('aria-label', (de ? 'Melden: ' : 'Report ') + g.title);
+          rb.addEventListener('click', async () => { if (!confirm(de ? 'Diesen Generator melden?' : 'Report this generator as harmful or rude?')) return; try { await fetch('/api/generators', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: g.id, act: 'report' }) }); } catch (_) {} rb.textContent = de ? 'Gemeldet' : 'Reported'; rb.disabled = true; });
+          acts.append(rb); li.append(a, m, acts); return li; }) : [Object.assign(document.createElement('li'), { className: 'note', textContent: de ? 'Noch keiner. Mach den ersten!' : 'None yet. Publish the first one!' })]));
+      } catch (_) { $('hubList').replaceChildren(Object.assign(document.createElement('li'), { className: 'note', textContent: de ? 'Die Sammlung braucht Internet.' : 'The hub needs the internet.' })); }
+    }
+    $('hubNew').addEventListener('click', () => hub('new')); $('hubPop').addEventListener('click', () => hub('popular'));
+    if (de) { $('hubH').textContent = 'Generatoren von anderen'; $('hubNew').textContent = 'Neueste'; $('hubPop').textContent = 'Meistgespielt'; $('hubMake').textContent = 'Eigenen machen und teilen'; $('hubImage').textContent = 'KI-Bildgenerator →'; $('hubChat').textContent = 'Figuren-Chat →'; $('hubStory').textContent = 'Geschichtenschreiber →'; $('editorLink').textContent = 'Zum vollen Editor: viele Listen, verschachtelt, Gewichte, {a|b}, Live-Vorschau, teilen und veröffentlichen →'; }
+    hub('new');
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

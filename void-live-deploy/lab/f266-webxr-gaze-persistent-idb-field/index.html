@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#000; color:#0f0; font-family:monospace; overflow:hidden; }
+#hud { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px; }
+#canvas { width:100vw; height:100vh; display:block; }
+button { background:#111; color:#0f0; border:1px solid #0f0; padding:6px 12px; cursor:pointer; }
+#status { margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze Persistent IndexedDB Memory Field · Verse lab</title>
+<meta name="description" content="True WebXR gaze-driven placement of spatial memory markers that persist across sessions and reloads via IndexedDB. Hybrid DOM HUD + WebGL canvas.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze Persistent IndexedDB Memory Field · Verse lab">
+<meta property="og:description" content="True WebXR gaze-driven placement of spatial memory markers that persist across sessions and reloads via IndexedDB. Hybrid DOM HUD + WebGL canvas.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f266-webxr-gaze-persistent-idb-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f266-webxr-gaze-persistent-idb-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <button id="enter">Enter WebXR Gaze</button>
+  <div id="status">Loading persistent field...</div>
+  <div id="count">Markers: 0</div>
+  <div>Gaze + trigger / click to place. Markers persist in IndexedDB across sessions.</div>
+</div>
+<canvas id="canvas"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze Persistent IndexedDB Memory Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

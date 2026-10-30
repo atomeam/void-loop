@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PDF tools that work offline · Verse</title>
+<meta name="description" content="Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="PDF tools that work offline · Verse">
+<meta property="og:description" content="Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.">
+<meta property="og:url" content="https://a-to-mind.com/pdf/suite/">
+<meta property="og:image" content="https://a-to-mind.com/og/pdf-suite.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PDF tools that work offline on Verse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PDF tools that work offline · Verse">
+<meta name="twitter:description" content="Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.">
+<meta name="twitter:image" content="https://a-to-mind.com/og/pdf-suite.png">
+<style>
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #b42318; --ok: #1a7f4b; --card: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff8a7e; --ok: #5fd39a; --card: #16141f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 700; } h2 { font-size: 17px; margin: 10px 0 2px; } h3 { margin: 0; font-size: 14px; }
+  .intro, .note { color: var(--soft); font-size: 14px; margin: 4px 0 10px; } .note { font-size: 13px; margin: 2px 0; }
+  button, select, input, textarea { font: inherit; color: inherit; } button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; } button:focus-visible, .card:focus-visible, .thumb:focus-visible, .drop:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  input[type=text], input[type=number], input[type=search], input[type=date], select, textarea { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; min-height: 40px; max-width: 100%; }
+  textarea { width: 100%; } .go { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; } .go { color: #0b0a10; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  #app { min-height: 760px; } #related { min-height: 190px; } .share { font-size: 14px; } .also { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); }
+  .live, .status { min-height: 1.4em; font-size: 14px; margin: 6px 0; } .bad { color: var(--bad); }
+  .sr { position: absolute; left: -9999px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; } .tabs button[aria-selected=true] { background: var(--accent); color: #fff; border-color: var(--accent); } .tabs button[aria-selected=true] { color: #0b0a10; }
+  .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--card); }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px 12px; text-align: center; cursor: pointer; } .drop.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+  .pick { position: absolute; left: -9999px; opacity: 0; pointer-events: none; } .files { list-style: none; padding: 0; margin: 8px 0; } .files li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--line); } .fname { font-weight: 600; word-break: break-all; } .files button { min-width: 40px; padding: 4px 10px; } .pg { width: 9em; }
+  .field { display: flex; flex-direction: column; gap: 3px; margin: 10px 0; font-size: 14px; } .field.row { flex-direction: row; align-items: center; gap: 8px; } .grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; } .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .results .result { margin: 6px 0; } .dl { display: inline-block; padding: 8px 16px; border-radius: 999px; background: var(--accent); color: #fff; font-weight: 600; text-decoration: none; min-height: 40px; line-height: 24px; } .dl { color: #0b0a10; }
+  .thumbs { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; } .thumb { border: 1px solid var(--line); border-radius: 10px; padding: 6px; background: var(--bg); text-align: center; } .thumb.dragging { opacity: .4; } .thumb.over { outline: 3px dashed var(--accent); }
+  .thumb .cv { display: flex; align-items: center; justify-content: center; min-height: 130px; overflow: hidden; } .thumb canvas { max-width: 100%; max-height: 130px; transition: transform .15s; box-shadow: 0 1px 4px #0003; background: #fff; } .cap { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; margin-top: 4px; } .cap button { min-width: 40px; min-height: 40px; padding: 2px 6px; }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/pdf/suite/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"PDF tools that work offline","url":"https://a-to-mind.com/pdf/suite/","description":"Every PDF tool in one set that works offline after one visit: merge, split, reorder, rotate, delete, compress, images to PDF and back, page numbers, watermark, crop. Nothing is uploaded, no account.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"pdf tools offline, offline pdf merge, pdf tools no upload, private pdf tools, pdf tools no account","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"PDF tools that work offline","item":"https://a-to-mind.com/pdf/suite/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>PDF tools that work offline</h1>
+  <p class="intro">The whole set of PDF tools on your device, with no server in the middle: open this page once and it keeps working with the network cut. Merge, split, move and delete pages, rotate, compress, pictures to PDF and back, number, stamp, crop. No account, no upload.</p>
+  <div id="app"></div>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/pdf/">PDF tools</a> <a href="/pdf/merge/">Merge PDF files</a> <a href="/pdf/organize/">Organize PDF pages</a> <a href="/resize-image/">Resize an image</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Every tool runs on this device with a small open-source library (pdf-lib and pdf.js, both vendored here): your files are read, changed and saved in this browser and never uploaded. After one visit the page works offline. A password-protected PDF cannot be opened, and text in a PDF cannot be edited (a PDF holds no paragraphs); <a href="/?q=ask%20questions%20about%20a%20pdf">ask questions about a PDF</a> reads one instead.</footer>
+</main>
+<script type="module" src="/pdf/suite/app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

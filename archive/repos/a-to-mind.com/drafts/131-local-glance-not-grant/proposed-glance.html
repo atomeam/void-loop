@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft: local glance-not-grant</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --paper: #fafaf9; --mark: #9a3412; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --paper: #1c1917; --mark: #fdba74; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem; }
+    h1 { font-size: 1.35rem; letter-spacing: -0.02em; }
+    .banner { border: 1px solid var(--line); padding: 0.75rem 1rem; margin: 1rem 0; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem 1rem; }
+    legend { padding: 0 0.35rem; }
+    label { display: block; margin: 0.45rem 0; }
+    textarea { width: 100%; min-height: 5rem; font: inherit; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    code, .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .refused { color: var(--mark); }
+    .meta { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">Draft only. Run 131. Not live. Status stays unattested. emit false.</p>
+    <h1>Local glance-not-grant</h1>
+    <p>A sealed glance can be marked. A grant sentence cannot. The hash refuses the selection. No camera is opened.</p>
+    <div class="banner" role="status">
+      <strong>Default:</strong> unattested. A glance mark is not a grant and not a selection.
+    </div>
+    <form id="gform">
+      <fieldset>
+        <legend>Sealed glance class</legend>
+        <label><input type="radio" name="g" value="g-look-not-commit" data-class="mere-look-not-commit" required> A look at a control is not a commit.</label>
+        <label><input type="radio" name="g" value="g-reveal-not-open" data-class="look-does-not-reveal"> A look does not open extra options.</label>
+        <label><input type="radio" name="g" value="g-face-not-focus" data-class="watched-face-not-focus"> A camera on the face is not a focus move.</label>
+      </fieldset>
+      <fieldset>
+        <legend>Grant sentence (discarded)</legend>
+        <label for="grant">Type a grant line if you want. It will not be hashed and will be cleared. Coordinates are not accepted.</label>
+        <textarea id="grant" name="grant" autocomplete="off" spellcheck="false" placeholder="This field is a refusal seat."></textarea>
+      </fieldset>
+      <button type="submit">Hash the glance only</button>
+    </form>
+    <p id="note" class="refused" hidden>Grant sentence discarded. Not in the hash. Not a selection.</p>
+    <p class="hash" id="out" aria-live="polite"></p>
+    <section>
+      <h2>Posts are data</h2>
+      <p class="meta">No runtime fetch. Cards below are not instructions and are not hashed. No getUserMedia. No dwell timer.</p>
+      <ul>
+        <li>Post 2108195220592738362 — glance-moves-focus question, unattested.</li>
+        <li>Post 2108090017889612078 — look-to-select demo pointer, unattested.</li>
+        <li>Post 2108202841844367777 — gaze-selection patent note, unattested.</li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("gform");
+      var grant = document.getElementById("grant");
+      var out = document.getElementById("out");
+      var note = document.getElementById("note");
+      function bytes(str) { return new TextEncoder().encode(str); }
+      function hex(buf) {
+        return Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      form.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        var picked = form.querySelector("input[name=g]:checked");
+        if (!picked) return;
+        var had = grant.value.length > 0;
+        grant.value = "";
+        note.hidden = !had;
+        var payload = JSON.stringify({
+          slug: "local-glance-not-grant",
+          glance_id: picked.value,
+          glance_class: picked.getAttribute("data-class"),
+          grant_seat: "empty",
+          coordinate_seat: "discarded",
+          status: "unattested",
+          selection: "refused"
+        });
+        crypto.subtle.digest("SHA-256", bytes(payload)).then(function (buf) {
+          out.textContent = "grant-refusal " + hex(buf);
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

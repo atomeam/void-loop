@@ -4,13 +4,15 @@
  * (index entries whose module is missing or misshapen are named). This browser: storage (a throwaway value written and
  * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Verse reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
- * service is not pinged: a ping would spend its small daily quota. Verse's own build: the newest checks and deploy on main (GitHub's
+ * service is not pinged: a ping would spend its small daily quota. Verse's own pages: the newest check of every page in the sitemap, opened in headless Chrome after a deploy (/api/selfcheck,
+ * lib/selfcheck.js). Verse's own build: the newest checks and deploy on main (GitHub's
  * public API), and the actions Verse took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
 import { stabilityOf, stabilityHtml } from '../lib/autopsy.js';
 import { recovered, loadFailed, keepFailed, keepHealth, successPulse } from '../lib/success-pulse.js';
+import { pagesHtml } from '../lib/selfcheck.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -97,17 +99,47 @@ export function checkBrowser(w = typeof window !== 'undefined' ? window : {}) {
 // (2026-10-13) that the card opens by itself only for the owner: visitors keep the blank stage (autoOpen below).
 export const REPO = 'atomeam/void-loop';
 export const BUILD = [{ name: 'Checks on main', file: 'verify.yml' }, { name: 'Deploy', file: 'deploy.yml' }];
+// The live check (mcp-live.yml): after every main deploy a real MCP client calls Verse's tools at a-to-mind.com. It is the one record
+// that a commit answers on the live domain, so it is the only evidence for "verified live"; it is read with the build, not shown as a row.
+export const LIVE = { name: 'MCP live', file: 'mcp-live.yml' };
+// Every commit the card reports stands at exactly one of these, on evidence only (2026-10-29): implemented (not on main), merged (on
+// main: every run read here is), deploy running (a deploy of that commit has started), deployed (a deploy of that commit passed),
+// verified live (deployed, and the live check passed on that same commit). A newer deploy is not taken to carry an older commit: the
+// card says only what a run of that exact commit shows, so it can read lower than the truth but never higher.
+export const STAGES = ['implemented', 'merged', 'deploy running', 'deployed', 'verified live'];
+const sha7 = (x) => String(x || '').slice(0, 7);
+const stateOf = (run) => run.status !== 'completed' ? 'running' : run.conclusion === 'success' ? 'passed' : run.conclusion === 'skipped' || run.conclusion === 'cancelled' ? 'unknown' : 'failed';
+const ghUrl = (u) => (/^https:\/\/github\.com\//.test(u || '') ? u : null);
+/** the stage of one commit from the runs read: { onMain, deploys, lives } (each run { sha, state }). Pure. */
+export function stageOf(sha, { onMain = true, deploys = [], lives = [] } = {}) {
+  if (!onMain) return 'implemented';
+  const same = (r) => !!(r && sha && r.sha && r.sha === sha7(sha));
+  const deployed = deploys.some((r) => same(r) && r.state === 'passed');
+  if (deployed && lives.some((r) => same(r) && r.state === 'passed')) return 'verified live';
+  if (deployed) return 'deployed';
+  if (deploys.some((r) => same(r) && r.state === 'running')) return 'deploy running';
+  return 'merged';
+}
 export async function buildRun(wf, fetchFn = (u, o) => fetch(u, o)) {
   try {
-    const r = await fetchFn('https://api.github.com/repos/' + REPO + '/actions/workflows/' + wf.file + '/runs?branch=main&per_page=1&exclude_pull_requests=true', { headers: { accept: 'application/vnd.github+json' } });
-    if (!r.ok) return { ...wf, state: 'unknown', note: 'GitHub answered HTTP ' + r.status };
-    const run = ((await r.json()).workflow_runs || [])[0];
-    if (!run) return { ...wf, state: 'unknown', note: 'no run on main yet' };
-    const state = run.status !== 'completed' ? 'running' : run.conclusion === 'success' ? 'passed' : run.conclusion === 'skipped' || run.conclusion === 'cancelled' ? 'unknown' : 'failed';
-    return { ...wf, state, sha: String(run.head_sha || '').slice(0, 7), note: (state === 'failed' ? 'failed (' + run.conclusion + ')' : state === 'running' ? 'running now' : state === 'passed' ? 'passed' : run.conclusion) + ' on ' + String(run.head_sha || '').slice(0, 7) + ' · ' + String(run.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: /^https:\/\/github\.com\//.test(run.html_url || '') ? run.html_url : null };
-  } catch (_) { return { ...wf, state: 'unknown', note: 'GitHub could not be reached from this browser' }; }
+    const r = await fetchFn('https://api.github.com/repos/' + REPO + '/actions/workflows/' + wf.file + '/runs?branch=main&per_page=10&exclude_pull_requests=true', { headers: { accept: 'application/vnd.github+json' } });
+    if (!r.ok) return { ...wf, state: 'unknown', note: 'GitHub answered HTTP ' + r.status, runs: [] };
+    const all = ((await r.json()).workflow_runs || []).filter(Boolean), run = all[0];
+    if (!run) return { ...wf, state: 'unknown', note: 'no run on main yet', runs: [] };
+    const state = stateOf(run), runs = all.map((x) => ({ sha: sha7(x.head_sha), state: stateOf(x) }));
+    // the newest run is still going (or was cancelled): the last one that finished says how main stands, so the card never shows a run without an outcome
+    const done = state === 'passed' || state === 'failed' ? null : all.find((x) => stateOf(x) === 'passed' || stateOf(x) === 'failed');
+    const last = done ? { state: stateOf(done), sha: sha7(done.head_sha), at: String(done.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: ghUrl(done.html_url) } : null;
+    return { ...wf, state, sha: sha7(run.head_sha), note: (state === 'failed' ? 'failed (' + run.conclusion + ')' : state === 'running' ? 'running now' : state === 'passed' ? 'passed' : run.conclusion) + ' on ' + sha7(run.head_sha) + ' · ' + String(run.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: ghUrl(run.html_url), last, runs };
+  } catch (_) { return { ...wf, state: 'unknown', note: 'GitHub could not be reached from this browser', runs: [] }; }
 }
-export const buildState = (fetchFn) => Promise.all(BUILD.map((w) => buildRun(w, fetchFn)));
+/** the build rows, each with the stage of its commit (and of the last finished run's commit) from the deploys and the live checks read. Pure. */
+export function withStages(rows, live) {
+  const deploys = ((rows || []).find((r) => r.file === 'deploy.yml') || {}).runs || [], lives = (live && live.runs) || [];
+  const at = (sha) => (sha ? stageOf(sha, { deploys, lives }) : null);
+  return (rows || []).map((r) => ({ ...r, stage: at(r.sha), ...(r.last ? { last: { ...r.last, stage: at(r.last.sha) } } : {}) }));
+}
+export const buildState = async (fetchFn) => { const [rows, live] = await Promise.all([Promise.all(BUILD.map((w) => buildRun(w, fetchFn))), buildRun(LIVE, fetchFn)]); return withStages(rows, live); };
 // the root cause (asked by Verse: "a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed
 // action", and twice before: the failure linked to its log): a red check on main is written down with the checks that failed
 // (void-live-deploy/incidents.json, verify.yml), so the card can say which ones, not only that something failed. Pure except the fetch.
@@ -169,21 +201,27 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   if (sup && sup.open) { await open(); return true; }
   const acts = await failedActions(fetchFn, undefined, now); // an action Verse took for the owner that failed (the other half of Verse's ask)
   if (acts && acts.length) { await open(); return true; }
+  if (ownerKey()) { const pg = await pagesState(fetchFn); if (pg && pg.serious) { await open(); return true; } } // a page of Verse's own that is broken (lib/selfcheck.js)
   return false;
 }
 
 // Actions Verse took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
 // owner-only). Verse asked five times for "a blocked deployment or failed action" to open a status card by itself: the build half
 // is buildState above, this is the action half. A visitor has no key and gets null; so does a browser that is offline.
+// A record that ended `deferred` (a site answered 429 and Verse waits as it asked, lib/watch.js) is not a failure: it is never counted
+// in "failed in the last day" and never opens the card; the card names those in one muted line of their own (statusHtml's waiting).
 export const ACTION_WINDOW_MS = 86400000;
-export async function failedActions(fetchFn = (u, o) => fetch(u, o), key = ownerKey(), now = Date.now()) {
+const actionRow = (a) => ({ id: a.id, kind: a.kind, ref: a.ref || '', error: a.error || 'failed', said: a.result || '', at: String(a.finished || a.started || '').slice(0, 16).replace('T', ' ') });
+/** the owner's actions of the last day that failed, and those that wait to try again: { failed, waiting }, or null for a visitor */
+export async function recentActions(fetchFn = (u, o) => fetch(u, o), key = ownerKey(), now = Date.now()) {
   if (!key) return null;
   try {
     const r = await fetchFn('/api/actions?limit=50', { headers: { authorization: 'Bearer ' + key } }); if (!r.ok) return null;
-    const rows = ((await r.json()).actions || []).filter((a) => a && a.state === 'failed' && now - Date.parse(a.finished || a.started || 0) < ACTION_WINDOW_MS);
-    return rows.slice(0, 8).map((a) => ({ id: a.id, kind: a.kind, ref: a.ref || '', error: a.error || 'failed', at: String(a.finished || a.started || '').slice(0, 16).replace('T', ' ') }));
+    const day = ((await r.json()).actions || []).filter((a) => a && now - Date.parse(a.finished || a.started || 0) < ACTION_WINDOW_MS);
+    return { failed: day.filter((a) => a.state === 'failed').slice(0, 8).map(actionRow), waiting: day.filter((a) => a.state === 'deferred').slice(0, 8).map(actionRow) };
   } catch (_) { return null; }
 }
+export async function failedActions(fetchFn, key = ownerKey(), now = Date.now()) { const a = await recentActions(fetchFn, key, now); return a && a.failed; }
 
 // Paying users who said "it broke" (functions/api/support.js): the open reports, read with the owner's key. A visitor has no key and
 // sees nothing; the owner sees each report and answers it from the card's link (POST /api/support { action: 'answer' }).
@@ -194,8 +232,14 @@ export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerK
   try { const r = await fetchFn('/api/support', { headers: { authorization: 'Bearer ' + key } }); if (!r.ok) return null; const j = await r.json(); return { open: Number(j.open) || 0, tickets: (j.tickets || []).filter((t) => t.status === 'open').slice(0, 5) }; } catch (_) { return null; }
 }
 
+// Verse's own pages, opened in headless Chrome after each deploy (tools/self-check.mjs, lib/selfcheck.js): the newest report, public.
+export async function pagesState(fetchFn = (u, o) => fetch(u, o)) {
+  // undefined (the section is left out) when the report could not be read; null when there is no report yet
+  try { const r = await fetchFn('/api/selfcheck', { cache: 'no-cache' }); if (!r.ok) return undefined; return (await r.json()).report || null; } catch (_) { return undefined; }
+}
+
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability) {
+export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting, pages) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>Verse status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -206,8 +250,10 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
     + (stability ? stabilityHtml(stability, esc) : '')
+    + (pages !== undefined ? pagesHtml(pages, esc) : '')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
-      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>'
+      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.stage ? ' · <b class="status-stage">' + esc(b.stage) + '</b>' : '') + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '')
+        + (b.last ? '<br><span class="status-last">' + dot(b.last.state === 'passed') + 'last finished: ' + esc(b.last.state) + ' on ' + esc(b.last.sha) + ' · ' + esc(b.last.at) + (b.last.stage ? ' · <b class="status-stage">' + esc(b.last.stage) + '</b>' : '') + (b.last.url ? ' · <a href="' + esc(b.last.url) + '" target="_blank" rel="noopener">that run</a>' : '') + '</span>' : '') + '</td></tr>'
         + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span>'
           + '<div class="status-fix" style="margin-top:6px"><b>Suggested fix:</b> <code style="user-select:all">' + esc(fixOf(b.checks[0]).cmd) + '</code><br><span style="color:#8a8a92">then</span> <code style="user-select:all">' + esc(fixOf(b.checks[0]).ship) + '</code>' + (fixOf(b.checks[0]).note ? ' <span style="color:#8a8a92">(' + esc(fixOf(b.checks[0]).note) + ')</span>' : '')
           + '<div style="margin-top:6px"><button type="button" data-recover="' + esc(b.sha || '') + '">Recover: queue a rebuild with ' + esc(recoverSkill(b.checks)) + '</button> <span data-recover-said style="color:#8a8a92"></span></div></div></td></tr>' : '')).join('') + '</table>' : '')
@@ -216,6 +262,7 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
       + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
     + (actions ? '<h3 style="margin:12px 0 4px;font-size:15px">Actions Verse took for you · ' + (actions.length ? '<span style="color:#e0584a">' + actions.length + ' failed in the last day</span>' : 'none failed in the last day') + '</h3>'
       + actions.map((a) => '<p style="margin:4px 0">' + dot(false) + '<b>' + esc(a.kind) + '</b>' + (a.ref ? ' · ' + esc(a.ref) : '') + ' · ' + esc(a.at) + '<br><span style="color:#8a8a92">' + esc(a.error) + '</span></p>').join('')
+      + (waiting && waiting.length ? '<p class="status-waiting" style="color:#8a8a92;margin:4px 0">◷ ' + waiting.length + ' rate limited, not failed: a site asked Verse to slow down, and it waits before trying again · ' + waiting.slice(0, 3).map((a) => esc(a.kind) + (a.ref ? ' · ' + esc(a.ref) : '') + ' · ' + esc(a.at)).join('; ') + '</p>' : '')
       + (actions.length ? '<p style="color:#8a8a92;margin:4px 0">Each one is a record in Verse’s action log (lib/actions.js); ask “what did you do today” for the whole list.</p>' : '') : '')
     + '<div class="src">Each source was asked once, now, because you asked; the translation service is not pinged, to save its daily quota. Nothing about you is sent or kept.</div>';
 }
@@ -230,13 +277,14 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>Verse status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
+  const [skills, sources, build, support, recent, pages] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? recentActions() : Promise.resolve(null), online ? pagesState() : Promise.resolve(undefined)]);
+  const actions = recent && recent.failed, waiting = recent && recent.waiting;
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   const stability = online ? await fetch('/incidents.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((j) => j ? stabilityOf(j) : null).catch(() => null) : null;
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability);
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability, waiting, pages);
   // a Success Pulse (asked by Verse): something that failed at the last check and is fine now (a skill that did not load and does)
-  const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
-  const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
+  const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind), ...((pages && pages.pages) || []).map((x) => 'page:' + x.path)];
+  const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind), ...((pages && pages.pages) || []).filter((x) => x.problems.some((q) => ['status', 'script', 'request', 'empty', 'link'].includes(q.kind))).map((x) => 'page:' + x.path)];
   const back = recovered(loadFailed(), failing, [...checked, ...(skills.error ? [] : (loadFailed().filter((n) => n.startsWith('skill:'))))]);
   keepFailed(failing); keepHealth(failing.length, checked.length + (skills.error ? 0 : 1)); // the book's parchment reads this (lib/tome.js parchmentFilter)
   if (back.length) { successPulse(); api.say('working again: ' + back.map((n) => n.replace(/^[a-z]+:/, '')).slice(0, 3).join(', ')); }

@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { percentile, latencyOf, replayAlone, verdict, assess, nextLatency, envName, REPLAY_CAP } from './bench-load.mjs';
+import { percentile, latencyOf, replayAlone, verdict, assess, nextLatency, envName, REPLAY_CAP, againOf } from './bench-load.mjs';
 import { nextFloor } from './bench-floor.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -180,4 +180,18 @@ test('bench.mjs: a baseline far under this machine\'s speed does not make a real
   assert.doesNotMatch(r.stderr, /inconclusive/);
   assert.equal(existsSync(last), existed, 'a --score run writes no bench.last.json');
   if (existed) assert.equal(readFileSync(last, 'utf8'), kept);
+});
+
+test('againOf: a second run in the same CI run runs again only the first run\'s misses, and anything else runs everything', () => {
+  const asks = [{ ask: 'a' }, { ask: 'b' }, { ask: 'c' }];
+  const prior = { key: 'k1', run: '7.1', out: [{ ask: 'a', right: true }, { ask: 'b', right: false }, { ask: 'c', right: false }] };
+  assert.deepEqual(againOf(prior, asks, { key: 'k1', run: '7.1' }), [1, 2]);
+  assert.equal(againOf(prior, asks, { key: 'k2', run: '7.1' }), null, 'what the bench reads changed');
+  assert.equal(againOf(prior, asks, { key: 'k1', run: '8.1' }), null, 'another CI run');
+  assert.equal(againOf(prior, asks, { key: 'k1', run: '' }), null, 'not in CI');
+  assert.equal(againOf(null, asks, { key: 'k1', run: '7.1' }), null);
+  assert.equal(againOf(prior, asks.slice(0, 2), { key: 'k1', run: '7.1' }), null, 'other asks');
+  assert.equal(againOf(prior, [{ ask: 'a' }, { ask: 'x' }, { ask: 'c' }], { key: 'k1', run: '7.1' }), null, 'other asks');
+  assert.equal(againOf({ ...prior, out: [{ ask: 'a' }, ...prior.out.slice(1)] }, asks, { key: 'k1', run: '7.1' }), null, 'a result with no verdict');
+  assert.deepEqual(againOf({ ...prior, out: prior.out.map((x) => ({ ...x, right: true })) }, asks, { key: 'k1', run: '7.1' }), [], 'nothing missed: nothing runs again');
 });

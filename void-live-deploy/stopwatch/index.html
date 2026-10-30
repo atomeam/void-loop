@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Online stopwatch, countdown, interval timer and chess clock · Verse</title>
+<meta name="description" content="A stopwatch with laps (each split, the change from the last, the fastest and slowest), a countdown timer with an alarm, an interval (Tabata, HIIT) timer and a chess clock, that keep exact time in a background tab, survive a reload and work offline. Space starts and stops, L marks a lap, R resets. No ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Stopwatch and timer · Verse">
+<meta property="og:description" content="Laps with fastest and slowest, a countdown with an alarm, an interval timer and a chess clock, exact in a background tab, offline. Share a timer as a link.">
+<meta property="og:url" content="https://a-to-mind.com/stopwatch/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/stopwatch/ (the tower's online-stopwatch.com floor): one file and one small module, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --good: #1f8a4c; --bad: #c0392b; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --good: #5fd08e; --bad: #ff7a6e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 8px; text-align: center; font-weight: 600; color: var(--soft); }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); text-align: center; margin: 18px 0 0; }
+  section + section { border-top: 1px solid var(--line); margin-top: 18px; }
+  .face { text-align: center; font: 700 clamp(48px, 16vw, 112px)/1.1 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; margin: 14px 0; letter-spacing: -.02em; }
+  .face.done { color: var(--bad); animation: blink 1s steps(2) infinite; } @keyframes blink { 50% { opacity: .35; } }
+  @media (prefers-reduced-motion: reduce) { .face.done { animation: none; } }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 8px 0; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; min-height: 44px; background: transparent; color: var(--ink); cursor: pointer; }
+  button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); min-width: 120px; }
+  input[type=text] { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 9em; min-height: 26px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; margin-top: 8px; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); } th:first-child, td:first-child { text-align: left; }
+  td.fast { color: var(--good); font-weight: 600; } td.slow { color: var(--bad); font-weight: 600; }
+  .note { font-size: 13px; color: var(--soft); text-align: center; }
+  .phase { text-align: center; font-size: 22px; font-weight: 700; margin: 10px 0 0; min-height: 33px; }
+  .phase.work { color: var(--good); } .phase.rest, .phase.setrest { color: var(--accent); } .phase.prep { color: var(--soft); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 12px; margin: 8px 0; }
+  .grid label { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; color: var(--soft); }
+  .grid input[type=text] { width: 5.5em; }
+  .chess { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 8px; }
+  .chess button { border-radius: 16px; min-height: 120px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+  .chess button b { font: 700 clamp(30px, 10vw, 60px)/1 ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .chess button span { font-size: 13px; color: var(--soft); }
+  .chess button.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); } .chess button.on span { color: inherit; }
+  .chess button.out { border-color: var(--bad); color: var(--bad); }
+  select { font: inherit; font-size: 15px; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; }
+  .mine button { padding-right: 10px; } .mine .x { min-width: 44px; padding: 9px 0; }
+  [hidden] { display: none !important; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/stopwatch/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Stopwatch and timer","url":"https://a-to-mind.com/stopwatch/","description":"A stopwatch with laps, a countdown timer with presets, your own saved timers and a choice of alarms, an interval timer (work and rest rounds in sets) and a chess clock with increment, kept on your device, working offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"online stopwatch, countdown timer, timer with alarm, stopwatch with laps, 5 minute timer, interval timer, tabata timer, chess clock","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/stopwatch/?t={duration}"},"duration-input":"required name=duration"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Stopwatch and timer","item":"https://a-to-mind.com/stopwatch/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/stopwatch.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Stopwatch, timer, interval timer and chess clock</h1>
+  <section id="sw" aria-labelledby="swh"><h2 id="swh">Stopwatch</h2>
+    <div class="face" id="swface" aria-live="off">0:00.00</div>
+    <div class="row"><button type="button" class="main" id="swgo">Start</button><button type="button" id="swlap" disabled>Lap</button><button type="button" id="swreset">Reset</button><button type="button" id="copylaps" hidden>Copy laps (CSV)</button></div>
+    <p class="note">Space starts and stops · L marks a lap · R resets · M mutes the alarm · F full screen · the fastest and slowest laps are marked</p>
+    <table id="laps" hidden><thead><tr><th>Lap</th><th>Split</th><th>Change</th><th>Total</th></tr></thead><tbody></tbody></table>
+  </section>
+
+  <section id="cd" aria-labelledby="cdh"><h2 id="cdh">Countdown timer</h2>
+    <div class="face" id="cdface" aria-live="polite">10:00</div>
+    <div class="row"><label for="len" class="note">Length</label><input type="text" id="len" value="10m" spellcheck="false" autocomplete="off" aria-describedby="lenhelp"><button type="button" id="set">Set</button></div>
+    <p class="note" id="lenhelp">10m, 1h30m, 90s, 1:30 or a number of minutes</p>
+    <div class="row" id="presets"><button type="button" data-ms="30000">30 sec</button><button type="button" data-ms="60000">1 min</button><button type="button" data-ms="120000">2 min</button><button type="button" data-ms="180000">3 min</button><button type="button" data-ms="300000">5 min</button><button type="button" data-ms="600000">10 min</button><button type="button" data-ms="900000">15 min</button><button type="button" data-ms="1200000">20 min</button><button type="button" data-ms="1500000">25 min (focus)</button><button type="button" data-ms="1800000">30 min</button><button type="button" data-ms="2700000">45 min</button><button type="button" data-ms="3600000">1 hour</button></div>
+    <div class="row mine" id="mine" aria-label="Your saved timers"></div>
+    <div class="row"><button type="button" class="main" id="cdgo">Start</button><button type="button" id="cdreset">Reset</button><button type="button" id="sound" aria-pressed="true">Alarm sound on</button><button type="button" id="test">Test sound</button><button type="button" id="link">Copy link</button><button type="button" id="keep">Save as preset</button></div>
+    <div class="row"><label for="tone" class="note">Alarm</label><select id="tone"><option value="beep">Beeps</option><option value="bell">Bell</option><option value="chime">Chime</option><option value="digital">Digital watch</option><option value="gong">Gong</option></select></div>
+    <p class="note" id="cdnote">An alarm sounds when it reaches zero (made on this device, so it works offline). Space starts and pauses, then resumes.</p>
+  </section>
+
+  <section id="iv" aria-labelledby="ivh"><h2 id="ivh">Interval timer</h2>
+    <p class="phase" id="ivphase" aria-live="polite">Ready</p>
+    <div class="face" id="ivface">0:20</div>
+    <p class="note" id="ivinfo">Round 1 of 8 · 4:00 left in all</p>
+    <div class="row"><button type="button" class="main" id="ivgo">Start</button><button type="button" id="ivreset">Reset</button><button type="button" id="ivlink">Copy link</button></div>
+    <div class="row" id="ivpresets"><button type="button" data-iv="20,10,8,1,0,10">Tabata 20/10 × 8</button><button type="button" data-iv="40,20,10,1,0,10">HIIT 40/20 × 10</button><button type="button" data-iv="30,30,10,1,0,10">30/30 × 10</button><button type="button" data-iv="60,0,10,1,0,10">EMOM 10 min</button><button type="button" data-iv="45,15,6,3,60,10">Circuit 45/15 × 6, 3 sets</button></div>
+    <div class="grid">
+      <label>Work <input type="text" id="ivwork" value="20s" spellcheck="false" autocomplete="off"></label>
+      <label>Rest <input type="text" id="ivrest" value="10s" spellcheck="false" autocomplete="off"></label>
+      <label>Rounds <input type="text" id="ivrounds" value="8" inputmode="numeric" autocomplete="off"></label>
+      <label>Sets <input type="text" id="ivsets" value="1" inputmode="numeric" autocomplete="off"></label>
+      <label>Rest between sets <input type="text" id="ivsetrest" value="0s" spellcheck="false" autocomplete="off"></label>
+      <label>Get ready <input type="text" id="ivprep" value="10s" spellcheck="false" autocomplete="off"></label>
+    </div>
+    <p class="note">Times as 20s, 1m30s or 1:30 (a bare number is seconds). A high tone starts work, a low one rest, with three ticks before each change.</p>
+  </section>
+
+  <section id="cc" aria-labelledby="cch"><h2 id="cch">Chess clock</h2>
+    <div class="chess"><button type="button" id="cc0" aria-label="White's clock: tap to end White's move"><b id="cc0t">5:00</b><span id="cc0m">White · 0 moves</span></button><button type="button" id="cc1" aria-label="Black's clock: tap to end Black's move"><b id="cc1t">5:00</b><span id="cc1m">Black · 0 moves</span></button></div>
+    <div class="row"><button type="button" class="main" id="ccpause">Pause</button><button type="button" id="ccreset">Reset</button><button type="button" id="cclink">Copy link</button></div>
+    <div class="row" id="ccpresets"><button type="button" data-cc="1+0">Bullet 1+0</button><button type="button" data-cc="3+2">Blitz 3+2</button><button type="button" data-cc="5+0">Blitz 5+0</button><button type="button" data-cc="10+0">Rapid 10+0</button><button type="button" data-cc="15+10">Rapid 15+10</button><button type="button" data-cc="30+0">Classical 30+0</button></div>
+    <div class="row"><label for="ccmin" class="note">Minutes</label><input type="text" id="ccmin" value="5" inputmode="decimal" autocomplete="off" style="width:3.5em"><label for="ccinc" class="note">+ seconds a move</label><input type="text" id="ccinc" value="0" inputmode="numeric" autocomplete="off" style="width:3em"><button type="button" id="ccset">Set</button></div>
+    <p class="note" id="ccnote">Black taps first to start White's clock; then each player taps their own side after moving (Space taps for the side to move). The increment is added after each move.</p>
+  </section>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/stopwatch/?t=5m">5 minute timer</a><a href="/stopwatch/?t=10m">10 minute timer</a><a href="/stopwatch/?iv=20,10,8,1,0,10">Tabata 20/10</a><a href="/stopwatch/?iv=40,20,10,1,0,10">HIIT 40/20</a><a href="/stopwatch/?cc=3%2B2">Blitz chess 3+2</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/time/">Time zones</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Kept as the moment it started, not a ticking count, so a background tab, a slow machine or a reload never makes it drift; both keep running across a reload, on this device only. Works offline after one visit. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { clock, fresh, act, elapsed, lapRows, parseDuration, timer, tact, remaining, intervalSteps, intervalAt, chess, chessLeft, chessTap, chessPause, chessFlag, timerAsk } from '/lib/stopwatch.js';
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.stopwatch.v1';
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (_) { return null; } };
+  const saved = load() || {};
+  let sw = saved.sw && Array.isArray(saved.sw.laps) ? saved.sw : fresh();
+  let cd = saved.cd && Number.isFinite(saved.cd.total) ? saved.cd : timer(600000), sound = saved.sound !== false, tab = ['cd', 'iv', 'cc'].includes(saved.tab) ? saved.tab : 'sw', rang = !!saved.rang;
+  let tone = ['beep', 'bell', 'chime', 'digital', 'gong'].includes(saved.tone) ? saved.tone : 'beep', mine = Array.isArray(saved.mine) ? saved.mine.filter((m) => m && Number.isFinite(m.ms)).slice(0, 12) : [];
+  // the interval timer: its plan in ms and a run kept like the stopwatch (banked + since start)
+  const PLAN0 = { work: 20000, rest: 10000, rounds: 8, sets: 1, setRest: 0, prep: 10000 };
+  let iv = saved.iv && saved.iv.plan && saved.iv.run ? saved.iv : { plan: PLAN0, run: fresh() };
+  let cc = saved.cc && Array.isArray(saved.cc.left) ? saved.cc : chess(300000, 0);
+  const q = new URLSearchParams(location.search), asked = parseDuration(q.get('t'));
+  if (asked) { cd = timer(asked); tab = 'cd'; rang = false; }
+  const ivPlan = (text) => { const n = String(text || '').split(',').map(Number); if (n.length < 3 || n.some((x) => !Number.isFinite(x) || x < 0) || !n[0] || !n[2]) return null; return { work: n[0] * 1000, rest: n[1] * 1000, rounds: n[2], sets: n[3] || 1, setRest: (n[4] || 0) * 1000, prep: (n[5] || 0) * 1000 }; };
+  const ccPlan = (text) => { const m = /^(\d+(?:\.\d+)?)(?:\s*[+| ]\s*(\d+))?$/.exec(String(text || '').trim()); return m && Number(m[1]) > 0 ? { ms: Math.round(Number(m[1]) * 60000), inc: Number(m[2] || 0) * 1000 } : null; };
+  if (ivPlan(q.get('iv'))) { iv = { plan: ivPlan(q.get('iv')), run: fresh() }; tab = 'iv'; }
+  if (ccPlan(q.get('cc'))) { const c = ccPlan(q.get('cc')); cc = chess(c.ms, c.inc); tab = 'cc'; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ sw, cd, sound, tab, rang, tone, mine, iv, cc })); } catch (_) {} };
+
+  // both on one page (a hidden tab hid the timer, its alarm and its presets from people and from the gate alike); the keys act on the one used last
+  function show(t) { tab = t; save(); }
+  for (const t of ['sw', 'cd', 'iv', 'cc']) $(t).addEventListener('pointerdown', () => show(t));
+
+  // the stopwatch
+  $('copylaps').addEventListener('click', async () => { const csv = 'lap,split,change,total\n' + lapRows(sw.laps).reverse().map((r) => [r.n, clock(r.split), r.delta === null ? '' : (r.delta > 0 ? '+' : '-') + clock(Math.abs(r.delta)), clock(r.total)].join(',')).join('\n') + '\n';
+    try { await navigator.clipboard.writeText(csv); const w = $('copylaps').textContent; $('copylaps').textContent = 'Copied'; setTimeout(() => { $('copylaps').textContent = w; }, 1200); } catch (_) {} });
+  function drawLaps() {
+    const rows = lapRows(sw.laps), tb = $('laps').tBodies[0]; $('laps').hidden = !rows.length; $('copylaps').hidden = !rows.length;
+    tb.replaceChildren(...rows.map((r) => { const tr = document.createElement('tr'); const cell = (t, cls) => { const td = document.createElement('td'); td.textContent = t; if (cls) td.className = cls; tr.append(td); };
+      cell('Lap ' + r.n + (r.fastest ? ' · fastest' : r.slowest ? ' · slowest' : '')); cell(clock(r.split), r.fastest ? 'fast' : r.slowest ? 'slow' : ''); cell(r.delta === null ? '' : (r.delta > 0 ? '+' : '−') + clock(Math.abs(r.delta))); cell(clock(r.total)); return tr; }));
+  }
+  function swDo(what) { sw = act(sw, what, Date.now()); $('swgo').textContent = sw.startedAt === null ? (elapsed(sw, Date.now()) ? 'Resume' : 'Start') : 'Stop'; $('swlap').disabled = sw.startedAt === null; drawLaps(); save(); }
+  $('swgo').addEventListener('click', () => swDo('toggle')); $('swlap').addEventListener('click', () => swDo('lap')); $('swreset').addEventListener('click', () => swDo('reset'));
+
+  // the countdown
+  let actx = null;
+  // every sound is made here (no sound file to fetch, so it works offline): one note, and the alarms built from notes
+  function note(freq, at, dur, type = 'sine', peak = 0.4) {
+    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + at; o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(peak, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur); o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + dur + 0.05); } catch (_) {}
+  }
+  const ALARMS = {
+    beep: () => { for (let i = 0; i < 3; i++) note(880, i * 0.45, 0.35); },
+    bell: () => { for (let i = 0; i < 3; i++) { note(1318, i * 0.9, 1.4, 'sine', 0.35); note(2637, i * 0.9, 0.6, 'sine', 0.12); } },
+    chime: () => [784, 988, 1175, 1568].forEach((f, i) => note(f, i * 0.28, 0.9, 'triangle', 0.35)),
+    digital: () => { for (let i = 0; i < 8; i++) note(2093, Math.floor(i / 2) * 0.5 + (i % 2) * 0.12, 0.07, 'square', 0.12); },
+    gong: () => { note(98, 0, 3, 'sine', 0.5); note(147, 0, 2.2, 'sine', 0.25); note(233, 0, 1.4, 'triangle', 0.15); },
+  };
+  function beep() { if (sound) (ALARMS[tone] || ALARMS.beep)(); }
+  function ring() { rang = true; save(); beep(); $('cdnote').textContent = 'Time is up. Reset or set another.'; try { if (navigator.vibrate) navigator.vibrate([300, 150, 300]); } catch (_) {} if (document.hidden && 'Notification' in window && Notification.permission === 'granted') try { new Notification('Time is up', { body: clock(cd.total, { hundredths: false }) + ' timer' }); } catch (_) {} }
+  function cdDo(what) {
+    if (what === 'toggle' && cd.endsAt === null && sound && 'Notification' in window && Notification.permission === 'default') { try { Notification.requestPermission(); } catch (_) {} } // asked on a person's tap, never on load
+    cd = tact(cd, what, Date.now()); if (what === 'reset') { rang = false; $('cdnote').textContent = 'An alarm sounds when it reaches zero (made on this device, so it works offline). Space starts and pauses, then resumes.'; }
+    $('cdgo').textContent = cd.endsAt === null ? (cd.left < cd.total && cd.left > 0 ? 'Resume' : 'Start') : 'Pause'; save();
+  }
+  function setLen(ms) { cd = timer(ms); rang = false; $('len').value = clock(ms, { hundredths: false }); cdDo('reset'); }
+  $('cdgo').addEventListener('click', () => cdDo('toggle')); $('cdreset').addEventListener('click', () => cdDo('reset'));
+  $('set').addEventListener('click', () => { const ms = parseDuration($('len').value); if (ms) setLen(ms); else $('cdnote').textContent = 'That length was not understood: try 10m, 1h30m, 90s or 1:30.'; });
+  $('len').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('set').click(); });
+  for (const b of $('presets').querySelectorAll('button[data-ms]')) b.addEventListener('click', () => setLen(Number(b.dataset.ms)));
+  // your own presets, kept on this device
+  function drawMine() {
+    $('mine').replaceChildren(...mine.map((m, i) => { const go = document.createElement('button'); go.type = 'button'; go.textContent = m.label; go.addEventListener('click', () => setLen(m.ms));
+      const x = document.createElement('button'); x.type = 'button'; x.className = 'x'; x.textContent = '×'; x.setAttribute('aria-label', 'Remove the saved timer ' + m.label); x.addEventListener('click', () => { mine.splice(i, 1); save(); drawMine(); });
+      const w = document.createElement('span'); w.append(go, x); return w; }));
+  }
+  $('keep').addEventListener('click', () => { const label = clock(cd.total, { hundredths: false }); if (!mine.some((m) => m.ms === cd.total)) { mine.push({ label: '★ ' + label, ms: cd.total }); mine = mine.slice(-12); save(); drawMine(); } $('cdnote').textContent = 'Saved ' + label + ' as your own preset, on this device.'; });
+  $('tone').value = tone; $('tone').addEventListener('change', () => { tone = $('tone').value; save(); const was = sound; sound = true; beep(); sound = was; });
+  $('test').addEventListener('click', () => { const was = sound; sound = true; beep(); sound = was; });
+  const mute = () => { sound = !sound; $('sound').setAttribute('aria-pressed', String(sound)); $('sound').textContent = sound ? 'Alarm sound on' : 'Alarm sound off'; save(); };
+  $('sound').addEventListener('click', () => { sound = !sound; $('sound').setAttribute('aria-pressed', String(sound)); $('sound').textContent = sound ? 'Alarm sound on' : 'Alarm sound off'; save(); });
+  $('link').addEventListener('click', async () => { const u = location.origin + location.pathname + '?t=' + encodeURIComponent(Math.round(cd.total / 1000) + 's'); try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
+
+  // the interval timer
+  const secs = (v) => { const t = String(v || '').trim(); if (/^\d+(?:\.\d+)?$/.test(t)) return Math.round(Number(t) * 1000); const ms = parseDuration(t); return ms === null && /^0\s*s?$/.test(t) ? 0 : ms; };
+  const plain = (ms) => (ms % 60000 === 0 && ms ? ms / 60000 + 'm' : ms >= 60000 ? Math.floor(ms / 60000) + 'm' + (ms % 60000) / 1000 + 's' : ms / 1000 + 's');
+  const PHASE = { prep: 'Get ready', work: 'Work', rest: 'Rest', setrest: 'Rest between sets' };
+  let ivLast = -1, ivTick = -1;
+  function ivFill() { const p = iv.plan; $('ivwork').value = plain(p.work); $('ivrest').value = plain(p.rest); $('ivrounds').value = p.rounds; $('ivsets').value = p.sets; $('ivsetrest').value = plain(p.setRest); $('ivprep').value = plain(p.prep); }
+  function ivRead() { const v = { work: secs($('ivwork').value), rest: secs($('ivrest').value), rounds: Math.round(Number($('ivrounds').value)), sets: Math.round(Number($('ivsets').value)), setRest: secs($('ivsetrest').value), prep: secs($('ivprep').value) };
+    if (!v.work || v.rest === null || v.setRest === null || v.prep === null || !(v.rounds >= 1 && v.rounds <= 99) || !(v.sets >= 1 && v.sets <= 20)) return null; return v; }
+  function ivDo(what) { iv = { ...iv, run: act(iv.run, what, Date.now()) }; if (what === 'reset') { ivLast = -1; ivTick = -1; } $('ivgo').textContent = iv.run.startedAt === null ? (elapsed(iv.run, Date.now()) ? 'Resume' : 'Start') : 'Pause'; save(); }
+  function ivSet(plan) { iv = { plan, run: fresh() }; ivFill(); ivDo('reset'); }
+  for (const id of ['ivwork', 'ivrest', 'ivrounds', 'ivsets', 'ivsetrest', 'ivprep']) $(id).addEventListener('change', () => { const p = ivRead(); if (p) ivSet(p); else ivFill(); });
+  for (const b of $('ivpresets').querySelectorAll('button')) b.addEventListener('click', () => ivSet(ivPlan(b.dataset.iv)));
+  $('ivgo').addEventListener('click', () => ivDo('toggle')); $('ivreset').addEventListener('click', () => ivDo('reset'));
+  const pl = () => { const p = iv.plan; return [p.work, p.rest, p.rounds * 1000, p.sets * 1000, p.setRest, p.prep].map((x) => x / 1000).join(','); };
+  $('ivlink').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.origin + location.pathname + '?iv=' + pl()); const w = $('ivlink').textContent; $('ivlink').textContent = 'Copied'; setTimeout(() => { $('ivlink').textContent = w; }, 1200); } catch (_) {} });
+  function ivFrame(now, quiet) {
+    const steps = intervalSteps(iv.plan), at = intervalAt(steps, elapsed(iv.run, now)), running = iv.run.startedAt !== null;
+    if (at.done && running) { iv = { ...iv, run: act(iv.run, 'stop', now) }; $('ivgo').textContent = 'Start'; save(); }
+    if (running && at.i !== ivLast && ivLast !== -1) { if (at.done) beep(); else if (sound) { at.step.kind === 'work' ? (note(1046, 0, 0.5), note(1318, 0.12, 0.5)) : note(523, 0, 0.6); } }
+    const sec = Math.ceil(at.left / 1000); if (running && !at.done && sec <= 3 && sec >= 1 && sec !== ivTick && sound && at.i === ivLast) note(660, 0, 0.12, 'sine', 0.25);
+    ivTick = running ? sec : -1; ivLast = running ? at.i : (elapsed(iv.run, now) ? at.i : -1);
+    if (quiet) return;
+    const st = at.step, sets = Math.max(1, Math.round(iv.plan.sets)), rounds = Math.max(1, Math.round(iv.plan.rounds));
+    $('ivphase').textContent = at.done ? 'Done' : !running && !elapsed(iv.run, now) ? 'Ready' : PHASE[st.kind]; $('ivphase').className = 'phase ' + (at.done ? '' : st.kind);
+    $('ivface').textContent = clock(Math.ceil((at.done ? 0 : at.left) / 1000) * 1000, { hundredths: false });
+    $('ivinfo').textContent = (at.done ? 'All ' + rounds + ' rounds done' : 'Round ' + Math.max(1, st.round) + ' of ' + rounds) + (sets > 1 ? ' · set ' + (at.done ? sets : st.set) + ' of ' + sets : '') + ' · ' + clock(Math.ceil(at.totalLeft / 1000) * 1000, { hundredths: false }) + ' left in all';
+  }
+
+  // the chess clock
+  let ccWarned = false;
+  const ccDraw = (now) => { const left = chessLeft(cc, now);
+    for (const i of [0, 1]) { const ms = left[i]; $('cc' + i + 't').textContent = ms < 10000 && ms > 0 ? clock(ms).slice(0, -1) : clock(Math.ceil(ms / 1000) * 1000, { hundredths: false });
+      $('cc' + i + 'm').textContent = (i ? 'Black' : 'White') + ' · ' + cc.moves[i] + (cc.moves[i] === 1 ? ' move' : ' moves') + (cc.flag === i ? ' · out of time' : '');
+      $('cc' + i).classList.toggle('on', cc.turn === i); $('cc' + i).classList.toggle('out', cc.flag === i); }
+    $('ccpause').textContent = cc.paused !== null ? 'Resume' : 'Pause'; $('ccpause').disabled = cc.turn === null && cc.paused === null; };
+  function ccDo(fn) { cc = fn(cc, Date.now()); save(); ccDraw(Date.now()); }
+  function ccSet(ms, inc) { cc = chess(ms, inc); ccWarned = false; $('ccmin').value = ms / 60000; $('ccinc').value = inc / 1000; $('ccnote').textContent = 'Black taps first to start White\'s clock; then each player taps their own side after moving (Space taps for the side to move).'; save(); ccDraw(Date.now()); }
+  for (const i of [0, 1]) $('cc' + i).addEventListener('click', () => { show('cc'); ccDo((c, now) => chessTap(chessFlag(c, now), i, now)); if (sound && cc.turn !== null) note(1500, 0, 0.04, 'square', 0.1); });
+  $('ccpause').addEventListener('click', () => ccDo(chessPause));
+  $('ccreset').addEventListener('click', () => ccSet(cc.base, cc.inc));
+  for (const b of $('ccpresets').querySelectorAll('button')) b.addEventListener('click', () => { const c = ccPlan(b.dataset.cc); ccSet(c.ms, c.inc); });
+  $('ccset').addEventListener('click', () => { const c = ccPlan($('ccmin').value + '+' + (Number($('ccinc').value) || 0)); if (c) ccSet(c.ms, c.inc); else $('ccnote').textContent = 'Minutes each should be a number, like 5 or 2.5.'; });
+  $('cclink').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.origin + location.pathname + '?cc=' + encodeURIComponent(cc.base / 60000 + '+' + cc.inc / 1000)); const w = $('cclink').textContent; $('cclink').textContent = 'Copied'; setTimeout(() => { $('cclink').textContent = w; }, 1200); } catch (_) {} });
+  function ccFrame(now) { const was = cc.flag; cc = chessFlag(cc, now); if (cc.flag !== null && was === null) { save(); beep(); $('ccnote').textContent = (cc.flag ? 'Black' : 'White') + ' ran out of time. Reset for a new game.'; } ccDraw(now); }
+
+  // keyboard: Space starts and stops, L laps, R resets (not while typing a length)
+  addEventListener('keydown', (e) => { if (e.target && /^(INPUT|TEXTAREA|BUTTON)$/.test(e.target.tagName) && e.key === ' ') return; if (e.target && e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase(), reset = { sw: () => swDo('reset'), cd: () => cdDo('reset'), iv: () => ivDo('reset'), cc: () => $('ccreset').click() };
+    if (k === ' ') { e.preventDefault(); if (tab === 'sw') swDo('toggle'); else if (tab === 'cd') cdDo('toggle'); else if (tab === 'iv') ivDo('toggle'); else $('cc' + (cc.turn === null ? 1 : cc.turn)).click(); }
+    else if (k === 'l' && tab === 'sw') swDo('lap'); else if (k === 'r') reset[tab]();
+    else if (k === 'm') mute(); else if (k === 'f') { try { document.fullscreenElement ? document.exitFullscreen() : $(tab).requestFullscreen(); } catch (_) {} } });
+
+  function frame() {
+    $('swface').textContent = clock(elapsed(sw, Date.now()));
+    const left = remaining(cd, Date.now()); $('cdface').textContent = clock(Math.ceil(left / 1000) * 1000, { hundredths: false }); $('cdface').classList.toggle('done', !left && rang);
+    if (!left && cd.endsAt !== null && !rang) { cd = tact(cd, 'pause', Date.now()); ring(); $('cdgo').textContent = 'Start'; }
+    ivFrame(Date.now()); ccFrame(Date.now());
+    document.title = (tab === 'cd' && cd.endsAt !== null ? clock(Math.ceil(left / 1000) * 1000, { hundredths: false }) + ' · ' : '') + 'Stopwatch and timer · Verse';
+    requestAnimationFrame(frame);
+  }
+  $('len').value = clock(cd.total, { hundredths: false }); $('sound').setAttribute('aria-pressed', String(sound)); $('sound').textContent = sound ? 'Alarm sound on' : 'Alarm sound off';
+  show(tab); swDo('noop'); cdDo('noop'); ivFill(); ivDo('noop'); drawMine(); ccDraw(Date.now()); $('ccmin').value = cc.base / 60000; $('ccinc').value = cc.inc / 1000;
+  if (tab !== 'sw' && q.toString()) $(tab).scrollIntoView();
+  setInterval(() => { if (!document.hidden) return; if (cd.endsAt !== null && !rang && !remaining(cd, Date.now())) { cd = tact(cd, 'pause', Date.now()); ring(); } ivFrame(Date.now(), true); ccFrame(Date.now()); }, 1000); // a background tab gets no animation frames: the alarm still rings on time
+  requestAnimationFrame(frame);
+  mountRelated(document.getElementById('related'), '/stopwatch/', [], { card: () => (tab === 'cd' ? timerAsk(cd.total) : '') }); // on the countdown, its stage card is a timer of the same length
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

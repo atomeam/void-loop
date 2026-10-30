@@ -1,5 +1,5 @@
 {
- "about": "Verse by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -186,6 +186,66 @@
    "date": "2026-10-19",
    "ask": "lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure…",
    "from": "claude 2026-10-18, asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-21",
+   "ask": "Verse Remix Kit",
+   "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "fun fact skill: random interesting facts from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "random quote skill: inspirational quotes from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #1410, owner card notes 1-5"
   }
  ],
  "open": [
@@ -205,7 +265,8 @@
    "state": "open",
    "date": "",
    "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5"
+   "from": "void.plan.md Now #5",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -217,13 +278,15 @@
    "state": "open",
    "date": "",
    "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13"
+   "from": "void.plan.md Next #13",
+   "waits": "the miss board"
   },
   {
    "state": "open",
    "date": "",
    "ask": "Paid Verse",
-   "from": "void.plan.md Next #12"
+   "from": "void.plan.md Next #12",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -265,7 +328,8 @@
    "state": "open",
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan"
+   "from": "owner, 2026-10-11, pit crew plan",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -277,7 +341,8 @@
    "state": "open",
    "date": "",
    "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
+   "waits": "the owner"
   },
   {
    "state": "open",
@@ -323,6 +388,7 @@
   "arcade",
   "battleship",
   "book",
+  "bubbles",
   "calculator",
   "camp",
   "checkers",
@@ -331,6 +397,7 @@
   "connect4",
   "countdown",
   "counter",
+  "dice",
   "eightball",
   "fireworks",
   "forge",
@@ -345,21 +412,27 @@
   "moon",
   "notepad",
   "othello",
+  "padlock",
+  "page",
   "paper",
   "pentamote",
   "piggybank",
   "poker",
+  "pot",
   "rack",
   "ringer",
   "savings",
   "stopwatch",
   "swarm",
+  "swatch",
   "tabletop",
   "tictactoe",
   "timer",
   "tip",
+  "tower",
   "void",
-  "weather"
+  "weather",
+  "wheel"
  ],
  "canon": {
   "version": 7,
@@ -449,19 +522,19 @@
  "tracks": [
   {
    "name": "Living action figures",
-   "last": "2026-10-15"
+   "last": "2026-10-21"
   },
   {
    "name": "One-shot printing of working machines",
-   "last": "2026-10-07"
+   "last": "2026-10-21"
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-10-14"
+   "last": "2026-10-21"
   },
   {
    "name": "Planet restoration",
-   "last": "2026-10-14"
+   "last": "2026-10-28"
   },
   {
    "name": "Verse stage handoff",
@@ -477,114 +550,118 @@
  },
  "commits": [
   {
-   "at": "2026-10-19T19:27:32Z",
-   "subject": "Verse Photos, step 1: a photo library kept on this device. 'add photos' keeps pictures full size in this browser (never uploaded, the same…"
+   "at": "2026-10-30T06:22:48Z",
+   "subject": "rap: ad-libs come off the main vocal onto their own track"
   },
   {
-   "at": "2026-10-19T19:26:32Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:22:10Z",
+   "subject": "converter: Compress CBZ on the device"
   },
   {
-   "at": "2026-10-19T19:12:31Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:20:32Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-19T19:00:12Z",
-   "subject": "Regenerate deps, the skill tools list and the self/asks cards after the merge"
+   "at": "2026-10-30T06:20:05Z",
+   "subject": "rap: the music video no longer stops at the first bar; the status line follows the performance"
   },
   {
-   "at": "2026-10-19T18:53:21Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-30T06:19:48Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T18:53:16Z",
-   "subject": "the self card never stays on '…': a cached library older than the page still draws it, a failed draw says so, and an unreachable…"
+   "at": "2026-10-30T06:19:31Z",
+   "subject": "Calendar card opens on the day the page shows"
   },
   {
-   "at": "2026-10-19T18:51:48Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for pulse, family-gravity, feud"
+   "at": "2026-10-30T06:18:59Z",
+   "subject": "converter: Compress EPUB on the device"
   },
   {
-   "at": "2026-10-19T18:50:33Z",
-   "subject": "Verse hardens itself: 7 benchmark ask(s) for text-tools, rides, error-garden"
+   "at": "2026-10-30T06:17:33Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T18:30:45Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for media-pick, show, echo-chamber, eigenwork"
+   "at": "2026-10-30T06:16:52Z",
+   "subject": "A stated quantity is answered with its conversion even when the model refuses"
   },
   {
-   "at": "2026-10-19T18:27:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:13:47Z",
+   "subject": "converter: Merge EPUB on the device"
   },
   {
-   "at": "2026-10-19T18:16:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:12:48Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T18:05:02Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:10:23Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T18:02:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:09:27Z",
+   "subject": "Team jobs carry a brief: the repository, the kind's guide, the playbooks and how to deliver"
   },
   {
-   "at": "2026-10-19T17:57:32Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-30T06:09:25Z",
+   "subject": "openapi: mark /api/rapvoice as Verse's own (the rap page is its only caller)"
   },
   {
-   "at": "2026-10-19T17:53:56Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:09:00Z",
+   "subject": "Family health: the growth score part says when no family moves it, and its check holds on a fixture"
   },
   {
-   "at": "2026-10-19T17:50:50Z",
-   "subject": "Verse hardens itself: 10 benchmark ask(s) for technical-context, spanish, deps, draft-triad"
+   "at": "2026-10-30T06:08:47Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T17:50:11Z",
-   "subject": "the self card is never the same twice: 'Since you last looked' leads (asks built, skills and proven since this device last opened it, the…"
+   "at": "2026-10-30T06:08:28Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-19T17:46:06Z",
-   "subject": "reinvest: today's plan for Verse's money"
+   "at": "2026-10-30T06:08:01Z",
+   "subject": "Rap: Verse's own voice on the beat, produced beats, and a music video for every song"
   },
   {
-   "at": "2026-10-19T17:39:57Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-30T06:07:47Z",
+   "subject": "Conductor: a paid member's idea goes before every free job, after a repair"
   },
   {
-   "at": "2026-10-19T17:34:41Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-30T06:07:42Z",
+   "subject": "Emoji combos: /emoji-combos/ assimilates emojicombos.com"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
-    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
+    "name": "Claude (F321 thread, 2026-10-29)",
+    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
    },
    {
-    "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Verse)",
-    "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family…"
+    "name": "Main green, tower checks (box, 2026-10-28)",
+    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
    },
    {
-    "name": "Art Forge (claude, helper/art-forge)",
-    "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md.…"
+    "name": "Lists run 7 (grok, 2026-10-28)",
+    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
    },
    {
-    "name": "Web4: Verse as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
-    "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line…"
+    "name": "Lists run 8 (grok, 2026-10-28)",
+    "line": "green foundation first, so red checks only. Fixed \"connected\" (/books/ links /notes/ and /translate/) and \"incident autopsy\" (the card's art seal is not an autopsy picture). Open counts: V01D asks 1 (milestone, blocked on Claude's growth…"
    },
    {
-    "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16…",
-    "line": "lib/tome.js + skills/guide.js: \"open the book\" / \"menu\" / \"help\" dim the stage and fill it with a leather tome, parchment pages set in a serif (running heads, drop capitals, the asks as ink, folios), a leaf that swings over the spine, Esc…"
+    "name": "Who visits (claude, 2026-10-26)",
+    "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
    },
    {
-    "name": "The showcase proves what it says, the scoreboards read true, the Examine view…",
-    "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no…"
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
    }
   ],
   "ladders": [
+   {
+    "name": "A page for every lane site from one table (Claude, 2026-10-26)",
+    "line": "add a row to lib/tool-sites.js (path, card ask, tools or features, asks), add the lane site to LANE_PAGES in lib/tower.js, run node tools/tool-site-pages.mjs && node tools/seo-pages.mjs && node tools/preload.mjs && node tools/sitemap.mjs…"
+   },
    {
     "name": "Parallel builders, one ship (Claude, 2026-10-15)",
     "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node…"
@@ -604,13 +681,17 @@
    {
     "name": "Test the live site like a person",
     "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
-   },
-   {
-    "name": "Ask Verse your own question",
-    "line": "node tools/ask-void.mjs --ask \"…\" logs its answer word for word like the builders' question."
    }
   ],
   "lessons": [
+   {
+    "name": "A new page says what it takes and gives",
+    "line": "add <meta name=\"verse-handoff\" content=\"in: ...; out: ...\"> when it ships (types in tools/handoff-scan.mjs); every lap builds the top connections in docs/HANDOFF-GAPS.md and plays them in tools/handoff-e2e.mjs (standing item in…"
+   },
+   {
+    "name": "The gate's standards (owner, 2026-10-28; docs/GATE-STANDARDS.md)",
+    "line": "a floor is beaten only by scripted end-to-end journeys against the competitor, each with negative controls (no stub, placeholder, error page or \"coming soon\"). A check that is blocked, skipped, walled or fails to load is INCOMPLETE, never…"
+   },
    {
     "name": "Rumble's page id is not its embed id",
     "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
@@ -626,14 +707,6 @@
    {
     "name": "Set the PR head in code and verify it",
     "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
-   },
-   {
-    "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
-   },
-   {
-    "name": "Never write a whole file through an API to change part of it",
-    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed."
    }
   ]
  },
@@ -641,7 +714,7 @@
   {
    "rank": 1,
    "item": "Stay inside Workers AI's free 10k neurons/day",
-   "free": "move answers from gpt-oss-120b to gemma; cache answers at the edge; on-page skills first",
+   "free": "done 2026-10-25 (commit 630e666fb): answers run on gemma-4-26b-a4b-it, gpt-oss-120b only as the second try. Still to do: cache answers at the edge; on-page skills first",
    "cost": "$0",
    "value": "high: answers stop failing after the cap (125% on Oct 14)",
    "why": "free and fixes a live outage"
@@ -649,7 +722,7 @@
   {
    "rank": 2,
    "item": "Cut KV writes under 1k/day",
-   "free": "edge cache (caches.default) instead of KV for counters and caches; move the two non-V01D workers off the shared namespace",
+   "free": "done on Verse's side (lists run 6, 2026-10-28): Verse makes no KV writes (counters and caches in caches.default since 2026-09-27) and tools/kv-writes.test.mjs keeps it so. Moving other workers to…",
    "cost": "$0",
    "value": "high: writes failing at 109%",
    "why": "free, live problem"
@@ -725,6 +798,14 @@
    "cost": "Amazon PA-API needs an Associates account with sales (docs)",
    "value": "low now",
    "why": "wait until Verse sells more"
+  },
+  {
+   "rank": 12,
+   "item": "Real photos of games for the sports, news and finance reports",
+   "free": "official highlight embeds (league and club channels through the platform's own embed), openly licensed photos (Wikimedia Commons, Openverse; CC0, CC-BY, CC-BY-SA, author and licence shown under…",
+   "cost": "a licensed agency photo feed (AP, Getty or a regional wire): quote-based, not listed here until a provider's price is read from its own page",
+   "value": "high: the one thing ESPN and every sports page has that Verse can't show for most games",
+   "why": "the tower's sports floors lose \"pictures of the games\" to money only; free routes cover the big matches"
   }
  ],
  "clips": {
@@ -775,5 +856,21 @@
    "x9": 1
   },
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
+ },
+ "people": {
+  "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-29T11:33Z",
+  "source": "verse"
+ },
+ "tower": {
+  "target": "onlineconverter.com",
+  "since": "2026-10-29",
+  "next": [
+   "ndscalc.ru",
+   "emojicombos.com",
+   "thunit.com"
+  ],
+  "beaten": 1,
+  "total": 1269
  }
 }

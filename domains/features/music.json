@@ -1,0 +1,1949 @@
+{
+ "floor": "music",
+ "verse_page": "/music/",
+ "researched": "2026-10-26",
+ "sites": {
+  "open.spotify.com": {
+   "sources": [
+    "https://open.spotify.com/",
+    "https://support.spotify.com/ie/article/your-premium-benefits/",
+    "https://support.spotify.com/uk/article/shuffle-play",
+    "https://support.spotify.com/us/article/jam/",
+    "https://support.spotify.com/us/article/view-lyrics/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Search catalogue",
+     "detail": "100M+ tracks, albums, artists, playlists, podcasts, audiobooks",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/music/ catalogue lists tempo words, 22 scales, 28 chord types, tunings and songs to play; no song search"
+    },
+    {
+     "group": "core",
+     "name": "Full-track playback",
+     "detail": "Stream full songs with play/pause/seek/volume",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "skills/music.js composes an original piece in the browser (Web Audio, piano roll, WAV save); skills/media-pick.js plays 30 s official iTunes previews; skills/video.js plays music videos from YouTube and others"
+    },
+    {
+     "group": "core",
+     "name": "Queue, shuffle and repeat",
+     "detail": "Add to queue, reorder, shuffle, repeat one/all",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "video.js has a watch queue (\"queue <x>\", \"next\")"
+    },
+    {
+     "group": "core",
+     "name": "Playlists",
+     "detail": "Create, edit, reorder, folders, cover image, description",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/music/ keeps setlists (saved tempos) on the device and shares them by link; every music page links to it",
+     "shows": "setlists?"
+    },
+    {
+     "group": "core",
+     "name": "Your Library",
+     "detail": "Liked Songs, saved albums, followed artists, filters and sort",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Artist and album pages",
+     "detail": "Discography, popular tracks, bio, tour dates, merch",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Home recommendations",
+     "detail": "Made For You mixes, Daily Mix, Discover Weekly, Release Radar",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/music/ recommends a practice tempo ladder, the chords that follow a chord and scales for a chord; no songs"
+    },
+    {
+     "group": "core",
+     "name": "Lyrics",
+     "detail": "Synced lyrics in the player",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Radio",
+     "detail": "Song/artist radio of similar tracks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Connect",
+     "detail": "Control playback on other devices (speakers, TV, phone)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Smart Shuffle and AI DJ",
+     "detail": "Shuffle with recommendations; AI host that talks between songs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "AI playlist",
+     "detail": "Make a playlist from a prompt",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Crossfade, gapless, normalisation, equaliser",
+     "detail": "Playback settings",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Keyboard shortcuts and mini player",
+     "detail": "Desktop/web shortcuts, now-playing view",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Wrapped and listening stats",
+     "detail": "Yearly recap, top artists",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Original music creation",
+     "detail": "Spotify does not make music",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "music.js composes an original piece from a mood, saves WAV",
+     "shows": "make me a song"
+    },
+    {
+     "group": "sharing",
+     "name": "Collaborative playlists and Blend",
+     "detail": "Shared playlists, taste-merging Blend",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Jam",
+     "detail": "Group listening session controlled by several people",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "sharing",
+     "name": "Share links, cards and codes",
+     "detail": "Share to socials with card art, Spotify Codes",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page has a Share this page button; a setlist is a link",
+     "shows": "share"
+    },
+    {
+     "group": "sharing",
+     "name": "Friend activity",
+     "detail": "What friends are listening to (desktop)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Downloads",
+     "detail": "Offline listening (Premium)",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "all six music pages open offline after one visit (sw.js) and nothing needs a download",
+     "shows": "works offline"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Apps everywhere",
+     "detail": "Mobile, desktop, car, TV, consoles, smart speakers, watch",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Screen reader and keyboard",
+     "detail": "Accessible web player, captions on video podcasts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Premium",
+     "detail": "Ad-free, any order, unlimited skips, downloads, high quality, Jam host",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Audiobooks in Premium",
+     "detail": "15 hours/month of audiobooks",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "Lossless audio",
+     "detail": "Lossless streaming tier",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ],
+   "leader": true
+  },
+  "metronomeonline.com": {
+   "sources": [
+    "https://emastered.com/blog/best-online-metronome",
+    "https://metronome-online.com/ (a similar site found by search: light/dark, stress first beat, timer, subdivisions, tap BPM)",
+    "https://douglasniedt.com/metronomeonline.html (polyrhythm, voice count)"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Free, nothing to pay",
+     "detail": "No subscription for the tool itself",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says free, no account, no ads",
+     "shows": "\\bfree\\b"
+    },
+    {
+     "group": "core",
+     "name": "No account",
+     "detail": "Opens and plays with no sign-in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says no account",
+     "shows": "no account"
+    },
+    {
+     "group": "core",
+     "name": "Runs in the browser, nothing to install",
+     "detail": "Sound is made by the page",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "every music page says it is made in your browser",
+     "shows": "in your browser"
+    },
+    {
+     "group": "core",
+     "name": "BPM field and tempo control",
+     "detail": "Set the tempo by typing or sliding",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ BPM slider, number box, +/- and +/-10 (20 to 400)"
+    },
+    {
+     "group": "core",
+     "name": "Tap BPM",
+     "detail": "A button to tap the tempo in",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Tap tempo and the T key; /bpm/ is a full counter"
+    },
+    {
+     "group": "core",
+     "name": "Stress (accent) the first beat",
+     "detail": "Louder first beat",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Accent the first beat, and every beat settable strong, medium, soft or silent"
+    },
+    {
+     "group": "core",
+     "name": "Beats per bar counter",
+     "detail": "Choose how many beats a bar has",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ 13 time signatures from 2/4 to 12/8 with their groupings"
+    },
+    {
+     "group": "core",
+     "name": "Subdivided beats",
+     "detail": "Eighths, triplets, sixteenths",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ eight subdivisions including swing, quintuplets, sextuplets and off-beat"
+    },
+    {
+     "group": "core",
+     "name": "Timer",
+     "detail": "Stop after a set time",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ practice timer in minutes"
+    },
+    {
+     "group": "core",
+     "name": "Light and dark mode",
+     "detail": "A quick toggle",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ Light or dark button (kept on the device)"
+    },
+    {
+     "group": "core",
+     "name": "Sound choice",
+     "detail": "Pick the click",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ nine synthesised sounds and a spoken count"
+    },
+    {
+     "group": "extra",
+     "name": "Visual beat and pendulum",
+     "detail": "The beat shown as well as heard",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ flashing beat circles and a pendulum"
+    },
+    {
+     "group": "extra",
+     "name": "Polyrhythm (two beats against each other)",
+     "detail": "A second pulse in another subdivision",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ a second pulse of 2 to 9 against the bar"
+    },
+    {
+     "group": "extra",
+     "name": "Tempo ramp (speed trainer)",
+     "detail": "Raise the tempo every few bars",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/metronome/ speed trainer and silent bars"
+    }
+   ]
+  },
+  "virtualpiano.net": {
+   "sources": [
+    "https://urlscan.io/result/2100e68d-36b5-499a-ae60-594fca3bd59e/content",
+    "https://www.educationalappstore.com/website/virtual-piano",
+    "https://portal.yandex.com.tr/yaozet/how_to/virtual-piano-guide-id1-uQgm5aeI"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Play with the computer keyboard",
+     "detail": "Letters and numbers map to piano keys",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ the virtualpiano key layout: 1-0, q-p, a-l, z-m, Shift for sharps"
+    },
+    {
+     "group": "core",
+     "name": "Mouse and touch play",
+     "detail": "Press the on-screen keys",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ pointer and touch, sliding from key to key with the mouse"
+    },
+    {
+     "group": "core",
+     "name": "MIDI keyboard input",
+     "detail": "Plug in a MIDI keyboard",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ Web MIDI note on/off and the sustain pedal (needs a browser with Web MIDI)"
+    },
+    {
+     "group": "core",
+     "name": "Sustain pedal",
+     "detail": "Hold notes on",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ space bar or button"
+    },
+    {
+     "group": "core",
+     "name": "Several instruments",
+     "detail": "A choice of sounds",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ twelve synthesised instruments (no sample files)"
+    },
+    {
+     "group": "core",
+     "name": "Sheets in letters",
+     "detail": "Play songs by reading letters",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ sheets in plain letters (note names, durations, chords) with public-domain songs, played with the keys lit"
+    },
+    {
+     "group": "extra",
+     "name": "Record and edit your playing as a sheet",
+     "detail": "A sheet producer that records, edits and plays back",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ Record, Play it back, Copy as sheet, and an editable sheet box"
+    },
+    {
+     "group": "extra",
+     "name": "Key labels on the keys",
+     "detail": "Show which key to press",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ the computer key on every note"
+    },
+    {
+     "group": "extra",
+     "name": "Transpose, octave shift and reverb",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/piano/ transpose, octave and reverb"
+    },
+    {
+     "group": "extra",
+     "name": "Large library of popular song sheets",
+     "detail": "Thousands of sheets for current songs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: the songs are copyrighted; /piano/ ships public-domain sheets and lets you write your own"
+    },
+    {
+     "group": "paid",
+     "name": "Premium membership",
+     "detail": "Ad-free, more features, paid per year",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: money; Verse has no subscription and no ads"
+    }
+   ]
+  },
+  "jasperbernaers.com": {
+   "sources": [
+    "https://jasperbernaers.com/free-online-guitar-tuner-and-instrument-tuner/",
+    "https://metronautapp.com/tuner",
+    "https://guitar.com/tuner/",
+    "https://wavespeed.ai/free-tools/tuner"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chromatic tuner with the microphone",
+     "detail": "Names the note you play and how many cents off",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ McLeod pitch detection, needle in cents, in tune within 5 cents"
+    },
+    {
+     "group": "core",
+     "name": "Instrument presets",
+     "detail": "Guitar, bass, ukulele, violin, cello",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ 15 tunings including drop D, DADGAD, open G, 7-string, viola, mandolin, banjo"
+    },
+    {
+     "group": "core",
+     "name": "Adjustable A4 reference",
+     "detail": "410 to 470 Hz",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ A4 box"
+    },
+    {
+     "group": "core",
+     "name": "Reference tones",
+     "detail": "Hear the target note",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ string buttons and a pitch pipe for any note"
+    },
+    {
+     "group": "core",
+     "name": "Audio stays on the device",
+     "detail": "Processed locally",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ says nothing is recorded or sent"
+    },
+    {
+     "group": "extra",
+     "name": "Strobe display",
+     "detail": "A strobe instead of a needle for fine tuning",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/tuner/ Needle or Strobe display (stripes drift by the cents, still when in tune)"
+    }
+   ]
+  },
+  "anotherproducer.com": {
+   "sources": [
+    "https://anotherproducer.com/online-tools-for-musicians/bpm-counter/",
+    "https://www.tunepocket.com/?p=32323",
+    "https://sengpielaudio.com/calculator-bpm.htm"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Tap any key or the button",
+     "detail": "Tap tempo",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ any key or the big button"
+    },
+    {
+     "group": "core",
+     "name": "Half and double time",
+     "detail": "x2 and /2 buttons",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ Half time and Double time"
+    },
+    {
+     "group": "core",
+     "name": "Average over several taps with a reset after a pause",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ average of the last 4 to 24 taps, reset after 1.5 to 4 s"
+    },
+    {
+     "group": "core",
+     "name": "Click on each tap",
+     "detail": "An optional metronome click",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ Click on each tap"
+    },
+    {
+     "group": "extra",
+     "name": "Note lengths in milliseconds",
+     "detail": "A table of beat lengths",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ whole to thirty-second notes, dotted, triplet, in ms and Hz"
+    },
+    {
+     "group": "extra",
+     "name": "Song length in bars",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ bars to minutes and seconds"
+    },
+    {
+     "group": "extra",
+     "name": "Tempo of an audio file",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/bpm/ onset autocorrelation on the device; nothing uploaded"
+    }
+   ]
+  },
+  "chordchord.com": {
+   "sources": [
+    "https://chordchord.com/chord-finder",
+    "https://chordchord.com/scale-finder",
+    "https://chordchord.com/guitar-scales"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Chord finder for piano and guitar",
+     "detail": "Pick a root and a chord type",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ 28 chord types, notes, piano keys, inversions"
+    },
+    {
+     "group": "core",
+     "name": "Guitar fingerings",
+     "detail": "Click a chord to see its fingering",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ up to four shapes drawn as diagrams, found by search"
+    },
+    {
+     "group": "core",
+     "name": "Scale finder",
+     "detail": "Pick a root, see the scale",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ 22 scales with steps and the keys lit"
+    },
+    {
+     "group": "core",
+     "name": "Chords that fit a scale",
+     "detail": "Lists chords in the key",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ chords of a major or minor key with roman numerals, sevenths and what each leads to"
+    },
+    {
+     "group": "extra",
+     "name": "Name a chord from notes",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ pick notes: the chord, and every scale that holds them"
+    },
+    {
+     "group": "extra",
+     "name": "Scale on a fretboard",
+     "detail": "Show a scale on a virtual guitar neck",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ every scale drawn on a 12-fret guitar neck, roots filled"
+    },
+    {
+     "group": "extra",
+     "name": "Choose a chord by clicking the fretboard",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ tap frets on the neck (or six lists) and the chord is named"
+    },
+    {
+     "group": "extra",
+     "name": "Circle of fifths, progressions, transposer",
+     "detail": "",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/chords/ all three"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "a song library with licensed sheets (skipped: copyright)",
+  "a catalogue of songs to search and a player for them (skipped: licences)"
+ ],
+ "verse_extra": [
+  "Verse composes original songs, no licence needed",
+  "one ask plays a song preview, its video or a new piece",
+  "six pages tied together (metronome, piano, tuner, BPM counter, chord and scale finder, setlists) with every sound made in the browser",
+  "a BPM found from an audio file on the device",
+  "a recording turned into a sheet in plain letters",
+  "German and English, offline, no account"
+ ],
+ "first_page": "Music tools: /metronome/, /piano/, /tuner/, /bpm/, /chords/ and the hub /music/, one page per lane site (LANE_PAGES). Will not build: licensed song sheets, full-track streaming, accounts, anything that sends audio off the device.",
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "anotherproducer.com": {
+    "url": "https://anotherproducer.[token]",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.min.css"
+     },
+     {
+      "name": "Embeds ep2.adtrafficquality.google",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "oEmbed for embedding links",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type*=oembed]"
+     },
+     {
+      "name": "API call anotherproducer.com/wp-json/complianz/v1/banner?lang&locale&token",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "Feature flag allowHTMLInStatusIndicator",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "magnific-popup.min.js@9934"
+     },
+     {
+      "name": "Feature flag allowHTMLInTemplate",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "magnific-popup.min.js@9964"
+     },
+     {
+      "name": "Feature flag enableAutosize",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "complianz.min.js@45855"
+     },
+     {
+      "name": "Feature flag enableEscapeKey",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "magnific-popup.min.js@9660"
+     },
+     {
+      "name": "Feature flag showCloseBtn",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "magnific-popup.min.js@9644"
+     },
+     {
+      "name": "Feature flag useFont",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "dark-mode.js@19429"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "BPM_Calculator.js@642"
+     },
+     {
+      "name": "Fast image decoding",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "dark-mode.js@44493"
+     },
+     {
+      "name": "Uses YouTube",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script hosts"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "app.min.js"
+     },
+     {
+      "name": "Follows the system dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "app.min.js@1450"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "frontend.min.css@31330"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Skip to content link",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[href^=\"#main\"]"
+     },
+     {
+      "name": "Path kept from crawlers /cdn-cgi/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /embed/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /readme.html",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /search/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /wp-admin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /wp-login.php",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /xmlrpc.php",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
+   "chordchord.com": {
+    "url": "https://chordchord.com/chord-finder",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Records audio or video",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9247.1a0f78ebe8b73c3d.js@331520"
+     },
+     {
+      "name": "Installable web app (fullscreen)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "API path /api",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8701.8e4949feabc29378.js@30633"
+     },
+     {
+      "name": "API path /api/mini-tools/chord-finder",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8701.8e4949feabc29378.js@9763"
+     },
+     {
+      "name": "API path /api/mini-tools/scale-finder",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8701.8e4949feabc29378.js@9848"
+     },
+     {
+      "name": "API path /api/mini-tools/scale-types",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "8701.8e4949feabc29378.js@10053"
+     },
+     {
+      "name": "API path /api/paddle-billing/customer-id",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1455-90be3723016d7ced.js@2436"
+     },
+     {
+      "name": "API path /api/paddle-billing/portal-url",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1455-90be3723016d7ced.js@3110"
+     },
+     {
+      "name": "API path /api/usage",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "[tool]-755b04f9e53ef814.js@20447"
+     },
+     {
+      "name": "API path [token]",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1455-90be3723016d7ced.js@2503"
+     },
+     {
+      "name": "Feature flag allowLogout",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1455-90be3723016d7ced.js@8947"
+     },
+     {
+      "name": "Feature flag bassEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-ba99e2edec5129b8.js@39071"
+     },
+     {
+      "name": "Feature flag chordEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-ba99e2edec5129b8.js@39131"
+     },
+     {
+      "name": "Feature flag disableNormalization",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "9247.1a0f78ebe8b73c3d.js@18654"
+     },
+     {
+      "name": "Feature flag disableStaticImages",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "main-4e94715d5f56bde8.js@119545"
+     },
+     {
+      "name": "Feature flag enableLogs",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "main-4e94715d5f56bde8.js@121651"
+     },
+     {
+      "name": "Feature flag shareEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-ba99e2edec5129b8.js@7697"
+     },
+     {
+      "name": "Feature flag showAddDiscounts",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1455-90be3723016d7ced.js@9018"
+     },
+     {
+      "name": "Feature flag showMask",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "1455-90be3723016d7ced.js@34742"
+     },
+     {
+      "name": "Picture in picture",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "framework-338c0e44701cad4e.js@2363"
+     },
+     {
+      "name": "Use the camera or microphone",
+      "detail": "input, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9247.1a0f78ebe8b73c3d.js@194852"
+     },
+     {
+      "name": "Background worker threads",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9247.1a0f78ebe8b73c3d.js@113333"
+     },
+     {
+      "name": "Compresses data in the browser",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-4e94715d5f56bde8.js@25911"
+     },
+     {
+      "name": "Passkeys and credentials",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9247.1a0f78ebe8b73c3d.js@84497"
+     },
+     {
+      "name": "Syncs between tabs",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-4e94715d5f56bde8.js@25864"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-4e94715d5f56bde8.js"
+     },
+     {
+      "name": "Screen reader announcements (aria-live)",
+      "detail": "a11y, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-live]"
+     },
+     {
+      "name": "Route /_next/image",
+      "detail": "route, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-4e94715d5f56bde8.js@66692"
+     }
+    ]
+   },
+   "jasperbernaers.com": {
+    "url": "https://jasperbernaers.[token]",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Download links",
+      "detail": "export, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[download] x1"
+     },
+     {
+      "name": "Input of type range",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=range] x3"
+     },
+     {
+      "name": "Path kept from crawlers /.fuse_hidden",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /CLAUDE.md",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /STYLE-TEMPLATE.html",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /analytics/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /webmastertools/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /365tips/ (1268 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /europe-power-grid/ (11 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /national-power-belgium/ (3 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /periodic-table/ (129 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /typing-speed-test/ (6 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "metronomeonline.com": {
+    "url": "https://www.metronomeonline.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?checkout_canceled",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "ada254c.js@30099"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Embeds ads.pubmatic.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds apps.smartadserver.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds cs-server-s2s.yellowblue.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds eb2.3lift.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds eus.rubiconproject.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds gum.criteo.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds hbx.media.net",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds js-sec.indexww.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds metronomeonline-35f8e.firebaseapp.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds primis-d.openx.net",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds rtb.nexverse.ai",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds ssp-sync.criteo.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds ssum-sec.casalemedia.com",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds static.fsrv.io",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "Embeds u.openx.net",
+      "detail": "embed, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "iframe"
+     },
+     {
+      "name": "API call a.ad.gt/api/v1/collect",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/country?o",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/exd?cv&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.btloader.com/pv?cv&nlf&sid&tid&upapi",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?at&cttl&dbsaved&dpi&dpn&gdpr&gdpr_consent&gpp",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&fbp&gdpr&gdpr_consent&gpp",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.intentiq.[token]?at&cttl&dpi&dpn&gdpr&gdpr_consent&gpp&iiqidtype",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call api.ipify.org/?format",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /v1/accounts:createAuthUri",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@74175"
+     },
+     {
+      "name": "API path /v1/accounts:delete",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@41193"
+     },
+     {
+      "name": "API path /v1/accounts:lookup",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@35227"
+     },
+     {
+      "name": "API path /v1/accounts:resetPassword",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@56614"
+     },
+     {
+      "name": "API path /v1/accounts:sendOobCode",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@56758"
+     },
+     {
+      "name": "API path /v1/accounts:sendVerificationCode",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@97156"
+     },
+     {
+      "name": "API path /v1/accounts:signInWithCustomToken",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@71147"
+     },
+     {
+      "name": "API path /v1/accounts:signInWithEmailLink",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@57752"
+     },
+     {
+      "name": "API path /v1/accounts:signInWithIdp",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@58329"
+     },
+     {
+      "name": "API path /v1/accounts:signInWithPassword",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@57580"
+     },
+     {
+      "name": "API path /v1/accounts:signInWithPhoneNumber",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@60304"
+     },
+     {
+      "name": "API path /v1/accounts:signUp",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@68076"
+     },
+     {
+      "name": "API path /v1/accounts:update",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@56692"
+     },
+     {
+      "name": "API path /v1/projects",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@105864"
+     },
+     {
+      "name": "API path /v1/recaptchaParams",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@95490"
+     },
+     {
+      "name": "API path /v1/token",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@37250"
+     },
+     {
+      "name": "API path /v2/accounts/mfaEnrollment:finalize",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@112445"
+     },
+     {
+      "name": "API path /v2/accounts/mfaEnrollment:start",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@96541"
+     },
+     {
+      "name": "API path /v2/accounts/mfaEnrollment:withdraw",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@79054"
+     },
+     {
+      "name": "API path /v2/accounts/mfaSignIn:finalize",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@112646"
+     },
+     {
+      "name": "API path /v2/accounts/mfaSignIn:start",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "bc02ae6.js@96918"
+     },
+     {
+      "name": "Feature flag disableScriptLoad",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "f52331f.js@204681"
+     },
+     {
+      "name": "Feature flag enableLongTask",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "f52331f.js@311084"
+     },
+     {
+      "name": "Feature flag showAuthPanel",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "5ad9983.js@14983"
+     },
+     {
+      "name": "Feature flag showDialog",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "f8d2df3.js@15905"
+     },
+     {
+      "name": "Feature flag showPaywall",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "f8d2df3.js@11233"
+     },
+     {
+      "name": "Feature flag showPulseInfo",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0bedd5b.js@1695"
+     },
+     {
+      "name": "Feature flag showTaskTimeSignatureButton",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0bedd5b.js@1730"
+     },
+     {
+      "name": "Feature flag useGrouping",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0bedd5b.js@14904"
+     },
+     {
+      "name": "Feature flag useNestjs",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "f52331f.js@299447"
+     },
+     {
+      "name": "Feature flag useTuner",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "0bedd5b.js@7535"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Input of type range",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=range] x1"
+     },
+     {
+      "name": "Input of type tel",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=tel] x1"
+     },
+     {
+      "name": "Keeps a database in the browser: firebase-heartbeat-database",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "indexedDB"
+     }
+    ]
+   },
+   "virtualpiano.net": {
+    "url": "https://virtualpiano.net/",
+    "scanned": "2026-10-26",
+    "blocked": {
+     "kind": "unreachable",
+     "why": "page.goto: Timeout 40000ms exceeded. Call log: - navigating to \"https://virtualpiano.net/\", waiting "
+    },
+    "features": []
+   }
+  }
+ }
+}

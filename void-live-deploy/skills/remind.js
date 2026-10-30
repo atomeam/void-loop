@@ -8,7 +8,8 @@
 export function remindOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const s = t.replace(/^(?:please\s+|(?:can|could|would|will)\s+you\s+(?:please\s+)?)/i, '');
-  const m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i);
+  // "a.m." / "p.m." with or without the last dot: an ask that ends on "5 p.m." has had that dot trimmed above
+  const m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.?|p\.m\.?)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i);
   if (!m) return null;
   const what = String(m[2] || '').trim();
   return { when: clock(m[1]), what };

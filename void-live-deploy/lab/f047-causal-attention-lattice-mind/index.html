@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --hue: 220; --sat: 40%; --lit: 12%; }
+  body { margin: 0; background: hsl(var(--hue), var(--sat), var(--lit)); color: #ddd; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.55); padding: 10px 14px; border-radius: 8px; font-size: 13px; pointer-events: none; }
+  .node { position: absolute; width: 72px; height: 72px; border-radius: 50%; background: hsla(var(--nh), 70%, 50%, .75); border: 2px solid #fff3; cursor: grab; display: flex; align-items: center; justify-content: center; font-size: 11px; text-align: center; user-select: none; transform: translate(-50%, -50%); transition: box-shadow .2s; }
+  .node:active { cursor: grabbing; }
+  #seal { position: absolute; bottom: 12px; right: 12px; padding: 8px 14px; background: #333; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Causal Attention Lattice Mind · Verse lab</title>
+<meta name="description" content="Novel combination: Canvas2D spatial lattice whose local update is driven by a causal (pointer-history-conditioned) attention kernel whose parameters are evolved by">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Causal Attention Lattice Mind · Verse lab">
+<meta property="og:description" content="Novel combination: Canvas2D spatial lattice whose local update is driven by a causal (pointer-history-conditioned) attention kernel whose parameters are evolved by">
+<meta property="og:url" content="https://a-to-mind.com/lab/f047-causal-attention-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f047-causal-attention-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  F-047 Causal Attention Lattice<br>
+  residual: <span id="res">—</span> · conf: <span id="conf">—</span> · gen: <span id="gen">0</span>
+</div>
+<button id="seal">Seal best genes</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">Causal Attention Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

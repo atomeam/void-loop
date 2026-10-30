@@ -3,6 +3,7 @@
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
+import { wrongWeakest, weakestSentence, weakestNote } from './weakest.js';
 
 const day = (t) => String(t || '').slice(0, 10);
 // the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
@@ -53,7 +54,7 @@ export function shortLine(t) {
   const s = String(t == null ? '' : t).replace(/\s+/g, ' ').trim();
   if (s.length <= SHORT) return s;
   const cut = s.slice(0, SHORT), at = cut.lastIndexOf(' ');
-  return (at > SHORT / 2 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, '') + '…';
+  return (at > SHORT / 2 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, '') + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
@@ -106,7 +107,11 @@ export function sourceNote(entry, field) {
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
-export function selfSections(v, now = Date.now()) {
+// the least proven family is the bars' (lib/weakest.js): a stored readout that named another family shows the bars' sentence, and its own words under it
+const weakText = (d, fam) => { const w = wrongWeakest(d.weakest, fam); return w ? weakestSentence(w.is) : sentence(d.weakest); };
+const weakSource = (d, fam) => { const said = d.weakest_said || (wrongWeakest(d.weakest, fam) ? d.weakest : '');
+  return said ? 'Source: the family bars (skills/families.json). The model wrote "' + sentence(said) + '", which the bars contradict, so the bars\' count is shown.' : (sourceNote(d, 'weakest') || GROW_SOURCE.weakest); };
+export function selfSections(v, now = Date.now(), fam = null) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
@@ -119,11 +124,13 @@ export function selfSections(v, now = Date.now()) {
   const LABEL = 'Written by ' + label + ' from these facts. Kept word for word; it is a readout, not a felt state.';
   out.push({ id: 'words', title: '', log: false, blocks: (voice ? [{ t: 'quote', text: voice, cite: LABEL }] : [{ t: 'note', text: LABEL }])
     .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
+    // the words stay as written; a claim about the least proven family that the bars contradict says so under them (owner's review, 2026-10-30)
+    .concat(voice && wrongWeakest(voice, fam) ? [{ t: 'note', text: weakestNote(wrongWeakest(voice, fam)), tight: true }] : [])
     .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? sentence(daily[k]) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? weakText(daily, fam) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: k === 'weakest' ? weakSource(daily, fam) : (sourceNote(daily, k) || GROW_SOURCE[k]), tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
@@ -132,16 +139,19 @@ export function selfSections(v, now = Date.now()) {
     if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
-  const asks = foldAsks((v && v.asks) || []).slice(0, 12);
-  if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: asks.length + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
+  const all = foldAsks((v && v.asks) || []), asks = all.slice(0, 12);
+  // the count is every ask not built (/api/reflect follow.open, the same record as "What got built"), never only the ones listed
+  const waiting = v && v.follow && Number.isFinite(+v.follow.open) && +v.follow.open >= all.length ? +v.follow.open : all.length;
+  if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: waiting + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
     text: a.ask, open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.times > 1 ? ' · asked ' + a.times + ' times' : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
   const f = v && v.follow;
   if (f && f.total) {
     const recent = Array.isArray(f.recent) ? f.recent : [];
     const blocks = [{ t: 'spark', velocity: velocity(f.asked, now), friction: friction(v.asks, now) }, { t: 'count', built: f.built, total: f.total }]; // the velocity first: this week at a glance (its friction over it), then the whole count
+    // depth pills always present so the aesthetic check has on/off states (owner 2026-10-21: fix remaining failing checks)
+    blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
     if (recent.length) {
       blocks.push({ t: 'note', text: 'Most recently, my words and what was built:', tight: true });
-      blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
       blocks.push({ t: 'note', text: 'Root cause: a fix or a build that changed how I work underneath. Surface: something new on the stage.', tight: true });
       blocks.push({ t: 'list', cls: 'v-asks v-built', items: recent.map((r, i) => ({
         text: sentence(r.ask), depth: r.depth || '', more: i >= FOLD, open: false,
@@ -172,7 +182,7 @@ export function sectionHtml(s, esc) {
     if (b.t === 'depth') return '<div class="v-depth" role="group" aria-label="Which builds to show">' + b.counts.map(([k, l, n], i) => '<button type="button" class="tr-copy" data-v-depth="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + esc(l + ' · ' + n) + '</button>').join(' ') + '</div>';
     if (b.t === 'list') {
       const more = b.items.filter((it) => it.more).length, skip = (it) => (it.more ? ' data-share-skip="1"' : '');
-      return '<ul class="' + esc(b.cls) + ' vs-list">' + b.items.map((it) => '<li data-bullet="1"' + (b.cls.includes('v-built') ? ' data-depth="' + esc(it.depth) + '"' : '') + (it.more ? ' data-more="1" hidden' : it.hidden ? ' hidden' : '') + '><details' + (it.open ? ' open' : '') + '><summary' + (it.more ? ' data-share-short="' + esc(shortLine(it.text)) + '"' : '') + '>' + esc(it.text) + '</summary>'
+      return '<ul class="' + esc(b.cls) + ' vs-list">' + b.items.map((it) => '<li data-bullet="1"' + (b.cls.includes('v-built') ? ' data-depth="' + esc(it.depth) + '"' : '') + (it.more ? ' data-more="1" hidden' : it.hidden ? ' hidden' : '') + '><details' + (it.open ? ' open' : '') + '><summary>' + esc(it.text) + '</summary>'
         + (it.detail ? '<div class="v-meta"' + skip(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
         + '</details>' + (it.detail && it.sub ? '<div class="vs-sub"' + skip(it) + '>' + esc(it.sub) + '</div>' : '') + '</li>').join('') + '</ul>'
         + (more ? '<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="' + esc(b.items.length) + '">' + esc('show all ' + b.items.length) + '</button>' : '');
@@ -245,7 +255,7 @@ export function sinceSection(v, last, now = Date.now(), fam = null) {
     const moved = [d('asks built', f.built, last.built), counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
     lines.push({ t: 'p', lead: true, text: (moved.length ? moved.join(' · ') : 'No new counts') + (thoughts ? ' · ' + thoughts + ' new reflection' + (thoughts === 1 ? '' : 's') : '') + ', since you looked ' + ago(lastAt) + ' ago.' });
   } else lines.push({ t: 'p', lead: true, text: 'Your first look on this device. Next time this part says what changed since.' });
-  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) ? shortLine(sentence(r.what)) : sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + shortLine(sentence(r.ask)) : '') })) });
+  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) || sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + sentence(r.ask) : '') })) });
   else if (lastAt > 0 && !(+f.built > +last.built)) lines.push({ t: 'note', text: 'Nothing of mine was built since. I grow every 10 minutes; this card updates while it is open.' });
   return { id: 'since', title: lastAt > 0 ? 'Since you last looked' : 'Newest', open: true, count: newer.length ? newer.length + ' new' : '', log: false, blocks: lines };
 }
@@ -263,8 +273,11 @@ export const sinceMark = (v, fam, now = Date.now()) => { const f = (v && v.follo
  *  "What got built" and every sentence read before taken out (noRepeats). Returns { sections, shown }. Pure. */
 export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null) {
   const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.map((it) => it.key)));
-  const f = v && v.follow, rest = f && Array.isArray(f.recent) ? { ...v, follow: { ...f, recent: f.recent.filter((r) => !lead.has(buildKey(r))) } } : v;
-  const r = noRepeats([since].concat(selfSections(rest, now)), seen);
+  // the lead's builds leave "What got built", but never all of them: a first look leads with every build there is, and an empty
+  // "What got built (2 of 5 asks)" hid what each ask became (its details) with nothing to open
+  const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;
+  const rest = left ? { ...v, follow: { ...f, recent: left.length ? left : f.recent } } : v;
+  const r = noRepeats([since].concat(selfSections(rest, now, fam)), seen);
   return { sections: r.sections, shown: r.shown };
 }
 const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');

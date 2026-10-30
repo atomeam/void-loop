@@ -163,6 +163,9 @@ export function parseGatedAsk(text) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'booking.make', args: cost ? { what: clip(m[1], 160), cost } : { what: clip(m[1], 160) } };
   }
+  // food from a restaurant ("order food from lovebird in lakeland", "order from joe's pizza") is skills/eat.js: it finds the place and every
+  // way to order, and the person places the order there, so nothing is spent here and nothing needs a yes
+  if (/^order\s+(?:me\s+|us\s+)?(?:some\s+)?(?:(?:food|dinner|lunch|breakfast|brunch|takeout|take-out|delivery|pizza|chicken|burgers?|tacos?|sushi|wings)\s+)?from\s+\S|^order\s+(?:me\s+|us\s+)?(?:some\s+)?(?:food|dinner|lunch|takeout|delivery)$/i.test(s)) return null;
   if ((m = s.match(new RegExp('^(?:buy|order|purchase)\\s+(?!of\\b|by\\b|in\\b)(?:me\\s+|us\\s+)?(.+?)(?:\\s+for\\s+' + COST + ')?$', 'i')))) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'order.place', args: cost ? { item: clip(m[1], 160), cost } : { item: clip(m[1], 160) } };

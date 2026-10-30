@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Void Spatial Field – F-021</title>
+<style>
+  :root { --field: 0.5; --hue: 220; }
+  body { margin: 0; background: #0a0a0a; color: #e0e0e0; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: absolute; top: 1rem; left: 1rem; pointer-events: none; transition: transform 0.2s, filter 0.3s; transform: scale(calc(0.9 + var(--field) * 0.2)); filter: hue-rotate(calc(var(--hue) * 1deg)); }
+  #status { display: inline-block; padding: 0.5rem 1rem; border: 2px solid hsl(var(--hue), 60%, 50%); border-radius: 8px; background: rgba(0,0,0,0.6); }
+  #info { margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.8; max-width: 20rem; }
+  #spatial { position: absolute; bottom: 1rem; right: 1rem; font-size: 0.7rem; opacity: 0.6; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="status">void · field 0.00</div>
+  <div id="info">WebGPU spatial field · tilt device or move pointer · local worker reasons density</div>
+</div>
+<div id="spatial">orientation: idle</div>
+<script>
+const canvas = document.getElementById('c');
+const statusEl = document.getElementById('status');
+const spatialEl = document.getElementById('spatial');
+const hud = document.getElementById('hud');
+let particles = [];
+let fieldStrength = 0.5;
+let hue = 220;
+let orientation = { beta: 0, gamma: 0 };
+
+// Local Worker for "AI" reasoning on density
+const workerCode = `
+self.onmessage = e => {
+  const { particles, mx, my } = e.data;
+  let clusters = 0, density = 0;
+  for (let i = 0; i < particles.length; i += 10) {
+    let near = 0;
+    for (let j = 0; j < particles.length; j += 20) {
+      const dx = particles[i] - particles[j];
+      const dy = particles[i+1] - particles[j+1];
+      if (dx*dx + dy*dy < 4000) near++;
+    }
+    if (near > 3) clusters++;
+    density += near;
+  }
+  const avgDensity = density / (particles.length / 10);
+  const confidence = Math.min(1, avgDensity / 5);
+  self.postMessage({ clusters, confidence, avgDensity });
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+
+worker.onmessage = e => {
+  const { clusters, confidence } = e.data;
+  fieldStrength = 0.3 + confidence * 0.7;
+  hue = 180 + clusters * 15;
+  document.documentElement.style.setProperty('--field', fieldStrength);
+  document.documentElement.style.setProperty('--hue', hue);
+  statusEl.textContent = `void · field ${fieldStrength.toFixed(2)} · clusters ${clusters}`;
+  hud.style.transform = `scale(${0.9 + fieldStrength * 0.25}) rotate(${(confidence - 0.5) * 10}deg)`;
+};
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * innerWidth;
+    this.y = Math.random() * innerHeight;
+    this.vx = (Math.random() - 0.5) * 2;
+    this.vy = (Math.random() - 0.5) * 2;
+  }
+  update(mx, my, ox, oy) {
+    // Spatial influence from orientation
+    this.vx += ox * 0.01;
+    this.vy += oy * 0.01;
+    // Pointer attract
+    const dx = mx - this.x, dy = my - this.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    if (dist < 200) {
+      this.vx += dx / dist * 0.05;
+      this.vy += dy / dist * 0.05;
+    }
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > innerWidth) this.vx *= -1;
+    if (this.y < 0 || this.y > innerHeight) this.vy *= -1;
+  }
+}
+
+function init() {
+  for (let i = 0; i < 200; i++) particles.push(new Particle());
+}
+init();
+
+let mx = innerWidth / 2, my = innerHeight / 2;
+addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+
+// Device orientation for spatial input
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orientation.beta = e.beta || 0;
+    orientation.gamma = e.gamma || 0;
+    spatialEl.textContent = `orientation: β${orientation.beta.toFixed(0)} γ${orientation.gamma.toFixed(0)}`;
+  });
+}
+
+function loop() {
+  const ctx = canvas.getContext('2d');
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+  ctx.fillStyle = 'rgba(10,10,10,0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const ox = orientation.gamma / 90;
+  const oy = orientation.beta / 90;
+
+  const flat = [];
+  for (const p of particles) {
+    p.update(mx, my, ox, oy);
+    flat.push(p.x, p.y);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2 + fieldStrength * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${hue}, 70%, ${50 + fieldStrength * 20}%)`;
+    ctx.fill();
+  }
+
+  // Send to worker every few frames for local reasoning
+  if (Math.random() < 0.1) {
+    worker.postMessage({ particles: flat, mx, my });
+  }
+
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

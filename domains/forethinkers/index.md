@@ -6,10 +6,10 @@ Forethinkers means building for what is about to be possible, not just for today
 
 | Track | File | Role |
 | --- | --- | --- |
-| Living action figures | `tracks/living-figures.md` | Tiny actuators, joints, power, on-board mind, sensing, personality, safety. Good-guy target: built to help and play. Last advanced 2026-10-15 02:12 (1,024-token toy mind with a cached memory prefix; Babaru offline claim corrected; price anchors). |
-| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. Last advanced 2026-10-07 20:14 (fully printed motors drive a waving arm and a walking robot). |
-| Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. Last advanced 2026-10-14 14:13 (one burden-enriched senolytic trial registered; blood methylation burden score MaGE). |
-| Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. Last advanced 2026-10-14 20:14 (NOAA heat-dose table; Dry Tortugas 2026 ≈ 2023 kill dose). |
+| Living action figures | `tracks/living-figures.md` | Tiny actuators, joints, power, on-board mind, sensing, personality, safety. Good-guy target: built to help and play. Last advanced 2026-10-21 14:07 (motor in the base with a printed linkage and a stall current limit); earlier 2026-10-15 02:12 (1,024-token toy mind with a cached memory prefix; Babaru offline claim corrected; price anchors). |
+| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. Last advanced 2026-10-21 14:07 (smallest arm-waving printed motor sized from the full text; battery-toy heat rule corrected to ASTM F963 section 4.25). |
+| Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. Last advanced 2026-10-21 20:13 (GSE327270 holds 2 of 84 participants, so MaGE waits; Source Data split: GrimAge-only gradient, semaglutide gains most in the fastest-ageing third); earlier 2026-10-14 14:13 (one burden-enriched senolytic trial registered; MaGE). |
+| Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. Last advanced 2026-10-28 14:15 (CBASS heat assay bounded by three field checks: strong sorter in moderate heat, weaker in severe heat; heat table refreshed to 27 Oct 2026); earlier 2026-10-14 20:14 (NOAA heat-dose table; Dry Tortugas 2026 ≈ 2023 kill dose). |
 | Verse stage handoff | `tracks/void-stage.md` | What Verse shows or exports from a figure once the stage life is real. Export-to-print unblocked 2026-10-07. |
 
 ## How a cycle works

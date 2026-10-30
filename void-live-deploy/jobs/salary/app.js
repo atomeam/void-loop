@@ -1,0 +1,5 @@
+// /jobs/salary/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["search","saved","alerts","tracker","feed","sources"],"preset":{"salaryOnly":true,"sort":"salary"},"de":{"h1":"Remote-Jobs mit Gehalt","intro":"Remote-Jobs, die sagen, was sie zahlen, die höchsten zuerst: Legen Sie ein Mindestjahresgehalt, eine Währung, die Stufe (Junior bis Executive) und die Art fest und sehen Sie die Zeitzonen, die ein Job verlangt. Stunden- und Monatslöhne werden zum Vergleich auf ein Jahr gerechnet; das letzte Wort hat die Anzeige."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/salary/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

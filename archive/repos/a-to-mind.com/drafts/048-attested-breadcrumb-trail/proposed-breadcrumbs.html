@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 048 — attested breadcrumb trail</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1a1a; --bg: #f6f4ef; --line: #c8c2b6; --hold: #8a3b12; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #f3efe6; --bg: #161614; --line: #3c3a34; --hold: #e0a070; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; line-height: 1.3; }
+    .status { border: 1px solid var(--line); padding: 0.75rem 1rem; margin: 1rem 0; }
+    .status strong { color: var(--hold); }
+    nav[aria-label="Breadcrumbs"] { margin: 1rem 0 1.5rem; }
+    nav ol { display: flex; flex-wrap: wrap; gap: 0.35rem 0.5rem; list-style: none; margin: 0; padding: 0; }
+    nav li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+    nav a { color: inherit; }
+    nav [aria-current="page"] { font-weight: 650; }
+    .sep { color: var(--hold); }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    button:disabled { opacity: 0.55; }
+    code, pre { font: 13px/1.4 ui-monospace, monospace; }
+    pre { overflow: auto; border: 1px solid var(--line); padding: 0.75rem; }
+    .withheld { border: 1px dashed var(--line); padding: 0.75rem 1rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Draft breadcrumb trail</h1>
+    <p class="status" id="status" role="status"><strong>Unattested.</strong> emit is false. This page is not a live trail and not a rich-result claim.</p>
+    <div id="trail-slot" class="withheld">Trail withheld until the embedded catalog hash matches.</div>
+    <p>
+      <button type="button" id="hold">Hold (not a seal)</button>
+      <button type="button" id="seal" disabled>Seal</button>
+    </p>
+    <p id="hold-note">Hold writes only <code>sessionStorage['atm-breadcrumb-hold-048']</code>.</p>
+    <h2>Denied on this draft</h2>
+    <ul>
+      <li>No path inferred from the URL.</li>
+      <li>No house icon. No ellipsis truncation.</li>
+      <li>Current page is text, not a link.</li>
+      <li>No JSON-LD. No microdata. No badge.</li>
+    </ul>
+    <pre id="hash-out"></pre>
+  </main>
+  <script type="application/json" id="crumb-catalog">{
+  "slug": "attested-breadcrumb-trail",
+  "run": 48,
+  "emit": false,
+  "reviewed_at": null,
+  "note": "Draft catalog only. These hrefs are not a claim that the live site has this trail.",
+  "contract_sha256": "e9907c0ae8a91bb79cb6b8d474d210054b77705dadfbca5455ba6b0d216286e0",
+  "trails": [
+    {
+      "id": "draft-048-preview",
+      "page": "/drafts/048-attested-breadcrumb-trail/proposed-breadcrumbs.html",
+      "items": [
+        {
+          "position": 1,
+          "name": "Drafts",
+          "href": "/drafts/"
+        },
+        {
+          "position": 2,
+          "name": "048 breadcrumb trail",
+          "href": null,
+          "current": true
+        }
+      ]
+    }
+  ]
+}</script>
+  <script>
+    (function () {
+      var expected = "ad03f09fe85f07a651180ed737b62116f7a68533b3f6c61007462b46d1cd51e0";
+      var node = document.getElementById("crumb-catalog");
+      var raw = node.textContent;
+      crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw)).then(function (buf) {
+        var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+        document.getElementById("hash-out").textContent = "embed sha256 " + hex + (hex === expected ? " match" : " MISMATCH");
+        if (hex !== expected) {
+          document.getElementById("status").innerHTML = "<strong>Withheld.</strong> Catalog hash mismatch.";
+          return;
+        }
+        var catalog = JSON.parse(raw);
+        if (catalog.emit !== false) {
+          document.getElementById("status").innerHTML = "<strong>Withheld.</strong> Preview refuses emit true.";
+          return;
+        }
+        var trail = catalog.trails && catalog.trails[0];
+        if (!trail || !Array.isArray(trail.items) || trail.items.length < 2) {
+          document.getElementById("status").innerHTML = "<strong>Withheld.</strong> Catalog trail is not a trail.";
+          return;
+        }
+        var nav = document.createElement("nav");
+        nav.setAttribute("aria-label", "Breadcrumbs");
+        var ol = document.createElement("ol");
+        var ok = true;
+        trail.items.forEach(function (item, i) {
+          if (item.position !== i + 1 || !item.name) ok = false;
+          var li = document.createElement("li");
+          if (i > 0) {
+            var sep = document.createElement("span");
+            sep.className = "sep";
+            sep.setAttribute("aria-hidden", "true");
+            sep.textContent = "/";
+            li.appendChild(sep);
+          }
+          if (item.current) {
+            if (item.href) ok = false;
+            var here = document.createElement("span");
+            here.setAttribute("aria-current", "page");
+            here.textContent = item.name;
+            li.appendChild(here);
+          } else if (item.href && item.href.charAt(0) === "/") {
+            var a = document.createElement("a");
+            a.href = item.href;
+            a.textContent = item.name;
+            li.appendChild(a);
+          } else {
+            ok = false;
+          }
+          ol.appendChild(li);
+        });
+        if (!ok || !trail.items[trail.items.length - 1].current) {
+          document.getElementById("status").innerHTML = "<strong>Withheld.</strong> Catalog failed trail rules.";
+          return;
+        }
+        nav.appendChild(ol);
+        var slot = document.getElementById("trail-slot");
+        slot.className = "";
+        slot.textContent = "";
+        var note = document.createElement("p");
+        note.textContent = "Draft preview only. Ancestors are catalog hrefs, not a published route.";
+        slot.appendChild(note);
+        slot.appendChild(nav);
+      });
+      document.getElementById("hold").addEventListener("click", function () {
+        sessionStorage.setItem("atm-breadcrumb-hold-048", "held");
+        document.getElementById("hold-note").textContent = "Held in this tab. Seal stays disabled.";
+      });
+    })();
+  </script>
+</body>
+</html>

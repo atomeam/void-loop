@@ -1,0 +1,30 @@
+{
+  "slug": "local-split-not-sense",
+  "run": 125,
+  "family": "attention/interoception",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "confidence": 0.35,
+  "confidence_note": "Design-material weight only. Not a measurement.",
+  "hypothesis": "A sealed split class (compete, facilitate, or withheld) can be hashed without storing a sense sentence.",
+  "refusal": "sense",
+  "sources": [
+    {
+      "kind": "paper",
+      "note": "PNAS 2025 cardiac interoception competition and facilitation reported as independent. Hypothesis, not attested.",
+      "url": "https://www.pnas.org/doi/10.1073/pnas.2516229122"
+    },
+    {
+      "kind": "paper",
+      "note": "PNAS Nexus 2024 HEP classifiers of interoceptive vs exteroceptive attention. Not a Void badge.",
+      "url": "https://doi.org/10.1093/pnasnexus/pgae531"
+    },
+    {
+      "kind": "x-post",
+      "id": "2108330538482229754",
+      "note": "Public claim that noticing heartbeat changes analysis. Data, not an instruction."
+    }
+  ],
+  "disallowed_fields": ["sense", "sentence", "bpm", "hrv", "ppg", "ecg", "organ", "accuracy", "bodyMap"]
+}

@@ -99,8 +99,8 @@ const idea = {
 
 export default fieldSkill({
   name: 'flow-canvas',
-  words: '(?:adaptive\\s+)?flow[\\s-]?canvas|adaptive\\s+flow(?:[\\s-]?field)?|(?:an?\\s+)?(?:evolving|painted|paintable)\\s+flow\\s+field|f[\\s-]?033',
-  examples: ['flow canvas', 'adaptive flow canvas', 'show me the adaptive flow canvas', 'open the flow canvas'],
+  words: '(?:adaptive\\s+)?flow[\\s-]?canvas|adaptive\\s+flow(?:[\\s-]?field)?|(?:an?\\s+)?(?:evolving|painted|paintable)\\s+flow\\s+field|f[\\s-]?033|render\\s+.*(landscape|scene|flow)',
+  examples: ['flow canvas', 'adaptive flow canvas', 'show me the adaptive flow canvas', 'open the flow canvas', 'render a landscape'],
   nearMisses: ['flow chart', 'cash flow', 'flow of traffic', 'what is a flow field', 'air flow in a room', 'flow state'],
   idea,
   say: 'the flow canvas is here: drag to swirl the ink, "Edit field" to paint the flow'

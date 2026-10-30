@@ -7,7 +7,7 @@ const TESTS = [['merges.test.mjs', "import m from '../void-live-deploy/skills/me
 
 test('only the unit tests that import a changed skill or lib are picked, and a changed test runs itself', () => {
   assert.deepEqual(testsFor(['void-live-deploy/skills/status.js', 'README.md'], TESTS).files, ['tools/status-fix.test.mjs']);
-  assert.deepEqual(testsFor(['void-live-deploy/lib/keep-going.js', 'tools/new.test.mjs'], TESTS).files, ['tools/keep.test.mjs', 'tools/new.test.mjs']);
+  assert.deepEqual(testsFor(['void-live-deploy/lib/keep-going.js', 'tools/new.test.mjs'], TESTS).files, ['tools/new.test.mjs', 'tools/keep.test.mjs'], 'the PR\'s own test runs first');
   assert.deepEqual(testsFor(['void-live-deploy/skills/status.js'], [['browser.test.mjs', "import { chromium } from 'playwright-core'; // skills/status.js"]]).files, [], 'a browser script is left to verify.yml');
   assert.deepEqual(testsFor(['void.html', 'docs/MAP.md'], TESTS).files, []);
   // a test that runs a browser script (bench-load.test.mjs spawns bench.mjs) needs Chrome too, even when the PR changed the test itself
@@ -111,4 +111,57 @@ test('"lock it" is the picked thing\'s lock (a note against arrows), never the w
   assert.equal(safetyIntent('lock it'), null);
   assert.deepEqual(safetyIntent('lock now'), { op: 'lock' });
   assert.deepEqual(safetyIntent('lock the screen'), { op: 'lock' });
+});
+
+// 2026-10-30: three merges broke main on checks the safety-check could have run in seconds. These replay their changed files.
+import { checksFor, readTests, readBrowser, MAX_TESTS } from './skill-safety.mjs';
+import { fileURLToPath } from 'node:url';
+const repoDir = fileURLToPath(new URL('..', import.meta.url));
+
+test('the near tests survive the cap: a lib with many importers still runs its own tests first', () => {
+  const many = [...Array(20)].map((_, i) => ['a' + String(i).padStart(2, '0') + '.test.mjs', "from '../void-live-deploy/lib/tower.js'"]);
+  const near = [['tower.test.mjs', "from '../void-live-deploy/lib/tower.js'"], ['tower-merge.test.mjs', "from '../void-live-deploy/lib/tower.js'"]];
+  const got = testsFor(['void-live-deploy/lib/tower.js', 'tools/zz.test.mjs'], [...many, ...near, ['zz.test.mjs', 'x']]).files;
+  assert.equal(got.length, MAX_TESTS);
+  assert.deepEqual(got.slice(0, 3), ['tools/zz.test.mjs', 'tools/tower.test.mjs', 'tools/tower-merge.test.mjs'], 'the PR\'s own test, the module\'s test, then tower-*');
+  assert.equal(got[3], 'tools/a00.test.mjs', 'then the rest in name order');
+  assert.deepEqual(testsFor(['void-live-deploy/lib/tower.js'], [['tower-gate.test.mjs', "from '../void-live-deploy/lib/tower.js'; for (const n of ['playwright-core', 'playwright']) req(n)"], ['tower-x.test.mjs', "const { chromium } = await import('playwright-core'); lib/tower.js'"], ...near]).files,
+    ['tools/tower.test.mjs', 'tools/tower-merge.test.mjs'], 'a test that loads Playwright itself is left to verify.yml');
+  assert.ok(!testsFor(['void-live-deploy/lib/tower.js'], [['towering.test.mjs', "lib/tower.js'"], ...many]).files.slice(0, 1).includes('tools/towering.test.mjs'), 'tower- is the prefix, not tower');
+});
+
+test('#1643 (a second hosting floor in lib/tower.js) now runs tower.test and tower-merge.test, on the real repository', () => {
+  const changed = ['docs/MAP.md', 'void-live-deploy/lib/tower.js', 'void-live-deploy/parity.json', 'void-live-deploy/self.json'];
+  const got = testsFor(changed, readTests(repoDir), readBrowser(repoDir)).files;
+  assert.ok(got.includes('tools/tower.test.mjs') && got.includes('tools/tower-merge.test.mjs'), got.join(' '));
+});
+
+test('#1682 (the Brain router) still runs brain-route.test and brain-watch.test first', () => {
+  const changed = ['void-live-deploy/lib/brain-route.js', 'void-live-deploy/lib/brain-mind.js', 'void-live-deploy/lib/brain-host.js', 'tools/brain-route.test.mjs'];
+  const got = testsFor(changed, readTests(repoDir), readBrowser(repoDir)).files;
+  assert.equal(got[0], 'tools/brain-route.test.mjs');
+  assert.ok(got.includes('tools/brain-host.test.mjs'), got.join(' '));
+});
+
+test('#1690 (a new /api route) runs openapi-check.mjs; a page or a lib alone does not', () => {
+  assert.deepEqual(checksFor(['void-live-deploy/functions/api/holidays.js', 'void-live-deploy/skills/holidays.js']), ['tools/openapi-check.mjs']);
+  assert.deepEqual(checksFor(['void-live-deploy/openapi.json']), ['tools/openapi-check.mjs']);
+  assert.deepEqual(checksFor(['tools/openapi-check.mjs']), ['tools/openapi-check.mjs']);
+  assert.deepEqual(checksFor(['void-live-deploy/lib/tower.js', 'void.html', 'docs/x.md']), []);
+});
+
+test('a failed repo check holds the merge with its own command in the comment, before any unit test runs', () => {
+  const calls = [];
+  const run = (cmd, args) => { calls.push([cmd, ...args]); if (cmd === 'node' && args[0] === 'tools/openapi-check.mjs') throw Object.assign(new Error('x'), { stdout: '/api/holidays: a route in neither the spec nor INTERNAL\n', stderr: '' }); return ''; };
+  const gh = (p) => (/\/files/.test(p) ? [{ filename: 'void-live-deploy/functions/api/holidays.js' }, { filename: 'void-live-deploy/skills/merges.js' }] : []);
+  const out = safety(run, gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T });
+  assert.equal(out.state, 'fail'); assert.match(out.why, /openapi-check/);
+  assert.ok(calls.some((c) => c[0] === 'gh' && c.some((a) => String(a).startsWith('body=' + MARK) && a.includes('`node tools/openapi-check.mjs` failed') && a.includes('/api/holidays'))));
+  assert.ok(!calls.some((c) => c[0] === 'node' && c[1] === '--test'), 'held before the unit tests');
+});
+
+test('a passing repo check is named in the result', () => {
+  const run = () => '', gh = (p) => (/\/files/.test(p) ? [{ filename: 'void-live-deploy/functions/api/x.js' }] : []);
+  const out = safety(run, gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T });
+  assert.equal(out.state, 'pass'); assert.match(out.why, /openapi-check\.mjs passed/);
 });

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Metronome online: tap tempo, accents, subdivisions · Verse</title>
+<meta name="verse-handoff" content="in: number; out: number">
+<meta name="description" content="A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Metronome: a steady click to keep time · Verse">
+<meta property="og:description" content="A free online metronome from 20 to 400 BPM with tap tempo, every time signature, accents on each beat, subdivisions, nine sounds, a visual beat, a practice timer, a speed trainer and setlists. No account; it works offline.">
+<meta property="og:url" content="https://a-to-mind.com/metronome/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { color-scheme: light; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
+  :root:not([data-theme=light]) { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; text-align: center; font-weight: 650; }
+  h2 { font-size: 16px; margin: 0 0 8px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 40px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #mnav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 120px; align-content: flex-start; }
+  #mnav a { font-size: 14px; padding: 8px 12px; min-height: 24px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #mnav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; font-family: ui-monospace, monospace; font-size: 14px; }
+  input[type=range] { padding: 0; accent-color: var(--accent); min-height: 44px; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; }
+  .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input { min-height: 0; width: 20px; height: 20px; flex: 0 0 auto; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .big { text-align: center; font-size: 64px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; min-height: 70px; }
+  .big small { font-size: 18px; font-weight: 500; color: var(--soft); }
+  .dots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; min-height: 56px; align-items: center; }
+  .dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--box); padding: 0; min-height: 40px; min-width: 40px; font-size: 12px; color: var(--soft); }
+  .dot[data-lv="3"] { border-color: var(--accent); } .dot[data-lv="2"] { border-color: var(--soft); } .dot[data-lv="0"] { opacity: .45; border-style: dashed; }
+  .dot.on { background: var(--accent); color: var(--on-accent); transform: scale(1.12); }
+  .flash { transition: background .08s; } .flash.on { background: var(--tint); }
+  .pend { position: relative; height: 90px; overflow: hidden; } .pend i { position: absolute; left: 50%; bottom: 0; width: 4px; height: 82px; background: var(--accent); border-radius: 2px; transform-origin: 50% 100%; transform: translateX(-50%) rotate(-22deg); } .pend i::after { content: ''; position: absolute; left: -7px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+  .tapbtn { width: 100%; min-height: 96px; font-size: 22px; border-radius: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; } th { color: var(--soft); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 6px 0; list-style: none; }
+  .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--tint); font-size: 15px; min-height: 24px; }
+  .kb { position: relative; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; height: 190px; border: 1px solid var(--line); border-radius: 10px; background: var(--box); touch-action: pan-x; user-select: none; -webkit-user-select: none; }
+  .wk { flex: 0 0 44px; height: 180px; border: 1px solid var(--line); border-radius: 0 0 8px 8px; background: var(--key); color: #444; font-size: 11px; padding: 0 0 6px; display: flex; align-items: flex-end; justify-content: center; position: relative; min-height: 0; min-width: 0; box-sizing: border-box; z-index: 1; text-align: center; line-height: 1.1; }
+  .wk.on { background: var(--hit); color: #fff; }
+  .bk { position: absolute; top: 0; width: 28px; height: 112px; margin-left: -14px; background: var(--blk); border: 1px solid var(--line); border-radius: 0 0 6px 6px; color: #ddd; font-size: 10px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; z-index: 3; min-height: 0; min-width: 0; box-sizing: border-box; }
+  .bk.on { background: var(--hit); }
+  .kbi { position: relative; display: flex; flex: 0 0 auto; }
+  .strobe { height: 54px; border-radius: 10px; margin: 8px 0; background: repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--tint) 14px 28px); background-size: 28px 100%; } .strobe.ok { background: repeating-linear-gradient(90deg, var(--good) 0 14px, var(--tint) 14px 28px); }
+  .neck { width: 100%; min-height: 150px; } .neck svg { width: 100%; height: auto; display: block; } .neck text { fill: var(--ink); font: 9px system-ui; }
+  .meter { position: relative; height: 54px; border-radius: 10px; background: var(--tint); overflow: hidden; margin: 8px 0; }
+  .meter i { position: absolute; top: 0; bottom: 0; width: 4px; left: 50%; margin-left: -2px; background: var(--accent); transition: left .12s; } .meter b { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--good); }
+  .meter.ok i { background: var(--good); }
+  .read { text-align: center; font-size: 56px; font-weight: 700; line-height: 1.1; min-height: 62px; } .read small { font-size: 16px; font-weight: 500; color: var(--soft); display: block; }
+  .strings { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; min-height: 48px; }
+  svg.dia { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; } svg.dia text { fill: var(--ink); font: 11px system-ui; } svg.dia line, svg.dia rect.fr { stroke: var(--soft); } svg.dia .dotf { fill: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #mnav, button, .row { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/metronome/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Metronome","url":"https://a-to-mind.com/metronome/","description":"A free online metronome from 20 to 400 BPM: tap tempo, every time signature from 2/4 to 12/8, an accent on each beat you can set strong, medium, soft or silent, subdivisions (eighths, triplets, sixteenths, swing), nine sounds, a voice count, a visual beat and pendulum, a practice timer, a speed trainer, silent bars and setlists. No account, no ads; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"metronome, online metronome, metronome 120 bpm, tap tempo metronome, metronome with accents, metronome 6/8, free metronome no ads","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/metronome/?bpm={bpm}"},"bpm-input":"required name=bpm"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://a-to-mind.com/metronome/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/metronome/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main id="app">
+  <h1>Metronome: a steady click to keep time</h1>
+  <p class="sub" id="lead"><strong>For practising an instrument, a workout, a dance or a speech.</strong> Press Start, or open a ready tempo:</p>
+  <nav class="row" id="tries" aria-label="Ready tempos"><a href="?bpm=80&amp;sig=4%2F4">Piano practice 80</a> <a href="?bpm=170&amp;sig=2%2F4">Running 170 steps a minute</a> <a href="?bpm=60&amp;sig=4%2F4">A slow speech 60</a> <a href="?bpm=100&amp;sig=3%2F4">A waltz 100</a></nav>
+  <p class="sub" id="lede">A free online metronome: 20 to 400 BPM, tap tempo, any time signature, accents, subdivisions, nine sounds, a visual beat, a practice timer and setlists. Nothing leaves your device; it works offline.</p>
+  <nav id="mnav" aria-label="Music tools"><a href="/metronome/" aria-current="page">Metronome</a><a href="/piano/">Piano</a><a href="/tuner/">Tuner</a><a href="/bpm/">BPM counter</a><a href="/chords/">Chords and scales</a><a href="/music/">Setlists and catalogue</a><a href="/?q=make%20me%20a%20song">Make me a song</a></nav>
+  <section class="pane flash" id="stage" aria-label="Metronome">
+    <div class="dots" id="dots" role="group" aria-label="Beats of the bar, press one to change its accent"><button class="dot" type="button" data-lv="3" aria-label="Beat 1, strong">1</button><button class="dot" type="button" data-lv="1" aria-label="Beat 2, soft">2</button><button class="dot" type="button" data-lv="1" aria-label="Beat 3, soft">3</button><button class="dot" type="button" data-lv="1" aria-label="Beat 4, soft">4</button></div>
+    <div class="big"><output id="bpmOut" for="bpm">120</output> <small>BPM</small></div>
+    <p class="note" id="tempoWord" style="text-align:center">Allegro · 500 ms per beat</p>
+    <p class="note" style="text-align:center"><a id="toBpm" href="/bpm/?bpm=120">Note lengths at this tempo</a></p>
+    <div class="pend" id="pend" aria-hidden="true"><i id="rod"></i></div>
+    <div class="row"><button type="button" id="m10" aria-label="10 slower">−10</button><button type="button" id="m1" aria-label="1 slower">−</button><input type="range" id="bpm" min="20" max="400" value="120" step="1" aria-label="Beats per minute" style="flex:1 1 120px"><button type="button" id="p1" aria-label="1 faster">+</button><button type="button" id="p10" aria-label="10 faster">+10</button></div>
+    <div class="row"><button type="button" id="play" class="go" style="flex:1 1 140px" aria-pressed="false">Start</button><button type="button" id="tap" style="flex:1 1 140px">Tap tempo</button></div>
+    <p class="note" id="status" role="status" aria-live="polite">Press Start, or the space bar. Tap the beat circles to set each beat strong, medium, soft or silent.</p>
+  </section>
+  <section class="pane" aria-label="Rhythm and sound">
+    <h2>Time signature, subdivisions and sound</h2>
+    <div class="row"><label>Time signature<select id="sig"><option value="2/4">2/4</option><option value="3/4">3/4</option><option value="4/4" selected>4/4</option><option value="5/4">5/4</option><option value="6/4">6/4</option><option value="7/4">7/4</option><option value="3/8">3/8</option><option value="5/8">5/8</option><option value="6/8">6/8</option><option value="7/8">7/8</option><option value="9/8">9/8</option><option value="12/8">12/8</option><option value="2/2">2/2</option></select></label><label>Subdivision<select id="sub"><option value="none" selected>Quarter notes (none)</option><option value="eighth">Eighth notes</option><option value="triplet">Triplets</option><option value="sixteenth">Sixteenth notes</option><option value="quintuplet">Quintuplets</option><option value="sextuplet">Sextuplets</option><option value="swing">Swing (long-short)</option><option value="offbeat">Off-beat only</option></select></label><label>Sound<select id="snd"><option value="click" selected>Click</option><option value="wood">Wood block</option><option value="hihat">Hi-hat</option><option value="cowbell">Cowbell</option><option value="beep">Beep</option><option value="rimshot">Rim shot</option><option value="kick">Kick drum</option><option value="tick">Soft tick</option><option value="clap">Clap</option></select></label></div>
+    <div class="row"><label>Polyrhythm: a second pulse of this many in each bar<select id="poly"><option value="0">Off</option><option value="2">2 against the bar</option><option value="3">3 against the bar</option><option value="4">4 against the bar</option><option value="5">5 against the bar</option><option value="6">6 against the bar</option><option value="7">7 against the bar</option><option value="8">8 against the bar</option><option value="9">9 against the bar</option></select></label></div>
+    <div class="row"><label>Volume<input type="range" id="vol" min="0" max="100" value="80" aria-label="Volume"></label><label>Beats per minute<input type="number" id="bpmIn" min="20" max="400" value="120" inputmode="numeric" aria-label="Type the tempo"></label></div>
+    <div class="row"><label class="chk"><input type="checkbox" id="voice"> Voice count (says 1 2 3 4)</label><label class="chk"><input type="checkbox" id="vis" checked> Visual beat (flash)</label><label class="chk"><input type="checkbox" id="stress" checked> Accent the first beat</label></div>
+    <h2>Tempo presets</h2>
+    <div class="row" id="presets"><button type="button" data-bpm="60">Slow speech 60</button><button type="button" data-bpm="80">Piano practice 80</button><button type="button" data-bpm="170">Running 170</button><button type="button" data-bpm="50">Largo 50</button><button type="button" data-bpm="70">Adagio 70</button><button type="button" data-bpm="92">Andante 92</button><button type="button" data-bpm="114">Moderato 114</button><button type="button" data-bpm="132">Allegro 132</button><button type="button" data-bpm="180">Presto 180</button></div>
+  </section>
+  <section class="pane" aria-label="Practice tools">
+    <h2>Practice timer, speed trainer and silent bars</h2>
+    <div class="row"><label>Practice timer (minutes, 0 = off)<input type="number" id="timer" min="0" max="180" value="0" inputmode="numeric"></label><label>Timer left<output id="timerLeft">off</output></label></div>
+    <div class="row"><label>Speed trainer: raise by (BPM)<input type="number" id="rampStep" min="0" max="40" value="0" inputmode="numeric"></label><label>every (bars)<input type="number" id="rampEvery" min="1" max="64" value="4" inputmode="numeric"></label><label>up to (BPM)<input type="number" id="rampTo" min="20" max="400" value="160" inputmode="numeric"></label></div>
+    <div class="row"><label>Silent bars: play (bars)<input type="number" id="playBars" min="1" max="16" value="4" inputmode="numeric"></label><label>then rest (bars, 0 = off)<input type="number" id="restBars" min="0" max="16" value="0" inputmode="numeric"></label></div>
+    <p class="note" id="ladder">Practice ladder for this tempo: 60%, 75%, 90%, then 100%.</p>
+  </section>
+  <section class="pane" aria-label="Setlist">
+    <h2>Setlist</h2>
+    <div class="row"><label>Name<input id="entryName" maxlength="40" placeholder="Verse, Chorus, Etude no. 3"></label><button type="button" id="saveEntry" style="flex:0 0 auto">Save to a setlist</button></div>
+    <ol id="setlist" aria-label="Saved tempos" style="padding-left:20px;margin:6px 0;min-height:24px"></ol>
+    <div class="row"><button type="button" id="copyLink">Copy link to this setlist</button><button type="button" id="theme" aria-pressed="false">Light or dark</button></div>
+  </section>
+  <p class="note" id="about">Counts the beat in the signature you pick (6/8 has six beats). All sounds are made in your browser; no file is loaded and nothing is sent. Space starts and stops, the arrow keys change the tempo, T taps.</p>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/metronome/?bpm=60">60 BPM</a><a href="/metronome/?bpm=80">80 BPM</a><a href="/metronome/?bpm=100">100 BPM</a><a href="/metronome/?bpm=120">120 BPM</a><a href="/metronome/?bpm=140">140 BPM</a><a href="/metronome/?bpm=90&amp;sig=6%2F8">90 BPM in 6/8</a><a href="/metronome/?bpm=100&amp;sig=3%2F4">100 BPM in 3/4</a><a href="/metronome/?bpm=100&amp;sub=eighth">Eighth-note subdivision</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/bpm/">BPM counter</a> <a href="/tuner/">Tuner</a> <a href="/piano/">Piano</a> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/rap/">Verse raps</a> <a href="/tools/">All tools</a><!-- /related --></nav> <!-- void-review: ok (BPM here is the words of the link "BPM counter" in HTML, not a name in code) -->
+  <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
+  <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/metronome/app.js';
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

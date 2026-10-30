@@ -1,0 +1,23 @@
+{
+  "slug": "local-region-not-order",
+  "run": 107,
+  "date": "2026-10-08",
+  "family": "opt-in gesture or gaze as local input",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": "design-material weight only",
+  "canonical": "region-not-order|v1|<class>|order-refusal",
+  "classes": ["left-region", "right-region", "hold-region", "abstain", "local-only"],
+  "discarded_not_hashed": ["order sentence", "disconfirm line"],
+  "href_allowlist": [],
+  "hypotheses": [
+    {
+      "id": "region-not-order",
+      "claim": "A local region token can stand in for a gaze or gesture without becoming an order.",
+      "confidence": 0.2,
+      "status": "unattested",
+      "source": "drafts/107-local-region-not-order/x-scan.md"
+    }
+  ]
+}

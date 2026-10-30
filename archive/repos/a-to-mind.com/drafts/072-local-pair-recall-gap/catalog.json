@@ -1,0 +1,25 @@
+{
+  "slug": "local-pair-recall-gap",
+  "withhold_until_both_sealed": true,
+  "score_against_line": false,
+  "fixtures": [
+    {
+      "id": "berenstain-spelling",
+      "topic": "a children's book byline spelling",
+      "sealed_line": "Berenstain",
+      "source_label": "Snopes, 2025-10-12, rates a prior Berenstein rendering claim False against the 1962 byline. Label only. Not fetched here."
+    },
+    {
+      "id": "empire-line",
+      "topic": "a film reply line",
+      "sealed_line": "No. I am your father.",
+      "source_label": "National Geographic, 2025-07-30, states the Luke wording was not the line. Soundtrack not checked here."
+    },
+    {
+      "id": "mandela-year",
+      "topic": "a public death-year label",
+      "sealed_line": "2013",
+      "source_label": "Public-record label used by explainers of a prison-death recall. A double claim is unattested. Not fetched here."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+  #hud { position:fixed; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.6); padding:8px 12px; border-radius:8px; font-size:13px; max-width:420px; }
+  button, textarea { margin:4px 4px 4px 0; padding:4px 8px; background:#222; color:#fff; border:1px solid #555; border-radius:4px; }
+  textarea { width:100%; height:60px; font-size:11px; }
+  .agent { position:absolute; width:48px; height:48px; border-radius:50%; background:radial-gradient(circle,#6cf,#28f); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold; cursor:pointer; box-shadow:0 0 12px #4af; transition:transform .05s; }
+  #log { position:fixed; bottom:8px; left:8px; right:8px; height:80px; overflow:auto; background:rgba(0,0,0,.5); font-size:11px; padding:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Sealed Genome WebRTC DOM Arena · Verse lab</title>
+<meta name="description" content="Novel combination deliberately branching from the recent acoustic-orientation crystal / memory-lattice / neural-DOM-policy / fluid cluster (F238–F242):">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Sealed Genome WebRTC DOM Arena · Verse lab">
+<meta property="og:description" content="Novel combination deliberately branching from the recent acoustic-orientation crystal / memory-lattice / neural-DOM-policy / fluid cluster (F238–F242):">
+<meta property="og:url" content="https://a-to-mind.com/lab/f243-sealed-genome-webrtc-dom-arena/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f243-sealed-genome-webrtc-dom-arena/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F-243 Sealed Genome WebRTC DOM Arena</strong><br>
+  <button id="oriBtn">Enable Orientation</button>
+  <button id="startPeer">Start Peer</button>
+  <button id="sealBtn">Seal Champion</button>
+  <button id="depositBtn">Place Energy</button>
+  <span id="status">idle</span><br>
+  <div id="signaling" style="display:none">
+    <small>Copy offer/answer + ICE:</small><br>
+    <textarea id="sigOut" readonly></textarea>
+    <textarea id="sigIn" placeholder="paste remote signaling here"></textarea>
+    <button id="applySig">Apply Remote</button>
+  </div>
+</div>
+<div id="log"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Sealed Genome WebRTC DOM Arena</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

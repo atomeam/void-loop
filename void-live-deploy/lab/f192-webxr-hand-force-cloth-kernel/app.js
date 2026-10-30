@@ -1,0 +1,342 @@
+const canvas = document.getElementById('c');
+const statusEl = document.getElementById('status');
+const stiffEl = document.getElementById('stiff');
+const dampEl = document.getElementById('damp');
+
+let GRID = 24;
+let N = GRID * GRID;
+let positions = new Float32Array(N * 2);
+let velocities = new Float32Array(N * 2);
+let restLen = 1.0 / GRID * 1.8;
+let stiffness = 0.6;
+let damping = 0.98;
+let gravity = 0.0008;
+let wind = [0, 0];
+let forceX = 0, forceY = 0, forceStrength = 0;
+let usingWebGPU = false;
+let device, pipeline, particleBuffer, uniformBuffer;
+let xrSession = null;
+let orientation = { beta: 0, gamma: 0 };
+
+function initParticles() {
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = (y * GRID + x) * 2;
+      positions[i] = (x / (GRID - 1) - 0.5) * 1.6 + 0.5;
+      positions[i + 1] = (y / (GRID - 1) - 0.5) * 1.2 + 0.35;
+      velocities[i] = velocities[i + 1] = 0;
+    }
+  }
+}
+initParticles();
+
+// IndexedDB
+const dbName = 'F192Cloth';
+let db;
+const openDB = () => new Promise((res, rej) => {
+  const req = indexedDB.open(dbName, 1);
+  req.onupgradeneeded = () => req.result.createObjectStore('snap');
+  req.onsuccess = () => res(req.result);
+  req.onerror = () => rej(req.error);
+});
+async function saveSnap() {
+  try {
+    db = db || await openDB();
+    const tx = db.transaction('snap', 'readwrite');
+    tx.objectStore('snap').put({ positions: Array.from(positions), velocities: Array.from(velocities), grid: GRID }, 'cloth');
+    statusEl.textContent = 'Snapshot saved';
+  } catch (e) { statusEl.textContent = 'Save failed (memory only)'; }
+}
+async function loadSnap() {
+  try {
+    db = db || await openDB();
+    const tx = db.transaction('snap', 'readonly');
+    const req = tx.objectStore('snap').get('cloth');
+    req.onsuccess = () => {
+      if (req.result) {
+        positions.set(req.result.positions);
+        velocities.set(req.result.velocities);
+        statusEl.textContent = 'Snapshot loaded';
+      }
+    };
+  } catch (e) { statusEl.textContent = 'Load failed'; }
+}
+
+// WebGPU setup (compute + render)
+async function tryWebGPU() {
+  if (!navigator.gpu) return false;
+  try {
+    const adapter = await navigator.gpu.requestAdapter();
+    if (!adapter) return false;
+    device = await adapter.requestDevice();
+    const context = canvas.getContext('webgpu');
+    const format = navigator.gpu.getPreferredCanvasFormat();
+    context.configure({ device, format, alphaMode: 'opaque' });
+
+    const computeWGSL = `
+      struct Particle { pos: vec2<f32>, vel: vec2<f32> };
+      struct Uniforms { stiff: f32, damp: f32, gravity: f32, force: vec2<f32>, forceStr: f32, wind: vec2<f32>, rest: f32, grid: u32 };
+      @group(0) @binding(0) var<storage, read_write> particles: array<Particle>;
+      @group(0) @binding(1) var<uniform> u: Uniforms;
+      @compute @workgroup_size(64)
+      fn main(@builtin(global_invocation_id) id: vec3<u32>) {
+        let i = id.x;
+        if (i >= u.grid * u.grid) { return; }
+        var p = particles[i];
+        // springs to neighbors
+        let x = i % u.grid;
+        let y = i / u.grid;
+        var force = vec2<f32>(0.0);
+        // right
+        if (x + 1 < u.grid) {
+          let o = particles[i + 1].pos - p.pos;
+          let d = length(o);
+          if (d > 0.0) { force += normalize(o) * (d - u.rest) * u.stiff; }
+        }
+        // down
+        if (y + 1 < u.grid) {
+          let o = particles[i + u.grid].pos - p.pos;
+          let d = length(o);
+          if (d > 0.0) { force += normalize(o) * (d - u.rest) * u.stiff; }
+        }
+        // left / up handled by others
+        // external
+        force += vec2<f32>(0.0, u.gravity);
+        force += u.wind;
+        // localized hand force
+        let dist = length(p.pos - u.force);
+        if (dist < 0.25) {
+          force += normalize(p.pos - u.force) * u.forceStr * (1.0 - dist / 0.25);
+        }
+        p.vel = (p.vel + force) * u.damp;
+        p.pos += p.vel;
+        // bounds
+        p.pos = clamp(p.pos, vec2<f32>(0.05), vec2<f32>(0.95));
+        particles[i] = p;
+      }
+    `;
+    const computeModule = device.createShaderModule({ code: computeWGSL });
+    pipeline = device.createComputePipeline({
+      layout: 'auto',
+      compute: { module: computeModule, entryPoint: 'main' }
+    });
+
+    // buffers
+    const partSize = N * 4 * 4; // pos2 + vel2
+    particleBuffer = device.createBuffer({ size: partSize, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC });
+    uniformBuffer = device.createBuffer({ size: 64, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+
+    // simple render (points via canvas fallback for reliability; full WebGPU render can be extended)
+    usingWebGPU = true;
+    statusEl.textContent = 'WebGPU compute active';
+    return true;
+  } catch (e) {
+    console.warn(e);
+    return false;
+  }
+}
+
+// Canvas2D fallback physics
+const ctx = canvas.getContext('2d');
+function stepJS() {
+  const stiff = parseFloat(stiffEl.value);
+  const damp = parseFloat(dampEl.value);
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = (y * GRID + x) * 2;
+      let fx = wind[0], fy = wind[1] + gravity;
+      // right spring
+      if (x + 1 < GRID) {
+        const j = i + 2;
+        const dx = positions[j] - positions[i], dy = positions[j+1] - positions[i+1];
+        const d = Math.hypot(dx, dy) || 1;
+        const f = (d - restLen) * stiff;
+        fx += (dx / d) * f; fy += (dy / d) * f;
+      }
+      // down
+      if (y + 1 < GRID) {
+        const j = i + GRID * 2;
+        const dx = positions[j] - positions[i], dy = positions[j+1] - positions[i+1];
+        const d = Math.hypot(dx, dy) || 1;
+        const f = (d - restLen) * stiff;
+        fx += (dx / d) * f; fy += (dy / d) * f;
+      }
+      // force injection
+      const px = positions[i], py = positions[i+1];
+      const dist = Math.hypot(px - forceX, py - forceY);
+      if (dist < 0.25 && forceStrength > 0) {
+        const nx = (px - forceX) / (dist || 1), ny = (py - forceY) / (dist || 1);
+        fx += nx * forceStrength * (1 - dist / 0.25);
+        fy += ny * forceStrength * (1 - dist / 0.25);
+      }
+      velocities[i] = (velocities[i] + fx) * damp;
+      velocities[i+1] = (velocities[i+1] + fy) * damp;
+      positions[i] += velocities[i];
+      positions[i+1] += velocities[i+1];
+      positions[i] = Math.max(0.05, Math.min(0.95, positions[i]));
+      positions[i+1] = Math.max(0.05, Math.min(0.95, positions[i+1]));
+    }
+  }
+}
+
+function render() {
+  const w = canvas.width = innerWidth;
+  const h = canvas.height = innerHeight;
+  ctx.fillStyle = '#0a0a12';
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = 'rgba(100,180,255,0.4)';
+  ctx.lineWidth = 1;
+  // draw springs
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const i = (y * GRID + x) * 2;
+      const px = positions[i] * w, py = positions[i+1] * h;
+      if (x + 1 < GRID) {
+        const j = i + 2;
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(positions[j]*w, positions[j+1]*h); ctx.stroke();
+      }
+      if (y + 1 < GRID) {
+        const j = i + GRID * 2;
+        ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(positions[j]*w, positions[j+1]*h); ctx.stroke();
+      }
+    }
+  }
+  ctx.fillStyle = '#8af';
+  for (let i = 0; i < N; i++) {
+    const px = positions[i*2] * w, py = positions[i*2+1] * h;
+    ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI*2); ctx.fill();
+  }
+  // force indicator
+  if (forceStrength > 0) {
+    ctx.fillStyle = 'rgba(255,100,100,0.6)';
+    ctx.beginPath(); ctx.arc(forceX * w, forceY * h, 18, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+async function stepWebGPU() {
+  if (!usingWebGPU || !device) return;
+  // upload uniforms + particles
+  const unif = new Float32Array([
+    parseFloat(stiffEl.value), parseFloat(dampEl.value), gravity,
+    forceX, forceY, forceStrength,
+    wind[0], wind[1], restLen, GRID
+  ]);
+  device.queue.writeBuffer(uniformBuffer, 0, unif);
+  // pack particles
+  const packed = new Float32Array(N * 4);
+  for (let i = 0; i < N; i++) {
+    packed[i*4] = positions[i*2];
+    packed[i*4+1] = positions[i*2+1];
+    packed[i*4+2] = velocities[i*2];
+    packed[i*4+3] = velocities[i*2+1];
+  }
+  device.queue.writeBuffer(particleBuffer, 0, packed);
+  const bindGroup = device.createBindGroup({
+    layout: pipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: particleBuffer } },
+      { binding: 1, resource: { buffer: uniformBuffer } }
+    ]
+  });
+  const encoder = device.createCommandEncoder();
+  const pass = encoder.beginComputePass();
+  pass.setPipeline(pipeline);
+  pass.setBindGroup(0, bindGroup);
+  pass.dispatchWorkgroups(Math.ceil(N / 64));
+  pass.end();
+  device.queue.submit([encoder.finish()]);
+  // read back (simplified; in production use mapAsync)
+  // for demo we keep JS positions in sync by stepping JS lightly or accept one-way
+}
+
+// Pointer force
+canvas.addEventListener('pointermove', e => {
+  const rect = canvas.getBoundingClientRect();
+  forceX = (e.clientX - rect.left) / rect.width;
+  forceY = (e.clientY - rect.top) / rect.height;
+  forceStrength = e.buttons ? 0.04 : 0.015;
+});
+canvas.addEventListener('pointerup', () => forceStrength = 0);
+canvas.addEventListener('pointerdown', e => {
+  const rect = canvas.getBoundingClientRect();
+  forceX = (e.clientX - rect.left) / rect.width;
+  forceY = (e.clientY - rect.top) / rect.height;
+  forceStrength = 0.05;
+});
+
+// DeviceOrientation wind
+window.addEventListener('deviceorientation', e => {
+  orientation.beta = e.beta || 0;
+  orientation.gamma = e.gamma || 0;
+  wind[0] = (orientation.gamma / 90) * 0.0004;
+  wind[1] = (orientation.beta / 90) * 0.0003;
+});
+
+// WebXR Hand
+async function enterXR() {
+  if (!navigator.xr) { statusEl.textContent = 'WebXR not available'; return; }
+  try {
+    const supported = await navigator.xr.isSessionSupported('immersive-vr');
+    if (!supported) { statusEl.textContent = 'immersive-vr not supported'; return; }
+    xrSession = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['hand-tracking'] });
+    statusEl.textContent = 'XR session active — show hands';
+    xrSession.addEventListener('end', () => { xrSession = null; statusEl.textContent = 'XR ended'; });
+    const refSpace = await xrSession.requestReferenceSpace('local');
+    const onFrame = (time, frame) => {
+      const session = frame.session;
+      session.requestAnimationFrame(onFrame);
+      // extract hands
+      for (const input of session.inputSources) {
+        if (input.hand) {
+          const palm = input.hand.get('wrist') || input.hand.get('palm');
+          if (palm) {
+            const pose = frame.getJointPose(palm, refSpace);
+            if (pose) {
+              // project roughly into sim space (local -1..1 → 0..1)
+              forceX = pose.transform.position.x * 0.5 + 0.5;
+              forceY = -pose.transform.position.y * 0.4 + 0.5;
+              forceStrength = 0.06;
+            }
+          }
+          const tip = input.hand.get('index-finger-tip');
+          if (tip) {
+            const pose = frame.getJointPose(tip, refSpace);
+            if (pose) {
+              forceX = pose.transform.position.x * 0.5 + 0.5;
+              forceY = -pose.transform.position.y * 0.4 + 0.5;
+              forceStrength = 0.08;
+            }
+          }
+        }
+      }
+    };
+    xrSession.requestAnimationFrame(onFrame);
+  } catch (e) {
+    statusEl.textContent = 'XR failed: ' + e.message;
+  }
+}
+
+document.getElementById('xr').onclick = enterXR;
+document.getElementById('reset').onclick = () => { initParticles(); statusEl.textContent = 'Reset'; };
+document.getElementById('save').onclick = saveSnap;
+document.getElementById('load').onclick = loadSnap;
+
+// Main loop
+async function loop() {
+  if (usingWebGPU) {
+    await stepWebGPU();
+    // For simplicity of single-file demo, also step JS so render stays in sync
+    // (production would readback buffer)
+  }
+  stepJS();
+  render();
+  requestAnimationFrame(loop);
+}
+
+// Boot
+(async () => {
+  const gpuOk = await tryWebGPU();
+  if (!gpuOk) statusEl.textContent = 'Canvas2D fallback (no WebGPU)';
+  else statusEl.textContent = 'WebGPU + Canvas render';
+  loop();
+})();

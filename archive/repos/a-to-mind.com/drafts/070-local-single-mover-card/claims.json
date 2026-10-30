@@ -1,0 +1,16 @@
+{
+  "slug": "local-single-mover-card",
+  "run": "070",
+  "date": "2026-10-05",
+  "family": "human-machine co-agency",
+  "status": "unattested",
+  "emit": false,
+  "href_allowlist": [],
+  "hypothesis": "A step hashed only after exactly one mover is sealed is a hypothesis of attribution the person typed. It is not a shared mind, not a handoff, and not an executed action.",
+  "movers_allowed": ["human", "machine-paste"],
+  "movers_denied": ["both", "unset"],
+  "page_cannot_set": ["attested"],
+  "confidence_kind": "design-material weight, not a measurement",
+  "disconfirm": "The person cannot name a single mover, or the step text was produced by a tool call this page does not have.",
+  "not_a_seal": true
+}

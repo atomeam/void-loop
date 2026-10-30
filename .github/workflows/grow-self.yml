@@ -12,8 +12,8 @@
 name: Verse hardens itself
 
 on:
-  schedule:
-    - cron: '41 */3 * * *' # every 3 hours (owner, 2026-10-19: "it upgrades extremely often and I dont have to babysit"); one preview in flight, closed before the next starts
+  # no schedule (owner, 2026-10-24: "there should be no self hardening, it needs to say exactly what upgrades not just hardening that means
+  # fucking nothing"): kept for a run by hand, never on a timer (docs/SALVAGE.md)
   workflow_dispatch:
     inputs:
       n:
@@ -131,6 +131,13 @@ jobs:
         run: |
           echo "blocked=0" >> "$GITHUB_OUTPUT"
           if [ "$(node tools/grow-gate.mjs status)" != "open" ]; then echo "no preview is waiting"; exit 0; fi
+          # auto-close a preview older than 12 hours so the loop cannot stay stuck (owner, 2026-10-21)
+          age=$(node -p "const s = JSON.parse(require('fs').readFileSync('tools/grow-self.state.json','utf8')); Date.now() - Date.parse(s.at || 0)" 2>/dev/null || echo 0)
+          if [ "$age" -gt 43200000 ]; then
+            node tools/grow-gate.mjs close --proof "auto-closed after 12h so growth can resume"
+            echo "auto-closed stale preview"
+            exit 0
+          fi
           ask=$(node tools/grow-gate.mjs try)
           if [ -z "$ask" ]; then
             echo "blocked=1" >> "$GITHUB_OUTPUT"
@@ -169,13 +176,21 @@ jobs:
           # a probe that answered nothing at all is a broken run (no browser, no page), never "every ask failed": it opens nothing
           grep -qE '^[0-9]+ of [0-9]+ answered' "$g/probe.log" || { echo "::error title=The probe did not finish::no result line in the probe log"; exit 1; }
           node tools/lacks.mjs settle "$g/cand.json" "$g/probe.log" --out "$g/passing.json" --failed "$g/failed.json" --report "$g/report.md"
+          # record which skills' examples missed so the next plan deprioritizes them
+          node -e "import('./tools/grow-lessons.mjs').then(m => m.record(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')), undefined, JSON.parse(require('fs').readFileSync(process.argv[2],'utf8'))))" "$g/failed.json" "$g/passing.json" || true
           cat "$g/report.md" >> "$GITHUB_STEP_SUMMARY"
           count=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).length" "$g/passing.json")
           # the card art: the weakest properties go in the summary, and each floor rises when the art got better (it never lowers: a drop fails checks.mjs)
           { echo; echo '#### Card art'; node tools/art-score.mjs; node tools/art-pixels.mjs; } | tee -a "$GITHUB_STEP_SUMMARY"
           node tools/art-score.mjs --write; node tools/art-pixels.mjs --write
           art=$(git diff --name-only -- tools/art-floor.json | wc -l)
-          if [ "$count" -lt 1 ] && [ "$art" -lt 1 ]; then echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report lists them"; exit 0; fi
+          if [ "$count" -lt 1 ] && [ "$art" -lt 1 ]; then
+            # nothing added is not growth (owner, 2026-10-24, on six "found nothing to add" lines in What's new: "why is this even happening"): no
+            # ledger line, no log line, no PR; what was tried stays in this job's summary (report.md above) and in grow-lessons for the next plan
+            echo "added=0" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report above lists them; nothing is opened"
+            exit 0
+          fi
           skills=""; title=""
           if [ "$count" -ge 1 ]; then
             node tools/append.mjs bench --skip --file "$g/passing.json"
@@ -186,20 +201,41 @@ jobs:
             now=$(node -p "const f = JSON.parse(require('fs').readFileSync('tools/art-floor.json', 'utf8')); f.composite + ' and ' + (f.pixels ? f.pixels.composite : 'n/a')")
             title="${title:+$title, and }the card art floors rise to $now"
           fi
-          printf '%s | verse | grow | hardened itself: %s (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$title" >> domains/void.agents.log.md
+          # richer ledger line: why these skills (from the plan) and the actual asks that were added (owner, 2026-10-21: "needs to say more than hardened itself and benchmark ask")
+          detail=""
+          if [ -s "$g/cand.json.plan" ]; then
+            reasons=$(node -p "const p = JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); (p.picks||[]).map(x => x.name + ' (' + (x.reasons||[]).join(', ') + ')').join('; ')" "$g/cand.json.plan" 2>/dev/null || true)
+            if [ -n "$reasons" ]; then detail="$detail Why these: $reasons."; fi
+          fi
+          if [ -s "$g/passing.json" ]; then
+            asks=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).map(c => '\u201c' + c.ask + '\u201d now opens ' + c.want.replace('skill:', '')).join('; ')" "$g/passing.json" 2>/dev/null || true)
+            if [ -n "$asks" ]; then detail="$detail New phrases: $asks."; fi
+          fi
+          if [ -s "$g/failed.json" ]; then
+            fails=$(node -p "const f = JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); f.slice(0,4).map(x => x.ask).join('; ')" "$g/failed.json" 2>/dev/null || true)
+            if [ -n "$fails" ]; then detail="$detail Did not route: $fails."; fi
+          fi
+          what="Verse hardened itself: $title.${detail:+ $detail}"
+          printf '%s | verse | grow | %s (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$what" >> domains/void.agents.log.md
           # a line on the growth ledger too, with one of the asks it proved, so "look what I made" shows what Verse built by itself (owner, 2026-10-19:
           # "bring back the I made this for upgrades"; Verse's own builds never reached the ledger, so they never popped up)
           try=$(node -p "const c = JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')); (c[0] && c[0].ask) || ''" "$g/passing.json" 2>/dev/null || true)
-          node tools/grow.mjs grow "Verse hardened itself: $title" --by verse ${try:+--try "$try"}
+          node tools/grow.mjs grow "$what" --by verse ${try:+--try "$try"}
+          # the line carries its phrases as data too, so every card and preview lists them (owner, 2026-10-21; tools/backfill-hardened.mjs)
+          [ -s "$g/passing.json" ] && node tools/backfill-hardened.mjs --last "$g/passing.json" || true
+          node tools/loop-refine.mjs --write || true # Self-Refine: rewrite the newest ledger lines until the critic is quiet (docs/LOOP-GAPS.md)
           # the card cycle moves only now that this run has a patch: a run that stopped earlier consumed no turn
           n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
           node tools/card-cycle.mjs --n "$n" --advance >> "$GITHUB_STEP_SUMMARY" || true
           # one preview in flight: the next run must verify this ask live and close it before it starts anything
-          if [ -n "$try" ]; then node tools/grow-gate.mjs open --run "${{ github.run_id }}" --try "$try" --what "Verse hardened itself: $title"; fi
+          if [ -n "$try" ]; then node tools/grow-gate.mjs open --run "${{ github.run_id }}" --try "$try" --what "$what"; fi
           git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch"
           # only the benchmark, the art floors, the cycle, the gate, the log and the ledger may change; anything else means a tool misbehaved and nothing is opened
-          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors, the cycle, the gate, the logs and the ledger may change"; exit 1; } || true
+          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void.growth.json|tools/grow-lessons\.json)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors, the cycle, the gate, the logs and the ledger may change"; exit 1; } || true
           node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/grow-self.state.json", "utf8"))'
+          # the pull request says what got better and the phrases it now answers, as the stage does (owner, 2026-10-24: "there should be no self
+          # hardening, it needs to say exactly what upgrades not just hardening that means fucking nothing"); skills/showcase.js hardenedLine
+          title=$(node --input-type=module -e "import { hardenedLine } from './void-live-deploy/skills/showcase.js'; const l = hardenedLine(process.argv[1]) || process.argv[2]; console.log(l.replace(/\\b1 more ways\\b/, '1 more way').replace(/\\s+/g, ' ').slice(0, 240))" "$what" "$title")
           echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"; echo "title=$title" >> "$GITHUB_OUTPUT"
 
       # the patch (when anything routed) and the asks that did not: both leave this job, nothing else does
@@ -284,15 +320,15 @@ jobs:
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark, the art floors, the cycle's place, the gate's state, the log and the ledger
-          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Not committed::the patch touches more than the benchmark, the art floors, the cycle, the gate, the log and the ledger"; exit 1; } || true
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|tools/grow-self\.state\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json|tools/grow-lessons\.json)$' && { echo "::error title=Not committed::the patch touches more than the benchmark, the art floors, the cycle, the gate, the log and the ledger"; exit 1; } || true
           git apply "$patch"
           [ -n "$(git status --porcelain)" ] || { echo "nothing to add"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           branch="verse/harden-$(date -u +%Y%m%d-%H%M%S)-${GITHUB_RUN_ID}"
           git checkout -b "$branch"
-          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json
-          git commit -q -m "Verse hardens itself: $WHAT" -m "Verse found its least proven skills in its own files (tools/lacks.mjs, tools/card-cycle.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them (.github/workflows/grow-self.yml)."
+          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json tools/grow-self.state.json domains/void.agents.log.md void-live-deploy/void.growth.json tools/grow-lessons.json
+          git commit -q -m "$WHAT" -m "Verse found its least proven skills in its own files (tools/lacks.mjs, tools/card-cycle.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them (.github/workflows/grow-self.yml)."
           git push -q origin "$branch"
-          gh pr create --repo "${{ github.repository }}" --base main --head "$branch" --title "Verse hardens itself: $WHAT" --body "Verse found its least proven skills in its own files, tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them." --label "made by Verse" --label "verse hardens" --label "automerge"
-          echo "### Verse hardened itself: $WHAT (PR opened)" >> "$GITHUB_STEP_SUMMARY"
+          gh pr create --repo "${{ github.repository }}" --base main --head "$branch" --title "$WHAT" --body "Verse found its least proven skills in its own files, tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them." --label "made by Verse" --label "verse hardens" --label "automerge"
+          echo "### $WHAT (PR opened)" >> "$GITHUB_STEP_SUMMARY"

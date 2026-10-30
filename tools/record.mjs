@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
+import { scoreOf, takeBeatMs, toBeat } from './film-sound.mjs'; // the film's score and its tempo: scene changes land on its beats
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const site = path.resolve(here, '..', 'void-live-deploy');
@@ -50,13 +51,18 @@ export function shipsOf(growth, n = 50) {
 // shortened to what fits on the card (the first sentence when it fits, else cut at a word with "…"); none when the ledger has none.
 // Never a word or a number the ledger does not hold. Pure.
 export const FINDING_MAX = 90, FINDING_MS = 2400;
+// never cut (owner, 2026-10-22: "the shorts cut off words"): a long finding is split at word boundaries into pages of at most
+// FINDING_MAX characters, each shown in turn, never ended with "…". findingOf keeps the whole text; findingPages splits it. Pure.
 export function findingOf(run) {
-  const f = run && Array.isArray(run.findings) && run.findings.length ? String(run.findings[0] || '').replace(/\s+/g, ' ').trim() : '';
-  if (f.length <= FINDING_MAX) return f;
-  const first = (f.match(/^.+?[.!?](?=\s)/) || [''])[0];
-  if (first && first.length <= FINDING_MAX) return first;
-  const cut = f.slice(0, FINDING_MAX - 1), sp = cut.lastIndexOf(' ');
-  return (sp > FINDING_MAX / 2 ? cut.slice(0, sp) : cut).replace(/[\s,;:.\-]+$/, '') + '…';
+  return run && Array.isArray(run.findings) && run.findings.length ? String(run.findings[0] || '').replace(/\s+/g, ' ').trim() : '';
+}
+export function findingPages(text, max = FINDING_MAX) {
+  const pages = []; let cur = '';
+  for (const w of String(text || '').split(' ').filter(Boolean)) {
+    if (cur && (cur + ' ' + w).length > max) { pages.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w;
+  }
+  if (cur) pages.push(cur);
+  return pages;
 }
 export function script(tool0, run0) {
   const tool = { ...tool0, label: brand(tool0.label), sub: brand(tool0.sub) };
@@ -142,7 +148,11 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   // about twice that, 1080 x 1920 (CSS zoom 2.3), so every pixel of the film is real. Playwright never scales a film up (asked for
   // 1080 x 1920 at a 540 viewport it put the page in the top-left quarter of a grey frame, every film before 2026-10-14).
   const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
-  const page = await ctx.newPage();
+  // beat-locked cuts: the film's own score (tools/film-sound.mjs, picked by the film's id) has a tempo, and the take's clock starts when the page is made (that is when the
+  // video starts); every change of scene waits for the next beat of the score, in the take's time (the cut is 15% faster)
+  let tookMs = 0, syncAt = 0; const score = scoreOf(id), beat = takeBeatMs(score), tick = [], t0 = Date.now();
+  const page = await ctx.newPage(), cutsSeen = [];
+  const onBeat = async (minMs, every = 1) => { await page.waitForTimeout(toBeat(Date.now() - t0, beat, minMs, every)); tick.push(Date.now() - t0); }; // tick: when each scene change was let go, for the trace
   try {
     await page.goto(ship ? 'https://a-to-mind.com/?q=' + encodeURIComponent(tool.ask) : base + 'fringe/' + id + '.html', { waitUntil: 'load' });
     // the edit (owner, 2026-10-14: "teach Verse how to edit and make epic videos that are very entertaining"): a hook that slams in,
@@ -155,26 +165,35 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
         [data-v-bar] { top: 0; left: 0; height: 5px; width: 0; background: linear-gradient(90deg, #ff3d7f, #7a5cff); box-shadow: 0 0 12px #ff3d7f; transition: width linear; }
         [data-v-cap] { left: 0; right: 0; bottom: 0; padding: 14px 20px 18px; background: linear-gradient(transparent, rgba(5,5,12,.92) 30%); color: #fff; }
         [data-v-cap] small { display: block; font: 700 11px/1 system-ui; letter-spacing: .2em; text-transform: uppercase; color: #ff9dbd; margin-bottom: 6px; }
-        [data-v-cap] b { font: 800 21px/1.25 system-ui; }
+        [data-v-cap] b { display: block; font: 800 21px/1.25 system-ui; overflow-wrap: anywhere; }
+        [data-v-cap] small { overflow-wrap: anywhere; line-height: 1.3; }
         [data-v-chip] { top: 14px; left: 50%; transform: translate(-50%, -12px) scale(.9); opacity: 0; padding: 8px 14px; border-radius: 999px; color: #fff;
-          font: 800 15px/1 system-ui; background: linear-gradient(90deg, #ff3d7f, #7a5cff); box-shadow: 0 8px 22px rgba(255,61,127,.45); transition: transform .18s ease, opacity .18s ease; }
+          font: 800 15px/1.2 system-ui; max-width: calc(100vw / 2.3 - 28px); width: max-content; text-align: center; overflow-wrap: anywhere; background: linear-gradient(90deg, #ff3d7f, #7a5cff); box-shadow: 0 8px 22px rgba(255,61,127,.45); transition: transform .18s ease, opacity .18s ease; }
         [data-v-chip].on { transform: translate(-50%, 0) scale(1); opacity: 1; }
         [data-v-card] { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 28px; text-align: center; color: #fff;
           background: radial-gradient(80% 60% at 50% 40%, #1d1640, #050508 75%); }
         [data-v-card] .k { font: 800 12px/1 system-ui; letter-spacing: .3em; color: #ff9dbd; }
-        [data-v-card] .h { font: 900 34px/1.08 system-ui; letter-spacing: -.02em; white-space: pre-line; animation: v-slam .45s cubic-bezier(.2,1.4,.4,1) both; }
+        [data-v-card] .h { font: 900 34px/1.08 system-ui; letter-spacing: -.02em; white-space: pre-line; overflow-wrap: anywhere; max-width: 100%; animation: v-slam .45s cubic-bezier(.2,1.4,.4,1) both; }
         [data-v-card] .m { font: 200 44px/1 system-ui; letter-spacing: .06em; }
         @keyframes v-slam { from { transform: scale(1.6); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: none; } }
         [data-v-punch] { transition: transform .35s cubic-bezier(.2,.8,.2,1) !important; }`;
       document.head.appendChild(css);
-      const fx = (attr, html) => { const e = document.createElement('div'); e.setAttribute('data-v-fx', ''); e.setAttribute(attr, ''); if (html != null) e.innerHTML = html; document.body.appendChild(e); return e; }; // void-review: ok: every caller passes esc()-escaped text
+      const fx = (attr, html) => { const e = document.createElement('div'); e.setAttribute('data-v-fx', ''); e.setAttribute(attr, ''); if (html != null) e.innerHTML = html; document.documentElement.appendChild(e); return e; }; // void-review: ok: every caller passes esc()-escaped text
       const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
       const cap = fx('data-v-cap', '<small>' + esc(title) + '</small><b>' + esc(caption) + '</b>');
       document.body.style.paddingBottom = (cap.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
       const bar = fx('data-v-bar'); requestAnimationFrame(() => { bar.style.transitionDuration = total + 'ms'; bar.style.width = '100%'; });
       window.__vfx = {
-        card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">Verse</div>' : '')); return c; },
+        card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">Verse</div>' : ''));
+          const h = c.querySelector('.h'); for (let px = 34; px > 16 && (c.scrollHeight > c.clientHeight || h.scrollWidth > h.clientWidth); px -= 2) h.style.fontSize = px + 'px'; return c; }, // shrink to fit, never clip
+        cuts() { // the text-bounds check: every overlay word inside the frame and its box (no clipped line, no hidden overflow)
+          const W = innerWidth, H = innerHeight, bad = [];
+          for (const e of document.querySelectorAll('[data-v-fx], [data-v-fx] *')) { const t = (e.innerText || '').trim(); if (!t || e.closest('[data-v-bar]')) continue;
+            const r = e.getBoundingClientRect(); if (!r.width) continue;
+            if (e.scrollWidth > e.clientWidth + 1 || r.left < -1 || r.right > W + 1 || r.top < -1 || r.bottom > H + 1 || /\u2026|\.\.\.$/.test(t)) bad.push(t.slice(0, 60)); }
+          return bad; },
         clear() { document.querySelectorAll('[data-v-card]').forEach((n) => n.remove()); },
+        sync() { const e = fx('data-v-sync'); e.style.cssText = 'inset:0;background:#ff00ff'; setTimeout(() => e.remove(), 90); }, // the film's sync mark: one pure magenta frame pair, so the score can be lined up with the video's own clock (tools/film-sound.mjs findSync)
         chip(text) { const c = fx('data-v-chip', esc(text)); requestAnimationFrame(() => c.classList.add('on')); setTimeout(() => { c.classList.remove('on'); setTimeout(() => c.remove(), 250); }, 1100); },
         punch(el) { // push in on what was pressed, then ease back: the camera follows the action
           // the origin as a share of the page, so the page zoom's units never matter (in px it swung the frame off-centre)
@@ -187,8 +206,9 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     }, { title: words.title, caption: words.caption, total: seconds * 1000 });
     const fx = (fn, ...args) => page.evaluate(({ fn, args }) => window.__vfx && window.__vfx[fn](...args), { fn, args });
     // the hook: the first second decides whether anyone stays
+    await onBeat(300); syncAt = Date.now() - t0; await fx('sync'); await page.waitForTimeout(110); // the sync mark, on a beat
     await fx('card', 'an AI built this itself', words.hook, false);
-    await page.waitForTimeout(1600);
+    await onBeat(1400, 2); cutsSeen.push(...(await fx('cuts')) || []);
     await fx('clear');
     // the demo, then the finding (when the ledger has one, its seconds taken from the demo so the film stays as long), then the ending
     const until = Date.now() + Math.max(4, seconds - 4 - (words.finding ? FINDING_MS / 1000 : 0)) * 1000;
@@ -199,23 +219,29 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
     for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
       if (Date.now() > until - 1200) break;
-      const label = ((await b.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim().slice(0, 28);
+      const label = ((await b.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim(); // the whole label, wrapped, never cut
       await b.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' })).catch(() => {});
       if (label) await fx('chip', 'tap: ' + label);
       await b.click({ timeout: 1000 }).catch(() => {});
       await b.evaluate((el) => window.__vfx && window.__vfx.punch(el)).catch(() => {});
-      await page.waitForTimeout(1100);
+      await onBeat(1000);
     }
     const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
-    if (words.finding) { // the payoff a viewer can check: what this run found, in the ledger's own words
-      await fx('card', 'what it found', words.finding, false);
-      await page.waitForTimeout(FINDING_MS);
-      await fx('clear');
+    if (words.finding) { // the payoff a viewer can check: what this run found, in the ledger's own words, a page at a time
+      const pages = findingPages(words.finding);
+      for (const [i, p] of pages.entries()) {
+        await fx('card', 'what it found' + (pages.length > 1 ? ' ' + (i + 1) + '/' + pages.length : ''), p, false);
+        await onBeat(Math.max(1400, FINDING_MS / pages.length) | 0, 2); cutsSeen.push(...(await fx('cuts')) || []);
+        await fx('clear');
+      }
     }
     // the ending: the call to action on the same card as the hook, so the last frame flows into the first and the Short loops
     await fx('card', 'try it free · a-to-mind.com', words.hook, true);
-    await page.waitForTimeout(2600);
+    await onBeat(500); cutsSeen.push(...(await fx('cuts')) || []);
+    await onBeat(1800, 2);
+    if (cutsSeen.length && process.env.VOID_FILM_CUTS !== 'warn') throw new Error('film text cut off: ' + [...new Set(cutsSeen)].join(' | '));
   } finally {
+    tookMs = Date.now() - t0; // by the take's own clock; the video is a little shorter (its first frame comes after the page is made): the difference skews the score (tools/film-sound.mjs skewSeconds)
     await page.close(); // the video is written when its page closes
   }
   const raw = await page.video().path();
@@ -223,7 +249,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const video = path.join(out, id + '.webm');
   fs.renameSync(raw, video);
   const meta = path.join(out, id + '.json');
-  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), recorded: new Date().toISOString() }, null, 2) + '\n');
+  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), bpm: score.bpm, beatMs: beat, beatLocked: true, syncAt, tookMs, ...(process.env.VOID_FILM_TRACE ? { trace: tick.map((t) => ({ at: t, offBeat: Math.min(t % beat, beat - (t % beat)) | 0 })) } : {}), recorded: new Date().toISOString() }, null, 2) + '\n');
   return { video, meta };
 }
 

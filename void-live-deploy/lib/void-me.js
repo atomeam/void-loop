@@ -3,6 +3,7 @@
 // If they can't be made, every call answers 503: no sign-in, no sync, nothing half-written.
 import { randomB64u, sha256, b64u } from './webauthn.js';
 import { PAGE_TABLE } from './pages.js';
+import { ownerAccount } from './guard.js';
 
 export const RP_NAME = 'Verse';
 export const CHALLENGE_TTL_MS = 5 * 60e3;
@@ -33,11 +34,14 @@ const TABLES = [
   "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];
 // The account's tier. Fails closed: a missing row, an unknown value or any read error is 'free' (never paid by accident).
+// The owner is always a member: an account with a passkey the owner bound with the key itself (void_owner_passkeys) is 'paid',
+// with no sale, receipt or form. Only READ_TOKEN can bind such a passkey (/api/passkey 'owner-bind').
 export async function tierOf(env, userId) {
   try {
     const row = await env.DB.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').bind(userId).first();
-    return row && row.tier === 'paid' ? 'paid' : 'free';
-  } catch (_) { return 'free'; }
+    if (row && row.tier === 'paid') return 'paid';
+  } catch (_) { /* fall through to the owner check */ }
+  return (await ownerAccount(env, userId)) ? 'paid' : 'free';
 }
 const made = new WeakMap();
 export function ensureTables(env) {

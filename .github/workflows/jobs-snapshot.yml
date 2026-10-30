@@ -1,0 +1,45 @@
+# The jobs snapshot (tools/jobs-snapshot.mjs), daily: the newest remote jobs from Remotive, Jobicy and Himalayas, read once from a runner within each source's terms
+# (Remotive and Himalayas ask to be read about once a day) and committed to main as void-live-deploy/jobs/snapshot.json. The jobs pages draw it first, labelled a
+# snapshot of its date (never live), and replace it with /api/jobs when that answers. It also runs when its own script changes, so the first snapshot is made on the
+# push that adds it. No key, no secret. When no source answers the step says so and the file is left as it was.
+name: Jobs snapshot
+
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  push:
+    branches: [main]
+    paths: ['tools/jobs-snapshot.mjs', '.github/workflows/jobs-snapshot.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: jobs-snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the snapshot on main
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch the jobs and write the snapshot
+        run: |
+          node tools/jobs-snapshot.mjs || { echo "::warning title=Jobs snapshot not refreshed::no source answered (the reasons are above)"; exit 0; }
+          git diff --quiet void-live-deploy/jobs/snapshot.json && { echo "snapshot unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/jobs/snapshot.json
+          git commit -m "Jobs snapshot: the newest remote jobs from Remotive, Jobicy and Himalayas, as of today"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

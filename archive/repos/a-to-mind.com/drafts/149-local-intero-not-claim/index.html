@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-intero-not-claim — draft</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  label { display: block; margin-top: 1rem; font-weight: 600; }
+  textarea { width: 100%; min-height: 6rem; font: inherit; }
+  button { margin-top: 1rem; padding: 0.5rem 1rem; }
+  #out { margin-top: 1rem; padding: 1rem; background: #f4f4f4; word-break: break-all; }
+  .note { font-size: 0.9rem; color: #555; }
+</style>
+</head>
+<body>
+<h1>local-intero-not-claim</h1>
+<p class="note">Draft only. Default-deny. Unattested. No live seal. Claim sentence is discarded and is not hashed.</p>
+
+<label for="obs">Local attention / interoceptive observation (data)</label>
+<textarea id="obs" placeholder="e.g. warmth along spine, pressure at crown, ringing — local note only"></textarea>
+
+<label for="claim">Anomalous claim sentence (will be discarded, not hashed)</label>
+<textarea id="claim" placeholder="e.g. this is contact / healing / non-human signal — type then discard"></textarea>
+
+<button id="go" type="button">Hash as unattested</button>
+
+<div id="out" hidden>
+  <strong>claim-refusal id</strong>
+  <div id="hash"></div>
+  <p class="note">The claim sentence was discarded and is not in the hash. This id is not an attestation, not a seal, and not a promotion to fact. Status: unattested default.</p>
+</div>
+
+<script>
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+document.getElementById('go').addEventListener('click', async () => {
+  const obs = document.getElementById('obs').value.trim();
+  const claim = document.getElementById('claim').value; // intentionally unused
+  if (!obs) return;
+  // claim is discarded — not included
+  const payload = obs + '|hypothesis-unattested|unattested';
+  const id = await sha256(payload);
+  document.getElementById('hash').textContent = id;
+  document.getElementById('out').hidden = false;
+  // claim textarea left as-is for user awareness that it was not hashed
+});
+</script>
+</body>
+</html>

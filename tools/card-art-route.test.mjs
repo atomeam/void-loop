@@ -8,6 +8,7 @@ import * as route from '../void-live-deploy/functions/api/card-art.js';
 import { models, ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, CAMERA, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
 import { readFileSync } from 'node:fs';
+globalThis.fetch = async (u) => { if (/wikipedia\.org\/w\/api\.php\?action=query&list=search/.test(String(u))) return new Response(JSON.stringify({ query: { search: [] } }), { headers: { 'content-type': 'application/json' } }); throw new Error('no network in these tests'); }; // Wikipedia knows no page (a lost photo would leave the painting unkept) // a cartoon looks its subject up on Wikipedia (lib/wiki-look.js): never the real one here; tools/wiki-look.test.mjs fakes it
 
 const store = new Map();
 globalThis.caches = { default: { match: async (req) => (store.has(req.url) ? new Response(store.get(req.url)) : undefined), put: async (req, res) => { store.set(req.url, await res.text()); } } };
@@ -27,7 +28,7 @@ async function formOf(o) {
 function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false } = {}) {
   store.clear(); route.resetReady();
   const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
-  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
+  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge') || model === models('answer')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
   return { env, calls, dcalls };
 }
 const post = (env, subject, kind = 'answer', rarity = 'common', ip = '1.1.1.1') => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ subject, kind, rarity }) }) });
@@ -94,9 +95,9 @@ test('the kill switch ART_OFF and a missing AI binding both leave the plate, and
   const n = world({ ai: false }); assert.equal((await (await post(n.env, 'cat')).json()).why, 'off');
 });
 
-test('refusals: a person, sexual or hateful words, a brand or artist, a key, the keeper: a plate and no model call', async () => {
+test('refusals: a person, sexual or hateful words, a key, the keeper: a plate and no model call', async () => {
   const { env, calls } = world();
-  const cases = [['Jane Smith', 'person', 'person'], ['nude beach', 'answer', 'unsuitable'], ['nazi flag', 'answer', 'unsuitable'], ['Mickey Mouse', 'answer', 'brand'], ['paint like Picasso', 'answer', 'brand'],
+  const cases = [['Jane Smith', 'person', 'person'], ['nude beach', 'answer', 'unsuitable'], ['nazi flag', 'answer', 'unsuitable'],
     ['sk-abcdefghijklmnopqrstuvwxyz0123456789', 'answer', 'secret'], ['ghp_' + 'a'.repeat(36), 'answer', 'secret'], ['   ', 'answer', null]]; // secret-scan: ok (made-up shapes)
   for (const [s, kind, why] of cases) {
     const r = await post(env, s, kind);
@@ -168,7 +169,7 @@ test('the Art Director (owner, 2026-10-18): a scene from the free text model lea
   assert.ok(w.calls[0].o.prompt.includes(STYLE_LOCK) && w.calls[0].o.prompt.endsWith(FRAMING));
 });
 test('a slow, empty or refused scene falls back to the fixed template, and a family off the list is dropped', async () => {
-  for (const opt of [{ directFail: true }, { scene: '' }, { scene: 'Mickey Mouse waving at a crowd of fans' }, { scene: 'two words' }]) {
+  for (const opt of [{ directFail: true }, { scene: '' }, { scene: 'two words' }]) {
     const w = world(opt); await post(w.env, 'dragon', 'animal', 'mythic');
     assert.equal(w.calls[0].o.prompt, artPrompt('dragon', 'animal', 'mythic'), JSON.stringify(opt));
   }
@@ -178,7 +179,7 @@ test('a slow, empty or refused scene falls back to the fixed template, and a fam
 test('sceneOf keeps plain words only, one line, at most 240 characters, and refuses what a subject would be refused for', () => {
   assert.equal(sceneOf('Scene: A <i>lantern</i> "glowing" in fog; centered.\nSecond line'), 'A lantern glowing in fog centered');
   assert.equal(sceneOf('x'.repeat(10) + ' ' + 'word '.repeat(80)).length <= 240, true);
-  for (const bad of ['a nude figure in the dark', 'a swastika on a wall in the void', 'in the style of Picasso a cat sits', 'a key sk-abcdefghijklmnopqrstuvwxyz0123456789 glows']) assert.equal(sceneOf(bad), '', bad); // secret-scan: ok (made-up shape)
+  for (const bad of ['a nude figure in the dark', 'a swastika on a wall in the void', 'a key sk-abcdefghijklmnopqrstuvwxyz0123456789 glows']) assert.equal(sceneOf(bad), '', bad); // secret-scan: ok (made-up shape)
 });
 test('FLUX.2 [klein] paints first at the 16:9 window; when it fails the square model paints instead and the picture is kept', async () => {
   const w = world(); const real = w.env.AI.run;
@@ -218,4 +219,52 @@ test('past the Workers AI cap, or when it fails, Pollinations paints for free (u
     const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); const b = await (await post(bad.env, 'fox')).json();
     assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
   } finally { globalThis.fetch = real; }
+});
+// a cartoon is drawn from what its subject looks like, not the bare name (2026-10-24: "Cartoon Dimebag Darrel" came out a smiling boy in a blue t-shirt)
+test('a cartoon asks the text model for the look and paints from it; UNKNOWN or a refused look paints from the name; its row is the new cartoon2 one', async () => {
+  const look = 'a lean grown man with long dark hair, a long goatee dyed bright red, sunglasses, black band shirt, playing an electric guitar shaped like a lightning bolt';
+  const w = world({ scene: look });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(a.state, 'art'); assert.equal(w.dcalls.length, 1); assert.match(w.dcalls[0].o.messages[0].content, /never heard of it/); assert.match(w.dcalls[0].o.messages[1].content, /dimebag darrel$/);
+  assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man with long dark hair, a long goatee dyed bright red/); assert.match(w.calls[0].o.prompt, /flat 2D cartoon/);
+  assert.doesNotMatch(w.calls[0].o.prompt, /children|picture-book|arcane/);
+  assert.equal(rows(w.env)[0].subject, 'cartoon13 dimebag darrel');
+  assert.equal(a.look, look, 'the look comes back with a fresh painting, so a builder can see what it was drawn from');
+  const pre = world({ scene: 'Here is a description for the illustrator:\n\n' + look }); await post(pre.env, 'dimebag darrel', 'cartoon');
+  assert.match(pre.calls[0].o.prompt, /^a cartoon of dimebag darrel: a lean grown man/, 'a preamble line is never taken for the look');
+  assert.equal(pre.dcalls[0].o.max_tokens, 700); assert.equal(pre.dcalls[0].o.chat_template_kwargs.enable_thinking, false, 'no thinking: it ate the whole answer');
+  const u = world({ scene: 'UNKNOWN' }); await post(u.env, 'zorblax', 'cartoon'); assert.match(u.calls[0].o.prompt, /^a zorblax as a flat 2D cartoon/);
+  const f = world({ directFail: true }); await post(f.env, 'cat', 'cartoon'); assert.match(f.calls[0].o.prompt, /^a cat as a flat 2D cartoon/);
+  assert.equal(rows(f.env).length, 0, 'a cartoon painted after the look failed is shown but never kept: the next ask tries again');
+  assert.equal(rows(u.env).length, 1, 'an unknown subject is an answer, kept');
+  const { keepable } = await import('../void-live-deploy/functions/api/card-art.js');
+  assert.equal(keepable({ look: 'x', source: 'wikipedia' }), true);
+  assert.equal(keepable({ look: 'x', photoWhy: 'no wikidata image; no free photo' }), true, 'no photo to be had: the words are the best there is');
+  assert.equal(keepable({ look: 'x', photoWhy: 'commons gave no Wikimedia address for "D.jpg": none; no free photo' }), false, 'a photo lost on the way: try again next time');
+  assert.equal(keepable({ look: 'x', photoWhy: 'vision error slow' }), false); assert.equal(keepable({ look: '', why: 'error slow' }), false); assert.equal(keepable({ look: '', why: 'unknown: UNKNOWN' }), true);
+});
+// the spelling (owner, 2026-10-24: "make sure it corrects the spelling too"): the look reply's Name line, kept only when it is the same name
+test('a cartoon takes the usual spelling from the look reply, paints and shows it, and keeps it for the next ask; a different name is never taken', async () => {
+  const { spellingOf, lookParts } = await import('../void-live-deploy/lib/art-rules.js');
+  assert.equal(spellingOf('dimebag darrel', 'Dimebag Darrell'), 'Dimebag Darrell');
+  assert.equal(spellingOf('dimebag darrel', 'Pantera'), '', 'a different subject is never taken');
+  assert.equal(spellingOf('dimebag darrel', 'Darrell Lance Abbott'), '', 'not the same words');
+  assert.equal(spellingOf('cat', 'Cat'), 'Cat');
+  const look = 'a lean grown man with long dark hair, a long goatee dyed bright pink, sleeveless black shirt, camo shorts, a blue lightning bolt shaped electric guitar';
+  assert.deepEqual(lookParts('Name: **Dimebag Darrell**\nLook: ' + look), { name: 'Dimebag Darrell', text: look });
+  const w = world({ scene: 'Name: Dimebag Darrell\nLook: ' + look });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(a.name, 'Dimebag Darrell'); assert.equal(a.look, look); assert.equal(a.lookWhy, '');
+  assert.match(w.calls[0].o.prompt, /^a cartoon of dimebag darrell: a lean grown man/);
+  const again = await (await get(w.env, 'dimebag darrel', 'cartoon')).json(); assert.equal(again.name, 'Dimebag Darrell', 'kept for the next person with the same spelling');
+  const bad = world({ scene: 'Name: Pantera\nLook: ' + look }); const b = await (await post(bad.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(b.name, undefined); assert.match(bad.calls[0].o.prompt, /^a cartoon of dimebag darrel: /);
+  const none = world({ directFail: true }); const c = await (await post(none.env, 'cat', 'cartoon')).json(); assert.match(c.lookWhy, /^error slow/);
+});
+test('a cartoon look is asked of the answer model, keeps up to 380 characters of signature detail, and still refuses what a scene would', async () => {
+  const { lookOf, LOOK_MAX } = await import('../void-live-deploy/lib/art-rules.js');
+  const w = world({ scene: 'Name: Dimebag Darrell\nLook: a lean man with long curly dark brown hair, a long braided goatee dyed bright pink, a sleeveless black shirt, baggy green camouflage cargo shorts, a razor blade pendant necklace, playing a blue electric guitar whose body is shaped like a jagged lightning bolt with a matching lightning headstock' });
+  const a = await (await post(w.env, 'dimebag darrel', 'cartoon')).json();
+  assert.equal(w.dcalls[0].model, models('answer')); assert.match(a.look, /dyed bright pink.*camouflage cargo shorts.*lightning bolt/); assert.ok(a.look.length > 240 && a.look.length <= LOOK_MAX);
+  assert.match(lookOf('Look: a cartoon mouse in the style of disney with big round ears and red shorts and yellow shoes'), /big round ears/, 'a brand in the look is drawn like anything else (owner, 2026-10-25)');
 });

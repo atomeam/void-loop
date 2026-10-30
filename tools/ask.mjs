@@ -1,6 +1,7 @@
 // node tools/ask.mjs "ask one" "ask two" ...: shows what Verse answers (the card text, who answered, any page error), with outside services blocked.
-// For finding out why a probe missed. It only prints; nothing is written.
-import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
+// For finding out why a probe missed. It prints, and saves one screenshot per ask (ASK_SHOTS=<dir>, else the system temp folder) so whoever
+// ships the change looks at what a person would see (owner, 2026-10-23: "checks the result of everything to see if it even does what you expect").
+import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { chromium } from 'playwright-core';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.join(here, '..', 'void-live-deploy');
 const asks = process.argv.slice(2);
@@ -25,7 +26,12 @@ for (const a of asks) {
   const last = (await page.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } })).filter((x) => String(x.ask).trim() === a.trim()).pop();
   const after = await page.evaluate(() => document.body.innerText);
   const shown = after.startsWith(before) ? after.slice(before.length) : after.slice(-400);
-  console.log('> ' + a + '\n  by: ' + (last ? last.note || '(no note)' : '(nothing logged)') + (said ? '\n  said: ' + said.trim().slice(0, 200) : '') + '\n  shows: ' + shown.replace(/\s*\n\s*/g, ' / ').trim().slice(0, 300) + (errs.length ? '\n  ERROR: ' + errs.join(' | ') : ''));
+  // what the pictures say: the alt text and labels of what is on the stage and the open page (a picture's subject is not in innerText)
+  const pics = await page.evaluate(() => [...document.querySelectorAll('#stage [alt], #stage [aria-label], #stage [data-subject], .vpage.on [alt]')].map((e) => e.getAttribute('alt') || e.getAttribute('aria-label') || e.getAttribute('data-subject')).filter(Boolean).slice(-8).join(' / ')).catch(() => '');
+  const dir = process.env.ASK_SHOTS || os.tmpdir(), shot = path.join(dir, 'ask-' + a.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) + '.png');
+  try { fs.mkdirSync(dir, { recursive: true }); } catch (_) {} // ASK_SHOTS may name a folder that does not exist yet
+  const looked = await page.screenshot({ path: shot }).then(() => shot).catch(() => '');
+  console.log('> ' + a + '\n  by: ' + (last ? last.note || '(no note)' : '(nothing logged)') + (said ? '\n  said: ' + said.trim().slice(0, 200) : '') + '\n  shows: ' + shown.replace(/\s*\n\s*/g, ' / ').trim().slice(0, 300) + (pics ? '\n  pictures: ' + pics.slice(0, 200) : '') + (looked ? '\n  look: ' + looked : '') + (errs.length ? '\n  ERROR: ' + errs.join(' | ') : ''));
   await page.keyboard.press('Escape').catch(() => {});
 }
 await browser.close(); server.close();

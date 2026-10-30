@@ -1,0 +1,53 @@
+{
+  "catalog": "identity",
+  "run": "050",
+  "emit": false,
+  "preferred": [
+    {
+      "id": "origin-root",
+      "iri": "https://a-to-mind.com/",
+      "observed": "200 on 2026-10-01; title Void \u00b7 A-to-Mind; no canonical element",
+      "self_canonical": false,
+      "hreflang": [],
+      "reason": "Preferred IRI for the blank stage. Not emitted until a human seals emit."
+    },
+    {
+      "id": "llms-txt",
+      "iri": "https://a-to-mind.com/llms.txt",
+      "observed": "200 on 2026-10-01",
+      "self_canonical": false,
+      "hreflang": [],
+      "reason": "Existing agent note. Not a translation. Not an alternate of /."
+    },
+    {
+      "id": "tools-json",
+      "iri": "https://a-to-mind.com/tools.json",
+      "observed": "named by llms.txt on 2026-10-01",
+      "self_canonical": false,
+      "hreflang": [],
+      "reason": "Existing tool list. Do not treat as an HTML duplicate of /."
+    }
+  ],
+  "withhold": [
+    {
+      "pattern": "https://a-to-mind.com/?q=",
+      "rule": "no-canonical",
+      "reason": "Ask launcher. Not duplicative of /. RFC 6596 target must be duplicative or a superset. Folding ?q= onto / would be a false consolidation."
+    },
+    {
+      "pattern": "http://*",
+      "rule": "no-canonical",
+      "reason": "HTTP is not a preferred IRI. Do not emit an HTTP canonical. Redirects are a separate seal."
+    },
+    {
+      "pattern": "https://www.a-to-mind.com/*",
+      "rule": "no-canonical",
+      "reason": "www is not sealed. Do not invent a www canonical."
+    },
+    {
+      "pattern": "hreflang:*",
+      "rule": "deny",
+      "reason": "No sealed translation. x-default is denied. A single English page is not a language cluster."
+    }
+  ]
+}

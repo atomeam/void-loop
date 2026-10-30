@@ -1,0 +1,132 @@
+{
+ "note": "made by tools/paint-pictures.mjs",
+ "categories": [
+  "Masterpieces",
+  "Animals",
+  "Nature",
+  "Places",
+  "Space",
+  "Patterns"
+ ],
+ "pictures": [
+  {
+   "id": "wave",
+   "name": "The Great Wave",
+   "cat": "Masterpieces",
+   "file": "/paint/templates/wave.json",
+   "credit": "Hokusai, public domain"
+  },
+  {
+   "id": "starry",
+   "name": "The Starry Night",
+   "cat": "Masterpieces",
+   "file": "/paint/templates/starry.json",
+   "credit": "Van Gogh, public domain"
+  },
+  {
+   "id": "sunset",
+   "name": "Sunset over the hills",
+   "cat": "Nature",
+   "file": "/paint/templates/sunset.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "meadow-flower",
+   "name": "Flower in a pot",
+   "cat": "Nature",
+   "file": "/paint/templates/meadow-flower.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "mountain-lake",
+   "name": "Mountain lake",
+   "cat": "Nature",
+   "file": "/paint/templates/mountain-lake.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "tree",
+   "name": "Autumn tree",
+   "cat": "Nature",
+   "file": "/paint/templates/tree.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "cat",
+   "name": "Sleepy cat",
+   "cat": "Animals",
+   "file": "/paint/templates/cat.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "fish",
+   "name": "Tropical fish",
+   "cat": "Animals",
+   "file": "/paint/templates/fish.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "owl",
+   "name": "Night owl",
+   "cat": "Animals",
+   "file": "/paint/templates/owl.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "butterfly",
+   "name": "Butterfly",
+   "cat": "Animals",
+   "file": "/paint/templates/butterfly.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "house",
+   "name": "Little house",
+   "cat": "Places",
+   "file": "/paint/templates/house.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "lighthouse",
+   "name": "Lighthouse",
+   "cat": "Places",
+   "file": "/paint/templates/lighthouse.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "sailboat",
+   "name": "Sailboat",
+   "cat": "Places",
+   "file": "/paint/templates/sailboat.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "balloon",
+   "name": "Hot air balloon",
+   "cat": "Places",
+   "file": "/paint/templates/balloon.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "rocket",
+   "name": "Rocket to the stars",
+   "cat": "Space",
+   "file": "/paint/templates/rocket.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "mandala",
+   "name": "Mandala",
+   "cat": "Patterns",
+   "file": "/paint/templates/mandala.json",
+   "credit": "Verse, CC0"
+  },
+  {
+   "id": "quilt",
+   "name": "Patchwork quilt",
+   "cat": "Patterns",
+   "file": "/paint/templates/quilt.json",
+   "credit": "Verse, CC0"
+  }
+ ]
+}

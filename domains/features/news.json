@@ -1,0 +1,3679 @@
+{
+ "floor": "news",
+ "verse_page": "void-live-deploy/news/index.html",
+ "researched": "2026-10-25",
+ "sites": {
+  "bbc.com/news": {
+   "sources": [
+    "https://www.bbc.com/news",
+    "https://webarchive.archive.unhcr.org/20170623102942mp_/http://www.bbc.co.uk/news/help-30119608",
+    "https://apptopia.com/ios/app/377382255/about",
+    "https://www.bbc.co.uk/usingthebbc/"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "Front page of top stories",
+     "detail": "Ranked top stories with images, updated through the day",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "void-live-deploy/news/index.html: Top stories, about 10 open feeds grouped by lib/news.js stories(), source and age on every row; links out, no images",
+     "shows": "Top stories"
+    },
+    {
+     "group": "core",
+     "name": "Sections",
+     "detail": "World, UK, Business, Tech, Science, Health, Entertainment, regions (Africa, Asia, US & Canada...)",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page section row: Top stories, World, UK, US, Business, Technology, Science, Sport, Culture, Africa, Asia, Europe, Middle East, Latin America",
+     "shows": "Business[\\s\\S]*Science[\\s\\S]*Sport"
+    },
+    {
+     "group": "core",
+     "name": "Full articles",
+     "detail": "Original reporting with images, maps, embedded video and related links",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page Verse reports tab (lib/news-report.js): a summary of each multi-source story, a daily brief and what changed on followed topics, written by Verse from the feeds' own headlines and summaries, every sentence naming its sources, labelled \"Written by Verse from <sources>\"; it is not original reporting and links out for the articles",
+     "shows": "Verse reports"
+    },
+    {
+     "group": "core",
+     "name": "Live pages",
+     "detail": "Rolling timestamped live coverage of breaking events",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Video and audio",
+     "detail": "Clips, BBC News channel live stream (UK), podcasts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Most read / most watched",
+     "detail": "Popular list",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Search",
+     "detail": "Search BBC News archive",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page search box over the loaded headlines and summaries (BBC archive search is not built: only what the feeds carry now)",
+     "shows": "Search the headlines"
+    },
+    {
+     "group": "core",
+     "name": "Local news and weather",
+     "detail": "Local stories by postcode (UK)",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Weather has its own page /weather/; no local news by postcode"
+    },
+    {
+     "group": "power",
+     "name": "Follow topics (My News)",
+     "detail": "Follow up to 25 topics; personalised feed",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page My news: topics and sources followed on the device (localStorage), no account, no cap below 30",
+     "shows": "My news"
+    },
+    {
+     "group": "power",
+     "name": "Breaking news alerts",
+     "detail": "Push notifications for top stories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Verify and fact checks",
+     "detail": "BBC Verify explainers and fact-checks",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "In-depth and explainers",
+     "detail": "Long-form analysis, Q&As, data visualisations",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Verse reports: plain-words summaries of what several sources say; no long-form analysis or data visualisations"
+    },
+    {
+     "group": "power",
+     "name": "World Service languages",
+     "detail": "News in 40+ languages",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "news page: English, Spanish, French and German top stories from DW, France 24, BBC Mundo and others; not 40 languages"
+    },
+    {
+     "group": "power",
+     "name": "Live freshness timestamps",
+     "detail": "Every story shows when it was published/updated",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page: every row shows source and age from the feed time",
+     "shows": "\\d+ (?:min|h|d) ago"
+    },
+    {
+     "group": "sharing",
+     "name": "Share stories",
+     "detail": "Share links to articles and live posts",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "news page: share per story (device share sheet or copy of headline, sources and link) and a link to the whole view",
+     "shows": "Copy link to this view"
+    },
+    {
+     "group": "sharing",
+     "name": "Have your say / comments",
+     "detail": "Comments on some stories, reader questions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Apps and widgets",
+     "detail": "iOS/Android app, home-screen widgets, offline reading of loaded stories",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "news page opens offline with the last headlines kept on the device (service worker); no app or widget"
+    },
+    {
+     "group": "accessibility",
+     "name": "Accessible pages",
+     "detail": "Screen-reader friendly markup, captions on video, text-only \"lite\" pages",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "news page: labelled controls, 44 px targets, text size and a headlines-only view; not measured against BBC lite pages"
+    },
+    {
+     "group": "paid",
+     "name": "BBC.com subscription (outside UK)",
+     "detail": "Paywall for some long-form and video outside the UK",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "breaking news push alerts (no accounts or push on this page)",
+  "40+ languages (four: English, Spanish, French, German)",
+  "most-read lists (the feeds publish none; the multi-source lift is Verse's own)",
+  "fact-check and explainer desks",
+  "archive search beyond what the feeds carry now",
+  "plain-words summary per story (needs a model call per cluster; not built to stay on existing caps)",
+  "original reporting by people, live pages and video (Verse writes from the feeds' words only and links out)"
+ ],
+ "verse_extra": [
+  "the same story from several outlets grouped into one with an 'N sources' list",
+  "a source filter and follow a source, not only a topic",
+  "a headlines-only reading mode and bigger text",
+  "a read-later list on the device",
+  "works offline with the last headlines",
+  "no ads, no account, no tracking",
+  "Verse reports: a summary per multi-source story, a daily brief and what changed on your topics, grounded in the feeds' words, sources named, checked against them"
+ ],
+ "first_page": "News page /news/ for readers who want a calm, ad-free front page. First: \"news\" opens top stories gathered from several open sources (Wikipedia In the news, public RSS from major outlets, Hacker News) with source and age on each, section tabs, topics followed on the device, and a link holding the chosen sections. Will not build: original reporting, comments, video streaming or push alerts.",
+ "auto": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "allsides.com": {
+    "url": "https://www.allsides.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.allsides.com/unbiased-balanced-news"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Balanced News & Perspectives",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"balanc\", \"perspective\""
+     },
+     {
+      "name": "Featured",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"featur\""
+     },
+     {
+      "name": "More Perspectives",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"perspective\""
+     },
+     {
+      "name": "Are Fake Polls Good for Democracy? Not By Themselves",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"poll\", \"good\", \"democracy\"; not \"fake\""
+     },
+     {
+      "name": "Beyond Media Bias: The Hidden Problem of Unverified Information",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"media\"; not \"beyond\", \"bia\", \"hidden\""
+     },
+     {
+      "name": "Discuss & Debate",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"discuss\", \"debate\""
+     },
+     {
+      "name": "News from the Left",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\", \"left\""
+     },
+     {
+      "name": "News from the Center",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\", \"center\""
+     },
+     {
+      "name": "News from the Right",
+      "detail": "a heading on /unbiased-balanced-news",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\", \"right\""
+     }
+    ]
+   },
+   "thelocal.com": {
+    "url": "https://www.thelocal.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.thelocal.com/",
+     "https://www.thelocal.com/20260902/the-essential-guide-to-voting-from-abroad-as-a-us-citizen-tlccu",
+     "https://www.thelocal.com/20261022/maps-routes-revealed-for-the-2027-tour-de-france-races",
+     "https://www.thelocal.com/20260930/opinion-macron-must-tackle-french-fuel-prices-or-risk-populist-oil-fire-in-2027",
+     "https://www.thelocal.com/tag/question",
+     "https://www.thelocal.com/aboutus"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "ADVERTISEMENT",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"advertisement\""
+     },
+     {
+      "name": "The Local - News and practical guides in English",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"local\", \"practical\", \"guide\""
+     },
+     {
+      "name": "Storms batter Europe hitting power supplies, flights and phones",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"storm\", \"europe\"; not \"batter\", \"hitt\""
+     },
+     {
+      "name": "MAPS: Routes revealed for the 2027 Tour de France races",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"reveal\"; not \"map\", \"route\", \"2027\""
+     },
+     {
+      "name": "Protests expected in Rome and Milan under heavy security",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"protest\"; not \"expect\", \"rome\", \"milan\""
+     },
+     {
+      "name": "Lawmakers say EU must probe social media role in protests",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"say\"; not \"lawmaker\", \"must\", \"probe\""
+     },
+     {
+      "name": "TRAVEL NEWS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"travel\""
+     },
+     {
+      "name": "EU parliament approves more safeguards for travellers in Europe",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"parliament\"; not \"approve\", \"safeguard\", \"traveller\""
+     },
+     {
+      "name": "Budget airline easyJet to launch new UK-France route",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"airline\", \"launch\"; not \"budget\", \"easyjet\""
+     },
+     {
+      "name": "Bedbugs ground Qantas flight at Rome’s Fiumicino airport",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"flight\"; not \"bedbug\", \"ground\", \"qanta\""
+     },
+     {
+      "name": "POLITICS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"politic\""
+     },
+     {
+      "name": "'Generational rage': How young Europeans are fighting to be heard",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"young\"; not \"generational\", \"rage\""
+     },
+     {
+      "name": "Foreign Office warns Germans in France as 'war-like' protests spread",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"office\", \"german\"; not \"foreign\", \"warn\""
+     },
+     {
+      "name": "Swedish PM's friend guilty of 'negligence with classified information'",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"friend\"; not \"swedish\", \"guilty\", \"negligence\""
+     },
+     {
+      "name": "Nationwide protests in France marred by looting, fires and violence",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"nationwide\", \"protest\", \"france\"; not \"marr\""
+     },
+     {
+      "name": "VIDEO: Discover a life of purpose in Sweden’s heartland",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"video\", \"discover\", \"life\", \"purpose\""
+     },
+     {
+      "name": "OPINION: France is hurtling towards a precipice of debt",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"france\"; not \"opinion\", \"hurtl\", \"toward\""
+     },
+     {
+      "name": "OPINION AND ANALYSIS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"opinion\", \"analysi\""
+     },
+     {
+      "name": "OPINION: Germany is having the wrong immigration debate",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"germany\"; not \"opinion\", \"having\", \"wrong\""
+     },
+     {
+      "name": "OPINION: France is in deep trouble over its debt",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"france\", \"deep\"; not \"opinion\", \"trouble\""
+     },
+     {
+      "name": "SEE ALSO",
+      "detail": "a heading on /20260902/the-essential-guide-to-voting-from-abroad-as-a-us-citizen-tlccu",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"see\", \"also\""
+     },
+     {
+      "name": "COMMENTS",
+      "detail": "a heading on /20261022/maps-routes-revealed-for-the-2027-tour-de-france-races",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"comment\""
+     },
+     {
+      "name": "COMMENTS (4)",
+      "detail": "a heading on /20260930/opinion-macron-must-tackle-french-fuel-prices-or-risk-populist-oil-fire-in-2027",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"4\"; not \"comment\""
+     },
+     {
+      "name": "Breakthroughs for the radical and far-right in Europe",
+      "detail": "a heading on /20260930/opinion-macron-must-tackle-french-fuel-prices-or-risk-populist-oil-fire-in-2027",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"far\", \"right\"; not \"breakthrough\", \"radical\""
+     },
+     {
+      "name": "READER QUESTIONS",
+      "detail": "a heading on /tag/question",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"question\"; not \"reader\""
+     },
+     {
+      "name": "An essential guide to travelling through Copenhagen Airport with kids",
+      "detail": "a heading on /tag/question",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"essential\", \"guide\", \"travell\", \"through\""
+     },
+     {
+      "name": "Eight key questions to understand Sweden's citizenship freeze",
+      "detail": "a heading on /tag/question",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"eight\", \"key\", \"question\"; not \"understand\""
+     },
+     {
+      "name": "UPDATED: Readers' questions answered on Sweden's citizenship reforms",
+      "detail": "a heading on /tag/question",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"updat\", \"question\", \"answer\"; not \"reader\""
+     },
+     {
+      "name": "Get daily news straight in your inbox",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"daily\", \"new\"; not \"straight\", \"inbox\""
+     },
+     {
+      "name": "Members make The Local. Join our 50,000 supporters",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"make\"; not \"member\", \"local\", \"join\""
+     },
+     {
+      "name": "About The Local",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"about\"; not \"local\""
+     },
+     {
+      "name": "Meet The Local Team",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"meet\"; not \"local\", \"team\""
+     },
+     {
+      "name": "Ben McPartland",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"ben\"; not \"mcpartland\""
+     },
+     {
+      "name": "Emma Löfgren",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"emma\"; not \"fgren\""
+     },
+     {
+      "name": "Amanda Previdelli",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"amanda\", \"previdelli\""
+     },
+     {
+      "name": "Emma Pearson",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"emma\"; not \"pearson\""
+     },
+     {
+      "name": "Emma Albright",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"emma\"; not \"albright\""
+     },
+     {
+      "name": "Rachel Loxton",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"rachel\", \"loxton\""
+     },
+     {
+      "name": "Paul Krantz",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"paul\"; not \"krantz\""
+     },
+     {
+      "name": "Tom Pugh",
+      "detail": "a heading on /aboutus",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"tom\", \"pugh\""
+     }
+    ]
+   },
+   "rnz.co.nz": {
+    "url": "https://www.rnz.co.nz/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.rnz.co.nz/",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/rnz-election-policy-guide-2026",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/economy-policy-guide",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/education-policy-guide",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/energy-climate-and-environment-policy-guide",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/governance-policy-guide",
+     "https://www.rnz.co.nz/news/politics_election-2026/feature/health-policy-guide"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "RNZ home page",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"rnz\", \"home\""
+     },
+     {
+      "name": "Top stories",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\""
+     },
+     {
+      "name": "Canterbury defend their NPC title, ending Northland's dream run",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"defend\", \"their\"; not \"canterbury\", \"npc\""
+     },
+     {
+      "name": "ACT publishes manifesto with $22b in cuts, ditches migration promise",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"act\", \"publishe\", \"manifesto\", \"22b\""
+     },
+     {
+      "name": "Canterbury records 200km/h winds, flights disrupted in Wellington",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"record\"; not \"canterbury\", \"200km\", \"wind\""
+     },
+     {
+      "name": "Tesla owner loses legal fight after software disables fast charging",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"tesla\", \"owner\", \"lose\", \"legal\""
+     },
+     {
+      "name": "Economy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"economy\""
+     },
+     {
+      "name": "Education",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"education\""
+     },
+     {
+      "name": "Energy, climate, environment",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"energy\", \"climate\", \"environment\""
+     },
+     {
+      "name": "Governance",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"governance\""
+     },
+     {
+      "name": "Top stories continues",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\"; not \"continue\""
+     },
+     {
+      "name": "Firefighters battle blaze in Central Plateau military zone",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"battle\", \"central\"; not \"firefighter\", \"blaze\""
+     },
+     {
+      "name": "Whakarongo mai Listen live",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"mai\", \"listen\", \"live\"; not \"whakarongo\""
+     },
+     {
+      "name": "Arotahi / Spotlight",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"spotlight\"; not \"arotahi\""
+     },
+     {
+      "name": "Life",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"life\""
+     },
+     {
+      "name": "Does AI have feelings? Anthropic thinks so",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"doe\", \"feel\", \"anthropic\", \"think\""
+     },
+     {
+      "name": "Puna kōrero / In case you missed it",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"miss\"; not \"puna\", \"rero\", \"case\""
+     },
+     {
+      "name": "'We're supposed to fail on the outside': Life after Gloriavale",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"suppos\", \"fail\", \"outside\", \"life\""
+     },
+     {
+      "name": "‘We’ve suffered’ – Silver Ferns ready for the good times",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"fern\"; not \"suffer\", \"silver\", \"ready\""
+     },
+     {
+      "name": "Around the motu",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"around\"; not \"motu\""
+     },
+     {
+      "name": "Fire in Auckland Kainga Ora property deemed suspicious: FENZ",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"auckland\"; not \"fire\", \"kainga\", \"ora\""
+     },
+     {
+      "name": "One dead after car collides with tree in Christchurch",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"dead\", \"after\", \"car\"; not \"collide\""
+     },
+     {
+      "name": "Police seek offender as Māngere assault victim remains critical",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"police\", \"seek\"; not \"offender\", \"ngere\""
+     },
+     {
+      "name": "Politics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"politic\""
+     },
+     {
+      "name": "Enrolments closed, advance voting begins for 2026 Election",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"voting\"; not \"enrolment\", \"clos\", \"advance\""
+     },
+     {
+      "name": "As it happened: Election campaign, 25 October",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"happen\", \"election\", \"campaign\", \"25\""
+     },
+     {
+      "name": "Sport",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"sport\""
+     },
+     {
+      "name": "Golf: top-five finish for Ryan Fox",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"five\"; not \"golf\", \"finish\""
+     },
+     {
+      "name": "English cricket county dumps one of its legends",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"english\"; not \"cricket\", \"county\", \"dump\""
+     },
+     {
+      "name": "Football: pressure mounts at Man Utd",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"football\", \"mount\", \"man\"; not \"pressure\""
+     },
+     {
+      "name": "Breakers lose by 86-84 to Taipans in Cairns",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"breaker\", \"lose\", \"86\", \"84\""
+     },
+     {
+      "name": "Money",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"money\""
+     },
+     {
+      "name": "Why don't we pay for our own pension? Ask Susan",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"don\", \"pay\", \"our\""
+     },
+     {
+      "name": "Why you'll be paying more for flights this Christmas",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"flight\"; not \"paying\", \"christma\""
+     },
+     {
+      "name": "Ngā kōnae ipurangi / Podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"podcast\"; not \"nae\", \"ipurangi\""
+     },
+     {
+      "name": "Pacific Dark",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"pacific\", \"dark\""
+     },
+     {
+      "name": "The Reality Machine",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"reality\", \"machine\""
+     },
+     {
+      "name": "Caucus",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"caucu\""
+     },
+     {
+      "name": "The Detail",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"detail\""
+     },
+     {
+      "name": "Kim Hill Wants To Know",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"want\", \"know\"; not \"kim\", \"hill\""
+     }
+    ]
+   },
+   "channelnewsasia.com": {
+    "url": "https://www.channelnewsasia.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.channelnewsasia.com/us",
+     "https://www.channelnewsasia.com/singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+     "https://www.channelnewsasia.com/singapore/electricity-prices-indonesia-gas-supply-cut-tan-see-leng-6490121"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Flights resume at Riyadh airport as Houthis attack Saudi Arabia",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"flight\", \"riyadh\", \"airport\"; not \"resume\""
+     },
+     {
+      "name": "Storms batter Europe hitting power supplies, flights and phones",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"storm\", \"europe\"; not \"batter\", \"hitt\""
+     },
+     {
+      "name": "Police made 1,314 arrests in France's protests",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"police\", \"made\", \"1\", \"314\""
+     },
+     {
+      "name": "Trump campaigns in Michigan a day after Obama rallies Democrats",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"campaign\", \"day\"; not \"michigan\""
+     },
+     {
+      "name": "Commentary: Why work from home doesn’t mean work from anywhere",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"work\", \"home\"; not \"commentary\""
+     },
+     {
+      "name": "Japan indicts US Marine on murder charge in Okinawa",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"marine\", \"murder\"; not \"japan\", \"indict\""
+     },
+     {
+      "name": "Watch CNA Originals Live",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"live\"; not \"watch\", \"cna\", \"original\""
+     },
+     {
+      "name": "Shorts",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"short\""
+     },
+     {
+      "name": "More Top Stories",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\""
+     },
+     {
+      "name": "Zelenskyy says US warnings on ballistic strikes have fully resumed",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"say\"; not \"zelenskyy\", \"warn\", \"ballistic\""
+     },
+     {
+      "name": "Podcasts",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"podcast\""
+     },
+     {
+      "name": "What to check before signing a retrenchment agreement",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"what\", \"before\"; not \"check\", \"sign\""
+     },
+     {
+      "name": "Commentary",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"commentary\""
+     },
+     {
+      "name": "Snap Insight: PAP cadres chose cautious renewal in challenging times",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"snap\"; not \"insight\", \"pap\", \"cadre\""
+     },
+     {
+      "name": "Discover more on CNA",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"discover\", \"cna\""
+     },
+     {
+      "name": "CNA Games",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"game\"; not \"cna\""
+     },
+     {
+      "name": "Lifestyle",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"lifestyle\""
+     },
+     {
+      "name": "Insider",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"insider\""
+     },
+     {
+      "name": "Insider Spotlight",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"spotlight\"; not \"insider\""
+     },
+     {
+      "name": "Visual Stories",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"story\"; not \"visual\""
+     },
+     {
+      "name": "Luxury",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"luxury\""
+     },
+     {
+      "name": "Gucci's sales slump sends parent company Kering's shares tumbling",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"slump\"; not \"gucci\", \"sale\", \"send\""
+     },
+     {
+      "name": "Latest Videos",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"latest\"; not \"video\""
+     },
+     {
+      "name": "Trending",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"trend\""
+     },
+     {
+      "name": "Brand Studio",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"brand\", \"studio\""
+     },
+     {
+      "name": "How ComfortDelGro built a connected global network",
+      "detail": "a heading on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\"; not \"comfortdelgro\", \"built\", \"connect\""
+     },
+     {
+      "name": "Related",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"relat\""
+     },
+     {
+      "name": "NEW SOLAR TARGET",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"solar\", \"target\""
+     },
+     {
+      "name": "EXPANDING POWER GRID",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"power\"; not \"expand\", \"grid\""
+     },
+     {
+      "name": "NEW POWER PLANTS",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"power\"; not \"plant\""
+     },
+     {
+      "name": "BOOSTING ENERGY STORAGE CAPACITY",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"boost\", \"energy\", \"storage\", \"capacity\""
+     },
+     {
+      "name": "LOW-CARBON ELECTRICITY IMPORTS",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"low\", \"electricity\", \"import\"; not \"carbon\""
+     },
+     {
+      "name": "Sign up for our newsletters",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"our\"; not \"sign\", \"newsletter\""
+     },
+     {
+      "name": "Related Topics",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"relat\", \"topic\""
+     },
+     {
+      "name": "Also worth reading",
+      "detail": "a heading on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"also\", \"read\"; not \"worth\""
+     },
+     {
+      "name": "Play Video",
+      "detail": "a button on /us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"play\"; not \"video\""
+     },
+     {
+      "name": "Set CNA as your preferred source on Google",
+      "detail": "a button on /singapore/energy-infrastructure-plan-electricity-demand-tan-see-leng-siew-6490666",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"set\", \"source\"; not \"cna\", \"preferr\""
+     }
+    ]
+   },
+   "france24.com": {
+    "url": "https://www.france24.com/en/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.france24.com/en/",
+     "https://www.france24.com/en/tag/features/",
+     "https://www.france24.com/en/tv-guide",
+     "https://www.france24.com/en/sponsored-content/20231215-child-malnutrition-in-burundi-concrete-actions-to-help-children",
+     "https://www.france24.com/en/syrian-women-assad-jails/",
+     "https://www.france24.com/en/about-us"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Doncic dominates for Lakers as James' Sixers fall to Pistons",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"doncic\", \"dominate\", \"laker\", \"jame\""
+     },
+     {
+      "name": "AI ad blitz distorts US midterms",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"midterm\"; not \"blitz\", \"distort\""
+     },
+     {
+      "name": "Olympic fever grips Senegal as Dakar hosts Youth Olympic Games",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"olympic\", \"fever\", \"grip\", \"senegal\""
+     },
+     {
+      "name": "Singapore's longevity industry: The quest for eternal youth",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"quest\"; not \"singapore\", \"longevity\", \"industry\""
+     },
+     {
+      "name": "AKAA art and design fair brings African artists to Paris",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"akaa\", \"art\", \"design\", \"fair\""
+     },
+     {
+      "name": "Marine Le Pen launches presidential campaign in Orléans",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"marine\", \"pen\", \"launche\", \"presidential\""
+     },
+     {
+      "name": "Midterms: Obama campaigns for Democrats, slams Trump",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"midterm\", \"obama\", \"campaign\", \"democrat\""
+     },
+     {
+      "name": "France: Clashes erupt as protests sweep across cities",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"france\", \"erupt\", \"protest\"; not \"clashe\""
+     },
+     {
+      "name": "West Bank: Extensive military operation 'on the way', Netanyahu says",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"west\", \"military\"; not \"bank\", \"extensive\""
+     },
+     {
+      "name": "Thousands take to Tel Aviv's streets for protests against Netanyahu",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"thousand\", \"take\", \"tel\"; not \"aviv\""
+     },
+     {
+      "name": "Haiti: Capoeira classes aim to promote peace",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"aim\"; not \"haiti\", \"capoeira\", \"classe\""
+     },
+     {
+      "name": "Survivors of Assad's prisons speak out about rape and torture",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"prison\"; not \"survivor\", \"assad\", \"speak\""
+     },
+     {
+      "name": "Searching for radioactive waste in the depths of the Atlantic",
+      "detail": "a heading on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"search\"; not \"radioactive\", \"waste\", \"depth\""
+     },
+     {
+      "name": "France’s seafood problem starts elsewhere",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"france\", \"start\"; not \"seafood\", \"problem\""
+     },
+     {
+      "name": "France’s purchasing power crisis: Navigating the pinch",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"france\", \"power\", \"crisi\"; not \"purchas\""
+     },
+     {
+      "name": "Elections in Russia: the 1001 tricks to remove inconvenient candidates",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"election\"; not \"russia\", \"1001\", \"trick\""
+     },
+     {
+      "name": "How far-right AfD breakthrough may ‘cause absolute chaos’ in Germany",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"far\", \"right\"; not \"afd\""
+     },
+     {
+      "name": "Why Ukraine’s drained Kakhovka Dam is strategic for Russia",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"why\"; not \"ukraine\", \"drain\", \"kakhovka\""
+     },
+     {
+      "name": "French-Saudi ‘Dragon Ball’ theme park puzzles Japanese manga fans",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"french\", \"ball\"; not \"saudi\", \"dragon\""
+     },
+     {
+      "name": "What the renewed Black Sea blockade means for Ukraine’s farmers",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"what\", \"renew\", \"sea\"; not \"black\""
+     },
+     {
+      "name": "In Ceuta, migrants stranded at Europe’s gates await their fate",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"migrant\", \"europe\"; not \"ceuta\", \"strand\""
+     },
+     {
+      "name": "Clamping down: China tightens exit rules",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"down\", \"china\"; not \"clamp\", \"tighten\""
+     },
+     {
+      "name": "Winemakers across Europe face the challenges of climate change",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"across\", \"europe\", \"face\"; not \"winemaker\""
+     },
+     {
+      "name": "AI before AI: The legacy of Norbert Wiener’s cybernetics (3/3)",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"before\", \"legacy\"; not \"norbert\", \"wiener\""
+     },
+     {
+      "name": "How Israel reduced Iran’s historic Rafi-Nia synagogue to rubble (1/2)",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"israel\", \"iran\"; not \"reduc\""
+     },
+     {
+      "name": "BREAKING NEWS",
+      "detail": "a heading on /en/tag/features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"break\", \"new\""
+     },
+     {
+      "name": "TV GUIDE",
+      "detail": "a heading on /en/tv-guide",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"guide\""
+     },
+     {
+      "name": "Child malnutrition in Burundi: concrete actions to help children",
+      "detail": "a heading on /en/sponsored-content/20231215-child-malnutrition-in-burundi-concrete-actions-to-help-children",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"child\"; not \"malnutrition\", \"burundi\", \"concrete\""
+     },
+     {
+      "name": "'All human emotions': French astronaut Sophie Adenot returns to Earth",
+      "detail": "a heading on /en/sponsored-content/20231215-child-malnutrition-in-burundi-concrete-actions-to-help-children",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"human\", \"french\"; not \"emotion\", \"astronaut\""
+     },
+     {
+      "name": "Rape: Assad's weapon against Syrian women",
+      "detail": "a heading on /en/syrian-women-assad-jails/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"against\"; not \"rape\", \"assad\", \"weapon\""
+     },
+     {
+      "name": "Rape: Assad's weapon of war during the Syrian revolution",
+      "detail": "a heading on /en/syrian-women-assad-jails/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"war\"; not \"rape\", \"assad\", \"weapon\""
+     },
+     {
+      "name": "The Palestine Branch: A den of torture in Assad’s Syria",
+      "detail": "a heading on /en/syrian-women-assad-jails/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"den\"; not \"palestine\", \"branch\", \"torture\""
+     },
+     {
+      "name": "Liberté Égalité Actualité",
+      "detail": "a heading on /en/about-us",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"libert\", \"galit\", \"actualit\""
+     },
+     {
+      "name": "Key dates",
+      "detail": "a heading on /en/about-us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"key\"; not \"date\""
+     },
+     {
+      "name": "France Médias Monde",
+      "detail": "a heading on /en/about-us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"france\"; not \"dia\", \"monde\""
+     },
+     {
+      "name": "AI ad blitz distorts US midterms 03:31 From AFP",
+      "detail": "a list item on /en/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"midterm\"; not \"blitz\", \"distort\", \"03\""
+     },
+     {
+      "name": "Previous day",
+      "detail": "a list item on /en/tv-guide",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"day\"; not \"previou\""
+     },
+     {
+      "name": "MONDAY 26 OCTOBER 2026",
+      "detail": "a list item on /en/tv-guide",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"october\", \"2026\"; not \"monday\", \"26\""
+     },
+     {
+      "name": "5 December 2006: Exclusive worldwide launch on the Internet",
+      "detail": "a list item on /en/about-us",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"5\"; not \"december\", \"2006\", \"exclusive\""
+     },
+     {
+      "name": "12 October 2010: France 24’s Arabic channel begins broadcasting 24/7",
+      "detail": "a list item on /en/about-us",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"12\", \"october\", \"france\"; not \"2010\""
+     }
+    ]
+   },
+   "dw.com": {
+    "url": "https://www.dw.com/en/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.dw.com/en/top-stories/s-9097"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Homepage",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"homepage\""
+     },
+     {
+      "name": "Top Story",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\""
+     },
+     {
+      "name": "Brazil elections: Lula wins another term, beating Flavio Bolsonaro",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"election\", \"lula\", \"win\""
+     },
+     {
+      "name": "Brazil election: Voters in Rio split over crime and policing",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"election\", \"voter\"; not \"rio\""
+     },
+     {
+      "name": "Serbia's Aleksandar Vucic concedes defeat to student-led movement",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"serbia\", \"aleksandar\", \"vucic\", \"concede\""
+     },
+     {
+      "name": "Germany news: Fire flares up at Hitler's Eagle's Nest retreat",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"germany\", \"new\"; not \"fire\", \"flare\""
+     },
+     {
+      "name": "France: Hundreds arrested after nationwide protests",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"france\", \"hundr\", \"arrest\", \"after\""
+     },
+     {
+      "name": "Brazil votes in tight runoff between Lula and Bolsonaro",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"vote\", \"tight\", \"runoff\""
+     },
+     {
+      "name": "Reports & Analysis",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"report\"; not \"analysi\""
+     },
+     {
+      "name": "AFRICA",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"africa\""
+     },
+     {
+      "name": "Ebola cases in Kenya and Nigeria raise concern in Uganda",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"kenya\", \"nigeria\"; not \"ebola\", \"case\""
+     },
+     {
+      "name": "ASIA",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"asia\""
+     },
+     {
+      "name": "In Sri Lanka, wild elephants increasingly clash with humans",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"sri\", \"lanka\", \"wild\", \"elephant\""
+     },
+     {
+      "name": "GERMANY",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"germany\""
+     },
+     {
+      "name": "Adolf Eichmann: Trial of a Nazi criminal",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"trial\"; not \"adolf\", \"eichmann\", \"nazi\""
+     },
+     {
+      "name": "EUROPE",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"europe\""
+     },
+     {
+      "name": "Italy's Cafe Med treats patients to free medical advice",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"med\"; not \"italy\", \"cafe\", \"treat\""
+     },
+     {
+      "name": "MIDDLE EAST",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"middle\", \"east\""
+     },
+     {
+      "name": "NORTH AMERICA",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"north\", \"america\""
+     },
+     {
+      "name": "Michigan Senate race splits Arab and Jewish communities",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"senate\", \"race\"; not \"michigan\", \"split\""
+     },
+     {
+      "name": "A closer look",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"look\"; not \"closer\""
+     },
+     {
+      "name": "2026 Israel election",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"2026\", \"israel\", \"election\""
+     },
+     {
+      "name": "Video news",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"video\""
+     },
+     {
+      "name": "Top stories in 90 seconds",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\", \"second\"; not \"90\""
+     },
+     {
+      "name": "Latest show",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"latest\"; not \"show\""
+     },
+     {
+      "name": "Living off-grid in one of London’s richest suburbs",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"living\", \"off\"; not \"grid\", \"london\""
+     },
+     {
+      "name": "All Shows",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"show\""
+     },
+     {
+      "name": "Get inspired",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"inspir\""
+     },
+     {
+      "name": "Russia's war in Ukraine",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"war\"; not \"russia\", \"ukraine\""
+     },
+     {
+      "name": "Starlink disruption exposes Ukraine's dependence on satellites",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"starlink\", \"disruption\", \"expose\", \"ukraine\""
+     },
+     {
+      "name": "Low voter turnout in Bulgaria triggers presidential run-off",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"low\", \"voter\", \"turnout\", \"bulgaria\""
+     },
+     {
+      "name": "Ukraine: Starlink satellite speeds restored to normal",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"ukraine\", \"starlink\", \"satellite\", \"speed\""
+     },
+     {
+      "name": "In the spotlight",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"spotlight\""
+     },
+     {
+      "name": "Prague honors Roma resistance fighters against Hitler",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"prague\"; not \"honor\", \"roma\", \"resistance\""
+     },
+     {
+      "name": "Turkey: How a unique salt lake is disappearing",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"salt\"; not \"turkey\", \"unique\""
+     },
+     {
+      "name": "Indonesia wildfires destroy orangutans' remaining habitat",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"indonesia\", \"wildfire\", \"destroy\", \"orangutan\""
+     },
+     {
+      "name": "The hidden struggle of underprivileged Gen Z in Bangladesh",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"gen\"; not \"hidden\", \"struggle\", \"underprivileg\""
+     },
+     {
+      "name": "Why women say politics is becoming more hostile",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"say\", \"politic\"; not \"women\""
+     },
+     {
+      "name": "Most viewed",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"view\""
+     },
+     {
+      "name": "Trump announces Audi will build $4 billion factory in US",
+      "detail": "a heading on /en/top-stories/s-9097",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"will\"; not \"announce\", \"audi\""
+     }
+    ]
+   },
+   "euronews.com": {
+    "url": "https://www.euronews.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.euronews.com/",
+     "https://www.euronews.com/2026/10/25/off-the-record-yalta-20-spells-bad-news-for-europe-in-desperate-need-of-a-plan",
+     "https://www.euronews.com/2026/10/02/eu-farmers-face-falling-produce-prices-as-fuel-and-fertiliser-costs-rise"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Student List wins Serbian election as Vučić concedes defeat",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"student\", \"list\", \"win\", \"serbian\""
+     },
+     {
+      "name": "Zelenskyy: Trilateral talks with US and Russia set for November",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"zelenskyy\", \"trilateral\", \"talk\", \"russia\""
+     },
+     {
+      "name": "UK's Andy Burnham wants 'honest discussion' on EU free movement",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"want\"; not \"andy\", \"burnham\", \"honest\""
+     },
+     {
+      "name": "Russian strikes on Ukraine kill four and injure 28",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"strike\", \"kill\"; not \"russian\", \"ukraine\""
+     },
+     {
+      "name": "Israel orders West Bank crossings to close on election day",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"israel\", \"order\", \"west\"; not \"bank\""
+     },
+     {
+      "name": "Suspected Trappes gunman moved to police psychiatric unit",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"suspect\"; not \"trappe\", \"gunman\", \"moved\""
+     },
+     {
+      "name": "Over 1,300 arrests across France as protesters clashed with police",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"over\", \"1\", \"arrest\"; not \"300\""
+     },
+     {
+      "name": "Yotova narrowly ahead in first round of Bulgarian presidential vote",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"yotova\", \"first\"; not \"narrowly\", \"ahead\""
+     },
+     {
+      "name": "Latest news",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"latest\", \"new\""
+     },
+     {
+      "name": "Live",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"live\""
+     },
+     {
+      "name": "Serbia election results expected to be ‘very tight’, analyst says",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"serbia\", \"election\", \"result\"; not \"expect\""
+     },
+     {
+      "name": "Italy's cities in security 'lockdown' for Saturday protests",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"city\", \"security\"; not \"italy\", \"lockdown\""
+     },
+     {
+      "name": "Commission weighs best strategy for new trade talks with China",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"weigh\"; not \"commission\", \"best\", \"strategy\""
+     },
+     {
+      "name": "EU vies to expand role in Ukraine-Russia peace talks",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"vie\"; not \"expand\", \"role\", \"ukraine\""
+     },
+     {
+      "name": "Greek basketball chief resigns amid match-fixing investigation",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"chief\"; not \"greek\", \"basketball\", \"resign\""
+     },
+     {
+      "name": "128 arrested after night of unrest and looting in Barcelona",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"arrest\", \"after\"; not \"128\", \"night\""
+     },
+     {
+      "name": "Young protesters clash with police on Rome streets",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"young\", \"protester\", \"police\"; not \"clash\""
+     },
+     {
+      "name": "Protests spread from Paris to other capital cities across Europe",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"protest\", \"pari\"; not \"spread\", \"other\""
+     },
+     {
+      "name": "Italy: Thousands take to the streets as protests turn violent",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"thousand\", \"take\", \"street\"; not \"italy\""
+     },
+     {
+      "name": "Europe Today",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"europe\", \"today\""
+     },
+     {
+      "name": "The Ring",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"ring\""
+     },
+     {
+      "name": "12 minutes with",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"12\"; not \"minute\""
+     },
+     {
+      "name": "The Europe Conversation",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"europe\"; not \"conversation\""
+     },
+     {
+      "name": "Europe in Motion",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"europe\"; not \"motion\""
+     },
+     {
+      "name": "The Cube",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"cube\""
+     },
+     {
+      "name": "Made in Europe",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"made\", \"europe\""
+     },
+     {
+      "name": "Brazil: long queues and river journeys mark decisive presidential vote",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"long\"; not \"queue\", \"river\""
+     },
+     {
+      "name": "Serbia: crowds celebrate in Belgrade after Vučić admits defeat",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"serbia\", \"celebrate\", \"belgrade\"; not \"crowd\""
+     },
+     {
+      "name": "Azada Atakishiyeva’s journey in rhythmic gymnastics",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"azada\", \"atakishiyeva\", \"journey\", \"rhythmic\""
+     },
+     {
+      "name": "Made in Qatar: Local brands with global ambitions",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"made\"; not \"qatar\", \"local\", \"brand\""
+     },
+     {
+      "name": "Building cities that can withstand a changing climate",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"build\", \"city\", \"chang\"; not \"withstand\""
+     },
+     {
+      "name": "Kenya: huge piles of rubble after high-rise building collapses",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"kenya\"; not \"huge\", \"pile\", \"rubble\""
+     },
+     {
+      "name": "Audi's first US production plant: carmaker strikes deal with Trump",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"first\"; not \"audi\", \"production\", \"plant\""
+     },
+     {
+      "name": "Graveyard tourism: Why Europe’s cemeteries are on the must-visit list",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"europe\"; not \"graveyard\", \"tourism\""
+     },
+     {
+      "name": "New York votes to ban Central Park’s horse-drawn carriages",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"vote\", \"ban\", \"central\"; not \"york\""
+     },
+     {
+      "name": "US designates helium as critical amid European supply squeeze",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"amid\"; not \"designate\", \"helium\", \"critical\""
+     },
+     {
+      "name": "YouTube is top storytelling format for young people, report finds",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"top\"; not \"youtube\", \"storytell\", \"format\""
+     },
+     {
+      "name": "Veteran US actor Tom Skerritt dies aged 93",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"veteran\"; not \"actor\", \"tom\", \"skerritt\""
+     },
+     {
+      "name": "Should Europe ban meat billboards? Climate psychologist weighs in",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"europe\", \"ban\"; not \"should\", \"meat\""
+     },
+     {
+      "name": "Top stories",
+      "detail": "a heading on /2026/10/25/off-the-record-yalta-20-spells-bad-news-for-europe-in-desperate-need-of-a-plan",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\""
+     }
+    ]
+   },
+   "aljazeera.com": {
+    "url": "https://www.aljazeera.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.aljazeera.com/",
+     "https://www.aljazeera.com/features/",
+     "https://www.aljazeera.com/features/2026/10/25/the-search-for-gold-is-a-dangerous-and-laborious-gamble-for-sudans-miners",
+     "https://www.aljazeera.com/features/2026/10/25/gazas-visually-and-hearing-impaired-children-miss-school-due-to-israel-war",
+     "https://www.aljazeera.com/features/longform/2026/10/24/the-muslims-finding-belonging-in-southern-spain",
+     "https://www.aljazeera.com/features/2026/10/24/displaced-west-bank-palestinians-face-growing-hunger-after-un-cuts-food-aid",
+     "https://www.aljazeera.com/features/2026/10/25/election-posters-mass-tourism-and-property-israels-footprint-in-cyprus"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "UK Greens reject Jewish group’s racism charge over Zionism policy",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"green\", \"reject\", \"jewish\", \"group\""
+     },
+     {
+      "name": "‘Cautious calm’ prevails in Yemen’s Taiz",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"cautiou\", \"calm\", \"prevail\", \"yemen\""
+     },
+     {
+      "name": "Brazil election results 2026: Key takeaways from Lula’s historic win",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"election\", \"result\", \"2026\""
+     },
+     {
+      "name": "Serbia’s Vucic concedes election defeat to student-led movement",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"serbia\", \"vucic\", \"concede\", \"election\""
+     },
+     {
+      "name": "Seoul ‘fabricated” landmine blast, North Korea tells UN in letter",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"seoul\", \"fabricat\", \"landmine\", \"blast\""
+     },
+     {
+      "name": "Bulgaria election heads to a run-off amid low voter turnout",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"bulgaria\", \"election\", \"head\", \"run\""
+     },
+     {
+      "name": "Two storms slam northern Europe, cut power to 150,000 homes",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"two\", \"storm\", \"slam\", \"northern\""
+     },
+     {
+      "name": "Thousands protest in Prague against public media funding reforms",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"thousand\", \"protest\", \"prague\", \"against\""
+     },
+     {
+      "name": "WATCH LATEST VIDEOS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"latest\"; not \"watch\", \"video\""
+     },
+     {
+      "name": "Lula thanks Brazil's youth for historic election win",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"lula\", \"brazil\"; not \"thank\", \"youth\""
+     },
+     {
+      "name": "Netanyahu rival Eisenkot holds final rally before Israeli election",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"netanyahu\", \"rival\", \"eisenkot\", \"hold\""
+     },
+     {
+      "name": "Serbia celebrates historic election win for student-backed movement",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"serbia\", \"celebrate\", \"historic\", \"election\""
+     },
+     {
+      "name": "Trump escalates anti-Muslim rhetoric in fierce attack on El-Sayed",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"escalate\", \"anti\", \"muslim\""
+     },
+     {
+      "name": "Venezuela’s opposition leader Machado returns after months in exile",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"venezuela\", \"opposition\", \"leader\", \"machado\""
+     },
+     {
+      "name": "Marine Le Pen launches French presidential campaign",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"marine\", \"pen\", \"launche\", \"french\""
+     },
+     {
+      "name": "Trump VS California",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"california\""
+     },
+     {
+      "name": "Iraqis mark seven years since Tishreen protests with reform demands",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"iraqi\", \"mark\", \"seven\", \"year\""
+     },
+     {
+      "name": "Israeli air strike on Gaza City university kills three people",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"israeli\", \"air\", \"strike\"; not \"gaza\""
+     },
+     {
+      "name": "MUST READ",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"read\"; not \"must\""
+     },
+     {
+      "name": "MORE HEADLINES",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"headline\""
+     },
+     {
+      "name": "OPINION",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"opinion\""
+     },
+     {
+      "name": "Elections cannot produce change in Israel",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"election\", \"change\"; not \"cannot\", \"produce\""
+     },
+     {
+      "name": "Who Israel elects matters, and not just for Israelis",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"who\", \"israel\", \"elect\"; not \"matter\""
+     },
+     {
+      "name": "Featured",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"featur\""
+     },
+     {
+      "name": "Nigeria’s missing: Families in the northeast still wait for answers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"nigeria\", \"miss\", \"family\"; not \"northeast\""
+     },
+     {
+      "name": "The Muslims finding belonging in southern Spain",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"muslim\"; not \"find\", \"belong\", \"southern\""
+     },
+     {
+      "name": "Sudan’s soaring fuel prices make getting by harder for workers",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"fuel\"; not \"sudan\", \"soar\", \"price\""
+     },
+     {
+      "name": "Sign up for Al Jazeera",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"jazeera\"; not \"sign\""
+     },
+     {
+      "name": "Breaking News Alert",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"break\", \"new\"; not \"alert\""
+     },
+     {
+      "name": "Israel Election 2026",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"israel\", \"election\", \"2026\""
+     },
+     {
+      "name": "Bots, deepfakes and surveillance: Israel’s election goes to war online",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"israel\"; not \"bot\", \"deepfake\", \"surveillance\""
+     },
+     {
+      "name": "How Benjamin Netanyahu reshaped Israel’s institutions",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"benjamin\", \"netanyahu\"; not \"reshap\""
+     },
+     {
+      "name": "You rely on Al Jazeera for truth and transparency",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"jazeera\"; not \"rely\", \"truth\", \"transparency\""
+     },
+     {
+      "name": "Content Feed",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"content\", \"feed\""
+     },
+     {
+      "name": "Typhoon Champi hits Taiwan, killing one and injuring hundreds",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"typhoon\", \"champi\", \"hit\", \"taiwan\""
+     },
+     {
+      "name": "‘Generation Right’: Israeli youth show strong support for the right",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"right\", \"israeli\"; not \"generation\", \"youth\""
+     },
+     {
+      "name": "Pulaku: The two faces of Nigeria’s vigilantes",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"two\", \"face\", \"nigeria\"; not \"pulaku\""
+     },
+     {
+      "name": "Keeping Madhubala alive: The fight for Karachi’s captive elephants",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"keep\", \"madhubala\", \"alive\", \"fight\""
+     },
+     {
+      "name": "Indian developer turns ‘Cockroach’ protests into video game",
+      "detail": "a heading on /features/",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"turn\"; not \"indian\", \"developer\", \"cockroach\""
+     },
+     {
+      "name": "RECOMMENDED STORIES",
+      "detail": "a heading on /features/2026/10/25/the-search-for-gold-is-a-dangerous-and-laborious-gamble-for-sudans-miners",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"story\"; not \"recommend\""
+     }
+    ]
+   },
+   "npr.org": {
+    "url": "https://www.npr.org/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.npr.org/",
+     "https://www.npr.org/sections/music-features",
+     "https://www.npr.org/2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+     "https://www.npr.org/2026/10/25/nx-s1-5992998/drought-fire-and-high-diesel-prices-addin-up-tough-for-oregon-ranchers",
+     "https://www.npr.org/2026/10/23/nx-s1-6010488/east-potomac-trump-golf-hains-point",
+     "https://www.npr.org/2026/10/23/nx-s1-6013625/feeling-squeezed-by-high-prices-here-are-tips-for-managing-your-finances",
+     "https://www.npr.org/2026/10/24/nx-s1-6014612/medicare-advantage-open-enrollment-cancelled-plan"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "NPR - Breaking News, Analysis, Music, Arts & Podcasts",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"npr\", \"break\", \"new\"; not \"analysi\""
+     },
+     {
+      "name": "Brazil's left-wing President Lula elected for fourth term",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"left\", \"wing\", \"president\""
+     },
+     {
+      "name": "This College of Magic turns ordinary kids into cool magicians",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"turn\"; not \"college\", \"magic\", \"ordinary\""
+     },
+     {
+      "name": "Idaho fourth grader wins U.S. Capitol Christmas tree lighting contest",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"fourth\", \"win\"; not \"idaho\", \"grader\""
+     },
+     {
+      "name": "WATCH",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"watch\""
+     },
+     {
+      "name": "Brìghde Chaimbeul: Tiny Desk Concert",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"ghde\", \"chaimbeul\", \"tiny\", \"desk\""
+     },
+     {
+      "name": "Midterm elections 2026",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"midterm\", \"election\", \"2026\""
+     },
+     {
+      "name": "Trump leans into unprecedented power ahead of midterm elections",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"unprecedent\", \"power\"; not \"lean\""
+     },
+     {
+      "name": "AIPAC halts endorsements and direct contributions to candidates",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"aipac\", \"halt\", \"endorsement\", \"direct\""
+     },
+     {
+      "name": "How to register to vote in the 2026 elections",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"vote\", \"2026\"; not \"register\""
+     },
+     {
+      "name": "This decade has been missing its big-impact midterm",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"decade\", \"been\", \"miss\", \"big\""
+     },
+     {
+      "name": "Trump merchandise stores are closing: 'He has peaked'",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"trump\"; not \"merchandise\", \"store\", \"clos\""
+     },
+     {
+      "name": "Life Kit: Tools to help you get it together",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"life\", \"kit\", \"help\", \"together\""
+     },
+     {
+      "name": "Unsure which retirement account to choose? We have some tips",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"unsure\", \"which\", \"retirement\", \"account\""
+     },
+     {
+      "name": "Short Wave podcast: Revealing the science behind everyday mysteries",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"short\", \"podcast\", \"reveal\"; not \"wave\""
+     },
+     {
+      "name": "Why the spiral pass had physicists' heads spinning for decades",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"had\"; not \"spiral\", \"pass\""
+     },
+     {
+      "name": "Choose Your Own (Math) Adventure",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"choose\"; not \"math\", \"adventure\""
+     },
+     {
+      "name": "NPR MUSIC",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"npr\"; not \"music\""
+     },
+     {
+      "name": "The rapturous, heartbreaking story of Elephant 6",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"story\"; not \"rapturou\", \"heartbreak\", \"elephant\""
+     },
+     {
+      "name": "MUSIC",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"music\""
+     },
+     {
+      "name": "A new canon of Halloween music",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"canon\", \"halloween\", \"music\""
+     },
+     {
+      "name": "MUSIC INTERVIEWS",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"music\", \"interview\""
+     },
+     {
+      "name": "Fontaines D.C.'s decadent, dystopian vision of our time",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"fontaine\", \"decadent\", \"dystopian\", \"vision\""
+     },
+     {
+      "name": "REVIEW",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"review\""
+     },
+     {
+      "name": "WUNC NEWS",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"new\"; not \"wunc\""
+     },
+     {
+      "name": "More cover songs that are better than the originals",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"cover\", \"than\"; not \"song\", \"better\""
+     },
+     {
+      "name": "Saul Williams opens a portal between politics and possibility",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"william\", \"open\"; not \"saul\", \"portal\""
+     },
+     {
+      "name": "Jorja Smith finds love in the club",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"jorja\", \"smith\", \"find\", \"love\""
+     },
+     {
+      "name": "ONLY ON NPR",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"only\", \"npr\""
+     },
+     {
+      "name": "How Dolly Parton wrote the story of a changing America",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\"; not \"dolly\", \"parton\", \"wrote\""
+     },
+     {
+      "name": "The best Sunday morning albums",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"sunday\"; not \"best\", \"morn\", \"album\""
+     },
+     {
+      "name": "An art-rock illusionist rewrites pop in her own image",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"art\", \"rock\", \"illusionist\", \"rewrite\""
+     },
+     {
+      "name": "Ravyn Lenae, viral success story, adjusts to the aftershock",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"ravyn\", \"lenae\", \"viral\", \"success\""
+     },
+     {
+      "name": "Phoebe Bridgers remembers everything",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"phoebe\", \"bridger\", \"remember\", \"everyth\""
+     },
+     {
+      "name": "The voracious, and thoughtful, musical appetite of the PUBLIQuartet",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"voraciou\", \"thoughtful\", \"musical\", \"appetite\""
+     },
+     {
+      "name": "Cover songs that are better than the originals",
+      "detail": "a heading on /sections/music-features",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"cover\", \"than\"; not \"song\", \"better\""
+     },
+     {
+      "name": "LIFE KIT",
+      "detail": "a heading on /2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"life\", \"kit\""
+     },
+     {
+      "name": "Why you should take a 'say no' retreat",
+      "detail": "a heading on /2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"why\", \"take\", \"say\"; not \"should\""
+     },
+     {
+      "name": "Design your one-day, \"say no\" retreat: A suggested schedule",
+      "detail": "a heading on /2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"day\", \"say\"; not \"design\", \"retreat\""
+     },
+     {
+      "name": "How to focus on what really matters during the holidays",
+      "detail": "a heading on /2026/10/23/nx-s1-6011089/how-to-plan-a-say-no-retreat",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"what\"; not \"focu\", \"really\""
+     }
+    ]
+   },
+   "apnews.com": {
+    "url": "https://apnews.com/",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://apnews.com/",
+     "https://apnews.com/article/finland-pentulive-slow-tv-39015cb0f22fd4a3fe468ba8fe74b1de",
+     "https://apnews.com/newsletters?id=Ground_Game",
+     "https://apnews.com/article/housing-sellers-buyers-mortgage-rates-down-payment-183721a64d3fc45b6385e60e56a5413a",
+     "https://apnews.com/article/tolerating-uncertainty-embracing-change-14e76f00f10fb2247c05e005e3d8fbcb",
+     "https://apnews.com/hub/climate-questions"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "How Latin America’s left is welcoming Lula’s victory",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"latin\", \"america\", \"left\""
+     },
+     {
+      "name": "MORE POLITICS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"politic\""
+     },
+     {
+      "name": "What to know about Venezuela’s opposition leader Maria Corina Machado",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"what\", \"know\", \"about\", \"venezuela\""
+     },
+     {
+      "name": "Israel presses ahead with West Bank operation as election approaches",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"israel\", \"west\"; not \"presse\", \"ahead\""
+     },
+     {
+      "name": "LATEST NEWS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"latest\", \"new\""
+     },
+     {
+      "name": "PHOTOGRAPHY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"photography\""
+     },
+     {
+      "name": "COLLEGE FOOTBALL",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"football\"; not \"college\""
+     },
+     {
+      "name": "SHORT STORIES",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"short\", \"story\""
+     },
+     {
+      "name": "MOST WATCHED VIDEOS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"watch\", \"video\""
+     },
+     {
+      "name": "A golden sunbeam illuminates a 3,000-year-old Egyptian temple",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"3\"; not \"golden\", \"sunbeam\", \"illuminate\""
+     },
+     {
+      "name": "WEEKEND READS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"weekend\", \"read\""
+     },
+     {
+      "name": "WEEKEND PLAYLIST",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"weekend\"; not \"playlist\""
+     },
+     {
+      "name": "FOR YOU",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words"
+     },
+     {
+      "name": "MOST COMMENTED STORIES",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"story\"; not \"comment\""
+     },
+     {
+      "name": "TODAY IN HISTORY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"today\", \"history\""
+     },
+     {
+      "name": "1929: Teapot Dome Scandal conviction",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"dome\"; not \"1929\", \"teapot\", \"scandal\""
+     },
+     {
+      "name": "MOST READ",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"read\""
+     },
+     {
+      "name": "AP NEWS GAMES >",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\", \"game\""
+     },
+     {
+      "name": "QUIZZES",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"quizze\""
+     },
+     {
+      "name": "AP PHOTOGRAPHY",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"photography\""
+     },
+     {
+      "name": "US NEWS",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\""
+     },
+     {
+      "name": "CRIME",
+      "detail": "a heading on /",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"crime\""
+     },
+     {
+      "name": "NEWSLETTERS",
+      "detail": "a heading on /newsletters?id=Ground_Game",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"newsletter\""
+     },
+     {
+      "name": "Why uncertainty bothers us",
+      "detail": "a heading on /article/tolerating-uncertainty-embracing-change-14e76f00f10fb2247c05e005e3d8fbcb",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"why\"; not \"uncertainty\", \"bother\""
+     },
+     {
+      "name": "Phones enable our desire to know everything right away",
+      "detail": "a heading on /article/tolerating-uncertainty-embracing-change-14e76f00f10fb2247c05e005e3d8fbcb",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"our\"; not \"phone\", \"enable\", \"desire\""
+     },
+     {
+      "name": "Practice living without an answer",
+      "detail": "a heading on /article/tolerating-uncertainty-embracing-change-14e76f00f10fb2247c05e005e3d8fbcb",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"living\", \"answer\"; not \"practice\""
+     },
+     {
+      "name": "CLIMATE QUESTIONS",
+      "detail": "a heading on /hub/climate-questions",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"question\"; not \"climate\""
+     },
+     {
+      "name": "MORE NEWS",
+      "detail": "a heading on /hub/climate-questions",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\""
+     },
+     {
+      "name": "Trump casts his midterm ballot early in Florida 65",
+      "detail": "a list item on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"trump\", \"his\", \"midterm\"; not \"cast\""
+     },
+     {
+      "name": "Report Ad",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"report\""
+     },
+     {
+      "name": "Do Not Sell or Share My Personal Information",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"not\", \"share\"; not \"sell\", \"personal\""
+     },
+     {
+      "name": "Reject Non-Essential",
+      "detail": "a button on /",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"non\"; not \"reject\", \"essential\""
+     },
+     {
+      "name": "Add AP News on Google",
+      "detail": "a button on /article/finland-pentulive-slow-tv-39015cb0f22fd4a3fe468ba8fe74b1de",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"add\", \"new\"; not \"google\""
+     }
+    ]
+   },
+   "theguardian.com": {
+    "url": "https://www.theguardian.com/international",
+    "scanned": "2026-10-26",
+    "pages": [
+     "https://www.theguardian.com/international",
+     "https://www.theguardian.com/society/2026/oct/25/the-joy-of-veg-maxxing-how-to-eat-many-many-more-plants-without-really-trying",
+     "https://www.theguardian.com/food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+     "https://www.theguardian.com/help/accessibility-help",
+     "https://www.theguardian.com/tv-and-radio/2026/oct/25/theres-nothing-interesting-about-me-and-no-interest-in-me-how-larry-davids-new-biography-nearly-didnt-happen",
+     "https://www.theguardian.com/about",
+     "https://www.theguardian.com/commentisfree/2026/oct/25/12-things-you-need-to-know-about-work"
+    ],
+    "method": "heuristic",
+    "features": [
+     {
+      "name": "Brazil electionSecond round results",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"brazil\", \"round\", \"result\"; not \"electionsecond\""
+     },
+     {
+      "name": "Special report",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"report\"; not \"special\""
+     },
+     {
+      "name": "In focus",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"focu\""
+     },
+     {
+      "name": "More features",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"feature\""
+     },
+     {
+      "name": "Opinion",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"opinion\""
+     },
+     {
+      "name": "More opinion",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"opinion\""
+     },
+     {
+      "name": "Editorials",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"editorial\""
+     },
+     {
+      "name": "Cartoon",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"cartoon\""
+     },
+     {
+      "name": "Ella Baron Trump’s admiration for Putin",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"trump\"; not \"ella\", \"baron\", \"admiration\""
+     },
+     {
+      "name": "Sport",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"sport\""
+     },
+     {
+      "name": "As it happenedRead back over Tom Lutz's lap-by-lap report",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"back\", \"over\"; not \"happenedread\", \"tom\""
+     },
+     {
+      "name": "As it happenedRead back over our week seven liveblog",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"back\", \"over\", \"our\"; not \"happenedread\""
+     },
+     {
+      "name": "As it happenedNiall McVeigh's minute-by-minute report",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"report\"; not \"happenedniall\", \"mcveigh\", \"minute\""
+     },
+     {
+      "name": "Live scoresAll the goals as they go in around Europe",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"live\", \"they\"; not \"scoresall\", \"goal\""
+     },
+     {
+      "name": "More sport",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"sport\""
+     },
+     {
+      "name": "Athletics Australia’s Henderson claims historic race walk world record",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"australia\", \"claim\"; not \"athletic\", \"henderson\""
+     },
+     {
+      "name": "More top stories",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"top\", \"story\""
+     },
+     {
+      "name": "Climate crisis & environment",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"crisi\"; not \"climate\", \"environment\""
+     },
+     {
+      "name": "UK news",
+      "detail": "a heading on /international",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"new\""
+     },
+     {
+      "name": "Most viewed",
+      "detail": "a heading on /society/2026/oct/25/the-joy-of-veg-maxxing-how-to-eat-many-many-more-plants-without-really-trying",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"view\""
+     },
+     {
+      "name": "How to make mushroom stroganoff – recipe",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"how\", \"make\"; not \"mushroom\", \"stroganoff\""
+     },
+     {
+      "name": "1 A note on the fat",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"1\", \"note\"; not \"fat\""
+     },
+     {
+      "name": "2 Prep the veg",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"2\", \"prep\", \"veg\""
+     },
+     {
+      "name": "3 Fry the onions",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"3\"; not \"fry\", \"onion\""
+     },
+     {
+      "name": "4 Fry the button mushrooms",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"4\"; not \"fry\", \"button\", \"mushroom\""
+     },
+     {
+      "name": "5 Dry-fry the field mushrooms",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"5\"; not \"dry\", \"fry\", \"field\""
+     },
+     {
+      "name": "6 Add butter and fry again",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"6\", \"add\"; not \"butter\", \"fry\""
+     },
+     {
+      "name": "7 Finish the sauce base",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"7\", \"base\"; not \"finish\", \"sauce\""
+     },
+     {
+      "name": "8 Add the fried onion mix",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"8\", \"add\"; not \"fried\", \"onion\""
+     },
+     {
+      "name": "9 Season and serve",
+      "detail": "a heading on /food/2026/oct/25/how-to-make-mushroom-stroganoff-recipe",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"9\", \"season\"; not \"serve\""
+     },
+     {
+      "name": "Preferences",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"preference\""
+     },
+     {
+      "name": "Accessibility",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"accessibility\""
+     },
+     {
+      "name": "May 2022",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"may\", \"2022\""
+     },
+     {
+      "name": "Recommended browsers",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"recommend\", \"browser\""
+     },
+     {
+      "name": "January 2017",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/news/?sec=world shows none of its words; not \"january\", \"2017\""
+     },
+     {
+      "name": "Help us improve the Guardian website's accessibility",
+      "detail": "a heading on /help/accessibility-help",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"guardian\"; not \"help\", \"improve\", \"website\""
+     },
+     {
+      "name": "This is not a paywall",
+      "detail": "a heading on /tv-and-radio/2026/oct/25/theres-nothing-interesting-about-me-and-no-interest-in-me-how-larry-davids-new-biography-nearly-didnt-happen",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"not\"; not \"paywall\""
+     },
+     {
+      "name": "Our organisation",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"our\"; not \"organisation\""
+     },
+     {
+      "name": "Times change but the Guardian’s values don’t",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/news/?sec=world shows \"time\", \"change\", \"but\", \"guardian\""
+     },
+     {
+      "name": "A mission for journalism: an essay by our editor",
+      "detail": "a heading on /about",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/news/?sec=world shows \"our\"; not \"mission\", \"journalism\", \"essay\""
+     }
+    ]
+   }
+  },
+  "gaps": [
+   {
+    "name": "Featured",
+    "sites": [
+     "allsides.com",
+     "aljazeera.com"
+    ]
+   },
+   {
+    "name": "OPINION",
+    "sites": [
+     "aljazeera.com",
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "More Perspectives",
+    "sites": [
+     "allsides.com"
+    ]
+   },
+   {
+    "name": "Discuss & Debate",
+    "sites": [
+     "allsides.com"
+    ]
+   },
+   {
+    "name": "ADVERTISEMENT",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "VIDEO: Discover a life of purpose in Sweden’s heartland",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "OPINION AND ANALYSIS",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "COMMENTS",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "An essential guide to travelling through Copenhagen Airport with kids",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "Amanda Previdelli",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "Rachel Loxton",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "Tom Pugh",
+    "sites": [
+     "thelocal.com"
+    ]
+   },
+   {
+    "name": "ACT publishes manifesto with $22b in cuts, ditches migration promise",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Tesla owner loses legal fight after software disables fast charging",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Education",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Energy, climate, environment",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Governance",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Life",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Does AI have feelings? Anthropic thinks so",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "'We're supposed to fail on the outside': Life after Gloriavale",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Breakers lose by 86-84 to Taipans in Cairns",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Money",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Pacific Dark",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "The Reality Machine",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Caucus",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "The Detail",
+    "sites": [
+     "rnz.co.nz"
+    ]
+   },
+   {
+    "name": "Commentary",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Discover more on CNA",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Lifestyle",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Insider",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Luxury",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Trending",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Brand Studio",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "NEW SOLAR TARGET",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "BOOSTING ENERGY STORAGE CAPACITY",
+    "sites": [
+     "channelnewsasia.com"
+    ]
+   },
+   {
+    "name": "Doncic dominates for Lakers as James' Sixers fall to Pistons",
+    "sites": [
+     "france24.com"
+    ]
+   },
+   {
+    "name": "Olympic fever grips Senegal as Dakar hosts Youth Olympic Games",
+    "sites": [
+     "france24.com"
+    ]
+   },
+   {
+    "name": "AKAA art and design fair brings African artists to Paris",
+    "sites": [
+     "france24.com"
+    ]
+   },
+   {
+    "name": "TV GUIDE",
+    "sites": [
+     "france24.com"
+    ]
+   },
+   {
+    "name": "Liberté Égalité Actualité",
+    "sites": [
+     "france24.com"
+    ]
+   },
+   {
+    "name": "Homepage",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "In Sri Lanka, wild elephants increasingly clash with humans",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "All Shows",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "Get inspired",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "Starlink disruption exposes Ukraine's dependence on satellites",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "Ukraine: Starlink satellite speeds restored to normal",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "Indonesia wildfires destroy orangutans' remaining habitat",
+    "sites": [
+     "dw.com"
+    ]
+   },
+   {
+    "name": "Zelenskyy: Trilateral talks with US and Russia set for November",
+    "sites": [
+     "euronews.com"
+    ]
+   },
+   {
+    "name": "The Ring",
+    "sites": [
+     "euronews.com"
+    ]
+   },
+   {
+    "name": "The Cube",
+    "sites": [
+     "euronews.com"
+    ]
+   },
+   {
+    "name": "Azada Atakishiyeva’s journey in rhythmic gymnastics",
+    "sites": [
+     "euronews.com"
+    ]
+   },
+   {
+    "name": "UK Greens reject Jewish group’s racism charge over Zionism policy",
+    "sites": [
+     "aljazeera.com"
+    ]
+   },
+   {
+    "name": "‘Cautious calm’ prevails in Yemen’s Taiz",
+    "sites": [
+     "aljazeera.com"
+    ]
+   },
+   {
+    "name": "Typhoon Champi hits Taiwan, killing one and injuring hundreds",
+    "sites": [
+     "aljazeera.com"
+    ]
+   },
+   {
+    "name": "Keeping Madhubala alive: The fight for Karachi’s captive elephants",
+    "sites": [
+     "aljazeera.com"
+    ]
+   },
+   {
+    "name": "WATCH",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Brìghde Chaimbeul: Tiny Desk Concert",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "AIPAC halts endorsements and direct contributions to candidates",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Life Kit: Tools to help you get it together",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Unsure which retirement account to choose? We have some tips",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "MUSIC",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "A new canon of Halloween music",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "MUSIC INTERVIEWS",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Fontaines D.C.'s decadent, dystopian vision of our time",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "REVIEW",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Jorja Smith finds love in the club",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "An art-rock illusionist rewrites pop in her own image",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Ravyn Lenae, viral success story, adjusts to the aftershock",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "Phoebe Bridgers remembers everything",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "The voracious, and thoughtful, musical appetite of the PUBLIQuartet",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "LIFE KIT",
+    "sites": [
+     "npr.org"
+    ]
+   },
+   {
+    "name": "PHOTOGRAPHY",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "MOST WATCHED VIDEOS",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "FOR YOU",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "QUIZZES",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "AP PHOTOGRAPHY",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "CRIME",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "NEWSLETTERS",
+    "sites": [
+     "apnews.com"
+    ]
+   },
+   {
+    "name": "In focus",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "More features",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "More opinion",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "Editorials",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "Cartoon",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "Preferences",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "Accessibility",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "May 2022",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "Recommended browsers",
+    "sites": [
+     "theguardian.com"
+    ]
+   },
+   {
+    "name": "January 2017",
+    "sites": [
+     "theguardian.com"
+    ]
+   }
+  ],
+  "queued": []
+ }
+}

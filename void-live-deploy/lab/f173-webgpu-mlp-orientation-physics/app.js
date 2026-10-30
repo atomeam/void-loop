@@ -1,0 +1,271 @@
+const status = document.getElementById('status');
+const canvas = document.getElementById('c');
+const N = 2048; // particles
+
+// Tiny MLP: orientation (3) + pointer (2) + time (1) → force multipliers (3)
+class TinyMLP {
+  constructor() {
+    this.w1 = Array.from({length: 6}, () => Array.from({length: 8}, () => (Math.random()-0.5)*0.4));
+    this.b1 = Array(8).fill(0);
+    this.w2 = Array.from({length: 8}, () => Array.from({length: 3}, () => (Math.random()-0.5)*0.4));
+    this.b2 = Array(3).fill(0);
+  }
+  tanh(x) { return Math.tanh(x); }
+  forward(x) {
+    const h = this.b1.map((b,j) => this.tanh(x.reduce((s,xi,i)=>s+xi*this.w1[i][j], b)));
+    return this.b2.map((b,k) => this.tanh(h.reduce((s,hj,j)=>s+hj*this.w2[j][k], b)));
+  }
+  reward(x, outs, s=0.015) {
+    const h = this.b1.map((b,j) => this.tanh(x.reduce((s,xi,i)=>s+xi*this.w1[i][j], b)));
+    for (let k=0; k<3; k++) {
+      const err = (outs[k] + s * Math.sign(outs[k]||0.01)) - outs[k];
+      for (let j=0; j<8; j++) this.w2[j][k] += 0.08 * err * h[j];
+      this.b2[k] += 0.08 * err;
+    }
+  }
+  toJSON() { return {w1:this.w1,b1:this.b1,w2:this.w2,b2:this.b2}; }
+  fromJSON(d) { Object.assign(this, d); }
+}
+const mlp = new TinyMLP();
+
+let inputs = [0,0,0,0,0,0]; // ax,ay,az, px,py, t
+let forces = [0.5,0.5,0.2];
+
+// IndexedDB
+let db;
+indexedDB.open('void-f173',1).onsuccess = e => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains('w')) {
+    db.close();
+    const r = indexedDB.open('void-f173',2);
+    r.onupgradeneeded = ev => ev.target.result.createObjectStore('w',{keyPath:'id'});
+    r.onsuccess = () => { db = r.result; load(); };
+  } else load();
+};
+function load() {
+  if (!db) return;
+  const g = db.transaction('w','readonly').objectStore('w').get(1);
+  g.onsuccess = () => { if (g.result) { mlp.fromJSON(g.result.data); status.textContent = 'weights loaded'; } };
+}
+function seal() {
+  if (!db) return;
+  db.transaction('w','readwrite').objectStore('w').put({id:1, data:mlp.toJSON(), t:Date.now()});
+  status.textContent = 'weights sealed';
+}
+
+// Orientation / pointer
+let useOri = false;
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', e => {
+    inputs[0] = Math.max(-1,Math.min(1,(e.beta||0)/90));
+    inputs[1] = Math.max(-1,Math.min(1,(e.gamma||0)/90));
+    inputs[2] = Math.max(-1,Math.min(1,((e.alpha||0)%360)/180-1));
+    useOri = true;
+  });
+}
+canvas.addEventListener('pointermove', e => {
+  inputs[3] = (e.clientX / innerWidth)*2-1;
+  inputs[4] = (e.clientY / innerHeight)*2-1;
+});
+
+// Attractors (DOM positions as force centers)
+const attractors = [];
+document.querySelectorAll('.dom-attractor').forEach(el => {
+  const a = { el, x:0, y:0, f: parseFloat(el.dataset.force)||1 };
+  attractors.push(a);
+  let drag=false, ox,oy;
+  el.addEventListener('pointerdown', e => { drag=true; ox=e.clientX-el.offsetLeft; oy=e.clientY-el.offsetTop; el.classList.add('dragging'); el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove', e => {
+    if (!drag) return;
+    el.style.left = (e.clientX-ox)+'px';
+    el.style.top = (e.clientY-oy)+'px';
+  });
+  el.addEventListener('pointerup', () => { drag=false; el.classList.remove('dragging'); });
+});
+
+function updateAttractors() {
+  attractors.forEach(a => {
+    const r = a.el.getBoundingClientRect();
+    a.x = (r.left + r.width/2) / innerWidth * 2 - 1;
+    a.y = (r.top + r.height/2) / innerHeight * 2 - 1;
+  });
+}
+
+// WebGPU setup
+let gpu = null, device, queue, context, pipeline, posBuf, velBuf, uniformBuf, bindGroup;
+let useWebGPU = false;
+
+async function initWebGPU() {
+  if (!navigator.gpu) { status.textContent = 'WebGPU unavailable · Canvas2D fallback'; return false; }
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) return false;
+  device = await adapter.requestDevice();
+  context = canvas.getContext('webgpu');
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  context.configure({ device, format, alphaMode: 'opaque' });
+
+  // Buffers: pos (x,y), vel (vx,vy) interleaved per particle
+  const particleSize = 16; // 4 floats
+  posBuf = device.createBuffer({ size: N*particleSize, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST });
+  velBuf = device.createBuffer({ size: N*particleSize, usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST });
+  uniformBuf = device.createBuffer({ size: 64, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+
+  // Init data
+  const initPos = new Float32Array(N*4);
+  const initVel = new Float32Array(N*4);
+  for (let i=0; i<N; i++) {
+    initPos[i*4] = Math.random()*2-1;
+    initPos[i*4+1] = Math.random()*2-1;
+    initVel[i*4] = (Math.random()-0.5)*0.01;
+    initVel[i*4+1] = (Math.random()-0.5)*0.01;
+  }
+  device.queue.writeBuffer(posBuf, 0, initPos);
+  device.queue.writeBuffer(velBuf, 0, initVel);
+
+  const shader = `
+    struct Uniforms { forces: vec4f, attractors: array<vec4f,2>, time: f32, _pad: vec3f };
+    @group(0) @binding(0) var<storage, read_write> pos: array<vec4f>;
+    @group(0) @binding(1) var<storage, read_write> vel: array<vec4f>;
+    @group(0) @binding(2) var<uniform> u: Uniforms;
+
+    @compute @workgroup_size(64)
+    fn main(@builtin(global_invocation_id) gid: vec3u) {
+      let i = gid.x;
+      if (i >= ${N}) { return; }
+      var p = pos[i].xy;
+      var v = vel[i].xy;
+
+      // orientation force
+      v += u.forces.xy * 0.002;
+
+      // attractors
+      for (var a = 0u; a < 2u; a++) {
+        let ap = u.attractors[a].xy;
+        let af = u.attractors[a].z;
+        let d = ap - p;
+        let dist = length(d) + 0.05;
+        v += normalize(d) * af * 0.0015 / dist;
+      }
+
+      // damping + wrap
+      v *= 0.985;
+      p += v;
+      if (p.x < -1.0) { p.x = 1.0; }
+      if (p.x > 1.0) { p.x = -1.0; }
+      if (p.y < -1.0) { p.y = 1.0; }
+      if (p.y > 1.0) { p.y = -1.0; }
+
+      pos[i] = vec4f(p, 0, 1);
+      vel[i] = vec4f(v, 0, 0);
+    }
+  `;
+
+  const module = device.createShaderModule({ code: shader });
+  pipeline = device.createComputePipeline({
+    layout: 'auto',
+    compute: { module, entryPoint: 'main' }
+  });
+
+  bindGroup = device.createBindGroup({
+    layout: pipeline.getBindGroupLayout(0),
+    entries: [
+      { binding: 0, resource: { buffer: posBuf } },
+      { binding: 1, resource: { buffer: velBuf } },
+      { binding: 2, resource: { buffer: uniformBuf } }
+    ]
+  });
+
+  useWebGPU = true;
+  status.textContent = 'WebGPU compute active';
+  return true;
+}
+
+// Fallback Canvas2D
+const ctx = canvas.getContext('2d');
+let particles = [];
+function initFallback() {
+  particles = [];
+  for (let i=0; i<N/4; i++) { // fewer for CPU
+    particles.push({
+      x: Math.random()*2-1, y: Math.random()*2-1,
+      vx: (Math.random()-0.5)*0.01, vy: (Math.random()-0.5)*0.01
+    });
+  }
+}
+
+function resize() {
+  const dpr = Math.min(devicePixelRatio, 2);
+  canvas.width = innerWidth * dpr;
+  canvas.height = innerHeight * dpr;
+  canvas.style.width = innerWidth + 'px';
+  canvas.style.height = innerHeight + 'px';
+  if (ctx) ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+resize();
+addEventListener('resize', resize);
+
+let running = true;
+async function loop() {
+  if (!running) return;
+  inputs[5] = (Date.now() % 10000) / 5000 - 1;
+  forces = mlp.forward(inputs);
+  updateAttractors();
+
+  if (useWebGPU && device) {
+    const uni = new Float32Array(16);
+    uni[0] = forces[0]; uni[1] = forces[1]; uni[2] = forces[2];
+    uni[4] = attractors[0]?.x || 0; uni[5] = attractors[0]?.y || 0; uni[6] = attractors[0]?.f || 0;
+    uni[8] = attractors[1]?.x || 0; uni[9] = attractors[1]?.y || 0; uni[10] = attractors[1]?.f || 0;
+    device.queue.writeBuffer(uniformBuf, 0, uni);
+
+    const encoder = device.createCommandEncoder();
+    const pass = encoder.beginComputePass();
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.dispatchWorkgroups(Math.ceil(N/64));
+    pass.end();
+    device.queue.submit([encoder.finish()]);
+
+    // Hybrid overlay clear for visibility
+    ctx.fillStyle = 'rgba(5,5,8,0.15)';
+    ctx.fillRect(0,0,innerWidth,innerHeight);
+  } else {
+    // CPU fallback physics
+    ctx.fillStyle = 'rgba(5,5,8,0.2)';
+    ctx.fillRect(0,0,innerWidth,innerHeight);
+    for (const p of particles) {
+      p.vx += forces[0] * 0.002;
+      p.vy += forces[1] * 0.002;
+      for (const a of attractors) {
+        const dx = a.x - p.x, dy = a.y - p.y;
+        const dist = Math.hypot(dx,dy) + 0.05;
+        p.vx += (dx/dist) * a.f * 0.0015 / dist;
+        p.vy += (dy/dist) * a.f * 0.0015 / dist;
+      }
+      p.vx *= 0.985; p.vy *= 0.985;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -1) p.x = 1; if (p.x > 1) p.x = -1;
+      if (p.y < -1) p.y = 1; if (p.y > 1) p.y = -1;
+      const sx = (p.x+1)*0.5*innerWidth;
+      const sy = (p.y+1)*0.5*innerHeight;
+      ctx.fillStyle = `hsla(${180+forces[2]*60},70%,65%,0.7)`;
+      ctx.fillRect(sx, sy, 1.5, 1.5);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('reward').onclick = () => {
+  mlp.reward(inputs, forces);
+  status.textContent = 'reward applied';
+};
+document.getElementById('seal').onclick = seal;
+document.getElementById('reset').onclick = () => {
+  if (!useWebGPU) initFallback();
+  status.textContent = 'particles reset';
+};
+
+initWebGPU().then(ok => {
+  if (!ok) initFallback();
+  loop();
+}).catch(() => { initFallback(); loop(); status.textContent = 'fallback mode'; });

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+html,body{margin:0;height:100%;background:#030308;color:#cfd3e6;font:14px/1.4 system-ui,sans-serif;overflow:hidden}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+#ui{position:fixed;left:12px;top:12px;max-width:320px;background:rgba(5,6,14,.72);padding:10px 12px;border-radius:10px;backdrop-filter:blur(6px)}
+#ui h1{font-size:15px;margin:0 0 6px;font-weight:600;letter-spacing:.04em}
+#ui p{margin:4px 0;font-size:12px;opacity:.85}
+#map{display:block;margin-top:6px;border-radius:6px;width:180px;height:180px;image-rendering:pixelated}
+button{background:#14162a;color:#dfe3ff;border:1px solid #2c3160;border-radius:6px;padding:5px 9px;margin:2px 2px 0 0;cursor:pointer;font:inherit;font-size:12px}
+#pick{position:fixed;bottom:22px;left:0;right:0;display:flex;justify-content:space-around;pointer-events:none}
+#pick button{pointer-events:auto;font-size:15px;padding:9px 22px}
+select{background:#14162a;color:#dfe3ff;border:1px solid #2c3160;border-radius:6px;font-size:12px}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Taste Oracle · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Taste Oracle.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Taste Oracle · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Taste Oracle.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f231-taste-oracle/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f231-taste-oracle/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="gl"></canvas>
+<div id="ui"><h1>Taste Oracle</h1>
+<p>Pick the sculpture you like more. A Gaussian-process taste model learns from every choice and proposes the next pair. Haze and flicker on a sculpture show how unsure the model is about it.</p>
+<p id="stats">0 choices</p>
+<p>Taste map through the current favourite (brightness = predicted liking, grain = uncertainty): <select id="dx"></select> × <select id="dy"></select></p>
+<canvas id="map" width="48" height="48"></canvas>
+<div><button id="undo">Undo</button><button id="reset">Reset</button><button id="auto">Auto taster</button></div></div>
+<div id="pick"><button id="L">◀ This one</button><button id="R">This one ▶</button></div>
+<script type="module" src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

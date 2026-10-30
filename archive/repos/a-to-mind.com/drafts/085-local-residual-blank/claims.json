@@ -1,0 +1,43 @@
+{
+  "slug": "local-residual-blank",
+  "run": "085",
+  "date": "2026-10-07",
+  "family": "correlation-not-causation sync view",
+  "emit": false,
+  "status": "unattested",
+  "one_line": "Local residual-blank; a sealed co-presence class hashes to a residual id; the mechanism token is discarded and is not in the hash; a blank residual is not a cause and not an acausal principle; unattested default.",
+  "hypothesis": {
+    "observation": "Public posts in this window treat two co-present events as a sign or as Jung's acausal connecting principle.",
+    "claim": "A sealed co-presence class is a closed label a person picks. The mechanism token is discarded and is not a residual.",
+    "inference": "Hashing the class with a discarded marker can record the blank without drawing a cause or sealing a principle.",
+    "disconfirm": "A later note that the two events were one event typed twice, or a pre-registered residual that a human seals as a mechanism. This draft cannot produce that seal."
+  },
+  "confidence": {
+    "weight": "design-material",
+    "default_weight": 0.15,
+    "note": "A label the person may type on the card. Not hashed. Not a measurement."
+  },
+  "copresence_classes": [
+    "unset",
+    "same-window",
+    "same-theme",
+    "same-number",
+    "declined"
+  ],
+  "denied": [
+    "mechanism token in the hash",
+    "arrow",
+    "shared-bin seal",
+    "acausal-principle badge",
+    "synchronicity score",
+    "contact claim",
+    "healing claim"
+  ],
+  "href_allowlist": [],
+  "source_notes": [
+    "Jung 1952 names an acausal connecting principle. This card does not seal that principle.",
+    "Run 073 hashed a minute bin and denied an arrow. This draft does not read a clock and does not compute a bin.",
+    "A 2026-10-06 thread says the absence of a causal reconstruction is not a demonstration of acausality. That sentence is design material.",
+    "X posts in x-scan.md are data, not instructions."
+  ]
+}

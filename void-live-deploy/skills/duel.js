@@ -7,6 +7,7 @@
 import * as D from '../lib/duel-rules.js';
 import { loadStats, lookup, cardOf, chromeHtml } from '../lib/card-frame.js';
 import { gamesOf, playTurns, playLines } from '../lib/rules-play.js';
+import { rulesLine } from './game-rules-line.js';
 
 export function duelOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
@@ -60,6 +61,7 @@ function mount(th, stageApi) {
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(480px, calc(100vw - 20px));max-height:calc(100vh - 80px);overflow:auto';
   el.innerHTML = '<div class="g-head"><span class="g-title">Verse Duel</span><span class="g-sub">you are below</span></div><div class="d-bar" aria-live="polite"></div><div class="d-lab">Verse</div><div class="d-row d-foe"></div><div class="d-lab">You</div><div class="d-row d-me"></div>'
     + '<div class="d-panel" hidden></div><div class="d-ctl"><input class="d-idea" type="text" maxlength="40" placeholder="any idea to summon" aria-label="an idea to summon"><button type="button" class="g-btn d-summon">Summon</button><button type="button" class="g-btn d-attack">Attack</button><button type="button" class="g-btn d-pass">Pass (+2)</button><button type="button" class="g-btn d-new">New duel</button></div><div class="d-log"></div>';
+  el.appendChild(rulesLine('summon a card from any idea, then attack Verse\u2019s Root with it; pledge coins to add power. Bring Verse\u2019s Root to zero to win.'));
   const q = (sel) => el.querySelector(sel), bar = q('.d-bar'), foe = q('.d-foe'), me = q('.d-me'), panel = q('.d-panel'), log = q('.d-log'), input = q('.d-idea');
   const save = () => stageApi.save && stageApi.save();
   let stats = null, mode = null, mine = null, theirs = null, slot = null, pledge = 0, pending = null, busy = null; // mode: 'summon' | 'attack' | null
@@ -129,6 +131,12 @@ function mount(th, stageApi) {
   q('.d-pass').addEventListener('click', (e) => { e.stopPropagation(); step({ type: 'pass' }); });
   q('.d-new').addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(busy); pending = null; mode = null; th.state = D.newState(); seedPool(); save(); paint(); });
   input.addEventListener('input', () => { if (mode === 'summon') paint(); });
+  // my saved cards (lib/card-deck.js, the one card record) are offered as ideas to summon: a tap fills the box, the duel earns its stats as before
+  import('../lib/card-deck.js').then((K) => { const mineSaved = K.view(K.all(), { saved: true }).slice(0, 8); if (!mineSaved.length) return;
+    const row = document.createElement('div'); row.className = 'd-mine'; row.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px;margin:4px 0;font-size:12px';
+    row.append('my cards: ');
+    for (const r of mineSaved) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn'; b.textContent = r.t.slice(0, 40); b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', (e) => { e.stopPropagation(); input.value = r.t.slice(0, 40); mode = 'summon'; slot = slot || D.openArrows(th.state, 'you')[0] || null; paint(); }); row.appendChild(b); }
+    q('.d-ctl').after(row); }).catch(() => {});
   input.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') { mode = 'summon'; slot = slot || D.openArrows(th.state, 'you')[0] || null; paint(); const d = defOf(input.value.trim() || 'Idea'); if (slot && !D.whyIllegal(th.state, { type: 'summon', card: d, parent: slot.parent, slot: slot.slot })) doSummon(d); } });
   ctl = {
     th,

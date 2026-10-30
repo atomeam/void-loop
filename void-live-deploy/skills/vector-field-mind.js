@@ -49,8 +49,8 @@ const idea = {
 
 export default fieldSkill({
   name: 'vector-field-mind',
-  words: '(?:evolving |evolutionary |local )?(?:vector|flow) field(?: mind)?|vector field mind',
-  examples: ['show me a vector field mind', 'vector field mind', 'evolving vector field', 'flow field mind'],
+  words: '(?:evolving |evolutionary |local )?(?:vector|flow) field(?: mind)?|vector field mind|vector (?:logo )?(?:of|for) .+|create a vector of .+|give me a svg of .+',
+  examples: ['show me a vector field mind', 'vector field mind', 'evolving vector field', 'flow field mind', 'create a vector of a leaf', 'give me a svg of a star'],
   nearMisses: ['what is a vector field', 'vector field definition', 'divergence of a vector field'],
   idea, say: 'Vector field mind (F-033): particles ride a flow that a small mind keeps evolving · move over it, tap Sound on for the drone'
 });

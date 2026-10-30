@@ -1,0 +1,154 @@
+<!doctype html>
+<!-- written by tools/tower-self.mjs from lib/self-sites.js and its family page; edit the row, not this file -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit converter: every unit at once, exact · Verse</title>
+<meta name="twitter:description" content="Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology.">
+<meta name="twitter:title" content="Unit converter: every unit at once, exact · Verse">
+<meta name="description" content="Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Unit converter: every unit at once, exact · Verse">
+<meta property="og:description" content="Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology.">
+<meta property="og:url" content="https://a-to-mind.com/convert/unit-converter-2/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/convert/ (the tower's unitconverters.net floor): one file and one small module, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c0392b; --tint: #6d4aff14; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff7a6e; --tint: #a58bff1c; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 10px; text-align: center; font-weight: 600; color: var(--soft); }
+  input, select { font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 26px; box-sizing: border-box; min-width: 0; }
+  select { min-height: 40px; max-width: 100%; } select option, select optgroup { color: var(--ink); background: var(--bg); }
+  #ask { width: 100%; font-size: 18px; }
+  .answer { text-align: center; font: 700 clamp(24px, 7vw, 40px)/1.2 system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; margin: 14px 0 6px; overflow-wrap: anywhere; }
+  .answer.bad { color: var(--bad); font-size: 16px; font-weight: 500; }
+  #formula { text-align: center; font-size: 15px; color: var(--soft); margin: 0 0 8px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-height: 1.5em; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; margin: 10px 0; }
+  .row label { font-size: 14px; color: var(--soft); display: inline-flex; gap: 6px; align-items: center; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.main { background: var(--accent); border-color: var(--accent); color: var(--on-accent, #fff); }
+  button:disabled { opacity: .5; cursor: default; }
+  #units { list-style: none; margin: 10px 0 0; padding: 0; }
+  #units li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 4px 10px; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--line); border-radius: 8px; }
+  #units li.from, #units li.to { background: var(--tint); }
+  #units li.from input { border-color: var(--accent); }
+  #units label { font-size: 15px; overflow-wrap: anywhere; } #units label small { color: var(--soft); margin-left: 4px; }
+  #units input { width: 100%; text-align: right; font-variant-numeric: tabular-nums; }
+  #units input.bad { border-color: var(--bad); }
+  .note { font-size: 13px; color: var(--soft); text-align: center; }
+  #kinds { font-size: 13px; color: var(--soft); margin: 14px 0 0; } #kinds b { color: var(--ink); font-weight: 600; } #kinds a { color: inherit; }
+  #pair h2 { font-size: 15px; font-weight: 600; margin: 18px 0 6px; text-align: center; } #pair table { width: 100%; max-width: 420px; margin: 0 auto; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  #pair th, #pair td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; } #pair th { color: var(--soft); font-weight: 600; font-size: 14px; }
+  html.wait #units, html.wait #units ~ * { visibility: hidden; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<script>/* a link or a kept conversion of another kind redraws the rows after load: until then they and all below them are hidden, so nothing seen moves (a ?q=100 c to f link shifted 0.46) */
+try { const k = (JSON.parse(localStorage.getItem('a2m.void.convert.v1') || 'null') || {}).kind; if (/[?&](?:q|k)=/.test(location.search) || (k && k !== 'length')) document.documentElement.classList.add('wait'); } catch (_) { if (/[?&](?:q|k)=/.test(location.search)) document.documentElement.classList.add('wait'); }</script>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/convert/unit-converter-2/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Unit converter: every unit at once, exact","url":"https://a-to-mind.com/convert/unit-converter-2/","description":"Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"unit converter, celsius to fahrenheit, cm to inches, kg to lbs, km to miles, litres to gallons","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Unit converter: every unit at once, exact","item":"https://a-to-mind.com/convert/unit-converter-2/"}]}]}</script>
+<!-- /seo -->
+</head>
+<body>
+<main>
+  <h1>Unit converter: every unit at once, exact</h1>
+  <p class="intro">Convert length, temperature, area, volume, weight and mass, time, speed, pressure, energy, power, force, data storage, angle, fuel consumption and frequency, plus the engineering groups: heat, fluids, light, electricity, magnetism and radiology.</p>
+  <label for="ask" class="note" style="display:block;text-align:left">Type a conversion from any unit to any other, or a value in any unit below</label>
+  <input type="text" id="ask" value="1 m" spellcheck="false" autocomplete="off" placeholder="100 c to f, 5 km in miles, how many feet in a mile">
+  <p class="answer" id="answer" aria-live="polite">1 m in every length unit</p>
+  <p id="formula" aria-live="polite">Pick a second unit (type "1 m to …") for the formula from one to the other.</p>
+  <div class="row">
+    <label>Kind <select id="kind" aria-label="Kind of unit"><optgroup label="Common converters"><option value="length" selected>Length</option><option value="mass">Weight and mass</option><option value="temperature">Temperature</option><option value="volume">Volume</option><option value="area">Area</option><option value="speed">Speed</option><option value="time">Time</option><option value="data">Data storage</option><option value="pressure">Pressure</option><option value="energy">Energy</option><option value="power">Power</option><option value="force">Force</option><option value="angle">Angle</option><option value="frequency">Frequency</option><option value="fuel">Fuel consumption</option></optgroup><optgroup label="Engineering converters: mechanics, heat, fluids, light, electricity, magnetism, radiology"><option value="acceleration">Acceleration</option><option value="angvel">Angular velocity</option><option value="density">Density</option><option value="specvol">Specific volume</option><option value="torque">Torque</option><option value="inertia">Moment of inertia</option><option value="heat">Heat: thermal conductivity</option><option value="specheat">Heat: specific heat capacity</option><option value="heatflux">Heat: heat flux density</option><option value="htc">Heat: heat transfer coefficient</option><option value="fluids">Fluids: flow rate</option><option value="massflow">Fluids: mass flow rate</option><option value="dynvisc">Fluids: dynamic viscosity</option><option value="kinvisc">Fluids: kinematic viscosity</option><option value="molar">Fluids: molar concentration</option><option value="light">Light: illuminance</option><option value="luminance">Light: luminance</option><option value="electricity">Electricity: charge</option><option value="current">Electricity: current</option><option value="voltage">Electricity: voltage (potential)</option><option value="resistance">Electricity: resistance</option><option value="resistivity">Electricity: resistivity</option><option value="conductance">Electricity: conductance</option><option value="conductivity">Electricity: conductivity</option><option value="capacitance">Electricity: capacitance</option><option value="inductance">Electricity: inductance</option><option value="efield">Electricity: electric field strength</option><option value="magnetism">Magnetism: flux density</option><option value="magfield">Magnetism: field strength</option><option value="magflux">Magnetism: magnetic flux</option><option value="mmf">Magnetism: magnetomotive force</option><option value="radiology">Radiology: absorbed dose</option><option value="radioactivity">Radiology: radioactivity</option><option value="exposure">Radiology: radiation exposure</option></optgroup><optgroup label="Other converters: metric prefixes, data transfer rate, typography"><option value="prefix">Metric prefixes</option><option value="datarate">Data transfer rate</option><option value="typography">Typography</option></optgroup></select></label>
+    <label>Precision <select id="sig" aria-label="Significant digits"><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12" selected>12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option></select> digits</label>
+  </div>
+  <ul id="units" aria-label="Every unit of this kind"><li data-unit="m" class="from"><label for="u-m">Metre<small>m</small></label><input type="text" inputmode="decimal" id="u-m" spellcheck="false" autocomplete="off" value="1"></li><li data-unit="km"><label for="u-km">Kilometre<small>km</small></label><input type="text" inputmode="decimal" id="u-km" spellcheck="false" autocomplete="off" value="0.001"></li><li data-unit="cm"><label for="u-cm">Centimetre<small>cm</small></label><input type="text" inputmode="decimal" id="u-cm" spellcheck="false" autocomplete="off" value="100"></li><li data-unit="mm"><label for="u-mm">Millimetre<small>mm</small></label><input type="text" inputmode="decimal" id="u-mm" spellcheck="false" autocomplete="off" value="1000"></li><li data-unit="um"><label for="u-um">Micrometre<small>µm</small></label><input type="text" inputmode="decimal" id="u-um" spellcheck="false" autocomplete="off" value="1000000"></li><li data-unit="nm"><label for="u-nm">Nanometre<small>nm</small></label><input type="text" inputmode="decimal" id="u-nm" spellcheck="false" autocomplete="off" value="1000000000"></li><li data-unit="in"><label for="u-in">Inch<small>in</small></label><input type="text" inputmode="decimal" id="u-in" spellcheck="false" autocomplete="off" value="39.3700787402"></li><li data-unit="ft"><label for="u-ft">Foot<small>ft</small></label><input type="text" inputmode="decimal" id="u-ft" spellcheck="false" autocomplete="off" value="3.28083989501"></li><li data-unit="yd"><label for="u-yd">Yard<small>yd</small></label><input type="text" inputmode="decimal" id="u-yd" spellcheck="false" autocomplete="off" value="1.09361329834"></li><li data-unit="mi"><label for="u-mi">Mile<small>mi</small></label><input type="text" inputmode="decimal" id="u-mi" spellcheck="false" autocomplete="off" value="0.000621371192237"></li><li data-unit="nmi"><label for="u-nmi">Nautical mile<small>nmi</small></label><input type="text" inputmode="decimal" id="u-nmi" spellcheck="false" autocomplete="off" value="0.000539956803456"></li><li data-unit="mil"><label for="u-mil">Mil (thou)<small>mil</small></label><input type="text" inputmode="decimal" id="u-mil" spellcheck="false" autocomplete="off" value="39370.0787402"></li><li data-unit="fur"><label for="u-fur">Furlong<small>fur</small></label><input type="text" inputmode="decimal" id="u-fur" spellcheck="false" autocomplete="off" value="0.0049709695379"></li><li data-unit="au"><label for="u-au">Astronomical unit<small>au</small></label><input type="text" inputmode="decimal" id="u-au" spellcheck="false" autocomplete="off" value="6.68458712227e-12"></li><li data-unit="ly"><label for="u-ly">Light-year<small>ly</small></label><input type="text" inputmode="decimal" id="u-ly" spellcheck="false" autocomplete="off" value="1.05700083402e-16"></li></ul>
+  <div class="row"><button type="button" id="swap">Swap the two units</button><button type="button" id="link">Copy link</button></div>
+  <p class="note">Every unit of a kind at once, both ways: type in any box and the rest follow. Exact: each unit comes from its definition (an inch is 0.0254 m, a pound 0.45359237 kg, a US gallon 231 cubic inches), worked out as fractions, and rounded only when shown, to the precision you choose.</p>
+  <p id="kinds"><b>Common converters: </b><a href="?k=length">Length</a>, <a href="?k=mass">Weight and mass</a>, <a href="?k=temperature">Temperature</a>, <a href="?k=volume">Volume</a>, <a href="?k=area">Area</a>, <a href="?k=speed">Speed</a>, <a href="?k=time">Time</a>, <a href="?k=data">Data storage</a>, <a href="?k=pressure">Pressure</a>, <a href="?k=energy">Energy</a>, <a href="?k=power">Power</a>, <a href="?k=force">Force</a>, <a href="?k=angle">Angle</a>, <a href="?k=frequency">Frequency</a>, <a href="?k=fuel">Fuel consumption</a><br><b>Engineering converters: mechanics, heat, fluids, light, electricity, magnetism, radiology: </b><a href="?k=acceleration">Acceleration</a>, <a href="?k=angvel">Angular velocity</a>, <a href="?k=density">Density</a>, <a href="?k=specvol">Specific volume</a>, <a href="?k=torque">Torque</a>, <a href="?k=inertia">Moment of inertia</a>, <a href="?k=heat">Heat: thermal conductivity</a>, <a href="?k=specheat">Heat: specific heat capacity</a>, <a href="?k=heatflux">Heat: heat flux density</a>, <a href="?k=htc">Heat: heat transfer coefficient</a>, <a href="?k=fluids">Fluids: flow rate</a>, <a href="?k=massflow">Fluids: mass flow rate</a>, <a href="?k=dynvisc">Fluids: dynamic viscosity</a>, <a href="?k=kinvisc">Fluids: kinematic viscosity</a>, <a href="?k=molar">Fluids: molar concentration</a>, <a href="?k=light">Light: illuminance</a>, <a href="?k=luminance">Light: luminance</a>, <a href="?k=electricity">Electricity: charge</a>, <a href="?k=current">Electricity: current</a>, <a href="?k=voltage">Electricity: voltage (potential)</a>, <a href="?k=resistance">Electricity: resistance</a>, <a href="?k=resistivity">Electricity: resistivity</a>, <a href="?k=conductance">Electricity: conductance</a>, <a href="?k=conductivity">Electricity: conductivity</a>, <a href="?k=capacitance">Electricity: capacitance</a>, <a href="?k=inductance">Electricity: inductance</a>, <a href="?k=efield">Electricity: electric field strength</a>, <a href="?k=magnetism">Magnetism: flux density</a>, <a href="?k=magfield">Magnetism: field strength</a>, <a href="?k=magflux">Magnetism: magnetic flux</a>, <a href="?k=mmf">Magnetism: magnetomotive force</a>, <a href="?k=radiology">Radiology: absorbed dose</a>, <a href="?k=radioactivity">Radiology: radioactivity</a>, <a href="?k=exposure">Radiology: radiation exposure</a><br><b>Other converters: metric prefixes, data transfer rate, typography: </b><a href="?k=prefix">Metric prefixes</a>, <a href="?k=datarate">Data transfer rate</a>, <a href="?k=typography">Typography</a><br></p>
+  <section id="pair" hidden aria-labelledby="pairh"><h2 id="pairh"></h2><table><thead><tr><th scope="col" id="pairfrom"></th><th scope="col" id="pairto"></th></tr></thead><tbody id="pairrows"></tbody></table></section>
+  <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/base-converter/">Base converter</a> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Works offline after one visit; nothing you type leaves this device. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  // the default converter above is in the HTML, so the first paint is the finished page; the code comes in after the load event and redraws the
+  // same rows (nothing moves), then answers a conversion in the link or the last one kept (2026-10-25: 216 ms to the load event and a layout shift of 0.28)
+  addEventListener('load', async () => {
+  const { KINDS, GROUPS, kindsInOrder, unitOf, parseNum, fmt, convert, convertAll, parseAsk, formulaOf } = await import('/lib/units.js');
+  const $ = (id) => document.getElementById(id), KEY = 'a2m.void.convert.v1';
+  // the state: a kind, the unit typed in (from), the number as typed, the unit asked for (to, or null), and how many significant digits to show
+  let st = { kind: 'length', from: unitOf('length', 'm'), text: '1', to: null };
+  let sig = 12; try { sig = Math.min(15, Math.max(3, +localStorage.getItem(KEY + '.sig') || 12)); } catch (_) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ kind: st.kind, from: st.from.id, text: st.text, to: st.to ? st.to.id : null })); localStorage.setItem(KEY + '.sig', String(sig)); } catch (_) {} };
+  const restore = (o) => { const f = o && KINDS[o.kind] && unitOf(o.kind, o.from); if (!f || !parseNum(o.text)) return false; st = { kind: o.kind, from: f, text: String(o.text), to: unitOf(o.kind, o.to) }; return true; };
+  const q = new URLSearchParams(location.search);
+  const asked = q.get('q') ? parseAsk(q.get('q')) : null;
+  if (asked) st = { kind: asked.kind, from: asked.from, text: asked.text, to: asked.to };
+  else if (!restore({ kind: q.get('k'), from: q.get('from'), text: q.get('v') || '1', to: q.get('to') })) { try { restore(JSON.parse(localStorage.getItem(KEY) || 'null')); } catch (_) {} }
+  if (q.get('sig') && +q.get('sig') >= 3 && +q.get('sig') <= 15) sig = +q.get('sig');
+
+  // the kinds, grouped as unitconverters.net groups them (common, then the engineering groups), as a select and as a line of words
+  const kinds = kindsInOrder();
+  $('kind').replaceChildren(...Object.entries(GROUPS).map(([g, label]) => { const og = document.createElement('optgroup'); og.label = label;
+    og.append(...kinds.filter(([, k]) => k.group === g).map(([id, k]) => { const o = document.createElement('option'); o.value = id; o.textContent = k.label; return o; })); return og; }));
+  $('kinds').replaceChildren(...Object.entries(GROUPS).flatMap(([g, label]) => { const b = document.createElement('b'); b.textContent = label + ': ';
+    const names = kinds.filter(([, k]) => k.group === g).map(([id, k]) => { const a = document.createElement('a'); a.href = '?k=' + id; a.textContent = k.label; a.addEventListener('click', (e) => { e.preventDefault(); pick(id); }); return a; });
+    return [b, ...names.flatMap((a, i) => (i ? [', ', a] : [a])), document.createElement('br')]; }));
+  $('sig').replaceChildren(...Array.from({ length: 13 }, (_, i) => { const o = document.createElement('option'); o.value = o.textContent = String(i + 3); return o; }));
+  $('sig').value = String(sig);
+  function pick(k) { if (k === st.kind) return; st = { kind: k, from: KINDS[k].units[0], text: '1', to: null }; build(); $('ask').value = says(); }
+
+  const inputs = new Map(); // unit id -> its box, for the kind on show
+  function build() { // the kind's rows, made once per kind so a box keeps its focus while the others change
+    $('kind').value = st.kind; inputs.clear();
+    $('units').replaceChildren(...KINDS[st.kind].units.map((u) => {
+      const li = document.createElement('li'), label = document.createElement('label'), box = document.createElement('input'), small = document.createElement('small');
+      box.type = 'text'; box.inputMode = 'decimal'; box.id = 'u-' + u.id; box.spellcheck = false; box.autocomplete = 'off'; label.htmlFor = box.id;
+      label.textContent = u.name.charAt(0).toUpperCase() + u.name.slice(1); small.textContent = u.sym; label.append(small);
+      box.addEventListener('input', () => { if (u !== st.from) { st.to = u === st.to ? st.from : st.to; st.from = u; } st.text = box.value; draw(box); if (document.activeElement !== $('ask')) $('ask').value = says(); });
+      li.append(label, box); li.dataset.unit = u.id; inputs.set(u.id, box); return li; }));
+    draw(null);
+  }
+  const says = () => st.text.trim() + ' ' + st.from.sym + (st.to ? ' to ' + st.to.sym : '');
+  const show = (v) => (v ? fmt(v, sig) : '∞'); // only 0 through a reciprocal unit (L/100km) has no value
+  function draw(typing) {
+    const v = parseNum(st.text);
+    for (const li of $('units').children) { li.classList.toggle('from', li.dataset.unit === st.from.id); li.classList.toggle('to', !!st.to && li.dataset.unit === st.to.id); }
+    for (const [id, box] of inputs) box.classList.toggle('bad', !v && id === st.from.id);
+    if (!v) { $('answer').className = 'answer bad'; $('answer').textContent = 'That is not a number: try 100, -40, 1.5e3, 3/8 or 1 1/2.'; $('formula').textContent = ''; return; }
+    for (const { unit, value } of convertAll(st.kind, v, st.from)) { const box = inputs.get(unit.id); if (box && box !== typing) box.value = unit === st.from ? st.text : show(value); }
+    $('answer').className = 'answer';
+    $('answer').textContent = st.to ? show(v) + ' ' + st.from.sym + ' = ' + show(convert(v, st.from, st.to)) + ' ' + st.to.sym : show(v) + ' ' + st.from.sym + ' in every ' + KINDS[st.kind].label.toLowerCase() + ' unit';
+    $('formula').textContent = st.to ? 'From ' + st.from.sym + ' to ' + st.to.sym + ', the formula: ' + formulaOf(st.from, st.to, sig) : 'Pick a second unit (type "' + st.text.trim() + ' ' + st.from.sym + ' to …") for the formula from one to the other.';
+    $('swap').disabled = !st.to;
+    // the pair's table of common values (unitconverters.net's page per pair), below everything else so drawing it moves nothing above
+    $('pair').hidden = !st.to;
+    if (st.to) { $('pairh').textContent = st.from.sym + ' to ' + st.to.sym + ' table'; $('pairfrom').textContent = st.from.name.charAt(0).toUpperCase() + st.from.name.slice(1) + ' (' + st.from.sym + ')'; $('pairto').textContent = st.to.name.charAt(0).toUpperCase() + st.to.name.slice(1) + ' (' + st.to.sym + ')';
+      $('pairrows').replaceChildren(...['0.01', '0.1', '1', '2', '3', '5', '10', '20', '25', '50', '100', '250', '500', '1000', '10000'].map((n) => { const tr = document.createElement('tr'), a = document.createElement('td'), b = document.createElement('td'), r = convert(parseNum(n), st.from, st.to);
+        a.textContent = n + ' ' + st.from.sym; b.textContent = show(r) + ' ' + st.to.sym; tr.append(a, b); return tr; })); }
+    save();
+  }
+  $('ask').addEventListener('input', () => { const a = parseAsk($('ask').value); if (!a) return; const same = a.kind === st.kind; st = { kind: a.kind, from: a.from, text: a.text, to: a.to }; if (same) draw(null); else build(); });
+  $('kind').addEventListener('change', () => pick($('kind').value));
+  $('sig').addEventListener('change', () => { sig = +$('sig').value; draw(null); });
+  $('swap').addEventListener('click', () => { if (!st.to) return; const v = parseNum(st.text); const to = st.from; st.from = st.to; st.to = to; const r = v && convert(v, to, st.from); if (r) st.text = fmt(r, sig); draw(null); $('ask').value = says(); });
+  $('link').addEventListener('click', async () => { const p = new URLSearchParams({ k: st.kind, from: st.from.id, v: st.text.trim() }); if (st.to) p.set('to', st.to.id); if (sig !== 12) p.set('sig', String(sig));
+    const u = location.origin + location.pathname + '?' + p; try { await navigator.clipboard.writeText(u); const w = $('link').textContent; $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = w; }, 1200); } catch (_) {} });
+  build(); $('ask').value = says(); document.documentElement.classList.remove('wait');
+  // the "Use with" row last of all
+  // its stage card opens on the conversion shown here, read back by the card to the same number (lib/convert-math.js cardAsk)
+  const words = (u) => [u.sym, u.name].map((w) => String(w).toLowerCase());
+  Promise.all([import('/lib/toolkit.js'), import('/lib/convert-math.js')]).then(([m, { cardAsk }]) => m.mountRelated(document.getElementById('related'), '/convert/', [], { card: () => {
+    const v = parseNum(st.text); if (!v) return ''; // an exact fraction; the card takes a plain number
+    const answer = (b) => { const p = parseAsk('1 ' + st.from.sym + ' to ' + b); return p && p.from === st.from && p.to && (!st.to || p.to === st.to) ? +fmt(convert(v, st.from, p.to), 15) : NaN; };
+    return cardAsk(+fmt(v, 15), words(st.from), st.to ? words(st.to) : null, answer); } })).catch(() => {});
+  });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+{
+ "site": "tripwaffle.com",
+ "url": "https://tripwaffle.com/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "appleid.cdn-apple.com/appleid.auth.js",
+   "t": "js",
+   "b": 42880,
+   "ext": true
+  },
+  {
+   "f": "styles.min.css",
+   "t": "css",
+   "b": 200192
+  },
+  {
+   "f": "tailwind.css",
+   "t": "css",
+   "b": 130574
+  },
+  {
+   "f": "apple-signin.js",
+   "t": "js",
+   "b": 5945
+  }
+ ],
+ "assetCount": 4,
+ "bytes": 379591,
+ "html": {
+  "mobile": {
+   "title": "TripWaffle - Travel planning, fixed.",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 8,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "details": 21,
+   "ariaLabels": [
+    "5 out of 5 stars",
+    "More sign-in options",
+    "No",
+    "TripWaffle home",
+    "Yes"
+   ],
+   "roles": {
+    "menu": 1,
+    "menuitem": 2
+   }
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "All questions and answers",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Continue with Apple",
+   "w": "md"
+  },
+  {
+   "l": "Data",
+   "w": "md"
+  },
+  {
+   "l": "FAQ",
+   "w": "md"
+  },
+  {
+   "l": "Features",
+   "w": "md"
+  },
+  {
+   "l": "How it works",
+   "w": "md"
+  },
+  {
+   "l": "More sign-in options",
+   "w": "md"
+  },
+  {
+   "l": "Privacy",
+   "w": "md"
+  },
+  {
+   "l": "Reviews",
+   "w": "md"
+  },
+  {
+   "l": "Safety guides",
+   "w": "md"
+  },
+  {
+   "l": "Sign in",
+   "w": "md"
+  },
+  {
+   "l": "System status",
+   "w": "md"
+  },
+  {
+   "l": "Terms",
+   "w": "md"
+  },
+  {
+   "l": "TripIt exporter",
+   "w": "md"
+  },
+  {
+   "l": "TripWaffle home",
+   "w": "md"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/api/",
+   "/admin/",
+   "/dashboard/",
+   "/settings/",
+   "/event/",
+   "/trip/",
+   "/signin/",
+   "/import/",
+   "/unsubscribe/",
+   "/discover/"
+  ],
+  "sitemaps": [
+   "https://tripwaffle.com/sitemap.xml",
+   "https://tripwaffle.com/data/sitemap.xml",
+   "https://tripwaffle.com/safety/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 3,
+  "index": true,
+  "sections": [
+   {
+    "s": "data",
+    "n": 1
+   },
+   {
+    "s": "safety",
+    "n": 1
+   },
+   {
+    "s": "sitemap-pages.xml",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "styles.min.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "tailwind.css",
+   "own": true,
+   "media": [
+    "print",
+    "dark"
+   ]
+  },
+  {
+   "file": "apple-signin.js",
+   "own": true,
+   "flags": [
+    "usePopup@911"
+   ],
+   "storage": [
+    "tw_tracking@2396"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "tailwindcss.com*",
+   "file": "tailwind.css",
+   "at": 2268
+  },
+  {
+   "host": "tripwaffle.com",
+   "file": "apple-signin.js",
+   "at": 339
+  }
+ ],
+ "thirdParty": [
+  "appleid.cdn-apple.com",
+  "tailwindcss.com*"
+ ],
+ "requests": [
+  "https://tripwaffle.com/api/home-panel.php",
+  "https://tripwaffle.com/api/scraper-beacon.php"
+ ],
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "styles.min.css"
+  },
+  {
+   "name": "API call tripwaffle.com/api/home-panel.php",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call tripwaffle.com/api/scraper-beacon.php",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "Feature flag usePopup",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "apple-signin.js@911"
+  },
+  {
+   "name": "Widget menu",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=menu] x1"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "tailwind.css"
+  },
+  {
+   "name": "Respects the reduced-motion setting",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "styles.min.css@19052"
+  },
+  {
+   "name": "Path kept from crawlers /admin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /api/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /dashboard/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /discover/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /event/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /import/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /settings/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /signin/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /trip/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /unsubscribe/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  }
+ ]
+}

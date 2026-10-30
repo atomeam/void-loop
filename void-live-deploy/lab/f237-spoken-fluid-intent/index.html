@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin: 0; background: #0a0a0a; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+canvas { display: block; }
+#ui { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 12px; border-radius: 8px; max-width: 320px; }
+button, input { margin: 4px 0; padding: 6px; }
+#status { font-size: 0.9em; opacity: 0.8; margin-top: 8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spoken Fluid Intent · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Spoken Fluid Intent.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spoken Fluid Intent · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Spoken Fluid Intent.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f237-spoken-fluid-intent/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f237-spoken-fluid-intent/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <h3>Spoken Fluid Intent</h3>
+  <p>Speak or type to sculpt the mind. The field responds and speaks back.</p>
+  <input id="text" placeholder="type an intent..." size="28">
+  <button id="speak">Speak</button>
+  <button id="listen">Listen</button>
+  <div id="status">Ready. Drag to stir. Speak words like "calm", "swirl", "focus".</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spoken Fluid Intent</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

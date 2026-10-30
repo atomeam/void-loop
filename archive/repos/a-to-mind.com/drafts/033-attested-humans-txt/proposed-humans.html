@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Attested humans.txt — draft 033</title>
+<style>
+:root{--bg:#0e1116;--fg:#e8edf4;--muted:#9aa6b5;--line:#2a3340;--card:#161b22;--hold:#c9a227;--ok:#3d9a6a;--bad:#c45c5c}
+body{margin:0;font:16px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+main{max-width:46rem;margin:0 auto;padding:1.25rem}
+.note{color:var(--muted)}
+.chip{display:inline-block;border:1px solid var(--hold);padding:.3rem .6rem}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+td,th{text-align:left;border-bottom:1px solid var(--line);padding:.4rem;vertical-align:top}
+.hash,code{font-family:ui-monospace,Menlo,monospace;font-size:.75rem;word-break:break-all}
+.match{color:var(--ok)}.mismatch{color:var(--bad)}.hold{color:var(--hold)}
+button{font:inherit;background:var(--card);color:var(--fg);border:1px solid var(--line);padding:.4rem .7rem}
+</style>
+</head>
+<body>
+<main>
+<p class="note">Draft 033 candidate · hold-gate · Queue empty · not a live /humans.txt</p>
+<h1>Attested humans.txt</h1>
+<p>No invented TEAM. No jobs CTA. Last update is null.</p>
+<p class="chip">unattested / hold</p>
+<table>
+<thead><tr><th>id</th><th>canonical</th><th>check</th></tr></thead>
+<tbody id="rows">
+<tr data-canonical="hum#033|kind:attested-humans-txt|invented-person:deny|jobs-cta:deny|ascii-mascot:deny|hash:sha256|seal:human" data-sha="1bd04242d1b822fb5716feffadd039359a4449bbcd6fe26530a1b00bd26e4cf1"><td>contract</td><td class="hash">hum#033|…|seal:human</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#route|text:No live /humans.txt until a human seals named people who actually exist." data-sha="41aca34a6e7d8faa0fbd4cb5ab76c10e0101c2b4e2cf218eb601e78bc985807d"><td>route</td><td>No live /humans.txt until a human seals named people who actually exist.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#team|text:TEAM rows stay empty until a human names real people. Invented names are denied." data-sha="0a49f4ac362dedb4e438c9a0c63c70ec135438705b7357a9c83302a243043679"><td>team</td><td>TEAM rows stay empty until a human names real people. Invented names are denied.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#thanks|text:THANKS rows stay empty until a human names a real thanks. Generators do not invent credits." data-sha="eb4893a770e3746328a3789a587fba3f979e91c939d50c2a275a84d3c63a11cc"><td>thanks</td><td>THANKS rows stay empty until a human names a real thanks. Generators do not invent credits.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#site|text:SITE last-update stays null until seal. A date bump without byte change is denied." data-sha="b7a175ebc6a4e6ebc4d20559275f452a4e634568469b3b7607387185efd91b3c"><td>site</td><td>SITE last-update stays null until seal. A date bump without byte change is denied.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#author-link|text:No rel=author head link until the root file is sealed and hashed." data-sha="530d036a2ede8dd71f221794993e0feae2b74f76dee7b4c3a44cbbae4883b35d"><td>author-link</td><td>No rel=author head link until the root file is sealed and hashed.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#jobs|text:No hiring CTA, no jobs-page credits theater, no ASCII mascot as a substitute for names." data-sha="73b24864417efd1e7d7467eb7e4a54da74033c8a4ab52723052cddd12e81d9b2"><td>jobs</td><td>No hiring CTA, no jobs-page credits theater, no ASCII mascot as a substitute for names.</td><td class="hold">pending</td></tr>
+<tr data-canonical="claim#tokens|text:This page does not price tokens and does not pitch Void Monthly." data-sha="126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"><td>tokens</td><td>This page does not price tokens and does not pitch Void Monthly.</td><td class="hold">pending</td></tr>
+<tr data-canonical="page#humans-txt|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny" data-sha="9e1c08933e7970c1e24955e3364b517b856dd6d400c2bd8b942f8f32f76c67cf"><td>page</td><td class="hash">page#humans-txt|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny</td><td class="hold">pending</td></tr>
+</tbody>
+</table>
+<p class="note" id="digest-note"></p>
+<p><button type="button" id="rehash">Recompute digests</button>
+<button type="button" id="hold-bind">Record local hold</button></p>
+<p class="note" id="form-status">Nothing sent.</p>
+<pre id="receipt" hidden></pre>
+</main>
+<script>
+const EXPECTED_BODY="67c279a3b5d307abbc9ba015ef33b06e0e027980822bef7f3a09f630160b94ab";
+const EXPECTED_HEAD="5c5df4427d5de2faec8c9a1e74976e4fe88dbe23f0572bf9702e892f9ac6cfc9";
+const HEAD_CANON='{"algo":"sha256","ascii_mascot":false,"invented_person":false,"jobs_cta":false,"kind":"attested-humans-txt"}';
+async function sha256Hex(text){
+  const d=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+async function recompute(){
+  const rows=[...document.querySelectorAll("#rows tr")];
+  const canons=[];
+  for(const row of rows){
+    const canon=row.getAttribute("data-canonical")||"";
+    const expected=row.getAttribute("data-sha")||"";
+    const got=await sha256Hex(canon);
+    canons.push(canon);
+    const cell=row.querySelector("td:last-child");
+    cell.textContent=got===expected?"match":"mismatch";
+    cell.className=got===expected?"match":"mismatch";
+  }
+  const bodyHash=await sha256Hex(canons.map(l=>l+"\n").join(""));
+  const headHash=await sha256Hex(HEAD_CANON);
+  document.getElementById("digest-note").textContent=
+    "Body "+bodyHash+" ("+(bodyHash===EXPECTED_BODY?"match":"mismatch")+") · Head "+headHash+" ("+(headHash===EXPECTED_HEAD?"match":"mismatch")+")";
+}
+document.getElementById("rehash").onclick=recompute;
+recompute();
+document.getElementById("hold-bind").onclick=function(){
+  const receipt={kind:"hold",slug:"attested-humans-txt",run:"033",accepted:false,sent:false,invented_person:false,stored_at:new Date().toISOString()};
+  try{sessionStorage.setItem("atm-humans-txt-hold-033",JSON.stringify(receipt));document.getElementById("form-status").textContent="Hold receipt local only.";}
+  catch(e){document.getElementById("form-status").textContent="Hold in page only.";}
+  const pre=document.getElementById("receipt");pre.hidden=false;pre.textContent=JSON.stringify(receipt,null,2);
+};
+</script>
+</body>
+</html>

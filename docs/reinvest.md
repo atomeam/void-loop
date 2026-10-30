@@ -36,7 +36,7 @@ approval, and nothing is bought automatically.
 ## The plan for a hypothetical first $100
 
 <!-- plan -->
-_As of 2026-10-20. Rewritten daily by tools/reinvest.mjs._
+_As of 2026-10-29. Rewritten daily by tools/reinvest.mjs._
 
 **The first $100:** keep $20 in reserve; do every free path first (below); fund 3 items for $40.50; hold $39.50 for the next item that becomes worth buying (re-ranked daily).
 

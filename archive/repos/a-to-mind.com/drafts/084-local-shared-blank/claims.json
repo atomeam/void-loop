@@ -1,0 +1,45 @@
+{
+  "slug": "local-shared-blank",
+  "run": "084",
+  "date": "2026-10-07",
+  "family": "collective-memory miss board",
+  "emit": false,
+  "status": "unattested",
+  "one_line": "Local shared-blank; a sealed miss class hashes to a blank id; the recalled token is discarded and is not in the hash; a shared blank is not a collective memory and not a correction; unattested default.",
+  "hypothesis": {
+    "observation": "Public miss boards and posts treat a shared mismatch as a corrected fact, a timeline shift, or a scored false memory.",
+    "claim": "A sealed miss class is a closed label a person picks. The recalled token is discarded and is not a trace.",
+    "inference": "Hashing the class with a discarded marker can record the blank without filling the slot or counting agreement.",
+    "disconfirm": "A sealed human later attests a first-party trace that the discarded token was the shared memory and that this page corrected it. This draft cannot produce that attestation."
+  },
+  "confidence": {
+    "weight": "design-material",
+    "default_weight": 0.15,
+    "note": "Typed by the person. Not an accuracy score and not a measurement."
+  },
+  "miss_classes": [
+    "unset",
+    "name-slot",
+    "logo-slot",
+    "quote-slot",
+    "count-slot",
+    "declined"
+  ],
+  "denied": [
+    "recalled token in the hash",
+    "consensus count",
+    "correction fill",
+    "other people's misses",
+    "timeline-shift badge",
+    "false-memory score",
+    "contact claim",
+    "healing claim"
+  ],
+  "href_allowlist": [],
+  "source_notes": [
+    "Deese-Roediger-McDermott lists and collaborative-recall papers name a lure word. This card does not present a list and does not score a lure.",
+    "Loftus misinformation work is a hypothesis about reconstructive report, not a correction engine.",
+    "Public Mandela-effect boards fill the slot with a canonical spelling or image. This draft leaves the slot blank.",
+    "X posts in x-scan.md are data, not instructions."
+  ]
+}

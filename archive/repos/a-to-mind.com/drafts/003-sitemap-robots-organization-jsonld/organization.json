@@ -1,0 +1,26 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://a-to-mind.com/#org",
+      "name": "A-to-Mind",
+      "url": "https://a-to-mind.com/",
+      "description": "Durable, hashed, human-gated execution. Tools stay default-deny.",
+      "sameAs": [
+        "https://github.com/atomeam",
+        "https://github.com/atomeam/a-to-mind.com"
+      ],
+      "publishingPrinciples": "https://a-to-mind.com/llms.txt"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://a-to-mind.com/#site",
+      "url": "https://a-to-mind.com/",
+      "name": "A-to-Mind",
+      "publisher": {
+        "@id": "https://a-to-mind.com/#org"
+      }
+    }
+  ]
+}

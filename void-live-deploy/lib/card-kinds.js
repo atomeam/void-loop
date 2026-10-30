@@ -7,6 +7,9 @@
 
 /** [kind, test, chapter for its glyph and colour] in the order they are tried */
 export const KINDS = [
+  ['Character', /\b(?:fictional character|cartoon character|animated character|comic(?:s)? character|video game character|action figure|puppet character|mascot|character (?:in|from|of))\b/i, 'games'],
+  ['Episode', /\b(?:television episode|tv episode|episode of)\b/i, 'stage'],
+  ['Myth', /\b(?:deity|god of|goddess of|mythological|legendary (?:creature|figure)|folkloric|saint)\b/i, 'self'],
   ['Film', /\b(?:films?|movies?|screenplay|animated feature|documentary)\b/i, 'stage'],
   ['Show', /\b(?:television|tv series|tv show|sitcom|web series|miniseries|anime|cartoon series)\b/i, 'stage'],
   ['Album', /\balbum\b/i, 'words'],
@@ -15,9 +18,14 @@ export const KINDS = [
   ['Card', /\b(?:trading card|collectible card|playing card|tarot card|pok[eé]mon (?:species|card)|magic: the gathering card|yu-gi-oh! card)\b/i, 'games'],
   ['Game', /\b(?:video game|board game|card game|tabletop game|role-playing game|game series)\b/i, 'games'],
   ['Book', /\b(?:novel|novella|poem|short story|play by|comic book|manga|book by|memoir|textbook)\b/i, 'words'],
+  ['Place', /\b(?:residence|palace|building|bridge|tower|landmark|monument|museum|castle|stadium|skyscraper|cathedral|church|temple|airport|railway station|fortress|dam|canal)\b/i, 'sky'], // a landmark before a person: "residence of the president" is the White House
   ['Person', /\((?:born|b\.)\s|\(\d{3,4}\s*[–-]\s*\d{2,4}\)|\b(?:actor|actress|singer|songwriter|musician|rapper|politician|writer|author|novelist|poet|playwright|scientist|mathematician|physicist|chemist|biologist|philosopher|artist|painter|sculptor|director|comedian|footballer|athlete|player|inventor|engineer|president|king|queen|emperor|explorer|economist|composer|conductor|astronaut|businessman|businesswoman|entrepreneur|activist|journalist|presenter|model|chef|boxer|racing driver|coach)\b/i, 'self'],
-  ['Place', /\b(?:city|town|village|country|capital|river|mountain|island|state|county|province|region|lake|ocean|sea|desert|valley|peninsula|archipelago|national park|neighbourhood|municipality|continent|district)\b/i, 'sky'],
-  ['Creature', /\b(?:species|genus|family of|mammal|bird|fish|reptile|amphibian|insect|animal|breed|subspecies|domesticated|plant|tree|flower|fungus|bacterium|virus|dinosaur)\b/i, 'life'],
+  ['Food', /\b(?:dish|dessert|cuisine|juice|drink|liquid extract|beverage|cocktail|pastry|sauce|cheese|bread|soup|sandwich|snack|candy|confection|stew)\b/i, 'life'],
+  ['Creature', /\b(?:species|genus|family of|big cat|cat|whale|shark|lizard|snake|primate|ape|wolf|bear|mammal|bird|fish|reptile|amphibian|insect|animal|breed|subspecies|domesticated|plant|tree|flower|fungus|bacterium|virus|dinosaur)\b/i, 'life'],
+  ['Place', /\b(?:city|town|village|country|capital|river|mountain|island|state|county|province|region|lake|ocean|sea|desert|valley|peninsula|archipelago|national park|reefs?|islands?|coast|bay|strait|gulf|plateau|waterfall|glacier|volcano|neighbourhood|municipality|continent|district)\b/i, 'sky'],
+  ['Vehicle', /\b(?:automobile|car model|aircraft|airliner|locomotive|motorcycle|spacecraft|rocket|vehicle|smartphone|gadget|operating system|programming language|software)\b/i, 'make'],
+  ['Team', /\b(?:football club|sports? team|basketball team|baseball team|cricket team|hockey team|national team)\b/i, 'time'],
+  ['Concept', /\b(?:theory|theorem|equation|chemical element|particle|physical law|principle|chess opening|mathematical|syndrome|disease)\b/i, 'index'],
   ['Organisation', /\b(?:company|corporation|organi[sz]ation|university|institution|agency|association|political party|nonprofit|brand|manufacturer|retailer|school|team|club|league)\b/i, 'time'],
   ['Event', /\b(?:war|battle|festival|election|treaty|disaster|revolution|championship|tournament|olympics|massacre|conference|protest|uprising)\b/i, 'time'],
   ['Idea', /./, 'index'],
@@ -27,7 +35,8 @@ const WORD = { card: 'Card', 'trading card': 'Card', film: 'Film', movie: 'Film'
 /** { kind, chapter, detail }: what a page's short description says it is, with its year and maker when it says them. Pure. */
 export function kindOf(description, extract = '') {
   const d = String(description || ''), text = d + ' ' + String(extract || '').slice(0, 160);
-  const hit = KINDS.find(([, re]) => re.test(d)) || KINDS.find(([, re]) => re.test(text)) || KINDS[KINDS.length - 1];
+  const specific = KINDS.slice(0, -1); // the last row (Idea) matches anything: it is the fallback, not a reading of the description
+  const hit = specific.find(([, re]) => re.test(d)) || specific.find(([, re]) => re.test(text)) || KINDS[KINDS.length - 1];
   const year = (/\b(1[5-9]\d\d|20\d\d)\b/.exec(d) || [])[1] || '';
   const by = (/\bby ([A-Z][^,;()]{2,40})/.exec(d) || [])[1] || '';
   return { kind: hit[0], chapter: hit[2], detail: [year, by].filter(Boolean).join(' · ') };
@@ -40,6 +49,9 @@ export function newInSub(description, header) {
   const [kinds, ...rest] = h.split(' \u2014 '), detail = rest.join(' '), hasWord = (w) => new RegExp('(?:^|[^a-z0-9])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:$|[^a-z0-9])').test(detail);
   let t = d.replace(/\b(?:directed |written |created |produced |composed |performed |sung |recorded |painted |founded |developed )?by ([A-Z][^,;()]{2,40})/g, (m, name) => (detail.includes(name.trim().toLowerCase()) ? ' ' : m));
   t = t.replace(/\b(1[5-9]\d\d|20\d\d)\b/g, (m) => (hasWord(m) ? ' ' : m));
+  // a year the header holds leaves its parenthesis behind: "(born 1963)" goes whole, not "(born )"; "(1795–1821)" keeps the
+  // year the header lacks as "(died 1821)", not "( –1821)" (2026-10-29: Michael Jordan's card read "American basketball player (born )")
+  t = t.replace(/\(\s*(?:born|b\.)\s*\)/gi, ' ').replace(/\(\s*[\u2013-]\s*(\d{3,4})\s*\)/g, '(died $1)').replace(/\(\s*[\u2013-]?\s*\)/g, ' ');
   for (const k of kinds.split(' \u00b7 ').map((x) => x.trim()).filter(Boolean)) t = t.replace(new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b', 'gi'), ' ');
   const left = t.replace(/\b(?:a|an|the|of|and|in|by|directed|written|from|is|was)\b/gi, ' ').replace(/[\s,;:.\u2013\u2014-]+/g, ' ').trim();
   if (!/[A-Za-z]{2}/.test(left)) return '';

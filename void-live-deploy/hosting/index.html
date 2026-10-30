@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Traffic, queue &amp; uptime calculator (hosting sizer) · Verse</title>
+<meta name="description" content="Calculate traffic capacity, queue wait times, server sizing and allowed downtime for any service or venue: a shop queue, a support desk or a web server. Size a web server in the browser: sustained bandwidth, monthly transfer, concurrent workers, vCPUs and RAM from your requests per second, with the downtime each uptime SLA allows and a hardened NGINX or Caddy config. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Traffic, queue &amp; uptime calculator · Verse">
+<meta property="og:description" content="Work out bandwidth, monthly transfer, workers, vCPUs, RAM and allowed downtime, then take a hardened NGINX or Caddy config. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/hosting/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/hosting/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input, select { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
+  input[type=number] { width:5.6em; }
+  #sla { width:7em; }
+  input:focus, select:focus, button:focus-visible, a:focus-visible, pre:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; min-height:34px; cursor:pointer; }
+  button:hover { border-color:#3b3b4d; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  .out { color:#cfcbe6; font-size:14px; font-variant-numeric:tabular-nums; margin:6px 0 0; min-height:4em; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#dcd8f4; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; }
+  .scroll { width:100%; max-width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:520px; font-size:14px; }
+  caption { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  th, td { text-align:right; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  th:first-child, td:first-child { text-align:left; }
+  tr.on td { color:#fff; font-weight:600; background:#191828; }
+  pre { margin:8px 0; padding:10px 12px; background:#0d0c14; border:1px solid var(--line); border-radius:10px; font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:#dcd8f4; overflow-x:auto; min-height:620px; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:6px 0; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a, .siblings a { color:#cfc6ff; }
+  #shareline { overflow-wrap:anywhere; min-height:4.5em; }
+  #domain { width:15em; max-width:100%; }
+  #domaintable td { text-align:left; }
+  #domaintable td.st-free { color:#a8e6bd; font-weight:600; }
+  #domaintable td.st-taken { color:#f0b8c4; }
+  #domaintable tr.first td:first-child { font-weight:600; }
+  [hidden] { display:none !important; }
+  /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
+  #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
+  #related .tk-label { color:var(--soft); }
+  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Traffic, queue &amp; uptime calculator</h1>
+  <p class="sub" id="lead">Calculate traffic capacity, queue wait times, server sizing, and allowed downtime for any service or venue.</p>
+  <p class="sub">The same sums answer "how many tills, agents or servers do we need so nobody waits long?" for a shop, a support line or a website. For a web server it goes on to work out sustained bandwidth, monthly transfer, concurrent workers, vCPUs and RAM from your own traffic, the downtime each uptime promise (SLA) allows, and a hardened NGINX or Caddy config with TLS 1.3, security headers and a rate limit. Everything is worked out on this device.</p>
+
+  <section class="card" aria-labelledby="h-queue">
+    <h2 id="h-queue">Queue and wait time</h2>
+    <div class="row" role="group" aria-label="Start from an example">
+      <button type="button" data-qp="venue" aria-pressed="false">Customer queue / venue</button>
+      <button type="button" data-qp="desk" aria-pressed="false">Support desk (agents needed)</button>
+      <button type="button" data-qp="web" aria-pressed="false">Web server</button>
+    </div>
+    <div class="row">
+      <label><span>Arrivals</span><input id="qa" type="number" min="0.01" max="100000000" step="any" inputmode="decimal" aria-label="How many arrive"></label>
+      <label><span>per</span><select id="qau" aria-label="Arrivals per"><option value="3600">hour</option><option value="60">minute</option><option value="1">second</option></select></label>
+      <label><span>Time to serve each</span><input id="qt" type="number" min="0.001" max="100000" step="any" inputmode="decimal" aria-label="Time to serve each one"></label>
+      <label><span>in</span><select id="qtu" aria-label="Serving time unit"><option value="60">minutes</option><option value="1">seconds</option><option value="0.001">milliseconds</option></select></label>
+      <label><span>Servers open (tills, agents, desks)</span><input id="qn" type="number" min="1" max="100000" step="1" inputmode="numeric" aria-label="Servers open: tills, agents, desks or cores"></label>
+      <label><span>Longest fair average wait, s</span><input id="qw" type="number" min="0" max="86400" step="any" inputmode="decimal" aria-label="Longest average wait you accept, in seconds"></label>
+    </div>
+    <p class="out" id="qout" aria-live="polite"></p>
+    <p class="note">How: on average arrivals × time each are being served at once (Little's law); the chance of waiting and the average wait come from the Erlang C formula, which call centres use for the same sum. Arrivals are taken as random, as they are in a shop or on a phone line.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-domain">
+    <h2 id="h-domain">Domain search &amp; packages</h2>
+    <p class="note" data-honest>Type a name and Verse asks the registry of every ending (.no, .com, .net, .org, .info, .biz) at once whether it is registered, through RDAP (rdap.org), and shows who holds each taken one and when it expires. Verse does not register domains or sell hosting: a free name is registered at any registrar, which also confirms the price and whether the name is reserved.</p>
+    <div class="row">
+      <label><span>Name or domain</span><input id="domain" type="text" aria-label="Name or domain to search" placeholder="example or example.no" autocomplete="off" spellcheck="false" autocapitalize="off"></label>
+      <label><span>Ending first</span>
+        <select id="tld" aria-label="Ending to check first">
+          <option value="no">.no</option><option value="com">.com</option><option value="net">.net</option><option value="org">.org</option><option value="info">.info</option><option value="biz">.biz</option>
+        </select>
+      </label>
+      <button type="button" id="domainbtn" aria-label="Search the name at every ending">Search</button>
+      <button type="button" id="dshare">Copy share link</button>
+    </div>
+    <p class="out" id="domainresult" aria-live="polite">Type a name, like example, and search: each ending's registry answers whether it is registered.</p>
+    <div class="scroll">
+      <table id="domaintable" hidden>
+        <caption>The name at each ending, as each registry answered</caption>
+        <thead><tr><th scope="col">Domain</th><th scope="col">Status</th><th scope="col">What the registry says</th><th scope="col">Name Unit asks</th></tr></thead>
+        <tbody id="domainrows"></tbody>
+      </table>
+    </div>
+    <nav class="siblings" id="dnext" aria-label="Use the search result" hidden>
+      <a id="dgist" href="/g/">Open the results in a gist</a>
+      <a href="#h-config">See the server config for this domain</a>
+    </nav>
+    <div class="scroll">
+      <table>
+        <caption>Name Unit's hosting plans, as its own page lists them (their offer, not Verse's)</caption>
+        <thead><tr><th scope="col">Plan</th><th scope="col">Storage</th><th scope="col">Price</th><th scope="col">Server</th></tr></thead>
+        <tbody>
+          <tr><td>Small</td><td>20 GB</td><td>Kr. 9 / mnd</td><td>Servere i Norge</td></tr>
+          <tr><td>Medium</td><td>40 GB</td><td>Kr. 19 / mnd</td><td>Servere i Norge</td></tr>
+          <tr><td>Large</td><td>80 GB</td><td>Kr. 29 / mnd</td><td>Servere i Norge</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Name Unit's own pages disagree on these plans (read 2026-10-29): its front page lists 9, 19 and 29 kr a month for 20, 40 and 80 GB, its web hosting page 15, 30 and 60 kr for 30, 60 and 120 GB, and its comparison page 10, 20 and 40 kr for 20, 40 and 80 GB. Ask them which price holds before you buy. The yearly domain prices in the search above are from its web hosting page.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-cap">
+    <h2 id="h-cap">Capacity</h2>
+    <div class="row">
+      <label><span>Requests / s</span><input id="rps" type="number" min="1" max="1000000" step="1" inputmode="numeric" aria-label="Requests per second"></label>
+      <label><span>Reply size, KB</span><input id="kb" type="number" min="1" max="100000" step="1" inputmode="numeric" aria-label="Average reply size in kilobytes"></label>
+      <label><span>Worker time, ms</span><input id="ms" type="number" min="1" max="5000" step="1" inputmode="numeric" aria-label="Worker CPU time per request in milliseconds"></label>
+      <label><span>RAM / worker, MB</span><input id="ram" type="number" min="16" max="65536" step="1" inputmode="numeric" aria-label="Memory per worker in megabytes"></label>
+      <label><span>Uptime SLA, %</span><input id="sla" type="number" min="90" max="99.999" step="0.001" inputmode="decimal" aria-label="Uptime SLA in percent"></label>
+    </div>
+    <p class="out" id="bw"></p>
+    <p class="out" id="monthly"></p>
+    <p class="out" id="workers"></p>
+    <p class="out" id="memory"></p>
+    <p class="say" id="say" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-shared">
+    <h2 id="h-shared">Shared vs exclusive</h2>
+    <p class="note">A crowded shared host splits its cores between tenants; an exclusive server keeps all of them. The same traffic, in numbers:</p>
+    <div class="scroll">
+      <table id="contention">
+        <caption>What this traffic needs on a crowded shared host and on an exclusive server</caption>
+        <thead><tr><th scope="col">Setup</th><th scope="col">Capacity</th><th scope="col">Your load</th><th scope="col">Readout</th></tr></thead>
+        <tbody>
+          <tr><td>Shared host, 4 busy tenants</td><td id="shared-cap"></td><td id="shared-load"></td><td id="shared-say"></td></tr>
+          <tr><td>Exclusive server</td><td id="exclusive-cap"></td><td id="exclusive-load"></td><td id="exclusive-say"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" id="contention-note"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-sla">
+    <h2 id="h-sla">Uptime and SLA</h2>
+    <p class="note">Allowed downtime per period, for a 365-day year. Your SLA row is the one in bold:</p>
+    <div class="scroll">
+      <table id="slatable">
+        <caption>Allowed downtime per year, month, week and day at each uptime SLA</caption>
+        <thead><tr><th scope="col">SLA</th><th scope="col">Year</th><th scope="col">Month</th><th scope="col">Week</th><th scope="col">Day</th></tr></thead>
+        <tbody>
+          <tr data-sla="99"><td>99%</td><td>3d 15h 36m</td><td>7h 18m</td><td>1h 40m 48s</td><td>14m 24s</td></tr>
+          <tr data-sla="99.9"><td>99.9%</td><td>8h 45m 36s</td><td>43m 48s</td><td>10m 5s</td><td>1m 26s</td></tr>
+          <tr data-sla="99.95"><td>99.95%</td><td>4h 22m 48s</td><td>21m 54s</td><td>5m 2s</td><td>43s</td></tr>
+          <tr data-sla="99.99"><td>99.99%</td><td>52m 34s</td><td>4m 23s</td><td>1m</td><td>9s</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" id="sla-note"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-config">
+    <h2 id="h-config">Server config</h2>
+    <p class="note">A hardened starting point sized to the numbers above: TLS 1.3, HSTS, a content security policy, nosniff, referrer and permissions policies, and a rate limit. Read it, then copy or download it.</p>
+    <div class="row">
+      <label><span>Server</span>
+        <select id="server" aria-label="Server software">
+          <option value="nginx">NGINX</option>
+          <option value="caddy">Caddy</option>
+        </select>
+      </label>
+      <button type="button" id="copy">Copy</button>
+      <button type="button" id="download">Download</button>
+      <button type="button" id="share">Copy share link</button>
+    </div>
+    <pre id="config" tabindex="0" aria-label="Generated server configuration"></pre>
+    <nav class="siblings" aria-label="Use together with">
+      <a id="gist" href="/g/">Open the config in a gist</a>
+      <a id="b64" href="/base64/">Encode it for cloud-init</a>
+      <a id="wc" href="/word-count/">Count its lines</a>
+      <a href="/password-strength/">Password strength</a>
+      <a href="/convert/">Convert units</a>
+      <a href="/tournaments/">Tournament scoring</a>
+      <a href="/emojis/">Emoji counts</a>
+      <a href="/tools/">All tools</a>
+      <a href="/?ask=web%20hosting%20sizing">See it as a card on the stage</a>
+      <a href="/">Back to Verse</a>
+    </nav>
+  </section>
+
+  <p class="note" id="demo">This is a worked example: 50 requests/s, 200 KB replies, 40 ms of worker time, 128 MB per worker and a 99.9% SLA. Change a number and it becomes yours, and it stays on this device.</p>
+  <p class="note" id="shareline">Share link: <a id="link" href="/hosting/">/hosting/</a></p>
+
+  <footer>
+    <p>Everything on this page is worked out on this device from the numbers you type: no account, no ads, nothing is sent anywhere, and it works offline with the numbers it last had. Bandwidth is decimal (1,000 KB to the MB); workers come from Little's law, capacity from one core at the worker time you give; the downtime table is 365 days, with a month as a twelfth of that and a week as seven days.</p>
+  </footer>
+  <nav id="related" class="tk-row" aria-label="Related tools"><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/calculators/">Formula calculators</a> <a href="/base64/">Base64</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a></nav>
+</main>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'a2m.void.hosting.v1';
+  const SEED = { rps: 50, kb: 200, ms: 40, ram: 128, sla: 99.9, server: 'nginx' };
+  const params = new URLSearchParams(location.search);
+  // a name or a whole domain as typed: { label, ending } (punycode for a name in another script), or null when it is not one
+  const LABEL_RE = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/, ENDING_RE = /^(?:[a-z0-9-]{2,63}\.)*[a-z0-9-]{2,63}$/;
+  function parseName(raw, fallbackEnding) {
+    let t = String(raw || '').trim().toLowerCase().replace(/^[a-z]+:\/\//, '').replace(/[\/?#].*$/, '').replace(/\.$/, '').replace(/\s+/g, '');
+    if (!t) return null;
+    try { t = new URL('http://' + t).hostname; } catch (_) { return null; }
+    t = t.replace(/^www\./, '');
+    const i = t.indexOf('.'), label = i < 0 ? t : t.slice(0, i), ending = i < 0 ? fallbackEnding : t.slice(i + 1);
+    return LABEL_RE.test(label) && ENDING_RE.test(ending || '') ? { label, ending } : null;
+  }
+  const linked = parseName(params.get('d'), '');
+  const num = (key, lo, hi, fallback) => { const v = parseFloat(params.get(key)); return Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : fallback; };
+  const state = {
+    rps: num('rps', 1, 1000000, SEED.rps), kb: num('kb', 1, 100000, SEED.kb), ms: num('ms', 1, 5000, SEED.ms),
+    ram: num('ram', 16, 65536, SEED.ram), sla: num('sla', 90, 99.999, SEED.sla),
+    server: ['nginx', 'caddy'].includes(params.get('server')) ? params.get('server') : SEED.server,
+    d: linked && linked.ending ? linked.label + '.' + linked.ending : '',
+  };
+  if (!params.has('rps') && !params.has('kb')) {
+    try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object' && Number.isFinite(saved.rps)) Object.assign(state, saved, linked ? { d: state.d } : {}); } catch (_) {}
+    const sd = parseName(state.d, ''); state.d = sd && sd.ending ? sd.label + '.' + sd.ending : '';
+  }
+
+  const fmt = (n) => Math.round(n).toLocaleString('en-US');
+  const one = (n) => (Number.isInteger(n) ? fmt(n) : String(Math.round(n * 100) / 100));
+  const say = (text) => { $('say').textContent = text; };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
+
+  const sizing = () => {
+    const bwKB = state.rps * state.kb;
+    const bwMB = bwKB / 1000;
+    const mbps = bwKB * 8 / 1000;
+    const reqMonth = state.rps * 2592000;
+    const gbMonth = reqMonth * state.kb / 1e6;
+    const workers = Math.max(1, Math.ceil(state.rps * state.ms / 1000));
+    const vcpu = Math.max(1, Math.ceil(workers / 0.5));
+    const ramMB = vcpu * state.ram + 512;
+    const ramGB = Math.max(1, Math.ceil(ramMB / 1024));
+    const ramHeadGB = Math.max(2, ramGB * 2);
+    const coreCapacity = Math.max(1, Math.floor(1000 / state.ms));
+    return { bwKB, bwMB, mbps, reqMonth, gbMonth, workers, vcpu, ramMB, ramGB, ramHeadGB, coreCapacity };
+  };
+
+  // the domain the search last checked first is the config's server name (example.com until a search)
+  const host = () => state.d || 'example.com';
+  const configText = (c) => state.server === 'caddy'
+    ? [
+      '# Generated by Verse\'s hosting sizer on this device: no account, nothing sent.',
+      '# Sized for ' + fmt(state.rps) + ' requests/s at ' + fmt(state.kb) + ' KB replies, ' + fmt(state.ms) + ' ms of worker time.',
+      '# TLS 1.3 only, with HSTS, a content security policy, nosniff, referrer and permissions policies.',
+      '',
+      '{',
+      '\tauto_https',
+      '}',
+      '',
+      host() + ' {',
+      '\tencode zstd gzip',
+      '\ttls {',
+      '\t\tprotocols tls1.3',
+      '\t}',
+      '\theader {',
+      '\t\tStrict-Transport-Security "max-age=31536000; includeSubDomains"',
+      '\t\tContent-Security-Policy "default-src \'self\'; img-src \'self\' data:; style-src \'self\'; script-src \'self\'"',
+      '\t\tX-Content-Type-Options "nosniff"',
+      '\t\tReferrer-Policy "strict-origin-when-cross-origin"',
+      '\t\tPermissions-Policy "camera=(), microphone=(), geolocation=()"',
+      '\t}',
+      '\t# rate limit: ' + fmt(Math.max(1, Math.round(state.rps))) + ' requests/s per address, burst ' + fmt(Math.max(1, state.rps * 2)) + '',
+      '\trate_limit {',
+      '\t\tzone per_ip {',
+      '\t\t\tkey {remote_host}',
+      '\t\t\tevents ' + fmt(Math.max(1, Math.round(state.rps))),
+      '\t\t\twindow 1s',
+      '\t\t}',
+      '\t}',
+      '\treverse_proxy 127.0.0.1:3000',
+      '}',
+      '',
+      '# Workers: ' + c.workers + ' concurrent, ' + c.vcpu + ' vCPUs, ' + fmt(c.ramMB) + ' MB of memory (' + c.ramGB + ' GB RAM).',
+    ].join('\n')
+    : [
+      '# Generated by Verse\'s hosting sizer on this device: no account, nothing sent.',
+      '# Sized for ' + fmt(state.rps) + ' requests/s at ' + fmt(state.kb) + ' KB replies, ' + fmt(state.ms) + ' ms of worker time.',
+      '# TLS 1.3 only, with HSTS, a content security policy, nosniff, referrer and permissions policies.',
+      '',
+      'limit_req_zone $binary_remote_addr zone=verse:10m rate=' + fmt(Math.max(1, Math.round(state.rps))) + 'r/s;',
+      '',
+      'server {',
+      '\tlisten 443 ssl http2;',
+      '\tserver_name ' + host() + ';',
+      '',
+      '\tssl_protocols TLSv1.3;',
+      '\tssl_prefer_server_ciphers off;',
+      '\tadd_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;',
+      '\tadd_header Content-Security-Policy "default-src \'self\'; img-src \'self\' data:; style-src \'self\'; script-src \'self\'" always;',
+      '\tadd_header X-Content-Type-Options "nosniff" always;',
+      '\tadd_header Referrer-Policy "strict-origin-when-cross-origin" always;',
+      '\tadd_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;',
+      '',
+      '\tlocation / {',
+      '\t\t# rate limit: ' + fmt(Math.max(1, Math.round(state.rps))) + ' requests/s per address, burst ' + fmt(Math.max(1, state.rps * 2)),
+      '\t\tlimit_req zone=verse burst=' + fmt(Math.max(1, state.rps * 2)) + ' nodelay;',
+      '\t\tproxy_pass http://127.0.0.1:3000;',
+      '\t\tproxy_set_header Host $host;',
+      '\t}',
+      '}',
+      '',
+      '# Workers: ' + c.workers + ' concurrent, ' + c.vcpu + ' vCPUs, ' + fmt(c.ramMB) + ' MB of memory (' + c.ramGB + ' GB RAM).',
+    ].join('\n');
+
+  const handoff = () => {
+    const cfg = $('config').textContent, name = state.server === 'caddy' ? 'Caddyfile' : 'nginx.conf';
+    $('gist').href = '/g/?text=' + encodeURIComponent(cfg) + '&name=' + encodeURIComponent(name);
+    $('b64').href = '/base64/?t=' + encodeURIComponent(cfg);
+    $('wc').href = '/word-count/?t=' + encodeURIComponent(cfg);
+  };
+
+  const link = () => {
+    const q = new URLSearchParams();
+    q.set('rps', String(state.rps)); q.set('kb', String(state.kb)); q.set('ms', String(state.ms));
+    q.set('ram', String(state.ram)); q.set('sla', String(state.sla));
+    if (state.server !== SEED.server) q.set('server', state.server);
+    if (state.d) q.set('d', state.d);
+    for (const [k, v] of queueParams()) q.set(k, v);
+    return location.origin + '/hosting/?' + q.toString();
+  };
+
+  // the queue card (owner, 2026-10-28, docs/WIDER-USE.md: the same arithmetic for anyone, not only a web host): Little's law and Erlang C
+  const QSEED = { venue: { qa: 90, qau: 3600, qt: 2, qtu: 60, qn: 4, qw: 120 }, desk: { qa: 120, qau: 3600, qt: 6, qtu: 60, qn: 14, qw: 60 } };
+  const qweb = () => ({ qa: state.rps, qau: 1, qt: state.ms, qtu: 0.001, qn: sizing().vcpu, qw: 0.05 });
+  const Q = { ...QSEED.venue };
+  for (const k of ['qa', 'qt', 'qn', 'qw', 'qau', 'qtu']) { const v = parseFloat(params.get(k)); if (Number.isFinite(v) && v >= 0) Q[k] = v; }
+  if (!['3600', '60', '1'].includes(String(Q.qau))) Q.qau = 3600; if (!['60', '1', '0.001'].includes(String(Q.qtu))) Q.qtu = 60; Q.qn = Math.max(1, Math.round(Q.qn));
+  /** the Erlang C queue: a = load (busy at once), pw = chance of waiting, wait = average wait in seconds; Infinity when the servers cannot keep up */
+  function erlang(perSec, secEach, n) {
+    const a = perSec * secEach; if (n <= a) return { a, pw: 1, wait: Infinity };
+    let term = 1, sum = 1; for (let k = 1; k < n; k++) { term *= a / k; sum += term; } term *= a / n;
+    const top = term * n / (n - a), pw = top / (sum + top); return { a, pw, wait: pw * secEach / (n - a) };
+  }
+  const secs = (t) => (!Number.isFinite(t) ? 'for ever (the queue only grows)' : t < 1 ? Math.round(t * 1000) + ' ms' : t < 90 ? (t < 10 ? one(t) : Math.round(t)) + ' s' : t < 5400 ? one(t / 60) + ' minutes' : one(t / 3600) + ' hours');
+  function renderQueue() {
+    const perSec = Q.qa / Q.qau, each = Q.qt * Q.qtu, r = erlang(perSec, each, Q.qn);
+    let need = Math.max(1, Math.ceil(r.a + 1e-9)); while (need < 100000 && !(erlang(perSec, each, need).wait <= Q.qw)) need++;
+    const per = { 3600: 'an hour', 60: 'a minute', 1: 'a second' }[Q.qau];
+    $('qout').textContent = 'On average ' + one(r.a) + ' are being served at once (' + one(Q.qa) + ' ' + per + ' × ' + secs(each) + ' each). '
+      + (Number.isFinite(r.wait) ? 'With ' + fmt(Q.qn) + ' open they are ' + Math.round(r.a / Q.qn * 100) + '% busy: ' + Math.round(r.pw * 100) + '% of arrivals wait, on average ' + secs(r.wait) + ' (counting those who do not wait). ' : 'With ' + fmt(Q.qn) + ' open they cannot keep up: the queue grows without end. ')
+      + 'To keep the average wait under ' + secs(Q.qw) + ' you need ' + fmt(need) + ' open.';
+    for (const b of document.querySelectorAll('[data-qp]')) { const s = b.dataset.qp === 'web' ? qweb() : QSEED[b.dataset.qp]; b.setAttribute('aria-pressed', String(['qa', 'qau', 'qt', 'qtu', 'qn', 'qw'].every((k) => Number(s[k]) === Number(Q[k])))); }
+  }
+  function queueParams() { const out = []; if (['qa', 'qau', 'qt', 'qtu', 'qn', 'qw'].some((k) => Q[k] !== QSEED.venue[k])) for (const k of ['qa', 'qau', 'qt', 'qtu', 'qn', 'qw']) out.push([k, String(Q[k])]); return out; }
+  const showQueue = () => { for (const k of ['qa', 'qt', 'qn', 'qw', 'qau', 'qtu']) $(k).value = String(Q[k]); };
+
+  function render() {
+    renderQueue();
+    const c = sizing();
+    $('bw').textContent = 'Sustained bandwidth: ' + fmt(c.bwKB) + ' KB/s (' + one(c.bwMB) + ' MB/s, ' + one(c.mbps) + ' Mbps) at ' + fmt(state.rps) + ' requests/s with ' + fmt(state.kb) + ' KB replies.';
+    $('monthly').textContent = 'Monthly transfer: ' + fmt(c.reqMonth) + ' requests/month · ' + fmt(c.gbMonth) + ' GB/month (' + (c.gbMonth / 1000).toFixed(2) + ' TB) over a 30-day month.';
+    $('workers').textContent = 'Concurrent workers: ' + c.workers + ' active workers by Little\'s law (' + fmt(state.rps) + ' requests/s × ' + fmt(state.ms) + ' ms = ' + c.workers + ') · ' + c.vcpu + ' vCPUs at 50% headroom, so a burst has a whole core spare.';
+    $('memory').textContent = 'Memory: ' + fmt(c.ramMB) + ' MB (a worker per core: ' + c.vcpu + ' × ' + fmt(state.ram) + ' MB + 512 MB for the OS) → ' + c.ramGB + ' GB RAM minimum, ' + c.ramHeadGB + ' GB RAM with cache headroom.';
+
+    const over = (cap) => state.rps > cap;
+    $('shared-cap').textContent = fmt(c.coreCapacity) + ' requests/s (1 vCPU of 4)';
+    $('shared-load').textContent = fmt(state.rps) + ' requests/s';
+    $('shared-say').textContent = over(c.coreCapacity) ? (state.rps / c.coreCapacity).toFixed(1) + '× over capacity — requests queue behind other tenants' : Math.round((1 - state.rps / c.coreCapacity) * 100) + '% headroom on one core';
+    const exclusive = c.coreCapacity * c.vcpu;
+    $('exclusive-cap').textContent = fmt(exclusive) + ' requests/s (' + c.vcpu + ' vCPU)';
+    $('exclusive-load').textContent = fmt(state.rps) + ' requests/s';
+    $('exclusive-say').textContent = over(exclusive) ? (state.rps / exclusive).toFixed(1) + '× over capacity — add vCPUs or shave worker time' : Math.round((1 - state.rps / exclusive) * 100) + '% headroom, no noisy neighbours';
+    $('contention-note').textContent = 'One core at ' + fmt(state.ms) + ' ms per request settles ' + fmt(c.coreCapacity) + ' requests/s. Four tenants on four cores leave one core each, so ' + fmt(state.rps) + ' requests/s needs ' + (state.rps / c.coreCapacity).toFixed(1) + '× the share it gets; an exclusive ' + c.vcpu + '-vCPU server settles ' + fmt(exclusive) + ' requests/s.';
+
+    document.querySelectorAll('#slatable tbody tr').forEach((tr) => { tr.classList.toggle('on', Number(tr.dataset.sla) === Number(state.sla)); });
+    $('sla-note').textContent = 'Your SLA of ' + one(state.sla) + '% allows the downtime in the bold row; the table is the whole agreement in numbers, not a promise.';
+
+    $('config').textContent = configText(c);
+    handoff();
+    const href = link();
+    $('link').href = href;
+    $('link').textContent = href.replace(location.origin, '');
+    try { history.replaceState(null, '', href); } catch (_) {}
+    $('demo').hidden = !(state.rps === SEED.rps && state.kb === SEED.kb && state.ms === SEED.ms && state.ram === SEED.ram && state.sla === SEED.sla && state.server === SEED.server);
+  }
+
+  const commit = (message) => { render(); save(); if (message) say(message); };
+
+  $('rps').value = state.rps; $('kb').value = state.kb; $('ms').value = state.ms; $('ram').value = state.ram; $('sla').value = state.sla; $('server').value = state.server;
+
+  for (const [key, lo, hi] of [['rps', 1, 1000000], ['kb', 1, 100000], ['ms', 1, 5000], ['ram', 16, 65536], ['sla', 90, 99.999]]) {
+    $(key).addEventListener('input', (e) => {
+      const v = parseFloat(e.target.value);
+      if (!Number.isFinite(v)) return;
+      state[key] = Math.min(hi, Math.max(lo, v));
+      commit();
+    });
+  }
+  showQueue();
+  for (const k of ['qa', 'qt', 'qn', 'qw', 'qau', 'qtu']) $(k).addEventListener(k.length === 3 ? 'change' : 'input', (e) => { const v = parseFloat(e.target.value); if (!Number.isFinite(v) || v < 0) return; Q[k] = k === 'qn' ? Math.max(1, Math.round(v)) : v; render(); });
+  for (const b of document.querySelectorAll('[data-qp]')) b.addEventListener('click', () => { Object.assign(Q, b.dataset.qp === 'web' ? qweb() : QSEED[b.dataset.qp]); showQueue(); render(); say(b.textContent + ': the example is filled in; change any number.'); });
+  $('server').addEventListener('change', (e) => { state.server = e.target.value; commit('Config switched to ' + (state.server === 'caddy' ? 'Caddy' : 'NGINX') + '.'); });
+
+  // the domain search (nameunit.com's main job, assimilated 2026-10-29): a name at every ending at once, each answered by that ending's own
+  // registry through rdap.org's bootstrap redirect (CORS open). 200 = registered (registrar, created, expires); a 404 from the registry = no
+  // registration found; a 404 from rdap.org itself = that ending has no public RDAP service. Nothing is guessed: no answer says so.
+  const ENDINGS = ['no', 'com', 'net', 'org', 'info', 'biz'];
+  // Name Unit's yearly price per ending, as its own web hosting page lists it (nameunit.com/webhotell, read 2026-10-29): their offer, not Verse's
+  const NU_YEAR = { no: 110, com: 125, net: 145, org: 140, info: 165, biz: 170 };
+  const day = (iso) => (iso || '').slice(0, 10);
+  const STATUS = { taken: 'Registered', free: 'No registration found', nordap: 'No public lookup', noanswer: 'No answer' };
+  // a registry that is busy (429, 5xx) or drops the connection is asked again, twice at most, after the wait it names (Retry-After, 4 s at most)
+  // or 1.5 s then 3 s: the .org registry limits how often one address may ask, and a second search a few seconds after the first hit that limit
+  const wait = (ms) => new Promise((res) => setTimeout(res, ms));
+  async function ask(d) {
+    let r = null;
+    for (let i = 0; i < 3; i++) {
+      try { r = await fetch('https://rdap.org/domain/' + encodeURIComponent(d), { headers: { accept: 'application/rdap+json' } }); } catch (_) { r = null; } // void-review: ok (a retry of the same one request, one after the other by design: it waits for the registry's limit to pass)
+      if (r && r.status !== 429 && r.status < 500) return r;
+      if (i < 2) { const s = r && +r.headers.get('retry-after'); await wait(s > 0 ? Math.min(s, 4) * 1000 : 1500 * (i + 1)); }
+    }
+    return r;
+  }
+  async function lookup(d) {
+    const r = await ask(d);
+    if (!r) return { kind: 'noanswer', text: 'The registry did not answer. Nothing is assumed; search again in a moment.' };
+    const viaRegistry = !/^https:\/\/rdap\.org\//.test(r.url || '');
+    if (r.status === 404 && viaRegistry) return { kind: 'free', text: 'Looks free to register (checked ' + new Date().toISOString().slice(11, 16) + ' UTC). A registrar confirms the price and whether the name is reserved.' };
+    if (r.status === 404) return { kind: 'nordap', text: 'The .' + d.split('.').slice(1).join('.') + ' registry has no public RDAP lookup, so Verse cannot check it here; its registry or any registrar can.' };
+    if (!r.ok) return { kind: 'noanswer', text: 'The registry answered ' + r.status + '. Nothing is assumed; search again in a moment.' };
+    let j = {}; try { j = await r.json(); } catch (_) {} // void-review: ok (a registered name with an unreadable record still reads as registered)
+    const ev = (a) => day(((j.events || []).find((e) => e.eventAction === a) || {}).eventDate);
+    const reg = (j.entities || []).find((e) => (e.roles || []).includes('registrar')), fn = reg && ((reg.vcardArray || [])[1] || []).find((x) => x[0] === 'fn');
+    return { kind: 'taken', text: (fn ? 'Through ' + fn[3] : 'Registered') + (ev('registration') ? ', since ' + ev('registration') : '') + (ev('expiration') ? ', paid up to ' + ev('expiration') : '') + '.' };
+  }
+  const domainLines = [];
+  let searchRun = 0;
+  async function checkDomain() {
+    const out = $('domainresult'), raw = $('domain').value;
+    if (!raw.trim()) { out.textContent = 'Type a name first, like example, or a whole domain, like example.no.'; $('domain').focus(); return; }
+    const p = parseName(raw, $('tld').value);
+    if (!p) { out.textContent = raw.trim() + ' is not a name a registry takes: letters, digits and hyphens (not at the start or end), up to 63, then an ending.'; return; }
+    if (ENDINGS.includes(p.ending)) $('tld').value = p.ending;
+    const endings = [p.ending, ...ENDINGS.filter((e) => e !== p.ending)], run = ++searchRun;
+    state.d = p.label + '.' + p.ending; $('domain').value = state.d; commit();
+    out.textContent = 'Asking ' + endings.length + ' registries about ' + p.label + '...';
+    const rows = $('domainrows'); rows.textContent = ''; domainLines.length = 0; $('domaintable').hidden = false; $('dnext').hidden = true;
+    const cells = endings.map((e, i) => {
+      const tr = document.createElement('tr'); if (!i) tr.className = 'first';
+      const td = (t) => { const c = document.createElement('td'); c.textContent = t; tr.append(c); return c; };
+      const d = p.label + '.' + e, name = td(d), st = td('Asking...'), say = td(''), price = td(NU_YEAR[e] ? NU_YEAR[e] + ' kr a year' : 'not listed');
+      rows.append(tr); return { d, e, name, st, say, price };
+    });
+    const results = await Promise.all(cells.map(async (c) => {
+      const r = await lookup(c.d); if (run !== searchRun) return r;
+      c.st.textContent = STATUS[r.kind]; c.st.className = r.kind === 'free' ? 'st-free' : r.kind === 'taken' ? 'st-taken' : ''; c.say.textContent = r.text;
+      return { ...r, d: c.d, e: c.e };
+    }));
+    if (run !== searchRun) return;
+    const of = (k) => results.filter((r) => r.kind === k).map((r) => r.d);
+    const free = of('free'), taken = of('taken'), open = [...of('nordap'), ...of('noanswer')];
+    out.textContent = p.label + ': ' + free.length + ' of ' + results.length + ' endings look free to register' + (free.length ? ' (' + free.join(', ') + ')' : '') + '. '
+      + (taken.length ? taken.length + ' registered (' + taken.join(', ') + '). ' : '') + (open.length ? open.length + ' could not be checked here (' + open.join(', ') + '). ' : '')
+      + 'The server config below now uses ' + state.d + '.';
+    for (const r of results) domainLines.push(r.d + '\t' + STATUS[r.kind] + '\t' + r.text);
+    $('dgist').href = '/g/?text=' + encodeURIComponent('Domain search for ' + p.label + ', ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC (RDAP via rdap.org)\n\n' + domainLines.join('\n')) + '&name=' + encodeURIComponent(p.label + '-domains.txt');
+    $('dnext').hidden = false;
+  }
+  $('domainbtn').onclick = checkDomain;
+  $('domain').addEventListener('keydown', (e) => { if (e.key === 'Enter') checkDomain(); });
+  $('dshare').onclick = async () => {
+    if (!state.d) { $('domainresult').textContent = 'Search a name first; the share link then carries it.'; return; }
+    const href = link();
+    try { await navigator.clipboard.writeText(href); $('domainresult').textContent = 'Share link copied: it opens this page and searches ' + state.d + ' again.'; }
+    catch (_) { $('link').focus(); $('domainresult').textContent = 'The link is in the Share link line at the bottom; select it to copy.'; }
+  };
+
+  $('copy').onclick = async () => {
+    try { await navigator.clipboard.writeText($('config').textContent); say('Config copied: it carries the TLS 1.3, header and rate-limit lines sized to these numbers.'); }
+    catch (_) { $('config').focus(); say('The config is in the box above; select it to copy.'); }
+  };
+  $('share').onclick = async () => {
+    const href = link();
+    try { await navigator.clipboard.writeText(href); say('Share link copied: it carries the traffic, the worker memory, the SLA, the server choice and the domain you searched.'); }
+    catch (_) { $('link').focus(); say('The link is in the Share link line below; select it to copy.'); }
+  };
+  $('download').onclick = () => {
+    const cfg = $('config').textContent, name = state.server === 'caddy' ? 'Caddyfile' : 'nginx.conf';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([cfg], { type: 'text/plain;charset=utf-8' }));
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    say('Downloaded ' + name + '.');
+  };
+
+  render();
+  // a link with a domain (d=) opens with that search run, so a shared result comes back as it was sent
+  if (linked) { $('domain').value = linked.ending ? linked.label + '.' + linked.ending : linked.label; checkDomain(); }
+  else if (state.d) $('domain').value = state.d;
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

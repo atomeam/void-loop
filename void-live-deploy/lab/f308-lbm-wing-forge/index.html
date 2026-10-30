@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><link rel="icon" href="data:,"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;height:100%;background:#000;color:#cfd6e6;font:14px/1.4 system-ui,sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0;display:grid;place-items:center}
+canvas{width:min(100vw,200vh);height:auto;image-rendering:auto;touch-action:none;cursor:crosshair}
+#panel{position:fixed;left:16px;bottom:16px;width:290px;padding:14px 16px;border:1px solid #3a4560;border-radius:14px;background:rgba(6,8,14,.82);backdrop-filter:blur(6px);transform-origin:50% 100%;transition:transform .25s ease-out,border-width .25s}
+#panel h1{font-size:15px;margin:0 0 6px;letter-spacing:.06em;color:#fff}
+#panel p{margin:0 0 8px;font-size:12px;color:#8e98b0}
+label{display:grid;grid-template-columns:86px 1fr 40px;gap:6px;align-items:center;font-size:12px}
+input[type=range]{width:100%}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+button{background:#121828;color:#e8ecf6;border:1px solid #3a4560;border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+button:hover{border-color:#8fb4ff}
+#hud{margin-top:8px;font-variant-numeric:tabular-nums;font-size:12px}
+#lift{position:fixed;width:3px;background:linear-gradient(#9ff,#38f);border-radius:2px;transform-origin:50% 100%;pointer-events:none;box-shadow:0 0 12px #6cf}
+#drag{position:fixed;height:3px;background:linear-gradient(90deg,#f86,#fd8);border-radius:2px;pointer-events:none;box-shadow:0 0 12px #f86}
+#log{font-size:11px;color:#7d88a2;max-height:54px;overflow:hidden}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Wing Forge: a wind tunnel that evolves its own wing · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Wing Forge: a wind tunnel that evolves its own wing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Wing Forge: a wind tunnel that evolves its own wing · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Wing Forge: a wind tunnel that evolves its own wing.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f308-lbm-wing-forge/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f308-lbm-wing-forge/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<div id="stage"><canvas id="c" width="960" height="480" aria-label="Wind tunnel: drag to paint rocks, shift-drag to erase"></canvas></div>
+<div id="lift"></div><div id="drag"></div>
+<section id="panel" aria-live="polite">
+<h1>WING FORGE · F-308</h1>
+<p>Real lattice-Boltzmann air flows left to right. Paint rocks into the tunnel (shift-drag erases), then let the forge evolve a wing that flies best around them. This panel tilts with the wing's measured lift.</p>
+<div id="genes"></div>
+<div class="row"><button id="evolve">Evolve wing</button><button id="reset">Reset</button><button id="clear">Clear rocks</button><button id="copy">Copy link</button></div>
+<div id="hud"></div><div id="log"></div>
+</section>
+<script type="module" src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+  :root{--ink:#e9ecff;--dim:#8b90b8;--glass:rgba(20,22,44,.62)}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#03030a;color:var(--ink);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif;overflow:hidden}
+  canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
+  #ui{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:calc(100% - 20px);padding:10px;border-radius:18px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+  button{font:inherit;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 13px;min-height:44px;cursor:pointer}
+  button:hover{background:rgba(255,255,255,.14)}
+  button.on{background:#ff4d7a;border-color:#ff8aa6}
+  button:focus-visible{outline:2px solid #9fb4ff;outline-offset:2px}
+  #top{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+  #top h1{font-size:17px;margin:0;font-weight:600;letter-spacing:.02em}
+  #top p{margin:2px 0 0;color:var(--dim);font-size:13px;max-width:34em}
+  #status{pointer-events:none;text-align:right;color:var(--dim);font-size:13px;white-space:pre-line}
+  #toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:10px 16px;border-radius:12px;background:var(--glass);opacity:0;transition:opacity .3s;pointer-events:none}
+  @media (max-width:560px){#top p{display:none}#status{font-size:12px}#ui{left:8px;right:8px;transform:none;max-width:none;gap:6px;padding:8px}#ui button{flex:1 1 30%;padding:8px 6px}}
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Hum Crystals (hum-crystal-music-box) · Verse lab</title>
+<meta name="description" content="A music toy regular visitors can use: hum a tune, each note grows a glowing crystal on a slowly turning 3D spiral (height = pitch), and an on-device music box">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Hum Crystals (hum-crystal-music-box) · Verse lab">
+<meta property="og:description" content="A music toy regular visitors can use: hum a tune, each note grows a glowing crystal on a slowly turning 3D spiral (height = pitch), and an on-device music box">
+<meta property="og:url" content="https://a-to-mind.com/lab/f299-hum-crystal-music-box/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f299-hum-crystal-music-box/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c" aria-label="A spiral of glowing crystals. Each crystal is one note you hummed; its height is the pitch."></canvas>
+<div id="top">
+  <div><h1>Hum Crystals</h1><p>Hum a tune. Every note grows a crystal on the spiral. Tap Answer and the music box, which learns only from your tunes on this device, hums back a reply. Cloudy crystals mean it was unsure.</p></div>
+  <div id="status" aria-live="polite">ready</div>
+</div>
+<div id="ui" role="toolbar" aria-label="Music box controls">
+  <button id="rec" aria-pressed="false">● Hum</button>
+  <button id="ans">Answer me</button>
+  <button id="play">▶ Play</button>
+  <button id="demo">Try a tune</button>
+  <button id="share">Share</button>
+  <button id="wav">Save sound</button>
+  <button id="clr">Clear</button>
+</div>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

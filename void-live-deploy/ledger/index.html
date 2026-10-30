@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repo activity ledger · Verse</title>
+<meta name="description" content="Every issue and pull request of any public GitHub project in one table: search, filter by state, author, label or date, export CSV or JSON, and share the exact view with a link. No account, no token, works offline after one visit.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Repo activity ledger · Verse">
+<meta property="og:description" content="Every issue and pull request of any public GitHub project in one table you can search, filter, export and share. No account, no token.">
+<meta property="og:url" content="https://a-to-mind.com/ledger/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; --open:#7ee2a8; --closed:#ff9b9b; --merged:#c6a8ff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:18px 14px 40px; }
+  header { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:flex-start; justify-content:space-between; }
+  h1 { font-size:24px; margin:4px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 12px; font-size:15px; max-width:62ch; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  .grow { flex:1 1 260px; min-width:0; }
+  label { display:block; color:var(--quiet); font-size:13px; }
+  label > span { display:block; margin-bottom:3px; }
+  label.check { display:flex; gap:6px; align-items:center; min-height:40px; }
+  input, select { font:inherit; font-size:16px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:7px 9px; min-height:40px; max-width:100%; }
+  input[type=checkbox] { min-height:0; width:20px; height:20px; }
+  .grow input { width:100%; }
+  input:focus, select:focus, button:focus-visible, a:focus-visible, [role=tab]:focus-visible, summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  button { font:inherit; font-size:15px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:8px 15px; min-height:40px; cursor:pointer; }
+  button.primary { background:#2b2452; border-color:#4a3f8f; }
+  button:hover { border-color:#4b4b60; }
+  button[disabled] { opacity:.5; cursor:default; }
+  .presets { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:6px 0 0; font-size:13px; color:var(--quiet); }
+  .presets button { font-size:13px; padding:6px 11px; min-height:34px; }
+  .status { color:#d8d4f0; font-size:14px; min-height:1.5em; margin:8px 0 0; }
+  .status.warn { color:#ffd38a; }
+  .note { color:var(--quiet); font-size:13px; margin:6px 0 0; }
+  .new { color:#ffe08a; font-size:14px; margin:6px 0 0; }
+  [role=tablist] { display:flex; gap:6px; border-bottom:1px solid var(--line); margin:4px 0 10px; }
+  [role=tab] { border-radius:10px 10px 0 0; border-bottom:none; background:transparent; color:var(--quiet); padding:9px 16px; }
+  [role=tab][aria-selected=true] { background:var(--card); color:var(--ink); border-color:#4a3f8f; box-shadow:inset 0 -3px 0 var(--accent); }
+  details summary { cursor:pointer; color:var(--quiet); font-size:14px; min-height:36px; display:flex; align-items:center; }
+  .count { color:var(--quiet); font-size:14px; margin:6px 0; }
+  .scroll { width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  caption { text-align:left; color:var(--quiet); font-size:13px; padding:0 0 6px; }
+  th, td { text-align:left; padding:8px 8px; border-bottom:1px solid #23222f; vertical-align:top; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; }
+  td.num, td.when { font-variant-numeric:tabular-nums; white-space:nowrap; }
+  td a { color:#d6ceff; overflow-wrap:anywhere; }
+  .lbl { display:inline-block; font-size:11px; color:var(--quiet); border:1px solid var(--line); border-radius:999px; padding:0 7px; margin:2px 4px 0 0; }
+  .st { font-size:12px; font-weight:600; border-radius:999px; padding:1px 8px; border:1px solid currentColor; white-space:nowrap; }
+  .st.open { color:var(--open); } .st.closed { color:var(--closed); } .st.merged { color:var(--merged); }
+  tr.fresh td:first-child { box-shadow:inset 3px 0 0 #ffe08a; }
+  .empty { color:var(--quiet); padding:14px 4px; }
+  kbd { font:12px ui-monospace,SFMono-Regular,Menlo,monospace; background:#1c1b28; border:1px solid var(--line); border-radius:4px; padding:0 5px; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:8px 4px; min-height:24px; }
+  footer { margin-top:22px; color:var(--soft); font-size:13px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a, .siblings a, .card a { color:#cfc6ff; }
+  .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  [hidden] { display:none !important; }
+  /* phones: each row is a small card, the column names said in front of each value */
+  @media (max-width: 640px) {
+    table, thead, tbody, tr, td { display:block; width:100%; }
+    thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+    tr { border:1px solid var(--line); border-radius:12px; margin:0 0 10px; padding:6px 10px; background:#100f19; }
+    td { border:none; padding:3px 0; white-space:normal !important; }
+    td[data-h]::before { content:attr(data-h) ': '; color:var(--soft); font-size:12px; }
+    td.title { font-size:15px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
+</style>
+<script src="/visit.js" defer></script>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/ledger/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Repo activity ledger: every issue and pull request of a GitHub repo","url":"https://a-to-mind.com/ledger/","description":"Every issue and pull request of any public GitHub repository in one table, on separate tabs: title, number, link, author, state, created and merged or closed. Search, filter by state, author, label or date, export CSV or JSON, share the exact view with a link; the last copy opens offline. No account and no token: the browser reads the public GitHub API.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"github issues to csv, export github pull requests, list all issues of a github repo, github activity log, github issues spreadsheet","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/ledger/?repo={repo}"},"repo-input":"required name=repo"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Repo activity ledger: every issue and pull request of a GitHub repo","item":"https://a-to-mind.com/ledger/"}]}]}</script>
+<!-- /seo -->
+
+<!-- the page code and what it imports, at once, and kept by sw.js keepWhole for offline (kept by hand: tools/preload.mjs reads inline modules only) -->
+<link rel="modulepreload" href="/ledger/app.js">
+<link rel="modulepreload" href="/lib/ledger.js">
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1 id="h1">Repo activity ledger</h1>
+      <p class="sub" id="lead">Every issue and pull request of any public GitHub project in one table: search it, filter it, export it to a spreadsheet, and share the exact view with a link.</p>
+    </div>
+    <label><span id="t-lang">Language</span>
+      <select id="lang" aria-label="Language">
+        <option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option>
+      </select>
+    </label>
+  </header>
+
+  <section class="card" aria-labelledby="h-repo">
+    <h2 id="h-repo">Repository</h2>
+    <form id="repoform" class="row" autocomplete="off">
+      <label class="grow"><span id="t-repo">Public repository: owner/name or a github.com link</span>
+        <input id="repo" name="repo" type="text" inputmode="url" spellcheck="false" placeholder="e.g. atomeam/void-loop" aria-describedby="status">
+      </label>
+      <button class="primary" type="submit" id="load">Load</button>
+      <button type="button" id="refresh" aria-keyshortcuts="r">Refresh</button>
+      <button type="button" id="older" hidden>Load older</button>
+    </form>
+    <div class="presets" id="presets"><span id="t-try">Try an example:</span>
+      <button type="button" data-preset="atomeam/void-loop">atomeam/void-loop · this site</button>
+      <button type="button" data-preset="excalidraw/excalidraw">excalidraw/excalidraw · drawing</button>
+      <button type="button" data-preset="jellyfin/jellyfin">jellyfin/jellyfin · home media</button>
+      <button type="button" data-preset="openstreetmap/iD">openstreetmap/iD · maps</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+    <p class="new" id="newline" hidden></p>
+  </section>
+
+  <section class="card" aria-label="Ledger">
+    <div role="tablist" aria-label="Kind of item" id="tabs">
+      <button type="button" role="tab" id="tab-issue" aria-controls="panel" aria-selected="true" data-tab="issue">Issues <span class="c"></span></button>
+      <button type="button" role="tab" id="tab-pr" aria-controls="panel" aria-selected="false" tabindex="-1" data-tab="pr">Pull requests <span class="c"></span></button>
+    </div>
+    <div id="panel" role="tabpanel" aria-labelledby="tab-issue">
+      <form id="filters" class="row" onsubmit="return false">
+        <label class="grow"><span id="t-q">Search title, number, author or label</span>
+          <input id="q" name="q" type="search" placeholder="e.g. login bug" aria-keyshortcuts="/">
+        </label>
+        <label><span id="t-state">State</span>
+          <select id="state" name="state"><option value="all">All</option><option value="open">Open</option><option value="closed">Closed</option><option value="merged">Merged</option></select>
+        </label>
+        <label><span id="t-author">Author</span>
+          <select id="author" name="author"><option value="">Anyone</option></select>
+        </label>
+        <button type="button" id="reset">Clear filters</button>
+      </form>
+      <details id="more">
+        <summary id="t-more">More filters (label, dates, sort, bots)</summary>
+        <div class="row">
+          <label><span id="t-label">Label</span><select id="label" name="label"><option value="">Any label</option></select></label>
+          <label><span id="t-from">Created from</span><input id="from" name="from" type="date"></label>
+          <label><span id="t-to">Created to</span><input id="to" name="to" type="date"></label>
+          <label><span id="t-sort">Sort</span>
+            <select id="sort" name="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="updated">Recently updated</option><option value="comments">Most comments</option></select>
+          </label>
+          <label class="check"><input id="bots" type="checkbox" checked> <span id="t-bots">Include bots</span></label>
+        </div>
+      </details>
+      <p class="count" id="count" aria-live="polite"></p>
+      <div class="scroll">
+        <table id="table">
+          <caption id="caption"></caption>
+          <thead><tr><th scope="col" id="th-title">Title</th><th scope="col">#</th><th scope="col" id="th-author">Author</th><th scope="col" id="th-state">State</th><th scope="col" id="th-created">Created</th><th scope="col" id="th-done">Closed</th><th scope="col" id="th-url">Link</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="empty" hidden></p>
+      <div class="row"><button type="button" id="moreRows" hidden>Show more rows</button></div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-export">
+    <h2 id="h-export">Export and share</h2>
+    <p class="note" id="t-exportnote">Exports hold the rows of the view above, with every column: kind, number, title, URL, author, state, created, closed, merged, updated, labels and comments (times in UTC).</p>
+    <div class="row">
+      <button type="button" id="csv" aria-keyshortcuts="e">Download CSV</button>
+      <button type="button" id="json">Download JSON</button>
+      <button type="button" id="copycsv">Copy as CSV</button>
+      <button type="button" id="copylink">Copy link to this view</button>
+      <button type="button" id="share" hidden>Share</button>
+    </div>
+    <p class="status" id="exportsay" aria-live="polite"></p>
+  </section>
+
+  <p class="note" id="plain">No account and no token: your browser reads GitHub's public API, 60 requests an hour without a login (an unchanged answer, a 304, is free), and the last copy of each repo stays on this device and opens offline.</p>
+  <details class="card" id="how">
+    <summary id="t-how">How it works, limits and keyboard shortcuts</summary>
+    <ul class="note" id="howlist">
+      <li>Your browser reads GitHub's public API directly. There is no account, no token and no server in between, and nothing about you is sent anywhere else.</li>
+      <li>GitHub allows 60 requests an hour from one network without a login. The first look at a repo reads up to its 2,000 newest items (one request per 100, so at most 20); after that, Refresh asks only for what changed since the saved copy, with the saved ETag, and an unchanged answer (304) does not count against the limit.</li>
+      <li>When the limit is used up the page says when it resets and keeps showing the saved copy. The last copy of each of six repos stays on this device and opens offline.</li>
+      <li>A pull request is any item GitHub marks with a pull_request field; its merge time comes from there too. Times show in your own time zone; exports keep UTC.</li>
+      <li>Keyboard: <kbd>/</kbd> jumps to search, <kbd>r</kbd> refreshes, <kbd>e</kbd> downloads the CSV, and the arrow keys move between the Issues and Pull requests tabs.</li>
+    </ul>
+  </details>
+
+  <nav class="siblings" aria-label="Use together with">
+    <a href="/kanban/">Kanban board</a>
+    <a href="/notes/">Notes</a>
+    <a href="/calendar/">Calendar</a>
+    <a href="/code-review/">Code review</a>
+    <a href="/g/">Share code as a gist</a>
+    <a href="/?q=look%20at%20atomeam%2Fvoid-loop">See this repo as a card on the stage</a>
+  </nav>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/ledger/?tab=pr">Pull requests of atomeam/void-loop</a><a href="/ledger/?repo=excalidraw%2Fexcalidraw&amp;state=open">Open issues of excalidraw/excalidraw</a><a href="/ledger/?repo=jellyfin%2Fjellyfin&amp;tab=pr&amp;state=merged">Merged pull requests of jellyfin/jellyfin</a><a href="/ledger/?repo=microsoft%2Fvscode&amp;state=open&amp;label=bug">Open bugs in microsoft/vscode</a><a href="/ledger/?sort=old">Oldest issues of atomeam/void-loop first</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/kanban/">Kanban board</a> <a href="/team/">Team chat</a> <a href="/notes/">Notes</a> <a href="/calendar/">Calendar</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer><a href="/tools/">All tools</a> · <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module" src="/ledger/app.js"></script>
+</body>
+</html>

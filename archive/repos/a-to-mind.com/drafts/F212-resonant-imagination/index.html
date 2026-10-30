@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F-212 Resonant Imagination · The Void</title>
+<style>
+:root{--d:0.5;--w:500;--ls:0em;--r:14px}
+html,body{margin:0;height:100%;background:#020207;color:#d8dcff;font-family:system-ui,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#hud{position:fixed;left:16px;top:16px;display:flex;flex-direction:column;gap:10px;max-width:330px;pointer-events:none}
+.card{pointer-events:auto;background:rgba(10,12,30,.62);backdrop-filter:blur(6px);border:1px solid rgba(140,150,255,calc(.15 + var(--d)*.6));
+ border-radius:var(--r);padding:10px 12px;font-weight:var(--w);letter-spacing:var(--ls);transition:border-radius .6s,letter-spacing .6s,transform .6s;
+ transform:skewX(calc(var(--d)*-6deg)) translateX(calc(var(--d)*8px))}
+.card h3{margin:0 0 4px;font-size:12px;text-transform:uppercase;opacity:.7;letter-spacing:.12em}
+.card div{font-size:13px;line-height:1.35}
+#help{position:fixed;right:16px;bottom:14px;font-size:12px;opacity:.6;text-align:right}
+button{background:#1a1d44;color:#cfd3ff;border:1px solid #445;border-radius:8px;padding:4px 9px;margin:4px 4px 0 0;cursor:pointer}
+</style></head><body>
+<canvas id="c"></canvas>
+<div id="hud">
+ <div class="card"><h3>Thought</h3><div id="thought">waking…</div></div>
+ <div class="card"><h3>Metabolism</h3><div id="budget">…</div></div>
+ <div class="card"><h3>Harmony</h3><div id="harm">…</div>
+  <button id="chaos">Scatter (d)</button><button id="listen">Listen</button></div>
+</div>
+<div id="help">Click a star to detune it. The mind imagines each fix as sound in an OfflineAudioContext,<br>keeps the one that beats least, and thinks harder or softer with your device's CPU pressure.</div>
+<script>
+"use strict";
+// ---------- world: resonator stars on a sphere ----------
+const N=28, ROOT=110, RATIOS=[1,9/8,6/5,5/4,4/3,3/2,5/3,2,9/4,5/2,3,4];
+const nodes=[];
+for(let i=0;i<N;i++){const y=1-2*(i+.5)/N, r=Math.sqrt(1-y*y), t=i*2.39996;
+ nodes.push({p:[Math.cos(t)*r,y,Math.sin(t)*r],f:ROOT*RATIOS[(i*5)%RATIOS.length],flash:0});}
+const nb=nodes.map((a,i)=>nodes.map((b,j)=>[j,Math.hypot(a.p[0]-b.p[0],a.p[1]-b.p[1],a.p[2]-b.p[2])]).filter(x=>x[0]!==i).sort((x,y)=>x[1]-y[1]).slice(0,3).map(x=>x[0]));
+// analytic Plomp-Levelt roughness (only for display and for validating the audio judgement)
+function plRough(f1,f2){const fmin=Math.min(f1,f2),s=0.24/(0.021*fmin+19),d=Math.abs(f2-f1);return Math.exp(-3.5*s*d)-Math.exp(-5.75*s*d);}
+function clusterRoughPL(i,fi){let r=0;for(const j of nb[i])r+=plRough(fi,nodes[j].f);return r;}
+function globalHarmony(){let r=0,c=0;for(let i=0;i<N;i++)for(const j of nb[i]){r+=plRough(nodes[i].f,nodes[j].f);c++;}return 1-r/c/0.25;}
+// ---------- imagination: render a candidate future as sound ----------
+const SR=8000, LEN=0.3;
+async function imagine(i,fi){
+ const ctx=new OfflineAudioContext(1,Math.round(SR*LEN),SR);
+ const mix=ctx.createGain();mix.gain.value=0.22;
+ const freqs=[fi,...nb[i].map(j=>nodes[j].f)];
+ for(const f of freqs){const o=ctx.createOscillator();o.frequency.value=f;o.connect(mix);o.start();}
+ // small feedback delay network: the "room" the thought echoes in
+ const dl=ctx.createDelay(0.1);dl.delayTime.value=0.013;const fb=ctx.createGain();fb.gain.value=0.45;
+ const lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+ mix.connect(dl);dl.connect(lp);lp.connect(fb);fb.connect(dl);
+ const out=ctx.createGain();mix.connect(out);lp.connect(out);out.connect(ctx.destination);
+ const buf=await ctx.startRendering(), x=buf.getChannelData(0);
+ // amplitude envelope via 10 ms moving average of |x|; beating shows up as envelope wobble
+ const W=80, env=[];let acc=0;
+ for(let k=0;k<x.length;k++){acc+=Math.abs(x[k]);if(k>=W)acc-=Math.abs(x[k-W]);if(k>=W&&k%8===0)env.push(acc/W);}
+ const tail=env.slice(env.length>>2);let m=0;for(const v of tail)m+=v;m/=tail.length;
+ let vr=0;for(const v of tail)vr+=(v-m)*(v-m);vr/=tail.length;
+ return Math.sqrt(vr)/(m+1e-9); // coefficient of variation = heard roughness
+}
+// ---------- metabolism: think budget follows real CPU pressure ----------
+const BUDGET={nominal:10,fair:6,serious:3,critical:1};
+let pressure="unknown", budget=8, lastThinkMs=0, pressureSrc="frame-time fallback";
+if("PressureObserver" in window){
+ try{const po=new PressureObserver(rs=>{pressure=rs[rs.length-1].state;budget=BUDGET[pressure]||budget;});
+  po.observe("cpu",{sampleInterval:1000}).then(()=>{pressureSrc="Compute Pressure API";}).catch(()=>{});}catch(e){}
+}
+// ---------- the mind ----------
+const agent={p:[0,0,1.25],target:null};
+const stats={thoughts:0,fixes:0,agree:0,judged:0,harmonyStart:null,harmony:0,lastCv:0};
+let busy=false;
+async function think(){
+ if(busy)return;busy=true;const t0=performance.now();
+ // attend to the roughest star (by last heard roughness or analytic hint for unseen ones)
+ let worst=0,wi=0;for(let i=0;i<N;i++){const r=clusterRoughPL(i,nodes[i].f)+(nodes[i].flash>0?.05:0);if(r>worst){worst=r;wi=i;}}
+ if(worst<0.02){busy=false;document.getElementById("thought").textContent="Everything rings clean. Resting.";return;}
+ const n=Math.max(1,Math.min(budget,RATIOS.length));
+ const cands=[nodes[wi].f];
+ const pool=RATIOS.map(r=>ROOT*r).filter(f=>f!==nodes[wi].f).sort(()=>Math.random()-.5);
+ while(cands.length<n+1&&pool.length)cands.push(pool.pop());
+ const heard=await Promise.all(cands.map(f=>imagine(wi,f)));
+ let bi=0;for(let k=1;k<heard.length;k++)if(heard[k]<heard[bi])bi=k;
+ // agreement check: does the ear pick what the analytic model would?
+ let ai=0;for(let k=1;k<cands.length;k++)if(clusterRoughPL(wi,cands[k])<clusterRoughPL(wi,cands[ai]))ai=k;
+ stats.judged++;if(ai===bi||Math.abs(clusterRoughPL(wi,cands[ai])-clusterRoughPL(wi,cands[bi]))<0.01)stats.agree++;
+ const before=nodes[wi].f;
+ if(bi!==0){nodes[wi].f=cands[bi];nodes[wi].flash=1;stats.fixes++;}
+ agent.target=wi;stats.thoughts++;stats.lastCv=heard[bi];
+ lastThinkMs=performance.now()-t0;
+ if(pressureSrc!=="Compute Pressure API"){ // fallback metabolism from imagination cost
+  budget=lastThinkMs>120?Math.max(1,budget-1):lastThinkMs<40?Math.min(10,budget+1):budget;}
+ document.getElementById("thought").textContent=
+  `Star ${wi} beat at ${heard[0].toFixed(3)}. Imagined ${cands.length-1} retunings as sound; `+
+  (bi?`${before.toFixed(0)} Hz → ${cands[bi].toFixed(0)} Hz rang cleanest (${heard[bi].toFixed(3)}).`:`none beat the current tone, kept it.`);
+ busy=false;
+}
+function scatter(k=6){for(let q=0;q<k;q++){const i=(Math.random()*N)|0;nodes[i].f=ROOT*(1+Math.random()*3);nodes[i].flash=1;}}
+document.getElementById("chaos").onclick=()=>scatter();
+addEventListener("keydown",e=>{if(e.key==="d")scatter();});
+// listen: play current harmony live, quietly
+let live=null;
+document.getElementById("listen").onclick=()=>{
+ if(live){live.close();live=null;return;}
+ live=new AudioContext();const g=live.createGain();g.gain.value=0.03;g.connect(live.destination);
+ for(const n of nodes){const o=live.createOscillator();o.frequency.value=n.f;o.connect(g);o.start();n.osc=o;}
+};
+// ---------- render ----------
+const cv=document.getElementById("c"),g2=cv.getContext("2d");let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,devicePixelRatio||1);W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;}
+addEventListener("resize",resize);resize();
+let rot=0;const proj=[];
+function project(p){const c=Math.cos(rot),s=Math.sin(rot),x=p[0]*c+p[2]*s,z=-p[0]*s+p[2]*c,y=p[1]*Math.cos(.35)-z*Math.sin(.35),z2=p[1]*Math.sin(.35)+z*Math.cos(.35);
+ const k=Math.min(W,H)*.36/(1.9-z2*.6);return [W/2+x*k,H/2+y*k,z2];}
+cv.addEventListener("pointerdown",e=>{const x=e.clientX*DPR,y=e.clientY*DPR;let bi=-1,bd=1e9;
+ proj.forEach((q,i)=>{const d=Math.hypot(q[0]-x,q[1]-y);if(d<bd){bd=d;bi=i;}});
+ if(bi>=0&&bd<40*DPR){nodes[bi].f*=1+(Math.random()*.12+.03)*(Math.random()<.5?-1:1);nodes[bi].flash=1;}});
+let tPrev=performance.now();
+function frame(t){
+ const dt=Math.min(.05,(t-tPrev)/1000);tPrev=t;rot+=dt*.12;
+ g2.fillStyle="rgba(2,2,7,.35)";g2.fillRect(0,0,W,H);
+ for(let i=0;i<N;i++)proj[i]=project(nodes[i].p);
+ for(let i=0;i<N;i++)for(const j of nb[i]){if(j<i)continue;const r=plRough(nodes[i].f,nodes[j].f)/0.25;
+  g2.strokeStyle=`hsla(${200-160*r},90%,${55+r*10}%,${.15+r*.6})`;g2.lineWidth=(1+r*3)*DPR;
+  g2.beginPath();g2.moveTo(proj[i][0],proj[i][1]);
+  const wob=r*12*DPR*Math.sin(t*.02*(1+Math.abs(nodes[i].f-nodes[j].f)*.05));
+  g2.quadraticCurveTo((proj[i][0]+proj[j][0])/2+wob,(proj[i][1]+proj[j][1])/2-wob,proj[j][0],proj[j][1]);g2.stroke();}
+ for(let i=0;i<N;i++){const n=nodes[i],q=proj[i],pc=(Math.log2(n.f/ROOT)%1+1)%1;
+  const rad=(3+2*(q[2]+1))*DPR*(1+n.flash*1.5+.15*Math.sin(t*.001*n.f/20));
+  g2.fillStyle=`hsla(${pc*360},85%,${60+n.flash*30}%,${.5+(q[2]+1)*.25})`;g2.beginPath();g2.arc(q[0],q[1],rad,0,7);g2.fill();
+  n.flash=Math.max(0,n.flash-dt*.8);}
+ if(agent.target!=null){const tp=nodes[agent.target].p;for(let a=0;a<3;a++)agent.p[a]+=(tp[a]*1.15-agent.p[a])*dt*2.5;}
+ const ap=project(agent.p),gr=g2.createRadialGradient(ap[0],ap[1],0,ap[0],ap[1],26*DPR);
+ gr.addColorStop(0,"rgba(255,255,255,.95)");gr.addColorStop(.3,"rgba(160,170,255,.5)");gr.addColorStop(1,"rgba(80,90,255,0)");
+ g2.fillStyle=gr;g2.beginPath();g2.arc(ap[0],ap[1],26*DPR,0,7);g2.fill();
+ requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+// ---------- UI that physically follows the mind's dissonance ----------
+function ui(){
+ const h=globalHarmony(),d=Math.max(0,Math.min(1,1-h));stats.harmony=h;if(stats.harmonyStart==null)stats.harmonyStart=h;
+ const R=document.documentElement.style;R.setProperty("--d",d.toFixed(3));R.setProperty("--w",String(Math.round(300+d*600)));
+ R.setProperty("--ls",(d*.08).toFixed(3)+"em");R.setProperty("--r",Math.round(18-d*16)+"px");
+ document.getElementById("harm").textContent=`${(h*100).toFixed(1)}% consonant · ${stats.fixes} retunings · ear agrees with Plomp–Levelt model ${stats.judged?Math.round(100*stats.agree/stats.judged):0}%`;
+ document.getElementById("budget").textContent=`CPU ${pressure} (${pressureSrc}) · ${budget} futures per thought · last thought ${lastThinkMs.toFixed(0)} ms`;
+ if(live)nodes.forEach(n=>n.osc&&n.osc.frequency.setTargetAtTime(n.f,live.currentTime,.1));
+}
+setInterval(()=>{think();ui();},450);
+scatter(10);
+window.__f212={stats,nodes,imagine,globalHarmony,scatter};
+</script></body></html>

@@ -1,0 +1,36 @@
+{
+  "slug": "local-shelf-not-solve",
+  "run": 116,
+  "family": "private incubation log",
+  "status": "unattested",
+  "emit": false,
+  "seal": false,
+  "hypothesis": "A shelf mark is not a solution and not a dream report.",
+  "confidence": 0.23,
+  "confidence_note": "design-material weight, not a measurement",
+  "hash_preimage": "void-shelf-not-solve|v1|class=<id>|status=unattested",
+  "excluded_from_hash": [
+    "solve_sentence",
+    "dream_report",
+    "scene_gloss",
+    "lucidity",
+    "insight"
+  ],
+  "classes": [
+    {
+      "id": "withheld",
+      "label": "Withheld",
+      "note": "No shelf is recorded."
+    },
+    {
+      "id": "empty",
+      "label": "Empty",
+      "note": "Slots hypothesized empty. Not a blank dream."
+    },
+    {
+      "id": "shelved",
+      "label": "Shelved",
+      "note": "One slot is closed. Solve sentence and report refused."
+    }
+  ]
+}

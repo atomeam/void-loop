@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CPAN Testers studio · Verse</title>
+<meta name="description" content="An offline-first Perl test report and module ingestion studio: ingest CPAN Tester reports, view distribution health, search a test matrix, and export summaries. No account, no ads, works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="CPAN Testers studio · Verse">
+<meta property="og:description" content="Ingest CPAN test reports, view distribution health and a test matrix, and export summaries. No account, no ads, works offline.">
+<meta property="og:url" content="https://a-to-mind.com/cpan/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/cpan/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#9a9aa8; --quiet:#b9b9c8; --line:#2a2a35; --card:#12111c; --accent:#8b7bff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background:radial-gradient(ellipse at 50% 0%, #1d1830, #07060b 70%); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { font-size:22px; margin:6px 0 2px; }
+  h2 { font-size:16px; margin:0 0 8px; }
+  .sub { color:var(--quiet); margin:0 0 14px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin:12px 0; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin:8px 0; }
+  label { display:block; color:var(--quiet); font-size:12px; }
+  label span { display:block; margin-bottom:3px; }
+  input, select, textarea { font:inherit; font-size:15px; color:var(--ink); background:#191827; border:1px solid var(--line); border-radius:8px; padding:6px 9px; min-height:34px; }
+  textarea { width:100%; min-height:110px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; }
+  input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible, pre:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+  button { font:inherit; font-size:14px; background:#171624; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; min-height:34px; cursor:pointer; }
+  button:hover { border-color:#3b3b4d; }
+  .note { color:var(--quiet); font-size:13px; margin:8px 0 0; }
+  .out { color:#cfcbe6; font-size:14px; font-variant-numeric:tabular-nums; margin:6px 0 0; min-height:2em; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#dcd8f4; background:#1c1b28; border-radius:4px; padding:1px 4px; }
+  .say { color:var(--quiet); font-size:13px; min-height:1.5em; margin:6px 0 0; }
+  .scroll { width:100%; max-width:100%; overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:420px; font-size:14px; }
+  caption { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  th, td { text-align:left; padding:7px 8px; border-bottom:1px solid #23222f; font-variant-numeric:tabular-nums; }
+  th { color:var(--quiet); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+  pre { margin:8px 0; padding:10px 12px; background:#0d0c14; border:1px solid var(--line); border-radius:10px; font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:#dcd8f4; overflow-x:auto; min-height:120px; }
+  .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
+  .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
+  footer a, .siblings a { color:#cfc6ff; }
+  #shareline { overflow-wrap:anywhere; min-height:2em; }
+  [hidden] { display:none !important; }
+  .lead { max-width: 60ch; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Check if a code library passes its tests (CPAN Testers studio)</h1>
+  <p class="lead" id="lead"><strong>See which computers a code library works on</strong>: paste test reports for Perl modules and get pass and fail counts per system, a table you can search, and an export. Or try a sample:</p>
+  <div class="row tries" id="tries" role="group" aria-label="Load sample reports">
+    <button type="button" data-sample="Text::CSV 2.04 PASS Linux&#10;Text::CSV 2.04 PASS Windows&#10;Text::CSV 2.04 FAIL Darwin">Read a spreadsheet file</button>
+    <button type="button" data-sample="Email::Sender 2.600 PASS Linux&#10;Email::Sender 2.600 FAIL Windows&#10;Email::Sender 2.600 PASS FreeBSD">Send an email</button>
+    <button type="button" data-sample="DateTime 1.65 PASS Linux&#10;DateTime 1.65 PASS Darwin&#10;DateTime 1.65 PASS Windows">Work with dates</button>
+  </div>
+  <p class="note">Samples are made-up reports, not live results.</p>
+  <p class="sub">An offline-first Perl test report and module ingestion studio: ingest CPAN Tester reports, view distribution health, search a test matrix, and export summaries. No account, no ads, works offline.</p>
+
+  <section class="card" aria-labelledby="h-ingest">
+    <h2 id="h-ingest">Test reports</h2>
+    <p class="note">Paste CPAN test reports (module, version, tester, status). Everything stays on this device.</p>
+    <textarea id="reports" aria-label="CPAN test reports input" placeholder="Acme::Widget 1.02 PASS Linux&#10;Acme::Widget 1.02 FAIL Darwin"></textarea>
+    <div class="row">
+      <button type="button" id="ingest" aria-label="Ingest test reports">Ingest reports</button>
+      <button type="button" id="clear" aria-label="Clear test reports">Clear</button>
+    </div>
+    <p class="out" id="summary"></p>
+    <p class="say" id="say" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-health">
+    <h2 id="h-health">Distribution health</h2>
+    <p class="note">Aggregate pass and fail counts across ingested reports.</p>
+    <p class="out" id="health"></p>
+    <div class="scroll">
+      <table id="matrix">
+        <caption>CPAN test matrix</caption>
+        <thead><tr><th scope="col">Module</th><th scope="col">Version</th><th scope="col">Platform</th><th scope="col">Status</th></tr></thead>
+        <tbody id="matrixbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-search">
+    <h2 id="h-search">Module search</h2>
+    <div class="row">
+      <label><span>Search modules</span><input id="q" type="text" aria-label="Search modules" placeholder="Acme"></label>
+      <button type="button" id="search" aria-label="Search test matrix">Search</button>
+    </div>
+    <p class="out" id="searchout">0 matching reports.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-live">
+    <h2 id="h-live">Live feed</h2>
+    <div class="row">
+      <button type="button" id="connectlive" aria-label="Connect live CPAN Testers feed">Connect Live Feed</button>
+    </div>
+    <p class="note" id="livestatus">Offline-first: local reports in use. Connect Live Feed reads the searched module's real CPAN Testers totals from MetaCPAN.</p>
+  </section>
+
+  <section class="card" aria-labelledby="h-export">
+    <h2 id="h-export">Export</h2>
+    <div class="row">
+      <button type="button" id="exportjson" aria-label="Export summary as JSON">Export JSON</button>
+      <button type="button" id="exportcsv" aria-label="Export matrix as CSV">Export CSV</button>
+    </div>
+    <p class="note">Exported summary appears below.</p>
+    <pre id="exportbox" aria-label="Exported summary"></pre>
+  </section>
+
+  <p class="note" id="demo">This is a worked example: paste CPAN Tester report lines and the studio summarizes distribution health, builds a test matrix, and exports it. Nothing is sent anywhere.</p>
+  <p class="note">Everything on this page is worked out on this device: no account, no ads, nothing is sent anywhere, and it works offline with the reports it last had.</p>
+
+  <nav class="siblings" aria-label="Use together with">
+    <a href="/base64/">Base64 encoder</a>
+    <a href="/g/">Gist creator</a>
+    <a href="/word-count/">Word counter</a>
+    <a href="/convert/">Convert units</a>
+    <a href="/?ask=cpan%20testers">See it as a card on the stage</a>
+    <a href="/">Back to Verse</a>
+  </nav>
+</main>
+<script type="module">
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'a2m.void.cpan.v1';
+  const state = { reports: [], last: '' };
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && typeof saved === 'object') Object.assign(state, saved); } catch (_) {}
+
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (_) {} };
+  const say = (t) => { $('say').textContent = t; };
+
+  const parseLine = (line) => {
+    const m = /^\s*(.+?)\s+(\S+)\s+(PASS|FAIL|NA)\s*(.*)$/i.exec(line);
+    if (!m) return null;
+    return { module: m[1].trim(), version: m[2].trim(), status: m[3].toUpperCase(), platform: (m[4] || 'unknown').trim() };
+  };
+
+  const render = () => {
+    const body = $('matrixbody');
+    while (body.firstChild) body.removeChild(body.firstChild);
+    for (const r of state.reports) {
+      const tr = document.createElement('tr');
+      for (const v of [r.module, r.version, r.platform, r.status]) { const td = document.createElement('td'); td.textContent = v; tr.appendChild(td); }
+      body.appendChild(tr);
+    }
+    const pass = state.reports.filter((r) => r.status === 'PASS').length;
+    const fail = state.reports.filter((r) => r.status === 'FAIL').length;
+    const total = state.reports.length;
+    const rate = total ? Math.round((pass / total) * 100) : 0;
+    $('summary').textContent = 'Ingested ' + total + ' reports: ' + pass + ' PASS, ' + fail + ' FAIL (' + rate + '% pass rate).';
+    $('health').textContent = 'Distribution health: ' + pass + ' passing, ' + fail + ' failing across ' + new Set(state.reports.map((r) => r.module)).size + ' modules.';
+  };
+
+  $('ingest').onclick = () => {
+    const lines = $('reports').value.split(/\n/).map((l) => l.trim()).filter(Boolean);
+    const parsed = lines.map(parseLine).filter(Boolean);
+    state.reports = parsed;
+    state.last = $('reports').value;
+    render();
+    save();
+    say('Ingested ' + parsed.length + ' test reports on this device.');
+  };
+  $('clear').onclick = () => { state.reports = []; render(); save(); say('Reports cleared on this device.'); };
+  $('search').onclick = () => {
+    const w = $('q').value.trim().toLowerCase();
+    const rows = w ? state.reports.filter((r) => r.module.toLowerCase().includes(w)) : state.reports;
+    $('searchout').textContent = rows.length + ' matching reports for "' + w + '".';
+  };
+  // the live feed: a distribution's real CPAN Testers totals for its latest release, read from MetaCPAN's public API (it allows this page to
+  // ask). The module is the one searched for, else the first one ingested; nothing is sent but the module's name.
+  const distOf = (m) => String(m || '').trim().replace(/::/g, '-').replace(/[^A-Za-z0-9_.-]/g, '');
+  const syncLive = async (fromClick) => {
+    const dist = distOf($('q').value) || distOf(state.reports[0] && state.reports[0].module);
+    if (!navigator.onLine) { $('livestatus').textContent = 'Offline-first: using local reports.'; return; }
+    if (!dist) { if (fromClick === true) $('livestatus').textContent = 'Offline-first: search for a module (Moo, or Test::More) and press Connect Live Feed to read its live CPAN Testers totals.'; return; }
+    $('livestatus').textContent = 'Reading the live CPAN Testers totals for ' + dist + ' from MetaCPAN…';
+    try {
+      const r = await fetch('https://fastapi.metacpan.org/v1/release/' + encodeURIComponent(dist), { mode: 'cors', credentials: 'omit', headers: { accept: 'application/json' } });
+      if (r.status === 404) { $('livestatus').textContent = 'MetaCPAN has no distribution called ' + dist + '. Offline-first: local reports in use.'; return; }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json(), t = (j && j.tests) || {}, n = (k) => Number(t[k] || 0).toLocaleString('en-US');
+      $('livestatus').textContent = 'Live: ' + j.distribution + ' ' + j.version + (j.date ? ' (released ' + String(j.date).slice(0, 10) + ')' : '') + ': CPAN Testers ' + n('pass') + ' pass, ' + n('fail') + ' fail, ' + n('na') + ' n/a, ' + n('unknown') + ' unknown, read from MetaCPAN at ' + new Date().toLocaleTimeString() + '. Offline reports remain available.';
+    } catch (e) {
+      $('livestatus').textContent = 'MetaCPAN did not answer. Offline-first: using local reports.';
+    }
+  };
+  $('connectlive').onclick = () => syncLive(true);
+  $('exportjson').onclick = () => {
+    const cfg = JSON.stringify({ reports: state.reports, pass: state.reports.filter((r) => r.status === 'PASS').length, fail: state.reports.filter((r) => r.status === 'FAIL').length }, null, 2);
+    $('exportbox').textContent = cfg;
+    say('Summary exported as JSON on this device.');
+  };
+  $('exportcsv').onclick = () => {
+    const rows = ['module,version,platform,status'].concat(state.reports.map((r) => [r.module, r.version, r.platform, r.status].join(',')));
+    $('exportbox').textContent = rows.join('\n');
+    say('Matrix exported as CSV on this device.');
+  };
+
+  if (state.last) $('reports').value = state.last;
+  render();
+  if (navigator.onLine) syncLive();
+  window.addEventListener('online', syncLive);
+  for (const b of document.querySelectorAll('#tries [data-sample]')) b.addEventListener('click', () => { $('reports').value = b.dataset.sample; $('ingest').click(); });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

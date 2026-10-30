@@ -1,0 +1,67 @@
+# Versus by weight (owner, 2026-10-29: size is bytes and surface, not popularity): measures how heavy each rival's home page really is
+# (tools/tower-size.mjs) on a runner, since the sandboxes cannot reach rivals, and commits void-live-deploy/tower.size.json. The Versus card and the
+# queue (lib/tower.js) put the fewest controls first, the lighter page on a tie. Plain GETs of public pages, robots.txt respected, never a no-rival
+# site; no secret. Chromium is installed so the controls are counted on the rendered page (one browser, at most 3 pages at once).
+name: Tower size
+on:
+  workflow_dispatch:
+    inputs:
+      max:
+        description: "sites to read this run"
+        default: "120"
+      only:
+        description: "read only these sites again (comma-separated hosts), for a retry"
+        default: ""
+  schedule:
+    - cron: '23 4 * * *'
+concurrency:
+  group: void-tower-size
+  cancel-in-progress: false
+permissions:
+  contents: write
+  actions: write
+jobs:
+  size:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Tests
+        run: node --test tools/tower-size.test.mjs tools/tower-target.test.mjs
+      - name: Weigh the sites
+        env:
+          MAX: ${{ inputs.max || '120' }}
+          ONLY: ${{ inputs.only || '' }}
+        run: |
+          case "$MAX" in ''|*[!0-9]*) MAX=120 ;; esac
+          case "$ONLY" in *[!a-z0-9.,-]*) echo "only takes hosts: $ONLY"; exit 1 ;; esac
+          if [ -n "$ONLY" ]; then node tools/tower-size.mjs --only "$ONLY" --minutes 35; else node tools/tower-size.mjs --max "$MAX" --minutes 35; fi
+          node tools/tower-target.mjs
+      - name: Commit the weights
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/tower.size.json void-live-deploy/tower.target.json; if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "Tower size: how heavy each Versus site really is"
+          for i in 1 2 3 4; do git pull -q --rebase -X theirs origin main && git push -q origin HEAD:main && break; sleep $((i * 5)); done
+          gh workflow run deploy.yml --ref main -f after_merge=true

@@ -1,0 +1,38 @@
+{
+  "slug": "attested-referrer-policy",
+  "run": "044",
+  "status": "candidate-only",
+  "queue": "empty",
+  "promoted": false,
+  "contract": "referrer#044|kind:attested-referrer-policy|header:absent-until-seal|proposed:no-referrer|chain:deny|meta-as-seal:deny|unsafe-url:deny|badge:deny|seal:human",
+  "contract_sha256": "7d2feefdd1bc0f6b85a2ced628e56d3a6b116d3182d9356cacc4c2db01ffc5bf",
+  "emit": false,
+  "claims": [
+    {
+      "id": "header-absent",
+      "text": "No Referrer-Policy response header is published by this draft.",
+      "attested": false
+    },
+    {
+      "id": "meta-absent",
+      "text": "No referrer meta element is a seal.",
+      "attested": false
+    },
+    {
+      "id": "proposed-token",
+      "text": "If a human later seals emit, the only candidate token is no-referrer.",
+      "attested": false
+    },
+    {
+      "id": "no-badge",
+      "text": "No privacy grade, scanner grade, or honored badge is claimed.",
+      "attested": false
+    }
+  ],
+  "file_sha256": {
+    "referrer.catalog.json": "69320a9cf1af280c69cc371ad58057f2ec47793a33d8e0a026f9523abcf6d27e",
+    "head-snippet.draft.html": "a4430466cdb936031d956a5a431c25953ced6fdbad2c8fe58f0188414a6160c8",
+    "referrer-worker.js": "d9fb32a9862eb8cedd8c9ef9e0fbc2764d1869b76ae848fc61c0b81692b5c9fc",
+    "proposed-referrer.html": "fd1584fd42f707ff311376a10fb74d3cea2e9f53b1f075cca445fd803d97fe35"
+  }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Draft 042 — subresource integrity hold</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8c0b4; --hold: #7a1f1f; --paper: #f6f3ee; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3eee6; --line: #4a453e; --hold: #e7b4b4; --paper: #161410; }
+    }
+    body { margin: 0; font: 16px/1.5 ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.4rem; line-height: 1.25; letter-spacing: -0.02em; }
+    h2 { font-size: 1rem; margin-top: 2rem; }
+    p, li { max-width: 38rem; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.86rem; }
+    pre { overflow: auto; padding: 0.8rem 1rem; border: 1px solid var(--line); }
+    table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.4rem 0.5rem; }
+    .status { border: 1px solid var(--hold); padding: 0.75rem 1rem; }
+    button, textarea { font: inherit; color: inherit; }
+    textarea { width: 100%; min-height: 6rem; box-sizing: border-box; background: transparent; border: 1px solid var(--line); padding: 0.6rem; }
+    button { background: transparent; border: 1px solid var(--ink); padding: 0.4rem 0.8rem; cursor: pointer; }
+    button[disabled] { opacity: 0.45; cursor: not-allowed; }
+    .note { font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p>Draft 042 · not sealed · not live</p>
+    <h1>Subresource integrity, absent until a human seals the bytes</h1>
+    <p class="status" id="status" role="status">Integrity-Policy: not sent. Third-party script and style src: denied. Catalog assets: 0.</p>
+    <p>This page loads no script and no stylesheet except the style block above. A hash computed here is a local note. It does not enter the catalog and it does not authorize a tag.</p>
+
+    <h2>Allowlist</h2>
+    <table>
+      <thead><tr><th>Path</th><th>sha384</th><th>Bytes</th><th>Disposition</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="4">No sealed asset. Empty is the correct row.</td></tr></tbody>
+    </table>
+
+    <h2>Local hash note</h2>
+    <p class="note">Paste bytes you already hold. This does not fetch a URL. A CDN response is not a reason to trust those bytes.</p>
+    <textarea id="bytes" spellcheck="false" aria-label="Bytes to hash locally"></textarea>
+    <p><button type="button" id="hash">Hash locally</button></p>
+    <pre id="out" aria-live="polite">sha256: —&#10;sha384: —</pre>
+
+    <h2>Hold</h2>
+    <p class="note">Hold records that a person looked. Hold is not a seal. Nothing is written except sessionStorage on this origin.</p>
+    <p><button type="button" id="hold">Hold this draft</button> <button type="button" id="seal" disabled>Seal (human only, disabled)</button></p>
+    <pre id="holdout">sessionStorage['atm-sri-hold-042']: absent</pre>
+  </main>
+  <script type="module">
+    const catalog = {"slug":"attested-subresource-integrity","run":"042","status":"unattested","emit_integrity_policy":false,"assets":[]};
+    const status = document.getElementById("status");
+    const out = document.getElementById("out");
+    const holdout = document.getElementById("holdout");
+    if (catalog.emit_integrity_policy !== false || catalog.assets.length !== 0) {
+      status.textContent = "Catalog refused: draft must stay empty and must not emit Integrity-Policy.";
+    }
+    function b64(buf) {
+      const bytes = new Uint8Array(buf);
+      let s = "";
+      for (const b of bytes) s += String.fromCharCode(b);
+      return btoa(s);
+    }
+    function hex(buf) {
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("hash").addEventListener("click", async () => {
+      const data = new TextEncoder().encode(document.getElementById("bytes").value);
+      const [sha256, sha384] = await Promise.all([
+        crypto.subtle.digest("SHA-256", data),
+        crypto.subtle.digest("SHA-384", data)
+      ]);
+      out.textContent = "unattested local note\nbytes: " + data.byteLength + "\nsha256: " + hex(sha256) + "\nsha384: " + b64(sha384) + "\nnot written to catalog";
+    });
+    document.getElementById("hold").addEventListener("click", () => {
+      const stamp = new Date().toISOString();
+      sessionStorage.setItem("atm-sri-hold-042", stamp);
+      holdout.textContent = "sessionStorage['atm-sri-hold-042']: " + stamp + "\nseal: absent";
+    });
+    const prior = sessionStorage.getItem("atm-sri-hold-042");
+    if (prior) holdout.textContent = "sessionStorage['atm-sri-hold-042']: " + prior + "\nseal: absent";
+  </script>
+</body>
+</html>

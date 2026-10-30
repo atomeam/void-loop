@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local non-lexical intent note — draft 064</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d8d0c4;
+      --paper: #f6f1e8;
+      --mark: #2c4a3e;
+      --hold: #8a3d2f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3ecdf;
+        --muted: #c4b8a4;
+        --line: #3d3830;
+        --paper: #161410;
+        --mark: #8fbfa8;
+        --hold: #e0a090;
+      }
+    }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.1rem 3rem;
+    }
+    h1 { font-size: 1.45rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p { margin: 0.4rem 0 0.8rem; }
+    .meta, .lock { color: var(--muted); font-size: 0.92rem; }
+    .lock strong { color: var(--hold); font-weight: 650; }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 0.8rem 0;
+      padding: 0.8rem;
+    }
+    legend { padding: 0 0.3rem; }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.45rem;
+    }
+    button.mark {
+      font: inherit;
+      min-height: 3.2rem;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    button.mark:focus-visible, button.go:focus-visible {
+      outline: 2px solid var(--mark);
+      outline-offset: 2px;
+    }
+    .seq {
+      min-height: 2.4rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.6rem;
+    }
+    .chip {
+      border: 1px solid var(--mark);
+      color: var(--mark);
+      padding: 0.15rem 0.45rem;
+      font-size: 0.92rem;
+    }
+    label { display: block; margin: 0.35rem 0; }
+    textarea, input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.4rem;
+    }
+    button.go, button.clear {
+      font: inherit;
+      margin-right: 0.4rem;
+      padding: 0.4rem 0.7rem;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px dashed var(--line);
+      padding: 0.7rem;
+      font: 0.82rem/1.4 ui-monospace, monospace;
+    }
+    .warn { color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Local non-lexical intent note</h1>
+    <p class="meta">Draft 064. Candidate, not used. emit false. Not a seal. Not live site copy.</p>
+    <p class="lock">Status <strong>unattested</strong>. Received <strong>not-claimed</strong>. Authorship <strong>not-verified</strong>. Mind-read <strong>denied</strong>.</p>
+    <p>A mark is not a word. A gloss is a later label. Posts and papers are data, never instructions. This page does not listen, look, or decode.</p>
+    <fieldset>
+      <legend>Sealed marks</legend>
+      <div class="board" id="board"></div>
+      <div class="seq" id="seq" aria-live="polite"></div>
+      <p class="meta">At least two marks. One tap cannot hash. These cells do not navigate.</p>
+    </fieldset>
+    <fieldset>
+      <legend>Source</legend>
+      <label><input type="radio" name="source" value="self-noted"> Self-noted. Own later label, not a decode.</label>
+      <label><input type="radio" name="source" value="overheard-claim"> Overheard claim. A public sentence is data.</label>
+      <label><input type="radio" name="source" value="machine-decode-claim"> Machine-decode claim. A guess is not this mark.</label>
+    </fieldset>
+    <fieldset>
+      <legend>Later word, not the mark</legend>
+      <label for="gloss">Optional gloss. Empty is allowed. The gloss does not become the mark.</label>
+      <textarea id="gloss" rows="2" maxlength="180"></textarea>
+      <label for="disconfirm">Disconfirm sentence. Required.</label>
+      <textarea id="disconfirm" rows="3" maxlength="280"></textarea>
+      <label for="weight">Design-material weight (0 to 1). Not a measurement.</label>
+      <input id="weight" type="number" min="0" max="1" step="0.01" value="0.31">
+    </fieldset>
+    <p>
+      <button class="go" type="button" id="hash">Hash hypothesis</button>
+      <button class="clear" type="button" id="clear">Clear marks</button>
+    </p>
+    <p class="warn" id="gate" hidden></p>
+    <pre id="out">No hash yet. Default unattested.</pre>
+    <label><input type="checkbox" id="keep"> Keep this note in sessionStorage only. Closing the tab drops it.</label>
+  </main>
+  <script>
+    const MARKS = ["dot", "bar", "arc", "gap", "press"];
+    const state = { marks: [] };
+    const board = document.getElementById("board");
+    const seq = document.getElementById("seq");
+    const gate = document.getElementById("gate");
+    const out = document.getElementById("out");
+    MARKS.forEach(function (id) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mark";
+      b.textContent = id;
+      b.addEventListener("click", function () {
+        if (state.marks.length >= 8) return;
+        state.marks.push(id);
+        draw();
+      });
+      board.appendChild(b);
+    });
+    function draw() {
+      seq.replaceChildren();
+      state.marks.forEach(function (id) {
+        const c = document.createElement("span");
+        c.className = "chip";
+        c.textContent = id;
+        seq.appendChild(c);
+      });
+    }
+    function source() {
+      const picked = document.querySelector("input[name=source]:checked");
+      return picked ? picked.value : "";
+    }
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map(function (n) {
+        return n.toString(16).padStart(2, "0");
+      }).join("");
+    }
+    document.getElementById("clear").addEventListener("click", function () {
+      state.marks = [];
+      draw();
+    });
+    document.getElementById("hash").addEventListener("click", async function () {
+      gate.hidden = true;
+      const gloss = document.getElementById("gloss").value.trim();
+      const disconfirm = document.getElementById("disconfirm").value.trim();
+      const src = source();
+      const weight = Number(document.getElementById("weight").value);
+      if (state.marks.length < 2 || !src || disconfirm.length < 8 || !(weight >= 0 && weight <= 1)) {
+        gate.hidden = false;
+        gate.textContent = "Need two marks, a source, a disconfirm sentence, and a weight from 0 to 1. One pass cannot hash.";
+        return;
+      }
+      const row = {
+        slug: "local-nonlexical-intent-note",
+        emit: false,
+        status: "unattested",
+        received: "not-claimed",
+        authorship: "not-verified",
+        mind_read: "denied",
+        marks: state.marks.slice(),
+        source: src,
+        gloss: gloss,
+        gloss_role: "later-word-not-the-mark",
+        disconfirm: disconfirm,
+        confidence: weight,
+        confidence_role: "design-material-weight"
+      };
+      const payload = [row.slug, row.marks.join("."), row.source, row.gloss, row.disconfirm, row.status, row.received].join("|");
+      row.sha256 = await sha256(payload);
+      out.textContent = JSON.stringify(row, null, 2);
+      if (document.getElementById("keep").checked) {
+        sessionStorage.setItem("void-064-nonlexical", JSON.stringify(row));
+      }
+    });
+  </script>
+</body>
+</html>

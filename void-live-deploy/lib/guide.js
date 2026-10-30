@@ -69,7 +69,7 @@ export function oneLine(src, name) {
   if ((line.split(/\s+/).length < 5 || /^"[^"]*"\.?$/.test(line.trim())) && rest && !/^(?:Contract|api):/.test(rest)) line = line ? line.replace(/[.;:,]+$/, '') + ': ' + rest.charAt(0).toLowerCase() + rest.slice(1) : rest;
   line = line.replace(/:\s*frontier #\d+'s (?:first|second|third) piece\.?$/, '');
   if (line.length > 170) { const semi = line.indexOf(';', 60); if (semi > 0 && semi < 170) line = line.slice(0, semi); }
-  if (line.length > 170) { const sp = line.lastIndexOf(' ', 160); line = line.slice(0, sp > 80 ? sp : 160).replace(/[,;:(\s]+$/, '') + '…'; }
+  // the whole line, never cut (owner, 2026-10-21)
   if ((line.match(/\(/g) || []).length > (line.match(/\)/g) || []).length) line = line.slice(0, line.lastIndexOf('(')); // a note cut in half
   line = line.trim().replace(/\s+[-–—]\s*$/, '').replace(/[.;:,]+$/, '');
   return line.charAt(0).toUpperCase() + line.slice(1);
@@ -127,7 +127,8 @@ export function miniOwners(names, read) {
   return out;
 }
 
-const title = (s) => String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
+const NAMED = { 'mind-field-mode': 'Mind Field', 'tilt-arena-mode': 'Tilt Arena', 'doodle-mind': 'Doodle Mind', 'echo-field': 'Echo Field', 'resonant-membrane': 'Resonant Membrane', 'gaze-chase': 'Gaze Chase', 'gpu-swarm': 'GPU Swarm', 'hand-arena': 'Hand Arena' }; // a family's front page carries the family's own name (owner, 2026-10-21: "make them all easier to find")
+const title = (s) => NAMED[s] || String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
 
 // Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
@@ -159,7 +160,10 @@ export function flavorOf(name, familyName, why, tier, taken = new Set()) {
     const line = LORE[(s + i) % LORE.length](f, n ? Number(n) : 0) + TAILS[((s >>> 8) + Math.floor(i / LORE.length)) % TAILS.length];
     if (!taken.has(line)) { taken.add(line); return line; }
   }
-  return LORE[s % LORE.length](f, n ? Number(n) : 0);
+  // every lore line and tail is in the book already (many proven skills with no asks counted share the same few): the skill's own name keeps it unique
+  const line = LORE[s % LORE.length](f, n ? Number(n) : 0) + ' This is the page of ' + name + '.';
+  taken.add(line);
+  return line;
 }
 
 /**
@@ -193,7 +197,10 @@ export function compose({ names = [], read = () => '', families = { families: []
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
   page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
-  page({ kind: 'how', chapter: 'front', title: 'How to ask', core: core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })) });
+  // the first asks over two pages (owner, 2026-10-21: the book cut the bottom of this page): the welcome and the first half, then the rest and the store
+  const coreAll = core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })), half = Math.ceil(coreAll.length / 2);
+  if (coreAll.length > 3) { page({ kind: 'how', chapter: 'front', title: 'How to ask', part: 1, core: coreAll.slice(0, half) }); page({ kind: 'how', chapter: 'front', title: 'More to ask', part: 2, core: coreAll.slice(half) }); }
+  else page({ kind: 'how', chapter: 'front', title: 'How to ask', core: coreAll });
   page({ kind: 'legend', chapter: 'front', title: 'How to read a page' });
   page({ kind: 'toc', chapter: 'front', title: 'Contents' });
   front.to = pages.length;

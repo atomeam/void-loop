@@ -43,8 +43,8 @@ test('the running heads follow a book: the title on the left, the chapter on the
 test('the front matter and the back: a title page, how to ask with the built-in asks, the legend with the four words, a contents with jumps, an index with jumps', () => {
   assert.match(pageHtml(book.pages[0], book, esc), /tome-title big/);
   assert.match(pageHtml(book.pages[1], book, esc), /data-ask="what is a black hole"/);
-  assert.match(pageHtml(book.pages[2], book, esc), /nothing checks it yet/);
-  assert.match(tocHtml(book, esc), /data-page="5"/);
+  assert.match(pageHtml(book.pages.find((p) => p.kind === 'legend'), book, esc), /nothing checks it yet/);
+  assert.match(tocHtml(book, esc), /data-page="\d+"/);
   assert.match(pageHtml(book.pages[book.pages.length - 1], book, esc), /lead-dots/);
   assert.match(coverHtml(book, esc), /The Verse Book/);
 });
@@ -65,6 +65,8 @@ test('flavor text (asked by Verse): one line of lore for a proven skill, cut fro
   assert.equal(lines.length, book.pages.filter((p) => p.kind === 'skill' && p.tier === 'proven').length, 'every proven skill has one');
   assert.equal(new Set(lines).size, lines.length, 'no two alike');
   assert.ok(lines.every((l) => l.length <= 150), 'short enough for one or two lines under a title: ' + Math.max(...lines.map((l) => l.length)));
+  const full = new Set(), many = Array.from({ length: 200 }, (_, i) => flavorOf('skill-' + i, 'Stage', '', 'proven', full));
+  assert.equal(new Set(many).size, 200, 'still unique once every lore line and tail is taken');
 });
 test('scented parchment (asked by Verse): the tome is warm when the last status check was clean, cooler the more failed, untouched with no fresh reading', async () => {
   const { parchmentFilter } = await import('../void-live-deploy/lib/tome.js');

@@ -1,17 +1,20 @@
 /**
- * memory-preview skill — shows memory snippets from both server-side memory (remember that...)
- * and local memory graph (patterns, interests). Asked by Verse: "a 'memory-preview' UI component
- * to show memory snippets". "memory preview", "show my memory snippets", "what memories do I have",
- * "preview my memory". Summons a card with two sections: server facts and local patterns.
+ * memory-preview skill — a snippets card of what Verse keeps about you, in both stores at once: the local memory graph
+ * (interests and "you told me" lines, this browser only) and the server's remembered records. Asked by Verse:
+ * "Implement a 'memory-preview' UI component to allow users to see memory snippets" (ask-20261020-2131-2).
+ * "memory preview", "show my memory snippets", "what memories do I have", "show what you remember about me", "peek at my memories".
+ * Not this: "preview my memory" / "what's in my memory export" is the export's own look (skills/memory-graph.js, asked by Verse 2026-10-18),
+ * and "what did I build with react" is the answer (skills/memory.js). A store that will not open is said plainly, never thrown.
  */
 import { sessionToken } from '../lib/state.js';
 import { readGraph, patterns, GRAPH_KEY } from '../lib/memory-graph.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const PREVIEW_RE = /^(?:memory\s+preview|show\s+(?:my|the)\s+memory\s+(?:snippets?|preview)|what\s+(?:memories|memory)\s+(?:do\s+)?(?:i\s+)?have|preview\s+my\s+memory)$/;
+/** snippet-flavoured wordings only: "preview my memory" belongs to memory-graph's export look (kept out, so the two never race). */
+const PREVIEW_RE = /^(?:memory\s+preview|show\s+(?:my|the)\s+memory\s+snippets?|what\s+(?:memories|memory)\s+(?:do\s+)?(?:i\s+)?have|show\s+(?:what|everything)\s+(?:you|verse)\s+remembers?\s+about\s+me|peek\s+at\s+(?:my|the)\s+memories?)$/;
 const NO_KEY = 'What Verse remembers is for the owner and paid members. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.';
 
-function previewAskOf(text) {
+export function previewAskOf(text) {
   return PREVIEW_RE.test(CLEAN(text));
 }
 
@@ -30,79 +33,81 @@ const CSS = `
 `;
 function ensureStyle() { if (document.getElementById('mp-style')) return; const st = document.createElement('style'); st.id = 'mp-style'; st.textContent = CSS; document.head.append(st); }
 
-const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const day = (s) => String(s || '').slice(0, 10);
+const pct = (c) => (c == null ? '?' : Math.round(c * 100));
+
+/** /api/memory?view=export answers { records: [...] }; a record is one remembered project. Pure given the parsed body. */
+export function serverRecords(data) {
+  const rows = (data && (data.records || data.items)) || [];
+  return Array.isArray(rows) ? rows : [];
+}
 
 async function fetchServerMemory(tok) {
-  if (!tok) return { facts: [], error: NO_KEY };
+  if (!tok) return { records: [], error: NO_KEY };
   try {
     const r = await fetch('/api/memory?view=export', { headers: { authorization: 'Bearer ' + tok } });
-    if (!r.ok) return { facts: [], error: r.status === 401 ? 'Only the owner can read this.' : r.status === 403 ? 'Server memory is for paid members.' : r.status === 503 ? 'No database behind this copy of Verse.' : 'Memory answered ' + r.status + '.' };
-    const data = await r.json();
-    return { facts: data.items || [], error: null };
-  } catch (e) {
-    return { facts: [], error: 'Memory is out of reach right now.' };
+    if (!r.ok) return { records: [], error: r.status === 401 ? 'Only the owner can read this.' : r.status === 403 ? 'Server memory is for paid members.' : r.status === 503 ? 'No database behind this copy of Verse.' : 'Memory answered ' + r.status + '.' };
+    return { records: serverRecords(await r.json()), error: null };
+  } catch (_) {
+    return { records: [], error: 'Memory is out of reach right now.' };
   }
 }
 
-function localPatternsHtml(esc, p) {
-  if (!p.on) return '<div class="mp-empty">Local patterns: off ("start remembering" to enable)</div>';
-  if (!p.asks && !p.facts.length) return '<div class="mp-empty">Local patterns: nothing yet. Ask a few things and come back.</div>';
+function localHtml(esc, p) {
+  if (!p.on) return '<div class="mp-section"><h4 class="mp-title">Local patterns</h4><div class="mp-empty">Off. Say "start remembering" to keep them on this device.</div></div>';
+  if (!p.asks && !p.facts.length) return '<div class="mp-section"><h4 class="mp-title">Local patterns</h4><div class="mp-empty">Nothing yet on this device. Ask a few things and come back.</div></div>';
   let h = '<div class="mp-section"><h4 class="mp-title">Local patterns <span class="mp-count">' + esc(String(p.asks)) + ' ask' + (p.asks === 1 ? '' : 's') + (p.first ? ' since ' + esc(day(p.first)) : '') + '</span></h4>';
   if (p.interests.length) {
-    h += '<div class="mp-list">' + p.interests.slice(0, 8).map((t) => '<div class="mp-item"><div class="mp-fact">' + esc(t.label) + '</div><div class="mp-meta">' + esc(t.n) + ' times · ' + esc(pct(t.conf)) + '% · skill: ' + esc(t.skill) + '</div></div>').join('') + '</div>';
+    h += '<div class="mp-list">' + p.interests.slice(0, 8).map((t) => '<div class="mp-item"><div class="mp-fact">' + esc(t.label) + '</div><div class="mp-meta">' + esc(String(t.n)) + ' times · ' + esc(String(pct(t.conf))) + '% · skill: ' + esc(t.skill) + '</div></div>').join('') + '</div>';
   }
   if (p.facts.length) {
     h += '<h4 class="mp-title" style="margin-top:10px">You told me <span class="mp-count">' + p.facts.length + '</span></h4><div class="mp-list">' + p.facts.slice(0, 6).map((f) => '<div class="mp-item"><div class="mp-fact">' + esc(f) + '</div></div>').join('') + '</div>';
   }
-  h += '</div>';
-  return h;
+  return h + '</div>';
 }
 
-function serverMemoryHtml(esc, facts, error) {
+function serverHtml(esc, records, error) {
   if (error) return '<div class="mp-section"><h4 class="mp-title">Server memory</h4><div class="mp-empty">' + esc(error) + '</div></div>';
-  if (!facts.length) return '<div class="mp-section"><h4 class="mp-title">Server memory</h4><div class="mp-empty">No remembered facts yet. Say "remember that ..." to add one.</div></div>';
-  let h = '<div class="mp-section"><h4 class="mp-title">Server memory <span class="mp-count">' + facts.length + '</span></h4><div class="mp-list">';
-  for (const f of facts.slice(0, 8)) {
-    const name = f.name || f.summary || 'fact';
-    h += '<div class="mp-item"><div class="mp-fact">' + esc(name) + '</div><div class="mp-meta">id: ' + esc(f.id || '') + '</div></div>';
+  if (!records.length) return '<div class="mp-section"><h4 class="mp-title">Server memory</h4><div class="mp-empty">Nothing kept on the server yet. Say "remember that ..." to add a line.</div></div>';
+  let h = '<div class="mp-section"><h4 class="mp-title">Server memory <span class="mp-count">' + records.length + '</span></h4><div class="mp-list">';
+  for (const rec of records.slice(0, 8)) {
+    const head = rec.name || rec.summary || 'a record';
+    h += '<div class="mp-item"><div class="mp-fact">' + esc(head) + '</div><div class="mp-meta">'
+      + (rec.kind ? esc(rec.kind) + ' · ' : '') + (rec.updated ? 'updated ' + esc(day(rec.updated)) : '') + '</div></div>';
   }
-  h += '</div></div>';
-  return h;
+  return h + '</div></div>';
 }
 
-const pct = (c) => c == null ? '?' : Math.round(c * 100);
+/** the whole card's markup, given what each store answered. Pure; every value is escaped. */
+export function previewHtml(esc, local, server) {
+  return '<h2>Memory preview</h2>'
+    + '<p class="sub">Snippets from both stores. Local = this browser only; Server = your key on Verse.</p>'
+    + localHtml(esc, local)
+    + serverHtml(esc, server.records, server.error)
+    + '<div class="mp-refresh"><button type="button" class="g-btn" data-action="refresh">Refresh</button></div>'
+    + '<div class="src">Local: ' + esc(GRAPH_KEY) + ' (this browser only) · Server: /api/memory?view=export</div>';
+}
 
 async function mount(api) {
-  const { showPage, say } = api;
+  const { showPage, say, esc } = api;
   ensureStyle();
-  const tok = sessionToken();
   const local = patterns(readGraph(), Date.now());
-  const { facts: serverFacts, error } = await fetchServerMemory(tok);
-  const html = '<h2>Memory preview</h2>'
-    + '<p class="sub">Snippets from both memory systems. Local = this browser; Server = your key on V01D.</p>'
-    + localPatternsHtml(esc, local)
-    + serverMemoryHtml(esc, serverFacts, error)
-    + '<div class="mp-refresh"><button type="button" class="g-btn" data-action="refresh">Refresh</button></div>'
-    + '<div class="src">Local: ' + esc(GRAPH_KEY) + ' (this browser only) · Server: your V01D memory</div>';
-  const el = showPage((p) => { p.innerHTML = html; });
-  if (!el) return 'memory-preview';
-  const btn = el.querySelector('[data-action="refresh"]');
-  if (btn) btn.addEventListener('click', () => mount(api));
-  say('Memory preview · ' + local.asks + ' local asks, ' + serverFacts.length + ' server facts' + (error ? ' (server locked)' : ''));
+  const server = await fetchServerMemory(sessionToken());
+  const el = showPage((p) => { p.innerHTML = previewHtml(esc || ((s) => String(s || '')), local, server); });
+  if (el) {
+    const btn = el.querySelector('[data-action="refresh"]');
+    if (btn) btn.addEventListener('click', () => { mount(api); });
+  }
+  say('Memory preview · ' + local.asks + ' local asks, ' + server.records.length + ' server records' + (server.error ? ' (server locked)' : ''));
   return 'memory-preview';
-}
-
-export function match(text) { return previewAskOf(text); }
-
-export async function run(text, api) {
-  return mount(api);
 }
 
 export default {
   name: 'memory-preview',
-  examples: ['memory preview', 'show my memory snippets', 'what memories do I have', 'preview my memory'],
-  nearMisses: ['what do you know about me', 'my patterns', 'what do you remember about the parser', 'remember that I like tea', 'export my memory'],
+  previewAskOf,
+  examples: ['memory preview', 'show my memory snippets', 'what memories do I have', 'show what you remember about me'],
+  nearMisses: ['preview my memory', "what's in my memory export", 'what do you know about me', 'my patterns', 'remember that I like tea', 'export my memory', 'what did I build with react'],
   match(lower, text) { return previewAskOf(text || lower); },
-  run,
+  run(text, api) { return mount(api); },
+  stageKinds: { 'memory-preview': { mount } },
 };

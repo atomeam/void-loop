@@ -1,0 +1,33 @@
+{
+  "slug": "local-bound-not-hit",
+  "run": 81,
+  "family": "weak-signal-hypothesis-ledger",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "bound": "unset",
+  "candidate": "discarded",
+  "disconfirm": "bound-is-not-a-hit",
+  "href_allowlist": [],
+  "default_digest": "a0e8e5ae6bbb05042e1ac6c16b1619ac175404f61476f163ce46efc45259831a",
+  "fixtures": [
+    {
+      "id": "window-label",
+      "label": "Window-label bound",
+      "status": "unattested",
+      "note": "A closed label for what interval was named. Not a duration measurement and not a hit."
+    },
+    {
+      "id": "instrument-label",
+      "label": "Instrument-label bound",
+      "status": "unattested",
+      "note": "A closed label for what was said to be looked through. Not a telescope reading and not a detection."
+    },
+    {
+      "id": "veto-label",
+      "label": "Veto-label bound",
+      "status": "unattested",
+      "note": "A closed label for a named discard rule. Not a false-discovery seal and not an early warning."
+    }
+  ]
+}

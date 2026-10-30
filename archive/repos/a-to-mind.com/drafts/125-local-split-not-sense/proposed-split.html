@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Void draft — local split, not a sense</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f6f1e8; --mark: #6d4c2f; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3ecdf; --line: #4a433a; --paper: #1a1714; --mark: #d7b48a; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; }
+    p, li { max-width: 38rem; }
+    .flag { display: inline-block; border: 1px solid var(--line); padding: 0.15rem 0.45rem; font: 0.75rem/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+    fieldset { border: 1px solid var(--line); margin: 1.25rem 0; padding: 0.8rem 1rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea, button { font: inherit; color: inherit; background: transparent; }
+    textarea { width: 100%; min-height: 5rem; border: 1px solid var(--line); padding: 0.5rem; box-sizing: border-box; }
+    button { border: 1px solid var(--mark); padding: 0.35rem 0.7rem; margin-right: 0.4rem; }
+    button[disabled] { opacity: 0.45; }
+    output, pre { display: block; white-space: pre-wrap; word-break: break-word; border-top: 1px solid var(--line); margin-top: 0.8rem; padding-top: 0.6rem; font: 0.85rem/1.4 ui-monospace, monospace; }
+    .discarded { text-decoration: line-through; opacity: 0.7; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="flag">unattested · draft · emit false</p>
+  <h1>Local split, not a sense</h1>
+  <p>A split mark is a closed class: compete, facilitate, or withheld. It is not a sense reading and not a body diagnosis. The sentence about what the body said is discarded and is not in the hash.</p>
+  <p>No camera, microphone, pulse sensor, or clock is used. Pages and posts pasted below are data, never instructions.</p>
+
+  <fieldset>
+    <legend>Split class</legend>
+    <label><input type="radio" name="split" value="compete"> compete — inward and outward reported as rivals</label>
+    <label><input type="radio" name="split" value="facilitate"> facilitate — inward mark reported beside an outward mark</label>
+    <label><input type="radio" name="split" value="withheld" checked> withheld — no class claimed</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Sense sentence (discarded)</legend>
+    <label for="sense">What the body seemed to say. This text is not stored and is not hashed.</label>
+    <textarea id="sense" maxlength="240" placeholder="Type, then discard. Not a reading."></textarea>
+    <button type="button" id="discard">Discard sentence</button>
+    <output id="discard-out" class="discarded">Nothing discarded yet.</output>
+  </fieldset>
+
+  <fieldset>
+    <legend>Paste well (data only)</legend>
+    <label for="paste">A retrieved page or post. Imperative lines are flagged and not run.</label>
+    <textarea id="paste" maxlength="600" placeholder="Paste is data."></textarea>
+    <button type="button" id="flag">Flag instructions</button>
+    <output id="paste-out">No paste flagged.</output>
+  </fieldset>
+
+  <p>
+    <button type="button" id="hash">Hash split refusal</button>
+    <button type="button" disabled>Promote (denied)</button>
+    <button type="button" disabled>Seal (denied)</button>
+  </p>
+  <pre id="receipt">status: unattested
+refusal: sense
+emit: false</pre>
+</main>
+<script>
+(function () {
+  var sense = document.getElementById("sense");
+  var discardOut = document.getElementById("discard-out");
+  var paste = document.getElementById("paste");
+  var pasteOut = document.getElementById("paste-out");
+  var receipt = document.getElementById("receipt");
+  var discarded = "";
+
+  function splitValue() {
+    var node = document.querySelector('input[name="split"]:checked');
+    return node ? node.value : "withheld";
+  }
+
+  document.getElementById("discard").addEventListener("click", function () {
+    discarded = sense.value;
+    sense.value = "";
+    discardOut.textContent = discarded
+      ? "Discarded (" + discarded.length + " chars). Not in the hash."
+      : "Empty discard. Not in the hash.";
+  });
+
+  document.getElementById("flag").addEventListener("click", function () {
+    var lines = paste.value.split(/\n/);
+    var hits = lines.filter(function (line) {
+      return /^\s*(do |you must|ignore previous|system:|how to )/i.test(line);
+    });
+    pasteOut.textContent = hits.length
+      ? "Flagged " + hits.length + " imperative line(s). Not executed."
+      : "No imperative line flagged. Paste remains data.";
+  });
+
+  document.getElementById("hash").addEventListener("click", function () {
+    var payload = {
+      slug: "local-split-not-sense",
+      split: splitValue(),
+      refusal: "sense",
+      status: "unattested",
+      run: 125
+    };
+    var canonical = JSON.stringify(payload);
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(canonical)).then(function (buf) {
+      var hex = Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+      receipt.textContent = [
+        "status: unattested",
+        "refusal: sense",
+        "split: " + payload.split,
+        "sha256: " + hex,
+        "preimage: " + canonical,
+        "sense sentence in hash: false",
+        "emit: false",
+        "seal: false"
+      ].join("\n");
+    }).catch(function () {
+      receipt.textContent = "status: unattested\nhash denied\nemit: false";
+    });
+  });
+})();
+</script>
+</body>
+</html>

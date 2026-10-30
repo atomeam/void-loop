@@ -6,6 +6,7 @@
  * Nothing about the visitor is sent; GitHub sees one anonymous request.
  */
 import { keepLive } from './live.js';
+import { hardenedLine } from './showcase.js';
 
 export const REPO = 'atomeam/void-loop', EVERY = 5 * 60e3, SHOW = 10;
 const ASK = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:merge\s+log|merge\s+feed|recent\s+merges|latest\s+merges)$|^what\s+(?:did\s+(?:you|the\s+bot|(?:verse|v01d))|got|has\s+been|was)\s+merged?(?:\s+(?:today|lately|recently|this\s+week))?$|^what\s+merged(?:\s+(?:today|lately|recently|this\s+week))?$/;
@@ -16,11 +17,22 @@ export function mergesAsk(text) {
 }
 
 /** GitHub's closed pull requests -> the merged ones, newest first, with how each got in. Pure. */
+/** a pull request's title as the log shows it: Verse's own upgrades say what got better, never "hardens itself", and a cycle that added nothing
+ *  is not shown at all (owner, 2026-10-24: "there should be no self hardening, it needs to say exactly what upgrades"; "nothing should be
+ *  empty"). Titles from before grow-self named the upgrade read "Verse hardens itself: ...". null for one to leave out. Pure. */
+export function plainTitle(title) {
+  const t = String(title || '').replace(/\s+/g, ' ').trim(), m = /^(?:Verse|V01D) hardens itself:\s*(.+)$/i.exec(t);
+  if (!m) return t;
+  if (/^nothing to add\b/i.test(m[1])) return null;
+  const line = hardenedLine('Verse hardened itself: ' + m[1]);
+  return line ? line.replace(/\b1 more ways\b/, '1 more way') : t;
+}
+
 export function mergedOf(prs, n = SHOW) {
-  return (Array.isArray(prs) ? prs : []).filter((p) => p && p.merged_at && typeof p.number === 'number')
+  return (Array.isArray(prs) ? prs : []).filter((p) => p && p.merged_at && typeof p.number === 'number' && plainTitle(p.title) !== null)
     .sort((a, b) => String(b.merged_at).localeCompare(String(a.merged_at))).slice(0, n)
     .map((p) => { const labels = (p.labels || []).map((l) => (l && l.name) || '');
-      return { number: p.number, title: String(p.title || '').slice(0, 160), at: String(p.merged_at).slice(0, 16).replace('T', ' '), url: /^https:\/\/github\.com\//.test(String(p.html_url || '')) ? p.html_url : 'https://github.com/' + REPO + '/pull/' + p.number,
+      return { number: p.number, title: plainTitle(p.title).slice(0, 200), at: String(p.merged_at).slice(0, 16).replace('T', ' '), url: /^https:\/\/github\.com\//.test(String(p.html_url || '')) ? p.html_url : 'https://github.com/' + REPO + '/pull/' + p.number,
         how: labels.includes('made by Verse') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Verse\'s review' : 'merged by hand' }; });
 }
 

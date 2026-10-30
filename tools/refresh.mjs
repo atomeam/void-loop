@@ -23,9 +23,14 @@ export const STEPS = [
   { name: 'families', script: 'families.mjs', write: [], check: ['--check'], why: 'each skill\'s family and how far it is proven, from the tests and the benchmark' },
   { name: 'guide', script: 'guide.mjs', write: [], check: ['--check'], why: 'the book: one page per skill, game and miniature, from the skills and the families' },
   { name: 'what', script: 'what-skills.mjs', write: [], check: ['--check'], why: 'one current line per skill for the cards that list them (the already-built card), from the book' },
+  { name: 'seo', script: 'seo-pages.mjs', write: [], check: ['--check'], why: 'each tool page\'s canonical link and JSON-LD, from the table in lib/seo.js (what the page is, the words people search for it)' },
+  { name: 'parity', script: 'parity.mjs', write: ['--write'], check: ['--check'], why: 'each obituary site\'s feature inventory (docs/PARITY), /parity.json and the cited timelines /obituaries/ opens, from the pages, the tower and docs/HISTORY; no network (the live scan is node tools/parity.mjs --scan)' },
+  { name: 'tower-plan', script: 'tower-plan.mjs', write: [], check: ['--check'], why: "the Versus card's plan (working on now, next easiest, far future), from the tower-plan block in docs/NEXT.md; every id checked against the tower's floors" },
   { name: 'asks', script: 'asks-link.mjs', write: ['--write'], check: ['--check'], volatile: true, why: "which of Verse's asks are built, linked to the ledger line that built them (the wants and self cards list only the rest); a new ledger line can answer an old ask, so the deploy links them" },
   { name: 'self', script: 'self-context.mjs', write: [], check: ['--check'], volatile: true, why: "Verse's facts about itself (the self card, /api/answer), from everything above and the ledgers; it embeds the newest commits, so only the deploy keeps it current" },
   { name: 'bench-alarms', script: 'bench-alarms.mjs', write: [], check: ['--check'], volatile: true, why: "the Bench icon's count of checked false alarms; regenerated at deploy" },
+  { name: 'churn', script: 'churn.mjs', write: ['--write'], check: ['--check'], volatile: true, why: "churn.json: the files changed more than 12 times in 7 days, from git; the will skips a want that names one, and only the deploy keeps the window current" },
+  { name: 'sitemap', script: 'sitemap.mjs', write: [], check: ['--check'], volatile: true, why: 'sitemap.xml: the home page, every tool page, the tower, the /fix/ and /is-it/ pages, lastmod from git; the deploy sets the dates' },
 ];
 
 /** the steps picked by name, in STEPS order; an unknown name is an error. Pure. */

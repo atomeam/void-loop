@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>TDM reservation — unattested draft</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1a1a; --bg: #f6f5f2; --line: #c8c4ba; --hold: #8a5a00; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #eceae4; --bg: #141412; --line: #3a3832; --hold: #e0b15a; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; }
+    p, li { font-size: 0.95rem; }
+    .state { display: inline-block; border: 1px solid var(--line); padding: 0.15rem 0.45rem; font-family: ui-monospace, monospace; font-size: 0.8rem; }
+    .state[data-state="unattested"], .state[data-state="hold"] { color: var(--hold); }
+    code, pre { font-family: ui-monospace, monospace; font-size: 0.78rem; }
+    pre { white-space: pre-wrap; border: 1px solid var(--line); padding: 0.75rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 0.4rem 0.3rem; font-size: 0.82rem; }
+    button { font: inherit; padding: 0.4rem 0.7rem; }
+    .denied { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="state" id="state" data-state="unattested">unattested</p>
+  <h1>TDM reservation draft</h1>
+  <p>Candidate only. No live <code>/.well-known/tdmrep.json</code>. A missing file means this origin does not implement TDMRep. That is not a grant to mine, and it is not a block.</p>
+  <p id="hold-note">Hold is local. Nothing is written to the origin.</p>
+
+  <h2>Claims</h2>
+  <table id="claims"><thead><tr><th>id</th><th>sha256</th><th>check</th></tr></thead><tbody></tbody></table>
+  <p>Head <code id="head-hash"></code> · body <code id="body-hash"></code></p>
+
+  <h2>Not served</h2>
+  <p class="denied">The array below is a draft byte string. The worker returns 404 while <code>SEALED</code> is false. <code>tdm-reservation: 0</code> is denied. No <code>tdm-policy</code> URL.</p>
+  <pre id="draft-bytes">[
+  {
+    "location": "/",
+    "tdm-reservation": 1
+  }
+]</pre>
+
+  <p>
+    <button type="button" id="verify">Recompute SHA-256</button>
+    <button type="button" id="hold">Hold — do not serve</button>
+  </p>
+  <p id="result"></p>
+</main>
+<script type="module">
+const LINES = [
+  ["tdm#036", "tdm#036|kind:attested-tdm-reservation|resource:/.well-known/tdmrep.json|absent-until-seal:deny-serve|reservation-1:candidate|honor-claim:deny|hash:sha256|seal:human", "1efcf0bac38f4665834716e851d138233d14a835b6c96c8caa5f5eb47727dba2"],
+  ["claim#route", "claim#route|text:No live /.well-known/tdmrep.json until a human seals the reservation text.", "8908f5842f3469e1a1a003d35da8c5fa3db95d4531a0c45682506c7fb4813a02"],
+  ["claim#absent", "claim#absent|text:A missing tdmrep.json means this origin does not implement TDMRep. It is not a grant to mine.", "58f7e483c916d3576e7acf09127098c944c960564c239b85e30154ce93343845"],
+  ["claim#one", "claim#one|text:tdm-reservation 1 is a rights-reservation signal under the TDMRep note. It is not a crawler block.", "08dcc7a4bd809f30e4ed3c6b5b8192bccc2791516363f4b2d62241a3a5545729"],
+  ["claim#zero", "claim#zero|text:tdm-reservation 0 is denied. This draft does not publish a permission to mine.", "39237082b74ac55fc95ca862ae7a8ffa1c9fb5fe3cabd56074ad4b0cf0b67ed6"],
+  ["claim#policy", "claim#policy|text:No tdm-policy URL until seal. An ODRL file is not invented here.", "86c7dde002ecb1183b52f896f49dfbf7b1e9eb1907079091a9731478cfc5d3d7"],
+  ["claim#robots", "claim#robots|text:Content-Signal and robots.txt Disallow are preferences. They do not prove a crawler stopped.", "f4ea0ed725c57fdf52b94a7a1caddb282d08531244e8db59f8cf1fc28a851a1e"],
+  ["claim#names", "claim#names|text:IETF train-ai and Cloudflare ai-train are different names. This page does not collapse them into one standard.", "09684d63a505bfae6abf5dabdbef255bb45d44a0d2d0a6c191e51cf568d963e6"],
+  ["claim#badge", "claim#badge|text:No opted-out or all-AI-blocked badge. Public state stays unattested.", "9e499825cadb2f2c07734b67c2661c3296d8be2a2e33a47a6305c66dab12040c"],
+  ["claim#tokens", "claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.", "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"],
+  ["page#tdm", "page#tdm|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny", "60b2e59e8f5a0a450ed5df6987ae44f7e151390cae707572655192f820a892fe"]
+];
+const HEAD = '{"algo":"sha256","kind":"attested-tdm-reservation","live_file":false,"reservation":null,"resource":"absent"}';
+const HEAD_SHA = "2de2e7d09bdec0048686efe519f46df70f7bfc49f8ef1b2cf9c7c56e86dbddf6";
+const BODY_SHA = "e7df591282d489170c62a4a306b3d9b367955b680e923602171d96622d4d735e";
+
+async function sha256(text) {
+  const bytes = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function setState(name) {
+  const el = document.getElementById("state");
+  el.dataset.state = name;
+  el.textContent = name;
+}
+
+const tbody = document.querySelector("#claims tbody");
+for (const [id, line, expect] of LINES) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = "<td></td><td></td><td></td>";
+  tr.children[0].textContent = id;
+  tr.children[1].textContent = expect.slice(0, 12) + "…";
+  tr.children[2].textContent = "—";
+  tr.dataset.line = line;
+  tr.dataset.expect = expect;
+  tbody.appendChild(tr);
+}
+
+document.getElementById("verify").addEventListener("click", async () => {
+  if (!crypto.subtle) { setState("unavailable"); return; }
+  let ok = true;
+  for (const tr of tbody.querySelectorAll("tr")) {
+    const got = await sha256(tr.dataset.line);
+    const match = got === tr.dataset.expect;
+    tr.children[2].textContent = match ? "match" : "mismatch";
+    if (!match) ok = false;
+  }
+  const head = await sha256(HEAD);
+  const body = await sha256(LINES.map((row) => row[1]).join("\n") + "\n");
+  document.getElementById("head-hash").textContent = head === HEAD_SHA ? "match" : "mismatch";
+  document.getElementById("body-hash").textContent = body === BODY_SHA ? "match" : "mismatch";
+  if (head !== HEAD_SHA || body !== BODY_SHA) ok = false;
+  setState(ok ? "match" : "mismatch");
+  document.getElementById("result").textContent = ok
+    ? "Digests match. Match is not a seal and not a crawler block."
+    : "Mismatch. Do not serve.";
+});
+
+document.getElementById("hold").addEventListener("click", () => {
+  sessionStorage.setItem("atm-tdm-hold-036", "hold");
+  setState("hold");
+  document.getElementById("hold-note").textContent = "Hold recorded in sessionStorage only. The well-known path stays absent.";
+});
+</script>
+</body>
+</html>

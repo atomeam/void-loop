@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>F178 · RNN Soft-Body DOM Mind</title>
+<style>
+  :root { --hue: 200; }
+  body { margin: 0; background: #0a0a0c; color: #e0e0e0; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .card {
+    position: absolute; width: 140px; height: 90px; background: rgba(20,20,30,0.85);
+    border: 1px solid hsl(var(--hue), 60%, 50%); border-radius: 12px; padding: 12px;
+    pointer-events: auto; user-select: none; transition: filter 0.2s;
+    backdrop-filter: blur(4px); box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  #mind { z-index: 10; font-size: 13px; }
+  button { position: fixed; bottom: 16px; right: 16px; z-index: 20; background: #222; color: #fff;
+    border: 1px solid #444; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { position: fixed; top: 12px; left: 12px; font-size: 12px; opacity: 0.7; z-index: 20; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="status">tilt or drag · seal saves RNN</div>
+<div class="card" id="mind">RNN Soft-Body<br><span id="hid">h: —</span></div>
+<div class="card" style="left:20%;top:30%">node A</div>
+<div class="card" style="left:60%;top:40%">node B</div>
+<div class="card" style="left:40%;top:70%">node C</div>
+<button id="seal">Seal weights</button>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const mind = document.getElementById('mind');
+const hidEl = document.getElementById('hid');
+const status = document.getElementById('status');
+let W = canvas.width = innerWidth, H = canvas.height = innerHeight;
+addEventListener('resize', () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
+
+// Soft-body grid
+const COLS = 7, ROWS = 6, SPACING = 48;
+const nodes = [];
+const springs = [];
+for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+  nodes.push({
+    x: W/2 - (COLS-1)*SPACING/2 + x*SPACING,
+    y: H/2 - (ROWS-1)*SPACING/2 + y*SPACING,
+    px: 0, py: 0, vx: 0, vy: 0, pinned: false
+  });
+}
+// structural springs
+for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+  const i = y*COLS + x;
+  if (x < COLS-1) springs.push({ a: i, b: i+1, rest: SPACING, k: 0.4 });
+  if (y < ROWS-1) springs.push({ a: i, b: i+COLS, rest: SPACING, k: 0.4 });
+}
+// pin corners
+[0, COLS-1, (ROWS-1)*COLS, ROWS*COLS-1].forEach(i => nodes[i].pinned = true);
+
+// Tiny RNN in worker
+const workerCode = `
+let Wxh = Array.from({length:8}, () => Array.from({length:4}, () => (Math.random()-0.5)*0.4));
+let Whh = Array.from({length:8}, () => Array.from({length:8}, () => (Math.random()-0.5)*0.3));
+let Why = Array.from({length:2}, () => Array.from({length:8}, () => (Math.random()-0.5)*0.5));
+let bh = Array(8).fill(0), by = Array(2).fill(0);
+let h = Array(8).fill(0);
+
+function tanh(x){ return Math.tanh(x); }
+function forward(x) {
+  const newh = Array(8).fill(0);
+  for (let i=0;i<8;i++) {
+    let s = bh[i];
+    for (let j=0;j<4;j++) s += Wxh[i][j]*x[j];
+    for (let j=0;j<8;j++) s += Whh[i][j]*h[j];
+    newh[i] = tanh(s);
+  }
+  h = newh;
+  const y = Array(2).fill(0);
+  for (let i=0;i<2;i++) {
+    let s = by[i];
+    for (let j=0;j<8;j++) s += Why[i][j]*h[j];
+    y[i] = Math.tanh(s);
+  }
+  return { y, h: h.slice() };
+}
+self.onmessage = e => {
+  if (e.data.type === 'step') {
+    const r = forward(e.data.x);
+    self.postMessage({ type: 'out', ...r });
+  } else if (e.data.type === 'save') {
+    self.postMessage({ type: 'weights', Wxh, Whh, Why, bh, by, h });
+  } else if (e.data.type === 'load') {
+    Object.assign({Wxh,Whh,Why,bh,by,h}, e.data.w);
+  }
+};
+`;
+const blob = new Blob([workerCode], {type:'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+let stretch = [0,0];
+worker.onmessage = e => {
+  if (e.data.type === 'out') {
+    stretch = e.data.y;
+    hidEl.textContent = 'h: ' + e.data.h.map(v=>v.toFixed(2)).join(' ');
+  }
+};
+
+// Inputs
+let orient = { beta: 0, gamma: 0 };
+let ptr = { x: W/2, y: H/2, dx: 0, dy: 0 };
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0; orient.gamma = e.gamma || 0;
+  });
+}
+canvas.addEventListener('pointermove', e => {
+  ptr.dx = e.clientX - ptr.x; ptr.dy = e.clientY - ptr.y;
+  ptr.x = e.clientX; ptr.y = e.clientY;
+});
+
+// Physics step
+function step() {
+  // RNN input: [beta/90, gamma/90, dx/20, dy/20]
+  const x = [
+    Math.max(-1, Math.min(1, orient.beta/90)),
+    Math.max(-1, Math.min(1, orient.gamma/90)),
+    Math.max(-1, Math.min(1, ptr.dx/30)),
+    Math.max(-1, Math.min(1, ptr.dy/30))
+  ];
+  worker.postMessage({ type: 'step', x });
+
+  // modulate a few springs with stretch
+  const mod = 1 + stretch[0]*0.35;
+  for (let i = 0; i < springs.length; i += 3) springs[i].rest = SPACING * mod;
+
+  // integrate
+  for (const n of nodes) {
+    if (n.pinned) continue;
+    // spring forces
+    for (const s of springs) {
+      if (s.a === nodes.indexOf(n) || s.b === nodes.indexOf(n)) {
+        const other = nodes[s.a === nodes.indexOf(n) ? s.b : s.a];
+        const dx = other.x - n.x, dy = other.y - n.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const f = (dist - s.rest) * s.k;
+        n.vx += (dx/dist) * f * 0.016;
+        n.vy += (dy/dist) * f * 0.016;
+      }
+    }
+    n.vy += 0.08; // light gravity
+    n.vx *= 0.98; n.vy *= 0.98;
+    n.x += n.vx; n.y += n.vy;
+  }
+  // mouse attractor near pointer
+  const nearest = nodes.reduce((best, n, i) => {
+    const d = Math.hypot(n.x - ptr.x, n.y - ptr.y);
+    return d < best.d ? {d, i} : best;
+  }, {d: Infinity, i: -1});
+  if (nearest.d < 80) {
+    const n = nodes[nearest.i];
+    n.vx += (ptr.x - n.x) * 0.02;
+    n.vy += (ptr.y - n.y) * 0.02;
+  }
+}
+
+function draw() {
+  ctx.fillStyle = '#0a0a0c';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = `hsl(${200 + stretch[1]*40}, 50%, 40%)`;
+  ctx.lineWidth = 1;
+  for (const s of springs) {
+    const a = nodes[s.a], b = nodes[s.b];
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  }
+  ctx.fillStyle = '#6cf';
+  for (const n of nodes) { ctx.beginPath(); ctx.arc(n.x, n.y, 3, 0, 6.28); ctx.fill(); }
+
+  // map selected nodes to DOM cards
+  const cards = document.querySelectorAll('.card');
+  const mapIdx = [Math.floor(nodes.length*0.3), Math.floor(nodes.length*0.55), Math.floor(nodes.length*0.75)];
+  cards.forEach((card, i) => {
+    if (i === 0) return; // mind card special
+    const n = nodes[mapIdx[i-1] || 0];
+    card.style.left = (n.x - 70) + 'px';
+    card.style.top = (n.y - 45) + 'px';
+    const sc = 1 + Math.abs(stretch[0])*0.15;
+    card.style.transform = `scale(${sc})`;
+  });
+  // mind card follows centroid
+  const cx = nodes.reduce((s,n)=>s+n.x,0)/nodes.length;
+  const cy = nodes.reduce((s,n)=>s+n.y,0)/nodes.length;
+  mind.style.left = (cx - 70) + 'px';
+  mind.style.top = (cy - 45) + 'px';
+  document.documentElement.style.setProperty('--hue', 200 + stretch[1]*60);
+}
+
+function loop() {
+  step();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+
+// IndexedDB seal
+const sealBtn = document.getElementById('seal');
+sealBtn.onclick = async () => {
+  worker.postMessage({ type: 'save' });
+  const once = e => {
+    if (e.data.type === 'weights') {
+      const req = indexedDB.open('void-rnn', 1);
+      req.onupgradeneeded = () => req.result.createObjectStore('weights');
+      req.onsuccess = () => {
+        const db = req.result;
+        const tx = db.transaction('weights', 'readwrite');
+        tx.objectStore('weights').put(e.data, 'rnn');
+        status.textContent = 'sealed to IndexedDB';
+      };
+      worker.removeEventListener('message', once);
+    }
+  };
+  worker.addEventListener('message', once);
+};
+
+// try load on start
+const loadReq = indexedDB.open('void-rnn', 1);
+loadReq.onsuccess = () => {
+  const db = loadReq.result;
+  if (!db.objectStoreNames.contains('weights')) return;
+  const tx = db.transaction('weights', 'readonly');
+  const get = tx.objectStore('weights').get('rnn');
+  get.onsuccess = () => {
+    if (get.result) worker.postMessage({ type: 'load', w: get.result });
+  };
+};
+</script>
+</body>
+</html>

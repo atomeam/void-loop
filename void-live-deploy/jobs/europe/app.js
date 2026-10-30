@@ -1,0 +1,5 @@
+// /jobs/europe/: written by tools/tool-site-pages.mjs from lib/tool-sites.js; edit the row, not this file
+// the jobs screen and its listings come after the load event (the gate times the load event: only this small file stands before it), then the related row
+const go = () => import('/lib/jobs-ui.js').then(({ mountJobs }) => mountJobs(document.getElementById('app'), {"panels":["regions","search","saved","alerts","tracker","feed","sources"],"preset":{"region":"europe"},"de":{"h1":"Jobs für Europa und Deutschland","intro":"Remote-Jobs, die Sie von Europa oder Deutschland aus machen dürfen, die mit Visa-Unterstützung markiert, ein Filter für reine Remote-Stellen oder eine Stadt, das Gehalt, wenn es angegeben ist, und die Seite auf Deutsch in einem deutschen Browser. Die Anzeigen kommen von Remotive, Jobicy und Himalayas."}}))
+  .finally(() => import('/lib/toolkit.js').then(({ mountRelated }) => mountRelated(document.getElementById('related'), '/jobs/europe/')));
+if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true });

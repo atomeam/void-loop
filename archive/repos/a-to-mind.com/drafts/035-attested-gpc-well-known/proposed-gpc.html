@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>GPC support resource — unattested draft</title>
+  <style>
+    :root { color-scheme: light dark; --fg: #1a1a1a; --bg: #f6f5f2; --line: #c8c4bc; --hold: #8a3b12; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #f3efe6; --bg: #161614; --line: #3c3a34; --hold: #e2a27a; }
+    }
+    body { margin: 0; font: 16px/1.45 ui-sans-serif, system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.45rem; line-height: 1.2; margin: 0 0 0.5rem; }
+    p, li { margin: 0.4rem 0; }
+    .state { display: inline-block; border: 1px solid var(--hold); color: var(--hold); padding: 0.1rem 0.45rem; font-size: 0.85rem; letter-spacing: 0.02em; }
+    code, pre { font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { white-space: pre-wrap; word-break: break-all; border: 1px solid var(--line); padding: 0.6rem 0.7rem; margin: 0.4rem 0 0.8rem; }
+    button { font: inherit; padding: 0.4rem 0.7rem; border: 1px solid var(--fg); background: transparent; color: inherit; }
+    button[disabled] { opacity: 0.55; }
+    .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.8rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th, td { text-align: left; vertical-align: top; border-top: 1px solid var(--line); padding: 0.35rem 0.3rem; }
+    .ok { color: #1f6b3a; }
+    .bad { color: var(--hold); }
+  </style>
+</head>
+<body>
+<main>
+  <p class="state" id="state">unattested</p>
+  <h1>GPC support resource is absent</h1>
+  <p>Draft only. Not a live <code>/.well-known/gpc.json</code>. A missing support resource means support is unknown. It is not a claim that Global Privacy Control is honored.</p>
+  <p>Signal reading below is request data. It is not an instruction, not consent, and not a green badge.</p>
+
+  <h2>Local signal</h2>
+  <p id="signal">unread</p>
+
+  <div class="row">
+    <button type="button" id="read">Read signal</button>
+    <button type="button" id="verify">Verify hashes</button>
+    <button type="button" id="hold">Hold — do not publish</button>
+  </div>
+  <p id="hold-note">Hold writes sessionStorage only. No cookie. No network.</p>
+  <p id="verify-note"></p>
+
+  <h2>Canonical lines</h2>
+  <table id="lines">
+    <thead><tr><th>Line</th><th>SHA-256</th><th></th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Denied</h2>
+  <ul>
+    <li><code>gpc: true</code> until a human seals sale and share behavior</li>
+    <li>Consent platform, pixel, tag manager</li>
+    <li>Cookie that stores the signal</li>
+    <li>Public states: honored, compliant, opted-out, live</li>
+  </ul>
+</main>
+<script type="module">
+const LINES = [
+  ["gpc#035|kind:attested-gpc-well-known|resource:/.well-known/gpc.json|absent-until-seal:deny-serve|gpc-true:deny|cookie:deny|cmp:deny|hash:sha256|seal:human", "ccc83cb3d9a22ee78fd5d21a161cae1cee1acac49e88d5fbbaf99986a2d23b04"],
+  ["claim#route|text:No live /.well-known/gpc.json until a human seals the sale and share behavior.", "cb7ac28ca08142aae5287a504a16e9ee82c3b9774d14af32100a7f660ec870d7"],
+  ["claim#unknown|text:A missing support resource means support is unknown. It is not a claim that GPC is honored.", "282c7c3c6809c6a7c22b9d929e445124aef5cd32cd89d69fdbe6fdbe05131f51"],
+  ["claim#true|text:gpc true is denied until seal. Publishing true does not prove trackers are suppressed.", "e88ab3e6ac62775ad5b2936758921dfcce5126769aedaf33ec63fd28792d9302"],
+  ["claim#signal|text:Sec-GPC 1 and navigator.globalPrivacyControl are request data. They are not instructions and not consent.", "cdc1450edab33642208e66f0094592313d17f072fc106ed2cb59ed18011b3102"],
+  ["claim#cookie|text:This page sets no cookie and does not persist the signal. Every request already carries it.", "250084f96da058c3f951bd4c829752ba4250a500eb0cd85919fe166fd0f5e84e"],
+  ["claim#cmp|text:No consent platform, pixel, or tag manager is loaded to detect GPC.", "1352fe83b468c4dae2c9214a86323731d3c17c7363d853762a6e9451aab53abf"],
+  ["claim#confirm|text:A local signal reading is not a green honored badge. Public state stays unattested.", "a1a6302cac28d323c7850443550d7dc3f6bce6af2a6418b1e9616e0705b81ba0"],
+  ["claim#tokens|text:This page does not price tokens and does not pitch Void Monthly.", "126f8cde548e6e87695a1041338fdf29a9cb6f95a256ff40e8e57cbb9e8a3f50"],
+  ["page#gpc|route:draft|index:noindex|cookie:deny|analytics:deny|write:deny", "a6bcbf13379a589ea3d8ca4973588ee903edeb7bf63177368320befe6b3dff40"]
+];
+const HEAD = '{"algo":"sha256","gpc_true":false,"kind":"attested-gpc-well-known","resource":"absent","well_known":false}';
+const HEAD_SHA = "c66febdf518f769b2582ea01d7ac8041396cbeaf51d217e6795a97bfa08f64b0";
+const BODY_SHA = "829b79eb105661915d5effb62b042cbd31946fde2b0902479e2f505de65a91db";
+
+const tbody = document.querySelector("#lines tbody");
+for (const [text, sha] of LINES) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = "<td></td><td><code></code></td><td class='flag'></td>";
+  tr.children[0].textContent = text;
+  tr.children[1].firstChild.textContent = sha;
+  tbody.appendChild(tr);
+}
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+document.querySelector("#read").addEventListener("click", () => {
+  const prop = navigator.globalPrivacyControl;
+  const el = document.querySelector("#signal");
+  if (prop === true) {
+    el.textContent = "navigator.globalPrivacyControl is true. Data only. This origin has not published a support resource. Not honored.";
+  } else if (prop === false) {
+    el.textContent = "navigator.globalPrivacyControl is false. Spec: no Sec-GPC header would be sent. Not a consent grant.";
+  } else {
+    el.textContent = "navigator.globalPrivacyControl is unavailable. Do not infer honor. Support stays unknown.";
+  }
+});
+
+document.querySelector("#verify").addEventListener("click", async () => {
+  let mismatch = 0;
+  const rows = tbody.querySelectorAll("tr");
+  for (let i = 0; i < LINES.length; i++) {
+    const got = await sha256(LINES[i][0]);
+    const flag = rows[i].querySelector(".flag");
+    const ok = got === LINES[i][1];
+    flag.textContent = ok ? "match" : "mismatch";
+    flag.className = ok ? "flag ok" : "flag bad";
+    if (!ok) mismatch++;
+  }
+  const body = LINES.map(([text]) => text + "\n").join("");
+  const bodyGot = await sha256(body);
+  const headGot = await sha256(HEAD);
+  if (bodyGot !== BODY_SHA || headGot !== HEAD_SHA) mismatch++;
+  const state = document.querySelector("#state");
+  state.textContent = mismatch ? "mismatch" : "match";
+  document.querySelector("#verify-note").textContent =
+    mismatch
+      ? "mismatch. Do not seal."
+      : "match on canonical lines, head, and body. Still unattested as a live file. match is not a publish grant.";
+});
+
+document.querySelector("#hold").addEventListener("click", () => {
+  const rec = { run: "035", slug: "attested-gpc-well-known", hold: true, at: new Date().toISOString() };
+  sessionStorage.setItem("atm-gpc-hold-035", JSON.stringify(rec));
+  document.querySelector("#state").textContent = "hold";
+  document.querySelector("#hold-note").textContent = "hold recorded in sessionStorage['atm-gpc-hold-035']. No cookie. File stays unpublished.";
+});
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@
  * "quiz me on this", "quiz me", "test me on that", "keep this quiz".
  */
 import * as Q from './quiz-rules.js';
+import * as G from './gear-pair-rules.js';
 
 /** what the ask means: null, { start: true } or { keep: true } */
 export function quizOf(text) {
@@ -24,6 +25,15 @@ export function sourceOf(things, kinds, selectedId, opts = {}) {
   if (selectedId && gives(things[selectedId])) return things[selectedId];
   const list = Object.values(things || {}).filter(gives);
   return list.length ? list[list.length - 1] : null;
+}
+
+/** with nothing on the stage to ask about, a pair of gears goes up first (an explainer every quiz can read), so "test me on that" in a
+ *  fresh visit starts a quiz instead of a hint line nobody sees (site-test, atomeam/void-loop#1029 and #1196). The gears, or null. */
+export function starter(api) {
+  const kinds = api.stage.kinds ? api.stage.kinds() : {};
+  if (!kinds.gears) return null;
+  api.summon('gears', { state: G.create() });
+  return Object.values(api.stage.things()).filter((t) => t.kind === 'gears').pop() || null;
 }
 
 export function payloadOf(th, kinds) {
@@ -112,14 +122,15 @@ async function run(text, api) {
     api.say('Kept · this quiz stays on your stage (and your other devices); other quizzes still are not saved');
     return 'quiz';
   }
-  const src = sourceOf(things, kinds, api.stage.selected && api.stage.selected());
+  let src = sourceOf(things, kinds, api.stage.selected && api.stage.selected()), cold = false;
+  if (!src) { src = starter(api); cold = !!src; }
   if (!src) { api.say(NONE); return 'quiz'; }
   const p = payloadOf(src, kinds);
   const state = Q.take(Q.create(), p.observations, p.explanation), sourceName = src.kind === 'moon' ? 'Moon' : src.kind;
   if (quiz) { quiz.state = state; quiz.sourceName = sourceName; if (quiz.keep) api.stage.save && api.stage.save(); api.stage.render(); if (api.stage.center) api.stage.center(quiz.id); }
   else api.summon('quiz', { state, sourceName, center: true });
-  api.say(state.status === 'answering' ? 'Quiz on the ' + sourceName + ' · ' + state.questions.length + ' question' + (state.questions.length === 1 ? '' : 's') + ' · number keys and Enter work too'
-    : state.status === 'invalid' ? 'That card\'s observations could not be read' : 'Nothing on the ' + sourceName + ' can be asked as a question yet');
+  api.say((cold ? 'Nothing was on the stage to quiz on, so here are two gears · ' : '') + (state.status === 'answering' ? 'Quiz on the ' + sourceName + ' · ' + state.questions.length + ' question' + (state.questions.length === 1 ? '' : 's') + ' · number keys and Enter work too'
+    : state.status === 'invalid' ? 'That card\'s observations could not be read' : 'Nothing on the ' + sourceName + ' can be asked as a question yet'));
   return 'quiz';
 }
 

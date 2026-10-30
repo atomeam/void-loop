@@ -1,0 +1,2572 @@
+{
+ "floor": "pdf",
+ "verse_page": "void-live-deploy/pdf/index.html",
+ "researched": "2026-10-26",
+ "method": "Searched the web for each site (a fetch of the sites themselves fails from the builder's network), so features come from search results, vendor pages and third-party reviews; paid tiers and limits change often, confirm before any price claim.",
+ "sites": {
+  "ilovepdf.com": {
+   "leader": true,
+   "url": "https://www.ilovepdf.com/",
+   "sources": [
+    "https://www.ilovepdf.com/",
+    "https://fillhq.com/comparison/smallpdf-vs-ilovepdf"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Split by range, every N pages, or extract",
+     "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
+    },
+    {
+     "name": "Delete pages",
+     "detail": "Pick pages to remove from a PDF and save the rest.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Rotate pages",
+     "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
+    },
+    {
+     "name": "Compress PDF",
+     "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
+    },
+    {
+     "name": "Images to PDF",
+     "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
+    },
+    {
+     "name": "PDF to images",
+     "detail": "Every page saved as JPG or PNG.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
+    },
+    {
+     "name": "Convert to and from Word, Excel, PowerPoint",
+     "detail": "Office files to PDF and back; done on a server.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
+    },
+    {
+     "name": "Edit PDF (text, shapes, images)",
+     "detail": "Add text, draw shapes, insert images and annotations on pages.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
+    },
+    {
+     "name": "Sign PDF",
+     "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
+    },
+    {
+     "name": "Watermark",
+     "detail": "Stamp text or an image across all pages, with opacity and position.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
+    },
+    {
+     "name": "Page numbers",
+     "detail": "Number pages, choose position, first number and format.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
+    },
+    {
+     "name": "Protect and unlock with a password",
+     "detail": "Encrypt a PDF with a password or remove a known password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
+    },
+    {
+     "name": "Repair PDF",
+     "detail": "Recover a damaged PDF as far as it can be read.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built: pdf-lib refuses a damaged file; no recovery"
+    },
+    {
+     "name": "OCR (make scanned text searchable)",
+     "detail": "Recognise text in scans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
+    },
+    {
+     "name": "Redact",
+     "detail": "Black out text for good.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: true redaction needs the text layer rewritten; not built"
+    },
+    {
+     "name": "Compare two PDFs",
+     "detail": "Show differences between two versions.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet"
+    },
+    {
+     "name": "Crop pages",
+     "detail": "Trim margins of every page or chosen ones.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
+    },
+    {
+     "name": "Scan to PDF with the camera",
+     "detail": "Take photos on a phone and make a PDF.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Images to PDF takes a photo from the phone camera through the file chooser; no in-page scanner with edge detection"
+    },
+    {
+     "name": "PDF/A for archiving",
+     "detail": "Convert to the long-term archive format.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: PDF/A conversion needs fonts embedded and colour profiles; not built"
+    },
+    {
+     "name": "No account needed",
+     "detail": "Use a tool without signing up or in.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "no account anywhere"
+    },
+    {
+     "name": "Free limits",
+     "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
+    }
+   ]
+  },
+  "smallpdf.com": {
+   "url": "https://smallpdf.com/",
+   "sources": [
+    "https://smallpdf.com/",
+    "https://fillhq.com/comparison/smallpdf-vs-ilovepdf"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Split by range, every N pages, or extract",
+     "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
+    },
+    {
+     "name": "Delete pages",
+     "detail": "Pick pages to remove from a PDF and save the rest.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Rotate pages",
+     "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
+    },
+    {
+     "name": "Compress PDF",
+     "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
+    },
+    {
+     "name": "Images to PDF",
+     "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
+    },
+    {
+     "name": "PDF to images",
+     "detail": "Every page saved as JPG or PNG.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
+    },
+    {
+     "name": "Convert to and from Word, Excel, PowerPoint",
+     "detail": "Office files to PDF and back; done on a server.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
+    },
+    {
+     "name": "Edit PDF (text, shapes, images)",
+     "detail": "Add text, draw shapes, insert images and annotations on pages.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
+    },
+    {
+     "name": "Sign PDF",
+     "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
+    },
+    {
+     "name": "Watermark",
+     "detail": "Stamp text or an image across all pages, with opacity and position.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
+    },
+    {
+     "name": "Page numbers",
+     "detail": "Number pages, choose position, first number and format.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
+    },
+    {
+     "name": "Protect and unlock with a password",
+     "detail": "Encrypt a PDF with a password or remove a known password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
+    },
+    {
+     "name": "OCR (make scanned text searchable)",
+     "detail": "Recognise text in scans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
+    },
+    {
+     "name": "Scan to PDF with the camera",
+     "detail": "Take photos on a phone and make a PDF.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Images to PDF takes a photo from the phone camera through the file chooser; no in-page scanner with edge detection"
+    },
+    {
+     "name": "Free limits",
+     "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
+    }
+   ]
+  },
+  "tools.pdf24.org": {
+   "url": "https://tools.pdf24.org/en/",
+   "sources": [
+    "https://tools.pdf24.org/en/merge-pdf",
+    "https://tools.pdf24.org/en/split-pdf",
+    "https://www.capterra.in/software/182070/pdf24-creator"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Split by range, every N pages, or extract",
+     "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
+    },
+    {
+     "name": "Delete pages",
+     "detail": "Pick pages to remove from a PDF and save the rest.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Rotate pages",
+     "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
+    },
+    {
+     "name": "Compress PDF",
+     "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
+    },
+    {
+     "name": "Images to PDF",
+     "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
+    },
+    {
+     "name": "PDF to images",
+     "detail": "Every page saved as JPG or PNG.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
+    },
+    {
+     "name": "Convert to and from Word, Excel, PowerPoint",
+     "detail": "Office files to PDF and back; done on a server.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
+    },
+    {
+     "name": "Edit PDF (text, shapes, images)",
+     "detail": "Add text, draw shapes, insert images and annotations on pages.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
+    },
+    {
+     "name": "Sign PDF",
+     "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
+    },
+    {
+     "name": "Watermark",
+     "detail": "Stamp text or an image across all pages, with opacity and position.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
+    },
+    {
+     "name": "Page numbers",
+     "detail": "Number pages, choose position, first number and format.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
+    },
+    {
+     "name": "Protect and unlock with a password",
+     "detail": "Encrypt a PDF with a password or remove a known password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
+    },
+    {
+     "name": "OCR (make scanned text searchable)",
+     "detail": "Recognise text in scans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
+    },
+    {
+     "name": "Compare two PDFs",
+     "detail": "Show differences between two versions.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet"
+    },
+    {
+     "name": "Crop pages",
+     "detail": "Trim margins of every page or chosen ones.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
+    },
+    {
+     "name": "Repair PDF",
+     "detail": "Recover a damaged PDF as far as it can be read.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built: pdf-lib refuses a damaged file; no recovery"
+    },
+    {
+     "name": "PDF/A for archiving",
+     "detail": "Convert to the long-term archive format.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: PDF/A conversion needs fonts embedded and colour profiles; not built"
+    },
+    {
+     "name": "No account needed",
+     "detail": "Use a tool without signing up or in.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "no account anywhere"
+    },
+    {
+     "name": "Works offline",
+     "detail": "The tools open and run with no connection.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "the service worker keeps the pages and, after the first idle fetch, the libraries"
+    }
+   ]
+  },
+  "sejda.com": {
+   "url": "https://www.sejda.com/",
+   "sources": [
+    "https://www.sejda.com/",
+    "https://www.pcworld.com/article/699260/sejda-free-pdf-editor-review.html"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Split by range, every N pages, or extract",
+     "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
+    },
+    {
+     "name": "Delete pages",
+     "detail": "Pick pages to remove from a PDF and save the rest.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Rotate pages",
+     "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
+    },
+    {
+     "name": "Compress PDF",
+     "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
+    },
+    {
+     "name": "Images to PDF",
+     "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
+    },
+    {
+     "name": "PDF to images",
+     "detail": "Every page saved as JPG or PNG.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
+    },
+    {
+     "name": "Convert to and from Word, Excel, PowerPoint",
+     "detail": "Office files to PDF and back; done on a server.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
+    },
+    {
+     "name": "Edit PDF (text, shapes, images)",
+     "detail": "Add text, draw shapes, insert images and annotations on pages.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
+    },
+    {
+     "name": "Sign PDF",
+     "detail": "Draw, type or upload a signature and place it on the page; request signatures from others.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet: draw a signature and place it on a page (next)"
+    },
+    {
+     "name": "Watermark",
+     "detail": "Stamp text or an image across all pages, with opacity and position.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
+    },
+    {
+     "name": "Page numbers",
+     "detail": "Number pages, choose position, first number and format.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
+    },
+    {
+     "name": "Protect and unlock with a password",
+     "detail": "Encrypt a PDF with a password or remove a known password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
+    },
+    {
+     "name": "OCR (make scanned text searchable)",
+     "detail": "Recognise text in scans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
+    },
+    {
+     "name": "Crop pages",
+     "detail": "Trim margins of every page or chosen ones.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
+    },
+    {
+     "name": "Redact",
+     "detail": "Black out text for good.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: true redaction needs the text layer rewritten; not built"
+    },
+    {
+     "name": "Compare two PDFs",
+     "detail": "Show differences between two versions.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "not built yet"
+    },
+    {
+     "name": "Free limits",
+     "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
+    },
+    {
+     "name": "No account needed",
+     "detail": "Use a tool without signing up or in.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "no account anywhere"
+    }
+   ]
+  },
+  "pdfcandy.com": {
+   "url": "https://www.pdfcandy.com/",
+   "sources": [
+    "https://www.techradar.com/reviews/pdf-candy",
+    "https://beebom.com/pdf-candy-review/amp"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Split by range, every N pages, or extract",
+     "detail": "Cut a PDF into several by page ranges, fixed counts, bookmarks or size; extract chosen pages.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Split tab: by ranges (1-3;4-6), every N pages, one file per page, with a ZIP"
+    },
+    {
+     "name": "Delete pages",
+     "detail": "Pick pages to remove from a PDF and save the rest.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Extract or delete pages tab: keep or delete pages like 1-3, 7, last, even, odd"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Rotate pages",
+     "detail": "Turn one page, a selection or all pages by 90, 180 or 270 degrees.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Rotate tab (all or named pages) and the turn button on each thumbnail"
+    },
+    {
+     "name": "Compress PDF",
+     "detail": "Shrink a file by recompressing images and structure; levels from light to strong.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Compress tab: lossless tidy, or pages redrawn as JPEG pictures at three strengths (text stops being selectable; said on the page)"
+    },
+    {
+     "name": "Images to PDF",
+     "detail": "JPG, PNG and more into one PDF, with page size, orientation and margins.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Images to PDF: JPG, PNG and anything the browser can show, page size, direction, margin"
+    },
+    {
+     "name": "PDF to images",
+     "detail": "Every page saved as JPG or PNG.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "PDF to images: PNG or JPG at 72, 150 or 300 dpi, a ZIP"
+    },
+    {
+     "name": "Convert to and from Word, Excel, PowerPoint",
+     "detail": "Office files to PDF and back; done on a server.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: Word, Excel and PowerPoint conversion needs a server; nothing leaves the device here"
+    },
+    {
+     "name": "Edit PDF (text, shapes, images)",
+     "detail": "Add text, draw shapes, insert images and annotations on pages.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: adding text, shapes and annotations is not built yet; a PDF holds no paragraphs to edit"
+    },
+    {
+     "name": "Watermark",
+     "detail": "Stamp text or an image across all pages, with opacity and position.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "text watermark with opacity, size, angle and pages; no image watermark"
+    },
+    {
+     "name": "Page numbers",
+     "detail": "Number pages, choose position, first number and format.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Page numbers tab: position, style (1 / 1 of 10 / Page 1), first number, skip the first page"
+    },
+    {
+     "name": "Protect and unlock with a password",
+     "detail": "Encrypt a PDF with a password or remove a known password.",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skipped: pdf-lib cannot encrypt or decrypt; a password-protected PDF is refused with a plain message"
+    },
+    {
+     "name": "OCR (make scanned text searchable)",
+     "detail": "Recognise text in scans.",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "skipped: OCR needs a recognition model; paid on the sites that have it"
+    },
+    {
+     "name": "Crop pages",
+     "detail": "Trim margins of every page or chosen ones.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Crop tab: margins in mm off all or named pages"
+    },
+    {
+     "name": "Free limits",
+     "detail": "Free use is capped by file size, pages or tasks per day/hour; more costs money.",
+     "paid": true,
+     "verse": "has",
+     "verse_evidence": "no daily or per-hour task cap and no page cap; the device's memory is the limit"
+    },
+    {
+     "name": "No account needed",
+     "detail": "Use a tool without signing up or in.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "no account anywhere"
+    }
+   ]
+  },
+  "10015.io": {
+   "url": "https://10015.io/tools/pdf-merger",
+   "sources": [
+    "https://10015.io/tools/pdf-merger"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Reorder pages with thumbnails",
+     "detail": "Drag page thumbnails into a new order, add blank pages, from several files.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Pages tab: thumbnails of every page of several files; drag, Alt+arrows, buttons; rotate, delete, reverse, save"
+    },
+    {
+     "name": "Files stay on the device",
+     "detail": "The work happens in the browser or an offline app; nothing is uploaded.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "everything runs in the browser with the vendored pdf-lib and pdf.js; the footer says so"
+    }
+   ]
+  },
+  "codeshack.io": {
+   "url": "https://codeshack.io/pdf-merge-tool/",
+   "sources": [
+    "https://codeshack.io/pdf-merge-tool/"
+   ],
+   "features": [
+    {
+     "name": "Merge PDFs",
+     "detail": "Combine several PDFs into one, drag to reorder files before joining.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "Merge tab: files in order with up/down, pages like 1-3 per file; /pdf/merge/ is the merge-only page"
+    },
+    {
+     "name": "Files stay on the device",
+     "detail": "The work happens in the browser or an offline app; nothing is uploaded.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "everything runs in the browser with the vendored pdf-lib and pdf.js; the footer says so"
+    }
+   ]
+  }
+ },
+ "union_gaps": [
+  {
+   "name": "Convert to and from Word, Excel, PowerPoint",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com",
+    "pdfcandy.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Edit PDF (text, shapes, images)",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com",
+    "pdfcandy.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Watermark",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com",
+    "pdfcandy.com"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "Protect and unlock with a password",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com",
+    "pdfcandy.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "OCR (make scanned text searchable)",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com",
+    "pdfcandy.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Sign PDF",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com",
+    "tools.pdf24.org",
+    "sejda.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Compare two PDFs",
+   "sites": [
+    "ilovepdf.com",
+    "tools.pdf24.org",
+    "sejda.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Repair PDF",
+   "sites": [
+    "ilovepdf.com",
+    "tools.pdf24.org"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Redact",
+   "sites": [
+    "ilovepdf.com",
+    "sejda.com"
+   ],
+   "verse": "missing"
+  },
+  {
+   "name": "Scan to PDF with the camera",
+   "sites": [
+    "ilovepdf.com",
+    "smallpdf.com"
+   ],
+   "verse": "partial"
+  },
+  {
+   "name": "PDF/A for archiving",
+   "sites": [
+    "ilovepdf.com",
+    "tools.pdf24.org"
+   ],
+   "verse": "missing"
+  }
+ ],
+ "verse_extra": [
+  "Ask questions about a PDF"
+ ],
+ "re": {
+  "scanned": "2026-10-26",
+  "sites": {
+   "10015.io": {
+    "url": "https://10015.io/tools/pdf-merger",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?error",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_app-697468a544e3fe97.js@17236"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "2512-a886e9fafa99a4bd.js@16227"
+     },
+     {
+      "name": "Opens files: application/pdf,.pdf",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Save and open files in place (File System Access)",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "2512-a886e9fafa99a4bd.js@9621"
+     },
+     {
+      "name": "Several files at once",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][multiple]"
+     },
+     {
+      "name": "Exports as image/jpeg",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "pdf-merger-46a5ee3bbbce6a24.js@8225"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "5161-9139363905c94449.js"
+     },
+     {
+      "name": "Installable web app (standalone)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "manifest"
+     },
+     {
+      "name": "Works offline (service worker with a precache)",
+      "detail": "pwa, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "service worker sw.js"
+     },
+     {
+      "name": "RSS or Atom feed",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type$=xml]"
+     },
+     {
+      "name": "Share files through the system share sheet",
+      "detail": "share, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_app-697468a544e3fe97.js@25552"
+     },
+     {
+      "name": "Share through the system share sheet",
+      "detail": "share, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_app-697468a544e3fe97.js@25507"
+     },
+     {
+      "name": "API call 10015.io/api/auth/session",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API call 10015.io/api/comments/get-all?page&toolId",
+      "detail": "api, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "network"
+     },
+     {
+      "name": "API path /api",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-be6a7f5e51083211.js@75992"
+     },
+     {
+      "name": "API path /api/ai/describe-image/main",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@420"
+     },
+     {
+      "name": "API path /api/ai/describe-image/sub",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@497"
+     },
+     {
+      "name": "API path /api/ai/generate-color-palette",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@339"
+     },
+     {
+      "name": "API path /api/ai/text-to-caption",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@262"
+     },
+     {
+      "name": "API path /api/auth/signin",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_app-697468a544e3fe97.js@12424"
+     },
+     {
+      "name": "API path /api/bug-reports/create",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "4225-242b432a35f2e641.js@16025"
+     },
+     {
+      "name": "API path /api/comments/create",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1874.c5014fb4e74119e9.js@2943"
+     },
+     {
+      "name": "API path /api/comments/delete",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9296-3a0304e0f30c174b.js@12822"
+     },
+     {
+      "name": "API path /api/comments/get-all",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1874.c5014fb4e74119e9.js@3769"
+     },
+     {
+      "name": "API path /api/comments/report",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9296-3a0304e0f30c174b.js@13539"
+     },
+     {
+      "name": "API path /api/comments/update",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "9296-3a0304e0f30c174b.js@12106"
+     },
+     {
+      "name": "API path /api/describe-image/main",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@381"
+     },
+     {
+      "name": "API path /api/describe-image/sub",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@459"
+     },
+     {
+      "name": "API path /api/favs/update",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "2084-0032cf7913090539.js@12393"
+     },
+     {
+      "name": "API path /api/generate-color-palette",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@297"
+     },
+     {
+      "name": "API path /api/llms",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@836"
+     },
+     {
+      "name": "API path /api/product-feed",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@783"
+     },
+     {
+      "name": "API path /api/sitemap",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@558"
+     },
+     {
+      "name": "API path /api/sitemap/dynamic",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@672"
+     },
+     {
+      "name": "API path /api/sitemap/pages",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@611"
+     },
+     {
+      "name": "API path /api/text-to-caption",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@227"
+     },
+     {
+      "name": "API path /api/tool-feed",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_buildManifest.js@729"
+     },
+     {
+      "name": "Feature flag disableStaticImages",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "main-be6a7f5e51083211.js@55738"
+     },
+     {
+      "name": "Feature flag disableTransforms",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "3748-c67062f92fd00288.js@38445"
+     },
+     {
+      "name": "Feature flag showFooter",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "4225-242b432a35f2e641.js@36185"
+     },
+     {
+      "name": "Feature flag showSpinner",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-697468a544e3fe97.js@41091"
+     },
+     {
+      "name": "Feature flag useCSSOMInjection",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-697468a544e3fe97.js@72209"
+     },
+     {
+      "name": "Feature flag useDragOverlay",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "3748-c67062f92fd00288.js@38488"
+     },
+     {
+      "name": "Feature flag useFsAccessApi",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "2512-a886e9fafa99a4bd.js@14087"
+     },
+     {
+      "name": "Feature flag useSession",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "_app-697468a544e3fe97.js@9533"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "2092.91362663aeee2781.js@25402"
+     },
+     {
+      "name": "Picture in picture",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "1454-743267d3524e5007.js@4459"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym64428979:0_reqNum",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym64428979_lsid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_retryReqs",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_synced",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: _ym_uid",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: nextauth.message",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Syncs between tabs",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "_app-697468a544e3fe97.js@1290"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "main-be6a7f5e51083211.js"
+     }
+    ]
+   },
+   "codeshack.io": {
+    "url": "https://codeshack.io/pdf-merge-tool/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Keyboard shortcut Control+K",
+      "detail": "shortcut, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[aria-keyshortcuts]"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script.min.js@4358"
+     },
+     {
+      "name": "Opens files: application/pdf",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Several files at once",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][multiple]"
+     },
+     {
+      "name": "Download links",
+      "detail": "export, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[download] x1"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.min.css"
+     },
+     {
+      "name": "RSS or Atom feed",
+      "detail": "share, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[type$=xml]"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script.min.js@1252"
+     },
+     {
+      "name": "Remembers a setting in the browser: codeshack_recent",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: mv_session",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.min.css"
+     },
+     {
+      "name": "Follows the system dark mode",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "script.min.js@263"
+     },
+     {
+      "name": "Respects high-contrast settings",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.min.css@232319"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "style.min.css@201450"
+     },
+     {
+      "name": "Path kept from crawlers /dl-free/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /index.php",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Path kept from crawlers /projects/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     }
+    ]
+   },
+   "pdfcandy.com": {
+    "url": "https://pdfcandy.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "URL parameter ?v",
+      "detail": "url-param, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/index.js@29477"
+     },
+     {
+      "name": "Accepts the file types .pdf,.doc,.docx",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/land.js@262128"
+     },
+     {
+      "name": "Drag and drop files or items",
+      "detail": "import, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@1537"
+     },
+     {
+      "name": "Opens files: application/pdf, image/gif, image/png, image/tiff, image/jfi",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Several files at once",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][multiple]"
+     },
+     {
+      "name": "Download links",
+      "detail": "export, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "a[download] x2"
+     },
+     {
+      "name": "API path /api/v2/me",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/index.js@16562"
+     },
+     {
+      "name": "API path /api/v2/subscription/upgrade",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/index.js@54831"
+     },
+     {
+      "name": "API path /api/v3",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@199818"
+     },
+     {
+      "name": "API path /upload",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/land.js@261753"
+     },
+     {
+      "name": "API path /ws/v1",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@199846"
+     },
+     {
+      "name": "Feature flag allowInput",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@148424"
+     },
+     {
+      "name": "Feature flag allowLogout",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/index.js@53826"
+     },
+     {
+      "name": "Feature flag enableEscapeKey",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/land.js@249594"
+     },
+     {
+      "name": "Feature flag enableTime",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@148410"
+     },
+     {
+      "name": "Feature flag showAddTaxId",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/index.js@53857"
+     },
+     {
+      "name": "Feature flag showCloseBtn",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/land.js@249578"
+     },
+     {
+      "name": "Feature flag showDropdown",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@13463"
+     },
+     {
+      "name": "Feature flag showExport",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@309"
+     },
+     {
+      "name": "Feature flag showOneFile",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@45805"
+     },
+     {
+      "name": "Feature flag showPasswordPopup",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@45784"
+     },
+     {
+      "name": "Feature flag showSettings",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@135478"
+     },
+     {
+      "name": "Feature flag showSorting",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@294"
+     },
+     {
+      "name": "Feature flag showZoom",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@77230"
+     },
+     {
+      "name": "Feature flag transformsEnabled",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/land.js@90213"
+     },
+     {
+      "name": "Feature flag useTransform",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "static.pdfcandy.com/land.js@89785"
+     },
+     {
+      "name": "Copy and paste through the clipboard",
+      "detail": "setting, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/index.js@24086"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Input of type number",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=number] x1"
+     },
+     {
+      "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-chat",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-summarizer",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: pdfcandy_limits_pdf-translator",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Language versions in the sitemap: 19",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Language versions: 20 (x-default, en, de, fr, it, es)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Background worker threads",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/app.42e7a073.js@206513"
+     },
+     {
+      "name": "Live updates over a WebSocket",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "static.pdfcandy.com/index.js"
+     },
+     {
+      "name": "Path kept from crawlers /admin/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /ar/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /cn/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /de/ (43 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /es/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /fr/ (43 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /id/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /it/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /jp/ (42 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   },
+   "sejda.com": {
+    "url": "https://www.sejda.com/",
+    "scanned": "2026-10-26",
+    "features": [
+     {
+      "name": "Opens files: .png,.jpg,.jpeg,.bmp",
+      "detail": "import, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=file][accept]"
+     },
+     {
+      "name": "Print layout",
+      "detail": "export, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "index.min.css"
+     },
+     {
+      "name": "API path /api",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@528427"
+     },
+     {
+      "name": "API path /api/files",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@712072"
+     },
+     {
+      "name": "API path /api/files/client-view",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@722682"
+     },
+     {
+      "name": "API path /api/files/upload-check",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@748089"
+     },
+     {
+      "name": "API path /api/tasks",
+      "detail": "api, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@761426"
+     },
+     {
+      "name": "Feature flag allowMove",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@432175"
+     },
+     {
+      "name": "Feature flag allowResize",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@432188"
+     },
+     {
+      "name": "Feature flag allowSelect",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@432160"
+     },
+     {
+      "name": "Feature flag disableAutoFetch",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@677992"
+     },
+     {
+      "name": "Feature flag disableAutoOpen",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@311270"
+     },
+     {
+      "name": "Feature flag disableMetaDataParsers",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@459801"
+     },
+     {
+      "name": "Feature flag disableRange",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@722836"
+     },
+     {
+      "name": "Feature flag disableStream",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@677975"
+     },
+     {
+      "name": "Feature flag disableSubmitBtn",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@648121"
+     },
+     {
+      "name": "Feature flag showAuthPopup",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@703792"
+     },
+     {
+      "name": "Feature flag showContent",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@255964"
+     },
+     {
+      "name": "Feature flag showIcon",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@255952"
+     },
+     {
+      "name": "Feature flag showSubtext",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@255937"
+     },
+     {
+      "name": "Feature flag showTick",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@256153"
+     },
+     {
+      "name": "Feature flag useDefault",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@253205"
+     },
+     {
+      "name": "Feature flag useIntKeysAsArrayIndex",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@444664"
+     },
+     {
+      "name": "Feature flag useWebWorkers",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@748821"
+     },
+     {
+      "name": "Feature flag useWorkerFetch",
+      "detail": "flag, inferred",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "inferred",
+      "evidence": "libs-and-partials.min.js@678025"
+     },
+     {
+      "name": "Widget menu",
+      "detail": "setting, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "[role=menu] x1"
+     },
+     {
+      "name": "Input of type email",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=email] x1"
+     },
+     {
+      "name": "Input of type search",
+      "detail": "input, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "input[type=search] x1"
+     },
+     {
+      "name": "Use the camera or microphone",
+      "detail": "input, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@601479"
+     },
+     {
+      "name": "Keeps a database in the browser: recent-files",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "indexedDB"
+     },
+     {
+      "name": "Remembers a setting in the browser: agreedTerms",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Remembers a setting in the browser: thumbnails-size",
+      "detail": "storage, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "localStorage"
+     },
+     {
+      "name": "Interface languages: 17 (jp, nl, kr, se, eu, ie)",
+      "detail": "i18n, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@480792"
+     },
+     {
+      "name": "Language versions in the sitemap: 29",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Language versions: 30 (en, fr, de, ro, nl, no)",
+      "detail": "i18n, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "link[hreflang]"
+     },
+     {
+      "name": "Off-thread image drawing",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@455849"
+     },
+     {
+      "name": "Syncs between tabs",
+      "detail": "service, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "libs-and-partials.min.js@390761"
+     },
+     {
+      "name": "Respects the reduced-motion setting",
+      "detail": "a11y, read",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "read",
+      "evidence": "index.min.css@56194"
+     },
+     {
+      "name": "Path kept from crawlers /api/",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "robots.txt"
+     },
+     {
+      "name": "Section /ar/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /cs/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /da/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /de/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /el/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /es/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /fi/ (19 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     },
+     {
+      "name": "Section /ro/ (20 pages)",
+      "detail": "route, observed",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "unbuilt (found by reverse engineering)",
+      "found_by": "re",
+      "tag": "observed",
+      "evidence": "sitemap.xml"
+     }
+    ]
+   }
+  }
+ }
+}

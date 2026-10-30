@@ -1,0 +1,112 @@
+# One queue job through Verse's own coding agent (tools/verse-job.mjs; docs/playbooks/conductor.md). The conductor (tools/conductor.mjs, run by
+# grow-clock.yml every 10 minutes) claims the job and starts this with its id: features, tower rows no template can fix, flaky tests, Verse's
+# own wants and voice asks, and repairs of loops that keep failing. The job's words go to one lap of tools/verse-loop.mjs as its task, so
+# the lap's guards apply unchanged: Verse's free-model coder (tools/verse-coder.mjs), the key scan, no new red, no test weakening, a plain
+# push, a pull request labelled automerge. The result goes back to the queue (done, or queued again with one more try; three tries and the
+# conductor sets the job aside). No human in the loop (owner, 2026-10-28 and 2026-10-26). Off while domains/verse-loop.pause exists in the
+# repository (the kill switch: delete it to run; a commit, never a settings page). Same concurrency group as verse-loop.yml: one coder at a time,
+# because they share the free model budget and both append to docs/TAGTEAM.md.
+name: Verse job
+
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "the build queue job id the conductor claimed (state building)"
+        required: true
+        type: string
+      dry:
+        description: "run the lap's checks and the coder, commit and open nothing, and leave the job as it is"
+        type: boolean
+        default: false
+
+concurrency:
+  group: verse-coder
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+  checks: read
+  statuses: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.pause.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: domains
+      - id: pause
+        env:
+          DRY: ${{ inputs.dry }}
+          OFF: ${{ vars.VERSE_LOOP_ENABLED }}
+        run: |
+          # a dry run goes through a paused loop (that is how it is tried before it is switched on); a live run does not
+          if [ "$DRY" != "true" ] && { [ -f domains/verse-loop.pause ] || [ "$OFF" = "false" ]; }; then
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "::notice title=Verse job::paused (domains/verse-loop.pause); the job stays claimed and the conductor puts it back after 3 hours"
+          else echo "run=true" >> "$GITHUB_OUTPUT"; fi
+
+  job:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Who commits
+        run: |
+          git config user.name "verse-loop"
+          git config user.email "verse-loop@users.noreply.github.com"
+      - name: Install Chromium (the free brain's benchmark gate)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+          git update-index --assume-unchanged void-live-deploy/index.html void-live-deploy/void.html
+      - name: The loop's memory (failure streak, open PRs, heal tries)
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}
+          restore-keys: verse-loop-state-
+      - name: The job
+        env:
+          JOB: ${{ inputs.job }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+          VERSE_LOOP_STATE: ${{ runner.temp }}/verse-loop/state.json
+          VERSE_LOOP_AGENT: verse
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ secrets.VERSE_LOOP_TOKEN || github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VERSE_LOOP_MODEL: ${{ vars.VERSE_LOOP_MODEL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: |
+          case "$JOB" in ''|*[!A-Za-z0-9_-]*) echo "::error title=Verse job::the job id is not an id"; exit 0 ;; esac
+          node tools/verse-job.mjs "$JOB" $DRY
+      - name: Keep the loop's memory
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/verse-loop
+          key: verse-loop-state-${{ github.run_id }}

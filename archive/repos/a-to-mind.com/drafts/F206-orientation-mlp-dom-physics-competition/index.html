@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F206 · Orientation-Causal MLP DOM Physics Competition</title>
+<style>
+  body { margin: 0; overflow: hidden; font-family: system-ui, sans-serif; background: #0a0a12; color: #eee; }
+  #arena { position: relative; width: 100vw; height: 100vh; }
+  .agent { position: absolute; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: #000; box-shadow: 0 0 12px currentColor; transition: transform 0.05s linear; user-select: none; }
+  .resource { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #ffcc00; box-shadow: 0 0 8px #ffcc00; pointer-events: none; }
+  #ui { position: fixed; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  button { background: #222; color: #fff; border: 1px solid #444; padding: 6px 10px; margin: 2px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { margin-top: 8px; font-size: 12px; opacity: 0.8; }
+</style>
+</head>
+<body>
+<div id="arena"></div>
+<div id="ui">
+  <strong>F206 · Orientation MLP DOM Physics</strong><br>
+  <button id="orient">Enable Orientation</button>
+  <button id="place">Place Resource</button>
+  <button id="seal">Seal Winner Genome</button>
+  <button id="inject">Inject Sealed</button>
+  <div id="status">Offline-capable. Click Enable Orientation (or use mouse). Agents compete for resources under tilt gravity.</div>
+</div>
+<script>
+// Tiny MLP controller per agent (4 inputs -> 2 force outputs). Weights = genome.
+// Inputs: dx to nearest resource, dy to nearest, orientation beta, gamma (normalized).
+// Physics: simple Euler integration on DOM positions. Competition via score + soft repulsion.
+// Persistence: IndexedDB for sealed genomes. BroadcastChannel for multi-tab demo.
+// Branch: pure DOM physical embodiment, orientation-causal, no WebGPU/canvas lattice/WebXR/audio.
+
+const N_AGENTS = 5;
+const AGENTS = [];
+const RESOURCES = [];
+let orient = { beta: 0, gamma: 0, enabled: false };
+let lastTime = performance.now();
+const dbName = 'F206-genomes';
+let db;
+
+function simpleHash(str) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16);
+}
+
+class Agent {
+  constructor(id, genome = null) {
+    this.id = id;
+    this.el = document.createElement('div');
+    this.el.className = 'agent';
+    this.el.textContent = id;
+    document.getElementById('arena').appendChild(this.el);
+    this.x = Math.random() * (window.innerWidth - 60) + 30;
+    this.y = Math.random() * (window.innerHeight - 60) + 30;
+    this.vx = 0;
+    this.vy = 0;
+    this.score = 0;
+    this.genome = genome || Array.from({length: 12}, () => (Math.random() - 0.5) * 2);
+    this.hue = Math.floor(Math.random() * 360);
+    this.updateStyle();
+  }
+  updateStyle() {
+    this.el.style.left = this.x + 'px';
+    this.el.style.top = this.y + 'px';
+    this.el.style.background = `hsl(${this.hue}, 70%, 55%)`;
+    this.el.style.color = 'black';
+    this.el.textContent = `${this.id} ${this.score}`;
+  }
+  mlp(inputs) {
+    const w = this.genome;
+    let h = [0,0,0,0];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 4; j++) h[j] += inputs[i] * (w[i*4 + j] || 0);
+      h[i] = Math.tanh(h[i]);
+    }
+    let out = [0, 0];
+    for (let j = 0; j < 2; j++) {
+      for (let i = 0; i < 4; i++) out[j] += h[i] * (w[16 + i*2 + j] || w[8 + i] || 0);
+      out[j] = Math.tanh(out[j]);
+    }
+    return out;
+  }
+  step(dt, resources) {
+    let nx = 0, ny = 0, minD = 1e9;
+    for (const r of resources) {
+      const dx = r.x - this.x, dy = r.y - this.y;
+      const d = Math.hypot(dx, dy);
+      if (d < minD) { minD = d; nx = dx / (d + 1); ny = dy / (d + 1); }
+    }
+    const inputs = [nx, ny, (orient.beta || 0) / 90, (orient.gamma || 0) / 90];
+    const [fx, fy] = this.mlp(inputs);
+    const gX = (orient.gamma || 0) * 0.05;
+    const gY = (orient.beta || 0) * 0.05;
+    this.vx += (fx * 40 + gX) * dt;
+    this.vy += (fy * 40 + gY) * dt;
+    this.vx *= 0.92;
+    this.vy *= 0.92;
+    this.x += this.vx * dt * 60;
+    this.y += this.vy * dt * 60;
+    this.x = Math.max(20, Math.min(window.innerWidth - 60, this.x));
+    this.y = Math.max(20, Math.min(window.innerHeight - 60, this.y));
+    for (let i = resources.length - 1; i >= 0; i--) {
+      const r = resources[i];
+      if (Math.hypot(r.x - this.x, r.y - this.y) < 30) {
+        this.score++;
+        r.el.remove();
+        resources.splice(i, 1);
+      }
+    }
+    for (const other of AGENTS) {
+      if (other === this) continue;
+      const dx = this.x - other.x, dy = this.y - other.y;
+      const d = Math.hypot(dx, dy) + 1;
+      if (d < 80 && other.score > this.score) {
+        this.vx += (dx / d) * 20 * dt;
+        this.vy += (dy / d) * 20 * dt;
+      }
+    }
+    this.updateStyle();
+  }
+}
+
+function placeResource(x, y) {
+  const el = document.createElement('div');
+  el.className = 'resource';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.getElementById('arena').appendChild(el);
+  RESOURCES.push({ x, y, el });
+}
+
+function loop(t) {
+  const dt = Math.min(0.05, (t - lastTime) / 1000);
+  lastTime = t;
+  for (const a of AGENTS) a.step(dt, RESOURCES);
+  requestAnimationFrame(loop);
+}
+
+function initAgents() {
+  for (let i = 0; i < N_AGENTS; i++) AGENTS.push(new Agent(i));
+}
+
+async function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(dbName, 1);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('genomes')) d.createObjectStore('genomes', { keyPath: 'id' });
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function sealWinner() {
+  if (!AGENTS.length) return;
+  const winner = AGENTS.reduce((a, b) => a.score > b.score ? a : b);
+  const id = simpleHash(JSON.stringify(winner.genome));
+  const rec = { id, genome: winner.genome, score: winner.score, ts: Date.now() };
+  if (db) {
+    const tx = db.transaction('genomes', 'readwrite');
+    tx.objectStore('genomes').put(rec);
+  }
+  status(`Sealed genome ${id.slice(0,8)} from agent ${winner.id} (score ${winner.score})`);
+  try { new BroadcastChannel('F206').postMessage({ type: 'seal', rec }); } catch(e) {}
+}
+
+async function injectSealed() {
+  if (!db) return;
+  const tx = db.transaction('genomes', 'readonly');
+  const store = tx.objectStore('genomes');
+  const req = store.getAll();
+  req.onsuccess = () => {
+    const all = req.result;
+    if (!all.length) { status('No sealed genomes in IDB'); return; }
+    const rec = all[Math.floor(Math.random() * all.length)];
+    const a = new Agent(AGENTS.length, rec.genome);
+    a.hue = Math.floor(Math.random() * 360);
+    AGENTS.push(a);
+    status(`Injected genome ${rec.id.slice(0,8)} as new agent`);
+  };
+}
+
+function status(msg) { document.getElementById('status').textContent = msg; }
+
+document.getElementById('orient').onclick = async () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' && DeviceOrientationEvent.requestPermission) {
+    try { await DeviceOrientationEvent.requestPermission(); } catch(e) {}
+  }
+  window.addEventListener('deviceorientation', e => {
+    orient.beta = e.beta || 0;
+    orient.gamma = e.gamma || 0;
+    orient.enabled = true;
+    status(`Orientation active: β=${orient.beta.toFixed(0)} γ=${orient.gamma.toFixed(0)}`);
+  });
+  status('Orientation listener attached (tilt device or use DevTools sensors)');
+};
+
+document.getElementById('place').onclick = () => {
+  placeResource(Math.random() * (window.innerWidth - 40) + 20, Math.random() * (window.innerHeight - 40) + 20);
+};
+
+document.getElementById('seal').onclick = sealWinner;
+document.getElementById('inject').onclick = injectSealed;
+
+document.getElementById('arena').onclick = e => {
+  if (e.target.id === 'arena') placeResource(e.clientX, e.clientY);
+};
+
+try {
+  const bc = new BroadcastChannel('F206');
+  bc.onmessage = e => {
+    if (e.data.type === 'seal' && db) {
+      db.transaction('genomes', 'readwrite').objectStore('genomes').put(e.data.rec);
+      status('Received sealed genome from peer tab');
+    }
+  };
+} catch(e) {}
+
+openDB().then(d => { db = d; status('IDB ready. Place resources, enable orientation, watch agents compete.'); }).catch(() => status('IDB unavailable — in-memory only'));
+initAgents();
+for (let i = 0; i < 4; i++) placeResource(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

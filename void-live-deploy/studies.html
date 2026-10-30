@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Verse · studies</title>
+<style>
+  :root { color-scheme: dark; --bg:#0b0b10; --fg:#ece9f5; --dim:#9a95ab; --ac:#9d7bff; }
+  * { box-sizing: border-box; } body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; } h1 { font-size: 1.4rem; margin: 0 0 4px; } p.sub { color: var(--dim); margin: 0 0 20px; }
+  ul { list-style: none; padding: 0; margin: 0 0 24px; } li { border: 1px solid #2a2638; border-radius: 10px; padding: 10px 12px; margin: 0 0 8px; cursor: pointer; overflow-wrap: anywhere; }
+  li:hover, li:focus { border-color: var(--ac); outline: none; } .meta { color: var(--dim); font-size: .85rem; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #14121c; border-radius: 10px; padding: 14px; font: 13px/1.5 ui-monospace, monospace; }
+  .msg { color: var(--dim); }
+</style></head>
+<body><main>
+<h1>What Verse studied</h1>
+<p class="sub">Owner only. Each study read a public page passively (nothing was run, submitted or copied). Pick one to read its evidence.</p>
+<div id="msg" class="msg">Loading…</div>
+<h2 id="wh" hidden>Wants ready to build from a study</h2><ul id="wants"></ul>
+<h2 id="sh" hidden>Studies</h2><ul id="list"></ul>
+<pre id="out" hidden></pre>
+</main>
+<script>
+(async () => {
+  // the owner's signed-in account brings an owner session first (lib/owner-link.js)
+  const tok = (await import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => '')) || (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
+  const $ = (id) => document.getElementById(id), msg = $('msg');
+  if (!tok) { msg.textContent = 'Sign in as the owner on the main page first, then come back here.'; return; }
+  const get = (q) => fetch('/api/studies' + q, { headers: { authorization: 'Bearer ' + tok }, cache: 'no-store' }).then((r) => r.ok ? r.json() : Promise.reject(r.status));
+  const item = (r, ul) => { const li = document.createElement('li'); li.tabIndex = 0;
+    const n = document.createElement('div'); n.textContent = r.name; const m = document.createElement('div'); m.className = 'meta'; m.textContent = r.summary + ' · ' + String(r.updated || '').slice(0, 10);
+    li.append(n, m); const open = () => get('?id=' + encodeURIComponent(r.id)).then((b) => { const o = $('out'); o.hidden = false; o.textContent = (b.study && b.study.body) || '(empty)'; o.scrollIntoView({ behavior: 'smooth' }); }, () => { msg.textContent = 'Could not open that study.'; });
+    li.onclick = open; li.onkeydown = (e) => { if (e.key === 'Enter') open(); }; ul.append(li); };
+  Promise.all([get(''), get('?wants=1').catch(() => ({ wants: [] }))]).then(([s, w]) => {
+    msg.textContent = s.studies.length ? s.studies.length + ' stud' + (s.studies.length === 1 ? 'y' : 'ies') + ', ' + w.wants.length + ' want' + (w.wants.length === 1 ? '' : 's') + ' ready to build.' : 'No studies yet. File one with tools/rea-study.mjs --ask.';
+    $('sh').hidden = !s.studies.length; $('wh').hidden = !w.wants.length;
+    s.studies.forEach((r) => item(r, $('list'))); w.wants.forEach((r) => item(r, $('wants')));
+  }, (st) => { msg.textContent = st === 401 ? 'This page is for the owner only.' : 'Studies are not available right now.'; });
+})();
+</script>
+</body></html>

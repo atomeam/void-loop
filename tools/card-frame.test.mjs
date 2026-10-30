@@ -121,3 +121,11 @@ test('a card prints its abilities as keywords, each from a fact: Proven, Fresh, 
   assert.match(h.adds, /class="vc-kw"[^>]*>Proven</); assert.match(h.adds, />Fresh</); assert.match(h.adds, />Linked</);
   assert.equal(chromeHtml(cardOf({ kind: 'Answer', sources: 2, ageDays: 3 }), esc).adds.match(/class="vc-kw"/g).length, 1, 'an answer on two sources is Sourced');
 });
+
+test('a card from a skill with a full page links to it (owner, 2026-10-25)', async () => {
+  const { pageLinkHtml, PAGE_OF } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  assert.match(pageLinkHtml('calendar', esc), /href="\/calendar\/"[^>]*>Open the full Calendar page →<\/a>$/);
+  assert.equal(pageLinkHtml('nope', esc), '');
+  for (const [, [href]] of Object.entries(PAGE_OF)) assert.match(href, /^(?:\/[a-z0-9-]+)+\/(?:[a-z-]+)?$/);
+});

@@ -1,0 +1,45 @@
+{
+  "slug": "local-residue-not-caption",
+  "run": 124,
+  "family": "non-lexical intent capture",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "confidence": "low",
+  "hypothesis": "A sealed residue class hashes to a caption-refusal id. The caption sentence is discarded and is not in the hash. A residue mark is not a caption and not a decoded intention.",
+  "canonical": "residue-not-caption|v1|<source>|<form>|<hold>|caption-refusal",
+  "catalog": [
+    "empty|unlabeled|held",
+    "residue|unvoiced|held",
+    "mime|unlabeled|held",
+    "counterclaim|untimed|held",
+    "abstain|abstain|abstain",
+    "local-only|unvoiced|held"
+  ],
+  "discarded_not_hashed": ["caption sentence"],
+  "denied": [
+    "caption",
+    "decoded intention",
+    "mind-read badge",
+    "inner-speech decoder",
+    "word field",
+    "WPM score",
+    "vocabulary size",
+    "EEG",
+    "fMRI",
+    "implant",
+    "microphone",
+    "camera",
+    "letter board",
+    "facilitator",
+    "contact",
+    "healing",
+    "crash retrieval",
+    "extraterrestrial hardware"
+  ],
+  "sources_as_data": [
+    "Horikawa 2025 Science Advances mind captioning: nonverbal fMRI to text is an interpretive layer, not a spoken sentence",
+    "KAIST/MSRA Neural Value Alignment, IEEE TCYB 2026 DOI 10.1109/TCYB.2026.3722605: EEG mismatch is not a recovered sentence",
+    "x-scan.md post ids, not rows"
+  ]
+}

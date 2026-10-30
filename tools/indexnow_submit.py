@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Superseded: use tools/indexnow.mjs (deploy.yml runs it after every main deploy). Kept on the salvage shelf, not run.
 """Tell IndexNow engines (Bing, Yandex, ...) about a-to-mind.com's pages. Run after a deploy."""
 import json
 import urllib.error

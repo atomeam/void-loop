@@ -8,7 +8,11 @@
  */
 import { show3d } from './calendar3d.js';
 import { countdownOf } from './countdown.js';
-const KEY = 'a2m.void.agenda.v1';
+import { pickKind } from '../lib/media.js';
+import { mirror } from '../lib/chat-calendar.js';
+import * as A from '../lib/agenda.js';
+// the longest ask still read as an event to add ("lunch with Ana and Sam at the cafe on Main Street next Tuesday at noon" is 14)
+export const MAX_EVENT_WORDS = 16;
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
 function gated(text) {
@@ -82,6 +86,8 @@ export function parseCalendar(text) {
   // "days until new year", "days until december 25": that is a countdown, not an agenda.
   // The ask carries a date, so parseWhenText would claim it - hand it to the countdown skill.
   if (countdownOf(t)) return null;
+  // "good movies to watch tonight" asks for a pick, not an event called "Good movies to watch" (2026-10-30: it was saved as one)
+  if (pickKind(t)) return null;
   // "add dentist to my calendar Oct 12 at 3" / "put lunch with Ana on my calendar tomorrow at noon": your own calendar, saved here
   const own = t.match(/^(?:please\s+)?(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+my\s+(?:calendar|calender|agenda)(?:\s+(.+))?$/i);
   if (own) {
@@ -93,7 +99,8 @@ export function parseCalendar(text) {
   if (/^(?:show\s+(?:me\s+)?)?(?:my\s+)?(?:the\s+)?(?:calender|calendar|agenda)\b/i.test(t)
     || /^(?:what'?s|whats)\s+(?:next|on(?:\s+today)?|coming\s+up)\b/i.test(t)
     || /^(?:upcoming|my agenda)\b(?!\s+(?:public\s+|bank\s+)?holidays?\b)/i.test(t)) { // "upcoming holidays" is the holiday list
-    return { kind: 'show' };
+    const focus = A.cardDayOf(t); // "my calendar on 2026-12-03": the Calendar page's card, so the wall calendar opens on the day the page shows
+    return focus ? { kind: 'show', focus } : { kind: 'show' };
   }
   // "clear calendar" / "delete all my events": empties it, after one tap (it can't be undone)
   if (/^(?:clear|empty|wipe|erase|reset|delete\s+all(?:\s+of)?)\s+(?:out\s+)?(?:my\s+|the\s+)?(?:calender|calendar|agenda)(?:\s+events)?$/i.test(t)
@@ -105,12 +112,18 @@ export function parseCalendar(text) {
   }
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
   if (/^(?:what|whats|who|whos|why|how|hows|when|whens|where|wheres|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
+  if (/^(?:the\s+|today'?s\s+|live\s+)?[\w .'-]{0,40}\b(?:scores?|league\s+table|standings)(?:\s+(?:today|tonight|now|live|yesterday))?$/i.test(t)) return null; // the scores skill ("premier league scores today" is not an event)
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
   if (/\bwhat\s+time\s+(?:is\s+it|will\s+it\s+be)\b/i.test(t)) return null; // "if it's 3pm in new york what time is it in paris" is world time
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   if (/^(?:please\s+)?(?:wake\s+me(?:\s+up)?|(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm)\s+(?:for|at)\s+\d/i.test(t)) return null; // an alarm rings: the timer counts down to it
+  // a request for work is not an event (owner's review, 2026-10-30: "Review what Verse's loop shipped since the last summary ..." was saved
+  // as a calendar event): an ask that opens with a work verb, or runs past MAX_EVENT_WORDS words, has no event in it; the explicit forms
+  // ("add X to my calendar", "remind me to ...") were taken above or below and keep any length
+  if (/^(?:please\s+)?(?:review|summari[sz]e|list|explain|analy[sz]e|compare|audit|describe|tell\s+me|give\s+me|look\s+at|go\s+through|walk\s+me)\b/i.test(t)) return null;
+  if (!/^(?:please\s+)?remind\s+me\b/i.test(t) && t.split(/\s+/).length > MAX_EVENT_WORDS) return null;
   const w = parseWhenText(t);
   // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
   if (!w) { const r = t.match(/^(?:please\s+)?remind\s+me\s+(?:to|about)\s+(.{2,80})$/i); if (r) { const d = new Date(); d.setHours(0, 0, 0, 0); return { kind: 'add', title: tidy(r[1]), at: d, allDay: true, raw: t }; } }
@@ -118,13 +131,13 @@ export function parseCalendar(text) {
   return { kind: 'add', title: w.title, at: w.at, allDay: w.allDay, raw: t };
 }
 
+// one store: the /calendar/ page's (lib/agenda.js), so the card, the page and chat edits ("move the dentist to Tuesday") show the same events
+const ONE_DAY = 864e5;
+/** what is coming up, as rows { id, title, at, allDay }: from an hour ago (a day for an all-day one) to a year on, repeats included */
 function load() {
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (_) { return []; }
+  const now = Date.now();
+  return A.rowsOf(A.events(), new Date(now - ONE_DAY), new Date(now + 400 * ONE_DAY)).filter((r) => new Date(r.at).getTime() + (r.allDay ? ONE_DAY : 36e5) >= now);
 }
-function save(rows) {
-  try { localStorage.setItem(KEY, JSON.stringify(rows)); } catch (_) {}
-}
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
 function fmtWhen(iso) {
   const at = new Date(iso);
@@ -133,8 +146,7 @@ function fmtWhen(iso) {
 
 function draw(el, api) {
   const { esc } = api;
-  const now = Date.now();
-  const rows = load().filter((r) => new Date(r.at).getTime() + 60 * 60 * 1000 >= now).sort((a, b) => a.at.localeCompare(b.at)).slice(0, 8);
+  const rows = load().slice(0, 8);
   let body;
   if (!rows.length) {
     body = '<div class="sub">Nothing coming up. Type something like "call Sam next Tuesday at 4".</div>';
@@ -158,12 +170,12 @@ async function run(text, api) {
     return 'calendar';
   }
   if (q.kind === 'clear') {
-    const n = load().length;
+    const n = A.events().length;
     if (!n) { if (api.say) api.say('your calendar is already empty'); return 'calendar'; }
     const el = showPage((p) => { p.innerHTML = '<h2>Clear your calendar?</h2><div class="sub">' + n + ' event' + (n === 1 ? '' : 's')
       + ' saved in this browser. This can\'t be undone.</div><button type="button" class="tr-copy cal-clear" style="margin-top:12px">clear all ' + n + '</button>'; });
     const b = el.querySelector('.cal-clear');
-    if (b) b.addEventListener('click', () => { save([]); draw(el, api); if (api.say) api.say('calendar cleared'); if (api.summon) api.summon('calendar', { hide: true }); });
+    if (b) b.addEventListener('click', () => { A.write([]); draw(el, api); if (api.say) api.say('calendar cleared'); if (api.summon) api.summon('calendar', { hide: true }); });
     return 'calendar';
   }
   if (q.kind === 'when') {
@@ -171,23 +183,22 @@ async function run(text, api) {
     return 'calendar';
   }
   if (q.kind === 'add') {
-    const rows = load();
-    rows.push({ id: uid(), title: q.title.slice(0, 160), at: q.at.toISOString(), text: q.raw.slice(0, 200) });
-    save(rows);
-    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()));
+    // into the Calendar page's own events, read by the page's quickAdd (length, repeat, reminder) and said in words so a wrong reading shows;
+    // when the page reads nothing from it the card's own reading is kept as it is (an hour, or all day)
+    const S = A.read(); let line = '';
+    try { const m = mirror(S, q.raw || q.title, new Date(), navigator.language || 'en'); if (m) { A.write(m.store.events); line = m.line; } } catch (_) {}
+    if (!line) { const dup = S.events.some((e) => e.title.toLowerCase() === q.title.toLowerCase() && Math.abs(new Date(e.start) - q.at) < 6e4); if (!dup) A.write(A.withNew(S.events, { title: q.title.slice(0, 160), at: q.at, allDay: q.allDay })); }
+    if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()) + (line ? ' (in the Calendar page: ' + line + ')' : ''));
   }
   if (api.summon) api.summon('calendar'); // the card on the stage (mount below)
-  if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
+  if (q.kind === 'show') show3d(api, q.focus ? A.dayOfKey(q.focus) : undefined); // and the 3D wall calendar; an add only says so (the card shows it)
   return 'calendar';
 }
 
 // the card on the stage (moved out of void.html in cleanup step 6): upcoming events from this browser's agenda, a day
 // header for each day, × to take one off (undo brings it back)
 function mount(th, stageApi) {
-  let list = load();
-  if (!Array.isArray(list)) list = [];
-  const now = Date.now();
-  const up = list.filter((e) => e && e.at && new Date(e.at).getTime() + (e.allDay ? 864e5 : 36e5) >= now).sort((a, b) => a.at.localeCompare(b.at));
+  const up = load();
   const el = document.createElement('div');
   el.className = 'thing calendar-card';
   el.dataset.id = th.id;
@@ -212,7 +223,7 @@ function mount(th, stageApi) {
     const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'remove ' + (ev.title || 'event'));
     x.className = 'cal-x';
     x.addEventListener('pointerdown', (e) => e.stopPropagation());
-    x.addEventListener('click', () => { stageApi.snapshot(); save(list.filter((e) => e.id !== ev.id)); stageApi.render(); });
+    x.addEventListener('click', () => { stageApi.snapshot(); A.write(A.withoutRow(A.events(), ev.id)); stageApi.render(); });
     row.appendChild(when); row.appendChild(what); row.appendChild(x); el.appendChild(row);
   });
   stageApi.bindDrag(el, th);

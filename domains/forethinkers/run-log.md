@@ -2,6 +2,15 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-21 14:07 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `run-log.md` and the frontier. No earlier `forethinkers/*` branch or open think-tank PR was left to fold in. Printing was the least recently advanced track (2026-10-07), and its open question 6 was closest to an answer because the paper's full text is now readable.
+
+- Established: the smallest printed motor that waves an arm is a 25 mm by 42 mm printed radial stator in a 12-pole outer rotor, 1.45 N mm/A, 5.2% at 2.2 W, driving a gearless crank-and-slot arm 160 mm at 2 Hz on 9 V (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, [doi 10.1002/admt.70994](https://doi.org/10.1002/admt.70994), full text read 2026-10-21).
+- Derived: a 120 mm figure arm needs about 1 A from it with no gearbox; normal waving settles near 37 C; a stalled arm could pass 120 C without a current limit.
+- Corrected: a battery figure answers to ASTM F963 section 4.25 (battery 71 C, section 8.17 stalled-motor test), not section 4.4, which covers 120 V toys through 16 CFR 1505.
+- Frontier: one `next:` line for the printed-motor card (the fourth step and a new Next line). The old growth board is frozen, so the row went to the one build order.
+
 ## 2026-10-15 02:12 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `toy-problems.md`, `run-log.md` and the frontier. Folded `forethinkers/cycle-2026-10-14-2014`: its PR #700 squash-merged before the last fix (one batched `Promise.all` for the four NOAA fetches in `experiments/heat-dose.mjs`), so that fix comes in here and the branch is deleted. Picked living figures: least recently advanced (2026-10-07 20:14), and open question 2 (kid memory in a tiny context) could be moved from live vendor pages.
@@ -177,3 +186,11 @@ Advanced the shared body part.
 These three are one part family. A figure joint, a wearable, and a field robot can use the same actuator class. Verse's missing stage is still summon to a printable spec.
 
 [think-tank] Summon a printable actuator spec from the three dated sources above. Original name and original shape only.
+
+## 2026-10-21 20:13 ET cycle: life extension, open question 5
+
+Picked life extension (least recently advanced, 2026-10-14 14:13). Found GSE327270 is a 2-sample deposit, so MaGE cannot be scored on the semaglutide trial yet. Used the paper's public Source Data instead: baseline epigenetic acceleration tertiles (67 of 84 linked by age) show a PCGrimAge-only gradient (semaglutide minus placebo -0.64 to -3.59 y/y, low to high tertile; interaction t = -2.48) and none on PCPhenoAge or OMICmAge. Exploratory. Script and table in `experiments/semaglutide-baseline-tertiles.*`. Folded earlier branch `forethinkers/cycle-2026-10-21-1407` (already merged as #1197; branch gone). No growth-board change.
+
+## 2026-10-28 14:15 ET cycle: planet restoration, open question 5 bench half
+
+Picked planet restoration (least recently advanced, 2026-10-14 20:14). Searched for the Dry Tortugas six-month Flonduran check: no public numbers yet. Bounded what a CBASS acute heat assay can tell restoration from three field checks: Cunning et al. 2024 (R = 0.74 against an 8-day run; retest rules), Naugle et al. 2025 preprint (assay scores predicted 2024 GBR heatwave survivors), Szereday, Voolstra et al. 2026 preprint (2,068 colonies, limited power in severe heat). Corrected the bench success line to a group-level retest rule. Refreshed the NOAA heat table through 27 Oct 2026. Added open question 6 and a growth-board row (coral heat-test card). Folded the earlier branch `forethinkers/cycle-2026-10-21-2013` (already merged as #1203; branch already gone).

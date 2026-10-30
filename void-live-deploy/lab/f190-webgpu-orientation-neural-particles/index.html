@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin:0; background:#0a0a0f; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+  canvas { display:block; width:100vw; height:100vh; }
+  #ui { position:fixed; top:12px; left:12px; background:rgba(10,10,20,0.75); padding:12px; border-radius:8px; font-size:13px; max-width:280px; z-index:10; }
+  button { background:#223; color:#aaf; border:1px solid #446; padding:6px 10px; margin:4px 2px; border-radius:4px; cursor:pointer; }
+  button:hover { background:#335; }
+  #status { margin-top:8px; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Orientation Competitive Neural Particles · Verse lab</title>
+<meta name="description" content="WebGPU compute shaders implement multiple competitive local agents as neural-particle kernels. DeviceOrientation (or pointer proxy) is injected as a causal uniform.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Orientation Competitive Neural Particles · Verse lab">
+<meta property="og:description" content="WebGPU compute shaders implement multiple competitive local agents as neural-particle kernels. DeviceOrientation (or pointer proxy) is injected as a causal uniform.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f190-webgpu-orientation-neural-particles/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f190-webgpu-orientation-neural-particles/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F190 Neural Particles</strong><br>
+  Tilt device or move pointer to focus.<br>
+  Agents compete; champion sealed.
+  <div>
+    <button id="seal">Seal Champion</button>
+    <button id="transfer">Force Transfer</button>
+    <button id="reset">Reset</button>
+  </div>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Orientation Competitive Neural Particles</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

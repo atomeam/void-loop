@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Binary, decimal, hex and octal converter · Verse</title>
+<meta name="description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Binary, decimal, hex and octal converter · Verse">
+<meta property="og:description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
+<meta property="og:url" content="https://a-to-mind.com/base-converter/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/base-converter/ (owner, 2026-10-24: back to the easy sites; hextobinary.com, Tranco 136,997, is a hex-to-binary box among AdSense, tag-manager, consent and maths-typesetting scripts): one file and one small module, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 18px; margin: 0 0 14px; text-align: center; font-weight: 600; color: var(--soft); }
+  .lead { margin: 2px 0 6px; } .tries { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; margin: 0 0 10px; } .tries a { padding: 8px 0; }
+  .row { display: grid; grid-template-columns: 6.2em 1fr auto; gap: 8px; align-items: center; margin: 8px 0; }
+  label { font-size: 14px; color: var(--soft); }
+  input { font: 17px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; color: inherit; background: transparent; border: 2px solid var(--line); border-radius: 10px; padding: 9px 11px; min-width: 0; width: 100%; box-sizing: border-box; }
+  input:focus { outline: none; border-color: var(--accent); } input.bad { border-color: var(--bad); }
+  button { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; background: transparent; color: var(--ink); cursor: pointer; }
+  #note { min-height: 1.4em; font-size: 14px; color: var(--bad); margin: 6px 0; }
+  .facts { margin: 14px 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; min-height: 4.6em; box-sizing: border-box; } .facts.off { visibility: hidden; } .facts p { margin: 4px 0; } .facts code { font: 14px ui-monospace, monospace; word-break: break-all; }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 18px 0 6px; } #note.info { color: var(--soft); } #anyb { font: inherit; font-size: 14px; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; min-height: 36px; }
+  #steps { height: 16em; overflow: auto; } #steps p { margin: 4px 0; } .calc { font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; } .hint { font-size: 13px; color: var(--soft); }
+  table.map { border-collapse: collapse; font: 14px ui-monospace, Menlo, Consolas, monospace; margin: 6px 0; } table.map th, table.map td { padding: 3px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+  details { margin: 12px 0; } summary { cursor: pointer; color: var(--soft); }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/base-converter/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Binary, decimal, hex and octal converter","url":"https://a-to-mind.com/base-converter/","description":"Type a number in binary, octal, decimal, hex or any base up to 36 and see it in all of them at once, exact at any size, fractions too (a repeating part in brackets), with its signed reading, its text and the working step by step.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"binary to decimal, hex to binary, decimal to binary, hex to decimal, octal converter, binary translator, number base converter","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/base-converter/?v={value}&b={base}"},"value-input":"required name=value"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Binary, decimal, hex and octal converter","item":"https://a-to-mind.com/base-converter/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/baseconv.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Convert numbers: binary, octal, decimal, hex and any base</h1>
+  <p class="lead" id="lead">Turn a number into binary, hex or any base and back: for colours, file sizes, permissions or homework. Type in any box; the others follow.</p>
+  <nav class="tries" id="tries" aria-label="Ready examples"><span>Try:</span> <a href="?v=ff8800&amp;b=16">Colour #ff8800</a> <a href="?v=755&amp;b=8">File permission 755</a> <a href="?v=1024&amp;b=10">1 kilobyte in bytes (1024)</a> <a href="?v=42&amp;b=10">Homework: 42 in binary</a></nav>
+  <div class="row"><label for="b2">Binary</label><input id="b2" data-base="2" inputmode="text" autocomplete="off" spellcheck="false" placeholder="1111 1111"><button type="button" data-copy="b2">Copy</button></div>
+  <div class="row"><label for="b8">Octal</label><input id="b8" data-base="8" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="377"><button type="button" data-copy="b8">Copy</button></div>
+  <div class="row"><label for="b10">Decimal</label><input id="b10" data-base="10" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="255" autofocus><button type="button" data-copy="b10">Copy</button></div>
+  <div class="row"><label for="b16">Hex</label><input id="b16" data-base="16" inputmode="text" autocomplete="off" spellcheck="false" placeholder="FF"><button type="button" data-copy="b16">Copy</button></div>
+  <div class="row"><label for="bn"><select id="anyb" aria-label="Which base"><option value="3">Base 3</option><option value="4">Base 4</option><option value="5">Base 5</option><option value="6">Base 6</option><option value="7">Base 7</option><option value="9">Base 9</option><option value="11">Base 11</option><option value="12">Base 12</option><option value="13">Base 13</option><option value="14">Base 14</option><option value="15">Base 15</option><option value="17">Base 17</option><option value="18">Base 18</option><option value="19">Base 19</option><option value="20">Base 20</option><option value="21">Base 21</option><option value="22">Base 22</option><option value="23">Base 23</option><option value="24">Base 24</option><option value="25">Base 25</option><option value="26">Base 26</option><option value="27">Base 27</option><option value="28">Base 28</option><option value="29">Base 29</option><option value="30">Base 30</option><option value="31">Base 31</option><option value="32">Base 32</option><option value="33">Base 33</option><option value="34">Base 34</option><option value="35">Base 35</option><option value="36" selected>Base 36</option></select></label><input id="bn" data-base="any" inputmode="text" autocomplete="off" spellcheck="false" placeholder="73"><button type="button" data-copy="bn">Copy</button></div>
+  <div id="note" role="status" aria-live="polite"></div>
+  <div class="facts off" id="facts"></div>
+  <p style="text-align:center"><button type="button" id="link">Copy link</button></p>
+  <section aria-labelledby="wh"><h2 id="wh">How it is worked out</h2><div id="steps"><p class="hint">Type a number above to see each step, a fraction too (0.1, ff.8, 10.101).</p></div></section>
+  <details><summary>Hex digits in binary and decimal</summary><table class="map"><thead><tr><th>Hex</th><th>Binary</th><th>Decimal</th></tr></thead><tbody><tr><td>0</td><td>0000</td><td>0</td></tr><tr><td>1</td><td>0001</td><td>1</td></tr><tr><td>2</td><td>0010</td><td>2</td></tr><tr><td>3</td><td>0011</td><td>3</td></tr><tr><td>4</td><td>0100</td><td>4</td></tr><tr><td>5</td><td>0101</td><td>5</td></tr><tr><td>6</td><td>0110</td><td>6</td></tr><tr><td>7</td><td>0111</td><td>7</td></tr><tr><td>8</td><td>1000</td><td>8</td></tr><tr><td>9</td><td>1001</td><td>9</td></tr><tr><td>A</td><td>1010</td><td>10</td></tr><tr><td>B</td><td>1011</td><td>11</td></tr><tr><td>C</td><td>1100</td><td>12</td></tr><tr><td>D</td><td>1101</td><td>13</td></tr><tr><td>E</td><td>1110</td><td>14</td></tr><tr><td>F</td><td>1111</td><td>15</td></tr></tbody></table><p class="hint">Each hex digit is four bits, each octal digit three, so hex to binary is one digit at a time.</p></details>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/base-converter/?v=ff&amp;b=16">ff in hex</a><a href="/base-converter/?v=1010&amp;b=2">1010 in binary</a><a href="/base-converter/?v=255&amp;b=10">255 in decimal</a><a href="/base-converter/?v=777&amp;b=8">777 in octal</a><a href="/base-converter/?v=deadbeef&amp;b=16">deadbeef in hex</a><a href="/base-converter/?v=11111111&amp;b=2">11111111 in binary</a><a href="/base-converter/?v=1024&amp;b=10">1024 in decimal</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/color/">Colour codes</a> <a href="/random/">Random number</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Type in any box; the others follow. Exact at any size (up to 4,096 digits), never rounded. A <code>0x</code>, <code>0b</code> or <code>0o</code> in front is understood, spaces and commas are ignored. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module">
+  import { mountRelated } from '/lib/toolkit.js';
+  import { baseAsk, convert, clean, parse, format, group, parseReal, formatReal, stepsToDecimal, stepsFromDecimal, stepsFraction } from '/lib/baseconv.js';
+  const $ = (id) => document.getElementById(id), boxes = [...document.querySelectorAll('input[data-base]')];
+  const facts = (r) => {
+    const f = $('facts'); f.textContent = ''; const a = r.all; f.classList.toggle('off', !r.ok); if (!r.ok) return; // its room is kept either way, so nothing below moves
+    const line = (label, text, code) => { const p = document.createElement('p'); p.append(label + ' '); if (code) { const c = document.createElement('code'); c.textContent = text; p.appendChild(c); } else p.append(text); f.appendChild(p); };
+    line('Bits needed:', String(a.bits));
+    if (a.signed) line(a.negative ? 'In two’s complement (' + a.signed.width + ' bits):' : 'As a signed ' + a.signed.width + '-bit number:', a.negative ? a.signed.twos + ' (unsigned ' + a.signed.unsigned.toString() + ')' : a.signed.value.toString(), true);
+    if (a.text) line('As text:', a.text, true);
+  };
+  const baseOfBox = (b) => (b.dataset.base === 'any' ? +$('anyb').value : +b.dataset.base);
+  const sup = (n) => String(n).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]), sub = (n) => String(n).replace(/\d/g, (d) => '₀₁₂₃₄₅₆₇₈₉'[d]);
+  const para = (text, cls) => { const p = document.createElement('p'); p.textContent = text; if (cls) p.className = cls; return p; };
+  // the working (hextobinary.com shows the steps): into decimal by place values, out of decimal by dividing, a fraction by multiplying
+  function steps(raw, base, real) {
+    const out = [], c = clean(raw); if (!c) { $('steps').replaceChildren(para('Type a number above to see each step, a fraction too (0.1, ff.8, 10.101).', 'hint')); return; }
+    const [ip, fp] = c.digits.split('.'), intDigits = ip || '0';
+    if (base !== 10) {
+      if (intDigits.length <= 24) { const st = stepsToDecimal(intDigits, base); out.push(para('Into decimal, each digit times its place value (base ' + base + '):'), para(intDigits.toUpperCase() + sub(base) + ' = ' + st.map((x) => x.value + '×' + base + sup(x.power)).join(' + '), 'calc'), para('= ' + st.map((x) => x.term.toLocaleString('en')).join(' + ') + ' = ' + st.reduce((a, x) => a + x.term, 0n).toLocaleString('en'), 'calc')); }
+      else out.push(para('Into decimal: each digit times its place value; ' + intDigits.length + ' digits are too many to write out here.'));
+      if (fp) out.push(para('After the point, the places are ' + base + sup('-1') + ', ' + base + sup('-2') + ' and so on: ' + [...fp.slice(0, 8)].map((d, i) => parseInt(d, 36) + '×' + base + sup('-' + (i + 1))).join(' + ') + (fp.length > 8 ? ' + the rest' : ''), 'calc'));
+      if (base === 16 || base === 8) { const w = base === 16 ? 4 : 3; out.push(para('Into binary, one digit at a time (' + w + ' bits each):'), para([...intDigits].map((d) => d.toUpperCase() + '→' + parseInt(d, base).toString(2).padStart(w, '0')).join('  '), 'calc')); }
+    } else {
+      const n = parse(intDigits, 10);
+      if (n === 0n && fp) { /* a fraction below one: only the part after the point has working */ }
+      else if (n !== null && intDigits.length <= 30) { const st = stepsFromDecimal(n, 2); out.push(para('Into binary, divide by 2 and keep each remainder, then read them from the bottom up:'));
+        const t = document.createElement('table'); t.className = 'map'; t.innerHTML = '<thead><tr><th>Number</th><th>÷ 2</th><th>Remainder</th></tr></thead>'; const tb = document.createElement('tbody');
+        for (const x of st.slice(0, 64)) { const tr = document.createElement('tr'); for (const v of [x.n.toLocaleString('en'), x.q.toLocaleString('en'), String(x.r)]) { const td = document.createElement('td'); td.textContent = v; tr.append(td); } tb.append(tr); } t.append(tb); out.push(t);
+        out.push(para('Read upwards: ' + st.map((x) => x.r).reverse().join('') + sub(2) + '. For hex, group those bits by four from the right; for octal, by three.', 'calc')); }
+      else out.push(para('Into binary: divide by 2 again and again, keeping the remainders; this number is too long to write out each step here.'));
+    }
+    if (real && fp) { const f10 = parseReal(raw, base); if (f10) { const st2 = stepsFraction(f10, 2, 10); if (st2.length) out.push(para('The part after the point into binary: multiply by 2, the whole part is the next digit:'), para(st2.map((x) => '×2 → ' + x.digit).join(', ') + (st2.length === 10 ? ', and on' : ''), 'calc')); } }
+    $('steps').replaceChildren(...out);
+  }
+  let typedIn = null; // the box typed in last, for the stage card
+  const show = (fromBox) => {
+    typedIn = fromBox;
+    const base = baseOfBox(fromBox), raw = fromBox.value; for (const x of boxes) x.classList.remove('bad'); $('note').textContent = ''; $('note').classList.remove('info');
+    if (!clean(raw)) { for (const b of boxes) if (b !== fromBox) b.value = ''; facts({ ok: false }); steps(raw, base); return; }
+    if (raw.includes('.')) { // a fraction: every other base, exact, a repeating part in brackets
+      const v = parseReal(raw, base); if (!v) { fromBox.classList.add('bad'); $('note').textContent = '"' + raw.slice(0, 40) + '" is not a base ' + base + ' fraction.'; facts({ ok: false }); return; }
+      let cut = false; for (const b of boxes) if (b !== fromBox) { const r = formatReal(v, baseOfBox(b)); b.value = baseOfBox(b) === 16 ? r.text.toUpperCase() : r.text; cut = cut || r.cut; }
+      $('note').textContent = 'A fraction: digits in brackets repeat for ever' + (cut ? '; where none repeat within 48 digits, the first 48 are shown.' : '.'); $('note').classList.add('info'); facts({ ok: false }); steps(raw, base, v); return;
+    }
+    const r = convert(raw, base, base); if (!r.ok) { fromBox.classList.add('bad'); $('note').textContent = r.why; facts(r); return; }
+    for (const b of boxes) if (b !== fromBox) b.value = b.dataset.base === 'any' ? group(format(r.all.value, baseOfBox(b)).toUpperCase(), baseOfBox(b)) : { 2: r.all.bin, 8: r.all.oct, 10: r.all.dec, 16: r.all.hex }[+b.dataset.base];
+    facts(r); steps(raw, base);
+  };
+  $('anyb').addEventListener('change', () => { const typed = boxes.find((b) => b.value.trim() && b.dataset.base !== 'any'); if (typed) show(typed); else if ($('bn').value.trim()) show($('bn')); });
+  for (const b of boxes) b.addEventListener('input', () => show(b));
+  for (const c of document.querySelectorAll('button[data-copy]')) c.addEventListener('click', async () => { const v = $(c.dataset.copy).value; try { await navigator.clipboard.writeText(v.replace(/[ ,]/g, '')); c.textContent = 'Copied'; setTimeout(() => { c.textContent = 'Copy'; }, 1200); } catch (_) { $(c.dataset.copy).select(); } });
+  // a link that opens on this number (?v=…&b=…), the way the page opens from an ask
+  $('link').addEventListener('click', async () => { const box = boxes.find((x) => x.value.trim()), u = new URL(location.href); u.search = box ? '?v=' + encodeURIComponent(box.value.replace(/[ ,]/g, '')) + '&b=' + box.dataset.base : ''; try { await navigator.clipboard.writeText(u.href); $('link').textContent = 'Copied'; setTimeout(() => { $('link').textContent = 'Copy link'; }, 1200); } catch (_) {} });
+  const q = new URLSearchParams(location.search), v = q.get('v'), from = +q.get('b') || 10; if (v && [2, 8, 10, 16].includes(from)) { const box = boxes.find((x) => +x.dataset.base === from); box.value = v.slice(0, 5000); show(box); }
+  mountRelated($('related'), '/base-converter/', [{ label: 'See it as a colour', href: () => { const h = $('b16').value.replace(/^0x/i, '').replace(/[\s,_]/g, ''); return /^[0-9a-f]{1,6}$/i.test(h) ? '/color/?c=' + h.padStart(6, '0').toLowerCase() : null; } }], { card: () => (!typedIn ? '' : typedIn.dataset.base === 'any' ? baseAsk($('b10').value, 10) : baseAsk(typedIn.value, +typedIn.dataset.base)) });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

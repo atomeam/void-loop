@@ -19,3 +19,32 @@ test('the all-time totals plus the asks made after the log, never a count that s
   const w = await get(envOf(entries, ledger, { links: [] })); // no totals yet: the window, as before
   assert.equal(w.total, 2); assert.equal(w.built, 1);
 });
+
+// asked by Verse (2026-10-29): the self card said "3 waiting" beside "What got built (237 of 244 asks)". An ask still open in the voice
+// log (totals.open) and asked again online is one ask, not a new one; an old open ask built since moves to built; and waiting is every
+// ask not built, so total = built + waiting on every card.
+test('waiting is every ask not built: total minus built, with an ask asked again online counted once', async () => {
+  const entries = [
+    { at: '2026-10-29T14:31:00Z', kind: 'build', thoughts: 'x', asks: [{ ask: 'Create a browser-based utility to check the watertightness of STL print files.' }, { ask: 'Implement edge caching for answers in the worker' }] },
+    { at: '2026-10-29T14:20:00Z', kind: 'build', thoughts: 'y', asks: [{ ask: 'Migrate answer generation from gpt-oss-120b to Gemma right away' }] },
+  ];
+  const ledger = [{ at: '2026-10-29T14:25:00Z', what: 'answers on Gemma', asked: 'Migrate answer generation from gpt-oss-120b to Gemma right away' }];
+  const totals = { asked: 239, built: 236, through: '2026-10-28T22:29:00Z', open: [
+    { ask: 'Create a utility to check the watertightness of STL print files in the browser', at: '2026-10-28T22:29:00Z', kind: 'daily', times: 6 },
+    { ask: 'Absorb every repository on the account into the core code', at: '2026-10-28T22:29:00Z', kind: 'daily', times: 6 },
+    { ask: 'Migrate answer generation from gpt-oss-120b to Gemma right away', at: '2026-10-28T22:21:00Z', kind: 'build', times: 2 },
+  ] };
+  const env = envOf(entries, ledger, { links: [], totals });
+  const r = await (await onRequestGet({ request: new Request('http://x/api/reflect'), env })).json();
+  // open: the STL ask (log + online, once), absorb (log only), edge caching (new online); Gemma built since the log
+  assert.equal(r.follow.open, 3, JSON.stringify(r.asks.map((a) => a.ask)));
+  assert.equal(r.asks.length, 3);
+  assert.equal(r.follow.built, 237);
+  assert.equal(r.follow.total, 240);
+  assert.equal(r.follow.total - r.follow.built, r.follow.open, 'built and waiting add up to the total');
+  assert.ok(r.asks.some((a) => /Absorb every repository/.test(a.ask)), 'an open ask from the log stays waiting even when it fell out of the window');
+  assert.equal(r.asks.filter((a) => /STL/.test(a.ask)).length, 1, 'the STL ask is one ask');
+  // the old way counted the STL ask twice (once in the log totals, once as new online): break the totals' open list and the sum no longer holds
+  const old = await (await onRequestGet({ request: new Request('http://x/api/reflect'), env: envOf(entries, ledger, { links: [], totals: { ...totals, open: undefined } }) })).json();
+  assert.notEqual(old.follow.total - old.follow.built, 3, 'without the open list the window double counts (this is what the card showed)');
+});

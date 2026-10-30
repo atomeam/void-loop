@@ -1,0 +1,46 @@
+# Fold the growth entries PRs leave in growth/entries/ (one file each, tools/grow.mjs on a branch) into the ledger,
+# void-live-deploy/void.growth.json, and remove the files, so PRs never collide on the ledger's last lines (owner, 2026-10-28).
+# Every deploy folds too (deploy.yml, without committing), so the served ledger has a merged PR's entry at once; this commits it.
+name: Growth fold
+
+on:
+  push:
+    branches: [main]
+    paths: ['growth/entries/**']
+  schedule:
+    - cron: "41 * * * *" # an entry a push by a bot left behind (pushes made with this token start no workflow)
+  workflow_dispatch:
+
+concurrency:
+  group: growth-fold
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  fold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fold and commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -f -B main origin/main
+            node tools/growth-fold.mjs
+            node tools/grow.mjs --check
+            git add -A growth/entries void-live-deploy/void.growth.json
+            git diff --cached --quiet && { echo "nothing waiting"; exit 0; }
+            git commit -q -m "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+            if git push -q origin main; then echo "folded and pushed"; exit 0; fi
+            sleep $((i * 5))
+          done
+          echo "::error title=Growth not folded::could not push the fold to main"; exit 1

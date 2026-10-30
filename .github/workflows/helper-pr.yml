@@ -1,0 +1,43 @@
+# A helper's push to helper/<what> gets its PR (docs/RULES.md: helpers push to helper/<what> and open a PR into main). The helpers
+# often pushed and never opened one, so the work sat on the branch and never merged (2026-10-29: 17 helper branches with work and no PR).
+# This opens it: ready, not a draft, labelled automerge, so Verse automerge (automerge.yml) merges it once Verse's review is clean.
+# A PR opened with this run's token starts no pull_request workflows, so it then starts the automerge run, which starts the review
+# on the head (as it does for a head the bot pushed). A branch with an open PR, or with nothing that main lacks, is left alone.
+name: Verse helper PR
+
+on:
+  push:
+    branches: ["helper/**"]
+
+concurrency:
+  group: helper-pr-${{ github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write # open the PR and label it
+  actions: write # start Verse automerge on the new PR
+
+jobs:
+  open:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # count what the branch has that main lacks
+      - name: Open the PR if the branch has none
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          ahead=$(git rev-list --count "origin/main..origin/$BRANCH")
+          if [ "$ahead" -eq 0 ]; then echo "nothing main lacks on $BRANCH"; exit 0; fi
+          open=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq 'length')
+          if [ "$open" -gt 0 ]; then echo "$BRANCH already has an open PR"; exit 0; fi
+          title=$(git log -1 --format=%s "origin/$BRANCH")
+          body="A helper pushed $BRANCH ($ahead commits that main lacks) and opened no PR, so Verse helper PR opened it (.github/workflows/helper-pr.yml). It merges by itself once Verse's review is clean."
+          gh pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge
+          gh workflow run automerge.yml --repo "$REPO" --ref main
+          echo "### PR opened for $BRANCH" >> "$GITHUB_STEP_SUMMARY"

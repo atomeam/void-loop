@@ -62,15 +62,12 @@ export function telemetryOf(raw) {
   if ((text.length < MIN_CHARS && !ours) || text.length > 20000) return null;
   const first = text.split('\n')[0].trim();
   if (/^(?:why|how|what|who|when|where|can|could|should|does|do|is|are|will|explain|fix|help)\b/i.test(first) && /\?\s*$/.test(first) && text.split('\n').length < 3) return null;
-  const signals = signalsOf(text);
-  if (signals.length < MIN_SIGNALS && !ours) return null;
+  const signals = signalsOf(text), read = statusReadOf(text);
+  if (signals.length < MIN_SIGNALS && !ours && !read) return null;
   const shas = [...new Set((text.match(/\b[0-9a-f]{7,40}\b/g) || []).filter((s) => /\d/.test(s) && /[a-f]/.test(s)))].slice(0, 5);
   const prs = [...new Set([...text.matchAll(/(?:\bPR\s*#?|pull\/|void-loop#|#)(\d{2,6})\b/gi)].map((m) => m[1]))].slice(0, 5);
-  // "159/162 passed", "passed 8 of 8", and a status update's "tests pass 8/8" (2026-10-21: the close-out gate's own status)
-  const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*(?:passed|pass(?:es|ing)?|green)\b/i.exec(text)
-    || /\bpassed\s+(\d+)\s*(?:\/|of)\s*(\d+)\b/i.exec(text)
-    || /\b(?:tests?|checks?|suite)\b[^.\n]{0,40}?\b(\d+)\s*\/\s*(\d+)\b/i.exec(text);
-  return { kind: signals.includes('run') || signals.includes('ci') ? 'ci' : 'status', signals, shas, prs, failures: failuresOf(text), passed: m ? { ok: +m[1], of: +m[2] } : null };
+  const m = /(\d+)\s*(?:\/|of)\s*(\d+)\s*passed/i.exec(text);
+  return { kind: read ? 'status' : signals.includes('run') || signals.includes('ci') ? 'ci' : 'status', signals, shas, prs, failures: failuresOf(text), passed: m ? { ok: +m[1], of: +m[2] } : null, read };
 }
 
 /** the card's lines for a reading, plain text (the page escapes them). Pure. */
@@ -80,6 +77,11 @@ export function summaryOf(t) {
   if (t.shas.length) out.push('Commits: ' + t.shas.join(', '));
   if (t.prs.length) out.push('Pull requests: ' + t.prs.map((p) => '#' + p).join(', '));
   if (t.passed) out.push('Passed ' + t.passed.ok + ' of ' + t.passed.of);
+  if (t.read) {
+    for (const c of t.read.changed) out.push('Changed: ' + c);
+    for (const w of t.read.waits) out.push('Waiting: ' + w);
+    if (t.read.next) out.push('Next step: ' + t.read.next);
+  }
   out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed' : 'Nothing in it names a failure');
   return out;
 }
@@ -88,13 +90,40 @@ export function summaryOf(t) {
  *  an error or a timeout it is describing. lib/automation-fix.js intentOf asks this first. Pure. */
 export function isBuildersReport(text) {
   const t = telemetryOf(text);
-  if (!t) return false;
-  const s = String(text);
-  if ((t.signals.includes('pr') || t.signals.includes('sha')) && (s.match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2) return true;
-  // A status update can name no commit or pull request: a pass count plus the work's own state ("uncommitted", "commit/push",
-  // "sealed", "waiting") is a builder reporting, not a broken automation (2026-10-21: the close-out gate's own status came back
-  // as "I read this as a broken automation" and an invented fix). An ask to fix or explain it is still the fixer's.
-  const state = (s.match(/\b(?:uncommitted|commit(?:ted|ting)?|push(?:ed|ing)?|merge[d]?|branch|sealed|waiting|blocked|deployed)\b/gi) || []).length;
-  const asking = /\b(?:fix|debug|help|why|how|can you|please)\b/i.test(s);
-  return !!t.passed && state >= 2 && /\b(?:tests?|checks?|suite)\b/i.test(s) && !asking;
+  return !!t && (t.signals.includes('pr') || t.signals.includes('sha')) && (String(text).match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2;
 }
+
+// A pasted status report (owner, 2026-10-29): plain sentences on what shipped, what is held and what to do next, with no error quoted. Verse
+// answered one with the broken-automation fix card ("That thread didn't start" read as trouble, "job loop" as the thing). It is a report to
+// read back: what changed, what waits, and the one next step. A text that says something of its own is broken is never one.
+const WAITS = /\b(?:did(?:n't| not)\s+(?:start|run|ship|land|go\s+out)|block(?:ed|s)\b|waiting|waits?\s+(?:on|for)|on hold|held\b|pending|not\s+(?:yet|started|shipped|merged|live)|set to (?:ship|run|start)|after\s+(?:the\s+)?[\w\s-]{0,40}\bresets?\b|queued|worth a look|needs?\s+(?:a look|your|you)\b)/i;
+const NEXT = /^(?:if you want(?: it)?|say so\b|next(?: step)?\s*:|reply\b|tell me\b|please\b|to (?:go on|continue|ship it)\b)/i;
+const CHANGED = /\b(?:merged|is (?:now )?live|went live|shipped|deployed|released|landed|adds|added|fixed|finished|done|turned on|switched on|published)\b/i;
+const BROKEN = /\b(?:stopped\s+(?:working|firing|running)|is(?:n't| not)\s+working|does(?:n't| not)\s+work|not working|keeps?\s+failing|won't\s+(?:run|start|fire|load)|broke\b|crash(?:es|ed)?)\b/i;
+const kindOf = (s) => (NEXT.test(s) ? 'next' : WAITS.test(s) ? 'waits' : CHANGED.test(s) ? 'changed' : null);
+const plain = (s) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, '').replace(/^\s*(?:>|[-+]\s|\d+[.)]\s)\s*/, '').replace(/\s+/g, ' ').trim(); // keeps "#1470"
+const tidy = (s) => s.replace(/^(?:also|and|then|plus|so)\s*,?\s+/i, '').replace(/[,;\s]+$/, '').replace(/[^.!]$/, '$&.').replace(/^./, (c) => c.toUpperCase());
+
+/** a pasted status report read back as { changed, waits, next }, or null when the text is not one (a question, an instruction, a
+ *  complaint that something is broken, or too short to be a report). Pure. */
+export function statusReadOf(raw) {
+  const lines = String(raw || '').split(/\n+/).map(plain).filter(Boolean), text = lines.join(' ');
+  if (text.length < MIN_CHARS || text.length > 20000 || BROKEN.test(text) || !lines.length) return null;
+  if (/\?\s*$/.test(lines[0]) || /^(?:why|how|what|who|can|could|please|fix|help|explain)\b/i.test(lines[0])) return null;
+  const sentences = lines.flatMap((l) => l.split(/(?<=[.!?])\s+(?=[A-Z"'(])/)).map((x) => x.trim()).filter((x) => x.length > 3);
+  if (sentences.length < 3) return null;
+  const read = { changed: [], waits: [], next: null };
+  for (const s of sentences) {
+    // "the cleaner is live, and the fix is set to ship after the reset" is two items; split only when both halves read as one
+    const halves = s.split(/,\s+and\s+/);
+    const parts = halves.length === 2 && kindOf(halves[0]) && kindOf(halves[1]) ? halves : [s];
+    for (const p of parts) {
+      const k = kindOf(p);
+      if (k === 'next') read.next = read.next || tidy(p);
+      else if (k) read[k].push(tidy(p));
+    }
+  }
+  return read.changed.length && read.waits.length ? read : null;
+}
+/** true for a pasted status report (see statusReadOf). lib/automation-fix.js intentOf asks this, so a report is never a fix ask. Pure. */
+export function isStatusReport(text) { return !!statusReadOf(text); }

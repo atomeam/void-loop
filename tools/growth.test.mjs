@@ -120,7 +120,7 @@ test('the stability trend: a point a day per family from void.better.json, today
 });
 
 test('"what just shipped?" is about Verse (it came back as a Wikipedia line about the Just Cause games, 2026-10-19), and real shipping questions are left alone', () => {
-  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently']) assert.equal(growthOf(q), true, q);
+  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently', 'What got built', 'what got shipped today']) assert.equal(growthOf(q), true, q);
   for (const q of ['what shipped to my order', 'where did my package ship', 'what have you built', 'when does the iphone ship']) assert.equal(growthOf(q), false, q);
 });
 
@@ -129,4 +129,32 @@ test('the tester card names each run\'s failed asks as asks to tap, not only "64
   const rows = testerRows({ runs: [{ at: '2026-10-19T04:58:40Z', passed: 1, of: 2, kind: 'grow', note: 'n', failed: [{ ask: 'what are you?', why: 'missing text /Verse/' }] }, { at: '2026-10-18T04:58:40Z', passed: 2, of: 2, kind: 'grow', note: 'n' }] });
   assert.deepEqual(rows[0].failed, [{ ask: 'what are you?', why: 'missing text /Verse/' }]);
   assert.deepEqual(rows[1].failed, []);
+});
+
+test('growth entries (owner, 2026-10-28): a branch writes its own file, the fold adds each once in time order and removes the files', async () => {
+  const { mkdtempSync, writeFileSync: w, readFileSync: r, readdirSync, mkdirSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  const { entryName, entryText, foldInto, writesEntryFile } = await import('./grow.mjs'), { fold } = await import('./growth-fold.mjs');
+  assert.equal(writesEntryFile({ branch: 'box/x', env: {} }), true);
+  assert.equal(writesEntryFile({ branch: 'main', env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'HEAD', env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'box/x', env: { GROWTH_LEDGER: '1' } }), false);
+  assert.equal(writesEntryFile({ branch: 'box/x', args: ['--ledger'], env: {} }), false);
+  assert.equal(writesEntryFile({ branch: 'main', args: ['--entry'], env: {} }), true);
+  const a = { at: '2026-10-28T20:00:00Z', by: 'box', kind: 'build', what: 'a' }, b = { at: '2026-10-28T19:00:00Z', by: 'grok', kind: 'fix', what: 'b' };
+  assert.match(entryName(a), /^20261028T200000Z-box-[0-9a-f]{8}\.json$/);
+  assert.notEqual(entryName(a), entryName({ ...a, what: 'other' }));
+  const base = '[\n  {"at": "2026-10-01T00:00:00Z", "by": "x", "kind": "grow", "what": "old"}\n]\n';
+  const once = foldInto(base, [a, b]);
+  assert.deepEqual(JSON.parse(once).map((e) => e.what), ['old', 'b', 'a']);
+  assert.equal(foldInto(once, [a, b]), once);
+  const d = mkdtempSync(join(tmpdir(), 'gfold-')), dir = join(d, 'entries'), led = join(d, 'ledger.json');
+  mkdirSync(dir); w(led, base); w(join(dir, entryName(a)), entryText(a)); w(join(dir, entryName(b)), entryText(b)); w(join(dir, 'README.md'), 'x');
+  assert.deepEqual(fold({ ledger: led, dir, dry: true }), { folded: 2, files: 2 });
+  assert.equal(r(led, 'utf8'), base);
+  assert.deepEqual(fold({ ledger: led, dir }), { folded: 2, files: 2 });
+  assert.equal(JSON.parse(r(led, 'utf8')).length, 3);
+  assert.deepEqual(readdirSync(dir), ['README.md']);
+  w(join(dir, 'bad.json'), '{"what": 1}');
+  assert.throws(() => fold({ ledger: led, dir }), /bad\.json/);
 });

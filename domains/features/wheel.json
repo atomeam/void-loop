@@ -1,0 +1,209 @@
+{
+  "floor": "wheel",
+  "verse_page": "/wheel/",
+  "researched": "2026-10-25",
+  "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
+  "sites": {
+    "wheelofnames.com": {
+      "sources": [
+        "https://wheelofnames.com/",
+        "https://wheelofnames.com/faq",
+        "https://peerlist.io/wheelofnames/project/wheel-of-names"
+      ],
+      "features": [
+        {
+          "name": "Entries list",
+          "detail": "type or paste names, one per line",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "wheel/index.html \"Entry list: names or choices, one a line\""
+        },
+        {
+          "name": "Spin by click or keyboard",
+          "detail": "click the wheel or Ctrl+Enter",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Click the wheel, press SPIN, or press Space\""
+        },
+        {
+          "name": "Shuffle and sort entries",
+          "detail": "",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Shuffle / Sort A–Z"
+        },
+        {
+          "name": "Remove the winner",
+          "detail": "Remove button in the winner dialog; option to remove all instances",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "\"Remove the winner\""
+        },
+        {
+          "name": "Results tab",
+          "detail": "list of past winners with sort and clear",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"Winners so far\"; no sort or clear"
+        },
+        {
+          "name": "Weights (advanced mode)",
+          "detail": "set each slice's size so it is likelier",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "inline \"Pizza*3\", and Advanced mode: weights, a box for each entry's weight with its chance in percent"
+        },
+        {
+          "name": "Per-entry colours (advanced mode)",
+          "detail": "pick each slice's colour",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "colours come from the palette; not per entry"
+        },
+        {
+          "name": "Images as entries",
+          "detail": "a picture on a slice instead of text",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Add images as entries: each image is an entry named after its file, drawn on its slice and shown with the winner; kept on the device (the link carries the names)"
+        },
+        {
+          "name": "Image in the centre / wheel background",
+          "detail": "custom centre image and background",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Colour themes / palettes",
+          "detail": "pick a colour theme for the wheel",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"Paint the wheel in its shades\" from /color/ (setPalette); no theme picker on /wheel/"
+        },
+        {
+          "name": "Spin time",
+          "detail": "\"During spin\" tab: spin duration",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Spin time: 2 s to 20 s, kept on the device"
+        },
+        {
+          "name": "Max names visible",
+          "detail": "cap how many names show on the wheel",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Spin sounds",
+          "detail": "ticking sound choice during spin",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "\"Sound on\" toggle; no sound choice"
+        },
+        {
+          "name": "After-spin sound and confetti",
+          "detail": "cheer / applause and confetti when it stops",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Confetti and a cheer for the winner (fanfare and clapping made in the browser), on by default, never with reduced motion or sound off"
+        },
+        {
+          "name": "Custom winner message",
+          "detail": "\"After spin\" tab sets the pop-up text",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Auto-remove winner after a delay",
+          "detail": "option to remove the winner automatically",
+          "paid": false,
+          "verse": "has",
+          "verse_evidence": "Remove each winner after its spin: the winner leaves the wheel 1.6 s after it is shown (never below two entries)"
+        },
+        {
+          "name": "Title and description",
+          "detail": "name the wheel",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "no title field"
+        },
+        {
+          "name": "Save wheels to an account",
+          "detail": "sign in (Google) to save and open wheels",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "the link holds the entries; no saved list"
+        },
+        {
+          "name": "Share wheels / gallery",
+          "detail": "share by link; public wheel gallery",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "Copy link holds the entries; no gallery"
+        },
+        {
+          "name": "Pre-filled URL format",
+          "detail": "a URL that sets entries, colours, title and message",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "the link carries the entries only"
+        },
+        {
+          "name": "Google Sheets link",
+          "detail": "pull entries from a spreadsheet (not confirmed by search; pasting a column works)",
+          "paid": false,
+          "verse": "partial",
+          "verse_evidence": "paste a spreadsheet column into the box"
+        },
+        {
+          "name": "Hide entries",
+          "detail": "hide the list for a surprise",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "none"
+        },
+        {
+          "name": "Full screen",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "no full-screen control"
+        },
+        {
+          "name": "Many interface languages",
+          "detail": "",
+          "paid": false,
+          "verse": "missing",
+          "verse_evidence": "English only"
+        }
+      ]
+    }
+  },
+  "verse_extra": [
+    "Winner drawn with crypto before the wheel turns, each chance exactly its share",
+    "Weights typed inline (Pizza*3)",
+    "An answer straight from an ask on the stage",
+    "Everything stays on the device",
+    "Opens offline"
+  ],
+  "gaps": [
+    "Title and description",
+    "Save wheels to an account",
+    "Colour themes / palettes",
+    "Share wheels / gallery",
+    "Per-entry colours (advanced mode)",
+    "Image in the centre / wheel background",
+    "Max names visible",
+    "Custom winner message",
+    "Hide entries",
+    "Full screen",
+    "Many interface languages",
+    "Results tab",
+    "Spin sounds",
+    "Pre-filled URL format",
+    "Google Sheets link"
+  ]
+}

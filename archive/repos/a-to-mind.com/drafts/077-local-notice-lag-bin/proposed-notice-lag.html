@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notice-lag bin — candidate, not a seal</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --paper: #f4f0e8;
+      --line: #c9c1b2;
+      --hold: #8a3d2a;
+      --ok: #2f5d50;
+      --muted: #6d675e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3efe6;
+        --paper: #161410;
+        --line: #3a342c;
+        --hold: #e0a090;
+        --ok: #9dcec0;
+        --muted: #a39b90;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 42rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p { margin: 0.6rem 0; }
+    .flag {
+      display: inline-block;
+      border: 1px solid var(--hold);
+      color: var(--hold);
+      padding: 0.1rem 0.45rem;
+      font: 0.78rem/1.3 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    fieldset {
+      border: 1px solid var(--line);
+      margin: 1rem 0;
+      padding: 0.8rem 1rem 1rem;
+    }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    input[type="text"], textarea, select {
+      width: 100%;
+      font: inherit;
+      color: inherit;
+      background: transparent;
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.5rem;
+    }
+    textarea { min-height: 5.5rem; }
+    button {
+      font: 0.95rem/1.2 ui-sans-serif, system-ui, sans-serif;
+      padding: 0.45rem 0.8rem;
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: inherit;
+    }
+    button:disabled { opacity: 0.45; }
+    .locked, .out, .digest {
+      font: 0.86rem/1.4 ui-monospace, ui-sans-serif, monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .out { border-left: 3px solid var(--line); padding-left: 0.7rem; }
+    .held { border-left-color: var(--hold); }
+    .muted { color: var(--muted); font-size: 0.92rem; }
+    ul { margin: 0.4rem 0 0.8rem; padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="flag">candidate · emit false · unattested</p>
+  <h1>Notice-lag bin</h1>
+  <p>A sealed lag label is a hashed hypothesis of when a notice seemed to arrive. The label is a word. It is not a clock reading, not the raw present, and not a sender.</p>
+  <p class="muted">Run 077 draft. Family: attention/interoception. Not a Used row. No camera, microphone, wearable, or <code>performance.now</code>. Posts are not fetched. Fixture digest <span id="fixture">9f91d54449bd0a71da4ca2a21fc8ba7ade10a5965aa3ab7bda8b18cc86847283</span>.</p>
+
+  <fieldset>
+    <legend>Lag label</legend>
+    <label><input type="radio" name="lag" value="unclocked"> unclocked — no timing word</label>
+    <label><input type="radio" name="lag" value="seemed-soon"> seemed-soon — a word, not a millisecond</label>
+    <label><input type="radio" name="lag" value="seemed-late"> seemed-late — a word, not a discrete-perception proof</label>
+    <label><input type="radio" name="lag" value="seemed-after"> seemed-after — the notice seemed to follow the cue</label>
+    <label><input type="radio" name="lag" value="declined"> declined</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Cue and disconfirm</legend>
+    <label>Cue the notice seemed to follow (2–48 characters, not fetched)
+      <input id="cue" type="text" maxlength="48" autocomplete="off" spellcheck="false">
+    </label>
+    <label>What would show the lag was a story (at least 24 characters)
+      <textarea id="disconfirm" maxlength="240"></textarea>
+    </label>
+    <label>Report source
+      <select id="source">
+        <option value="">choose</option>
+        <option value="self-noted">self-noted</option>
+        <option value="overheard-claim">overheard-claim</option>
+        <option value="paper-claim">paper-claim</option>
+      </select>
+    </label>
+    <label>Design-material weight
+      <select id="weight">
+        <option value="">choose</option>
+        <option value="sketch">sketch</option>
+        <option value="noted">noted</option>
+        <option value="loud">loud</option>
+      </select>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Locked refusals</legend>
+    <p class="locked" id="locks">signal_source=not-named
+present=not-raw
+sender=not-claimed
+diagnosis=denied
+clock=denied
+status=unattested</p>
+    <label><input id="hyp" type="checkbox"> This row is a hypothesis, not a reading.</label>
+    <label><input id="deny" type="checkbox"> Clock and sensor stay denied.</label>
+    <label><input id="keep" type="checkbox"> Keep this row in sessionStorage until the tab closes. Default is memory only.</label>
+  </fieldset>
+
+  <p>
+    <button id="hash" type="button" disabled>Hash refused present</button>
+    <button id="drop" type="button">Drop local row</button>
+  </p>
+  <p class="out" id="out" aria-live="polite">No bin id. A late notice is not the raw present.</p>
+  <ul class="muted">
+    <li>A millisecond token in the cue or the disconfirm holds the row. Held text does not hash.</li>
+    <li>Paper-claim labels a public claim. It does not load a paper and does not name a signal.</li>
+    <li>Restored session memory is not a seal.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var LAGS = ["unclocked", "seemed-soon", "seemed-late", "seemed-after", "declined"];
+  var SOURCES = ["self-noted", "overheard-claim", "paper-claim"];
+  var WEIGHTS = ["sketch", "noted", "loud"];
+  var KEY = "void-notice-lag-bin-077";
+  var clockRe = /\b\d{2,4}\s*(ms|msec|milliseconds?)\b|\bperformance\.now\b|\bdate\.now\b/i;
+
+  var cue = document.getElementById("cue");
+  var disconfirm = document.getElementById("disconfirm");
+  var source = document.getElementById("source");
+  var weight = document.getElementById("weight");
+  var hyp = document.getElementById("hyp");
+  var deny = document.getElementById("deny");
+  var keep = document.getElementById("keep");
+  var hashBtn = document.getElementById("hash");
+  var out = document.getElementById("out");
+
+  function strip(s) {
+    return String(s || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  }
+  function selectedLag() {
+    var node = document.querySelector('input[name="lag"]:checked');
+    return node ? node.value : "";
+  }
+  function clockHeld() {
+    return clockRe.test(cue.value) || clockRe.test(disconfirm.value);
+  }
+  function gates() {
+    var lag = selectedLag();
+    var c = strip(cue.value);
+    var d = strip(disconfirm.value);
+    if (clockHeld()) return { ok: false, relation: "clock-held" };
+    if (LAGS.indexOf(lag) < 0) return { ok: false, relation: "lag-open" };
+    if (c.length < 2 || c.length > 48) return { ok: false, relation: "cue-open" };
+    if (d.length < 24) return { ok: false, relation: "disconfirm-open" };
+    if (SOURCES.indexOf(source.value) < 0) return { ok: false, relation: "source-open" };
+    if (WEIGHTS.indexOf(weight.value) < 0) return { ok: false, relation: "weight-open" };
+    if (!hyp.checked || !deny.checked) return { ok: false, relation: "gate-open" };
+    return { ok: true, relation: "ready", lag: lag, cue: c, disconfirm: d };
+  }
+  function paint() {
+    var g = gates();
+    hashBtn.disabled = !g.ok;
+    if (!g.ok && g.relation === "clock-held") {
+      out.className = "out held";
+      out.textContent = "clock-held. A millisecond does not hash. The number is not a discrete-perception proof.";
+    }
+  }
+  function canonical(row) {
+    var keys = Object.keys(row).sort();
+    var parts = keys.map(function (k) {
+      return JSON.stringify(k) + ":" + JSON.stringify(row[k]);
+    });
+    return "{" + parts.join(",") + "}";
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  function rowFrom(g) {
+    return {
+      clock: "denied",
+      confidence: weight.value,
+      cue: g.cue,
+      diagnosis: "denied",
+      disconfirm: g.disconfirm,
+      emit: false,
+      lag: g.lag,
+      present: "not-raw",
+      report_source: source.value,
+      sender: "not-claimed",
+      signal_source: "not-named",
+      slug: "local-notice-lag-bin",
+      status: "unattested"
+    };
+  }
+  async function commit() {
+    var g = gates();
+    if (!g.ok) { paint(); return; }
+    var row = rowFrom(g);
+    var text = canonical(row);
+    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    var id = hex(buf);
+    out.className = "out";
+    out.textContent = "bin id " + id + "\nrelation=hashed-hypothesis\npresent=not-raw\nsender=not-claimed\nstatus=unattested\n" + text;
+    if (keep.checked) {
+      try { sessionStorage.setItem(KEY, JSON.stringify({ id: id, row: row })); } catch (e) {}
+    }
+  }
+  function drop() {
+    try { sessionStorage.removeItem(KEY); } catch (e) {}
+    out.className = "out";
+    out.textContent = "Local row dropped. Restored memory was not a seal.";
+  }
+  function restore() {
+    try {
+      var raw = sessionStorage.getItem(KEY);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      out.className = "out";
+      out.textContent = "Restored session memory is not a seal.\nbin id " + saved.id + "\nstatus=unattested";
+    } catch (e) {}
+  }
+  document.addEventListener("input", paint);
+  document.addEventListener("change", paint);
+  hashBtn.addEventListener("click", commit);
+  document.getElementById("drop").addEventListener("click", drop);
+  restore();
+  paint();
+})();
+</script>
+</body>
+</html>

@@ -6,7 +6,7 @@
  */
 import { autopsy, autopsyHtml, ERROR_TINT, REACT_ON } from '../lib/autopsy.js';
 import { reactionBar } from '../lib/reaction-bar.js'; // spectators react to an incident; 'confused' and 'pity' wear the warning look (asked by Verse)
-const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy(?:\s+(?:for|of|in)\s+(?:the\s+)?([a-z0-9][a-z0-9 -]{0,40}?))?|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
+const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy(?:\s+(?:for|of|in)\s+(?:the\s+)?([a-z0-9][a-z0-9 -]{0,40}?))?|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|(?:show\s+(?:me\s+)?)?(?:the\s+)?remediation\s+drafts?(?:\s+for\s+the\s+(?:last|latest)\s+incidents?)?|send\s+the\s+root\s+cause\s+to\s+the\s+builders?|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
 // a family named after the autopsy ("incident autopsy for time", the link on a stability sparkline, asked by Verse): its id or its name, from families.json; '' for any other word
 const famOf = (text, fam) => { const m = WHEN.exec(norm(text)), w = m && m[1] ? m[1].trim() : '', f = w && ((fam && fam.families) || []).find((x) => x && (String(x.id).toLowerCase() === w || String(x.name || '').toLowerCase() === w)); return f ? String(f.id) : ''; };
@@ -24,6 +24,12 @@ async function run(text, api) {
     const bar = reactionBar(li.dataset.incident, { tint: ERROR_TINT }); if (!bar) continue;
     bar.style.margin = '4px 0 2px'; const inner = li.querySelector('ul'); li.insertBefore(bar, inner);
   }
+  // the root-cause action (asked by Verse): the brief goes to the clipboard, ready for a builder agent; nothing is posted for the visitor
+  el.addEventListener('click', async (e) => {
+    const b = e.target.closest && e.target.closest('[data-builder-brief]'); if (!b) return;
+    let ok = false; try { await navigator.clipboard.writeText(b.getAttribute('data-builder-brief')); ok = true; } catch (_) {}
+    b.textContent = ok ? 'Copied: paste it to a builder agent or into the issue' : 'Select the steps above to copy them';
+  });
   return 'incident-autopsy';
 }
 
@@ -34,13 +40,13 @@ export function suite() {
   const a = autopsy({ incidents: [{ at: '2026-10-17T09:00:00Z', sha: 'abcdef1234', suite: 's', checks: ['clock: "what time" <b>x</b>', 'zzz: nothing'] }] }, fam, { pages: [] });
   const h = autopsyHtml(a, esc);
   const ok = a.families.length === 1 && a.families[0].count === 1 && a.unmapped.length === 1 && h.includes('&lt;b&gt;') && !h.includes('<b>x') && autopsyHtml(autopsy({ incidents: [] }, fam, null), esc).includes('No incidents recorded')
-    && WHEN.test(norm('Which skill family is unhealthy?')) && !WHEN.test('family health');
+    && h.includes('data-remediation=') && h.includes('test_void.mjs --only') && WHEN.test(norm('Which skill family is unhealthy?')) && !WHEN.test('family health');
   return { ok, got: ok ? '' : h };
 }
 
 export default {
   name: 'incident-autopsy',
-  examples: ['incident autopsy', 'which skill family is unhealthy', 'autopsy of the failed suites', 'which family is failing', 'show me the incident autopsy', 'incident autopsy for time'],
+  examples: ['incident autopsy', 'which skill family is unhealthy', 'autopsy of the failed suites', 'which family is failing', 'show me the incident autopsy', 'incident autopsy for time', 'remediation draft for the last incident', 'send the root cause to the builders'],
   nearMisses: ['autopsy of a frog', 'what is an incident report', 'family health', 'show me your skill families', 'which family is the oldest', 'incident'],
   suite,
   match(lower, text) { return WHEN.test(norm(text || lower)); },

@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculators with units: everyday, maths, science and engineering · Verse</title>
+<meta name="description" content="Free formula calculators that take any unit: percent, tip, loan, unit price, BMI and dates first, then geometry, statistics, physics, chemistry, electrical and engineering. Type 2 in and 10 ft and get ft², m² or acres. Build your own formula with units, share any answer as a link, export CSV or JSON. Works offline. No ads.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Calculators with units · Verse">
+<meta property="og:description" content="Everyday sums first, the science and engineering ones a click away. Every box takes units, every answer is a link, and you can build your own formula.">
+<meta property="og:url" content="https://a-to-mind.com/calculators/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/calculators/ (the tower's vcalc.com floor): the formula library in lib/calculators.js, units in lib/calc-units.js, no third party */
+  :root { color-scheme: dark; --bg: #f7f6fb; --card: #ffffff; --ink: #15131c; --soft: #57546a; --line: #d4d0e2; --chip: #ecebf3; --accent: #5b36f0; --on-accent: #fff; --bad: #b3261e; --warn: #8a5a00; }
+  :root { color-scheme: dark; --bg: #0b0a10; --card: #14121c; --ink: #ecebf5; --soft: #aeabc0; --line: #2f2b3d; --chip: #1d1a27; --accent: #a58bff; --on-accent: #0b0a10; --bad: #ff8a80; --warn: #ffc56b; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 14px 16px 40px; }
+  h1 { font-size: 22px; margin: 0; } .lead { margin: 2px 0 10px; color: var(--soft); }
+  h2 { font-size: 18px; margin: 0; } h3 { font-size: 14px; margin: 14px 0 6px; color: var(--soft); text-transform: uppercase; letter-spacing: .04em; }
+  input, select, textarea, button { font: inherit; color: var(--ink); }
+  input, select, textarea { box-sizing: border-box; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-height: 40px; min-width: 0; }
+  textarea { width: 100%; min-height: 9em; font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; }
+  button, a.btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; background: transparent; cursor: pointer; text-decoration: none; color: var(--ink); }
+  button[aria-pressed=true] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .find { display: flex; gap: 8px; } .find input { flex: 1; }
+  #hits { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; } #hits:empty { display: none; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-top: 8px; }
+  .formula { font: 14px/1.5 ui-monospace, Menlo, Consolas, monospace; color: var(--soft); margin: 4px 0 10px; overflow-wrap: anywhere; }
+  .form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px 12px; }
+  .field { display: grid; gap: 3px; } .field > label, .field > .lab { font-size: 14px; color: var(--soft); }
+  .pair { display: flex; gap: 6px; } .pair input { flex: 1 1 6em; width: 6em; } .pair select { flex: 0 1 auto; max-width: 55%; }
+  .field.wide { grid-column: 1 / -1; } .field.wide input { width: 100%; }
+  .answer { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .answer .what { font-size: 14px; color: var(--soft); margin: 0; }
+  #big { display: block; font: 700 clamp(32px, 9vw, 48px)/1.15 system-ui, -apple-system, sans-serif; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; min-height: 1.15em; }
+  #big.err { color: var(--bad); font-size: 18px; font-weight: 600; }
+  .outs { list-style: none; padding: 0; margin: 8px 0 0; } .outs li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 10px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .outs .val { font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; } .outs select { min-height: 32px; padding: 2px 8px; }
+  .other { margin: 8px 0 0; } .other ul { list-style: none; padding: 0; margin: 4px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 2px 12px; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .other li span { color: var(--soft); }
+  details > summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; font-weight: 600; }
+  .working { font: 13px/1.6 ui-monospace, Menlo, Consolas, monospace; color: var(--soft); white-space: pre-wrap; overflow-wrap: anywhere; margin: 6px 0 0; }
+  .note { font-size: 14px; color: var(--soft); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+  .lib a, #hits a { display: inline-flex; align-items: center; min-height: 32px; padding: 2px 12px; border-radius: 999px; background: var(--chip); color: var(--ink); text-decoration: none; font-size: 14px; }
+  .lib a[aria-current=page], #hits a[aria-current=page] { background: var(--accent); color: var(--on-accent); }
+  .lib ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tabs { display: flex; gap: 6px; margin: 8px 0; }
+  .rows { display: grid; gap: 8px; } .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.5fr) auto; gap: 6px; align-items: end; }
+  .row .field input, .row .field select { width: 100%; }
+  .ins { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; } .ins button { min-height: 32px; padding: 2px 10px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+  #saved { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  [hidden] { display: none !important; }
+  footer { font-size: 13px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
+  @media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .row .expr { grid-column: 1 / -1; } }
+  .tablewrap { max-height: 420px; overflow: auto; margin-top: 6px; border: 1px solid var(--line); border-radius: 10px; }
+  .tablewrap table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .tablewrap th, .tablewrap td { padding: 4px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .tablewrap th { position: sticky; top: 0; background: var(--card); }
+  #kshow { display: block; font: 600 28px/1.3 ui-monospace, Menlo, Consolas, monospace; text-align: right; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; overflow-wrap: anywhere; min-height: 1.3em; }
+  .keys { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
+  .keys button { justify-content: center; border-radius: 10px; padding: 4px 6px; }
+  .keys button.op { background: var(--chip); } .keys button.eq { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/calculators/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Formula calculators with units","url":"https://a-to-mind.com/calculators/","description":"164 calculators where every box takes units: percent, tip, loan, unit price, BMI, dates and unit conversion first, then money, health, geometry, maths, statistics, physics, chemistry, electrical and engineering. Type 2 in and 10 ft and get ft², m² or acres; the working in SI in pro mode; build your own formula with units, guided or as text; share any answer as a link, export CSV or JSON. Works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"formula calculator with units, pipe surface area calculator, ohms law calculator, molar mass calculator, loan payment calculator, custom formula calculator, physics calculator","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/calculators/?find={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Formula calculators with units","item":"https://a-to-mind.com/calculators/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/calculators.js">
+<link rel="modulepreload" href="/lib/calc-units.js">
+<link rel="modulepreload" href="/lib/fincalc.js">
+<link rel="modulepreload" href="/lib/date-math.js">
+<link rel="modulepreload" href="/lib/formula-engine.js">
+<link rel="modulepreload" href="/lib/formulas.js">
+<link rel="modulepreload" href="/lib/formulas-1.js">
+<link rel="modulepreload" href="/lib/keypad.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Calculators</h1>
+  <p class="lead">Pick a calculator or type what you want to work out. Every box takes units, and every answer is a link you can share. It all runs on this device and works offline.</p>
+  <div class="find" role="search">
+    <label class="sr" for="find">Find a calculator</label>
+    <input id="find" type="search" placeholder="Find a calculator: tip, loan, ohm, molar mass…" autocomplete="off" spellcheck="false">
+  </div>
+  <ul id="hits" aria-label="Matching calculators"></ul>
+  <div class="bar">
+    <button id="pro" type="button" aria-pressed="false" title="More significant figures, SI working, raw formula mode">Pro mode</button>
+    <button id="share" type="button">Share link</button>
+    <button id="copy" type="button">Copy answer</button>
+    <button id="csv" type="button">Export CSV</button> <!-- void-review: ok (CSV is button text, not code) -->
+    <button id="json" type="button">Export JSON</button>
+    <span id="said" class="note" role="status" aria-live="polite"></span>
+  </div>
+  <input id="link" type="text" readonly aria-label="Link to this answer" hidden style="width:100%">
+  <section id="calc" class="card" aria-labelledby="cname" style="min-height:420px">
+    <h2 id="cname" tabindex="-1">Percent of a number</h2>
+    <p class="formula" id="cformula">result = p × x</p>
+    <p class="note" id="csource" hidden></p>
+    <div id="cform" class="form"></div>
+    <div class="answer">
+      <p class="what" id="what">Result</p>
+      <output id="big" for="cform" aria-live="polite">40.8</output>
+      <div id="bigunit"></div>
+      <ul class="outs" id="outs"></ul>
+      <details class="other" id="otherbox" hidden open><summary>In other units</summary><ul id="other"></ul></details>
+      <details id="workbox"><summary>Working</summary><div class="working" id="working"></div></details>
+      <details id="tablebox" hidden open><summary id="tablesum">Schedule</summary><div class="tablewrap" tabindex="0" role="region" aria-labelledby="tablesum"><table id="ctable"></table></div></details>
+    </div>
+  </section>
+  <section id="keypad" class="card" aria-labelledby="kname" style="margin-top:16px">
+    <h2 id="kname">Scientific calculator</h2>
+    <p class="note">Tap the keys, or click here and type: digits, + − * /, ^, ( ), Enter for =, Backspace for Back, Escape for AC. Deg is on until you press it; Ans is the last answer, M+ M− MR MC use the memory, RND writes a random number from 0 to 1, EXP is times ten to a power.</p>
+    <output id="kshow" aria-live="polite">0</output>
+    <p class="note" id="kinfo">Deg · memory 0</p>
+    <div class="keys" id="keys" role="group" aria-label="Calculator keys"></div>
+  </section>
+  <section id="build" class="card" aria-labelledby="bname" style="margin-top:16px">
+    <h2 id="bname">Build your own formula</h2>
+    <p class="note">Write a formula with units and Verse checks that the units add up, then shows the answer in the unit you ask for. Guided asks you for each part; Raw is the same formula as text, one line each.</p>
+    <div class="tabs" role="group" aria-label="Formula builder mode">
+      <button id="tguided" type="button" aria-pressed="true" aria-controls="guided">Guided</button>
+      <button id="traw" type="button" aria-pressed="false" aria-controls="raw">Raw</button>
+    </div>
+    <div id="guided"></div>
+    <div id="raw" hidden>
+      <label class="note" for="rawtext">One line each: <code>name [unit] = formula  # label</code>. A line whose right side is a number is an input; a line starting with # is the title.</label>
+      <textarea id="rawtext" spellcheck="false" autocapitalize="off"></textarea>
+    </div>
+    <div class="ins" id="ins" aria-label="Insert into the formula"></div>
+    <div class="answer">
+      <p class="what" id="btitle">Answer</p>
+      <ul class="outs" id="bouts" aria-live="polite"></ul>
+      <p id="berr" class="note bad"></p>
+    </div>
+    <div class="bar">
+      <button id="bsave" type="button">Save on this device</button>
+      <button id="bshare" type="button">Share formula link</button>
+      <button id="bexample" type="button">Start from an example</button>
+    </div>
+    <ul id="saved" aria-label="Saved formulas"></ul>
+    <datalist id="units"></datalist>
+  </section>
+  <section class="lib" aria-labelledby="lname" style="margin-top:16px">
+    <h2 id="lname">All calculators</h2>
+    <div id="lib"></div>
+  </section>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/calculators/?calc=pipe-surface-area&amp;d=2&amp;d.u=in&amp;l=10&amp;l.u=ft">Pipe surface area, 2 in by 10 ft</a><a href="/calculators/?calc=tip&amp;bill=64&amp;people=3">Tip for $64 split 3 ways</a><a href="/calculators/?calc=loan-payment">Loan payment</a><a href="/calculators/?calc=ohms-law-current">Ohm's law: current</a><a href="/calculators/?calc=molar-mass&amp;f=C6H12O6">Molar mass of glucose</a><a href="/calculators/?formula=%23%20Circle%20area%0AA%20%5Bm%C2%B2%5D%20%3D%20pi%2Ar%5E2%20%20%23%20Area%0Ar%20%5Bm%5D%20%3D%203%20%20%23%20Radius">Build your own formula: a circle's area</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/calculator/">Calculator</a> <a href="/convert/">Unit converter</a> <a href="/base-converter/">Base converter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer><p>Worked out on your device; nothing you type is sent anywhere. Physical constants are CODATA 2018 exact or recommended values, atomic weights IUPAC abridged. <a href="/calculator/">Scientific calculator</a> · <a href="/convert/">Unit converter</a> · <a href="/">Ask Verse anything</a></p></footer> <!-- void-review: ok (CODATA and IUPAC are words in the footer, not code) -->
+</main>
+<script type="module">
+  import { CATEGORIES, CALCULATORS, BY_ID, run, allUnits, readQuery, writeQuery, search, toCSV, toJSON, fmt, fmtMoney } from '/lib/calculators.js';
+  import { KINDS, findUnit, parseSpec, runSpec } from '/lib/calc-units.js';
+  import { KEYS, start as keyStart, press as keyPress } from '/lib/keypad.js';
+  const $ = (id) => document.getElementById(id);
+  const h = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (v === undefined || v === null || v === false) continue; if (k === 'text') e.textContent = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) if (c !== null && c !== undefined) e.append(c); return e; };
+  const store = { get: (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} } };
+  const PRO_KEY = 'a2m.calculators.pro', DRAFT_KEY = 'a2m.calculators.draft', SAVED_KEY = 'a2m.calculators.formulas';
+  const DEFAULT_CALC = 'percent-of';
+  const EXAMPLE = '# Pipe outside surface area\nA [ft²] = pi*d*l  # Surface area\nd [in] = 2  # Outside diameter\nl [ft] = 10  # Length';
+  const siUnit = (kind) => { const k = KINDS[kind]; if (!k) return ''; const u = k.units.find((x) => x.f === 1 && !x.o) || k.units[0]; return u.id; };
+  const say = (t) => { $('said').textContent = t; clearTimeout(say.t); say.t = setTimeout(() => { $('said').textContent = ''; }, 4000); };
+
+  const q0 = readQuery(location.search);
+  const state = { calc: BY_ID.has(q0.calc) ? q0.calc : DEFAULT_CALC, given: q0.given, outUnits: q0.outUnits, kind: q0.kind, solve: q0.solve, pro: q0.pro || store.get(PRO_KEY, false) === true };
+  let last = null, shaped = null;
+
+  // ---------- one calculator: its form, then its answer
+  function fieldFor(inp) {
+    const id = 'in-' + inp.k, val = state.given[inp.k] !== undefined ? state.given[inp.k] : inp.v;
+    const set = (e) => { state.given[inp.k] = e.target.value; compute(); };
+    let box;
+    if (inp.kind === 'choice') box = h('select', { id, oninput: set }, inp.opts.map(([v, label]) => h('option', { value: v, text: label, selected: String(val) === v })));
+    else if (inp.kind === 'date') box = h('input', { id, type: 'date', value: val, oninput: set });
+    else if (inp.kind === 'text') box = h('input', { id, type: 'text', value: val, oninput: set, autocomplete: 'off', spellcheck: 'false' });
+    else box = h('input', { id, type: 'text', value: val, oninput: set, autocomplete: 'off', spellcheck: 'false', inputmode: ['number', 'ratio', 'money'].includes(inp.kind === 'list' ? inp.of : inp.kind) ? 'decimal' : null });
+    const kind = inp.kind === 'list' ? inp.of : inp.kind, units = KINDS[kind] ? KINDS[kind].units : [];
+    const wide = inp.kind === 'list' || inp.kind === 'text';
+    if (units.length > 1) {
+      const cur = state.given[inp.k + '.u'] || inp.unit;
+      const sel = h('select', { 'aria-label': 'Unit for ' + inp.label, oninput: (e) => { state.given[inp.k + '.u'] = e.target.value; compute(); } }, units.map((u) => h('option', { value: u.id, text: u.id === u.name ? u.id : u.id + ' (' + u.name + ')', selected: u.id === cur })));
+      return h('div', { class: 'field' + (wide ? ' wide' : '') }, h('label', { for: id, text: inp.label }), h('div', { class: 'pair' }, box, sel));
+    }
+    return h('div', { class: 'field' + (wide ? ' wide' : '') }, h('label', { for: id, text: inp.label + (units.length === 1 && units[0].id ? ' (' + units[0].id + ')' : '') }), box);
+  }
+  function outUnitSelect(o) {
+    const units = KINDS[o.kind] ? KINDS[o.kind].units : [];
+    if (units.length < 2 || o.kind === 'money' || o.kind === 'number') return null;
+    const cur = state.outUnits[o.k] || o.unit;
+    return h('select', { 'aria-label': 'Show ' + o.label + ' in', oninput: (e) => { state.outUnits[o.k] = e.target.value; compute(); } }, units.map((u) => h('option', { value: u.id, text: u.id === u.name ? u.id : u.id + ' (' + u.name + ')', selected: u.id === cur })));
+  }
+  function renderForm() {
+    const calc = BY_ID.get(state.calc);
+    shaped = run(calc, state.given, state.outUnits, { pro: state.pro, kind: state.kind, solve: state.solve }).calc;
+    $('cname').textContent = shaped.name;
+    $('cformula').textContent = shaped.cat + ' · ' + shaped.formula;
+    // a library formula says where it comes from
+    const src = $('csource'); src.replaceChildren(); src.hidden = !shaped.src;
+    if (shaped.src) src.append('Source: ', /^https?:/.test(shaped.src) ? h('a', { href: shaped.src, rel: 'noopener', text: shaped.src.replace(/^https?:\/\/(www\.)?/, '').replace(/^en\.wikipedia\.org\/wiki\//, 'Wikipedia: ').replace(/_/g, ' ') }) : shaped.src);
+    const form = $('cform'); form.replaceChildren();
+    // a library formula works for any of its variables: pick the one to find, and the rest become the boxes
+    if (shaped.solveFor && shaped.solveFor.length > 1) {
+      form.append(h('div', { class: 'field' }, h('label', { for: 'in-solve', text: 'Solve for' }), h('select', { id: 'in-solve', oninput: (e) => { state.solve = e.target.value === shaped.def.lhs ? '' : e.target.value; renderForm(); } }, shaped.solveFor.map(([k, label]) => h('option', { value: k, text: label + ' (' + k + ')', selected: k === shaped.target })))));
+    }
+    if (calc.convert) {
+      const kinds = Object.entries(KINDS).filter(([id, k]) => id !== 'number' && k.units.length > 1);
+      form.append(h('div', { class: 'field' }, h('label', { for: 'in-kind', text: 'Quantity' }), h('select', { id: 'in-kind', oninput: (e) => { state.kind = e.target.value; delete state.given['v.u']; delete state.outUnits.r; renderForm(); } }, kinds.map(([id, k]) => h('option', { value: id, text: k.name, selected: id === shaped.kind })))));
+    }
+    for (const inp of shaped.inputs) form.append(fieldFor(inp));
+    for (const a of document.querySelectorAll('#lib a, #hits a')) a.toggleAttribute('aria-current', false);
+    for (const a of document.querySelectorAll('#lib a[data-id="' + state.calc + '"]')) a.setAttribute('aria-current', 'page');
+    compute();
+  }
+  function urlState() { return { calc: state.calc === DEFAULT_CALC && !Object.keys(state.given).length && !Object.keys(state.outUnits).length ? '' : state.calc, solve: state.solve, kind: BY_ID.get(state.calc).convert ? state.kind || shaped.kind : '', given: state.given, outUnits: state.outUnits, pro: state.pro }; }
+  function compute() {
+    const r = run(BY_ID.get(state.calc), state.given, state.outUnits, { pro: state.pro, kind: state.kind || (shaped && shaped.kind), solve: state.solve }); last = r;
+    const big = $('big'), first = r.outputs[0];
+    big.classList.toggle('err', !!r.error);
+    $('what').textContent = r.error ? 'Check this box' : first ? first.label : '';
+    big.textContent = r.error ? r.error : first ? first.text : '';
+    const bu = $('bigunit'); bu.replaceChildren();
+    const sel0 = first && !r.error ? outUnitSelect(first) : null; if (sel0) bu.append(h('label', { class: 'note' }, 'Show in ', sel0));
+    const outs = $('outs'); outs.replaceChildren();
+    for (const o of r.outputs.slice(1)) outs.append(h('li', {}, h('span', { text: o.label }), h('span', { class: 'pair' }, h('span', { class: 'val', text: o.text }), outUnitSelect(o))));
+    // the first answer in every unit of its kind
+    const ob = $('otherbox'), ol = $('other'); ol.replaceChildren();
+    const many = first && !r.error && KINDS[first.kind] && first.kind !== 'money' && first.kind !== 'number' && KINDS[first.kind].units.length > 2 ? allUnits(first.kind, first.si, state.pro ? 12 : 6).filter((x) => x.unit !== first.unit) : [];
+    for (const x of many) ol.append(h('li', {}, x.text + ' ', h('span', { text: x.name === x.unit ? '' : x.name })));
+    ob.hidden = !many.length;
+    // the working: the formula, each input as typed and in SI, each answer in SI
+    const lines = [r.calc.formula, ''];
+    for (const i of r.inputs) {
+      if (KINDS[i.kind] && Number.isFinite(i.value)) lines.push(i.label + ' = ' + i.raw + (/[a-zA-Z$%°µ]/.test(i.raw) ? '' : i.unit ? ' ' + i.unit : '') + (i.unit !== siUnit(i.kind) ? '  →  ' + fmt(i.value, 12) + (siUnit(i.kind) ? ' ' + siUnit(i.kind) : '') : ''));
+      else if (i.kind === 'list' && Array.isArray(i.value)) lines.push(i.label + ' = ' + i.value.length + ' values (' + i.value.slice(0, 12).map((v) => fmt(v, 12)).join(', ') + (i.value.length > 12 ? ', …' : '') + (siUnit(i.of) ? ' ' + siUnit(i.of) : '') + ')');
+      else lines.push(i.label + ' = ' + i.raw);
+    }
+    lines.push('');
+    for (const o of r.outputs) lines.push(o.label + ' = ' + o.text + (KINDS[o.kind] && Number.isFinite(o.si) && o.kind !== 'money' && o.unit !== siUnit(o.kind) ? '  (' + fmt(o.si, 12) + (siUnit(o.kind) ? ' ' + siUnit(o.kind) : '') + ' in SI)' : ''));
+    $('working').textContent = lines.join('\n');
+    // a table when the answer has one (an amortization schedule, a year-by-year balance, tax by bracket)
+    const tb = $('tablebox'), tt = $('ctable'); tt.replaceChildren(); tb.hidden = !r.table;
+    if (r.table) {
+      const money = new Set(r.table.money || []), cell = (v, i) => (money.has(i) && typeof v === 'number' ? fmtMoney(v) : typeof v === 'number' ? fmt(v, 12) : String(v));
+      tt.append(h('thead', {}, h('tr', {}, ...r.table.head.map((x) => h('th', { scope: 'col', text: x })))));
+      const body = h('tbody'); for (const row of r.table.rows) body.append(h('tr', {}, ...row.map((v, i) => h('td', { text: cell(v, i) })))); tt.append(body);
+      $('tablesum').textContent = r.table.head[0] === 'Month' ? 'Schedule, month by month (' + r.table.rows.length + ' rows)' : r.table.head[0] === 'Year' ? 'Year by year' : 'By bracket';
+    }
+    $('workbox').open = state.pro || $('workbox').open;
+    history.replaceState(null, '', location.pathname + writeQuery(urlState()) + location.hash);
+    $('link').value = location.href;
+    document.title = r.calc.name + ' · Calculators · Verse';
+  }
+  function openCalc(id, push = true) {
+    if (!BY_ID.has(id)) return;
+    state.calc = id; state.given = {}; state.outUnits = {}; state.kind = ''; state.solve = '';
+    if (push) history.pushState(null, '', location.pathname + writeQuery(urlState()));
+    renderForm();
+    $('calc').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    $('cname').focus({ preventScroll: true });
+  }
+  const chip = (c) => h('li', {}, h('a', { href: '?calc=' + c.id, 'data-id': c.id, text: c.name, title: c.cat + ': ' + c.formula }));
+  const lib = $('lib');
+  lib.addEventListener('click', go); $('hits').addEventListener('click', go);
+  function go(e) { const a = e.target.closest('a[data-id]'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); openCalc(a.dataset.id); }
+  $('lname').textContent = 'All calculators (' + CALCULATORS.length + ')';
+  for (const cat of CATEGORIES) {
+    const list = CALCULATORS.filter((c) => c.cat === cat); if (!list.length) continue;
+    // a long category shows its first 24 and a button for the rest (every hand-built calculator always shows; search finds them all)
+    const cid = 'cat-' + cat.toLowerCase().replace(/\s+/g, '-');
+    let room = Math.max(0, 24 - list.filter((c) => !c.def).length), more = 0;
+    const items = list.map((c) => { const li = chip(c); if (c.def && room-- <= 0) { li.hidden = true; more++; } return li; });
+    const ul = h('ul', { id: cid + '-list', 'aria-labelledby': cid }, items);
+    lib.append(h('h3', { id: cid, text: cat + ' (' + list.length + ')' }), ul);
+    if (more) { const b = h('button', { type: 'button', class: 'more', 'aria-controls': cid + '-list', 'aria-expanded': 'false', text: 'Show all ' + list.length + ' in ' + cat }); b.addEventListener('click', () => { for (const li of ul.children) li.hidden = false; b.remove(); }); lib.append(b); }
+  }
+  const find = $('find');
+  find.addEventListener('input', () => { const t = find.value.trim(); $('hits').replaceChildren(...(t ? search(t).slice(0, 12).map(chip) : [])); if (t && !$('hits').children.length) $('hits').append(h('li', { class: 'note', text: 'No calculator matches "' + t + '". Build it below with your own formula.' })); });
+  find.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const a = $('hits').querySelector('a[data-id]'); if (a) { e.preventDefault(); openCalc(a.dataset.id); } } });
+  if (q0.find) { find.value = q0.find; find.dispatchEvent(new Event('input')); }
+  addEventListener('popstate', () => { const q = readQuery(location.search); state.calc = BY_ID.has(q.calc) ? q.calc : DEFAULT_CALC; state.given = q.given; state.outUnits = q.outUnits; state.kind = q.kind; state.solve = q.solve; renderForm(); });
+  // ---------- the toolbar: pro mode, share, copy, export
+  const proBtn = $('pro');
+  const setPro = (on) => { state.pro = on; proBtn.setAttribute('aria-pressed', String(on)); store.set(PRO_KEY, on); document.body.classList.toggle('pro', on); };
+  proBtn.addEventListener('click', () => { setPro(!state.pro); if (state.pro) $('workbox').open = true; compute(); buildRun(); say(state.pro ? 'Pro mode on: 12 significant figures and the working in SI' : 'Pro mode off'); });
+  const answerText = (r) => r.calc.name + '\n' + (r.error ? r.error : r.outputs.map((o) => o.label + ': ' + o.text).join('\n')) + '\n' + location.href;
+  async function copyText(t, done) {
+    try { await navigator.clipboard.writeText(t); say(done); return true; }
+    catch (_) { const l = $('link'); l.hidden = false; l.value = t; l.focus(); l.select(); say('Copy it from the box below'); return false; }
+  }
+  $('share').addEventListener('click', async () => {
+    const url = location.href;
+    if (navigator.share && matchMedia('(pointer: coarse)').matches) { try { await navigator.share({ title: last.calc.name, text: last.error ? last.calc.name : last.outputs[0].label + ': ' + last.outputs[0].text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    $('link').hidden = false; $('link').value = url; copyText(url, 'Link copied: it opens this calculator with these values');
+  });
+  $('copy').addEventListener('click', () => copyText(answerText(last), 'Answer copied'));
+  const download = (name, type, text) => { const a = h('a', { href: URL.createObjectURL(new Blob([text], { type })), download: name }); document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); say('Saved ' + name); };
+  $('csv').addEventListener('click', () => download(last.calc.id + '.csv', 'text/csv', toCSV(last)));
+  $('json').addEventListener('click', () => download(last.calc.id + '.json', 'application/json', toJSON(last)));
+  // ---------- build your own formula: the guided rows and the raw text are the same formula
+  const MODE_KEY = 'a2m.calculators.mode';
+  let text = q0.formula || store.get(DRAFT_KEY, '') || EXAMPLE, mode = store.get(MODE_KEY, 'guided') === 'raw' ? 'raw' : 'guided', model = null, focusBox = null;
+  const toModel = (spec) => ({ title: spec.title, results: spec.results.map((r) => ({ k: r.k, unit: r.unit, expr: r.expr, label: r.label === r.k ? '' : r.label })), inputs: spec.inputs.map((x) => ({ k: x.k, unit: x.unit, v: x.v, label: x.label === x.k ? '' : x.label })) });
+  const line = (k, unit, rhs, label) => k.trim() + (unit.trim() ? ' [' + unit.trim() + ']' : '') + ' = ' + rhs.trim() + (label.trim() ? '  # ' + label.trim() : '');
+  const fromModel = (m) => [...(m.title.trim() ? ['# ' + m.title.trim()] : []), ...m.results.filter((r) => r.k.trim() && r.expr.trim()).map((r) => line(r.k, r.unit, r.expr, r.label)), ...m.inputs.filter((x) => x.k.trim()).map((x) => line(x.k, x.unit, String(x.v ?? ''), x.label))].join('\n');
+  const unitIds = [...new Set(Object.values(KINDS).flatMap((k) => k.units.map((u) => u.id)).filter(Boolean))];
+  $('units').append(...unitIds.map((u) => h('option', { value: u })));
+  function guidedField(label, value, set, attrs = {}) {
+    return h('div', { class: 'field' + (attrs.cls ? ' ' + attrs.cls : '') }, h('span', { class: 'lab', text: label }), h('input', { type: 'text', value: value ?? '', 'aria-label': attrs.aria || label, list: attrs.list, inputmode: attrs.inputmode, autocomplete: 'off', spellcheck: 'false', autocapitalize: 'off', placeholder: attrs.placeholder, onfocus: attrs.expr ? (e) => { focusBox = e.target; } : null, oninput: (e) => { set(e.target.value); changed(); } }));
+  }
+  function renderGuided() {
+    model = model || toModel(parseSpec(text));
+    const g = $('guided'); g.replaceChildren();
+    g.append(guidedField('Title', model.title, (v) => { model.title = v; }, { placeholder: 'What it works out' }));
+    g.append(h('h3', { text: 'Results' }));
+    const rows = h('div', { class: 'rows' });
+    model.results.forEach((r, i) => rows.append(h('div', { class: 'row' },
+      guidedField('Name', r.k, (v) => { r.k = v; }, { aria: 'Result ' + (i + 1) + ' name', placeholder: 'A' }),
+      guidedField('Shown in', r.unit, (v) => { r.unit = v; }, { aria: 'Result ' + (i + 1) + ' unit', list: 'units', placeholder: 'ft²' }),
+      guidedField('Formula', r.expr, (v) => { r.expr = v; }, { aria: 'Result ' + (i + 1) + ' formula', cls: 'expr', expr: true, placeholder: 'pi*d*l' }),
+      guidedField('Label', r.label, (v) => { r.label = v; }, { aria: 'Result ' + (i + 1) + ' label', placeholder: 'Surface area' }),
+      h('button', { type: 'button', 'aria-label': 'Remove result ' + (r.k || i + 1), text: 'Remove', onclick: () => { model.results.splice(i, 1); renderGuided(); changed(); } }))));
+    g.append(rows, h('button', { type: 'button', text: 'Add a result', onclick: () => { model.results.push({ k: 'r' + (model.results.length + 1), unit: '', expr: '', label: '' }); renderGuided(); g.querySelectorAll('.expr input')[model.results.length - 1].focus(); } }));
+    g.append(h('h3', { text: 'Inputs' }));
+    const ins = h('div', { class: 'rows' });
+    model.inputs.forEach((x, i) => ins.append(h('div', { class: 'row' },
+      guidedField('Name', x.k, (v) => { x.k = v; }, { aria: 'Input ' + (i + 1) + ' name' }),
+      guidedField('Unit', x.unit, (v) => { x.unit = v; }, { aria: 'Input ' + (i + 1) + ' unit', list: 'units', placeholder: 'in' }),
+      guidedField('Value', x.v, (v) => { x.v = v; }, { aria: 'Input ' + (i + 1) + ' value', inputmode: 'decimal' }),
+      guidedField('Label', x.label, (v) => { x.label = v; }, { aria: 'Input ' + (i + 1) + ' label', placeholder: 'Diameter' }),
+      h('button', { type: 'button', 'aria-label': 'Remove input ' + (x.k || i + 1), text: 'Remove', onclick: () => { model.inputs.splice(i, 1); renderGuided(); changed(); } }))));
+    g.append(ins, h('button', { type: 'button', text: 'Add an input', onclick: () => { model.inputs.push({ k: 'x' + (model.inputs.length + 1), unit: '', v: '', label: '' }); renderGuided(); changed(); } }));
+  }
+  function changed() { if (mode === 'guided') { text = fromModel(model); $('rawtext').value = text; } store.set(DRAFT_KEY, text); buildRun(); }
+  function buildRun() {
+    const spec = parseSpec(text), r = runSpec(spec), sig = state.pro ? 12 : 6, ul = $('bouts'); ul.replaceChildren();
+    $('btitle').textContent = spec.title || 'Answer';
+    for (const x of r.results) {
+      const kinds = x.kinds && x.kinds.length ? ' (a ' + x.kinds.map((k) => KINDS[k].name.toLowerCase()).join(' or ') + ')' : '';
+      ul.append(h('li', {}, h('span', { text: x.label }), h('span', { class: 'val' + (x.error ? ' bad' : ''), text: x.error ? x.error : fmt(x.shown, sig) + (x.unitText ? ' ' + x.unitText : '') + (x.warn ? '' : kinds) })));
+      if (x.warn) ul.append(h('li', { class: 'note warn', text: 'Units: ' + x.warn + (x.kinds && x.kinds.length ? '. That is a ' + x.kinds.map((k) => KINDS[k].name.toLowerCase()).join(' or ') + '.' : '.') }));
+    }
+    if (!r.results.length) ul.append(h('li', { class: 'note', text: 'Add a result with a formula, such as A [ft²] = pi*d*l.' }));
+    $('berr').textContent = [...new Set(r.errors)].join('; ');
+  }
+  function setMode(m) {
+    if (m === 'guided' && mode === 'raw') model = toModel(parseSpec(text));
+    mode = m; store.set(MODE_KEY, m);
+    $('tguided').setAttribute('aria-pressed', String(m === 'guided')); $('traw').setAttribute('aria-pressed', String(m === 'raw'));
+    $('guided').hidden = m !== 'guided'; $('raw').hidden = m !== 'raw';
+    if (m === 'guided') renderGuided(); else $('rawtext').value = text;
+  }
+  function load(t) { text = t; model = toModel(parseSpec(text)); $('rawtext').value = text; if (mode === 'guided') renderGuided(); store.set(DRAFT_KEY, text); buildRun(); }
+  $('tguided').addEventListener('click', () => setMode('guided')); $('traw').addEventListener('click', () => setMode('raw'));
+  $('rawtext').addEventListener('input', (e) => { text = e.target.value; store.set(DRAFT_KEY, text); buildRun(); });
+  $('rawtext').addEventListener('focus', (e) => { focusBox = e.target; });
+  const INSERT = [['+', '+'], ['−', '-'], ['×', '*'], ['÷', '/'], ['xʸ', '^'], ['(', '('], [')', ')'], ['π', 'pi'], ['√', 'sqrt('], ['sin', 'sin('], ['cos', 'cos('], ['tan', 'tan('], ['ln', 'ln('], ['log', 'log('], ['eˣ', 'exp('], ['|x|', 'abs('], ['g', 'g'], ['c', 'c'], ['G', 'G'], ['h', 'h'], ['R', 'R'], ['Nᴀ', 'NA'], ['k', 'kB']];
+  const NAMES = { '-': 'minus', '*': 'times', '/': 'divided by', '^': 'to the power', '(': 'open bracket', ')': 'close bracket', pi: 'pi', 'sqrt(': 'square root', 'exp(': 'e to the power', 'abs(': 'absolute value', g: 'standard gravity', c: 'speed of light', G: 'gravitational constant', h: 'Planck constant', R: 'gas constant', NA: 'Avogadro constant', kB: 'Boltzmann constant', '+': 'plus' };
+  $('ins').append(...INSERT.map(([label, ins]) => h('button', { type: 'button', text: label, 'aria-label': 'Insert ' + (NAMES[ins] || ins.replace('(', '')), onmousedown: (e) => e.preventDefault(), onclick: () => {
+    const box = focusBox && document.contains(focusBox) && !focusBox.closest('[hidden]') ? focusBox : mode === 'raw' ? $('rawtext') : $('guided').querySelector('.expr input');
+    if (!box) return; const s = box.selectionStart ?? box.value.length, e2 = box.selectionEnd ?? s;
+    box.setRangeText(ins, s, e2, 'end'); box.focus(); box.dispatchEvent(new Event('input', { bubbles: true }));
+  } })));
+  function renderSaved() {
+    const list = store.get(SAVED_KEY, []), ul = $('saved'); ul.replaceChildren();
+    list.forEach((f, i) => ul.append(h('li', { class: 'pair' }, h('button', { type: 'button', text: f.title || 'Formula ' + (i + 1), 'aria-label': 'Open saved formula ' + (f.title || i + 1), onclick: () => { load(f.text); say('Opened ' + (f.title || 'formula')); } }),
+      h('button', { type: 'button', text: '×', 'aria-label': 'Delete saved formula ' + (f.title || i + 1), onclick: () => { const l = store.get(SAVED_KEY, []); l.splice(i, 1); store.set(SAVED_KEY, l); renderSaved(); } }))));
+  }
+  $('bsave').addEventListener('click', () => { const title = parseSpec(text).title || 'My formula', l = store.get(SAVED_KEY, []).filter((f) => f.title !== title); l.unshift({ title, text }); store.set(SAVED_KEY, l.slice(0, 40)); renderSaved(); say('Saved "' + title + '" on this device'); });
+  $('bshare').addEventListener('click', () => { const url = location.origin + location.pathname + writeQuery({ formula: text, pro: state.pro }); $('link').hidden = false; $('link').value = url; copyText(url, 'Formula link copied: it opens this formula with its values'); });
+  $('bexample').addEventListener('click', () => { load(EXAMPLE); say('Example loaded'); });
+
+  // ---------- start
+  setPro(state.pro);
+  renderForm();
+  $('rawtext').value = text; setMode(mode); buildRun(); renderSaved();
+  if (q0.formula) $('build').scrollIntoView({ block: 'start' });
+  import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculators/')).catch(() => {});
+  // the scientific keypad (lib/keypad.js): the same press() the tests drive
+  {
+    let ks = keyStart(); const box = $('keys'), CLS = { '=': 'eq', '+': 'op', '−': 'op', '×': 'op', '÷': 'op', AC: 'op', Back: 'op' };
+    const LABEL = { 'xʸ': 'xʸ', '√': '√', Deg: 'Deg' };
+    const paint = () => { $('kshow').textContent = ks.error ? 'Error: ' + ks.error : ks.shown; $('kinfo').textContent = (ks.deg ? 'Deg' : 'Rad') + ' · memory ' + fmt(ks.mem, 12) + (ks.ans ? ' · Ans ' + fmt(ks.ans, 12) : ''); const d = box.querySelector('[data-k=Deg]'); if (d) d.textContent = ks.deg ? 'Deg' : 'Rad'; };
+    const go = (k) => { ks = keyPress(ks, k); paint(); };
+    for (const k of KEYS) box.append(h('button', { type: 'button', class: CLS[k] || '', 'data-k': k, 'aria-label': k === 'Deg' ? 'Degrees or radians' : k === '−' ? 'minus' : k === '±' ? 'change sign' : k === 'M−' ? 'memory minus' : k, text: LABEL[k] || k, onclick: () => go(k) }));
+    const TYPED = { '*': '×', '/': '÷', '-': '−', '+': '+', '^': 'xʸ', '(': '(', ')': ')', '.': '.', '%': '%', '!': 'n!', Enter: '=', '=': '=', Backspace: 'Back', Escape: 'AC' };
+    $('keypad').addEventListener('keydown', (e) => { if (e.ctrlKey || e.metaKey || e.altKey) return; const k = /^[0-9]$/.test(e.key) ? e.key : TYPED[e.key]; if (!k) return; e.preventDefault(); go(k); });
+    $('kshow').tabIndex = 0; paint();
+  }
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
+</body>
+</html>

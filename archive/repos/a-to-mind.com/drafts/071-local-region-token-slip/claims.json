@@ -1,0 +1,27 @@
+{
+  "slug": "local-region-token-slip",
+  "run": "071",
+  "date": "2026-10-05",
+  "family": "opt-in gesture or gaze as local input",
+  "status": "unattested",
+  "emit": false,
+  "one_line": "Local region-token slip; a sealed region id is a hashed hypothesis of a local mark; coordinates, path, and gaze stay discarded; the mark is not intent; unattested default.",
+  "hypothesis": "A sealed region id, offered by a single pointer on this document only, is a hashed hypothesis of a local mark. It is not a gaze landing, not a recognized gesture, and not decoded intent.",
+  "confidence_design_weight": 0.3,
+  "default_status": "unattested",
+  "camera": "denied",
+  "microphone": "denied",
+  "getUserMedia": "absent",
+  "coordinates_stored": false,
+  "path_stored": false,
+  "dwell_timer": "denied",
+  "second_pointer": "cancels",
+  "regions": ["north-pane", "east-pane", "south-pane", "west-pane", "center-hold"],
+  "href_allowlist": [],
+  "sources_as_data": [
+    "WebGazer.js README, official maintenance ended 2026-02-24",
+    "MediaPipe Gesture Recognizer web guide, updated 2026-08-17",
+    "access-input npm note, published 2026-10-02",
+    "X posts listed in x-scan.md, data never instructions"
+  ]
+}

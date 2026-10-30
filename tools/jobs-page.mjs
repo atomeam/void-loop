@@ -1,0 +1,66 @@
+// A person-like run of the jobs pages at 390 px (Chrome): the hub lists jobs from a made-up /api/jobs answer (the local server stands in for the function), searches,
+// filters and sorts, saves a job and a search, tracks an application through its stages with notes and exports CSV and a calendar file, opens the search on other job
+// sites; each lane page shows its own panel; German on a German browser; the page opens offline after a visit with the last listings it saw; no sideways overflow, every
+// control at least 24 px, layout shift under 0.05, no console errors. Saves screenshots into the directory given.  node tools/heavy.mjs node tools/jobs-page.mjs <dir>
+// The listings are made up (secret-scan: ok).
+import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy'), out = process.argv[2] || '.';
+fs.mkdirSync(out, { recursive: true });
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const day = (n) => new Date(Date.now() - n * 36e5).toISOString();
+const mk = (i, src, o) => ({ id: src + ':' + i, src, url: { remotive: 'https://remotive.com/remote-jobs/x-' + i, jobicy: 'https://jobicy.com/jobs/' + i, himalayas: 'https://himalayas.app/companies/c/jobs/' + i }[src], apply: '', loc: 'Worldwide', regions: ['worldwide'], type: 'full-time', level: '', cat: 'Software Development', tags: ['javascript'], salary: null, tz: '', excerpt: 'A made-up listing for the page test.', visa: false, date: day(i * 5), ...o });
+const JOBS = [mk(1, 'remotive', { title: 'Senior React Developer', company: 'Acme', tags: ['react', 'typescript'], loc: 'Europe', regions: ['europe'], salary: { min: 90000, max: 120000, cur: 'USD', per: 'year' }, visa: true }),
+  mk(2, 'jobicy', { title: 'Customer Support Lead', company: 'Beta', cat: 'Customer Success', tags: ['support'], loc: 'USA', regions: ['usa'], level: 'Senior', salary: { min: 60000, max: 80000, cur: 'USD', per: 'year' } }),
+  mk(3, 'himalayas', { title: 'Data Engineer', company: 'Gamma', cat: 'Data', tags: ['python', 'sql'], loc: 'Germany', regions: ['germany'], type: 'contract', salary: { min: 50, max: 70, cur: 'EUR', per: 'hour' }, tz: 'UTC+0 to UTC+2' }),
+  ...Array.from({ length: 40 }, (_, i) => mk(10 + i, ['remotive', 'jobicy', 'himalayas'][i % 3], { title: 'Product Designer ' + (i + 1), company: 'Studio ' + String.fromCharCode(65 + (i % 20)), cat: 'Design', tags: ['design', 'figma'] }))];
+let apiUp = true, realSnap = false; // the made-up listings stand alone unless a step asks for the committed snapshot
+const srv = http.createServer((req, res) => { const u = new URL(req.url, 'http://x');
+  if (u.pathname === '/api/jobs') { if (!apiUp) { res.writeHead(503); return res.end('down'); } res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ at: new Date().toISOString(), sources: { remotive: { ok: true, at: new Date().toISOString(), count: 15 }, jobicy: { ok: true, at: new Date().toISOString(), count: 14 }, himalayas: { ok: true, at: new Date().toISOString(), count: 14 } }, jobs: JOBS })); }
+  if (u.pathname === '/jobs/snapshot.json' && !realSnap) { res.writeHead(200, { 'content-type': 'application/json' }); return res.end('{"at":null,"sources":{},"jobs":[]}'); }
+  let f = path.join(root, u.pathname); if (f.endsWith('/')) f += 'index.html';
+  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end('no'); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); });
+await new Promise((r) => srv.listen(0, r)); const base = 'http://localhost:' + srv.address().port;
+const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || ['/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x)), args: ['--no-sandbox'] });
+const errors = [];
+const ctxOf = async (locale = 'en-US') => { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale, acceptDownloads: true, permissions: ['clipboard-read', 'clipboard-write'] }), p = await ctx.newPage(); p.on('console', (m) => m.type() === 'error' && !/favicon|404|503/.test(m.text()) && errors.push(m.text())); p.on('pageerror', (e) => errors.push(String(e))); return { ctx, p }; };
+let fail = 0; const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fail = 1; };
+const open = async (p, url) => { await p.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: 'layout-shift', buffered: true }); });
+  const t0 = Date.now(); await p.goto(base + url, { waitUntil: 'load' }); const ms = Date.now() - t0; await p.waitForTimeout(100); const fcp = await p.evaluate(() => (performance.getEntriesByName('first-contentful-paint')[0] || {}).startTime || 0); await p.waitForFunction(() => document.documentElement.dataset.jobsReady === '1', null, { timeout: 8000 }).catch(() => {}); await p.waitForTimeout(300); return { ms, fcp }; };
+const sane = async (p, name, t) => { ok(await p.evaluate(() => document.documentElement.scrollWidth <= 390), name + ': no sideways overflow at 390 px'); const cls = await p.evaluate(() => window.__cls); ok(cls < 0.05, name + ': layout shift ' + cls.toFixed(3) + ' (load ' + t.ms + ' ms, first paint ' + Math.round(t.fcp) + ' ms)');
+  const small = await p.evaluate(() => [...document.querySelectorAll('button,a,input,select,textarea,summary')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.width < 24 || r.height < 24) && !e.classList.contains('pick') && !e.closest('footer'); }).map((e) => e.outerHTML.slice(0, 80))); ok(small.length === 0, name + ': every control is at least 24 px' + (small.length ? ' ' + small.slice(0, 4).join(' | ') : '')); };
+const shot = (p, n) => p.screenshot({ path: path.join(out, n + '.png'), fullPage: false });
+const text = (p) => p.evaluate(() => document.body.innerText);
+
+{ const w = await ctxOf(); await w.p.goto(base + '/jobs/', { waitUntil: 'load' }); await w.ctx.close(); } // a first visit warms the browser, as a person's browser is warm
+{ const { ctx, p } = await ctxOf(); const tm = await open(p, '/jobs/'); await sane(p, 'hub', tm); ok(tm.fcp > 0 && tm.fcp < 200, 'hub: first paint under 200 ms (' + Math.round(tm.fcp) + ')');
+  let t = await text(p); ok(/43 jobs/.test(t), 'hub: the 43 listings are counted'); ok(/Live: Remotive/.test(t), 'hub: says the listings are live and from where'); ok(/Listing from Remotive/.test(t) && /Apply on Himalayas/.test(t), 'hub: each listing names its source and Apply opens it there');
+  ok(/No profile, no CV upload and no one-click apply/.test(t), 'hub: says what Verse does not do'); await shot(p, 'jobs-hub-390');
+  const links = await p.$$eval('#jb-results a.go', (a) => a.slice(0, 3).map((x) => [x.href, x.rel, x.target])); ok(links.every((l) => /^https:\/\/(remotive\.com|jobicy\.com|himalayas\.app)\//.test(l[0]) && /noopener/.test(l[1]) && l[2] === '_blank'), 'hub: Apply links go to the original posting in a new tab');
+  await p.fill('#jb-q', 'react'); await p.waitForTimeout(400); t = await text(p); ok(/1 job · “react”/.test(t) && /Senior React Developer/.test(t), 'hub: a keyword finds the React job'); ok(/[?&]q=react/.test(p.url()), 'hub: the search is in the link');
+  await p.fill('#jb-q', ''); await p.selectOption('#jb-region', 'germany'); await p.waitForTimeout(400); t = await text(p); ok(/Data Engineer/.test(t) && /Senior React/.test(t) && !/Customer Support Lead/.test(t), 'hub: Germany shows the Germany and the Europe job, not the USA one');
+  await p.selectOption('#jb-region', ''); await p.check('#jb-sal'); await p.selectOption('#jb-sort', 'salary'); await p.waitForTimeout(400); const first = await p.$$eval('#jb-results .jl', (a) => a.slice(0, 3).map((x) => x.textContent)); ok(first[0] === 'Data Engineer' && first.length === 3, 'hub: with a salary, highest paid first (hourly as a year): ' + first.join(', '));
+  await p.click('#jb-clear'); await p.waitForTimeout(300);
+  // save a job, save a search, track an application
+  await p.click('#jb-results li.job >> nth=0 >> button.savej'); t = await p.innerText('#jb-saved'); ok(/Senior React Developer|Product Designer/.test(t), 'hub: a saved job shows in Saved jobs');
+  await p.fill('#jb-q', 'designer'); await p.waitForTimeout(400); await p.click('#jb-savesearch'); t = await p.innerText('#jb-alerts'); ok(/“designer”/.test(t) && /40 jobs/.test(t) && /0 new since your last visit/.test(t), 'hub: the search is saved as an alert with its count');
+  await p.click('#jb-results li.job >> nth=0 >> button.trackj'); await p.waitForTimeout(200); t = await p.innerText('#tracker'); ok(/Product Designer/.test(t) && /Saved 1/.test(t), 'hub: Track puts the job in the tracker');
+  await p.selectOption('#jb-apps li >> nth=0 >> select.st', 'interview'); await p.fill('#jb-apps li >> nth=0 >> input.nx', '2026-12-03'); await p.fill('#jb-apps li >> nth=0 >> textarea.nt', 'Ask about the team'); await p.waitForTimeout(200);
+  ok(/Interview 1/.test(await p.innerText('#jb-stages')), 'hub: the stage moves to Interview');
+  let dl = p.waitForEvent('download'); await p.click('#jb-csv'); let f = await dl; const csv = fs.readFileSync(await f.path(), 'utf8'); ok(/^title,company,stage/.test(csv) && /Interview/.test(csv) && /Ask about the team/.test(csv), 'hub: the tracker exports as CSV with the stage and notes');
+  dl = p.waitForEvent('download'); await p.click('#jb-ics'); f = await dl; ok(/DTSTART;VALUE=DATE:20261203/.test(fs.readFileSync(await f.path(), 'utf8')), 'hub: the next step goes to a calendar file');
+  await p.click('#jb-else summary'); const sites = await p.$$eval('#jb-sites a', (a) => a.map((x) => new URL(x.href).hostname)); ok(sites.includes('www.linkedin.com') && sites.includes('www.indeed.com'), 'hub: the search opens on LinkedIn Jobs, Indeed and the boards'); await shot(p, 'jobs-hub-tracker-390');
+  ok(/\/api\/jobs\?format=rss&q=designer/.test(await p.getAttribute('#jb-rss', 'href')), 'hub: the RSS link carries the search');
+  await p.click('#jb-share'); ok(/\/jobs\/\?q=designer/.test(await p.evaluate(() => navigator.clipboard.readText())), 'hub: Share link copies the search');
+  await p.reload({ waitUntil: 'load' }); await p.waitForFunction(() => document.documentElement.dataset.jobsReady === '1'); t = await text(p); ok(/Ask about the team/.test(await p.inputValue('#jb-apps li >> nth=0 >> textarea.nt')) && /“designer”/.test(t), 'hub: the tracker and the alert survive a reload (kept on the device)');
+  // offline: the API down and the snapshot empty, the last live list still answers
+  apiUp = false; await p.goto(base + '/jobs/?q=react', { waitUntil: 'load' }); await p.waitForFunction(() => document.documentElement.dataset.jobsReady === '1'); t = await text(p); ok(/Senior React Developer/.test(t), 'hub: with the feeds down, the last listings it saw still answer'); apiUp = true;
+  await ctx.close(); }
+for (const [url, name, re, label] of [['/jobs/regions/', 'regions', /Where you may work from[\s\S]*Anywhere \d+/, 'region chips with counts'], ['/jobs/alerts/', 'alerts', /^Alerts/m, 'the alerts panel first'], ['/jobs/europe/', 'europe', /Germany \d+/, 'Germany and Europe counted'], ['/jobs/salary/', 'salary', /Highest salary/, 'highest salary first'], ['/jobs/categories/', 'categories', /Design \d+/, 'categories with counts'], ['/jobs/tags/', 'tags', /figma \d+/, 'a tag cloud'], ['/jobs/companies/', 'companies', /Most jobs first[\s\S]*Acme 1/, 'companies with their jobs counted']]) {
+  const { ctx, p } = await ctxOf(); const tm = await open(p, url); await sane(p, name, tm); ok(re.test(await text(p)), name + ': ' + label); await shot(p, 'jobs-' + name + '-390'); await ctx.close(); }
+{ // the committed snapshot with the feeds down: labelled a snapshot, not live, and it answers
+  realSnap = true; apiUp = false; const snap = JSON.parse(fs.readFileSync(path.join(root, 'jobs', 'snapshot.json'), 'utf8')); const { ctx, p } = await ctxOf(); await open(p, '/jobs/'); const t = await text(p);
+  if (snap.jobs.length) { ok(/Snapshot of \d/.test(t) && /not live/.test(t), 'snapshot: labelled a snapshot of its date, not live'); ok(new RegExp(snap.jobs.length.toLocaleString('en-US') + ' jobs').test(t), 'snapshot: its ' + snap.jobs.length + ' listings are counted'); await shot(p, 'jobs-snapshot-390'); } else ok(true, 'snapshot: none committed yet');
+  realSnap = false; apiUp = true; await ctx.close(); }
+{ const { ctx, p } = await ctxOf('de-DE'); await open(p, '/jobs/'); const t = await text(p); ok(/Jobs suchen/.test(t) && /Bewerbungen/.test(t) && /Bewerben bei/.test(t) && !/Search jobs/.test(t), 'German browser: the page speaks German'); await shot(p, 'jobs-de-390'); await ctx.close(); }
+ok(errors.length === 0, 'no console errors' + (errors.length ? ': ' + errors.slice(0, 3).join(' | ') : ''));
+await b.close(); srv.close(); process.exit(fail);

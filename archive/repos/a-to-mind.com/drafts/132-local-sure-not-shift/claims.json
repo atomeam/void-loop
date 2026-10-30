@@ -1,0 +1,20 @@
+{
+  "slug": "local-sure-not-shift",
+  "run": 132,
+  "family": "collective-memory miss board",
+  "status": "candidate-not-used",
+  "emit": false,
+  "default": "unattested",
+  "preimage": "sure-not-shift|v1|<class>|shift-refusal|status=unattested",
+  "discarded_not_in_hash": ["shift sentence", "disconfirm line", "post text", "confidence number"],
+  "classes": [
+    {"id": "withheld", "refusal": "fec6c3c83ff07f0b1488f3dd57640b842be30f1fd6e318902b77d79abef82378"},
+    {"id": "felt-sure", "refusal": "9e5e66b4d7ea6811c2ed8e1a70170ae6a7aab51ed5cc1375ba6aef8851a8478b"},
+    {"id": "felt-held", "refusal": "b6877aa40e978e455fd3f20fc5232fabd6595f84e53e2f84bf469fa8a9fbacdf"},
+    {"id": "source-slip", "refusal": "11e2ce1f5dadda90b60b5008bf243505d35975df77d43d6a51019ac8e35b2dc5"},
+    {"id": "abstain", "refusal": "41b00d09e694f0da85134a00cf15fe8008d50924133e2c2d51f8b3584178a3d7"},
+    {"id": "local-only", "refusal": "f3cc153ea6add634a636339e9ea102ae1034e320edc136a89205bae2dbf0d012"}
+  ],
+  "refused_routes": ["/shift", "/timeline", "/canon", "/poll", "/chorus"],
+  "note": "Digests are the contract for the sealed class only. They are not a seal of any post or of a record shift."
+}

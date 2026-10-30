@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Online piano: play with your keyboard or touch · Verse</title>
+<meta name="description" content="A free online piano you play with the computer keyboard, the mouse, a touch screen or a MIDI keyboard: twelve instruments, a sustain pedal, key labels, sheet music in plain letters, record and replay, transpose and reverb. No account; it works offline.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Piano · Verse">
+<meta property="og:description" content="A free online piano you play with the computer keyboard, the mouse, a touch screen or a MIDI keyboard: twelve instruments, a sustain pedal, key labels, sheet music in plain letters, record and replay, transpose and reverb. No account; it works offline.">
+<meta property="og:url" content="https://a-to-mind.com/piano/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { color-scheme: light; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #cfcbdc; --accent: #5b36f0; --on-accent: #fff; --box: #fff; --tint: #efe9ff; --bad: #c62a40; --good: #12795a; --key: #fff; --blk: #1b1826; --hit: #8f73ff; }
+  :root:not([data-theme=light]) { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  :root[data-theme=dark] { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #3a3649; --accent: #a58bff; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --bad: #ff6b7e; --good: #4fd6a8; --key: #e9e7f2; --blk: #0b0a10; --hit: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 20px; margin: 0 0 4px; text-align: center; font-weight: 650; }
+  h2 { font-size: 16px; margin: 0 0 8px; }
+  .sub { font-size: 13px; color: var(--soft); text-align: center; margin: 0 0 10px; min-height: 40px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  #mnav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 12px; min-height: 120px; align-content: flex-start; }
+  #mnav a { font-size: 14px; padding: 8px 12px; min-height: 24px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; background: var(--box); }
+  #mnav a[aria-current=page] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  input, select, textarea { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; max-width: 100%; }
+  textarea { width: 100%; min-height: 92px; font-family: ui-monospace, monospace; font-size: 14px; }
+  input[type=range] { padding: 0; accent-color: var(--accent); min-height: 44px; }
+  input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 44px; min-width: 44px; background: var(--box); color: var(--ink); cursor: pointer; }
+  button[aria-pressed=true], button.go, button[aria-selected=true] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button:disabled { opacity: .5; cursor: default; }
+  .pane { border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin: 10px 0; background: var(--box); }
+  #tries a { padding: 8px 4px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .row > label { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 2px; flex: 1 1 130px; min-width: 0; }
+  .row > label select, .row > label input { width: 100%; }
+  .row.c { justify-content: center; }
+  .chk { flex: 0 1 auto !important; flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; font-size: 15px !important; min-height: 44px; }
+  .row > label.chk input { min-height: 0; width: 20px; height: 20px; flex: 0 0 auto; }
+  .note { font-size: 13px; color: var(--soft); margin: 4px 0; min-height: 20px; }
+  .big { text-align: center; font-size: 64px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; min-height: 70px; }
+  .big small { font-size: 18px; font-weight: 500; color: var(--soft); }
+  .dots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; min-height: 56px; align-items: center; }
+  .dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--box); padding: 0; min-height: 40px; min-width: 40px; font-size: 12px; color: var(--soft); }
+  .dot[data-lv="3"] { border-color: var(--accent); } .dot[data-lv="2"] { border-color: var(--soft); } .dot[data-lv="0"] { opacity: .45; border-style: dashed; }
+  .dot.on { background: var(--accent); color: var(--on-accent); transform: scale(1.12); }
+  .flash { transition: background .08s; } .flash.on { background: var(--tint); }
+  .pend { position: relative; height: 90px; overflow: hidden; } .pend i { position: absolute; left: 50%; bottom: 0; width: 4px; height: 82px; background: var(--accent); border-radius: 2px; transform-origin: 50% 100%; transform: translateX(-50%) rotate(-22deg); } .pend i::after { content: ''; position: absolute; left: -7px; top: 6px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+  .tapbtn { width: 100%; min-height: 96px; font-size: 22px; border-radius: 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; } th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; } th { color: var(--soft); font-weight: 600; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 6px 0; list-style: none; }
+  .chips li { border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; background: var(--tint); font-size: 15px; min-height: 24px; }
+  .kb { position: relative; display: flex; overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; height: 190px; border: 1px solid var(--line); border-radius: 10px; background: var(--box); touch-action: pan-x; user-select: none; -webkit-user-select: none; }
+  .wk { flex: 0 0 44px; height: 180px; border: 1px solid var(--line); border-radius: 0 0 8px 8px; background: var(--key); color: #444; font-size: 11px; padding: 0 0 6px; display: flex; align-items: flex-end; justify-content: center; position: relative; min-height: 0; min-width: 0; box-sizing: border-box; z-index: 1; text-align: center; line-height: 1.1; }
+  .wk.on { background: var(--hit); color: #fff; }
+  .bk { position: absolute; top: 0; width: 28px; height: 112px; margin-left: -14px; background: var(--blk); border: 1px solid var(--line); border-radius: 0 0 6px 6px; color: #ddd; font-size: 10px; padding: 0 0 4px; display: flex; align-items: flex-end; justify-content: center; z-index: 3; min-height: 0; min-width: 0; box-sizing: border-box; }
+  .bk.on { background: var(--hit); }
+  .kbi { position: relative; display: flex; flex: 0 0 auto; }
+  .strobe { height: 54px; border-radius: 10px; margin: 8px 0; background: repeating-linear-gradient(90deg, var(--accent) 0 14px, var(--tint) 14px 28px); background-size: 28px 100%; } .strobe.ok { background: repeating-linear-gradient(90deg, var(--good) 0 14px, var(--tint) 14px 28px); }
+  .neck { width: 100%; min-height: 150px; } .neck svg { width: 100%; height: auto; display: block; } .neck text { fill: var(--ink); font: 9px system-ui; }
+  .meter { position: relative; height: 54px; border-radius: 10px; background: var(--tint); overflow: hidden; margin: 8px 0; }
+  .meter i { position: absolute; top: 0; bottom: 0; width: 4px; left: 50%; margin-left: -2px; background: var(--accent); transition: left .12s; } .meter b { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--good); }
+  .meter.ok i { background: var(--good); }
+  .read { text-align: center; font-size: 56px; font-weight: 700; line-height: 1.1; min-height: 62px; } .read small { font-size: 16px; font-weight: 500; color: var(--soft); display: block; }
+  .strings { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; min-height: 48px; }
+  svg.dia { width: 100%; max-width: 360px; height: auto; display: block; margin: 0 auto; } svg.dia text { fill: var(--ink); font: 11px system-ui; } svg.dia line, svg.dia rect.fr { stroke: var(--soft); } svg.dia .dotf { fill: var(--accent); }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+  details { margin: 8px 0; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+  #related, #asks { margin-top: 14px; } footer { font-size: 13px; color: var(--soft); text-align: center; margin-top: 10px; } footer a { color: var(--soft); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; color: var(--soft); } .tk-row a { color: var(--soft); }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media print { #mnav, button, .row { display: none !important; } }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/piano/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Piano","url":"https://a-to-mind.com/piano/","description":"A free online piano you play with the computer keyboard, the mouse, a touch screen or a MIDI keyboard: twelve instruments, a sustain pedal on the space bar, the computer key shown on each note, reverb, transpose, sheet music in plain letters with public-domain songs, and recording that turns your playing into a sheet. Made in your browser; no account, nothing to download.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"online piano, virtual piano, piano keyboard online, play piano with computer keyboard, piano sheets letters, piano with sustain pedal, midi keyboard online piano","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/piano/?song={song}"},"song-input":"required name=song"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Piano","item":"https://a-to-mind.com/piano/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/piano/app.js">
+<link rel="modulepreload" href="/lib/music-tools.js">
+<link rel="modulepreload" href="/lib/music-audio.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/music-ui.js">
+<link rel="modulepreload" href="/lib/music-de.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main id="app">
+  <h1>Piano</h1>
+  <p class="sub" id="lede">A free online piano: play with your computer keyboard, a touch screen or a MIDI keyboard. Twelve instruments, sustain, key labels, sheets in plain letters, recording and reverb. Nothing is loaded or sent; it works offline.</p>
+  <nav id="mnav" aria-label="Music tools"><a href="/metronome/">Metronome</a><a href="/piano/" aria-current="page">Piano</a><a href="/tuner/">Tuner</a><a href="/bpm/">BPM counter</a><a href="/chords/">Chords and scales</a><a href="/music/">Setlists and catalogue</a><a href="/?q=make%20me%20a%20song">Make me a song</a></nav>
+  <section class="pane" aria-label="Piano">
+    <div class="row"><label>Instrument<select id="ins"><option value="piano" selected>Grand piano</option><option value="epiano">Electric piano</option><option value="organ">Organ</option><option value="strings">Strings</option><option value="synth">Synth lead</option><option value="bell">Bell</option><option value="flute">Flute</option><option value="guitar">Plucked guitar</option><option value="marimba">Marimba</option><option value="harpsichord">Harpsichord</option><option value="musicbox">Music box</option><option value="choir">Choir pad</option></select></label><label>Octave<select id="oct"><option value="-12">Octave down</option><option value="0" selected>Middle</option><option value="12">Octave up</option></select></label><label>Transpose (half steps)<input type="number" id="trans" min="-12" max="12" value="0" inputmode="numeric"></label></div>
+    <div class="kb" id="kb" role="group" aria-label="Piano keyboard, press a key"><div class="kbi" id="kbi"></div></div>
+    <div class="row"><button type="button" id="sus" aria-pressed="false">Sustain (hold the space bar)</button><label class="chk"><input type="checkbox" id="lab" checked> Show the computer key on each note</label><label class="chk"><input type="checkbox" id="rev"> Reverb</label><label class="chk"><input type="checkbox" id="midi"> MIDI keyboard</label></div>
+    <p class="note" id="status" role="status" aria-live="polite">Play with the keys 1 2 3 4 5 6 7 8 9 0 q w e r t y u i o p a s d f g h j k l z x c v b n m. Hold Shift for a sharp. Tap or click the keys on a touch screen.</p>
+  </section>
+  <section class="pane" aria-label="Record and replay">
+    <h2>Record and replay</h2>
+    <div class="row"><button type="button" id="rec" aria-pressed="false">Record</button><button type="button" id="replay" disabled>Play it back</button><button type="button" id="copyRec" disabled>Copy as sheet</button><button type="button" id="clearRec" disabled>Clear</button></div>
+    <p class="note" id="recNote">Nothing recorded yet. Your playing is turned into a sheet in plain letters you can copy, edit and play again.</p>
+  </section>
+  <section class="pane" aria-label="Sheets">
+    <h2>Sheets in plain letters</h2>
+    <div class="row"><label>Song<select id="song"></select></label><label>Tempo (BPM)<input type="number" id="songBpm" min="30" max="300" value="100" inputmode="numeric"></label></div>
+    <label class="vh" for="sheet">Sheet text</label>
+    <textarea id="sheet" spellcheck="false" aria-label="Sheet text, one note per word">E4 E4 F4 G4 | G4 F4 E4 D4 | C4 C4 D4 E4 | E4:1.5 D4:0.5 D4:2</textarea>
+    <div class="row"><button type="button" id="playSheet" class="go">Play the sheet</button><button type="button" id="stopSheet">Stop</button></div>
+    <p class="note" id="sheetNote">A note is a letter and an octave (C4 is middle C, F#4, Bb3). :2 holds it two beats, [C4 E4 G4] is a chord, - is a rest, | is a bar line. Songs here are in the public domain.</p>
+  </section>
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/piano/?song=ode">Ode to Joy</a><a href="/piano/?song=twinkle">Twinkle, Twinkle</a><a href="/piano/?song=elise">Für Elise</a><a href="/piano/?song=canon">Canon in D</a><a href="/piano/?song=jingle">Jingle Bells</a><a href="/piano/?song=lullaby">Brahms Lullaby</a></nav>
+<!-- /asks -->
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/chords/">Chords and scales</a> <a href="/metronome/">Metronome</a> <a href="/tuner/">Tuner</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <p class="note" id="trust" style="text-align:center;min-height:40px">Free, no account, no ads. Made in your browser: nothing leaves your device. Works offline.</p>
+  <p class="note" id="share" style="text-align:center"><button type="button" id="shareBtn">Share this page</button></p>
+  <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
+</main>
+<script type="module">
+  // the page is whole before this runs: its words and controls are in the HTML, and the code that makes the sound is a small module its head preloads
+  import '/piano/app.js';
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js LATER, kept with its modules)</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "discarded_not_in_hash": [
+    "language_sentence"
+  ],
+  "emit": false,
+  "family": "sensory substitution",
+  "fixture": {
+    "id": "pair-label-only",
+    "note": "A sealed sight-to-sound label is not a visual language and not restored sight.",
+    "pair": "sight-to-sound"
+  },
+  "hash_fields": [
+    "disconfirm",
+    "pair",
+    "slug",
+    "status"
+  ],
+  "href_allowlist": [],
+  "pair_enum": [
+    "sight-to-sound",
+    "sight-to-touch",
+    "sound-to-touch",
+    "touch-to-sound",
+    "declined"
+  ],
+  "run": "091",
+  "seal": null,
+  "slug": "local-pair-not-language",
+  "status": "unattested"
+}

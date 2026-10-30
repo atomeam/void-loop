@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Versus · Verse</title>
+<meta name="description" content="Versus: the site Verse is on now and every site it has surpassed.">
+<link rel="canonical" href="https://a-to-mind.com/conquered/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Versus · Verse">
+<meta property="og:description" content="Versus: the site Verse is on now and every site it has surpassed.">
+<meta property="og:url" content="https://a-to-mind.com/conquered/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/conquered (owner, 2026-10-24: "current target at the top, conquered sites stacked underneath, and nothing rendered above it"):
+     Versus (owner, 2026-10-25: "the tower rename is easy its versus"), the same as the card (skills/tower.js towerHtml), full screen, left open and kept current */
+  html, body { margin: 0; min-height: 100%; background: #07060b; color: #ecebf5; font: 16px/1.4 system-ui, -apple-system, sans-serif; }
+  main { padding: 18px 12px 30px; }
+  .tw-stack { max-height: none !important; overflow: visible !important; }
+  #stamp { text-align: center; font-size: 11px; opacity: .5; margin-top: 8px; }
+  a { color: inherit; }
+</style><script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/tower.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/gate-badge.js">
+<link rel="modulepreload" href="/lib/tower-controls.js">
+<link rel="modulepreload" href="/lib/tower-journeys.js">
+<link rel="modulepreload" href="/lib/tower-weight.js">
+<link rel="modulepreload" href="/skills/tower.js">
+<link rel="modulepreload" href="/lib/avatar.js">
+<link rel="modulepreload" href="/lib/tower-rank.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main><div id="tower">Reading Versus…</div><p id="detail" aria-live="polite"></p><div id="stamp"></div></main>
+<script type="module">
+  import { tower, towerArgs } from '/lib/tower.js';
+  import { towerHtml, detailText } from '/skills/tower.js';
+  const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  async function draw() {
+    // the same files and the same arguments the stage's Versus card reads (skills/tower.js load), so this page and the card name one target:
+    // the lock in tower.target.json, then the smallest by rank and weight
+    const [inv, ev, fr, rk, sz, tg] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.size.json'), get('/tower.target.json')]);
+    const t = tower(...towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg }));
+    $('tower').innerHTML = towerHtml(t, esc); $('stamp').textContent = 'updated ' + new Date().toLocaleTimeString();
+    for (const b of $('tower').querySelectorAll('.tower-floor')) b.onclick = () => { const f = t.floors.find((x) => x.floor === +b.dataset.floor); if (f) $('detail').textContent = detailText(f); }; // the card has no detail slot of its own, so the floor's line goes under it
+  }
+  draw(); setInterval(() => { if (document.visibilityState === 'visible') draw(); }, 30000);
+</script>
+</body>
+</html>

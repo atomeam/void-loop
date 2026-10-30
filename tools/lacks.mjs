@@ -16,6 +16,7 @@
 //   node tools/lacks.mjs queue failed.json [--dry]         the asks that did not route become `probe:` jobs for propose-fix.yml (owner token; at most PROBE_OPEN_MAX open)
 // Nothing here writes into the repo but the files named by --out/--report; adding rows is tools/append.mjs, opening the PR is the workflow.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { heavy as heavyLessons, chance, load as loadLessons } from './grow-lessons.mjs';
 import { resolve, dirname } from 'node:path';
 import { plan as probePlan, PROBE_OPEN_MAX } from './probe-asks.mjs';
 import { fileURLToPath } from 'node:url';
@@ -99,11 +100,26 @@ export function usable(ask) {
   return a.length >= 2 && a.length <= MAX_ASK && !/[\n\r]/.test(a) && !/https?:|www\.|@\S+\.\S+|[A-Za-z0-9_-]{32,}/.test(a) && /[a-z]/i.test(a);
 }
 
+/** market reach (docs/STRATEGY.md, monetization first): 1 + the weight of each tag group (money, parity) whose pattern the skill's
+ * name matches, from tools/revenue-tags.json. Pure. */
+export function reach(name, tags = {}) {
+  let w = 1;
+  for (const g of Object.values(tags || {})) if (g && Array.isArray(g.patterns) && g.patterns.some((p) => new RegExp('(^|-)' + p + '($|-)').test(name))) w += +g.weight || 0;
+  return Math.max(1, w); // boosts only: a tag never demotes or drops a want
+}
+
 /** the plan: the top n skills and, for each, up to PER_SKILL of its own examples not already in the benchmark, as candidate rows. Pure. */
 export function plan(data, { n = 6, first = [] } = {}) {
   const have = new Set((Array.isArray(data.bench) ? data.bench : (data.bench && (data.bench.asks || data.bench.items)) || []).map((r) => String(r && r.ask || '').trim().toLowerCase()));
   // the card cycle's next cards come first (tools/card-cycle.mjs: every card gets a turn), then the least proven ones
-  const ranked = rank(data), on = new Set(first), ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name)));
+  const ranked = rank(data), on = new Set(first);
+  // skills whose examples keep routing elsewhere are deprioritized so the plan tries fresher candidates (owner 2026-10-21)
+  const heavy = new Set(heavyLessons());
+  // expected value (docs/LOOP-GAPS.md): how much proof a skill lacks times the chance a try at it lands, from the result memory
+  // in tools/grow-lessons.json. A skill never tried scores its lack x 0.5, so fresh skills and proven-weak ones both get turns.
+  const mem = data.lessons || loadLessons(), tags = data.revenue || readJson('tools/revenue-tags.json', {}), boost = data.studyBoost || {}, ev = (r) => r.score * chance(r.name, mem) * reach(r.name, tags) * (boost[r.name] || 1); // a finished study with strong evidence (tools/study-engine.mjs studyBoosts) moves its want up, never off
+  const byEv = (a, b) => ev(b) - ev(a);
+  const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name)).sort(byEv)).concat(ranked.filter((r) => heavy.has(r.name)).sort(byEv));
   // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
   // the weakest skills that can still be hardened (2026-10-20: the top six were all done, the plan came back empty and grow-self stopped)
   const want = Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6)), picks = [], candidates = [], seen = new Set();
@@ -134,9 +150,16 @@ export function missedIn(log, candidates) {
 }
 
 /** after the probe: the rows that routed to their skill, and a report that names every one that did not and what answered instead. Pure. */
+/** true when the skill that answered is the one we wanted, or a near-name of it (skycard ≈ sky-card). Pure. */
+export function nearMatch(want, got) {
+  const w = String(want || '').replace(/^skill:/, '').toLowerCase().replace(/[-_]/g, '');
+  const g = String(got || '').toLowerCase().replace(/^skill:/, '').replace(/[-_]/g, '').split(/\s/)[0];
+  return w && g && (w === g || w.includes(g) || g.includes(w));
+}
 export function settle(candidates, log) {
-  const missed = missedIn(log, candidates), passing = candidates.filter((c) => !missed.has(c.ask));
-  const failed = candidates.filter((c) => missed.has(c.ask)).map((c) => ({ ask: c.ask, want: c.want, got: missed.get(c.ask) }));
+  const missed = missedIn(log, candidates);
+  const passing = candidates.filter((c) => !missed.has(c.ask) || nearMatch(c.want, missed.get(c.ask)));
+  const failed = candidates.filter((c) => missed.has(c.ask) && !nearMatch(c.want, missed.get(c.ask))).map((c) => ({ ask: c.ask, want: c.want, got: missed.get(c.ask) }));
   return { passing, failed };
 }
 

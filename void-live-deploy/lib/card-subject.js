@@ -20,16 +20,19 @@ const MOTIFS = {
   sword: 'sword swords blade knife war battle weapon fight warrior', flame: 'flame fire burn burning ember explosion', crown: 'crown king queen throne royal kingdom',
   wave: 'ocean sea wave waves water ship island river boat', mountain: 'mountain mountains peak climb hill', heart: 'heart love romance hearts', gem: 'crystal gem gems diamond jewel treasure gold',
   note: 'music musical song songs singer singers band bands album albums melody concert concerts dance dancing idol idols choir orchestra guitar piano jazz rock opera rapper rappers', // the K-pop card had no picture of its own (2026-10-17)
-  clock: 'clock time watchmaker hour', mask: 'mask masks mask disguise party carnival theatre',
+  clock: 'clock clocks watchmaker hour hours', mask: 'mask masks mask disguise party carnival theatre',
   // round 2 (owner, 2026-10-18: "continue to improve the card art its not perfect"): a cat, a skyline, a black hole, a chart, a bowl, a warning and code each had only a stand-in
   cat: 'cat cats kitten kitty feline tiger lion lynx', city: 'city cities tokyo skyline street streets neon downtown metropolis skyscraper tower towers urban', hole: 'hole holes singularity horizon vortex blackhole accretion',
   chart: 'stock stocks market markets money price prices finance coin coins cash bank dollar dollars profit growth economy trading invest investing budget', food: 'recipe recipes cook cooking food kitchen bake baking soup eggs flour dinner meal dish bowl pancake pancakes',
   warning: 'error errors bug bugs broke broken fail failed failure crash warning fault exception outage incident', code: 'code coding hacker hack program programming programmer developer matrix software computer digital cyber binary algorithm script scripts javascript python typescript function functions variable debug compile compiler api database syntax github',
   dragon: 'dragon dragons wyvern serpent drake',
+  doll: 'doll dolls figurine figurines toy toys puppet puppets mannequin', // a toy is drawn as Verse's own small doll (owner, 2026-10-26)
+  stopwatch: 'stopwatch stopwatches timer timers countdown laps lap', // the stopwatch card drew a key (its link names the keys; owner, 2026-10-24: the stopwatch card)
+  wheel: 'wheel wheels spinner roulette raffle', // the wheel of names card drew a bare hexagon (owner, 2026-10-24: "shouldnt the card art be a wheel?")
   landscape: 'geography landscape country countries continent continents valley desert canyon terrain plains',
 };
 // the hue each motif is drawn in, so a dragon burns red and the sea is blue whatever the family's hue (the family's hue still tints the rest of the plate)
-export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6 };
+export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6, wheel: 330, stopwatch: 4, doll: 8 }; // person (the neutral portrait plate) takes the family hue
 export const motifHue = (m) => (Number.isFinite(MOTIF_HUE[m]) ? MOTIF_HUE[m] : null);
 // the motifs that stand on a horizon: the plate draws a far ridge and a floor under them, so they sit in a place instead of floating
 export const GROUNDED = new Set(['house', 'tree', 'mountain', 'wave', 'city', 'sword', 'dragon']);
@@ -48,8 +51,12 @@ export function nounsOf(text, max = 6) {
   return [...seen.values()].sort((a, b) => (b.n + (WORD_MOTIF[b.w] || WORD_MOTIF[stem(b.w)] ? 2 : 0)) - (a.n + (WORD_MOTIF[a.w] || WORD_MOTIF[stem(a.w)] ? 2 : 0)) || a.at - b.at).slice(0, max).map((e) => e.w);
 }
 /** the paint subject of a card: the answer's own nouns as one line; with too little answer text, the card title's content words. Pure. */
+// a status card (Fixed, Still open, Fixes you named, Changed, Waiting) reports work, it is not a failure: the warning plate is kept for a card about a
+// real error or outage (owner, 2026-10-29: a plain note about my own card drew a hazard triangle, from "I own the fault")
+export const isStatusCard = (text) => /^(?:Fixed|Still open|Fixes you named|Changed|Waiting|Next step):/m.test(String(text || ''));
 export function subjectOf(title, text) {
   let n = nounsOf(text); if (n.length < 2) n = [...new Set([...n, ...nounsOf(title)])].slice(0, 6);
+  if (isStatusCard(text)) n = n.filter((w) => (WORD_MOTIF[w] || WORD_MOTIF[stem(w)]) !== 'warning');
   return { nouns: n, phrase: n.join(' ') };
 }
 /** the motif names (at most 3, no repeats) for a list of nouns, in order. Pure. */
@@ -87,6 +94,11 @@ const DRAW = {
   code: [['M34 22L8 50L34 78M66 22L92 50L66 78M57 14L43 86', 'N']],
   dragon: [['M46 60L2 14Q10 40 6 54Q18 46 22 62Q32 52 34 70Q42 62 46 74Z', 'P'], ['M54 60L98 14Q90 40 94 54Q82 46 78 62Q68 52 66 70Q58 62 54 74Z', 'P'], ['M43 30Q50 6 57 30L59 66Q50 96 41 66Z', 'P'], ['M44 20L36 4M56 20L64 4M50 90L50 98', 'N'], [circ(46, 30, 2), 'G'], [circ(54, 30, 2), 'G']],
   landscape: [['M4 90L4 62Q22 40 42 62Q62 30 96 60L96 90Z', 'P'], ['M4 78Q30 66 50 80T96 74', 'N'], [circ(76, 26, 10), 'G']],
+  stopwatch: [[circ(50, 58, 36), 'P'], ['M44 10H56M50 10V22M74 26L80 20', 'N'], [circ(50, 58, 30), 'L'], ['M50 58L64 36', 'G'], [circ(50, 58, 4), 'G'], ['M50 28V32M80 58H76M50 88V84M20 58H24', 'N']],
+  wheel: [[circ(50, 54, 40), 'P'], ['M50 14V94M10 54H90M22 26L78 82M78 26L22 82', 'N'], ['M50 54L50 14A40 40 0 0 1 78 26Z M50 54L90 54A40 40 0 0 1 78 82Z M50 54L50 94A40 40 0 0 1 22 82Z M50 54L10 54A40 40 0 0 1 22 26Z', 'L'], [circ(50, 54, 7), 'G'], ['M42 2H58L50 16Z', 'G']],
+  // Verse's own small doll: a glum face with a receding hairline, boxer shorts and little red dancing shoes (drawn from the answer's own words, no show art)
+  doll: [['M50 8a16 15 0 1 0 0.1 0Z', 'P'], ['M34 17Q38 8 46 9M66 17Q62 8 54 9', 'N'], [circ(44, 20, 1.8), 'I'], [circ(56, 20, 1.8), 'I'], ['M43 28Q50 23 57 28', 'N'], ['M37 38H63L61 62H39Z', 'L'], ['M37 40L26 58M63 40L74 58', 'N'], ['M39 60H61L65 76H53L50 70L47 76H35Z', 'G'], ['M42 76L40 84M58 76L60 84', 'N'], ['M22 96Q22 80 40 82L46 96Z', 'R'], ['M78 96Q78 80 60 82L54 96Z', 'R']],
+  person: [[circ(50, 32, 17), 'P'], ['M14 94Q14 56 50 56Q86 56 86 94Z', 'P']],
   mask: [['M10 28Q50 12 90 28Q92 64 70 80Q50 94 30 80Q8 64 10 28Z', 'P'], ['M24 42Q34 36 44 46Q34 54 24 42ZM56 46Q66 36 76 42Q66 54 56 46Z', 'I'], ['M38 70Q50 78 62 70', 'N']],
 };
 /** the motifs as ink drawings for an art box of w x h: a gold halo of sigils behind, the first motif large, the others beside it. `c` = { P, L, D, G, ink, sw }. Pure. */
@@ -94,7 +106,7 @@ const DRAW = {
 export const motifPaths = (name) => DRAW[name] || null;
 export function motifSvg(names, w, h, c) {
   if (!names || !names.length) return '';
-  const fill = { P: c.P, L: c.L, I: c.ink, G: c.G, N: 'none' }, u = h / 100;
+  const fill = { P: c.P, L: c.L, I: c.ink, G: c.G, N: 'none', R: '#c8372d' }, u = h / 100;
   const one = (name, cx, cy, sz) => '<g transform="translate(' + (cx - sz / 2).toFixed(1) + ' ' + (cy - sz / 2).toFixed(1) + ')scale(' + (sz / 100).toFixed(3) + ')">' + DRAW[name].map(([d, f]) => '<path d="' + d + '" fill="' + fill[f] + '"/>').join('') + '</g>';
   let s = '<g stroke="' + c.ink + '" stroke-width="' + (c.sw * 2.2).toFixed(1) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">';
   s += '<g stroke="' + c.G + '" stroke-width="' + (1.2 * u).toFixed(1) + '" opacity=".75"><circle cx="' + (w / 2).toFixed(1) + '" cy="' + (h / 2).toFixed(1) + '" r="' + (h * 0.47).toFixed(1) + '"/><circle cx="' + (w / 2).toFixed(1) + '" cy="' + (h / 2).toFixed(1) + '" r="' + (h * 0.41).toFixed(1) + '" stroke-dasharray="' + (2 * u).toFixed(1) + ' ' + (5 * u).toFixed(1) + '"/></g>';

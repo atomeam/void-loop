@@ -1,0 +1,164 @@
+name: Promote In-Flight Claims to Proven
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout glassbox
+        uses: actions/checkout@v4
+        with:
+          path: glassbox
+          fetch-depth: 0
+
+      - name: Require PROMOTION_TOKEN
+        env:
+          PROMOTION_TOKEN: ${{ secrets.PROMOTION_TOKEN }}
+        run: |
+          if [ -z "$PROMOTION_TOKEN" ]; then
+            echo "PROMOTION_TOKEN is missing. Add a PAT with contents:write on atomeam/promise-ledger and atomeam/a-to-mind.com. This job does not write D1, hold, or ALPHA."
+            exit 1
+          fi
+
+      - name: Checkout promise-ledger
+        uses: actions/checkout@v4
+        with:
+          repository: atomeam/promise-ledger
+          token: ${{ secrets.PROMOTION_TOKEN }}
+          path: promise-ledger
+
+      - name: Checkout a-to-mind.com
+        uses: actions/checkout@v4
+        with:
+          repository: atomeam/a-to-mind.com
+          token: ${{ secrets.PROMOTION_TOKEN }}
+          path: a-to-mind.com
+
+      - name: Process and promote claims from this PR only
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+          const crypto = require("crypto");
+          const { execSync } = require("child_process");
+
+          const inFlightDir = "./glassbox/in-flight";
+          const promiseClaimsDir = "./promise-ledger/claims";
+          const surfaceLedgerFile = "./a-to-mind.com/surfaceledger/surface-ledger.md";
+          const treatyFile = "./a-to-mind.com/.well-known/treaty.json";
+          const prNumber = process.env.PR_NUMBER;
+
+          fs.mkdirSync(promiseClaimsDir, { recursive: true });
+          fs.mkdirSync(path.dirname(surfaceLedgerFile), { recursive: true });
+          fs.mkdirSync(path.dirname(treatyFile), { recursive: true });
+
+          let changed = [];
+          try {
+            changed = execSync(
+              `git -C glassbox diff --name-only ${process.env.BASE_SHA} ${process.env.HEAD_SHA}`,
+              { encoding: "utf8" }
+            )
+              .split("\n")
+              .map((s) => s.trim())
+              .filter(Boolean);
+          } catch (err) {
+            console.warn("diff failed, falling back to in-flight/*.json", err.message);
+          }
+
+          const candidates = (changed.length
+            ? changed
+                .filter((f) => f.startsWith("in-flight/") && f.endsWith(".json") && !f.endsWith("schema.json"))
+                .map((f) => path.basename(f))
+            : fs.readdirSync(inFlightDir).filter((f) => f.endsWith(".json") && f !== "schema.json"));
+
+          const newlyProven = [];
+          for (const file of candidates) {
+            const full = path.join(inFlightDir, file);
+            if (!fs.existsSync(full)) continue;
+            const raw = JSON.parse(fs.readFileSync(full, "utf8"));
+            if (raw.promote === true) {
+              throw new Error(`${file} has promote=true; refuse self-promotion`);
+            }
+            if (raw.target !== "github:atomeam/glassbox") {
+              throw new Error(`${file} target is not github:atomeam/glassbox`);
+            }
+            for (const claim of raw.claims || []) {
+              const destFile = path.join(promiseClaimsDir, `${claim.id}.json`);
+              if (fs.existsSync(destFile)) {
+                console.log(`skip existing ${claim.id}`);
+                continue;
+              }
+              const proven = {
+                ...claim,
+                status: "PROVEN",
+                promoted_at: new Date().toISOString(),
+                approved_via: `PR #${prNumber}`,
+              };
+              const keys = Object.keys(proven).filter((k) => k !== "content_hash").sort();
+              proven.content_hash =
+                "sha256:" +
+                crypto.createHash("sha256").update(JSON.stringify(proven, keys), "utf8").digest("hex");
+              fs.writeFileSync(destFile, JSON.stringify(proven, null, 2) + "\n");
+              newlyProven.push(proven);
+            }
+          }
+
+          const allClaimFiles = fs
+            .readdirSync(promiseClaimsDir)
+            .filter((f) => f.endsWith(".json"))
+            .sort();
+          let ledgerMd =
+            "# Surface Ledger\n\nQuote only PROVEN rows with source + hash. Expired past 90 days: hard fail.\n\n| ID | Kind | Claim | Hash | Expires |\n|---|---|---|---|---|\n";
+          for (const f of allClaimFiles) {
+            const c = JSON.parse(fs.readFileSync(path.join(promiseClaimsDir, f), "utf8"));
+            ledgerMd += `| \`${c.id}\` | ${c.kind} | ${c.text} | \`${c.content_hash.slice(0, 18)}…\` | ${c.expires_at} |\n`;
+          }
+          fs.writeFileSync(surfaceLedgerFile, ledgerMd + "\n");
+
+          const treatyData = {
+            schema: "2026.1.0",
+            schema_id: "a-to-mind.treaty/2026.1.0",
+            issuer: "https://a-to-mind.com",
+            ledger_surface: "/surfaceledger/surface-ledger.md",
+            total_proven_claims: allClaimFiles.length,
+            last_rehash: new Date().toISOString(),
+            root_hash:
+              "sha256:" +
+              crypto.createHash("sha256").update(ledgerMd, "utf8").digest("hex"),
+            note: "Promoted only after human merge of a glassbox PR. Service keys cannot ALLOW.",
+          };
+          fs.writeFileSync(treatyFile, JSON.stringify(treatyData, null, 2) + "\n");
+          console.log(`promoted ${newlyProven.length} claims; ledger now ${allClaimFiles.length}`);
+          NODE
+
+      - name: Commit and push to promise-ledger
+        run: |
+          cd promise-ledger
+          git config user.name "glassbox-promoter[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add claims/
+          git diff --cached --quiet && echo "no promise-ledger changes" && exit 0
+          git commit -m "feat(ledger): promote verified claims from PR #${{ github.event.pull_request.number }}"
+          git push origin HEAD:main
+
+      - name: Commit and push to a-to-mind.com
+        run: |
+          cd a-to-mind.com
+          git config user.name "glassbox-promoter[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add surfaceledger/surface-ledger.md .well-known/treaty.json
+          git diff --cached --quiet && echo "no site ledger changes" && exit 0
+          git commit -m "chore(surface): update ledger and re-hash treaty for PR #${{ github.event.pull_request.number }}"
+          git push origin HEAD:main

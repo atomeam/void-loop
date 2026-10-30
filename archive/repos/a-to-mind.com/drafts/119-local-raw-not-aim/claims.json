@@ -1,0 +1,34 @@
+{
+  "slug": "local-raw-not-aim",
+  "run": 119,
+  "family": "opt-in gesture or gaze as local input",
+  "status": "unattested",
+  "seal": false,
+  "emit": false,
+  "preimage": "void-raw-not-aim|v1|class=<id>|status=unattested",
+  "discarded_from_hash": ["aim_sentence", "coordinates", "device_number"],
+  "classes": ["withheld", "raw-update", "session-unidentified", "abstain"],
+  "refusals": ["aim", "gaze-trace", "dwell-select", "camera", "device-id"],
+  "hypotheses": [
+    {
+      "id": "raw-is-not-aim",
+      "confidence": "design-material",
+      "statement": "A catalog raw class can be sealed without becoming an aim or a gaze trace.",
+      "default": "unattested"
+    },
+    {
+      "id": "session-id-is-not-look",
+      "confidence": "low",
+      "statement": "A session-scoped device mark, including an unidentified zero, is not a look and not a person.",
+      "source": "W3C Pointer Events Level 4 WD 2026-10-08",
+      "default": "unattested"
+    },
+    {
+      "id": "eye-tracking-fix-is-not-a-look",
+      "confidence": "low",
+      "statement": "A product note that lists eye tracking among addressed issues does not seal a look.",
+      "source_post": "2108238961999270190",
+      "default": "unattested"
+    }
+  ]
+}

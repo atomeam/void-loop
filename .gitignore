@@ -17,3 +17,7 @@ dist/
 media/
 .store-tmp/
 site-test-shots/
+
+# the tower gate sweep's slice files (tools/tower-gate.mjs --shard i/N): folded into tower.evidence.json by the merge job, never committed
+void-live-deploy/tower.evidence.[0-9]*.json
+.paint-src/

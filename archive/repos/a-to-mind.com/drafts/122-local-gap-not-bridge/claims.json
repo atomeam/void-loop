@@ -1,0 +1,19 @@
+{
+  "slug": "local-gap-not-bridge",
+  "run": 122,
+  "family": "anomalous-event timeline",
+  "status": "candidate-not-used",
+  "default_status": "unattested",
+  "emit": false,
+  "human_seal": false,
+  "live_copy_changed": false,
+  "hash_preimage": "void-gap-not-bridge|v1|left=<class>|gap=gap-empty|right=<class>|bridge=refused|status=unattested",
+  "discarded_before_hash": ["bridge_sentence", "post_ids", "page_text", "span", "era_gloss"],
+  "seats": {
+    "left": ["note-class-a", "note-class-b", "note-class-c"],
+    "gap": ["gap-empty"],
+    "right": ["note-class-a", "note-class-b", "note-class-c"]
+  },
+  "refusal": "A gap mark is not a bridge and not a missing event.",
+  "denied": ["date-axis", "connecting-line", "span-duration", "flap-score", "era-name", "sequence-id", "next-prev", "inserted-event", "contact", "healing", "crash-retrieval", "extraterrestrial-hardware"]
+}

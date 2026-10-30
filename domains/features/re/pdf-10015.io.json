@@ -1,0 +1,1353 @@
+{
+ "site": "10015.io",
+ "url": "https://10015.io/tools/pdf-merger",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "_buildManifest.js",
+   "t": "js",
+   "b": 28724
+  },
+  {
+   "f": "_ssgManifest.js",
+   "t": "js",
+   "b": 5867
+  },
+  {
+   "f": "1454-743267d3524e5007.js",
+   "t": "js",
+   "b": 38425
+  },
+  {
+   "f": "1874.c5014fb4e74119e9.js",
+   "t": "js",
+   "b": 6207
+  },
+  {
+   "f": "2084-0032cf7913090539.js",
+   "t": "js",
+   "b": 15556
+  },
+  {
+   "f": "2092.91362663aeee2781.js",
+   "t": "js",
+   "b": 25787
+  },
+  {
+   "f": "2480.2dc8c88f57ce68e9.js",
+   "t": "js",
+   "b": 86
+  },
+  {
+   "f": "2512-a886e9fafa99a4bd.js",
+   "t": "js",
+   "b": 21785
+  },
+  {
+   "f": "3674-b5a55cdf79c1b309.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "3687-fe0d5dedf56a8bb7.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "3748-c67062f92fd00288.js",
+   "t": "js",
+   "b": 48625
+  },
+  {
+   "f": "4225-242b432a35f2e641.js",
+   "t": "js",
+   "b": 53192
+  },
+  {
+   "f": "452-04cfc07ed7b3b5af.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "4667-097f5e7d78ccac4a.js",
+   "t": "js",
+   "b": 10523
+  },
+  {
+   "f": "5161-9139363905c94449.js",
+   "t": "js",
+   "b": 100544
+  },
+  {
+   "f": "5360-06fd30e23ffc3496.js",
+   "t": "js",
+   "b": 11368
+  },
+  {
+   "f": "5528.b45d20073257d9c4.js",
+   "t": "js",
+   "b": 12816
+  },
+  {
+   "f": "576-f97b2b683e69204f.js",
+   "t": "js",
+   "b": 9093
+  },
+  {
+   "f": "5890-8db0cee89f758431.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "6624.b17f8ec7fe9f33e6.js",
+   "t": "js",
+   "b": 2531
+  },
+  {
+   "f": "669-a8877f58677d8de5.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "8643.ed910fdcd5e0009c.js",
+   "t": "js",
+   "b": 2521
+  },
+  {
+   "f": "8764-593a836a579a1569.js",
+   "t": "js",
+   "b": 23287
+  },
+  {
+   "f": "9296-3a0304e0f30c174b.js",
+   "t": "js",
+   "b": 24781
+  },
+  {
+   "f": "9413-58c92f8233e41660.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "9450-5c5adaa93e01a7fa.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "9669-cff2ccf3ed05171a.js",
+   "t": "js",
+   "b": 17092
+  },
+  {
+   "f": "framework-79bce4a3a540b080.js",
+   "t": "js",
+   "b": 130002
+  },
+  {
+   "f": "main-be6a7f5e51083211.js",
+   "t": "js",
+   "b": 125034
+  },
+  {
+   "f": "_app-697468a544e3fe97.js",
+   "t": "js",
+   "b": 97497
+  },
+  {
+   "f": "coding-tools-fb56758d1bd013cf.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "color-tools-3ec4558535c40623.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "css-tools-1a9ffcae5fcf101a.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "image-tools-acd3a11550087a81.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "[token].js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "pdf-tools-89128347fd12ff90.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "product-finder-f1503148ca9e86cb.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "security-tools-c5843638fd95ae1e.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "[token].js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "text-tools-8410afe827db676a.js",
+   "t": "js",
+   "b": 0
+  },
+  {
+   "f": "pdf-merger-46a5ee3bbbce6a24.js",
+   "t": "js",
+   "b": 34450
+  },
+  {
+   "f": "webpack-daa436a53cb67808.js",
+   "t": "js",
+   "b": 9778
+  },
+  {
+   "f": "1cdbadac87c5dc23.css",
+   "t": "css",
+   "b": 11091
+  },
+  {
+   "f": "d94b5962628d4620.css",
+   "t": "css",
+   "b": 10760
+  },
+  {
+   "f": "ym.js",
+   "t": "js",
+   "b": 897
+  },
+  {
+   "f": "ep2.adtrafficquality.google/sodar2.js",
+   "t": "js",
+   "b": 21546,
+   "ext": true
+  },
+  {
+   "f": "fonts.googleapis.com/css",
+   "t": "css",
+   "b": 11550,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ads790.",
+   "t": "js",
+   "b": 54,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 3250,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 7881,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.[token]",
+   "t": "js",
+   "b": 1981,
+   "ext": true
+  },
+  {
+   "f": "fundingchoicesmessages.google.com/ca-pub-5192391535741661",
+   "t": "js",
+   "b": 226553,
+   "ext": true
+  },
+  {
+   "f": "mc.yandex.ru/watch.js",
+   "t": "js",
+   "b": 147232,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.[token].js",
+   "t": "js",
+   "b": 63368,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/adsbygoogle.js",
+   "t": "js",
+   "b": 166645,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/rum.js",
+   "t": "js",
+   "b": 84278,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/ufs_web_display.js",
+   "t": "js",
+   "b": 246218,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/reactive_library_fy2021.js",
+   "t": "js",
+   "b": 239253,
+   "ext": true
+  },
+  {
+   "f": "pagead2.googlesyndication.com/show_ads_impl_fy2021.js",
+   "t": "js",
+   "b": 513979,
+   "ext": true
+  },
+  {
+   "f": "static.cloudflareinsights.[token]",
+   "t": "js",
+   "b": 31853,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/abg_lite_fy2021.js",
+   "t": "js",
+   "b": 21520,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 1712,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/qs_click_protection_fy2021.js",
+   "t": "js",
+   "b": 20918,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.com/window_focus_fy2021.js",
+   "t": "js",
+   "b": 2746,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 16748,
+   "ext": true
+  },
+  {
+   "f": "tpc.googlesyndication.[token].js",
+   "t": "js",
+   "b": 26234,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 534625,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.[token].js",
+   "t": "js",
+   "b": 44403,
+   "ext": true
+  }
+ ],
+ "assetCount": 68,
+ "bytes": 3312866,
+ "html": {
+  "mobile": {
+   "title": "PDF Merger: Order and Merge PDF Files | ",
+   "lang": "en",
+   "manifest": "https://10015.io/manifest.json",
+   "feeds": 2,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 7,
+    "twitter": true,
+    "themeColor": true,
+    "appleCapable": false
+   },
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "10015.io",
+    "www.google.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "accepts": [
+    "application/pdf,.pdf"
+   ],
+   "inputTypes": {
+    "file": 1,
+    "text": 1
+   },
+   "textareas": 1,
+   "ariaLabels": [
+    "Add to Favs",
+    "Advertisement",
+    "Bookmark PDF Compressor",
+    "Bookmark PDF Editor",
+    "Bookmark PDF Splitter",
+    "Bug Report",
+    "Buy me a coffee",
+    "Clear search",
+    "Free online tools",
+    "Image tools",
+    "Search",
+    "Search Listings",
+    "Search Tools",
+    "Share",
+    "Sign In",
+    "Text tools",
+    "Tool categories",
+    "Web application suite"
+   ],
+   "roles": {
+    "tab": 10,
+    "alert": 1
+   },
+   "live": true,
+   "skipLink": true,
+   "noscript": true
+  },
+  "desktop": {
+   "iframes": [
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "10015.io",
+    "www.google.com",
+    "googleads.g.doubleclick.net",
+    "googleads.g.doubleclick.net"
+   ],
+   "ariaLabels": [
+    "Add to Favs",
+    "Advertisement",
+    "Bookmark PDF Compressor",
+    "Bookmark PDF Editor",
+    "Bookmark PDF Splitter",
+    "Bug Report",
+    "Buy me a coffee",
+    "Clear search",
+    "Search",
+    "Search Tools",
+    "Share",
+    "Sign In",
+    "Tool categories"
+   ]
+  }
+ },
+ "controls": [
+  {
+   "l": "10015 Tools Home",
+   "w": "md"
+  },
+  {
+   "l": "About",
+   "w": "md"
+  },
+  {
+   "l": "Add to Favs",
+   "w": "md"
+  },
+  {
+   "l": "Bookmark PDF Compressor",
+   "w": "md"
+  },
+  {
+   "l": "Bookmark PDF Editor",
+   "w": "md"
+  },
+  {
+   "l": "Bookmark PDF Splitter",
+   "w": "md"
+  },
+  {
+   "l": "Bug Report",
+   "w": "md"
+  },
+  {
+   "l": "Buy Me A Coffee",
+   "w": "d"
+  },
+  {
+   "l": "Buy me a coffee",
+   "w": "md"
+  },
+  {
+   "l": "Clear search",
+   "w": "d"
+  },
+  {
+   "l": "Comment",
+   "w": "md"
+  },
+  {
+   "l": "Contact",
+   "w": "md"
+  },
+  {
+   "l": "Link to it",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Product Finder βETA",
+   "w": "d"
+  },
+  {
+   "l": "Search",
+   "w": "m"
+  },
+  {
+   "l": "Share",
+   "w": "md"
+  },
+  {
+   "l": "Sign In",
+   "w": "md"
+  },
+  {
+   "l": "Submit Your Product",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Use",
+   "w": "md"
+  },
+  {
+   "l": "cite it",
+   "w": "md"
+  }
+ ],
+ "manifest": {
+  "name": "10015 Tools",
+  "display": "standalone",
+  "displayOverride": [],
+  "orientation": "portrait",
+  "scope": "",
+  "icons": 3,
+  "screenshots": 0,
+  "categories": [],
+  "shortcuts": [],
+  "shareTarget": null,
+  "fileHandlers": [],
+  "protocolHandlers": [],
+  "launchHandler": false,
+  "widgets": 0,
+  "relatedApps": 0,
+  "lang": ""
+ },
+ "serviceWorker": {
+  "url": "sw.js",
+  "bytes": 93217,
+  "workbox": true,
+  "precache": true,
+  "fetchHandler": false,
+  "skipWaiting": true,
+  "sync": false,
+  "periodicSync": false,
+  "push": false,
+  "notificationClick": false,
+  "cacheNames": []
+ },
+ "robots": {
+  "disallow": [
+   "/api/"
+  ],
+  "sitemaps": [
+   "https://10015.io/sitemap"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 2,
+  "index": true,
+  "sections": [
+   {
+    "s": "sitemap",
+    "n": 2
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "_buildManifest.js",
+   "own": true,
+   "apiPaths": [
+    "/api/text-to-caption@227",
+    "/api/ai/text-to-caption@262",
+    "/api/generate-color-palette@297",
+    "/api/ai/generate-color-palette@339",
+    "/api/describe-image/main@381",
+    "/api/ai/describe-image/main@420",
+    "/api/describe-image/sub@459",
+    "/api/ai/describe-image/sub@497",
+    "/api/sitemap@558",
+    "/api/sitemap/pages@611",
+    "/api/sitemap/dynamic@672",
+    "/api/tool-feed@729",
+    "/api/product-feed@783",
+    "/api/llms@836"
+   ]
+  },
+  {
+   "file": "1454-743267d3524e5007.js",
+   "own": true,
+   "apis": [
+    "Picture in picture"
+   ]
+  },
+  {
+   "file": "1874.c5014fb4e74119e9.js",
+   "own": true,
+   "apiPaths": [
+    "/api/comments/create@2943",
+    "/api/comments/get-all@3769"
+   ]
+  },
+  {
+   "file": "2084-0032cf7913090539.js",
+   "own": true,
+   "apiPaths": [
+    "/api/favs/update@12393"
+   ],
+   "routes": [
+    "/tools/@13532"
+   ]
+  },
+  {
+   "file": "2092.91362663aeee2781.js",
+   "own": true,
+   "apis": [
+    "Copy and paste through the clipboard"
+   ]
+  },
+  {
+   "file": "2512-a886e9fafa99a4bd.js",
+   "own": true,
+   "flags": [
+    "useFsAccessApi@14087"
+   ],
+   "apis": [
+    "Drag and drop files or items",
+    "Save and open files in place (File System Access)"
+   ],
+   "mimes": [
+    "audio/aac",
+    "application/x-abiword",
+    "application/x-freearc",
+    "image/avif",
+    "video/x-msvideo",
+    "application/vnd.amazon.ebook",
+    "image/bmp",
+    "application/x-bzip",
+    "application/x-bzip2",
+    "application/x-cdf",
+    "application/x-csh",
+    "text/csv",
+    "application/msword",
+    "application/vnd.ms-fontobject",
+    "application/epub+zip",
+    "application/gzip",
+    "image/gif",
+    "image/heic",
+    "image/heif",
+    "image/vnd.microsoft.icon"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "3748-c67062f92fd00288.js",
+   "own": true,
+   "flags": [
+    "disableTransforms@38445",
+    "useDragOverlay@38488"
+   ],
+   "keydownHandlers": 1
+  },
+  {
+   "file": "4225-242b432a35f2e641.js",
+   "own": true,
+   "apiPaths": [
+    "/api/bug-reports/create@16025",
+    "/api/favs/update@17776"
+   ],
+   "flags": [
+    "showFooter@36185"
+   ],
+   "routes": [
+    "/tools/@34464"
+   ],
+   "keydownHandlers": 1
+  },
+  {
+   "file": "4667-097f5e7d78ccac4a.js",
+   "own": true,
+   "mimes": [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/avif",
+    "application/pdf",
+    "application/epub+zip",
+    "application/msword"
+   ]
+  },
+  {
+   "file": "5161-9139363905c94449.js",
+   "own": true,
+   "storage": [
+    "hasSeenWelcomeModal@76479"
+   ],
+   "routes": [
+    "/manifest.json@28715",
+    "/icons/icon-192x192.png@28784",
+    "/icons/icon-180x180.png@28874",
+    "/favicon.ico@28936",
+    "/tools/@41826",
+    "/product-finder@52532",
+    "/about@52838",
+    "/terms@53003",
+    "/privacy@53184",
+    "/contact@53373",
+    "/profile@64801",
+    "/tool-request@64968",
+    "/orders@65152",
+    "/product-finder/submit@72811",
+    "/product-finder/feature@72923"
+   ],
+   "mimes": [
+    "application/atom+xml"
+   ],
+   "keydownHandlers": 2,
+   "media": [
+    "print"
+   ]
+  },
+  {
+   "file": "9296-3a0304e0f30c174b.js",
+   "own": true,
+   "apiPaths": [
+    "/api/comments/update@12106",
+    "/api/comments/delete@12822",
+    "/api/comments/report@13539"
+   ]
+  },
+  {
+   "file": "framework-79bce4a3a540b080.js",
+   "own": true,
+   "apis": [
+    "Picture in picture"
+   ]
+  },
+  {
+   "file": "main-be6a7f5e51083211.js",
+   "own": true,
+   "apiPaths": [
+    "/api@75992"
+   ],
+   "flags": [
+    "disableStaticImages@55738"
+   ],
+   "routes": [
+    "/_next/image@23468"
+   ],
+   "mimes": [
+    "text/partytown",
+    "image/webp"
+   ],
+   "usesLocationSearch": true,
+   "media": [
+    "dark"
+   ]
+  },
+  {
+   "file": "_app-697468a544e3fe97.js",
+   "own": true,
+   "params": [
+    "error@17236"
+   ],
+   "apiPaths": [
+    "/api/auth/signin@12424"
+   ],
+   "flags": [
+    "useSession@9533",
+    "showSpinner@41091",
+    "useCSSOMInjection@72209"
+   ],
+   "apis": [
+    "Picture in picture",
+    "Share files through the system share sheet",
+    "Share through the system share sheet",
+    "Syncs between tabs"
+   ]
+  },
+  {
+   "file": "pdf-merger-46a5ee3bbbce6a24.js",
+   "own": true,
+   "blobTypes": [
+    "image/jpeg@8225"
+   ],
+   "mimes": [
+    "image/jpeg",
+    "application/pdf"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "10015.io",
+   "file": "2092.91362663aeee2781.js",
+   "at": 22571
+  },
+  {
+   "host": "api.whatsapp.com",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24442
+  },
+  {
+   "host": "chrome.google.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 81310
+  },
+  {
+   "host": "fatihtelis.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 81530
+  },
+  {
+   "host": "git.io",
+   "file": "_app-697468a544e3fe97.js",
+   "at": 64333
+  },
+  {
+   "host": "googleads.g.doubleclick.net",
+   "file": "5161-9139363905c94449.js",
+   "at": 30392
+  },
+  {
+   "host": "mc.yandex.ru",
+   "file": "ym.js",
+   "at": 405
+  },
+  {
+   "host": "nextjs.org",
+   "file": "1454-743267d3524e5007.js",
+   "at": 15254
+  },
+  {
+   "host": "pagead2.googlesyndication.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 30552
+  },
+  {
+   "host": "partner.googleadservices.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 30310
+  },
+  {
+   "host": "schema.org",
+   "file": "5161-9139363905c94449.js",
+   "at": 81181
+  },
+  {
+   "host": "t.me",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24556
+  },
+  {
+   "host": "www.buymeacoffee.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 4808
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24071
+  },
+  {
+   "host": "www.googletagmanager.com",
+   "file": "_app-697468a544e3fe97.js",
+   "at": 35312
+  },
+  {
+   "host": "www.googletagservices.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 30473
+  },
+  {
+   "host": "www.linkedin.com",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24251
+  },
+  {
+   "host": "www.producthunt.com",
+   "file": "5161-9139363905c94449.js",
+   "at": 81262
+  },
+  {
+   "host": "www.reddit.com",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24335
+  },
+  {
+   "host": "x.com",
+   "file": "2092.91362663aeee2781.js",
+   "at": 24168
+  }
+ ],
+ "thirdParty": [
+  "analytics.google.com",
+  "api.whatsapp.com",
+  "chrome.google.com",
+  "ep1.adtrafficquality.google",
+  "ep2.adtrafficquality.google",
+  "fatihtelis.com",
+  "fonts.googleapis.com",
+  "fundingchoicesmessages.google.com",
+  "git.io",
+  "googleads.g.doubleclick.net",
+  "mc.yandex.com",
+  "mc.yandex.ru",
+  "nextjs.org",
+  "pagead2.googlesyndication.com",
+  "partner.googleadservices.com",
+  "schema.org",
+  "static.cloudflareinsights.com",
+  "t.me",
+  "tpc.googlesyndication.com",
+  "www.buymeacoffee.com",
+  "www.facebook.com",
+  "www.googletagmanager.com",
+  "www.googletagservices.com",
+  "www.gstatic.com",
+  "www.linkedin.com",
+  "www.producthunt.com",
+  "www.reddit.com",
+  "x.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "Web fonts"
+ ],
+ "requests": [
+  "https://10015.[token].json",
+  "https://10015.io/api/auth/session",
+  "https://10015.io/api/comments/get-all?page&toolId",
+  "https://10015.io/cdn-cgi/rum",
+  "https://analytics.google.com/g/collect?_ee&_eu&_fv&_gaz&_ng&_nsi&_p&_s",
+  "https://analytics.google.com/g/collect?_et&_eu&_ng&_p&_s&cid&dl&dma",
+  "https://ep1.adtrafficquality.google/getconfig/sodar?sjk&st&sv&tid&tv",
+  "https://fundingchoicesmessages.google.[token]",
+  "https://googleads.g.doubleclick.net/btr/view?ai&cid&ibtr&sigh&uach_m",
+  "https://googleads.g.doubleclick.net/pagead/adview?ai&cid&ebtr&sigh&uach_m&vis",
+  "https://mc.yandex.com/watch/64428979/1?browser-info&charset&page-url&redirnss&t&uah&wmode",
+  "https://mc.yandex.com/watch/64428979?browser-info&charset&page-url&t&uah&wmode",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&name&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&proto&type",
+  "https://pagead2.googlesyndication.com/pagead/gen_204?id&type",
+  "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+  "https://pagead2.googlesyndication.com/pagead/ping?e",
+  "https://pagead2.googlesyndication.com/pcs/activeview?adk&app&avms&bin&bs&cid&co&cr"
+ ],
+ "storage": {
+  "local": [
+   "_ym64428979:0_reqNum",
+   "_ym64428979_lsid",
+   "_ym_retryReqs",
+   "_ym_synced",
+   "_ym_uid",
+   "google_adsense_settings",
+   "google_ama_config",
+   "nextauth.message"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "URL parameter ?error",
+   "kind": "url-param",
+   "tag": "read",
+   "evidence": "_app-697468a544e3fe97.js@17236"
+  },
+  {
+   "name": "Drag and drop files or items",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "2512-a886e9fafa99a4bd.js@16227"
+  },
+  {
+   "name": "Opens files: application/pdf,.pdf",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Save and open files in place (File System Access)",
+   "kind": "import",
+   "tag": "read",
+   "evidence": "2512-a886e9fafa99a4bd.js@9621"
+  },
+  {
+   "name": "Several files at once",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][multiple]"
+  },
+  {
+   "name": "Exports as image/jpeg",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "pdf-merger-46a5ee3bbbce6a24.js@8225"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "5161-9139363905c94449.js"
+  },
+  {
+   "name": "Installable web app (standalone)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "manifest"
+  },
+  {
+   "name": "Works offline (service worker with a precache)",
+   "kind": "pwa",
+   "tag": "observed",
+   "evidence": "service worker sw.js"
+  },
+  {
+   "name": "RSS or Atom feed",
+   "kind": "share",
+   "tag": "observed",
+   "evidence": "link[type$=xml]"
+  },
+  {
+   "name": "Share files through the system share sheet",
+   "kind": "share",
+   "tag": "read",
+   "evidence": "_app-697468a544e3fe97.js@25552"
+  },
+  {
+   "name": "Share through the system share sheet",
+   "kind": "share",
+   "tag": "read",
+   "evidence": "_app-697468a544e3fe97.js@25507"
+  },
+  {
+   "name": "Embeds 10015.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds googleads.g.doubleclick.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds www.google.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call 10015.io/api/auth/session",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call 10015.io/api/comments/get-all?page&toolId",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /api",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "main-be6a7f5e51083211.js@75992"
+  },
+  {
+   "name": "API path /api/ai/describe-image/main",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@420"
+  },
+  {
+   "name": "API path /api/ai/describe-image/sub",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@497"
+  },
+  {
+   "name": "API path /api/ai/generate-color-palette",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@339"
+  },
+  {
+   "name": "API path /api/ai/text-to-caption",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@262"
+  },
+  {
+   "name": "API path /api/auth/signin",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_app-697468a544e3fe97.js@12424"
+  },
+  {
+   "name": "API path /api/bug-reports/create",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "4225-242b432a35f2e641.js@16025"
+  },
+  {
+   "name": "API path /api/comments/create",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "1874.c5014fb4e74119e9.js@2943"
+  },
+  {
+   "name": "API path /api/comments/delete",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9296-3a0304e0f30c174b.js@12822"
+  },
+  {
+   "name": "API path /api/comments/get-all",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "1874.c5014fb4e74119e9.js@3769"
+  },
+  {
+   "name": "API path /api/comments/report",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9296-3a0304e0f30c174b.js@13539"
+  },
+  {
+   "name": "API path /api/comments/update",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "9296-3a0304e0f30c174b.js@12106"
+  },
+  {
+   "name": "API path /api/describe-image/main",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@381"
+  },
+  {
+   "name": "API path /api/describe-image/sub",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@459"
+  },
+  {
+   "name": "API path /api/favs/update",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "2084-0032cf7913090539.js@12393"
+  },
+  {
+   "name": "API path /api/generate-color-palette",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@297"
+  },
+  {
+   "name": "API path /api/llms",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@836"
+  },
+  {
+   "name": "API path /api/product-feed",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@783"
+  },
+  {
+   "name": "API path /api/sitemap",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@558"
+  },
+  {
+   "name": "API path /api/sitemap/dynamic",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@672"
+  },
+  {
+   "name": "API path /api/sitemap/pages",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@611"
+  },
+  {
+   "name": "API path /api/text-to-caption",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@227"
+  },
+  {
+   "name": "API path /api/tool-feed",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "_buildManifest.js@729"
+  },
+  {
+   "name": "Feature flag disableStaticImages",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "main-be6a7f5e51083211.js@55738"
+  },
+  {
+   "name": "Feature flag disableTransforms",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "3748-c67062f92fd00288.js@38445"
+  },
+  {
+   "name": "Feature flag showFooter",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "4225-242b432a35f2e641.js@36185"
+  },
+  {
+   "name": "Feature flag showSpinner",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-697468a544e3fe97.js@41091"
+  },
+  {
+   "name": "Feature flag useCSSOMInjection",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-697468a544e3fe97.js@72209"
+  },
+  {
+   "name": "Feature flag useDragOverlay",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "3748-c67062f92fd00288.js@38488"
+  },
+  {
+   "name": "Feature flag useFsAccessApi",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "2512-a886e9fafa99a4bd.js@14087"
+  },
+  {
+   "name": "Feature flag useSession",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "_app-697468a544e3fe97.js@9533"
+  },
+  {
+   "name": "Copy and paste through the clipboard",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "2092.91362663aeee2781.js@25402"
+  },
+  {
+   "name": "Picture in picture",
+   "kind": "setting",
+   "tag": "read",
+   "evidence": "1454-743267d3524e5007.js@4459"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym64428979:0_reqNum",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym64428979_lsid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_retryReqs",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_synced",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: _ym_uid",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: google_adsense_settings",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: google_ama_config",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Remembers a setting in the browser: nextauth.message",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Syncs between tabs",
+   "kind": "service",
+   "tag": "read",
+   "evidence": "_app-697468a544e3fe97.js@1290"
+  },
+  {
+   "name": "Dark mode",
+   "kind": "a11y",
+   "tag": "read",
+   "evidence": "main-be6a7f5e51083211.js"
+  }
+ ]
+}

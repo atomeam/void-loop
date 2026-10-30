@@ -11,6 +11,11 @@
 # glyphs, calendar, growth suites) and browser-suite (tools/test_void.mjs), each reporting on its own, so one unrelated test
 # can no longer hide the suite's result (a held-file test red on the runner kept every head of main unverified for an hour).
 # The revert reads the browser-suite job (and older verdicts, named verify-main) and names the job it decided from.
+# 2026-10-26 (owner: "ok whats the hold up, fix it so we stop having holdups"; growth over upkeep, 2026-10-15): one group per job (per
+# shard for the suite), shared by every head, never cancelled. A run that has started always finishes; of the heads waiting behind it only
+# the newest runs (GitHub keeps one pending per group). With builders pushing a commit a minute, a group per head put 13 heads x 3 shards of
+# 25-minute suites in the queue and every deploy waited 13+ minutes for a runner. A head skipped this way is covered by the newer head that
+# contains it; a red run still reverts through tools/revert-target.mjs, which checks its target is still on main.
 name: Verse verify
 
 on:
@@ -33,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
-      group: void-verify-fast-${{ github.sha }}
+      group: void-verify-fast
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +51,11 @@ jobs:
         run: |
           if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          # a head that only writes the incident record (the incident job's own commit, tested when an automerge started this
+          # on "main" just after it landed) carries no code: testing it only re-ran the parent's red and wrote one more incident
+          if [ "$(git diff --name-only HEAD~1 HEAD)" = "void-live-deploy/incidents.json" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
@@ -64,18 +74,20 @@ jobs:
           exit 1
 
   # Three shards since 2026-10-16: the whole suite ran to 1,652 s of its 1,680 s budget on one runner, so every new section risked
-  # going red on the clock alone. Each job runs the sections whose heading hashes to its shard (tools/test_void.mjs --shard i/n,
-  # tools/shard.mjs), every section in exactly one of them (60 / 67 / 76 sections; the shared-page section, the longest, is in
-  # the third), each job its own verdict; the revert reads all three (tools/revert-target.mjs isSuiteJob).
+  # going red on the clock alone. Four since 2026-10-29: the suite had doubled (143 / 127 / 142 sections), shard 2 took 1,390 s,
+  # shard 3 1,575 s and shard 1 ran past the 1,680 s budget with six 3D sections still to go (run 40819702176), so the work, not a
+  # slow check, outgrew three runners; the budget stays. Each job runs the sections whose heading hashes to its shard
+  # (tools/test_void.mjs --shard i/n, tools/shard.mjs), every section in exactly one of them (86 / 112 / 96 / 118 sections; the
+  # shared-page section, the longest, is in the second), each job its own verdict; the revert reads them all (tools/revert-target.mjs isSuiteJob).
   browser-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4]
     concurrency:
-      group: void-verify-${{ github.sha }}-${{ matrix.shard }}
+      group: void-verify-${{ matrix.shard }}
       cancel-in-progress: false
     permissions:
       contents: write # push the revert
@@ -93,15 +105,20 @@ jobs:
           if git log -1 --format=%B | grep -q '^Verse-auto-revert:'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
+          # a head that only writes the incident record (the incident job's own commit, tested when an automerge started this
+          # on "main" just after it landed) carries no code: testing it only re-ran the parent's red and wrote one more incident
+          if [ "$(git diff --name-only HEAD~1 HEAD)" = "void-live-deploy/incidents.json" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Only the incident record changed: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
-      - name: Test what shipped (shard ${{ matrix.shard }} of 3 of the full suite)
+      - name: Test what shipped (shard ${{ matrix.shard }} of 4 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
-          shard: ${{ matrix.shard }}/3
+          shard: ${{ matrix.shard }}/4
 
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
@@ -109,24 +126,27 @@ jobs:
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
+      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here
+      - name: 3D frame times (perf3d)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 2
+        run: node tools/perf3d.test.mjs
+      - name: Every game played as four kinds of player (persona playtest)
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
+        run: node tools/persona-playtest.mjs
+
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true
 
-      - name: Write the incident (asked by Verse; skills/incident.js shows it as "what broke lately")
-        if: failure() && steps.test.outcome == 'failure'
-        run: |
-          node tools/incident-log.mjs record "$(git rev-parse HEAD)" "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" test-output.txt || true
-          if ! git diff --quiet void-live-deploy/incidents.json; then
-            cp void-live-deploy/incidents.json /tmp/incidents.json
-            git checkout -q -- void-live-deploy/incidents.json # a dirty tree made the checkout below abort and lost the record
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git fetch -q origin main && git checkout -q -B main origin/main
-            cp /tmp/incidents.json void-live-deploy/incidents.json
-            git add void-live-deploy/incidents.json && git commit -q -m "Incident: the browser suite failed on $(git rev-parse --short HEAD@{1} 2>/dev/null || echo main) (void-live-deploy/incidents.json)" && git push -q origin main || echo "::warning title=Incident not recorded::could not push incidents.json to main"
-            git checkout -q - 2>/dev/null || true
-          fi
+      # the incident is written once per head by the incident job below, from every shard's output (one commit per red head,
+      # not one per shard: three shards each pushed their own "Incident:" commit, and each replaced the others' checks)
+      - name: Keep this shard's output for the incident job
+        if: always() && steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-output-${{ matrix.shard }}
+          path: test-output.txt
+          retention-days: 3
 
       - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
         if: failure() && steps.test.outcome == 'failure'
@@ -203,3 +223,68 @@ jobs:
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
           echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
+
+  # One incident per red head of main (all shards' failed checks in one entry, one commit, with the shards that failed), and every
+  # shard that passed closes what it fixed on earlier heads (tools/incident-log.mjs pass). A run whose other shards were cancelled
+  # counts too: each shard queues on its own, so on a busy main the four almost never finish on one head (not one did from 25 to
+  # 29 October), and a close that waited for four green shards on one head never came. An automatic revert is skipped.
+  incident:
+    needs: browser-suite
+    if: always() && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success' || needs.browser-suite.result == 'cancelled')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-incident
+      cancel-in-progress: false
+    permissions:
+      contents: write # the one incidents.json commit on main
+      actions: read # which shards of this run passed and which failed
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        if: needs.browser-suite.result == 'failure'
+        with:
+          pattern: suite-output-*
+          path: suite-output
+      - name: Record or close
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tested="${{ github.sha }}"
+          run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          git log -1 --format=%B "$tested" | grep -q '^Verse-auto-revert:' && { echo "automatic revert: not recorded"; exit 0; }
+          [ "$(git diff --name-only "$tested~1" "$tested")" = "void-live-deploy/incidents.json" ] && { echo "only the incident record changed: not tested, not recorded"; exit 0; }
+          # the shards of this run that passed and that failed ("1,3"); a cancelled shard is neither
+          jobs=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" --jq '.jobs[] | "\(.name)|\(.conclusion)"' || true)
+          shards() { echo "$jobs" | sed -n "s/^browser-suite (\([1-4]\))|$1\$/\1/p" | sort -n | paste -sd, -; }
+          passed=$(shards success); failed=$(shards failure)
+          echo "shards passed: ${passed:-none}; failed: ${failed:-none}"
+          [ -z "$passed$failed" ] && { echo "no shard finished: nothing to record"; exit 0; }
+          apply() {
+            if [ -n "$failed" ]; then
+              cat suite-output/*/test-output.txt > /tmp/all-output.txt 2>/dev/null || true
+              node tools/incident-log.mjs record "$tested" "$run" /tmp/all-output.txt "$failed" || true
+            fi
+            [ -n "$passed" ] && { node tools/incident-log.mjs pass "$tested" "$run" "$passed" || true; }
+          }
+          apply
+          if [ -n "$failed" ]; then
+            msg="Incident: the browser suite failed on ${tested:0:8} (void-live-deploy/incidents.json)"
+          else
+            msg="Incidents closed: shard(s) $passed passed on ${tested:0:8} (void-live-deploy/incidents.json)"
+          fi
+          git diff --quiet -- void-live-deploy/incidents.json && { echo "nothing to write"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cp void-live-deploy/incidents.json /tmp/incidents.json
+          for i in 1 2 3 4; do
+            git add void-live-deploy/incidents.json && git commit -q -m "$msg" && git push -q origin HEAD:main && exit 0
+            sleep $((2 ** i)); git fetch -q origin main && git reset -q --hard origin/main
+            # re-apply on the newer main (the record is computed again so nothing written meanwhile is lost)
+            apply
+            git diff --quiet -- void-live-deploy/incidents.json && exit 0
+          done
+          echo "::warning title=Incident not recorded::could not push incidents.json to main"

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { position: fixed; inset: 0; z-index: 0; }
+  #ui-layer { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+  .sculptor-card {
+    position: absolute; width: 140px; height: 90px; background: rgba(30,40,60,0.85);
+    border: 1px solid #4af; border-radius: 12px; padding: 8px; box-sizing: border-box;
+    pointer-events: auto; cursor: grab; transition: transform 0.1s linear;
+    font-size: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .sculptor-card.claimed { border-color: #fa4; }
+  .sculptor-card.human { border-color: #4f4; }
+  #hud { position: fixed; top: 12px; left: 12px; z-index: 2; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { pointer-events: auto; margin: 4px; padding: 6px 12px; background: #224; color: #fff; border: 1px solid #4af; border-radius: 6px; cursor: pointer; }
+  #status { color: #8cf; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand RNN Physical UI Sculptors · Verse lab</title>
+<meta name="description" content="True WebXR hand-tracking (with pointer fallback) feeds a local tiny Elman RNN whose outputs generate spring targets for hybrid DOM sculptor cards.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand RNN Physical UI Sculptors · Verse lab">
+<meta property="og:description" content="True WebXR hand-tracking (with pointer fallback) feeds a local tiny Elman RNN whose outputs generate spring targets for hybrid DOM sculptor cards.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f302-webxr-hand-rnn-physical-ui-sculptors/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f302-webxr-hand-rnn-physical-ui-sculptors/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui-layer"></div>
+<div id="hud">
+  <div id="status">Initializing…</div>
+  <button id="enter-xr">Enter WebXR Hand</button>
+  <button id="seal">Seal Genome</button>
+  <button id="compete">Start Competition</button>
+  <div id="info">Hand joints → RNN → spring forces on DOM cards. Agents compete to claim cards.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand RNN Physical UI Sculptors</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

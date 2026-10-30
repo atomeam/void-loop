@@ -10,8 +10,8 @@
 import { cleanLower } from '../lib/ask-text.js';
 const CLEAN = cleanLower; // shared: lib/ask-text.js
 
-const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug|book|lamp)(?:\s+(?:on|to)\s+the\s+stage)?$/;
-const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden|low poly)\s+)*(chair|cup|mug|book|lamp|wolf|fox|dog)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is|sculpt)\s+)?(?:motelet|(?:a|the|one)\s+(?:figure|bust))(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
 // a figure that sits: "a figure that sits on the chair", "motelet sitting on the chair", "seat the figure" (miss board)
 const SIT_RE = /^(?:please\s+)?(?:(?:summon|show|bring|make|put|get|seat)\s+(?:me\s+)?)?(?:a|the|one)?\s*(?:little\s+)?(?:figure|motelet)(?:\s+that)?\s+(?:sits?|sitting|seated)(?:\s+(?:down\s+)?(?:on|upon|in)(?:\s+(?:the|a))?\s*(?:chair|seat))?$|^seat\s+(?:the\s+)?(?:figure|motelet)(?:\s+(?:on\s+)?(?:the\s+)?(?:chair|seat))?$/;
@@ -42,7 +42,8 @@ export function parseAsk(text) {
   const t = CLEAN(text);
   let m;
   if (FORGET_RE.test(t)) return { act: 'forget' };
-  if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
+  // the animals are the low poly ones only ("low poly dog"): a plain "bring a dog" or "summon a fox" is a living figure (skills/figures.js)
+  if ((m = t.match(OBJECT_RE)) && (!/^(?:wolf|fox|dog)$/.test(m[1]) || /\blow poly\b/.test(t))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
   if (SIT_RE.test(t)) return { act: 'sit' };
   if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };

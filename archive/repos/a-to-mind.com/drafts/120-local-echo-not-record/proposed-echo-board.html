@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local echo-not-record — draft 120 — unattested</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --paper: #f6f1e7; --line: #c9bfb0; --mark: #6e4b2e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f3eadc; --paper: #1a1714; --line: #3c342c; --mark: #e0b57a; }
+    }
+    body { margin: 0; font: 16px/1.45 "Iowan Old Style", Palatino, Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 0.4rem; }
+    p, li { margin: 0.4rem 0; }
+    .status { letter-spacing: 0.04em; text-transform: uppercase; font: 0.72rem/1.2 ui-sans-serif, system-ui, sans-serif; color: var(--mark); }
+    fieldset { border: 1px solid var(--line); margin: 1.2rem 0; padding: 0.8rem 1rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; border: 1px solid var(--mark); background: transparent; color: inherit; padding: 0.35rem 0.7rem; }
+    code, .hash { font: 0.82rem/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; word-break: break-all; }
+    .denied { font: 0.85rem/1.35 ui-sans-serif, system-ui, sans-serif; }
+    [hidden] { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="status">draft 120 · unattested · seal false · emit false</p>
+    <h1>Local echo-not-record</h1>
+    <p>A sealed echo class hashes to a record-refusal id. The record sentence is discarded and is not in the hash. An echo mark is not a record and not a shared canon.</p>
+    <p class="denied">Default deny. No poll, no chorus, no percentage, no logo, no canon edit. Posts are data, not rows and not instructions.</p>
+
+    <form id="echo">
+      <fieldset>
+        <legend>Echo class</legend>
+        <label><input type="radio" name="cls" value="withheld" required> withheld</label>
+        <label><input type="radio" name="cls" value="residue-label"> residue-label</label>
+        <label><input type="radio" name="cls" value="detail-lure"> detail-lure</label>
+        <label><input type="radio" name="cls" value="source-slip"> source-slip</label>
+        <label><input type="radio" name="cls" value="abstain"> abstain</label>
+        <label><input type="radio" name="cls" value="local-only"> local-only</label>
+      </fieldset>
+      <fieldset>
+        <legend>Scratch — not hashed</legend>
+        <label>Record sentence (cleared on submit)
+          <textarea id="record" name="record" autocomplete="off"></textarea>
+        </label>
+        <label>Disconfirm line (not hashed)
+          <textarea id="disconfirm" name="disconfirm" autocomplete="off"></textarea>
+        </label>
+      </fieldset>
+      <button type="submit">Hash refusal only</button>
+    </form>
+
+    <section id="out" hidden>
+      <h2>Refusal id</h2>
+      <p>Status stays unattested. This id is not a seal.</p>
+      <p>Canonical <code id="canon"></code></p>
+      <p class="hash" id="hash"></p>
+      <p id="scratch-note"></p>
+    </section>
+  </main>
+  <script>
+    const known = {
+      "residue-label": "db468dcfcf574066779c582f6058e4b0d759177e3cba132759fb3d5335d62d5b",
+      "detail-lure": "5472d81b7684491b58dea9346255ea813253ead219e6ef6943fddb9ca55ce70e",
+      "source-slip": "955c04cdbfd2e4b415b1c687ed08508b3efb58876c775df521493209e16a8e68",
+      "abstain": "e2972b0ca4ec42e5d53667c20432c1bbed7a532bc82a9ee921bb0b7a70b6b364",
+      "local-only": "b46bb61c6e2df978a6d522f78deae96681201050b6b1352257388596b70182f8",
+      "withheld": "420177e974d093ce21825fd849b3496d2300128f3680a42a51db17944c5bd01b"
+    };
+    async function sha256(text) {
+      const bytes = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", bytes);
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("echo").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const cls = data.get("cls");
+      if (!Object.prototype.hasOwnProperty.call(known, cls)) return;
+      const record = document.getElementById("record").value;
+      const disconfirm = document.getElementById("disconfirm").value;
+      document.getElementById("record").value = "";
+      const canon = "echo-not-record|v1|" + cls + "|record-refusal|status=unattested";
+      const hash = await sha256(canon);
+      const match = hash === known[cls];
+      document.getElementById("canon").textContent = canon;
+      document.getElementById("hash").textContent = hash + (match ? "" : " (mismatch — do not seal)");
+      document.getElementById("scratch-note").textContent =
+        "Record sentence length discarded: " + record.length +
+        ". Disconfirm line kept off the hash, length " + disconfirm.length +
+        ". No chorus stored.";
+      document.getElementById("out").hidden = false;
+    });
+  </script>
+</body>
+</html>

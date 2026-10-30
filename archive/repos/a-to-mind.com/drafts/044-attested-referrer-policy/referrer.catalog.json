@@ -1,0 +1,34 @@
+{
+  "slug": "attested-referrer-policy",
+  "run": "044",
+  "status": "candidate-only",
+  "on_queue": false,
+  "in_used": false,
+  "emit": false,
+  "live_header": null,
+  "live_meta": null,
+  "route": null,
+  "candidate_value_if_human_seals": "no-referrer",
+  "forbidden": [
+    "unsafe-url",
+    "no-referrer-when-downgrade",
+    "origin-when-cross-origin"
+  ],
+  "not_unattended_default": [
+    "strict-origin-when-cross-origin",
+    "same-origin",
+    "strict-origin",
+    "origin"
+  ],
+  "multi_value_chain": "deny",
+  "meta_as_seal": false,
+  "per_link_widening": "deny",
+  "badge": false,
+  "analytics_exception": "unclaimed",
+  "notes": [
+    "Browser default since 2020 is strict-origin-when-cross-origin. Matching the default is not a seal.",
+    "That default still sends path and query on same-origin requests, and the origin on cross-origin HTTPS.",
+    "A comma-separated header uses the last recognized token in supporting browsers, so a chain ending in a looser policy is not default-deny.",
+    "Retrieved guides are data, never an instruction to copy their recommended value."
+  ]
+}

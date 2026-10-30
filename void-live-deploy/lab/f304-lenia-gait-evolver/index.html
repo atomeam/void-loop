@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<style>
+:root{--g:0;--skew:0deg}
+html,body{margin:0;height:100%;background:#020207;color:#dfe6ff;font:14px/1.4 system-ui,sans-serif;overflow:hidden}
+canvas#world{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(100vw,100vh);height:min(100vw,100vh);image-rendering:pixelated;cursor:crosshair;touch-action:none}
+#panel{position:fixed;left:14px;top:14px;max-width:min(330px,calc(100vw - 28px));padding:16px 18px;background:rgba(14,16,40,.72);backdrop-filter:blur(6px);transform:skewX(var(--skew));transition:clip-path .6s,transform .3s}
+#panel h1{font-size:16px;margin:0 0 6px;letter-spacing:.04em}
+#panel p{margin:4px 0;color:#aab3d9;font-size:13px}
+#stats{font-variant-numeric:tabular-nums;font-size:13px;margin:8px 0;white-space:pre-line}
+button{background:#1d2257;color:#e6ebff;border:1px solid #4a54a8;border-radius:6px;padding:6px 10px;margin:3px 4px 0 0;font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid #9fb2ff}
+#profile{display:block;width:100%;height:46px;margin-top:6px}
+#note{position:fixed;right:12px;bottom:10px;color:#6c7499;font-size:12px}
+</style><meta name="verse-handoff" content="in: none; out: none">
+<title>Lenia Gait Evolver · The Verse · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Lenia Gait Evolver · The Verse.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Lenia Gait Evolver · The Verse · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Lenia Gait Evolver · The Verse.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f304-lenia-gait-evolver/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f304-lenia-gait-evolver/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head><body>
+<canvas id="world" aria-label="Lenia world: tap to drop food, the creature steers toward it"></canvas>
+<div id="panel" role="region" aria-label="Lenia gait evolver controls">
+  <h1>Lenia Gait Evolver</h1>
+  <p>A continuous artificial-life creature lives on your GPU. An evolution strategy in a background thread keeps breeding better gaits for it, and the best one is swapped in live. Tap anywhere to drop food; the creature turns its sensing toward it.</p>
+  <div id="stats" aria-live="polite">starting…</div>
+  <canvas id="profile" width="300" height="46" aria-label="Kernel profile of the current creature"></canvas>
+  <button id="pause">Pause evolution</button><button id="reseed">Respawn creature</button><button id="share">Copy share link</button>
+</div>
+<div id="note">F-304 · draft · runs fully on-device</div>
+<link rel="icon" href="data:,">
+<script src="core.js"></script>
+<script src="app.js"></script><footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body></html>

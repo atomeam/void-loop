@@ -2,23 +2,21 @@
  * translate skill — Google gtx, MyMemory fallback, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
-const LANGS = {
-  english:'en', spanish:'es', french:'fr', german:'de', italian:'it', portuguese:'pt', dutch:'nl',
-  russian:'ru', ukrainian:'uk', polish:'pl', czech:'cs', greek:'el', turkish:'tr', arabic:'ar',
-  hebrew:'he', hindi:'hi', bengali:'bn', urdu:'ur', japanese:'ja', korean:'ko', chinese:'zh-CN',
-  mandarin:'zh-CN', cantonese:'zh-TW', vietnamese:'vi', thai:'th', indonesian:'id', malay:'ms',
-  filipino:'tl', tagalog:'tl', swedish:'sv', norwegian:'no', danish:'da', finnish:'fi',
-  hungarian:'hu', romanian:'ro', swahili:'sw', persian:'fa', farsi:'fa', irish:'ga', welsh:'cy',
-  latin:'la', hawaiian:'haw', catalan:'ca', croatian:'hr', serbian:'sr', bulgarian:'bg'
-};
+import { bandMini } from '../lib/card-mini.js';
+import { isIt } from './is-it.js';
+import { STAGE_LANGS, cardText } from '../lib/translate-card.js';
+const LANGS = STAGE_LANGS;
 const LANG_RE = Object.keys(LANGS).join('|');
 
 function parse(text) {
   const t = text.trim().replace(/[?!.]+$/, '');
   let m = t.match(new RegExp('^(?:please\\s+)?translate\\s+["“]?(.+?)["”]?\\s+(?:from\\s+(' + LANG_RE + ')\\s+)?(?:to|into|in)\\s+(' + LANG_RE + ')$', 'i'));
-  if (m) return { q: m[1], from: m[2], to: m[3] };
+  // the translate page's card (lib/translate-card.js cardAsk): its text as base64url, read back only when it is that exact code
+  if (m) return { q: cardText(m[1]) ?? m[1], from: m[2], to: m[3] };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
+  // "is it christmas in french": a yes-or-no day question asked for its word in that language (skills/is-it.js), not a phrase to translate
+  if (isIt(t)) return null;
   // "the longest word in english", "most common letter in english": a question about the language, not a translation
   if (/^(?:what\s+is\s+)?(?:the\s+)?(?:longest|shortest|most\s+common|hardest|oldest|newest|first|last)\s+\w+(?:\s+\w+)?\s+in\s+/i.test(t)) return null;
   m = t.match(new RegExp('^what\\s+is\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'))
@@ -54,8 +52,9 @@ async function run(text, api) {
     if (!out) throw 0;
     el.innerHTML = '<div class="sub">' + esc(p.q) + ' · ' + esc(p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase()) + '</div>'
       + '<div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
-      + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button>'
+      + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button> <a class="tr-full" href="/translate/?q=' + encodeURIComponent(p.q) + '&to=' + encodeURIComponent(to) + '" style="margin-left:8px">open the translator (100 languages, listen, speak, camera)</a>'
       + '<div class="src">Source: ' + (via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
+    bandMini(api, el, 'bubbles', { from: p.q, to: out, lang: p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase() }, '3D speech bubbles: ' + p.q + ' and ' + out); // owner, 2026-10-25: "3d figure if possible"
     const btn = el.querySelector('.tr-copy');
     if (btn) btn.addEventListener('click', async () => {
       let ok = false;
@@ -76,6 +75,7 @@ async function run(text, api) {
 export default {
   name: 'translate',
   examples: ['translate hello to Spanish', 'how do you say thank you in Japanese', 'good morning in French', 'what is cat in German'],
+  translateOf: parse,
   match(lower, text) { return !!parse(text); },
   run
 };

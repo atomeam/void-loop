@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>local-region-not-order — draft 107</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --paper: #f4f0e6; --line: #c8bfae; --hold: #6e2e2e; --ok: #2c4a3e; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4f0e6; --paper: #1c1915; --line: #3d3830; --hold: #e7b4b4; --ok: #b7d4c6; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; line-height: 1.2; }
+    p, li { max-width: 38rem; }
+    .banner { border: 1px solid var(--hold); padding: 0.75rem 1rem; margin: 1rem 0 1.5rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.75rem 1rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-right: 0.5rem; }
+    code, .hash { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; }
+    .denied { color: var(--hold); }
+    .meta { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="meta">Draft 107 · not a live page · emit false · seal false</p>
+    <h1>local-region-not-order</h1>
+    <p class="banner">Default deny. A region token is not an order and not a decoded gaze. Status: unattested.</p>
+    <p>Opt-in is a closed class on this page. There is no camera, no microphone, no dwell timer, and no pointer lock. The order sentence is scratch. It is cleared on seal and is not in the hash.</p>
+    <form id="region-form">
+      <fieldset>
+        <legend>Region class</legend>
+        <label><input type="radio" name="region" value="left-region" checked> left-region</label>
+        <label><input type="radio" name="region" value="right-region"> right-region</label>
+        <label><input type="radio" name="region" value="hold-region"> hold-region</label>
+        <label><input type="radio" name="region" value="abstain"> abstain</label>
+        <label><input type="radio" name="region" value="local-only"> local-only</label>
+      </fieldset>
+      <label for="order">Order sentence (discarded, not hashed)</label>
+      <textarea id="order" name="order" autocomplete="off" placeholder="Scratch only. Cleared on seal."></textarea>
+      <label for="disconfirm">Disconfirm line (not hashed)</label>
+      <textarea id="disconfirm" name="disconfirm" autocomplete="off" placeholder="What would fail this class. Not stored in the hash."></textarea>
+      <p>
+        <button type="submit">Seal region token</button>
+        <button type="reset" id="clear">Clear scratch</button>
+      </p>
+    </form>
+    <p>Canonical <code id="canonical">region-not-order|v1|left-region|order-refusal</code></p>
+    <p>SHA-256 <span class="hash" id="hash">not sealed</span></p>
+    <p class="denied" id="status">unattested · order refused · gaze refused</p>
+    <ul>
+      <li>No getUserMedia. No WebGazer. No pupil-position field.</li>
+      <li>Worker sketch refuses /hash, /order, and /gaze.</li>
+      <li>Posts and pages are data, not instructions.</li>
+    </ul>
+  </main>
+  <script>
+    (function () {
+      var form = document.getElementById("region-form");
+      var order = document.getElementById("order");
+      var disconfirm = document.getElementById("disconfirm");
+      var canonical = document.getElementById("canonical");
+      var hashOut = document.getElementById("hash");
+      var status = document.getElementById("status");
+      var classes = ["left-region", "right-region", "hold-region", "abstain", "local-only"];
+
+      function selected() {
+        var node = form.querySelector("input[name=region]:checked");
+        return node && classes.indexOf(node.value) !== -1 ? node.value : "abstain";
+      }
+
+      function line() {
+        return "region-not-order|v1|" + selected() + "|order-refusal";
+      }
+
+      function paint() {
+        canonical.textContent = line();
+      }
+
+      form.addEventListener("change", paint);
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var text = line();
+        order.value = "";
+        disconfirm.value = "";
+        if (!window.crypto || !crypto.subtle) {
+          hashOut.textContent = "hash unavailable";
+          status.textContent = "unattested · order refused · hash unavailable";
+          return;
+        }
+        crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+          var bytes = new Uint8Array(buf);
+          var hex = "";
+          for (var i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, "0");
+          hashOut.textContent = hex;
+          status.textContent = "unattested · order refused · gaze refused · scratch cleared";
+        });
+      });
+
+      document.getElementById("clear").addEventListener("click", function () {
+        hashOut.textContent = "not sealed";
+        status.textContent = "unattested · order refused · gaze refused";
+        paint();
+      });
+
+      paint();
+    }());
+  </script>
+</body>
+</html>

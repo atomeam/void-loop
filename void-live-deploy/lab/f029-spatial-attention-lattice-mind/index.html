@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+:root {
+  --hue: 220;
+  --scale: 1;
+  --filter: 0;
+}
+body {
+  margin: 0;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  transition: filter 0.4s, transform 0.4s;
+}
+#hud {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: rgba(20,20,40,0.7);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid hsla(var(--hue), 70%, 60%, 0.5);
+  backdrop-filter: blur(8px);
+  transform: scale(var(--scale)) rotate(calc(var(--filter) * 2deg));
+  transition: all 0.3s ease;
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: crosshair;
+}
+button {
+  background: #2a2a50;
+  color: white;
+  border: 1px solid #5a5a9a;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin: 4px;
+  cursor: pointer;
+}
+button:hover { background: #3a3a70; }
+#status { font-size: 0.85rem; opacity: 0.8; margin-top: 8px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Spatial Attention Lattice Mind · Verse lab</title>
+<meta name="description" content="Continuous spatial lattice (Canvas2D grid; WebGPU compute path noted) whose local update is an attention-weighted aggregation over neighborhood, parameterized by a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Spatial Attention Lattice Mind · Verse lab">
+<meta property="og:description" content="Continuous spatial lattice (Canvas2D grid; WebGPU compute path noted) whose local update is an attention-weighted aggregation over neighborhood, parameterized by a">
+<meta property="og:url" content="https://a-to-mind.com/lab/f029-spatial-attention-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f029-spatial-attention-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <strong>F-029 Spatial Attention Lattice Mind</strong>
+  <div id="status">Mind initializing…</div>
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset Field</button>
+  <div style="font-size:0.75rem; margin-top:8px; opacity:0.7">
+    Pointer injects energy. Orientation (if allowed) biases attention. Mind evolves local rule weights for diversity + interaction.
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">Spatial Attention Lattice Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

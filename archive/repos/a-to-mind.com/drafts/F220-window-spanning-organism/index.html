@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>F-220 Window-Spanning Organism</title>
+<link id="fav" rel="icon" href="data:,">
+<style>
+ html,body{margin:0;height:100%;background:#000;color:#cfd6ff;font:13px/1.4 system-ui,sans-serif;overflow:hidden}
+ canvas{position:fixed;inset:0;width:100vw;height:100vh;display:block}
+ #hud{position:fixed;left:12px;top:10px;max-width:360px;background:#05060ccc;border:1px solid #1d2240;border-radius:10px;padding:10px 12px;backdrop-filter:blur(6px)}
+ #hud b{color:#fff} #hud .t{font-size:16px;color:#fff;margin-bottom:4px}
+ button{background:#10142a;color:#cfd6ff;border:1px solid #2a3166;border-radius:7px;padding:5px 9px;margin:6px 6px 0 0;cursor:pointer;font:inherit}
+ button:hover{border-color:#6b78ff}
+ .pane{position:fixed;border:1px solid #3a4280;border-radius:8px;background:#ffffff05;box-shadow:0 0 0 1px #0008;cursor:grab}
+ .pane .bar{height:18px;background:#1a1f45;border-radius:7px 7px 0 0;font-size:11px;padding:0 6px;color:#aab}
+ small{color:#7e86b8}
+</style></head><body>
+<canvas id="cv"></canvas>
+<div id="hud"><div class="t">The creature lives across your windows</div>
+<div id="line">waking…</div><div id="stats"><small></small></div>
+<button id="open">Open another window</button><button id="desk">Desk mode (one screen)</button><button id="mode">Mode: learning</button>
+<div><small>Drag windows so they overlap: overlaps are doors. It cannot see other windows; it learns doors by standing in two at once, and forgets them when you pull windows apart. Click to drop food here. The tab icon and title show what it believes about this window.</small></div></div>
+<script src="core.js"></script>
+<script>
+(() => {
+const Q = new URLSearchParams(location.search);
+const cv = document.getElementById('cv'), g = cv.getContext('2d');
+const fav = document.getElementById('fav'), fc = document.createElement('canvas'); fc.width = fc.height = 32; const fg = fc.getContext('2d');
+const F = window.__f220 = { mode: null, myId: null, snap: null, belief: null, frames: 0, favUpdates: 0, titles: [] };
+let send = () => {}, deskPanes = null, localWorld = null;
+
+function myRect() {
+  if (Q.get('rect')) { const [x, y, w, h] = Q.get('rect').split(',').map(Number); return { x, y, w, h }; } // tests / fixed layouts
+  return { x: screenX + Math.max(0, (outerWidth - innerWidth) / 2), y: screenY + Math.max(0, outerHeight - innerHeight), w: innerWidth, h: innerHeight };
+}
+let origin = myRect();
+function connect() {
+  if (Q.get('desk') === '1' || !('SharedWorker' in window)) return startDesk();
+  try {
+    const sw = new SharedWorker('world-worker.js', { name: 'f220-world' });
+    F.mode = 'shared-worker';
+    sw.port.onmessage = (m) => { const d = m.data; if (d.type === 'hello') F.myId = d.id; if (d.type === 'state') { F.snap = d.snap; F.belief = d.belief; F.events = d.events; } };
+    sw.port.start(); send = (msg) => sw.port.postMessage(msg);
+    addEventListener('pagehide', () => send({ type: 'bye' }));
+    setInterval(() => { origin = myRect(); send({ type: 'rect', rect: origin }); }, 120); // also the heartbeat
+  } catch (e) { F.err = String(e); startDesk(); }
+}
+// Fallback / phones: several draggable panes on one screen are the "windows".
+function startDesk() {
+  F.mode = 'desk'; localWorld = new F220.World({ seed: 11 }); origin = { x: 0, y: 0, w: innerWidth, h: innerHeight };
+  const W = innerWidth, H = innerHeight, s = Math.min(W, H);
+  const init = [[0.04, 0.30, 0.34, 0.30], [0.33, 0.52, 0.30, 0.30], [0.58, 0.28, 0.30, 0.30], [0.80, 0.50, 0.18, 0.34]];
+  deskPanes = init.map((p, i) => { const el = document.createElement('div'); el.className = 'pane'; el.innerHTML = '<div class="bar">window ' + (i + 1) + '</div>'; document.body.appendChild(el);
+    const r = { x: p[0] * W, y: p[1] * H, w: p[2] * W, h: p[3] * H }; const o = { id: 'd' + i, el, r }; place(o); drag(o); return o; });
+  function place(o) { Object.assign(o.el.style, { left: o.r.x + 'px', top: o.r.y + 'px', width: o.r.w + 'px', height: o.r.h + 'px' }); localWorld.setRoom(o.id, o.r); }
+  function drag(o) { o.el.onpointerdown = (e) => { const sx = e.clientX - o.r.x, sy = e.clientY - o.r.y; o.el.setPointerCapture(e.pointerId);
+    o.el.onpointermove = (ev) => { o.r.x = ev.clientX - sx; o.r.y = ev.clientY - sy; place(o); }; o.el.onpointerup = () => { o.el.onpointermove = null; }; e.stopPropagation(); }; }
+  document.getElementById('hud').querySelector('.t').textContent = 'The creature lives across these windows';
+  send = (m) => { if (m.type === 'mode') localWorld.mode = m.mode; if (m.type === 'feed') { const ids = localWorld.roomsAt(m.x, m.y); if (ids.length) { localWorld.food = { room: ids[0], x: m.x, y: m.y, born: localWorld.tick }; localWorld.waypoint = null; } } };
+  setInterval(() => { localWorld.step(); localWorld.step(); F.snap = localWorld.snapshot(); F.belief = localWorld.belief(localWorld.c.room); F.events = localWorld.events.slice(-6); }, 33);
+}
+
+function setFavicon(b, hunger) {
+  // the browser chrome is part of the creature's body: each tab icon is its belief about that window
+  fg.clearRect(0, 0, 32, 32); const hue = 220 - hunger * 200;
+  fg.fillStyle = '#000'; fg.beginPath(); fg.arc(16, 16, 15, 0, 7); fg.fill();
+  if (b.hops === 0) { fg.fillStyle = `hsl(${hue},90%,62%)`; fg.beginPath(); fg.arc(16, 16, 10 + Math.sin(F.frames / 6) * 2, 0, 7); fg.fill(); }
+  else if (b.hops > 0) { fg.strokeStyle = `hsl(${hue},80%,60%)`; fg.lineWidth = 3; for (let i = 0; i < Math.min(b.hops, 3); i++) { fg.beginPath(); fg.arc(16, 16, 13 - i * 4, 0, 7); fg.stroke(); } }
+  else { fg.fillStyle = '#556'; fg.font = 'bold 22px sans-serif'; fg.textAlign = 'center'; fg.fillText('?', 16, 24); }
+  fav.href = fc.toDataURL(); F.favUpdates++;
+}
+
+function draw() {
+  F.frames++; const dpr = devicePixelRatio || 1;
+  if (cv.width !== innerWidth * dpr) { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; }
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // void background with a faint drift of stars fixed in SCREEN space, so they line up across windows
+  g.fillStyle = '#000'; g.fillRect(0, 0, innerWidth, innerHeight);
+  const S = F.snap; if (S) {
+    const ox = origin.x, oy = origin.y; g.save(); g.translate(-ox, -oy);
+    for (let i = 0; i < 160; i++) { const sx = (i * 9301 + 49297) % 4000, sy = (i * 233280 + 1237) % 2400; g.fillStyle = `rgba(200,210,255,${0.15 + (i % 7) / 14})`; g.fillRect(sx, sy, 1.5, 1.5); }
+    for (const r of S.rooms) { const mine = F.mode === 'desk' || r.id === F.myId; g.strokeStyle = mine ? '#2b3270' : '#1a1f3f'; g.setLineDash(mine ? [] : [6, 6]); g.strokeRect(r.x + 0.5, r.y + 0.5, r.w - 1, r.h - 1); }
+    g.setLineDash([]);
+    for (const d of S.doors) { const a = Math.min(1, d.n / 20); g.fillStyle = `rgba(120,255,210,${0.25 + a * 0.6})`; g.beginPath(); g.arc(d.x, d.y, 4 + a * 6, 0, 7); g.fill(); }
+    const c = S.c; g.strokeStyle = 'rgba(130,150,255,.35)'; g.lineWidth = 2; g.beginPath(); c.trail.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke();
+    if (S.waypoint) { g.strokeStyle = 'rgba(255,255,255,.25)'; g.setLineDash([3, 5]); g.beginPath(); g.moveTo(c.x, c.y); g.lineTo(S.waypoint.x, S.waypoint.y); g.stroke(); g.setLineDash([]); }
+    if (S.food) { g.fillStyle = '#ffd36b'; g.shadowColor = '#ffb000'; g.shadowBlur = 18; g.beginPath(); g.arc(S.food.x, S.food.y, 7, 0, 7); g.fill(); g.shadowBlur = 0; }
+    const hue = 220 - c.hunger * 200; const R = 13 + Math.sin(F.frames / 8) * 1.5;
+    const grd = g.createRadialGradient(c.x, c.y, 2, c.x, c.y, R * 2.4); grd.addColorStop(0, `hsla(${hue},95%,70%,1)`); grd.addColorStop(1, `hsla(${hue},95%,50%,0)`);
+    g.fillStyle = grd; g.beginPath(); g.arc(c.x, c.y, R * 2.4, 0, 7); g.fill();
+    g.restore();
+    const b = F.belief || { glyph: '?', text: '', hops: -1 };
+    document.getElementById('line').innerHTML = F.mode === 'desk' ? `<b>${S.thought}</b> · ${S.rooms.length} windows` : `<b>${b.glyph} ${b.text}</b> · this window is ${F.myId} · ${S.rooms.length} window${S.rooms.length > 1 ? 's' : ''} open`;
+    document.querySelector('#stats small').textContent = `eaten ${S.eaten} · doors known ${S.doors.length} · doors forgotten ${S.surprises} · mode ${S.mode}`;
+    if (F.frames % 15 === 0) { const t = `${b.glyph} ${b.text} · Void`; if (document.title !== t) { document.title = t; F.titles.push(t); if (F.titles.length > 20) F.titles.shift(); } setFavicon(b, c.hunger); }
+  }
+  requestAnimationFrame(draw);
+}
+cv.addEventListener('click', (e) => send({ type: 'feed', x: e.clientX + origin.x, y: e.clientY + origin.y }));
+document.getElementById('open').onclick = () => window.open(location.pathname, '_blank', `popup,width=520,height=420,left=${screenX + outerWidth - 60},top=${screenY + 120}`);
+document.getElementById('desk').onclick = () => location.search = '?desk=1';
+let learning = true; document.getElementById('mode').onclick = (e) => { learning = !learning; e.target.textContent = 'Mode: ' + (learning ? 'learning' : 'straight-line smell'); send({ type: 'mode', mode: learning ? 'learn' : 'straight' }); };
+connect(); requestAnimationFrame(draw);
+})();
+</script></body></html>

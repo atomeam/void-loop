@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #hud { position: fixed; top: 10px; left: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px; font-size: 13px; max-width: 320px; }
+  #hud button { margin: 4px 4px 0 0; padding: 4px 10px; background: #224; color: #fff; border: 1px solid #46a; border-radius: 4px; cursor: pointer; }
+  .thought { position: fixed; padding: 6px 10px; background: rgba(20,30,60,0.75); border: 1px solid #6af; border-radius: 12px; font-size: 12px; pointer-events: none; transition: transform 0.15s linear, opacity 0.3s; transform-style: preserve-3d; white-space: nowrap; }
+  #status { position: fixed; bottom: 10px; left: 10px; font-size: 11px; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Sonified Evolutionary Thought Field · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: WebGPU Sonified Evolutionary Thought Field.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Sonified Evolutionary Thought Field · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: WebGPU Sonified Evolutionary Thought Field.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f416-webgpu-sonified-thought-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f416-webgpu-sonified-thought-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <strong>F-197 Sonified Thought Field</strong><br>
+  Click to reward / seed. Drag to influence.<br>
+  <button id="seal">Seal genes</button>
+  <button id="reset">Reset</button>
+  <span id="info">evolving…</span>
+</div>
+<div id="status">WebGPU: checking… | Audio: waiting for gesture</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Sonified Evolutionary Thought Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

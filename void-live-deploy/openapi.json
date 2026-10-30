@@ -18,6 +18,7 @@
     { "name": "discovery", "description": "What Void can do and what is on sale." }
   ],
   "paths": {
+    "/api/scores": {"get": {"tags": ["sports"], "operationId": "getScores", "summary": "Scores, standings, game detail and team schedules for 12 leagues (free, read only)", "description": "Free and read only, no key, no premium tier. A league from a closed list (epl, laliga, bundesliga, seriea, ligue1, mls, ucl, nba, nfl, mlb, nhl, f1) and a day return that day's games (live, final or upcoming) as one shape; view=standings returns the tables, view=game the events, team stats, line-ups, box score and play by play, view=team a team's next and last games, view=form each team's last five results and a Verse rating. The data comes from ESPN's unofficial public site API (OpenLigaDB behind it for the Bundesliga, Jolpica for F1) and may be delayed by a minute or more; answers are edge-cached from 20 seconds while a game is live to six hours once final, and a source that fails gives the last good copy marked stale. Call it from a server or an agent (no CORS). Scores are public facts shown for reading: no odds, no betting data.", "parameters": [{"name": "league", "in": "query", "required": true, "schema": {"type": "string", "enum": ["epl", "laliga", "bundesliga", "seriea", "ligue1", "mls", "ucl", "nba", "nfl", "mlb", "nhl", "f1"]}}, {"name": "date", "in": "query", "required": false, "description": "A day, YYYY-MM-DD, from 2000-01-01 to 400 days ahead; today when left out.", "schema": {"type": "string", "format": "date"}}, {"name": "span", "in": "query", "required": false, "description": "7 for the seven days from date (scores view only).", "schema": {"type": "integer", "enum": [1, 7]}}, {"name": "view", "in": "query", "required": false, "schema": {"type": "string", "enum": ["scores", "standings", "game", "team", "form"], "default": "scores"}}, {"name": "id", "in": "query", "required": false, "description": "The game id, for view=game (digits).", "schema": {"type": "string", "pattern": "^[0-9]{1,12}$"}}, {"name": "team", "in": "query", "required": false, "description": "The team id, for view=team (digits).", "schema": {"type": "string", "pattern": "^[0-9]{1,12}$"}}], "responses": {"200": {"description": "{ ok: true, league, view, date, at, source, games | groups | game, events, stats, lineups, players, plays | form, elo }; stale: true when the last good copy is served."}, "400": {"description": "The league, day or id is not allowed."}, "429": {"description": "More than 30 uncached requests a minute from one connection."}, "502": {"description": "No source answered and no earlier copy exists."}}}},
     "/api/films": {
       "get": {
         "tags": ["review"], "operationId": "listFilms", "summary": "Void's films (paying users)",
@@ -65,7 +66,7 @@
         "tags": ["review"],
         "operationId": "reviewCode",
         "summary": "Review code or a diff",
-        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Void Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
+        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Verse Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
         "security": [{}, { "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -96,7 +97,7 @@
                   "ms": 14,
                   "tier": "free",
                   "review": "rules",
-                  "upgrade": "Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
+                  "upgrade": "Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
                 }
               }
             }
@@ -118,11 +119,11 @@
         ],
         "responses": {
           "200": {
-            "description": "The offer. `standalone` is null whenever Void Code Review Pro is not sold on its own.",
+            "description": "The offer. `standalone` is null whenever Verse Code Review Pro is not sold on its own.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ReviewOffer" },
-                "example": { "product": "Void Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
+                "example": { "product": "Verse Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
               }
             }
           },
@@ -135,7 +136,7 @@
         "tags": ["mcp"],
         "operationId": "mcpMessage",
         "summary": "Send one MCP JSON-RPC message",
-        "description": "Void's MCP server: the streamable HTTP transport, answered as plain JSON (no event stream). Methods: `initialize`, `tools/list`, `tools/call`, `ping`. The tools are read-only: `review_code` (the instant checks), `review_code_closer` (the closer read; send the same Authorization header /api/review takes), `moon_phase`, `meteor_showers`, a `skill_<name>` tool for each of Void's ten proven read-only skills with the most evidence (answered the way `ask_void` is, with a link to the skill itself) and `skill_health` (the skill-family health metrics from /skills/families.json). A JSON-RPC notification (no `id`) gets 202 with no body. Unparseable JSON still gets 200 with JSON-RPC error -32700. GET answers 405.",
+        "description": "Void's MCP server: the streamable HTTP transport, answered as plain JSON (no event stream). Methods: `initialize`, `tools/list`, `tools/call`, `ping`. The tools are read-only: `review_code` (the instant checks), `review_code_closer` (the closer read; send the same Authorization header /api/review takes), `moon_phase`, `meteor_showers`, a `skill_<name>` tool for each of Void's ten proven read-only skills with the most evidence (answered the way `ask_void` is, with a link to the skill itself) `seo_audit`, `readability` and `colour_contrast` (the SEO audit, readability and WCAG contrast tools Verse runs on its own pages) and `skill_health` (the skill-family health metrics from /skills/families.json). A JSON-RPC notification (no `id`) gets 202 with no body. Unparseable JSON still gets 200 with JSON-RPC error -32700. GET answers 405.",
         "security": [{}, { "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -240,7 +241,7 @@
       "reviewKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Optional. A Void Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Void Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
+        "description": "Optional. A Verse Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Verse Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
       }
     },
     "responses": {

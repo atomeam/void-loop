@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --border-w: 4px;
+  --hue: 220;
+  --card-scale: 1;
+  --card-x: 20px;
+  --card-y: 20px;
+  --bg: #0a0a12;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+  border: var(--border-w) solid hsl(var(--hue), 70%, 50%);
+  transition: border-width 0.3s, border-color 0.5s, background 0.5s;
+  box-sizing: border-box;
+  height: 100vh;
+}
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+#card {
+  position: fixed;
+  left: var(--card-x);
+  top: var(--card-y);
+  transform: scale(var(--card-scale));
+  transform-origin: top left;
+  background: rgba(10, 10, 20, 0.85);
+  border: 1px solid hsl(var(--hue), 60%, 60%);
+  padding: 12px 16px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  transition: transform 0.4s, border-color 0.5s;
+  max-width: 280px;
+  z-index: 10;
+}
+#card h3 { margin: 0 0 8px; font-size: 1rem; }
+#status { font-size: 0.9rem; min-height: 1.2em; }
+button {
+  background: hsl(var(--hue), 50%, 40%);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+button:hover { filter: brightness(1.2); }
+#seals { font-size: 0.75rem; margin-top: 8px; max-height: 100px; overflow-y: auto; }
+#fallback-note { position: fixed; bottom: 10px; left: 10px; font-size: 0.8rem; opacity: 0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-reaction-diffusion-local-mind · Verse lab</title>
+<meta name="description" content="Novel combination for The Verse canvas: a continuous GPU-native reaction-diffusion substrate (Gray-Scott model) representing the empty potential of the void, a local">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-reaction-diffusion-local-mind · Verse lab">
+<meta property="og:description" content="Novel combination for The Verse canvas: a continuous GPU-native reaction-diffusion substrate (Gray-Scott model) representing the empty potential of the void, a local">
+<meta property="og:url" content="https://a-to-mind.com/lab/f021-webgpu-reaction-diffusion-local-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f021-webgpu-reaction-diffusion-local-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="card">
+  <h3>Verse Mind</h3>
+  <div id="status">Initializing substrate…</div>
+  <button id="seal">Seal interpretation</button>
+  <button id="clear">Clear field</button>
+  <div id="seals"></div>
+</div>
+<div id="fallback-note"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-reaction-diffusion-local-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

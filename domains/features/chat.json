@@ -1,0 +1,213 @@
+{
+ "floor": "chat",
+ "verse_page": null,
+ "researched": "2026-10-25",
+ "sites": {
+  "web.whatsapp.com": {
+   "sources": [
+    "https://web.whatsapp.com/",
+    "https://faq.whatsapp.com/",
+    "https://www.whatsapp.com/groups?lang=en",
+    "https://www.whatsapp.com/features"
+   ],
+   "features": [
+    {
+     "group": "core",
+     "name": "One-to-one messaging",
+     "detail": "Text chats with delivery and read receipts, typing indicator",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "skills/invite.js: a signed-in member invites someone by link into a shared stage (POST /api/share, lib/share-client.js) where both see what is summoned; presence and shared cards, no messages"
+    },
+    {
+     "group": "core",
+     "name": "Group chats",
+     "detail": "Groups up to 1024, admins, invite links",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "invite.js shares one stage between people"
+    },
+    {
+     "group": "core",
+     "name": "End-to-end encryption",
+     "detail": "Signal protocol for chats and calls",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Media sharing",
+     "detail": "Photos, videos, documents up to 2 GB, contacts, location",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Voice messages",
+     "detail": "Record and send voice notes with transcripts",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Emoji, stickers, GIFs, reactions",
+     "detail": "React to messages, sticker packs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Reply, forward, edit, delete for everyone",
+     "detail": "Message actions",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Chat list and search",
+     "detail": "Search messages, filters (unread, favourites, groups)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "core",
+     "name": "Linked devices",
+     "detail": "Web/desktop linked to phone by QR, works with phone off",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Voice and video calls",
+     "detail": "One-to-one and group calls, call links, screen share (desktop)",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Disappearing messages and view once",
+     "detail": "Timer on chats, view-once media",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Polls and events",
+     "detail": "Polls in chats, events with RSVPs",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Communities",
+     "detail": "Groups of groups with announcements",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Channels",
+     "detail": "One-way broadcasts with unlimited followers",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Status",
+     "detail": "24-hour stories",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Pin, star, archive, mute",
+     "detail": "Organise chats",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Chat lock and privacy settings",
+     "detail": "Hide last seen, read receipts, profile photo",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "power",
+     "name": "Meta AI in chat",
+     "detail": "Assistant in chats",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "Verse answers asks on the stage (functions/api/answer.js), not inside a chat"
+    },
+    {
+     "group": "power",
+     "name": "One-time notes left for someone",
+     "detail": "n/a in WhatsApp",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "skills/whisper-network.js leaves a one-time note on a stage thing, device-local"
+    },
+    {
+     "group": "sharing",
+     "name": "Share links and contacts",
+     "detail": "Invite links, QR codes for contacts and groups",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "invite.js invite link"
+    },
+    {
+     "group": "offline-mobile",
+     "name": "Phone apps and desktop apps",
+     "detail": "iOS, Android, Windows, Mac; messages queue offline",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "accessibility",
+     "name": "Screen reader, voice message transcripts, font size",
+     "detail": "Accessibility options",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    },
+    {
+     "group": "paid",
+     "name": "WhatsApp Business",
+     "detail": "Business profiles, catalogues, paid API messaging",
+     "paid": true,
+     "verse": "missing",
+     "verse_evidence": "no Verse skill or page does this"
+    }
+   ]
+  }
+ },
+ "gaps": [
+  "text messages between two people by link",
+  "a room for a group",
+  "end-to-end encryption in the browser",
+  "photos and files in the chat",
+  "reactions and replies",
+  "messages kept on the device"
+ ],
+ "verse_extra": [
+  "the shared stage: summon a card and both people see it"
+ ],
+ "first_page": "Chat page /chat/ for two or a few people who want to talk without phone numbers. First: open a room, share its link, send end-to-end encrypted text (key in the link fragment, WebCrypto) relayed through the existing share room, with reactions, replies, read marks and history kept only on each device; any card summoned in the room shows for everyone. Will not build: phone-number accounts, calls, status, channels or file uploads past a small limit."
+}

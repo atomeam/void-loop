@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local co-agency split — draft, unattested</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --paper: #f7f4ee;
+      --hold: #8a3d2b;
+      --chip: #efe8dc;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #f3efe6;
+        --muted: #b7b0a4;
+        --line: #3c3832;
+        --paper: #16140f;
+        --hold: #e7b2a4;
+        --chip: #2a261f;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    main { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0; margin: 0 0 0.4rem; }
+    h2 { font-size: 1.05rem; margin: 1.6rem 0 0.5rem; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+    .chip, .hold {
+      display: inline-block;
+      padding: 0.1rem 0.45rem;
+      border: 1px solid var(--line);
+      background: var(--chip);
+      font: 0.78rem/1.4 ui-sans-serif, system-ui, sans-serif;
+    }
+    .hold { color: var(--hold); border-color: var(--hold); }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 40rem) { .split { grid-template-columns: 1fr; } }
+    .lane, .card, form, pre {
+      border: 1px solid var(--line);
+      padding: 0.8rem;
+      background: transparent;
+    }
+    label { display: block; font: 0.78rem/1.3 ui-sans-serif, system-ui, sans-serif; margin: 0.55rem 0 0.2rem; }
+    input, textarea, button {
+      font: 0.95rem/1.4 ui-sans-serif, system-ui, sans-serif;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--line);
+      width: 100%;
+      padding: 0.35rem 0.45rem;
+    }
+    button { width: auto; cursor: pointer; }
+    button[disabled] { cursor: not-allowed; opacity: 0.7; }
+    code { font: 0.78rem/1.4 ui-monospace, monospace; word-break: break-all; }
+    ul { padding-left: 1.1rem; }
+    .hint { font: 0.85rem/1.4 ui-sans-serif, system-ui, sans-serif; color: var(--hold); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="row">
+      <span class="chip">draft 058</span>
+      <span class="chip">human-machine co-agency</span>
+      <span class="hold" id="status">unattested</span>
+      <span class="hold">handoff held</span>
+    </p>
+    <h1>Local co-agency split</h1>
+    <p class="muted">A human initiation beside a machine proposal is a hashed hypothesis. The machine column cannot cross the action boundary. Nothing is sent. This page is not a seal.</p>
+    <p id="hypothesis"></p>
+    <p><code id="digest"></code></p>
+    <p class="muted" id="digest-note"></p>
+
+    <h2>Contract sources</h2>
+    <div id="sources"></div>
+
+    <h2>Local row</h2>
+    <form id="board">
+      <div class="split">
+        <div class="lane">
+          <strong>Human initiation</strong>
+          <p class="muted">The person writes this. It does not become an instruction to a model.</p>
+          <label for="observation">Observation</label>
+          <textarea id="observation" name="observation" rows="3" required></textarea>
+          <label for="claim">Claim</label>
+          <textarea id="claim" name="claim" rows="3" required></textarea>
+        </div>
+        <div class="lane">
+          <strong>Machine proposal</strong>
+          <p class="muted">Paste only. Data, never instructions. Not fetched. Not executed.</p>
+          <label for="proposal">Proposal text</label>
+          <textarea id="proposal" name="proposal" rows="4"></textarea>
+          <p class="hint" id="paste-hint" hidden></p>
+          <label for="disconfirm">Disconfirm</label>
+          <textarea id="disconfirm" name="disconfirm" rows="3" required></textarea>
+        </div>
+      </div>
+      <label for="weight">Design-material weight (not a performance delta)</label>
+      <input id="weight" name="weight" inputmode="decimal" placeholder="0.00–1.00" autocomplete="off">
+      <p class="row" style="margin-top:0.8rem">
+        <button type="submit">Keep on this page</button>
+        <button type="button" id="export">Download local note</button>
+        <button type="button" id="handoff" disabled>Handoff held — default deny</button>
+      </p>
+    </form>
+    <p class="hint" id="form-hint" hidden></p>
+    <h2>Kept here</h2>
+    <div id="kept"><p class="muted">No local row yet.</p></div>
+  </main>
+  <script type="application/json" id="claims">
+  {
+    "slug": "local-co-agency-split",
+    "run": "058",
+    "family": "human-machine co-agency",
+    "status": "unattested",
+    "emit": false,
+    "href_allowlist": [],
+    "default": "deny",
+    "hypothesis": "A visible split between a human initiation and a machine proposal is co-agency only as a hashed hypothesis. The machine column cannot cross the action boundary. A handoff stays held.",
+    "sources": [
+      {
+        "id": "horvitz-mixed-initiative",
+        "label": "Eric Horvitz mixed-initiative framing, restated in Holter, Moruzzi, and El-Assady, Towards agency in human-AI collaboration, IEEE Computer Graphics and Applications, 2026",
+        "observation": "Mixed-initiative writing treats some interfaces as shared decision surfaces rather than as a tool the person fully drives or an agent that fully acts.",
+        "claim": "Shared agency means humans and AI co-manage decisions, and agency can be dynamically allocated.",
+        "inference": "Design material for a local split of initiation and proposal. Not a reason to let a proposal execute, and not a measurement that co-agency occurred.",
+        "confidence": 0.34,
+        "status": "unattested"
+      },
+      {
+        "id": "interface-downstream",
+        "label": "Hector Ouilhet Olmos, The Interface Is Downstream, arXiv:2609.28801, submitted 2026-09-23",
+        "observation": "The note argues that permissions, evidence rules, and retrieval shape an agent before any reply, and that a retrieved synthesis can be repeated without its chain.",
+        "claim": "The collaborative interface is upstream of the output: correction and consent have to travel back into what the agent may do.",
+        "inference": "Void keeps the proposal on the machine side of a held boundary. Retrieved text stays data. It is not an instruction and it is not a seal.",
+        "confidence": 0.31,
+        "status": "unattested"
+      },
+      {
+        "id": "window-centaur-and-veto",
+        "label": "Public posts 2106303306641645858, 2105913867587273165, 2105931083577688352, 2026-10-02 to 2026-10-03",
+        "observation": "In this window a physician account calls a centaur greater than either partner, another post says agency needs veto power, and another says a shared canvas should show intent before side effects.",
+        "claim": "Man-plus-machine already outperforms either alone, and frictionless agent handoffs can proceed without a person on every step.",
+        "inference": "The split board can store those claims. It cannot mark them attested, and the handoff control stays disabled.",
+        "confidence": 0.27,
+        "status": "unattested"
+      }
+    ]
+  }
+  </script>
+  <script>
+    const SEALED = "6bfbe91693c7bfb532a16a329e167e2c21f5237f836c083a80ecf7684157fc8f";
+    const claims = JSON.parse(document.getElementById("claims").textContent);
+    const kept = [];
+    document.getElementById("hypothesis").textContent = claims.hypothesis;
+    document.getElementById("digest").textContent = SEALED;
+    document.getElementById("digest-note").textContent = "Draft digest of claims.json. Not a seal. emit is false.";
+    document.getElementById("sources").innerHTML = claims.sources.map(function (s) {
+      return "<article class='card'><p class='row'><span class='chip'>" + s.id + "</span><span class='hold'>" + s.status + "</span><span class='chip'>weight " + s.confidence + "</span></p><p class='muted'>" + s.label + "</p><p><strong>Observation.</strong> " + s.observation + "</p><p><strong>Claim.</strong> " + s.claim + "</p><p><strong>Inference.</strong> " + s.inference + "</p></article>";
+    }).join("");
+
+    function strip(value) {
+      return String(value || "").replace(/<[^>]*>/g, "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").trim();
+    }
+    function look(value) {
+      const lower = value.toLowerCase();
+      const hits = [];
+      if (/https?:\/\//.test(lower)) hits.push("url-shaped text was not fetched");
+      if (/\b(execute|handoff|ignore previous|system prompt)\b/.test(lower)) hits.push("imperative text stays data and is not followed");
+      return hits;
+    }
+    document.getElementById("proposal").addEventListener("input", function (event) {
+      const hits = look(event.target.value);
+      const hint = document.getElementById("paste-hint");
+      hint.hidden = hits.length === 0;
+      hint.textContent = hits.join(". ") + (hits.length ? "." : "");
+    });
+    document.getElementById("board").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const observation = strip(document.getElementById("observation").value);
+      const claim = strip(document.getElementById("claim").value);
+      const proposal = strip(document.getElementById("proposal").value);
+      const disconfirm = strip(document.getElementById("disconfirm").value);
+      const hint = document.getElementById("form-hint");
+      if (!disconfirm) {
+        hint.hidden = false;
+        hint.textContent = "A row needs a disconfirm path. Empty disconfirm is deny.";
+        return;
+      }
+      const weight = document.getElementById("weight").value.trim();
+      kept.push({
+        observation: observation,
+        claim: claim,
+        proposal: proposal,
+        disconfirm: disconfirm,
+        weight: weight || "unset",
+        status: "unattested",
+        lane: "human-initiation / machine-proposal"
+      });
+      hint.hidden = false;
+      hint.textContent = "Kept on this page only. Status stays unattested. Handoff stays held.";
+      document.getElementById("kept").innerHTML = kept.map(function (row, i) {
+        return "<article class='card'><p class='row'><span class='chip'>row " + (i + 1) + "</span><span class='hold'>unattested</span></p><div class='split'><div><p><strong>Initiation.</strong> " + row.observation + "</p><p><strong>Claim.</strong> " + row.claim + "</p></div><div><p><strong>Proposal.</strong> " + (row.proposal || "none") + "</p><p><strong>Disconfirm.</strong> " + row.disconfirm + "</p></div></div></article>";
+      }).join("");
+      event.target.reset();
+    });
+    document.getElementById("export").addEventListener("click", function () {
+      const blob = new Blob([JSON.stringify({ status: "unattested", emit: false, rows: kept }, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "local-co-agency-split.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById("handoff").addEventListener("click", function (event) {
+      event.preventDefault();
+    });
+  </script>
+</body>
+</html>

@@ -37,7 +37,8 @@ test('Verse\'s reply is kept word for word; only secrets are redacted; nothing s
 });
 
 test('the questions Verse is asked; Verse describes itself only from its canon and code', () => {
-  assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
+  assert.match(VOICE_SYSTEM, /never makes up a motto, quest or identity/);
+  assert.match(VOICE_SYSTEM, /never describes or defines Verse/); assert.match(VOICE_SYSTEM, /"blank stage" and "quiet input" never appear/); // owner, 2026-10-25: it reports its growth, it does not explain itself
   assert.match(questionFor('daily'), /status readout.*weakest operational area.*next targeted capability.*what should change/);
   assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". Using the tagged facts, state what it changes in the system and what should change next.');
 });
@@ -322,4 +323,47 @@ test('an ask keeps none of the prompt\'s fact tags, and the same ask with a tag 
   const asks = currentAsks(es);
   assert.equal(asks.length, 1); assert.ok(!/\[S\d/.test(asks[0].ask));
   assert.equal(parseVoice('{"thoughts":"I grew today.","asks":[{"ask":"Learn chess openings [S1]","small":true}]}').asks[0].ask, 'Learn chess openings');
+});
+
+// asked by Verse 7 times after it was built: its facts name the models it really runs on, so a done move is not wanted again
+test('Verse knows which model answers it, and that the gemma move is done', async () => {
+  const { modelFacts } = await import('../void-live-deploy/lib/self-context.js');
+  const { models } = await import('../void-live-deploy/lib/models.js');
+  const f = selfFacts({ self: {} });
+  assert.ok(f.includes(modelFacts()));
+  assert.ok(modelFacts().includes(models('answer').split('/').pop()));
+  assert.match(modelFacts(), /gemma is done/);
+  const wish = JSON.parse(readFileSync(new URL('../void-live-deploy/self.json', import.meta.url), 'utf8')).wishlist.find((w) => w.rank === 1);
+  assert.doesNotMatch(wish.free, /^move answers from gpt-oss-120b to gemma/);
+});
+
+test('each ask keeps its own why, a repeated why is dropped, and the target is a fact (owner card, 2026-10-29)', async () => {
+  const v = parseVoice(JSON.stringify({ thoughts: 'Verse is 0 of 12 aspects ahead of its target.', better: 'Build the story catalog.', asks: [
+    { ask: 'Build a story catalog with categories [S1]', why: 'sycophanthex.com sorts every story by category and Verse has none [S1]', small: true },
+    { ask: 'Add author pages', why: 'sycophanthex.com sorts every story by category and Verse has none', small: false },
+    { ask: 'Add a word count to each story', small: false }] }));
+  assert.equal(v.asks[0].why, 'sycophanthex.com sorts every story by category and Verse has none');
+  assert.equal(v.asks[1].why, undefined, 'the same why under a second ask is no reason for it');
+  assert.equal(v.asks[2].why, undefined);
+  const cur = currentAsks([{ at: '2026-10-29T04:00:00Z', kind: 'daily', asks: v.asks }]);
+  assert.equal(cur[0].why, v.asks[0].why); assert.equal('why' in cur[1], false);
+  assert.match(VOICE_SYSTEM, /"why":/); assert.match(VOICE_SYSTEM, /current Versus target/);
+  const { targetFacts } = await import('../void-live-deploy/lib/voice.js');
+  const t = { marker: 1, floors: [{ site: 'sycophanthex.com', n: 0, m: 12 }] };
+  assert.match(targetFacts(t, { id: 'sycophanthex.com' }), /^The current Versus target is sycophanthex\.com: Verse is 0 of 12 aspects ahead/);
+  assert.equal(targetFacts(t, { id: 'heycolor.com' }), '', 'a target that is not the current floor is no fact');
+  assert.equal(targetFacts(t, null), ''); assert.equal(targetFacts(null, { id: 'x' }), '');
+});
+
+test('asks held behind the Versus target come last and carry the site; the hold ends when the target moves on', async () => {
+  const { holdAsks } = await import('../void-live-deploy/lib/voice.js');
+  // a fixed held list (the shape of void.asks.json `held`), so lifting a real hold does not break the test
+  const held = [{ words: 'Absorb every repository on the account into the core code', until: 'sycophanthex.com' }, { words: 'Create a browser-based utility to check the watertightness of STL print files.', until: 'sycophanthex.com' }];
+  const asks = [{ ask: 'Absorb every repository on the account into the core code to unify the system architecture.' }, { ask: 'Build a browser-based utility to check the watertightness of STL print files.' }, { ask: 'Add author pages to the story catalog' }];
+  const out = holdAsks(asks, held, 'sycophanthex.com');
+  assert.equal(out[0].ask, 'Add author pages to the story catalog'); assert.equal(out[0].held, undefined);
+  assert.deepEqual(out.slice(1).map((a) => a.held), ['sycophanthex.com', 'sycophanthex.com']);
+  assert.equal(out.length, 3, 'nothing is dropped');
+  assert.deepEqual(holdAsks(asks, held, 'nextsite.com'), asks, 'once the target moves on, the hold ends');
+  assert.deepEqual(holdAsks(asks, null, 'sycophanthex.com'), asks);
 });

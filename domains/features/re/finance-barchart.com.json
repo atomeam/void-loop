@@ -1,0 +1,1713 @@
+{
+ "site": "www.barchart.com",
+ "url": "https://www.barchart.com/",
+ "scanned": "2026-10-26",
+ "status": 202,
+ "assets": [
+  {
+   "f": "[token]",
+   "t": "js",
+   "b": 4433,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/client",
+   "t": "js",
+   "b": 276306,
+   "ext": true
+  },
+  {
+   "f": "accounts.google.com/style",
+   "t": "css",
+   "b": 696,
+   "ext": true
+  },
+  {
+   "f": "ajax.googleapis.com/jquery.min.js",
+   "t": "js",
+   "b": 84320,
+   "ext": true
+  },
+  {
+   "f": "app.advizorpro.com/0fCvgG.ap.js",
+   "t": "js",
+   "b": 3697,
+   "ext": true
+  },
+  {
+   "f": "assets.barchart.com/angular-P2S2TZJH.js",
+   "t": "js",
+   "b": 325194
+  },
+  {
+   "f": "assets.barchart.com/app-YSNNN4EA.js",
+   "t": "js",
+   "b": 2793612
+  },
+  {
+   "f": "assets.barchart.com/chunk-34QOFQJW.js",
+   "t": "js",
+   "b": 16997
+  },
+  {
+   "f": "assets.barchart.com/chunk-44S7UVHW.js",
+   "t": "js",
+   "b": 765
+  },
+  {
+   "f": "assets.barchart.com/chunk-45JVSHMK.js",
+   "t": "js",
+   "b": 264419
+  },
+  {
+   "f": "assets.barchart.com/chunk-4SN5QCZ5.js",
+   "t": "js",
+   "b": 44220
+  },
+  {
+   "f": "assets.barchart.com/chunk-6GCHSC3R.js",
+   "t": "js",
+   "b": 1173
+  },
+  {
+   "f": "assets.barchart.com/chunk-A5DZKTYS.js",
+   "t": "js",
+   "b": 666141
+  },
+  {
+   "f": "assets.barchart.com/chunk-CBTTO3XF.js",
+   "t": "js",
+   "b": 6475
+  },
+  {
+   "f": "assets.barchart.com/chunk-D4TVTOFI.js",
+   "t": "js",
+   "b": 118869
+  },
+  {
+   "f": "assets.barchart.com/chunk-D52P7EVR.js",
+   "t": "js",
+   "b": 634
+  },
+  {
+   "f": "assets.barchart.com/chunk-DHBPAKNG.js",
+   "t": "js",
+   "b": 3607
+  },
+  {
+   "f": "assets.barchart.com/chunk-DVYOKHKL.js",
+   "t": "js",
+   "b": 1254
+  },
+  {
+   "f": "assets.barchart.com/chunk-EGZDY63Z.js",
+   "t": "js",
+   "b": 882
+  },
+  {
+   "f": "assets.barchart.com/chunk-FE5QRXH7.js",
+   "t": "js",
+   "b": 3846
+  },
+  {
+   "f": "assets.barchart.com/chunk-FLQ5NGZ7.js",
+   "t": "js",
+   "b": 81036
+  },
+  {
+   "f": "assets.barchart.com/chunk-IBDI4EGT.js",
+   "t": "js",
+   "b": 640
+  },
+  {
+   "f": "assets.barchart.com/chunk-LUH5H7XQ.js",
+   "t": "js",
+   "b": 1882
+  },
+  {
+   "f": "assets.barchart.com/chunk-OKUYXJBY.js",
+   "t": "js",
+   "b": 3287
+  },
+  {
+   "f": "assets.barchart.com/chunk-OWITNQDL.js",
+   "t": "js",
+   "b": 135
+  },
+  {
+   "f": "assets.barchart.com/chunk-R6YQIQ7B.js",
+   "t": "js",
+   "b": 232
+  },
+  {
+   "f": "assets.barchart.com/chunk-RSPCZC2P.js",
+   "t": "js",
+   "b": 926554
+  },
+  {
+   "f": "assets.barchart.com/chunk-SZW3EZLZ.js",
+   "t": "js",
+   "b": 6324
+  },
+  {
+   "f": "assets.barchart.com/chunk-UX3FDFFN.js",
+   "t": "js",
+   "b": 431
+  },
+  {
+   "f": "assets.barchart.com/chunk-VK5OKBU3.js",
+   "t": "js",
+   "b": 1832
+  },
+  {
+   "f": "assets.barchart.com/chunk-VMSGWVZI.js",
+   "t": "js",
+   "b": 70691
+  },
+  {
+   "f": "assets.barchart.com/chunk-X7QVC4RG.js",
+   "t": "js",
+   "b": 2326
+  },
+  {
+   "f": "assets.barchart.com/chunk-XBRF3ODZ.js",
+   "t": "js",
+   "b": 9025
+  },
+  {
+   "f": "assets.barchart.com/chunk-XO6U7UQI.js",
+   "t": "js",
+   "b": 104452
+  },
+  {
+   "f": "assets.barchart.com/chunk-XU7VFAPQ.js",
+   "t": "js",
+   "b": 968
+  },
+  {
+   "f": "assets.barchart.com/chunk-YFGHXKOL.js",
+   "t": "js",
+   "b": 174895
+  },
+  {
+   "f": "assets.barchart.com/chunk-ZFVUFCVF.js",
+   "t": "js",
+   "b": 15160
+  },
+  {
+   "f": "assets.barchart.com/datatable-BMZGMMQB.css",
+   "t": "css",
+   "b": 545945
+  },
+  {
+   "f": "assets.barchart.com/global-4GCQTWBD.js",
+   "t": "js",
+   "b": 343372
+  },
+  {
+   "f": "assets.barchart.com/global-styles-KZZHXL65.css",
+   "t": "css",
+   "b": 2116033
+  },
+  {
+   "f": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "t": "js",
+   "b": 1140417
+  },
+  {
+   "f": "assets.barchart.com/barchart-utilities.min.js",
+   "t": "js",
+   "b": 19170
+  },
+  {
+   "f": "assets.barchart.com/mosaic-host-3U7L7YQJ.js",
+   "t": "js",
+   "b": 3064
+  },
+  {
+   "f": "assets.barchart.com/tailwind-LH5FVB7A.css",
+   "t": "css",
+   "b": 46535
+  },
+  {
+   "f": "assets.barchart.com/vendor-K5AOT3WV.js",
+   "t": "js",
+   "b": 5000
+  },
+  {
+   "f": "assets.barchart.com/barfont.#.css",
+   "t": "css",
+   "b": 12124
+  },
+  {
+   "f": "assets0.headwayapp.co/app-widget-BF5t69b3.css",
+   "t": "css",
+   "b": 16363,
+   "ext": true
+  },
+  {
+   "f": "assets0.headwayapp.co/app-widget-qSceAN00.js",
+   "t": "js",
+   "b": 13503,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/config.js",
+   "t": "js",
+   "b": 114779,
+   "ext": true
+  },
+  {
+   "f": "cdn.confiant-integrations.net/wrap.js",
+   "t": "js",
+   "b": 425970,
+   "ext": true
+  },
+  {
+   "f": "cdn.firstpromoter.com/fpr.js",
+   "t": "js",
+   "b": 4842,
+   "ext": true
+  },
+  {
+   "f": "cdn.headwayapp.co/widget.js",
+   "t": "js",
+   "b": 27503,
+   "ext": true
+  },
+  {
+   "f": "cdn.id5-sync.com/id5PrebidModule.js",
+   "t": "js",
+   "b": 102362,
+   "ext": true
+  },
+  {
+   "f": "cdn1.anonymised.io/auth.js",
+   "t": "js",
+   "b": 94219,
+   "ext": true
+  },
+  {
+   "f": "cdn1.anonymised.io/bundle.js",
+   "t": "js",
+   "b": 89799,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/cc.js",
+   "t": "js",
+   "b": 947728,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/consent-sdk-2.3.js",
+   "t": "js",
+   "b": 288629,
+   "ext": true
+  },
+  {
+   "f": "consent.cookiebot.com/uc.js",
+   "t": "js",
+   "b": 121004,
+   "ext": true
+  },
+  {
+   "f": "d24c13e85910.e56cff97.us-east-1.token.awswaf.com/challenge.js",
+   "t": "js",
+   "b": 681267,
+   "ext": true
+  },
+  {
+   "f": "googleads.g.doubleclick.net/10809465205",
+   "t": "js",
+   "b": 6853,
+   "ext": true
+  },
+  {
+   "f": "googleads.g.doubleclick.net/957121319",
+   "t": "js",
+   "b": 6858,
+   "ext": true
+  },
+  {
+   "f": "hb-barchart.opentrade.ascendeum.com/asc_prebid.js",
+   "t": "js",
+   "b": 525517,
+   "ext": true
+  },
+  {
+   "f": "mosaic.river.aws.barchart.com/site.js",
+   "t": "js",
+   "b": 247571
+  },
+  {
+   "f": "mosaic.river.aws.barchart.com/script.js",
+   "t": "js",
+   "b": 4773
+  },
+  {
+   "f": "s3.us-east-2.amazonaws.com/bydataAnalytics.js",
+   "t": "js",
+   "b": 73257,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/pubads_impl.js",
+   "t": "js",
+   "b": 686402,
+   "ext": true
+  },
+  {
+   "f": "securepubads.g.doubleclick.net/gpt.js",
+   "t": "js",
+   "b": 136209,
+   "ext": true
+  },
+  {
+   "f": "solutions.cdn.optable.co/sdk.js",
+   "t": "js",
+   "b": 118677,
+   "ext": true
+  },
+  {
+   "f": "static.anonymised.io/loader.js",
+   "t": "js",
+   "b": 19048,
+   "ext": true
+  },
+  {
+   "f": "static.doubleclick.net/ad_status.js",
+   "t": "js",
+   "b": 29,
+   "ext": true
+  },
+  {
+   "f": "www.google.[token].js",
+   "t": "js",
+   "b": 63035,
+   "ext": true
+  },
+  {
+   "f": "www.google.com/api.js",
+   "t": "js",
+   "b": 1613,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/destination",
+   "t": "js",
+   "b": 435610,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 491107,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/js",
+   "t": "js",
+   "b": 605588,
+   "ext": true
+  },
+  {
+   "f": "www.googletagmanager.com/gtm.js",
+   "t": "js",
+   "b": 555463,
+   "ext": true
+  },
+  {
+   "f": "www.gstatic.com/recaptcha__en.js",
+   "t": "js",
+   "b": 848898,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=root,base",
+   "t": "js",
+   "b": 1118747,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=OtKSJe",
+   "t": "js",
+   "b": 192,
+   "ext": true
+  },
+  {
+   "f": "www.youtube.com/m=root,base",
+   "t": "css",
+   "b": 275415,
+   "ext": true
+  }
+ ],
+ "assetCount": 82,
+ "bytes": 21577332,
+ "html": {
+  "mobile": {
+   "title": "Barchart | Market Data, News, Trading To",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 8,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "iframes": [
+    "www.barchart.com",
+    "www.youtube.com",
+    "www.barchart.com",
+    "consentcdn.cookiebot.com",
+    "headway-widget.net",
+    "www.barchart.com",
+    "www.barchart.com",
+    "account.anonymised.io"
+   ],
+   "inputTypes": {
+    "email": 1
+   },
+   "selects": 1,
+   "forms": 1,
+   "ariaLabels": [
+    "Ask BART - Barchart's AI Chat",
+    "Australia",
+    "Canada",
+    "Close",
+    "Create Account",
+    "Europe",
+    "LOGIN",
+    "Market:",
+    "UK",
+    "US",
+    "scroll backward",
+    "scroll forward",
+    "select commodity"
+   ],
+   "roles": {
+    "listbox": 2,
+    "status": 3
+   },
+   "live": true,
+   "downloadAttrs": 2
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "About Barchart",
+   "w": "md"
+  },
+  {
+   "l": "Advertise",
+   "w": "md"
+  },
+  {
+   "l": "Affiliate Program",
+   "w": "md"
+  },
+  {
+   "l": "BACK TO TOP",
+   "w": "md"
+  },
+  {
+   "l": "Barchart App",
+   "w": "md"
+  },
+  {
+   "l": "Barchart FeedBurner",
+   "w": "md"
+  },
+  {
+   "l": "Barchart Merchandise",
+   "w": "md"
+  },
+  {
+   "l": "Barchart Plus",
+   "w": "md"
+  },
+  {
+   "l": "Barchart Premier",
+   "w": "md"
+  },
+  {
+   "l": "Barchart RSS Feed",
+   "w": "md"
+  },
+  {
+   "l": "Barchart for Excel",
+   "w": "md"
+  },
+  {
+   "l": "Barchart on Facebook",
+   "w": "md"
+  },
+  {
+   "l": "Barchart on Instagram",
+   "w": "md"
+  },
+  {
+   "l": "Barchart on LinkedIn",
+   "w": "md"
+  },
+  {
+   "l": "Barchart on Twitter",
+   "w": "md"
+  },
+  {
+   "l": "Barchart on Youtube",
+   "w": "md"
+  },
+  {
+   "l": "Business Solutions",
+   "w": "md"
+  },
+  {
+   "l": "CONTACT BARCHART",
+   "w": "m"
+  },
+  {
+   "l": "Change to Dark mode",
+   "w": "md"
+  },
+  {
+   "l": "Commodities",
+   "w": "md"
+  },
+  {
+   "l": "Configure Homepage Charts",
+   "w": "md"
+  },
+  {
+   "l": "Contact Barchart",
+   "w": "md"
+  },
+  {
+   "l": "Contact Us",
+   "w": "md"
+  },
+  {
+   "l": "Cookie Notice",
+   "w": "md"
+  },
+  {
+   "l": "Cookie Settings",
+   "w": "md"
+  },
+  {
+   "l": "Create Free Account",
+   "w": "md"
+  },
+  {
+   "l": "HOME",
+   "w": "m"
+  },
+  {
+   "l": "Investing Ideas",
+   "w": "md"
+  },
+  {
+   "l": "Log In",
+   "w": "m"
+  },
+  {
+   "l": "Market Data",
+   "w": "md"
+  },
+  {
+   "l": "Market Data APIs",
+   "w": "md"
+  },
+  {
+   "l": "Market:",
+   "w": "md"
+  },
+  {
+   "l": "Morningstar",
+   "w": "md"
+  },
+  {
+   "l": "Newsletters",
+   "w": "md"
+  },
+  {
+   "l": "Portfolio",
+   "w": "md"
+  },
+  {
+   "l": "Pre-Market Movers",
+   "w": "md"
+  },
+  {
+   "l": "Privacy Policy",
+   "w": "md"
+  },
+  {
+   "l": "Real-Time Futures",
+   "w": "md"
+  },
+  {
+   "l": "SITE MAP",
+   "w": "m"
+  },
+  {
+   "l": "SITE NEWS",
+   "w": "m"
+  },
+  {
+   "l": "Sign Up",
+   "w": "m"
+  },
+  {
+   "l": "Site Education",
+   "w": "md"
+  },
+  {
+   "l": "Site Map",
+   "w": "md"
+  },
+  {
+   "l": "Stock Screener",
+   "w": "md"
+  },
+  {
+   "l": "Terms of Use",
+   "w": "md"
+  },
+  {
+   "l": "Top Picks",
+   "w": "md"
+  },
+  {
+   "l": "Unusual Options",
+   "w": "md"
+  },
+  {
+   "l": "Watchlist",
+   "w": "md"
+  },
+  {
+   "l": "select commodity",
+   "w": "d"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/password/",
+   "/proxies/",
+   "/search?*",
+   "/*?*viewName=",
+   "/*?*orderBy=",
+   "/*?*orderDir="
+  ],
+  "sitemaps": [
+   "https://www.barchart.com/sitemap.xml",
+   "https://www.barchart.com/news/google-sitemap.xml",
+   "https://www.barchart.com/sitemap_index.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 721,
+  "index": false,
+  "sections": [
+   {
+    "s": "stocks",
+    "n": 163
+   },
+   {
+    "s": "futures",
+    "n": 128
+   },
+   {
+    "s": "etfs-funds",
+    "n": 117
+   },
+   {
+    "s": "options",
+    "n": 69
+   },
+   {
+    "s": "investing-ideas",
+    "n": 48
+   },
+   {
+    "s": "news",
+    "n": 46
+   },
+   {
+    "s": "forex",
+    "n": 37
+   },
+   {
+    "s": "my",
+    "n": 32
+   },
+   {
+    "s": "education",
+    "n": 31
+   },
+   {
+    "s": "crypto",
+    "n": 12
+   },
+   {
+    "s": "economy",
+    "n": 6
+   },
+   {
+    "s": "press-releases",
+    "n": 6
+   },
+   {
+    "s": "terms",
+    "n": 3
+   },
+   {
+    "s": "barchart-for-excel",
+    "n": 2
+   },
+   {
+    "s": "get-barchart-premier",
+    "n": 2
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "own": true,
+   "keys": [
+    "Escape@243542",
+    "Enter@299323",
+    "ArrowLeft@305526",
+    "ArrowUp@305561",
+    "ArrowRight@305597",
+    "ArrowDown@305632"
+   ],
+   "flags": [
+    "bsEnabled@279778",
+    "useNative@296503"
+   ],
+   "storage": [
+    "mm.tour.step@203069"
+   ],
+   "mimes": [
+    "text/ng-template"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "own": true,
+   "keys": [
+    "NYSE@798683",
+    "date@1150631",
+    "growth1y@1489441",
+    "growth5y@1489463",
+    "Range@1568379",
+    "OHLC@1571882",
+    "Renko@2192355",
+    "Baseline@2192514",
+    "LineBreak@2192580",
+    "Kagi@2192647",
+    "PointAndFigure@2192767",
+    "ArrowLeft@2494235",
+    "ArrowRight@2494257",
+    "ArrowUp@226772",
+    "ArrowDown@226842",
+    "Enter@226940",
+    "Space@251663",
+    "Backspace@350151"
+   ],
+   "apiPaths": [
+    "/data/widget/price-surprises@3966",
+    "/api/v1/watchlist/batch@563442",
+    "/api/v1/watchlist/replace@563628",
+    "/api/v1/watchlist@563816",
+    "[token]@989785",
+    "/share/news@1128175",
+    "/api/v1/quotes/get@1384917",
+    "/api/v1@1385405",
+    "/share@2049772",
+    "/api/v1/screeners@2050801",
+    "/api/v2/watchlists@2375137",
+    "/export/image@2550456",
+    "/api/v1/user/hydrate@2788268"
+   ],
+   "flags": [
+    "useNative@55909",
+    "showOptionsLink@75130",
+    "showOptLinkInRightColumn@77115",
+    "showExpandLink@123955",
+    "useHTML@222514",
+    "disableMouse@235292",
+    "disableTouch@235308",
+    "disablePointer@235324",
+    "showStepNumbers@546603",
+    "showButtons@546668",
+    "showBullets@546683",
+    "showProgress@546698",
+    "disableInteraction@546854",
+    "showInLegend@580784",
+    "showResizeHandles@707721",
+    "disableExpiredAsterisk@757892",
+    "useFilter@786820",
+    "showMinMaxArc@1066680",
+    "showGoToLatest@1066697",
+    "showValue@1066948",
+    "showPrevious@1067554"
+   ],
+   "storage": [
+    "bcFreeBottomAccountViews@914556",
+    "bcPrefLeftMenu@1317298",
+    "barchart.premierFormData@2241405",
+    "barchart.getPremierFormData@2255076",
+    "showHelp@2753090",
+    "bcAuthRepaired@2788722"
+   ],
+   "downloads": [
+    "true@1604689"
+   ],
+   "blobTypes": [
+    "image/png@1899481"
+   ],
+   "routes": [
+    "/futures/quotes/@131036",
+    "/my/watchlist@455890",
+    "/my/my-barchart@914818",
+    "/login@1015365",
+    "/register@1015411",
+    "/quotes/get@1405831",
+    "/corporateActions@1409554",
+    "/my/dashboard@2760304"
+   ],
+   "apis": [
+    "Copy and paste through the clipboard",
+    "Print button"
+   ],
+   "mimes": [
+    "image/convert",
+    "text/calendar",
+    "video/mp4",
+    "image/png"
+   ],
+   "websocket": true,
+   "usesLocationSearch": true,
+   "keydownHandlers": 3
+  },
+  {
+   "file": "assets.barchart.com/global-4GCQTWBD.js",
+   "own": true,
+   "apiPaths": [
+    "/socket.io@236764"
+   ],
+   "flags": [
+    "useTransition@117362",
+    "useTransform@117379"
+   ],
+   "langs": 6
+  },
+  {
+   "file": "assets.barchart.com/global-styles-KZZHXL65.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "print",
+    "reduced"
+   ]
+  },
+  {
+   "file": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "own": true,
+   "keys": [
+    "brightness@430722",
+    "ArrowUp@1043124",
+    "ArrowDown@1043143",
+    "Tab@1043164",
+    "Enter@1043080"
+   ],
+   "flags": [
+    "allowMutatingData@16804",
+    "showDelay@19197",
+    "useHTML@19614",
+    "panningEnabled@72469",
+    "zoomEnabled@72496",
+    "showEmpty@73298",
+    "showFirstLabel@73311",
+    "showLastLabel@73329",
+    "allowOverlap@74067",
+    "allowPointSelect@188394",
+    "showCheckbox@188423",
+    "enableMouseTracking@188464",
+    "allowOutsidePlotInteraction@262603",
+    "showInLegend@268896",
+    "useSimulation@354653",
+    "enableSimulation@355318",
+    "showLine@387293",
+    "showFullPath@425129",
+    "allowTraversingTree@428894",
+    "useMapGeometry@533122",
+    "buttonsEnabled@611141"
+   ],
+   "blobTypes": [
+    "image/png@413400"
+   ],
+   "apis": [
+    "Respects high-contrast settings"
+   ],
+   "mimes": [
+    "image/png"
+   ],
+   "keydownHandlers": 3
+  },
+  {
+   "file": "assets.barchart.com/tailwind-LH5FVB7A.css",
+   "own": true,
+   "apis": [
+    "Respects the reduced-motion setting"
+   ],
+   "media": [
+    "reduced"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "host": "angularjs.org",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 322977
+  },
+  {
+   "host": "calendar.google.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 309051
+  },
+  {
+   "host": "calendar.yahoo.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 310589
+  },
+  {
+   "host": "cubiq.org",
+   "file": "assets.barchart.com/global-4GCQTWBD.js",
+   "at": 343259
+  },
+  {
+   "host": "docs.angularjs.org",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 16206
+  },
+  {
+   "host": "errors.angularjs.org",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 298
+  },
+  {
+   "host": "extras.ddfplus.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 197943
+  },
+  {
+   "host": "facebook.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 1060603
+  },
+  {
+   "host": "feross.org",
+   "file": "assets.barchart.com/global-4GCQTWBD.js",
+   "at": 342482
+  },
+  {
+   "host": "fullcalendar.io",
+   "file": "assets.barchart.com/global-styles-KZZHXL65.css",
+   "at": 2115983
+  },
+  {
+   "host": "instagram.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 1061527
+  },
+  {
+   "host": "instrument-extensions.aws.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 677684
+  },
+  {
+   "host": "instruments-prod.aws.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 676285
+  },
+  {
+   "host": "introjs.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 2793447
+  },
+  {
+   "host": "mbenford.github.io",
+   "file": "assets.barchart.com/global-4GCQTWBD.js",
+   "at": 342753
+  },
+  {
+   "host": "mgcrea.github.io",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 324996
+  },
+  {
+   "host": "mths.be",
+   "file": "assets.barchart.com/global-4GCQTWBD.js",
+   "at": 343324
+  },
+  {
+   "host": "orders.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 1047966
+  },
+  {
+   "host": "outlook.live.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 309395
+  },
+  {
+   "host": "outlook.office.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 309833
+  },
+  {
+   "host": "plus.google.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 23989
+  },
+  {
+   "host": "purl.org",
+   "file": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "at": 688082
+  },
+  {
+   "host": "sheets.googleapis.com",
+   "file": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "at": 462888
+  },
+  {
+   "host": "stage.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 207033
+  },
+  {
+   "host": "tailwindcss.com",
+   "file": "assets.barchart.com/tailwind-LH5FVB7A.css",
+   "at": 46508
+  },
+  {
+   "host": "trygbe.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 2709231
+  },
+  {
+   "host": "twitter.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 24095
+  },
+  {
+   "host": "webapp-proxy.aws.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 682061
+  },
+  {
+   "host": "www.barchart.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 3583
+  },
+  {
+   "host": "www.facebook.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 23877
+  },
+  {
+   "host": "www.google.com",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 255798
+  },
+  {
+   "host": "www.highcharts.com",
+   "file": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "at": 19652
+  },
+  {
+   "host": "www.linkedin.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 24227
+  },
+  {
+   "host": "www.naturalearthdata.com",
+   "file": "assets.barchart.com/highcharts-JIEOAFKE.js",
+   "at": 1139635
+  },
+  {
+   "host": "www.opensource.org",
+   "file": "assets.barchart.com/angular-P2S2TZJH.js",
+   "at": 323619
+  },
+  {
+   "host": "www.youtube-nocookie.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 2007771
+  },
+  {
+   "host": "www.youtube.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 2008202
+  },
+  {
+   "host": "x.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 1312232
+  },
+  {
+   "host": "youtube.com",
+   "file": "assets.barchart.com/app-YSNNN4EA.js",
+   "at": 1061062
+  }
+ ],
+ "thirdParty": [
+  "accounts.google.com",
+  "ad.doubleclick.net",
+  "aegis.anonymised.io",
+  "ajax.googleapis.com",
+  "angularjs.org",
+  "api.anonymised.io",
+  "api.id5-sync.com",
+  "api.intentiq.com",
+  "app.advizorpro.com",
+  "assets0.headwayapp.co",
+  "calendar.google.com",
+  "calendar.yahoo.com",
+  "cdn.confiant-integrations.net",
+  "cdn.firstpromoter.com",
+  "cdn.headwayapp.co",
+  "cdn.id5-sync.com",
+  "cdn.jsdelivr.net",
+  "cdn1.anonymised.io",
+  "cloudflare.com",
+  "consent.cookiebot.com",
+  "consentcdn.cookiebot.com",
+  "cubiq.org",
+  "d24c13e85910.e56cff97.us-east-1.token.awswaf.com",
+  "docs.angularjs.org",
+  "errors.angularjs.org",
+  "extras.ddfplus.com",
+  "facebook.com",
+  "feross.org",
+  "fullcalendar.io",
+  "googleads.g.doubleclick.net",
+  "hb-barchart.opentrade.ascendeum.com",
+  "id5-sync.com",
+  "instagram.com",
+  "introjs.com",
+  "jnn-pa.googleapis.com",
+  "lb.eu-1-id5-sync.com",
+  "lbs.eu-1-id5-sync.com",
+  "lexicon.33across.com",
+  "match.adsrvr.org",
+  "mbenford.github.io",
+  "mgcrea.github.io",
+  "mths.be",
+  "na.edge.optable.co",
+  "outlook.live.com",
+  "outlook.office.com",
+  "pagead2.googlesyndication.com",
+  "plus.google.com",
+  "purl.org",
+  "rn7ojhuq2qa445vszv7zi52ybe0ykrab.lambda-url.us-east-1.on.aws",
+  "s3.us-east-2.amazonaws.com",
+  "securepubads.g.doubleclick.net",
+  "sheets.googleapis.com",
+  "solutions.cdn.optable.co",
+  "static.anonymised.io",
+  "static.doubleclick.net",
+  "tailwindcss.com",
+  "trygbe.com",
+  "twitter.com",
+  "www.facebook.com",
+  "www.google-analytics.com"
+ ],
+ "services": [
+  "Ads",
+  "Cloudflare",
+  "Google Analytics",
+  "YouTube"
+ ],
+ "requests": [
+  "https://ad.doubleclick.net/ccm/s/collect?auid&fmt&gtm",
+  "https://aegis.anonymised.io/oauth2/token",
+  "https://api.anonymised.io/v2/debug?aav",
+  "https://api.anonymised.io/v3/anon/interest-scores?aav",
+  "https://api.anonymised.io/v3/interest-scores?aav",
+  "https://api.anonymised.io/v3/public/pps?aav",
+  "https://api.id5-sync.com/analytics/336/id5-api-js",
+  "https://api.intentiq.[token]?ABTestingConfigurationSource&abtg&at&dpi&dpn&gdpr&iiqidtype&iiqpcid",
+  "https://cdn.jsdelivr.net/gh/prebid/currency-file@1/latest.json",
+  "https://cloudflare.com/cdn-cgi/trace",
+  "https://consentcdn.cookiebot.[token].json",
+  "https://d24c13e85910.e56cff97.us-east-1.token.awswaf.[token]?client",
+  "https://d24c13e85910.e56cff97.us-east-1.token.awswaf.[token]?region",
+  "https://googleads.g.doubleclick.net/pagead/id",
+  "https://googleads.g.doubleclick.net/pagead/id?slf_rd",
+  "https://id5-sync.com/api/config/prebid",
+  "https://id5-sync.com/bounce",
+  "https://id5-sync.com/gm/v3",
+  "https://jnn-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/GenerateIT",
+  "https://lb.eu-1-id5-sync.com/lb/v1",
+  "https://lbs.eu-1-id5-sync.com/lbs/v1",
+  "https://lexicon.33across.com/v1/envelope?coppa&gdpr&pid&src&us_privacy&ver",
+  "https://match.adsrvr.org/track/rid?fmt&ttd_pid",
+  "https://mosaic.river.aws.barchart.com/au",
+  "https://mosaic.river.aws.barchart.com/er",
+  "https://mosaic.river.aws.barchart.com/g/news_feed?c&gdpr&pos&ppid&t&tile&url",
+  "https://mosaic.river.aws.barchart.com/g/top_table?c&gdpr&pos&ppid&t&tile&url",
+  "https://mosaic.river.aws.barchart.com/g/under_table?c&gdpr&pos&ppid&t&tile&url",
+  "https://mosaic.river.aws.barchart.com/t/umami/batch",
+  "https://na.edge.optable.co/config?cookies&gdpr&o&osdk&passport&sid&t",
+  "https://na.edge.optable.co/config?cookies&o&osdk&passport&ro&sid&t",
+  "https://na.edge.optable.co/config?o&purpose&t",
+  "https://na.edge.optable.co/v2/targeting?cookies&gdpr&id&o&osdk&passport&sid&t",
+  "https://pagead2.googlesyndication.com/ccm/collect?_tu&ae&apvc&dl&dma&dma_cps&en&ep.ads_data_redaction",
+  "https://www.barchart.[token].ashx?backadjust&contractroll&daystoexpiration&dividends&end&order&padded&splits",
+  "https://www.barchart.[token]?description&fields&method&raw&symbols",
+  "https://www.barchart.[token]?fields&hasOptions&limit&lists&meta&orderBy&orderDir&raw",
+  "https://www.barchart.[token]?fields&hasOptions&meta&page&raw&symbols",
+  "https://www.barchart.[token]?fields&limit&lists&meta&orderBy&orderDir&raw",
+  "https://www.barchart.com/api/v1/user/hydrate"
+ ],
+ "websockets": [
+  "wss://jerq-aggregator-prod.aws.barchart.com/socket.io/?EIO&transport"
+ ],
+ "storage": {
+  "local": [
+   "33acrossId",
+   "33acrossIdTp",
+   "33acrossId_cst",
+   "33acrossId_exp",
+   "33acrossId_last",
+   "OPTABLE_RESOLVED",
+   "OPTABLE_SPLIT_TEST",
+   "[token]",
+   "[token]",
+   "[token]",
+   "[token]",
+   "[token]",
+   "[token]",
+   "_gcl_ls",
+   "_iiq_ch",
+   "_iiq_fdata",
+   "_iiq_fdata_1096233217",
+   "anon-cuid",
+   "anon-sl",
+   "anon-sl-group",
+   "ap:lid",
+   "asc-sid-www.barchart.com",
+   "asc_UID",
+   "awswaf_token_refresh_timestamp",
+   "cohort_ids",
+   "id5id",
+   "id5id_cached_consent_data",
+   "id5id_cached_consent_data_exp",
+   "id5id_cst",
+   "id5id_exp",
+   "id5id_extensions",
+   "id5id_last",
+   "id5id_privacy",
+   "id5id_privacy_exp",
+   "id5id_v2_8646265218490707",
+   "id5id_v2_signature",
+   "idw-fe-id",
+   "idw-outdated",
+   "idw-total-page-count",
+   "intentIqId"
+  ],
+  "session": [
+   "OPTABLE_TARGETING_DONE",
+   "anon-sl-group-session",
+   "ap:sid",
+   "bcFreeBottomAccountViews",
+   "bidcache_25",
+   "idw-page-count",
+   "idw-session-id",
+   "mosaic_identified:[token]",
+   "mosaic_umami_cache",
+   "optableSessionDepth",
+   "optableSessionDepthIndex",
+   "optable_source_exists",
+   "viewport_t"
+  ],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Keys handled: Escape, Enter, ArrowLeft, ArrowUp, ArrowRight, ArrowDown",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "assets.barchart.com/angular-P2S2TZJH.js@243542"
+  },
+  {
+   "name": "Keys handled: NYSE, date, growth1y, growth5y, Range, OHLC, Renko, Baseline",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@798683"
+  },
+  {
+   "name": "Keys handled: brightness, ArrowUp, ArrowDown, Tab, Enter",
+   "kind": "shortcut",
+   "tag": "read",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@430722"
+  },
+  {
+   "name": "Download links",
+   "kind": "export",
+   "tag": "observed",
+   "evidence": "a[download] x2"
+  },
+  {
+   "name": "Exports a file named like true",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1604689"
+  },
+  {
+   "name": "Exports as image/png",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1899481"
+  },
+  {
+   "name": "Print button",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2311894"
+  },
+  {
+   "name": "Print layout",
+   "kind": "export",
+   "tag": "read",
+   "evidence": "assets.barchart.com/global-styles-KZZHXL65.css"
+  },
+  {
+   "name": "Embeds account.anonymised.io",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds consentcdn.cookiebot.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds headway-widget.net",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "Embeds www.youtube.com",
+   "kind": "embed",
+   "tag": "observed",
+   "evidence": "iframe"
+  },
+  {
+   "name": "API call api.anonymised.io/v2/debug?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.anonymised.io/v3/anon/interest-scores?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.anonymised.io/v3/interest-scores?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.anonymised.io/v3/public/pps?aav",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.id5-sync.com/analytics/336/id5-api-js",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call api.intentiq.[token]?ABTestingConfigurationSource&abtg&at&dpi&dpn&gdpr&",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call id5-sync.com/api/config/prebid",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API call id5-sync.com/gm/v3",
+   "kind": "api",
+   "tag": "observed",
+   "evidence": "network"
+  },
+  {
+   "name": "API path /api/v1",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1385405"
+  },
+  {
+   "name": "API path /api/v1/quotes/get",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1384917"
+  },
+  {
+   "name": "API path /api/v1/screeners",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2050801"
+  },
+  {
+   "name": "API path /api/v1/user/hydrate",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2788268"
+  },
+  {
+   "name": "API path /api/v1/watchlist",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@563816"
+  },
+  {
+   "name": "API path /api/v1/watchlist/batch",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@563442"
+  },
+  {
+   "name": "API path /api/v1/watchlist/replace",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@563628"
+  },
+  {
+   "name": "API path /api/v2/watchlists",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2375137"
+  },
+  {
+   "name": "API path /data/widget/price-surprises",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@3966"
+  },
+  {
+   "name": "API path /export/image",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2550456"
+  },
+  {
+   "name": "API path /share",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@2049772"
+  },
+  {
+   "name": "API path /share/news",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1128175"
+  },
+  {
+   "name": "API path /socket.io",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/global-4GCQTWBD.js@236764"
+  },
+  {
+   "name": "API path [token]",
+   "kind": "api",
+   "tag": "read",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@989785"
+  },
+  {
+   "name": "Feature flag allowMutatingData",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@16804"
+  },
+  {
+   "name": "Feature flag allowOutsidePlotInteraction",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@262603"
+  },
+  {
+   "name": "Feature flag allowOverlap",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@74067"
+  },
+  {
+   "name": "Feature flag allowPointSelect",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188394"
+  },
+  {
+   "name": "Feature flag allowTraversingTree",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@428894"
+  },
+  {
+   "name": "Feature flag bsEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/angular-P2S2TZJH.js@279778"
+  },
+  {
+   "name": "Feature flag buttonsEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@611141"
+  },
+  {
+   "name": "Feature flag disableExpiredAsterisk",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@757892"
+  },
+  {
+   "name": "Feature flag disableInteraction",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@546854"
+  },
+  {
+   "name": "Feature flag disableMouse",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@235292"
+  },
+  {
+   "name": "Feature flag disablePointer",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@235324"
+  },
+  {
+   "name": "Feature flag disableTouch",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@235308"
+  },
+  {
+   "name": "Feature flag enableMouseTracking",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188464"
+  },
+  {
+   "name": "Feature flag enableSimulation",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@355318"
+  },
+  {
+   "name": "Feature flag panningEnabled",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@72469"
+  },
+  {
+   "name": "Feature flag showBullets",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@546683"
+  },
+  {
+   "name": "Feature flag showButtons",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@546668"
+  },
+  {
+   "name": "Feature flag showCheckbox",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@188423"
+  },
+  {
+   "name": "Feature flag showDelay",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@19197"
+  },
+  {
+   "name": "Feature flag showEmpty",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73298"
+  },
+  {
+   "name": "Feature flag showExpandLink",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@123955"
+  },
+  {
+   "name": "Feature flag showFirstLabel",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73311"
+  },
+  {
+   "name": "Feature flag showFullPath",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@425129"
+  },
+  {
+   "name": "Feature flag showGoToLatest",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@1066697"
+  },
+  {
+   "name": "Feature flag showInLegend",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/app-YSNNN4EA.js@580784"
+  },
+  {
+   "name": "Feature flag showLastLabel",
+   "kind": "flag",
+   "tag": "inferred",
+   "evidence": "assets.barchart.com/highcharts-JIEOAFKE.js@73329"
+  }
+ ]
+}

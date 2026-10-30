@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root {
+    --entropy: 0.4;
+    --hue: 220;
+    --blur: 0px;
+    --scale: 1;
+  }
+  body {
+    margin: 0;
+    background: #0a0a12;
+    color: #e0e0ff;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    filter: hue-rotate(calc(var(--hue) * 1deg)) blur(var(--blur));
+    transform: scale(var(--scale));
+    transition: filter 0.3s, transform 0.3s;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+  }
+  #hud {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    pointer-events: none;
+    transform: translateX(calc(var(--entropy) * 20px));
+  }
+  #seal {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(20,20,40,0.8);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  button {
+    background: #222;
+    color: #eee;
+    border: 1px solid #444;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin: 4px;
+  }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Local Attention Field Mind · Verse lab</title>
+<meta name="description" content="A continuous spatial field of token-particles on Canvas2D whose inter-particle forces are computed by a local Web Worker implementing simplified multi-head">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Local Attention Field Mind · Verse lab">
+<meta property="og:description" content="A continuous spatial field of token-particles on Canvas2D whose inter-particle forces are computed by a local Web Worker implementing simplified multi-head">
+<meta property="og:url" content="https://a-to-mind.com/lab/f032-attention-field-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f032-attention-field-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  Entropy: <span id="ent">0.00</span> · Heads: <span id="heads">2</span> · Clusters: <span id="clu">0</span><br>
+  <button id="audioBtn">Enable Audio</button>
+  <button id="orientBtn">Enable Orientation</button>
+</div>
+<div id="seal">Seal state</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Local Attention Field Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

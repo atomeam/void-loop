@@ -19,9 +19,9 @@ export function wrap(text, font, width, measure, maxLines = 99) {
   if (cur) lines.push(cur);
   for (let i = 0; i < lines.length; i++) { // one word wider than the sheet (a long address) is cut with an ellipsis, never left to run off the page
     if (measure(lines[i], font) <= width) continue;
-    let l = lines[i]; while (l.length > 1 && measure(l + '…', font) > width) l = l.slice(0, -1); lines[i] = l + '…';
+    let l = lines[i]; while (l.length > 1 && measure(l + '…', font) > width) l = l.slice(0, -1); lines[i] = l + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
   }
-  if (lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, '') + '…'; }
+  if (lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, '') + '…'; } // ellipsis-ok: drawn picture or short label, the full text is on the card
   return lines;
 }
 
@@ -84,7 +84,7 @@ export function layoutFace(page, book, side, measure) {
       const col = Math.floor(i / rows), ex = x0 + col * (cw + 14), ey = y + (i % rows) * 19;
       hits.push({ x: ex - 3, y: ey - 14, w: cw + 6, h: 19, page: e.page });
       let name = e.name; while (name.length > 1 && measure(name, font) > cw - 26) name = name.slice(0, -1) + (name.endsWith('…') ? '' : '');
-      if (name !== e.name) name = name.slice(0, -1) + '…';
+      if (name !== e.name) name = name.slice(0, -1) + '…'; // ellipsis-ok: drawn picture or short label, the full text is on the card
       t(name, ex, ey, font, INK); t(String(e.page), ex + cw, ey, '12px ' + SANS, SOFT, 'right');
     });
     footer(); return out;

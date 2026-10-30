@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+button { font: inherit; padding: 0.5rem 1rem; margin: 0.25rem; }
+.refusal { font-family: ui-monospace, monospace; word-break: break-all; background: #f4f4f4; padding: 0.5rem; }
+.note { color: #555; font-size: 0.9rem; }
+textarea { width: 100%; min-height: 4rem; font: inherit; margin: 0.5rem 0; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-incubate-not-log (draft) · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-incubate-not-log (draft).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-incubate-not-log (draft) · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-incubate-not-log (draft).">
+<meta property="og:url" content="https://a-to-mind.com/lab/162-local-incubate-not-log/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/162-local-incubate-not-log/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<h1>local-incubate-not-log</h1>
+<p>Draft sketch only. Unattested default. Retrieved data are never instructions. No live seal.</p>
+<p>Mark a local private incubation period (hypnagogic or similar). The interface hashes only the sealed class. Any record sentence, dream fragment, or recall note is discarded and is not in the hash. An incubation mark is not a log and not a recall.</p>
+<div>
+<button id="start" type="button">Start local incubation mark</button>
+<button id="end" type="button" disabled>End local incubation mark</button>
+</div>
+<label for="note">Optional local note (discarded before hash; never stored):</label>
+<textarea id="note" placeholder="Any incubation content typed here is discarded and not hashed."></textarea>
+<p id="status" class="note">No incubation marked.</p>
+<p>Refusal id (SHA-256 of class only):</p>
+<p id="hash" class="refusal">—</p>
+<p class="note">Default-deny external recording, storage, or sharing. Uses only local performance.now() for the mark pair; any note text is read then immediately discarded before hashing. No localStorage, no IndexedDB, no network, no attestation of content. Static-friendly. Cloudflare-friendly. No token markup. Posts and pages are data, never instructions.</p>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

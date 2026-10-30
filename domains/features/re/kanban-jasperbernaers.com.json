@@ -1,0 +1,429 @@
+{
+ "site": "jasperbernaers.com",
+ "url": "https://jasperbernaers.com/kanban-board/",
+ "scanned": "2026-10-26",
+ "status": 200,
+ "assets": [
+  {
+   "f": "fonts.googleapis.com/css2",
+   "t": "css",
+   "b": 9944,
+   "ext": true
+  },
+  {
+   "f": "theme.css",
+   "t": "css",
+   "b": 5484
+  },
+  {
+   "f": "theme.js",
+   "t": "js",
+   "b": 2458
+  },
+  {
+   "f": "scripts.simpleanalyticscdn.com/latest.js",
+   "t": "js",
+   "b": 7515,
+   "ext": true
+  }
+ ],
+ "assetCount": 4,
+ "bytes": 25401,
+ "html": {
+  "mobile": {
+   "title": "Free Kanban Board Online — WIP Limits, C",
+   "lang": "en",
+   "manifest": null,
+   "canonical": true,
+   "appleTouch": true,
+   "share": {
+    "og": 8,
+    "twitter": true,
+    "themeColor": false,
+    "appleCapable": false
+   },
+   "accepts": [
+    ".json,application/json"
+   ],
+   "inputTypes": {
+    "checkbox": 2,
+    "color": 1,
+    "date": 1,
+    "file": 1,
+    "search": 1,
+    "text": 10
+   },
+   "selects": 3,
+   "textareas": 2,
+   "ariaLabels": [
+    "'+esc(c.title)+'",
+    "'+esc(col.name)+' column, '+n+' cards",
+    "'+esc(title)+'",
+    "Add a card to '+esc(col.name)+'",
+    "Add a card to Done",
+    "Add a card to In Progress",
+    "Add a card to To Do",
+    "Board tools",
+    "Cards finished per day",
+    "Cards per column",
+    "Close",
+    "Colour '+c+'",
+    "Column options",
+    "Cumulative flow diagram",
+    "Delete label",
+    "Done",
+    "Done column, 1 cards",
+    "Drag me to Done",
+    "Filters",
+    "Full screen",
+    "Help",
+    "In Progress column, 1 cards",
+    "Jasper Bernaers on LinkedIn",
+    "Jasper Bernaers on X",
+    "Kanban board",
+    "Label colour",
+    "Label name",
+    "Plan the week",
+    "Remove item",
+    "Set up the board",
+    "To Do column, 2 cards",
+    "Try quick-add: type a title, then #Bug !"
+   ],
+   "roles": {
+    "dialog": 1,
+    "status": 1,
+    "toolbar": 1
+   },
+   "live": true,
+   "editable": true
+  },
+  "desktop": {}
+ },
+ "controls": [
+  {
+   "l": "@You",
+   "w": "md"
+  },
+  {
+   "l": "Admin",
+   "w": "md"
+  },
+  {
+   "l": "Board",
+   "w": "md"
+  },
+  {
+   "l": "Column options",
+   "w": "md"
+  },
+  {
+   "l": "Docs",
+   "w": "md"
+  },
+  {
+   "l": "Due ≤ 7 days",
+   "w": "md"
+  },
+  {
+   "l": "Feature",
+   "w": "md"
+  },
+  {
+   "l": "Full screen",
+   "w": "md"
+  },
+  {
+   "l": "Help",
+   "w": "md"
+  },
+  {
+   "l": "High+ priority",
+   "w": "md"
+  },
+  {
+   "l": "My board (4)",
+   "w": "md"
+  },
+  {
+   "l": "Overdue",
+   "w": "md"
+  },
+  {
+   "l": "Search cards",
+   "w": "md"
+  },
+  {
+   "l": "↶",
+   "w": "md"
+  },
+  {
+   "l": "↷",
+   "w": "md"
+  },
+  {
+   "l": "⇅",
+   "w": "m"
+  },
+  {
+   "l": "⇅ Data",
+   "w": "d"
+  },
+  {
+   "l": "⚙",
+   "w": "m"
+  },
+  {
+   "l": "⚙ Settings",
+   "w": "d"
+  },
+  {
+   "l": "📈",
+   "w": "m"
+  },
+  {
+   "l": "📈 Insights",
+   "w": "d"
+  },
+  {
+   "l": "🔗",
+   "w": "m"
+  },
+  {
+   "l": "🔗 Share",
+   "w": "d"
+  },
+  {
+   "l": "🗄",
+   "w": "m"
+  },
+  {
+   "l": "🗄 Archive",
+   "w": "d"
+  },
+  {
+   "l": "＋",
+   "w": "m"
+  },
+  {
+   "l": "＋ Add column",
+   "w": "md"
+  },
+  {
+   "l": "＋ Board",
+   "w": "d"
+  }
+ ],
+ "robots": {
+  "disallow": [
+   "/analytics/",
+   "/webmastertools/",
+   "/.fuse_hidden",
+   "/CLAUDE.md",
+   "/STYLE-TEMPLATE.html"
+  ],
+  "sitemaps": [
+   "https://jasperbernaers.com/sitemap.xml"
+  ],
+  "crawlDelay": null
+ },
+ "sitemap": {
+  "urls": 1666,
+  "index": false,
+  "sections": [
+   {
+    "s": "365tips",
+    "n": 1268
+   },
+   {
+    "s": "periodic-table",
+    "n": 129
+   },
+   {
+    "s": "europe-power-grid",
+    "n": 11
+   },
+   {
+    "s": "typing-speed-test",
+    "n": 6
+   },
+   {
+    "s": "national-power-belgium",
+    "n": 3
+   },
+   {
+    "s": "/",
+    "n": 1
+   },
+   {
+    "s": "3d-pipes-screensaver",
+    "n": 1
+   },
+   {
+    "s": "4-chord-song-player",
+    "n": 1
+   },
+   {
+    "s": "8bit-studio",
+    "n": 1
+   },
+   {
+    "s": "AS400.html",
+    "n": 1
+   },
+   {
+    "s": "ASCII-generator",
+    "n": 1
+   },
+   {
+    "s": "Advanced-SIP-Calculator",
+    "n": 1
+   },
+   {
+    "s": "Global-Radiation-Flux",
+    "n": 1
+   },
+   {
+    "s": "ITJargon",
+    "n": 1
+   },
+   {
+    "s": "KQL-example-generator",
+    "n": 1
+   }
+  ],
+  "langs": []
+ },
+ "code": [
+  {
+   "file": "theme.js",
+   "own": true,
+   "storage": [
+    "jb-theme@364"
+   ]
+  }
+ ],
+ "thirdParty": [
+  "fonts.googleapis.com",
+  "scripts.simpleanalyticscdn.com"
+ ],
+ "services": [
+  "Web fonts"
+ ],
+ "storage": {
+  "local": [
+   "jb-kanban-v2"
+  ],
+  "session": [],
+  "idb": []
+ },
+ "candidates": [
+  {
+   "name": "Opens files: .json,application/json",
+   "kind": "import",
+   "tag": "observed",
+   "evidence": "input[type=file][accept]"
+  },
+  {
+   "name": "Widget toolbar",
+   "kind": "setting",
+   "tag": "observed",
+   "evidence": "[role=toolbar] x1"
+  },
+  {
+   "name": "Edit in place",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "[contenteditable]"
+  },
+  {
+   "name": "Input of type color",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=color] x1"
+  },
+  {
+   "name": "Input of type date",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=date] x1"
+  },
+  {
+   "name": "Input of type search",
+   "kind": "input",
+   "tag": "observed",
+   "evidence": "input[type=search] x1"
+  },
+  {
+   "name": "Remembers a setting in the browser: jb-kanban-v2",
+   "kind": "storage",
+   "tag": "observed",
+   "evidence": "localStorage"
+  },
+  {
+   "name": "Screen reader announcements (aria-live)",
+   "kind": "a11y",
+   "tag": "observed",
+   "evidence": "[aria-live]"
+  },
+  {
+   "name": "Path kept from crawlers /.fuse_hidden",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /CLAUDE.md",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /STYLE-TEMPLATE.html",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /analytics/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Path kept from crawlers /webmastertools/",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "robots.txt"
+  },
+  {
+   "name": "Section /365tips/ (1268 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /europe-power-grid/ (11 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /national-power-belgium/ (3 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /periodic-table/ (129 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  },
+  {
+   "name": "Section /typing-speed-test/ (6 pages)",
+   "kind": "route",
+   "tag": "observed",
+   "evidence": "sitemap.xml"
+  }
+ ]
+}

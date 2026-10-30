@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body { margin:0; font-family:system-ui,sans-serif; background:#0a0a12; color:#e0e8ff; }
+header { padding:12px 16px; background:#11131f; border-bottom:1px solid #262a3d; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+h1 { margin:0; font-size:1.2rem; }
+button, select { padding:8px 12px; border:1px solid #4a6a9a; background:#1a2a4a; color:#cfe0ff; border-radius:6px; cursor:pointer; font-size:14px; }
+button:hover { background:#24365c; }
+#stage { display:flex; gap:12px; padding:16px; flex-wrap:wrap; justify-content:center; }
+.panel { width:280px; height:320px; background:#fff; border:3px solid #333; border-radius:4px; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.5); }
+.panel canvas { width:100%; height:100%; display:block; }
+.toolbar { padding:8px 16px; background:#141829; border-bottom:1px solid #262a3d; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.bubble { position:absolute; background:#fff; color:#111; border:2px solid #000; border-radius:12px; padding:6px 10px; font-size:13px; max-width:140px; cursor:move; user-select:none; }
+.bubble:after { content:''; position:absolute; bottom:-8px; left:16px; border:8px solid transparent; border-top-color:#000; }
+input.bubble-edit { width:100%; border:none; background:transparent; font:inherit; outline:none; }
+.status { font-size:12px; color:#8a93b0; padding:8px 16px; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Panel Play · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: Panel Play.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Panel Play · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: Panel Play.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f233-panel-play/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f233-panel-play/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<header>
+  <h1>Panel Play</h1>
+  <div>
+    <button id="download">Download PNG</button>
+    <button id="share">Copy share link</button>
+    <button id="clear">Clear all</button>
+  </div>
+</header>
+<div class="toolbar">
+  <span>Tool:</span>
+  <button data-tool="bubble">Speech bubble</button>
+  <button data-tool="figure">Stick figure</button>
+  <button data-tool="prop">Prop (star/heart)</button>
+  <select id="panelSelect">
+    <option value="0">Panel 1</option>
+    <option value="1">Panel 2</option>
+    <option value="2">Panel 3</option>
+  </select>
+</div>
+<div id="stage"></div>
+<div class="status" id="status">Click a tool, then click a panel to place. Drag bubbles. Area of the week: Comics.</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

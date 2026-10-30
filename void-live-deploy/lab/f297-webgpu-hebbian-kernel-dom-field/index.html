@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0c10; --fg: #e0e6ef; --accent: #5ce1e6; --orb: #ff6b9d; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  .orb {
+    position: absolute; width: 72px; height: 72px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, var(--orb) 60%, #222);
+    display: flex; align-items: center; justify-content: center; font-size: 11px;
+    text-align: center; pointer-events: auto; cursor: grab; user-select: none;
+    box-shadow: 0 0 20px #ff6b9d88; transition: transform 0.1s;
+  }
+  .orb:active { cursor: grabbing; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: #111a; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  button { background: #222; color: var(--accent); border: 1px solid #444; padding: 4px 10px; margin: 2px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #333; }
+  #status { font-size: 11px; opacity: 0.8; margin-top: 4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Hebbian Kernel DOM Field · Verse lab</title>
+<meta name="description" content="A spatial association field whose weights are updated by a local Hebbian learning rule.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Hebbian Kernel DOM Field · Verse lab">
+<meta property="og:description" content="A spatial association field whose weights are updated by a local Hebbian learning rule.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f297-webgpu-hebbian-kernel-dom-field/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f297-webgpu-hebbian-kernel-dom-field/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>F297 WebGPU Hebbian Kernel DOM Field</div>
+  <button id="seal">Seal Weights</button>
+  <button id="load">Load</button>
+  <button id="reset">Reset</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Hebbian Kernel DOM Field</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

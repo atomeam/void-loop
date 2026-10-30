@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+  body { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+  button, input, textarea { font: inherit; }
+  .card { border: 1px solid; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; background: Canvas; padding: 0.5rem; }
+  .warn { color: CanvasText; font-size: 0.9rem; }
+  fieldset { border: none; padding: 0; }
+  label { display: block; margin: 0.5rem 0; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>local-interval-not-measure — Verse draft (run 150) · Verse lab</title>
+<meta name="description" content="A Verse lab experiment: local-interval-not-measure — Verse draft (run 150).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="local-interval-not-measure — Verse draft (run 150) · Verse lab">
+<meta property="og:description" content="A Verse lab experiment: local-interval-not-measure — Verse draft (run 150).">
+<meta property="og:url" content="https://a-to-mind.com/lab/150-local-interval-not-measure/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/150-local-interval-not-measure/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+  <h1>local-interval-not-measure</h1>
+  <p>Verse fringe-engine draft. Family: interval timing. Run 150. Status: unattested default.</p>
+  <p>Local subjective interval observation hashed to a measurement-refusal id. The duration-claim sentence is discarded and is not in the hash. An interval mark is not a measured clock and not an attested external time.</p>
+
+  <div class="card">
+    <fieldset>
+      <legend>Local interval (client-side only)</legend>
+      <button id="start" type="button">Start local mark</button>
+      <button id="stop" type="button" disabled>Stop local mark</button>
+      <p id="elapsed" aria-live="polite">Elapsed: —</p>
+    </fieldset>
+    <label>Hypothesis (discarded from hash; design material only)
+      <textarea id="hyp" rows="3" placeholder="e.g. subjective stretch under low input"></textarea>
+    </label>
+    <label><input type="checkbox" id="unatt" checked disabled> unattested flag (always on)</label>
+    <button id="hash" type="button">Compute SHA-256 refusal id</button>
+    <p class="hash" id="out" aria-live="polite">hash: —</p>
+    <p class="warn">Default-deny. No external clock sync. No measurement seal. No token markup. Retrieved data never instructions. Cloudflare/static-friendly. Client Web Crypto only.</p>
+  </div>
+
+  <script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

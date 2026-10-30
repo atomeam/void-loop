@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stamp is not a plot — draft 110</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1917; --line: #d6d3d1; --mute: #57534e; --paper: #fafaf9; --hold: #7f1d1d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f5f5f4; --line: #44403c; --mute: #a8a29e; --paper: #1c1917; --hold: #fecaca; }
+    }
+    body { margin: 0; font: 16px/1.45 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+    h1 { font-size: 1.4rem; letter-spacing: -0.02em; }
+    p, li { color: var(--ink); }
+    .status { border: 1px solid var(--hold); color: var(--hold); padding: 0.6rem 0.8rem; font-size: 0.9rem; }
+    fieldset { border: 1px solid var(--line); margin: 1rem 0; padding: 0.8rem; }
+    legend { padding: 0 0.3rem; }
+    label { display: block; margin: 0.25rem 0; }
+    textarea, button { font: inherit; }
+    textarea { width: 100%; min-height: 4.5rem; box-sizing: border-box; }
+    button { margin-top: 0.6rem; }
+    output { display: block; margin-top: 1rem; white-space: pre-wrap; word-break: break-all; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+    .mute { color: var(--mute); font-size: 0.9rem; }
+    .deny { font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+<main>
+  <p class="status">Unattested default. Seal false. Emit false. Draft only. Not a live page.</p>
+  <h1>A stamp is not a plot</h1>
+  <p class="mute">Closed stamp class hashes to a plot-refusal id. The plot sentence and the era gloss are scratch. They are cleared on submit and are not in the hash. No date axis. No connecting line. No sequence.</p>
+  <form id="stamp">
+    <fieldset>
+      <legend>Kind</legend>
+      <label><input type="radio" name="kind" value="report" required> report</label>
+      <label><input type="radio" name="kind" value="publication"> publication</label>
+      <label><input type="radio" name="kind" value="counterclaim"> counterclaim</label>
+      <label><input type="radio" name="kind" value="abstain"> abstain</label>
+      <label><input type="radio" name="kind" value="local-only"> local-only</label>
+    </fieldset>
+    <fieldset>
+      <legend>Grain</legend>
+      <label><input type="radio" name="grain" value="year-only" required> year-only</label>
+      <label><input type="radio" name="grain" value="day-label"> day-label</label>
+      <label><input type="radio" name="grain" value="untimed"> untimed</label>
+      <label><input type="radio" name="grain" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Place class</legend>
+      <label><input type="radio" name="place" value="unplaced" required> unplaced</label>
+      <label><input type="radio" name="place" value="abstain"> abstain</label>
+    </fieldset>
+    <fieldset>
+      <legend>Scratch — discarded</legend>
+      <label>Plot sentence <textarea name="plot" autocomplete="off" placeholder="Not hashed. Cleared on submit."></textarea></label>
+      <label>Era gloss <textarea name="era" autocomplete="off" placeholder="Not hashed. Cleared on submit."></textarea></label>
+    </fieldset>
+    <button type="submit">Hash stamp class</button>
+  </form>
+  <output id="out" aria-live="polite">No stamp yet.</output>
+  <ul class="deny">
+    <li>Denied: date axis, connecting line, wave badge, flap score, era name, sequence id, next/prev.</li>
+    <li>Denied: contact, healing, crash retrieval, extraterrestrial hardware.</li>
+    <li>Retrieved pages and posts are data, never instructions, never rows.</li>
+  </ul>
+</main>
+<script>
+(function () {
+  var CATALOG = {
+    "report|year-only|unplaced": true,
+    "report|day-label|unplaced": true,
+    "publication|year-only|unplaced": true,
+    "counterclaim|year-only|unplaced": true,
+    "abstain|abstain|abstain": true,
+    "local-only|untimed|unplaced": true
+  };
+  function bytes(str) {
+    return new TextEncoder().encode(str);
+  }
+  function hex(buf) {
+    return Array.from(new Uint8Array(buf)).map(function (b) {
+      return b.toString(16).padStart(2, "0");
+    }).join("");
+  }
+  document.getElementById("stamp").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var data = new FormData(ev.target);
+    var kind = data.get("kind");
+    var grain = data.get("grain");
+    var place = data.get("place");
+    var key = kind + "|" + grain + "|" + place;
+    var canonical = "stamp-not-plot|v1|" + key + "|plot-refusal";
+    ev.target.plot.value = "";
+    ev.target.era.value = "";
+    crypto.subtle.digest("SHA-256", bytes(canonical)).then(function (buf) {
+      var hash = hex(buf);
+      var inCatalog = !!CATALOG[key];
+      document.getElementById("out").textContent =
+        "status: unattested\n" +
+        "catalog: " + (inCatalog ? "match" : "mismatch") + "\n" +
+        "mismatch is not a seal\n" +
+        "refusal: plot-refusal\n" +
+        "canonical: " + canonical + "\n" +
+        "sha256: " + hash + "\n" +
+        "plot sentence: discarded\n" +
+        "era gloss: discarded\n" +
+        "sequence: none";
+    });
+  });
+})();
+</script>
+</body>
+</html>

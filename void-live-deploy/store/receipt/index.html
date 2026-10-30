@@ -28,85 +28,163 @@ button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink
 aside#cart{position:fixed;right:16px;top:70px;width:min(360px,calc(100vw - 32px));background:#0c0c12f2;border:1px solid var(--line);border-radius:16px;padding:16px;backdrop-filter:blur(8px);z-index:5;box-shadow:0 20px 60px #0008}
 #cart ul{list-style:none;padding:0;margin:8px 0}#cart li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
 .note{font-size:13px;color:var(--muted)}.ok{color:#56d364}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 16px}.controls label{font-size:13px;color:var(--muted)}
+.step{padding:2px 0}.step b{color:var(--accent)}
+.qbtn{padding:2px 9px;font-size:14px}
+#lookup label{font-size:13px;color:var(--muted)}#lookup input{min-height:40px}
+.avail{font-size:12px;color:var(--muted)}
 section.lookup{margin-top:40px;border-top:1px solid var(--line);padding-top:20px}
 input{font:inherit;background:#0b0b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px}
 #receipt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:18px 0}
 code{background:#000;padding:2px 6px;border-radius:6px;font-size:14px}
 footer{margin-top:40px;color:var(--muted);font-size:13px}
 </style>
+<script src="/visit.js" defer></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after the first visit</script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/store.js">
+<link rel="modulepreload" href="/lib/store-products.js">
+<link rel="modulepreload" href="/lib/pay-share.js">
+<link rel="modulepreload" href="/lib/alt-pay.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main>
-<header><a class="logo" href="/">V<b>0</b>1D <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
-<div id="receipt" hidden></div>
+<header><a class="logo" href="/">Verse <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
+<p class="sub" id="rlead" hidden><b>Your receipt.</b> Your order code, license keys and download links show here. Keep the order code: with your email, it finds this receipt again any time, on any device.</p>
+<div id="receipt" role="status" aria-live="polite" tabindex="-1" hidden></div>
 <h1>Made by Verse. Sold by Verse.</h1>
 <p class="sub">3D models and printable minis you can spin before you buy, plus Verse's tools and the crew's hands-on help. Turn any model with your finger.</p>
+<div class="controls"><label for="q">Search products</label> <input id="q" type="search" style="max-width:260px" placeholder="a name, a kind, words from the blurb" aria-label="Search products"> <label for="kind">Kind</label> <select id="kind" aria-label="Filter by kind"><option value="">All kinds</option></select> <label for="sort">Sort</label> <select id="sort" aria-label="Sort products"><option value="featured">featured</option><option value="price-asc">price, low to high</option><option value="price-desc">price, high to low</option><option value="newest">newest</option></select> <span class="note" id="shown"></span> <a class="note" id="csv" download="verse-store-price-list.csv" href="#">Download price list (CSV)</a></div> <!-- void-review: ok: CSV is the file kind in a label, not a code name -->
+<p class="note" id="offlinenote" hidden>You are offline: this is your last visit's catalogue, from this device. Your cart is kept too.</p>
 <div class="grid" id="grid"></div>
+<section class="lookup" id="new" hidden><h2 style="font-size:20px;margin:0 0 6px">New from Verse</h2><p class="note">Verse publishes its own products here. Every change, as it happens (<a href="/store/changelog.json">changelog.json</a>):</p><ul id="log" class="note" style="padding-left:18px"></ul></section>
 <section class="lookup"><h2 style="font-size:20px;margin:0 0 6px">Find my order</h2>
 <p class="note">Lost your receipt? Give the email you paid with and the 8-letter order code. (Gumroad orders: your files and keys are in Gumroad's email.)</p>
-<form id="lookup"><input id="le" type="email" placeholder="you@example.com" required> <input id="lc" placeholder="ORDER CODE" maxlength="8" size="10" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
-<footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): Verse never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what Verse makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask Verse "what can I buy" on the <a href="/">home page</a>.</footer>
+<form id="lookup"><label for="le">Email you paid with</label> <input id="le" type="email" autocomplete="email" placeholder="you@example.com" required> <label for="lc">Order code</label> <input id="lc" placeholder="8 letters" maxlength="8" size="10" autocapitalize="characters" autocomplete="off" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
+<section class="lookup" id="delivery"><h2 style="font-size:20px;margin:0 0 6px">How a Verse order arrives</h2><p class="note">Everything sold here is digital: <b>nothing ships</b>. Your receipt, found any time by your email and the 8-letter order code, marks each step:</p><ol id="steps" class="note" style="padding-left:18px"></ol><p class="note">Downloads are signed links that last 24 hours — open your receipt any time for fresh ones. The license key is checked on this page, not only in an email.</p></section>
+<footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): Verse never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what Verse makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask Verse "what can I buy" on the <a href="/">home page</a>. No ads, no trackers, no account: your cart and orders are kept on this device, the cart is shared as a link, and this page works offline after your first visit.</footer>
 </main>
-<aside id="cart" hidden><b>Your cart</b><ul id="items"></ul><div class="row"><span>Total</span><span class="price" id="total">$0</span></div>
+<aside id="cart" hidden><b>Your cart</b><ul id="items"></ul><div class="row"><span>Subtotal</span><b id="subtotal">$0</b></div><div class="row"><span>Total</span><span class="price" id="total">$0</span></div><p class="note">The payment page shows the final total, with any tax, before you confirm. No account needed here; the cart is kept on this device.</p><p class="note"><a id="cartlink" href="/store/">Share this cart</a> — a link that carries exactly what is in it.</p>
 <input id="email" type="email" placeholder="email for your receipt (optional)" style="width:100%;margin:10px 0">
 <button id="pay" style="width:100%">Checkout</button><p class="note" id="paynote"></p></aside>
 <script type="module">
+import { cartLines, cartTotals, usdCents, cartUrl, catalogCsv, searchProducts, kindsOf, sortProducts, DELIVERY_STEPS, deliveryDone } from '/lib/store.js';
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const TIP = 'https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&utm_medium=store-pwyw&utm_campaign=v01d-store';
 const ICON = { membership: '✦', license: '⌘', service: '🛠', support: '♥', download: '⬢' };
-let products = [], provider = 'gumroad', cart = []; try { cart = JSON.parse(localStorage.getItem('v01d-cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch (_) { cart = []; }
+const usd = (c) => '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100));
+// pay a share, get that share (docs/store.md): the slider only explains; what unlocks is decided by the server from the paid amount
+const kOf = (pay, price, n) => (pay >= price ? n : pay <= 0 ? 0 : Math.min(n, Math.max(1, Math.ceil((pay * n) / price - 1e-9))));
+function shareLine(p, pay) { const s = p.share, k = kOf(pay, s.price, s.items.length); return `Pay ${usd(pay)} of ${usd(s.price)} and get ${k} of ${s.items.length} ${s.noun}` + (s.free.length ? ` (plus ${s.free.map(esc).join(', ')}, free)` : ''); }
+function shareBox(p) {
+  const s = p.share, step = Math.max(100, Math.round(s.price / s.items.length));
+  return `<div class="share"><input type="range" aria-label="How much to pay" min="${s.min}" max="${s.price}" step="${Math.min(step, 100)}" value="${s.price}" data-slide="${p.id}" style="width:100%">
+    <span class="note" data-line="${p.id}">${esc(shareLine(p, s.price))}</span>
+    <details class="note"><summary>What each share unlocks</summary><ol>${s.free.map((n) => `<li>${esc(n)} <b class="ok">free</b></li>`).join('')}${s.items.map((n) => `<li>${esc(n)}</li>`).join('')}</ol>Items unlock in this order. Pay the rest later from your receipt to get everything.</details></div>`;
+}
+let products = [], provider = 'gumroad', cart = [], q = '', kind = '', sort = 'featured', offline = false; try { const c = JSON.parse(localStorage.getItem('v01d-cart') || '[]'); cart = (Array.isArray(c) ? c : []).map((x) => (typeof x === 'string' ? { id: x, qty: 1 } : x)).filter((x) => x && x.id); } catch (_) { cart = []; } // {id, qty} since the shopping floor; a plain id from before is one each
 const save = () => { localStorage.setItem('v01d-cart', JSON.stringify(cart)); draw(); };
 function draw() {
-  const items = cart.map((id) => products.find((p) => p.id === id)).filter(Boolean);
-  $('#count').textContent = items.length;
-  $('#items').innerHTML = items.map((p) => `<li><span>${esc(p.name)}</span><span>${esc(p.price)} <a href="#" data-rm="${p.id}">✕</a></span></li>`).join('') || '<li class="note">Empty for now.</li>';
-  $('#total').textContent = '$' + (items.reduce((a, p) => a + p.cents, 0) / 100).toFixed(2).replace(/\.00$/, '');
-  $('#pay').disabled = !items.length;
-  $('#pay').textContent = provider === 'stripe' ? 'Checkout securely' : items.length > 1 ? 'Checkout on Gumroad (' + items.length + ' tabs)' : 'Checkout on Gumroad';
+  const lines = cart.map((c) => ({ ...c, p: products.find((p) => p.id === c.id) })).filter((l) => l.p);
+  $('#items').innerHTML = lines.map((l) => `<li><span>${esc(l.p.name)}<br><span class="note">${esc(usdCents(l.p.cents))} each${l.p.every ? ' · ' + esc(l.p.every) + 'ly' : ''}</span></span><span><button type="button" class="ghost qbtn" data-dec="${l.id}" aria-label="One fewer">−</button> Qty ${l.qty} <button type="button" class="ghost qbtn" data-inc="${l.id}" aria-label="One more">+</button> <b>${esc(usdCents(l.p.cents * l.qty))}</b> <a href="#" data-rm="${l.id}">✕</a></span></li>`).join('') || '<li class="note">Empty for now. Everything here is digital: nothing ships.</li>'; // void-review: ok (names and amounts are escaped)
+  const t = cartTotals(lines.map((l) => ({ cents: l.p.cents, qty: l.qty }))), n = lines.reduce((a, l) => a + l.qty, 0);
+  $('#subtotal').textContent = usdCents(t.subtotal); $('#total').textContent = usdCents(t.total);
+  $('#cartlink').href = cartUrl(lines); $('#cartlink').textContent = lines.length ? 'Share this cart (' + n + ' item' + (n > 1 ? 's' : '') + ')' : 'Share this cart';
+  $('#pay').disabled = !lines.length;
+  $('#pay').textContent = provider === 'stripe' ? 'Checkout securely' : lines.length > 1 ? 'Checkout on Gumroad (' + lines.length + ' tabs)' : 'Checkout on Gumroad';
 }
 async function load() {
   const r = await fetch('/api/store/catalog').then((r) => r.json()).catch(() => ({ products: [] }));
-  products = r.products || []; provider = r.provider || 'gumroad'; $('#prov').textContent = provider === 'stripe' ? 'Stripe' : 'Gumroad';
-  $('#grid').innerHTML = products.map((p) => `<article class="card" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.soon ? 'coming soon' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
-    <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span>
-    ${p.soon ? '<button disabled>Soon</button>' : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
-    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
-  draw(); previews(); receipt();
+  products = r.products || [];
+  if (products.length) { try { localStorage.setItem('v01d-catalog', JSON.stringify(products)); } catch (_) {} } // the last good catalogue, for an offline visit
+  else { try { products = JSON.parse(localStorage.getItem('v01d-catalog') || '[]'); } catch (_) { products = []; } offline = products.length > 0; }
+  provider = r.provider || 'gumroad'; $('#prov').textContent = provider === 'stripe' ? 'Stripe' : 'Gumroad';
+  const spec = new URLSearchParams(location.search).get('cart');
+  if (spec) { const next = cartLines(products, spec); if (next.length) { cart = next.map((l) => ({ id: l.id, qty: l.qty })); save(); $('#cart').hidden = false; } } // a cart that arrived as a link
+  $('#steps').innerHTML = DELIVERY_STEPS.map((st) => '<li>' + esc(st) + '</li>').join('');
+  $('#q').oninput = (e) => { q = e.target.value; renderGrid(); };
+  $('#kind').onchange = (e) => { kind = e.target.value; renderGrid(); };
+  $('#sort').onchange = (e) => { sort = e.target.value; renderGrid(); };
+  renderGrid();
+  previews(); receipt(); news();
+  if (location.hash.length > 1) { const c = document.getElementById(location.hash.slice(1)); if (c) { c.scrollIntoView({ block: 'center' }); c.style.borderColor = 'var(--accent)'; } }
 }
+function renderGrid() {
+  const kinds = kindsOf(products);
+  if ($('#kind').options.length <= 1) $('#kind').innerHTML = '<option value="">All kinds</option>' + kinds.map(([k, n]) => `<option value="${esc(k)}">${esc(k)} (${n})</option>`).join(''); // void-review: ok (escaped)
+  const list = sortProducts(searchProducts(products, q), sort).filter((p) => !kind || (p.kind || 'other') === kind);
+  $('#shown').textContent = 'Showing ' + list.length + ' of ' + products.length + ' products';
+  $('#csv').href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(catalogCsv(products));
+  $('#offlinenote').hidden = !offline;
+  $('#grid').innerHTML = list.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by Verse' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
+    <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span><span class="avail">${p.soon ? 'Coming soon' : 'Available now'}</span>
+    ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
+    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
+}
+document.addEventListener('input', (e) => {
+  const id = e.target.dataset && e.target.dataset.slide; if (!id) return; const p = products.find((x) => x.id === id), pay = +e.target.value;
+  document.querySelector(`[data-line="${id}"]`).textContent = shareLine(p, pay); document.querySelector(`[data-share="${id}"]`).textContent = 'Pay ' + usd(pay);
+});
 document.addEventListener('click', async (e) => {
-  const t = e.target.closest('[data-add],[data-rm],[data-free]'); if (!t) return; e.preventDefault();
-  if (t.dataset.add) { if (!cart.includes(t.dataset.add)) cart.push(t.dataset.add); save(); $('#cart').hidden = false; }
-  if (t.dataset.rm) { cart = cart.filter((x) => x !== t.dataset.rm); save(); }
+  const ub = e.target.closest('[data-upgrade]');
+  if (ub) { e.preventDefault(); const email = $('#le').value || $('#email').value || prompt('The email you paid with'); if (!email) return;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [ub.dataset.upgrade], upgrade: ub.dataset.code, email }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } if (r && r.urls && r.urls[0]) window.open(r.urls[0], '_blank', 'noopener'); else alert((r && r.error) || 'Try again in a minute.'); return; }
+  const sb = e.target.closest('[data-share]');
+  if (sb) { e.preventDefault(); const id = sb.dataset.share, pay = +document.querySelector(`[data-slide="${id}"]`).value;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [id], pay, email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } const u = (r && r.urls && r.urls[0]) || (products.find((p) => p.id === id) || {}).buy; if (u) window.open(u, '_blank', 'noopener'); return; }
+  const t = e.target.closest('[data-add],[data-rm],[data-free],[data-inc],[data-dec]'); if (!t) return; e.preventDefault();
+  if (t.dataset.add) { const l = cart.find((c) => c.id === t.dataset.add); if (l) l.qty = Math.min(9, l.qty + 1); else cart.push({ id: t.dataset.add, qty: 1 }); save(); $('#cart').hidden = false; }
+  if (t.dataset.rm) { cart = cart.filter((c) => c.id !== t.dataset.rm); save(); }
+  if (t.dataset.inc) { const l = cart.find((c) => c.id === t.dataset.inc); if (l) { l.qty = Math.min(9, l.qty + 1); save(); } }
+  if (t.dataset.dec) { const l = cart.find((c) => c.id === t.dataset.dec); if (l) { l.qty -= 1; if (l.qty < 1) cart = cart.filter((c) => c !== l); save(); } }
   if (t.dataset.free) { t.disabled = true; const r = await fetch('/api/store/free', { method: 'POST', body: JSON.stringify({ id: t.dataset.free }) }).then((r) => r.json()); showReceipt(r); t.disabled = false; }
 });
 $('#cartbtn').onclick = () => { $('#cart').hidden = !$('#cart').hidden; };
 $('#pay').onclick = async () => {
   $('#paynote').textContent = 'Opening the checkout…';
-  const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: cart, email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
+  const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: cart.map((c) => c.id), email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
   if (r && r.mode === 'stripe') { location.href = r.url; return; }
   const urls = (r && r.urls) || cart.map((id) => (products.find((p) => p.id === id) || {}).buy).filter(Boolean);
   urls.forEach((u) => window.open(u, '_blank', 'noopener'));
   $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · '); // void-review: ok (every url is escaped)
 };
 function showReceipt(r) {
-  const el = $('#receipt'); el.hidden = false;
+  const el = $('#receipt'); el.hidden = false; $('#rlead').hidden = false;
   if (!r || !r.items) { el.innerHTML = `<b>Receipt</b><p class="note">${esc((r && r.error) || 'Not found.')}</p>`; return; }
-  el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span>` +
-    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b><br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('');
-  el.scrollIntoView({ behavior: 'smooth' });
+  const marks = deliveryDone(r);
+  el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span><ol class="note" style="padding-left:18px">` +
+    DELIVERY_STEPS.map((st) => `<li class="step">${marks[st] ? '<b>✓</b> ' : '<b>·</b> '}${esc(st)}</li>`).join('') + `</ol>` +
+    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b>${i.share ? `<br><span class="note">You paid ${esc(usd(i.share.paid))} of ${esc(usd(i.share.price))}: ${i.share.got} of ${i.share.of} unlocked.${i.share.upgrade ? ' ' + esc(i.share.upgrade.line) + ` (order code <code>${esc(i.share.upgrade.code)}</code>). <button class="ghost" data-upgrade="${esc(i.id)}" data-code="${esc(i.share.upgrade.code)}">Unlock the rest</button>` : ''}</span>` : ''}<br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('') +
+    `<p class="row" style="justify-content:flex-start;flex-wrap:wrap"><button type="button" class="ghost" id="rcopy">Copy order code and keys</button> <a class="note" id="rsave" download="verse-receipt-${esc(r.code)}.txt" href="#">Save as a text file</a></p>`;
+  const txt = receiptText(r); $('#rsave').href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt);
+  $('#rcopy').onclick = () => navigator.clipboard.writeText(txt).then(() => { $('#rcopy').textContent = 'Copied'; }, () => { $('#rcopy').textContent = 'Copy blocked: use Save'; });
+  el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); el.focus({ preventScroll: true });
 }
+// the receipt as plain text: order code, each item and its key (download links expire, so they are left out)
+function receiptText(r) { return ['Verse receipt', 'Order code: ' + r.code, ...r.items.map((i) => i.name + ' · license key ' + i.license), 'Find it again: ' + location.origin + '/store/receipt/?code=' + r.code].join('\n'); }
 async function receipt() {
   const s = new URLSearchParams(location.search).get('session'); if (!s) return;
-  for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
+  for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()).catch(() => ({ pending: true })); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
   showReceipt({ error: 'Still confirming. Use "Find my order" below in a minute.' });
 }
-$('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value }) }).then((r) => r.json()); if (r.items) showReceipt(r); else $('#lout').textContent = r.error; };
+$('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value.trim().toUpperCase() }) }).then((r) => r.json()).catch(() => ({ error: navigator.onLine ? 'Could not reach the store. Try again in a minute.' : 'You are offline. Connect, then press Find it again.' })); if (r.items) showReceipt(r); else $('#lout').textContent = r.error || 'Not found.'; };
+{ const q = new URLSearchParams(location.search), code = q.get('code'); if (code) { $('#lc').value = code.slice(0, 8); $('#rlead').hidden = false; } if (/\/receipt\//.test(location.pathname) || q.has('session')) $('#rlead').hidden = false; } // a receipt link fills the order code (never the email)
+async function news() {
+  const r = await fetch('/store/changelog.json').then((r) => r.json()).catch(() => null), l = (r && r.changelog) || [];
+  if (!l.length) return; $('#new').hidden = false; // the log keeps its old lines as written (AGENTS.md); a person reads the name Verse
+  $('#log').innerHTML = l.slice(0, 12).map((x) => `<li><b>${esc(x.name)}</b> · ${esc(String(x.what || '').replace(/\bV01D\b/g, 'Verse'))} · ${esc(x.price)} <span>(${esc(new Date(x.at).toLocaleDateString())})</span></li>`).join('');
+}
 async function previews() {
   const els = [...document.querySelectorAll('[data-glb]')]; if (!els.length) return;
   try {
-    const THREE = await import('/vendor/three-r180/build/three.module.min.js');
-    const { GLTFLoader } = await import('/vendor/three-r180/addons/GLTFLoader.js');
-    const { MeshoptDecoder } = await import('/vendor/three-r180/addons/meshopt_decoder.module.js');
-    const { RoomEnvironment } = await import('/vendor/three-r180/addons/RoomEnvironment.js');
+    const THREE = await import('/vendor/three-r180a/build/three.module.min.js');
+    const { GLTFLoader } = await import('/vendor/three-r180a/addons/GLTFLoader.js');
+    const { MeshoptDecoder } = await import('/vendor/three-r180a/addons/meshopt_decoder.module.js');
+    const { RoomEnvironment } = await import('/vendor/three-r180a/addons/RoomEnvironment.js');
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder), cache = {};
     for (const el of els) {
       const url = el.dataset.glb, w = el.clientWidth, h = el.clientHeight;

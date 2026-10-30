@@ -1,0 +1,23 @@
+{
+ "site": "co2.myclimate.org",
+ "url": "https://co2.myclimate.org/en/flight_calculators/new",
+ "scanned": "2026-10-26",
+ "blocked": {
+  "kind": "robots",
+  "why": "robots.txt disallows the page for every crawler"
+ },
+ "assetCount": 0,
+ "bytes": 0,
+ "robots": {
+  "disallow": [
+   "/"
+  ],
+  "sitemaps": [],
+  "crawlDelay": null
+ },
+ "storage": {
+  "local": [],
+  "session": [],
+  "idb": []
+ }
+}

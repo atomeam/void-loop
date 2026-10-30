@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make a random generator: lists, odds, share and publish · Verse</title>
+<meta name="description" content="Write your own random generator in plain lists, with a live preview: nested lists, [list] references, {a|b} choices, odds (^2), {1-6}, {a}/{an}, titleCase and pluralForm, kept values, a picture prompt that goes straight to the image generator. Share it as a link, publish it to the hub, remix anyone's, embed it, download it. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Make a random generator · Verse">
+<meta property="og:description" content="Lists in, random results out, live. Share, publish, remix, embed, picture it.">
+<meta property="og:url" content="https://a-to-mind.com/generators/make/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/generators/make/ (the random generators floor's editor): the list language is lib/listgen.js; nothing leaves the device
+     unless you publish or picture */
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --hi: #efe9ff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --hi: #221c3a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--soft); margin: 0 0 12px; }
+  h2 { font-size: 14px; font-weight: 600; color: var(--soft); margin: 14px 0 6px; }
+  input, textarea, select { font: inherit; font-size: 16px; color: inherit; background: var(--box); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-height: 44px; box-sizing: border-box; }
+  #src { width: 100%; min-height: 360px; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; tab-size: 2; white-space: pre; overflow: auto; resize: vertical; }
+  #name { width: 100%; font-weight: 600; }
+  input[type=number] { width: 80px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; min-width: 40px; background: var(--box); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; box-sizing: border-box; }
+  button.go { background: var(--accent); color: var(--on-accent, #fff); border-color: var(--accent); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 8px 0 0; }
+  .panes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 760px) { .panes { grid-template-columns: 1fr; } }
+  .errs { margin: 8px 0 0; padding: 0; list-style: none; }
+  .errs li { color: var(--bad); font-size: 14px; padding: 4px 0; }
+  .errs button { font-size: 13px; min-height: 32px; padding: 2px 10px; margin-right: 6px; color: var(--bad); border-color: var(--bad); }
+  ol.res { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--box); min-height: 120px; }
+  .res > li { padding: 10px 12px; border-top: 1px solid var(--line); }
+  .res > li:first-child { border-top: 0; }
+  .txt { font-size: 17px; overflow-wrap: anywhere; white-space: pre-line; }
+  .tap { font: inherit; font-size: inherit; color: inherit; background: none; border: 0; border-bottom: 1px dotted var(--soft); border-radius: 0; padding: 0 2px; min-height: 24px; min-width: 24px; line-height: 24px; text-align: center; cursor: pointer; display: inline-block; vertical-align: baseline; } /* at least 24 by 24 px to tap (WCAG 2.5.8) */
+  .tap:hover { background: var(--hi); }
+  .wheel { display: grid; justify-items: start; gap: 6px; margin-top: 6px; } .wheel canvas { width: 200px; height: 200px; }
+  ol.res.lay-cards { border: 0; background: none; display: grid; gap: 10px; } ol.res.lay-cards > li { border: 1px solid var(--line); border-radius: 14px; background: var(--box); }
+  ol.res.lay-cards .txt::first-line { font-weight: 700; }
+  ol.res.lay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0; } ol.res.lay-grid > li { border-top: 0; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  ol.res.lay-table .txt { font-variant-numeric: tabular-nums; white-space: pre-wrap; }
+  .imgp { font-size: 13px; color: var(--soft); margin-top: 4px; overflow-wrap: anywhere; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .acts button, .acts a { font-size: 13px; padding: 4px 12px; min-height: 36px; }
+  .note { font-size: 13px; color: var(--soft); margin: 6px 0; min-height: 1.5em; overflow-wrap: anywhere; }
+  .seed { font-size: 13px; color: var(--soft); font-variant-numeric: tabular-nums; }
+  details { margin-top: 14px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--box); }
+  summary { cursor: pointer; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--hi); padding: 1px 4px; border-radius: 4px; }
+  .help dt { margin-top: 6px; } .help dd { margin: 0 0 4px 0; color: var(--soft); font-size: 14px; }
+  .mine li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; }
+  .mine { list-style: none; padding: 0; margin: 0; }
+  #inputs { margin: 0 0 8px; } .inp { display: inline-flex; gap: 6px; align-items: center; font-size: 14px; color: var(--soft); } .inp select, .inp input { min-width: 120px; }
+  [hidden] { display: none !important; }
+  html.embed .noembed { display: none !important; }
+  html.embed main { padding: 8px; } html.embed .panes { grid-template-columns: 1fr; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+</style>
+<link rel="canonical" href="https://a-to-mind.com/generators/make/">
+<!-- the page's module and what it imports, by hand (tools/preload.mjs reads inline modules only; sw.js keeps these for offline) -->
+<link rel="modulepreload" href="/generators/make/app.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/listgen.js">
+<link rel="modulepreload" href="/lib/comments-ui.js">
+<link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/ai-generators.js">
+<link rel="modulepreload" href="/lib/comments.js">
+<link rel="modulepreload" href="/lib/art-rules.js">
+<link rel="modulepreload" href="/lib/merge-rules.js">
+<link rel="modulepreload" href="/lib/keeper.js">
+</head>
+<body>
+<main>
+  <h1 id="h">Make a random generator</h1>
+  <p class="sub noembed" id="sub">Write lists on the left; results show on the right as you type. <a href="#help">How to write one</a> · <a href="/generators/">All generators</a></p>
+  <p class="note" id="from" hidden></p>
+  <div class="panes">
+    <section class="noembed" id="editor">
+      <label for="name" class="sub" style="display:block;margin:0 0 4px">Name</label>
+      <input id="name" maxlength="60" placeholder="My generator">
+      <h2><label for="src">Lists</label></h2>
+      <textarea id="src" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="20000" aria-describedby="errs"></textarea>
+      <ul class="errs" id="errs" role="alert"></ul>
+      <div class="row">
+        <button type="button" id="save">Save on this device</button>
+        <button type="button" id="share">Share link</button>
+        <button type="button" id="publish">Publish to the hub</button>
+        <button type="button" id="embed">Embed</button>
+        <button type="button" id="download">Download .html</button>
+        <button type="button" id="new">New</button>
+      </div>
+      <div class="note" id="note" role="status"></div>
+    </section>
+    <section id="out">
+      <h2 id="outH">Results</h2>
+      <div class="row" style="margin:0 0 8px">
+        <button type="button" class="go" id="regen">Regenerate</button>
+        <label class="seed">Results <input type="number" id="n" min="1" max="20" value="5" inputmode="numeric"></label>
+        <button type="button" id="copyAll">Copy all</button>
+        <button type="button" id="remix" hidden>Remix (edit a copy)</button>
+        <button type="button" id="report" hidden>Report</button>
+        <span class="seed" id="seed">seed 0</span>
+      </div>
+      <div class="row" id="inputs" hidden aria-label="Choices"></div>
+      <ol class="res" id="res" aria-live="polite"></ol>
+    </section>
+  </div>
+
+  <section class="noembed" id="comments" hidden aria-label="Comments"></section>
+
+  <section class="noembed">
+    <h2>Your generators on this device</h2>
+    <ul class="mine" id="mine"></ul>
+  </section>
+
+  <details class="noembed help" id="help">
+    <summary>How to write a generator</summary>
+    <dl>
+      <dt><code>output</code> then indented lines</dt><dd>A list is a name on its own line with its entries indented under it. The list called <code>output</code> makes each result (or write <code>$output = [something]</code> on one line).</dd>
+      <dt><code>[animal]</code></dt><dd>A random entry of the list called animal. Entries can use other lists, so results build up.</dd>
+      <dt>Nested lists: an entry with entries under it</dt><dd><code>[animal]</code> picks through every level; <code>[animal.bird]</code> picks only from the nested list called bird.</dd>
+      <dt><code>cat ^2</code></dt><dd>Odds: twice as likely as an entry without them; <code>^0.5</code> half as likely, <code>^1/10</code> a tenth, <code>^0</code> never.</dd>
+      <dt><code>{big|small|tiny}</code></dt><dd>Pick one inline; options can carry odds too: <code>{big^3|small}</code>.</dd>
+      <dt><code>{1-6}</code> <code>{a-z}</code> <code>{2d6+1}</code></dt><dd>A whole number, a letter, dice.</dd>
+      <dt><code>{a}</code> <code>{A}</code> and <code>{s}</code></dt><dd>"a" or "an" to fit the word after it; an "s" unless the number before it is 1: <code>{1-3} cat{s}</code>.</dd>
+      <dt><code>[animal.titleCase]</code></dt><dd>Also <code>.upperCase</code> <code>.lowerCase</code> <code>.sentenceCase</code> <code>.pluralForm</code> <code>.singularForm</code> <code>.possessiveForm</code> <code>.pastTense</code>.</dd>
+      <dt><code>[animal.selectUnique(3).joinItems(", ")]</code></dt><dd>Several at once: <code>selectMany(n)</code> may repeat, <code>selectUnique(n)</code> never does, <code>selectAll</code> takes every entry.</dd>
+      <dt><code>[hero = name, ""]</code> then <code>[hero]</code></dt><dd>Keep a pick and say it again later; the <code>""</code> keeps it quiet the first time.</dd>
+      <dt><code>[deck = card.consumableList, ""]</code> then <code>[deck] [deck]</code></dt><dd>Deal without repeats until the list is used up.</dd>
+      <dt><code>wizard ^[gender == "female"]</code></dt><dd>Odds worked out at each pick: true counts as 1, false as 0, a number as itself.</dd>
+      <dt><code>[names[gender]]</code></dt><dd>The nested list whose name is the value of gender.</dd>
+      <dt><code>[if (level &gt; 10) {A veteran.} else {A rookie.}]</code> and <code>[level &gt;= 15 ? "Legendary" : ""]</code></dt><dd>Choose by a condition: <code>== != &lt; &gt; &lt;= &gt;= &amp;&amp; || !</code>, and sums with <code>+ - * / %</code>. Only the branch taken is picked from.</dd>
+      <dt><code>$inputs</code> with <code>gender = select female|male</code>, <code>level = number 1-20</code>, <code>nick = text Shadow</code></dt><dd>Choices shown above the results; use them like kept values: <code>[gender]</code>.</dd>
+      <dt><code>animals = {import:abcdefgh}</code></dt><dd>Use a published generator: <code>[animals]</code> is its result, <code>[animals.bird]</code> one of its lists. The id is the end of its hub link.</dd>
+      <dt><code>$meta</code> with <code>title = ...</code>, <code>description = ...</code>, <code>image = &lt;gallery id&gt;</code></dt><dd>How its published link looks when shared; the image is a picture from the <a href="/image/#gallery">public gallery</a>.</dd>
+      <dt><code>{wheel: food}</code></dt><dd>A wheel of the list's entries (their odds are the slices' sizes) that spins to the one picked; the result says it too.</dd>
+      <dt><code>$layout = cards</code></dt><dd>How the results are laid out: <code>lines</code>, <code>cards</code> (the first line is the title), <code>grid</code> (small tiles) or <code>table</code> (columns split by <code> | </code>).</dd>
+      <dt><code>[shared.visits]</code>, <code>{add: visits}</code>, <code>{set: last = [food]}</code></dt><dd>A published generator's shared data: everyone using it reads and adds to the same small store (20 keys, short texts). Only the published text writes; your edits do not.</dd>
+      <dt><code>{ai: a one-line motto for a [guild] guild}</code></dt><dd>A few words written by Verse's free language model from your prompt (lists work inside it); the same result keeps the same words. At most three in a result.</dd>
+      <dt><code>.presentTense</code> <code>.futureTense</code> <code>.negativeForm</code></dt><dd>"walked home" becomes "walks home", "will walk home", "did not walk home".</dd>
+      <dt>Tap a word</dt><dd>In a result, the dotted parts came from a list or a choice: tap one to roll just that part again.</dd>
+      <dt><code>image</code></dt><dd>A list called image is a picture prompt: "Picture it" sends it to the image generator.</dd>
+      <dt><code>$title = My generator</code>, <code>// a comment</code>, <code>&lt;br&gt;</code>, <code>\[</code> <code>\{</code> <code>\|</code> <code>\s</code></dt><dd>A name, a note to yourself, a new line, and the characters themselves.</dd>
+    </dl>
+  </details>
+  
+<nav id="related" class="noembed" aria-label="Related tools"></nav>
+  <footer class="noembed" id="foot">Generators are kept in this browser. A share link carries the whole generator in the link itself; nothing is stored anywhere until you publish. Results are plain text.</footer>
+</main>
+<script type="module" src="/generators/make/app.js"></script>
+</body>
+</html>

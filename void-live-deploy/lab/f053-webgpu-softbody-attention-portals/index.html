@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --attention-hue: 200;
+    --portal-scale: 1;
+    --bg: #0a0c10;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: #e0e6ef; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+  #chrome {
+    position: absolute; top: 12px; left: 12px; z-index: 10;
+    background: hsl(var(--attention-hue), 40%, 12% / 0.85);
+    border: 1px solid hsl(var(--attention-hue), 60%, 40%);
+    border-radius: 12px; padding: 12px 16px; backdrop-filter: blur(8px);
+    transform: scale(calc(0.95 + var(--portal-scale) * 0.05));
+    transition: background 0.3s, border-color 0.3s;
+  }
+  button, .portal {
+    background: hsl(var(--attention-hue), 50%, 20%);
+    border: 1px solid hsl(var(--attention-hue), 70%, 50%);
+    color: #fff; border-radius: 8px; padding: 6px 12px; cursor: pointer;
+  }
+  .portal {
+    position: absolute; width: 140px; min-height: 70px; padding: 8px;
+    font-size: 12px; z-index: 20; user-select: none; touch-action: none;
+    transform: scale(var(--portal-scale));
+  }
+  .portal h4 { margin: 0 0 4px; font-size: 13px; }
+  #status { font-size: 11px; opacity: 0.8; margin-top: 6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Softbody Attention Portals · Verse lab</title>
+<meta name="description" content="A deformable softbody of particles simulated in a WebGPU compute shader.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Softbody Attention Portals · Verse lab">
+<meta property="og:description" content="A deformable softbody of particles simulated in a WebGPU compute shader.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f053-webgpu-softbody-attention-portals/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f053-webgpu-softbody-attention-portals/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <strong>F053 Softbody Attention Portals</strong>
+  <div>
+    <button id="seal">Seal Mind</button>
+    <button id="load">Load</button>
+    <button id="reset">Reset</button>
+  </div>
+  <div id="status">Initializing…</div>
+</div>
+<canvas id="c"></canvas>
+<div id="portals"></div>
+
+<script type="module" src="app.js"></script>
+<h1 class="vl-sr">WebGPU Softbody Attention Portals</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

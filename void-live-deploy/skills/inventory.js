@@ -16,6 +16,17 @@ export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families |
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
+  games: 'every board and table game in one place: the game rack, chess, checkers, go, othello and the rest',
+  time: 'timers, clocks, the sky, weather and the time around the world, in one place',
+  rooms: 'a room project on one card: paint, flooring, wallpaper, drywall and baseboard, with prices',
+  dates: 'the calendar, today, public holidays and countdowns',
+  'stage-out': 'the stage off the screen: a one-page sheet to print, JSON in and out, email-ready text',
+  pollen: 'pollen and allergy forecast for a European city (Open-Meteo)',
+  'mind-field': 'Mind Field: eight living field minds in one card with a Mode switcher (Doodle Mind, Echo Field, swarm, flow, listen, grow, attention, living cards)',
+  'tilt-arena': 'Tilt Arena: little learning agents chase what you steer, in four modes (Tilt, Gaze Chase, GPU Swarm, Hand Arena)',
+  similar: 'what is similar: the modes and siblings of any combined skill',
+  'list-starters': 'ready-made lists: packing, chores, bills and guests, and starter templates for shopping, agendas and more',
+  languages: 'answer in Spanish and translate anything',
   part: 'named printable parts (Linemote-1 and the like)',
   figure: 'summoned figures on the stage',
   make: 'make an app from stage parts',
@@ -23,7 +34,6 @@ const WHAT = {
   air: 'air quality',
   uv: 'UV index',
   quake: 'recent earthquakes',
-  pollen: 'pollen',
   spanish: 'answers in Spanish',
   translate: 'translation',
   'rebuild-map': 'assimilation map (what is being rebuilt as Verse)',

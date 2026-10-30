@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shelf, not solve — draft 116</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1915; --line: #c8bfb2; --paper: #f4efe6; --mark: #6b4a2a; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #f4efe6; --line: #4a433c; --paper: #1c1915; --mark: #e0c4a4; }
+    }
+    body { margin: 0; font: 16px/1.45 Georgia, serif; background: var(--paper); color: var(--ink); }
+    main { max-width: 40rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    h1 { font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+    p.note { font-size: 0.92rem; }
+    .shelf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 1.5rem 0; }
+    .slot { height: 4.2rem; border: 1px solid var(--line); }
+    .slot.on { background: var(--mark); }
+    fieldset { border: 1px solid var(--line); padding: 0.75rem 1rem 1rem; margin: 0 0 1rem; }
+    legend { padding: 0 0.4rem; }
+    label { display: block; margin: 0.35rem 0; }
+    textarea { width: 100%; min-height: 4.5rem; font: inherit; background: transparent; color: inherit; border: 1px solid var(--line); }
+    button { font: inherit; background: transparent; color: inherit; border: 1px solid var(--mark); padding: 0.4rem 0.8rem; }
+    output { display: block; margin-top: 1rem; font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="note">Draft 116. Not sealed. Not live. Status defaults to unattested.</p>
+    <h1>A shelf mark is not a solve</h1>
+    <p>Incubation hypotheses set a problem aside and call the return a solution. This page seals the shelf class only. A sentence about the answer, a dream report, or an insight is discarded and is not hashed.</p>
+    <div class="shelf" id="shelf" aria-hidden="true">
+      <div class="slot"></div><div class="slot"></div><div class="slot"></div>
+    </div>
+    <form id="shelf-form">
+      <fieldset>
+        <legend>Shelf class</legend>
+        <label><input type="radio" name="shelf_class" value="withheld" checked> Withheld — no shelf recorded</label>
+        <label><input type="radio" name="shelf_class" value="empty"> Empty — closed slots; not a blank dream</label>
+        <label><input type="radio" name="shelf_class" value="shelved"> Shelved — one slot filled; not a solution</label>
+      </fieldset>
+      <fieldset>
+        <legend>Solve sentence (discarded)</legend>
+        <label for="solve">Write a solve claim if you need to see it dropped. It is not stored and not hashed.</label>
+        <textarea id="solve" name="solve_sentence" maxlength="240" placeholder="not a solution"></textarea>
+      </fieldset>
+      <button type="submit">Seal shelf class</button>
+      <output id="out" for="shelf-form">status: unattested
+solve-refusal id: none
+solve sentence: not hashed</output>
+    </form>
+  </main>
+  <script>
+    const form = document.getElementById("shelf-form");
+    const out = document.getElementById("out");
+    const slots = document.querySelectorAll("#shelf .slot");
+    const solve = document.getElementById("solve");
+    function selected() {
+      const node = form.querySelector("input[name=shelf_class]:checked");
+      return node ? node.value : "withheld";
+    }
+    function paint(shelf) {
+      slots.forEach((slot, i) => {
+        slot.classList.toggle("on", shelf === "shelved" && i === 1);
+      });
+    }
+    form.addEventListener("change", () => { paint(selected()); });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const shelf = selected();
+      const dropped = solve.value;
+      solve.value = "";
+      const preimage = "void-shelf-not-solve|v1|class=" + shelf + "|status=unattested";
+      const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(preimage));
+      const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+      paint(shelf);
+      out.textContent = [
+        "status: unattested",
+        "shelf class: " + shelf,
+        "solve-refusal id: " + hex.slice(0, 16),
+        "preimage excludes solve sentence: yes",
+        dropped ? "dropped chars: " + dropped.length : "dropped chars: 0"
+      ].join("\n");
+    });
+  </script>
+</body>
+</html>

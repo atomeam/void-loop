@@ -7,7 +7,7 @@
  * own; not saved by default (an `ephemeral` stage kind) unless the visitor says "keep this challenge".
  */
 import * as C from './challenge-rules.js';
-import { sourceOf, payloadOf } from './quiz.js';
+import { sourceOf, payloadOf, starter } from './quiz.js';
 
 /** what the ask means: null, { start: true }, { start: true, missed: true } or { keep: true } */
 export function challengeOf(text) {
@@ -117,16 +117,20 @@ async function run(text, api) {
     api.say('Kept · this challenge stays on your stage (and your other devices); other learning cards still are not saved');
     return 'challenge';
   }
-  const src = sourceOf(things, kinds, api.stage.selected && api.stage.selected(), q.missed ? { kind: 'quiz' } : {});
+  let src = sourceOf(things, kinds, api.stage.selected && api.stage.selected(), q.missed ? { kind: 'quiz' } : {}), cold = '';
+  // nothing to work from (a fresh visit): with no missed questions yet, the five minutes go to what is on the stage, or to a pair of gears put
+  // up for it, and it says so (site-test, atomeam/void-loop#1196)
+  if (!src && q.missed) { src = sourceOf(things, kinds, api.stage.selected && api.stage.selected()); if (src) cold = 'No missed questions yet, so the challenge is on the ' + (src.kind === 'moon' ? 'Moon' : src.kind) + ' · '; }
+  if (!src) { src = starter(api); if (src) cold = (q.missed ? 'No missed questions yet' : 'Nothing was on the stage') + ', so here are two gears · '; }
   if (!src) { api.say(q.missed ? 'No quiz on the stage · say "quiz me on this" beside an explainer first' : NONE); return 'challenge'; }
   const p = payloadOf(src, kinds);
   const state = C.take(C.create(), p.observations, p.explanation);
   const sourceName = src.kind === 'quiz' ? 'questions you missed' : src.kind === 'moon' ? 'Moon' : src.kind;
   if (mine) { mine.state = state; mine.sourceName = sourceName; if (mine.keep) api.stage.save && api.stage.save(); api.stage.render(); if (api.stage.center) api.stage.center(mine.id); }
   else api.summon('challenge', { state, sourceName, center: true });
-  api.say(state.status === 'ready' ? 'Five minutes on the ' + sourceName + ' · ' + state.rounds.length + ' round' + (state.rounds.length === 1 ? '' : 's') + ' · press Start when ready'
+  api.say(cold + (state.status === 'ready' ? 'Five minutes on the ' + sourceName + ' · ' + state.rounds.length + ' round' + (state.rounds.length === 1 ? '' : 's') + ' · press Start when ready'
     : state.status === 'invalid' ? 'That card\'s observations could not be read'
-    : q.missed ? 'Nothing missed to practise · every answer was right' : 'Nothing on the ' + sourceName + ' to predict yet');
+    : q.missed ? 'Nothing missed to practise · every answer was right' : 'Nothing on the ' + sourceName + ' to predict yet'));
   return 'challenge';
 }
 

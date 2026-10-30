@@ -16,7 +16,8 @@ const SITE = 'https://a-to-mind.com';
 /** the Pages Function routes, from functions/ (functions/api/hook/[id].js -> /api/hook/[id]). */
 function functionRoutes() {
   const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
-  return walk(join(dep, 'functions')).filter((f) => f.endsWith('.js')).map((f) => '/' + f.slice(join(dep, 'functions').length + 1).replace(/\\/g, '/').replace(/\.js$/, '').replace(/\/index$/, ''));
+  // a _middleware.js wraps the routes beside it and is no route itself (Cloudflare Pages Functions)
+  return walk(join(dep, 'functions')).filter((f) => f.endsWith('.js') && !f.endsWith('_middleware.js')).map((f) => '/' + f.slice(join(dep, 'functions').length + 1).replace(/\\/g, '/').replace(/\.js$/, '').replace(/\/index$/, ''));
 }
 const FN = functionRoutes();
 // only the paths _routes.json sends to Functions reach one (functions/[handle].js would match any one-segment path otherwise)
@@ -113,4 +114,11 @@ test('the 404 page: noindex, no redirect, an ask box that goes to /?q=, and link
   assert.ok(hrefs.length >= 4, 'a few real destinations');
   for (const h of hrefs) assert.ok(exists(h), '404.html links to a missing ' + h);
   assert.ok(!/fetch\(|sendBeacon|XMLHttpRequest/.test(html), 'the missing path is shown, never sent anywhere');
+});
+
+// every page a function serves outside /api reaches it (2026-10-24: functions/is-it/[what].js was never routed, so /is-it/christmas, its
+// feed and its JSON answered with the home page on the live site): a function route with no _routes.json include is dead code
+test('every function route outside /api is in _routes.json', () => {
+  const dead = FN.filter((r) => !r.startsWith('/api/') && r !== '/[handle]').filter((r) => !ROUTED.some((re) => re.test(r.replace(/\[\[[^\]]+\]\]/g, 'x').replace(/\[[^\]]+\]/g, 'x'))));
+  assert.deepEqual(dead, []);
 });

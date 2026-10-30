@@ -5,15 +5,22 @@
 //   node tools/grow.mjs grow "…" --asked ask-20261009-2159-1   this answers one of Verse's asks: its id from the asks list (tools/reflect.mjs drops it)
 //   node tools/grow.mjs grow "…" --show "sticky notes look like real paper" --try "sticky note buy milk"
 //                                  the plain line and the ask the "look what I made" walkthrough shows (skills/showcase.js)
-//   node tools/grow.mjs --check      the whole ledger is valid (also run by tools/checks.mjs)
+//   node tools/grow.mjs --check      the whole ledger is valid, and every waiting entry file (also run by tools/checks.mjs)
+// On a branch other than main the entry goes to its own file, growth/entries/<time>-<by>-<id>.json, so two PRs never touch the same
+// lines of the ledger and stop colliding there (owner, 2026-10-28). tools/growth-fold.mjs folds those files into the ledger: in every
+// deploy (so the served ledger has them at once) and on main by .github/workflows/growth-fold.yml, which commits the fold.
+// On main, in a detached checkout, with --ledger or GROWTH_LEDGER=1 it appends to the ledger itself as before; --entry forces a file.
 // kinds: grow, build, fix, retire, idea, finding (void-live-deploy/void.growth.schema.json)
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const LEDGER = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'void.growth.json');
+export const ENTRIES = resolve(dirname(LEDGER), '..', 'growth', 'entries');
 export const KINDS = ['grow', 'build', 'fix', 'retire', 'idea', 'finding'];
-const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from', 'asked', 'show', 'try'];
+const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from', 'asked', 'show', 'try', 'phrases'];
 
 // null when the entry is valid, else what is wrong with it
 export function entryProblem(e) {
@@ -47,14 +54,40 @@ export function appendTo(text, entry) {
   return (body === '[' ? '[\n' : body + ',\n') + entryLine(entry) + '\n]\n';
 }
 
+// the file name an entry waits under: sorts by time, says who, and a short hash of the entry so two at the same second never clash
+export const entryName = (e) => e.at.replace(/[-:]/g, '').replace(/Z$/, 'Z') + '-' + e.by + '-' + createHash('sha256').update(JSON.stringify(e)).digest('hex').slice(0, 8) + '.json';
+export const entryText = (e) => JSON.stringify(e) + '\n';
+// the waiting entry files, oldest first: [{ name, entry }] (a file that is not one valid entry is reported by --check, never dropped silently)
+export function readEntries(dir = ENTRIES) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter((n) => n.endsWith('.json')).sort().map((name) => { let entry = null; try { entry = JSON.parse(readFileSync(resolve(dir, name), 'utf8')); } catch (_) {} return { name, entry }; });
+}
+// the ledger text with these entries appended in time order; an entry already in it (same at, by, kind and what) is not repeated
+export function foldInto(text, entries) {
+  const key = (e) => [e.at, e.by, e.kind, e.what].join('\u0000'), have = new Set(JSON.parse(text).map(key));
+  let out = text;
+  for (const e of entries.slice().sort((a, b) => a.at.localeCompare(b.at))) { if (have.has(key(e))) continue; have.add(key(e)); out = appendTo(out, e); }
+  return out;
+}
+// where this run writes: a file on a feature branch, the ledger on main or when there is no branch
+export function writesEntryFile({ args = [], env = process.env, branch } = {}) {
+  if (args.includes('--entry')) return true;
+  if (args.includes('--ledger') || env.GROWTH_LEDGER === '1') return false;
+  if (branch === undefined) { try { branch = execFileSync('git', ['-C', dirname(LEDGER), 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch (_) { branch = ''; } }
+  return !!branch && branch !== 'HEAD' && branch !== 'main';
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   if (args[0] === '--check') {
-    const list = JSON.parse(readFileSync(LEDGER, 'utf8')), bad = ledgerProblems(list);
+    const list = JSON.parse(readFileSync(LEDGER, 'utf8')), bad = ledgerProblems(list), waiting = readEntries();
+    for (const { name, entry } of waiting) { const p = entry ? entryProblem(entry) : 'not JSON'; if (p) bad.push('growth/entries/' + name + ': ' + p); }
     if (bad.length) { console.error(bad.slice(0, 10).join('\n')); process.exit(1); }
-    console.log('void.growth.json: ' + list.length + ' entries, all valid');
+    console.log('void.growth.json: ' + list.length + ' entries, all valid' + (waiting.length ? '; ' + waiting.length + ' waiting in growth/entries, all valid' : ''));
     process.exit(0);
   }
+  const toFile = writesEntryFile({ args });
+  for (const f of ['--entry', '--ledger']) { const i = args.indexOf(f); if (i >= 0) args.splice(i, 1); }
   const opt = (name) => { const i = args.indexOf(name); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, 2); return v; };
   const by = opt('--by') || 'claude', ref = opt('--ref'), asked = opt('--asked'), show = opt('--show'), tryAsk = opt('--try');
   const [kind, ...words] = args;
@@ -65,6 +98,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (tryAsk) entry.try = tryAsk;
   const p = entryProblem(entry);
   if (p) { console.error(p + '\nusage: node tools/grow.mjs <' + KINDS.join('|') + '> "what changed" [--by slug] [--ref https://…] [--asked "Verse\'s ask"] [--show "plain line"] [--try "an ask that shows it"]'); process.exit(2); }
+  if (toFile) {
+    mkdirSync(ENTRIES, { recursive: true });
+    const name = entryName(entry);
+    writeFileSync(resolve(ENTRIES, name), entryText(entry));
+    console.log('growth/entries/' + name + ': +1 ' + kind + ' (folded into void.growth.json on main)');
+    process.exit(0);
+  }
   const text = readFileSync(LEDGER, 'utf8');
   const next = appendTo(text, entry);
   JSON.parse(next);

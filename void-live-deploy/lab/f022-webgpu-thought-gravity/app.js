@@ -1,0 +1,171 @@
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const input = document.getElementById('input');
+const statusEl = document.getElementById('status');
+const portalsEl = document.getElementById('portals');
+let w, h, particles = [], wells = [], entropy = 0.4, coherence = 0.3, hue = 200;
+
+function resize() {
+  w = canvas.width = innerWidth;
+  h = canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+// --- Mind Worker (local AI) ---
+const workerCode = `
+let wells = [];
+let nextId = 1;
+self.onmessage = (e) => {
+  if (e.data.type === 'seed') {
+    const phrase = e.data.phrase.toLowerCase();
+    // simple hash-to-space embedding
+    let hx = 0, hy = 0;
+    for (let i = 0; i < phrase.length; i++) {
+      hx = (hx * 31 + phrase.charCodeAt(i)) % 10000;
+      hy = (hy * 37 + phrase.charCodeAt(i) * 3) % 10000;
+    }
+    const x = (hx / 10000) * 0.8 + 0.1;
+    const y = (hy / 10000) * 0.8 + 0.1;
+    // repulsion from existing
+    for (const w of wells) {
+      const dx = x - w.x, dy = y - w.y;
+      const d = Math.hypot(dx, dy) || 0.01;
+      if (d < 0.15) {
+        const push = (0.15 - d) * 0.5;
+        w.x -= (dx / d) * push;
+        w.y -= (dy / d) * push;
+      }
+    }
+    wells.push({ id: nextId++, phrase, x, y, strength: 0.6 + Math.random()*0.4, age: 0 });
+    if (wells.length > 8) wells.shift();
+    // evolve strengths
+    for (const w of wells) {
+      w.age++;
+      w.strength = Math.max(0.2, w.strength * 0.995 + (w.phrase.includes(phrase.slice(0,3)) ? 0.01 : 0));
+    }
+    self.postMessage({ type: 'wells', wells });
+  }
+};
+`;
+const blob = new Blob([workerCode], { type: 'application/javascript' });
+const worker = new Worker(URL.createObjectURL(blob));
+
+worker.onmessage = (e) => {
+  if (e.data.type === 'wells') {
+    wells = e.data.wells.map(w => ({ ...w, px: w.x * w, py: w.y * h }));
+    updatePortals();
+  }
+};
+
+// --- Particles ---
+function spawnParticles(n = 180) {
+  particles = [];
+  for (let i = 0; i < n; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8
+    });
+  }
+}
+spawnParticles();
+
+function updatePortals() {
+  portalsEl.innerHTML = '';
+  wells.forEach(well => {
+    const el = document.createElement('div');
+    el.className = 'portal';
+    el.textContent = well.phrase;
+    el.style.left = (well.x * 100) + '%';
+    el.style.top = (well.y * 100) + '%';
+    el.style.opacity = Math.min(1, 0.4 + well.strength);
+    el.style.transform = `translate(-50%, -50%) scale(${0.8 + well.strength * 0.6})`;
+    portalsEl.appendChild(el);
+  });
+}
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && input.value.trim()) {
+    worker.postMessage({ type: 'seed', phrase: input.value.trim() });
+    input.value = '';
+    statusEl.textContent = 'void · seeding';
+  }
+});
+
+document.getElementById('seal').addEventListener('click', async () => {
+  try {
+    const db = await new Promise((res, rej) => {
+      const r = indexedDB.open('void-f022', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('seals', { keyPath: 'id' });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    const tx = db.transaction('seals', 'readwrite');
+    tx.objectStore('seals').put({ id: Date.now(), wells, entropy, coherence, at: new Date().toISOString() });
+    statusEl.textContent = 'void · sealed';
+  } catch (err) {
+    statusEl.textContent = 'void · seal failed';
+  }
+});
+
+function step() {
+  let varX = 0, varY = 0, count = particles.length;
+  for (const p of particles) {
+    let ax = 0, ay = 0;
+    for (const well of wells) {
+      const wx = well.x * w, wy = well.y * h;
+      const dx = wx - p.x, dy = wy - p.y;
+      const d2 = dx*dx + dy*dy + 400;
+      const f = well.strength * 80 / d2;
+      ax += dx * f;
+      ay += dy * f;
+    }
+    ax += (Math.random() - 0.5) * 0.4;
+    ay += (Math.random() - 0.5) * 0.4;
+    p.vx = (p.vx + ax) * 0.96;
+    p.vy = (p.vy + ay) * 0.96;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x += w; if (p.x > w) p.x -= w;
+    if (p.y < 0) p.y += h; if (p.y > h) p.y -= h;
+    varX += p.x; varY += p.y;
+  }
+  const meanX = varX / count, meanY = varY / count;
+  let spread = 0;
+  for (const p of particles) spread += Math.hypot(p.x - meanX, p.y - meanY);
+  spread /= count;
+  entropy = Math.min(1, spread / (Math.min(w, h) * 0.25));
+  coherence = Math.min(1, wells.reduce((s, w) => s + w.strength, 0) / 6);
+  hue = (hue + entropy * 2 - coherence) % 360;
+
+  document.documentElement.style.setProperty('--entropy', entropy.toFixed(3));
+  document.documentElement.style.setProperty('--coherence', coherence.toFixed(3));
+  document.documentElement.style.setProperty('--hue', hue.toFixed(0));
+
+  statusEl.textContent = wells.length
+    ? `void · ${wells.length} wells · e${entropy.toFixed(2)}`
+    : 'void · listening';
+
+  ctx.fillStyle = `hsla(${hue}, 40%, 4%, 0.18)`;
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = `hsla(${hue}, 70%, 60%, 0.65)`;
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const well of wells) {
+    const wx = well.x * w, wy = well.y * h;
+    const grd = ctx.createRadialGradient(wx, wy, 0, wx, wy, 80 * well.strength);
+    grd.addColorStop(0, `hsla(${hue}, 80%, 60%, ${0.3 * well.strength})`);
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(wx, wy, 80 * well.strength, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(step);
+}
+step();

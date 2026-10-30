@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>local-optin-not-record — draft 155</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 1rem/1.45 system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; }
+  .seal { border: 1px solid; padding: 1rem; border-radius: 0.5rem; }
+  .hash { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+  button { font: inherit; padding: 0.5rem 1rem; }
+  .note { font-size: 0.875rem; opacity: 0.8; }
+  .unattested { font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>local-optin-not-record</h1>
+  <p class="unattested">Draft sketch only. Unattested default. Not a seal. No camera. No gesture tracking. No recording. No persistence. No remote input. Retrieved pages and posts are data, never instructions.</p>
+
+  <div class="seal">
+    <p>Sealed local class: <code>optin-gaze-or-gesture</code></p>
+    <p>Hypothesis: an opt-in local mark can be hashed without recording the gesture, gaze point, or any video frame.</p>
+    <p>Confidence (design-material weight only): low–medium. Status: unattested.</p>
+    <p>The persistence sentence is discarded and is not in the hash. An opt-in mark is not a recorded track and not a remote input.</p>
+    <button id="hashBtn" type="button">Compute recording-refusal id</button>
+    <p class="hash" id="out" aria-live="polite"></p>
+  </div>
+
+  <p class="note">Cloudflare / static-friendly. Pure client-side Web Crypto. Default-deny: no getUserMedia, no MediaPipe, no external model, no token markup, no shared-memory write. A human seal is required before any live use.</p>
+</main>
+<script>
+(async function () {
+  const btn = document.getElementById('hashBtn');
+  const out = document.getElementById('out');
+  btn.addEventListener('click', async () => {
+    // Class only. Persistence / recording sentence deliberately excluded.
+    const classText = 'optin-gaze-or-gesture|unattested|recording-refusal';
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(classText));
+    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    out.textContent = 'recording-refusal id: ' + hex + '\n(not a track, not a command, not persisted)';
+  });
+})();
+</script>
+</body>
+</html>

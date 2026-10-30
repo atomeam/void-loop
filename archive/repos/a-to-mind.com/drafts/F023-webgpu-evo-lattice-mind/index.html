@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Void F-023 · Evolutionary Lattice Mind</title>
+<style>
+  :root {
+    --hue: 200;
+    --fitness: 0.4;
+    --radius: 12px;
+  }
+  body {
+    margin: 0; background: #07070a; color: #e8e4dc;
+    font-family: system-ui, sans-serif; overflow: hidden;
+    transition: background 0.6s;
+  }
+  canvas { display: block; width: 100vw; height: 100vh; image-rendering: pixelated; }
+  #hud {
+    position: absolute; top: 1rem; left: 1rem; pointer-events: none;
+    max-width: 28rem;
+  }
+  #status {
+    display: inline-block; padding: 0.45rem 0.9rem;
+    border: 3px solid hsl(var(--hue), 70%, 55%);
+    border-radius: var(--radius);
+    font-size: 0.9rem; transition: all 0.4s;
+    background: rgba(0,0,0,0.35);
+  }
+  #info { margin-top: 0.4rem; font-size: 0.75rem; opacity: 0.75; line-height: 1.4; }
+  #card {
+    position: absolute; bottom: 1.5rem; right: 1.5rem;
+    width: 14rem; padding: 0.8rem 1rem;
+    background: rgba(20,18,28,0.75);
+    border: 2px solid hsl(var(--hue), 60%, 50%);
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+    transform: scale(1) rotate(0deg);
+    transition: transform 0.5s, border-color 0.4s;
+    font-size: 0.8rem;
+  }
+  button {
+    margin-top: 0.4rem; margin-right: 0.3rem;
+    background: hsl(var(--hue), 50%, 30%); color: #fff; border: none;
+    padding: 0.35rem 0.7rem; border-radius: 6px; cursor: pointer;
+  }
+  #seals { font-size: 0.7rem; opacity: 0.7; margin-top: 0.3rem; max-height: 4rem; overflow: auto; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="status">void · evolving</div>
+  <div id="info">F-023 Evolutionary Lattice · drag to seed · tilt device (if allowed) · click Seal to remember rule</div>
+</div>
+<div id="card">
+  <strong>Assimilation Mind</strong><br>
+  gen <span id="gen">0</span> · fitness <span id="fit">0.00</span><br>
+  <button id="clear">Clear</button>
+  <button id="seal">Seal</button>
+  <div id="seals"></div>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const genEl = document.getElementById('gen');
+const fitEl = document.getElementById('fit');
+const sealsEl = document.getElementById('seals');
+const card = document.getElementById('card');
+
+let W = 64, H = 64;
+let grid = new Float32Array(W * H);
+let next = new Float32Array(W * H);
+let params = [0.15, 0.05, 0.1, 0.02]; // diffusion, reaction, biasX, biasY
+let generation = 0, fitness = 0.3;
+let audioCtx, osc, gain;
+let seals = [];
+
+function resize() {
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+resize();
+addEventListener('resize', resize);
+
+function idx(x, y) { return y * W + x; }
+function initGrid() {
+  for (let i = 0; i < grid.length; i++) grid[i] = 0.4 + Math.random() * 0.2;
+}
+initGrid();
+
+// Worker for evolutionary mind
+const workerCode = `
+let pop = [];
+const POP = 8;
+function randParams() {
+  return [Math.random()*0.3, Math.random()*0.1, (Math.random()-0.5)*0.05, (Math.random()-0.5)*0.05];
+}
+function init() { pop = Array.from({length:POP}, randParams); }
+init();
+function fitnessFromStats(s) {
+  const ent = Math.min(1, s.variance * 8 + Math.abs(s.mean - 0.5) * 2);
+  return ent;
+}
+self.onmessage = e => {
+  const {stats, gen} = e.data;
+  // evaluate current best roughly, mutate pop
+  const scores = pop.map(p => fitnessFromStats(stats) * (0.7 + Math.random()*0.6));
+  const ranked = pop.map((p,i) => ({p, s: scores[i]})).sort((a,b) => b.s - a.s);
+  const elite = ranked.slice(0, 2).map(r => r.p);
+  const nextPop = [...elite];
+  while (nextPop.length < POP) {
+    const a = elite[Math.floor(Math.random()*elite.length)];
+    const child = a.map(v => v + (Math.random()-0.5)*0.04);
+    nextPop.push(child);
+  }
+  pop = nextPop;
+  const best = elite[0];
+  const fit = scores[0] || 0.3;
+  self.postMessage({params: best, generation: gen+1, fitness: fit});
+};
+`;
+const blob = new Blob([workerCode], {type: 'application/javascript'});
+const worker = new Worker(URL.createObjectURL(blob));
+worker.onmessage = e => {
+  params = e.data.params;
+  generation = e.data.generation;
+  fitness = e.data.fitness;
+  genEl.textContent = generation;
+  fitEl.textContent = fitness.toFixed(2);
+};
+
+let frame = 0;
+let mx = -1, my = -1, painting = false;
+
+addEventListener('pointerdown', e => { painting = true; mx = e.clientX; my = e.clientY; startAudio(); });
+addEventListener('pointermove', e => { if (painting) { mx = e.clientX; my = e.clientY; } });
+addEventListener('pointerup', () => { painting = false; mx = -1; });
+
+// Orientation bias
+let tiltX = 0, tiltY = 0;
+if (window.DeviceOrientationEvent) {
+  addEventListener('deviceorientation', e => {
+    tiltX = (e.gamma || 0) / 90 * 0.03;
+    tiltY = (e.beta || 0) / 90 * 0.03;
+  });
+}
+
+function step() {
+  // paint
+  if (painting && mx >= 0) {
+    const gx = Math.floor(mx / canvas.width * W);
+    const gy = Math.floor(my / canvas.height * H);
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      const x = (gx + dx + W) % W, y = (gy + dy + H) % H;
+      grid[idx(x,y)] = Math.min(1, grid[idx(x,y)] + 0.3);
+    }
+  }
+  // update lattice with current params + tilt
+  const [diff, react, bx, by] = params;
+  const biasX = bx + tiltX, biasY = by + tiltY;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const i = idx(x,y);
+    let sum = 0, cnt = 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (dx===0 && dy===0) continue;
+      const nx = (x+dx+W)%W, ny = (y+dy+H)%H;
+      sum += grid[idx(nx,ny)]; cnt++;
+    }
+    const avg = sum / cnt;
+    let v = grid[i];
+    v += diff * (avg - v);
+    v += react * v * (1 - v) * 4; // logistic growth-ish
+    v += biasX * (x/W - 0.5) + biasY * (y/H - 0.5);
+    next[i] = Math.max(0, Math.min(1, v));
+  }
+  [grid, next] = [next, grid];
+
+  // stats every 20 frames
+  if (frame % 20 === 0) {
+    let mean = 0, varSum = 0;
+    for (let i = 0; i < grid.length; i++) mean += grid[i];
+    mean /= grid.length;
+    for (let i = 0; i < grid.length; i++) { const d = grid[i]-mean; varSum += d*d; }
+    const variance = varSum / grid.length;
+    worker.postMessage({stats: {mean, variance}, gen: generation});
+  }
+
+  // render
+  const img = ctx.createImageData(canvas.width, canvas.height);
+  // simple nearest-neighbor upscale
+  for (let py = 0; py < canvas.height; py++) {
+    const gy = Math.floor(py / canvas.height * H);
+    for (let px = 0; px < canvas.width; px++) {
+      const gx = Math.floor(px / canvas.width * W);
+      const v = grid[idx(gx, gy)];
+      const i = (py * canvas.width + px) * 4;
+      const hue = (200 + v * 160) % 360;
+      // crude HSL to RGB
+      const s = 0.7, l = 0.3 + v * 0.4;
+      const c = (1 - Math.abs(2*l - 1)) * s;
+      const hp = hue / 60;
+      const x = c * (1 - Math.abs(hp % 2 - 1));
+      let r=0,g=0,b=0;
+      if (hp < 1) { r=c; g=x; } else if (hp < 2) { r=x; g=c; } else if (hp < 3) { g=c; b=x; }
+      else if (hp < 4) { g=x; b=c; } else if (hp < 5) { r=x; b=c; } else { r=c; b=x; }
+      const m = l - c/2;
+      img.data[i] = (r+m)*255; img.data[i+1] = (g+m)*255; img.data[i+2] = (b+m)*255; img.data[i+3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+
+  // morph UI
+  const hue = 160 + fitness * 180;
+  document.documentElement.style.setProperty('--hue', hue);
+  document.documentElement.style.setProperty('--fitness', fitness);
+  document.documentElement.style.setProperty('--radius', (8 + fitness * 32) + 'px');
+  statusEl.textContent = generation > 5 ? `void · gen ${generation}` : 'void · evolving';
+  statusEl.style.borderColor = `hsl(${hue}, 70%, ${50 + fitness*20}%)`;
+  card.style.transform = `scale(${0.9 + fitness*0.25}) rotate(${(fitness-0.4)*12}deg)`;
+  document.body.style.background = `hsl(${hue}, 15%, ${4 + fitness*4}%)`;
+
+  // audio
+  if (osc && gain) {
+    let m = 0;
+    for (let i = 0; i < Math.min(200, grid.length); i += 4) m += grid[i];
+    m /= 50;
+    osc.frequency.setTargetAtTime(180 + m * 520, audioCtx.currentTime, 0.1);
+    gain.gain.setTargetAtTime(0.04 + fitness * 0.08, audioCtx.currentTime, 0.15);
+  }
+
+  frame++;
+  requestAnimationFrame(step);
+}
+
+function startAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    osc = audioCtx.createOscillator();
+    gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 220;
+    gain.gain.value = 0.05;
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+  } catch (e) { console.warn('audio blocked', e); }
+}
+
+document.getElementById('clear').onclick = () => { initGrid(); };
+document.getElementById('seal').onclick = async () => {
+  const payload = {gen: generation, fitness, params: [...params], ts: Date.now()};
+  const text = JSON.stringify(payload);
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('').slice(0,12);
+  payload.hash = hash;
+  seals.unshift(payload);
+  if (seals.length > 6) seals.pop();
+  sealsEl.innerHTML = seals.map(s => `<div>gen${s.gen} · ${s.hash}</div>`).join('');
+  // IndexedDB best-effort
+  try {
+    const req = indexedDB.open('void-evo', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('rules', {keyPath: 'ts'});
+    req.onsuccess = () => {
+      const tx = req.result.transaction('rules', 'readwrite');
+      tx.objectStore('rules').put(payload);
+    };
+  } catch (e) {}
+};
+
+step();
+</script>
+</body>
+</html>
