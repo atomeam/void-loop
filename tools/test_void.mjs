@@ -7621,6 +7621,9 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
+    // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
+    // midnight UTC "two hours ago" is yesterday (red on main at 00:22, 01:19 and 00:51 UTC, 2026-10-29 and 2026-10-30)
+    const todayAgo = (h) => new Date(Math.max(Date.parse(new Date().toISOString().slice(0, 10)), Date.now() - h * 36e5)).toISOString();
     // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
@@ -7683,7 +7686,7 @@ try {
         label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color,
         red: segs.length, redColor: segs.map((l) => getComputedStyle(l).stroke).join(), redAt: segs.map((l) => l.getAttribute('x1') + '-' + l.getAttribute('x2')).join(), overdue: b.dataset.overdue, amber: amber && amber.textContent, amberColor: amber && getComputedStyle(amber).color, title: b.title }; });
     const v1 = await vel(), hits1 = reflectHits;
-    reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
+    reflectAsked = built([['a', ago(0)], ['b', todayAgo(1)], ['c', todayAgo(2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
     const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
