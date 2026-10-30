@@ -3221,12 +3221,18 @@ say('nothing selected to remove');
     // the asked-for character keeps its case ("ascii code for A" is 65, not 97): find it in the original ask
     let lastAskRaw = '';
     function text0Char(lower, c) { const raw = lastAskRaw || ''; const m = raw.match(/(?:for|of)\s+["'“]?(.)["'”]?\s*\??\s*$/i); return m && m[1].toLowerCase() === c.toLowerCase() ? m[1] : c; }
-    // fixed facts for standard sizes and quantities, with the caveat people need
+    // fixed facts for standard sizes and quantities, with the caveat people need. 2026-10-30: the speed of sound, bulb lumens and drink
+    // sizes now carry the page they come from (read that day): The Physics Factbook for sound (343 m/s at 20 °C; 1,450 to 1,498 m/s in
+    // water), Energy Saver for lumens (it gives no LED wattage, so the old "LED equivalents use 8–10 W" is gone) and NIAAA for a 1.5 fl oz
+    // shot and a 5 fl oz glass of wine; the counts per bottle are worked out from those. A fifth element is the date its page was read.
+    const SOUND = [['The Physics Factbook: speed of sound in air', 'https://hypertextbook.com/facts/2000/CheukWong.shtml'], ['The Physics Factbook: speed of sound in water', 'https://hypertextbook.com/facts/2000/NickyDu.shtml']];
+    const LUMENS = [['Energy Saver: buy lumens, not watts', 'https://www.energy.gov/node/380665']];
+    const DRINKS = [['NIAAA: what is a standard drink', 'https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink']];
     const SIZE_FACTS = [
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
       [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
       [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
-      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; faster in warm air, much faster in water (about 1,480 m/s)'],
+      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; about 0.6 m/s faster for each °C warmer, and about 1,450–1,500 m/s in water at room temperature', SOUND, '2026-10-30'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
@@ -3237,15 +3243,15 @@ say('nothing selected to remove');
       [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the rim, from the floor, in the NBA and most leagues'],
       [/^(?:what\s+is\s+(?:the\s+|a\s+)?)?standard\s+(?:interior\s+|front\s+|exterior\s+)?door\s+(?:width|size)$/, '36 in (exterior)', 'US: front doors 36 in wide; interior doors 28–32 in; both usually 80 in tall'],
       [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', '355 ml in the US; 330 ml is common elsewhere'],
-      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses'],
-      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5-oz shots in a 750 ml bottle; about 39 in a 1.75 l handle'],
+      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses (a standard glass of wine is 5 fl oz)', DRINKS, '2026-10-30'],
+      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5 fl oz shots (a standard drink of spirits) in a 750 ml bottle; about 39 in a 1.75 l handle', DRINKS, '2026-10-30'],
       [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, 'about 48', '6-oz cups at 2 tablespoons of grounds each; stronger brewing gives fewer'],
       [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
       [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level: 198 g a cup ÷ 48 teaspoons is 4.1 g; a tablespoon is about 12.4 g', KA],
       [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g', KA],
       [/^how\s+many\s+watts\s+does\s+a\s+(?:fridge|refrigerator)\s+use$/, 'about 100–250 W running', 'a modern fridge, while the compressor runs; it cycles, so about 1–2 kWh a day in all'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; LED equivalents use about 8–10 W (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; an LED equivalent uses about 14–16 W'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; to replace a bulb, match its lumens, not its watts (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)', LUMENS, '2026-10-30'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; to replace a bulb, match its lumens, not its watts (60 W ≈ 800, 75 W ≈ 1,100)', LUMENS, '2026-10-30'],
       [/^how\s+many\s+(?:people|adults)\s+(?:per|does\s+a)\s+(?:large\s+)?pizza(?:\s+feed)?$/, '2–3 adults', 'a 14-inch large has 8 slices: about 3 slices each for adults, 2 for kids (so 4 kids)'],
       [/^how\s+much\s+(?:uncooked\s+|dry\s+)?rice\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¼–½ cup uncooked', 'about 45–90 g dry, which cooks to ¾–1½ cups; use the smaller amount for a side'],
       [/^(?:what\s+is\s+the\s+)?(?:rice\s+to\s+water|water\s+to\s+rice)\s+ratio(?:\s+for\s+(?:white\s+)?rice)?$|^how\s+much\s+water\s+(?:for|per)\s+(?:a\s+|1\s+|one\s+)?cup\s+of\s+rice$/, '1 : 2', '1 cup white rice to 2 cups water on the stove; jasmine and basmati about 1 : 1½, brown rice 1 : 2½'],
@@ -3565,12 +3571,12 @@ say('nothing selected to remove');
       // "speed of light in mph"
       m = t.match(/^(?:the\s+)?speed\s+of\s+(light|sound)\s+in\s+(mph|km\/?h|kph|m\/s|miles?\s+per\s+(?:hour|second)|km\/s)$/);
       if (m) { const ms = m[1] === 'light' ? 299792458 : 343, u = m[2]; const v = /mph|miles?\s+per\s+hour/.test(u) ? ms / 0.44704 : /miles?\s+per\s+second/.test(u) ? ms / 1609.344 : /km\/?h|kph/.test(u) ? ms * 3.6 : /km\/s/.test(u) ? ms / 1000 : ms;
-        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature' }; }
+        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature', ...(m[1] === 'sound' ? { src: [SOUND[0]], read: '2026-10-30' } : {}) }; }
       // tiny definitions with numbers
       if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
       if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
       // standard sizes and everyday quantities: fixed facts answered here, each with its usual caveat
-      for (const [re, value, note, src] of SIZE_FACTS) if (re.test(t)) return src ? { value, note, src, read: KA_READ } : { value, note };
+      for (const [re, value, note, src, read] of SIZE_FACTS) if (re.test(t)) return src ? { value, note, src, read: read || KA_READ } : { value, note };
       // paper in other units: "a4 in inches", "us letter size in mm"
       m = t.match(/^(?:what\s+(?:size|dimensions?)\s+is\s+)?(a[0-6]|us\s+letter|letter|legal|tabloid)(?:\s+(?:paper|size|sheet))*(?:\s+(?:in|to)\s+(mm|cm|inches|in))?$/);
       if (m) { const P = { a0: [841, 1189], a1: [594, 841], a2: [420, 594], a3: [297, 420], a4: [210, 297], a5: [148, 210], a6: [105, 148], letter: [215.9, 279.4], 'us letter': [215.9, 279.4], legal: [215.9, 355.6], tabloid: [279.4, 431.8] }[m[1].replace(/\s+/g, ' ')], u = m[2] || (/^a/.test(m[1]) ? 'mm' : 'in');
