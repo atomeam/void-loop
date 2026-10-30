@@ -7065,5 +7065,6 @@
   {"ask": "animate waves on a beach at sunset", "want": "skill:video-gen"},
   {"ask": "is it better to rent or buy a house", "want": "skill:rentbuy"},
   {"ask": "rent vs buy", "want": "skill:rentbuy"},
-  {"ask": "how heavy can my suitcase be", "want": "skill:baggage"}
+  {"ask": "how heavy can my suitcase be", "want": "skill:baggage"},
+  {"ask": "heads or tails", "want": "skill:coin"}
 ]

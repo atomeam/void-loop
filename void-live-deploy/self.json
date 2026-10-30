@@ -536,6 +536,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T19:20:50Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
+  },
+  {
+   "at": "2026-10-30T19:11:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T19:02:17Z",
+   "subject": "Incident: the browser suite failed on e28d7d21 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-30T18:59:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:58:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:51:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:50:50Z",
    "subject": "Regenerate the generated files after the merge"
   },
@@ -550,6 +574,10 @@
   {
    "at": "2026-10-30T18:39:59Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T18:39:15Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T18:37:47Z",
@@ -586,34 +614,6 @@
   {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-30T18:16:58Z",
-   "subject": "Image: \"Change it\" changes a picture Verse painted with one typed line"
-  },
-  {
-   "at": "2026-10-30T18:15:33Z",
-   "subject": "Answer a typed secret-name question from Verse's own names"
-  },
-  {
-   "at": "2026-10-30T18:15:21Z",
-   "subject": "The forge's ledger line says when a fix came from Verse's own probe, so the growth card counts it"
-  },
-  {
-   "at": "2026-10-30T18:14:34Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T18:13:36Z",
-   "subject": "Tower gate: onlineconverter.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-30T18:13:14Z",
-   "subject": "Baggage gets a daily live check against the airline pages"
-  },
-  {
-   "at": "2026-10-30T18:12:03Z",
-   "subject": "Fly stars check: sample the streak drawn for the last move"
   }
  ],
  "builders": {
