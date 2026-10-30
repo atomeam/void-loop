@@ -22,6 +22,13 @@ export function cleanPage(d) {
   };
 }
 export async function ensurePages(env) { await env.DB.prepare(PAGE_TABLE).run(); }
+// Whether the page's owner is a MultiVerse member right now (the published page shows the mark then). The account id stays here.
+export async function pageMember(env, handle, tierOf) {
+  try {
+    const row = await env.DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind(handle).first();
+    return !!row && (await tierOf(env, row.user_id)) === 'paid';
+  } catch (_) { return false; }
+}
 export async function pageOf(env, handle) {
   try {
     await ensurePages(env);
