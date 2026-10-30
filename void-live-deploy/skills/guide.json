@@ -8008,6 +8008,7 @@
     "video",
     "gamebox",
     "link",
+    "loan",
     "games",
     "coin",
     "image",
@@ -8077,7 +8078,6 @@
     "joke",
     "recipe",
     "crypto",
-    "loan",
     "savings",
     "fuel",
     "tip",
@@ -8425,38 +8425,38 @@
     },
     {
      "rank": 18,
+     "name": "loan",
+     "catches": "monthly payment on a $250000 mortgage at 6.5% for 30 years"
+    },
+    {
+     "rank": 19,
      "name": "games",
      "catches": "board games can all be combined"
     },
     {
-     "rank": 19,
+     "rank": 20,
      "name": "coin",
      "catches": "flip a coin"
     },
     {
-     "rank": 20,
+     "rank": 21,
      "name": "image",
      "catches": "show this image https://example.org/cat.png"
     },
     {
-     "rank": 21,
+     "rank": 22,
      "name": "is-it",
      "catches": "is it christmas"
     },
     {
-     "rank": 22,
+     "rank": 23,
      "name": "calc",
      "catches": "open a calculator"
     },
     {
-     "rank": 23,
+     "rank": 24,
      "name": "habit-ring",
      "catches": "habit ring for write, walk, sleep"
-    },
-    {
-     "rank": 24,
-     "name": "gauge-feedback",
-     "catches": "clean this feedback: You always miss the deadline. The login page is brilliant. "
     }
    ],
    "n": 449
@@ -8468,43 +8468,43 @@
    "rules": [
     {
      "rank": 25,
+     "name": "gauge-feedback",
+     "catches": "clean this feedback: You always miss the deadline. The login page is brilliant. "
+    },
+    {
+     "rank": 26,
      "name": "partial-answer",
      "catches": "partial answer on whether to move to Berlin"
     },
     {
-     "rank": 26,
+     "rank": 27,
      "name": "sheaf-check",
      "catches": "do my notes agree: launch: friday; owner: ana | launch: monday"
     },
     {
-     "rank": 27,
+     "rank": 28,
      "name": "spectral-review",
      "catches": "spectral review"
     },
     {
-     "rank": 28,
+     "rank": 29,
      "name": "task-diagram",
      "catches": "map my tasks a -> b, b -> c, a -> d, d -> c"
     },
     {
-     "rank": 29,
+     "rank": 30,
      "name": "guide",
      "catches": "open the book"
     },
     {
-     "rank": 30,
+     "rank": 31,
      "name": "tab",
      "catches": "put in the page"
     },
     {
-     "rank": 31,
+     "rank": 32,
      "name": "kept",
      "catches": "turn this card into a note"
-    },
-    {
-     "rank": 32,
-     "name": "list",
-     "catches": "make a list"
     }
    ],
    "n": 450
@@ -8516,43 +8516,43 @@
    "rules": [
     {
      "rank": 33,
+     "name": "list",
+     "catches": "make a list"
+    },
+    {
+     "rank": 34,
      "name": "convert",
      "catches": "unit converter"
     },
     {
-     "rank": 34,
+     "rank": 35,
      "name": "markets",
      "catches": "crypto prices"
     },
     {
-     "rank": 35,
+     "rank": 36,
      "name": "rides",
      "catches": "food and rides"
     },
     {
-     "rank": 36,
+     "rank": 37,
      "name": "social",
      "catches": "social feed"
     },
     {
-     "rank": 37,
+     "rank": 38,
      "name": "dating",
      "catches": "dating profile"
     },
     {
-     "rank": 38,
+     "rank": 39,
      "name": "task-board",
      "catches": "add task call mum friday high priority 30 min"
     },
     {
-     "rank": 39,
+     "rank": 40,
      "name": "time-math",
      "catches": "how long is a meeting from 9:30 to 11:15"
-    },
-    {
-     "rank": 40,
-     "name": "busy-blocks",
-     "catches": "busy blocks: standup 9-9:30, lunch 12-1, review 2:30-4"
     }
    ],
    "n": 451
@@ -8564,43 +8564,43 @@
    "rules": [
     {
      "rank": 41,
+     "name": "busy-blocks",
+     "catches": "busy blocks: standup 9-9:30, lunch 12-1, review 2:30-4"
+    },
+    {
+     "rank": 42,
      "name": "part",
      "catches": "summon linemote-1"
     },
     {
-     "rank": 42,
+     "rank": 43,
      "name": "figure",
      "catches": "summon motelet"
     },
     {
-     "rank": 43,
+     "rank": 44,
      "name": "together",
      "catches": "what are they doing"
     },
     {
-     "rank": 44,
+     "rank": 45,
      "name": "pong",
      "catches": "pong"
     },
     {
-     "rank": 45,
+     "rank": 46,
      "name": "snake",
      "catches": "snake"
     },
     {
-     "rank": 46,
+     "rank": 47,
      "name": "null-sweep",
      "catches": "null sweep"
     },
     {
-     "rank": 47,
+     "rank": 48,
      "name": "merge-void",
      "catches": "merge void"
-    },
-    {
-     "rank": 48,
-     "name": "dim-void",
-     "catches": "dim the void"
     }
    ],
    "n": 452
@@ -8612,43 +8612,43 @@
    "rules": [
     {
      "rank": 49,
+     "name": "dim-void",
+     "catches": "dim the void"
+    },
+    {
+     "rank": 50,
      "name": "void-breaker",
      "catches": "void breaker"
     },
     {
-     "rank": 50,
+     "rank": 51,
      "name": "arcade",
      "catches": "arcade games"
     },
     {
-     "rank": 51,
+     "rank": 52,
      "name": "wants",
      "catches": "what do you want built now"
     },
     {
-     "rank": 52,
+     "rank": 53,
      "name": "growth",
      "catches": "tester log"
     },
     {
-     "rank": 53,
+     "rank": 54,
      "name": "tower",
      "catches": "versus"
     },
     {
-     "rank": 54,
+     "rank": 55,
      "name": "quiz",
      "catches": "quiz me on this"
     },
     {
-     "rank": 55,
+     "rank": 56,
      "name": "challenge",
      "catches": "give me five minutes with this"
-    },
-    {
-     "rank": 56,
-     "name": "goal",
-     "catches": "give me a challenge with this"
     }
    ],
    "n": 453
@@ -8660,43 +8660,43 @@
    "rules": [
     {
      "rank": 57,
+     "name": "goal",
+     "catches": "give me a challenge with this"
+    },
+    {
+     "rank": 58,
      "name": "telemetry-route",
      "catches": "CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAI"
     },
     {
-     "rank": 58,
+     "rank": 59,
      "name": "intent",
      "catches": "I need to ship the product page by Friday"
     },
     {
-     "rank": 59,
+     "rank": 60,
      "name": "rts",
      "catches": "start a camp"
     },
     {
-     "rank": 60,
+     "rank": 61,
      "name": "stl-check",
      "catches": "check my stl file"
     },
     {
-     "rank": 61,
+     "rank": 62,
      "name": "forge",
      "catches": "forge history"
     },
     {
-     "rank": 62,
+     "rank": 63,
      "name": "skill-eclipse",
      "catches": "eclipse media skills until friday"
     },
     {
-     "rank": 63,
+     "rank": 64,
      "name": "ask-diff",
      "catches": "diff \"make a timer\" and \"make a focus timer for writing\""
-    },
-    {
-     "rank": 64,
-     "name": "date-calc",
-     "catches": "30 days after 2026-03-01"
     }
    ],
    "n": 454
@@ -8708,43 +8708,43 @@
    "rules": [
     {
      "rank": 65,
+     "name": "date-calc",
+     "catches": "30 days after 2026-03-01"
+    },
+    {
+     "rank": 66,
      "name": "contradiction-lamp",
      "catches": "what contradicts"
     },
     {
-     "rank": 66,
+     "rank": 67,
      "name": "date-grid",
      "catches": "empty month grid for november 2026"
     },
     {
-     "rank": 67,
+     "rank": 68,
      "name": "anneal-ambition",
      "catches": "set my ambition temperature for the podcast"
     },
     {
-     "rank": 68,
+     "rank": 69,
      "name": "make",
      "catches": "make a 3d torus"
     },
     {
-     "rank": 69,
+     "rank": 70,
      "name": "time",
      "catches": "existing skills should merge"
     },
     {
-     "rank": 70,
+     "rank": 71,
      "name": "languages",
      "catches": "most skills can be combined"
     },
     {
-     "rank": 71,
+     "rank": 72,
      "name": "rebuild-map",
      "catches": "show the map"
-    },
-    {
-     "rank": 72,
-     "name": "deps",
-     "catches": "dependency map"
     }
    ],
    "n": 455
@@ -8756,43 +8756,43 @@
    "rules": [
     {
      "rank": 73,
+     "name": "deps",
+     "catches": "dependency map"
+    },
+    {
+     "rank": 74,
      "name": "eat",
      "catches": "order food from lovebird in lakeland"
     },
     {
-     "rank": 74,
+     "rank": 75,
      "name": "sky-card",
      "catches": "where is jupiter"
     },
     {
-     "rank": 75,
+     "rank": 76,
      "name": "place",
      "catches": "map of Lisbon"
     },
     {
-     "rank": 76,
+     "rank": 77,
      "name": "define",
      "catches": "define serendipity"
     },
     {
-     "rank": 77,
+     "rank": 78,
      "name": "news",
      "catches": "news today"
     },
     {
-     "rank": 78,
+     "rank": 79,
      "name": "words",
      "catches": "synonym for happy"
     },
     {
-     "rank": 79,
+     "rank": 80,
      "name": "calc-more",
      "catches": "pixels to cm at 96 dpi"
-    },
-    {
-     "rank": 80,
-     "name": "country",
-     "catches": "france vs spain"
     }
    ],
    "n": 456
@@ -8804,38 +8804,38 @@
    "rules": [
     {
      "rank": 81,
+     "name": "country",
+     "catches": "france vs spain"
+    },
+    {
+     "rank": 82,
      "name": "grades",
      "catches": "what is my gpa A B B+ A-"
     },
     {
-     "rank": 82,
+     "rank": 83,
      "name": "distance",
      "catches": "distance from London to Paris"
     },
     {
-     "rank": 83,
+     "rank": 84,
      "name": "stage-organize",
      "catches": "put the kept cards in folder recipes"
     },
     {
-     "rank": 84,
+     "rank": 85,
      "name": "joke",
      "catches": "tell me a joke"
     },
     {
-     "rank": 85,
+     "rank": 86,
      "name": "recipe",
      "catches": "recipe for pancakes"
     },
     {
-     "rank": 86,
+     "rank": 87,
      "name": "crypto",
      "catches": "bitcoin price"
-    },
-    {
-     "rank": 87,
-     "name": "loan",
-     "catches": "monthly payment on a $250000 mortgage at 6.5% for 30 years"
     },
     {
      "rank": 88,
