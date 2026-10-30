@@ -73,8 +73,10 @@ function deployed(sha) {
   const runs = gh(`repos/${REPO}/actions/workflows/deploy.yml/runs?status=success&per_page=1`);
   const head = runs && runs.workflow_runs && runs.workflow_runs[0] && runs.workflow_runs[0].head_sha;
   if (!head) return false;
-  const c = gh(`repos/${REPO}/compare/${sha}...${head}`);
-  return c && (c.status === 'ahead' || c.status === 'identical');
+  // only the status: the whole compare of an old merge to today's deploy lists every commit and file since, past any buffer
+  // (the first replay, 2026-10-30: #1766 and #1590 failed with ENOBUFS)
+  const status = execFileSync('gh', ['api', `repos/${REPO}/compare/${sha}...${head}`, '--jq', '.status'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60e3 }).trim();
+  return status === 'ahead' || status === 'identical';
 }
 
 async function move(id, state, note, dry) {

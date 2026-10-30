@@ -5,6 +5,11 @@
 name: Team gate
 
 on:
+  # after each deploy: a handed-in job is judged once its merge is live (GitHub's cron ran an hour late on 2026-10-30, so the
+  # schedule is only the fallback)
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
   schedule:
     - cron: '7,37 * * * *'  # every 30 minutes
   workflow_dispatch:
@@ -29,6 +34,7 @@ concurrency:
 
 jobs:
   gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
