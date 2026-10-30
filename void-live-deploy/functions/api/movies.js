@@ -27,7 +27,7 @@ export async function lookup(title, year, get = getJson) {
       : { kind: 'embed', src: 'https://archive.org/embed/' + id, id, page: 'https://archive.org/details/' + id, license: 'public domain / Creative Commons, from the Internet Archive' };
   }
   const one = (v) => String(Array.isArray(v) ? v[0] : v || '');
-  const name = (i && i.title) || (w && w.title) || cleanTitle(one(a.title)), yr = (i && i.year) || (w && w.year) || cleanYear(one(a && a.year).slice(0, 4)) || year;
+  const name = (i && i.title) || (w && w.title) || (a ? cleanTitle(one(a.title)) : title), yr = (i && i.year) || (w && w.year) || cleanYear(one(a && a.year).slice(0, 4)) || year;
   const links = watchLinks(name, yr, i ? i.store : '');
   if (w) links.push({ label: 'Wikidata: the record', url: w.page });
   return {
