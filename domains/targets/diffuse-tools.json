@@ -1,0 +1,16 @@
+{
+ "site": "diffuse.tools",
+ "kind": "web widgets and code snippets: drop-in snippets (cookie notice, store locator, donations, contact button) you paste into a site, no coding needed",
+ "chosen": "2026-10-30",
+ "why": "target picked by the build queue: a small, embeddable, no-code widget collection, the kind of thing a site owner drops in by pasting a snippet. Void's notch is widgets that are alive on the stage and talk to the rest of the site, not static snippets.",
+ "source": ["https://diffuse.tools", "https://docs.diffuse.tools"],
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts.",
+ "features": [
+  { "id": "cookie-notice", "theirs": "a cookie consent notice widget you paste in, customizable without coding", "plus_one": "a consent notice that reads the site's own cookies and explains each one in plain words, and remembers the choice per visitor without a third-party script", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "store-locator", "theirs": "a store locator widget showing locations on a map", "plus_one": "a locator that also answers 'which shop has this in stock' by talking to the store's own data, and routes the visitor there by their own location", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "donations", "theirs": "a donations widget for collecting money on a site", "plus_one": "a donation box that shows what the money buys and confirms the gift back to the giver, with no platform cut hidden in the fine print", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "contact-button", "theirs": "a contact button widget", "plus_one": "a contact button that opens a real conversation on the stage, with the message kept and answered, not just a mailto", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "google-reviews", "theirs": "Google Reviews widget, coming soon", "plus_one": "reviews pulled in and answered by the site's own voice, with the bad ones shown too", "void": "none", "progress": "2026-10-30: target chosen from the build queue. Marked coming soon on their site." },
+  { "id": "instant-shop", "theirs": "Instant Shop widget, coming soon", "plus_one": "a shop that is already live on the stage, no embed, no redirect", "void": "none", "progress": "2026-10-30: target chosen from the build queue. Marked coming soon on their site." }
+ ]
+}
