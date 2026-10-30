@@ -16,6 +16,9 @@ export function loadEvents() {
 }
 const dayKey = (d) => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const pad2 = (n) => String(n).padStart(2, '0');
+/** the Calendar page on the day the wall calendar shows: the day picked, else the 1st of the month it is turned to. Pure. */
+export const pageOfDay = (y, m, sel) => { const d = sel ? fromKey(sel) : new Date(y, m, 1); return '/calendar/?d=' + d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
 const hhmm = (d) => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 
 function ensureStyle() {
@@ -90,6 +93,9 @@ export function show3d(api, focus) {
       + '<div class="src">Saved in this browser only · “clear calendar” empties it</div>';
   });
   const scene = el.querySelector('.c3d'), rig = el.querySelector('.c3d-rig'), edit = el.querySelector('.c3d-edit');
+  // the card's "Open the full Calendar page" link (lib/card-frame.js) follows the day: picked, or the month turned to
+  const aimPage = () => { if (!el || !el.dataset) return; el.dataset.page = pageOfDay(y, m, sel); const a = el.querySelector(':scope > .vc-page'); if (a) a.href = el.dataset.page; };
+  aimPage();
   if (!scene || !rig) return el;
 
   for (let i = 3; i >= 1; i--) { const p = document.createElement('div'); p.className = 'c3d-pad'; p.style.transform = 'translateZ(' + (-i * 2) + 'px) translateY(' + i * 1.5 + 'px)'; rig.appendChild(p); }
@@ -185,7 +191,7 @@ export function show3d(api, focus) {
 
   // a month turns over the rings like a real page
   function go(dir) {
-    const swap = () => { m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } sel = null; build(); };
+    const swap = () => { m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } sel = null; build(); aimPage(); };
     if (reduce) { swap(); return; }
     const t1 = performance.now(), dur = 520; let swapped = false;
     const step = (now) => {
@@ -202,6 +208,7 @@ export function show3d(api, focus) {
     if (moved) { moved = false; return; } // that was a turn, not a tap
     const c = e.target.closest('.c3d-day'); if (!c) return;
     sel = c.dataset.k;
+    aimPage();
     page.querySelectorAll('.c3d-day.sel').forEach((x) => x.classList.remove('sel')); c.classList.add('sel');
     drawEditor(); const w = edit.querySelector('.row.add .w'); if (w) w.focus({ preventScroll: true });
   });

@@ -210,3 +210,18 @@ test('a video call on an event, as Google Calendar adds one: made, kept, carried
   const inv = C.inviteLink({ ...e, invitees: ['a@b.co'] }, 'https://a-to-mind.com'); assert.match(decodeURIComponent(inv.mailto), /Video call: https:\/\/meet\.jit\.si\//);
   assert.equal(C.eventFromLink(inv.url.split('?e=')[1]).video, v);
 });
+test("the Calendar page's card opens on the day the page shows, and the card's page link follows the day back", async () => {
+  const A = await import('../void-live-deploy/lib/agenda.js');
+  const { parseCalendar } = await import('../void-live-deploy/skills/calendar.js');
+  const { pageOfDay } = await import('../void-live-deploy/skills/calendar3d.js');
+  assert.equal(A.cardAskOf('2026-12-03'), 'my calendar on 2026-12-03');
+  assert.equal(A.cardAskOf('2026-02-30'), '', 'no such day: no ask'); assert.equal(A.cardAskOf('soon'), '');
+  assert.deepEqual(parseCalendar('my calendar on 2026-12-03'), { kind: 'show', focus: '2026-12-03' });
+  assert.deepEqual(parseCalendar('my calendar'), { kind: 'show' }, 'the plain ask is as it was');
+  assert.equal(A.cardDayOf('my calendar on 2026-13-01'), '');
+  const d = A.dayOfKey('2026-12-03'); assert.equal([d.getFullYear(), d.getMonth(), d.getDate()].join(), '2026,11,3', 'a local day, not UTC midnight');
+  assert.equal(pageOfDay(2026, 11, '2026-12-3'), '/calendar/?d=2026-12-03', 'the day picked');
+  assert.equal(pageOfDay(2027, 0, null), '/calendar/?d=2027-01-01', 'a month turned to');
+  const page = fs.readFileSync(path.join(root, 'calendar', 'index.html'), 'utf8');
+  assert.match(page, /mountRelated\(\$\('related'\), '\/calendar\/'[\s\S]*?\{ card: \(\) => A\.cardAskOf\(C\.dayKey\(state\.cursor\)\) \}\)/, 'the page gives its card the day it shows');
+});

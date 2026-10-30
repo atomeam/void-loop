@@ -550,6 +550,38 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T06:22:48Z",
+   "subject": "rap: ad-libs come off the main vocal onto their own track"
+  },
+  {
+   "at": "2026-10-30T06:22:10Z",
+   "subject": "converter: Compress CBZ on the device"
+  },
+  {
+   "at": "2026-10-30T06:20:32Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T06:20:05Z",
+   "subject": "rap: the music video no longer stops at the first bar; the status line follows the performance"
+  },
+  {
+   "at": "2026-10-30T06:19:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T06:19:31Z",
+   "subject": "Calendar card opens on the day the page shows"
+  },
+  {
+   "at": "2026-10-30T06:18:59Z",
+   "subject": "converter: Compress EPUB on the device"
+  },
+  {
+   "at": "2026-10-30T06:17:33Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T06:16:52Z",
    "subject": "A stated quantity is answered with its conversion even when the model refuses"
   },
@@ -596,38 +628,6 @@
   {
    "at": "2026-10-30T06:07:42Z",
    "subject": "Emoji combos: /emoji-combos/ assimilates emojicombos.com"
-  },
-  {
-   "at": "2026-10-30T06:07:38Z",
-   "subject": "converter: Change EPUB Cover on the device"
-  },
-  {
-   "at": "2026-10-30T06:07:10Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:06:53Z",
-   "subject": "Put the visit counter back on 4 pages, and file the studios skill"
-  },
-  {
-   "at": "2026-10-30T06:02:57Z",
-   "subject": "Verse review: the page and its two deploy copies must match before a PR merges"
-  },
-  {
-   "at": "2026-10-30T06:01:19Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:01:06Z",
-   "subject": "Tower studios answer their own stage asks"
-  },
-  {
-   "at": "2026-10-30T06:01:01Z",
-   "subject": "News: swap the refused CBC feeds for CBS News"
-  },
-  {
-   "at": "2026-10-30T06:00:10Z",
-   "subject": "converter: Remove Noise from Audio on the device"
   }
  ],
  "builders": {

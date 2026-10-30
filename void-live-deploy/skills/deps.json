@@ -497,7 +497,7 @@
    "skills": 5,
    "direct": 4,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-doodle.js",
@@ -1330,7 +1330,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 6,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/rap-beat.js",
@@ -9248,7 +9248,8 @@
     "lib/video-write.js",
     "lib/rap.js",
     "lib/rap-song.js",
-    "lib/rap-beat.js"
+    "lib/rap-beat.js",
+    "lib/rap-voice.js"
    ],
    "importedBy": [
     "lib/rap-stage.js"
@@ -9263,11 +9264,11 @@
     "lib/rap-beat.js"
    ],
    "importedBy": [
-    "lib/rap-song.js"
+    "lib/rap-song.js",
+    "lib/rap-video.js"
    ],
    "reachedBy": [
     "lib/rap-stage.js",
-    "lib/rap-video.js",
     "skills/rap.js"
    ]
   },
