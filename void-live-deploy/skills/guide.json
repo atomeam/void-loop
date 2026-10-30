@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 22
+    "proven": 23
    },
    "from": 150,
    "to": 173
@@ -87,10 +87,10 @@
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 11
+    "proven": 12
    },
    "from": 174,
-   "to": 185
+   "to": 186
   },
   {
    "id": "words",
@@ -99,11 +99,11 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 1,
     "proven": 42
    },
-   "from": 186,
+   "from": 187,
    "to": 230
   },
   {
@@ -3006,8 +3006,10 @@
     "open the piano",
     "base converter"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the numbers and money it is the one a traveller is told to ask for first. Turn the page when you are done.",
+   "glow": 100,
    "n": 153
   },
   {
@@ -3362,6 +3364,7 @@
     "nutrition",
     "food",
     "eat",
+    "recipe",
     "heart",
     "breath",
     "feelings",
@@ -3491,6 +3494,23 @@
   {
    "kind": "skill",
    "chapter": "body",
+   "name": "recipe",
+   "title": "Recipe",
+   "line": "A recipe with ingredients and steps, from TheMealDB",
+   "examples": [
+    "recipe for pancakes",
+    "lasagna recipe",
+    "recipes with chicken"
+   ],
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
+   "flavor": "An old art of the body and mind, tested each day before the sun is up. Say the words below and it answers.",
+   "glow": 100,
+   "n": 182
+  },
+  {
+   "kind": "skill",
+   "chapter": "body",
    "name": "heart",
    "title": "Heart",
    "line": "Target heart rate and training zones, worked out for you",
@@ -3503,7 +3523,7 @@
    "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the body and mind. It has not failed a reader yet.",
    "glow": 100,
-   "n": 182
+   "n": 183
   },
   {
    "kind": "skill",
@@ -3518,9 +3538,9 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 real asks in the benchmark",
-   "flavor": "An old art of the body and mind, tested each day before the sun is up. Say the words below and it answers.",
+   "flavor": "Written by the hands that use it; 8 real askings stand behind this page. Say the words below and it answers.",
    "glow": 100,
-   "n": 183
+   "n": 184
   },
   {
    "kind": "skill",
@@ -3537,7 +3557,7 @@
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the body and mind, this one is trusted enough to be taught. It has not failed a reader yet.",
    "glow": 100,
-   "n": 184
+   "n": 185
   },
   {
    "kind": "skill",
@@ -3554,7 +3574,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Of the body and mind; set down here after it answered true 3 times. So it is written.",
    "glow": 100,
-   "n": 185
+   "n": 186
   },
   {
    "kind": "opener",
@@ -3582,7 +3602,6 @@
     "fact",
     "proverb",
     "magic8",
-    "recipe",
     "swaps",
     "film-metadata",
     "media-pick",
@@ -3607,7 +3626,7 @@
     "lorem",
     "study-cards"
    ],
-   "n": 186
+   "n": 187
   },
   {
    "kind": "skill",
@@ -3624,7 +3643,7 @@
    "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
    "flavor": "Keep this page; the words and the world are built on it. Ask, and see.",
    "glow": 100,
-   "n": 187
+   "n": 188
   },
   {
    "kind": "skill",
@@ -3641,7 +3660,7 @@
    "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
    "flavor": "Among the words and the world it is the one a traveller is told to ask for first. The void remembers each asking.",
    "glow": 100,
-   "n": 188
+   "n": 189
   },
   {
    "kind": "skill",
@@ -3658,7 +3677,7 @@
    "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
    "flavor": "Keep this page; the words and the world are built on it. It has not failed a reader yet.",
    "glow": 100,
-   "n": 189
+   "n": 190
   },
   {
    "kind": "skill",
@@ -3675,7 +3694,7 @@
    "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
-   "n": 190
+   "n": 191
   },
   {
    "kind": "skill",
@@ -3692,7 +3711,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up.",
    "glow": 100,
-   "n": 191
+   "n": 192
   },
   {
    "kind": "skill",
@@ -3709,7 +3728,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Turn the page when you are done.",
    "glow": 100,
-   "n": 192
+   "n": 193
   },
   {
    "kind": "skill",
@@ -3726,7 +3745,7 @@
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Keep this page; the words and the world are built on it. Turn the page when you are done.",
    "glow": 100,
-   "n": 193
+   "n": 194
   },
   {
    "kind": "skill",
@@ -3743,7 +3762,7 @@
    "why": "a self-test, 41 real asks in the benchmark",
    "flavor": "41 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
    "glow": 100,
-   "n": 194
+   "n": 195
   },
   {
    "kind": "skill",
@@ -3760,7 +3779,7 @@
    "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world.",
    "glow": 100,
-   "n": 195
+   "n": 196
   },
   {
    "kind": "skill",
@@ -3777,7 +3796,7 @@
    "why": "a self-test, 60 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 60 real askings. Ask, and see.",
    "glow": 100,
-   "n": 196
+   "n": 197
   },
   {
    "kind": "skill",
@@ -3794,7 +3813,7 @@
    "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
    "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Ask, and see.",
    "glow": 100,
-   "n": 197
+   "n": 198
   },
   {
    "kind": "skill",
@@ -3811,7 +3830,7 @@
    "why": "a self-test, 17 browser-suite mentions, 33 real asks in the benchmark",
    "flavor": "Of the words and the world; set down here after it answered true 33 times. Say the words below and it answers.",
    "glow": 100,
-   "n": 198
+   "n": 199
   },
   {
    "kind": "skill",
@@ -3828,7 +3847,7 @@
    "why": "a self-test, 11 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 11 real askings. Let the stage be the proof.",
    "glow": 100,
-   "n": 199
+   "n": 200
   },
   {
    "kind": "skill",
@@ -3845,7 +3864,7 @@
    "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "Among the words and the world it is the one a traveller is told to ask for first.",
    "glow": 100,
-   "n": 200
+   "n": 201
   },
   {
    "kind": "skill",
@@ -3858,9 +3877,11 @@
     "radio stations near me",
     "local tv stations"
    ],
-   "tier": "tested",
-   "why": "a self-test",
-   "n": 201
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "glow": 100,
+   "n": 202
   },
   {
    "kind": "skill",
@@ -3877,7 +3898,7 @@
    "why": "a self-test, 10 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 10 real askings. Let the stage be the proof.",
    "glow": 100,
-   "n": 202
+   "n": 203
   },
   {
    "kind": "skill",
@@ -3894,7 +3915,7 @@
    "why": "a self-test, 7 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. Turn the page when you are done.",
    "glow": 100,
-   "n": 203
+   "n": 204
   },
   {
    "kind": "skill",
@@ -3911,7 +3932,7 @@
    "why": "a self-test, 5 real asks in the benchmark",
    "flavor": "Not a boast but a record: 5 askings, each one answered.",
    "glow": 100,
-   "n": 204
+   "n": 205
   },
   {
    "kind": "skill",
@@ -3928,7 +3949,7 @@
    "why": "a self-test, 4 real asks in the benchmark",
    "flavor": "Of the words and the world; set down here after it answered true 4 times. It has not failed a reader yet.",
    "glow": 100,
-   "n": 205
+   "n": 206
   },
   {
    "kind": "skill",
@@ -3943,23 +3964,6 @@
    ],
    "tier": "checked",
    "why": "a self-test, 1 real ask in the benchmark",
-   "glow": 100,
-   "n": 206
-  },
-  {
-   "kind": "skill",
-   "chapter": "words",
-   "name": "recipe",
-   "title": "Recipe",
-   "line": "A recipe with ingredients and steps, from TheMealDB",
-   "examples": [
-    "recipe for pancakes",
-    "lasagna recipe",
-    "recipes with chicken"
-   ],
-   "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 10 real asks in the benchmark",
-   "flavor": "An old art of the words and the world, tested each day before the sun is up. Say the words below and it answers.",
    "glow": 100,
    "n": 207
   },
@@ -6088,7 +6092,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Let the stage be the proof.",
    "glow": 100,
    "n": 329
   },
@@ -6156,7 +6160,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Let the stage be the proof.",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
    "glow": 100,
    "n": 333
   },
@@ -6173,7 +6177,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
+   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
    "glow": 100,
    "n": 334
   },
@@ -6190,7 +6194,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. It has not failed a reader yet.",
+   "flavor": "Of the stage; set down here after it answered true 3 times. This is the page of dismissed-pile.",
    "glow": 100,
    "n": 335
   },
@@ -7723,7 +7727,7 @@
     "heart rate zones for a 40 year old"
    ],
    "owner": "heart",
-   "ownerPage": 182,
+   "ownerPage": 183,
    "n": 424
   },
   {
@@ -10584,7 +10588,7 @@
     },
     {
      "name": "Breath",
-     "page": 183
+     "page": 184
     },
     {
      "name": "Bubbles (3D)",
@@ -10808,7 +10812,7 @@
     },
     {
      "name": "Define",
-     "page": 194
+     "page": 195
     },
     {
      "name": "Dependency health",
@@ -10832,7 +10836,7 @@
     },
     {
      "name": "Digest",
-     "page": 189
+     "page": 190
     },
     {
      "name": "Dim void",
@@ -10928,7 +10932,7 @@
     },
     {
      "name": "Fact",
-     "page": 204
+     "page": 205
     },
     {
      "name": "Fakeuser",
@@ -10952,7 +10956,7 @@
     },
     {
      "name": "Feelings",
-     "page": 184
+     "page": 185
     },
     {
      "name": "Feud",
@@ -11080,7 +11084,7 @@
     },
     {
      "name": "Gh file",
-     "page": 188
+     "page": 189
     },
     {
      "name": "Go",
@@ -11136,11 +11140,11 @@
     },
     {
      "name": "Health habits",
-     "page": 185
+     "page": 186
     },
     {
      "name": "Heart",
-     "page": 182
+     "page": 183
     },
     {
      "name": "Heart (3D)",
@@ -11212,7 +11216,7 @@
     },
     {
      "name": "Joke",
-     "page": 202
+     "page": 203
     },
     {
      "name": "Kanban board",
@@ -11276,7 +11280,7 @@
     },
     {
      "name": "Local stations",
-     "page": 201
+     "page": 202
     },
     {
      "name": "Lock",
@@ -11296,7 +11300,7 @@
     },
     {
      "name": "Magic8",
-     "page": 206
+     "page": 207
     },
     {
      "name": "Magnetize",
@@ -11408,7 +11412,7 @@
     },
     {
      "name": "Movie",
-     "page": 190
+     "page": 191
     },
     {
      "name": "Music",
@@ -11436,7 +11440,7 @@
     },
     {
      "name": "News",
-     "page": 199
+     "page": 200
     },
     {
      "name": "Night ritual",
@@ -11576,7 +11580,7 @@
     },
     {
      "name": "Pick for me",
-     "page": 191
+     "page": 192
     },
     {
      "name": "Piggybank (3D)",
@@ -11592,7 +11596,7 @@
     },
     {
      "name": "Podcast search",
-     "page": 200
+     "page": 201
     },
     {
      "name": "Poker",
@@ -11640,7 +11644,7 @@
     },
     {
      "name": "Proverb",
-     "page": 205
+     "page": 206
     },
     {
      "name": "Pulse",
@@ -11672,7 +11676,7 @@
     },
     {
      "name": "Quote",
-     "page": 203
+     "page": 204
     },
     {
      "name": "Rack",
@@ -11704,7 +11708,7 @@
     },
     {
      "name": "Recipe",
-     "page": 207
+     "page": 182
     },
     {
      "name": "Recipe stack",
@@ -11728,7 +11732,7 @@
     },
     {
      "name": "Repo",
-     "page": 187
+     "page": 188
     },
     {
      "name": "Resonance mind",
@@ -11884,7 +11888,7 @@
     },
     {
      "name": "Spanish",
-     "page": 197
+     "page": 198
     },
     {
      "name": "Spectators",
@@ -12048,7 +12052,7 @@
     },
     {
      "name": "Technical context",
-     "page": 195
+     "page": 196
     },
     {
      "name": "Telemetry route",
@@ -12156,7 +12160,7 @@
     },
     {
      "name": "Translate",
-     "page": 198
+     "page": 199
     },
     {
      "name": "Trialwatch",
@@ -12204,7 +12208,7 @@
     },
     {
      "name": "Video",
-     "page": 192
+     "page": 193
     },
     {
      "name": "Video gen",
@@ -12212,7 +12216,7 @@
     },
     {
      "name": "Video play",
-     "page": 193
+     "page": 194
     },
     {
      "name": "Void (3D)",
@@ -12284,7 +12288,7 @@
     },
     {
      "name": "Words",
-     "page": 196
+     "page": 197
     },
     {
      "name": "Work",
@@ -12453,7 +12457,7 @@
   },
   {
    "name": "Breath",
-   "page": 183
+   "page": 184
   },
   {
    "name": "Bubbles (3D)",
@@ -12661,7 +12665,7 @@
   },
   {
    "name": "Define",
-   "page": 194
+   "page": 195
   },
   {
    "name": "Dependency health",
@@ -12685,7 +12689,7 @@
   },
   {
    "name": "Digest",
-   "page": 189
+   "page": 190
   },
   {
    "name": "Dim void",
@@ -12773,7 +12777,7 @@
   },
   {
    "name": "Fact",
-   "page": 204
+   "page": 205
   },
   {
    "name": "Fakeuser",
@@ -12797,7 +12801,7 @@
   },
   {
    "name": "Feelings",
-   "page": 184
+   "page": 185
   },
   {
    "name": "Feud",
@@ -12917,7 +12921,7 @@
   },
   {
    "name": "Gh file",
-   "page": 188
+   "page": 189
   },
   {
    "name": "Go",
@@ -12973,11 +12977,11 @@
   },
   {
    "name": "Health habits",
-   "page": 185
+   "page": 186
   },
   {
    "name": "Heart",
-   "page": 182
+   "page": 183
   },
   {
    "name": "Heart (3D)",
@@ -13041,7 +13045,7 @@
   },
   {
    "name": "Joke",
-   "page": 202
+   "page": 203
   },
   {
    "name": "Kanban board",
@@ -13105,7 +13109,7 @@
   },
   {
    "name": "Local stations",
-   "page": 201
+   "page": 202
   },
   {
    "name": "Lock",
@@ -13125,7 +13129,7 @@
   },
   {
    "name": "Magic8",
-   "page": 206
+   "page": 207
   },
   {
    "name": "Magnetize",
@@ -13229,7 +13233,7 @@
   },
   {
    "name": "Movie",
-   "page": 190
+   "page": 191
   },
   {
    "name": "Music",
@@ -13257,7 +13261,7 @@
   },
   {
    "name": "News",
-   "page": 199
+   "page": 200
   },
   {
    "name": "Night ritual",
@@ -13389,7 +13393,7 @@
   },
   {
    "name": "Pick for me",
-   "page": 191
+   "page": 192
   },
   {
    "name": "Piggybank (3D)",
@@ -13405,7 +13409,7 @@
   },
   {
    "name": "Podcast search",
-   "page": 200
+   "page": 201
   },
   {
    "name": "Poker",
@@ -13453,7 +13457,7 @@
   },
   {
    "name": "Proverb",
-   "page": 205
+   "page": 206
   },
   {
    "name": "Pulse",
@@ -13477,7 +13481,7 @@
   },
   {
    "name": "Quote",
-   "page": 203
+   "page": 204
   },
   {
    "name": "Rack",
@@ -13509,7 +13513,7 @@
   },
   {
    "name": "Recipe",
-   "page": 207
+   "page": 182
   },
   {
    "name": "Recipe stack",
@@ -13533,7 +13537,7 @@
   },
   {
    "name": "Repo",
-   "page": 187
+   "page": 188
   },
   {
    "name": "Resonance mind",
@@ -13681,7 +13685,7 @@
   },
   {
    "name": "Spanish",
-   "page": 197
+   "page": 198
   },
   {
    "name": "Spectators",
@@ -13837,7 +13841,7 @@
   },
   {
    "name": "Technical context",
-   "page": 195
+   "page": 196
   },
   {
    "name": "Telemetry route",
@@ -13937,7 +13941,7 @@
   },
   {
    "name": "Translate",
-   "page": 198
+   "page": 199
   },
   {
    "name": "Trialwatch",
@@ -13985,7 +13989,7 @@
   },
   {
    "name": "Video",
-   "page": 192
+   "page": 193
   },
   {
    "name": "Video gen",
@@ -13993,7 +13997,7 @@
   },
   {
    "name": "Video play",
-   "page": 193
+   "page": 194
   },
   {
    "name": "Void (3D)",
@@ -14057,7 +14061,7 @@
   },
   {
    "name": "Words",
-   "page": 196
+   "page": 197
   },
   {
    "name": "Work",
