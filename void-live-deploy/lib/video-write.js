@@ -4,7 +4,8 @@
 // edits of /lib/converter.js (cut, speed, volume, join, mix) and coded with AudioEncoder (AAC where the browser has it, else Opus).
 // /lib/video-mux.js writes the file. Pictures, a GIF, the pages of a PDF or a sound with a picture become a video the same way, with no
 // playing. Where the browser has no VideoEncoder, MediaRecorder records the playing video instead (plain conversion only), and the notes say
-// so. Browser only. Nothing is uploaded.
+// so. An AVI holds the H.264 pictures and the sound as 16-bit PCM (/lib/avi.js). Browser only. Nothing is uploaded.
+import { avi } from './avi.js';
 import { mp4, webm, webmWithDuration, avcCodecs, bitrateOf, evenSize } from './video-mux.js';
 import { cut, speed as speedOf, gain as gainOf, merge, mix } from './converter.js';
 
@@ -13,7 +14,7 @@ const supported = async (C, cfg) => { try { return !!(await C.isConfigSupported(
 const NAME = { avc1: 'H.264', vp09: 'VP9', vp8: 'VP8', av01: 'AV1', 'mp4a.40.2': 'AAC', opus: 'Opus' };
 const nameOf = (c) => NAME[c] || NAME[String(c).slice(0, 4)] || c;
 const RATE = 48000; // Opus and AAC are coded at 48 kHz
-const ISO = { mp4: 'mp4', mov: 'mp4', webm: 'webm', mkv: 'webm' }; // which writer: the ISO boxes or the Matroska elements
+const ISO = { mp4: 'mp4', mov: 'mp4', webm: 'webm', mkv: 'webm', avi: 'avi' }; // which writer: the ISO boxes, the Matroska elements or the RIFF chunks
 export const CONTAINERS = Object.keys(ISO);
 export const canEncode = () => typeof VideoEncoder === 'function' && typeof VideoFrame === 'function';
 const silence = (sec) => ({ rate: RATE, channels: [new Float32Array(Math.max(1, Math.round(sec * RATE)))], notes: [] });
@@ -25,9 +26,9 @@ export async function soundOf48(file) {
 }
 
 async function pickVideo(container, width, height, bitrate, fps) {
-  const iso = ISO[container] === 'mp4', list = iso ? [...avcCodecs(width, height, fps), 'vp09.00.41.08'] : ['vp09.00.41.08', 'vp8'];
+  const kind = ISO[container], iso = kind === 'mp4', list = kind === 'avi' ? avcCodecs(width, height, fps) : iso ? [...avcCodecs(width, height, fps), 'vp09.00.41.08'] : ['vp09.00.41.08', 'vp8'];
   for (const codec of list) { const cfg = { codec, width, height, bitrate, framerate: fps, ...(codec.startsWith('avc1') ? { avc: { format: 'avc' } } : {}) }; if (await supported(VideoEncoder, cfg)) return cfg; }
-  throw new Error('this browser cannot code ' + (iso ? 'H.264 or VP9' : 'VP9 or VP8') + ' video at ' + width + ' x ' + height + '.');
+  throw new Error('this browser cannot code ' + (kind === 'avi' ? 'H.264 (an AVI from Verse holds H.264 only)' : iso ? 'H.264 or VP9' : 'VP9 or VP8') + ' video at ' + width + ' x ' + height + '.');
 }
 async function pickAudio(container, channels) {
   if (typeof AudioEncoder !== 'function') return null;
@@ -121,6 +122,11 @@ async function encoder(container, W, H, quality, fps) {
 // the sound and the file, and the notes on both
 async function finish(container, E, sound, extraNotes, say) {
   const { video, rate } = await E.done(), secs = (video.samples[video.samples.length - 1].t + video.samples[video.samples.length - 1].d) / 1e6;
+  if (ISO[container] === 'avi') {
+    say(0.995); const a = avi(video, rate, sound), ch = sound ? Math.min(2, sound.channels.length) : 0;
+    const notes = [video.width + ' x ' + video.height + ' pixels', secs.toFixed(2) + ' s', a.pictures + ' pictures (' + a.rate.toFixed(1) + ' a second, the fixed rate an AVI has' + (a.gaps ? '; ' + a.gaps + ' held a picture for one more slot' : '') + ')', 'H.264 video', sound ? '16-bit PCM sound (' + (ch === 1 ? 'mono' : 'stereo') + ', 48 kHz), which every AVI player reads' : 'no sound'];
+    return { bytes: a.bytes, notes: [...notes, ...extraNotes], width: video.width, height: video.height, seconds: secs, frames: a.pictures };
+  }
   const acfg = sound ? await pickAudio(container, Math.min(2, sound.channels.length)) : null;
   say(0.995); const audio = acfg ? await encodeSound(sound, acfg) : null;
   const bytes = ISO[container] === 'mp4' ? mp4(video, audio, { qt: container === 'mov' }) : webm(video, audio, { mkv: container === 'mkv' });
@@ -146,7 +152,7 @@ async function frameStep(v, at) {
 }
 
 /** play one or more videos once, one after another, and code every picture shown, edited by opts. files: a File or a list of them (a merge).
- *  opts: { container: 'mp4' | 'mov' | 'webm' | 'mkv', quality, maxSide, width, rotate (0, 90, 180, 270), speed (0.25-4), from, to (seconds),
+ *  opts: { container: 'mp4' | 'mov' | 'webm' | 'mkv' | 'avi', quality, maxSide, width, rotate (0, 90, 180, 270), speed (0.25-4), from, to (seconds),
  *  blur, bright, shape ([w, h]), backdrop ('color' | 'blur' | 'picture'), backdropPic, color, over (texts and pictures), sound ('keep' |
  *  'none'), addSound ({ rate, channels }), addMode ('replace' | 'mix'), gainDb, shift (seconds the sound moves, minus: earlier), onProgress }.
  *  Returns { bytes, notes, width, height, seconds, frames }. */
