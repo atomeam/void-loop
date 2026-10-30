@@ -18,11 +18,11 @@ export function translate(root = document.body) {
   for (const e of root.querySelectorAll('[aria-label],[placeholder],[title]')) for (const a of ['aria-label', 'placeholder', 'title']) { const v = e.getAttribute(a); if (v && DE[v]) e.setAttribute(a, DE[v]); }
   if (DE[document.title]) document.title = DE[document.title];
 }
-/** the colour theme: the system's, or the one picked on this page and kept. */
+/** the colour theme: deep space, or the one picked on this page and kept. */
 export function theme(btn) {
   const set = (v) => { if (v) document.documentElement.setAttribute('data-theme', v); else document.documentElement.removeAttribute('data-theme'); };
   const saved = mem().theme; if (saved) set(saved);
-  if (btn) { const dark = () => (document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark'; btn.setAttribute('aria-pressed', String(dark())); btn.addEventListener('click', () => { const v = dark() ? 'light' : 'dark'; set(v); keep({ theme: v }); btn.setAttribute('aria-pressed', String(v === 'dark')); }); }
+  if (btn) { const dark = () => (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark'; btn.setAttribute('aria-pressed', String(dark())); btn.addEventListener('click', () => { const v = dark() ? 'light' : 'dark'; set(v); keep({ theme: v }); btn.setAttribute('aria-pressed', String(v === 'dark')); }); }
 }
 /** a link that carries the page's state; copies it (or shares it where the browser can). */
 export async function shareLink(url, title, say) {

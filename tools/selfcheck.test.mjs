@@ -19,7 +19,9 @@ test('what counts: a page that does not open stops there; errors, failed files, 
   assert.match(pageProblems({ ...fine, text: 'Verse will fight any site' })[0].why, /fight/);
   assert.equal(pageProblems({ ...fine, path: '/', toolRow: false }).length, 0, 'the stage is not a tool page');
   assert.equal(pageProblems({ ...fine, path: '/lab/x/', toolRow: false }).length, 0, 'lab pages are experiments');
+  assert.equal(pageProblems({ ...fine, path: '/fix/zapier-403-forbidden/', toolRow: false }).length, 0, 'the services pages link to each other');
   assert.equal(pageProblems({ ...fine, bg: 'rgba(0, 0, 0, 0)' }).length, 0, 'transparent is not light');
+  assert.equal(pageProblems({ ...fine, path: '/', text: '↵', controls: 4 }).length, 0, 'the front page is one box to type in: not empty');
 });
 test('luminance: white is bright, the void is dark, an unreadable colour is null', () => {
   assert.ok(luminance('rgb(255, 255, 255)') > 0.9); assert.ok(luminance('rgb(5, 5, 5)') < 0.01); assert.equal(luminance('nonsense'), null);

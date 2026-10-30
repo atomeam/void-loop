@@ -66,6 +66,7 @@ canvas.addEventListener('pointermove', e=>{
 async function initWebGPU(){
   if(!navigator.gpu){ status.textContent='No WebGPU; canvas fallback only'; return; }
   const adapter = await navigator.gpu.requestAdapter();
+  if(!adapter){ status.textContent='No WebGPU; canvas fallback only'; return; }
   device = await adapter.requestDevice();
   const format = navigator.gpu.getPreferredCanvasFormat();
   const context = canvas.getContext('webgpu');

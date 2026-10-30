@@ -1,7 +1,7 @@
 // The file and unit converter (/converter/, 2026-10-29, assimilates onlineconverter.com). Pure parts, the same in the browser and in node tests:
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
 // format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF); the sound edits (cut,
-// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4 and WEBM video (written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
+// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4, MOV, WEBM and MKV video and the video edits (run by /lib/video-write.js, written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
 // and written. Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
 // 'no' not on Verse yet. A tool is never shown as done when it is not.
@@ -14,9 +14,11 @@ const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 // ---- the catalog -------------------------------------------------------------------------------------------------------------------------
 export const CATS = Object.freeze(['Video', 'Audio', 'Image', 'Ebook', 'Document', 'Unit']);
 const NO = 'Not on Verse yet.';
-const NO_VIDEO = 'Not on Verse yet: Verse writes MP4 and WEBM video, but does not do this yet.';
 // the video formats Verse does not write, each with the reason
-const VIDEO_WHY = { '3GP': 'Not on Verse yet: Verse writes MP4 and WEBM, not 3GP (a phone format with its own sound codecs).', AVI: 'Not on Verse yet: Verse writes MP4 and WEBM, not AVI.', FLV: 'Not on Verse yet: Verse writes MP4 and WEBM, not FLV (Flash video).', MKV: 'Not on Verse yet: Verse writes MP4 and WEBM, not MKV.', MOV: 'Not on Verse yet: Verse writes MP4 and WEBM, not MOV.', WMV: 'Not on Verse yet: WMV needs Windows Media video, which no browser can code.' };
+const VIDEO_WHY = { '3GP': 'Not on Verse yet: Verse writes MP4, MOV, WEBM and MKV, not 3GP (a phone format whose usual sound codec, AMR, no browser can code).', AVI: 'Not on Verse yet: Verse writes MP4, MOV, WEBM and MKV. It has no AVI writer, and no browser plays AVI back to check one.', FLV: 'Not on Verse yet: Verse writes MP4, MOV, WEBM and MKV, not FLV (Flash video, which no browser plays now).', WMV: 'Not on Verse yet: WMV needs Windows Media video, which no browser can code.' };
+const VIDEO_OUT_NOTE = { MP4: 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.', MOV: 'Any video your browser can play becomes a MOV (H.264 video; AAC sound, or Opus where the browser has no AAC encoder, which QuickTime Player does not play), on this device. It takes as long as the video plays.', WEBM: 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.', MKV: 'Any video your browser can play becomes an MKV (VP9 video, Opus sound), on this device. It takes as long as the video plays.' };
+// a video tool: run 'video' with the edit (vop); each plays the video once, so it takes as long as the video plays
+const vid = (cat, name, vop, note, extra = {}) => tool(cat, name, 'here', { run: 'video', vop, from: 'video', note, ...extra });
 const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV or AIFF, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
@@ -24,16 +26,34 @@ const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 't
 const UNIT = (name, href) => tool('Unit', name, 'verse', { href, note: 'On the Verse unit converter.' });
 
 export const CATALOG = Object.freeze([
-  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => (f === 'MP4' || f === 'WEBM'
-    ? conv('Video', f, 'here', { to: f.toLowerCase(), from: 'video', note: f === 'MP4' ? 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.' : 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.' })
+  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => (VIDEO_OUT_NOTE[f]
+    ? conv('Video', f, 'here', { to: f.toLowerCase(), from: 'video', note: VIDEO_OUT_NOTE[f] })
     : conv('Video', f, 'no', { note: VIDEO_WHY[f] }))),
-  ...['Add Audio to Video', 'Add Background to Video', 'Add Image to Video', 'Add Text to Video', 'Add Transition to Video', 'Blur Video', 'Brighten Video', 'Change Video Speed', 'Compress Video', 'Cut Video', 'Increase Video Volume', 'Make Split Screen Video', 'Merge Video', 'Repair MP4', 'Resize Video', 'Rotate Video', 'Stabilize Video', 'Sync Audio and Video', 'Watermark Video'].map((n) => tool('Video', n, 'no', { note: NO_VIDEO })),
+  vid('Video', 'Add Audio to Video', 'add-sound', 'Puts a sound on a video, in place of its own sound or mixed with it. Pick one video and one sound.', { from: 'video+sound' }),
+  vid('Video', 'Add Background to Video', 'background', 'Puts the video on a square, tall (9:16) or wide (16:9) background: a colour, the video itself blurred, or a picture you add.', { from: 'video+picture?' }),
+  vid('Video', 'Add Image to Video', 'image', 'Puts a picture on the video, at the place, size and see-through level you pick, for all of it or from one second to another. Pick one video and one picture.', { from: 'video+picture' }),
+  vid('Video', 'Add Text to Video', 'text', 'Puts your words on the video, at the place, size and colour you pick, for all of it or from one second to another.'),
+  tool('Video', 'Add Transition to Video', 'no', { note: 'Not on Verse yet: Verse joins videos one after another (Merge Video), but does not fade one into the next yet.' }),
+  vid('Video', 'Blur Video', 'blur', 'Blurs every picture of the video by the amount you set.'),
+  vid('Video', 'Brighten Video', 'bright', 'Makes every picture of the video brighter or darker by the percent you set.'),
+  vid('Video', 'Change Video Speed', 'speed', 'Faster or slower (0.25 to 4 times). The sound changes speed too, so its pitch moves, as a tape does.'),
+  vid('Video', 'Compress Video', 'compress', 'A smaller file: a lower bit rate and, if you pick it, fewer pixels. It says how much smaller the file became.'),
+  vid('Video', 'Cut Video', 'cut', 'Keeps the video from one second to another, with its sound.'),
+  vid('Video', 'Increase Video Volume', 'gain', 'Makes the sound of a video louder or quieter by a number of decibels, with a count of clipped samples.'),
+  tool('Video', 'Make Split Screen Video', 'no', { note: 'Not on Verse yet: Verse plays and codes one video at a time, so it does not put two side by side yet.' }),
+  vid('Video', 'Merge Video', 'merge', 'Plays 2 or more videos one after another, in the order you pick them, as one video the size of the first.', { many: true }),
+  tool('Video', 'Repair MP4', 'no', { note: 'Not on Verse yet: Verse reads a video through the browser, which cannot open a broken MP4; a repair rebuilds the index from the raw data, which Verse does not do.' }),
+  vid('Video', 'Resize Video', 'resize', 'Makes the video the width you set; the height follows, so the shape stays.'),
+  vid('Video', 'Rotate Video', 'rotate', 'Turns the video 90, 180 or 270 degrees.'),
+  tool('Video', 'Stabilize Video', 'no', { note: 'Not on Verse yet: stabilizing needs motion tracking across the pictures, which Verse does not do.' }),
+  vid('Video', 'Sync Audio and Video', 'shift', 'Moves the sound earlier or later against the pictures, by the seconds you set.'),
+  vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (f === 'WAV' || f === 'AIFF'
     ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + f + ' (16-bit PCM), on this device.' })
     : conv('Audio', f, 'no', { note: ['ALAC', 'AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
   tool('Audio', 'Add Image to MP3', 'no', { note: NO }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
-  tool('Audio', 'Audio to Video', 'no', { note: NO_VIDEO }),
+  vid('Audio', 'Audio to Video', 'sound-video', 'A sound becomes a video: the picture you add (or a colour) shown for as long as the sound plays.', { from: 'sound+picture?' }),
   tool('Audio', 'Change Audio Speed', 'here', { run: 'speed', from: 'sound', note: 'Faster or slower, as a tape plays it: the pitch moves with the speed. The result is a WAV.' }),
   tool('Audio', 'Compress MP3', 'no', { note: NO }),
   tool('Audio', 'Cut MP3', 'part', { run: 'cut', from: 'sound', note: 'Cuts any sound from one second to another, MP3 included; the result is a WAV, not an MP3.' }),
@@ -41,7 +61,7 @@ export const CATALOG = Object.freeze([
   tool('Audio', 'Increase MP3 Volume', 'part', { run: 'gain', from: 'sound', note: 'Louder or quieter by a number of decibels, with a count of clipped samples; the result is a WAV, not an MP3.' }),
   tool('Audio', 'Merge Audio', 'here', { run: 'merge', from: 'sound', many: true, note: 'Plays 2 or more sounds one after another, in the order you pick them, as one WAV.' }),
   tool('Audio', 'Mix Audio', 'here', { run: 'mix', from: 'sound', many: true, note: 'Plays 2 or more sounds at the same time, as one WAV; it turns the mix down if it would clip, and says so.' }),
-  tool('Audio', 'Remove Audio from Video', 'no', { note: NO_VIDEO }),
+  vid('Audio', 'Remove Audio from Video', 'mute', 'The same video with no sound.'),
   tool('Audio', 'Remove Noise from Audio', 'no', { note: NO }),
   tool('Audio', 'Remove Silence from Audio', 'here', { run: 'silence', from: 'sound', note: 'Takes out every quiet stretch longer than you set, as a WAV, and says how much it took out.' }),
   tool('Audio', 'Repair M4A', 'no', { note: NO }),
@@ -55,8 +75,8 @@ export const CATALOG = Object.freeze([
   tool('Image', 'Compress Image', 'verse', { href: '/photos/?tab=out', note: 'On Verse photo tools, with a before and after slider and the size saved.' }),
   tool('Image', 'Cut Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
   tool('Image', 'Extract Image from Video', 'here', { run: 'frame', from: 'video', note: 'The picture at the second you set, as a PNG.' }),
-  tool('Image', 'GIF to Video', 'no', { note: NO_VIDEO }),
-  tool('Image', 'Image to Video', 'no', { note: NO_VIDEO }),
+  vid('Image', 'GIF to Video', 'gif-video', 'Every frame of an animated GIF, for its own time, as a video; see-through parts become the colour you pick.', { from: 'gif' }),
+  vid('Image', 'Image to Video', 'pictures-video', 'Shows 1 or more pictures one after another, for the seconds you set each, as a video; you can add a sound.', { from: 'picture+sound?' }),
   tool('Image', 'Merge Images', 'here', { run: 'merge-images', from: 'picture', many: true, note: 'Puts 2 or more pictures side by side or one above the other, as one PNG.' }),
   tool('Image', 'Remove Image Background', 'no', { note: NO }),
   tool('Image', 'Resize Image', 'verse', { href: '/resize-image/', note: 'On Verse: resize by pixels or by percent.' }),
@@ -70,8 +90,8 @@ export const CATALOG = Object.freeze([
   tool('Document', 'Add Image to PDF', 'here', { run: 'pdf-image', from: 'pdf+picture', note: 'Puts a picture on a page of a PDF, at the place and size you pick; the rest of the PDF stays as it was.' }),
   tool('Document', 'Compress PDF', 'verse', { href: '/pdf/?tool=compress', note: 'On Verse PDF tools.' }),
   tool('Document', 'Merge PDF', 'verse', { href: '/pdf/?tool=merge', note: 'On Verse PDF tools.' }),
-  tool('Document', 'PDF to Video', 'no', { note: NO_VIDEO }),
-  tool('Document', 'PPTX to Video', 'no', { note: NO_VIDEO }),
+  vid('Document', 'PDF to Video', 'pdf-video', 'Shows each page of a PDF for the seconds you set, as a video.', { from: 'pdf' }),
+  tool('Document', 'PPTX to Video', 'no', { note: 'Not on Verse yet: Verse cannot draw PowerPoint slides, so it cannot show them in a video.' }),
   tool('Document', 'Split PDF', 'verse', { href: '/pdf/?tool=split', note: 'On Verse PDF tools.' }),
   UNIT('Area', '/convert/?k=area'), tool('Unit', 'Currency', 'verse', { href: '/markets/?s=EURUSD', note: 'On Verse markets, at the European Central Bank rates.' }),
   UNIT('Length / Distance', '/convert/?k=length'), UNIT('Speed', '/convert/?k=speed'), UNIT('Temperature', '/convert/?k=temperature'), UNIT('Time', '/convert/?k=time'), // void-review: ok (k= names a unit kind on /convert/, not a key)
@@ -129,7 +149,7 @@ export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
   if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
   if (k === 'sound') return ['wav', 'aiff'].filter((t) => t !== x);
-  if (k === 'video') return ['mp4', 'webm', 'wav', 'aiff'].filter((t) => t !== x);
+  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -495,4 +515,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', webm: 'video/webm', wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });

@@ -84,7 +84,12 @@ const dl = (el, rows) => {
 };
 // what it did on Verse (lib/brain-route.js): its picks on the stage and the asks heard on tool pages, newest first; a lesson can be undone
 const host = window.verseBrainHost || null, didEl = $('#did');
-const breaksEl = $('#breaks'), lookBtn = $('#lookBtn');
+const breaksEl = $('#breaks'), lookBtn = $('#lookBtn'), nextEl = $('#next');
+const next = () => { // what Verse decided to do next, as its will said at the brain's last look (lib/brain-watch.js decisionOf)
+  const d = host && host.decision ? host.decision() : null; if (!nextEl) return;
+  const t = d ? (d.want ? 'Verse decided next: ' + d.want + (d.because ? ', because ' + d.because.replace(/\.$/, '') : '') + '.' : '') + (d.tower ? ' ' + d.tower + '.' : '') : '';
+  if (nextEl.textContent !== t) nextEl.textContent = t; nextEl.hidden = !t;
+};
 const breaks = () => { // the breaks that stand now, the owner's card: what is red, why, and a link to it
   if (!host || !host.breaks || !breaksEl) return; const list = host.breaks(), w = host.watchStats(), sig = JSON.stringify([list.map((b) => [b.key, b.what, b.marked]), w.reads]);
   if (breaksEl.dataset.sig === sig) return; breaksEl.dataset.sig = sig; breaksEl.dataset.n = String(list.length);
@@ -94,13 +99,13 @@ const breaks = () => { // the breaks that stand now, the owner's card: what is r
 };
 if (lookBtn) lookBtn.addEventListener('click', async () => { if (!host || !host.watchNow) return; lookBtn.disabled = true; lookBtn.textContent = 'Looking'; try { await host.watchNow(); } finally { lookBtn.disabled = false; lookBtn.textContent = 'Look now'; breaks(); did(); } });
 const did = () => {
-  breaks();
+  breaks(); next();
   if (!host || !host.actions) return; const list = host.actions(12), sig = JSON.stringify(list.map((a) => [a.id, a.outcome]));
   if (didEl.dataset.sig === sig) return; didEl.dataset.sig = sig; didEl.dataset.n = String(list.length); if (!list.length) return;
   didEl.replaceChildren(...list.map((a) => {
     const li = document.createElement('li'); li.dataset.id = a.id;
-    if (a.kind === 'watch' || a.kind === 'recovered') { // what it saw of Verse's own health (lib/brain-watch.js)
-      li.append(node('span', (a.kind === 'watch' ? 'Saw a break: ' : 'Saw it mend: ') + a.what + ', because ' + a.why + '.'));
+    if (a.kind === 'watch' || a.kind === 'recovered' || a.kind === 'decided') { // what it saw of Verse's health and decisions (lib/brain-watch.js)
+      li.append(node('span', (a.kind === 'watch' ? 'Saw a break: ' : a.kind === 'decided' ? 'Read: ' : 'Saw it mend: ') + a.what + ', because ' + a.why.replace(/\.$/, '') + '.'));
       if (/^https:\/\/github\.com\/atomeam\/void-loop\//.test(a.url || '')) { const l = node('a', ' Open'); l.href = a.url; l.rel = 'noopener'; l.target = '_blank'; li.append(l); }
       if (a.kind === 'watch') { const u = node('button', a.outcome === 'seen' ? 'Unmark' : 'Mark seen'); u.type = 'button'; u.className = 'undo'; u.setAttribute('aria-label', (a.outcome === 'seen' ? 'Unmark ' : 'Mark seen: ') + a.what); u.addEventListener('click', () => { if (a.outcome === 'seen') host.undismiss(a.id); else host.dismiss(a.id); did(); }); li.append(u); }
       return li;

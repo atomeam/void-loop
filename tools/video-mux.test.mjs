@@ -95,3 +95,12 @@ test('codecs and sizes: H.264 level by picture size, even sides, a bit rate by q
   assert.ok(bitrateOf(1280, 720, 30, 'high') > bitrateOf(1280, 720, 30, 'small'));
   assert.deepEqual(opusHeadOf(OPUS_HEAD), { channels: 2, preSkip: 312, rate: 48000, gain: 0, family: 0 });
 });
+
+test('MOV and MKV: the same boxes and elements with the QuickTime brand and the matroska doctype', () => {
+  const v = { codec: 'avc1.42e01f', width: 64, height: 64, description: AVCC, samples: [frame(0, 10, true)] };
+  const mov = mp4(v, null, { qt: true }); assert.equal(type(mov, 0), 'ftyp'); assert.equal(String.fromCharCode(...mov.subarray(8, 12)), 'qt  ');
+  assert.deepEqual(boxes(mov).map((x) => x.type), ['ftyp', 'moov', 'mdat']);
+  const mkv = webm({ codec: 'vp09.00.41.08', width: 64, height: 64, samples: [frame(0, 10, true)] }, null, { mkv: true });
+  const s = Buffer.from(mkv).toString('latin1'); assert.ok(s.includes('matroska') && !s.includes('webm'));
+  assert.ok(!Buffer.from(webm({ codec: 'vp09.00.41.08', width: 64, height: 64, samples: [frame(0, 10, true)] })).toString('latin1').includes('matroska'));
+});
