@@ -8,7 +8,7 @@ const rules = (code, lang) => ruleReview(code, lang ? { lang } : {}).findings.ma
 // asks
 for (const a of ['review my code', 'code review', 'can you review this function', 'check my python script', 'what\'s wrong with my code', 'is this query safe', 'find bugs in this', 'please review this pull request', 'be my code reviewer', 'refactor this class', 'review this code: if (x = 5) {}', 'lint this: var total = 0;', 'check my python: if x is 5: pass'])
   ok(isReviewAsk(a), 'ask should be a review: ' + a);
-for (const a of ['check my zip code', 'what is a code review', 'review the dress code', 'how do i review code', 'check the weather', 'review of the new iphone', 'morse code for sos', 'code of conduct', 'what is the area code for 212', 'audit this', 'lint this', 'check my python', 'check my bash skills'])
+for (const a of ['check my zip code', 'what is a code review', 'review the dress code', 'how do i review code', 'check the weather', 'review of the new iphone', 'morse code for sos', 'code of conduct', 'what is the area code for 212', 'audit this', 'lint this', 'check my python', 'check my bash skills', 'check my stl file', 'check my 3mf file', 'review my stl file for holes'])
   ok(!isReviewAsk(a), 'ask should not be a review: ' + a);
 ok(codeOf('review this code: if (x = 5) { go() }') === 'if (x = 5) { go() }', 'code after the colon');
 ok(codeOf('review my code\n```js\nconst a = 1;\n```') === 'const a = 1;', 'code in a fence');
