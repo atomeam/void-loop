@@ -164,6 +164,20 @@ export const JOURNEYS = {
     if (!(await p.evaluate(() => document.body.innerText.includes('Flight JFK → LHR')))) throw new Error('the calendar does not show the added flight');
     await check('the calendar added "Flight JFK → LHR"');
   },
+  'search the sports database for a match still to come and put it on the calendar (a past match gets no link)': async (p, check) => {
+    const d = new Date(Date.now() + 9 * 86400000), soon = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const ev = (id, name, date, hs, as) => ({ id, name, date, league: 'English Premier League', sport: 'Soccer', home: 'Arsenal', away: 'Chelsea', hs, as, src: 'TheSportsDB' });
+    await p.route('**/api/sportsearch?**', (r) => r.fulfill({ json: { ok: true, teams: [], events: [ev('1', 'Arsenal vs Chelsea', '2019-05-01', '3', '1'), ev('2', 'Arsenal vs Chelsea', soon, '', '')], venues: [], players: [], source: 'TheSportsDB' } }));
+    await p.goto(ORIGIN + '/sports/?q=Arsenal%20vs%20Chelsea', { waitUntil: 'load' }); await p.waitForSelector('ul.ev li a[href^="/calendar/?e="]');
+    const links = await p.locator('ul.ev li', { hasText: 'Arsenal vs Chelsea' }).evaluateAll((ls) => ls.map((l) => !!l.querySelector('a[href^="/calendar/"]')));
+    if (links.join() !== 'false,true') throw new Error('the calendar links on the two matches are ' + links.join() + ', not only on the one still to come');
+    await check('the search shows the match on ' + soon + ' with a link to the calendar, and the 2019 match without one');
+    await Promise.all([p.waitForURL(/\/calendar\/\?e=/), p.locator('ul.ev li a', { hasText: 'Add to my calendar' }).click()]); await p.waitForSelector('#invAdd', { state: 'visible' });
+    await Promise.all([p.waitForURL(/\/calendar\/\?d=/), p.locator('#invAdd').click()]);
+    if (!(await p.evaluate(() => document.body.innerText.includes('Arsenal vs Chelsea')))) throw new Error('the calendar does not show the added match');
+    if ((await p.evaluate(() => location.search)) !== '?d=' + soon + '&view=day') throw new Error('the calendar opened on ' + (await p.evaluate(() => location.search)) + ', not the day of the match');
+    await check('the sports page put "Arsenal vs Chelsea" on ' + soon + ' in the calendar');
+  },
   'open the time in Kyoto, then see the weather and the local radio and TV in Kyoto': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/time/?c=Kyoto@Asia/Tokyo', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); await check('the time page opened on Kyoto');
