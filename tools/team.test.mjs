@@ -591,7 +591,7 @@ test('next --wait waits for a job, prints it and exits, so an agent in a tool sh
       res.setHeader('content-type', 'application/json');
       const b = body ? JSON.parse(body) : {};
       if (b.do === 'here' && ++heres < 2) return res.end(JSON.stringify({ ok: true, say: 'No job waiting.' }));
-      res.end(JSON.stringify({ ok: true, job: { job: 'team-9', kind: 'site', thread: 7, ask: 'build the thing' } }));
+      res.end(JSON.stringify({ ok: true, job: { job: 'team-9', kind: 'site', thread: 7, ask: 'build the thing', brief: 'Code: https://github.com/atomeam/void-loop' } }));
     });
   });
   await new Promise((r) => srv.listen(0, '127.0.0.1', r));
@@ -599,6 +599,7 @@ test('next --wait waits for a job, prints it and exits, so an agent in a tool sh
     const r = await runAgent(['next', '--wait', '--every', '20'], { VERSE_TEAM_API: 'http://127.0.0.1:' + srv.address().port + '/api/team' });
     assert.equal(r.code, 0, r.err);
     assert.match(r.out, /Job team-9 \(site, thread 7\): build the thing/);
+    assert.match(r.out, /Code: https:\/\/github\.com\/atomeam\/void-loop/, 'it prints the brief with the job (Beam gave back 4 jobs as "no spec", 2026-10-30)');
     assert.equal(heres, 2, 'it asked again until a job came');
   } finally { srv.close(); }
 });

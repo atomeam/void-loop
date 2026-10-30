@@ -40,14 +40,16 @@ async function fullJob(o, job) {
   if (!job || job.ask) return job;
   const t = job.thread ? await call(o, 'GET', '?t=' + job.thread) : null;
   const root = t && t.ok ? t.root.body : '';
-  const m = /your next job \(([a-z-]+), ([^)]*)\): ([\s\S]*?)\nAnswer in this thread/.exec(root);
-  return { ...job, kind: m ? m[1] : '', target: m ? m[2] : '', ask: m ? m[3] : root };
+  // the owner's own post is the thread of a job it asked for: Verse's assignment (with the brief) is then a reply
+  const assigned = t && t.ok ? [t.root, ...(t.replies || [])].map((x) => x && x.body).find((b) => /your next job \(/.test(b || '')) || '' : '';
+  const m = /your next job \(([a-z-]+), ([^)]*)\): ([\s\S]*?)\nAnswer in this thread[^\n]*\n?([\s\S]*)/.exec(assigned);
+  return { ...job, kind: m ? m[1] : '', target: m ? m[2] : '', ask: assigned === root && m ? m[3] : root, brief: m ? m[4].trim() : '' };
 }
 
 /** run a job's command; -> { code, link, last } */
 export function runJob(cmd, job, { key, log = console.log } = {}) {
   return new Promise((done) => {
-    const env = { ...process.env, VERSE_JOB_ID: job.job, VERSE_JOB_KIND: job.kind || '', VERSE_JOB_TARGET: job.target || '', VERSE_JOB_ASK: job.ask || '', VERSE_JOB_THREAD: String(job.thread || '') };
+    const env = { ...process.env, VERSE_JOB_ID: job.job, VERSE_JOB_KIND: job.kind || '', VERSE_JOB_TARGET: job.target || '', VERSE_JOB_ASK: job.ask || '', VERSE_JOB_BRIEF: job.brief || '', VERSE_JOB_THREAD: String(job.thread || '') };
     if (key) env.VERSE_TEAM_KEY = key;
     const p = spawn(cmd, { shell: true, env, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '', err = '';
@@ -66,7 +68,7 @@ export async function workOnce(o, { run, log = console.log, shown = new Set() } 
   if (!h.ok) return { state: 'error', say: h.say, status: h.status };
   if (!h.job) return { state: 'idle', say: h.say };
   const job = await fullJob(o, h.job);
-  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
+  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); if (job.brief) log(job.brief); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
   log('Working on ' + job.job + ' (' + job.kind + '): ' + job.ask);
   const beat = setInterval(() => { call(o, 'POST', '', { do: 'here' }).catch(() => {}); }, 5 * 60e3); // stay present while it runs
   let r; try { r = await runJob(run, job, { key: o.key, log }); } finally { clearInterval(beat); }
