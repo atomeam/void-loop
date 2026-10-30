@@ -17,7 +17,7 @@ const img = (w, h, f) => { const data = new Uint8ClampedArray(w * h * 4); for (l
 test('the catalog: 106 tools as onlineconverter.com lists them, unique ids, the counts the page shows', () => {
   assert.equal(C.CATALOG.length, 106);
   assert.equal(new Set(C.CATALOG.map((t) => t.id)).size, 106);
-  assert.deepEqual(C.counts(), { here: 55, verse: 18, part: 9, no: 24, all: 106 });
+  assert.deepEqual(C.counts(), { here: 55, verse: 18, part: 10, no: 23, all: 106 });
   for (const t of C.CATALOG) {
     assert.ok(C.CATS.includes(t.cat), t.id + ' category'); assert.ok(['here', 'verse', 'part', 'no'].includes(t.status), t.id + ' status');
     assert.ok(t.note && t.note.length > 10, t.id + ' says why'); if (t.status === 'verse') assert.match(t.href, /^\/[a-z-]+\//, t.id + ' links the Verse page');

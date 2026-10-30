@@ -1,4 +1,4 @@
-// EPUB edits on the device (/converter/): the change of a book's cover, the merge of 2 or more books into one, and the compression of a book. Pure: no DOM; the page passes in the picture, already in the format
+// EPUB edits on the device (/converter/): the change of a book's cover, the merge of 2 or more books into one, and the compression of a book or a comic (CBZ). Pure: no DOM; the page passes in the picture, already in the format
 // the book needs, so the same code runs in node tests. A book is read with its own zip directory and written again with the mimetype first and
 // stored, as the EPUB container standard (OCF) asks. Every file the edit does not touch keeps its bytes exactly.
 import { unzip, crc32, xml } from './translate-docs.js';
@@ -31,7 +31,11 @@ export async function readBook(bytes) {
 
 /** files [{ name, data }] -> EPUB bytes: the mimetype first and stored, the rest deflated where that makes them smaller. */
 export async function writeBook(files) {
-  const order = [{ name: 'mimetype', data: te.encode('application/epub+zip') }, ...files.filter((f) => f.name !== 'mimetype')], parts = [], dir = []; let off = 0;
+  return packZip([{ name: 'mimetype', data: te.encode('application/epub+zip') }, ...files.filter((f) => f.name !== 'mimetype')]);
+}
+// files [{ name, data }] -> zip bytes in that order, each deflated where that makes it smaller (a file named mimetype is always stored)
+async function packZip(order) {
+  const parts = [], dir = []; let off = 0;
   for (const f of order) {
     const name = te.encode(f.name), data = f.data, crc = crc32(data);
     const packed = f.name === 'mimetype' || typeof CompressionStream !== 'function' ? data : await pipe(data, new CompressionStream('deflate-raw'));
@@ -208,6 +212,22 @@ export async function mergeBooks(list, title = '', now = new Date()) {
 }
 
 const pct = (x) => (x < 1 ? x.toFixed(1) : String(Math.round(x))), kb = (n) => (n < 1024 * 1024 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1024 / 1024).toFixed(1) + ' MB');
+const PIC = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
+// each JPEG, PNG or WebP picture given to shrink, the new one kept only when smaller -> { files, pics, smaller, before, after }
+async function shrinkAll(list, typeOf, shrink, side, skip = new Set()) {
+  const files = []; let pics = 0, smaller = 0, before = 0, after = 0;
+  for (const f of list) {
+    const type = typeOf(f.name) || PIC[(f.name.split('.').pop() || '').toLowerCase()];
+    if (!skip.has(f.name) && (type === 'image/jpeg' || type === 'image/png' || type === 'image/webp')) {
+      pics++; let out = null; try { out = await shrink(f.data, type, side); } catch (_) { out = null; }
+      if (out && out.length && out.length < f.data.length) { smaller++; before += f.data.length; after += out.length; files.push({ name: f.name, data: out }); continue; }
+    }
+    files.push(f);
+  }
+  return { files, pics, smaller, before, after };
+}
+const sizeNote = (a, b, same, what) => (same ? 'the ' + what + ' was already as small as Verse can make it, so it is the same file (' + kb(a) + ')' : kb(a) + ' became ' + kb(b) + ' (' + pct(100 - (100 * b) / a) + '% smaller)');
+const picNote = (p, what) => (p.pics ? (p.pics === 1 ? (p.smaller ? 'the picture was' : 'the picture was not') : (p.smaller || 'none') + ' of the ' + p.pics + ' pictures were') + ' made smaller' + (p.smaller ? ' (' + kb(p.before) + ' to ' + kb(p.after) + ')' : '') : what + ' has no JPEG, PNG or WebP pictures to make smaller');
 /** the book made smaller: every file packed again with deflate, and each JPEG, PNG or WebP picture given to `shrink(data, mediaType, maxSide)`, which
  * gives back the picture in the same type (made again, and no larger than maxSide pixels on its long side when maxSide > 0), or null. A picture is
  * changed only when the new one is smaller, and keeps its name and type, so no page or link changes. A fixed layout book places its pictures by
@@ -215,22 +235,27 @@ const pct = (x) => (x < 1 ? x.toFixed(1) : String(Math.round(x))), kb = (n) => (
 export async function compressBook(bytes, shrink, { maxSide = 0 } = {}) {
   const book = await readBook(bytes), enc = new Set(encryptedOf(book.files).map((e) => e.path));
   const fixed = /<meta\b[^>]*property\s*=\s*["']rendition:layout["'][^>]*>\s*pre-paginated\s*</.test(book.opf);
-  const typeOf = new Map(book.items.map((i) => [i.path, i.type])), files = []; let pics = 0, smaller = 0, before = 0, after = 0;
-  for (const f of book.files) {
-    const type = typeOf.get(f.name) || ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[(f.name.split('.').pop() || '').toLowerCase()];
-    if (!enc.has(f.name) && (type === 'image/jpeg' || type === 'image/png' || type === 'image/webp')) {
-      pics++; let out = null; try { out = await shrink(f.data, type, fixed ? 0 : maxSide); } catch (_) { out = null; }
-      if (out && out.length && out.length < f.data.length) { smaller++; before += f.data.length; after += out.length; files.push({ name: f.name, data: out }); continue; }
-    }
-    files.push(f);
-  }
-  let out = await writeBook(files); const same = out.length >= bytes.length; if (same) out = bytes;
-  const notes = [same ? 'the book was already as small as Verse can make it, so it is the same file (' + kb(bytes.length) + ')' : kb(bytes.length) + ' became ' + kb(out.length) + ' (' + pct(100 - (100 * out.length) / bytes.length) + '% smaller)'];
+  const typeOf = new Map(book.items.map((i) => [i.path, i.type])), p = await shrinkAll(book.files, (n) => typeOf.get(n), shrink, fixed ? 0 : maxSide, enc);
+  let out = await writeBook(p.files); const same = out.length >= bytes.length; if (same) out = bytes;
+  const notes = [sizeNote(bytes.length, out.length, same, 'book')];
   if (!same) {
-    notes.push(pics ? (pics === 1 ? (smaller ? 'the picture was' : 'the picture was not') : (smaller || 'none') + ' of the ' + pics + ' pictures were') + ' made smaller' + (smaller ? ' (' + kb(before) + ' to ' + kb(after) + ')' : '') : 'the book has no JPEG, PNG or WebP pictures to make smaller');
+    notes.push(picNote(p, 'the book'));
     notes.push('the words, pages, styles and fonts are byte for byte as they were; every file is packed again');
-    if (fixed && pics) notes.push('a fixed layout book: its pictures keep their size in pixels, so each page looks as it did');
+    if (fixed && p.pics) notes.push('a fixed layout book: its pictures keep their size in pixels, so each page looks as it did');
   }
   if (enc.size) notes.push(enc.size + ' encrypted file' + (enc.size > 1 ? 's keep their' : ' keeps its') + ' bytes');
+  return { bytes: out, notes };
+}
+
+/** a comic book archive (CBZ: a zip of page pictures) made smaller: each JPEG, PNG or WebP page given to `shrink(data, mediaType, maxSide)` as
+ * for an EPUB, kept only when smaller, under its own name and in its own place, so the pages stay in their order. Every other file (ComicInfo.xml)
+ * keeps its bytes. -> { bytes, notes } */
+export async function compressComic(bytes, shrink, { maxSide = 0 } = {}) {
+  let list; try { list = await unzip(bytes); } catch (e) { throw new Error('not a CBZ file (' + ((e && e.message) || e) + ')'); }
+  const p = await shrinkAll(list, () => '', shrink, maxSide);
+  if (!p.pics) throw new Error('no JPEG, PNG or WebP pages in this file, so it is not a comic Verse can make smaller.');
+  let out = await packZip(p.files); const same = out.length >= bytes.length; if (same) out = bytes;
+  const notes = [sizeNote(bytes.length, out.length, same, 'comic')];
+  if (!same) notes.push(picNote(p, 'the comic').replace(/picture/g, 'page'), 'the pages keep their names and their order; every other file is byte for byte as it was');
   return { bytes: out, notes };
 }
