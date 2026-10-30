@@ -2107,7 +2107,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 43,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/webauthn.js",

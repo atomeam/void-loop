@@ -550,6 +550,66 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T07:21:54Z",
+   "subject": "cards: show the answer's photo once, in the art box"
+  },
+  {
+   "at": "2026-10-30T07:21:32Z",
+   "subject": "Members perk: a shared /@name link shows that page, not the Verse home card"
+  },
+  {
+   "at": "2026-10-30T07:21:06Z",
+   "subject": "Team gate: replay merged PRs as if handed in, and read every changed file"
+  },
+  {
+   "at": "2026-10-30T07:18:41Z",
+   "subject": "markets: 24h move from yesterday's close, screener coins fall back to snapshot + Yahoo, honest sources"
+  },
+  {
+   "at": "2026-10-30T07:18:06Z",
+   "subject": "Regenerate families, deps and guide for the words asks"
+  },
+  {
+   "at": "2026-10-30T07:18:06Z",
+   "subject": "Words asks: fun facts reach the fact skill, quote of the day, jokes on a topic, 8 ball and saying phrasing"
+  },
+  {
+   "at": "2026-10-30T07:17:03Z",
+   "subject": "jobs: keep both new tests after the merge with main"
+  },
+  {
+   "at": "2026-10-30T07:16:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T07:15:35Z",
+   "subject": "jobs: an alert for all jobs links its RSS feed with no trailing ampersand"
+  },
+  {
+   "at": "2026-10-30T07:14:30Z",
+   "subject": "jobs: Track and Save buttons on cards follow the tracker and saved list"
+  },
+  {
+   "at": "2026-10-30T07:13:51Z",
+   "subject": "A published page fits a phone: every card in reach, one under the other"
+  },
+  {
+   "at": "2026-10-30T07:13:27Z",
+   "subject": "members-paid tests the merged PR; two ideas in one millisecond no longer clash"
+  },
+  {
+   "at": "2026-10-30T07:12:03Z",
+   "subject": "Keep main's /converter/, /rap/ and parity docs; this PR changes only the brain"
+  },
+  {
+   "at": "2026-10-30T07:11:33Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T07:10:59Z",
+   "subject": "Jobs: Himalayas categories read as words, not slugs"
+  },
+  {
    "at": "2026-10-30T07:10:15Z",
    "subject": "converter: 3GP writer (H.264 pictures, AAC sound where the browser codes it)"
   },
@@ -568,66 +628,6 @@
   {
    "at": "2026-10-30T07:05:13Z",
    "subject": "deps.json: the gate's test reads lib/team.js"
-  },
-  {
-   "at": "2026-10-30T07:03:24Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T07:03:04Z",
-   "subject": "Reduced motion: the 3D calendar opens at rest and holds still"
-  },
-  {
-   "at": "2026-10-30T07:01:28Z",
-   "subject": "Coin table keeps answering, Wikipedia cached at the edge, plain status card words"
-  },
-  {
-   "at": "2026-10-30T06:59:00Z",
-   "subject": "converter: AVI writer (H.264 pictures, 16-bit PCM sound)"
-  },
-  {
-   "at": "2026-10-30T06:56:27Z",
-   "subject": "Unit converter page: end its cut-off sentence; /tools/ lists a tool built twice once"
-  },
-  {
-   "at": "2026-10-30T06:56:01Z",
-   "subject": "Team gate: read the live pages at once, and time out gh"
-  },
-  {
-   "at": "2026-10-30T06:55:24Z",
-   "subject": "Team jobs are done only when the merged PR did the job"
-  },
-  {
-   "at": "2026-10-30T06:55:05Z",
-   "subject": "Copy the stage change to void.html"
-  },
-  {
-   "at": "2026-10-30T06:54:20Z",
-   "subject": "Rap: Verse listens to a track, scores its own take against it and retunes the take"
-  },
-  {
-   "at": "2026-10-30T06:53:39Z",
-   "subject": "Members: \"Built by @name\" on a member's published page"
-  },
-  {
-   "at": "2026-10-30T06:51:31Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T06:51:28Z",
-   "subject": "converter: M4A and M4R writer (AAC where the browser codes it, ALAC in the .m4a where it does not)"
-  },
-  {
-   "at": "2026-10-30T06:51:12Z",
-   "subject": "Reduced motion switch holds the stage still"
-  },
-  {
-   "at": "2026-10-30T06:50:33Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T06:46:00Z",
-   "subject": "Self-check: flag pages that look unfinished"
   }
  ],
  "builders": {
