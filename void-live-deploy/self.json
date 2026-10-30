@@ -536,8 +536,16 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T18:19:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-30T18:15:33Z",
+   "subject": "Answer a typed secret-name question from Verse's own names"
   },
   {
    "at": "2026-10-30T18:14:34Z",
@@ -606,14 +614,6 @@
   {
    "at": "2026-10-30T17:38:34Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T17:33:31Z",
-   "subject": "helper-pr: check the branch merged with main before opening a PR"
-  },
-  {
-   "at": "2026-10-30T17:31:42Z",
-   "subject": "Watch with Verse: keep a learn's notes in one batch; mark the two reviewed lines"
   }
  ],
  "builders": {
