@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1002,
+ "counted": 1004,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -983,6 +983,13 @@
    "tests": 2
   },
   {
+   "file": "lib/selfcheck.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/video.js",
    "skills": 2,
    "direct": 2,
@@ -1924,7 +1931,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 72,
    "tests": 28
   },
   {
@@ -3623,6 +3630,13 @@
    "importedBy": [
     "functions/api/report.js"
    ]
+  },
+  "functions/api/selfcheck.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/selfcheck.js"
+   ],
+   "importedBy": []
   },
   "functions/api/share/[room].js": {
    "imports": [
@@ -6420,6 +6434,7 @@
     "functions/api/routes.js",
     "functions/api/routines.js",
     "functions/api/rsvp.js",
+    "functions/api/selfcheck.js",
     "functions/api/sportsearch.js",
     "functions/api/store/[[path]].js",
     "functions/api/studies.js",
@@ -9080,6 +9095,16 @@
     "skills/toolkit.js",
     "skills/tower.js",
     "skills/walker.js"
+   ]
+  },
+  "lib/selfcheck.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/selfcheck.js",
+    "skills/status.js"
+   ],
+   "reachedBy": [
+    "skills/own-parts.js"
    ]
   },
   "lib/seo-audit.js": {
@@ -13976,7 +14001,8 @@
    "imports": [
     "lib/ask-text.js",
     "lib/autopsy.js",
-    "lib/success-pulse.js"
+    "lib/success-pulse.js",
+    "lib/selfcheck.js"
    ],
    "importedBy": [
     "skills/own-parts.js"
