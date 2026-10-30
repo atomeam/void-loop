@@ -24,3 +24,13 @@ export function markets(u) {
   return { ok: true, sym, kind: 'stock', name: sym, currency: 'USD', range: '5d', price: 201.5, change: 1.25, pct: 0.62,
     points: [[1, 198], [2, 199.4], [3, 200.1], [4, 200.25], [5, 201.5]], source: 'Stooq', delayed: true, asOf: '2026-10-29' };
 }
+
+// Open Library's title search (skills/book.js, "who wrote hamlet"): the book asked for, by the author Open Library lists for it.
+// Any other book search keeps the fixed stand-in in tools/bench.mjs. Pure.
+const BOOKS = { hamlet: ['Hamlet', 'William Shakespeare', 1603], 'pride and prejudice': ['Pride and Prejudice', 'Jane Austen', 1813], dune: ['Dune', 'Frank Herbert', 1965] };
+/** an Open Library search by title -> { docs } for a book in BOOKS, or null. Pure. */
+export function openLibrary(u) {
+  if (!/^https:\/\/openlibrary\.org\/search\.json\?/.test(u)) return null;
+  const b = BOOKS[String(new URL(u).searchParams.get('title') || '').trim().toLowerCase()];
+  return b ? { docs: [{ key: '/works/OL' + b[2] + 'W', title: b[0], author_name: [b[1]], first_publish_year: b[2] }] } : null;
+}

@@ -4,14 +4,15 @@
 //   node --test tools/bench-standins.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { wikiquote, markets } from './bench-standins.mjs';
+import { wikiquote, markets, openLibrary } from './bench-standins.mjs';
+import book from '../void-live-deploy/skills/book.js';
 import quote from '../void-live-deploy/skills/quote.js';
 import proverb from '../void-live-deploy/skills/proverb.js';
 import stocks from '../void-live-deploy/skills/stocks.js';
 
 async function run(skill, text) {
   const el = { innerHTML: '' }, real = globalThis.fetch;
-  globalThis.fetch = async (u) => { const b = wikiquote(String(u)) || markets(String(u)); return b ? { ok: true, status: 200, json: async () => b } : { ok: false, status: 204, json: async () => { throw new Error('no body'); } }; };
+  globalThis.fetch = async (u) => { const b = wikiquote(String(u)) || markets(String(u)) || openLibrary(String(u)); return b ? { ok: true, status: 200, json: async () => b } : { ok: false, status: 204, json: async () => { throw new Error('no body'); } }; };
   try {
     const got = await skill.run(text, { showPage: (f) => { f(el); return el; }, esc: (x) => String(x), _pageStill: () => true });
     return { got, html: el.innerHTML };
@@ -44,9 +45,16 @@ test('a stock ask gets a price card from the markets stand-in', async () => {
   }
 });
 
+test('"who wrote hamlet" names the author Open Library lists', async () => {
+  assert.ok(book.match('who wrote hamlet', 'who wrote hamlet'));
+  const { got, html } = await run(book, 'who wrote hamlet');
+  assert.match(String(got), /book/); assert.match(html, /William Shakespeare/);
+});
+
 test('the stand-ins answer only their own addresses', () => {
   assert.equal(wikiquote('https://en.wikipedia.org/w/api.php?action=query'), null);
   assert.equal(wikiquote('https://evil.test/?u=https://en.wikiquote.org/w/api.php?x'), null);
   assert.equal(markets('http://127.0.0.1:8080/api/answer'), null);
+  assert.equal(openLibrary('https://openlibrary.org/search.json?limit=5&q=dune'), null, 'a search not by title keeps the fixed stand-in');
   assert.equal(markets('http://127.0.0.1:8080/api/markets?s=AAPL&r=5d').sym, 'AAPL');
 });

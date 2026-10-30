@@ -23,7 +23,7 @@ import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
-import { wikiquote, markets } from './bench-standins.mjs';
+import { wikiquote, markets, openLibrary } from './bench-standins.mjs';
 // how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
 // (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
 const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
@@ -176,6 +176,7 @@ async function one(ctx, { ask: a, want, says, before }) {
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked
       return r.fulfill(json(Object.fromEntries(ids.map((id) => [id, { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 }])))); }
     if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
+    const ol = openLibrary(u); if (ol) return r.fulfill(json(ol)); // a title search answers with that book
     if (u.includes('openlibrary.org/search.json')) return r.fulfill(json({ docs: [{ key: '/works/OL1W', title: 'Kindred', author_name: ['Octavia E. Butler'], first_publish_year: 1979, subject: ['Science fiction', 'Time travel'] }, { key: '/works/OL2W', title: 'Hyperion', author_name: ['Dan Simmons'], first_publish_year: 1989, subject: ['Science fiction'] }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
