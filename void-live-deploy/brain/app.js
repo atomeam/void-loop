@@ -82,6 +82,19 @@ const dl = (el, rows) => {
   const pairs = kept.length ? kept : [['None yet', 'each organ is shown once it has a score']];
   el.replaceChildren(...pairs.map(([k, v]) => { const d = document.createElement('div'); d.append(node('dt', k), node('dd', String(v))); return d; })); // one tile a number
 };
+// what it did on Verse (lib/brain-route.js): its picks on the stage and the asks heard on tool pages, newest first; a lesson can be undone
+const host = window.verseBrainHost || null, didEl = $('#did');
+const did = () => {
+  if (!host || !host.actions) return; const list = host.actions(12), sig = JSON.stringify(list.map((a) => [a.id, a.outcome]));
+  if (didEl.dataset.sig === sig) return; didEl.dataset.sig = sig; didEl.dataset.n = String(list.length); if (!list.length) return;
+  didEl.replaceChildren(...list.map((a) => {
+    const li = document.createElement('li'); li.dataset.id = a.id;
+    li.append(node('span', a.kind === 'heard' ? 'Heard "' + a.ask + '": ' + a.why + '.' : 'For "' + a.ask + '" it ' + a.why + ' (' + a.cands.length + ' could answer).'));
+    if (a.outcome) { const o = node('span', a.outcome === 'kept' ? ' You kept it.' : a.outcome === 'left' ? ' You left it, so it learned.' : ' Lesson undone.'); o.className = a.outcome === 'kept' ? 'ok' : a.outcome === 'left' ? 'no' : ''; li.append(o); }
+    if (a.outcome === 'kept' || a.outcome === 'left') { const u = node('button', 'Undo'); u.type = 'button'; u.className = 'undo'; u.setAttribute('aria-label', 'Undo what it learned from "' + a.ask + '"'); u.addEventListener('click', () => { host.undoRoute(a.id); did(); }); li.append(u); }
+    return li;
+  }));
+};
 const liveNow = $('#liveNow'), liveGains = $('#liveGains'), says = $('#says'), pulse = $('#pulse');
 const read = () => {
   const b = th.state && th.state.b; if (!b) return;
@@ -94,7 +107,9 @@ const read = () => {
     ['Organs', b.granted.length + ' of ' + B.ORGAN_IDS.length + ' ran this tick' + (s.starved ? ' · under-used: ' + s.starved : '')],
     ['Holds', s.concepts + ' words · ' + s.episodes + ' moments · ' + s.procedures + ' genomes'],
     ['Ticks', String(b.ticks) + (size ? ' · ' + size.W + 'x' + size.H + ' at ' + size.dpr + 'x' : '')],
+    host && host.routeStats ? ['Routes', (() => { const r = host.routeStats(); return r.picks + ' picks on Verse · ' + r.changed + ' not the page\'s first · ' + r.good + ' kept · ' + r.bad + ' left'; })()] : null,
   ]);
+  did();
   const P = s.painter, G = s.grower, F = s.formula, C = s.current, R = s.grains, D = s.gardener, H = b.ear.guessed ? s.hearing : null;
   const tiles = D ? Object.values(D.classes).reduce((a, v) => a + v, 0) : 0;
   dl(liveGains, [
