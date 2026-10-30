@@ -550,18 +550,6 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T16:36:38Z",
-   "subject": "brain: the conversation orb on the brain map, whole asks and answers in its note (no ellipsis cut)"
-  },
-  {
-   "at": "2026-10-30T16:35:15Z",
-   "subject": "Read a pasted status report as a report, not a broken automation"
-  },
-  {
-   "at": "2026-10-30T16:33:19Z",
-   "subject": "Scores page: the weather at the game's ground"
-  },
-  {
    "at": "2026-10-30T16:32:55Z",
    "subject": "Spotter: 2 check(s) healed with no revert after d0f883ca9412accf1ff4900e1c34f6c97683773e (tools/flakes.json)"
   },
@@ -579,10 +567,6 @@
   },
   {
    "at": "2026-10-30T16:29:05Z",
-   "subject": "brain: organ 23, Dialogue, the conversation orb keeps this visitor's asks and Verse's answers on their device"
-  },
-  {
-   "at": "2026-10-30T16:29:05Z",
    "subject": "Open the UUID card for \"uuid generator\" and convert \"timestamp converter 1700000000\""
   },
   {
@@ -590,12 +574,12 @@
    "subject": "End a long card title at a whole sentence, never mid-word"
   },
   {
-   "at": "2026-10-30T16:28:30Z",
-   "subject": "Time page: flights to the city asked for, on the event's day when it is ahead"
-  },
-  {
    "at": "2026-10-30T16:27:43Z",
    "subject": "openapi-check: mark /api/sing as Verse's own (member-only, owner's Modal)"
+  },
+  {
+   "at": "2026-10-30T16:26:00Z",
+   "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
   },
   {
    "at": "2026-10-30T16:24:34Z",
@@ -628,6 +612,22 @@
   {
    "at": "2026-10-30T16:10:52Z",
    "subject": "Stage card: show how main stands now, not old failures"
+  },
+  {
+   "at": "2026-10-30T16:09:33Z",
+   "subject": "Time page: put the event on the calendar, and see the matches that day"
+  },
+  {
+   "at": "2026-10-30T16:07:12Z",
+   "subject": "Sports search: put a match still to come on the calendar"
+  },
+  {
+   "at": "2026-10-30T16:06:49Z",
+   "subject": "CSV to JSON both ways and a CSS minifier"
+  },
+  {
+   "at": "2026-10-30T15:59:16Z",
+   "subject": "Cite the Better Sleep Council for the bed size answers"
   }
  ],
  "builders": {

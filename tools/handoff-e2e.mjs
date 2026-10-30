@@ -82,7 +82,7 @@ export const JOURNEYS = {
     if (on.join(' ') !== 'C E G') throw new Error('the chord finder picked ' + on.join(' ') + ', not C E G');
     await check('the chord finder named C E G as C major');
   },
-  'add an invited event to the calendar, see its moment in other cities on the time page, then the weather, the flights and the matches that day, and the weather at a game\'s ground': async (p, check) => {
+  'add an invited event to the calendar, see its moment in other cities on the time page, then the weather, the flights and the matches that day, and the weather and the flights to a game\'s ground': async (p, check) => {
     const ev = { title: 'Team lunch', start: '2026-11-03T12:30', end: '2026-11-03T13:30', allDay: false, location: 'Berlin' };
     await p.goto(ORIGIN + '/calendar/?e=' + Buffer.from(JSON.stringify(ev)).toString('base64url'), { waitUntil: 'load' }); await p.waitForSelector('#invAdd', { state: 'visible' });
     await check('the calendar opened on the invite'); await p.locator('#invAdd').click(); await p.waitForSelector('#detTime');
@@ -120,7 +120,7 @@ export const JOURNEYS = {
     if ((await p.locator('#date').inputValue()) !== soon) throw new Error('the scores page opened on "' + (await p.locator('#date').inputValue()) + '", not ' + soon);
     await check('the scores page opened on the matches of ' + soon);
     // and back: a game that has not started goes on Verse's own calendar at its kick-off in this device's zone
-    await p.route('**/api/scores?**', (r) => r.fulfill({ json: { ok: true, game: { id: 'g1', state: 'pre', start: soon + 'T15:00:00Z', venue: 'Emirates Stadium', city: 'London', home: { name: 'Arsenal', short: 'ARS', score: '' }, away: { name: 'Chelsea', short: 'CHE', score: '' } }, events: [], last5: [], h2h: [], plays: [], stats: [], lineups: [], players: [] } }));
+    await p.route('**/api/scores?**', (r) => r.fulfill({ json: { ok: true, game: { id: 'g1', state: 'pre', start: soon + 'T15:00:00Z', venue: 'Emirates Stadium', city: 'London', country: 'England', home: { name: 'Arsenal', short: 'ARS', score: '' }, away: { name: 'Chelsea', short: 'CHE', score: '' } }, events: [], last5: [], h2h: [], plays: [], stats: [], lineups: [], players: [] } }));
     await p.goto(ORIGIN + '/scores/?league=epl&game=g1', { waitUntil: 'load' }); await p.waitForSelector('#vtime');
     await Promise.all([p.waitForURL(/\/time\/\?at=/), p.locator('#vtime').click()]); await p.waitForSelector('#event:not([hidden])');
     if (!(await p.locator('#evwhen').textContent()).includes('3:00 PM UTC')) throw new Error('the time page showed "' + (await p.locator('#evwhen').textContent()) + '", not the kick-off at 15:00 UTC');
@@ -135,6 +135,12 @@ export const JOURNEYS = {
     await Promise.all([p.waitForURL(/\/weather\/\?place=London$/), p.locator('#vwx').click()]); await p.waitForSelector('#q');
     if ((await p.locator('#q').inputValue()) !== 'London') throw new Error('the weather page opened on "' + (await p.locator('#q').inputValue()) + '", not London');
     await check('the weather page opened on London, the town of the Emirates Stadium');
+    // and flights there on the day of the game: the flights page finds London's airport for "London United Kingdom"
+    await p.goto(ORIGIN + '/scores/?league=epl&game=g1', { waitUntil: 'load' }); await p.waitForSelector('#vfly');
+    await Promise.all([p.waitForURL(/\/flights\/\?toq=/), p.locator('#vfly').click()]); await p.waitForFunction(() => document.documentElement.dataset.flightsReady === '1');
+    await p.waitForFunction(() => new URLSearchParams(location.search).get('to') === 'LHR', null, { timeout: 10000 }).catch(() => {});
+    const fl = new URL(p.url()); if (fl.searchParams.get('to') !== 'LHR' || (await p.locator('#f-d').inputValue()) !== soon) throw new Error('the flights page opened on to=' + fl.searchParams.get('to') + ', ' + (await p.locator('#f-d').inputValue()) + ', not LHR on ' + soon);
+    await check('the flights page opened on flights to LHR on the day of the game, ' + soon);
   },
   'work out a flight, see its landing in both cities on the time page, the weather, the local radio and TV and the remote jobs where it lands (and fly back there from it), and add it to the calendar': async (p, check) => {
     const open = () => p.goto(ORIGIN + '/flights/?from=JFK&to=LHR&d=2026-11-20&t=19:00', { waitUntil: 'load' }).then(() => p.waitForSelector('#fa-time'));
