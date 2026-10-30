@@ -50,3 +50,39 @@ test('not an MP3, or a cover that is not JPEG or PNG: a plain error', () => {
   assert.throws(() => M.addCover(new TextEncoder().encode('hello there, this is text'), JPG, 'image/jpeg'), /not an MP3/);
   assert.throws(() => M.addCover(frames(2), JPG, 'image/gif'), /JPEG or a PNG/);
 });
+
+test('with no LAME tag, a cut keeps whole frames, from the frame that holds the start to the frame that holds the end, and the ID3 tag', () => {
+  const tag = M.writeTag([text('TIT2', 'Song')], 3), mp3 = cat(tag, frames(100));
+  // 1152 samples at 44.1 kHz is 26.12 ms a frame: frames 38 to 76 hold 1 s to 2 s
+  const r = M.cutMp3(mp3, 1, 2), m = M.framesOf(r.bytes);
+  assert.equal(m.frames.length, 39); assert.equal(M.readTag(r.bytes).frames[0].id, 'TIT2');
+  assert.equal(r.from, 38 * 1152 / 44100); assert.equal(r.to, 77 * 1152 / 44100);
+  assert.match(r.notes.join(' '), /39 of 100 MP3 frames/); assert.match(r.notes.join(' '), /not coded again: the file has no LAME tag/);
+  assert.throws(() => M.cutMp3(mp3, 3, 2), /end must be after the start/);
+  assert.equal(M.framesOf(M.cutMp3(mp3, 0, '').bytes).frames.length, 100, 'no end: to the end');
+});
+
+test('a frame whose sound starts before the cut is made quiet; it keeps the bytes the decoder holds, and its body, for the frames after it', () => {
+  const mp3 = frames(100);
+  // frame 38 says its sound starts 100 bytes back (main_data_begin, 9 bits), in frame 37, which the cut takes away
+  mp3[38 * 417 + 4] = 100 >> 1; mp3[38 * 417 + 5] = (100 & 1) << 7; mp3[38 * 417 + 300] = 9;
+  mp3[39 * 417 + 4] = 50 >> 1; // frame 39 reaches 50 bytes back, into frame 38's body, which the cut keeps
+  const r = M.cutMp3(mp3, 1, 2), out = M.framesOf(r.bytes).frames, at = out[0].at;
+  assert.equal(r.bytes[at + 4], 0, 'the first frame is quiet, and has no bytes before it'); assert.equal(r.bytes[at + 300], 9, 'its body stays');
+  assert.equal(r.bytes[out[1].at + 4], 50 >> 1, 'the second frame finds its sound, so it is not touched');
+  assert.match(r.notes.join(' '), /about \d+ ms at the start are quiet or faint/);
+});
+
+test('with a LAME tag the cut is exact to the sample: frames more at the start, and a new start delay and end padding for the player to skip', () => {
+  const info = new Uint8Array(417); info.set([0xff, 0xfb, 0x90, 0x00]); info.set(new TextEncoder().encode('Info'), 36); info.set([0, 0, 0, 15, 0, 0, 0, 100], 40);
+  const lame = 36 + 8 + 4 + 4 + 100 + 4; info.set(new TextEncoder().encode('LAME'), lame);
+  info[lame + 21] = 576 >> 4; info[lame + 22] = (576 & 15) << 4; // delay 576, padding 0, at bytes 21 to 23 of the LAME tag
+  const src = cat(info, frames(100)), m = M.framesOf(src);
+  assert.equal(m.xing.id, 'Info'); assert.equal(m.xing.delay, 576); assert.equal(m.frames.length, 100);
+  // 1 s is sample 44100, and 44100 + 576 + 529 = 45205 of the frames: frame 39, and 3 frames before it for the decoder to fill up
+  const r = M.cutMp3(src, 1, 2), o = M.framesOf(r.bytes);
+  assert.equal(r.from, 1); assert.equal(r.to, 2);
+  assert.equal(o.frames.length, 78 - 36); assert.equal(o.xing.frames, o.frames.length);
+  assert.equal(o.xing.delay, 45205 - 36 * 1152 - 529); assert.equal(o.xing.padding, 78 * 1152 + 529 - (88200 + 1105));
+  assert.match(r.notes.join(' '), /exact to the sample/);
+});

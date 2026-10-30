@@ -58,7 +58,7 @@ export const CATALOG = Object.freeze([
   vid('Audio', 'Audio to Video', 'sound-video', 'A sound becomes a video: the picture you add (or a colour) shown for as long as the sound plays.', { from: 'sound+picture?' }),
   tool('Audio', 'Change Audio Speed', 'here', { run: 'speed', from: 'sound', note: 'Faster or slower, as a tape plays it: the pitch moves with the speed. The result is a WAV.' }),
   tool('Audio', 'Compress MP3', 'no', { note: NO }),
-  tool('Audio', 'Cut MP3', 'part', { run: 'cut', from: 'sound', note: 'Cuts any sound from one second to another, MP3 included; the result is a WAV, not an MP3.' }),
+  tool('Audio', 'Cut MP3', 'here', { run: 'cut', from: 'sound', note: 'Keeps an MP3 from one second to another, and the result is an MP3. The sound is not coded again, so it loses nothing; with the LAME tag most MP3s have, the cut is exact to the sample, and with none it is on the frame lines, 26 ms apart. The tag (title, artist, cover) stays. Any other sound is cut too, and saved as the format you pick.' }),
   tool('Audio', 'Extract Audio from Video', 'here', { run: 'extract-audio', from: 'video', note: 'The sound of a video your browser can play, as a WAV.' }),
   tool('Audio', 'Increase MP3 Volume', 'part', { run: 'gain', from: 'sound', note: 'Louder or quieter by a number of decibels, with a count of clipped samples; the result is a WAV, not an MP3.' }),
   tool('Audio', 'Merge Audio', 'here', { run: 'merge', from: 'sound', many: true, note: 'Plays 2 or more sounds one after another, in the order you pick them, as one WAV.' }),
