@@ -1,17 +1,15 @@
 # STL checker (/stl/): design and test plan
 
 Asked by Verse: "Create a browser-based utility to check the watertightness of STL print files."
-Design and test plan only. The ask stays held behind the current Versus target (sycophanthex.com)
-in `void.asks.json`, so the page is not on main. The built page waits on branch `asks/stl-check`
-and ships when the hold lifts.
+Held behind sycophanthex.com until that target was unpinned; the owner said ship it on 2026-10-30.
 
 ## Pieces
 
 | Piece | File | What it does |
 | --- | --- | --- |
-| The check | `asks/stl-check:void-live-deploy/lib/stl-check.js` | Pure module, no DOM and no network. It parses an STL file, welds the corners, counts every edge and returns a report object, a verdict line and a mended copy. |
-| The page | `asks/stl-check:void-live-deploy/stl/index.html`, `stl/app.js` | Drop or pick a file, view the report and the 3D preview, copy or download the report, download a mended copy. |
-| The stage card | `asks/stl-check:void-live-deploy/skills/stl-check.js` | "check my stl file", "is my stl watertight". A file box that runs the same check inline, plus links to /stl/. |
+| The check | `void-live-deploy/lib/stl-check.js` | Pure module, no DOM and no network. It parses an STL file, welds the corners, counts every edge and returns a report object, a verdict line and a mended copy. |
+| The page | `void-live-deploy/stl/index.html`, `stl/app.js` | Drop or pick a file, view the report and the 3D preview, copy or download the report, download a mended copy. |
+| The stage card | `void-live-deploy/skills/stl-check.js` | "check my stl file", "is my stl watertight". A file box that runs the same check inline, plus links to /stl/. |
 | Hand-off | forge card's "Check this STL" link | Opens `/stl/?forge=<key>`, the same file that the forge's Print it downloads. The page also takes `?sample=cube|hole|flipped`, `?src=/same-site/path.stl` and `?tol=`. |
 
 ## What it checks
@@ -69,7 +67,7 @@ flat 2D projection with the same colours.
 
 ## Tests that prove each check
 
-`asks/stl-check:tools/stl-check.test.mjs` (node:test, 11 tests). Every test builds a real mesh, breaks it in one way, and asserts that the report
+`tools/stl-check.test.mjs` (node:test, 11 tests). Every test builds a real mesh, breaks it in one way, and asserts that the report
 names exactly that break:
 
 | Check | Test | Asserts |
@@ -84,7 +82,7 @@ names exactly that break:
 | Bad files | empty file, binary cut to 5 faces | "empty" verdict; "cut short" problem with 5 faces read |
 | Agreement with the forge | forge vase and rocket via `forge-rules.js` | no open edges, nothing flipped, outward, same volume as `printCheck`, and open + non-manifold equals the model's own count of edges not shared by exactly two faces |
 | Report | hole sample | the text starts with the file name and the verdict, and lists every number and "not uploaded"; the JSON has no mesh |
-| Stage skill and routing | `asks/stl-check:skills/stl-check.js`, `lib/toolkit.js` | matches the checker asks, leaves "download the stl", "print it", "make me a vase" and others alone; `routeAsk` sends them to /stl/ |
+| Stage skill and routing | `skills/stl-check.js`, `lib/toolkit.js` | matches the checker asks, leaves "download the stl", "print it", "make me a vase" and others alone; `routeAsk` sends them to /stl/ |
 
 In-browser, `tools/real-pages.mjs` spec `/stl/` (run by `checks.mjs` with Chrome) does the following:
 
@@ -104,5 +102,5 @@ In-browser, `tools/real-pages.mjs` spec `/stl/` (run by `checks.mjs` with Chrome
 - Filling a hole with a fan suits small, roughly flat holes. A large ragged hole gets a closed but crude patch.
 - Found while building: the forge's `printCheck` counts a mesh as closed when under 0.1% of its edges are bad. The forge's rocket (1),
   bottle (2), snowman (20) and well (47) carry non-manifold edges that /stl/ names.
-- The Versus floor 'stl check' (against iamrapid.com's repair tool, parity 93% in `asks/stl-check:docs/PARITY/iamrapid.com.md`) has no probe yet, so
+- The Versus floor 'stl check' (against iamrapid.com's repair tool, parity 93% in `docs/PARITY/iamrapid.com.md`) has no probe yet, so
   it is unmeasured.

@@ -59,7 +59,7 @@ async function runTopic(topic, api) {
   });
 }
 export function isNews(text) {
-  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?(?:\s+today)?)|what\s+is\s+in\s+the\s+news(?:\s+today)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?)(?:\s+today|\s+now|\s+right\s+now)?|what\s+is\s+in\s+the\s+news(?:\s+today|\s+now|\s+right\s+now)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 async function run(text, api) {
   if (isTechNews(text)) return runTech(api);

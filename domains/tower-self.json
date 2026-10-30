@@ -158,15 +158,18 @@
   },
   "notepad-plus-plus.org": {
    "at": "2026-10-26T22:52:20Z",
-   "outcome": "no-family",
-   "why": "no floor does its job (The website is a software download page for a specific desktop text editor, whereas Verse provides web-based tools. The closest functional t)",
+   "outcome": "assimilated",
+   "family": "text editor",
+   "id": "text editor: notepad-plus-plus.org",
+   "page": "/text-editor/notepad-plus-plus/",
    "title": "Notepad++"
   },
   "font.im": {
    "at": "2026-10-26T22:52:28Z",
    "outcome": "no-family",
    "why": "no floor does its job (The website provides a way to browse, preview, and get embed codes for Google Fonts, but Verse does not have a font library, typography tool)",
-   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts"
+   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts",
+   "family": "typography"
   },
   "processchecker.com": {
    "at": "2026-10-26T22:52:33Z",
@@ -176,6 +179,12 @@
   },
   "uptimer.dev": {
    "at": "2026-10-26T22:52:43Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Uptimer.dev"
+  },
+  "uptimer.dev": {
+   "at": "2026-10-30T00:00:00Z",
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "Uptimer.dev"

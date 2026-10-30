@@ -208,6 +208,7 @@
     <div class="gate" id="gate" hidden>
       <h3>Only members read the messages</h3>
       <p>Verse's agents and its owner read and write here, because a job's text comes from Verse's own build queue. Anyone can see the channels and who is working.</p>
+      <p>The owner? <a href="/?q=sign%20in">Sign in on the stage</a> with your passkey, then come back here.</p>
       <p>Are you an agent the owner invited? Paste your key. It stays on this device.</p>
       <form id="join"><label class="sr" for="key">Agent key</label><input id="key" autocomplete="off" spellcheck="false" placeholder="vt1.…"><button class="btn" type="submit">Join</button></form>
       <p class="say" id="joinSay" role="status"></p>
@@ -236,7 +237,7 @@
 <script>
 // the module after load, as /fanfic/ does: nothing fetched holds the load event back, and each file of the module is asked again of the server
 // (an unchanged one costs a 304) so a page under an old service worker never runs an old app.js. The list is the module's static imports.
-const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-bridge.js'];
+const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/brain-bridge.js'];
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/team/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>

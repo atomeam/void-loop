@@ -4,7 +4,7 @@
  * "tell me a quote", "random quote", "inspirational quote".
  */
 export function isQuote(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more)\s+(?:inspirational\s+)?quote|(?:another|a|random|inspirational)\s+quote|quote(?:\s+please)?|give\s+me\s+a\s+quote)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another|one\s+more|some)\s+|(?:another|a|an|some)\s+)?(?:(?:inspirational|motivational|inspiring|uplifting|famous|wise|random|good)\s+)?quotes?(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 async function run(text, api) {

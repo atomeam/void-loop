@@ -2006,12 +2006,12 @@
   },
   {
     "ask": "42 in binary",
-    "want": "calc",
-    "says": "101010"
+    "want": "calc|skill:baseconv",
+    "says": "101010|0010 1010"
   },
   {
     "ask": "convert 255 to hex",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "\\bff\\b|0xff"
   },
   {
@@ -2595,7 +2595,7 @@
   },
   {
     "ask": "tell me a fun fact",
-    "want": "said|answer|skill:joke"
+    "want": "said|answer|skill:joke|skill:fact"
   },
   {
     "ask": "motivate me",
@@ -2995,12 +2995,12 @@
   },
   {
     "ask": "what is 255 in binary",
-    "want": "calc",
-    "says": "11111111"
+    "want": "calc|skill:baseconv",
+    "says": "11111111|1111 1111"
   },
   {
     "ask": "what is 0xff in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "255"
   },
   {
@@ -3968,7 +3968,7 @@
   },
   {
     "ask": "what is 101010 in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "42"
   },
   {
@@ -4632,8 +4632,8 @@
   {"ask": "what is the gcd of 48 and 180", "want": "calc", "says": "12"},
   {"ask": "lcm of 6 and 8", "want": "calc", "says": "24"},
   {"ask": "roman numerals for 2026", "want": "calc", "says": "MMXXVI"},
-  {"ask": "what is 1010 in binary to decimal", "want": "calc", "says": "\\b10\\b"},
-  {"ask": "255 in hex", "want": "calc", "says": "FF|ff"},
+  {"ask": "what is 1010 in binary to decimal", "want": "calc|skill:baseconv", "says": "\\b10\\b"},
+  {"ask": "255 in hex", "want": "calc|skill:baseconv", "says": "FF|ff"},
   {"ask": "review this python: except: pass", "want": "review", "says": "hides every error|silently|bare"},
   {"ask": "is this code safe? eval(userInput)", "want": "review", "says": "runs text as code"},
   {"ask": "review this sql: DELETE FROM users;", "want": "review", "says": "every row"},
@@ -5586,10 +5586,10 @@
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
   {"ask": "what's for sale", "want": "skill:services"},
-  {"ask": "pricing", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "price list", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "pricing", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "price list", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "how much is void", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "give me five minutes with this", "want": "skill:challenge"},
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
@@ -6083,8 +6083,8 @@
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
-  {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "how much is verse", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does verse cost", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "what is verse", "want": "self|speaks|what"},
   {"ask": "make my verse dark", "want": "skill:dark-look"},
   {"ask": "what did verse get wrong", "want": "skill:make"},
@@ -6721,13 +6721,13 @@
   {"ask": "memory preview", "want": "skill:memory-preview"},
   {"ask": "show my memory snippets", "want": "skill:memory-preview"},
   {"ask": "what memories do I have", "want": "skill:memory-preview"},
-  {"ask": "hide the sky", "want": "skill:night-sky"},
+  {"ask": "hide the sky", "want": "skill:night-sky|skill:nightsky"},
   {"ask": "morning routine as calendar events", "want": "skill:ritual-template"},
   {"ask": "export my evening routine to my calendar", "want": "skill:ritual-template"},
   {"ask": "ritual template: meditate 10, stretch 15, journal 10 at 6:30am", "want": "skill:ritual-template"},
-  {"ask": "where is jupiter", "want": "skill:sky-card"},
-  {"ask": "where is the moon tonight", "want": "skill:sky-card"},
-  {"ask": "is venus up", "want": "skill:sky-card"},
+  {"ask": "where is jupiter", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "where is the moon tonight", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "is venus up", "want": "skill:sky-card|skill:skycard"},
   {"ask": "mind field", "want": "skill:doodle-mind"},
   {"ask": "show me the mind field", "want": "skill:doodle-mind"},
   {"ask": "living field", "want": "skill:doodle-mind"},
@@ -6931,5 +6931,19 @@
   {"ask": "play hangman", "want": "skill:hangman"},
   {"ask": "start hangman", "want": "skill:hangman"},
   {"ask": "should I go", "want": "skill:yesno"},
-  {"ask": "yesno", "want": "skill:yesno"}
+  {"ask": "yesno", "want": "skill:yesno"},
+  {"ask": "set the stage to a retro server room", "want": "skill:backdrop"},
+  {"ask": "stage: an atmospheric study", "want": "skill:backdrop"},
+  {"ask": "check my stl file", "want": "skill:stl-check"},
+  {"ask": "is my stl watertight", "want": "skill:stl-check"},
+  {"ask": "stl checker", "want": "skill:stl-check"},
+  {"ask": "whats in the news today", "want": "skill:news"},
+  {"ask": "what is in the news right now", "want": "skill:news"},
+  {"ask": "give me a motivational quote", "want": "skill:quote"},
+  {"ask": "famous quotes", "want": "skill:quote"},
+  {"ask": "what can i make with chicken and rice", "want": "skill:recipe"},
+  {"ask": "good movies to watch tonight", "want": "skill:media-pick|skill:movie"},
+  {"ask": "what should i watch on netflix", "want": "skill:media-pick|skill:movie|skill:show"},
+  {"ask": "convert hello to morse code", "want": "skill:morse"},
+  {"ask": "magic 8 ball will i pass my test", "want": "skill:magic8"}
 ]

@@ -3,6 +3,7 @@
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
+import { wrongWeakest, weakestSentence, weakestNote } from './weakest.js';
 
 const day = (t) => String(t || '').slice(0, 10);
 // the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
@@ -106,7 +107,11 @@ export function sourceNote(entry, field) {
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
-export function selfSections(v, now = Date.now()) {
+// the least proven family is the bars' (lib/weakest.js): a stored readout that named another family shows the bars' sentence, and its own words under it
+const weakText = (d, fam) => { const w = wrongWeakest(d.weakest, fam); return w ? weakestSentence(w.is) : sentence(d.weakest); };
+const weakSource = (d, fam) => { const said = d.weakest_said || (wrongWeakest(d.weakest, fam) ? d.weakest : '');
+  return said ? 'Source: the family bars (skills/families.json). The model wrote "' + sentence(said) + '", which the bars contradict, so the bars\' count is shown.' : (sourceNote(d, 'weakest') || GROW_SOURCE.weakest); };
+export function selfSections(v, now = Date.now(), fam = null) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
@@ -119,11 +124,13 @@ export function selfSections(v, now = Date.now()) {
   const LABEL = 'Written by ' + label + ' from these facts. Kept word for word; it is a readout, not a felt state.';
   out.push({ id: 'words', title: '', log: false, blocks: (voice ? [{ t: 'quote', text: voice, cite: LABEL }] : [{ t: 'note', text: LABEL }])
     .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
+    // the words stay as written; a claim about the least proven family that the bars contradict says so under them (owner's review, 2026-10-30)
+    .concat(voice && wrongWeakest(voice, fam) ? [{ t: 'note', text: weakestNote(wrongWeakest(voice, fam)), tight: true }] : [])
     .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? sentence(daily[k]) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? weakText(daily, fam) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: k === 'weakest' ? weakSource(daily, fam) : (sourceNote(daily, k) || GROW_SOURCE[k]), tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
@@ -270,7 +277,7 @@ export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null
   // "What got built (2 of 5 asks)" hid what each ask became (its details) with nothing to open
   const f = v && v.follow, left = f && Array.isArray(f.recent) ? f.recent.filter((r) => !lead.has(buildKey(r))) : null;
   const rest = left ? { ...v, follow: { ...f, recent: left.length ? left : f.recent } } : v;
-  const r = noRepeats([since].concat(selfSections(rest, now)), seen);
+  const r = noRepeats([since].concat(selfSections(rest, now, fam)), seen);
   return { sections: r.sections, shown: r.shown };
 }
 const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');

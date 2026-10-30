@@ -166,3 +166,51 @@ test('the team chat card on the stage (skills/team-chat.js): takes the team-chat
   assert.equal(t.waiting, 4); assert.equal(t.busy, 1);
   assert.deepEqual(teamLines(null), { agents: [], channels: [], waiting: 0, busy: 0 }, 'an answer that is not the workspace shows nothing made up');
 });
+
+test('the owner is an account: the owner account\'s signed-in session is the owner here; any other account is not let in', async () => {
+  const env = world(); const sid = async (t) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('void-session:' + t)))].map((x) => x.toString(16).padStart(2, '0')).join('');
+  env.DB.raw.exec('CREATE TABLE void_sessions (id TEXT PRIMARY KEY, user_id TEXT, expires INTEGER); CREATE TABLE void_passkeys (id TEXT PRIMARY KEY, user_id TEXT); CREATE TABLE void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT)');
+  const OWNS = 'o'.repeat(43), OTHER = 'm'.repeat(43), LAPSED = 'x'.repeat(43); // secret-scan: ok (test session tokens)
+  const later = Date.now() + 864e5;
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(OWNS), 'u-owner', later);
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(OTHER), 'u-other', later);
+  env.DB.raw.prepare('INSERT INTO void_sessions VALUES (?, ?, ?)').run(await sid(LAPSED), 'u-owner', Date.now() - 1);
+  env.DB.raw.exec("INSERT INTO void_passkeys VALUES ('pk-owner-phone', 'u-owner'), ('pk-owner-laptop', 'u-owner'), ('pk-other', 'u-other'); INSERT INTO void_owner_passkeys VALUES ('pk-owner-phone', '2026-10-14')");
+  assert.deepEqual((await get(env, '?me', OWNS)).me, { kind: 'owner', name: 'Owner' }, 'the owner account signed in on any of its passkeys');
+  const other = await get(env, '?me', OTHER);
+  assert.equal(other.me, null); assert.equal(other.signedIn, true, 'the page can say signed in, but not as the owner');
+  assert.equal((await get(env, '?c=work', OTHER)).status, 401, 'another account reads no message');
+  assert.equal((await API.onRequestPost({ env, request: req('POST', '', { do: 'invite', name: 'Rogue' }, OTHER), now: T0 })).status, 401, 'and invites no one');
+  assert.equal((await get(env, '?me', LAPSED)).me, null, 'a session past its end is nobody');
+  assert.equal((await API.onRequestPost({ env, request: req('POST', '', { do: 'invite', name: 'Scout' }, OWNS), now: T0 })).status, 201, 'the owner account invites');
+});
+
+test('the owner asks for work in #work: the post goes on the build queue and an agent is handed it in that same thread', async () => {
+  const env = world([]);
+  const inv = await post(env, { do: 'invite', name: 'Scout' }, OWNER);
+  assert.equal((await post(env, { do: 'here' }, inv.key)).state, 'idle', 'nothing queued yet');
+  const ask = await post(env, { do: 'post', c: 'work', body: 'add a moon phase to /weather/' }, OWNER, T0 + 1000);
+  assert.equal(ask.status, 201); assert.equal(ask.job, 'team-' + ask.id);
+  const q = job(env, ask.job);
+  assert.deepEqual([q.ask, q.target, q.state], ['add a moon phase to /weather/', 'feature:team-' + ask.id, 'queued']);
+  assert.equal((await post(env, { do: 'post', c: 'general', body: 'just chat' }, OWNER, T0 + 1100)).job, undefined, 'only #work');
+  assert.equal((await post(env, { do: 'post', c: 'work', thread: ask.id, body: 'and keep it small' }, OWNER, T0 + 1200)).job, undefined, 'a reply is not a new job');
+  assert.equal(env.DB.raw.prepare('SELECT COUNT(*) AS n FROM void_queue').get().n, 1);
+  const agentPost = await post(env, { do: 'post', c: 'work', body: 'an agent talking' }, inv.key, T0 + 3000);
+  assert.equal(agentPost.job, undefined, 'an agent\'s post is never a job');
+
+  const here = await post(env, { do: 'here' }, inv.key, T0 + 5000);
+  assert.equal(here.job.job, ask.job); assert.equal(here.job.thread, ask.id, 'handed out in the owner\'s own thread');
+  const th = await get(env, '?t=' + ask.id, OWNER, T0 + 6000);
+  assert.equal(th.root.body, 'add a moon phase to /weather/');
+  assert.match(th.replies[0].body, /^On the build queue/); assert.match(th.replies.at(-1).body, /^@Scout your next job \(feature/);
+  await post(env, { do: 'done', ok: true, link: 'https://github.com/atomeam/void-loop/pull/9998' }, inv.key, T0 + 9000);
+  assert.equal(job(env, ask.job).state, 'done');
+  assert.match((await get(env, '?t=' + ask.id, OWNER, T0 + 9500)).replies.at(-1).body, /^Done\. https:\/\/github\.com/);
+
+  const long = await post(env, { do: 'post', c: 'work', body: 'x'.repeat(600) }, OWNER, T0 + 10000);
+  assert.ok(job(env, long.job).ask.length <= 200 && job(env, long.job).ask.endsWith('(the whole ask: #work thread ' + long.id + ')'), 'the queue keeps its 200 character ask; the thread keeps the rest');
+  const bare = world(); bare.DB.raw.exec('DROP TABLE void_queue');
+  assert.equal((await post(bare, { do: 'post', c: 'work', body: 'no queue here' }, OWNER)).job, undefined, 'no build queue, no job, and the post still goes');
+});
+

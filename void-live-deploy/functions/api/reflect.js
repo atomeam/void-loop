@@ -10,6 +10,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
+import { wrongWeakest, weakestSentence } from '../../lib/weakest.js';
 import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
 import { tower, towerArgs } from '../../lib/tower.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
@@ -43,7 +44,8 @@ export async function onRequestPost({ request, env }) {
   const question = questionFor(kind, shipped);
   const facts = await readSelf(env, new URL(request.url).origin);
   const before = await readVoice(env);
-  const pieces = [['domains/ (the self canon, the growth inbox) and the skills index, through lib/self-context.js', selfFacts(facts)]]; // includes its games, its miniatures and what it said about itself last time
+  // the family facts go in once, under their own tag (skills/families.json below); selfFacts still corrects its last readout with them
+  const pieces = [['domains/ (the self canon, the growth inbox) and the skills index, through lib/self-context.js', selfFacts(facts).split('\n').filter((l) => !/^My skill families /.test(l)).join('\n')]]; // includes its games, its miniatures and what it said about itself last time
   // its last week, from the growth ledger (daily), and what became of what it asked for (every time): an ask counts as built
   // only on evidence (lib/voice.js followThrough). A ledger or link file that cannot be read leaves that line out.
   const asset = async (path) => { try { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? await r.json() : null; } catch (_) { return null; } };
@@ -56,7 +58,7 @@ export async function onRequestPost({ request, env }) {
     // the asks held behind it (void.asks.json `held`) are named, so the reflection does not ask for them again while the target stands
     const hd = tf ? (answered && Array.isArray(answered.held) ? answered.held : []).filter((h) => h && h.until === tg.id && typeof h.words === 'string').map((h) => '"' + h.words + '"') : [];
     if (tf) pieces.unshift(['tower.target.json, void.asks.json held and the tower ranking (lib/tower.js)', tf + (hd.length ? ' These asks wait until ' + tg.id + ' is beaten, so do not ask for them now: ' + hd.join(', ') + '.' : '')]); } catch (_) { /* no tower */ }
-  const fams = familyFacts(await asset('/skills/families.json')); if (fams) pieces.push(['skills/families.json', fams]);
+  const famJson = facts.families || await asset('/skills/families.json'), fams = familyFacts(famJson); if (fams) pieces.push(['skills/families.json', fams]);
   // what its owner told it when it spoke before (functions/api/voice-reply.js): its memory of the conversation, corrections first
   const told = replyFacts(await readReplies(env)); if (told) pieces.push(['the owner\'s replies and corrections (voice-replies)', told]);
   const { text: context, sources } = taggedFacts(pieces);
@@ -84,6 +86,10 @@ export async function onRequestPost({ request, env }) {
     }
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
+  // the least proven family is the one the bars mark, never the model's guess (owner's review, 2026-10-30: the readout said Games, 34 of 37,
+  // the bars Words and the world, 38 of 42): a weakest that names the wrong family is replaced by the bars' sentence, its words kept beside it
+  const ww = kind === 'daily' && wrongWeakest(said.weakest, famJson);
+  if (ww) said = { ...said, weakest: weakestSentence(ww.is), weakest_said: said.weakest };
   const at = new Date().toISOString();
   const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), sources, by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }

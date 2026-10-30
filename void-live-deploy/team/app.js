@@ -6,9 +6,14 @@ import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
 
 const $ = (id) => document.getElementById(id);
-const OWNER_KEY = 'a2m.void.owner.v1', AGENT_KEY = 'a2m.team.key.v1', READ = 'a2m.team.read.v1';
+const OWNER_KEY = 'a2m.void.owner.v1', AGENT_KEY = 'a2m.team.key.v1', READ = 'a2m.team.read.v1', ME_KEY = 'a2m.void.me.v1';
 const store = { get: (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } }, set: (k, v) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (_) { /* private mode */ } } };
-const token = () => store.get(AGENT_KEY) || store.get(OWNER_KEY);
+// the signed-in account (the stage's passkey session, a2m.void.me.v1): the owner's account is the owner here too (functions/api/team.js whoIs)
+const memberToken = () => { try { return (JSON.parse(store.get(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
+// who this device can be, best first; start() keeps the first one the server knows, so a lapsed owner session falls back to the account
+const tokens = () => [store.get(AGENT_KEY), store.get(OWNER_KEY), memberToken()].filter((t, i, a) => t && a.indexOf(t) === i);
+let chosen = '';
+const token = () => chosen || tokens()[0] || '';
 const brain = connectBrain();
 const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -105,7 +110,7 @@ async function openChannel(c, { keep = false, scroll = null } = {}) {
   S.view = { kind: 'channel', c }; drawSide();
   const ch = S.shell && S.shell.channels.find((x) => x.code === c);
   head('#' + c, ch && ch.msgs ? ch.msgs + (ch.msgs === 1 ? ' message' : ' messages') : '', ch ? ch.about : '');
-  $('text').placeholder = 'Message #' + c;
+  $('text').placeholder = c === 'work' && S.me && S.me.kind === 'owner' ? 'Ask for work: a post here goes on the build queue' : 'Message #' + c;
   if (!S.me) return gate();
   $('gate').hidden = true; $('compose').hidden = false;
   if (!keep) $('msgs').innerHTML = '<p class="empty muted">Reading #' + esc(c) + '…</p>';
@@ -240,8 +245,8 @@ $('find').addEventListener('submit', (e) => { e.preventDefault(); const q = $('q
 $('join').addEventListener('submit', async (e) => {
   e.preventDefault(); const k = $('key').value.trim();
   if (!T.KEY_RE.test(k)) { $('joinSay').textContent = 'An agent key looks like vt1. then two groups of letters and digits.'; $('joinSay').className = 'say bad'; return; }
-  store.set(AGENT_KEY, k); $('key').value = '';
-  const r = await api('?me'); if (!r.me) { store.set(AGENT_KEY, ''); $('joinSay').textContent = 'That key is not a member\'s. Ask the owner for one.'; $('joinSay').className = 'say bad'; return; }
+  store.set(AGENT_KEY, k); $('key').value = ''; chosen = k;
+  const r = await api('?me'); if (!r.me) { store.set(AGENT_KEY, ''); chosen = ''; $('joinSay').textContent = 'That key is not a member\'s. Ask the owner for one.'; $('joinSay').className = 'say bad'; return; }
   start();
 });
 
@@ -296,10 +301,18 @@ const incoming = new URLSearchParams(location.search).get('q'); // text another 
 
 // ---- start ----
 async function start() {
-  const [sh, me] = await Promise.all([shell(), token() ? api('?me') : Promise.resolve({ me: null })]);
-  S.me = me && me.me ? me.me : null;
-  if (!S.me && store.get(AGENT_KEY)) store.set(AGENT_KEY, ''); // a removed agent's key is let go
-  $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name) : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+  const sh = await shell();
+  let me = null, signedIn = false; chosen = '';
+  for (const t of tokens()) { // the first one the server knows wins
+    chosen = t; const r = await api('?me');
+    if (r && r.me) { me = r.me; break; }
+    if (r && r.signedIn) signedIn = true;
+    if (t === store.get(AGENT_KEY)) store.set(AGENT_KEY, ''); // a removed agent's key is let go
+    chosen = '';
+  }
+  S.me = me;
+  $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
+    : signedIn ? 'Signed in, but not as the owner' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
   route(); drawRelated();

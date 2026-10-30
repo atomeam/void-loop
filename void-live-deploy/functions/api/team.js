@@ -11,6 +11,7 @@
 //     remove {name}                     the owner: an agent leaves (its job goes back to the queue)
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
+//                                       (the owner's post at the top of #work is a job on the build queue, feature:team-<id>, handed out in its thread)
 //     react {id, emoji}                 add or take back a reaction (the closed list in lib/team.js EMOJI)
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
 //     next                              an agent asks for its next job now
@@ -27,6 +28,8 @@
 //     at a time, claimed in one statement so two agents never hold the same job; a job of an agent away 30 minutes goes back to the queue.
 // Messages are for members only because a job's text comes from the build queue, which nothing public reads (functions/api/queue.js).
 import { ownerOk } from '../../lib/guard.js';
+import { session } from '../../lib/void-me.js';
+import { ownerAccount } from './support.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 
@@ -66,7 +69,13 @@ export async function whoIs(request, env) {
     if (a && !a.off && sameHex(await keyHash(env, m[2]), a.key)) return { kind: 'agent', agent: a };
     return null;
   }
-  return (await ownerOk(request, env)) ? { kind: 'owner' } : null;
+  if (await ownerOk(request, env)) return { kind: 'owner' };
+  // the owner is an account (functions/api/passkey.js ownerFor, functions/api/support.js payer): a signed-in session of the account whose
+  // passkey was bound as the owner's is the owner here too, so an owner session that ran out does not leave the owner reading as a visitor
+  // (owner, 2026-10-30: "it says reading as a visitor it should know im the owner im signed in")
+  const s = await session(request, env).catch(() => null);
+  if (s && await ownerAccount(env, s.userId)) return { kind: 'owner' };
+  return s ? { kind: 'member' } : null;
 }
 const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
 
@@ -113,11 +122,24 @@ export async function handOut(env, a, now) {
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
-    const thread = await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
+    const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by = 'owner'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
+    const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
+    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's own post is the job's thread
     await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
     return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, thread };
   }
   return null;
+}
+// the owner's post at the top of #work is a job: it goes on the build queue as a feature, and Verse hands it out in that same thread
+async function enqueue(env, msg, body, now) {
+  const open = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE id LIKE 'team-%' AND state IN ('queued', 'building')").first().catch(() => null);
+  if (!open) return null; // no build queue in this workspace
+  if (open.n >= T.RATES.asks) return 'full';
+  const at = new Date(now).toISOString(), id = 'team-' + msg, text = T.clean(body, 1000);
+  const ask = text.length > 200 ? text.slice(0, 160).trim() + ' … (the whole ask: #work thread ' + msg + ')' : text;
+  await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:team-' + msg, 'queued', 'asked in #work by the owner', at, at).run();
+  await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, msg).run();
+  return id;
 }
 // a job goes back to the queue (given back, failed, or its agent went away); Verse says so in the job's thread
 async function giveBack(env, a, now, why, failed) {
@@ -156,8 +178,8 @@ export async function onRequestGet({ request, env, now = Date.now() }) {
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
-  const me = await whoIs(request, env);
-  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null });
+  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null;
+  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}) });
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   const { list } = await namesOf(env);
@@ -194,7 +216,7 @@ export async function onRequestPost({ request, env, now = Date.now() }) {
   await tables(env, now);
   let p; try { p = await request.json(); } catch (_) { return bad(400, 'send JSON'); }
   if (!p || typeof p !== 'object') return bad(400, 'send JSON');
-  const me = await whoIs(request, env);
+  const who = await whoIs(request, env), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
   if (!me) return bad(401, 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
@@ -242,7 +264,10 @@ export async function onRequestPost({ request, env, now = Date.now() }) {
       }
       if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
       const id = await write(env, { c, by: byOf(me), body, thread, now });
-      return json({ ok: true, id }, 201);
+      const queued = me.kind === 'owner' && c === 'work' && !thread ? await enqueue(env, id, body, now) : null;
+      if (queued === 'full') await write(env, { c, by: 'verse', body: T.RATES.asks + ' of your asks are open already, so this one is not on the build queue. It goes on when one closes and you ask again.', thread: id, now });
+      else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
+      return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}) }, 201);
     }
     case 'react': {
       const id = parseInt(p.id, 10), e = String(p.emoji || ''); if (!T.EMOJI.includes(e)) return bad(400, 'that reaction is not on the list');
