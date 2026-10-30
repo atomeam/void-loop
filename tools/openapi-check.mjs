@@ -63,6 +63,7 @@ export const INTERNAL = {
   '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",
   '/api/approval': 'the approve card, signed-in',
   '/api/aurora': "the page's aurora card",
+  '/api/joins': "the stage's community milestone card and the growth card's community line: the member count and the newest join's time, nothing else (functions/api/joins.js, lib/joins.js)",
   '/api/automations': 'automations, signed-in',
   '/api/automations/tick': 'the scheduler, owner key',
   '/api/bench': 'the benchmarks, owner key',
