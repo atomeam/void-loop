@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1022,
+ "counted": 1024,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1382,6 +1382,13 @@
    "tests": 3
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -2502,13 +2509,6 @@
    "tests": 1
   },
   {
-   "file": "lib/podcasts.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2562,7 +2562,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/translate-web.js",
@@ -2927,6 +2927,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/podcasts-card.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/progress-chart.js",
@@ -8578,10 +8585,20 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/podcasts-card.js": {
+   "imports": [
+    "skills/podcast-search.js"
+   ],
+   "importedBy": []
+  },
   "lib/podcasts.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/podcasts.js"
+    "functions/api/podcasts.js",
+    "skills/podcast-search.js"
+   ],
+   "reachedBy": [
+    "lib/podcasts-card.js"
    ]
   },
   "lib/practice.js": {
@@ -13626,6 +13643,14 @@
     "lib/stage-pack.js"
    ],
    "importedBy": []
+  },
+  "skills/podcast-search.js": {
+   "imports": [
+    "lib/podcasts.js"
+   ],
+   "importedBy": [
+    "lib/podcasts-card.js"
+   ]
   },
   "skills/podcast.js": {
    "imports": [],

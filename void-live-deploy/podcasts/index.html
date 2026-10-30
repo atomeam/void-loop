@@ -140,7 +140,7 @@
   // everything after the first paint: the page shows its box, its words and the pinned show at once; the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
     const $ = (id) => document.getElementById(id);
-    let mountRelated, P; try { [{ mountRelated }, P] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
+    let mountRelated, P, cardAsk; try { [{ mountRelated }, P, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js'), import('/lib/podcasts-card.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
     const au = $('au');
     const KEY = 'a2m.void.podcasts.v1', CACHE = 'a2m-podcast-audio-v1', MAX_EP = 150 * 1048576, MAX_ALL = 1024 * 1048576, SELF = 'https://a-to-mind.com/podcast/rss.xml';
     const h = (t, a, ...k) => { const e = document.createElement(t); for (const [n, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (n === 'class') e.className = v; else if (n === 'text') e.textContent = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else e.setAttribute(n, v === true ? '' : v); } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); } return e; };
@@ -152,7 +152,7 @@
     try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
     const save = () => { try { const keys = Object.keys(S.pos); if (keys.length > 400) for (const k of keys.sort((a, b) => (S.pos[a].u || 0) - (S.pos[b].u || 0)).slice(0, keys.length - 400)) delete S.pos[k]; localStorage.setItem(KEY, JSON.stringify(S)); } catch (_) {} };
     const say = (t, bad) => { const n = $('note'); n.textContent = t || ''; n.classList.toggle('bad', !!bad); };
-    const nav = mountRelated($('related'), '/podcasts/');
+    const nav = mountRelated($('related'), '/podcasts/', [], { card: () => cardAsk(location.search) });
     const keyOf = (show, ep) => P.hash(show.feed || show.id || 'x') + '.' + ep.id;
     const compact = (show, ep) => ({ id: ep.id, key: keyOf(show, ep), title: ep.title, audio: ep.audio, dur: ep.dur, pub: ep.pub, image: ep.image || show.image || '', notes: P.cutAt(ep.notes || '', 240), showTitle: show.title, showImage: show.image || '', feed: show.feed || '', showId: show.verse ? 'verse' : show.id || '', bytes: ep.bytes || 0, chaptersUrl: ep.chaptersUrl, transcripts: ep.transcripts, chapters: ep.chapters });
 

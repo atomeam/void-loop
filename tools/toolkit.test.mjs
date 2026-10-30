@@ -360,6 +360,20 @@ test('the time page\'s card opens on the city asked for, else the clocks on the 
   assert.match(src, /\{ card: \(\) => timeAsk\(main, places\) \}/, 'the time page gives its card the clocks open on it');
 });
 
+test('the podcasts page\'s card shows the search open there as shows on the stage, not a fixed example; that card opens Podcasts searched for the same words', async () => {
+  const { cardAsk } = await import('../void-live-deploy/lib/podcasts-card.js'), { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), { pageOfPodcasts } = await import('../void-live-deploy/skills/podcast-search.js');
+  for (const [search, ask, page] of [['?q=history', 'podcasts about history', '/podcasts/?q=history'], ['?q=true+crime', 'podcasts about true crime', '/podcasts/?q=true%20crime'], ['?q=%20serial%20%20killers%20', 'podcasts about serial killers', '/podcasts/?q=serial%20killers']]) {
+    assert.equal(cardAsk(search), ask, search);
+    assert.equal(await firstSkill(ask), 'podcast-search', ask + ' reaches the podcast search');
+    assert.deepEqual(pageOfCard('podcast-search', pageOfPodcasts(ask.slice(15))), [page, 'Podcasts'], 'its card opens Podcasts searched: ' + ask);
+  }
+  for (const search of ['', '?id=123', '?feed=https%3A%2F%2Fa.example%2Ff', '?show=verse&ep=ep1', '?q=x', '?q=' + 'a'.repeat(41), '?q=%3F%3F', undefined]) assert.equal(cardAsk(search), '', 'the example ask stays: ' + search);
+  assert.equal(CARD_ASK['/podcasts/'], 'podcasts about history'); assert.equal(await firstSkill(CARD_ASK['/podcasts/']), 'podcast-search', 'the example ask has a card on the stage too');
+  assert.deepEqual(pageOfCard('podcast-search', ''), ['/podcasts/', 'Podcasts']);
+  const pg = fs.readFileSync(new URL('../void-live-deploy/podcasts/index.html', import.meta.url), 'utf8');
+  assert.ok(pg.includes("{ card: () => cardAsk(location.search) }"), 'the page asks for its own card, from its address');
+});
+
 test('the base converter\'s card opens on the number typed there, in the base it was typed in, not 255', async () => {
   const B = await import('../void-live-deploy/lib/baseconv.js');
   const cases = [['ff', 16, 'ff hex to decimal'], ['1111 0000', 2, '11110000 binary to decimal'], ['777', 8, '777 octal to decimal'], ['4096', 10, '4096 decimal to binary'], ['0xBEEF', 16, 'beef hex to decimal']];
