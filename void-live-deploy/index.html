@@ -3235,6 +3235,11 @@ say('nothing selected to remove');
     const RICE_SERVE = [RICE[0], ['MSU Extension: serving sizes (MyPlate)', 'https://www.montana.edu/extension/buyeatlivebetter/other_nep_resources/fact_sheets/servingsizes/Factsheet_Serving_Sizes_.pdf']];
     const COFFEE = [['National Coffee Association: drip coffee', 'https://www.aboutcoffee.org/brewing/drip-coffee/']];
     const MEAT = [['CSU Extension: holiday meat safety', 'https://extension.colostate.edu/resource/holiday-meat-safety/']];
+    // sports sizes, each from the rule that sets it, read 2026-10-30
+    const NFL_FIELD = [['NFL rulebook, Rule 1 (2024)', 'https://operations.nfl.com/media/24emxacq/2024-nfl-rulebook.pdf']];
+    const IFAB_FIELD = [['IFAB Laws of the Game, Law 1: the field of play', 'https://www.theifab.com/laws/latest/the-field-of-play/']];
+    const POOL = [['WA Government sports dimensions guide: swimming', 'https://dlgsc.wa.gov.au/sport-and-recreation/sports-dimensions-guide/swimming'], ['AP (via KSAT): Paris pool depth and the World Aquatics minimum', 'https://www.ksat.com/sports/2024/07/31/no-world-records-have-been-set-at-the-olympic-pool-is-it-too-shallow/']];
+    const HOOP = [['NBA rulebook, Rule 1: court dimensions and equipment', 'https://official.nba.com/rule-no-1-court-dimensions-equipment'], ['FIBA official basketball rules 2026: equipment', 'https://assets.fiba.basketball/image/upload/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf']];
     const SIZE_FACTS = [
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
       [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
@@ -3244,10 +3249,10 @@ say('nothing selected to remove');
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?twin(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '38 × 75 in', 'a US twin mattress (97 × 191 cm); twin XL is 38 × 80 in'],
-      [/^how\s+(?:big|large)\s+is\s+(?:an?\s+)?(?:american\s+)?football\s+field(?:\s+in\s+acres)?$/, 'about 1.32 acres', '360 × 160 ft with the end zones (57,600 sq ft); 1.1 acres without them'],
-      [/^how\s+(?:big|large)\s+is\s+a\s+soccer\s+(?:field|pitch)(?:\s+in\s+acres)?$/, 'about 1.76 acres', 'a typical 105 × 68 m pitch; FIFA allows a range'],
-      [/^how\s+(?:long|big)\s+is\s+an?\s+olympic(?:\s+swimming)?\s+pool$/, '50 m long', '25 m wide, at least 2 m deep; about 2,500,000 liters'],
-      [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the rim, from the floor, in the NBA and most leagues'],
+      [/^how\s+(?:big|large)\s+is\s+(?:an?\s+)?(?:american\s+)?football\s+field(?:\s+in\s+acres)?$/, 'about 1.32 acres', '360 × 160 ft by the NFL rule, with the two 10-yard end zones (57,600 sq ft); about 1.1 acres for the 300 ft between the goal lines', NFL_FIELD, '2026-10-30'],
+      [/^how\s+(?:big|large)\s+is\s+a\s+soccer\s+(?:field|pitch)(?:\s+in\s+acres)?$/, 'about 1.6–2.0 acres', '100–110 × 64–75 m for international matches by Law 1 (a 105 × 68 m pitch is about 1.76 acres); other matches may be 90–120 m long and 45–90 m wide', IFAB_FIELD, '2026-10-30'],
+      [/^how\s+(?:long|big)\s+is\s+an?\s+olympic(?:\s+swimming)?\s+pool$/, '50 m long', 'at least 25 m wide, for the 10 lanes of at least 2.5 m that the Olympic Games need; World Aquatics now asks for at least 2.5 m deep (3 m is best), so about 3,125,000 liters at 25 m wide and 2.5 m deep', POOL, '2026-10-30'],
+      [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the top of the ring, from the floor: 10 ft in the NBA rule, 3,050 mm (± 6 mm) in the FIBA rule', HOOP, '2026-10-30'],
       [/^(?:what\s+is\s+(?:the\s+|a\s+)?)?standard\s+(?:interior\s+|front\s+|exterior\s+)?door\s+(?:width|size)$/, '36 in (exterior)', 'US: front doors 36 in wide; interior doors 28–32 in; both usually 80 in tall'],
       [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', '355 ml in the US; 330 ml is common elsewhere'],
       [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses (a standard glass of wine is 5 fl oz)', DRINKS, '2026-10-30'],
