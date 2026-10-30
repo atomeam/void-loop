@@ -62,7 +62,7 @@ async function runTopic(topic, api) {
   return liveCard(api, el, 'news', 30 * 60e3, async () => {
     const j = await fetch(weekUrl(topic)).then((r) => r.json());
     if (!api._pageStill(el)) return;
-    const items = weekItems(j);
+    const items = weekItems(j, topic);
     if (!items.length) { el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><p>No Hacker News stories mention “' + esc(topic) + '” this past week. For general headlines, ask “news today”.</p>'; return; }
     el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">Hacker News stories from the past week</div>' + list(esc, items)
       + '<div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a> (tech-leaning; for world headlines ask “news today”)</div>';

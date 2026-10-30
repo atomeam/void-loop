@@ -1,6 +1,33 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
+  {
+   "at": "2026-10-30T12:13:24.946Z",
+   "sha": "37a659648a1955712671ed4e47970265160331ae",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41040216296",
+   "suite": "browser suite on main",
+   "checks": [
+    "local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia",
+    "semantic validator: \"how do i make guacamole\" answered with a pancakes card is reported once as ungrounded:recipe (no refusal shown); a guacamole card reports nothing"
+   ],
+   "touched": [
+    "tools/fact-topic.test.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/fact.js",
+    "void-live-deploy/skills/families.json",
+    "tools/compose.test.mjs",
+    "tools/recipes.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/compose.js",
+    "void-live-deploy/lib/recipes.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/music.js"
+   ],
+   "shards": [
+    2,
+    3
+   ]
+  },
   {
    "at": "2026-10-30T11:25:10.005Z",
    "sha": "d16874e2fe7d2fe8346c4a48cf778a3bdf551c47",
@@ -29,6 +56,9 @@
    ],
    "shards": [
     3,
+    4
+   ],
+   "passed": [
     4
    ]
   },
@@ -69,6 +99,9 @@
    ],
    "shards": [
     2,
+    4
+   ],
+   "passed": [
     4
    ]
   },
@@ -974,53 +1007,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 978
-  },
-  {
-   "at": "2026-10-29T02:22:19.449Z",
-   "sha": "65e4a8c9395b431c1b2570a5e09fbf58638b1c76",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40803056940",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "defences: a link (?q=) can't start a send, booking or spend: the ask is only typed into the box for the person, nothing is requested",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind",
-    "self-grounding: \"what's next\" is answered from Verse's own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache"
-   ],
-   "touched": [
-    "tools/families.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1937-advice",
-    "void-live-deploy/skills/what.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 994
   }
  ]
 }

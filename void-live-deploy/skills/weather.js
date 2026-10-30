@@ -1,5 +1,5 @@
 /**
- * weather skill — Open-Meteo, no key
+ * weather skill — the weather now and the forecast for a place, kept current while the card is up (Open-Meteo, no key)
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
  * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.

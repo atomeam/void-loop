@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1068,
+ "counted": 1069,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -455,7 +455,7 @@
    "skills": 5,
    "direct": 1,
    "dependants": 11,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/success-pulse.js",
@@ -651,7 +651,7 @@
    "skills": 4,
    "direct": 4,
    "dependants": 5,
-   "tests": 15
+   "tests": 16
   },
   {
    "file": "lib/field-cards.js",
@@ -1197,7 +1197,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 27,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/proposal.js",
@@ -1403,6 +1403,13 @@
    "tests": 3
   },
   {
+   "file": "lib/avi.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/rap-ears.js",
    "skills": 1,
    "direct": 0,
@@ -1428,19 +1435,12 @@
    "skills": 1,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/avi.js",
-   "skills": 1,
-   "direct": 0,
    "dependants": 4,
    "tests": 1
   },
@@ -2793,7 +2793,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 2
+   "tests": 4
   },
   {
    "file": "lib/ai-generators.js",
@@ -3056,6 +3056,13 @@
   },
   {
    "file": "lib/mp3-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/mp4-repair.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4910,6 +4917,7 @@
   "lib/avi.js": {
    "imports": [],
    "importedBy": [
+    "lib/mp4-repair.js",
     "lib/video-write.js"
    ],
    "reachedBy": [
@@ -8517,6 +8525,12 @@
   },
   "lib/mp3-edit.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/mp4-repair.js": {
+   "imports": [
+    "lib/avi.js"
+   ],
    "importedBy": []
   },
   "lib/music-audio.js": {

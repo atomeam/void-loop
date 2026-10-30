@@ -68,14 +68,14 @@ export const SKILL_TOOLS = [
   ]
  },
  {
-  "skill": "recipe",
-  "tool": "skill_recipe",
+  "skill": "quote",
+  "tool": "skill_quote",
   "family": "words",
   "familyName": "Words and the world",
   "examples": [
-   "recipe for pancakes",
-   "how do i make guacamole",
-   "chicken recipes"
+   "inspirational quote",
+   "random quote",
+   "tell me a quote"
   ]
  },
  {

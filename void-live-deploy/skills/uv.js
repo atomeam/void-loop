@@ -1,5 +1,5 @@
 /**
- * uv skill - Open-Meteo UV index + geocoding, no key
+ * uv skill - the UV index for a place now and today's highest, with sun advice (Open-Meteo UV index + geocoding, no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "UV index in Miami", "how strong is the sun in LA", "should I wear sunscreen in Phoenix", "what's the UV in Tokyo".
  * Shows current UV (WHO scale), today's max, clear guidance, and a dated Open-Meteo source.
