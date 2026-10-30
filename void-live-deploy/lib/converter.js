@@ -1,7 +1,7 @@
 // The file and unit converter (/converter/, 2026-10-29, assimilates onlineconverter.com). Pure parts, the same in the browser and in node tests:
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
 // format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF); the sound edits (cut,
-// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
+// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4 and WEBM video (written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
 // and written. Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
 // 'no' not on Verse yet. A tool is never shown as done when it is not.
@@ -14,7 +14,9 @@ const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 // ---- the catalog -------------------------------------------------------------------------------------------------------------------------
 export const CATS = Object.freeze(['Video', 'Audio', 'Image', 'Ebook', 'Document', 'Unit']);
 const NO = 'Not on Verse yet.';
-const NO_VIDEO = 'Not on Verse yet: Verse cannot write video files.';
+const NO_VIDEO = 'Not on Verse yet: Verse writes MP4 and WEBM video, but does not do this yet.';
+// the video formats Verse does not write, each with the reason
+const VIDEO_WHY = { '3GP': 'Not on Verse yet: Verse writes MP4 and WEBM, not 3GP (a phone format with its own sound codecs).', AVI: 'Not on Verse yet: Verse writes MP4 and WEBM, not AVI.', FLV: 'Not on Verse yet: Verse writes MP4 and WEBM, not FLV (Flash video).', MKV: 'Not on Verse yet: Verse writes MP4 and WEBM, not MKV.', MOV: 'Not on Verse yet: Verse writes MP4 and WEBM, not MOV.', WMV: 'Not on Verse yet: WMV needs Windows Media video, which no browser can code.' };
 const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV or AIFF, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
@@ -22,7 +24,9 @@ const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 't
 const UNIT = (name, href) => tool('Unit', name, 'verse', { href, note: 'On the Verse unit converter.' });
 
 export const CATALOG = Object.freeze([
-  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => conv('Video', f, 'no', { note: NO_VIDEO })),
+  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => (f === 'MP4' || f === 'WEBM'
+    ? conv('Video', f, 'here', { to: f.toLowerCase(), from: 'video', note: f === 'MP4' ? 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.' : 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.' })
+    : conv('Video', f, 'no', { note: VIDEO_WHY[f] }))),
   ...['Add Audio to Video', 'Add Background to Video', 'Add Image to Video', 'Add Text to Video', 'Add Transition to Video', 'Blur Video', 'Brighten Video', 'Change Video Speed', 'Compress Video', 'Cut Video', 'Increase Video Volume', 'Make Split Screen Video', 'Merge Video', 'Repair MP4', 'Resize Video', 'Rotate Video', 'Stabilize Video', 'Sync Audio and Video', 'Watermark Video'].map((n) => tool('Video', n, 'no', { note: NO_VIDEO })),
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (f === 'WAV' || f === 'AIFF'
     ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + f + ' (16-bit PCM), on this device.' })
@@ -125,7 +129,7 @@ export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
   if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
   if (k === 'sound') return ['wav', 'aiff'].filter((t) => t !== x);
-  if (k === 'video') return ['wav', 'aiff'];
+  if (k === 'video') return ['mp4', 'webm', 'wav', 'aiff'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -142,7 +146,7 @@ export function search(q) {
     const exact = CATALOG.find((t) => t.kind === 'converter' && t.cat === cat && normFormat(t.name) === to) || CATALOG.find((t) => t.kind === 'converter' && normFormat(t.name) === to);
     if (exact) out.push({ tool: exact, why: (from ? from.toUpperCase() + ' to ' : 'to ') + to.toUpperCase() });
     if (!exact || exact.status === 'no') {
-      const near = kindOf(to) === 'sound' || (kindOf(to) === 'video' && fk === 'video') ? toolOf('audio-wav') : kindOf(to) === 'video' && fk === 'picture' ? toolOf('image-gif') : fk === 'text' || kindOf(to) === 'text' ? toolOf('doc-txt') : null;
+      const near = kindOf(to) === 'video' && (fk === 'video' || fk === '') ? toolOf('video-mp4') : kindOf(to) === 'sound' ? toolOf('audio-wav') : kindOf(to) === 'video' && fk === 'picture' ? toolOf('image-gif') : fk === 'text' || kindOf(to) === 'text' ? toolOf('doc-txt') : null;
       if (near && near !== exact && (!from || fk === '' || near.from === 'sound' ? ['sound', 'video', ''].includes(fk) : true)) out.push({ tool: near, why: 'nearest on Verse: ' + near.name + (near.from === 'sound' ? ' (the sound, as a WAV)' : '') });
     }
     return out;
@@ -491,4 +495,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', webm: 'video/webm', wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });

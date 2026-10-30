@@ -48,7 +48,10 @@ function run(text, api) {
       const again = document.createElement('button'); again.className = 'rp-btn'; again.textContent = 'Another take';
       const open = document.createElement('a'); open.className = 'rp-btn'; open.textContent = 'Change the style, mood or flow'; open.href = linkOf(s, got.rap);
       again.addEventListener('click', () => { s = { ...s, seed: s.seed + 1 }; box.textContent = ''; const m = document.createElement('p'); m.className = 'rp-msg'; m.setAttribute('role', 'status'); m.textContent = 'Writing take ' + (s.seed + 1) + ' now.'; box.append(m); draw(); });
-      cur = mountRap(box, got.rap, s, { extra: [again, open] });
+      // the rap's own link: the whole rap rides in it, so whoever opens it gets these bars with the beat on /rap/, not a new rap
+      const link = document.createElement('button'); link.type = 'button'; link.className = 'rp-btn'; link.textContent = 'Copy its link';
+      const rap = got.rap, at = s; link.addEventListener('click', async () => { const u = location.origin + linkOf(at, rap); try { await navigator.clipboard.writeText(u); cur && cur.say('Copied the link to this rap.'); } catch (_) { cur && cur.say('Copy this link: ' + u); } });
+      cur = mountRap(box, got.rap, s, { extra: [again, link, open] });
     }
   };
   draw();

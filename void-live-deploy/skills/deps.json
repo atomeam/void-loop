@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 999,
+ "counted": 1000,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -77,7 +77,7 @@
    "skills": 21,
    "direct": 2,
    "dependants": 22,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/ladder.js",
@@ -90,7 +90,7 @@
    "file": "lib/mind-field-modes.js",
    "skills": 20,
    "direct": 2,
-   "dependants": 23,
+   "dependants": 22,
    "tests": 2
   },
   {
@@ -343,7 +343,7 @@
    "skills": 7,
    "direct": 2,
    "dependants": 13,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/art-source.js",
@@ -738,13 +738,6 @@
    "tests": 1
   },
   {
-   "file": "lib/brain-bridge.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
    "file": "lib/field-vector.js",
    "skills": 3,
    "direct": 1,
@@ -778,13 +771,6 @@
    "direct": 1,
    "dependants": 4,
    "tests": 2
-  },
-  {
-   "file": "lib/wheel.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 4,
-   "tests": 3
   },
   {
    "file": "lib/chat-calendar.js",
@@ -959,7 +945,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 3,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/generators.js",
@@ -972,13 +958,6 @@
    "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3,
-   "tests": 2
-  },
-  {
-   "file": "lib/prizes.js",
-   "skills": 2,
-   "direct": 0,
    "dependants": 3,
    "tests": 2
   },
@@ -1025,13 +1004,6 @@
    "tests": 1
   },
   {
-   "file": "lib/handoff.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
    "file": "lib/list-ops.js",
    "skills": 2,
    "direct": 2,
@@ -1057,14 +1029,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 2,
-   "tests": 3
-  },
-  {
-   "file": "lib/orb-memories.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/photo-ask.js",
@@ -1354,6 +1319,13 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-bridge.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/brain-store.js",
    "skills": 1,
    "direct": 1,
@@ -1365,7 +1337,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 14
+   "tests": 13
   },
   {
    "file": "lib/fakeuser.js",
@@ -1415,6 +1387,13 @@
    "direct": 1,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/wheel.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 3
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1890,7 +1869,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 16
+   "tests": 17
   },
   {
    "file": "lib/tower-rank.js",
@@ -2439,6 +2418,13 @@
    "tests": 1
   },
   {
+   "file": "lib/prizes.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2510,6 +2496,13 @@
   },
   {
    "file": "lib/translate-words.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/video-mux.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2699,6 +2692,13 @@
   },
   {
    "file": "lib/ground.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/handoff.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2934,6 +2934,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/video-write.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/wordcount.js",
@@ -4526,11 +4533,7 @@
    "imports": [],
    "importedBy": [
     "lib/brain-host.js",
-    "skills/agent-fluid-memory-orbs.js",
     "skills/verse-brain.js"
-   ],
-   "reachedBy": [
-    "skills/mind-field.js"
    ]
   },
   "lib/brain-creature.js": {
@@ -6505,12 +6508,7 @@
     "lib/wheel.js",
     "lib/prizes.js"
    ],
-   "importedBy": [
-    "skills/agent-fluid-memory-orbs.js"
-   ],
-   "reachedBy": [
-    "skills/mind-field.js"
-   ]
+   "importedBy": []
   },
   "lib/health-habits.js": {
    "imports": [],
@@ -7294,7 +7292,6 @@
    "importedBy": [
     "lib/brain-field.js",
     "lib/field-stage.js",
-    "lib/orb-memories.js",
     "skills/mind-field-mode.js",
     "skills/verse-brain.js"
    ],
@@ -7681,17 +7678,6 @@
   "lib/orb-field.js": {
    "imports": [
     "lib/field-fluid-orbs.js"
-   ],
-   "importedBy": [
-    "skills/agent-fluid-memory-orbs.js"
-   ],
-   "reachedBy": [
-    "skills/mind-field.js"
-   ]
-  },
-  "lib/orb-memories.js": {
-   "imports": [
-    "lib/mind-field-modes.js"
    ],
    "importedBy": [
     "skills/agent-fluid-memory-orbs.js"
@@ -8214,10 +8200,6 @@
    "imports": [],
    "importedBy": [
     "lib/handoff.js"
-   ],
-   "reachedBy": [
-    "skills/agent-fluid-memory-orbs.js",
-    "skills/mind-field.js"
    ]
   },
   "lib/probe-asks.js": {
@@ -10278,6 +10260,18 @@
     "skills/v01d-fixes.js"
    ]
   },
+  "lib/video-mux.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/video-write.js"
+   ]
+  },
+  "lib/video-write.js": {
+   "imports": [
+    "lib/video-mux.js"
+   ],
+   "importedBy": []
+  },
   "lib/video.js": {
    "imports": [],
    "importedBy": [
@@ -10530,10 +10524,6 @@
    "importedBy": [
     "lib/handoff.js",
     "skills/wheel.js"
-   ],
-   "reachedBy": [
-    "skills/agent-fluid-memory-orbs.js",
-    "skills/mind-field.js"
    ]
   },
   "lib/where.js": {
@@ -10685,10 +10675,7 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-fluid-orbs.js",
-    "lib/orb-field.js",
-    "lib/orb-memories.js",
-    "lib/brain-bridge.js",
-    "lib/handoff.js"
+    "lib/orb-field.js"
    ],
    "importedBy": [
     "skills/mind-field.js"
