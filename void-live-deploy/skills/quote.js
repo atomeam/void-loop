@@ -34,7 +34,7 @@ export function qotdFrom(html) {
 
 // "motivational quote", "quote about courage": a quote from Wikiquote's page on that theme, so the ask gets what it named.
 const SECT = 'https://en.wikiquote.org/w/api.php?format=json&formatversion=2&origin=*&action=parse&redirects=1&prop=sections&page=';
-const HEART = ['Perseverance', 'Effort']; // the theme pages for "motivational", "inspirational", "uplifting"
+const HEART = ['Perseverance', 'Courage']; // the theme pages for "motivational", "inspirational", "uplifting" (2026-10-30: Effort gave complaints, not lifts)
 /** the Wikiquote page an ask names: "quote about X" -> "X", a motivational ask -> a HEART page, anything else -> null. Pure. */
 export function themeOf(text, rand = Math.random) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');

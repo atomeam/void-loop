@@ -65,12 +65,12 @@ const RUN = {
     if (!ctx.joined) return fail(NOT_IN);
     const c = String(a.channel || 'general'), j = await ctx.get('?c=' + encodeURIComponent(c) + (a.since > 0 ? '&since=' + Math.floor(a.since) : ''));
     if (!j.ok) return fail(said(j));
-    return result('#' + c + (j.messages.length ? '\n' + j.messages.map(line).join('\n') : ': no messages' + (a.since ? ' after #' + a.since : ' yet')), { channel: c, messages: j.messages });
+    return handed(j, result('#' + c + (j.messages.length ? '\n' + j.messages.map(line).join('\n') : ': no messages' + (a.since ? ' after #' + a.since : ' yet')), { channel: c, messages: j.messages }));
   },
   async thread(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?t=' + Math.floor(Number(a.id) || 0)); if (!j.ok) return fail(said(j));
-    return result([j.root, ...j.replies].map(line).join('\n'), { root: j.root, replies: j.replies });
+    return handed(j, result([j.root, ...j.replies].map(line).join('\n'), { root: j.root, replies: j.replies }));
   },
   async post(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
@@ -80,12 +80,12 @@ const RUN = {
   async mentions(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?activity'); if (!j.ok) return fail(said(j));
-    return result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'No one has mentioned you yet.', { hits: j.hits });
+    return handed(j, result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'No one has mentioned you yet.', { hits: j.hits }));
   },
   async search(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
     const j = await ctx.get('?q=' + encodeURIComponent(String(a.words || '')) + (a.channel ? '&c=' + encodeURIComponent(a.channel) : '')); if (!j.ok) return fail(said(j));
-    return result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'Nothing found.', { hits: j.hits });
+    return handed(j, result(j.hits.length ? j.hits.map((m) => '#' + m.c + ' ' + line(m)).join('\n') : 'Nothing found.', { hits: j.hits }));
   },
   async hook(a, ctx) {
     if (!ctx.joined) return fail(NOT_IN);
@@ -100,6 +100,8 @@ const RUN = {
     return result('Closed.' + (j.next ? ' Your next job: ' + jobText(j.next) : ' ' + (j.say || '')), { next: j.next || null });
   },
 };
+// a read that came back with a job Verse handed this agent (it was idle): the job first, then what was read
+const handed = (j, r) => (j.job && j.job.job ? { ...r, content: [{ type: 'text', text: 'Verse handed you a job: ' + jobText(j.job) + '. Answer in its thread with post (thread: ' + j.job.thread + '), then close it with done.\n\n' }, ...r.content], structuredContent: { ...r.structuredContent, job: j.job } } : r);
 const jobText = (x) => x.job + (x.kind ? ' (' + x.kind + ')' : '') + ', thread #' + x.thread + ' in #work' + (x.ask ? ': ' + x.ask : '');
 function job(j, ctx) {
   if (!ctx.joined) return fail(NOT_IN);

@@ -127,6 +127,22 @@ async function finish(container, E, sound, extraNotes, say) {
   return { bytes, notes: [...notes, ...extraNotes], width: video.width, height: video.height, seconds: secs, frames: video.samples.length };
 }
 
+// the slowest speed a browser plays a video at
+const SLOWEST = 0.0625;
+
+/** the length of one picture of a paused video near `at`, in seconds, read from the frame times the browser shows after a seek: the first
+ *  frame, then small steps on until the next one. A still picture, or a browser that shows no frame while paused, gives 1/30. */
+async function frameStep(v, at) {
+  const shown = (t) => new Promise((res) => {
+    let done = false; const tm = setTimeout(() => { if (!done) { done = true; res(null); } }, 1500);
+    v.requestVideoFrameCallback((_, meta) => { if (!done) { done = true; clearTimeout(tm); res(meta.mediaTime); } });
+    v.currentTime = Math.abs(v.currentTime - t) < 1e-6 ? t + 1e-4 : t;
+  });
+  const m0 = await shown(at); if (m0 == null) return { step: 1 / 30 };
+  for (let k = 1; k <= 30; k++) { const m = await shown(m0 + k / 240); if (m == null) break; if (m > m0 + 1e-6) return { step: m - m0 }; }
+  return { step: 1 / 30 };
+}
+
 /** play one or more videos once, one after another, and code every picture shown, edited by opts. files: a File or a list of them (a merge).
  *  opts: { container: 'mp4' | 'mov' | 'webm' | 'mkv', quality, maxSide, width, rotate (0, 90, 180, 270), speed (0.25-4), from, to (seconds),
  *  blur, bright, shape ([w, h]), backdrop ('color' | 'blur' | 'picture'), backdropPic, color, over (texts and pictures), sound ('keep' |
@@ -145,27 +161,37 @@ export async function writeVideo(files, opts = {}) {
     if (from && ends[0] && from >= ends[0]) throw new Error('the start (' + from + ' s) is after the end of the video (' + ends[0].toFixed(2) + ' s).');
     let offset = 0, skipped = 0; const kept = [];
     for (let i = 0; i < vids.length; i++) {
-      const v = vids[i], a = i ? 0 : from, z = ends[i] || Infinity; v.playbackRate = rate;
-      if (a) { v.currentTime = a; await wait(v, 'seeked'); }
-      let last = -1, lastTs = offset, seen = null;
+      const v = vids[i], a = i ? 0 : from, z = ends[i] || Infinity, { step } = await frameStep(v, a);
+      v.playbackRate = rate;
+      let last = -1, lastTs = offset;
       await new Promise((resolve, reject) => {
-        let over = false; const stop = () => { if (!over) { over = true; v.pause(); resolve(); } };
+        let over = false, held = 0; const stop = () => { if (!over) { over = true; clearTimeout(held); v.pause(); resolve(); } };
+        // after a seek, the video plays only once the callback has drawn the picture the seek shows: a video that plays on 'seeked' can
+        // move on before the callback runs, and the canvas then gets a later picture under the earlier time. A browser that shows no
+        // picture after a seek plays after 3 s.
+        const play = () => { if (held) { clearTimeout(held); held = 0; } if (!over) v.play().catch(reject); };
+        const seekThenPlay = (t) => { v.requestVideoFrameCallback(onFrame); v.currentTime = t; held = setTimeout(play, 3000); };
         const onFrame = async (_, meta) => {
           try {
             if (over) return; const mt = meta.mediaTime;
             if (mt >= z) return stop();
-            // pictures went by with no drawing: this device draws slower than the video plays, so play it slower (the times come from the
-            // video, not the clock, so the result is the same, only it takes longer)
-            if (seen != null && meta.presentedFrames - seen > 1) { skipped += meta.presentedFrames - seen - 1; if (v.playbackRate > 0.0625) v.playbackRate = Math.max(0.0625, v.playbackRate / 2); }
-            seen = meta.presentedFrames;
+            // pictures went by with no drawing: this device draws slower than the video plays. Go back to the last picture drawn and play
+            // slower, so that every picture is drawn (the times come from the video, not the clock, so the result is the same, only slower)
+            const ref = last >= 0 ? last : a - step, gap = mt > ref + step * 1.5; // before the first picture, the one at the start is due
+            if (gap && v.playbackRate > SLOWEST) {
+              v.pause(); v.playbackRate = Math.max(SLOWEST, v.playbackRate / 4); seekThenPlay(last >= 0 ? last + step / 2 : a); return;
+            }
+            if (gap) skipped += Math.max(0, Math.round((mt - ref) / step) - 1); // already at the slowest speed: the loss is counted and said
             if (mt > last) { last = mt; lastTs = offset + Math.max(0, (mt - a) / rate) * 1e6; drawFrame(E.x, v, v.videoWidth, v.videoHeight, W, H, opts, lastTs / 1e6); E.push(Math.round(lastTs)); say(Math.min(0.99, lastTs / 1e6 / total)); }
             if (!v.ended) v.requestVideoFrameCallback(onFrame);
+            if (held) play();
             // the encoder is behind: hold the video until it catches up, so no picture is dropped
             if (E.enc.encodeQueueSize > 4 && !v.ended) { v.pause(); while (E.enc.encodeQueueSize > 1) await new Promise((r) => E.enc.addEventListener('dequeue', r, { once: true })); if (!over) await v.play(); }
           } catch (e) { reject(e); }
         };
         v.addEventListener('ended', stop, { once: true });
-        v.requestVideoFrameCallback(onFrame); v.play().catch(reject);
+        // from the start: the seek shows the first picture to the callback, then the video plays
+        if (Math.abs(v.currentTime - a) > 1e-6) seekThenPlay(a); else { v.requestVideoFrameCallback(onFrame); play(); }
       });
       const end = Math.min(z, durs[i] || z), len = isFinite(end) ? Math.max(0, (end - a) / rate) : 0, shown = Math.max(len, (lastTs - offset) / 1e6 + 1 / 30); kept.push({ a, z: end, len: shown }); offset += shown * 1e6;
     }
