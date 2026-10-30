@@ -1,1 +1,0 @@
-{"at":"2026-10-30T05:51:37Z","by":"claude","kind":"fix","what":"Checks: the files check now parses the scripts written inside each page, so a broken inline script like the one that took News down fails CI before it ships","show":"A page whose own script does not parse now fails the checks","try":"https://a-to-mind.com/news/"}

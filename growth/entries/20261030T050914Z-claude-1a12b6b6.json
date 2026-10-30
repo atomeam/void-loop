@@ -1,1 +1,0 @@
-{"at":"2026-10-30T05:09:14Z","by":"claude","kind":"fix","what":"tower queue: a rendered count under 20 that is less than half the raw HTML count is a block page, so the row cannot rank (coinflip.tech 5 of 149, generatorguru.com 4 of 356)"}

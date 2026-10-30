@@ -1,1 +1,0 @@
-{"at":"2026-10-30T05:41:22Z","by":"claude","kind":"fix","what":"News page: a misplaced line stopped the page script from parsing, so no headline loaded; the week's stories call now runs after the status line","show":"News loads its headlines again","try":"https://a-to-mind.com/news/?q=spacex"}
