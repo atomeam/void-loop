@@ -36,7 +36,9 @@ export function filled(text, now = Date.now()) {
   // the epoch: a number to a date, a date to the number, and the time now
   if ((m = t.match(new RegExp('^(?:convert )?(?:the )?' + EP + ' (?:of |for )?' + N + '(?: to (?:a )?(?:date|utc|human date|readable date))?$')))
     || (m = t.match(new RegExp('^(?:convert |what (?:date|time) is )?' + N + '(?: ' + EP + ')? (?:to|as|in|into) (?:a )?(?:date|utc|human date|readable date|date and time)$')))
-    || (m = t.match(new RegExp('^what (?:date|time) is ' + EP + ' ' + N + '$')))) return { calc: BY_ID.get('unix-time'), given: { v: m[1] } };
+    || (m = t.match(new RegExp('^what (?:date|time) is ' + EP + ' ' + N + '$')))
+    // the tool by its name with the number after it: "timestamp converter 1700000000", "convert timestamp 1700000000", "epoch converter: 1700000000"
+    || (m = t.match(new RegExp('^(?:convert (?:the |this |a )?)?(?:(?:unix|epoch|posix) )?(?:time ?stamp|epoch|unix time)(?: (?:converter|to date))?:? ' + N + '$')))) return { calc: BY_ID.get('unix-time'), given: { v: m[1] } };
   if ((m = t.match(new RegExp('^(?:convert )?' + DT + ' (?:to|in|into|as) ' + EP + '$')))
     || (m = t.match(new RegExp('^(?:what is )?(?:the )?' + EP + ' (?:of|for) ' + DT + '$')))) return { calc: BY_ID.get('unix-time'), given: { v: m[1].toUpperCase().replace(/ ?(?:Z|UTC|GMT)$/, '') } };
   if (/^(?:what(?:s| is) )?(?:the )?(?:current|now|todays?) (?:unix|epoch|posix)(?: time(?:stamp)?)?(?: now)?$|^(?:unix|epoch) time(?:stamp)? (?:now|right now|today)$/.test(t)) return { calc: BY_ID.get('unix-time'), given: { v: String(Math.floor(now / 1000)) } };
@@ -100,7 +102,7 @@ function library(api) {
 export default {
   name: 'formulas',
   examples: ['pipe surface area calculator', 'ohms law current calculator', 'calculator for molar mass', 'kinetic energy calculator', 'formula calculators',
-    'unix timestamp 1700000000', 'epoch converter', 'url encode hello world', 'compound interest 1000 at 5% for 10 years', 'roman numeral converter'],
+    'unix timestamp 1700000000', 'timestamp converter 1700000000', 'epoch converter', 'url encode hello world', 'compound interest 1000 at 5% for 10 years', 'roman numeral converter'],
   nearMisses: ['calculator', 'open a calculator', 'what is 17% of 240', 'how do calculators work', 'calculator watch',
     'what is unix', 'what is compound interest', 'url of the calculators page', 'encode', 'roman numerals for 1994'],
   pick, isLibrary, filled,
