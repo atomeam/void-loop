@@ -4,7 +4,7 @@
  * "tell me a quote", "random quote", "inspirational quote".
  */
 export function isQuote(text) {
-  return /^(?:please\s+)?(?:(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another|one\s+more|some)\s+|(?:another|a|an|some)\s+)?(?:(?:inspirational|motivational|inspiring|uplifting|famous|wise|random|good)\s+)?quotes?(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another|one\s+more|some)\s+|(?:another|a|an|some)\s+)?(?:(?:inspirational|motivational|inspiring|uplifting|famous|wise|random|good)\s+)?quotes?(?:\s+about\s+.+)?(?:\s+please)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 async function run(text, api) {
@@ -26,7 +26,7 @@ async function run(text, api) {
 
 export default {
   name: 'quote',
-  examples: ['tell me a quote', 'random quote', 'inspirational quote', 'another quote'],
+  examples: ['tell me a quote', 'random quote', 'inspirational quote', 'another quote', 'quote about perseverance'],
   nearMisses: ['what is a quote', 'stock quotes', 'quote of the day news'],
   match(lower, text) { return isQuote(text); },
   run,

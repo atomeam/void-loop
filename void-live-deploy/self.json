@@ -542,13 +542,21 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T18:00:52Z",
+  "at": "2026-10-25T18:05:32Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-30T03:16:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T03:15:41Z",
+   "subject": "Words and the world: 7 common asks reach their skills"
+  },
   {
    "at": "2026-10-30T03:12:45Z",
    "subject": "Regenerate the generated files after the merge"
@@ -620,14 +628,6 @@
   {
    "at": "2026-10-30T02:30:14Z",
    "subject": "Refresh generated files: families, deps, guide, self, asks links, churn, sitemap"
-  },
-  {
-   "at": "2026-10-30T02:28:13Z",
-   "subject": "Self card: the bars' least proven family everywhere, site-named asks need site evidence, no doubled ledger lines, no review prompts on the…"
-  },
-  {
-   "at": "2026-10-30T02:26:15Z",
-   "subject": "Services card names MultiVerse and links its page, not \"your own custom Verse\""
   }
  ],
  "builders": {

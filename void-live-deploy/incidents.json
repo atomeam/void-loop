@@ -1,5 +1,5 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first, with the green shards that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.",
  "incidents": [
   {
    "at": "2026-10-30T02:37:47.980Z",
@@ -33,7 +33,14 @@
    ],
    "shards": [
     4
-   ]
+   ],
+   "passed": [
+    4
+   ],
+   "closedAt": "2026-10-30T03:33:32.544Z",
+   "closedBy": "7ed8ce7b788eabb318fb600bbe1deae86f9bf15a",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40996034633",
+   "minutes": 141
   },
   {
    "at": "2026-10-30T00:51:50.499Z",

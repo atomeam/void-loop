@@ -58,3 +58,27 @@ test('a pick asked by what it is, and never saved as an event', () => {
   assert.equal(parseCalendar('watch the game tomorrow at 8pm').kind, 'add');
   assert.equal(parseCalendar('dentist tomorrow at 3').kind, 'add');
 });
+
+test('a recipe by two ingredients finds the meals that have both', async () => {
+  const { ingredientsOf, mealsInAll } = await import('../void-live-deploy/skills/recipe.js');
+  assert.deepEqual(ingredientsOf('chicken and rice'), ['chicken', 'rice']);
+  assert.deepEqual(ingredientsOf('eggs, cheese & some spinach'), ['eggs', 'cheese', 'spinach']);
+  assert.deepEqual(ingredientsOf('chicken'), ['chicken']);
+  const a = [{ idMeal: '1', strMeal: 'A' }, { idMeal: '2', strMeal: 'B' }], b = [{ idMeal: '2', strMeal: 'B' }, { idMeal: '3', strMeal: 'C' }];
+  assert.deepEqual(mealsInAll([a, b]).map((m) => m.strMeal), ['B']);
+  assert.deepEqual(mealsInAll([a]).map((m) => m.strMeal), ['A', 'B']);
+  const lists = { chicken: a, rice: b, tofu: [] };
+  const run = async (ask, data) => {
+    const el = { innerHTML: '' }, asked = [], real = globalThis.fetch;
+    globalThis.fetch = async (u) => { asked.push(u); const i = decodeURIComponent(String(u).split('i=')[1] || ''); return { json: async () => ({ meals: (data[i] || []).length ? data[i] : null }) }; };
+    try { await recipe.run(ask, { showPage: (f) => { f(el); return el; }, esc: (s) => String(s), _pageStill: () => true }); } finally { globalThis.fetch = real; }
+    return { html: el.innerHTML, asked };
+  };
+  let r = await run('what can i make with chicken and rice', lists);
+  assert.equal(r.asked.length, 2);
+  assert.ok(r.html.startsWith('<h2>With chicken and rice</h2>') && r.html.includes('recipe for B') && !r.html.includes('recipe for A'), r.html);
+  r = await run('what can i make with tofu and chicken', lists);
+  assert.ok(r.html.includes('<h2>With chicken</h2>') && r.html.includes('No recipe here has all of tofu and chicken. These have chicken.'), r.html);
+  r = await run('recipes with tofu', lists);
+  assert.ok(r.html.includes('I don\'t have a recipe'), r.html);
+});

@@ -126,3 +126,71 @@ test('a recorded purchase from before today\'s rules unlocks its own Verse on th
     assert.equal((await get(D2)).tier, 'free');
   }
 });
+
+// A purchase made with no ?void= on the link (bought signed out, or straight from Gumroad) is linked by the buyer with the Order ID
+// from the receipt and the email they paid with (owner, 2026-10-30: "i paid and everything just now and it went nowhere").
+test('a buyer unlocks their own Verse with the receipt Order ID and email, and every wrong claim is turned down', async () => {
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', SALE = 'N6blWbTnSDY7nQYhsLEGrg==', MAIL = 'Buyer@Example.com';
+  const ping = (extra) => new URLSearchParams({ sale_id: SALE, order_number: '524459935', seller_id: SELLER, email: MAIL, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-c', test: 'true', resource_name: 'sale', ...extra }).toString();
+  const rec = (DB, r, id = 'sale:' + SALE + ':t') => DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES (?, 'sale', ?, 'sub-c', 'yinmj', NULL, 1, 'verified, no Verse id: link by hand', ?, ?)").run(id, SALE, r, new Date().toISOString());
+  const claim = (DB, order, email, env = {}) => onRequestPost({ env: { DB, ...env }, request: new Request('https://a-to-mind.com/api/members', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json', 'cf-connecting-ip': '10.2.0.' + (++ip) }, body: JSON.stringify({ do: 'claim', order, email }) }) });
+  const fresh = async (r) => { const DB = d1(); await signIn(DB, null); await ensureStoreTables({ DB }); if (r) rec(DB, r); return DB; };
+
+  let DB = await fresh(ping({}));
+  assert.equal((await get(DB)).tier, 'free', 'a ping with no Verse id unlocks nothing by itself');
+  let r = await claim(DB, SALE, ' buyer@example.COM ');
+  assert.equal(r.status, 200, JSON.stringify(await r.clone().json()));
+  assert.equal((await get(DB)).tier, 'paid', 'the receipt claim unlocks the Verse');
+  assert.equal(DB.raw.prepare('SELECT sale_id FROM void_accounts WHERE user_id = ?').get(USER).sale_id, SALE);
+  assert.equal(DB.raw.prepare('SELECT void_id FROM void_sales').get().void_id, USER);
+  assert.equal((await claim(DB, SALE, MAIL)).status, 200, 'claiming again from the same Verse is fine');
+
+  DB = await fresh(ping({})); assert.equal((await claim(DB, '524459935', MAIL)).status, 200, 'the order number works too');
+  DB = await fresh(null); assert.equal((await claim(DB, SALE, MAIL)).status, 404, 'no ping on record and no token: nothing to link');
+  DB = await fresh(ping({})); assert.equal((await claim(DB, SALE, 'someone@else.com')).status, 403, 'the wrong email');
+  DB = await fresh(ping({ 'url_params[void]': 'another-verse-id-0000' })); assert.equal((await claim(DB, SALE, MAIL)).status, 409, 'a purchase made for another Verse');
+  DB = await fresh(ping({ seller_id: 'zzOtherSellerZZzzzzzzz==' })); assert.equal((await claim(DB, SALE, MAIL)).status, 403, 'another seller');
+  DB = await fresh(ping({ product_id: 'other', product_permalink: 'https://moonbeam846.gumroad.com/l/other' })); assert.equal((await claim(DB, SALE, MAIL)).status, 404, 'another product');
+  DB = await fresh(ping({}));
+  DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('cancellation:sub-c:x', 'cancellation', NULL, 'sub-c', 'yinmj', NULL, 0, 'x', 'resource_name=cancellation', ?)").run(new Date().toISOString());
+  assert.equal((await claim(DB, SALE, MAIL)).status, 403, 'a cancelled membership');
+  DB = await fresh(ping({}));
+  DB.raw.prepare("INSERT INTO void_accounts (user_id, tier, sale_id, updated) VALUES ('other-verse', 'paid', ?, ?)").run(SALE, new Date().toISOString());
+  assert.equal((await claim(DB, SALE, MAIL)).status, 409, 'a sale already linked to another Verse');
+  assert.equal((await get(DB)).tier, 'free');
+  DB = await fresh(ping({})); assert.equal((await claim(DB, 'x', MAIL)).status, 400, 'a bad Order ID');
+
+  // with GUMROAD_ACCESS_TOKEN and no ping on record, the sale is read back from Gumroad itself
+  const api = (sale) => async () => new Response(JSON.stringify({ success: !!sale, sale }));
+  const S = { id: SALE, email: MAIL, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-c' };
+  DB = await fresh(null); assert.equal((await claim(DB, SALE, MAIL, { GUMROAD_ACCESS_TOKEN: 't', GUMROAD_FETCH: api(S) })).status, 200, 'an API-confirmed sale');
+  DB = await fresh(null); assert.equal((await claim(DB, SALE, MAIL, { GUMROAD_ACCESS_TOKEN: 't', GUMROAD_FETCH: api({ ...S, refunded: true }) })).status, 403, 'an API sale that was refunded');
+  DB = await fresh(null); assert.equal((await claim(DB, SALE, MAIL, { GUMROAD_ACCESS_TOKEN: 't', GUMROAD_FETCH: api(null) })).status, 404, 'Gumroad does not know the sale');
+});
+
+// The owner's own purchase with no Verse id links itself to the owner's account on the next load (a test ping is only ever the creator's).
+test('a test purchase with no Verse id unlocks the owner\'s own account on load, and no other account', async () => {
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', SALE = 'ownTestNoIdSaleXXXXXX==';
+  const ping = (extra) => new URLSearchParams({ sale_id: SALE, seller_id: SELLER, email: 'owner@example.com', product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', subscription_id: 'sub-o', test: 'true', resource_name: 'sale', ...extra }).toString();
+  const setup = async (raw, owner) => {
+    const DB = d1(); await signIn(DB, null); await ensureStoreTables({ DB });
+    const at = new Date().toISOString();
+    DB.raw.prepare("INSERT INTO void_passkeys (id, user_id, public_key, alg, sign_count, at) VALUES ('cred-1', ?, 'k', -7, 0, ?)").run(USER, at);
+    if (owner) DB.raw.prepare("INSERT INTO void_owner_passkeys (id, at) VALUES ('cred-1', ?)").run(at);
+    DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('sale:o:t', 'sale', ?, 'sub-o', 'yinmj', NULL, 1, 'verified, no Verse id: link by hand', ?, ?)").run(SALE, raw, at);
+    return DB;
+  };
+  let DB = await setup(ping({}), true);
+  assert.equal((await get(DB)).tier, 'paid', 'the owner sees member with nothing to type');
+  assert.equal(DB.raw.prepare('SELECT sale_id FROM void_accounts WHERE user_id = ?').get(USER).sale_id, SALE);
+  assert.equal(DB.raw.prepare("SELECT void_id FROM void_sales WHERE id = 'sale:o:t'").get().void_id, USER);
+  assert.equal((await get(await setup(ping({}), false))).tier, 'free', 'a signed-in account that is not the owner\'s gets nothing');
+  assert.equal((await get(await setup(ping({ test: 'false' }), true))).tier, 'free', 'a real sale with no id is never guessed onto the owner');
+  assert.equal((await get(await setup(ping({ seller_id: 'zzOtherSellerZZzzzzzzz==' }), true))).tier, 'free', 'another seller');
+  DB = await setup(ping({}), true);
+  DB.raw.prepare("INSERT INTO void_accounts (user_id, tier, sale_id, updated) VALUES ('other-verse', 'paid', ?, ?)").run(SALE, new Date().toISOString());
+  assert.equal((await get(DB)).tier, 'free', 'a sale already linked stays where it is');
+  DB = await setup(ping({}), true);
+  DB.raw.prepare("INSERT INTO void_sales (id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at) VALUES ('cancellation:sub-o:x', 'cancellation', NULL, 'sub-o', 'yinmj', NULL, 0, 'x', 'resource_name=cancellation', ?)").run(new Date().toISOString());
+  assert.equal((await get(DB)).tier, 'free', 'a cancelled test membership');
+});
