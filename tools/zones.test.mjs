@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
-import { sunDay } from '../void-live-deploy/lib/sun-day.js';
+import { sunDay, moonOfDay } from '../void-live-deploy/lib/sun-day.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
   assert.deepEqual(findPlace('tokyo'), { name: 'Tokyo', tz: 'Asia/Tokyo' }); assert.equal(findPlace('Asia/Tokyo').tz, 'Asia/Tokyo'); assert.equal(findPlace('time in Tokyo').tz, 'Asia/Tokyo');
@@ -56,6 +56,9 @@ test('solar noon, the three twilights and golden hour within 2 minutes of NOAA; 
   assert.ok(s.noonAlt > 77 && s.noonAlt < 78.5, 'the sun 77.7° high at the solstice (90 - 35.69 + 23.44)');
   const full = sunDay({ name: 'Tokyo', tz }, [2026, 9, 26]).moon; assert.equal(full.name, 'full moon'); assert.ok(full.illumination > 97, 'the full moon of 26 October 2026: ' + full.illumination);
   assert.ok(full.rise || full.set, 'a moonrise or moonset');
+  // the phase needs no city: a time zone with no place on the map gets the same moon as a city on the same day and the same noon
+  assert.deepEqual(moonOfDay('Asia/Tokyo', [2026, 9, 26]), { name: full.name, illumination: full.illumination }, 'the phase without a city');
+  assert.equal(moonOfDay('Etc/UTC', [2026, 9, 26]).name, 'full moon', 'plain UTC on the full moon of 26 October 2026');
   assert.equal(sunDay({ name: 'Longyearbyen', tz: 'Arctic/Longyearbyen' }, [2026, 5, 21]).astronomical.dawn, null, 'never dark at midnight sun');
 });
 test('date to date: the start day counted, the end not, weekdays and weekends; business days on and back (weekends only)', () => {
