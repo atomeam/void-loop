@@ -5,15 +5,16 @@ import { CATS, CATALOG, toolOf, counts, STATUS_TEXT, formatOf, kindOf, targetsOf
 import { loadJs, loadLib, zip, sizeText } from '/lib/pdf-tools.js';
 import { writeVideo, writeStill, soundOf48, encodeSound } from '/lib/video-write.js';
 import { flac, opusFile } from '/lib/audio-write.js';
+import { addCover } from '/lib/mp3-edit.js';
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(props)) { if (k === 'class') e.className = v; else if (k in e) e[k] = v; else e.setAttribute(k, v); } for (const c of kids) if (c != null) e.append(c); return e; };
 const base = (name) => String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '');
 const runnable = (t) => !!(t && (t.run || t.to));
 const SND = 'audio/*,.wav,.aiff,.aif,.mp3,.flac,.ogg,.opus,.m4a,.m4r', VID = 'video/*,.mp4,.mov,.webm,.mkv';
-const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND };
+const ACCEPT = { sound: SND + ',video/*', video: VID, picture: 'image/*', gif: 'image/gif,.gif', text: '.pdf,.docx,.epub,.rtf,.html,.htm,.txt,application/pdf,text/plain,text/html', 'pdf+picture': 'application/pdf,.pdf,image/*', pdf: 'application/pdf,.pdf', 'video+sound': VID + ',' + SND, 'video+picture': VID + ',image/*', 'video+picture?': VID + ',image/*', 'sound+picture?': SND + ',video/*,image/*', 'picture+sound?': 'image/*,' + SND, 'mp3+picture': 'audio/mpeg,.mp3,image/*' };
 // how many files a tool needs, and what to say about them
-const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'] };
+const NEED = { 'video+sound': [2, ' Pick one video and one sound (a video\'s sound works too).'], 'video+picture': [2, ' Pick one video and one picture.'], 'video+picture?': [1, ' Pick a video; add a picture if you want one.'], 'sound+picture?': [1, ' Pick a sound; add a picture if you want one.'], 'picture+sound?': [1, ' Pick 1 or more pictures, in the order to show them; add a sound if you want one.'], 'mp3+picture': [2, ' Pick one MP3 and one picture.'] };
 const PICTURE_OUT = ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'], SOUND_OUT = ['wav', 'aiff', 'flac', 'ogg', 'opus'], TEXT_OUT = ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'], VIDEO_OUT = ['mp4', 'mov', 'webm', 'mkv'];
 const SHOWN = new Set(['jpg', 'png', 'webp', 'gif', 'bmp']);
 
@@ -277,6 +278,13 @@ async function go() {
       for (const c of cs) { if (row) { x.drawImage(c, at, Math.round((H - c.height) / 2)); at += c.width; } else { x.drawImage(c, Math.round((W - c.width) / 2), at); at += c.height; } }
       add({ name: outName(base(list[0].f.name) + ' joined.png', 'png', taken), ext: 'png', bytes: new Uint8Array(await (await blobOf(out, 'image/png')).arrayBuffer()), notes: [cs.length + ' pictures ' + (row ? 'side by side' : 'one above the other'), W + ' x ' + H + ' pixels'] });
     } else if (t.run === 'video') { await runVideo(t, list, taken, add, fail, say);
+    } else if (t.run === 'mp3-image') {
+      const m = list.find((x) => x.fmt === 'mp3'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
+      if (!m || !pic) throw new Error('pick one MP3 and one picture.');
+      say('Putting ' + pic.f.name + ' in ' + m.f.name);
+      const raw = await bytesOf(pic.f), jpgOrPng = pic.fmt === 'jpg' || pic.fmt === 'png', cover = jpgOrPng ? raw : await pictureFile(await canvasOf(pic.f), 'jpg', 0.92);
+      const r = addCover(await bytesOf(m.f), cover, pic.fmt === 'png' ? 'image/png' : 'image/jpeg');
+      add({ name: outName(m.f.name, 'mp3', taken), ext: 'mp3', bytes: r.bytes, notes: (jpgOrPng ? [] : [pic.fmt.toUpperCase() + ' picture made a JPEG, the format players read']).concat(r.notes) });
     } else if (t.run === 'pdf-image') {
       const p = list.find((x) => x.fmt === 'pdf'), pic = list.find((x) => kindOf(x.fmt) === 'picture');
       if (!p || !pic) throw new Error('pick one PDF and one picture.');
@@ -381,7 +389,7 @@ function show() {
     const li = make('li', {}, make('a', { class: 'dl', href: url, download: r.name, textContent: 'Download ' + r.name }), make('span', { class: 'sz' }, sizeText(r.bytes.length)));
     if (r.notes && r.notes.length) li.append(make('p', { class: 'notes' }, r.notes.join(' · ')));
     if (SHOWN.has(r.ext)) li.append(make('img', { src: url, alt: 'The new picture: ' + r.name }));
-    if (['wav', 'flac', 'ogg', 'opus'].includes(r.ext)) li.append(make('audio', { controls: true, src: url, preload: 'metadata' }));
+    if (['wav', 'flac', 'ogg', 'opus', 'mp3'].includes(r.ext)) li.append(make('audio', { controls: true, src: url, preload: 'metadata' }));
     if (VIDEO_OUT.includes(r.ext)) li.append(make('video', { controls: true, src: url, preload: 'metadata', playsInline: true }));
     ul.append(li);
   }
