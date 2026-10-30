@@ -4,7 +4,10 @@
  * "yes or no", "should I go", "yesno".
  */
 export function isYesNo(text) {
-  return /^(?:please\s+)?(?:yes\s+or\s+no|yesno|should\s+i(?:\s+\w+){0,3}|yes\s+or\s+no\s+please)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  // 2026-10-30: "should i rent or buy" names two choices, so a coin's Yes or No answers neither: it goes on to the answer
+  if (/^(?:please\s+)?should\s+i\b.*\bor\b/i.test(t)) return false;
+  return /^(?:please\s+)?(?:yes\s+or\s+no|yesno|should\s+i(?:\s+\w+){0,3}|yes\s+or\s+no\s+please)$/i.test(t);
 }
 
 function run(text, api) {
@@ -19,7 +22,7 @@ function run(text, api) {
 export default {
   name: 'yesno',
   examples: ['yes or no', 'should I go', 'yesno', 'should i'],
-  nearMisses: ['what is yes or no', 'yes and no'],
+  nearMisses: ['what is yes or no', 'yes and no', 'should i rent or buy'],
   match(lower, text) { return isYesNo(text); },
   run,
   suite() {
