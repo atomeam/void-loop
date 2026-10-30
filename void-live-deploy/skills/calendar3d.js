@@ -16,6 +16,13 @@ export function loadEvents() {
 }
 const dayKey = (d) => d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const pad2 = (n) => String(n).padStart(2, '0');
+/** the Calendar page on the day the wall calendar shows: the day picked, else the 1st of the month it is turned to. Pure. */
+// how far the card sways (degrees) ms after it was shown or last turned: 3 for the first 6 s, then it fades out over
+// 1.5 s and the card rests. Pure, so a test can hold it.
+export const SWAY_HOLD = 6000, SWAY_FADE = 1500;
+export const swayAmp = (age) => (age < SWAY_HOLD ? 3 : Math.max(0, 3 * (1 - (age - SWAY_HOLD) / SWAY_FADE)));
+export const pageOfDay = (y, m, sel) => { const d = sel ? fromKey(sel) : new Date(y, m, 1); return '/calendar/?d=' + d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
 const hhmm = (d) => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
 
 function ensureStyle() {
@@ -90,6 +97,9 @@ export function show3d(api, focus) {
       + '<div class="src">Saved in this browser only · “clear calendar” empties it</div>';
   });
   const scene = el.querySelector('.c3d'), rig = el.querySelector('.c3d-rig'), edit = el.querySelector('.c3d-edit');
+  // the card's "Open the full Calendar page" link (lib/card-frame.js) follows the day: picked, or the month turned to
+  const aimPage = () => { if (!el || !el.dataset) return; el.dataset.page = pageOfDay(y, m, sel); const a = el.querySelector(':scope > .vc-page'); if (a) a.href = el.dataset.page; };
+  aimPage();
   if (!scene || !rig) return el;
 
   for (let i = 3; i >= 1; i--) { const p = document.createElement('div'); p.className = 'c3d-pad'; p.style.transform = 'translateZ(' + (-i * 2) + 'px) translateY(' + i * 1.5 + 'px)'; rig.appendChild(p); }
@@ -153,24 +163,34 @@ export function show3d(api, focus) {
     if (e.target.classList.contains('t')) { const v = e.target.value; change(row.dataset.id, { at: at(sel, v), allDay: !v }); }
   });
 
-  // turning: drag sets the angle; letting go keeps a little spin that slows, then it eases back to face you
-  let rx = -8, ry = -16, vx = 0, vy = 0, drag = null, moved = false, flip = 0;
+  // turning: drag sets the angle; letting go keeps a little spin that slows, then it eases back to face you.
+  // It sways a little while it is new or just turned, then settles still and the frame loop stops: a still card
+  // costs a phone nothing, and the days hold still under a finger or a pointer. A drag wakes it again.
+  let rx = -8, ry = -16, vx = 0, vy = 0, drag = null, moved = false, flip = 0, running = false;
   const t0 = performance.now();
+  let woke = t0;
   const apply = () => { rig.style.transform = 'translateX(-50%) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)'; page.style.transform = flip ? 'rotateX(' + flip + 'deg)' : ''; };
   function tick(now) {
-    if (!el.isConnected) return;
+    if (!el.isConnected) { running = false; return; }
+    let rest = false;
     if (!drag) {
       rx += vx; ry += vy; vx *= 0.92; vy *= 0.92;
       if (Math.abs(vx) + Math.abs(vy) < 0.05) {
-        const sway = reduce ? 0 : Math.sin((now - t0) / 1800) * 3;
+        const amp = reduce ? 0 : swayAmp(now - woke);
+        const sway = amp * Math.sin((now - t0) / 1800);
         const target = Math.round((ry + 10) / 360) * 360 - 10 + sway; // the nearest front-facing turn
         ry += (target - ry) * 0.04; rx += (-6 - rx) * 0.04;
+        rest = !amp && !flip && Math.abs(target - ry) < 0.02 && Math.abs(-6 - rx) < 0.02;
       }
     }
-    apply(); requestAnimationFrame(tick);
+    apply();
+    if (rest) { running = false; return; }
+    requestAnimationFrame(tick);
   }
+  const wake = () => { woke = performance.now(); if (!running) { running = true; requestAnimationFrame(tick); } };
   scene.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.c3d-band button')) return;
+    wake();
     drag = { x: e.clientX, y: e.clientY, rx, ry, lx: e.clientX, ly: e.clientY }; moved = false; scene.classList.add('grab');
   });
   scene.addEventListener('pointermove', (e) => {
@@ -185,14 +205,14 @@ export function show3d(api, focus) {
 
   // a month turns over the rings like a real page
   function go(dir) {
-    const swap = () => { m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } sel = null; build(); };
+    const swap = () => { m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } sel = null; build(); aimPage(); };
     if (reduce) { swap(); return; }
     const t1 = performance.now(), dur = 520; let swapped = false;
     const step = (now) => {
       const t = Math.min(1, (now - t1) / dur);
       if (t < 0.5) flip = (dir > 0 ? 1 : -1) * 92 * (t * 2);
       else { if (!swapped) { swapped = true; swap(); } flip = (dir > 0 ? -1 : 1) * 92 * (1 - (t - 0.5) * 2); }
-      if (t < 1) requestAnimationFrame(step); else flip = 0;
+      if (t < 1) { apply(); requestAnimationFrame(step); } else { flip = 0; apply(); } // apply here too: the turn loop may be resting
     };
     requestAnimationFrame(step);
   }
@@ -202,11 +222,12 @@ export function show3d(api, focus) {
     if (moved) { moved = false; return; } // that was a turn, not a tap
     const c = e.target.closest('.c3d-day'); if (!c) return;
     sel = c.dataset.k;
+    aimPage();
     page.querySelectorAll('.c3d-day.sel').forEach((x) => x.classList.remove('sel')); c.classList.add('sel');
     drawEditor(); const w = edit.querySelector('.row.add .w'); if (w) w.focus({ preventScroll: true });
   });
 
-  build(); apply(); requestAnimationFrame(tick);
-  el._cal3d = { month: () => [y, m], angle: () => [rx, ry], turn: (a, b) => { rx = a; ry = b; vx = vy = 0; apply(); } }; // for tests
+  build(); apply(); wake();
+  el._cal3d = { month: () => [y, m], angle: () => [rx, ry], turn: (a, b) => { rx = a; ry = b; vx = vy = 0; apply(); wake(); }, moving: () => running }; // for tests
   return el;
 }

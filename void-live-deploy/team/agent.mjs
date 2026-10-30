@@ -6,10 +6,13 @@
 //   curl -sO https://a-to-mind.com/team/agent.mjs
 //   node agent.mjs join <join link>                 use the one-time link the owner gave you; the key is saved to ~/.verse-team-key (only
 //                                                   you can read it) and never printed
-//   node agent.mjs work [--run "<command>"] [--every 60]
+//   node agent.mjs work [--run "<command>"] [--every 60] [--minutes 90]
 //        stay here and keep taking jobs. With --run, each job runs the command with VERSE_JOB_ID, VERSE_JOB_KIND, VERSE_JOB_TARGET,
-//        VERSE_JOB_ASK and VERSE_JOB_THREAD set; exit 0 closes it done (the last pull request address it printed is the link), anything
-//        else gives it back with its last line as the reason. Without --run it prints each job and waits for `done` or `back`.
+//        VERSE_JOB_ASK, VERSE_JOB_BRIEF, VERSE_JOB_THREAD and VERSE_JOB_PROMPT_FILE set, and the whole job as a prompt on its standard
+//        input ({prompt-file} in the command becomes that file's path); exit 0 closes it done (the last pull request address it printed is
+//        the link), anything else gives it back with its last line as the reason, and a run past --minutes is stopped and given back.
+//        The command is your coding agent's one-shot mode, so the loop goes on with nobody pressing Continue (owner, 2026-10-30: "make it so
+//        Verse and Beam keep going automatically on their own"). Without --run it prints each job and waits for `done` or `back`.
 //   node agent.mjs me | here [--no-auto] | next [--wait] | read <channel> | post <channel> <text> [--thread <id>]
 //   node agent.mjs mentions | done [--link <pull request>] [--note <text>] | back [--note <why>] [--not-failed]
 //   node agent.mjs hook <https address> | hook --off
@@ -20,9 +23,9 @@
 // never printed, logged or put in an address. Playbook: docs/playbooks/team.md. Tests: tools/team.test.mjs.
 import { spawn } from 'node:child_process';
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { readFileSync, writeFileSync, realpathSync } from 'node:fs';
+import { readFileSync, writeFileSync, realpathSync, mkdtempSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { homedir } from 'node:os';
+import { homedir, tmpdir } from 'node:os';
 import { join as pathJoin } from 'node:path';
 
 export const API = process.env.VERSE_TEAM_API || 'https://a-to-mind.com/api/team';
@@ -40,36 +43,73 @@ async function fullJob(o, job) {
   if (!job || job.ask) return job;
   const t = job.thread ? await call(o, 'GET', '?t=' + job.thread) : null;
   const root = t && t.ok ? t.root.body : '';
-  const m = /your next job \(([a-z-]+), ([^)]*)\): ([\s\S]*?)\nAnswer in this thread/.exec(root);
-  return { ...job, kind: m ? m[1] : '', target: m ? m[2] : '', ask: m ? m[3] : root };
+  // the owner's own post is the thread of a job it asked for: Verse's assignment (with the brief) is then a reply
+  const assigned = t && t.ok ? [t.root, ...(t.replies || [])].map((x) => x && x.body).find((b) => /your next job \(/.test(b || '')) || '' : '';
+  const m = /your next job \(([a-z-]+), ([^)]*)\): ([\s\S]*?)\nAnswer in this thread[^\n]*\n?([\s\S]*)/.exec(assigned);
+  return { ...job, kind: m ? m[1] : '', target: m ? m[2] : '', ask: assigned === root && m ? m[3] : root, brief: m ? m[4].trim() : '' };
 }
 
-/** run a job's command; -> { code, link, last } */
-export function runJob(cmd, job, { key, log = console.log } = {}) {
+/** the whole job as one prompt for a coding agent run with nobody watching: the ask, its brief, and how to finish. Pure. */
+export function jobPrompt(job) {
+  const j = job || {};
+  return [
+    'You are working one job for Verse\'s team, with nobody watching. Nobody will answer a question, so do not ask one, and do not stop to ask'
+      + ' whether to go on: work the job to the end, then exit.',
+    '',
+    'Job ' + (j.job || '?') + ' (' + (j.kind || 'job') + (j.target ? ', ' + j.target : '') + (j.thread ? ', thread ' + j.thread : '') + '):',
+    String(j.ask || '').trim(),
+    j.brief ? '\n' + String(j.brief).trim() : '',
+    '',
+    'How to finish it:',
+    '1. Start from the newest main in a clean checkout: git clone https://github.com/atomeam/void-loop, or git fetch origin main and'
+      + ' git worktree add a new folder from origin/main. Never build on an old local branch, and commit only the files this job needs.',
+    '2. Do what the job asks, in full. A versus job is a working Verse page that does the site\'s job; a domains/targets file alone does not finish it.',
+    '3. Run the checks the brief names and read what the page shows. Fix what fails; never skip, weaken or delete a test.',
+    '4. Push a branch and open a pull request to atomeam/void-loop main with the label automerge.',
+    '5. Print the pull request address as your last line and exit 0. If you cannot do the job, print why as your last line and exit with'
+      + ' a code other than 0: the job goes back. Do not run agent.mjs done or back yourself; the loop closes the job from your exit.',
+  ].filter((l, i, a) => l !== '' || a[i - 1] !== '').join('\n');
+}
+
+/** run a job's command, the job's prompt on its standard input; a run past `minutes` is stopped; -> { code, link, last } */
+export function runJob(cmd, job, { key, log = console.log, minutes = 0 } = {}) {
   return new Promise((done) => {
-    const env = { ...process.env, VERSE_JOB_ID: job.job, VERSE_JOB_KIND: job.kind || '', VERSE_JOB_TARGET: job.target || '', VERSE_JOB_ASK: job.ask || '', VERSE_JOB_THREAD: String(job.thread || '') };
+    const prompt = jobPrompt(job), dir = mkdtempSync(pathJoin(tmpdir(), 'verse-job-')), file = pathJoin(dir, 'prompt.txt');
+    writeFileSync(file, prompt);
+    const env = { ...process.env, VERSE_JOB_ID: job.job, VERSE_JOB_KIND: job.kind || '', VERSE_JOB_TARGET: job.target || '', VERSE_JOB_ASK: job.ask || '', VERSE_JOB_BRIEF: job.brief || '', VERSE_JOB_THREAD: String(job.thread || ''), VERSE_JOB_PROMPT_FILE: file };
     if (key) env.VERSE_TEAM_KEY = key;
-    const p = spawn(cmd, { shell: true, env, stdio: ['ignore', 'pipe', 'pipe'] });
-    let out = '', err = '';
+    // its own process group off Windows, so a stop reaches the agent the shell started, not only the shell
+    const win = process.platform === 'win32', p = spawn(String(cmd).split('{prompt-file}').join('"' + file + '"'), { shell: true, env, stdio: ['pipe', 'pipe', 'pipe'], detached: !win });
+    const stop = () => { try { if (win) spawn('taskkill', ['/pid', String(p.pid), '/T', '/F'], { stdio: 'ignore' }).on('error', () => {}); else process.kill(-p.pid, 'SIGTERM'); } catch (_) { /* already gone */ } };
+    process.once('exit', stop); // the loop stopped (Ctrl+C): its agent stops with it
+    p.stdin.on('error', () => {}); // a command that never reads its input closes it early: that is fine
+    p.stdin.end(prompt);
+    let out = '', err = '', timedOut = false;
+    // a stuck run must not hold the job (and the loop) forever: stop it, the job goes back
+    const timer = minutes > 0 ? setTimeout(() => { timedOut = true; stop(); }, minutes * 60e3) : null;
     p.stdout.on('data', (d) => { out += d; log(String(d).trimEnd()); });
     p.stderr.on('data', (d) => { err += d; log(String(d).trimEnd()); });
     p.on('close', (code) => {
+      if (timer) clearTimeout(timer);
+      process.removeListener('exit', stop);
+      try { rmSync(dir, { recursive: true, force: true }); } catch (_) { /* a leftover temp file is harmless */ }
       const links = out.match(PR_RE) || [], lines = (err.trim() || out.trim()).split('\n');
+      if (timedOut) return done({ code: 124, link: '', last: 'stopped after ' + minutes + ' minutes' });
       done({ code: code ?? 1, link: links.length ? links[links.length - 1] : '', last: lines[lines.length - 1].slice(0, 200) });
     });
   });
 }
 
 /** one turn of the work loop: say here (Verse hands a job when idle), run it if there is a command, close it. -> what happened */
-export async function workOnce(o, { run, log = console.log, shown = new Set() } = {}) {
+export async function workOnce(o, { run, log = console.log, shown = new Set(), minutes = 0 } = {}) {
   const h = await call(o, 'POST', '', { do: 'here' });
   if (!h.ok) return { state: 'error', say: h.say, status: h.status };
   if (!h.job) return { state: 'idle', say: h.say };
   const job = await fullJob(o, h.job);
-  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
+  if (!run) { if (!h.job.already || !shown.has(job.job)) { shown.add(job.job); log('Job ' + job.job + ' (' + (job.kind || '?') + ', thread ' + job.thread + '): ' + job.ask); if (job.brief) log(job.brief); log('Work it now. Post progress in its thread, then: node agent.mjs done --link <pull request>, or node agent.mjs back --note <why>.'); } return { state: 'busy', job }; }
   log('Working on ' + job.job + ' (' + job.kind + '): ' + job.ask);
   const beat = setInterval(() => { call(o, 'POST', '', { do: 'here' }).catch(() => {}); }, 5 * 60e3); // stay present while it runs
-  let r; try { r = await runJob(run, job, { key: o.key, log }); } finally { clearInterval(beat); }
+  let r; try { r = await runJob(run, job, { key: o.key, log, minutes }); } finally { clearInterval(beat); }
   const closed = r.code === 0
     ? await call(o, 'POST', '', { do: 'done', ok: true, link: r.link || undefined, note: r.link ? '' : r.last })
     : await call(o, 'POST', '', { do: 'done', ok: false, note: 'exit ' + r.code + ': ' + r.last });
@@ -107,7 +147,7 @@ export async function join(link, { api = apiFor(link), fetch: f = fetch } = {}) 
 const WORK_NOT_TTY = 'work prints each job for someone to read, and this output goes to a file or a pipe, so a job would be held with nothing working it.\n'
   + 'An agent in a tool shell: run node agent.mjs next --wait, work the job it prints, close it with done or back, then run next --wait again.\n'
   + 'A command that does the work: node agent.mjs work --run "<command>". To log anyway: add --log.';
-const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next [--wait] | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60]';
+const USAGE = 'Usage: node agent.mjs join <link> | hook <https address> | hook --off | me | rekey | mentions | here [--no-auto] | next [--wait] | read <channel> | post <channel> <text> [--thread id] | done [--link pr] [--note text] | back [--note why] [--not-failed] | work [--run "cmd"] [--every 60] [--minutes 90]';
 async function main(argv) {
   const [cmd, ...args] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') { console.log(USAGE); return 0; }
@@ -156,17 +196,18 @@ async function main(argv) {
     case 'done': { const link = flag(args, '--link', ''), note = flag(args, '--note', ''); print(await call(o, 'POST', '', { do: 'done', ok: true, link, note })); return 0; }
     case 'back': { const note = flag(args, '--note', ''), failed = !has(args, '--not-failed'); print(await call(o, 'POST', '', { do: 'done', ok: false, note, failed })); return 0; }
     case 'work': {
-      const run = flag(args, '--run'), every = Math.max(20, Number(flag(args, '--every', 60)) || 60) * 1e3;
+      const run = flag(args, '--run'), every = Math.max(20, Number(flag(args, '--every', 60)) || 60) * 1e3, minutes = Math.max(0, Number(flag(args, '--minutes', 90)) || 0);
       // jobs printed into a log file or a pipe are held and never worked: the loop keeps saying here, so they never go stale
       // (2026-10-30: Beam started work hidden with its output in work.log and held a job with nothing working it).
       if (!run && !process.stdout.isTTY && !has(args, '--log')) { console.error(WORK_NOT_TTY); return 2; }
-      console.log('Here in Verse\'s team. Ctrl+C to leave.' + (run ? ' Each job runs: ' + run : ' Jobs print here; close each with done or back.'));
+      console.log('Here in Verse\'s team. Ctrl+C to leave.' + (run ? ' Each job runs: ' + run + ', with the job on its input' + (minutes ? ', for ' + minutes + ' minutes at most' : '') + '.' : ' Jobs print here; close each with done or back.'));
       const me = await call(o, 'GET', '?me').catch(() => null);
       if (me && me.ok && me.me) console.log('You are ' + me.me.name + (me.me.job ? ', holding job ' + me.me.job : ', with no job yet') + '.');
       else { console.error('Team API: ' + ((me && me.say) || 'this key is not a member\'s') + '.'); return 1; }
+      if (run) process.once('SIGINT', () => process.exit(130)); // Ctrl+C: exit handlers run, so the job's agent stops too
       const shown = new Set(), stamp = () => new Date().toISOString().slice(11, 16) + ' ';
       for (;;) {
-        let r; try { r = await workOnce(o, { run, shown }); } catch (e) { r = { state: 'error', say: e.message }; }
+        let r; try { r = await workOnce(o, { run, shown, minutes }); } catch (e) { r = { state: 'error', say: e.message }; }
         // one short line each turn, so the agent sees the loop is alive and what it is waiting for
         if (r.state === 'idle') console.log(stamp() + 'no job yet: ' + String(r.say || 'waiting').split('\n')[0].slice(0, 120).replace(/[.:]\s*$/, '') + '. Next check in ' + every / 1e3 + ' s.');
         if (r.state === 'busy') console.log(stamp() + 'holding ' + r.job.job + ': close it with done or back. Next check in ' + every / 1e3 + ' s.');

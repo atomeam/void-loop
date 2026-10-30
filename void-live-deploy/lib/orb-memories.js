@@ -76,3 +76,28 @@ export function memorySays(mems) {
   const said = words.length ? 'Verse remembers ' + words.slice(0, 5).join(', ') + (words.length > 5 ? ' and ' + (words.length - 5) + ' more' : '') + '. Tap a word to remind it.' : '';
   return [said, others.length ? 'From the shared field: ' + others.join(', ') + '.' : ''].filter(Boolean).join(' ');
 }
+
+// The card answers Verse as it thinks (owner via the team, 2026-10-30: the orbs "should feel alive on the stage, respond to what Verse
+// remembers"): a memory that is new, or that Verse thinks about again (its brightness jumps), stirs the fluid where it sits, once, so an
+// orb gathers there while you watch, and its word pulses. STIR is the jump that counts; a stir is as strong as the jump (or the brightness,
+// for a new memory), from STIR_MIN up to 1.
+export const STIR = 0.2, STIR_MIN = 0.35;
+/** the memories that stir now: [{ key, x, y, word, strength }]. before: Map key -> brightness from the last pass (updated in place).
+ *  Memories that left are dropped from it, so coming back counts as new. Pure apart from before, which the caller owns. */
+export function stirsOf(before, mems) {
+  const out = [], live = new Set();
+  for (const m of mems || []) {
+    if (!m || m.key == null) continue; live.add(m.key);
+    const act = clamp01(m.act), was = before.get(m.key);
+    if (was === undefined || act - was >= STIR) out.push({ key: m.key, x: clamp01(m.x), y: clamp01(m.y), word: m.word || '', strength: Math.max(STIR_MIN, Math.min(1, was === undefined ? act : act - was + STIR_MIN)) });
+    before.set(m.key, act);
+  }
+  for (const k of [...before.keys()]) if (!live.has(k)) before.delete(k);
+  return out;
+}
+/** the remembered word an orb is nearest, within r (both in 0..1 of the card), or ''. Pure. */
+export function wordNear(mems, x, y, r = 0.12) {
+  let best = '', bd = r * r;
+  for (const m of mems || []) { if (!m || !m.word) continue; const dx = clamp01(m.x) - x, dy = clamp01(m.y) - y, d = dx * dx + dy * dy; if (d <= bd) { bd = d; best = m.word; } }
+  return best;
+}

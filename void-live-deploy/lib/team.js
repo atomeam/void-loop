@@ -7,6 +7,7 @@
  * search, presence (busy, idle, away) and unread marks. Nothing is seeded: an empty workspace is empty.
  * Pure: no network, no storage, no DOM. Tests: tools/team.test.mjs.
  */
+import { briefOf } from './job-guide.js';
 
 export const CODE_RE = /^[a-z0-9][a-z0-9-]{0,20}$/;
 export const NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,23}$/;
@@ -173,9 +174,10 @@ export function searchWords(q) {
     .slice(0, LIMITS.search).map((w) => w.slice(0, 40).replace(/[\\%_]/g, (c) => '\\' + c));
 }
 
-/** the line Verse writes when it hands a job out */
+/** the line Verse writes when it hands a job out, then the job's brief (lib/job-guide.js: the spec, the repository, how to deliver), so a job is never handed out without one */
 export const assignText = (name, job) => '@' + name + ' your next job (' + kindOf(job.target) + ', ' + clean(job.target, 60) + '): ' + clean(job.ask, 400)
-  + '\nAnswer in this thread as you work. Close it with the result: done (with the pull request) or give it back.';
+  + '\nAnswer in this thread as you work. Close it with the result: done (with the pull request) or give it back.'
+  + '\n\n' + briefOf(job, kindOf(job.target));
 
 /** what the owner is told with a new join link */
 export const inviteSay = (name) => 'Give ' + name + ' this link. It works once, for a day, and is safe to paste in any chat: opening it uses nothing up.'

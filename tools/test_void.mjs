@@ -142,6 +142,7 @@ const approvalFn = await import(new URL('../void-live-deploy/functions/api/appro
 // automation.keep executor's yes (lib/keep-going.js) flips a seeded rule onto the clock exactly as it does live
 const automationsFn = await import(new URL('../void-live-deploy/functions/api/automations.js', import.meta.url).href);
 const autosLib = await import(new URL('../void-live-deploy/lib/automations-run.js', import.meta.url).href);
+const betterLib = await import(new URL('../void-live-deploy/lib/better.js', import.meta.url).href); // family-health: the growth score drivers the card should list
 const OWNER = 'test-owner-key-0123456789';
 function memoryD1({ broken = false } = {}) {
   // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
@@ -7813,6 +7814,13 @@ try {
     check('Site Test card (asked by Verse): a heat map ranks the families least stable first, the failing family hottest with the longest bar, its name escaped',
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));
+    // Verse's own parts by name (skills/own-parts.js; owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card)
+    let answered = 0; await S.ctx.route(/\/api\/answer/, (rt) => { answered++; return rt.fulfill(json({ answer: 'a web answer', sources: [] })); });
+    await S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); if (l) l.remove(); }).catch(() => null);
+    await S.ask('show me the site test card', 1500);
+    const own = await until(async () => S.p.$eval('.vpage.on', (p) => (p.querySelector('.st-candidates') ? { text: p.textContent.slice(0, 80) } : null)).catch(() => null), 6000);
+    check('own parts: "show me the site test card" opens Verse\'s own Site Test card ("What to test next"), not a web answer about a test card',
+      !!own && !answered && !S.errors.length, JSON.stringify({ own, answered, errors: S.errors }));
     await S.ctx.close(); }
   // Verse's incident asks (asked by Verse): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
   // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family
@@ -7933,8 +7941,27 @@ try {
         && JSON.stringify(src.rows.filter((x) => x.next === 'live').map((x) => x.name).sort()) === JSON.stringify([...(wf.sources.one_live_from_proven || [])].sort())
         && !src.wide && !F.errors.length,
         JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
-    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
-      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
+    // the card on today's data: the families listed are exactly the ones lib/better.js familyDrivers puts 0.05 points or more either side of the
+    // average (three each way), with the newest void.better.json row's part count; on a day when every family is that close to the average
+    // (since nearly every skill went proven on 2026-10-30, run 41010108375), one line says so instead of an empty heading
+    { const shown = await F.p.$eval('.vpage .fh-drivers', (b) => ({ head: (b.querySelector('.vh') || {}).textContent || '', dr: [...b.querySelectorAll('li[data-driver]')].map((x) => x.dataset.driver + ':' + (+x.dataset.points)), even: (b.querySelector('.fh-even') || {}).textContent || '' })).catch(() => null);
+      const rows = JSON.parse(fs.readFileSync(path.join(root, 'void.better.json'), 'utf8')), last = (Array.isArray(rows) ? rows : []).filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0];
+      const nParts = last && last.parts ? Object.values(last.parts).filter((v) => v !== null && v !== undefined).length : 5, d = betterLib.familyDrivers(fam, nParts || 5);
+      const want = [...d.filter((x) => x.points > 0.04).slice(0, 3), ...d.filter((x) => x.points < -0.04).slice(-3).reverse()].map((x) => x.id + ':' + x.points);
+      check('family-health: on today\'s families the growth score part lists exactly the families 0.05 points or more from the average, and says in one line when none is',
+        !!shown && /What moves my growth score/.test(shown.head) && JSON.stringify(shown.dr) === JSON.stringify(want)
+        && (want.length ? !shown.even : /^No family moves it by 0\.05 points or more: every family is \d+%( to \d+%)? healthy\.$/.test(shown.even)) && !F.errors.length,
+        JSON.stringify({ shown, want, errors: F.errors })); }
+    // the same part on a day with a spread (skills/families.json served with every Numbers and money skill failing): it names the families that
+    // lift the score and the ones that drag it, in score points; held on a fixture, so the claim does not hang on how healthy the skills are today
+    { const G = await fresh({ phone: true });
+      const spread = JSON.parse(JSON.stringify(fam)); for (const f of spread.families) if (f.id === 'numbers') for (const s of f.skills) s.failing = ['fixture: failing'];
+      await G.ctx.route(/\/skills\/families\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(spread) }));
+      await G.ask('show me your skill families', 1200);
+      await until(async () => G.p.$eval('.vpage .fh-drivers li[data-driver]', () => true).catch(() => false), 6000);
+      const dr = await G.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await G.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => spread.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr }));
+      await G.ctx.close(); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Verse, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows

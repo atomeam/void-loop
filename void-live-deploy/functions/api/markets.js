@@ -9,7 +9,7 @@
 //   - read prices. No model, no key, no token, no KV, no database, no write; a failed answer is never cached. Nothing here trades, holds money or gives advice.
 // SOURCES AND THEIR RISK: Stooq's CSV (free, no key, the first choice for shares and indices) can start asking for a key or change; Yahoo's chart endpoint is
 // unofficial and has no published terms for this use, so it is only the fallback and the source of the one-day chart; CoinGecko's public API (no key, about 30 calls a
-// minute, one year of history); frankfurter.dev (ECB reference rates, once a day). Data may be delayed up to 15 minutes or more; every answer says its source.
+// minute, one year of history; when it refuses, a coin's quote comes from Yahoo's chart instead); frankfurter.dev (ECB reference rates, once a day). Data may be delayed up to 15 minutes or more; every answer says its source.
 // answer.js is loaded when first needed, not at import: the report code (lib/report-run.js) reaches this file from answer.js, and a static import back would be a cycle
 const rateLimited = async (...a) => (await import('./answer.js')).rateLimited(...a);
 import { recordClose, RECORD_NAME } from '../../lib/markets-record.js';
@@ -99,7 +99,8 @@ export const recordAnswer = (r, range, on, rec, now) => ({ ok: true, partial: tr
 /** one quote, shaped for the page: { ok, sym, kind, name, currency, range, price, change, pct, ..., points, source, delayed, at }. fetchFn and now are for tests. */
 export async function lookQuote(r, range, on, fetchFn = fetch, now = Date.now()) {
   let q = null;
-  try { q = r.kind === 'crypto' ? await coinQuote(r, range, fetchFn, now) : r.kind === 'fx' ? await fxQuote(r, range, fetchFn, now) : await stockQuote(r, range, fetchFn, now); } catch (_) { q = null; }
+  // a coin: CoinGecko first; when it does not answer (its free API often refuses shared Cloudflare addresses), Yahoo's BTC-USD style chart, said to be from Yahoo
+  try { q = r.kind === 'crypto' ? (await coinQuote(r, range, fetchFn, now).catch(() => null)) || { ...(await yahooQuote(r, range, fetchFn)), name: r.name } : r.kind === 'fx' ? await fxQuote(r, range, fetchFn, now) : await stockQuote(r, range, fetchFn, now); } catch (_) { q = null; }
   if (!q) {
     // the sources did not answer: a day inside the bundled record still has its close (lib/markets-record.js), said to be from it
     const rec = on ? recordClose(r.sym, on) : null;

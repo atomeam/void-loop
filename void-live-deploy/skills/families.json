@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 0,
-  "tested": 2,
-  "checked": 5,
-  "proven": 372
+  "tested": 0,
+  "checked": 6,
+  "proven": 374
  },
  "families": [
   {
@@ -574,7 +574,7 @@
     "experiment": 0,
     "tested": 0,
     "checked": 1,
-    "proven": 37
+    "proven": 38
    },
    "skills": [
     {
@@ -889,6 +889,15 @@
      "last_tested_by": "the benchmark",
      "success_rate": 1,
      "promoted": "2026-10-29"
+    },
+    {
+     "name": "emoji-combos",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     },
     {
      "name": "hangman",
@@ -3324,9 +3333,9 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 1,
-    "proven": 46
+    "tested": 0,
+    "checked": 2,
+    "proven": 47
    },
    "skills": [
     {
@@ -3349,10 +3358,12 @@
     },
     {
      "name": "studios",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-30"
     },
     {
      "name": "dependency-health",
@@ -3607,7 +3618,7 @@
     {
      "name": "family-health",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 9 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,
@@ -3697,10 +3708,11 @@
     },
     {
      "name": "own-parts",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-10-29",
-     "last_tested_by": "the daily smoke test",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-30",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-30",
      "streak": 10
     },
     {

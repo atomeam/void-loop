@@ -2,7 +2,7 @@
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
 // format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF; FLAC and Ogg in audio-write.js); the sound edits (cut,
 // speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4, MOV, WEBM and MKV video and the video edits (run by /lib/video-write.js, written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
-// and written. Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
+// and written; an EPUB's cover, the merge of EPUBs and the compression of an EPUB or a CBZ (/lib/epub-edit.js). Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
 // 'no' not on Verse yet. A tool is never shown as done when it is not.
 import { unzip, paragraphsOf, OFFICE, docxOf, xml, unxml, pdfParagraphs } from './translate-docs.js';
@@ -19,9 +19,9 @@ const VIDEO_WHY = { '3GP': 'Not on Verse yet: Verse writes MP4, MOV, WEBM and MK
 const VIDEO_OUT_NOTE = { MP4: 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.', MOV: 'Any video your browser can play becomes a MOV (H.264 video; AAC sound, or Opus where the browser has no AAC encoder, which QuickTime Player does not play), on this device. It takes as long as the video plays.', WEBM: 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.', MKV: 'Any video your browser can play becomes an MKV (VP9 video, Opus sound), on this device. It takes as long as the video plays.' };
 // a video tool: run 'video' with the edit (vop); each plays the video once, so it takes as long as the video plays
 const vid = (cat, name, vop, note, extra = {}) => tool(cat, name, 'here', { run: 'video', vop, from: 'video', note, ...extra });
-// the sounds Verse writes: WAV and AIFF and FLAC with its own encoders; OGG and OPUS with the browser's Opus encoder in Verse's own Ogg pages
-const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
-const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, OGG or OPUS, but cannot write ' + f + '.';
+// the sounds Verse writes: WAV, AIFF, FLAC and ALAC with its own encoders; OGG and OPUS with the browser's Opus encoder in Verse's own Ogg pages
+const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', ALAC: 'ALAC (Apple Lossless, 16-bit, in an .m4a file: the same sound as a WAV, in less space; Verse codes it itself)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
+const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, ALAC, OGG or OPUS, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
 const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 'tool', name, status, ...extra });
@@ -52,7 +52,7 @@ export const CATALOG = Object.freeze([
   vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
   ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
     ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' })
-    : conv('Audio', f, 'no', { note: ['ALAC', 'AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
+    : conv('Audio', f, 'no', { note: ['AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
   tool('Audio', 'Add Image to MP3', 'here', { run: 'mp3-image', from: 'mp3+picture', note: 'Puts a picture in the MP3 as its cover (the ID3 tag, as music players show it). The sound is not coded again, so it stays exactly as it was; title, artist and the other tag fields stay too.' }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
   vid('Audio', 'Audio to Video', 'sound-video', 'A sound becomes a video: the picture you add (or a colour) shown for as long as the sound plays.', { from: 'sound+picture?' }),
@@ -83,11 +83,15 @@ export const CATALOG = Object.freeze([
   tool('Image', 'Remove Image Background', 'no', { note: NO }),
   tool('Image', 'Resize Image', 'verse', { href: '/resize-image/', note: 'On Verse: resize by pixels or by percent.' }),
   tool('Image', 'Rotate Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
-  tool('Image', 'Watermark Image', 'part', { href: '/photos/?tab=text', note: 'On Verse photo tools: Text. A text watermark only, not a picture.' }),
+  tool('Image', 'Watermark Image', 'here', { run: 'watermark-image', from: 'picture+picture?', note: 'Puts your words, or a picture you pick as the mark (the smallest one), in a corner of each picture, see-through by the amount you set. A JPG stays a JPG, a PNG a PNG. Still pictures only: not an animated GIF.' }),
   ...['EPUB', 'AZW', 'DOCX', 'HTML', 'MOBI', 'PDF', 'RTF', 'TXT'].map((f) => (['AZW', 'MOBI'].includes(f)
     ? conv('Ebook', f, 'no', { note: 'Not on Verse yet: Verse cannot write Kindle files.' })
     : conv('Ebook', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of an EPUB, DOCX, PDF, RTF or HTML file as plain text.' : WORDS }))),
-  ...['Change EPUB Cover', 'Compress AZW3', 'Compress CBZ/CBR', 'Compress EPUB', 'Merge EPUB'].map((n) => tool('Ebook', n, 'no', { note: NO })),
+  tool('Ebook', 'Change EPUB Cover', 'here', { run: 'epub-cover', from: 'epub+picture', note: 'Puts a picture on an EPUB as its cover, the one readers show in the library and on the first page. An old cover keeps its file, so every page that showed it shows the new one; a book with no cover gets a cover page first. The text, the chapters and the other files stay byte for byte as they were.' }),
+  tool('Ebook', 'Merge EPUB', 'here', { run: 'epub-merge', from: 'epub', many: true, note: 'Joins 2 or more EPUB books into one, in the order you pick them. Each book keeps its own pages, pictures, styles and fonts, so it looks as it did; the table of contents has a part for each book, with its own chapters. A book with DRM cannot be read, so it cannot be merged.' }),
+  tool('Ebook', 'Compress EPUB', 'here', { run: 'epub-compress', from: 'epub', note: 'Makes an EPUB smaller: every file is packed again, and each JPEG, PNG and WebP picture is made again at the quality you pick and scaled down to the largest side you pick. A picture changes only when the new one is smaller, and keeps its name, so no page changes. The words, styles and fonts stay byte for byte as they were.' }),
+  tool('Ebook', 'Compress CBZ/CBR', 'part', { run: 'cbz-compress', from: 'cbz', note: 'CBZ only: each JPEG, PNG and WebP page is made again at the quality you pick and scaled down to the largest side you pick, and kept only when it is smaller, under its own name and in its own place. A CBR is a RAR archive, which Verse cannot open yet.' }),
+  tool('Ebook', 'Compress AZW3', 'no', { note: NO }),
   ...['PDF', 'DOCX', 'HTML', 'TXT'].map((f) => conv('Document', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of a PDF, DOCX, EPUB, RTF or HTML file as plain text.' : WORDS })),
   tool('Document', 'Add Image to PDF', 'here', { run: 'pdf-image', from: 'pdf+picture', note: 'Puts a picture on a page of a PDF, at the place and size you pick; the rest of the PDF stays as it was.' }),
   tool('Document', 'Compress PDF', 'verse', { href: '/pdf/?tool=compress', note: 'On Verse PDF tools.' }),
@@ -150,8 +154,8 @@ export function formatOf(bytes, name = '') {
 export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
   if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
-  if (k === 'sound') return ['wav', 'aiff', 'flac', 'ogg', 'opus'].filter((t) => t !== x);
-  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff', 'flac', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'sound') return ['wav', 'aiff', 'flac', 'alac', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'video') return ['mp4', 'mov', 'webm', 'mkv', 'wav', 'aiff', 'flac', 'alac', 'ogg', 'opus'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -517,4 +521,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });

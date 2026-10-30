@@ -109,13 +109,20 @@ function mount({ el, q, th, cv, still, redraw }) {
         b.addEventListener('click', (e) => { e.stopPropagation(); const cur = th.state.orbs.find((x) => x.id === o.id); if (cur) sealOne(cur); });
         layer.appendChild(b); els.set(o.id, b);
       }
-      const m = F.orbMorph(o), gold = !!o.sealed, hue = gold ? 42 : m.hue;
-      b.style.left = (o.x / F.GW * 100).toFixed(2) + '%'; b.style.top = (o.y / F.GH * 100).toFixed(2) + '%';
-      b.style.transform = 'scale(' + m.scale + ')'; b.style.opacity = String(m.opacity);
-      b.style.background = 'radial-gradient(circle at 40% 38%, hsla(' + hue + ',100%,88%,.95) 0%, hsla(' + hue + ',90%,60%,.7) 38%, hsla(' + hue + ',90%,45%,0) 72%)';
-      b.style.boxShadow = '0 0 14px hsla(' + hue + ',90%,60%,.55)' + (gold ? ', 0 0 0 1.5px hsla(42,95%,65%,.9)' : '');
-      b.classList.toggle('sealed', gold); b.dataset.scale = String(m.scale); b.dataset.hue = String(hue);
-      b.setAttribute('aria-label', gold ? 'sealed memory orb ' + o.sealed.slice(0, 12) : 'memory orb: tap to seal it');
+      // every frame, so a phone does only what changed: the place and size each frame, the colour only when its hue moves a step
+      const m = F.orbMorph(o), gold = !!o.sealed, hue = gold ? 42 : m.hue, k = b._k || (b._k = {});
+      const left = (o.x / F.GW * 100).toFixed(1) + '%', top = (o.y / F.GH * 100).toFixed(1) + '%', tf = 'scale(' + m.scale + ')', op = String(m.opacity);
+      if (k.left !== left) b.style.left = k.left = left; if (k.top !== top) b.style.top = k.top = top;
+      if (k.tf !== tf) { b.style.transform = k.tf = tf; b.dataset.scale = String(m.scale); } if (k.op !== op) b.style.opacity = k.op = op;
+      const tint = (gold ? 'g' : '') + Math.round(hue / 6) * 6;
+      if (k.tint !== tint) {
+        const h = Math.round(hue / 6) * 6; k.tint = tint;
+        b.style.background = 'radial-gradient(circle at 40% 38%, hsla(' + h + ',100%,88%,.95) 0%, hsla(' + h + ',90%,60%,.7) 38%, hsla(' + h + ',90%,45%,0) 72%)';
+        b.style.boxShadow = '0 0 14px hsla(' + h + ',90%,60%,.55)' + (gold ? ', 0 0 0 1.5px hsla(42,95%,65%,.9)' : '');
+        b.classList.toggle('sealed', gold); b.dataset.hue = String(h);
+      }
+      const near = Mem.wordNear(mems, o.x / F.GW, o.y / F.GH), label = gold ? 'sealed memory orb ' + o.sealed.slice(0, 12) + (near ? ' near "' + near + '"' : '') : 'memory orb' + (near ? ' near "' + near + '"' : '') + ': tap to seal it';
+      if (k.label !== label) { b.setAttribute('aria-label', k.label = label); b.title = label; b.dataset.near = near; }
     }
     for (const [id, b] of els) if (!live.has(id)) { b.remove(); els.delete(id); }
     el.dataset.orbs = String(s.orbs.length);
@@ -125,7 +132,7 @@ function mount({ el, q, th, cv, still, redraw }) {
   // Verse's own memories as orbs (lib/orb-memories.js): the page's brain when it has one (window.verseBrainHost, the same brain the Verse
   // Brain card shows), else what a brain on another tab posts; then the other cards' live slots in the shared field
   const memEls = new Map(), memLine = document.createElement('div');
-  let mems = [], heard = null;
+  let mems = [], heard = null; const stirred = new Map(); // memory key -> its brightness last pass (lib/orb-memories.js stirsOf)
   memLine.className = 'fo-memories'; memLine.setAttribute('aria-live', 'polite'); memLine.style.cssText = 'font-size:12px;opacity:.85;margin-top:4px';
   sealed.after(memLine);
   const pageBrain = () => { const h = window.verseBrainHost; return h && h.alive !== false && h.brain ? h.brain : null; };
@@ -150,6 +157,8 @@ function mount({ el, q, th, cv, still, redraw }) {
     if (!brain && !heard) { try { heard = connectBrain(); } catch (_) { heard = null; } } // no brain on this page: hear one on another tab
     mems = Mem.memoriesOf({ brain, heard: heard && heard.live ? heard.state : null, slots: field ? field.slots() : [], own: field ? field.code : 0 });
     th.state.pulls = Mem.pullsOf(mems, F.GW, F.GH); th.state.memories = mems.length;
+    const stirs = Mem.stirsOf(stirred, mems); // a memory Verse just thought of stirs the fluid where it sits, once (step() spends it)
+    if (stirs.length) { th.state.bursts = (th.state.bursts || []).concat(stirs).slice(-8); el.dataset.stirs = String((+el.dataset.stirs || 0) + stirs.length); el.dataset.stirred = stirs.map((x) => x.word).filter(Boolean).join(','); }
     const live = new Set();
     for (const m of mems) {
       live.add(m.key); const b = memOf(m);
@@ -158,6 +167,7 @@ function mount({ el, q, th, cv, still, redraw }) {
       b.title = what; if (m.word) b.setAttribute('aria-label', what);
     }
     for (const [k, b] of memEls) if (!live.has(k)) { b.remove(); memEls.delete(k); }
+    for (const x of stirs) { const b = memEls.get(x.key); if (b && b.animate && !still()) { try { b.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(' + (1.6 + x.strength).toFixed(2) + ') drop-shadow(0 0 ' + Math.round(6 + 10 * x.strength) + 'px hsla(190,95%,70%,.9))' }, { filter: 'brightness(1)' }], { duration: 900, easing: 'ease-out' }); } catch (_) { /* no animation here */ } } }
     const words = Mem.wordsOf(mems), t = Mem.memorySays(mems);
     if (memLine.textContent !== t) memLine.textContent = t;
     Object.assign(el.dataset, { memories: String(mems.length), memoryWords: words.join(','), memoryFrom: brain ? 'page' : heard && heard.live ? 'tab' : mems.length ? 'field' : 'none' });
@@ -217,12 +227,15 @@ function densityImage(s) {
 }
 
 const idea = {
-  id: NAME, title: 'Memory orbs', sub: 'F-321 · agents in a fluid', W: 360, H: 270, warm: 40,
+  id: NAME, title: 'Memory orbs', sub: 'F-321 · agents in a fluid', W: 360, H: 270, warm: 40, restOffscreen: true, // a card scrolled out of view does no frames (lib/field-stage.js)
   how: 'Small agents share one tiny neural policy and push a fluid. Where it pools, a memory orb is born: it drifts with the current, grows with the density under it and turns with the swirl. Tap one to seal it; Recall brings the last sealed orb back. The words you told Verse float in it too, where Verse Brain holds them, and the fluid pools on them: tap a word to remind Verse of it.',
   create(seed) { return F.create(seed); },
   step(s, dt, input) {
     F.step(s, dt, input);
     const h = Math.max(0, Math.min(3, (+dt || 1 / 60) * 60)); for (const p of s.pulls || []) F.splat(s, p.x, p.y, 0, 0, p.dye * h, 2); // Verse's memories pull the fluid
+    if (s.bursts && s.bursts.length) { // and one Verse just thought of stirs it: dye where it sits and a ring of push outward, so an orb gathers there
+      for (const b of s.bursts) F.stir(s, b.x * F.GW, b.y * F.GH, b.strength);
+      s.bursts = []; }
     s.lastOver = input.over ? { x: input.x, y: input.y } : s.lastOver || null; }, // one point, overwritten: never a path
   metrics: (s) => F.metrics(s),
   params: (s) => F.params(s),

@@ -162,6 +162,7 @@ test('tools/team-agent.mjs keeps an agent busy: it runs each job\'s command and 
   assert.equal(ok.state, 'done'); assert.equal(ok.job.job, 'j2'); assert.equal(ok.link, 'https://github.com/atomeam/void-loop/pull/7');
   assert.equal(job(env, 'j2').state, 'done'); assert.match(job(env, 'j2').note, /pull\/7/);
   assert.equal(ok.next.job, 'j5', 'handed the next at once');
+  assert.match(ok.next.brief || '', /^The spec: [\s\S]*\nDeliver: /, 'the hand-out carries the job\'s brief (lib/job-guide.js)');
   const bad = await workOnce(o, { run: 'node -e "console.error(\'no mirror source\'); process.exit(3)"', log });
   assert.equal(bad.state, 'given back'); assert.equal(bad.job.job, 'j5'); assert.equal(bad.job.kind, 'will', 'a job handed out earlier is read back off its thread');
   assert.equal(job(env, 'j5').state, 'queued'); assert.match(job(env, 'j5').note, /^tries 1 · exit 3: no mirror source/);
@@ -590,7 +591,7 @@ test('next --wait waits for a job, prints it and exits, so an agent in a tool sh
       res.setHeader('content-type', 'application/json');
       const b = body ? JSON.parse(body) : {};
       if (b.do === 'here' && ++heres < 2) return res.end(JSON.stringify({ ok: true, say: 'No job waiting.' }));
-      res.end(JSON.stringify({ ok: true, job: { job: 'team-9', kind: 'site', thread: 7, ask: 'build the thing' } }));
+      res.end(JSON.stringify({ ok: true, job: { job: 'team-9', kind: 'site', thread: 7, ask: 'build the thing', brief: 'Code: https://github.com/atomeam/void-loop' } }));
     });
   });
   await new Promise((r) => srv.listen(0, '127.0.0.1', r));
@@ -598,6 +599,32 @@ test('next --wait waits for a job, prints it and exits, so an agent in a tool sh
     const r = await runAgent(['next', '--wait', '--every', '20'], { VERSE_TEAM_API: 'http://127.0.0.1:' + srv.address().port + '/api/team' });
     assert.equal(r.code, 0, r.err);
     assert.match(r.out, /Job team-9 \(site, thread 7\): build the thing/);
+    assert.match(r.out, /Code: https:\/\/github\.com\/atomeam\/void-loop/, 'it prints the brief with the job (Beam gave back 4 jobs as "no spec", 2026-10-30)');
     assert.equal(heres, 2, 'it asked again until a job came');
   } finally { srv.close(); }
+});
+
+import { runJob as scriptRunJob, jobPrompt } from '../void-live-deploy/team/agent.mjs';
+test('work --run hands the whole job to a one-shot agent and stops a stuck one, so the loop goes on with nobody pressing Continue', async () => {
+  // owner, 2026-10-30: "make it so Verse and Beam keep going automatically on their own" (Beam stopped after 3 jobs to ask "Continue?")
+  const job = { job: 'mvq1', kind: 'versus', target: 'versus:hexo.io', thread: 61, ask: 'Versus: hexo.io needs a page', brief: 'Code: https://github.com/atomeam/void-loop' };
+  const p = jobPrompt(job);
+  assert.match(p, /do not ask one/, 'nobody is there to answer');
+  assert.match(p, /Job mvq1 \(versus, versus:hexo\.io, thread 61\):\nVersus: hexo\.io needs a page/);
+  assert.match(p, /Code: https:\/\/github\.com\/atomeam\/void-loop/, 'the brief comes with it');
+  assert.match(p, /newest main in a clean checkout/, 'never an old local branch (Beam\'s first PRs carried a 10-day-old commit)');
+  assert.match(p, /a domains\/targets file alone does not finish it/, 'a versus job is the page, not a note about the site');
+  assert.match(p, /last line/);
+  const lines = [], log = (l) => lines.push(l);
+  // the prompt arrives on standard input and in the file the command names
+  const echo = await scriptRunJob('node -e "let s=\'\';process.stdin.on(\'data\',d=>s+=d).on(\'end\',()=>{const f=require(\'fs\').readFileSync(process.argv[1],\'utf8\');console.log(s===f?\'same\':\'differs\');console.log(\'https://github.com/atomeam/void-loop/pull/9\')})" {prompt-file}', job, { log });
+  assert.equal(echo.code, 0, lines.join('\n'));
+  assert.match(lines.join('\n'), /same/, 'the input and the file hold the same prompt');
+  assert.equal(echo.link, 'https://github.com/atomeam/void-loop/pull/9');
+  // a command that never reads its input still runs
+  assert.equal((await scriptRunJob('node -e "console.log(1)"', job, { log })).code, 0);
+  // a run past its minutes is stopped and given back with the reason
+  const t0 = Date.now(), stuck = await scriptRunJob('node -e "setTimeout(()=>{},60000)"', job, { log, minutes: 0.02 });
+  assert.equal(stuck.code, 124); assert.match(stuck.last, /stopped after 0\.02 minutes/);
+  assert.ok(Date.now() - t0 < 20e3, 'it did not wait the minute out');
 });

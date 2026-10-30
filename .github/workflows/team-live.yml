@@ -15,6 +15,10 @@ on:
         description: Agents whose old keys stop now (comma separated; a new join link is then made on /team/)
         type: string
         default: ''
+      reopen:
+        description: Done jobs to put back on the queue because their pull request did not do the job (comma separated job ids)
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -39,11 +43,13 @@ jobs:
           VERSE_OWNER: ${{ secrets.VOID_OWNER_TOKEN }}
           QUEUE: ${{ inputs.queue }}
           RETIRE: ${{ inputs.retire }}
+          REOPEN: ${{ inputs.reopen }}
         run: |
           cd /tmp/probe
           set -- --site https://a-to-mind.com
           if [ "$QUEUE" = "true" ]; then set -- "$@" --queue; fi
           if [ -n "$RETIRE" ]; then set -- "$@" --retire "$RETIRE"; fi
+          if [ -n "$REOPEN" ]; then set -- "$@" --reopen "$REOPEN"; fi
           code=0; node team-live.mjs "$@" > out.txt 2>&1 || code=$?
           cat out.txt; cat out.txt >> "$GITHUB_STEP_SUMMARY"
           # the same lines as one annotation, which the REST API reads (/check-runs/<job>/annotations) where the log and the summary cannot be

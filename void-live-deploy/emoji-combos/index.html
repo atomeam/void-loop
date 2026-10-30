@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Emoji combos to copy · Verse</title>
+<meta name="description" content="Search emoji combos, kaomoji and text art by tag and copy them. Collect several into one, make fancy text, turn a picture into dot art, and keep combos of your own on this device.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Emoji combos · Verse">
+<meta property="og:description" content="Search emoji combos, kaomoji and text art by tag and copy them. Collect several into one, make fancy text, turn a picture into dot art, and keep combos of your own on this device.">
+<meta property="og:url" content="https://a-to-mind.com/emoji-combos/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="verse-handoff" content="in: text; out: text">
+<style>
+  /* a-to-mind.com/emoji-combos/ (2026-10-30, against emojicombos.com, the next site in the ranking smallest first): one page and one module,
+     no third party, no cookie, no account; the catalog is written for Verse and counted as it is, your own combos and the saved ones stay on this device */
+  :root { color-scheme: dark; --bg: #0b0a10; --panel: #15131d; --ink: #ecebf5; --soft: #a9a6b9; --line: #2c2938; --accent: #a58bff; --on-accent: #15131c; --ok: #6fd184; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } h2 { font-size: 17px; margin: 26px 0 8px; }
+  p.hint, .hint { font-size: 14px; color: var(--soft); margin: 4px 0 8px; }
+  .box { display: flex; gap: 8px; }
+  input[type=search], input[type=text], textarea { flex: 1; font: inherit; color: inherit; background: var(--panel); border: 2px solid var(--line); border-radius: 10px; padding: 9px 12px; min-width: 0; }
+  input[type=search] { font-size: 18px; }
+  textarea { width: 100%; box-sizing: border-box; min-height: 64px; resize: vertical; font-size: 18px; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  button, .btn { font: inherit; font-size: 15px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; min-height: 36px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+  button.go { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+  button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  .chips a, .tags a { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--soft); text-decoration: none; font-size: 14px; }
+  .chips a:hover, .tags a:hover { color: var(--ink); border-color: var(--accent); }
+  #count { font-size: 15px; color: var(--soft); margin: 10px 0 6px; }
+  #results { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+  .combo { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .combo pre, #dots { margin: 0; font: 22px/1.25 system-ui, "Segoe UI Emoji", "Apple Color Emoji", sans-serif; white-space: pre; overflow-x: auto; }
+  .combo pre.art { font-size: 15px; line-height: 1.05; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .acts button { font-size: 14px; padding: 4px 12px; }
+  #egrid, #similar { display: flex; flex-wrap: wrap; gap: 4px; }
+  #egrid button, #similar button { font-size: 26px; min-width: 48px; min-height: 48px; padding: 0; justify-content: center; border-radius: 10px; }
+  .fancy { display: grid; gap: 6px; } .fancy div { display: flex; gap: 8px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+  .fancy span.s { font-size: 13px; color: var(--soft); min-width: 92px; } .fancy span.t { flex: 1; font-size: 18px; overflow-wrap: anywhere; }
+  label.opt { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; font-size: 15px; }
+  input[type=checkbox] { width: 24px; height: 24px; margin: 0; accent-color: var(--accent); }
+  input[type=range] { height: 30px; width: 140px; accent-color: var(--accent); }
+  input[type=file] { font: inherit; font-size: 14px; min-height: 36px; color: var(--soft); }
+  #dots { font-size: 12px; line-height: 1.1; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px; min-height: 40px; }
+  #status { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--accent); color: var(--on-accent); padding: 6px 16px; border-radius: 999px; font-weight: 600; font-size: 15px; }
+  #status:empty { display: none; }
+  #minemsg { font-size: 14px; color: var(--soft); }
+  nav#related { margin-top: 24px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } nav#related a { color: var(--soft); display: inline-flex; min-height: 30px; align-items: center; }
+  footer { font-size: 13px; color: var(--soft); margin-top: 22px; } footer a { color: inherit; }
+</style>
+<!-- seo -->
+<link rel="canonical" href="https://a-to-mind.com/emoji-combos/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Emoji combos: kaomoji and text art to copy","url":"https://a-to-mind.com/emoji-combos/","description":"Search emoji combos, kaomoji and text art by tag (cat, love, birthday) and copy one, or collect several into one box and copy them together. Make fancy text in 16 Unicode letter styles, turn a picture into Braille dot art, find single emoji by name with the ones like them, and keep combos of your own and the ones you save on this device. Nothing is sent and there is no account; it works offline.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"emoji combos, emoji combinations, kaomoji, text art, dot art generator, fancy text generator, cute emoji combos, aesthetic emoji combos","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/emoji-combos/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Emoji combos: kaomoji and text art to copy","item":"https://a-to-mind.com/emoji-combos/"}]}]}</script>
+<!-- /seo -->
+<script src="/visit.js" defer></script>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/emoji-combos.js">
+<link rel="modulepreload" href="/lib/emoji.js">
+<link rel="modulepreload" href="/lib/toolkit.js">
+<link rel="modulepreload" href="/lib/tool-sites.js">
+<link rel="modulepreload" href="/lib/flight-sites.js">
+<link rel="modulepreload" href="/lib/job-sites.js">
+<link rel="modulepreload" href="/lib/self-sites.js">
+<link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<!-- /modulepreload -->
+</head>
+<body>
+<main>
+  <h1>Emoji combos</h1>
+  <p class="hint">Search emoji combos, kaomoji and text art by tag, then copy one, or collect several into one. Everything here works on this device; nothing you type is sent anywhere.</p>
+  <form class="box" id="form" role="search"><input id="q" type="search" autocomplete="off" aria-label="Search combos by tag" placeholder="Search a tag: cat, love, birthday" enterkeyhint="search"><button class="go" id="go" type="submit">Search</button></form>
+  <div class="row chips" id="chips" aria-label="Popular tags"></div>
+  <div id="count" role="status"></div>
+  <div class="row"><button type="button" id="savedonly" aria-pressed="false">☆ Saved only</button></div>
+  <div id="results"></div>
+
+  <h2>Collected</h2>
+  <p class="hint">Collect combos, single emoji, fancy text or dot art into one box, then copy them together. The link carries what you collected.</p>
+  <textarea id="build" aria-label="Collected combos" placeholder="Press Collect on anything above"></textarea>
+  <div class="row">
+    <button type="button" class="go" id="copybuild">Copy all</button><button type="button" id="clearbuild">Clear</button><button type="button" id="share">Copy link</button>
+    <a class="btn" id="send-count" href="/word-count/">Count its characters</a><a class="btn" id="send-base64" href="/base64/">Encode it in Base64</a>
+  </div>
+
+  <h2>Find individual emojis</h2>
+  <p class="hint">Search by name. Tap an emoji to copy it; turn on "Tap collects" to add it to the box instead. Similar emojis show under the last one you tapped.</p>
+  <div class="box"><input id="eq" type="search" autocomplete="off" aria-label="Search single emoji by name" placeholder="Name an emoji: heart, cat, fire"></div>
+  <div class="row"><label class="opt"><input type="checkbox" id="collectmode"> Tap collects</label></div>
+  <div id="egrid" aria-label="Emoji"></div>
+  <div id="simhead" class="hint" hidden></div>
+  <div id="similar" aria-label="Similar emoji"></div>
+
+  <h2>Make fancy text</h2>
+  <p class="hint">Type once and get the same words in 16 Unicode letter styles, each ready to copy.</p>
+  <div class="box"><input id="ft" type="text" autocomplete="off" aria-label="Text to make fancy" placeholder="Type your text" maxlength="200"></div>
+  <div class="fancy" id="fancy"></div>
+
+  <h2>Image to text art (dot art)</h2>
+  <p class="hint">Pick a picture and it is drawn in Braille dots you can paste anywhere. The picture is read on this device and never uploaded.</p>
+  <div class="row"><input type="file" id="img" accept="image/*" aria-label="Choose a picture"></div>
+  <div class="row">
+    <label class="opt">Width <input type="range" id="cols" min="10" max="60" value="30" aria-label="Width in characters"> <span id="colsv">30</span></label>
+    <label class="opt">Threshold <input type="range" id="thr" min="10" max="245" value="128" aria-label="Brightness threshold"></label>
+    <label class="opt"><input type="checkbox" id="inv"> Invert</label>
+  </div>
+  <pre id="dots" aria-label="Dot art"></pre>
+  <div class="row"><button type="button" id="copydots">Copy dot art</button><button type="button" id="collectdots">Collect</button></div>
+
+  <h2>Make your own combo</h2>
+  <p class="hint">Add a combo with your own tags. It is kept on this device only, shows in your searches with the tag "yours", and is never sent anywhere.</p>
+  <textarea id="mine-t" aria-label="Your combo" placeholder="Your emojis or text art"></textarea>
+  <div class="box" style="margin-top:8px"><input id="mine-tags" type="text" autocomplete="off" aria-label="Tags for your combo, separated by commas" placeholder="Tags, separated by commas"><button type="button" class="go" id="addmine">Add</button></div>
+  <div id="minemsg" role="status"></div>
+
+  <!-- asks -->
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/emoji-combos/?q=cat">Cat combos</a><a href="/emoji-combos/?q=love">Love combos</a><a href="/emoji-combos/?q=birthday">Birthday combos</a><a href="/emoji-combos/?q=kaomoji">Kaomoji</a><a href="/emoji-combos/?q=dot%20art">Dot art</a></nav>
+<!-- /asks -->
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/emojis/">Emoji counts</a> <a href="/word-count/">Word counter</a> <a href="/base64/">Base64</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer id="about"></footer>
+</main>
+<div id="status" role="status" aria-live="polite"></div>
+<script type="module">
+  import { COMBOS, search, tagCounts, catalogStats, findEmoji, similarEmoji, fancyAll, brailleArt, grayOf, dotSize, linkOf, fromLink, loadState, saveState, addMine, removeMine, toggleSaved, withMine } from '/lib/emoji-combos.js';
+  import { EMOJI } from '/lib/emoji.js';
+  import { mountRelated } from '/lib/toolkit.js';
+  const $ = (id) => document.getElementById(id);
+  let state = loadState(), savedOnly = false, lastPick = '';
+  const ART = (t) => /\n/.test(t) || /[⠀-⣿]/.test(t);
+
+  let statusTimer = 0;
+  const say = (msg) => { $('status').textContent = msg; clearTimeout(statusTimer); statusTimer = setTimeout(() => { $('status').textContent = ''; }, 1600); };
+  async function copy(text, what = 'Copied') { try { await navigator.clipboard.writeText(text); say(what); } catch (_) { say('Copy did not work here: select and copy it'); } }
+  const collect = (text) => { const b = $('build'); b.value = b.value ? b.value + (ART(text) || ART(b.value) ? '\n' : ' ') + text : text; onBuild(); say('Collected'); };
+
+  // the search, the tag chips and the cards
+  const stats = catalogStats();
+  $('about').textContent = 'The catalog holds ' + stats.combos + ' combos in ' + stats.tags + ' tags, written for Verse (not copied from another site). Your own combos and the ones you save are kept on this device only. Nothing you search, type, collect or draw is sent anywhere, and there is no account.';
+  for (const { tag } of tagCounts().filter((x) => !['kaomoji', 'text', 'art'].includes(x.tag)).slice(0, 18)) { const a = document.createElement('a'); a.href = '?q=' + encodeURIComponent(tag); a.textContent = tag; a.dataset.tag = tag; $('chips').append(a); }
+  function card(c) {
+    const d = document.createElement('div'); d.className = 'combo';
+    const pre = document.createElement('pre'); pre.textContent = c.t; if (ART(c.t)) pre.className = 'art'; d.append(pre);
+    const tags = document.createElement('div'); tags.className = 'tags';
+    for (const t of c.tags) { const a = document.createElement('a'); a.href = '?q=' + encodeURIComponent(t); a.textContent = t; a.dataset.tag = t; tags.append(a); }
+    const acts = document.createElement('div'); acts.className = 'acts';
+    const b = (label, act) => { const x = document.createElement('button'); x.type = 'button'; x.textContent = label; x.dataset.act = act; acts.append(x); return x; };
+    b('Copy', 'copy'); b('Collect', 'collect'); const s = b(state.saved.includes(c.t) ? '★ Saved' : '☆ Save', 'save'); s.setAttribute('aria-pressed', String(state.saved.includes(c.t)));
+    if (c.mine) b('Remove', 'remove');
+    d.append(tags, acts); d._t = c.t; return d;
+  }
+  function render() {
+    const q = $('q').value.trim(), all = withMine(state);
+    let list = q ? search(q, all) : all.slice(0, state.mine.length + 18);
+    if (savedOnly) list = (q ? list : all).filter((c) => state.saved.includes(c.t));
+    $('results').replaceChildren(...list.map(card));
+    $('count').textContent = savedOnly ? list.length + ' saved combo' + (list.length === 1 ? '' : 's') + (q ? ' for ' + q : '')
+      : q ? (list.length ? list.length + ' combo' + (list.length === 1 ? '' : 's') + ' for ' + q : 'No combos for ' + q + ' yet. Try another word, a tag below, or make your own.')
+      : 'A few to start with, of ' + (stats.combos + state.mine.length) + ' combos. Search a tag or tap one.';
+  }
+  const setQuery = (q, push = true) => { $('q').value = q; render(); if (push) history.replaceState(null, '', linkOf({ q, c: $('build').value })); };
+  $('form').addEventListener('submit', (e) => { e.preventDefault(); setQuery($('q').value); });
+  $('q').addEventListener('input', () => render());
+  document.addEventListener('click', (e) => { const a = e.target.closest('a[data-tag]'); if (!a) return; e.preventDefault(); setQuery(a.dataset.tag); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  $('results').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-act]'); if (!btn) return; const t = btn.closest('.combo')._t;
+    if (btn.dataset.act === 'copy') copy(t);
+    else if (btn.dataset.act === 'collect') collect(t);
+    else if (btn.dataset.act === 'save') { state = toggleSaved(state, t); saveState(state); render(); say(state.saved.includes(t) ? 'Saved on this device' : 'Taken out of saved'); }
+    else if (btn.dataset.act === 'remove') { state = removeMine(state, t); saveState(state); render(); say('Removed'); }
+  });
+  $('savedonly').addEventListener('click', () => { savedOnly = !savedOnly; $('savedonly').setAttribute('aria-pressed', String(savedOnly)); render(); });
+
+  // the collected box, its link and its hand-offs
+  function onBuild() {
+    const v = $('build').value, enc = encodeURIComponent(v.slice(0, 2000));
+    $('send-count').href = '/word-count/' + (v ? '?t=' + enc : ''); $('send-base64').href = '/base64/' + (v ? '?t=' + enc : '');
+    history.replaceState(null, '', linkOf({ q: $('q').value, c: v }));
+  }
+  $('build').addEventListener('input', onBuild);
+  $('copybuild').addEventListener('click', () => { if ($('build').value) copy($('build').value, 'Copied all'); else say('Collect something first'); });
+  $('clearbuild').addEventListener('click', () => { $('build').value = ''; onBuild(); });
+  $('share').addEventListener('click', () => copy(location.origin + linkOf({ q: $('q').value, c: $('build').value }), 'Link copied'));
+
+  // single emoji
+  const ebtn = (e) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = e.c; b.title = e.n; b.setAttribute('aria-label', e.n); b.dataset.c = e.c; return b; };
+  function renderEmoji() { const q = $('eq').value.trim(); $('egrid').replaceChildren(...(q ? findEmoji(q, EMOJI) : EMOJI.slice(0, 40)).map(ebtn)); }
+  function pick(c) {
+    if ($('collectmode').checked) collect(c); else copy(c, 'Copied ' + c);
+    lastPick = c; const sim = similarEmoji(c, EMOJI);
+    $('simhead').hidden = !sim.length; $('simhead').textContent = sim.length ? 'Similar to ' + c + ':' : ''; $('similar').replaceChildren(...sim.map(ebtn));
+  }
+  $('eq').addEventListener('input', renderEmoji);
+  for (const id of ['egrid', 'similar']) $(id).addEventListener('click', (e) => { const b = e.target.closest('button[data-c]'); if (b) pick(b.dataset.c); });
+
+  // fancy text
+  function renderFancy() {
+    const t = $('ft').value || 'Fancy text';
+    $('fancy').replaceChildren(...fancyAll(t).map(({ style, text }) => {
+      const d = document.createElement('div'); const s = document.createElement('span'); s.className = 's'; s.textContent = style; const x = document.createElement('span'); x.className = 't'; x.textContent = text;
+      const c = document.createElement('button'); c.type = 'button'; c.textContent = 'Copy'; c.setAttribute('aria-label', 'Copy ' + style); c.addEventListener('click', () => copy(text, 'Copied ' + style));
+      const k = document.createElement('button'); k.type = 'button'; k.textContent = 'Collect'; k.setAttribute('aria-label', 'Collect ' + style); k.addEventListener('click', () => collect(text));
+      d.append(s, x, c, k); return d;
+    }));
+  }
+  $('ft').addEventListener('input', renderFancy);
+
+  // a picture as dot art, read on this device
+  let pic = null;
+  function drawDots() {
+    $('colsv').textContent = $('cols').value;
+    if (!pic) { $('dots').textContent = 'Choose a picture to see it in dots.'; return; }
+    const { w, h } = dotSize(pic.width, pic.height, +$('cols').value), cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const g = cv.getContext('2d', { willReadFrequently: true }); g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); g.drawImage(pic, 0, 0, w, h);
+    $('dots').textContent = brailleArt(grayOf(g.getImageData(0, 0, w, h).data, w, h), w, h, { threshold: +$('thr').value, invert: $('inv').checked });
+  }
+  $('img').addEventListener('change', () => { const f = $('img').files && $('img').files[0]; if (!f) return; const u = URL.createObjectURL(f), im = new Image(); im.onload = () => { pic = im; drawDots(); URL.revokeObjectURL(u); }; im.onerror = () => { $('dots').textContent = 'That file could not be read as a picture.'; }; im.src = u; });
+  for (const id of ['cols', 'thr', 'inv']) $(id).addEventListener('input', drawDots);
+  $('copydots').addEventListener('click', () => (pic ? copy($('dots').textContent, 'Copied dot art') : say('Choose a picture first')));
+  $('collectdots').addEventListener('click', () => (pic ? collect($('dots').textContent) : say('Choose a picture first')));
+
+  // your own combos
+  $('addmine').addEventListener('click', () => {
+    const r = addMine(state, $('mine-t').value, $('mine-tags').value);
+    if (r.error) { $('minemsg').textContent = r.error; return; }
+    state = r.state; saveState(state); $('minemsg').textContent = 'Added to your combos on this device.'; $('mine-t').value = ''; $('mine-tags').value = ''; setQuery('yours');
+  });
+
+  // what a link brings: a search, a collected combo, text another page handed over
+  const L = fromLink(location.search);
+  $('q').value = L.q; $('build').value = L.c; if (L.t) $('ft').value = L.t;
+  render(); onBuild(); renderEmoji(); renderFancy(); drawDots();
+  mountRelated($('related'), '/emoji-combos/');
+</script>
+</body>
+</html>

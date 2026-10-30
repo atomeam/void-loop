@@ -1,45 +1,51 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-30T05:42:55.645Z",
+ "updated": "2026-10-30T06:34:50.566Z",
  "last24h": {
   "ticks": 145,
-  "started": 136,
+  "started": 137,
   "requeued": 4,
   "setAside": 0,
   "probes": 15,
   "errors": 0
  },
- "broken": [
-  {
-   "wf": "store-gap.yml",
-   "fails": 3,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/40992860810"
-  }
- ],
+ "broken": [],
  "held": [
   {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml is broken (3 failed runs); its repair is queued"
+   "id": "mveb8rsi",
+   "why": "build-miss.yml reached its 8 runs today"
   },
   {
-   "id": "mvu167w7",
-   "why": "store-gap.yml is broken (3 failed runs); its repair is queued"
+   "id": "mveb8svc",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvfu4evy",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuq9g6",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqaee",
+   "why": "build-miss.yml reached its 8 runs today"
+  },
+  {
+   "id": "mvpuqb4r",
+   "why": "build-miss.yml reached its 8 runs today"
   }
  ],
  "handed": {
   "mvbl52gd": 1793327895026,
-  "mveb8rsi": 1793318608356,
-  "mva30i2e": 1793318608356,
-  "mveb8svc": 1793319230644,
-  "mva30j4u": 1793319230644,
+  "mveb8rsi": 1793340238470,
+  "mva30i2e": 1793340238470,
+  "mveb8svc": 1793340858912,
+  "mva30j4u": 1793340858912,
   "mvfu4evy": 1793319266338,
   "mvpuq9g6": 1793319879788,
   "mvpuqaee": 1793320496977,
   "mvpuqb4r": 1793321113968,
-  "mvt50uh4": 1793253842150,
-  "mvt50v1v": 1793254457421,
-  "mvt50vmc": 1793255072166,
-  "mvt50w76": 1793255687085,
   "mvt5tzsb": 1793256302227,
   "mvt5u0mf": 1793256918555,
   "mvt5u18m": 1793257533425,
@@ -75,7 +81,7 @@
   "mvtr4zrr": 1793293301015,
   "mvtruzch": 1793293917800,
   "mvttbday": 1793295151663,
-  "mvu167w7": 1793318608356,
+  "mvu167w7": 1793341476048,
   "mvttbf5a": 1793319879788,
   "mvttbg74": 1793320496977,
   "mvtw90ol": 1793321113968,
@@ -98,161 +104,11 @@
   "mvuiat9n": 1793337126691,
   "mvuiatw4": 1793337743656,
   "mvuiaui0": 1793338359946,
-  "mvuiav4d": 1793338975645
+  "mvuiav4d": 1793338975645,
+  "mvuki6th": 1793341476048,
+  "mvuki965": 1793342090566
  },
  "ticks": [
-  {
-   "at": "2026-10-29T05:43:35.379Z",
-   "open": 109,
-   "started": [
-    {
-     "id": "mv1icyux",
-     "kind": "voice",
-     "wf": "verse-job.yml",
-     "score": 125
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T05:53:48.619Z",
-   "open": 109,
-   "started": [
-    {
-     "id": "mv1icyux",
-     "kind": "voice",
-     "wf": "verse-job.yml",
-     "score": 125
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T06:04:02.150Z",
-   "open": 113,
-   "started": [
-    {
-     "id": "mv1icyux",
-     "kind": "voice",
-     "wf": "verse-job.yml",
-     "score": 125
-    },
-    {
-     "id": "mvt50uh4",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T06:14:17.421Z",
-   "open": 112,
-   "started": [
-    {
-     "id": "mv1icyux",
-     "kind": "voice",
-     "wf": "verse-job.yml",
-     "score": 125
-    },
-    {
-     "id": "mvt50v1v",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T06:24:32.166Z",
-   "open": 111,
-   "started": [
-    {
-     "id": "mvpwmhl2",
-     "kind": "will",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mvt50vmc",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-29T06:34:47.085Z",
-   "open": 113,
-   "started": [
-    {
-     "id": "mvb7si6e",
-     "kind": "review",
-     "wf": "verse-job.yml",
-     "score": 95
-    },
-    {
-     "id": "mvt50w76",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "tower-gate.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
   {
    "at": "2026-10-29T06:45:02.227Z",
    "open": 113,
@@ -3277,6 +3133,175 @@
    "lap": false,
    "revived": [],
    "held": 2,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T05:43:21.417Z",
+   "open": 104,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "store-gap.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 2,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T05:53:42.716Z",
+   "open": 103,
+   "started": [
+    {
+     "id": "mvqf0dsj",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "store-gap.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 2,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T06:03:58.470Z",
+   "open": 102,
+   "started": [
+    {
+     "id": "mvqf0fkb",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 91
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 83
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 69
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "store-gap.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 2,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T06:14:18.912Z",
+   "open": 106,
+   "started": [
+    {
+     "id": "mvt653u1",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 77
+    },
+    {
+     "id": "mveb8svc",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 83
+    },
+    {
+     "id": "mva30j4u",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 69
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "store-gap.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 2,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T06:24:36.048Z",
+   "open": 106,
+   "started": [
+    {
+     "id": "mvu167w7",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 91
+    },
+    {
+     "id": "mvuki6th",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 6,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-30T06:34:50.566Z",
+   "open": 101,
+   "started": [
+    {
+     "id": "mvudhzwf",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 75
+    },
+    {
+     "id": "mvuki965",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 6,
    "warnings": 0
   }
  ]

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1032,
+ "counted": 1040,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -20,14 +20,14 @@
    "file": "lib/field-kit.js",
    "skills": 32,
    "direct": 2,
-   "dependants": 70,
+   "dependants": 69,
    "tests": 8
   },
   {
    "file": "lib/state.js",
    "skills": 32,
    "direct": 4,
-   "dependants": 67,
+   "dependants": 68,
    "tests": 4
   },
   {
@@ -48,21 +48,21 @@
    "file": "lib/keeper.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 72,
+   "dependants": 76,
    "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 22,
    "direct": 1,
-   "dependants": 72,
+   "dependants": 76,
    "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 22,
    "direct": 0,
-   "dependants": 71,
+   "dependants": 75,
    "tests": 5
   },
   {
@@ -83,7 +83,7 @@
    "file": "lib/ladder.js",
    "skills": 20,
    "direct": 10,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 2
   },
   {
@@ -118,49 +118,49 @@
    "file": "lib/reactions.js",
    "skills": 16,
    "direct": 1,
-   "dependants": 59,
+   "dependants": 60,
    "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 53,
+   "dependants": 54,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 51,
+   "dependants": 52,
    "tests": 4
   },
   {
    "file": "lib/card-art.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 4
   },
   {
    "file": "lib/corrections.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 49,
+   "dependants": 50,
    "tests": 3
   },
   {
    "file": "lib/autopsy.js",
    "skills": 15,
    "direct": 5,
-   "dependants": 45,
+   "dependants": 46,
    "tests": 6
   },
   {
@@ -181,7 +181,7 @@
    "file": "lib/better.js",
    "skills": 10,
    "direct": 2,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 3
   },
   {
@@ -202,56 +202,56 @@
    "file": "lib/joins.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/weakest.js",
    "skills": 9,
    "direct": 0,
-   "dependants": 39,
+   "dependants": 40,
    "tests": 1
   },
   {
    "file": "lib/probe-log.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 38,
+   "dependants": 39,
    "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
   },
   {
    "file": "lib/ledger-today.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 2
   },
   {
    "file": "lib/will-last.js",
    "skills": 9,
    "direct": 1,
-   "dependants": 37,
+   "dependants": 38,
    "tests": 1
   },
   {
@@ -497,7 +497,7 @@
    "skills": 5,
    "direct": 4,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/field-doodle.js",
@@ -545,28 +545,28 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 78,
+   "dependants": 79,
    "tests": 1
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 2
   },
   {
    "file": "lib/no-answer.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
-   "tests": 2
+   "dependants": 27,
+   "tests": 3
   },
   {
    "file": "lib/subject-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
@@ -637,7 +637,7 @@
    "skills": 4,
    "direct": 3,
    "dependants": 6,
-   "tests": 28
+   "tests": 29
   },
   {
    "file": "lib/void-seal.js",
@@ -699,7 +699,7 @@
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 76,
+   "dependants": 77,
    "tests": 9
   },
   {
@@ -885,38 +885,38 @@
    "tests": 1
   },
   {
+   "file": "lib/compose.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 30,
+   "tests": 2
+  },
+  {
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 1
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 1
-  },
-  {
-   "file": "lib/compose.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 25,
-   "tests": 2
   },
   {
    "file": "lib/store-products.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 0
   },
   {
    "file": "lib/store.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 6
   },
   {
@@ -966,7 +966,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/generators.js",
@@ -1123,25 +1123,46 @@
    "tests": 1
   },
   {
+   "file": "lib/story.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 27,
+   "tests": 1
+  },
+  {
    "file": "lib/calc-units.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
+   "tests": 2
+  },
+  {
+   "file": "lib/rap.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 26,
    "tests": 2
   },
   {
    "file": "lib/markets.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 4
+  },
+  {
+   "file": "lib/proposal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 2
   },
   {
    "file": "lib/actions.js",
@@ -1151,45 +1172,24 @@
    "tests": 2
   },
   {
-   "file": "lib/proposal.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 23,
-   "tests": 2
-  },
-  {
-   "file": "lib/story.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 23,
-   "tests": 1
-  },
-  {
-   "file": "lib/rap.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 22,
-   "tests": 1
-  },
-  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 1
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/brain-workspace.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 19,
+   "dependants": 18,
    "tests": 1
   },
   {
@@ -1291,13 +1291,6 @@
    "tests": 1
   },
   {
-   "file": "lib/brain-trace.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/brain-watch.js",
    "skills": 1,
    "direct": 0,
@@ -1326,11 +1319,39 @@
    "tests": 0
   },
   {
+   "file": "lib/pdf-tools.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/translate-docs.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 3
+  },
+  {
+   "file": "lib/rap-beat.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/scores.js",
    "skills": 1,
    "direct": 1,
    "dependants": 5,
    "tests": 4
+  },
+  {
+   "file": "lib/video-mux.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/appraise-photo.js",
@@ -1340,6 +1361,13 @@
    "tests": 1
   },
   {
+   "file": "lib/converter.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
@@ -1347,11 +1375,18 @@
    "tests": 2
   },
   {
+   "file": "lib/rap-voice.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/brain.js",
    "skills": 1,
    "direct": 1,
    "dependants": 3,
-   "tests": 19
+   "tests": 18
   },
   {
    "file": "lib/fanfic.js",
@@ -1403,6 +1438,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-song.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1422,6 +1464,13 @@
    "direct": 1,
    "dependants": 3,
    "tests": 1
+  },
+  {
+   "file": "lib/video-write.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3,
+   "tests": 0
   },
   {
    "file": "lib/brain-glow.js",
@@ -1488,6 +1537,13 @@
   },
   {
    "file": "lib/note-extras.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/rap-video.js",
    "skills": 1,
    "direct": 0,
    "dependants": 2,
@@ -1670,6 +1726,13 @@
   },
   {
    "file": "lib/eclipse.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/emoji-combos.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -1987,252 +2050,252 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 80,
+   "dependants": 82,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 79,
+   "dependants": 81,
    "tests": 29
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 52,
+   "dependants": 53,
    "tests": 10
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42,
+   "dependants": 43,
    "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 41,
+   "dependants": 43,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40,
+   "dependants": 42,
    "tests": 8
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 35,
+   "dependants": 36,
    "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29,
+   "dependants": 30,
    "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 28,
+   "dependants": 29,
    "tests": 0
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 26,
+   "dependants": 27,
    "tests": 3
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25,
+   "dependants": 26,
    "tests": 7
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23,
+   "dependants": 24,
    "tests": 6
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 2
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 22,
+   "dependants": 23,
    "tests": 0
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/news.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 21,
+   "dependants": 22,
    "tests": 7
   },
   {
    "file": "lib/answer-edge.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/answer-honesty.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/character.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/free-pics.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 2
   },
   {
    "file": "lib/markets-record.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/measure-ask.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/news-report.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/own-card.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
    "file": "lib/report-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20,
+   "dependants": 21,
    "tests": 1
   },
   {
@@ -2285,6 +2348,13 @@
    "tests": 0
   },
   {
+   "file": "lib/job-guide.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4,
+   "tests": 2
+  },
+  {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
@@ -2313,13 +2383,6 @@
    "tests": 3
   },
   {
-   "file": "lib/pdf-tools.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/sale-jobs.js",
    "skills": 0,
    "direct": 0,
@@ -2331,7 +2394,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/translate-langs.js",
@@ -2383,25 +2446,11 @@
    "tests": 1
   },
   {
-   "file": "lib/translate-docs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 2
-  },
-  {
    "file": "lib/used.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
    "tests": 0
-  },
-  {
-   "file": "lib/video-mux.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
   },
   {
    "file": "lib/approval-gate.js",
@@ -2426,13 +2475,6 @@
   },
   {
    "file": "lib/book-face.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/converter.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -2748,6 +2790,13 @@
   },
   {
    "file": "lib/empty-state.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/epub-edit.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3104,13 +3153,6 @@
    "tests": 2
   },
   {
-   "file": "lib/video-write.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
-  },
-  {
    "file": "lib/wordcount.js",
    "skills": 0,
    "direct": 0,
@@ -3121,7 +3163,8 @@
  "files": {
   "functions/[handle].js": {
    "imports": [
-    "lib/pages.js"
+    "lib/pages.js",
+    "lib/void-me.js"
    ],
    "importedBy": []
   },
@@ -3187,6 +3230,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3530,6 +3574,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -3676,6 +3721,16 @@
     "lib/guard.js",
     "lib/actions.js",
     "lib/job-draft.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/rapvoice.js": {
+   "imports": [
+    "lib/models.js",
+    "lib/rap.js",
+    "lib/daily-cap.js",
+    "lib/shortfall.js",
+    "functions/api/answer.js"
    ],
    "importedBy": []
   },
@@ -3863,7 +3918,8 @@
     "lib/guard.js",
     "lib/void-me.js",
     "lib/automation-fix.js",
-    "lib/team.js"
+    "lib/team.js",
+    "lib/job-guide.js"
    ],
    "importedBy": [
     "functions/team/join/[code].js",
@@ -4106,6 +4162,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -4143,6 +4200,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -4172,6 +4230,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -4298,6 +4357,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4318,7 +4378,10 @@
     "lib/comments-ui.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
     "lib/voice.js",
@@ -4496,6 +4559,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4589,6 +4653,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4682,6 +4747,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -4930,7 +4996,6 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
-    "lib/brain-trace.js",
     "lib/brain-route.js",
     "lib/brain-watch.js"
    ],
@@ -4961,7 +5026,6 @@
     "lib/brain-current.js",
     "lib/brain-grains.js",
     "lib/brain-pool.js",
-    "lib/brain-trace.js",
     "lib/brain-workspace.js"
    ],
    "importedBy": [
@@ -5050,23 +5114,6 @@
     "skills/verse-brain.js"
    ]
   },
-  "lib/brain-trace.js": {
-   "imports": [
-    "lib/field-kit.js",
-    "lib/brain-workspace.js"
-   ],
-   "importedBy": [
-    "lib/brain-mind.js",
-    "lib/brain-organs.js",
-    "lib/brain.js"
-   ],
-   "reachedBy": [
-    "lib/brain-glow.js",
-    "lib/brain-host.js",
-    "lib/brain-route.js",
-    "skills/verse-brain.js"
-   ]
-  },
   "lib/brain-watch.js": {
    "imports": [],
    "importedBy": [
@@ -5099,7 +5146,6 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
-    "lib/brain-trace.js",
     "lib/brain.js",
     "skills/verse-brain.js"
    ],
@@ -5124,8 +5170,7 @@
     "lib/brain-formula.js",
     "lib/brain-current.js",
     "lib/brain-grains.js",
-    "lib/brain-pool.js",
-    "lib/brain-trace.js"
+    "lib/brain-pool.js"
    ],
    "importedBy": [
     "lib/brain-glow.js",
@@ -5188,6 +5233,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5269,6 +5315,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5408,6 +5455,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5520,6 +5568,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5577,6 +5626,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5655,6 +5705,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5685,6 +5736,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5721,6 +5773,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5791,7 +5844,7 @@
    "imports": [],
    "importedBy": [
     "lib/arrange.js",
-    "lib/rap-stage.js",
+    "lib/rap-beat.js",
     "lib/rap.js",
     "skills/music.js"
    ],
@@ -5807,6 +5860,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -5816,6 +5870,10 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ]
   },
@@ -5854,6 +5912,11 @@
    ],
    "importedBy": [
     "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "skills/rap.js"
    ]
   },
   "lib/cook-flow.js": {
@@ -5899,6 +5962,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -5956,6 +6020,7 @@
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/daily-art.js",
+    "functions/api/rapvoice.js",
     "functions/api/report.js"
    ],
    "reachedBy": [
@@ -6069,6 +6134,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -6127,6 +6193,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -6163,6 +6230,12 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/emoji-combos.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/emoji-combos.js"
+   ]
+  },
   "lib/emoji.js": {
    "imports": [],
    "importedBy": [
@@ -6177,6 +6250,12 @@
   },
   "lib/empty-state.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "lib/epub-edit.js": {
+   "imports": [
+    "lib/translate-docs.js"
+   ],
    "importedBy": []
   },
   "lib/event-date.js": {
@@ -6289,7 +6368,6 @@
     "lib/brain-painter.js",
     "lib/brain-pool.js",
     "lib/brain-synapses.js",
-    "lib/brain-trace.js",
     "lib/brain-workspace.js",
     "lib/brain.js",
     "lib/council-law.js",
@@ -6627,6 +6705,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -6797,6 +6876,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
     "functions/api/film-review.js",
@@ -6812,6 +6892,7 @@
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/publish.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
     "functions/api/report.js",
@@ -6850,6 +6931,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7020,6 +7102,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7055,6 +7138,17 @@
    ],
    "importedBy": [
     "functions/api/queue.js"
+   ]
+  },
+  "lib/job-guide.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/team.js",
+    "lib/team.js"
+   ],
+   "reachedBy": [
+    "functions/team/join/[code].js",
+    "functions/team/mcp.js"
    ]
   },
   "lib/job-sites.js": {
@@ -7125,6 +7219,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7202,6 +7297,7 @@
     "functions/api/mcp.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7228,7 +7324,10 @@
     "lib/daily-photo.js",
     "lib/duel-rules.js",
     "lib/fix-audit.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
@@ -7300,6 +7399,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7363,6 +7463,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7498,6 +7599,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7529,6 +7631,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7615,6 +7718,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7675,6 +7779,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7715,6 +7820,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -7747,6 +7853,7 @@
     "functions/api/mcp.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -7775,7 +7882,10 @@
     "lib/duel-rules.js",
     "lib/fix-audit.js",
     "lib/image-gen.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "lib/rap.js",
     "lib/self-context.js",
     "lib/story.js",
@@ -7883,6 +7993,7 @@
     "functions/api/merge.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/reflect.js",
     "functions/api/report.js",
@@ -8023,6 +8134,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8058,6 +8170,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8095,6 +8208,7 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8123,6 +8237,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8254,6 +8369,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8277,6 +8393,7 @@
     "lib/guard.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/_middleware.js",
     "functions/api/actions.js",
     "functions/api/answer.js",
@@ -8317,6 +8434,7 @@
     "functions/api/propose-fix.js",
     "functions/api/publish.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/react.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
@@ -8413,6 +8531,7 @@
     "functions/api/news.js",
     "functions/api/passkey.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8527,6 +8646,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8554,6 +8674,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8584,6 +8705,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8611,7 +8733,10 @@
     "lib/pdf-ui.js"
    ],
    "reachedBy": [
-    "lib/video-write.js"
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/video-write.js",
+    "skills/rap.js"
    ]
   },
   "lib/pdf-ui.js": {
@@ -8649,6 +8774,7 @@
     "functions/api/podcasts.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -8741,6 +8867,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8796,6 +8923,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8841,6 +8969,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -8892,6 +9021,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -8973,6 +9103,7 @@
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9075,12 +9206,72 @@
    "imports": [],
    "importedBy": []
   },
-  "lib/rap-stage.js": {
+  "lib/rap-beat.js": {
    "imports": [
-    "lib/compose.js",
-    "lib/rap.js"
+    "lib/compose.js"
    ],
    "importedBy": [
+    "lib/rap-song.js",
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-song.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js",
+    "lib/rap-voice.js"
+   ],
+   "importedBy": [
+    "lib/rap-stage.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-stage.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js",
+    "lib/rap-song.js",
+    "lib/rap-video.js"
+   ],
+   "importedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-video.js": {
+   "imports": [
+    "lib/video-mux.js",
+    "lib/video-write.js",
+    "lib/rap.js",
+    "lib/rap-song.js",
+    "lib/rap-beat.js",
+    "lib/rap-voice.js"
+   ],
+   "importedBy": [
+    "lib/rap-stage.js"
+   ],
+   "reachedBy": [
+    "skills/rap.js"
+   ]
+  },
+  "lib/rap-voice.js": {
+   "imports": [
+    "lib/rap.js",
+    "lib/rap-beat.js"
+   ],
+   "importedBy": [
+    "lib/rap-song.js",
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
     "skills/rap.js"
    ]
   },
@@ -9091,7 +9282,11 @@
    ],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/rapvoice.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ],
    "reachedBy": [
@@ -9165,6 +9360,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
     "functions/api/repo.js",
@@ -9264,6 +9460,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/report.js",
@@ -9293,6 +9490,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9323,6 +9521,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9380,6 +9579,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9425,6 +9625,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9497,6 +9698,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9621,6 +9823,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -9659,6 +9862,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -9808,6 +10012,7 @@
     "functions/api/mcp.js",
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
+    "functions/api/rapvoice.js",
     "functions/api/reflect.js",
     "functions/api/tower-self.js",
     "functions/api/voice-reply.js",
@@ -9874,6 +10079,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -10001,6 +10207,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -10286,6 +10493,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -10397,6 +10605,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10435,6 +10644,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10466,6 +10676,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10475,7 +10686,10 @@
     "functions/api/translate.js",
     "functions/api/weather.js",
     "lib/bench-asks.js",
+    "lib/rap-song.js",
     "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/rap-voice.js",
     "skills/rap.js"
    ]
   },
@@ -10512,6 +10726,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -10597,7 +10812,9 @@
    ]
   },
   "lib/team.js": {
-   "imports": [],
+   "imports": [
+    "lib/job-guide.js"
+   ],
    "importedBy": [
     "functions/api/team.js",
     "functions/team/join/[code].js",
@@ -10651,6 +10868,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -10933,10 +11151,14 @@
   "lib/translate-docs.js": {
    "imports": [],
    "importedBy": [
-    "lib/converter.js"
+    "lib/converter.js",
+    "lib/epub-edit.js"
    ],
    "reachedBy": [
-    "lib/video-write.js"
+    "lib/rap-stage.js",
+    "lib/rap-video.js",
+    "lib/video-write.js",
+    "skills/rap.js"
    ]
   },
   "lib/translate-extras.js": {
@@ -10989,7 +11211,12 @@
    "imports": [],
    "importedBy": [
     "lib/audio-write.js",
+    "lib/rap-video.js",
     "lib/video-write.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "skills/rap.js"
    ]
   },
   "lib/video-write.js": {
@@ -10997,7 +11224,13 @@
     "lib/video-mux.js",
     "lib/converter.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/rap-video.js"
+   ],
+   "reachedBy": [
+    "lib/rap-stage.js",
+    "skills/rap.js"
+   ]
   },
   "lib/video.js": {
    "imports": [],
@@ -11040,6 +11273,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -11058,6 +11292,7 @@
     "lib/guard.js"
    ],
    "importedBy": [
+    "functions/[handle].js",
     "functions/api/film-review.js",
     "functions/api/films.js",
     "functions/api/gumroad.js",
@@ -11088,6 +11323,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -11165,6 +11401,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -11210,6 +11447,7 @@
     "lib/void-me.js"
    ],
    "reachedBy": [
+    "functions/[handle].js",
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
@@ -11230,6 +11468,7 @@
     "functions/api/news.js",
     "functions/api/podcasts.js",
     "functions/api/publish.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",
@@ -11317,6 +11556,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -12143,6 +12383,12 @@
     "skills/games.js"
    ]
   },
+  "skills/emoji-combos.js": {
+   "imports": [
+    "lib/emoji-combos.js"
+   ],
+   "importedBy": []
+  },
   "skills/emoji.js": {
    "imports": [
     "lib/emoji.js"
@@ -12577,6 +12823,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -12630,6 +12877,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/reflect.js",
@@ -14776,6 +15024,7 @@
     "functions/api/merge.js",
     "functions/api/news.js",
     "functions/api/podcasts.js",
+    "functions/api/rapvoice.js",
     "functions/api/recipeimport.js",
     "functions/api/recipes.js",
     "functions/api/repo.js",

@@ -6,6 +6,7 @@
 <link rel="alternate" type="application/rss+xml" title="Verse Out Loud" href="/podcast/rss.xml">
 <meta property="og:image" content="https://a-to-mind.com/podcast/cover.jpg">
 <style>body{margin:0;background:#06070c;color:#e8ecf4;font:16px/1.5 system-ui,sans-serif}main{max-width:760px;margin:0 auto;padding:20px}a{color:#9cc0ff}.sub{opacity:.7}p,h1,h2{overflow-wrap:anywhere}audio{width:100%}.btn{display:inline-block;margin:4px 6px 4px 0;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.25);text-decoration:none;color:inherit}.line{cursor:pointer}img{max-width:100%;height:auto}</style>
+<script src="/visit.js" defer></script>
 </head><body><main>
 <p><a href="/">← a-to-mind.com</a></p>
 <img src="/podcast/cover.jpg" alt="Verse Out Loud cover" width="160" height="160" style="border-radius:14px">
@@ -17,10 +18,12 @@
 </main>
 <script>
 const esc=(s)=>String(s||'').replace(/[<>&"']/g,(c)=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'})[c]);
+// episodes.json is the published record and keeps its words as recorded; a person reads the name Verse, never the old name V01D (AGENTS.md)
+const named=(s)=>String(s||'').replace(/\bV01D\b/g,'Verse');
 const mmss=(s)=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 fetch('/podcast/episodes.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{
   const want=+new URLSearchParams(location.search).get('ep')||0, E=(j.episodes||[]).slice().reverse();
-  document.getElementById('eps').innerHTML=E.map(e=>'<section id="ep'+e.n+'"><h2>'+esc(e.title)+'</h2><div class="sub">'+esc(e.pub.slice(0,10))+' · '+mmss(e.seconds)+'</div><audio controls preload="none" src="/podcast/'+esc(e.file)+'"></audio><p><a class="btn" href="/podcast/'+esc(e.file)+'" download>Download mp3</a><a class="btn" href="/podcast/'+esc(e.transcript)+'" download>Transcript</a></p><p>'+esc(e.summary)+'</p><details'+(e.n===want||(!want&&e===E[0])?' open':'')+'><summary>Full transcript</summary>'+(e.lines||[]).map(l=>'<p class="line" data-t="'+(l.t||0)+'">'+(l.t!=null?'<span class="sub">'+mmss(l.t)+'</span> ':'')+'<b>'+esc(l.who)+':</b> '+esc(l.text)+'</p>').join('')+'</details></section>').join('')||'No episode yet.';
+  document.getElementById('eps').innerHTML=E.map(e=>'<section id="ep'+e.n+'"><h2>'+esc(named(e.title))+'</h2><div class="sub">'+esc(e.pub.slice(0,10))+' · '+mmss(e.seconds)+'</div><audio controls preload="none" src="/podcast/'+esc(e.file)+'"></audio><p><a class="btn" href="/podcast/'+esc(e.file)+'" download>Download mp3</a><a class="btn" href="/podcast/'+esc(e.transcript)+'" download>Transcript</a></p><p>'+esc(named(e.summary))+'</p><details'+(e.n===want||(!want&&e===E[0])?' open':'')+'><summary>Full transcript</summary>'+(e.lines||[]).map(l=>'<p class="line" data-t="'+(l.t||0)+'">'+(l.t!=null?'<span class="sub">'+mmss(l.t)+'</span> ':'')+'<b>'+esc(l.who)+':</b> '+esc(named(l.text))+'</p>').join('')+'</details></section>').join('')||'No episode yet.';
   document.querySelectorAll('section').forEach(s=>{const a=s.querySelector('audio');s.querySelectorAll('.line').forEach(p=>p.onclick=()=>{a.currentTime=+p.dataset.t;a.play().catch(()=>{})})});
   if(want){const s=document.getElementById('ep'+want); if(s) s.scrollIntoView();}
 }).catch(()=>{document.getElementById('eps').textContent='The episode list could not load; the RSS feed has them all.'});
