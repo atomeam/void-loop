@@ -7,7 +7,6 @@
  * "in the last 24 hours" / "past 3 days" / "today" set the window (7 days otherwise); "near me" is where the visitor is (lib/where.js, the
  * place they chose, the device if already allowed, else the connection's city), and the worldwide list with a line saying so when that is unknown.
  */
-import { whereAmI } from '../lib/where.js';
 
 const TYPES = /\b(earth\s*quakes?|quakes?|tremors?|seismic\s+(?:activity|event|events))\b/;
 
@@ -96,6 +95,7 @@ async function run(text, api) {
   try {
     let loc = null, note = '';
     if (here) {
+      const { whereAmI } = await import('../lib/where.js'); // the place lookup loads with a "near me" ask, not with the routing order (owner 2026-10-30)
       const w = await whereAmI();
       if (!api._pageStill(el)) return 'quake';
       if (w) loc = { latitude: w.lat, longitude: w.lon, name: w.name }; // "where you are" from the device, else the city it is known by

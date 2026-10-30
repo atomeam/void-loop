@@ -5,9 +5,15 @@
  * board, with pawns), the rest of the card beside it; the 2D board stays the fallback.
  * "sorry", "play sorry", "sorry!", "a game of sorry".
  */
-import { lift3d } from './lift3d.js';
-import { flip } from './sfx.js';
-import { COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove } from './sorry-rules.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules, the 3D lift and the card flip load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let lift3d, flip, COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove;
+export const ready = loadLater(() => Promise.all([
+  import('./sorry-rules.js'),
+  import('./lift3d.js'),
+  import('./sfx.js'),
+]).then(([r, l, x]) => { ({ COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove } = r); ({ lift3d } = l); ({ flip } = x); }));
 
 export function sorryOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?.]+$/, '').replace(/\s+/g, ' ');
@@ -225,6 +231,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!sorryOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'sorry');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'sorry'; }
   api.summon('sorry', { state: createState(), center: true });
@@ -239,5 +246,6 @@ export default {
   nearMisses: ['sorry', 'sorry about that', 'i am sorry', 'sorry i was late', 'say sorry', 'play aggravation'],
   match(lower, text) { return sorryOf(text); },
   run,
-  stageKinds: { sorry: { mount } },
+  ready,
+  stageKinds: { sorry: { mount: ready.mount(mount) } },
 };

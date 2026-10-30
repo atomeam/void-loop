@@ -10,16 +10,8 @@
 import { howTo } from './howto.js';
 import { soundButton } from './sfx.js';
 import { fitPanel } from '../lib/panel-fit.js';
+export { grip } from './grip.js'; // the handle lives on its own so a card that needs only it (skills/eightball.js) loads only it
 const SOUNDS = new Set(['sorry', 'aggravation']); // games that make table sounds so far
-
-export function grip(label) {
-  const g = document.createElement('div');
-  g.className = 'board-grip';
-  g.title = 'drag to move the board';
-  g.style.cssText = 'display:inline-flex;align-items:center;gap:6px;margin-top:-6px;padding:3px 12px;border-radius:999px;color:var(--muted,#8a8a8a);font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:grab;user-select:none;background:rgba(12,12,13,.35)';
-  g.textContent = '⠿ ' + label;
-  return g;
-}
 
 const CSS = '.side-card{position:absolute;z-index:2;padding:14px 16px 22px;border-radius:var(--radius,16px);background:var(--card-bg,rgba(16,16,18,.94));border:1px solid var(--card-line,rgba(255,255,255,.12));'
   + 'box-shadow:var(--card-shadow,0 18px 50px rgba(0,0,0,.45));color:var(--ink,#eee);font-size:var(--fs-s,13px);line-height:1.45;text-align:left;user-select:none;backdrop-filter:blur(8px);'

@@ -36,6 +36,7 @@ test('every chip on the sky card asks something a skill answers, and the skill i
 
 test('the card carries a definition, a take with a checkable fact, the live row and the chips', async () => {
   const sky = await import(pathToFileURL(resolve(dir, 'sky.js')).href);
+  await sky.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   const date = new Date('2026-01-15T21:30:00Z'), rows = sky.nowLines(date, LONDON);
   const html = sky.cardHtml(esc, { place: LONDON, date, rows: rows.lines });
   assert.match(html, /<h2>Sky<\/h2>/); assert.match(html, /a simulation/);
@@ -58,6 +59,7 @@ function near(got, want, tol) { assert.ok(Math.abs(got - want) <= tol, `${got} v
 
 test('the live row at noon says the sun is up and names no planets to look for', async () => {
   const sky = await import(pathToFileURL(resolve(dir, 'sky.js')).href);
+  await sky.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   const r = sky.nowLines(new Date('2026-06-21T12:00:00Z'), LONDON).lines;
   assert.match(r[0], /^The sun is 6\d° up, to the south \(day\)\.$/);
   assert.match(r[2], /sky is still too bright/);
@@ -74,6 +76,7 @@ test('a place is found inside an ask, and Unicode names survive', () => {
 
 test('the moon: tonight and the next phases agree with the almanac, and the picture lights the right side', async () => {
   const m = await import(pathToFileURL(resolve(dir, 'moontonight.js')).href), date = new Date('2025-10-10T15:00:00Z');
+  await m.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   for (const t of m.default.examples) assert.equal(route(t), 'moontonight', t);
   for (const t of m.default.nearMisses) assert.notEqual(route(t), 'moontonight', t);
   assert.equal(route('explain moon phases'), 'moon', 'the lesson skill keeps its own asks');
@@ -93,6 +96,7 @@ test('the moon: tonight and the next phases agree with the almanac, and the pict
 
 test('sunrise and sunset: London in October and the polar day', async () => {
   const s = await import(pathToFileURL(resolve(dir, 'suntimes.js')).href), date = new Date('2025-10-10T15:00:00Z');
+  await s.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   for (const t of s.default.examples) assert.equal(route(t), 'suntimes', t);
   for (const t of s.default.nearMisses) assert.notEqual(route(t), 'suntimes', t);
   assert.equal(route('sunset in Paris'), 'worldtime', 'a named place stays with the world clock');
@@ -106,6 +110,7 @@ test('sunrise and sunset: London in October and the polar day', async () => {
 
 test('aurora: how far the oval reaches, and a clear verdict', async () => {
   const au = await import(pathToFileURL(resolve(dir, 'aurora-tonight.js')).href);
+  await au.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   for (const t of au.default.examples) assert.equal(route(t), 'aurora-tonight', t);
   for (const t of au.default.nearMisses) assert.notEqual(route(t), 'aurora-tonight', t);
   const rows = [{ t: new Date('2025-10-10T12:00:00Z'), kp: 3, predicted: false }, { t: new Date('2025-10-10T15:00:00Z'), kp: 5.33, predicted: false }];
@@ -122,6 +127,7 @@ test('aurora: how far the oval reaches, and a clear verdict', async () => {
 
 test('constellations: what is up, where Orion is and when it is best, and the name table matches the star table', async () => {
   const c = await import(pathToFileURL(resolve(dir, 'constellation.js')).href), { CONSTELLATIONS } = await import('../void-live-deploy/lib/stars.js');
+  await c.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   assert.deepEqual(c.NAMES, CONSTELLATIONS);
   for (const t of c.default.examples) assert.equal(route(t), 'constellation', t);
   for (const t of c.default.nearMisses) assert.notEqual(route(t), 'constellation', t);
@@ -148,6 +154,7 @@ test('constellations: what is up, where Orion is and when it is best, and the na
 
 test('meteor showers: the right ones on the right days, the moon at the peak, and the radiant', async () => {
   const m = await import(pathToFileURL(resolve(dir, 'meteors.js')).href);
+  await m.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   for (const t of m.default.examples) assert.equal(route(t), 'meteors', t);
   for (const t of m.default.nearMisses) assert.notEqual(route(t), 'meteors', t);
   assert.deepEqual(m.meteorAsk('when are the perseids'), { kind: 'one', shower: 'perseids', place: null });
@@ -161,6 +168,7 @@ test('meteor showers: the right ones on the right days, the moon at the peak, an
 
 test('eclipses: the next total solar eclipse is 12 August 2026, and the lunar one is visible or missed by the moon\'s height', async () => {
   const e = await import(pathToFileURL(resolve(dir, 'eclipse.js')).href), date = new Date('2026-01-10T12:00:00Z');
+  await e.ready(); // the almanac and the place lookup load with the skill's first answer (lib/load-later.js)
   for (const t of e.default.examples) assert.equal(route(t), 'eclipse', t);
   for (const t of e.default.nearMisses) assert.notEqual(route(t), 'eclipse', t);
   assert.deepEqual(e.eclipseAsk('next total solar eclipse'), { which: 'solar', kind: 'total', place: null, year: null });

@@ -3,10 +3,17 @@
  * and that game opens and the rack is put away ("games" brings it back). Its card is separate (skills/side-card.js) and lists the same games as buttons, so the rack works
  * where WebGL can't run too. "games", "what games do you have", "play a game", "game rack", "board games".
  */
-import { grip, sideCard } from './side-card.js';
-import { LEVELS, getLevel, setLevel } from './game-level.js';
+import { loadLater } from '../lib/load-later.js';
 import PARODY from '../lib/parody.js';
-import { GAMES as LADDER_GAMES, ASKS as ARCADE_ASKS, arcadeRow, load as loadLadder } from '../lib/ladder.js';
+
+// the side card, the level picker and the arcade ladder (the parody table stays: match() reads it)
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let grip, sideCard, LEVELS, getLevel, setLevel, LADDER_GAMES, ARCADE_ASKS, arcadeRow, loadLadder;
+export const ready = loadLater(() => Promise.all([
+  import('./side-card.js'),
+  import('./game-level.js'),
+  import('../lib/ladder.js'),
+]).then(([c, g, d]) => { ({ grip, sideCard } = c); ({ LEVELS, getLevel, setLevel } = g); ({ GAMES: LADDER_GAMES, ASKS: ARCADE_ASKS, arcadeRow, load: loadLadder } = d); }));
 
 // Verse's parody of any classic game (asked by Verse: a searchable games matrix and a "parody-forge" card), folded into the game rack.
 // From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.
@@ -148,6 +155,7 @@ async function run(text, api) {
   const pq = parodyOf(text); if (pq) return parodyCard(pq, api);
   const q = rackOf(text);
   if (!q) return 'none';
+  await ready();
   if (q.wanted && api.reportMiss) api.reportMiss(text, 'game not built yet: ' + q.wanted); // the request lands on the miss board
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'rack');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
@@ -169,5 +177,6 @@ export default {
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,
-  stageKinds: { rack: { mount } },
+  ready,
+  stageKinds: { rack: { mount: ready.mount(mount) } },
 };
