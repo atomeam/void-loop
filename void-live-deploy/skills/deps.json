@@ -948,6 +948,20 @@
    "tests": 2
   },
   {
+   "file": "lib/rap-kit.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
+   "file": "lib/rap-piano.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 9,
+   "tests": 2
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -1312,20 +1326,6 @@
    "tests": 2
   },
   {
-   "file": "lib/rap-kit.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
-   "file": "lib/rap-piano.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 2
-  },
-  {
    "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
@@ -1379,7 +1379,7 @@
    "skills": 1,
    "direct": 0,
    "dependants": 5,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/rap-voice.js",
@@ -4451,7 +4451,9 @@
   },
   "lib/arrange.js": {
    "imports": [
-    "lib/compose.js"
+    "lib/compose.js",
+    "lib/rap-piano.js",
+    "lib/rap-kit.js"
    ],
    "importedBy": [
     "skills/music.js"
@@ -9590,6 +9592,7 @@
   "lib/rap-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/arrange.js",
     "lib/rap-beat.js",
     "lib/rap-song.js"
    ],
@@ -9598,6 +9601,7 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "lib/rap-voice.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },
@@ -9612,6 +9616,7 @@
   "lib/rap-piano.js": {
    "imports": [],
    "importedBy": [
+    "lib/arrange.js",
     "lib/rap-beat.js",
     "lib/rap-song.js"
    ],
@@ -9620,6 +9625,7 @@
     "lib/rap-stage.js",
     "lib/rap-video.js",
     "lib/rap-voice.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },

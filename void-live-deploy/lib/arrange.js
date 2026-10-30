@@ -3,14 +3,18 @@
  * not eight bars on one loop: it is a tension curve through sections, intro (piano-like pad and a lead), drop (drums, bass, chugging guitar),
  * breakdown (half-time, sparse and heavy), bridge (pulled back to pad, lead and bass) and climax (everything, double kick, crashes), each
  * with its own tracks, its own loudness, and the pad and lead ducked on every kick so the kick hits through them (sidechain, in the gain
- * automation itself). The same ask gives the same song. Made in the visitor's browser with Web Audio: no model, no sample, no server, no cost,
- * and no real singer's voice or recording is imitated; the guitar is detuned sawtooth pairs through a tanh waveshaper and a cabinet filter
+ * automation itself). The same ask gives the same song. Made in the visitor's browser with Web Audio: no model, no server, no cost. With the
+ * real instruments loaded (compose.js instrumentsFor; owner, 2026-10-30: "drums needs to sound like perfect studio quality") the drums are the
+ * recorded acoustic kit and the pad is the recorded grand piano, both public domain; without them both are synthesised. No real singer's voice
+ * or recording of a song is imitated; the guitar is detuned sawtooth pairs through a tanh waveshaper and a cabinet filter
  * (about 3.2 kHz low-pass with a bump near 100 Hz).
  * The piece has the same shape lib/compose.js makes (chords, bass, melody, drums as step arrays, bpm, bars) plus
  * `sections`, `guitar`, `pad` and `drums.crash`, so the piano roll, the notes text and the player's playhead work on it unchanged.
  * Tests: tools/arrange.test.mjs (the shape, in Node) and the browser section "music: a heavy ask" (renders it and measures each section's loudness).
  */
 import { SCALES, hashOf, noteName, hz, wordsOf, wavBytes } from './compose.js';
+import { chordOf, takeOf as pianoTake } from './rap-piano.js';
+import { takeOf as drumTake } from './rap-kit.js';
 
 /** the asks that want a heavy, shaped song rather than the default loop. Pure. */
 export const HEAVY = /\b(heavy|metal|rock|punk|hardcore|screamo|industrial|aggressive|angry|rage|intense|brutal|breakdown|riff|mosh|thrash|djent|grunge)\b/i;
@@ -95,7 +99,7 @@ export function sectionsSvg(p, W = 320, y0 = 150) {
 const curve = (k) => { const c = new Float32Array(2048); for (let i = 0; i < c.length; i++) { const x = (i / (c.length - 1)) * 2 - 1; c[i] = Math.tanh(k * x); } return c; };
 
 /** play the song on a context (real or offline) from t0 seconds; returns the seconds it lasts. */
-export function scheduleArranged(ctx, p, t0 = 0) {
+export function scheduleArranged(ctx, p, t0 = 0, { piano = null, kit = null } = {}) {
   const sp = 60 / p.bpm / 4, tension = (step) => { const s = p.sections.find((x) => step >= x.fromStep && step < x.fromStep + x.steps) || p.sections[0]; return 0.3 + 0.7 * s.tension; };
   // master: a limiter-like compressor so the loud sections never clip; the contrast between sections stays in the notes' own gains
   const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -8; comp.knee.value = 6; comp.ratio.value = 10; comp.attack.value = 0.003; comp.release.value = 0.12;
@@ -120,7 +124,18 @@ export function scheduleArranged(ctx, p, t0 = 0) {
     const t = t0 + step * sp, s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = nb; f.type = type; f.frequency.value = freq;
     g.gain.setValueAtTime(gain, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); s.connect(f); f.connect(g); g.connect(dest); s.start(t, 0, dur + 0.02);
   };
-  for (const n of p.pad) tone(soft, 'sine', n.midi, n.step, n.len, 0.05, 0.08, 0.3);
+  const keys = !!(piano && piano.buffers && piano.buffers.size), drumKit = kit && kit.buffers && kit.buffers.size && kit.name === 'kit' ? kit : null;
+  const sample = (buf, at, rate, gain, dest, off = null) => {
+    const s = ctx.createBufferSource(), g = ctx.createGain(); s.buffer = buf; s.playbackRate.value = rate; g.gain.setValueAtTime(gain, at);
+    if (off != null) { g.gain.setValueAtTime(gain, off); g.gain.exponentialRampToValueAtTime(0.0001, off + 0.3); s.stop(off + 0.32); }
+    s.connect(g); g.connect(dest); s.start(at); return s;
+  };
+  if (keys) { // the pad on the grand piano: each bar's chord rolled once, louder as the section's tension rises, held under the bar
+    const bars = new Map(); for (const n of p.pad) { if (!bars.has(n.step)) bars.set(n.step, []); bars.get(n.step).push(n.midi); }
+    for (const [step, notes] of bars) for (const n of chordOf({ t: t0 + step * sp, vel: 0.45 + 0.4 * (tension(step) - 0.3) / 0.7, notes, dur: p.stepsPerBar * sp })) {
+      const k = pianoTake(n.midi, n.vel), buf = piano.buffers.get(k.path); if (buf) sample(buf, n.t, k.rate, 0.3 * k.gain, soft, n.t + Math.min(n.dur, 2.6));
+    }
+  } else for (const n of p.pad) tone(soft, 'sine', n.midi, n.step, n.len, 0.05, 0.08, 0.3);
   for (const n of p.melody) { const lead = p.sections.find((s) => n.step >= s.fromStep && n.step < s.fromStep + s.steps); tone(lp, lead && lead.id === 'climax' ? 'sawtooth' : 'triangle', n.midi, n.step, n.len, (lead && lead.id === 'climax' ? 0.07 : lead && lead.id === 'bridge' ? 0.1 : 0.15) * tension(n.step), 0.015, 0.15); }
   for (const n of p.bass) tone(bassLp, 'sawtooth', n.midi, n.step, n.len * 0.9, (n.soft ? 0.09 : 0.22) * tension(n.step), n.soft ? 0.05 : 0.005, 0.06);
   for (const n of p.guitar) { // two detuned sawtooths a note (about 12 cents either side), and the fifth under an open chord
@@ -128,27 +143,43 @@ export function scheduleArranged(ctx, p, t0 = 0) {
     for (const c of [-12, 12]) { tone(drive, 'sawtooth', n.midi, n.step, len, g, 0.004, 0.03, c); if (n.open) tone(drive, 'sawtooth', n.midi + 7, n.step, len, g * 0.8, 0.004, 0.03, c); }
   }
   const dr = p.drums;
+  if (drumKit) { // the recorded kit: the velocity follows the section's tension, so the breakdown and climax hit harder than the drop
+    const rr = {}, hitOf = (voice, step, vel, gain) => { const n = rr[voice] = (rr[voice] ?? -1) + 1, k = drumTake('kit', voice, vel, n), buf = k && drumKit.buffers.get(k.path); if (buf) sample(buf, t0 + step * sp, 1, gain * k.gain, out); };
+    for (const s of dr.kick) hitOf('kick', s, Math.min(1, 0.55 + 0.45 * tension(s)), 1);
+    for (const s of dr.snare) hitOf('snare', s, Math.min(1, 0.5 + 0.5 * tension(s)), 0.8);
+    for (const s of dr.hat) hitOf('hat', s, s % 4 === 0 ? 0.85 : 0.6, 0.35);
+    for (const s of dr.crash) hitOf('crash', s, 1, 0.45);
+  } else {
   for (const s of dr.kick) { const t = t0 + s * sp, o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(155, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.2); g.gain.setValueAtTime(0.95 * tension(s), t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.24); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.26); noise(out, 'highpass', 3000, s, 0.02, 0.12); }
   for (const s of dr.snare) { noise(out, 'bandpass', 1800, s, 0.16, 0.5 * tension(s)); noise(out, 'highpass', 6000, s, 0.1, 0.12); }
   for (const s of dr.hat) noise(out, 'highpass', 7500, s, 0.04, 0.09 * tension(s));
   for (const s of dr.crash) noise(out, 'highpass', 5000, s, 1.1, 0.2);
+  }
   // the sidechain: every kick in a section with `duck` dips the soft bus to about 30% in 10 ms and lets it back over about 120 ms
   soft.gain.setValueAtTime(1, 0);
   for (const s of dr.kick) {
     const sec = p.sections.find((x) => s >= x.fromStep && s < x.fromStep + x.steps); if (!sec || !sec.duck) continue;
     const t = t0 + s * sp, low = 1 - sec.duck; soft.gain.setValueAtTime(1, t); soft.gain.linearRampToValueAtTime(low, t + 0.01); soft.gain.linearRampToValueAtTime(1, t + 0.13);
   }
-  return p.steps * sp + 1.2;
+  return p.steps * sp + (keys || drumKit ? 2.4 : 1.2);
+}
+/** a plain sentence about what played in a heavy song, from what loaded. Pure. */
+export function arrangedLine(p, { piano = null, kit = null } = {}) {
+  const k = !!(kit && kit.name === 'kit'), pi = !!piano;
+  if (k && pi) return 'The drums are a real recorded kit and the pad is a real grand piano; the guitar, bass and lead are synthesised.';
+  if (k) return 'The drums are a real recorded kit; the piano did not load, so the pad, guitar, bass and lead are synthesised.';
+  if (pi) return 'The pad is a real grand piano; the recorded drums did not load, so they are synthesised with the guitar, bass and lead.';
+  return 'The recordings did not load, so every part is synthesised.';
 }
 
 /** render the song to samples in the browser (OfflineAudioContext, 22.05 kHz mono): { samples, rate }, or null with no offline audio. */
-export async function renderArranged(p, OAC = typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : (typeof webkitOfflineAudioContext !== 'undefined' ? webkitOfflineAudioContext : null)) {
+export async function renderArranged(p, OAC = typeof OfflineAudioContext !== 'undefined' ? OfflineAudioContext : (typeof webkitOfflineAudioContext !== 'undefined' ? webkitOfflineAudioContext : null), instruments = {}) {
   if (!OAC) return null;
-  const rate = 22050, ctx = new OAC(1, Math.ceil((p.steps * (60 / p.bpm / 4) + 1.4) * rate), rate); scheduleArranged(ctx, p, 0);
+  const real = instruments.piano || instruments.kit, rate = 22050, ctx = new OAC(1, Math.ceil((p.steps * (60 / p.bpm / 4) + (real ? 2.6 : 1.4)) * rate), rate); scheduleArranged(ctx, p, 0, instruments);
   const buf = await ctx.startRendering(); return { samples: buf.getChannelData(0), rate };
 }
 /** the song as WAV bytes, or null. */
-export async function arrangedWav(p, OAC) { const r = await renderArranged(p, OAC); return r ? wavBytes(r.samples, r.rate) : null; }
+export async function arrangedWav(p, OAC, instruments = {}) { const r = await renderArranged(p, OAC, instruments); return r ? wavBytes(r.samples, r.rate) : null; }
 
 /** each section's loudness from rendered samples: [{ id, rms, db }] (db is 20 log10 of the RMS over the section's own time, full scale 0). Pure. */
 export function sectionLoudness(samples, rate, p) {
