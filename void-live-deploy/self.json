@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-30T04:36:42Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,12 +550,44 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T10:53:48Z",
+   "subject": "Full-page link keeps what the card shows"
+  },
+  {
+   "at": "2026-10-30T10:49:00Z",
+   "subject": "Autopilot: each deploy ships a dated snapshot of Verse's own commits and deploys"
+  },
+  {
+   "at": "2026-10-30T10:48:38Z",
+   "subject": "File the remote jobs skill under Out in the world, not Time"
+  },
+  {
+   "at": "2026-10-30T10:45:50Z",
+   "subject": "Heavy songs play: start each recording before scheduling its stop"
+  },
+  {
+   "at": "2026-10-30T10:45:46Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T10:42:31Z",
+   "subject": "Loan payoff card: note that every value is escaped"
+  },
+  {
+   "at": "2026-10-30T10:42:06Z",
+   "subject": "Loan: answer how long a monthly payment takes to pay off a balance"
+  },
+  {
    "at": "2026-10-30T10:41:32Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
    "at": "2026-10-30T10:41:01Z",
    "subject": "Incident: the browser suite failed on c6ffa7bd (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-30T10:40:39Z",
+   "subject": "words: an anagram card says the service failed, not that no word fits"
   },
   {
    "at": "2026-10-30T10:36:54Z",
@@ -596,38 +628,6 @@
   {
    "at": "2026-10-30T10:21:29Z",
    "subject": "Heavy songs hit with the real drum kit and the grand piano pad"
-  },
-  {
-   "at": "2026-10-30T10:20:05Z",
-   "subject": "deps.json: regenerate for lib/stabilize.js from #1859"
-  },
-  {
-   "at": "2026-10-30T10:20:05Z",
-   "subject": "Incident: the browser suite failed on 5b6f9243 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T10:19:27Z",
-   "subject": "Recipe scaling: the word after the quantity agrees with the new number"
-  },
-  {
-   "at": "2026-10-30T10:19:14Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T10:17:02Z",
-   "subject": "fact: a fact about a topic comes from that topic's Wikipedia article"
-  },
-  {
-   "at": "2026-10-30T10:15:28Z",
-   "subject": "Every song Verse makes plays a real grand piano and real drums"
-  },
-  {
-   "at": "2026-10-30T10:12:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T10:11:34Z",
-   "subject": "Autopilot: a live page of what Verse did on its own"
   }
  ],
  "builders": {
