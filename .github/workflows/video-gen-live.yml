@@ -1,0 +1,66 @@
+# The video-gen skill against the live site (tools/video-gen-live.mjs): every 6 hours, from GitHub's network, read GET /api/clip and /video/ on
+# a-to-mind.com, keep what they said as an artifact (findings/video-gen/<date>T<hhmm>.json, attempt "live", the occasion number) and write one
+# `finding` line to the growth ledger pointing at it. Both files are committed to main by the bot, as rides-live.yml does. The read spends
+# nothing itself; when video is off and the last test is over 6 hours old, it starts the route's own self-check, one 1 second draft clip inside
+# PROBE_DAILY_USD ($0.02 a day, lib/video-gen.js). Success is the site answering a known state, a test under 7 hours old and /video/ served,
+# AND the finding landing on main; the job is red otherwise. No key is used and nothing a person typed is sent.
+name: Video-gen live
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 */6 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: video-gen-live
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the live video route and page once and write the finding
+        id: check
+        run: |
+          set +e
+          node tools/video-gen-live.mjs > video-gen-live.out; code=$?
+          set -e
+          cat video-gen-live.out
+          sed -n '/^### video-gen, live/,$p' video-gen-live.out >> "$GITHUB_STEP_SUMMARY"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Commit the artifact and the ledger line to main
+        if: always()
+        run: |
+          if [ -z "$(git status --porcelain findings/video-gen void-live-deploy/void.growth.json)" ]; then echo "nothing was written (the site could not be reached)"; exit 1; fi
+          node tools/grow.mjs --check
+          mkdir -p /tmp/video-gen && cp -r findings/video-gen/. /tmp/video-gen/ && cp void-live-deploy/void.growth.json /tmp/video-gen-ledger.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -f -B main origin/main
+            # the ledger line goes on top of whatever main has now: the newest entry from this run, appended again
+            line=$(node -e 'const l=require("/tmp/video-gen-ledger.json"); console.log(JSON.stringify(l[l.length-1]))')
+            mkdir -p findings/video-gen && cp -n /tmp/video-gen/*.json findings/video-gen/
+            node --input-type=module -e 'import fs from "node:fs"; import { appendTo, LEDGER } from "./tools/grow.mjs"; const e = JSON.parse(process.argv[1]), s = fs.readFileSync(LEDGER, "utf8"); if (!s.includes(JSON.stringify(e))) fs.writeFileSync(LEDGER, appendTo(s, e));' "$line"
+            node tools/grow.mjs --check
+            git add findings/video-gen void-live-deploy/void.growth.json
+            git commit -q -m "Finding: video-gen checked against the live site (findings/video-gen)" || { echo "nothing new to commit"; exit 0; }
+            if git push -q origin main; then echo "pushed the finding to main"; exit 0; fi
+            sleep $((i * 5))
+          done
+          echo "::error title=Finding not recorded::could not push the video-gen finding to main"; exit 1
+      - name: Red when the live check found a problem
+        if: steps.check.outputs.code != '0'
+        run: |
+          echo "::error title=Video check failed::the live video route or page did not pass (exit ${{ steps.check.outputs.code }}); the finding records why"
+          exit 1

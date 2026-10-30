@@ -6,7 +6,12 @@
  * else a rough place from the time zone, and the label says which.
  * It is a world (void.html setWorld), not a card: the sky card with its explanation is the next piece (sky PR C).
  */
-import { sky } from '../lib/sky-math.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the sky math (lib/sky-math.js) loads with the first sky world, not with the routing order (lib/load-later.js, owner 2026-10-30);
+// the world's mount is called at once, so it draws when the math is in
+let sky;
+export const ready = loadLater(() => import('../lib/sky-math.js').then((m) => { ({ sky } = m); }));
 
 /** what the ask means: null, { show: true } or { hide: true } */
 export function nightSkyOf(text) {
@@ -104,12 +109,13 @@ const world = {
     const opts = ctx.opts || {}, now = () => (opts.at ? new Date(opts.at) : new Date());
     let zone = ''; try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
     let place = opts.place || placeFromZone(zone, new Date().getTimezoneOffset()), last = null;
-    const paint = () => { last = draw(cv, now(), place); window.__voidSkyWorld = { place, sun: last && last.sun, moon: last && last.moon, planets: last && last.planets.filter((p) => p.alt > 0).map((p) => p.name) }; };
+    let gone = false;
+    const paint = () => { if (gone) return; if (!ready.done) { ready().then(paint, () => {}); return; } last = draw(cv, now(), place); window.__voidSkyWorld = { place, sun: last && last.sun, moon: last && last.moon, planets: last && last.planets.filter((p) => p.alt > 0).map((p) => p.name) }; };
     paint();
     if (!opts.place && navigator.geolocation) navigator.geolocation.getCurrentPosition((p) => { place = { lat: p.coords.latitude, lonE: p.coords.longitude, rough: false }; paint(); }, () => {}, { timeout: 8000, maximumAge: 600000 });
     const iv = setInterval(paint, 60000); // the sky moves a quarter of a degree a minute: once a minute is plenty, and calm
     const onResize = () => paint(); addEventListener('resize', onResize);
-    return { update: paint, dispose() { clearInterval(iv); removeEventListener('resize', onResize); delete window.__voidSkyWorld; } };
+    return { update: paint, dispose() { gone = true; clearInterval(iv); removeEventListener('resize', onResize); delete window.__voidSkyWorld; } };
   },
 };
 
@@ -130,5 +136,6 @@ export default {
   nearMisses: ['why is the sky blue', 'sky news', 'skyrim', 'the sky is the limit', 'blue sky thinking', 'moon phase tonight', 'show me the stars of the show'],
   match(lower, text) { return !!nightSkyOf(text); },
   run,
+  ready,
   world,
 };

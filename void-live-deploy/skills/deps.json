@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1082,
+ "counted": 1084,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -32,16 +32,16 @@
   },
   {
    "file": "lib/placement.js",
-   "skills": 29,
+   "skills": 28,
    "direct": 1,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 1
   },
   {
-   "file": "lib/panel-fit.js",
-   "skills": 24,
-   "direct": 1,
-   "dependants": 25,
+   "file": "lib/load-later.js",
+   "skills": 27,
+   "direct": 23,
+   "dependants": 28,
    "tests": 1
   },
   {
@@ -64,6 +64,13 @@
    "direct": 0,
    "dependants": 83,
    "tests": 5
+  },
+  {
+   "file": "lib/panel-fit.js",
+   "skills": 23,
+   "direct": 1,
+   "dependants": 24,
+   "tests": 1
   },
   {
    "file": "lib/motion-throttle.js",
@@ -1718,6 +1725,13 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-strings.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/rap-video.js",
    "skills": 1,
    "direct": 0,
@@ -1736,7 +1750,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/a11y-modes.js",
@@ -1757,7 +1771,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/avatar.js",
@@ -4609,7 +4623,8 @@
    "imports": [
     "lib/compose.js",
     "lib/rap-piano.js",
-    "lib/rap-kit.js"
+    "lib/rap-kit.js",
+    "lib/rap-strings.js"
    ],
    "importedBy": [
     "skills/music.js"
@@ -8173,6 +8188,41 @@
     "skills/verse-brain.js"
    ]
   },
+  "lib/load-later.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/aggravation.js",
+    "skills/aurora-tonight.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/fireworks.js",
+    "skills/go.js",
+    "skills/mancala.js",
+    "skills/meteors.js",
+    "skills/monopoly.js",
+    "skills/moontonight.js",
+    "skills/night-sky.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/ringer.js",
+    "skills/sky.js",
+    "skills/sorry.js",
+    "skills/suntimes.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js",
+    "skills/rebuild-map.js",
+    "skills/sky-card.js",
+    "skills/time.js"
+   ]
+  },
   "lib/local-ask.js": {
    "imports": [],
    "importedBy": [
@@ -9398,7 +9448,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -9645,7 +9694,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -10162,6 +10210,15 @@
    ],
    "importedBy": [
     "skills/rap.js"
+   ]
+  },
+  "lib/rap-strings.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arrange.js"
+   ],
+   "reachedBy": [
+    "skills/music.js"
    ]
   },
   "lib/rap-video.js": {
@@ -12876,6 +12933,7 @@
   },
   "skills/aggravation.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/lift3d.js",
     "skills/sfx.js"
    ],
@@ -12974,10 +13032,11 @@
   },
   "skills/aurora-tonight.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -13029,6 +13088,7 @@
   },
   "skills/battleship.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/battleship-rules.js",
     "skills/lift3d.js",
     "skills/game-rules-line.js"
@@ -13187,9 +13247,10 @@
   },
   "skills/checkers.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/checkers-rules.js",
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/checkers-rules.js",
     "lib/match-history.js"
    ],
    "importedBy": [
@@ -13214,9 +13275,10 @@
   },
   "skills/chess.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/chess-rules.js",
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/chess-rules.js",
     "lib/match-history.js"
    ],
    "importedBy": [
@@ -13274,9 +13336,10 @@
   },
   "skills/connect4.js": {
    "imports": [
-    "skills/game-level.js",
+    "lib/load-later.js",
     "skills/connect4-rules.js",
     "skills/lift3d.js",
+    "skills/game-level.js",
     "lib/arena-say.js",
     "skills/game-rules-line.js"
    ],
@@ -13292,10 +13355,11 @@
   },
   "skills/constellation.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
     "lib/where.js",
-    "lib/skyask.js",
     "lib/stars.js"
    ],
    "importedBy": [
@@ -13575,11 +13639,12 @@
   },
   "skills/eclipse.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/eclipses.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -13593,7 +13658,7 @@
   },
   "skills/eightball.js": {
    "imports": [
-    "skills/side-card.js"
+    "skills/grip.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -13759,6 +13824,7 @@
   },
   "skills/fireworks.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/fireworks-rules.js",
     "skills/lift3d.js"
    ],
@@ -13969,6 +14035,7 @@
   },
   "skills/go.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/side-card.js",
     "lib/go-ai.js"
    ],
@@ -14008,6 +14075,38 @@
     "lib/gradient.js"
    ],
    "importedBy": []
+  },
+  "skills/grip.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/eightball.js",
+    "skills/side-card.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/arcade.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
   },
   "skills/group.js": {
    "imports": [
@@ -14241,7 +14340,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -14554,6 +14652,7 @@
   },
   "skills/mancala.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js"
    ],
@@ -14649,11 +14748,12 @@
   },
   "skills/meteors.js": {
    "imports": [
-    "lib/astro.js",
+    "lib/load-later.js",
     "lib/showers.js",
+    "lib/skyask.js",
+    "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -14977,6 +15077,7 @@
   },
   "skills/monopoly.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/monopoly-rules.js",
     "skills/lift3d.js",
     "lib/table-tools.js",
@@ -15002,10 +15103,11 @@
   },
   "skills/moontonight.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -15091,6 +15193,7 @@
   },
   "skills/night-sky.js": {
    "imports": [
+    "lib/load-later.js",
     "lib/sky-math.js"
    ],
    "importedBy": [
@@ -15177,6 +15280,7 @@
   },
   "skills/othello.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js",
     "lib/arena-say.js",
@@ -15335,6 +15439,7 @@
   },
   "skills/poker.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/poker-rules.js",
     "skills/lift3d.js"
    ],
@@ -15483,9 +15588,10 @@
   },
   "skills/rack.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/parody.js",
     "skills/side-card.js",
     "skills/game-level.js",
-    "lib/parody.js",
     "lib/ladder.js"
    ],
    "importedBy": [
@@ -15615,6 +15721,7 @@
   },
   "skills/ringer.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/ringer-rules.js",
     "skills/figures.js",
     "skills/lift3d.js",
@@ -15777,7 +15884,6 @@
     "skills/checkers.js",
     "skills/chess.js",
     "skills/connect4.js",
-    "skills/eightball.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
@@ -15862,13 +15968,13 @@
    "imports": [
     "skills/howto.js",
     "skills/sfx.js",
-    "lib/panel-fit.js"
+    "lib/panel-fit.js",
+    "skills/grip.js"
    ],
    "importedBy": [
     "skills/arcade.js",
     "skills/checkers.js",
     "skills/chess.js",
-    "skills/eightball.js",
     "skills/go.js",
     "skills/lift3d.js",
     "skills/rack.js"
@@ -15939,6 +16045,7 @@
   },
   "skills/sky.js": {
    "imports": [
+    "lib/load-later.js",
     "lib/astro.js",
     "lib/skyfacts.js",
     "lib/where.js",
@@ -16000,9 +16107,10 @@
   },
   "skills/sorry.js": {
    "imports": [
+    "lib/load-later.js",
+    "skills/sorry-rules.js",
     "skills/lift3d.js",
-    "skills/sfx.js",
-    "skills/sorry-rules.js"
+    "skills/sfx.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -16225,10 +16333,11 @@
   },
   "skills/suntimes.js": {
    "imports": [
+    "lib/load-later.js",
+    "lib/skyask.js",
     "lib/astro.js",
     "lib/skyfacts.js",
-    "lib/where.js",
-    "lib/skyask.js"
+    "lib/where.js"
    ],
    "importedBy": [
     "skills/time.js"
@@ -16368,6 +16477,7 @@
   },
   "skills/tictactoe.js": {
    "imports": [
+    "lib/load-later.js",
     "skills/game-level.js",
     "skills/lift3d.js",
     "skills/game-rules-line.js"

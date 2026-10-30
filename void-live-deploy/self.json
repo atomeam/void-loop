@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-25T05:50:00Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,36 +550,20 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T17:23:25Z",
-   "subject": "Quiz card: an ask right after a reload waits for the saved cards"
+   "at": "2026-10-30T16:51:10Z",
+   "subject": "Mark the helper names the review takes for undeclared"
   },
   {
-   "at": "2026-10-30T17:17:10Z",
-   "subject": "reinvest: today's plan for Verse's money"
+   "at": "2026-10-30T16:50:06Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T17:13:03Z",
-   "subject": "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
-  },
-  {
-   "at": "2026-10-30T16:52:53Z",
-   "subject": "YAML to JSON and JSON to YAML: a converter card in the util skill"
-  },
-  {
-   "at": "2026-10-30T16:51:08Z",
-   "subject": "Main green: a guard limit for /api/sing and the MAP line for verse-secrets.mjs"
-  },
-  {
-   "at": "2026-10-30T16:49:17Z",
-   "subject": "Verse mints, uses and retires its own Cloudflare keys"
+   "at": "2026-10-30T16:49:26Z",
+   "subject": "Load game and sky helpers on first use, not with the routing order"
   },
   {
    "at": "2026-10-30T16:48:19Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T16:48:11Z",
-   "subject": "Open a stage tool only when the message asks for it"
   },
   {
    "at": "2026-10-30T16:45:07Z",
@@ -588,10 +572,6 @@
   {
    "at": "2026-10-30T16:44:46Z",
    "subject": "Incident: the browser suite failed on 3bf3d447 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T16:43:37Z",
-   "subject": "Distance reads \"is nyc → london\": lead words off, short city names, the arrow form; a Verse fix is a fix only when its card answers"
   },
   {
    "at": "2026-10-30T16:43:01Z",
@@ -628,6 +608,26 @@
   {
    "at": "2026-10-30T16:29:05Z",
    "subject": "Open the UUID card for \"uuid generator\" and convert \"timestamp converter 1700000000\""
+  },
+  {
+   "at": "2026-10-30T16:28:45Z",
+   "subject": "End a long card title at a whole sentence, never mid-word"
+  },
+  {
+   "at": "2026-10-30T16:28:30Z",
+   "subject": "Time page: flights to the city asked for, on the event's day when it is ahead"
+  },
+  {
+   "at": "2026-10-30T16:27:43Z",
+   "subject": "openapi-check: mark /api/sing as Verse's own (member-only, owner's Modal)"
+  },
+  {
+   "at": "2026-10-30T16:26:00Z",
+   "subject": "Close the video dollar-cap race; The stage reads a copied chat right"
+  },
+  {
+   "at": "2026-10-30T16:24:34Z",
+   "subject": "Read pasted chats and reports, never a keys refusal or a guessed secret name"
   }
  ],
  "builders": {

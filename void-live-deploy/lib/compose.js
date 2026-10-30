@@ -7,6 +7,7 @@
 // Pure but for the two audio functions, which take any AudioContext-shaped object (a real one, an OfflineAudioContext, or a test's fake).
 import { chordOf, takeOf as pianoTake, loadPiano } from './rap-piano.js';
 import { takeOf as drumTake, loadKit } from './rap-kit.js';
+import { stringsTakesFor, loadStrings } from './rap-strings.js';
 const NOTE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 export const SCALES = { major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10], dorian: [0, 2, 3, 5, 7, 9, 10], phrygian: [0, 1, 3, 5, 7, 8, 10], 'minor pentatonic': [0, 3, 5, 7, 10], 'major pentatonic': [0, 2, 4, 7, 9] };
 const PARENT = { 'minor pentatonic': 'minor', 'major pentatonic': 'major' }; // chords are built on the seven-note scale a pentatonic comes from
@@ -119,14 +120,15 @@ export function pianoNotesOf(p) {
   const parts = partsOf(p);
   return [...p.chords.flatMap((c) => c.tones), ...(parts.bass ? p.bass.map((b) => b.midi) : []), ...(parts.melody ? p.melody.map((n) => n.midi) : [])];
 }
-/** load the real instruments a piece plays, decoded by `ctx`: { piano, kit }, each null when it cannot load (the piece then synthesises
- *  that part). */
+/** load the real instruments a piece plays, decoded by `ctx`: { piano, kit, strings }, each null when it cannot load (the piece then
+ *  synthesises that part). */
 export async function instrumentsFor(p, ctx, { fetchFn = (u) => globalThis.fetch(u) } = {}) {
-  if (!ctx || typeof ctx.decodeAudioData !== 'function') return { piano: null, kit: null };
-  // a heavy song (lib/arrange.js) plays its pad on the piano and every drum on the acoustic kit
+  if (!ctx || typeof ctx.decodeAudioData !== 'function') return { piano: null, kit: null, strings: null };
+  // a heavy song (lib/arrange.js) plays its pad on the piano, every drum on the acoustic kit, and its bass, guitar and lead on the recorded strings
   const decode = (bytes) => ctx.decodeAudioData(bytes), kitName = p.sections ? 'kit' : partsOf(p).kit, notes = p.sections ? (p.pad || []).map((n) => n.midi) : pianoNotesOf(p);
-  const [piano, kit] = await Promise.all([(notes.length ? loadPiano({ notes, fetchFn, decode }) : Promise.reject(new Error('no piano part'))).catch(() => null), kitName ? loadKit(kitName, { fetchFn, decode }).catch(() => null) : null]);
-  return { piano, kit };
+  const [piano, kit, strings] = await Promise.all([(notes.length ? loadPiano({ notes, fetchFn, decode }) : Promise.reject(new Error('no piano part'))).catch(() => null), kitName ? loadKit(kitName, { fetchFn, decode }).catch(() => null) : null,
+    p.sections ? loadStrings(stringsTakesFor(p), { fetchFn, decode }).catch(() => null) : null]);
+  return { piano, kit, strings };
 }
 /** a plain sentence about what played, from what loaded. Pure. */
 export function playedLine(p, { piano = null, kit = null } = {}) {

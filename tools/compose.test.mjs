@@ -86,7 +86,8 @@ test('the real instruments load once, and the line says what played', async () =
   assert.equal(playedLine(compose('a spooky song'), { piano: inst.piano, kit: null }), 'Played on a real grand piano. The recorded drums did not load, so the drums are synthesised.');
   assert.equal(playedLine(compose('make me a lullaby'), {}), 'The piano recordings did not load, so it is synthesised.');
   const down = await instrumentsFor(p, ctx, { fetchFn: async () => ({ ok: false, status: 404 }) }), none = await instrumentsFor(p, null);
-  assert.ok(down.piano && down.kit, 'what loaded before is kept for the page'); assert.deepEqual(none, { piano: null, kit: null });
+  assert.ok(down.piano && down.kit, 'what loaded before is kept for the page'); assert.deepEqual(none, { piano: null, kit: null, strings: null });
+  assert.equal(inst.strings, null, 'only a heavy song loads the recorded bass and guitar');
 });
 test('on the real instruments every chord, note and hit plays a recording, and the piece rings out', async () => {
   for (const ask of ['make me a lullaby', 'a spooky song for halloween', 'make a beat']) {

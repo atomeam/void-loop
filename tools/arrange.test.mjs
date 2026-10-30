@@ -71,13 +71,27 @@ function recorder() {
 test('a heavy song on the real instruments: every hit a recording, harder in the climax, the pad on the grand piano', async () => {
   const p = arrange('make a heavy metal song'), { ctx, played } = recorder(), inst = await instrumentsFor(p, ctx, { fetchFn });
   assert.equal(inst.kit.name, 'kit'); assert.ok(inst.piano.buffers.size > 0);
-  assert.equal(arrangedLine(p, inst), 'The drums are a real recorded kit and the pad is a real grand piano; the guitar, bass and lead are synthesised.');
+  assert.equal(arrangedLine(p, inst), 'The drums are a real recorded kit, the pad is a real grand piano, the bass is a real bass guitar, and the guitar and lead are a real electric guitar through a simulated amp.');
+  assert.equal(arrangedLine(p, { ...inst, strings: null }), 'The drums are a real recorded kit and the pad is a real grand piano; the bass and guitar and lead are synthesised.');
+  assert.equal(arrangedLine(p, { strings: inst.strings }), 'The bass is a real bass guitar and the guitar and lead are a real electric guitar through a simulated amp; the drums and pad are synthesised.');
   assert.equal(arrangedLine(p, {}), 'The recordings did not load, so every part is synthesised.');
   const secs = scheduleArranged(ctx, p, 0, inst), rec = played(), d = p.drums, sp = 60 / p.bpm / 4;
   const drums = rec.filter((r) => r.path.startsWith('/sounds/drums/kit/')), piano = rec.filter((r) => r.path.startsWith('/sounds/piano/'));
   assert.equal(drums.length, d.kick.length + d.snare.length + d.hat.length + d.crash.length, 'every hit');
   assert.equal(drums.filter((r) => r.path.includes('/crash-')).length, d.crash.length);
   assert.equal(piano.length, p.pad.length, 'every pad note');
+  // the bass, guitar and lead: every note a recording (owner, 2026-10-30: real music, not oscillators)
+  const bass = rec.filter((r) => r.path.startsWith('/sounds/bass/')), gtr = rec.filter((r) => r.path.startsWith('/sounds/guitar/'));
+  assert.equal(bass.length, p.bass.length, 'every bass note');
+  const opens = p.guitar.filter((n) => n.open).length, chugs = p.guitar.length - opens;
+  assert.equal(gtr.length, 2 * (chugs + 3 * opens) + p.melody.length, 'every chug twice (double tracked), every open hit as root, fifth and octave twice, every lead note once');
+  const mutes = gtr.filter((r) => /-mute[12]\.wav$/.test(r.path)).sort((a, b) => a.at - b.at);
+  assert.equal(mutes.length, 2 * chugs, 'the chugs are palm mutes');
+  const firsts = mutes.filter((r, i) => i === 0 || r.at - mutes[i - 1].at > 0.02), root = (r) => r.path.replace(/-mute[12]\.wav$/, '');
+  const pairs = firsts.slice(1).map((r, i) => [firsts[i], r]).filter(([a, b]) => root(a) === root(b));
+  assert.ok(pairs.length > 10 && pairs.every(([a, b]) => a.path !== b.path), 'two chugs in a row never play the same muted take (' + pairs.length + ' pairs)');
+  for (const r of [...bass, ...gtr]) assert.ok(r.rate > 0.9 && r.rate < 1.1, r.path + ' plays within 1.5 semitones of its own pitch (rate ' + r.rate.toFixed(3) + ')');
+  for (const r of [...bass, ...gtr]) assert.ok(r.off > r.at, r.path + ' is stopped after it starts');
   const kickAt = (id) => { const s = p.sections.find((x) => x.id === id); return drums.filter((r) => r.path.includes('/kick-') && r.at >= s.fromStep * sp && r.at < (s.fromStep + s.steps) * sp); };
   const loud = (rs) => rs.reduce((a, r) => a + r.gain, 0) / rs.length;
   assert.ok(loud(kickAt('climax')) > loud(kickAt('drop')), 'the climax kicks hit harder than the drop: ' + loud(kickAt('climax')).toFixed(3) + ' vs ' + loud(kickAt('drop')).toFixed(3));

@@ -157,3 +157,14 @@ test('the stage card: "animate <words>" is the video card with the words, a pict
   assert.deepEqual(PAGE_OF['video-gen'], ['/video/', 'AI video generator']);
   assert.deepEqual(pageOfCard('video-gen', '/video/?prompt=a%20cat'), ['/video/?prompt=a%20cat', 'AI video generator'], 'the card opens the page with its words');
 });
+
+test('the stage card says when Verse last tested the video model, beside the route\'s own words', async () => {
+  const { stateLine, agoWords } = await import('../void-live-deploy/skills/video-gen.js');
+  const now = Date.parse('2026-10-30T18:00:00Z');
+  assert.equal(agoWords('2026-10-30T17:59:30Z', now), 'just now'); assert.equal(agoWords('2026-10-30T17:15:00Z', now), '45 minutes ago');
+  assert.equal(agoWords('2026-10-30T12:10:00Z', now), '6 hours ago'); assert.equal(agoWords('', now), ''); assert.equal(agoWords('2026-10-30T19:00:00Z', now), '');
+  assert.equal(stateLine({ on: false, say: 'Video is off: no credits.', checkedAt: '2026-10-30T15:00:00Z' }, now), 'Video is off: no credits. Verse last tested the video model 3 hours ago.');
+  assert.equal(stateLine({ on: true, clipsLeft: 4, checkedAt: '2026-10-30T17:50:00Z' }, now), 'Video is on. 4 short clips left today for everyone. Verse last tested the video model 10 minutes ago.');
+  assert.equal(stateLine({ on: false, say: 'Video is off.' }, now), 'Video is off.', 'no test time, no claim');
+  assert.equal(stateLine(null, now), 'Video is off right now.');
+});

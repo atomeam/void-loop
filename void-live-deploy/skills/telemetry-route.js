@@ -30,15 +30,18 @@ function run(text, api) {
     const none = el.querySelector('[data-tel-none]');
     if (none) none.textContent = lines.some((l) => l.ok === false) ? 'Nothing in it names a failure, but GitHub does: see the ✗ above' : 'Nothing in it names a failure';
   };
+  // the "checking" line always ends: a read that fails in any way says so in its place, never leaves the card checking (owner, 2026-10-30)
+  const failed = () => draw([{ text: 'GitHub did not answer, so nothing here is checked', ok: null }]);
   if (slot) liveLines(t).then((lines) => {
     draw(lines);
     if (!stillRunning(lines) || !api.keepFresh) return;
     let n = 0;
     const id = api.keepFresh(el, async () => {
-      const next = await liveLines(t); draw(next); n++;
-      if (!stillRunning(next) || n >= REFRESH_MAX) clearInterval(id);
+      const next = await liveLines(t).catch(() => null); n++;
+      if (next) draw(next);
+      if (!next || !stillRunning(next) || n >= REFRESH_MAX) clearInterval(id);
     }, REFRESH_MS);
-  });
+  }).catch(failed);
   if (el) el.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-tel]'); if (!b) return;
     if (b.dataset.tel === 'autopsy') api.stage.ask('incident autopsy');
