@@ -8895,21 +8895,22 @@ try {
   // the semantic validator on the page (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"): a card about something
   // other than what was asked goes quietly to the miss list as ungrounded:<skill>; a card about the ask sends nothing
   if (want("semantic validator: a card about something else than the ask is reported as ungrounded, quietly")) {
+    // a dish with no built-in recipe, so the card comes from TheMealDB (a built-in dish, as guacamole is since #1854, fetches nothing)
     const G = await fresh(); const sent = [];
     await G.ctx.route(/\/api\/miss$/, (rt) => { sent.push(JSON.parse(rt.request().postData() || '{}')); return rt.fulfill({ status: 204, body: '' }); });
     let dish = 'Pancakes';
     await G.ctx.route(/themealdb\.com\/api\//, (rt) => rt.fulfill(json({ meals: [{ idMeal: '1', strMeal: dish, strCategory: 'Dessert', strArea: 'American', strInstructions: 'Mix and fry.', strMealThumb: '', strIngredient1: 'Flour', strMeasure1: '1 cup' }] })));
-    await G.ask('how do i make guacamole', 800);
+    await G.ask('how do i make shakshuka', 800);
     await until(async () => (await G.p.evaluate(() => (window.voidUngrounded || []).length)) > 0, 4000);
     const wrong = await G.p.evaluate(() => window.voidUngrounded || []);
     const reported = sent.filter((b) => /^ungrounded:/.test(b.fallback || ''));
-    dish = 'Guacamole';
-    await G.ask('how do i make guacamole', 800); await G.p.waitForTimeout(2200);
+    dish = 'Shakshuka';
+    await G.ask('how do i make shakshuka', 800); await G.p.waitForTimeout(2200);
     const after = await G.p.evaluate(() => (window.voidUngrounded || []).length);
     const shown = await G.p.$eval('#whisper', (e) => e.textContent).catch(() => '');
-    check('semantic validator: "how do i make guacamole" answered with a pancakes card is reported once as ungrounded:recipe (no refusal shown); a guacamole card reports nothing',
-      wrong.length === 1 && wrong[0].skill === 'recipe' && JSON.stringify(wrong[0].missing) === '["guacamole"]' && reported.length === 1 && reported[0].fallback === 'ungrounded:recipe'
-      && reported[0].ask === 'how do i make guacamole' && after === 1 && !/Missing:/.test(shown) && !G.errors.length, JSON.stringify({ wrong, sent, after, shown, errors: G.errors }));
+    check('semantic validator: "how do i make shakshuka" answered with a pancakes card is reported once as ungrounded:recipe (no refusal shown); a shakshuka card reports nothing',
+      wrong.length === 1 && wrong[0].skill === 'recipe' && JSON.stringify(wrong[0].missing) === '["shakshuka"]' && reported.length === 1 && reported[0].fallback === 'ungrounded:recipe'
+      && reported[0].ask === 'how do i make shakshuka' && after === 1 && !/Missing:/.test(shown) && !G.errors.length, JSON.stringify({ wrong, sent, after, shown, errors: G.errors }));
     await G.ctx.close(); }
 
   // grounding, where the validator found it (owner, 2026-10-14: "a tighter grounding mechanism"): "where is Orion" with no place known

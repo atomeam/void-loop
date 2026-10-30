@@ -126,9 +126,11 @@ jobs:
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
-      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here
+      # the two slow browser checks the fast checks skip unless their files changed (tools/checks.mjs ONLY_WHEN): every merge to main runs them here.
+      # perf3d runs on shard 4, not 2: shard 2 holds the longest section and its suite took 1,596 s, so perf3d after it ran into the
+      # 30-minute job limit and was cancelled (run 41038688000); shard 4's suite took 1,135 s, and the budget stays.
       - name: 3D frame times (perf3d)
-        if: steps.skip.outputs.skip != 'true' && matrix.shard == 2
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 4
         run: node tools/perf3d.test.mjs
       - name: Every game played as four kinds of player (persona playtest)
         if: steps.skip.outputs.skip != 'true' && matrix.shard == 3
