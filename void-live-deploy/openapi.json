@@ -159,6 +159,20 @@
         }
       }
     },
+    "/api/mcp/server-card": {
+      "get": {
+        "tags": ["mcp"],
+        "operationId": "mcpServerCard",
+        "summary": "Verse's MCP Server Card",
+        "description": "The static MCP Server Card (SEP-2127, schema v1) at the reserved place beside the endpoint: Verse's name, version, repository, icon and the streamable HTTP endpoint with the protocol version it speaks. It lists no tools; an MCP client lists them with `tools/list`. Public and read-only.",
+        "responses": {
+          "200": {
+            "description": "The Server Card",
+            "content": { "application/json": { "schema": { "type": "object", "required": ["$schema", "name", "version", "description"] } } }
+          }
+        }
+      }
+    },
     "/tools.json": {
       "get": {
         "tags": ["discovery"],

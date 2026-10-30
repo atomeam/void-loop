@@ -18,6 +18,24 @@ import { parse as parseColour, contrast as contrastOf, passes, toHex } from './c
 
 export const PROTOCOL = '2025-06-18';
 export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.2.0' };
+// Verse's MCP Server Card (SEP-2127, Final; schema v1): the static card at the reserved place beside the endpoint,
+// /api/mcp/server-card (functions/api/mcp/server-card.js). Identity matches server.json (the registry entry) and the
+// endpoint is the one initialize answers on, with the protocol version it speaks; no tools are listed (the card format
+// leaves them to tools/list). Pure.
+export const CARD_SCHEMA = 'https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json';
+export function serverCard(origin = 'https://a-to-mind.com') {
+  return {
+    $schema: CARD_SCHEMA,
+    name: 'io.github.atomeam/void',
+    version: SERVER.version,
+    title: SERVER.title,
+    description: 'Ask Verse anything with sources, plus code review, SEO audit, readability, contrast and sky facts.',
+    websiteUrl: origin,
+    repository: { url: 'https://github.com/atomeam/void-loop', source: 'github' },
+    icons: [{ src: origin + '/icon-512.png', mimeType: 'image/png', sizes: ['512x512'] }],
+    remotes: [{ type: 'streamable-http', url: origin + '/api/mcp', supportedProtocolVersions: [PROTOCOL] }],
+  };
+}
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 // what shape an agent wants back (asked by Verse, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
 // (the structured result as JSON text). 'image' is named so an agent learns it is not offered yet, rather than guessing.
