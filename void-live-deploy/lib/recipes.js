@@ -55,9 +55,11 @@ const PAREN_BOTH = new RegExp(String.raw`\((?:about |around |approx\.? )?${NUM}(
 const round5 = (v) => (v >= 20 ? Math.round(v / 5) * 5 : Math.round(v));
 const dec1 = (v) => String(Math.round(v * 10) / 10);
 const metricOf = (v, to, per) => { const x = v * per; if (to === 'g' && x >= 1000) return dec1(x / 1000) + ' kg'; if (to === 'ml' && x >= 1000) return dec1(x / 1000) + ' l'; return (to === 'cm' ? dec1(x) : String(round5(x))) + ' ' + to; };
+// cups as a measuring cup holds them: a whole cup when it is within 5%, else the nearest ⅛ or ⅓ (250 ml is 1 cup, not 1.04 cups; 100 ml is ⅜ cup)
+const cupsOf = (ml) => { const c = ml / 240, w = Math.round(c), e = Math.round(c * 8) / 8, t = Math.round(c * 3) / 3; const q = w && Math.abs(w - c) <= 0.05 * c ? w : Math.abs(t - c) < Math.abs(e - c) ? t : e; return fmtQty(q) + ' cup' + (q > 1 ? 's' : ''); };
 const usOf = (v, unit) => {
-  if (unit === 'ml') return v >= 60 ? fmtQty(v / 240) + ' cup' + (v / 240 > 1.03 ? 's' : '') : v >= 15 ? fmtQty(v / 15) + ' tbsp' : fmtQty(v / 5) + ' tsp';
-  if (unit === 'l') return fmtQty(v * 4.167) + ' cups';
+  if (unit === 'ml') return v >= 60 ? cupsOf(v) : v >= 15 ? fmtQty(v / 15) + ' tbsp' : fmtQty(v / 5) + ' tsp';
+  if (unit === 'l') return usOf(v * 1000, 'ml');
   if (unit === 'g') return v >= 454 ? dec1(v / 453.6) + ' lb' : dec1(v / 28.35) + ' oz';
   if (unit === 'kg') return dec1(v * 2.205) + ' lb';
   return dec1(v / 2.54) + ' inch';
