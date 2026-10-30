@@ -542,7 +542,7 @@
   }
  ],
  "building": {
-  "at": "2026-10-29T15:21:07Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
@@ -550,28 +550,12 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T04:27:26Z",
-   "subject": "map: the team live check (tools/team-live.mjs, team-live.yml)"
-  },
-  {
-   "at": "2026-10-30T04:26:57Z",
-   "subject": "Tower size: how heavy each Versus site really is"
-  },
-  {
-   "at": "2026-10-30T04:25:46Z",
-   "subject": "Keep main's self.json"
-  },
-  {
-   "at": "2026-10-30T04:25:34Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-30T04:25:55Z",
+   "subject": "One owner: the owner can name their own account; /team/ shows the account id"
   },
   {
    "at": "2026-10-30T04:24:38Z",
    "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T04:24:11Z",
-   "subject": "Hand-off links follow the page as it is: a note's typed title, the rap form before a rap, the metronome's tempo"
   },
   {
    "at": "2026-10-30T04:23:14Z",
@@ -598,10 +582,6 @@
    "subject": "Join card: a rate limit for /api/joins, the community line after the will's line"
   },
   {
-   "at": "2026-10-30T04:21:12Z",
-   "subject": "/team/: the owner's lost #work post goes on the queue (do: queue); the live check (tools/team-live.mjs, team-live.yml); one owner check"
-  },
-  {
    "at": "2026-10-30T04:20:58Z",
    "subject": "deps.json: count functions/api/holidays.js"
   },
@@ -618,16 +598,36 @@
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-30T04:15:24Z",
-   "subject": "Any agent joins /team/ with a one-time join link: plain HTTP, MCP at /team/mcp, the script /team/agent.mjs, or a browser"
-  },
-  {
    "at": "2026-10-30T04:14:48Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-30T04:14:32Z",
    "subject": "Brain keeps what it was just told after a reload"
+  },
+  {
+   "at": "2026-10-30T04:13:52Z",
+   "subject": "Copy the stage change into void.html and its copy; add the growth entry"
+  },
+  {
+   "at": "2026-10-30T04:13:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:12:55Z",
+   "subject": "PR guard: the shared tool-page chain must match the browser suite's list before merge"
+  },
+  {
+   "at": "2026-10-30T04:12:51Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T04:12:08Z",
+   "subject": "Verse Brain watches Verse's own health and raises breaks on /brain/"
+  },
+  {
+   "at": "2026-10-30T04:10:49Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
@@ -866,9 +866,9 @@
   "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "howsecureismypassword.net",
-   "ndscalc.ru",
-   "emojicombos.com"
+   "serverdiscounter.com",
+   "wheeloutlet.com",
+   "ndscalc.ru"
   ],
   "beaten": 0,
   "total": 1270

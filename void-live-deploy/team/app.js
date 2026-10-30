@@ -317,6 +317,8 @@ function drawRelated() {
     { label: 'Translate it', href: () => (openText() ? '/translate/?q=' + encodeURIComponent(fit(openText())) : null) },
   ] : []);
 }
+// this browser's Verse account id (shown when the account is signed in but not the owner's, so the owner can name it: lib/owner-accounts.js)
+const myId = () => { try { const u = (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).userId; return /^[A-Za-z0-9_-]{16,64}$/.test(u || '') ? u : ''; } catch (_) { return ''; } };
 const incoming = new URLSearchParams(location.search).get('q'); // text another page handed over (/team/?q=...) waits in the message box
 
 // ---- start ----
@@ -333,7 +335,7 @@ async function start() {
   }
   S.me = me;
   $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
-    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
+    : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' + (myId() ? '. This account\'s Verse id: ' + myId() : '') : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
   route(); drawRelated();
