@@ -38,7 +38,7 @@ async function run(text, api) {
   let got = null, title = '';
   for (let i = 0; i < 3 && !got; i++) { // a day with no page, or a page in another shape, is skipped for another day
     title = qotdTitle();
-    try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); got = qotdFrom(j && j.parse && j.parse.text); } } catch (_) {}
+    try { const r = await fetch(WQ + encodeURIComponent(title)); if (r.ok) { const j = await r.json(); got = qotdFrom(j && j.parse && j.parse.text); } } catch (_) {} // void-review: ok (a retry that stops at the first quote, not one request per item)
   }
   if (!api._pageStill(el)) return got ? 'quote' : 'none';
   if (!got) {
