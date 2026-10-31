@@ -1,19 +1,19 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-31T15:36:51.156Z",
+ "updated": "2026-10-31T16:38:27.788Z",
  "last24h": {
   "ticks": 145,
-  "started": 124,
+  "started": 123,
   "requeued": 0,
   "setAside": 0,
-  "probes": 15,
+  "probes": 14,
   "errors": 0
  },
  "broken": [
   {
    "wf": "grow-self.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/41208386373"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/41218169919"
   }
  ],
  "held": [
@@ -118,10 +118,6 @@
   "mveb8svc": 1793405892378,
   "mva30j4u": 1793449228181,
   "mvu167w7": 1793427567953,
-  "mvv3y6q2": 1793374991133,
-  "mvv4nvlb": 1793375608613,
-  "mvv4nw8l": 1793376224491,
-  "mvv6c97w": 1793377460475,
   "mvfu4evy": 1793406512279,
   "mvv6cai3": 1793406512279,
   "mvpuq9g6": 1793407131304,
@@ -186,127 +182,12 @@
   "mvwhgjoo": 1793457893832,
   "mvwhgk9m": 1793458539633,
   "mvwi985d": 1793459155101,
-  "mvwi99cc": 1793459770700
+  "mvwi99cc": 1793459770700,
+  "mvwkjtuu": 1793461629438,
+  "mvwkjupk": 1793462244146,
+  "mvwkjvyk": 1793462859436
  },
  "ticks": [
-  {
-   "at": "2026-10-30T15:43:11.133Z",
-   "open": 106,
-   "started": [
-    {
-     "id": "mvv3y6q2",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 100,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T15:53:28.613Z",
-   "open": 105,
-   "started": [
-    {
-     "id": "mvv4nvlb",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 100,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T16:03:44.491Z",
-   "open": 104,
-   "started": [
-    {
-     "id": "mvv4nw8l",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 100,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T16:14:01.625Z",
-   "open": 103,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": true,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 100,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T16:24:20.475Z",
-   "open": 107,
-   "started": [
-    {
-     "id": "mvv6c97w",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 40
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 100,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T16:34:37.167Z",
-   "open": 106,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 105,
-   "warnings": 0
-  },
   {
    "at": "2026-10-30T16:44:51.658Z",
    "open": 106,
@@ -3380,6 +3261,129 @@
    "lap": false,
    "revived": [],
    "held": 115,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T15:47:09.438Z",
+   "open": 121,
+   "started": [
+    {
+     "id": "mvwkjtuu",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 115,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T15:57:24.146Z",
+   "open": 126,
+   "started": [
+    {
+     "id": "mvwkjupk",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 121,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T16:07:39.436Z",
+   "open": 126,
+   "started": [
+    {
+     "id": "mvwkjvyk",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 122,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T16:17:58.859Z",
+   "open": 125,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 125,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T16:28:13.151Z",
+   "open": 125,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 125,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T16:38:27.788Z",
+   "open": 125,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 125,
    "warnings": 0
   }
  ]
