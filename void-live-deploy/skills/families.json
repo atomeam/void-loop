@@ -603,13 +603,13 @@
     {
      "name": "coin",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 12 browser-suite mentions, 2 real asks in the benchmark",
      "failing": [
       "coin toss"
      ],
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
-     "success_rate": 0,
+     "success_rate": 0.5,
      "promoted": "2026-10-29",
      "streak": 6
     },
@@ -2424,7 +2424,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 15 live findings, 2026-10-29",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 16 live findings, 2026-10-30",
      "last_tested": "2026-10-30",
      "last_tested_by": "the benchmark",
      "success_rate": 1,

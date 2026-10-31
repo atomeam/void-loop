@@ -328,24 +328,24 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
    "from": "claude 2026-10-18"
   },
   {
@@ -536,7 +536,75 @@
  },
  "commits": [
   {
+   "at": "2026-10-30T19:20:50Z",
+   "subject": "Finding: rides asked a live routing service (findings/rides)"
+  },
+  {
+   "at": "2026-10-30T19:11:13Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T19:02:17Z",
+   "subject": "Incident: the browser suite failed on e28d7d21 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-30T18:59:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:58:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:51:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:50:50Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:50:20Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:43:36Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-30T18:39:59Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T18:39:15Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:37:47Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:37:18Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:36:55Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:30:48Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-10-30T18:19:54Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:19:22Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-30T18:18:40Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -546,74 +614,6 @@
   {
    "at": "2026-10-30T18:17:09Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-30T18:15:33Z",
-   "subject": "Answer a typed secret-name question from Verse's own names"
-  },
-  {
-   "at": "2026-10-30T18:15:21Z",
-   "subject": "The forge's ledger line says when a fix came from Verse's own probe, so the growth card counts it"
-  },
-  {
-   "at": "2026-10-30T18:14:34Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-30T18:13:36Z",
-   "subject": "Tower gate: onlineconverter.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-30T18:13:14Z",
-   "subject": "Baggage gets a daily live check against the airline pages"
-  },
-  {
-   "at": "2026-10-30T18:12:03Z",
-   "subject": "Fly stars check: sample the streak drawn for the last move"
-  },
-  {
-   "at": "2026-10-30T18:11:41Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:07:29Z",
-   "subject": "Owner calls: GPC and the MCP Server Card go live, the crew chief closes"
-  },
-  {
-   "at": "2026-10-30T18:07:11Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:05:57Z",
-   "subject": "Three checks red on main go green: the team join test, the map and the parity inventories"
-  },
-  {
-   "at": "2026-10-30T18:00:55Z",
-   "subject": "The benchmark takes the echo card's 4 s pause out, so its ask is logged in time"
-  },
-  {
-   "at": "2026-10-30T17:59:25Z",
-   "subject": "Gradient hands its picture to a board"
-  },
-  {
-   "at": "2026-10-30T17:58:38Z",
-   "subject": "Five benchmark rows match the answers other laps sourced today, and a title search answers with that book"
-  },
-  {
-   "at": "2026-10-30T17:56:28Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP live: keep each passing client run as a finding with its requests and responses"
-  },
-  {
-   "at": "2026-10-30T17:51:38Z",
-   "subject": "MCP skill tools run each skill's own code on the server"
-  },
-  {
-   "at": "2026-10-30T17:51:08Z",
-   "subject": "The benchmark answers for Wikiquote and Verse's markets API, so 17 quote, proverb and stock asks are measured instead of reading (none)"
   }
  ],
  "builders": {

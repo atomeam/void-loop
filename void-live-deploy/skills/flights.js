@@ -19,8 +19,8 @@ function run(text, api) {
 }
 export default {
   name: 'flights',
-  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator', 'where can i fly from berlin'],
+  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator', 'where can i fly from berlin', 'flight status nyc to lon'],
   nearMisses: ['fly to tokyo', 'my flight is delayed', 'how do planes fly', 'distance from london to new york'],
-  match(lower) { const to = flightAskOf(String(lower || '').trim()); return !!to && !to.startsWith('/flights/distance/?'); }, // a distance between two places stays with the distance skill; "flight distance" alone opens the page
+  match(lower) { const to = flightAskOf(String(lower || '').trim()); return (!!to && !to.startsWith('/flights/distance/?')) || /flight status/.test(lower); }, // a distance between two places stays with the distance skill; "flight distance" alone opens the page
   run,
 };

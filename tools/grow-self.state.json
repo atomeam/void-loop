@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "41062252635",
-  "at": "2026-10-30T13:27:26Z",
-  "what": "Verse hardened itself: 5 benchmark ask(s) for video-gen, rentbuy, baggage.  Why these: tab (no benchmark ask, evidence tier: checked, 6 failed runs name it); video-gen (no benchmark ask, evidence tier: tested); eightball (no benchmark ask, evidence tier: checked); rentbuy (only 2 benchmark asks, evidence tier: checked); baggage (only 2 benchmark asks, evidence tier: tested); coin (only 1 benchmark ask). New phrases: “animate a cat chasing yarn” now opens video-gen; “animate waves on a beach at sunset” now opens video-gen; “is it better to rent or buy a house” now opens rentbuy; “rent vs buy” now opens rentbuy; “how heavy can my suitcase be” now opens baggage. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball; heads or tails.",
-  "try": "animate a cat chasing yarn",
+  "run": "41099099736",
+  "at": "2026-10-30T17:33:59Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for coin.  Why these: coin (only 1 benchmark ask); tab (no benchmark ask, evidence tier: checked, 6 failed runs name it); eightball (no benchmark ask, evidence tier: checked). New phrases: “heads or tails” now opens coin. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball.",
+  "try": "heads or tails",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-30T11:14:48Z",
-    "try": "local radio",
-    "closedAt": "2026-10-30T13:27:08Z"
+    "at": "2026-10-30T13:27:26Z",
+    "try": "animate a cat chasing yarn",
+    "closedAt": "2026-10-30T17:33:48Z"
   }
 }

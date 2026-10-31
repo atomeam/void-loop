@@ -493,7 +493,7 @@
    "chapter": "make",
    "name": "forge",
    "title": "Forge",
-   "line": "\"make me a rocket\" (a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree: things no figure covers yet) puts the thing on the stage as a model you can turn and inspect, and \"print it\" downloads it as an",
+   "line": "\"make me a rocket\" (a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree: things no figure covers yet) puts the thing on the stage as a model you can turn and inspect, and \"print it\" downloads it as an STL sized for a home printer (millimetres, flat base, inside a 180 mm cube)",
    "examples": [
     "forge history",
     "what can you make",
@@ -1068,7 +1068,7 @@
    "chapter": "make",
    "name": "nca-mind",
    "title": "Nca mind",
-   "line": "Verse's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and",
+   "line": "Verse's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and F-045",
    "examples": [
     "nca mind",
     "show me a living lattice",
@@ -1443,8 +1443,8 @@
     "coin toss"
    ],
    "tier": "proven",
-   "why": "a self-test, 12 browser-suite mentions, 1 real ask in the benchmark",
-   "flavor": "Not a boast but a record: 1 askings, each one answered. The void remembers each asking.",
+   "why": "a self-test, 12 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 2 askings, each one answered. The void remembers each asking.",
    "n": 69
   },
   {
@@ -4420,7 +4420,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 15 live findings, 2026-10-29",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark, 16 live findings, 2026-10-30",
    "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
    "glow": 100,
    "n": 234
@@ -6117,7 +6117,7 @@
    "chapter": "stage",
    "name": "list-templates",
    "title": "List templates",
-   "line": "Starter lists: ask for a",
+   "line": "Starter lists: ask for a \"shopping list template\", \"packing list template for a beach trip\", \"meeting agenda template\", \"groceries list template\", \"reading list template\", \"bug list template\", \"ideas list template\", \"gratitude list template\" or \"contacts template\" and the stage gets a list (or, for bugs and contacts, a data table) already filled with a sensible start to edit",
    "examples": [
     "shopping list template",
     "meeting agenda template",
@@ -6168,7 +6168,7 @@
    "chapter": "stage",
    "name": "stage-organize",
    "title": "Stage organize",
-   "line": "Keep the stage in order: folders for kept items (81: \"put the kept cards in folder recipes\", \"open folder recipes\", \"close folder\"), tags (82: \"tag the clock as work\"), filter by tag (83: \"show only things tagged work\"), colour labels (84: \"colour label the clock red\"), saved stage layouts (85: \"save this layout as morning\", \"restore layout morning\"), named snapshots (86: \"snapshot as before trip\", \"restore snapshot before trip\"), a diff of two snapshots by name only (87: \"diff snapshot a and b\"), template stage (88: \"save this stage as template weekly\", \"use template weekly\"), duplicate a layout (89), and",
+   "line": "Keep the stage in order: folders for kept items (81: \"put the kept cards in folder recipes\", \"open folder recipes\", \"close folder\"), tags (82: \"tag the clock as work\"), filter by tag (83: \"show only things tagged work\"), colour labels (84: \"colour label the clock red\"), saved stage layouts (85: \"save this layout as morning\", \"restore layout morning\"), named snapshots (86: \"snapshot as before trip\", \"restore snapshot before trip\"), a diff of two snapshots by name only (87: \"diff snapshot a and b\"), template stage (88: \"save this stage as template weekly\", \"use template weekly\"), duplicate a layout (89), and \"clear unkept\" (90: clears what is not a kept answer, locked or marked keep; a snapshot \"before clear\" is taken first so it can be brought back)",
    "examples": [
     "put the kept cards in folder recipes",
     "open folder recipes",
@@ -7188,7 +7188,7 @@
    "chapter": "self",
    "name": "wants",
    "title": "Wants",
-   "line": "\"what do you want built now\", \"name all your unbuilt asks\", \"your backlog\": one card, \"What I want built\", read from",
+   "line": "\"what do you want built now\", \"name all your unbuilt asks\", \"your backlog\": one card, \"What I want built\", read from Verse's own records and never from a model",
    "examples": [
     "what do you want built now",
     "what is on your wishlist?",
@@ -7350,7 +7350,7 @@
    "chapter": "safety-play",
    "name": "photo-scrub",
    "title": "Photo scrub",
-   "line": "\"strip the exif from a photo\" / \"remove the location from a picture\" puts a card on the stage: choose a",
+   "line": "\"strip the exif from a photo\" / \"remove the location from a picture\" puts a card on the stage: choose a JPEG or PNG and it says what hidden data the file carried (camera, time, place, comments), then offers a cleaned copy to save",
    "examples": [
     "strip the exif from a photo",
     "remove the location from a picture",

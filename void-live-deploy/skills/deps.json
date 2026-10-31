@@ -987,7 +987,7 @@
    "skills": 2,
    "direct": 1,
    "dependants": 35,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/pay-share.js",
@@ -1088,11 +1088,25 @@
    "tests": 1
   },
   {
+   "file": "lib/rap-fft.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 8,
+   "tests": 0
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
    "dependants": 8,
    "tests": 1
+  },
+  {
+   "file": "lib/rap-ears.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 4
   },
   {
    "file": "lib/recipes.js",
@@ -1473,13 +1487,6 @@
    "tests": 3
   },
   {
-   "file": "lib/rap-fft.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 0
-  },
-  {
    "file": "lib/translate-docs.js",
    "skills": 1,
    "direct": 0,
@@ -1492,13 +1499,6 @@
    "direct": 0,
    "dependants": 5,
    "tests": 1
-  },
-  {
-   "file": "lib/rap-ears.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 5,
-   "tests": 3
   },
   {
    "file": "lib/rap-voice.js",
@@ -1785,7 +1785,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/avatar.js",
@@ -1978,6 +1978,13 @@
   },
   {
    "file": "lib/game-health.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/genre-score.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -2394,7 +2401,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 26,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/answer-edge.js",
@@ -7480,6 +7487,14 @@
     "skills/generators-fill.js"
    ]
   },
+  "lib/genre-score.js": {
+   "imports": [
+    "lib/rap-ears.js"
+   ],
+   "importedBy": [
+    "skills/music.js"
+   ]
+  },
   "lib/gist.js": {
    "imports": [],
    "importedBy": [
@@ -10403,12 +10418,14 @@
     "lib/rap-fft.js"
    ],
    "importedBy": [
+    "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js"
    ],
    "reachedBy": [
     "lib/rap-stage.js",
     "lib/rap-video.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },
@@ -10419,9 +10436,11 @@
     "lib/rap-video.js"
    ],
    "reachedBy": [
+    "lib/genre-score.js",
     "lib/rap-listen.js",
     "lib/rap-song.js",
     "lib/rap-stage.js",
+    "skills/music.js",
     "skills/rap.js"
    ]
   },
@@ -15589,7 +15608,8 @@
   "skills/music.js": {
    "imports": [
     "lib/compose.js",
-    "lib/arrange.js"
+    "lib/arrange.js",
+    "lib/genre-score.js"
    ],
    "importedBy": []
   },
