@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: epicurious.com (https://www.epicurious.com/)
-- Verse: /recipes/?q=pancakes (recipes: epicurious.com, tower gate 12 of 15)
+- Verse: /recipes/?q=pancakes (recipes: epicurious.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Epicurious – Recipes, Menu Ideas, Videos &amp; Cooking Tips / Epicurious"
 - History: [docs/HISTORY/epicurious.com.md](../HISTORY/epicurious.com.md)
 
@@ -31,7 +31,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Cooking guides and articles | Content | have | its live page (2026-10-28): "Occasions Chevron Kitchen Gear Chevron Techniques Search for &quot;pasta&quot; Search Open Navigation Menu Me" | void-live-deploy/recipes/index.html:224 `S supermarket prices, a rough guide). Diets and allergies (vegetarian, vegan, gluten-free,` |
 | A newsletter | Content | have | its live page (2026-10-28): "Skip to main content Epicurious Utility Newsletter Primary Recipes Chevron Ingredients Chevron Occasions Chevr" | void-live-deploy/lib/calendar.js:321 `subscribe: 'Abonnieren', feedPh: 'Adresse eines Kalenders (https:// oder webcal://)',` |
 | An account that keeps your things on every device | Accounts | partial | its live page (2026-10-28): "ERNAME"}}},"BookmarkIcon":{"settings":{"signInHed":"Sign in to save","signInHedSpanTag":" ","signInMessage":"R" | void-live-deploy/recipes/index.html:257 `e = { ...store, ...JSON.parse(localStorage.getItem(KEY) // '{}') }; } catch (_) {}` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "icurious App","url":" https:\u002F\u002Fapps.apple.com\u002Fus\u002Fapp\u002Fepicurious\u002Fid312101965"},{"i" | void-live-deploy/recipes/index.html:547 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "icurious App","url":" https:\u002F\u002Fapps.apple.com\u002Fus\u002Fapp\u002Fepicurious\u002Fid312101965"},{"i" | void-live-deploy/recipes/index.html:548 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
 | Share a link to what you made or found | Sharing | have | its live page (2026-10-28): "ed3d4295e4a0\u002Fmaster\u002Fpass\u002FShare_Newsletters.jpg"},"subscribe":{"dangerousDisclaimer":"\u003Cp\u0" | void-live-deploy/recipes/index.html:189 `cipe, its servings and units">Share link</button>` |
 | A public API | Developers | have | its live page (2026-10-28): "":0,"value":"Cover Shoot by"}],"Bylines.DeveloperPreamble":[{"type":0,"value":"Development by"}],"Bylines.Dire" | void-live-deploy/recipes/index.html:328 `try { const r = await fetch('/api/recipes?' + params); if (r.ok) { const j = await r` |
 | Recipes | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

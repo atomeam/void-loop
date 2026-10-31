@@ -316,6 +316,18 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
 
+    # 10. ideas Verse had while watching TV or listening to the radio (owner, 2026-10-30: Verse "should be learning ... and even making new
+    #     apps and other things from anything it sees"): the 'idea' notes in /api/watchalong, Verse's own sentences, each with the show and
+    #     station it came from. Read only with the token (a run that cannot reach the site has none to add).
+    if TOK:
+        try:
+            req = urllib.request.Request("https://a-to-mind.com/api/watchalong?kind=idea&limit=10", headers=H)
+            for n in json.load(urllib.request.urlopen(req, timeout=30)).get("notes", [])[:6]:
+                where = " on ".join(x for x in [n.get("show"), n.get("station")] if x)
+                cands.append({"kind": "build from what I watched", "title": str(n.get("note", ""))[:160], "why": f"an idea I had watching {where or 'TV'} ({str(n.get('day', ''))[:10]})"[:240], "weight": 9, "source": "watching"})
+        except Exception as e:
+            print("watching:", e, file=sys.stderr)
+
     # is Verse getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more.
     # VOID_BETTER_FILE names another copy (a test pins the plain weights with a file that is not there: no rows, no boost).
     try:

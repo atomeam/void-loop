@@ -355,9 +355,27 @@ test('each ask keeps its own why, a repeated why is dropped, and the target is a
   assert.equal(targetFacts(t, null), ''); assert.equal(targetFacts(null, { id: 'x' }), '');
 });
 
+test('the target fact names the one aspect that is left, so no ask can invent a second (owner, 2026-10-30)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { targetFacts, familyFacts } = await import('../void-live-deploy/lib/voice.js');
+  const floor = { site: 'onlineconverter.com', n: 11, m: 12, left: ['speed'], ev: { speed: { verse: 243, best: 59, was: 'equal-and-better' } } };
+  const said = targetFacts({ marker: 1, floors: [floor] }, { id: 'onlineconverter.com' });
+  assert.match(said, /11 of 12 aspects ahead/);
+  assert.match(said, /The only aspects not ahead: speed \(Verse 243 against their 59\), which passed before and has slipped/);
+  assert.match(said, /an ask that names another missing aspect is asking for something that is not missing/);
+  const beaten = targetFacts({ marker: 1, floors: [{ site: 'x.com', n: 12, m: 12, left: [] }] }, { id: 'x.com' });
+  assert.doesNotMatch(beaten, /only aspects not ahead/, 'a floor with nothing left says nothing about what is left');
+
+  // the family total counts files; the routed count is what answers an ask, and the fact says both
+  const fam = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
+  assert.match(familyFacts(fam, '2026-10-30', 332), /\(332 of them answer an ask today; the rest are files no ask reaches, so they are not active\)/);
+  assert.doesNotMatch(familyFacts(fam, '2026-10-30'), /answer an ask today/, 'with no routed count it claims nothing it cannot back');
+});
+
 test('asks held behind the Versus target come last and carry the site; the hold ends when the target moves on', async () => {
   const { holdAsks } = await import('../void-live-deploy/lib/voice.js');
-  const held = JSON.parse(readFileSync(new URL('../void-live-deploy/void.asks.json', import.meta.url), 'utf8')).held;
+  // a fixed held list (the shape of void.asks.json `held`), so lifting a real hold does not break the test
+  const held = [{ words: 'Absorb every repository on the account into the core code', until: 'sycophanthex.com' }, { words: 'Create a browser-based utility to check the watertightness of STL print files.', until: 'sycophanthex.com' }];
   const asks = [{ ask: 'Absorb every repository on the account into the core code to unify the system architecture.' }, { ask: 'Build a browser-based utility to check the watertightness of STL print files.' }, { ask: 'Add author pages to the story catalog' }];
   const out = holdAsks(asks, held, 'sycophanthex.com');
   assert.equal(out[0].ask, 'Add author pages to the story catalog'); assert.equal(out[0].held, undefined);

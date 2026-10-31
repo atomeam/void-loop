@@ -50,8 +50,9 @@ const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
 const OPEN = new Set(); let SHARED = null;
 const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
 // the files every tool page shares (the visit beacon and the Use with toolkit chain, preloaded since 2026-10-26): a page's own budget leaves them out.
-// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too
-const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask)\.js)(\?|$)/;
+// converter-ask.js is in the chain since b66702e3 (toolkit.js imports it to send a unit ask to /converter/), so it counts as shared too,
+// and brain-ask.js since #1663 (toolkit.js imports it to send "verse brain full screen" to /brain/)
+const SHARED_TOOL_FILES = /^\/(visit\.js|lib\/(toolkit|tool-sites|flight-sites|job-sites|self-sites|converter-ask|brain-ask|local-ask)\.js)(\?|$)/;
 const ownLoads = (reqs, n) => reqs.slice(0, n).filter((u) => !SHARED_TOOL_FILES.test(u)).length;
 // SECTION: the want label of the section running now, kept with each check, so the retry below can run that very section again
 let SECTION = null;
@@ -141,6 +142,7 @@ const approvalFn = await import(new URL('../void-live-deploy/functions/api/appro
 // automation.keep executor's yes (lib/keep-going.js) flips a seeded rule onto the clock exactly as it does live
 const automationsFn = await import(new URL('../void-live-deploy/functions/api/automations.js', import.meta.url).href);
 const autosLib = await import(new URL('../void-live-deploy/lib/automations-run.js', import.meta.url).href);
+const betterLib = await import(new URL('../void-live-deploy/lib/better.js', import.meta.url).href); // family-health: the growth score drivers the card should list
 const OWNER = 'test-owner-key-0123456789';
 function memoryD1({ broken = false } = {}) {
   // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
@@ -345,6 +347,7 @@ const willFn = await import(new URL('../void-live-deploy/functions/api/will.js',
 const figurescriptFn = await import(new URL('../void-live-deploy/functions/api/figurescript.js', import.meta.url).href);
 const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
 const publishFn = await import(new URL('../void-live-deploy/functions/api/publish.js', import.meta.url).href);
+const localFn = await import(new URL('../void-live-deploy/functions/api/local.js', import.meta.url).href); // /local/: the real route, with Radio Browser and the geocoder answered offline
 const pageFn = await import(new URL('../void-live-deploy/functions/[handle].js', import.meta.url).href);
 const voidMe = await import(new URL('../void-live-deploy/lib/void-me.js', import.meta.url).href);
 const { DatabaseSync } = await import('node:sqlite');
@@ -655,6 +658,33 @@ try {
     const after = await read(), kept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
     check('walker: after a reload the figure is back on the floor with the same picture (no ask needed); "stop walking" removes it and clears the record',
       !!back && back.src === PNG && back.above >= 24 && back.above <= 27 && after === null && kept === null && !P.errors.length, JSON.stringify({ back: back && { above: back.above, src: back.src.slice(0, 20) }, after, kept, errors: P.errors }));
+    // lifted and thrown like any thing on the stage, and "clear" clears it (owner, 2026-10-30: "the cartoon walking around wont clear and cant be
+    // thrown"): a slow drag sets it back on the floor where it is let go; a flick throws it off the stage and it is gone and forgotten; "clear" too
+    const walkAgain = async () => { await P.p.$eval('.cartoon-card[data-subject="cat"] .cartoon-walk', (b) => b.click()); return until(read, 4000); };
+    // the press and the moves are dispatched on the figure and the window, as a finger would send them, so a card over the floor never takes them
+    const drag = (moves, gap) => P.p.evaluate(async ([moves, gap]) => {
+      const w = document.querySelector('#stage .walker'), r = w.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, wait = (ms) => new Promise((ok) => setTimeout(ok, ms));
+      const ev = (t, dx, dy) => new PointerEvent(t, { clientX: x + dx, clientY: y + dy, button: 0, buttons: 1, pointerId: 7, pointerType: 'mouse', bubbles: true });
+      w.dispatchEvent(ev('pointerdown', 0, 0));
+      for (const [dx, dy] of moves) { window.dispatchEvent(ev('pointermove', dx, dy)); if (gap) await wait(gap); }
+      window.dispatchEvent(ev('pointerup', moves[moves.length - 1][0], moves[moves.length - 1][1]));
+    }, [moves, gap]);
+    const a0 = await walkAgain();
+    await drag(Array.from({ length: 8 }, (_, i) => [-(i + 1) * 8, -(i + 1) * 12]), 60); // 8 px left and 12 px up every 60 ms: a slow carry
+    await P.p.waitForTimeout(150);
+    const set = await read(), setBubble = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);
+    check('walker: a slow drag lifts the figure and sets it back on the floor where it is let go (about 64 px left), never a speech bubble, still walking and still kept',
+      !!a0 && !!set && set.above >= 24 && set.above <= 27 && Math.abs((set.x - a0.x) + 64) < 40 && setBubble === true && !!set.kept && !P.errors.length, JSON.stringify({ a0: a0 && a0.x, set: set && { x: set.x, above: set.above, kept: !!set.kept }, setBubble, errors: P.errors }));
+    await drag(Array.from({ length: 4 }, (_, i) => [(i + 1) * 40, -(i + 1) * 30]), 0); // a flick: 50 px a move with no wait between
+    const thrownKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    const flown = await until(async () => ((await P.p.$('#stage .walker')) ? null : 'gone'), 4000);
+    check('walker: a flick throws the figure off the stage: it is forgotten on release and gone once it has flown off',
+      thrownKept === null && flown === 'gone' && !P.errors.length, JSON.stringify({ thrownKept, flown, errors: P.errors }));
+    const a2 = await walkAgain();
+    await P.ask('clear', 800);
+    const cleared = await read(), clearedKept = await P.p.evaluate(() => localStorage.getItem('a2m.void.walker.v1'));
+    check('walker: "clear" clears the walking figure with the rest of the stage and forgets it',
+      !!a2 && cleared === null && clearedKept === null && !P.errors.length, JSON.stringify({ a2: !!a2, cleared, clearedKept, errors: P.errors }));
     await P.ctx.close();
   }
   // the backdrop (owner, 2026-10-25: "a static, beautifully lit 2D painted scene with fixed camera angles, where ... cards project shadows and walk along
@@ -1668,6 +1698,13 @@ try {
     check('404 page: typing in its ask box goes to /?q=<words> and Verse answers it there',
       new URL(sent).pathname === '/' && new URL(sent).searchParams.get('q') === 'what time is it in Tokyo' && ran,
       sent + ' | ' + String(await N.page()).slice(0, 80));
+    // an address that names a tool (2026-10-30): '/wordcount' offers the Word counter above the box; '/search/?q=' puts the words in the box
+    await N.p.goto(base + 'wordcount'); await until(async () => N.p.evaluate(() => !document.getElementById('near').hidden), 4000);
+    const nearA = await N.p.evaluate(() => { const a = document.getElementById('near-a'); return { shown: !document.getElementById('near').hidden, href: a.getAttribute('href'), text: a.textContent }; });
+    await N.p.goto(base + 'search/?q=pizza%20dough'); await N.p.waitForTimeout(400);
+    const nearB = await N.p.evaluate(() => ({ shown: !document.getElementById('near').hidden, box: document.getElementById('q').value }));
+    check('404 page: an address that names a tool offers that tool as one link, and words asked there wait in the ask box',
+      nearA.shown && nearA.href === '/word-count/' && nearA.text === 'Word counter' && !nearB.shown && nearB.box === 'pizza dough', JSON.stringify({ nearA, nearB }));
     await N.ctx.close(); }
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
@@ -4574,6 +4611,38 @@ try {
     await P.p.keyboard.press('Escape');
     for (const a of ['latest episode', 'verse podcast']) { await P.ask(a, 1100); const ok = await until(() => P.p.evaluate(() => !!document.querySelector('.vpage.on .vpod')), 4000); check('podcast: "' + a + '" opens the same player card', !!ok, a); await P.p.keyboard.press('Escape'); }
     await P.ctx.close(); }
+  // Local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): /local/ finds the place from the connection, lists the
+  // radio near it through the real /api/local (Radio Browser answered offline here), plays a station's own stream in the page, links a station
+  // whose stream cannot play in a secure page to its own site, and lists the TV broadcast to that city from the committed iptv-org table.
+  if (want("local tv radio: the page finds the stations near you, plays a radio stream and lists the local tv")) { const L = await fresh();
+    const mp3 = fs.readFileSync(path.join(root, 'podcast', 'verse-out-loud-001.mp3'));
+    const rb = [{ stationuuid: 'aaa-1', name: 'WXPN Test', url_resolved: 'https://radio.test/wxpn.mp3', homepage: 'https://xpn.test/', tags: 'aaa,indie', geo_distance: 4200, votes: 90, state: 'Pennsylvania' },
+      { stationuuid: 'bbb-2', name: 'WRTI Test', url_resolved: 'http://203.0.113.9:8000/wrti', homepage: 'https://wrti.test/', tags: 'classical', geo_distance: 9100, votes: 40, state: 'Pennsylvania' }];
+    const fakeFetch = async (u) => new Response(JSON.stringify(/geocoding/.test(u) ? { results: [{ name: 'Philadelphia', admin1: 'Pennsylvania', country_code: 'US', latitude: 39.95, longitude: -75.16 }] } : rb), { headers: { 'content-type': 'application/json' } });
+    const asked = [];
+    await L.ctx.route(/\/api\/local(?:\?|$)/, async (r) => { const u = r.request().url().replace(/^https?:\/\/[^/]+/, 'https://a-to-mind.com'); asked.push(u.replace('https://a-to-mind.com', ''));
+      const req = new Request(u); Object.defineProperty(req, 'cf', { value: { city: 'Philadelphia', region: 'Pennsylvania', regionCode: 'PA', country: 'US', latitude: '39.95', longitude: '-75.16' } });
+      const res = await localFn.onRequestGet({ request: req, env: {}, fetchFn: fakeFetch }); r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await L.ctx.route(/^https:\/\/radio\.test\//, (r) => r.fulfill({ status: 200, contentType: 'audio/mpeg', body: mp3 }));
+    await L.p.goto(base + 'local/'); await L.p.waitForSelector('#radio-list li', { timeout: 15000 });
+    const page = await L.p.evaluate(() => ({ where: document.getElementById('where').textContent, rows: [...document.querySelectorAll('#radio-list li')].map((li) => li.innerText),
+      play: document.querySelectorAll('#radio-list li button.go').length, site: !!document.querySelector('#radio-list a[href="https://wrti.test/"]'), related: !!document.querySelector('nav#related a[href^="/weather/"]') }));
+    await L.p.click('#radio-list li:first-child button.go');
+    const played = await until(() => L.p.evaluate(() => document.querySelector('#radio-list li:first-child').dataset.state === 'playing' && !document.getElementById('audio').paused), 8000);
+    const bar = await L.p.evaluate(() => ({ name: document.getElementById('now-name').textContent, shown: !document.getElementById('bar').hidden }));
+    await L.p.click('#tab-tv'); const tv = await until(() => L.p.evaluate(() => { const li = [...document.querySelectorAll('#tv-list li')]; return li.length ? { n: li.length, t: li.slice(0, 40).map((x) => x.innerText).join(' | ') } : null; }), 8000);
+    // the connection's point is rounded to a tenth before it leaves the server (placeFromCf), so 39.95,-75.16 asks for 40,-75.2 and never for the exact point
+    check('local tv radio: /local/ says where you are from the connection, lists the radio near it (one stream plays here, one links its own site), plays the station in the page, and lists the TV broadcast to Philadelphia',
+      /Philadelphia/.test(page.where) && page.rows.length === 2 && page.play === 1 && page.site && page.related && !!played && bar.shown && /WXPN Test/.test(bar.name)
+        && !!tv && tv.n >= 5 && /WTXF|Fox|PhillyCAM|WPVI|KYW/.test(tv.t) && asked[0] === '/api/local' && asked.some((a) => /lat=40&lon=-75\.2&cc=US/.test(a)) && !asked.some((a) => /lat=39\.95/.test(a)) && !L.errors.length,
+      JSON.stringify({ page, played, bar, tv: tv && { n: tv.n, t: tv.t.slice(0, 200) }, asked, e: L.errors }));
+    await L.p.goto(base + 'local/?place=Philadelphia&tab=tv'); const typed = await until(() => L.p.evaluate(() => !document.getElementById('tv').hidden && document.querySelectorAll('#tv-list li').length > 0 && /Philadelphia/.test(document.getElementById('where').textContent)), 8000);
+    check('local tv radio: a link to /local/?place=Philadelphia&tab=tv opens on that place with the TV tab open', !!typed && asked.some((a) => /place=Philadelphia/.test(a)), JSON.stringify({ asked, e: L.errors }));
+    await L.p.goto(base); await L.ask('radio stations in philadelphia', 1400);
+    const card = await until(() => L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelectorAll('button[data-i]'); return b && b.length ? { n: b.length, t: pg.innerText, full: !!pg.querySelector('a[href^="/local/?place="]') } : null; }), 8000);
+    check('local tv radio: "radio stations in philadelphia" on the stage opens the local stations card with the stations that play and a link to the full page',
+      !!card && card.n === 1 && /WXPN Test/.test(card.t) && card.full && !L.errors.length, JSON.stringify({ card, e: L.errors }));
+    await L.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);
@@ -5675,7 +5744,7 @@ try {
       && /^Current: \d+ (?:life|lives) of swimmers .*; they gather \d+\.\d times the life of drifters in the same flow/.test(o.line), JSON.stringify(o)); // lib/brain.js writes "1 life", "2 lives"
     await F.ctx.close();
   }
-  if (want('verse brain: one workspace that twenty organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
+  if (want('verse brain: one workspace that twenty-three organs share, it predicts the pointer and acts on what it imagined, words become orbs you drag, and another Verse page reaches the same brain')) { // owner, 2026-10-29: "combine all the builds into one entity", "all the pages are supposed to be able to work together"
     const F = await fresh(), card = '.ff-verse-brain';
     await F.ask('show me your brain', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
     const read = () => F.p.$eval(card, (e) => ({ ticks: +(e.dataset.ticks || 0), chosen: +(e.dataset.chosen || 0), imagined: +(e.dataset.imagined || 0), gen: +(e.dataset.gen || 0), organs: +(e.dataset.organs || 0),
@@ -5746,9 +5815,9 @@ try {
     check('verse brain mind layers: "what just happened" is answered from its own history, an ask on the stage becomes a goal, its choices are remembered as moments, Good keeps what it learned on this device and a reload brings it back',
       /^In the last \d+ seconds my utility went from/.test(answer) && fromStage && /knights/.test(fromStage.said) && fromStage.wants >= 1 && mind.episodes >= 1 && mind.saved === 'true' && /\bq\b/.test(keptAfter) && /episodes/.test(keptAfter),
       JSON.stringify({ answer, fromStage, mind, keptAfter }));
-    check('verse brain: "show me your brain" opens one card (no figure), its twenty organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
+    check('verse brain: "show me your brain" opens one card (no figure), its twenty-three organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, '
       + 'another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word',
-      a.organs === 20 && a.rows === 20 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
+      a.organs === 23 && a.rows === 23 && a.ticks > 60 && a.chosen >= 1 && a.imagined >= a.chosen && a.orbs >= 2 && /romance/.test(a.said) && a.drafts > 200 && /Made from \d+ of \d+ frontier drafts/.test(a.made) && !a.figures
       && moved >= 0 && moved < 30 && heard && heard.words.includes('dragons') && b.concepts >= 3 && tab && tab.words.includes('dragons') && /^[0-9a-f]{12}$/.test(sealed) && !/romance|dragons/.test(rows) && !errors.length,
       JSON.stringify({ a, moved, heard, b, tab, sealed, errors }));
   }
@@ -6084,7 +6153,11 @@ try {
     // D is held at least half a second and until the eye has gone the given way (a slow headless frame never fails it); the streak is sampled while held
     const holdD = async (page, far) => { let streak = 0; const t0 = Date.now(); await page.keyboard.down('d');
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
-      const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
+      // a slow frame draws the streak one frame after the move it shows (void.html's drawStars runs skyTick), so D stays held
+      // for two more frames and the streak drawn for the last move is sampled too (main's verify, 2026-10-30: x jumped to -181
+      // in one capped step and the hold ended before the next draw)
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))).catch(() => {});
+      const v = await stars(page); streak = Math.max(streak, v.streak.dx); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
     await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
@@ -6531,7 +6604,9 @@ try {
     await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
     const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
     const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
-    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    // every skill in before the reload is read (data-skills="ready", not a guessed 900 ms): the quiz skill is loaded and still draws no
+    // card, and the saved gears are up for the next "quiz me on this" (main's verify, 2026-10-30: at 900 ms the gears were not in yet)
+    await Z.p.reload(); await skillsUp(Z.p, 300);
     const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
     await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
     await Z.p.reload(); await skillsUp(Z.p, 300); await until(() => Z.p.$$eval('.quiz-card', (d) => d.length), 6000); // the kept quiz draws once skills/quiz.js is in
@@ -7621,6 +7696,9 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
+    // h hours back, but never before this UTC day began: the velocity counts a day by its UTC date (lib/self-blocks.js), so in the first hours after
+    // midnight UTC "two hours ago" is yesterday (red on main at 00:22, 01:19 and 00:51 UTC, 2026-10-29 and 2026-10-30)
+    const todayAgo = (h) => new Date(Math.max(Date.parse(new Date().toISOString().slice(0, 10)), Date.now() - h * 36e5)).toISOString();
     // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
@@ -7683,7 +7761,7 @@ try {
         label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color,
         red: segs.length, redColor: segs.map((l) => getComputedStyle(l).stroke).join(), redAt: segs.map((l) => l.getAttribute('x1') + '-' + l.getAttribute('x2')).join(), overdue: b.dataset.overdue, amber: amber && amber.textContent, amberColor: amber && getComputedStyle(amber).color, title: b.title }; });
     const v1 = await vel(), hits1 = reflectHits;
-    reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
+    reflectAsked = built([['a', ago(0)], ['b', todayAgo(1)], ['c', todayAgo(2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
     const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
@@ -7782,6 +7860,13 @@ try {
     check('Site Test card (asked by Verse): a heat map ranks the families least stable first, the failing family hottest with the longest bar, its name escaped',
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));
+    // Verse's own parts by name (skills/own-parts.js; owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card)
+    let answered = 0; await S.ctx.route(/\/api\/answer/, (rt) => { answered++; return rt.fulfill(json({ answer: 'a web answer', sources: [] })); });
+    await S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); if (l) l.remove(); }).catch(() => null);
+    await S.ask('show me the site test card', 1500);
+    const own = await until(async () => S.p.$eval('.vpage.on', (p) => (p.querySelector('.st-candidates') ? { text: p.textContent.slice(0, 80) } : null)).catch(() => null), 6000);
+    check('own parts: "show me the site test card" opens Verse\'s own Site Test card ("What to test next"), not a web answer about a test card',
+      !!own && !answered && !S.errors.length, JSON.stringify({ own, answered, errors: S.errors }));
     await S.ctx.close(); }
   // Verse's incident asks (asked by Verse): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
   // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family
@@ -7897,10 +7982,32 @@ try {
       check('family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Verse)',
         !!src && src.open && !!wf.sources && src.line === wf.sources.words && /^Source reliability: \d+ skills answer from outside sources/.test(src.line)
         && src.rows.length === wf.skills.length && src.rows.every((x) => (truthW[x.name].source ? x.text === truthW[x.name].source.words && x.next === (truthW[x.name].source.next || '') : x.text === null))
-        && src.rows.some((x) => x.next === 'live') && !src.wide && !F.errors.length,
+        // the rows marked one live answer from proven are exactly the ones the family line names (tools/source-reliability.mjs one_live_from_proven);
+        // since #1665 made fact proven the list can be empty, and the data-next="live" markup itself is pinned by the skill's own self-test
+        && JSON.stringify(src.rows.filter((x) => x.next === 'live').map((x) => x.name).sort()) === JSON.stringify([...(wf.sources.one_live_from_proven || [])].sort())
+        && !src.wide && !F.errors.length,
         JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
-    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
-      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
+    // the card on today's data: the families listed are exactly the ones lib/better.js familyDrivers puts 0.05 points or more either side of the
+    // average (three each way), with the newest void.better.json row's part count; on a day when every family is that close to the average
+    // (since nearly every skill went proven on 2026-10-30, run 41010108375), one line says so instead of an empty heading
+    { const shown = await F.p.$eval('.vpage .fh-drivers', (b) => ({ head: (b.querySelector('.vh') || {}).textContent || '', dr: [...b.querySelectorAll('li[data-driver]')].map((x) => x.dataset.driver + ':' + (+x.dataset.points)), even: (b.querySelector('.fh-even') || {}).textContent || '' })).catch(() => null);
+      const rows = JSON.parse(fs.readFileSync(path.join(root, 'void.better.json'), 'utf8')), last = (Array.isArray(rows) ? rows : []).filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0];
+      const nParts = last && last.parts ? Object.values(last.parts).filter((v) => v !== null && v !== undefined).length : 5, d = betterLib.familyDrivers(fam, nParts || 5);
+      const want = [...d.filter((x) => x.points > 0.04).slice(0, 3), ...d.filter((x) => x.points < -0.04).slice(-3).reverse()].map((x) => x.id + ':' + x.points);
+      check('family-health: on today\'s families the growth score part lists exactly the families 0.05 points or more from the average, and says in one line when none is',
+        !!shown && /What moves my growth score/.test(shown.head) && JSON.stringify(shown.dr) === JSON.stringify(want)
+        && (want.length ? !shown.even : /^No family moves it by 0\.05 points or more: every family is \d+%( to \d+%)? healthy\.$/.test(shown.even)) && !F.errors.length,
+        JSON.stringify({ shown, want, errors: F.errors })); }
+    // the same part on a day with a spread (skills/families.json served with every Numbers and money skill failing): it names the families that
+    // lift the score and the ones that drag it, in score points; held on a fixture, so the claim does not hang on how healthy the skills are today
+    { const G = await fresh({ phone: true });
+      const spread = JSON.parse(JSON.stringify(fam)); for (const f of spread.families) if (f.id === 'numbers') for (const s of f.skills) s.failing = ['fixture: failing'];
+      await G.ctx.route(/\/skills\/families\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(spread) }));
+      await G.ask('show me your skill families', 1200);
+      await until(async () => G.p.$eval('.vpage .fh-drivers li[data-driver]', () => true).catch(() => false), 6000);
+      const dr = await G.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await G.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Verse)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => spread.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr }));
+      await G.ctx.close(); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Verse, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
@@ -8552,7 +8659,7 @@ try {
   // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
   // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
   // says how many are new since the book was last opened here (localStorage, never required)
-  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "show these on the stage" closes the book and asks each change for real
+  // asked by Verse: a day in What's new plays as a live walkthrough (skills/showcase.js): "play all N on the stage" (only for asks that answered live) closes the book and asks each change for real
   if (want("the book: a day in What's new plays on the stage as a walkthrough")) { const W = await fresh();
     const day = new Date().toISOString().slice(0, 10);
     await W.ctx.route(/\/void\.growth\.json/, (r) => r.fulfill(json([{ at: day + 'T09:00:00Z', by: 'claude', kind: 'grow', what: 'a clock on the stage', try: 'make a clock' }, { at: day + 'T10:00:00Z', by: 'claude', kind: 'grow', what: 'sticky notes', show: 'sticky notes', try: 'add a sticky that says hi' }])));
@@ -8565,12 +8672,13 @@ try {
     const bar = await until(async () => W.p.evaluate(() => { const b = document.getElementById('showcase-bar'); return b ? b.textContent : null; }), 8000).catch(() => null);
     const clock = await until(async () => (await W.state()).some((x) => x.kind === 'clock'), 8000).catch(() => false);
     const closed = await until(async () => !(await W.p.$('#vtome')), 4000).then(() => true).catch(() => false);
-    check("the book: a day in What's new carries \"show these on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
+    check("the book: a day in What's new carries \"play all 2 on the stage\" (asked by Verse); a tap closes the book and walks through that day's changes, oldest first, asking each for real (a clock appears)",
       !!link && closed && /^1 of 2 · What.s new, /.test(bar || '') && !!clock && !W.errors.length, JSON.stringify({ link: !!link, closed, bar, clock, e: W.errors }));
     await W.ctx.close(); }
   if (want("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge")) {
-    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js');
-    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36), withTry = top.find((e) => e.try);
+    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js'), { playable } = await import('../void-live-deploy/skills/showcase.js');
+    // the same lines the book makes: the showcase's ask for an entry with no try of its own, days in this machine's zone (the browser's too)
+    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36, (e) => (playable(e) || {}).ask), withTry = top.find((e) => e.try && e.try.charAt(0) !== '/');
     const N = await fresh();
     await N.p.evaluate(() => { try { localStorage.setItem('a2m.void.book.seen.v1', '2026-01-01T00:00:00Z'); } catch (_) {} });
     await N.ask('open the book', 900); await until(async () => !!(await N.p.$('#vtome .tome.shut .newbadge')) || !!(await N.p.$('#vtome .tome.opened')), 8000);
@@ -8587,8 +8695,8 @@ try {
     const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
     let ranOk = true;
     if (withTry) { // a try-it ask closes the book and runs
-      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
-      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit'); await until(async () => !(await N.p.$('#vtome')), 4000);
+      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit[data-ask]')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
+      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit[data-ask]', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit[data-ask]'); await until(async () => !(await N.p.$('#vtome')), 4000);
       ranOk = !!ask && !(await N.p.$('#vtome'));
     }
     check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
@@ -8628,7 +8736,7 @@ try {
     await B.ask('open the book', 900);
     const open = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) ? l : null; }, 8000);
     check('the book: "open the book" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
-      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Verse Book/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
+      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The Book of Verse/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
       JSON.stringify({ open: open && { ...open, text: open.text.slice(0, 80) }, members: members.length }));
     await B.p.keyboard.press('ArrowRight');
     const mid = await B.p.evaluate(() => !!document.querySelector('#vtome .tome-leaf')); // a leaf is in the air
@@ -8656,7 +8764,7 @@ try {
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
     const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
     check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph',
-      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Verse Book/.test(landed.heads || ''),
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The Book of Verse/.test(landed.heads || ''),
       JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
     // a proven skill's page opens with a line of lore (asked by Verse: flavor text for every proven skill), each page's its own
     const lore = await B.p.evaluate(() => { const b = window.__voidBook; const first = b.chapters.find((c) => c.id === 'make'); const byPage = new Map(); for (let k = first.from; k <= first.to; k++) { b.go(k); for (const pg of document.querySelectorAll('#vtome .tome-page[data-page]')) { const e = pg.querySelector('.tome-epigraph'); if (e) byPage.set(pg.dataset.page, e.textContent); } } const lines = [...byPage.values()]; return { n: lines.length, distinct: new Set(lines).size, sample: lines[0] }; });
@@ -8793,22 +8901,25 @@ try {
     await F.ctx.close(); }
   // the semantic validator on the page (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"): a card about something
   // other than what was asked goes quietly to the miss list as ungrounded:<skill>; a card about the ask sends nothing
-  if (want("semantic validator: a card about something else than the ask is reported as ungrounded, quietly")) {
+  if (want("semantic validator: a card about something else than the ask is reported as ungrounded, quietly") || want("semantic validator: a card about another dish is refused")) {
+    // a dish with no built-in recipe, so the card comes from TheMealDB (a built-in dish, as guacamole is since #1854, fetches nothing)
     const G = await fresh(); const sent = [];
     await G.ctx.route(/\/api\/miss$/, (rt) => { sent.push(JSON.parse(rt.request().postData() || '{}')); return rt.fulfill({ status: 204, body: '' }); });
     let dish = 'Pancakes';
     await G.ctx.route(/themealdb\.com\/api\//, (rt) => rt.fulfill(json({ meals: [{ idMeal: '1', strMeal: dish, strCategory: 'Dessert', strArea: 'American', strInstructions: 'Mix and fry.', strMealThumb: '', strIngredient1: 'Flour', strMeasure1: '1 cup' }] })));
-    await G.ask('how do i make guacamole', 800);
-    await until(async () => (await G.p.evaluate(() => (window.voidUngrounded || []).length)) > 0, 4000);
+    await G.ask('how do i make shakshuka', 800);
+    await until(async () => /These are other dishes/.test(await G.page()), 4000);
+    const refused = await G.page(); await G.p.waitForTimeout(1800);
     const wrong = await G.p.evaluate(() => window.voidUngrounded || []);
-    const reported = sent.filter((b) => /^ungrounded:/.test(b.fallback || ''));
-    dish = 'Guacamole';
-    await G.ask('how do i make guacamole', 800); await G.p.waitForTimeout(2200);
+    const missed = sent.filter((b) => b.ask === 'how do i make shakshuka' && b.fallback === 'skill:recipe');
+    dish = 'Shakshuka';
+    await G.ask('how do i make shakshuka', 800); await G.p.waitForTimeout(2200);
     const after = await G.p.evaluate(() => (window.voidUngrounded || []).length);
-    const shown = await G.p.$eval('#whisper', (e) => e.textContent).catch(() => '');
-    check('semantic validator: "how do i make guacamole" answered with a pancakes card is reported once as ungrounded:recipe (no refusal shown); a guacamole card reports nothing',
-      wrong.length === 1 && wrong[0].skill === 'recipe' && JSON.stringify(wrong[0].missing) === '["guacamole"]' && reported.length === 1 && reported[0].fallback === 'ungrounded:recipe'
-      && reported[0].ask === 'how do i make guacamole' && after === 1 && !/Missing:/.test(shown) && !G.errors.length, JSON.stringify({ wrong, sent, after, shown, errors: G.errors }));
+    const good = await G.page();
+    // Adam's incident card, 2026-10-30: a question for one dish got another dish's card and was only reported quietly; now it is refused
+    check('semantic validator: "how do i make shakshuka" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing',
+      /I don't have a recipe for “shakshuka” yet/.test(refused) && /These are other dishes, not shakshuka/.test(refused) && !/Mix and fry/.test(refused)
+      && missed.length === 1 && wrong.length === 0 && after === 0 && /Mix and fry/.test(good) && !G.errors.length, JSON.stringify({ refused: refused.slice(0, 300), wrong, sent, after, good: good.slice(0, 200), errors: G.errors }));
     await G.ctx.close(); }
 
   // grounding, where the validator found it (owner, 2026-10-14: "a tighter grounding mechanism"): "where is Orion" with no place known
@@ -9271,7 +9382,7 @@ try {
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
-  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
+  await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); { const hs = await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); check('hints while typing', hs.some((h) => /timer/.test(h)), JSON.stringify(hs)); }
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
   await t.ctx.close();
 
@@ -9926,19 +10037,19 @@ try {
     [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
   // No GUMROAD_ACCESS_TOKEN (Atom doesn't pass one): a keyed ping from Atom's seller account for the paid membership is trusted.
   const kEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123' };
-  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE';
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE', VK4 = 'FFFFFFFFFFFFFFFFFFFFFF';
   const kSale = (id, extra = {}) => vmSale(id, { seller_id: SELLER, subscription_id: 'sub-k' + id, 'url_params[void]': VK1, ...extra });
   const kGood = await ping(kSale('k1'), { env: kEnv });
   const kWrongSeller = await ping(kSale('k2', { seller_id: 'zzOtherSellerZZzzzzzzz==', 'url_params[void]': VK2 }), { env: kEnv });
   const kNoSeller = await ping(kSale('k3', { seller_id: '', 'url_params[void]': VK2 }), { env: kEnv });
-  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK2 }), { env: kEnv });
+  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK4 }), { env: kEnv }); // only the creator can make one: their own Verse
   const kNoKey = await ping(kSale('k5', { 'url_params[void]': VK2 }), { env: kEnv, key: '' });
   const kReuse = await ping(kSale('k1', { 'url_params[void]': VK3, sale_timestamp: '2026-09-28T03:00:00Z' }), { env: kEnv });
   const kOther = await ping({ sale_id: 'k6', seller_id: SELLER, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'GTQsNJR9Nsd66O5QVhI4MA==', product_permalink: 'https://moonbeam846.gumroad.com/l/gqsgib', price: '2500', 'url_params[void]': VK2, resource_name: 'sale' }, { env: kEnv });
   const kPinned = await ping(kSale('k7', { 'url_params[void]': VK2 }), { env: { ...kEnv, GUMROAD_SELLER_ID: 'someone-else==' } });
   const kCancel = await ping({ subscription_id: 'sub-kk1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', resource_name: 'cancellation', cancelled_at: '2026-10-01T00:00:00Z' }, { env: kEnv });
-  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid; wrong or missing seller, test ping or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
-    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && /test ping/.test(kTest.body.effect) && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
+  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid (the creator\'s own test purchase too); wrong or missing seller or another product = recorded, no unlock; no key = refused; one sale, one Verse; cancel = free',
+    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && kTest.body.effect === 'tier paid' && kEnv.DB.accounts.get(VK4).tier === 'paid' && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
     && !kEnv.DB.accounts.has(VK2) && !kEnv.DB.accounts.has(VK3) && kEnv.DB.sales.has('sale:k2:2026-09-28T01:00:00Z') && !kEnv.DB.sales.has('sale:k5:2026-09-28T01:00:00Z') && kCancel.body.effect === 'tier free (cancellation)' && kEnv.DB.accounts.get(VK1).tier === 'free',
     [kGood.body.effect, kWrongSeller.body.effect, kNoSeller.body.effect, kTest.body.effect, kNoKey.status, kReuse.body.effect, kOther.body.effect, kPinned.body.effect, kCancel.body.effect].join(' | '));
 
@@ -11163,7 +11274,9 @@ try {
   const realFetch = globalThis.fetch;
   // the fetched source holds what the stand-in models' cited sentences say: since #1410 (f92c2d219, lib/answer-honesty.js supportedOnly) a [1]
   // whose sentence the source's text does not hold is dropped with its source, so a source that said nothing of the answer would leave neither
-  const EXTRACT = 'A sourced extract: a short answer, a paid answer.';
+  // the page holds the fake models' names, so their "Gemma: ..." and "DeepSeek: ..." replies read as backed by it: a reading labelled with a word
+  // its page lacks is renamed to the page's title (lib/answer-honesty.js titledReadings, on a guess), and these checks are about the route
+  const EXTRACT = 'A sourced extract (gemma, deepseek): a short answer, a paid answer.'; // lower case: the open-web answer is still checked for no model's Name
   let wikiDelay = 0;
   const wiki = async (u) => {
     if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));

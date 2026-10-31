@@ -86,3 +86,19 @@ export function write(events, storage) {
 }
 /** the events kept (shorthand for read().events). */
 export const events = (storage) => read(storage).events;
+
+// The Calendar page's own card on the stage opens on the day the page shows (owner, 2026-10-25: pages and cards go both ways)
+/** a real local day from 'YYYY-MM-DD', or null ('2026-02-30' is no day). Pure. */
+export function dayOfKey(k) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(k || ''));
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  return d.getMonth() === +m[2] - 1 && d.getDate() === +m[3] ? d : null;
+}
+/** the stage ask that opens the wall calendar on one day ('my calendar on 2026-12-03'), or '' for no real day. Pure. */
+export const cardAskOf = (k) => (dayOfKey(k) ? 'my calendar on ' + k : '');
+/** the day that ask names ('2026-12-03'), or '' for any other ask. Pure. */
+export function cardDayOf(text) {
+  const m = /^(?:show\s+(?:me\s+)?)?(?:my\s+)?(?:the\s+)?(?:calendar|calender)\s+(?:on|for)\s+(\d{4}-\d{2}-\d{2})$/i.exec(String(text || '').trim());
+  return m && dayOfKey(m[1]) ? m[1] : '';
+}

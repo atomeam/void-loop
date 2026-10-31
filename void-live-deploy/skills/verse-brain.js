@@ -1,7 +1,7 @@
 /**
  * verse-brain skill — Verse Brain, the one entity Grok's frontier drafts became (owner, 2026-10-29: "build all the unique builds as a
  * combination and that can be verse"; "the grok builds combined can be verse brain"; "combine all the builds into one entity"; "all the
- * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, twenty organs, attention, imagination, the
+ * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, twenty-three organs, attention, imagination, the
  * self); lib/brain-drafts.json says which frontier drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
@@ -27,6 +27,7 @@ import * as Field from '../lib/shared-field.js';
 import { feltFrom, linkBrain, fieldSays } from '../lib/brain-field.js';
 import { detectPitch } from '../lib/brain-hearing.js';
 import { PX, PY } from '../lib/brain-painter.js';
+import { brainFullAsk } from '../lib/brain-ask.js';
 import { NX as CUR_X, NY as CUR_Y } from '../lib/brain-current.js';
 
 const phone = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
@@ -99,6 +100,16 @@ function draw(g, s, W, H) {
     for (const p of gs.bed.g) if (p.live) g.fillRect(p.x * W - 1.5, fy - p.y * up - 1.5, 3, 3);
     g.strokeStyle = 'rgba(255,190,90,.6)'; g.lineWidth = 1; g.beginPath(); g.moveTo(gs.aim * W, fy - 4); g.lineTo(gs.aim * W, fy + 4); g.stroke();
   }
+  // the trace (the NCA drafts): the tuned rule's own field, each held mark as an amber square
+  const tr = b.trace; if (tr && tr.own && tr.lives + tr.age > 0) {
+    const F = tr.own, n = Math.round(Math.sqrt(F.v.length)), cw = W / n, ch = H / n;
+    for (let p = 0; p < F.v.length; p++) if (F.v[p] > 0.4) { g.fillStyle = 'rgba(255,190,90,' + (F.v[p] * 0.35).toFixed(2) + ')'; g.fillRect((p % n) * cw, Math.floor(p / n) * ch, cw, ch); }
+  }
+  // the pool (F459): the network's own fluid as blue dots, its viscosity as how solid they look
+  const pl = b.pool; if (pl && pl.fluids[0] && pl.lives + pl.age > 0) {
+    const F = pl.fluids[0], v = pl.set[0] ? pl.set[0].visc : 0.1; g.fillStyle = 'rgba(110,170,255,' + (0.45 + Math.min(0.5, v * 2.5)).toFixed(2) + ')';
+    for (let k = 0; k < F.x.length; k++) g.fillRect(F.x[k] * W - 1.5, F.y[k] * H - 1.5, 3, 3);
+  }
   // the attention spotlight
   const fx = b.focus.x * W, fy = b.focus.y * H; g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 1.5; g.setLineDash([4, 4]);
   g.beginPath(); g.arc(fx, fy, 26, 0, 6.2832); g.stroke(); g.setLineDash([]);
@@ -137,6 +148,14 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
   row.innerHTML = '<form class="vb-form" style="display:flex;gap:6px;flex:1;min-width:180px"><input class="vb-word" type="text" maxlength="120" autocomplete="off" spellcheck="false" placeholder="tell it something, or ask why" aria-label="Words for Verse Brain to think about, or a question about what it is doing" style="flex:1;min-width:0;padding:4px 8px;border-radius:7px;border:1px solid var(--line,#444);background:transparent;color:inherit">'
     + '<button type="submit" class="g-btn vb-tell">Tell</button></form><button type="button" class="g-btn vb-good">Good</button><button type="button" class="g-btn vb-listen" aria-pressed="false">Listen</button><button type="button" class="g-btn vb-tune" aria-pressed="false" title="Plays Frere Jacques twice into its ear: a tune the page plays, not your voice, so you can see it hear with no microphone">Play a tune</button><button type="button" class="g-btn vb-forget">Forget</button>';
   q('.ff-btns').insertAdjacentElement('beforebegin', row);
+  // Full screen (owner, 2026-10-30: "verse brain needs a full screen"): the same brain on a page of its own (/brain/), where the field fills the
+  // screen; what it keeps, what it is thinking and your asks go with it (this device's store and the shared field's held part, saved on pagehide)
+  if (typeof location === 'undefined' || !/^\/brain\/?$/.test(location.pathname)) {
+    const full = document.createElement('a'); full.href = '/brain/'; full.className = 'g-btn vb-full'; full.textContent = 'Full screen';
+    full.setAttribute('aria-label', 'Open Verse Brain full screen'); full.style.cssText = 'text-decoration:none;display:inline-flex;align-items:center';
+    full.addEventListener('pointerdown', (e) => e.stopPropagation()); full.addEventListener('click', () => { try { save(); } catch (_) { /* pagehide saves too */ } });
+    row.appendChild(full);
+  }
   const said = document.createElement('div'); said.className = 'vb-said'; said.setAttribute('aria-live', 'polite'); said.style.cssText = 'font-size:12px;min-height:1.3em;margin-top:4px';
   row.insertAdjacentElement('afterend', said);
   // the shared field, said in words on the card: what it feels from the other mind cards, and what it holds there of its own
@@ -293,9 +312,11 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
       const here = !!host && host.brain === S().b && host.onlyHere(); // the page's own brain, holding only this page's asks
       if (restored || !(B.isCold(S().b) || here)) return false;
       const done = B.loadWorking(S().b, w); if (!done.length) return false;
+      // the words that came back, read before warm() hears this page's own asks again ("banana bread" opened the page: not from before)
+      const words = S().b.concepts.words.slice(-6);
       if (here) host.warm(S().b);
-      restored = true; el.dataset.restored = done.join(',');
-      const words = S().b.concepts.words; said.textContent = 'Back from before the reload: ' + (words.length ? words.slice(-6).join(', ') : 'its workspace and its spotlight') + '.';
+      restored = true; el.dataset.restored = done.join(','); el.dataset.back = words.join(',');
+      said.textContent = 'Back from before the reload: ' + (words.length ? words.join(', ') : 'its workspace and its spotlight') + '.';
       place(); sync(); return true;
     }
   });
@@ -326,7 +347,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 }
 
 const idea = {
-  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · twenty organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
+  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · twenty-three organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
@@ -341,13 +362,23 @@ const skill = fieldSkill({
   examples: ['verse brain', 'show me your brain', 'your brain', 'how do you think', 'what are you thinking about', 'show the shared field'],
   nearMisses: ['add a brain', 'summon a zombie and a brain', 'brain teaser', 'mind field', 'what do you think of this song'],
   idea,
-  say: "My brain, live: one workspace that twenty organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
+  say: "My brain, live: one workspace that twenty-three organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
 });
 // "what are you thinking (about)?" opens the card and is answered in words by the brain itself, from the state it is in after hearing the
 // visitor's asks (lib/brain-host.js answer): what it attends to, what it chose and its goals. Any other ask opens the card as before.
+// "full screen brain", "show me your brain full screen", "open verse brain": the brain's own page (/brain/), linked from a card, since a skill
+// does not leave the stage; the tool pages' ask box goes there itself (lib/toolkit.js routeAsk)
+const isFull = brainFullAsk;
 export default {
   ...skill,
+  examples: [...skill.examples, 'full screen brain', 'show me your brain full screen', 'open verse brain'],
+  match(lower, text) { return isFull(text || lower) || skill.match(lower, text); },
   async run(text, api) {
+    if (isFull(text)) {
+      api.showPage((p) => { p.dataset.page = '/brain/'; p.innerHTML = '<h2>Verse Brain, full screen</h2><p>The same brain, on a page of its own: the field fills the screen, with every organ, the orbs, its attention and its numbers live. What it keeps and what it is thinking go with it.</p><p><a class="btn" href="/brain/">Open Verse Brain full screen</a></p><div class="src">a-to-mind.com/brain/</div>'; });
+      api.say('My brain, full screen: a-to-mind.com/brain/');
+      return 'verse-brain';
+    }
     let said = null; const quiet = Object.create(api); quiet.say = (t) => { said = t; };
     const r = await skill.run(text, quiet); if (r === 'none') return r;
     const h = hostOf(), a = h && /^what (?:are you|is your brain) (?:thinking|doing)/i.test(String(text || '').trim()) ? h.answer(String(text).trim().replace(/\s+about$/i, '').replace(/[?!.]*$/, '?')) : null;

@@ -15,8 +15,8 @@
 <style>
   /* a-to-mind.com/gradient/ (owner, 2026-10-24: "find the site to conquer and get to work now"; the frontier's colorzilla.com, whose gradient editor
      loads Carbon ads, a Twitter widget, Facebook styles, Google Analytics and a tag manager): one file and one small module, no third party */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c42b41; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #c42b41; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -56,8 +56,11 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/gradient.js">
 <link rel="modulepreload" href="/lib/colour.js">
+<link rel="modulepreload" href="/lib/image-handoff.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -96,7 +99,10 @@
 </main>
 <script type="module">
   import { mountRelated, along, setPalette } from '/lib/toolkit.js';
-  import { css, cssIn, rule, scss, read, pack, open, fallback, textContrast, normal, reverse, adjust, fromSamples, PRESETS, inFormat } from '/lib/gradient.js';
+  import { css, cssIn, rule, scss, read, pack, open, fallback, textContrast, normal, reverse, adjust, fromSamples, PRESETS, inFormat, drawGradient } from '/lib/gradient.js';
+  import { receiveImage, sendImage, canvasBlob } from '/lib/image-handoff.js';
+  // the address as it came in: draw() rewrites the hash, and a handed-over picture (?img=handoff) is read from this
+  const arrived = { search: location.search, pathname: location.pathname, hash: location.hash };
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   let g = open(location.hash.slice(1)) || normal(PRESETS[2].g), on = 0, name = '';
   const hex = (c) => '#' + [c.r, c.g, c.b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
@@ -156,16 +162,25 @@
   $('copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('out').textContent); toast($('copy'), 'Copied'); } catch (_) {} });
   $('link').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); toast($('link'), 'Copied'); } catch (_) {} });
   $('import').addEventListener('click', () => { const r = read($('paste').value); $('note').textContent = r ? '' : 'That is not a CSS gradient I can read: try linear-gradient(to right, #ff5f6d, #ffc371).'; if (r) { g = r; on = 0; draw(); } });
-  $('pic').addEventListener('change', async () => {
-    const f = $('pic').files && $('pic').files[0]; if (!f) return;
+  $('pic').addEventListener('change', () => { const f = $('pic').files && $('pic').files[0]; if (f) fromPicture(f); });
+  // a picture's colours along its middle become the gradient: chosen here, or handed over by another page (lib/image-handoff.js, ?img=handoff)
+  async function fromPicture(f) {
     try { const bmp = await createImageBitmap(f), cv = el('canvas', { width: 200, height: Math.max(1, Math.round(200 * bmp.height / bmp.width)) }), x = cv.getContext('2d'); x.drawImage(bmp, 0, 0, cv.width, cv.height);
       const y = Math.floor(cv.height / 2), row = x.getImageData(0, Math.max(0, y - 2), cv.width, Math.min(5, cv.height)).data, w = cv.width, h = Math.min(5, cv.height), samples = [];
       for (let i = 0; i < 40; i++) { const px = Math.round((i / 39) * (w - 1)); let r = 0, gg = 0, b = 0; for (let j = 0; j < h; j++) { const o = (j * w + px) * 4; r += row[o]; gg += row[o + 1]; b += row[o + 2]; } samples.push({ r: r / h, g: gg / h, b: b / h }); }
-      const got = fromSamples(samples); if (got) { g = got; on = 0; draw(); $('note').textContent = ''; } } catch (_) { $('note').textContent = 'That picture could not be read.'; }
-  });
+      const got = fromSamples(samples); if (got) { g = got; on = 0; draw(); $('note').textContent = ''; document.dispatchEvent(new Event('tk:card')); } } catch (_) { $('note').textContent = 'That picture could not be read.'; }
+  }
   addEventListener('hashchange', () => { const r = open(location.hash.slice(1)); if (r && pack(r) !== pack(g)) { g = r; draw(); } });
   draw();
-  mountRelated(document.getElementById('related'), '/gradient/', [{ label: 'Paint the wheel with it', href: () => (pack(g).split('-').length > 1 ? '/wheel/' : null), go: () => setPalette(along(pack(g).split('-').slice(1).map((x) => ({ color: '#' + x.slice(0, 6), pos: +x.slice(9) })), 8)) }, { label: 'Open its first colour', href: () => { const c = pack(g).split('-')[1]; return c ? '/color/?c=' + c.slice(0, 6) : null; } }], { card: () => 'css gradient ' + css(g) });
+  mountRelated(document.getElementById('related'), '/gradient/', [{ label: 'Paint the wheel with it', href: () => (pack(g).split('-').length > 1 ? '/wheel/' : null), go: () => setPalette(along(pack(g).split('-').slice(1).map((x) => ({ color: '#' + x.slice(0, 6), pos: +x.slice(9) })), 8)) }, { label: 'Open its first colour', href: () => { const c = pack(g).split('-')[1]; return c ? '/color/?c=' + c.slice(0, 6) : null; } },
+    // the gradient as a 1200 × 675 picture, already open on the picture pages: a press keeps one PNG on this device and opens the page
+    ...[['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Resize it as a picture', '/resize-image/?img=handoff'], ['Save it as a PDF', '/pdf/?img=handoff'], ['Post it on a board', '/boards/?img=handoff']].map(([label, path]) => ({ label, href: () => path, go: () => { sendPicture(path); return false; } }))], { card: () => 'css gradient ' + css(g) });
+  function sendPicture(path) {
+    const cv = el('canvas', { width: 1200, height: 675 });
+    sendImage(path, () => (drawGradient(cv.getContext('2d'), g, cv.width, cv.height) ? canvasBlob(cv) : null), { name: (name || 'gradient') + '.png', fromPage: '/gradient/' })
+      .then((ok) => { if (!ok) $('note').textContent = 'This browser could not keep the gradient as a picture for the next page.'; });
+  }
+  receiveImage(fromPicture, arrived);
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>

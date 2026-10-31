@@ -158,15 +158,18 @@
   },
   "notepad-plus-plus.org": {
    "at": "2026-10-26T22:52:20Z",
-   "outcome": "no-family",
-   "why": "no floor does its job (The website is a software download page for a specific desktop text editor, whereas Verse provides web-based tools. The closest functional t)",
+   "outcome": "assimilated",
+   "family": "text editor",
+   "id": "text editor: notepad-plus-plus.org",
+   "page": "/text-editor/notepad-plus-plus/",
    "title": "Notepad++"
   },
   "font.im": {
    "at": "2026-10-26T22:52:28Z",
    "outcome": "no-family",
    "why": "no floor does its job (The website provides a way to browse, preview, and get embed codes for Google Fonts, but Verse does not have a font library, typography tool)",
-   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts"
+   "title": "Google Fonts | 谷歌字体中文版 | GoogleFonts",
+   "family": "typography"
   },
   "processchecker.com": {
    "at": "2026-10-26T22:52:33Z",
@@ -175,13 +178,13 @@
    "title": "Processchecker.com"
   },
   "uptimer.dev": {
-   "at": "2026-10-26T22:52:43Z",
+   "at": "2026-10-30T00:00:00Z",
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "Uptimer.dev"
   },
   "communitydragon.org": {
-   "at": "2026-10-27T08:19:15Z",
+   "at": "2026-10-30T10:00:00Z",
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "CommunityDragon"
@@ -199,9 +202,10 @@
    "title": "Quality web design in, Paphos, Cyprus with SEO and social media plans"
   },
   "randomarea.com": {
-   "at": "2026-10-29T08:50:07Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:36:40Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a collection of translated AI research papers and technical guides. Verse does not have a page for research paper translation, a scientific)",
+   "title": "AI 研究报告中文翻译合集"
   },
   "urdufonts.net": {
    "at": "2026-10-27T08:19:42Z",
@@ -304,9 +308,10 @@
    "title": "Unit | Asset tokenization layer on Hyperliquid"
   },
   "email-checker.net": {
-   "at": "2026-10-29T08:50:14Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:36:48Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides an email verification service and email-related educational content, but Verse does not have a page for verifying email addresses or an)",
+   "title": "Email Checker - Verify Email Address Online"
   },
   "besslerwheel.com": {
    "at": "2026-10-28T22:47:19Z",
@@ -315,9 +320,14 @@
    "title": "Johann Bessler - Orffyreus"
   },
   "getconverter.org": {
-   "at": "2026-10-29T08:50:22Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:08Z",
+   "outcome": "built",
+   "family": "finance",
+   "id": "finance: getconverter.org",
+   "page": "/markets/currency-converter/?s=SPX&r=5y&on=2024-12-31",
+   "words": "the family page's own (the model's were refused: says what the page does not do (between, global, accurate, custom, built))",
+   "rows": "12/15",
+   "gated": "2026-10-30T22:44:35Z"
   },
   "freefonts.co": {
    "at": "2026-10-28T22:47:31Z",
@@ -326,14 +336,16 @@
    "title": "FreeFonts : Download Thousands of Fonts for Free : Free Fonts"
   },
   "copyemojio.com": {
-   "at": "2026-10-29T08:50:33Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:18Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a financial news and educational blog providing articles on investing, loans, and wealth management. Verse has a 'finance' tool for looking up)",
+   "title": "ShortFinance"
   },
   "syncsketch.com": {
-   "at": "2026-10-29T08:50:37Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:24Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional visual collaboration and media review platform for animation and VFX teams, offering synchronous presentation and annotation)",
+   "title": "SyncSketch"
   },
   "nnamdicenter.org": {
    "at": "2026-10-28T22:47:47Z",
@@ -347,14 +359,75 @@
    "title": "Jigsaw Color Game Technology - Expert in Software and Game Development"
   },
   "qunitjs.com": {
-   "at": "2026-10-29T08:50:50Z",
-   "outcome": "not-judged",
-   "why": "the model answered 401"
+   "at": "2026-10-30T22:37:33Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a documentation and landing page for a JavaScript testing framework. While Verse has a tool for Perl test reports (cpan), it does not have a tool)",
+   "title": "QUnit"
   },
   "top-password.com": {
-   "at": "2026-10-29T08:50:56Z",
+   "at": "2026-10-30T22:37:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides software services and guides for recovering lost passwords and product keys. Verse has no page that offers password recovery services or)",
+   "title": "Password Recovery Software - Recover Lost Password, Reset Windows Password"
+  },
+  "kingdraw.com": {
+   "at": "2026-10-30T08:55:53Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "KingDraw官网_化学结构式编辑器"
+  },
+  "diffen.com": {
+   "at": "2026-10-30T22:37:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Diffen - Compare Anything. Diffen. Discern. Decide."
+  },
+  "kingdraw.cn": {
+   "at": "2026-10-31T08:45:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a specialized chemical structure editor and scientific drawing tool. While Verse has a 'formula calculators' page, that tool is for performing)",
+   "title": "KingDraw官网_化学结构式编辑器"
+  },
+  "zoopicker.com": {
+   "at": "2026-10-31T08:46:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a niche birdwatching social platform and utility for logging sightings and finding locations. Verse does not have a page for biological)",
+   "title": "Enjoy Birding more with ZooPicker | ZooPicker"
+  },
+  "convertytmp3.org": {
+   "at": "2026-10-31T08:46:10Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a YouTube to MP3/MP4 converter. None of the available Verse pages provide video-to-audio or video-to-video conversion services. While there is a)",
+   "title": "YTMP3 - YouTube to MP3 Converter"
+  },
+  "communitydns.net": {
+   "at": "2026-10-31T08:46:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides professional DNS resolution and anycast network services, which is a specialized infrastructure service that Verse does not have a page)",
+   "title": "Commumity DNS - Anycast Leaders"
+  },
+  "syncsketch.dev": {
+   "at": "2026-10-31T08:46:55Z",
    "outcome": "not-judged",
-   "why": "the model answered 401"
+   "why": "the answer was not JSON"
+  },
+  "speedtest.ru": {
+   "at": "2026-10-31T08:47:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an internet speed test tool, which measures network performance parameters like download/upload speed, ping, and jitter. None of the provided)",
+   "title": "Проверка скорости интернета - speedtest онлайн"
+  },
+  "unit.no": {
+   "at": "2026-10-31T08:47:08Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Sikt – Kunnskapssektorens tjenesteleverandør"
+  },
+  "wheeloutlet.com": {
+   "at": "2026-10-31T08:47:12Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an e-commerce portal for automotive wheels. Verse does not have a page for a shop or a service that sells physical products.)",
+   "title": "wheeloutlet.com - Select your country & onlineshop"
   }
  },
  "runs": [
@@ -501,6 +574,59 @@
    "queued": 0,
    "fixed": [],
    "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-30T08:56:00Z",
+   "line": "Versus: took on no site (also read: 7 not-judged, 1 no-family); next randomarea.com",
+   "built": 0,
+   "queued": 1,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-30T08:58:34Z",
+   "line": "Versus: took on no site; next randomarea.com",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0
+  },
+  {
+   "at": "2026-10-30T22:41:15Z",
+   "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows (also read: 7 no-family); next onlineconverter.com (the target)",
+   "built": 1,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "kingdraw.cn"
+  },
+  {
+   "at": "2026-10-30T22:44:35Z",
+   "line": "Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows; next onlineconverter.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "kingdraw.cn"
+  },
+  {
+   "at": "2026-10-31T08:47:23Z",
+   "line": "Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next onlineconverter.com (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "syncsketch.dev"
+  },
+  {
+   "at": "2026-10-31T08:49:57Z",
+   "line": "Versus: took on no site; next onlineconverter.com (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "syncsketch.dev",
+   "noop": true
   }
  ]
 }

@@ -1,1 +1,0 @@
-{"at":"2026-10-29T17:32:04Z","by":"claude","kind":"fix","what":"Versus size job: a page whose load event never fires is counted from what it built, and a run can re-read named sites"}

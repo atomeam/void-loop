@@ -181,7 +181,8 @@
   },
   {
     "ask": "who wrote hamlet",
-    "want": "answer|article"
+    "want": "skill:book",
+    "says": "Shakespeare"
   },
   {
     "ask": "what is photosynthesis",
@@ -189,7 +190,8 @@
   },
   {
     "ask": "how to boil an egg",
-    "want": "answer"
+    "want": "calc",
+    "says": "12 min"
   },
   {
     "ask": "recipe for pancakes",
@@ -637,7 +639,7 @@
   },
   {
     "ask": "what was the date 30 days ago",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "which day was it 100 days ago",
@@ -1490,7 +1492,7 @@
   },
   {
     "ask": "what is the date in 10 days",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "how many hours until midnight",
@@ -1897,7 +1899,8 @@
   },
   {
     "ask": "how many days until summer",
-    "want": "calc|holiday|skill:holidays|skill:countdown|answer"
+    "want": "calc",
+    "says": "\\d"
   },
   {
     "ask": "when is easter",
@@ -2006,22 +2009,22 @@
   },
   {
     "ask": "42 in binary",
-    "want": "calc",
-    "says": "101010"
+    "want": "calc|skill:baseconv",
+    "says": "101010|0010 1010"
   },
   {
     "ask": "convert 255 to hex",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "\\bff\\b|0xff"
   },
   {
     "ask": "what is my zodiac sign if i was born march 3",
-    "want": "calc|answer",
+    "want": "calc|answer|skill:date-calc",
     "says": "pisces"
   },
   {
     "ask": "how many days old am i if born on june 1 1990",
-    "want": "calc|age"
+    "want": "calc|age|skill:date-calc"
   },
   {
     "ask": "how to tie a tie",
@@ -2079,7 +2082,7 @@
   },
   {
     "ask": "is today a weekend",
-    "want": "today|calc|answer"
+    "want": "today|calc|answer|skill:is-it"
   },
   {
     "ask": "how many business days until christmas",
@@ -2087,7 +2090,7 @@
   },
   {
     "ask": "what's the date 3 weeks from today",
-    "want": "calc|today"
+    "want": "calc|today|skill:date-calc"
   },
   {
     "ask": "add 2 hours to 3:30 pm",
@@ -2244,6 +2247,16 @@
     "ask": "bmi for 5 feet 10 inches 170 pounds",
     "want": "calc",
     "says": "24\\.[34]"
+  },
+  {
+    "ask": "what is my bmi if i am 6 feet and 180 pounds",
+    "want": "calc",
+    "says": "24\\.4"
+  },
+  {
+    "ask": "bmi 180 lbs 6 ft",
+    "want": "calc",
+    "says": "24\\.4"
   },
   {
     "ask": "how many calories to lose a pound",
@@ -2502,7 +2515,7 @@
   },
   {
     "ask": "take a note: buy batteries",
-    "want": "sticky|notepad",
+    "want": "sticky|notepad|notes-fill",
     "says": "buy batteries"
   },
   {
@@ -2595,7 +2608,7 @@
   },
   {
     "ask": "tell me a fun fact",
-    "want": "said|answer|skill:joke"
+    "want": "skill:fact"
   },
   {
     "ask": "motivate me",
@@ -2995,12 +3008,12 @@
   },
   {
     "ask": "what is 255 in binary",
-    "want": "calc",
-    "says": "11111111"
+    "want": "calc|skill:baseconv",
+    "says": "11111111|1111 1111"
   },
   {
     "ask": "what is 0xff in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "255"
   },
   {
@@ -3010,7 +3023,7 @@
   },
   {
     "ask": "what is the date 30 days from today",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "how many weeks is 100 days",
@@ -3088,7 +3101,7 @@
   },
   {
     "ask": "what is the date next friday",
-    "want": "calc|skill:calendar"
+    "want": "calc|skill:calendar|skill:date-calc"
   },
   {
     "ask": "convert 2 cups of flour to grams",
@@ -3098,7 +3111,7 @@
   {
     "ask": "1 cup of sugar in grams",
     "want": "calc",
-    "says": "200"
+    "says": "198 g"
   },
   {
     "ask": "what temperature to cook chicken",
@@ -3152,7 +3165,7 @@
   },
   {
     "ask": "what is the date this sunday",
-    "want": "calc",
+    "want": "calc|skill:date-calc",
     "says": "Sunday"
   },
   {
@@ -3450,7 +3463,7 @@
   },
   {
     "ask": "is it a weekend",
-    "want": "today|calc|said",
+    "want": "today|calc|said|skill:is-it",
     "says": "[Nn]o|[Yy]es"
   },
   {
@@ -3855,7 +3868,7 @@
   },
   {
     "ask": "how many days until spring",
-    "want": "calc|holiday|skill:countdown",
+    "want": "calc",
     "says": "\\d"
   },
   {
@@ -3968,7 +3981,7 @@
   },
   {
     "ask": "what is 101010 in decimal",
-    "want": "calc",
+    "want": "calc|skill:baseconv",
     "says": "42"
   },
   {
@@ -4063,7 +4076,13 @@
   },
   {
     "ask": "how much luggage weight allowed",
-    "want": "answer|article|said|calc"
+    "want": "skill:baggage",
+    "says": "23 kg \\(50 lb\\)"
+  },
+  {
+    "ask": "checked bag weight limit",
+    "want": "skill:baggage",
+    "says": "32 kg \\(70 lb\\)"
   },
   {
     "ask": "what is 23 kg in pounds",
@@ -4172,7 +4191,7 @@
   },
   {
     "ask": "how long to pay off 100 at 200 a month at 20%",
-    "want": "calc",
+    "want": "calc|skill:loan",
     "says": "101\\.67"
   },
   {
@@ -4627,13 +4646,16 @@
   {"ask": "what is 2 to the power of 12", "want": "calc", "says": "4,?096"},
   {"ask": "what is 3/8 as a decimal", "want": "calc", "says": "0\\.375"},
   {"ask": "what is 0.625 as a fraction", "want": "calc", "says": "5/8"},
+  {"ask": "decimal to fraction 0.75", "want": "calc", "says": "3/4"},
+  {"ask": "convert decimal 0.375 to fraction", "want": "calc", "says": "3/8"},
+  {"ask": "0.6 decimal to fraction", "want": "calc", "says": "3/5"},
   {"ask": "average of 4, 8, 15, 16, 23, 42", "want": "calc", "says": "18"},
   {"ask": "median of 3 9 1 7 5", "want": "calc", "says": "\\b5\\b"},
   {"ask": "what is the gcd of 48 and 180", "want": "calc", "says": "12"},
   {"ask": "lcm of 6 and 8", "want": "calc", "says": "24"},
   {"ask": "roman numerals for 2026", "want": "calc", "says": "MMXXVI"},
-  {"ask": "what is 1010 in binary to decimal", "want": "calc", "says": "\\b10\\b"},
-  {"ask": "255 in hex", "want": "calc", "says": "FF|ff"},
+  {"ask": "what is 1010 in binary to decimal", "want": "calc|skill:baseconv", "says": "\\b10\\b"},
+  {"ask": "255 in hex", "want": "calc|skill:baseconv", "says": "FF|ff"},
   {"ask": "review this python: except: pass", "want": "review", "says": "hides every error|silently|bare"},
   {"ask": "is this code safe? eval(userInput)", "want": "review", "says": "runs text as code"},
   {"ask": "review this sql: DELETE FROM users;", "want": "review", "says": "every row"},
@@ -5035,8 +5057,8 @@
   {"ask": "what time zone is it in tokyo", "want": "skill:worldtime", "says": null},
   {"ask": "when is thanksgiving this year", "want": "holiday|skill:holidays|calc", "says": null},
   {"ask": "what day is new years eve", "want": "holiday|skill:holidays|calc", "says": null},
-  {"ask": "what was the date 100 days ago", "want": "calc|today", "says": null},
-  {"ask": "what's 2 weeks from today", "want": "calc|today", "says": null},
+  {"ask": "what was the date 100 days ago", "want": "calc|today|skill:date-calc", "says": null},
+  {"ask": "what's 2 weeks from today", "want": "calc|today|skill:date-calc", "says": null},
   {"ask": "180 lbs in kg", "want": "calc", "says": "81\\.6"},
   {"ask": "6 feet 2 inches in cm", "want": "calc", "says": "18[78]"},
   {"ask": "what is 1 mile in steps", "want": "calc|answer|article", "says": null},
@@ -5420,7 +5442,7 @@
   {"ask": "what is 2 hours and 15 minutes in minutes", "want": "calc", "says": "135"},
   {"ask": "how many weekdays in november", "want": "calc|today", "says": "2[01]"},
   {"ask": "gas mileage 300 miles 10 gallons", "want": "calc|skill:fuel", "says": "30"},
-  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null},
+  {"ask": "what is my age in days born march 5 1990", "want": "calc|age|skill:date-calc", "says": null},
   {"ask": "review this js: const data = await fetch(url); const json = data.json();", "want": "review", "says": "await|promise"},
   {"ask": "review this js: arr.map(x => { x * 2 })", "want": "review", "says": "return|undefined"},
   {"ask": "review this js: res.redirect(req.query.next)", "want": "review", "says": "redirect|open"},
@@ -5586,10 +5608,10 @@
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
   {"ask": "what's for sale", "want": "skill:services"},
-  {"ask": "pricing", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "price list", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "pricing", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "price list", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "how much is void", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "give me five minutes with this", "want": "skill:challenge"},
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
@@ -5930,7 +5952,7 @@
   {"ask": "what does it mean to be pragmatic", "want": "skill:define"},
   {"ask": "dictionary definition of empathy", "want": "skill:define"},
   {"ask": "use serendipity in a sentence", "want": "skill:define"},
-  {"ask": "what language does the word kindergarten come from", "want": "answer|article|skill:define"},
+  {"ask": "what language does the word kindergarten come from", "want": "skill:define"},
   {"ask": "what's the italian word for window", "want": "skill:translate"},
   {"ask": "how long is the flight from paris to new york", "want": "skill:distance", "says": "in the air"},
   {"ask": "miles from chicago to denver", "want": "skill:distance"},
@@ -5938,6 +5960,9 @@
   {"ask": "is it a public holiday tomorrow", "want": "holiday|skill:holidays"},
   {"ask": "what day was i born if my birthday is may 9 1985", "want": "calc", "says": "Thursday"},
   {"ask": "what day of the week was i born on 12 october 1999", "want": "calc", "says": "Tuesday"},
+  {"ask": "what day is 2026-10-30", "want": "calc", "says": "Friday"},
+  {"ask": "2026-10-30", "want": "calc", "says": "Friday"},
+  {"ask": "what day of the week was 1776-07-04", "want": "calc", "says": "Thursday"},
   {"ask": "what day was 3rd of august 2004", "want": "calc", "says": "Tuesday"},
   {"ask": "calories in a banana", "want": "skill:food", "says": "105"},
   {"ask": "how much protein in an egg", "want": "skill:food", "says": "6.3"},
@@ -5953,7 +5978,7 @@
   {"ask": "set timr for 12 min", "want": "timer|skill:timer|timer-start"},
   {"ask": "start a timmer for 6 minutes", "want": "timer|skill:timer|timer-start"},
   {"ask": "time me for 90 seconds", "want": "timer|skill:timer|timer-start"},
-  {"ask": "egg timer", "want": "calc", "says": "soft 6 min"},
+  {"ask": "egg timer", "want": "calc", "says": "soft 4.6 min"},
   {"ask": "show the map", "want": "skill:rebuild-map"},
   {"ask": "what is the map", "want": "skill:rebuild-map"},
   {"ask": "what's being built", "want": "skill:rebuild-map"},
@@ -6006,7 +6031,9 @@
   {"ask": "350 degrees in gas mark", "want": "calc", "says": "gas mark 4"},
   {"ask": "what gas mark is 200c", "want": "calc", "says": "gas mark 6"},
   {"ask": "medium rare steak temperature", "want": "calc", "says": "135"},
-  {"ask": "temperature for a well done steak", "want": "calc", "says": "160"},
+  {"ask": "temperature for a well done steak", "want": "calc", "says": "155"},
+  {"ask": "how hot should ground beef be cooked", "want": "calc", "says": "160"},
+  {"ask": "what temp is steak done", "want": "calc", "says": "145"},
   {"ask": "steak doneness chart", "want": "calc", "says": "medium well"},
   {"ask": "how many eggs in a dozen", "want": "calc", "says": "12"},
   {"ask": "how many in half a dozen", "want": "calc", "says": "^6|\\b6\\b"},
@@ -6083,8 +6110,8 @@
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
-  {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
-  {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "how much is verse", "want": "skill:services", "says": "MultiVerse"},
+  {"ask": "what does verse cost", "want": "skill:services", "says": "MultiVerse"},
   {"ask": "what is verse", "want": "self|speaks|what"},
   {"ask": "make my verse dark", "want": "skill:dark-look"},
   {"ask": "what did verse get wrong", "want": "skill:make"},
@@ -6707,6 +6734,8 @@
   {"ask": "what do you keep on this device", "want": "skill:state"},
   {"ask": "remote jobs for python", "want": "skill:work"},
   {"ask": "jobs as a writer", "want": "skill:work"},
+  {"ask": "find remote jobs", "want": "skill:work"},
+  {"ask": "job search", "want": "skill:work"},
   {"ask": "pick for me", "want": "skill:pick-for-me"},
   {"ask": "open the book", "want": "skill:guide"},
   {"ask": "the guide", "want": "skill:guide"},
@@ -6721,13 +6750,13 @@
   {"ask": "memory preview", "want": "skill:memory-preview"},
   {"ask": "show my memory snippets", "want": "skill:memory-preview"},
   {"ask": "what memories do I have", "want": "skill:memory-preview"},
-  {"ask": "hide the sky", "want": "skill:night-sky"},
+  {"ask": "hide the sky", "want": "skill:night-sky|skill:nightsky"},
   {"ask": "morning routine as calendar events", "want": "skill:ritual-template"},
   {"ask": "export my evening routine to my calendar", "want": "skill:ritual-template"},
   {"ask": "ritual template: meditate 10, stretch 15, journal 10 at 6:30am", "want": "skill:ritual-template"},
-  {"ask": "where is jupiter", "want": "skill:sky-card"},
-  {"ask": "where is the moon tonight", "want": "skill:sky-card"},
-  {"ask": "is venus up", "want": "skill:sky-card"},
+  {"ask": "where is jupiter", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "where is the moon tonight", "want": "skill:sky-card|skill:skycard"},
+  {"ask": "is venus up", "want": "skill:sky-card|skill:skycard"},
   {"ask": "mind field", "want": "skill:doodle-mind"},
   {"ask": "show me the mind field", "want": "skill:doodle-mind"},
   {"ask": "living field", "want": "skill:doodle-mind"},
@@ -6898,6 +6927,14 @@
   {"ask": "fantasy name generator", "want": "skill:textgen"},
   {"ask": "kinetic energy calculator", "want": "skill:formulas"},
   {"ask": "formula calculators", "want": "skill:formulas"},
+  {"ask": "unix timestamp 1700000000", "want": "skill:formulas"},
+  {"ask": "convert 1700000000 to date", "want": "skill:formulas"},
+  {"ask": "current unix time", "want": "skill:formulas"},
+  {"ask": "epoch converter", "want": "skill:formulas"},
+  {"ask": "url encode hello world", "want": "skill:formulas"},
+  {"ask": "compound interest 1000 at 5% for 10 years", "want": "skill:formulas"},
+  {"ask": "roman numeral converter", "want": "skill:formulas"},
+  {"ask": "days between dates", "want": "skill:formulas"},
   {"ask": "char codes of world", "want": "skill:ascii"},
   {"ask": "leet hello", "want": "skill:leet"},
   {"ask": "convert cool to leet", "want": "skill:leet"},
@@ -6914,5 +6951,120 @@
   {"ask": "random password", "want": "skill:password"},
   {"ask": "another password", "want": "skill:password"},
   {"ask": "another emoji", "want": "skill:emoji"},
-  {"ask": "8 ball", "want": "skill:magic8"}
+  {"ask": "8 ball", "want": "skill:magic8"},
+  {"ask": "mp4 to mp3", "want": "skill:converter"},
+  {"ask": "file converter", "want": "skill:converter"},
+  {"ask": "audio converter", "want": "skill:converter"},
+  {"ask": "write me a rap about pizza", "want": "skill:rap"},
+  {"ask": "rap about my dog", "want": "skill:rap"},
+  {"ask": "spit some bars about mondays", "want": "skill:rap"},
+  {"ask": "team chat", "want": "skill:team-chat"},
+  {"ask": "open the team chat", "want": "skill:team-chat"},
+  {"ask": "agent workspace", "want": "skill:team-chat"},
+  {"ask": "random uuid", "want": "skill:uuid"},
+  {"ask": "another uuid", "want": "skill:uuid"},
+  {"ask": "random guid", "want": "skill:uuid"},
+  {"ask": "hangman", "want": "skill:hangman"},
+  {"ask": "play hangman", "want": "skill:hangman"},
+  {"ask": "start hangman", "want": "skill:hangman"},
+  {"ask": "should I go", "want": "skill:yesno"},
+  {"ask": "yesno", "want": "skill:yesno"},
+  {"ask": "set the stage to a retro server room", "want": "skill:backdrop"},
+  {"ask": "stage: an atmospheric study", "want": "skill:backdrop"},
+  {"ask": "check my stl file", "want": "skill:stl-check"},
+  {"ask": "is my stl watertight", "want": "skill:stl-check"},
+  {"ask": "stl checker", "want": "skill:stl-check"},
+  {"ask": "whats in the news today", "want": "skill:news"},
+  {"ask": "what is in the news right now", "want": "skill:news"},
+  {"ask": "give me a motivational quote", "want": "skill:quote"},
+  {"ask": "famous quotes", "want": "skill:quote"},
+  {"ask": "what can i make with chicken and rice", "want": "skill:recipe"},
+  {"ask": "good movies to watch tonight", "want": "skill:media-pick|skill:movie"},
+  {"ask": "what should i watch on netflix", "want": "skill:media-pick|skill:movie|skill:show"},
+  {"ask": "convert hello to morse code", "want": "skill:morse"},
+  {"ask": "magic 8 ball will i pass my test", "want": "chance", "says": "pass my test"},
+  {"ask": "a colour", "want": "skill:color"},
+  {"ask": "ask the magic 8 ball", "want": "chance"},
+  {"ask": "new guid", "want": "skill:util"},
+  {"ask": "random color", "want": "skill:color"},
+  {"ask": "random colour", "want": "skill:color"},
+  {"ask": "night sky tonight", "want": "skill:sky"},
+  {"ask": "band name generator", "want": "skill:textgen"},
+  {"ask": "give me a story prompt", "want": "skill:textgen"},
+  {"ask": "story prompt generator", "want": "skill:textgen"},
+  {"ask": "complementary palette", "want": "skill:palette"},
+  {"ask": "another palette", "want": "skill:palette"},
+  {"ask": "pastel color palette", "want": "skill:palette"},
+  {"ask": "triadic palette from #ff8800", "want": "skill:palette"},
+  {"ask": "generate a color scheme", "want": "skill:palette"},
+  {"ask": "should i", "want": "skill:yesno"},
+  {"ask": "should i rent or buy", "want": "skill:rentbuy", "says": "Buying gets ahead|Renting stays ahead"},
+  {"ask": "is it cheaper to rent or buy a 500k condo, rent is 2500 a month", "want": "skill:rentbuy", "says": "\\$500,000|\\$2,500"},
+  {"ask": "shuffle these: apple banana cherry", "want": "skill:shuffle"},
+  {"ask": "randomize my list red green blue", "want": "skill:shuffle"},
+  {"ask": "shuffle: north south east west", "want": "skill:shuffle"},
+  {"ask": "word ladder from cat to dog", "want": "skill:wordladder"},
+  {"ask": "ladder from cold to warm", "want": "skill:wordladder"},
+  {"ask": "word ladder", "want": "skill:wordladder"},
+  {"ask": "free kanban board", "want": "skill:kanban-board"},
+  {"ask": "kanban", "want": "skill:kanban-board"},
+  {"ask": "start a kanban board", "want": "skill:kanban-board"},
+  {"ask": "online kanban", "want": "skill:kanban-board"},
+  {"ask": "morse code hello", "want": "skill:morse"},
+  {"ask": "morse hello world", "want": "skill:morse"},
+  {"ask": "translate to morse hello", "want": "skill:morse"},
+  {"ask": "what would the echo say should i learn to code", "want": "skill:echo-disagrees"},
+  {"ask": "please check my edit", "want": "skill:homotopy-edit"},
+  {"ask": "check my edits", "want": "skill:homotopy-edit"},
+  {"ask": "check my argument edits", "want": "skill:homotopy-edit"},
+  {"ask": "make today's misses into jobs", "want": "skill:miss-jobs"},
+  {"ask": "today's misses as jobs", "want": "skill:miss-jobs"},
+  {"ask": "password of 20 characters", "want": "skill:password"},
+  {"ask": "d20", "want": "skill:random"},
+  {"ask": "image boards", "want": "skill:boards"},
+  {"ask": "search podcasts for true crime", "want": "skill:podcast-search"},
+  {"ask": "podcasts about history", "want": "skill:podcast-search"},
+  {"ask": "find a podcast about cooking", "want": "skill:podcast-search"},
+  {"ask": "best podcasts about science", "want": "skill:podcast-search"},
+  {"ask": "any good podcasts about space", "want": "skill:podcast-search"},
+  {"ask": "What got built", "want": "skill:growth"},
+  {"ask": "what got built today", "want": "skill:growth"},
+  {"ask": "what got shipped recently", "want": "skill:growth"},
+  {"ask": "cpan testers results", "want": "skill:studios"},
+  {"ask": "paint by numbers studio", "want": "skill:studios"},
+  {"ask": "score my tournament", "want": "skill:studios"},
+  {"ask": "dog emoji combos", "want": "skill:emoji-combos"},
+  {"ask": "emoji combos for christmas", "want": "skill:emoji-combos"},
+  {"ask": "sad kaomoji", "want": "skill:emoji-combos"},
+  {"ask": "random emoji", "want": "skill:emoji"},
+  {"ask": "give me an emoji", "want": "skill:emoji"},
+  {"ask": "flight time london new york", "want": "skill:flights"},
+  {"ask": "bundesliga results", "want": "skill:scores"},
+  {"ask": "give me a random fact", "want": "skill:fact"},
+  {"ask": "tell me something interesting", "want": "skill:fact"},
+  {"ask": "ask the 8 ball will it work", "want": "chance"},
+  {"ask": "quote of the day", "want": "skill:quote"},
+  {"ask": "what is the quote of the day", "want": "skill:quote"},
+  {"ask": "a joke about cats", "want": "skill:joke"},
+  {"ask": "tell me a dad joke about pizza", "want": "skill:joke"},
+  {"ask": "an old saying", "want": "skill:proverb"},
+  {"ask": "book recommendations like the hobbit", "want": "skill:book"},
+  {"ask": "local radio", "want": "skill:local-stations"},
+  {"ask": "radio stations near me", "want": "skill:local-stations"},
+  {"ask": "local tv stations", "want": "skill:local-stations"},
+  {"ask": "word counter", "want": "skill:open-tool"},
+  {"ask": "open the piano", "want": "skill:open-tool"},
+  {"ask": "time zone converter", "want": "skill:open-tool"},
+  {"ask": "random number generator", "want": "skill:open-tool"},
+  {"ask": "random name picker", "want": "skill:wheel"},
+  {"ask": "base converter", "want": "skill:open-tool"},
+  {"ask": "apple stock price", "want": "skill:stocks"},
+  {"ask": "what is tesla's stock price", "want": "skill:stocks"},
+  {"ask": "how is the s&p 500 today", "want": "skill:stocks"},
+  {"ask": "animate a cat chasing yarn", "want": "skill:video-gen"},
+  {"ask": "animate waves on a beach at sunset", "want": "skill:video-gen"},
+  {"ask": "is it better to rent or buy a house", "want": "skill:rentbuy"},
+  {"ask": "rent vs buy", "want": "skill:rentbuy"},
+  {"ask": "how heavy can my suitcase be", "want": "skill:baggage"},
+  {"ask": "heads or tails", "want": "skill:coin"}
 ]

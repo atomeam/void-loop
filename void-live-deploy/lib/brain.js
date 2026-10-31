@@ -7,7 +7,11 @@
 //                              (F322: the look is a program it rewrites), grower (F453: a plant from a grammar it rewrites, bent toward
 //                              the attention), formula (F451: a formula it evolves for how its own tissue will change),
 //                              current (F447: a lattice-Boltzmann flow your drag stirs, with swimmers evolved to ride it to life),
-//                              grains (F456: grains thrown toward the focus that pass their genes on where they touch), will, arena
+//                              grains (F456: grains thrown toward the focus that pass their genes on where they touch),
+//                              pool (F459: a particle fluid after the focus, whose viscosity, stiffness and kernel size a tiny network
+//                              sets and learns), trace (the NCA drafts: a cellular automaton that holds where the focus was for
+//                              a while and lets it go, whose rule the brain tunes), dialogue (the conversation orb: what this
+//                              visitor asked and what Verse answered, so a repeat or a follow-up builds on the first), will, arena
 //   3. attention               scheduleTick() here: each tick a budget of organ runs goes to the organs that want it most, the starved
 //                              ones catch up, and one spotlight (the focus layer) shows what the brain is thinking about
 //   4. imagination             imagine() here: freeze the workspace, try an action or a genome for a few dozen ticks on the substrate
@@ -32,6 +36,9 @@ import { makeGrower, growerOf } from './brain-grower.js';
 import { makeFormula, formulaOf } from './brain-formula.js';
 import { makeCurrent, currentOf } from './brain-current.js';
 import { makeGrains, grainsOf } from './brain-grains.js';
+import { makePool, poolOf } from './brain-pool.js';
+import { makeTrace, traceOf } from './brain-trace.js';
+import { makeDialogue, dialogueStats } from './brain-dialogue.js';
 
 export const VERSION = 1;
 export const STARVE = 120; // ticks of waiting that add a whole 1 to an organ's want
@@ -52,7 +59,7 @@ export function createBrain(seed = 1, opts = {}) {
   const ws = createWorkspace(seed, ORGAN_IDS.concat(['attention']));
   const b = { v: VERSION, seed, ws, genome: fixGenome(opts.genome || STARTER), budget: opts.phone ? BUDGET_PHONE : BUDGET,
     senses: { feat: new Float32Array(8), px: 0.5, py: 0.5, has: false, over: false, speed: 0, trail: [] },
-    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), grower: makeGrower(seed), formula: makeFormula(seed), current: makeCurrent(seed), grains: makeGrains(seed), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
+    reservoir: makeReservoir(seed), synapses: makeSynapses(seed), creature: makeCreature(seed), ear: makeEar(), painter: makePainter(seed), gardener: makeGardener(seed), grower: makeGrower(seed), formula: makeFormula(seed), current: makeCurrent(seed), grains: makeGrains(seed), pool: makePool(seed), trace: makeTrace(seed), dialogue: makeDialogue(), gestures: makeGestures(), memory: makeMemory(), concepts: makeConcepts(), will: makeWill(), arena: makeArena(seed),
     focus: { x: 0.5, y: 0.5, px: 0.5, py: 0.5, region: 5, held: 0 }, surprise: 0, utility: 0, metrics: measure(ws),
     runs: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), lastRun: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), recent: Object.fromEntries(ORGAN_IDS.map((id) => [id, 0])), granted: [], ticks: 0,
     board: { drive: 'rest', eye: null, creature: null, ear: null, paint: null, garden: null, grow: null, gesture: null, motif: null, expect: null, thinking: null, action: null, genome: null, membrane: null }, imagining: 0, imagined: 0, mind: Mind.makeMind() };
@@ -82,9 +89,11 @@ export function updateFocus(b) {
   return b.focus;
 }
 /** which organs run this tick: senses always; then the budget goes to the highest want plus starvation (ticks since it last ran / STARVE).
- *  Returns the ids, in the order they run (the order of ORGANS: senses before the predictor, tissue before the rhythm). Pure. */
+ *  An organ that says it rests (rests(b) true: it has nothing to do, as the dialogue organ with no recalled ask) takes no part, so it never
+ *  takes a run from the others. Returns the ids, in the order they run (the order of ORGANS: senses before the predictor, tissue before
+ *  the rhythm). Pure. */
 export function scheduleTick(b) {
-  const scored = ORGANS.filter((o) => o.id !== 'senses').map((o) => ({ id: o.id, p: clamp(o.want(b) - (b.mind.throttle[o.id] || 0), 0, 1) + Math.min(1, (b.ticks - b.lastRun[o.id]) / STARVE) })); // the monitor slows an organ that disagrees with another over a region
+  const scored = ORGANS.filter((o) => o.id !== 'senses' && !(o.rests && o.rests(b))).map((o) => ({ id: o.id, p: clamp(o.want(b) - (b.mind.throttle[o.id] || 0), 0, 1) + Math.min(1, (b.ticks - b.lastRun[o.id]) / STARVE) })); // the monitor slows an organ that disagrees with another over a region
   scored.sort((p, q) => q.p - p.p);
   const pick = new Set(['senses', ...scored.slice(0, b.budget).filter((x) => x.p > 0.05).map((x) => x.id)]);
   return ORGANS.filter((o) => pick.has(o.id)).map((o) => o.id);
@@ -92,7 +101,7 @@ export function scheduleTick(b) {
 
 /** one tick of the whole brain. input: { x, y, over, down, tiltX, tiltY, sound, pitches: [[Hz, seconds], ...] }. Returns the organs that ran. */
 export function stepBrain(b, input = {}) {
-  const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++; b.painter.since++; b.gardener.since++; b.grower.since++; b.formula.since++; b.current.since++; b.grains.since++;
+  const ws = b.ws; ws.tick++; b.ticks++; b.will.since++; b.arena.since++; b.painter.since++; b.gardener.since++; b.grower.since++; b.formula.since++; b.current.since++; b.grains.since++; b.pool.since++; b.trace.since++;
   if (Array.isArray(input.pitches)) for (const p of input.pitches.slice(-64)) if (Array.isArray(p)) hearFrame(b.ear, +p[0], +p[1]); // every pitch frame, run or not: the hearing organ learns the notes when it runs
   updateFocus(b);
   const ids = scheduleTick(b);
@@ -234,6 +243,9 @@ export function embodiment(b) {
   if (b.board.formula && b.board.formula.rising && b.ticks - b.board.formula.tick < 60) out.push({ key: 'formula', organ: 'formula', x: b.board.formula.x, y: b.board.formula.y, label: 'expected life', size: 0.2, hue: 200 });
   if (b.board.current && b.board.current.gain > 1 && b.ticks - b.board.current.tick < 60) out.push({ key: 'current', organ: 'current', x: b.board.current.x, y: b.board.current.y, label: 'riding the current', size: 0.18, hue: 185 });
   if (b.board.grains && b.board.grains.gain > 1 && b.ticks - b.board.grains.tick < 60) out.push({ key: 'grains', organ: 'grains', x: b.board.grains.x, y: b.board.grains.y, label: 'grains landing', size: 0.16, hue: 35 });
+  if (b.board.pool && b.board.pool.gain > 1 && b.ticks - b.board.pool.tick < 60) out.push({ key: 'pool', organ: 'pool', x: b.board.pool.x, y: b.board.pool.y, label: 'pool following', size: 0.17, hue: 205 });
+  if (b.board.trace && b.board.trace.gain > 1 && b.ticks - b.board.trace.tick < 60) out.push({ key: 'trace', organ: 'trace', x: b.board.trace.x, y: b.board.trace.y, label: 'recalling here', size: 0.15, hue: 40 });
+  if (b.board.dialogue && b.ticks - b.board.dialogue.tick < 120) out.push({ key: 'dialogue', organ: 'dialogue', x: b.board.dialogue.x, y: b.board.dialogue.y, label: 'you asked before', size: 0.15, hue: 190 });
   if (b.board.creature) out.push({ key: 'creature', organ: 'creature', x: b.board.creature.x, y: b.board.creature.y, label: 'creature', size: 0.35, hue: 20 });
   if (b.board.action && b.board.action.name !== 'rest') out.push({ key: 'will', organ: 'will', x: b.focus.x, y: clamp(b.focus.y - 0.12, 0.04, 0.96), label: b.board.action.name, size: 0.5, hue: 140 });
   return out;
@@ -255,7 +267,7 @@ export function selfOf(b) {
     q: b.will.chosen, action: b.board.action ? b.board.action.name : 'rest',
     wants: b.mind.goals.map((g) => ({ word: g.word, strength: Math.round(g.strength * 100) / 100 })), episodes: b.mind.episodes.length, procedures: b.mind.procedures.length,
     eye: { wiring: Math.round(eyeWiring(b.synapses.W) * 100) / 100, seen: Math.round(b.synapses.seenAvg * 1000) / 1000, spikes: b.synapses.spikes },
-    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear), painter: painterOf(b.painter), gardener: gardenerOf(b.gardener), grower: growerOf(b.grower), formula: formulaOf(b.formula), current: currentOf(b.current), grains: grainsOf(b.grains),
+    creature: { generations: b.creature.gens, trials: b.creature.trials, deaths: b.creature.deaths, reverts: b.creature.reverts, progress: creatureProgress(b.creature) }, hearing: earOf(b.ear), painter: painterOf(b.painter), gardener: gardenerOf(b.gardener), grower: growerOf(b.grower), formula: formulaOf(b.formula), current: currentOf(b.current), grains: grainsOf(b.grains), pool: poolOf(b.pool), trace: traceOf(b.trace), dialogue: dialogueStats(b.dialogue, b.dialogue.now || 0),
     conflicts: b.mind.conflicts, aligned: b.mind.aligned || null, approval: Math.round(b.mind.approval * 100) / 100, recent: Mind.recent(b) };
 }
 /** plain sentences from the self, for the card and for "what is your brain doing". Pure. */
@@ -273,8 +285,11 @@ export function selfSays(b) {
   if (b.painter.last) { const p = s.painter; out.push('Painter: its look is a program it rewrote ' + p.gen + ' time' + (p.gen === 1 ? '' : 's') + ', now ' + p.program + ' (' + p.tokens + ' tokens); it paints ' + p.score + ' (the first scored ' + p.first + ').'); }
   if (b.grower.last) { const g = s.grower; out.push('Grower: its plant grows from a grammar it rewrote ' + g.gen + ' time' + (g.gen === 1 ? '' : 's') + ', now ' + g.grammar + '; ' + g.stems + ' stems bend toward the focus and reach ' + Math.round(g.reach * 100) + '% of the brightest light (it scores ' + g.score + ', the first scored ' + g.first + ').'); }
   if (b.formula.last) { const f = s.formula; out.push('Formula: it evolved ' + f.gen + ' generation' + (f.gen === 1 ? '' : 's') + ' of formulas for how its own tissue changes, now ' + f.rule + ' (n is the life around a place, s its food); on changes it had not seen it ' + (f.said > 0 ? 'beat "nothing changes" by ' + Math.round(f.said * 100) + '%.' : 'did not yet beat "nothing changes".')); }
-  if (b.current.lives) { const c = s.current; out.push('Current: ' + c.lives + ' li' + (c.lives === 1 ? 'fe' : 'ves') + ' of swimmers whose tiny networks evolve to ride a lattice-Boltzmann flow your drag stirs; ' + (c.gain == null ? '' : c.gain > 1 ? 'they gather ' + c.gain.toFixed(1) + ' times the life of drifters in the same flow' : 'they do not yet gather more life than drifters in the same flow') + (c.growth == null ? '.' : c.growth > 1 ? ', and ' + Math.round((c.growth - 1) * 100) + '% more than their first lives.' : ', and not yet more than their first lives.')); }
+  if (b.current.lives) { const c = s.current; out.push('Current: ' + c.lives + ' li' + (c.lives === 1 ? 'fe' : 'ves') + ' of swimmers whose tiny networks evolve to ride a lattice-Boltzmann flow your drag stirs; ' + (c.gain == null ? 'not yet enough lives to compare with drifters in the same flow' : c.gain > 1 ? 'they gather ' + c.gain.toFixed(1) + ' times the life of drifters in the same flow' : 'they do not yet gather more life than drifters in the same flow') + (c.growth == null ? '.' : c.growth > 1 ? ', and ' + Math.round((c.growth - 1) * 100) + '% more than their first lives.' : ', and not yet more than their first lives.')); }
   if (b.grains.bed.lives) { const g = s.grains; out.push('Grains: ' + g.lives + ' li' + (g.lives === 1 ? 'fe' : 'ves') + ' of grains thrown toward where the focus has been, that pass their bounce and grip on where they touch, from the grain that lands nearer; ' + (g.gain == null ? 'not yet enough lives to compare with grains that pass them at random.' : g.gain > 1 ? 'they land ' + g.gain.toFixed(1) + ' times nearer than grains that pass them at random.' : 'they do not yet land nearer than grains that pass them at random.')); }
+  if (b.pool.lives) { const p = s.pool; out.push('Pool: ' + p.lives + ' li' + (p.lives === 1 ? 'fe' : 'ves') + ' of a particle fluid that flows after the focus, whose viscosity, stiffness and kernel size a tiny network sets from what it senses; ' + (p.gain == null || p.lives < 20 ? 'not yet enough lives to compare with the starter setting.' : p.gain > 1 ? 'it follows with ' + p.gain.toFixed(1) + ' times less lag, slosh and crush than the starter setting.' : 'it does not yet follow with less lag, slosh and crush than the starter setting.')); }
+  if (b.trace.lives) { const t = s.trace; out.push('Trace: ' + t.lives + ' li' + (t.lives === 1 ? 'fe' : 'ves') + ' of a cellular automaton that holds where the focus was for a while and then lets it go, whose rule it tunes; ' + (t.gain == null || t.lives < 20 ? 'not yet enough lives to compare with the drafts\' rule.' : (t.gain > 1 ? 'it misses ' + t.gain.toFixed(1) + ' times less than the drafts\' rule' : 'it does not yet miss less than the drafts\' rule') + (t.hold != null ? ', and holds fresh marks at ' + t.hold.toFixed(2) + (t.stale != null ? ' and old ones at ' + t.stale.toFixed(2) : '') : '') + '.')); }
+  { const d = s.dialogue; if (d.asks) out.push('Dialogue: ' + d.asks + ' ask' + (d.asks === 1 ? '' : 's') + ' of yours kept on this device, ' + d.answered + ' answered; ' + d.repeats + ' repeat' + (d.repeats === 1 ? '' : 's') + ' and ' + d.follows + ' follow-up' + (d.follows === 1 ? '' : 's') + ' built on an earlier ask' + (d.kept ? '; ' + d.kept + ' follow-up' + (d.kept === 1 ? '' : 's') + ' answered and not asked again, on ' + d.days + ' day' + (d.days === 1 ? '' : 's') : '') + '.'); }
   if (b.gardener.blinks) { const g = s.gardener; out.push('Gardener: ' + g.inBand + ' of ' + GARDEN_TILES + ' patches at the edge of chaos (' + g.classes.dead + ' too still, ' + g.classes.noise + ' too wild); it tended them ' + g.thoughts + ' time' + (g.thoughts === 1 ? '' : 's') + '.'); }
   if (b.synapses.spikes) out.push('Eye: ' + s.eye.spikes + ' spikes; its same-side wiring is ' + Math.round(s.eye.wiring * 100) + '% (it starts at 0 and grows as dopamine finds living tissue).');
   if (b.senses.felt) out.push('Feels ' + b.senses.felt + ' memor' + (b.senses.felt === 1 ? 'y' : 'ies') + ' from other cards in the shared field.');

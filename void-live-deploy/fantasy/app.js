@@ -4,6 +4,7 @@
 import { mountRelated } from '/lib/toolkit.js';
 import * as S from '/lib/scores.js';
 import * as F from '/lib/fantasy.js';
+import { wheelLink, prizesLink, tournamentsLink } from '/lib/handoff.js';
 
 const $ = (id) => document.getElementById(id), KEY = 'a2m.void.fantasy.v1', EKEY = 'a2m.void.fantasy.games.v1';
 const h = (tag, a, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(a || {})) { if (v === false || v == null) continue; if (k === 'text') e.textContent = v; else if (/^on[a-z]+$/.test(k) && typeof v === 'function') e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? '' : v); } for (const c of kids.flat()) if (c != null) e.append(c); return e; };
@@ -85,4 +86,10 @@ $('clear').addEventListener('click', () => { $('sheet').value = ''; sheet = null
 $('file').addEventListener('change', (e) => { const f = e.target.files && e.target.files[0]; if (!f) return; if (f.size > 400000) { say('That file is too large (400 KB at most).', true); return; } const r = new FileReader(); r.onload = () => { $('sheet').value = String(r.result || ''); use($('sheet').value); }; r.readAsText(f); });
 $('share').addEventListener('click', async () => { const u = location.origin + location.pathname; try { if (navigator.share) await navigator.share({ title: document.title, url: u }); else { await navigator.clipboard.writeText(u); say('Link copied (your sheet is not in it).'); } } catch (_) { say(u); } });
 const saved = load(KEY, ''); if (typeof saved === 'string' && saved) { $('sheet').value = saved; use(saved); } else show();
-mountRelated($('related'), '/fantasy/', []);
+// the players on this tab (or the top of the draft board) go on to the picking pages: a coin flip between two starters, a roster to score
+const PICKS = { compare: ['compare'], sit: ['sit'], trade: ['give', 'get'] }, sending = () => (sheet && tab !== 'box' ? F.namesToSend(sheet, (PICKS[tab] || []).flatMap((k) => state.names[k]), state.col) : []);
+mountRelated($('related'), '/fantasy/', [
+  { label: 'Spin these players on the wheel', href: () => { const n = sending(); return n.length ? wheelLink(n) : null; } },
+  { label: 'Pick one of these players at random', href: () => { const n = sending(); return n.length ? '/random/?list=' + encodeURIComponent(n.join('\n')) : null; } },
+  { label: 'Prize odds for these players', href: () => { const n = sending(); return n.length ? prizesLink(n.join('\n')) : null; } },
+  { label: 'Score these players in a tournament', href: () => { const n = sending(); return n.length ? tournamentsLink(n) : null; } }]);

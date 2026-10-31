@@ -6,7 +6,7 @@ import { MODEL as reviewModel } from '../void-live-deploy/lib/review-api.js';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 
 test('every path resolves to a Workers AI model', () => {
-  assert.deepEqual([...PATHS].sort(), ['answer', 'art', 'coder', 'digest', 'figurescript', 'merge', 'review', 'translate', 'vision', 'will']);
+  assert.deepEqual([...PATHS].sort(), ['answer', 'art', 'coder', 'digest', 'figurescript', 'merge', 'review', 'translate', 'vision', 'voice', 'watch', 'hear', 'will'].sort());
   for (const p of PATHS) assert.match(models(p), /^@cf\/[\w.-]+\/[\w.-]+$/, p);
   assert.throws(() => models('nope'));
   // a path may run on the bake-off's winner (PATH_MODELS, tools/model-switch.mjs); FREE_MODEL stays the fallback and a real model id

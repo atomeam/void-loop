@@ -71,7 +71,7 @@ export { SELF_SITES };
 // the calculator floor (Versus job mvoxrtv8, online-calculator.com): /calculator/ is the page built for it, named for what it is: the
 // scientific calculator with its history, memory and unit conversion (no BMI or darts calculator is claimed here: those are not on it)
 export const CALCULATOR_SITES = Object.freeze([
-  { path: '/calculator/', card: 'calculators', lane: 'calculator', name: 'Calculator', h1: 'Scientific calculator', tools: ['scientific', 'history', 'memory', 'unit'],
+  { path: '/calculator/', card: 'calculator', lane: 'calculator', name: 'Calculator', h1: 'Scientific calculator', tools: ['scientific', 'history', 'memory', 'unit'],
     intro: 'A scientific calculator that shows its working: the expression as typed, the answer, a history that stays, memory keys and unit conversion. Everything runs on this device: nothing is uploaded, there is no account, and it works offline after one visit.',
     does: 'Scientific calculator with history, memory and unit conversion. Everything runs on your device: nothing is uploaded, no account, works offline.',
     asks: ['online calculator', 'scientific calculator', 'calculator with history', 'unit converter'],

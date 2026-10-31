@@ -1,42 +1,40 @@
 /**
  * stopwatch skill — a simple stopwatch on the stage
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "stopwatch", "start a stopwatch", "open the stopwatch".
+ * "stopwatch", "start a stopwatch", "stopwatch please".
  */
 export function isStopwatch(text) {
-  return /^(?:please\s+)?(?:(?:start|open|make|show)\s+(?:a\s+)?)?stopwatch(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:start|show|open|make)\s+(?:a\s+)?)?stopwatch(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 function run(text, api) {
   const { showPage } = api;
-  let running = false, startTime = 0, elapsed = 0, interval;
-  const update = (p) => {
-    const now = running ? elapsed + (Date.now() - startTime) : elapsed;
-    const secs = Math.floor(now / 1000);
-    const ms = Math.floor((now % 1000) / 10);
-    const display = String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0') + '.' + String(ms).padStart(2, '0');
-    p.innerHTML = '<h2>Stopwatch</h2><p style="font-size:48px;text-align:center;font-family:monospace">' + display + '</p>'
-      + '<div style="text-align:center"><button id="sw-toggle" class="g-btn">' + (running ? 'Stop' : 'Start') + '</button> <button id="sw-reset" class="g-btn">Reset</button></div>'
-      + '<div class="sub">say “stopwatch” for a new one</div>';
-    p.querySelector('#sw-toggle').addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (running) { elapsed += Date.now() - startTime; running = false; clearInterval(interval); }
-      else { startTime = Date.now(); running = true; interval = setInterval(() => update(p), 50); }
-      update(p);
+  let running = false, start = 0, banked = 0, interval;
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Stopwatch</h2><p id="time" style="font-size:48px;font-family:monospace;text-align:center">0:00.00</p>'
+      + '<div style="text-align:center;margin:12px"><button id="startstop">Start</button> <button id="reset">Reset</button></div>'
+      + '<div class="sub">say “stopwatch” for another</div>';
+    const timeEl = p.querySelector('#time');
+    const ss = p.querySelector('#startstop');
+    const rs = p.querySelector('#reset');
+    const fmt = (ms) => {
+      const s = Math.floor(ms / 1000), m = Math.floor(s / 60), ss = s % 60, cs = Math.floor((ms % 1000) / 10);
+      return `${m}:${String(ss).padStart(2, '0')}.${String(cs).padStart(2, '0')}`;
+    };
+    const tick = () => { if (running) timeEl.textContent = fmt(banked + (Date.now() - start)); };
+    ss.addEventListener('click', () => {
+      if (running) { banked += Date.now() - start; running = false; ss.textContent = 'Start'; clearInterval(interval); }
+      else { start = Date.now(); running = true; ss.textContent = 'Stop'; interval = setInterval(tick, 50); }
     });
-    p.querySelector('#sw-reset').addEventListener('click', (e) => {
-      e.stopPropagation();
-      running = false; elapsed = 0; clearInterval(interval); update(p);
-    });
-  };
-  showPage((p) => update(p));
+    rs.addEventListener('click', () => { running = false; banked = 0; start = 0; timeEl.textContent = '0:00.00'; ss.textContent = 'Start'; clearInterval(interval); });
+  });
   return 'stopwatch';
 }
 
 export default {
   name: 'stopwatch',
-  examples: ['stopwatch', 'start a stopwatch', 'open the stopwatch'],
-  nearMisses: ['what is a stopwatch', 'stopwatch online', 'timer'],
+  examples: ['stopwatch', 'start a stopwatch', 'show stopwatch'],
+  nearMisses: ['what is a stopwatch', 'stop the watch', 'watch'],
   match(lower, text) { return isStopwatch(text); },
   run,
   suite() {

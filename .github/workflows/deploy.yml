@@ -131,6 +131,18 @@ jobs:
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && vars.CSP_HASHES == 'true'
         run: node tools/csp-hashes.mjs --write
 
+      # a-to-mind.com/autopilot/ shows Verse's own commits and deploys; GitHub answers the live Worker 403 from Cloudflare's shared addresses
+      # without a token, so this run reads them with its own and ships the file with the deploy (never committed, never blocks the deploy)
+      - name: Autopilot snapshot (Verse's own commits and deploys, read with this run's token)
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CF_KEYMASTER_TOKEN: ${{ secrets.CF_KEYMASTER_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: node tools/autopilot-snapshot.mjs
+
       # Deploys run side by side (owner, 2026-10-25: "no need to serialize we should be able to do many things at once"): each run has its own
       # group. What serializing protected is that an older run never lands after a newer one, so just before the upload a run asks whether a
       # newer main head already has a deploy queued or running; if it does, this one stops (that run deploys a superset of it).
@@ -285,3 +297,79 @@ jobs:
           # the self card's own words (weakest, next game, how I'd get better) were refreshed once a day, so after a fix they still described the old problem:
           # ask for the full reflection after a build too, at most every three hours so a burst of merges asks once
           node tools/reflect.mjs --daily --if-older 180 | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+  # The paid MultiVerse paths in a real browser on every PR (coordinator, 2026-10-30: cover them without a real member). A seeded
+  # test member on an in-memory D1 claims a receipt (Already joined), reloads, and sends an idea; nothing reaches Gumroad or
+  # a-to-mind.com. Its own job, so a red here fails "Verse deploy" and tools/pr-ready.mjs holds the merge.
+  members-paid:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-members-paid-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
+      # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: node --test tools/members-paid.e2e.mjs (Already joined, after a reload, the idea box)
+        run: node --test tools/members-paid.e2e.mjs
+
+  # The page-to-page hand-offs (tools/handoff-e2e.mjs: BPM counter and metronome, chord finder and piano, calendar, time and weather)
+  # played in a real browser on a PR that changes one of those pages or the hand-off code (2026-10-30: until now nothing in CI ran them,
+  # so a broken hand-off only showed when a person used it). Its own job, like members-paid: a red here fails "Verse deploy" and holds the merge.
+  handoffs:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: void-handoffs-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Does this PR touch a hand-off?
+        id: touch
+        run: |
+          if git diff --name-only HEAD^1 HEAD | grep -Eq 'void-live-deploy/(bpm|metronome|chords|piano|calendar|time|weather)/|handoff'; then echo "run=true" >> "$GITHUB_OUTPUT"; else echo "### No hand-off page changed: journeys not played" >> "$GITHUB_STEP_SUMMARY"; fi
+      - uses: actions/setup-node@v4
+        if: steps.touch.outputs.run == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - if: steps.touch.outputs.run == 'true'
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        if: steps.touch.outputs.run == 'true'
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        if: steps.touch.outputs.run == 'true'
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium
+        if: steps.touch.outputs.run == 'true'
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: node tools/handoff-e2e.mjs (every hand-off journey, step by step)
+        if: steps.touch.outputs.run == 'true'
+        run: node tools/handoff-e2e.mjs

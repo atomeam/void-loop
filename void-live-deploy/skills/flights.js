@@ -9,7 +9,8 @@ const TOOLS = [['/flights/', 'Flights', 'search on five providers, route facts, 
 function run(text, api) {
   const { showPage, esc } = api, to = flightAskOf(String(text || '').trim().replace(/[?!.]+$/, '')) || '/flights/';
   showPage((el) => {
-    el.dataset.page = to.replace(/\?.*$/, '');
+    // the full page with the places in it ("where can i fly from berlin" opens /flights/routes/?fromq=berlin), as the card's own link does; a query card-frame would refuse (an apostrophe in a place) drops to the plain page
+    el.dataset.page = /^[^?]+(?:\?[A-Za-z0-9_.=&%-]{1,200})?$/.test(to) ? to : to.replace(/\?.*$/, '');
     el.innerHTML = '<h2>Flights</h2><p>Verse has no live fares: the prices are on the providers, and the flights page opens your search on Google Flights, Skyscanner, Kayak, Momondo and Expedia. The route, the flight time, the time difference and the CO2 are worked out on your device.</p>' // void-review: ok: fixed text
       + '<p><a href="' + esc(to) + '" style="font-weight:600">Open the page →</a></p><ul style="padding-left:18px;margin:6px 0">' + TOOLS.map(([h, n, d]) => '<li><a href="' + h + '">' + esc(n) + '</a>: ' + esc(d) + '</li>').join('') + '</ul>' // void-review: ok: fixed text and escaped
       + '<div class="src">Made by Verse · airports from OurAirports (public domain) · as of 2026-10</div>';
@@ -18,8 +19,8 @@ function run(text, api) {
 }
 export default {
   name: 'flights',
-  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator'],
+  examples: ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes', 'layover calculator', 'where can i fly from berlin', 'flight status nyc to lon'],
   nearMisses: ['fly to tokyo', 'my flight is delayed', 'how do planes fly', 'distance from london to new york'],
-  match(lower) { const to = flightAskOf(String(lower || '').trim()); return !!to && !to.startsWith('/flights/distance/'); }, // a distance ask stays with the distance skill
+  match(lower) { const to = flightAskOf(String(lower || '').trim()); return (!!to && !to.startsWith('/flights/distance/?')) || /flight status/.test(lower) || /.+ to .+ flight/.test(lower); }, // a distance between two places stays with the distance skill; "flight distance" alone opens the page
   run,
 };

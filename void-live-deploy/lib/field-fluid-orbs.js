@@ -69,6 +69,14 @@ export function splat(s, x, y, fu, fv, dye, rad = 2) {
   }
 }
 
+/** a memory Verse just thought of stirs the fluid at (x, y) (cells) with strength k (0..1): dye over the orb threshold where it sits and
+ *  a ring of push outward, so an orb gathers there on the next steps (lib/orb-memories.js stirsOf picks when). */
+export function stir(s, x, y, k) {
+  const q = clamp(+k || 0, 0, 1); if (!q) return;
+  splat(s, x, y, 0, 0, ORB_MIN + DMAX * 0.3 * q, 3);
+  for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; splat(s, x + Math.cos(a) * 3, y + Math.sin(a) * 3, Math.cos(a) * 0.6 * q, Math.sin(a) * 0.6 * q, 0, 2); }
+}
+
 /** density peaks: cells above min that are the highest of their 3 x 3, highest first. Pure. */
 export function findPeaks(d, min = ORB_MIN) {
   const out = [];

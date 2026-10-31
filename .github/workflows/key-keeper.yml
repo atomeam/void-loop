@@ -1,0 +1,32 @@
+# Verse retires its own keys (owner, 2026-10-30: "verse gets its own money and needs to learn to handle all the keys and secrets, stop trying
+# to make this a manual operation"). Every job mints its own short-lived Cloudflare key from CF_KEYMASTER_TOKEN (tools/key-keeper.mjs); this
+# daily run deletes the expired verse-* keys and writes which jobs the keymaster can mint for. Names and counts only, never a value.
+name: Key keeper
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: key-keeper
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CF_KEYMASTER_TOKEN: ${{ secrets.CF_KEYMASTER_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Retire expired keys and report what Verse can mint
+        run: |
+          { echo '## Verse keys'; echo; echo '```'; node tools/key-keeper.mjs sweep; node tools/key-keeper.mjs status; echo '```'; } | tee -a "$GITHUB_STEP_SUMMARY"

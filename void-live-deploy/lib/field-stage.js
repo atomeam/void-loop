@@ -69,7 +69,7 @@ function subLine(sub, text) {
 
 /** mount a field card for an idea on the stage; returns { el, state, tick(n) }. */
 export function mountField(th, stageApi, idea) {
-  const W = idea.W || 320, H = idea.H || 240, cls = 'field-card ff-' + idea.id;
+  let W = idea.W || 320, H = idea.H || 240; const cls = 'field-card ff-' + idea.id; // let: resize(w, h) below gives a full-screen page its own size
   // the state is not enumerable: the stage saves its things with JSON.stringify, and a field's typed arrays must not be written out with them
   const setState = (v) => { Object.defineProperty(th, 'state', { value: v, writable: true, enumerable: false, configurable: true }); return v; };
   setState(idea.create((Date.now() & 0xffff) || 1));
@@ -93,7 +93,7 @@ export function mountField(th, stageApi, idea) {
   cv.style.cssText = 'display:block;width:100%;aspect-ratio:' + W + '/' + H + ';background:#05040c;touch-action:none;cursor:crosshair';
   if (idea.vars) cv.style.filter = 'contrast(calc(0.9 + var(--ink-density, 0) * 0.6)) blur(calc((1 - var(--ink-density, 0)) * 0.7px))'; // --ink-density: sharp and high-contrast when high, soft charcoal when low
   const g = cv.getContext('2d'); if (g) g.scale(dpr, dpr);
-  q('.ff-frame').appendChild(cv);
+  const frame = q('.ff-frame'); frame.appendChild(cv); // kept by reference: a page may move the frame out of the card (the full-screen brain, /brain/)
   const hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
   for (const n of el.querySelectorAll('canvas,button')) n.addEventListener('pointerdown', (e) => e.stopPropagation());
   stageApi.bindDrag(el, th); keepWhile(el, th); stageApi.stage.appendChild(el);
@@ -114,7 +114,7 @@ export function mountField(th, stageApi, idea) {
   const morph = () => {
     metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
-    q('.ff-frame').style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter; // the field breathes, the buttons hold still under a finger (a scaled body kept Law, Mode and New game moving)
+    frame.style.transform = css.transform; hud.style.transform = css.hud; frame.style.filter = css.canvasFilter; // the field breathes, the buttons hold still under a finger (a scaled body kept Law, Mode and New game moving)
     for (const [k, v] of Object.entries({ ...css.vars, ...extra })) el.style.setProperty(k, v);
     if (extra['--ink-density'] != null) el.dataset.ink = extra['--ink-density'];
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
@@ -185,15 +185,26 @@ export function mountField(th, stageApi, idea) {
   }
   // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
   for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
-  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
+  let endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; try { modeLink && modeLink.close(); } catch (_) { /* gone */ } };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
+  // idea.restOffscreen: a card that only needs its loop while seen (the memory orbs) rests while it is scrolled out of view, so a phone does not
+  // spend frames on a card nobody sees; other cards keep running there because some feed the brain while unseen.
+  let away = false;
+  if (idea.restOffscreen && typeof IntersectionObserver === 'function') { try { const io = new IntersectionObserver((es) => { for (const e of es) away = !e.isIntersecting; el.dataset.away = away ? '1' : '0'; }); io.observe(el); const stop = endHook; endHook = () => { try { io.disconnect(); } catch (_) { /* gone */ } stop(); }; } catch (_) { away = false; } }
   let raf = 0, last = 0, cost = 0, gap = 16.7; const thr = motionThrottle(); // frame time is measured (data-frame-ms: the field's own work a frame; data-fps)
-  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still && !away) { const t0 = performance.now(); tick(idea.perFrame || 1, dt * thr.scale(el)); cost = cost * 0.95 + (performance.now() - t0) * 0.05; gap = gap * 0.95 + dt * 1000 * 0.05; if ((frames & 31) === 0) { el.dataset.frameMs = cost.toFixed(2); el.dataset.fps = String(Math.round(1000 / Math.max(1, gap))); } } raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
-  return { el, state: th.state, tick, input, get still() { return still; } };
+  // resize(w, h): a page that shows the field at its own size (the full-screen brain, /brain/) gives the canvas that size in CSS pixels, drawn at the
+  // device's pixel ratio (2 at most) so it stays sharp; the idea draws in 0..W, 0..H, so it fills the new size. A card never calls it.
+  const resize = (w, h) => {
+    W = Math.max(60, Math.round(w)); H = Math.max(60, Math.round(h)); const d = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d); cv.style.aspectRatio = W + '/' + H; if (g) g.setTransform(d, 0, 0, d, 0, 0); draw();
+    return { W, H, dpr: d };
+  };
+  return { el, state: th.state, tick, input, resize, get still() { return still; } };
 }
 
 /** the whole skill for an idea: { name, examples, nearMisses, match, run, stageKinds }. words is the regexp body for the ask (anchored here). */

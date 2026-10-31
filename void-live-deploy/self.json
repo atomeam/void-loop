@@ -246,6 +246,12 @@
    "date": "2026-10-29",
    "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
    "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "word ladder skill: transform one word to another by changing one letter at a time",
+   "from": "new idea by growth agent; already on main"
   }
  ],
  "open": [
@@ -327,39 +333,25 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Pit crew: the crew chief (waits for the owner)",
-   "from": "owner, 2026-10-11, pit crew plan",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Two signposts left out until they can be true",
-   "from": "claude, 2026-10-15, with the useful 404 and security.txt",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
    "from": "claude 2026-10-18"
   },
   {
@@ -550,84 +542,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-29T18:36:56Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T01:50:21Z",
+   "subject": "Tower gate: onlineconverter.com,docs and notes: anotepad.com,docs and notes: standardnotes.com measured against their live sites"
   },
   {
-   "at": "2026-10-29T18:36:28Z",
-   "subject": "verse brain current check: wait for the lives count, and accept \"1 life\""
+   "at": "2026-10-31T01:35:31Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-29T18:34:15Z",
-   "subject": "Drag the creature to the corner across from the focus in its brain test"
+   "at": "2026-10-31T01:22:00Z",
+   "subject": "Verse routes \"london to sydney flight\" to its flights skill the answer is not checked"
   },
   {
-   "at": "2026-10-29T18:25:34Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T01:21:15Z",
+   "subject": "Incident: the browser suite failed on 532b1cea (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T18:23:48Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T01:19:32Z",
+   "subject": "Incident: the browser suite failed on 980bd134 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T18:23:09Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T01:16:56Z",
+   "subject": "Incident: the browser suite failed on e9be83fe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T18:20:45Z",
-   "subject": "Card header line: no empty \"(born )\" when the year moves to the header"
+   "at": "2026-10-31T01:11:59Z",
+   "subject": "Incident: the browser suite failed on d8e1c46b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T18:19:32Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-29T18:19:26Z",
-   "subject": "verse brain: organ 20, Grains (F456), grains that pass their bounce and grip on touch"
-  },
-  {
-   "at": "2026-10-29T18:19:05Z",
-   "subject": "who is X check: a realistic answer-route reply; the retry reruns a check by its own section"
-  },
-  {
-   "at": "2026-10-29T18:13:43Z",
+   "at": "2026-10-31T01:09:58Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-29T18:11:10Z",
-   "subject": "Bench: a lighter page per ask (reduced motion, no pictures, fonts or media) so the daily run on main finishes inside 40 min"
+   "at": "2026-10-31T01:09:47Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-29T18:08:16Z",
+   "at": "2026-10-31T00:49:34Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-10-31T00:49:29Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T18:07:49Z",
-   "subject": "Persona playtest: wait for a lifted 3D board before reading its card"
+   "at": "2026-10-31T00:45:29Z",
+   "subject": "Verse loop: task, Queue job mvvmgn8m (heal: grow-self.yml): Repair grow-self.y"
   },
   {
-   "at": "2026-10-29T18:05:02Z",
-   "subject": "Deploy: prove a-to-mind.com serves the Versus size and target files byte for byte"
+   "at": "2026-10-31T00:44:01Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-29T18:02:09Z",
-   "subject": "Incident: the browser suite failed on a7aad196 (void-live-deploy/incidents.json)"
+   "at": "2026-10-31T00:42:34Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-10-29T17:55:02Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-10-31T00:40:58Z",
+   "subject": "narrow the page rule: /converter/ also matched app.js and would have slowed the repeat load"
   },
   {
-   "at": "2026-10-29T17:47:49Z",
-   "subject": "verse brain: prove the riding the current orb, in the brain and on the live card"
+   "at": "2026-10-31T00:36:49Z",
+   "subject": "Incident: the browser suite failed on 04e7b346 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-29T17:47:36Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-10-31T00:32:12Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
   },
   {
-   "at": "2026-10-29T17:45:32Z",
-   "subject": "Tower size: how heavy each Versus site really is"
+   "at": "2026-10-31T00:31:56Z",
+   "subject": "a tool page may live for a minute, so a load that repeats does not pay the round trip again"
+  },
+  {
+   "at": "2026-10-31T00:31:33Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-31T00:28:43Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
   }
  ],
  "builders": {
@@ -858,19 +850,19 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 30 (227 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-10-29T11:33Z",
+  "line": "People this week: 46 (309 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-30T11:26Z",
   "source": "verse"
  },
  "tower": {
   "target": "onlineconverter.com",
   "since": "2026-10-29",
   "next": [
-   "serverdiscounter.com",
-   "wheeloutlet.com",
-   "ndscalc.ru"
+   "ndscalc.ru",
+   "emojicombos.com",
+   "thunit.com"
   ],
-  "beaten": 0,
-  "total": 1268
+  "beaten": 2,
+  "total": 1269
  }
 }

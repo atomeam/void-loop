@@ -1,7 +1,7 @@
 // lib/toolkit.js: the tools that go together, one accent colour for all of them, and text that reads on it
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TOOLS, RELATED, relatedOf, hexOf, inkOn, accent, setAccent, ACCENT_KEY, routeAsk } from '../void-live-deploy/lib/toolkit.js';
+import { TOOLS, RELATED, relatedOf, hexOf, inkOn, accent, setAccent, ACCENT_KEY, routeAsk, toolNear } from '../void-live-deploy/lib/toolkit.js';
 import fs from 'node:fs';
 
 test('every tool page is linked to at least one other, only to tools that exist, never to itself, and the page carries the row', () => {
@@ -37,6 +37,19 @@ test('the ask bar routes an ask to the tool that does it, with the ask in the li
   assert.equal(to('255 in hex'), '/base-converter/?v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random-user/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
+  // a tool's own name opens the tool, not a stage answer about the words (2026-10-30: 'word count' opened Wikipedia's article on the stage)
+  for (const [ask, page] of [['word count', '/word-count/'], ['Word counter', '/word-count/'], ['pdf', '/pdf/'], ['photo tools', '/photos/'], ['open the code review', '/code-review/'],
+    ['colour codes', '/color/'], ['the calculator page', '/calculator/'], ['password generator', '/password/'], ['time zones', '/time/']]) assert.equal(to(ask), page, ask);
+  assert.equal(to('g'), '/?q=g', 'a name of two letters or fewer is not taken as a tool'); for (const w of ['time', 'flip', 'rap', 'news']) assert.equal(to(w), '/?q=' + w, w + ' stays with the stage card'); assert.equal(to('word count tool'), '/word-count/?t=tool', 'a route of its own still wins');
+  assert.equal(to('wordcount'), '/word-count/', 'a name run together counts'); assert.equal(to('versebrain'), '/?q=versebrain', 'a stage word run together stays with the stage');
+});
+
+// the 404 page offers the tool a missing address names (2026-10-30: '/wordcount' and '/search/?q=word+count' led to an empty 404)
+test('toolNear: the tool a missing address or the words asked there name, or null', () => {
+  for (const [path, q, href] of [['/wordcount', '', '/word-count/'], ['/password-generator/', '', '/password/'], ['/search/', 'word count', '/word-count/'],
+    ['/tools/calculator', '', '/calculator/'], ['/calculator/tip-for-40', '', '/calculator/'], ['/Word%20Counter.html', '', '/word-count/']]) assert.equal((toolNear(path, q) || {}).href, href, path + ' ' + q);
+  assert.equal(toolNear('/word-count/', '').label, TOOLS['/word-count/'], 'the label is the name /tools/ lists');
+  for (const [path, q] of [['/no-such-page/at-all', ''], ['/search/', 'pizza dough'], ['/news/x', ''], ['/versebrain', ''], ['/%E0%A4%A', ''], ['', '']]) assert.equal(toolNear(path, q), null, path + ' ' + q);
 });
 
 test('every tool page links to its own card on the stage, and every page has a card that links back (owner, 2026-10-25: "and vice versa")', async () => {
@@ -57,6 +70,13 @@ test('every tool page links to its own card on the stage, and every page has a c
   mountRelated(host, '/flip/');
   const row = host.children.find((c) => c.className === 'tk-row'), links = row.children.filter((c) => c.tag === 'a');
   assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
+});
+
+test('every page\'s stage ask reaches a card, so "See it as a card" never falls through to a generic answer', async () => {
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js');
+  const CORE = new Set(['random number between 1 and 100', 'start a stopwatch']); // answered by the stage itself (index.html), before the skills
+  for (const [p, ask] of Object.entries(CARD_ASK)) if (!CORE.has(ask)) assert.ok(await firstSkill(ask), p + ' sends "' + ask + '" to a skill');
+  assert.equal(await firstSkill(CARD_ASK['/calculator/']), 'calc', 'the calculator page opens the calculator on the stage');
 });
 
 test('the colour page\'s card opens on the colour open there, not the example, and follows it as it changes', async () => {
@@ -253,6 +273,97 @@ test('the made-up people page\'s card shows the people on the page: its count, c
   assert.ok(page.includes("{ card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) }"), 'the page gives the card its count, countries, gender and seed');
 });
 
+test('the recipes page\'s card shows the recipe open there, at its servings and units, not pancakes for 4; the visitor\'s own recipes stay on the device', async () => {
+  const C = await import('../void-live-deploy/lib/recipe-card.js'), R = await import('../void-live-deploy/lib/recipes.js'), mod = await import('../void-live-deploy/skills/recipe.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; const said = await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => true }); return [said, el]; };
+  // every built-in recipe, at its own servings and at others, in both units: the stage reads it back and shows the page's lines
+  for (const r of R.BUILT_IN) for (const [n, units] of [[r.servings, 'us'], [r.servings * 2, 'metric'], [1, 'us']]) {
+    const ask = C.cardAsk(r, n, units); assert.ok(ask, 'an ask for ' + r.name + ' ' + n + ' ' + units);
+    assert.equal(await firstSkill(ask), 'recipe', 'the stage gives it to the recipe card: ' + ask);
+    assert.deepEqual(mod.dishOf(ask), { dish: r.name.toLowerCase(), by: 'built', servings: n === r.servings ? 0 : n, units }, 'it reads back the page\'s recipe: ' + ask);
+    const [said, el] = await show(ask); assert.equal(said, 'recipe', ask);
+    const line = (x) => R.swapUnits(R.scale(x, n / r.servings), units);
+    for (const x of r.ingredients) assert.ok(el.innerHTML.includes('<li>' + esc(line(x)) + '</li>'), 'the card shows the page\'s line ' + line(x) + ' for ' + ask);
+    const want = '/recipes/?q=' + encodeURIComponent(r.id.replace(/-/g, ' ')) + (n !== r.servings ? '&servings=' + n : '') + '&units=' + units;
+    assert.equal(el.dataset.page, want, 'the card\'s page link opens the same recipe'); assert.deepEqual(pageOfCard('recipe', el.dataset.page), [want, 'Recipes']);
+  }
+  // a TheMealDB recipe goes by its id, so the card looks up that one, not the first of the same name
+  const meal = { idMeal: '52772', strMeal: 'Teriyaki Chicken Casserole', strArea: 'Japanese', strCategory: 'Chicken', strMealThumb: 'https://www.themealdb.com/images/media/meals/x.jpg', strInstructions: 'Preheat oven to 350° F.\nBake for 15 minutes.', strIngredient1: 'soy sauce', strMeasure1: '3/4 cup', strIngredient2: 'chicken', strMeasure2: '2 lb' };
+  const r = R.fromMeal(meal), asked = [], was = globalThis.fetch;
+  globalThis.fetch = async (u) => { asked.push(String(u)); return { json: async () => ({ meals: String(u).includes('lookup.php?i=52772') ? [meal] : null }) }; };
+  try {
+    const ask = C.cardAsk(r, 8, 'metric'); assert.equal(ask, 'recipe for teriyaki chicken casserole, themealdb 52772, 8 servings, metric');
+    assert.equal(await firstSkill(ask), 'recipe');
+    const [said, el] = await show(ask); assert.equal(said, 'recipe'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772'], 'it looks up the id, nothing else');
+    for (const x of r.ingredients) assert.ok(el.innerHTML.includes(esc(R.swapUnits(R.scale(x, 2), 'metric'))), 'doubled and in metric: ' + x);
+    assert.ok(el.innerHTML.includes(esc(R.swapUnits('Preheat oven to 350° F.', 'metric'))), 'the steps in the page\'s units too');
+    assert.equal(el.dataset.page, '/recipes/?id=52772&servings=8&units=metric'); assert.ok(pageOfCard('recipe', el.dataset.page));
+  } finally { globalThis.fetch = was; }
+  // what keeps the example: no recipe, the visitor's own (written or imported) recipe, a TheMealDB look-alike from elsewhere
+  const mine = { id: 'my-gran-s-stew', name: 'My gran\'s stew', servings: 4, ingredients: ['a secret'], steps: ['stir'] };
+  for (const a of [[null, 4, 'us'], [mine, 4, 'us'], [{ ...R.BUILT_IN[0], name: 'Pancakes my way' }, 4, 'us'], [{ ...r, from: '' }, 4, 'us'], [{ ...r, name: 'Chicken, leek and something' }, 4, 'us']]) assert.equal(C.cardAsk(...a), '', 'the example ask stays: ' + (a[0] && a[0].name));
+  assert.equal(C.cardAsk(R.BUILT_IN[0], 999, 'us'), 'recipe for pancakes, built in, us units', 'servings past the page\'s limit: its own servings');
+  // other asks keep what they did
+  assert.deepEqual(mod.dishOf('recipe for pancakes'), { dish: 'pancakes', by: 'name' }); assert.deepEqual(mod.dishOf('recipes with chicken'), { dish: 'chicken', by: 'ingredient' });
+  const page = fs.readFileSync(new URL('../void-live-deploy/recipes/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes('{ card: () => cardAsk(state.recipe, state.servings, state.units) }'), 'the page gives the card its recipe, servings and units');
+});
+
+test('a recipe ask for a dish the page has built in shows that recipe with the network cut, at the servings asked; "for 6" leaves the dish to search', async () => {
+  const R = await import('../void-live-deploy/lib/recipes.js'), mod = await import('../void-live-deploy/skills/recipe.js'), S = mod.default;
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => '&#' + c.charCodeAt(0) + ';');
+  const asked = [], was = globalThis.fetch; globalThis.fetch = async (u) => { asked.push(String(u)); throw new Error('offline'); };
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; asked.length = 0; const said = await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => true }); return [said, el]; };
+  try {
+    const pancakes = R.BUILT_IN.find((r) => r.id === 'pancakes');
+    for (const ask of ['recipe for pancakes', 'pancake recipe', 'guac recipe']) {
+      assert.equal(await firstSkill(ask), 'recipe', ask); const [said, el] = await show(ask);
+      assert.equal(said, 'recipe', ask); assert.deepEqual(asked, [], 'nothing fetched: ' + ask); assert.match(el.dataset.page, /^\/recipes\/\?q=/, ask);
+    }
+    assert.deepEqual(mod.dishOf('pancake recipe for 8'), { dish: 'pancake', by: 'name', servings: 8 });
+    assert.equal(await firstSkill('pancake recipe for 8'), 'recipe');
+    const [said, el] = await show('pancake recipe for 8 people'); assert.equal(said, 'recipe');
+    for (const x of pancakes.ingredients) assert.ok(el.innerHTML.includes('<li>' + esc(R.scale(x, 2)) + '</li>'), 'doubled: ' + x);
+    assert.equal(el.dataset.page, '/recipes/?q=pancakes&servings=8&units=us');
+    // not built in: the dish goes to the search without the servings, and a near name is not taken for a built-in one
+    await show('recipe for lasagna for 6'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/search.php?s=lasagna']);
+    await show('recipe for spaghetti carbonara'); assert.deepEqual(asked, ['https://www.themealdb.com/api/json/v1/1/search.php?s=spaghetti%20carbonara']);
+    assert.equal(R.exactly('spaghetti carbonara'), null); assert.equal(R.exactly('chicken soup').id, 'chicken-soup'); assert.equal(R.exactly('pancake').id, 'pancakes');
+  } finally { globalThis.fetch = was; }
+});
+
+test('the markets page\'s card shows the coin or the stock open there, not the board of top coins; its card opens Markets on that symbol', async () => {
+  const C = await import('../void-live-deploy/lib/markets-card.js'), M = await import('../void-live-deploy/lib/markets.js'), mod = await import('../void-live-deploy/skills/crypto.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) }); try { await S.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; } return el; };
+  let priced = 0;
+  for (const [sym, [id]] of Object.entries(M.COINS)) {
+    const ask = C.cardAsk(sym); if (!ask) { assert.equal(mod.coinOf(id + ' price'), null, 'only a coin the stage cannot price keeps the example: ' + sym); continue; }
+    priced++; assert.match(ask, /^[a-z]{2,10} price$/, ask);
+    assert.equal(mod.coinOf(ask).id, id, 'the stage prices the same coin the page shows: ' + ask);
+    assert.equal(await firstSkill(ask), 'crypto', 'the stage gives it to the crypto card: ' + ask);
+    const el = await show(ask); assert.equal(el.dataset.page, '/markets/?s=' + sym, 'its card opens Markets on the same coin: ' + ask);
+    assert.deepEqual(pageOfCard('crypto', el.dataset.page), ['/markets/?s=' + sym, 'Markets']);
+    assert.equal(C.cardAsk(sym.toLowerCase()), ask, 'as the page resolves it: ' + sym);
+  }
+  assert.ok(priced >= 10, 'the coins the stage prices: ' + priced);
+  assert.equal(C.cardAsk('BTC'), 'bitcoin price'); assert.equal(C.cardAsk('BNB'), 'bnb price', 'by its ticker where the stage does not know its id');
+  for (const s of ['EURUSD', '', 'AVAX', 'not a symbol!']) assert.equal(C.cardAsk(s), '', 'the example ask stays: ' + s);
+  // a stock, an ETF or an index goes to the stocks card, which opens Markets on the same symbol
+  const ST = (await import('../void-live-deploy/skills/stocks.js')).default;
+  for (const [s, want] of [['AAPL', 'AAPL stock price'], ['tsla', 'TSLA stock price'], ['BRK-B', 'BRK-B stock price'], ['VOD.L', 'VOD.L stock price'], ['SPY', 'SPY stock price'], ['ABCD', 'ABCD stock price'], ...M.INDICES.map(([x, , , , al]) => [x, al[0] + ' today'])]) {
+    const ask = C.cardAsk(s); assert.equal(ask, want, s);
+    assert.equal(await firstSkill(ask), 'stocks', 'the stage gives it to the stocks card: ' + ask);
+    const el = { dataset: {}, innerHTML: '' }, was = globalThis.fetch; globalThis.fetch = async () => ({ json: async () => ({}) });
+    try { await ST.run(ask, { showPage: (f) => { f(el); return el; }, esc: String, _pageStill: () => true }); } finally { globalThis.fetch = was; }
+    const sym = M.resolve(s).sym; assert.equal(el.dataset.page, '/markets/?s=' + encodeURIComponent(sym), 'its card opens Markets on the same symbol: ' + ask);
+    assert.deepEqual(pageOfCard('stocks', el.dataset.page), ['/markets/?s=' + encodeURIComponent(sym), 'Markets']);
+  }
+  assert.equal(mod.pageOfCoin('nothing-listed'), '', 'a coin Markets does not list: no page link');
+  const page = fs.readFileSync(new URL('../void-live-deploy/markets/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes('{ card: () => cardAsk(state.sym) }'), 'the page gives the card the symbol open on it');
+});
+
 test('the weather page\'s card opens on the place looked up there, not Boston; where you are opens the weather here', async () => {
   const L = await import('../void-live-deploy/lib/weather.js'), S = await import('../void-live-deploy/skills/weather.js');
   for (const p of ['Paris', 'São Paulo', 'St. Louis', 'Saint Martin in the Fields', 'New York']) {
@@ -261,8 +372,31 @@ test('the weather page\'s card opens on the place looked up there, not Boston; w
   }
   assert.equal(L.weatherAsk(''), 'weather here'); assert.equal(S.weatherPlace('weather here'), '', 'here: the device, as on the page');
   const src = fs.readFileSync(new URL('../void-live-deploy/weather/index.html', import.meta.url), 'utf8');
-  assert.match(src, /cardAsk = weatherAsk\(coords \? '' : place\); document\.dispatchEvent\(new Event\('tk:card'\)\)/, 'set when a forecast is drawn for the place looked up, and the link aimed again then: the forecast comes back after the page loads');
+  assert.match(src, /cardAsk = weatherAsk\(place\); document\.dispatchEvent\(new Event\('tk:card'\)\)/, 'set when a forecast is drawn for the place looked up (a flight\'s ?place=&ll= too), and the link aimed again then: the forecast comes back after the page loads');
+  assert.match(src, /look\('', \{ name: 'Where you are'/, 'where you are looks with no place name, so its card is the weather here');
   assert.match(src, /\{ card: \(\) => cardAsk \}/, 'the weather page gives its card the place open on it');
+});
+
+test('the news page\'s card shows the topic searched there or the Technology section, not always today\'s headlines; its card opens News on the same view', async () => {
+  const { cardAsk } = await import('../void-live-deploy/lib/news-card.js'), mod = await import('../void-live-deploy/skills/news.js'), S = mod.default, { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x);
+  const show = async (ask) => { const el = { dataset: {}, innerHTML: '' }; await S.run(ask, { showPage: (f) => { f(el); return el; }, esc, _pageStill: () => false }); return el; };
+  const was = globalThis.fetch; globalThis.fetch = async () => { throw new Error('no network in this test'); };
+  try {
+  for (const [sec, q, ask, page] of [['top', 'spacex', 'news about spacex', '/news/?q=spacex'], ['world', '  climate   change ', 'news about climate change', '/news/?q=climate%20change'], ['tech', 'Rust', 'news about Rust', '/news/?q=Rust'], ['tech', '', 'tech news', '/news/?sec=tech']]) {
+    assert.equal(cardAsk(sec, q), ask, sec + ' / ' + q);
+    assert.equal(await firstSkill(ask), 'news', ask + ' reaches the news skill');
+    const el = await show(ask); assert.equal(el.dataset.page, page, 'its card opens News on the same view: ' + ask);
+    assert.deepEqual(pageOfCard('news', el.dataset.page), [page, 'News']);
+  }
+  for (const [sec, q] of [['top', ''], ['my', ''], ['saved', ''], ['science', ''], ['top', 'x'], ['top', 'a'.repeat(41)], ['top', 'what?'], [undefined, undefined]]) assert.equal(cardAsk(sec, q), '', 'the example ask stays: ' + sec + ' / ' + q);
+  assert.equal(cardAsk('tech', 'x'), 'tech news', 'a search too short for a topic card leaves the section');
+  assert.equal((await show('news today')).dataset.page, undefined, 'the headlines card keeps the plain News link');
+  assert.equal(mod.pageOfNews("rock 'n' roll"), '', 'a topic that does not fit a plain query keeps the plain News link');
+  } finally { globalThis.fetch = was; }
+  const page = fs.readFileSync(new URL('../void-live-deploy/news/index.html', import.meta.url), 'utf8');
+  assert.ok(page.includes("{ card: () => cardAsk(st.sec, $('q').value) }"), 'the page asks for its own card, from the box as typed');
+  assert.doesNotMatch(page.match(/card: \(\) => [^}]*\}/)[0], /mem\./, 'followed topics and saved stories stay on the device');
 });
 
 test('the time page\'s card opens on the city asked for, else the clocks on the page, not Tokyo', async () => {
@@ -278,6 +412,20 @@ test('the time page\'s card opens on the city asked for, else the clocks on the 
   for (const a of ['time in New York', clock]) assert.equal(await firstSkill(a), 'worldtime', 'the stage gives it to the time skill: ' + a);
   const src = fs.readFileSync(new URL('../void-live-deploy/time/index.html', import.meta.url), 'utf8');
   assert.match(src, /\{ card: \(\) => timeAsk\(main, places\) \}/, 'the time page gives its card the clocks open on it');
+});
+
+test('the podcasts page\'s card shows the search open there as shows on the stage, not a fixed example; that card opens Podcasts searched for the same words', async () => {
+  const { cardAsk } = await import('../void-live-deploy/lib/podcasts-card.js'), { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), { pageOfPodcasts } = await import('../void-live-deploy/skills/podcast-search.js');
+  for (const [search, ask, page] of [['?q=history', 'podcasts about history', '/podcasts/?q=history'], ['?q=true+crime', 'podcasts about true crime', '/podcasts/?q=true%20crime'], ['?q=%20serial%20%20killers%20', 'podcasts about serial killers', '/podcasts/?q=serial%20killers']]) {
+    assert.equal(cardAsk(search), ask, search);
+    assert.equal(await firstSkill(ask), 'podcast-search', ask + ' reaches the podcast search');
+    assert.deepEqual(pageOfCard('podcast-search', pageOfPodcasts(ask.slice(15))), [page, 'Podcasts'], 'its card opens Podcasts searched: ' + ask);
+  }
+  for (const search of ['', '?id=123', '?feed=https%3A%2F%2Fa.example%2Ff', '?show=verse&ep=ep1', '?q=x', '?q=' + 'a'.repeat(41), '?q=%3F%3F', undefined]) assert.equal(cardAsk(search), '', 'the example ask stays: ' + search);
+  assert.equal(CARD_ASK['/podcasts/'], 'podcasts about history'); assert.equal(await firstSkill(CARD_ASK['/podcasts/']), 'podcast-search', 'the example ask has a card on the stage too');
+  assert.deepEqual(pageOfCard('podcast-search', ''), ['/podcasts/', 'Podcasts']);
+  const pg = fs.readFileSync(new URL('../void-live-deploy/podcasts/index.html', import.meta.url), 'utf8');
+  assert.ok(pg.includes("{ card: () => cardAsk(location.search) }"), 'the page asks for its own card, from its address');
 });
 
 test('the base converter\'s card opens on the number typed there, in the base it was typed in, not 255', async () => {
@@ -369,4 +517,17 @@ test('the Base64 page\'s card holds the text in the box, exactly as typed, and i
   assert.equal(B.cardAsk('x'.repeat(1501)), '', 'past 1500 characters: the example, so a long paste does not go in a link');
   const src = fs.readFileSync(new URL('../void-live-deploy/base64/index.html', import.meta.url), 'utf8');
   assert.match(src, /card:\s*\(\)\s*=>\s*\(text\.classList\.contains\('stale'\)\s*\?\s*''\s*:\s*cardAsk\(text\.value\)\)/, 'the page gives its card the text box, unless the box is not the text of this Base64');
+});
+
+// emoji counts and the snippet in a link (2026-10-30): reached only from the tower before; now in the kit, and each page's stage ask is
+// answered by the skill whose card links back to that page
+test('the emoji and snippet pages: the stage ask goes to the skill whose card opens the page, and the snippet card opens the GitHub file open there', async () => {
+  const { CARD_ASK } = await import('../void-live-deploy/lib/toolkit.js'), { PAGE_OF, pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  for (const [page, skill] of [['/emojis/', 'emoji'], ['/g/', 'gh-file']]) {
+    assert.equal(await firstSkill(CARD_ASK[page]), skill, page + ': ' + CARD_ASK[page]); assert.equal(PAGE_OF[skill][0], page, skill + ' links back to ' + page);
+  }
+  const { ghFileOf, ghFilePage } = await import('../void-live-deploy/lib/gist.js'), f = ghFileOf('https://github.com/atomeam/void-loop/blob/main/void-live-deploy/lib/gist.js#L5-L12');
+  assert.deepEqual(pageOfCard('gh-file', ghFilePage(f)), [ghFilePage(f), 'Snippet / Note in a link'], 'the card\'s page link opens that same file');
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/skills/gh-file.js', import.meta.url), 'utf8'), /card\.dataset\.page = ghFilePage\(f\)/);
+  assert.match(fs.readFileSync(new URL('../void-live-deploy/g/index.html', import.meta.url), 'utf8'), /card: \(\) => \(gh \? gh\.page/, 'the page gives the stage the GitHub file open on it');
 });

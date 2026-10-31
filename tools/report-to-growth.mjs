@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { FRONTIER, openItems, addOpen } from './frontier.mjs';
 
 const inboxPath = new URL('../domains/growth-inbox.md', import.meta.url);
-const MAX = 8, MIN_LEN = 12, MAX_LEN = 160;
+const MAX = 8, MIN_LEN = 12, MAX_LEN = 300;
 const HEAD = /^\s{0,3}(?:#{1,6}\s*)?(?:\*\*)?(?:evolve|next(?: steps?| asks?)?|wish ?list|follow-?ups?|to-?do|still to do|ideas?|what i(?:'d| would) add)(?:\*\*)?\s*:?\s*(?:\*\*)?\s*$/i;
 const INLINE = /^\s*(?:[-*+]\s+)?(?:\*\*)?(?:evolve|next(?: asks?)?|wish ?list|follow-?up|to-?do|what i(?:'d| would) add|i(?:'d| would) like)(?:\*\*)?\s*:\s*(?:\*\*)?\s*(.+)$/i;
 const WOULD = /^\s*(?:[-*+]\s+)?(i(?:'d| would) (?:add|implement|build|create|teach|make)\b.*)$/i;
@@ -23,7 +23,15 @@ const STOP = new Set('the and for with that this from into when what will than t
 
 const clean = (s) => String(s || '').replace(/\*\*|__|`/g, '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' ').replace(/[\s.;:]+$/, '').trim();
 const words = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
-const cut = (t) => (t.length <= MAX_LEN ? t : t.slice(0, MAX_LEN - 1).replace(/\s+\S*$/, '') + '…'); // a long wish ends on a whole word
+// a long wish ends at its last whole sentence, else its last whole clause, else its last whole word, and never with "…" (owner: no
+// line cut with "..."; the wants card showed "wait for the card to settle before checking…", 2026-10-30)
+const cut = (t) => {
+  if (t.length <= MAX_LEN) return t;
+  const head = t.slice(0, MAX_LEN + 1); let end = -1, m;
+  for (const re of [/[.!?](?=\s)/g, /[,;:](?=\s)/g]) { while ((m = re.exec(head))) if (m.index > 40) end = re.source[1] === '.' ? m.index + 1 : m.index; if (end > 0) break; }
+  if (end < 0) { const sp = head.lastIndexOf(' '); end = sp > 40 ? sp : MAX_LEN; }
+  return t.slice(0, end).replace(/[\s,;:(\-]+$/, '');
+};
 const keep = (s) => { const t = clean(s); return t.length >= MIN_LEN && !NONE.test(t) ? cut(t) : ''; };
 
 /** the wishes in a builder's note, in order, without repeats: bullets under a heading like Evolve / Next / Wishlist / Follow-ups / To do,

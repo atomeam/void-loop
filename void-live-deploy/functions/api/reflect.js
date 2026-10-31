@@ -10,7 +10,8 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
+import { wrongWeakest, weakestSentence } from '../../lib/weakest.js';
+import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, askRecord, builtAsks, familyFacts, readReplies, replyFacts, askId, targetFacts, holdAsks } from '../../lib/voice.js';
 import { tower, towerArgs } from '../../lib/tower.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
@@ -23,10 +24,13 @@ export async function onRequestGet({ request, env }) {
   const [ledger, answered, tg] = request && env.ASSETS ? await Promise.all([asset('/void.growth.json'), asset('/void.asks.json'), asset('/tower.target.json')]) : [null, null, null];
   // one record of its asks (lib/voice.js askRecord): every ask not built is waiting, so "N waiting" and "built of total" always agree
   const rec = ledger ? askRecord(entries, ledger, answered) : null, f = rec && rec.f;
-  const follow = rec ? { total: rec.total, built: rec.built, open: rec.open.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
+  // every built ask on evidence, newest first (lib/voice.js builtAsks: the voice window's built asks and every link and ledger line
+  // that names one), so the counts by week are real once the window's asks roll off (2026-10-30: "0 in the last 7 days" on a week of builds)
+  const done = rec ? builtAsks(f, ledger, answered && answered.links) : [];
+  const follow = rec ? { total: rec.total, built: rec.built, open: rec.open.length, recent: done.slice(0, 30),
     // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Verse asked for (Verse's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
-    asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
+    asked: done.slice(0, 200).map((g) => ({ ask: g.ask, at: g.at, times: g.times })) } : null;
   // the asks still open, every one (the card folds past the first few); without the ledger, the newest reflections' asks as before
   const open = rec ? rec.open : currentAsks(entries, 12);
   return Response.json({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: holdAsks(open, answered && answered.held, tg && tg.id).slice(0, 40), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
@@ -43,7 +47,8 @@ export async function onRequestPost({ request, env }) {
   const question = questionFor(kind, shipped);
   const facts = await readSelf(env, new URL(request.url).origin);
   const before = await readVoice(env);
-  const pieces = [['domains/ (the self canon, the growth inbox) and the skills index, through lib/self-context.js', selfFacts(facts)]]; // includes its games, its miniatures and what it said about itself last time
+  // the family facts go in once, under their own tag (skills/families.json below); selfFacts still corrects its last readout with them
+  const pieces = [['domains/ (the self canon, the growth inbox) and the skills index, through lib/self-context.js', selfFacts(facts).split('\n').filter((l) => !/^My skill families /.test(l)).join('\n')]]; // includes its games, its miniatures and what it said about itself last time
   // its last week, from the growth ledger (daily), and what became of what it asked for (every time): an ask counts as built
   // only on evidence (lib/voice.js followThrough). A ledger or link file that cannot be read leaves that line out.
   const asset = async (path) => { try { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? await r.json() : null; } catch (_) { return null; } };
@@ -56,7 +61,10 @@ export async function onRequestPost({ request, env }) {
     // the asks held behind it (void.asks.json `held`) are named, so the reflection does not ask for them again while the target stands
     const hd = tf ? (answered && Array.isArray(answered.held) ? answered.held : []).filter((h) => h && h.until === tg.id && typeof h.words === 'string').map((h) => '"' + h.words + '"') : [];
     if (tf) pieces.unshift(['tower.target.json, void.asks.json held and the tower ranking (lib/tower.js)', tf + (hd.length ? ' These asks wait until ' + tg.id + ' is beaten, so do not ask for them now: ' + hd.join(', ') + '.' : '')]); } catch (_) { /* no tower */ }
-  const fams = familyFacts(await asset('/skills/families.json')); if (fams) pieces.push(['skills/families.json', fams]);
+  // the routed count rides with the family facts: a family total counts skill files, and some of them answer no ask (owner's card,
+  // 2026-10-30: it said 386 active skills when the router serves 332)
+  const idxJson = await asset('/skills/index.json');
+  const famJson = facts.families || await asset('/skills/families.json'), fams = familyFacts(famJson, undefined, Array.isArray(idxJson) ? idxJson.length : 0); if (fams) pieces.push(['skills/families.json', fams]);
   // what its owner told it when it spoke before (functions/api/voice-reply.js): its memory of the conversation, corrections first
   const told = replyFacts(await readReplies(env)); if (told) pieces.push(['the owner\'s replies and corrections (voice-replies)', told]);
   const { text: context, sources } = taggedFacts(pieces);
@@ -84,6 +92,10 @@ export async function onRequestPost({ request, env }) {
     }
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
+  // the least proven family is the one the bars mark, never the model's guess (owner's review, 2026-10-30: the readout said Games, 34 of 37,
+  // the bars Words and the world, 38 of 42): a weakest that names the wrong family is replaced by the bars' sentence, its words kept beside it
+  const ww = kind === 'daily' && wrongWeakest(said.weakest, famJson);
+  if (ww) said = { ...said, weakest: weakestSentence(ww.is), weakest_said: said.weakest };
   const at = new Date().toISOString();
   const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), sources, by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }

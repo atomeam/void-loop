@@ -13,6 +13,7 @@ let pointer = { x: 0.5, y: 0.5, vx: 0, vy: 0 };
 async function initWebGPU() {
   if (!navigator.gpu) { statusEl.textContent = 'no WebGPU — Canvas2D fallback notes'; return false; }
   const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) { statusEl.textContent = 'no WebGPU adapter: Canvas2D fallback notes'; return false; }
   device = await adapter.requestDevice();
   context = canvas.getContext('webgpu');
   const format = navigator.gpu.getPreferredCanvasFormat();

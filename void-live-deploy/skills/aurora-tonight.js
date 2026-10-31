@@ -4,10 +4,17 @@
  * visitor's browser never talks to NOAA). If it cannot be read, the card says so and still says how the aurora works for your latitude.
  * The sky card's tint helpers (parseKp for the feed, auroraStrength, tintWithAurora) live in skills/aurora.js and are not skills.
  */
-import * as A from '../lib/astro.js';
-import { events, fmtTime, skyNow, agoWords } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
 import { splitPlace, SKY_LINK } from '../lib/skyask.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first aurora answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); reach and auroraAnswer read them, so a caller awaits ready first
+let A, events, fmtTime, skyNow, agoWords, whereAmI, findPlace;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ events, fmtTime, skyNow, agoWords } = f); ({ whereAmI, findPlace } = w); }));
 
 
 export function auroraAsk(text) {
@@ -55,6 +62,7 @@ async function readNow(fetchFn) {
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = auroraAsk(text) || {};
   const el = showPage((p) => { p.innerHTML = '<h2>Aurora</h2><div class="sub">reading the Kp index…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'aurora-tonight';
   if (!place) { el.innerHTML = `<h2>Aurora</h2><p>${ask.place ? `I couldn't find "${esc(ask.place)}".` : 'I need a place for this: try "aurora forecast for Tromsø", or open the sky and set your location.'}</p>${SKY_LINK}`; return ask.place ? 'none' : 'aurora-tonight'; }
@@ -73,4 +81,5 @@ export default {
   nearMisses: ['aurora the disney princess', 'aurora illinois weather', 'aurora borealis facts for kids', 'what causes the northern lights', 'northern lights hotel', 'aurora health care', 'northern lights song'],
   match(lower, text) { return !!auroraAsk(text); },
   run,
+  ready,
 };

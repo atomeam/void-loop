@@ -10,8 +10,14 @@
  *
  * Pit numbering: 0-5 are yours along the bottom (left to right), 6-11 are Verse's along the top (right to left). Stores are [you, Verse].
  */
-import { levelPick } from './game-level.js';
-import { lift3d } from './lift3d.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the level and the 3D lift load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let levelPick, lift3d;
+export const ready = loadLater(() => Promise.all([
+  import('./game-level.js'),
+  import('./lift3d.js'),
+]).then(([g, l]) => { ({ levelPick } = g); ({ lift3d } = l); }));
 
 const SEEDS = 4;
 const PITS = 12;
@@ -217,6 +223,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!mancalaOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'mancala');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'mancala'; } // one board at a time
   api.summon('mancala', { state: createMancalaState(), center: true });
@@ -235,7 +242,8 @@ export default {
   nearMisses: ['what is mancala', 'mancala rules', 'play connect 4', 'what is connect 4', 'othello rules'],
   match(lower, text) { return !!mancalaOf(text); },
   run,
-  stageKinds: { mancala: { mount } },
+  ready,
+  stageKinds: { mancala: { mount: ready.mount(mount) } },
   suite() {
     const blank = () => new Array(12).fill(0);
     const at = (pits, store = [0, 0], turn = 0) => ({ pits, store, turn, over: false, result: null });

@@ -11,7 +11,7 @@ const T = (s) => new RegExp(s, 'i'); // every pattern is a constant string in th
 const ACCOUNT = ['account', 'Accounts', 'An account that keeps your things on every device', T('sign ?in|log ?in|create (an |your )?account'), T('\\bsync(ed|s|ing)?\\b|on every device|\\bsign in\\b'), T('localStorage'), []];
 const APPS = ['apps', 'Apps', 'Phone apps (iOS or Android)', T('app store|google play|play\\.google|apps\\.apple|download (the|our) app'), T('manifest\\.webmanifest|install (it|verse|this) as an app|serviceWorker'), null, []];
 const OFFLINE = ['offline', 'Apps', 'Works offline', T('offline'), T('offline|serviceWorker'), null, []];
-const DARK = ['dark', 'Settings', 'Dark mode', T('dark (mode|theme)'), T('prefers-color-scheme: ?dark|dark mode|data-theme'), null, []];
+const DARK = ['dark', 'Settings', 'Dark mode', T('dark (mode|theme)'), T('(?:prefers-)?color-scheme: ?dark|dark mode|data-theme'), null, []];
 const LANG = ['ui-lang', 'Settings', 'The site in other languages', T('hreflang|choose (your )?language|select language'), T('data-w=|navigator\\.language|hreflang'), null, []];
 const SHARE = ['share', 'Sharing', 'Share a link to what you made or found', T('share'), T('share link|copy (a |the )?link|navigator\\.share|Share this'), null, []];
 const API = ['api', 'Developers', 'A public API', T('\\bapi\\b|developers?|cloud translation'), T('openapi\\.json|fetch\\([\'"]/api/'), null, []];
@@ -439,6 +439,25 @@ export const CATALOG = {
     ['breach', 'Strength', 'Whether it appears in leaks', T('breach|leak|pwned'), T('breach|pwned|leak'), null, []],
     ...COMMON,
   ],
+  // the STL checker (asked by Verse, 2026-10-29): iamrapid.com's repair-3d-file tool studied by hand from its page (its "detects & repairs" list,
+  // its Part Information panel and its status rows); 'core' is what that page shows
+  '/stl/': [
+    ['watertight', 'Check', 'Watertight yes or no', T('water ?tight'), T('Watertight'), null, 'core'],
+    ['open', 'Check', 'Open boundaries and holes', T('open boundar|holes?'), T('open edges?|holes?'), null, 'core'],
+    ['nonmanifold', 'Check', 'Non-manifold edges', T('non.?manifold'), T('non-manifold edges'), null, 'core'],
+    ['normals', 'Check', 'Inverted and flipped normals', T('inverted|flipped normals'), T('flipped faces|inside-out'), null, 'core'],
+    ['degenerate', 'Check', 'Degenerate faces', T('degenerat'), T('degenerate and duplicate faces|Degenerate faces'), null, 'core'],
+    ['dupfaces', 'Check', 'Duplicate faces', T('duplicate faces'), T('duplicate faces'), null, 'core'],
+    ['dupverts', 'Check', 'Duplicate vertices', T('duplicate vertices'), T('repeats each corner|Duplicate vertices merged'), null, 'core'],
+    ['shells', 'Check', 'Disconnected shells', T('shells'), T('Shells'), null, 'core'],
+    ['intersect', 'Check', 'Self-intersections', T('self.?intersect'), T('faces that (?:cross|pass through)|Self-intersections'), null, 'core'],
+    ['threshold', 'Check', 'A weld threshold in mm', T('threshold'), T('Weld within'), null, 'core'],
+    ['part', 'Part', 'Triangles, vertices, size, volume and surface area', T('surface area|volume'), T('size, volume and area|Surface area'), null, 'core'],
+    ['viewer', 'Part', 'A 3D view of the part', T('3d viewer|viewer'), T('3D view'), null, 'core'],
+    ['repair', 'Repair', 'Download a repaired file', T('repair'), T('mended copy'), null, 'core'],
+    ['local', 'Privacy', 'Runs in the browser, nothing uploaded', T('locally|never leaves'), T('never uploaded'), null, 'core'],
+    ...COMMON,
+  ],
   '/resize-image/': [
     ['resize', 'Image', 'Resize to exact size', T('resize|pixel'), T('resize|width'), null, 'core'],
     ['kb', 'Image', 'Compress to a file size in KB', T('kb'), T('KB'), null, 'core'],
@@ -452,6 +471,16 @@ export const CATALOG = {
     ['generate', 'Colour', 'Generate palettes', T('generat|random'), T('generat|random'), null, 'core'],
     ['codes', 'Colour', 'Hex, RGB and HSL codes', T('hex|rgb'), T('rgb|hex'), null, 'core'],
     ['export', 'Files', 'Export palettes', T('export|download'), T('export|download'), null, []],
+    ...COMMON,
+  ],
+  // the emoji combo catalog (2026-10-30): emojicombos.com studied by hand from its home page and its cat tag page; 'core' is what that page shows
+  '/emoji-combos/': [
+    ['search', 'Combos', 'Search combos by tag', T('search|tag'), T('search'), null, 'core'],
+    ['copy', 'Combos', 'Copy a combo', T('copy'), T('copy'), null, 'core'],
+    ['collect', 'Combos', 'Collect several into one', T('collect'), T('collect'), null, 'core'],
+    ['fancy', 'Text', 'Fancy text', T('fancy text|fonts?'), T('fancy text'), null, 'core'],
+    ['art', 'Text', 'Text art from an image', T('text art|dot art'), T('dot art|text art'), null, []],
+    ['yours', 'Combos', 'Make your own', T('submit|make your own'), T('make your own'), null, []],
     ...COMMON,
   ],
   '/emojis/': [
@@ -489,6 +518,11 @@ export const CATALOG = {
     ['weather', 'Extras', 'Weather', T('weather'), T('weather'), null, ['timeanddate.com']],
     ['eclipse', 'Astronomy', 'Eclipses', T('eclipse'), T('eclipse'), null, ['timeanddate.com']],
     ['dst', 'Time', 'Daylight saving changes', T('daylight|dst'), T('daylight|DST'), null, ['timeanddate.com']],
+    ...COMMON,
+  ],
+  '/cpan/': [
+    ['recent', 'Testing', 'Recent CPAN module test results', T('recent'), T('Recent'), null, []],
+    ['search', 'Testing', 'Search for CPAN modules', T('search'), T('search'), null, []],
     ...COMMON,
   ],
   '/color/': [
@@ -544,16 +578,17 @@ export const CATALOG = {
   ],
   // the file converter (2026-10-29): onlineconverter.com, studied by hand from its home page (read through a fetch; this build network gets a 403
   // from the site, so no live scan). Its 106 tools are listed one by one in lib/converter.js with Verse's own status; these rows are its groups.
-  // Verse writes no video and no compressed sound, so those rows stay missing or partial until it does: no row is made to pass.
+  // Verse writes MP4, MOV, WEBM and MKV video (2026-10-30), not 3GP, AVI, FLV or WMV; 15 of the 19 video tools; no compressed sound yet:
+  // those rows stay partial or missing until it does. No row is made to pass.
   '/converter/': [
-    ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
-    ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA', T('audio converter'), T('lamejs|mp3Encoder'), T('aiff\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
+    ['video-convert', 'Convert', 'Video converters: MP4, 3GP, AVI, FLV, MKV, MOV, WEBM and WMV', T('video converter'), T('aviOf|wmvOf|flvOf'), T("mkv: container === 'mkv'"), ['onlineconverter.com']],
+    ['audio-convert', 'Convert', 'Audio converters: MP3, AIFF, ALAC, AMR, FLAC, M4A, M4R, OGG, OPUS, WAV and WMA (no MP3, ALAC, AMR, M4A, M4R or WMA yet)', T('audio converter'), T('lamejs|mp3Encoder'), T('flac\\(s\\.channels, s\\.rate\\)'), ['onlineconverter.com']],
     ['image-convert', 'Convert', 'Image converters: JPG, BMP, DNG, GIF, PDF, PNG, TIFF and WEBP', T('image converter'), T('dngOf|writeDng'), T('tiff\\(pixels\\(c\\)\\)'), ['onlineconverter.com']],
     ['ebook-convert', 'Convert', 'Ebook converters: EPUB, AZW, DOCX, HTML, MOBI, PDF, RTF and TXT', T('ebook converter'), T('mobiOf|azwOf'), T('epubOf\\('), ['onlineconverter.com']],
     ['document-convert', 'Convert', 'Document converters (PDF, DOCX, HTML, TXT) that keep the layout', T('document converter'), T('keepLayout|layoutOf'), T('docxBytesOf\\('), ['onlineconverter.com']],
     ['unit-convert', 'Convert', 'Unit converters: weight, length, area, speed, temperature, time zone, time, currency and volume', T('unit converter'), T("UNIT\\('Area'"), null, ['onlineconverter.com']],
     ['audio-tools', 'Edit', 'Audio tools: cut, merge, mix, crossfade, speed, volume, silence and noise removal, cover pictures, compress, repair', T('cut mp3|merge audio'), T('denoise|noiseReduce'), T('removeSilence\\('), ['onlineconverter.com']],
-    ['video-tools', 'Edit', 'Video tools: cut, merge, resize, rotate, compress, watermark, text, speed and 11 more', T('cut video|merge video'), T('VideoEncoder|MediaRecorder'), null, ['onlineconverter.com']],
+    ['video-tools', 'Edit', 'Video tools: cut, merge, resize, rotate, compress, watermark, text, speed and 11 more (no transitions, split screen, repair or stabilize yet)', T('cut video|merge video'), T('splitScreenOf|stabilizeOf'), T("v === 'merge'"), ['onlineconverter.com']],
     ['image-tools', 'Edit', 'Image tools: blur, brighten, compress, cut, resize, rotate, watermark, merge, GIF speed, a frame from a video, background removal', T('resize image|merge images'), T('removeBackground'), T("'merge-images'"), ['onlineconverter.com']],
     ['ebook-tools', 'Edit', 'Ebook tools: change an EPUB cover, compress AZW3, CBZ, CBR and EPUB, merge EPUB', T('epub'), T('epubCover|mergeEpub'), null, ['onlineconverter.com']],
     ['pdf-tools', 'Edit', 'PDF tools: add an image, compress, merge and split', T('pdf'), T("'pdf-image'"), null, ['onlineconverter.com']],

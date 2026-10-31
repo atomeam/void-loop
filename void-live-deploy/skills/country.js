@@ -179,7 +179,7 @@ async function run(text, api) {
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {
-    const r = await fetch(WIKIDATA + '?format=json&query=' + encodeURIComponent(wikidataQuery(q.name)), { headers: { Accept: 'application/sparql-results+json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+    const r = await (api.fetch || fetch)(WIKIDATA + '?format=json&query=' + encodeURIComponent(wikidataQuery(q.name)), { headers: { Accept: 'application/sparql-results+json' }, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
     const all = r.ok ? fromWikidata(await r.json()) : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();

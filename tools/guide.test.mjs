@@ -16,6 +16,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 test('the one line is the first sentence of the header after the skill name, with builder notes left out', () => {
   assert.equal(oneLine('/**\n * tide skill — the next high and low tide for a place (Open-Meteo, no key). "tide in Lisbon".\n * Contract: { name, examples }\n */', 'tide'), 'The next high and low tide for a place');
   assert.equal(oneLine('/**\n * weather skill — Open-Meteo, no key\n * Contract: { name, examples, match(lower, text), run(text, api) }\n */', 'weather'), 'Open-Meteo, no key');
+  // a wrapped line that ends on a word no sentence ends on runs on, even into a name with a capital (the wants card's Adds line was
+  // '... "What I want built", read from' on 2026-10-30); a line that ends a clause still stops before a new sentence
+  assert.equal(oneLine('/**\n * wants skill - "your backlog": one card, "What I want built", read from\n * Verse\'s own records and never from a model. More here.\n */', 'wants'), '"your backlog": one card, "What I want built", read from Verse\'s own records and never from a model');
+  assert.equal(oneLine('/**\n * photo-scrub skill - a card on the stage: choose a\n * JPEG or PNG and it says what hidden data the file carried.\n */', 'photo-scrub'), 'A card on the stage: choose a JPEG or PNG and it says what hidden data the file carried');
+  assert.equal(oneLine('/**\n * moon skill - the phase of the moon tonight\n * Contract: { name, examples }\n */', 'moon'), 'The phase of the moon tonight');
   assert.equal(oneLine('/**\n * sky — "sky", "the night sky": the stage becomes the real sky overhead (skills/sky-world.js) and a card sits\n * on top of it. The first skill to own the stage.\n */', 'sky'), '"sky", "the night sky": the stage becomes the real sky overhead and a card sits on top of it');
   assert.equal(oneLine('/**\n * remind skill — "remind me at 5" (plan item 7)\n * Uses the confirm line already in lib/approval-core.js\n */', 'remind'), '"remind me at 5": uses the confirm line already in lib/approval-core.js', 'a line that is only a quoted ask carries the next sentence');
   assert.equal(oneLine('/**\n * routine — frontier #13\'s first piece. "call this my morning" keeps the last few asks as a routine.\n */', 'routine'), '"call this my morning" keeps the last few asks as a routine', 'a build-order number is dropped');
@@ -68,6 +73,8 @@ test('compose: a family skill opens into its members, each on one page in its fa
   const timer = b.pages.find((p) => p.name === 'timer');
   assert.equal(timer.chapter, 'time'); assert.equal(timer.line, 'Countdowns on the stage'); assert.deepEqual(timer.examples, ['set a timer for 5 minutes', 'make a timer', 'pause']); assert.equal(timer.tier, 'proven');
   assert.deepEqual(b.pages.find((p) => p.name === 'clock' && p.kind === 'skill').examples, ['make a clock'], 'an empty examples list falls back to the asks the header quotes');
+  assert.equal(b.pages.find((p) => p.name === 'clock' && p.kind === 'skill').examplesFrom, 'header', 'and the page says so, so the hardening plan never probes a quote');
+  assert.equal(timer.examplesFrom, undefined, 'a skill\'s own examples carry no mark');
   const chess = b.pages.find((p) => p.name === 'chess' && p.kind === 'skill');
   assert.equal(chess.title, 'Chess'); assert.equal(chess.game.ask, 'play chess'); assert.equal(chess.examples[0], 'play chess');
   const vq = b.pages.find((p) => p.kind === 'game'); assert.equal(vq.title, 'VoidQuest'); assert.equal(vq.chapter, 'games');

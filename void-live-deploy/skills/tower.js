@@ -6,13 +6,13 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, easeLine } from '../lib/tower.js?v=ladder-67';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-67';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
 import { faceSvg, verseFace } from '../lib/avatar.js';
 import { bySize, sizeOf, rankLabel, words } from '../lib/tower-rank.js';
-import { bytesLabel, weightBand } from '../lib/tower-weight.js';
+import { bytesLabel, rankableControls, weightBand } from '../lib/tower-weight.js';
 
 // Versus (owner, 2026-10-25: "the tower rename is easy its versus"): "versus", "verse versus", "the versus", "show me versus" open it, and every
 // ask that said "tower" still does
@@ -147,7 +147,7 @@ export function planHtml(p, esc) {
 }
 // the card's layout: the target first and big, its weight as chips, the fight, the aspects as a
 // compact grid of won / lost / open, three actions, what is up next, the honest surpassed count, and the long takes folded away
-const GOOD_CSS = '<style>.tw-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 0 2px}.tw-top .tw-head{margin:0;text-align:left;font-size:20px}'
+const GOOD_CSS = '<style>.tw-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:2px 0 2px}.tw-top .tw-head{margin:0;text-align:left;font-size:20px;font-weight:700;letter-spacing:normal;line-height:1.2}'
   + '.tw-pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#2a2340;border:1px solid #4a3f6b;color:#d9ccff;white-space:nowrap}'
   + '.tw-hero{margin:8px 0;padding:12px;border:1px solid #5b4a8a;border-radius:12px;background:linear-gradient(160deg,#1d1730,#14121b)}.tw-hero-k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;margin-bottom:6px}'
   + '.tw-hero-row{display:flex;align-items:center;gap:10px;min-width:0}.tw-hero-name{font-size:20px;font-weight:800;overflow-wrap:anywhere;line-height:1.15}.tw-hero-name a{color:inherit;text-decoration:none;border-bottom:1px dotted #8a7cc0}'
@@ -172,7 +172,17 @@ export function chipsHtml(f, esc) {
 /** the target at the top: its logo and name (a link to the site), its weight, and why it is the one. Pure. */
 export function heroHtml(f, esc) {
   return '<div class="tw-hero" data-id="' + esc(f.id) + '"><div class="tw-hero-k">' + (f.pinned ? 'Now assimilating · the target until Verse surpasses it' : 'Now assimilating · the easiest site left') + '</div><div class="tw-hero-row">' + siteFace(f, 44) + '<div class="tw-hero-name">' + (f.url ? '<a href="' + esc(f.url) + '" target="_blank" rel="noopener noreferrer">' + esc(f.site) + ' ↗</a>' : esc(f.site)) + '</div></div>'
-    + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + (f.pinned ? 'it is the target until Verse surpasses it, whatever new counts arrive; it ' : '') + easeLine(f) + '.') + '</p></div>';
+    + chipsHtml(f, esc) + '<p class="tw-why">' + esc('Why this one: ' + whyLine(f) + '.') + '</p></div>';
+}
+/** the reason the target is the target, and only that: the line above says it is the target, the chips carry its weight and the matchup
+ *  carries the aspect counts, so none of them is said again here (owner, 2026-10-30: the line repeated the counts above it). Pure. */
+export function whyLine(f) {
+  if (f.held) return 'held, not beaten: ' + f.held;
+  const tc = rankableControls(f.size), bar = (f.barred || []).length;
+  return (tc !== null ? tc + ' controls on its home page, the count that ranks every site smallest first'
+    : f.rank ? 'ranked #' + Number(f.rank).toLocaleString('en-US') + ' of the million most visited sites, and not weighed yet' : 'not weighed yet')
+    + (bar ? '; ' + bar + ' of its aspects were not measured, because the site turned the gate away' : '')
+    + (f.page ? '' : '; Verse has no page for it yet, so that page is built first');
 }
 /** three actions for the target: Verse's page (or that it has none yet), side by side, the site itself. Pure. */
 export function actionsHtml(f, esc) {
@@ -208,7 +218,7 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
   const sortBar = rk ? '<div class="tw-sort" data-share-skip><button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') + '</div>' : '';
   const lastRow = '<div class="tw-sortrow" data-share-skip style="display:flex;justify-content:space-between;align-items:center;gap:8px">' + (rk ? '<button type="button" class="tw-sortbtn" aria-pressed="' + on + '" title="' + esc(w.note) + '">' + esc(w.bySize) + '</button>' + (on ? '<span class="tw-sortnote">' + esc(w.note) + '</span>' : '') : '') + '</div>';
   const empty = '<div class="tw-empty">Nothing surpassed yet. A site counts only when Verse is better than it on every aspect, checked head to head and by scripted journeys.</div>';
-  return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><div class="tw-head">Versus</div></div>'
+  return TW_CSS + GOOD_CSS + (rk ? SIZE_CSS : '') + '<div class="tw"><div class="tw-top"><h2 class="tw-head">Versus</h2></div>'
     + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? (cur.pinned ? ' · now assimilating: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
     + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')

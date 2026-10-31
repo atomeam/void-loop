@@ -5,8 +5,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { capsRows, scanRows, screen, resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES } from '../void-live-deploy/lib/markets.js';
-import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP } from '../void-live-deploy/functions/api/markets.js';
+import { capsRows, scanRows, screen, resolve, parseStooqDaily, parseYahoo, summarize, closeOn, thin, fmtPrice, fmtBig, fmtMove, fmtDay, chartPath, comparePaths, cleanList, rowsFromFx, rowsFromPrices, RANGES, COINS } from '../void-live-deploy/lib/markets.js';
+import { onRequestGet, lookQuote, wantFrom, cleanIds, STRIP, parseSpark, overlay, coarse } from '../void-live-deploy/functions/api/markets.js';
 import { routeAsk, TOOLS, RELATED } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 
@@ -46,6 +46,7 @@ test('the close on a fixed day: the last row on or before it (a weekend gives Fr
 });
 test('numbers for the screen', () => {
   assert.equal(fmtPrice(250.42), '250.42'); assert.equal(fmtPrice(1234.5), '1,234.50'); assert.equal(fmtPrice(0.000123), '0.000123'); assert.equal(fmtPrice(null), '–');
+  assert.equal(fmtPrice(0.00000469), '0.00000469', 'under a cent: four digits that mean something, not 0.000005'); assert.equal(fmtPrice(0.0759), '0.0759');
   assert.equal(fmtBig(1.4e12), '1.4T'); assert.equal(fmtBig(39480700), '39.48M'); assert.equal(fmtBig(512), '512'); assert.equal(fmtMove(8.5, 4.7222), '+8.50 (+4.72%)'); assert.equal(fmtMove(-1, -0.5), '−1.00 (−0.50%)');
   assert.equal(fmtDay(Date.UTC(2024, 11, 31)), '31 Dec 2024'); assert.equal(thin([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]], 3).map((p) => p[0]).join(), '1,3,5');
   const c = chartPath([[0, 1], [10, 3], [20, 2]], 100, 50, 0); assert.equal(c.xy.length, 3); assert.equal(c.xy[0][0], 0); assert.equal(c.xy[2][0], 100); assert.equal(c.xy[1][1], 0, 'the highest point is at the top');
@@ -88,6 +89,12 @@ test('a coin: price, 24 hour range, volume and market cap from CoinGecko, a year
   assert.equal(q.source, 'CoinGecko'); assert.equal(q.price, 70000); assert.equal(q.prev, 68600); assert.equal(q.dayHigh, 71000); assert.equal(q.cap, 1.4e12); assert.equal(q.volume, 3e10); assert.equal(q.points.length, 48); assert.ok(q.hi52 > q.lo52);
   const long = await lookQuote(resolve('btc'), '5y', null, fake(), NOW); assert.match(long.note, /one year/);
 });
+test('a coin when CoinGecko does not answer: Yahoo\'s chart gives the price, named as the coin and said to be from Yahoo; both down is honestly nothing', async () => {
+  const y = { chart: { result: [{ meta: { currency: 'USD', longName: 'Bitcoin USD', regularMarketPrice: 70100, chartPreviousClose: 69000 }, timestamp: Array.from({ length: 300 }, (_, i) => Math.floor((NOW - (300 - i) * DAYMS) / 1000)), indicators: { quote: [{ close: Array.from({ length: 300 }, (_, i) => 40000 + i * 100) }] } }] } };
+  const q = await lookQuote(resolve('btc'), '1y', null, fake({ down: ['api.coingecko.com'], yahoo: y }), NOW);
+  assert.equal(q.ok, true); assert.match(q.source, /Yahoo/); assert.equal(q.name, 'Bitcoin'); assert.equal(q.kind, 'crypto'); assert.ok(q.price > 0);
+  const none = await lookQuote(resolve('btc'), '1y', null, fake({ down: ['api.coingecko.com', 'query1.finance.yahoo.com'] }), NOW); assert.equal(none.ok, false);
+});
 test('a currency pair: ECB rates, daily, one day shown as five; the rate on a fixed day', async () => {
   const q = await lookQuote(resolve('eurusd'), '1d', '2024-12-31', fake(), NOW);
   assert.equal(q.source.includes('ECB'), true); assert.equal(q.range, '5d'); assert.match(q.note, /once a day/); assert.equal(q.volume, null); assert.equal(q.kind, 'fx'); assert.equal(q.closeOn.close, 0.9652);
@@ -121,6 +128,41 @@ test('the strip and the watchlist cannot starve the quote: each counts against i
     assert.equal((await ask('?s=aapl&r=1y')).status, 200); assert.deepEqual([...bucketsUsed()].sort(), ['markets', 'markets-batch']);
     const before = kept.size; await ask('?strip=1'); await ask('?s=aapl&r=1y'); assert.equal(kept.size, before, 'repeats are answered from the cache and count nothing');
   } finally { globalThis.caches = had; }
+});
+test('the coin table when CoinGecko does not answer: the snapshot with Yahoo prices over it, then the snapshot alone, never a 503', async () => {
+  const snap = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/data/coins.json', import.meta.url), 'utf8')); if (!snap.ok) return;
+  const env = { ASSETS: { fetch: async (rq) => (new URL(rq.url).pathname === '/data/coins.json' ? new Response(JSON.stringify(snap)) : new Response('', { status: 404 })) } };
+  const by = Object.fromEntries(snap.caps.map((c) => [c.sym + '-USD', c]));
+  const spark = (shape) => async (url) => { const u = new URL(url); if (u.host === 'api.coingecko.com') return resp('', false); if (!u.pathname.endsWith('/spark')) return resp('', false);
+    const syms = u.searchParams.get('symbols').split(','); // BTC up 10% from the snapshot, a coin far off (another asset with the same ticker) is left as it was
+    const one = (s) => { const c = by[s], p = s === 'BTC-USD' ? c.price * 1.1 : s === 'ETH-USD' ? c.price * 3 : c.price; return { close: [p * 0.9, p * 0.95, p * 0.97, p], chartPreviousClose: p * 0.98 }; };
+    return resp(shape === 'old' ? Object.fromEntries(syms.map((s) => [s, one(s)])) : { spark: { result: syms.map((s) => ({ symbol: s, response: [{ meta: { regularMarketPrice: one(s).close[3], chartPreviousClose: one(s).chartPreviousClose }, indicators: { quote: [{ close: one(s).close }] } }] })) } }); };
+  for (const shape of ['old', 'new']) {
+    const r = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env, fetchFn: spark(shape) }), j = await r.json();
+    assert.equal(r.status, 200); assert.equal(j.ok, true); assert.equal(j.snapshot, snap.day); assert.equal(j.coins.length, snap.caps.length); assert.equal(j.live, snap.caps.length - 1, 'every coin but the one that is far off');
+    const btc = j.coins.find((c) => c.sym === 'BTC'), eth = j.coins.find((c) => c.sym === 'ETH');
+    assert.ok(Math.abs(btc.price / snap.caps[0].price - 1.1) < 1e-9); assert.ok(Math.abs(btc.cap / snap.caps[0].cap - 1.1) < 1e-6, 'the cap scales with the price'); assert.equal(btc.pct24.toFixed(2), '3.09', 'the 24h move is from the day before, not from Yahoo\'s close before the range'); assert.equal(btc.pct7.toFixed(2), '11.11');
+    assert.equal(eth.price, snap.caps.find((c) => c.sym === 'ETH').price, 'a price three times the snapshot is not taken'); assert.match(j.source, /Yahoo/); assert.match(j.source, new RegExp(snap.day));
+  }
+  const none = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env, fetchFn: fake({ down: ['api.coingecko.com'] }) }), n = await none.json();
+  assert.equal(none.status, 200); assert.equal(n.ok, true); assert.equal(n.live, 0); assert.deepEqual(n.coins, snap.caps); assert.match(n.source, /snapshot/);
+  // the screener's coins come from the same place: never 0 coins under a source that says CoinGecko
+  const sc = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?scan=1'), env, fetchFn: fake({ down: ['api.coingecko.com'] }) })).json();
+  const listed = snap.caps.filter((c) => Object.values(COINS).some((x) => x[0] === c.id));
+  assert.equal(sc.ok, true); assert.equal(sc.universe.coins, listed.length); assert.ok(listed.length >= 10); assert.equal(sc.rows.filter((r) => r.group === 'coins').length, listed.filter((c) => c.pct24 != null).length);
+  assert.match(sc.source, /snapshot of \d{4}-\d\d-\d\d for coins \(not live\)/); assert.doesNotMatch(sc.source, /, CoinGecko$/); assert.deepEqual(sc.coinFeed, { live: 0, snapshot: snap.day });
+  const lone = await (await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?scan=1'), env: {}, fetchFn: fake({ down: ['api.coingecko.com'] }) })).json();
+  assert.equal(lone.universe.coins, 0); assert.equal(lone.source, 'Stooq, Yahoo Finance (fallback)', 'no coins: no coin source named');
+  const o = overlay([{ sym: 'X', price: 50, athPct: -50, cap: 1 }], { 'X-USD': { price: 60, prev: 55, closes: [50, 55, 60] } }).coins[0]; assert.equal(o.athPct.toFixed(1), '-40.0', 'the high stays where it was; the distance moves with the price');
+  assert.equal(overlay([{ sym: 'X', price: 50, athPct: -10, cap: 1 }], { 'X-USD': { price: 60, prev: 55, closes: [60] } }).coins[0].athPct, 0, 'above the old high: at the high');
+  const gone = await onRequestGet({ request: new Request('https://a-to-mind.com/api/markets?caps=1'), env: {}, fetchFn: fake({ down: ['api.coingecko.com'] }) });
+  assert.equal(gone.status, 503, 'no snapshot and no live list: said so');
+  { const o = overlay([{ sym: 'SHIB', price: 0.0000047, pct24: -1, pct7: -5, spark: [1, 2, 3], cap: 1 }], { 'SHIB-USD': { price: 0.00000469, prev: 0.000005, closes: [0.000005, 0.000005, 0.00000469] } });
+    assert.equal(o.live, 1); assert.equal(o.coins[0].price, 0.00000469, 'the live price is taken'); assert.equal(o.coins[0].pct24, -1, 'a close rounded to one digit measures no move: the snapshot\'s stays');
+    assert.equal(o.coins[0].pct7, -5); assert.deepEqual(o.coins[0].spark, [1, 2, 3]); }
+  assert.ok(coarse(0.000005) && coarse(0.000012) && !coarse(0.00000469) && !coarse(1) && !coarse(0.5) && !coarse(0), 'coarse: under a tenth of a cent with fewer than three digits');
+  assert.deepEqual(overlay([{ sym: 'X', price: 0, cap: 1 }], { 'X-USD': { price: 5, prev: 4, closes: [5] } }).live, 0); assert.deepEqual(parseSpark(null), {});
+  assert.equal(parseSpark({ 'X-USD': { close: [90, 100], chartPreviousClose: 50 } })['X-USD'].prev, 90); assert.equal(parseSpark({ 'X-USD': { close: [100], chartPreviousClose: 95 } })['X-USD'].prev, 95, 'one close: the close before the range is all there is');
 });
 test('the coin table and the screener: rows, filters and the endpoint', async () => {
   const ask = (qs) => onRequestGet({ request: new Request('https://a-to-mind.com/api/markets' + qs), env: {}, fetchFn: fake() });

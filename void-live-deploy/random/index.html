@@ -14,8 +14,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/random (owner, 2026-10-24: "beat speed" on random.org): one file, nothing else to load, the number on screen at once */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #6b6878; --line: #d9d6e4; --accent: #6d4aff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #9a97aa; --line: #2c2938; --accent: #a58bff; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, sans-serif; }
   main { max-width: 560px; margin: 0 auto; padding: 22px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 6px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -53,6 +53,8 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/wheel.js">
 <link rel="modulepreload" href="/lib/handoff.js">
 <link rel="modulepreload" href="/lib/prizes.js">
@@ -145,14 +147,17 @@
     $('what').textContent = n > 1 ? n.toLocaleString() + ' random numbers, ' + A + ' to ' + Bv + (uniq ? ', no repeats' : '') : 'Random number, ' + A + ' to ' + Bv;
     if (n === 1) { hist.unshift(word(vals[0])); hist.length = Math.min(hist.length, 12); $('hist').textContent = hist.length > 1 ? 'Before: ' + hist.slice(1).join(' · ') : ''; }
     const q = new URLSearchParams({ min: d ? A.replace(/,/g, '') : a, max: d ? Bv.replace(/,/g, '') : b }); if (d) q.set('dec', d); if (n > 1) q.set('n', n); if (uniq) q.set('unique', '1'); if ($('sort').checked) q.set('sort', '1'); if (base !== 10) q.set('base', base); if (cols) q.set('cols', cols); if (pub) q.set('round', pub.r.round);
-    history.replaceState(null, '', '?' + q);
+    keepList(q); history.replaceState(null, '', '?' + q);
   }
+  // the list stays in the address with the range, so a reload or a copied link opens with it (a list handed over from the wheel or fantasy included)
+  function keepList(q) { const l = $('list').value.trim(); if (l && l.length <= 4000) q.set('list', l); else q.delete('list'); return q; }
+  $('list').addEventListener('input', () => { history.replaceState(null, '', '?' + keepList(new URLSearchParams(location.search))); });
   function listItems() { return $('list').value.split('\n').map((s) => s.trim()).filter(Boolean); }
   $('pick').onclick = () => { const l = listItems(); if (!l.length) { note.textContent = 'Write a few items first, one a line.'; return; } out.className = ''; out.textContent = l[below(l.length)]; $('what').textContent = 'Picked from your list of ' + l.length; note.textContent = ''; };
   $('shuffle').onclick = () => { const l = listItems(); for (let i = l.length - 1; i > 0; i--) { const j = below(i + 1); [l[i], l[j]] = [l[j], l[i]]; } out.className = 'many'; out.textContent = l.map((s, i) => (i + 1) + '. ' + s).join('\n'); out.style.whiteSpace = 'pre-line'; $('what').textContent = 'Your list, shuffled'; note.textContent = ''; };
   $('go').onclick = () => { out.style.whiteSpace = ''; draw(); };
   $('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(out.textContent).then(() => { note.textContent = 'Copied.'; }, () => {}); };
-  $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = 'Link copied: it opens with the same range.'; }, () => {}); };
+  $('link').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(location.href).then(() => { note.textContent = listItems().length ? 'Link copied: it opens with the same range and your list.' : 'Link copied: it opens with the same range.'; }, () => {}); };
   $('f').addEventListener('submit', (e) => { e.preventDefault(); draw(); });
   $('f').addEventListener('change', draw); $('uniq').onchange = draw; $('sort').onchange = draw; $('base').onchange = draw; $('cols').onchange = draw; $('beacon').onchange = draw; $('dec').onchange = draw;
   addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !/^(input|textarea|button|summary)$/i.test(e.target.tagName)) { e.preventDefault(); draw(); } });

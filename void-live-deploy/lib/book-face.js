@@ -1,4 +1,4 @@
-// The faces of the 3D Verse Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
+// The faces of the 3D Book of Verse (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
 // things to draw plus the places a tap lands. Pure, so it runs without a browser: the caller gives it a measure(text, font)
 // function (a canvas' measureText in the page, a fixed width in the tests) and paints the result with paint(). The same page data
 // the flat book reads (lib/guide.js, tools/guide.mjs), so the 3D book can never show a different page.
@@ -60,7 +60,7 @@ export function layoutFace(page, book, side, measure) {
   if (page.kind === 'cover') {
     t('a-to-mind.com', x0 + w / 2, y + 10, '13px ' + SANS, SOFT, 'center'); y += 36;
     ops.push({ k: 'glyph', name: 'v01d', chapter: 'front', x: x0 + w / 2 - 90, y: y, size: 180 }); y += 214;
-    t(page.title || 'The Verse Book', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
+    t(page.title || 'The Book of Verse', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 3)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const tot = (book && book.totals) || {};
     y += 12; t([tot.skills + ' skills', tot.games + ' games', tot.minis + ' 3D miniatures', tot.pages + ' pages'].join(' · '), x0 + w / 2, y, '13px ' + SANS, SOFT, 'center');

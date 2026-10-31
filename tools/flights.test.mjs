@@ -25,6 +25,9 @@ test('airport search by city, name, code, accents and city codes', () => {
   assert.deepEqual(s('NYC').slice(0, 3), ['JFK', 'LGA', 'EWR']); assert.deepEqual(s('LON').slice(0, 2), ['LHR', 'LGW']); assert.equal(s('london')[0], 'LHR'); assert.equal(s('new york')[0], 'JFK');
   assert.equal(s('münchen')[0], 'MUC'); assert.equal(s('Wien')[0], 'VIE'); assert.deepEqual(s(''), []); assert.deepEqual(s('zzzzqqq'), []);
   assert.ok(s('frankfurt').includes('FRA'));
+  // a city with its country (as the scores page asks for a game's ground) ranks like the bare city, and picks the right one of two cities
+  assert.deepEqual(s('London United Kingdom').slice(0, 2), ['LHR', 'LGW']); assert.equal(s('Manchester')[0], 'MHT'); assert.equal(s('Manchester United Kingdom')[0], 'MAN');
+  assert.equal(s('Paris France')[0], 'CDG'); assert.equal(s('Madrid Spain')[0], 'MAD'); assert.equal(s('Boston United States')[0], 'BOS');
 });
 test('nearby airports and airports of the same city', () => {
   const n = C.nearby(idx, A('LHR'), 60, 5).map((x) => x.a.iata); assert.ok(n.includes('LGW') && n.includes('LCY') && !n.includes('LHR'));
@@ -135,7 +138,10 @@ test('the asks that reach the pages', () => {
   assert.equal(o('flights to lisbon'), '/flights/?toq=lisbon'); assert.equal(o('cheap flights'), '/flights/'); assert.equal(o('flights from london to paris'), '/flights/?fromq=london&toq=paris'); assert.equal(o('flights to lisbon from new york'), '/flights/?fromq=new%20york&toq=lisbon');
   assert.equal(o('flight time london new york'), '/flights/time/?fromq=london&toq=new%20york'); assert.equal(o('how long is the flight from paris to tokyo'), '/flights/time/?fromq=paris&toq=tokyo'); assert.equal(o('distance from london to new york'), '/flights/distance/?fromq=london&toq=new%20york');
   assert.equal(o('airport codes'), '/flights/airports/'); assert.equal(o('layover calculator'), '/flights/trip/'); assert.equal(o('flight co2 calculator'), '/flights/co2/'); assert.equal(o('great circle map'), '/flights/map/');
-  for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo']) assert.equal(o(no), '', no);
+  assert.equal(o('flight distance'), '/flights/distance/'); assert.equal(o('where can i fly'), '/flights/routes/'); assert.equal(o('where can i fly from berlin'), '/flights/routes/?fromq=berlin');
+  assert.equal(o('destinations from lisbon'), '/flights/routes/?fromq=lisbon'); assert.equal(o('airports within 3 hours of london'), '/flights/routes/?fromq=london'); assert.equal(o('nonstop destinations'), '/flights/routes/');
+  for (const no of ['fly to tokyo', 'flight', 'my flight is delayed', 'how do planes fly', 'merge pdf', 'distance to the moon', 'time in tokyo', 'destinations', 'where can i fly a drone']) assert.equal(o(no), '', no);
+  for (const s of FLIGHT_SITES) assert.notEqual(o(s.card), '', 'the stage ask of ' + s.path + ' is a flight ask: ' + s.card);
 });
 test('coastlines: the encoder and the decoder agree, the file is small, and the map draws them under the route', async () => {
   const { linesOf, encodeLine, varint, Q } = await import('./coast-build.mjs'), { COAST, COAST_Q } = await import('../void-live-deploy/lib/flights-coast.js');
@@ -157,6 +163,40 @@ test('the stage card: takes flight asks, leaves distance asks to the distance sk
   const skill = (await import('../void-live-deploy/skills/flights.js')).default;
   for (const a of ['flights to lisbon', 'cheap flights', 'flight time london new york', 'airport codes']) assert.ok(skill.match(a), a);
   for (const a of ['distance from london to new york', 'fly to tokyo', 'my flight is delayed']) assert.ok(!skill.match(a), a);
+  for (const a of ['flight distance', 'where can i fly', 'great circle map']) assert.ok(skill.match(a), a);
+  const names = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/skills/index.json', import.meta.url), 'utf8')), mods = [];
+  for (const n of names) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; mods.push(...(sk.family ? sk.members : [sk])); }
+  for (const s of FLIGHT_SITES) { const k = mods.find((m) => m.match(s.card.toLowerCase(), s.card)); assert.equal(k && k.name, 'flights', 'the stage gives the card ask of ' + s.path + ' to the flights card: ' + s.card); }
   let html = ''; const el = { dataset: {}, set innerHTML(v) { html = v; } }; assert.equal(skill.run('flights to lisbon', { showPage: (f) => f(el), esc: (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;') }), 'flights');
-  assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/');
+  assert.match(html, /href="\/flights\/\?toq=lisbon"/); assert.match(html, /no live fares/); assert.equal(el.dataset.page, '/flights/?toq=lisbon', 'the full page link keeps the places too');
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js'), api = { showPage: (f) => f(el), esc: (s) => String(s) };
+  skill.run('where can i fly from berlin', api); assert.deepEqual(pageOfCard('flights', el.dataset.page)[0], '/flights/routes/?fromq=berlin', 'the full page opens on Berlin');
+  skill.run('flights to sao paulo', api); assert.equal(el.dataset.page, '/flights/?toq=sao%20paulo');
+  skill.run("flights to xi'an", api); assert.equal(el.dataset.page, '/flights/', 'a query card-frame would refuse drops to the plain page');
+  skill.run('cheap flights', api); assert.equal(el.dataset.page, '/flights/');
+});
+
+test('the leg links: the landing moment in both cities with their zones, the weather at the arrival airport, and the flight as a calendar event', async () => {
+  const a = { iata: 'JFK', city: 'New York', tz: 'America/New_York', country: 'United States', lat: 40.6413, lon: -73.7781 }, b = { iata: 'OGG', city: 'Kahului, Maui', cc: 'US', tz: 'Pacific/Honolulu', country: 'United States', lat: 20.8986, lon: -156.4305 };
+  const f = C.legFacts(a, b, '2026-11-20T09:00'), l = C.legLinks(a, b, f), u = (s) => new URL(s, 'https://verse.test');
+  const tm = u(l.time); assert.equal(tm.pathname, '/time/'); assert.equal(Date.parse(tm.searchParams.get('at')), f.arrUtc);
+  assert.deepEqual(tm.searchParams.get('cities').split(','), ['New York@America/New_York', 'Kahului Maui@Pacific/Honolulu'], 'a comma in a city name never splits the list');
+  const { placeAt } = await import('../void-live-deploy/lib/zones.js');
+  assert.deepEqual(tm.searchParams.get('cities').split(',').map(placeAt), [{ name: 'New York', tz: 'America/New_York' }, { name: 'Kahului Maui', tz: 'Pacific/Honolulu' }]);
+  const w = u(l.weather); assert.equal(w.searchParams.get('place'), 'Kahului Maui, United States'); assert.equal(w.searchParams.get('ll'), '20.8986,-156.4305');
+  const { eventFromLink } = await import('../void-live-deploy/lib/calendar.js'), ev = eventFromLink(u(l.calendar).searchParams.get('e'));
+  assert.equal(ev.title, 'Flight JFK → OGG'); assert.equal(ev.start, '2026-11-20T09:00'); assert.equal(ev.tz, 'America/New_York'); assert.equal(ev.location, 'New York');
+  assert.equal(C.localToUtc('America/New_York', ev.end), f.arrUtc, 'the event ends when the flight lands'); assert.ok(ev.notes.includes(f.arrDate + ' ' + f.arrTime));
+  const { placeFromLink } = await import('../void-live-deploy/lib/local-media.js'), lo = u(l.local);
+  assert.equal(lo.pathname, '/local/'); assert.deepEqual(placeFromLink(lo.search), { city: 'Kahului Maui', region: '', regionCode: '', country: 'US', lat: 20.9, lon: -156.43 }, 'the stations are found at the arrival airport, with no name to look up');
+  assert.equal(C.legLinks(a, { ...b, cc: '' }, f).local, '', 'no country, no local link');
+  assert.equal(C.legLinks(a, { ...b, cc: 'gb' }, f).jobs, '/jobs/?cc=GB'); assert.equal(C.legLinks(a, { ...b, cc: '' }, f).jobs, '', 'no country, no jobs link');
+  for (const s of ['Landing time in both cities', 'Weather where it lands', 'Add the flight to my calendar', 'Radio and TV where it lands']) assert.ok(DE[s], 'German for ' + s);
+});
+
+test('the airport near a place another page found: the nearest large one, else a medium one, never a small field or a far one', () => {
+  const n = (lat, lon) => (C.airportNear(idx, lat, lon) || {}).iata || null;
+  assert.equal(n(51.507, -0.128), 'LHR'); assert.equal(n(42.36, -71.06), 'BOS'); assert.equal(n(35.68, 139.69), 'HND');
+  assert.equal(n(39.78, -89.65), 'SPI', 'no large airport within reach: the medium one of the town');
+  assert.equal(n(30, -40), null, 'mid ocean: no airport, the page asks'); for (const bad of [NaN, 91, 'x']) assert.equal(n(bad, 0), null, String(bad)); assert.equal(n(0, 181), null);
 });

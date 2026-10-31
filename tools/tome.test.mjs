@@ -1,4 +1,4 @@
-// The tome (lib/tome.js): the Verse Book typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
+// The tome (lib/tome.js): the Book of Verse typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -35,7 +35,7 @@ test('every page of the real book typesets, with a title and a rule; a skill pag
 test('the running heads follow a book: the title on the left, the chapter on the right; the folio is the page number', () => {
   const p = book.pages.find((x) => x.kind === 'skill');
   const left = sheetHtml(p, book, 'left', esc), right = sheetHtml(p, book, 'right', esc);
-  assert.match(left, /tome-head"><span>The Verse Book<\/span>/); assert.match(right, /<span><\/span><span>[^<]+<\/span><\/div>/);
+  assert.match(left, /tome-head"><span>The Book of Verse<\/span>/); assert.match(right, /<span><\/span><span>[^<]+<\/span><\/div>/);
   assert.match(left, new RegExp('tome-folio">' + p.n + '<'));
   assert.equal(sheetHtml(null, book, 'left', esc), '');
 });
@@ -46,7 +46,7 @@ test('the front matter and the back: a title page, how to ask with the built-in 
   assert.match(pageHtml(book.pages.find((p) => p.kind === 'legend'), book, esc), /nothing checks it yet/);
   assert.match(tocHtml(book, esc), /data-page="\d+"/);
   assert.match(pageHtml(book.pages[book.pages.length - 1], book, esc), /lead-dots/);
-  assert.match(coverHtml(book, esc), /The Verse Book/);
+  assert.match(coverHtml(book, esc), /The Book of Verse/);
 });
 
 test('the stacks of unread leaves grow and shrink with the page you are on', () => {

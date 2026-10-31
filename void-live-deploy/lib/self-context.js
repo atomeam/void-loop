@@ -4,7 +4,7 @@
 // its skills (skills/index.json) and its will (void_kv 'will', the same thing GET /api/will shows). All of it is already
 // public on a-to-mind.com; nothing owner-only (queue, earnings, spends) is read here. Also its games and card miniatures
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
-import { knowsFacts, voiceFacts, keptFacts } from './voice.js';
+import { knowsFacts, voiceFacts, keptFacts, familyFacts } from './voice.js';
 import { PERSONA } from './persona.js';
 import { models, ANSWER_FALLBACK } from './models.js';
 const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
@@ -24,6 +24,22 @@ const BUILDERS = /\b(your|v0[1i]d'?s?|(?:verse|void)'?s?|verse'?s?)\s+builders?\
 // facts (the store, the wishlist, what it has and wants) answer, not generic advice for a stranger. "you" must be the subject
 // or "your" must own the money, so "how should I spend $100" stays the visitor's own question.
 const MONEY = /\byou\s+(have\s+|'ve\s+|just\s+)?(earned|made|raised|sold|got)\b[^?.!]{0,40}(\$|dollars?|money|sales?|first)|\b(would|should|will|could)\s+you\s+(spend|invest|reinvest|use|buy)\b[^?.!]{0,30}\b(your|it|the money|earnings|first)\b|\byour\s+(earnings|revenue|income|budget|money|sales|store|first\s+\$?\d+)\b/i;
+// who or what Verse is ("who are you?", "are you an AI?", "what model are you?", "who created you?"): an identity probe is a fact
+// about Verse, answered from its own facts and persona, never a question for Wikipedia ("Who Are You" is also a song). Asked by
+// Verse's will, 2026-10-30: "Fix the self-skill router so it stops treating identity-based probes as questions instead of facts."
+const IDENTITY = new RegExp([
+  '^\\s*(?:(?:hi|hey|hello|ok(?:ay)?|so|and|but|then)[,!.\\s]+)*(?:who|what)\\s+(?:are|r)\\s+(?:you|u)(?:\\s+(?:really|exactly|actually|then))?\\s*[?.!]*\\s*$',
+  '\\bintroduce\\s+yourself\\b', '\\btell\\s+me\\s+(?:about\\s+)?who\\s+you\\s+are\\b', '\\bwhat\\s+should\\s+i\\s+call\\s+you\\b',
+  '\\bare\\s+you\\s+(?:an?\\s+)?(?:ai|a\\.i\\.|bot|robot|chat\\s*bot|human|person|real\\s+person|machine|program|computer|llm|language\\s+model|chatgpt|gpt|claude|gemini|siri|alexa|alive|sentient|conscious|self[- ]aware)\\b',
+  '^\\s*are\\s+you\\s+real\\s*[?.!]*\\s*$',
+  '\\bwhat\\s+(?:model|llm|ai|kind\\s+of\\s+(?:ai|bot|thing|program|model)|type\\s+of\\s+(?:ai|bot|program|model))\\s+(?:are|r)\\s+you\\b',
+  '\\bwhat\\s+(?:model|llm|ai)\\s+(?:runs|powers|is\\s+behind)\\s+you\\b',
+  '\\bwho\\s+(?:created|made|built|owns|runs|programmed|designed|trained|wrote)\\s+you\\b',
+  '\\bdo\\s+you\\s+have\\s+(?:feelings|emotions|a\\s+(?:body|mind|soul|personality|consciousness))\\b',
+  '^\\s*how\\s+old\\s+are\\s+you\\s*[?.!]*\\s*$', '^\\s*where\\s+(?:do\\s+you\\s+live|are\\s+you\\s+(?:from|based|hosted|located))\\s*[?.!]*\\s*$', '^\\s*what\\s+do\\s+you\\s+do\\s*[?.!]*\\s*$',
+].join('|'), 'i');
+// "What is Verse?" and "what is a-to-mind?" name the product; "what is a verse" (a poem's) stays a question
+const WHAT_IS_US = /^\s*(?:[Ss]o\s+)?[Ww]hat\s+is\s+(?:Verse|a-to-mind(?:\.com)?)\s*[?.!]*\s*$/;
 const Verse = /\b(?:verse|v0[1i]d)\b/i, VERSE = /\bVerse\b/, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of Verse?"
 
 // a note or question about Verse's own cards, routing and fixes (a fix item, 2026-10-15: a pasted status note about Verse's own
@@ -34,7 +50,7 @@ export const isOwnWorkAsk = (ask) => { const a = String(ask || ''); return OWN_W
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
+  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || IDENTITY.test(a) || WHAT_IS_US.test(a) || ((Verse.test(a) || VERSE.test(a)) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
 // a note about one of Verse's own answer cards ("That card is wrong", "This card is the first one that speaks as itself", "it still says
@@ -55,17 +71,18 @@ const asset = async (env, origin, p) => {
 
 export async function readSelf(env, origin, ms = 800) {
   const kv = async (k) => { try { const r = await env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind(k).first(); return r && r.v ? JSON.parse(r.v) : null; } catch (_) { return null; } };
-  const [self, skills, will, voice, replies] = await Promise.all([
+  const [self, skills, will, voice, replies, families] = await Promise.all([
     within(asset(env, origin, '/self.json'), ms),
     within(asset(env, origin, '/skills/index.json'), ms),
     within(kv('will'), ms),
     within(kv('voice'), ms),
     within(kv('voice-replies'), ms),
+    within(asset(env, origin, '/skills/families.json'), ms),
   ]);
-  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null };
+  return { self, skills: Array.isArray(skills) ? skills : null, will, voice: Array.isArray(voice) ? voice : null, replies: Array.isArray(replies) ? replies : null, families: families && Array.isArray(families.families) ? families : null };
 }
 
-export function selfFacts({ self, skills, will, voice, replies } = {}, { card = false, note = '' } = {}) {
+export function selfFacts({ self, skills, will, voice, replies, families } = {}, { card = false, note = '' } = {}) {
   const parts = [];
   const cf = card ? cardFacts(self, { note }) : '';
   if (cf) parts.push(cf);
@@ -82,7 +99,9 @@ export function selfFacts({ self, skills, will, voice, replies } = {}, { card = 
   if (!card || asksModelDate(note)) parts.push(modelFacts(self)); // a card note that does not name the model gets no model date to restate (live card 3)
   const wl = wishlistFacts(self);
   if (wl) parts.push(wl);
-  const knows = knowsFacts(self), said = voiceFacts(voice);
+  // the family counts and the least proven family, ranked as the card's bars rank them (owner's review, 2026-10-30: the answer named Games, the bars Words and the world)
+  const fams = familyFacts(families); if (fams) parts.push(fams);
+  const knows = knowsFacts(self), said = voiceFacts(voice, families);
   if (knows) parts.push(knows);
   if (said) parts.push(said);
   const kept = keptFacts(replies); // what it kept from talking with its owner (its own words, never the owner's: these facts reach any visitor's answer)

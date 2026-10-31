@@ -15,8 +15,8 @@
 <script>if (location.search) document.documentElement.classList.add('pre'); // a recipe is coming from the link: hold the paint until it is drawn (html.pre)</script>
 <style>
   /* a-to-mind.com/recipes/ (Versus' Allrecipes floor): one file and two small modules; nothing stored but the history and the ticks */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -238,7 +238,7 @@
 <script type="module">
   // everything after the first paint: the page shows its box and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, R, K, RI] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js')]);
+    const [{ mountRelated }, R, K, RI, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/recipes.js'), import('/lib/kitchen.js'), import('/lib/recipeimport.js'), import('/lib/recipe-card.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.recipes.v1', MAX_HIST = 20, MEALDB = 'https://www.themealdb.com/api/json/v1/1/';
     const W = R.wordsFor(navigator.language), de = /^de\b/i.test(navigator.language || '');
     const histEmpty = $('histEmpty'), KW = K.wordsFor(navigator.language);
@@ -309,7 +309,7 @@
     }
     function open(r, { note = '' } = {}) {
       state.recipe = r; state.servings = +q.get('servings') > 0 && !state.opened ? Math.min(200, +q.get('servings')) : r.servings; state.opened = true;
-      render(); say(note);
+      render(); say(note); document.dispatchEvent(new Event('tk:card')); // a recipe that came back from the network: the stage card link follows it
       const it = { id: r.id, name: r.name, at: Date.now(), recipe: r };
       store.hist = [it].concat(store.hist.filter((h) => h.id !== r.id)).slice(0, MAX_HIST); keep(); lists();
     }
@@ -541,7 +541,8 @@
     lists(); setMode(state.mode); $('q').value = state.i || state.q;
     if (state.id || state.q || state.i) go(); else if (!navigator.onLine) say(W.offline);
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); // a recipe still on its way after 2.5 s: show the page as it stands
-    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }]);
+    mountRelated($('related'), '/recipes/', [{ label: de ? 'Timer stellen' : 'Set a timer', href: () => '/stopwatch/?t=' + encodeURIComponent((state.recipe && R.timersIn(state.recipe.steps.join(' '))[0] && R.timersIn(state.recipe.steps.join(' '))[0].label) || '10 minutes') }, { label: de ? 'Mengen umrechnen' : 'Convert a measure', href: () => '/convert/?q=' + encodeURIComponent('1 cup to ml') }],
+      { card: () => cardAsk(state.recipe, state.servings, state.units) }); // its stage card shows the recipe open here, at its servings and units, not pancakes
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

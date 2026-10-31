@@ -2,8 +2,8 @@
 // checked against allowlists, each feed read into one shape, the Bundesliga fallback, F1, cache lifetimes, the endpoint's bounds, the routes
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState, draftOrder, botPick, playersOf } from '../void-live-deploy/lib/scores.js';
-import { askIn, lookScores, onRequestGet } from '../void-live-deploy/functions/api/scores.js';
+import { flightAsk, LEAGUES, leagueOf, dateOk, shiftDay, readEvent, readScoreboard, readStandings, readSummary, readOpenLiga, seasonOf, readF1Races, readF1Results, readF1Standings, ttlFor, wordsFor, idOk, formOf, weekStart, fantasyPoints, progressOf, winProb, eloOf, simulate, scorePicks, survivorState, draftOrder, botPick, playersOf } from '../void-live-deploy/lib/scores.js';
+import { askIn, lookScores, onRequestGet, board } from '../void-live-deploy/functions/api/scores.js';
 import { routeAsk, TOOLS, RELATED, CARD_ASK } from '../void-live-deploy/lib/toolkit.js';
 import { PAGES } from '../void-live-deploy/lib/seo.js';
 import { askIn as sAsk, readAll, lookSearch, onRequestGet as sGet } from '../void-live-deploy/functions/api/sportsearch.js';
@@ -27,6 +27,19 @@ test('an ESPN scoreboard becomes games: final, live and upcoming, with goals and
   const ev = readEvent({ id: 1, competitions: [{ competitors: [{ homeAway: 'home', team: { displayName: '<b>X</b>\u0007' }, score: 'DROP' }, { homeAway: 'away', team: { displayName: 'Y' }, score: { displayValue: '3' } }] }] });
   assert.doesNotMatch(ev.home.name, /[<>\u0007]/, 'markup and control characters are stripped'); assert.equal(ev.home.score, ''); assert.equal(ev.away.score, '3');
   assert.equal(readScoreboard(null).length, 0); assert.equal(readScoreboard({ events: 'x' }).length, 0);
+});
+test('a game carries the town of its ground, for the weather there; the summary fills it from gameInfo when the header has none', () => {
+  const comp = (venue) => ({ id: 7, competitions: [{ venue, competitors: [{ homeAway: 'home', team: { displayName: 'A' } }, { homeAway: 'away', team: { displayName: 'B' } }] }] });
+  const g = readEvent(comp({ fullName: 'Stamford Bridge', address: { city: 'London', country: 'England' } })); assert.equal(g.venue, 'Stamford Bridge'); assert.equal(g.city, 'London');
+  assert.equal(readEvent(comp(undefined)).city, ''); assert.doesNotMatch(readEvent(comp({ address: { city: '<i>X</i>' } })).city, /[<>]/);
+  const s = readSummary({ header: { id: 7, competitions: [comp(undefined).competitions[0]] }, gameInfo: { venue: { fullName: 'Anfield', address: { city: 'Liverpool' } } } });
+  assert.equal(s.game.venue, 'Anfield'); assert.equal(s.game.city, 'Liverpool');
+  const kept = readSummary({ header: { id: 7, competitions: [comp({ fullName: 'Emirates Stadium', address: { city: 'London' } }).competitions[0]] }, gameInfo: { venue: { fullName: 'Elsewhere', address: { city: 'Nowhere' } } } });
+  assert.equal(kept.game.venue, 'Emirates Stadium', 'the header venue wins'); assert.equal(kept.game.city, 'London');
+  assert.equal(wordsFor('en').vwx, 'Weather at the ground'); assert.equal(wordsFor('de').vwx, 'Wetter am Stadion');
+  assert.equal(g.country, 'England'); assert.equal(flightAsk(g), 'London United Kingdom', 'the airport list names the state');
+  assert.equal(flightAsk({ city: 'Boston', country: 'USA' }), 'Boston United States'); assert.equal(flightAsk({ city: 'Madrid', country: 'Spain' }), 'Madrid Spain'); assert.equal(flightAsk({ city: 'Kyiv' }), 'Kyiv'); assert.equal(flightAsk({ venue: 'X' }), '');
+  assert.equal(wordsFor('en').vfly, 'Flights to the game'); assert.equal(wordsFor('de').vfly, 'Flüge zum Spiel');
 });
 test('standings: ranked rows, the sport\'s columns', () => {
   const s = readStandings(STANDINGS, 'soccer'); assert.equal(s.groups.length, 1); assert.deepEqual(s.groups[0].cols, ['P', 'W', 'D', 'L', 'GD', 'Pts']);
@@ -158,4 +171,33 @@ test('the search box: a plain name in, two sources read into text fields only, n
   const good = await (await sGet({ request: new Request('https://a-to-mind.com/api/sportsearch?q=arsenal'), env: {}, fetchFn: fakeFeeds() })).json(); assert.equal(good.players.length, 2); assert.equal(good.report, undefined);
   assert.equal((await sGet({ request: new Request('https://a-to-mind.com/api/sportsearch?q=arsenal&diag=1'), env: {}, fetchFn: fakeFeeds() })).status, 401, 'the diag is the owner\'s');
   const dg = await (await sGet({ request: new Request('https://a-to-mind.com/api/sportsearch?q=arsenal&diag=1', { headers: { authorization: 'Bearer ownerkey' } }), env: { READ_TOKEN: 'ownerkey' }, fetchFn: espnOnly })).json(); assert.equal(dg.ok, true); assert.equal(dg.sources.thesportsdb, 429); assert.equal(dg.sources.espn, 200); assert.equal(dg.calls.length, 5); assert.equal(dg.found.espn, 2); assert.doesNotMatch(JSON.stringify(dg), /123\/search|ownerkey/, 'no address or key in the diag');
+});
+
+test('ESPN refuses a range of days (October 2026): a week is read day by day and a longer span month by month', async () => {
+  const log = [], base = 'https://site.api.espn.com/apis/site/v2/sports/soccer/eng.1';
+  const res = (o, status = 200) => ({ ok: status < 400, status, text: async () => JSON.stringify(o) });
+  const feed = async (u) => { log.push(u); const d = new URL(u).searchParams.get('dates');
+    if (d.includes('-')) return res({ code: 400, message: 'Failed to get events endpoint.' }, 400);
+    if (d === '20250526') return res({}, 500); // one day that does not answer leaves the others
+    return res(d.length === 6 || d === '20250525' ? SCOREBOARD : { events: [] }); };
+  const week = await board(feed, base, '2025-05-21', '2025-05-27');
+  assert.equal(log.length, 1 + 7, 'the range once, then each of the 7 days'); assert.deepEqual(week.map((g) => g.id), ['1001', '1002', '1003'], 'each game once, in order');
+  log.length = 0; const six = await board(feed, base, '2025-04-13', '2025-05-25');
+  assert.deepEqual(log.slice(1).map((u) => new URL(u).searchParams.get('dates')), ['202504', '202505'], 'six weeks: the two months'); assert.equal(six.length, 3);
+  assert.equal((await board(feed, base, '2025-05-28', '2025-06-02')).length, 0, 'a week with no games is an empty week, not a failure');
+  await assert.rejects(board(async () => res({}, 500), base, '2025-05-21', '2025-05-27'), 'nothing answered: the page is told the feed is away');
+  const a = await lookScores(askIn('https://x.test/api/scores?league=epl&date=2025-05-21&span=7', NOW), feed, NOW); assert.equal(a.ok, true); assert.equal(a.games.length, 3);
+});
+
+test('a game opens on Verse\'s own calendar: the link carries its title, its wall clock in the visitor\'s zone and the same length as the .ics', async () => {
+  const { calendarEvent } = await import('../void-live-deploy/lib/scores.js');
+  const { eventFromLink } = await import('../void-live-deploy/lib/calendar.js');
+  const g = readScoreboard(SCOREBOARD)[2], e = calendarEvent(g, leagueOf('epl'), 'America/New_York');
+  assert.match(e, /^[\w-]+$/, 'base64url, safe in a link as it is');
+  const ev = eventFromLink(e);
+  assert.equal(ev.title, 'Chelsea vs Nottingham Forest'); assert.equal(ev.tz, 'America/New_York');
+  assert.equal(ev.start, '2025-05-25T14:30'); assert.equal(ev.end, '2025-05-25T16:30'); // 18:30 UTC, two hours, as icsOf
+  assert.match(ev.notes, /typical length, not a schedule/);
+  assert.equal(eventFromLink(calendarEvent(g, leagueOf('nfl'), 'UTC')).end, '2025-05-25T21:30', 'an NFL game runs three hours, as in the .ics');
+  assert.equal(calendarEvent({ start: 'x' }, leagueOf('epl'), 'UTC'), ''); assert.equal(calendarEvent(g, leagueOf('epl'), 'Not/AZone'), ''); assert.equal(calendarEvent(g, leagueOf('epl'), ''), '');
 });

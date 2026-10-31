@@ -3,6 +3,8 @@
  * "public holidays in japan", "next holiday in canada".
  */
 const CC = { us: 'US', usa: 'US', america: 'US', 'united states': 'US', uk: 'GB', britain: 'GB', 'united kingdom': 'GB', england: 'GB', canada: 'CA', japan: 'JP', france: 'FR', germany: 'DE', australia: 'AU', brazil: 'BR', mexico: 'MX', india: 'IN', italy: 'IT', spain: 'ES', ireland: 'IE', 'new zealand': 'NZ', sweden: 'SE', norway: 'NO', netherlands: 'NL', portugal: 'PT', 'south korea': 'KR', korea: 'KR' };
+// the list comes from Verse's own address (functions/api/holidays.js), which asks Nager.Date: the page asking Nager.Date itself got no answer on a-to-mind.com (2026-10-30)
+export const holidaysUrl = (cc) => '/api/holidays?cc=' + encodeURIComponent(cc);
 export function holidayListOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   // "when is the next holiday", "upcoming holidays": no country named, so this browser's own (en-GB -> GB), else the US
@@ -27,7 +29,8 @@ async function run(text, api) {
   if (!q) return 'none';
   const el = showPage((p) => { p.innerHTML = '<h2>Holidays</h2><div class="sub">…</div>'; });
   try {
-    const rows = await fetch('https://date.nager.at/api/v3/NextPublicHolidays/' + q.cc).then((r) => r.json());
+    const out = await fetch(holidaysUrl(q.cc)).then((r) => r.json());
+    const rows = out && out.ok ? out.rows : null;
     if (!api._pageStill(el)) return 'holidays';
     if (!Array.isArray(rows) || !rows.length) throw 0;
     const lis = rows.slice(0, 8).map((h) => '<li><b>' + esc(h.date) + '</b> · ' + esc(h.localName || h.name) + '</li>').join('');

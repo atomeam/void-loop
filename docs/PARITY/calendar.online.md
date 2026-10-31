@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: calendar.online (https://calendar.online/)
-- Verse: /calendar/ (calendar: calendar.online, tower gate 12 of 15)
+- Verse: /calendar/ (calendar: calendar.online, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Online calendar for teams and groups - Calendar.online"
 - History: [docs/HISTORY/calendar.online.md](../HISTORY/calendar.online.md)
 
@@ -30,7 +30,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Print a calendar | Files | have | its live page (2026-10-28): "f users Comprehensive rights management Printing / PDF export Appointment statistics Event export Event import" | void-live-deploy/calendar/index.html:224 `<button type="button" id="printBtn" title="Print what is on screen: the month, week, d` |
 | Events added from your email | Events | missing | its live page (2026-10-28): "o: What can Calendar Online do for you? Email Name create a free calendar Create calendar Easy access without" | no sign of it in the source of /calendar/ |
 | An account that keeps your things on every device | Accounts | partial | its live page (2026-10-28): "dar Create calendar Easy access without login Access your calendar via access links without a login. For examp" | void-live-deploy/calendar/index.html:293 `const keep = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (_` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "endar Tablet Online calendar smartphone Google Play 5.0 110 reviews App Store 4.6 37 reviews Video: What can C" | void-live-deploy/calendar/index.html:651 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "endar Tablet Online calendar smartphone Google Play 5.0 110 reviews App Store 4.6 37 reviews Video: What can C" | void-live-deploy/calendar/index.html:664 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
 | Dark mode | Settings | missing | its live page (2026-10-28): "nel (SMS) 4) Save your event Is there a dark mode? Yes, it can be activated in the calendar in the top right c" | no sign of it in the source of /calendar/ |
 | A public API | Developers | have | its live page (2026-10-28): "No Calendar.online branding Custom logo API interface Unlimited historical data Appointments are stored in the" | void-live-deploy/calendar/index.html:308 `const r = await fetch('/api/icsfeed?url=' + encodeURIComponent(c.url)).then(async (x` |
 | upgrade your browser | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

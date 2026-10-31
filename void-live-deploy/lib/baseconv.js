@@ -66,6 +66,8 @@ const PATTERNS = [
   [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + V + '\\s+' + B + '\\s+(?:to|into|in|as)\\s+' + B + '$', 'i'), (m) => [m[1], m[2], m[3]]],
   [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + B + '\\s+' + V + '\\s+(?:to|into|in|as)\\s+' + B + '$', 'i'), (m) => [m[2], m[1], m[3]]],
   [new RegExp('^(?:please\\s+)?convert\\s+' + V + '\\s+from\\s+' + B + '\\s+(?:to|into)\\s+' + B + '$', 'i'), (m) => [m[1], m[2], m[3]]],
+  // the converter's name, then the number: "binary to decimal 1010", "hex to binary: ff" (2026-10-30: these fell to an article)
+  [new RegExp('^(?:please\\s+)?(?:convert\\s+)?' + B + '\\s+(?:to|into)\\s+' + B + '\\s*:?\\s+' + V + '$', 'i'), (m) => [m[3], m[1], m[2]]],
   [new RegExp('^(?:please\\s+)?(?:convert\\s+|what\\s+is\\s+)?(0[xbo][0-9a-fA-F_]+|[-+]?\\d[\\d,_]*)\\s+(?:to|into|in|as)\\s+' + B + '\\??$', 'i'), (m) => [m[1], '', m[2]]],
 ];
 /** the stage card for a number typed in base 2, 8, 10 or 16: "<digits> <base> to <decimal, or binary from decimal>", only when the ask
@@ -77,10 +79,12 @@ export function baseAsk(text, base) {
   const a = convert(c.digits, base, 10), b = convert(p.value, p.from, 10);
   return a.ok && b.ok && a.out === b.out ? ask : '';
 }
-/** what an ask wants: { value, from (0 = by prefix or decimal), to } or null. A bare number with a prefix or no source base is read as decimal unless it carries 0x/0b/0o. Pure. */
+/** what an ask wants: { value, from (0 = by prefix or decimal), to } or null. A bare number with no source base is read as decimal unless it carries
+ *  0x/0b/0o, or it is all 0s and 1s and asked "in decimal": decimal to decimal answers nothing, so "what is 101010 in decimal" is binary (42). Pure. */
 export function parseAsk(text) {
   const t = String(text || '').trim().replace(/[?.!]+$/, '').replace(/\s+/g, ' ');
-  for (const [re, pick] of PATTERNS) { const m = re.exec(t); if (!m) continue; const [value, fromWord, toWord] = pick(m), to = baseOf(toWord), from = fromWord ? baseOf(fromWord) : 0; if (to && (from || !fromWord)) return { value, from: from || 0, to }; }
+  for (const [re, pick] of PATTERNS) { const m = re.exec(t); if (!m) continue; const [value, fromWord, toWord] = pick(m), to = baseOf(toWord), from = fromWord ? baseOf(fromWord) : 0;
+    if (to && (from || !fromWord)) return { value, from: from || (to === 10 && /^[01][01_,]+$/.test(value) ? 2 : 0), to }; }
   return null;
 }
 

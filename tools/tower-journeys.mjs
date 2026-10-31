@@ -152,6 +152,42 @@ export const SCRIPTS = {
       await J.expect((t) => /\n\s*Cut MP3\s*\n/.test(t) && /mp3/i.test(t), 'the same tool back from its link');
     },
   },
+  // password strength (/password-strength/, against howsecureismypassword.net): the password is checked on the device and never put in the
+  // address, so the shared link is the checker alone. The share journey proves that: the link carries nothing typed, it reopens the empty
+  // checker, and the same password typed again gets the same answer
+  'password strength': {
+    'do the main job and see the result': async (J) => {
+      await J.open('/password-strength/'); await J.fill('#pw', 'password', 'type the common password "password"');
+      await J.expect((t) => /\bVery weak\b/.test(t) && /Instantly\s*cracked from a stolen list/i.test(t) && /Contains "password", a password or word people use first/.test(t) && /Make it longer/.test(t), 'Very weak, cracked instantly, the reason and a tip');
+      await J.fill('#pw', 'q7#Vm2!xZp9@Lk4$Wd8&', 'type a 20-character random password');
+      await J.expect((t) => /\bVery strong\b/.test(t) && /More than a trillion years\s*cracked from a stolen list/i.test(t) && !/\bVery weak\b/.test(t), 'Very strong, more than a trillion years to crack');
+    },
+    'share the result and reopen it from the link': async (J) => {
+      await J.open('/password-strength/'); await J.fill('#pw', 'password', 'type the common password "password"'); await J.expect(/\bVery weak\b/, 'Very weak');
+      const u = await J.shareLink('#link'); if (/password(?!-strength)|[?#&]p=/i.test(u)) throw new Failed('the shared link carries what was typed: ' + u);
+      await J.open('/word-count/'); await J.open(u);
+      await J.expect((t) => /Type one to see its strength/.test(t) && !/\bVery weak\b/.test(t), 'the checker back from its link, empty: nothing typed came with it');
+      await J.fill('#pw', 'password', 'type "password" again'); await J.expect((t) => /\bVery weak\b/.test(t) && /Instantly\s*cracked from a stolen list/i.test(t), 'the same answer again: Very weak, cracked instantly');
+    },
+  },
+  // emoji combos (/emoji-combos/, against emojicombos.com): a tag search lists the combos it holds, fancy text shows as it is typed, and the
+  // box that collects several combos rides in the link, so the shared link brings the same collection back
+  'emoji combos': {
+    'do the main job and see the result': async (J) => {
+      await J.open('/emoji-combos/'); await J.fill('#q', 'cat', 'search the tag cat');
+      await J.expect((t) => /\b\d+ combos for cat\b/.test(t) && /🐱/u.test(t) && /⟆|=\^/u.test(t) && /\bCopy\b/.test(t), 'the cat combos counted, emoji and kaomoji, each with Copy');
+      await J.fill('#ft', 'Hello', 'type Hello into fancy text'); await J.expect((t) => t.includes('ℋℯ𝓁𝓁ℴ') && t.includes('𝐇𝐞𝐥𝐥𝐨'), 'Hello in Script and Bold');
+    },
+    'share the result and reopen it from the link': async (J) => {
+      await J.open('/emoji-combos/'); await J.fill('#q', 'birthday', 'search the tag birthday'); await J.expect(/\b\d+ combos for birthday\b/, 'the birthday combos');
+      const combo = ((await J.page.locator('#results .combo pre').first().textContent()) || '').trim(); if (!combo) throw new Failed('the first birthday combo has no text');
+      await J.click('#results .combo button[data-act="collect"] >> nth=0', 'collect the first birthday combo'); await J.expect((t) => t.includes(combo), 'the combo in the collected box');
+      const u = await J.shareLink('#share'); if (!/[?&]c=/.test(u) || !/[?&]q=birthday/.test(u)) throw new Failed('the link does not carry the search and the collection: ' + u);
+      await J.open('/word-count/'); await J.open(u);
+      await J.expect((t) => /\b\d+ combos for birthday\b/.test(t), 'the birthday search back from its link');
+      const box = await J.page.inputValue('#build').catch(() => ''); if (!box.includes(combo)) throw new Failed('the collected box came back without the combo: "' + box.slice(0, 80) + '"');
+    },
+  },
   // paint (/paint/, rebuilt 2026-10-28 against the colour-by-number sites): every step is a tap, a key or a file a person would use
   paint: {
     'choose a picture from the library': async (J) => { await J.open('/paint/'); await J.click('#cats button >> text="Animals"', 'choose the Animals category'); await J.expect((t) => /Sleepy cat/.test(t) && !/The Starry Night/.test(t.slice(0, t.indexOf('Upload your own image'))), 'only the animal pictures listed'); await J.click('#templates .card[data-id="cat"]', 'tap the Sleepy cat picture'); await J.expect(/Sleepy cat[\s\S]*0 of [\d,]+ pixels painted · 0 of \d+ areas/, 'the cat open with nothing painted yet'); },

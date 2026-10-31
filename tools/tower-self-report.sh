@@ -4,6 +4,8 @@
 # the newest main when another push won the race (the append-only files are re-appended, never merged by hand).
 LINE=$(node -e "const s=JSON.parse(require('fs').readFileSync('domains/tower-self.json','utf8'));const r=(s.runs||[]).slice(-1)[0];console.log(r?r.line:'')")
 [ -n "$LINE" ] || { echo "no report line"; exit 0; }
+# a lap that changed nothing (tools/tower-self.mjs isNoop) is kept in domains/tower-self.json only: the agent log and the growth ledger carry growth
+NOOP=$(node -e "const s=JSON.parse(require('fs').readFileSync('domains/tower-self.json','utf8'));const r=(s.runs||[]).slice(-1)[0];console.log(r&&r.noop?'yes':'')")
 git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 mkdir -p "$RUNNER_TEMP/rep"; cp domains/tower-self.json void-live-deploy/tower.evidence.json void-live-deploy/sw.js "$RUNNER_TEMP/rep/"
 pages=$(node tools/tower-self.mjs paths); for p in $pages; do mkdir -p "$RUNNER_TEMP/rep/$p"; cp "$p/index.html" "$RUNNER_TEMP/rep/$p/" 2>/dev/null; done
@@ -15,8 +17,10 @@ for i in 1 2 3 4 5; do
     node tools/gate-land.mjs put "$RUNNER_TEMP/mine.json" 2>/dev/null || true
     for p in $pages; do cp "$RUNNER_TEMP/rep/$p/index.html" "$p/" 2>/dev/null; done
   fi
-  printf '%s | verse | build | %s\n' "$TS" "$LINE" >> domains/void.agents.log.md
-  node tools/grow.mjs build "$LINE" --by verse >/dev/null || true
+  if [ -z "$NOOP" ]; then
+    printf '%s | verse | build | %s\n' "$TS" "$LINE" >> domains/void.agents.log.md
+    node tools/grow.mjs build "$LINE" --by verse >/dev/null || true
+  fi
   git add domains/tower-self.json domains/void.agents.log.md void-live-deploy/void.growth.json void-live-deploy/tower.evidence.json void-live-deploy/sw.js $pages
   git add void-live-deploy/tower.shots void-live-deploy/tower.icons 2>/dev/null || true
   git diff --cached --quiet && { echo "nothing to report"; exit 0; }

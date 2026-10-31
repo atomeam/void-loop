@@ -5,9 +5,15 @@
  * The board stands in the void in 3D (mini/battleship.js: the folding case, your ocean flat, your target board upright),
  * lifted by skills/lift3d.js with this card beside it; the flat grids here are the fallback.
  */
-import * as B from './battleship-rules.js';
-import { lift3d } from './lift3d.js';
-import { rulesLine } from './game-rules-line.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules, the 3D lift and the rules line load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let B, lift3d, rulesLine;
+export const ready = loadLater(() => Promise.all([
+  import('./battleship-rules.js'),
+  import('./lift3d.js'),
+  import('./game-rules-line.js'),
+]).then(([b, l, r]) => { B = b; ({ lift3d } = l); ({ rulesLine } = r); }));
 
 export function battleshipOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -87,6 +93,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!battleshipOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'battleship');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'battleship'; }
   api.summon('battleship', { state: B.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 40 });
@@ -101,5 +108,6 @@ export default {
   nearMisses: ['battleship', 'what is a battleship', 'battleship movie', 'play chess'],
   match(lower, text) { return !!battleshipOf(text); },
   run,
-  stageKinds: { battleship: { mount } },
+  ready,
+  stageKinds: { battleship: { mount: ready.mount(mount) } },
 };

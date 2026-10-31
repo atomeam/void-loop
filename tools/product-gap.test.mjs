@@ -49,3 +49,8 @@ const src = readFileSync(new URL('../void-live-deploy/lib/product-gap.js', impor
 assert.doesNotMatch(src, /cf-connecting-ip|void_gap_asks|sha\(/, 'no per-person or per-ask records');
 assert.match(readFileSync(new URL('../void-live-deploy/privacy/index.html', import.meta.url), 'utf8'), /Product topics/);
 console.log('product-gap: ok (topic only, plain count, threshold queues once, privacy line)');
+
+// "how much" is a buy only when it asks a price (2026-10-30: "how much luggage weight allowed" was noted as a product gap)
+{ const { isBuyAsk } = await import('../void-live-deploy/lib/gumroad.js');
+  for (const a of ['how much for logo design?', 'how much is a website', 'how much do you charge for a logo', 'how much does a logo cost', 'buy a template']) assert.ok(isBuyAsk(a), 'a buy ask: ' + a);
+  for (const a of ['how much luggage weight allowed', 'how much water should i drink', 'how much protein in an egg']) assert.ok(!isBuyAsk(a), 'not a buy ask: ' + a); }

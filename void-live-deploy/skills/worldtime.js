@@ -124,6 +124,9 @@ function diffWords(min) {
   return n + (h === 1 ? ' hour ' : ' hours ') + (min > 0 ? 'ahead of you' : 'behind you');
 }
 const label = (r) => r.name + (r.admin1 && r.admin1 !== r.name ? ', ' + r.admin1 : '') + (r.country ? ', ' + r.country : '');
+// the card's full link opens the Time zones page on the same places: "name@Area/Zone" keeps the name the geocoder found (Kyoto stays Kyoto, not
+// its zone's city) and the zone it is in (lib/zones.js findPlace reads it). Pure.
+export const timePage = (places) => '/time/?c=' + encodeURIComponent(places.map((p) => String(p.name).replace(/[,;|@]/g, ' ').trim() + '@' + p.tz).join(','));
 const SRC = '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (place and time zone) · clock from your browser</div>';
 
 // Which of the places with this name was meant. "Springfield, Illinois" (or ", IL", ", US") narrows by state or country.
@@ -204,6 +207,7 @@ async function run(text, api) {
         rows = found.filter((x) => x.g.r || x.g.choices).map((x) => { const r = x.g.r || x.g.choices[0]; return { name: r.name, tz: r.timezone }; });
         if (!rows.length) return missing(miss[0] || q.places[0]);
         el._missing = miss;
+        el.dataset.page = timePage(rows);
       }
       rows.push({ name: 'You', tz: youTz, you: true });
       const draw = () => {
@@ -230,6 +234,7 @@ async function run(text, api) {
       if (choices) return choose(q.place, choices);
       if (!r) return missing(q.place);
       const off = offsetMin(r.timezone, now), youOff = offsetMin(youTz, now);
+      el.dataset.page = timePage([{ name: r.name, tz: r.timezone }]);
       el.innerHTML = '<h2 class="wt">' + esc(label(r)) + '</h2>'
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + esc(fmtTime(r.timezone, now)) + '</div>'
         + '<div class="sub">' + esc(fmtDay(r.timezone, now)) + ' · ' + esc(r.timezone.replace(/_/g, ' ')) + ' · ' + gmt(off) + ' · ' + esc(diffWords(off - youOff)) + '</div>'
@@ -248,6 +253,7 @@ async function run(text, api) {
       const a = ga.r, b = gb.r;
       if (!a) return missing(q.from);
       if (!b) return missing(q.to);
+      el.dataset.page = timePage([{ name: a.name, tz: a.timezone }, { name: b.name, tz: b.timezone }]);
       const [y, mo, d] = ymdIn(a.timezone, now);
       const at = nowMode ? now : instantIn(a.timezone, y, mo, d, hm[0], hm[1]);
       const gapMin = offsetMin(b.timezone, at) - offsetMin(a.timezone, at), gh = Math.floor(Math.abs(gapMin) / 60), gm = Math.abs(gapMin) % 60;
@@ -271,6 +277,7 @@ async function run(text, api) {
     if (!api._pageStill(el)) return 'worldtime';
     const days = (w.daily && w.daily.time) || [], list = (w.daily && w.daily[q.which]) || [];
     if (!list.length) throw new Error('no sun times');
+    el.dataset.page = timePage([{ name: r.name, tz: r.timezone }]); // the Time zones page shows the same sunrise and sunset, and the rest of the day
     const toInstant = (s) => { const m = s.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/); return instantIn(r.timezone, +m[1], +m[2] - 1, +m[3], +m[4], +m[5]); };
     let i = q.tomorrow ? 1 : 0;
     if (!q.tomorrow && list[1] && toInstant(list[0]) < now) i = 1; // today's already passed: show the next one

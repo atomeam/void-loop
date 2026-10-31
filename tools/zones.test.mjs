@@ -1,8 +1,8 @@
 // lib/zones.js: the time in any city, a converter and a meeting planner, all from the browser's own zone data (Intl), daylight saving included
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { findPlace, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
-import { sunDay } from '../void-live-deploy/lib/sun-day.js';
+import { findPlace, placeAt, cityName, cityOf, wall, clockText, dst, gapText, instantOf, convert, planner, bestSpans, offsetMin, coordsOf, countryOf, lengthText, dateSpan, businessDay } from '../void-live-deploy/lib/zones.js';
+import { sunDay, moonOfDay } from '../void-live-deploy/lib/sun-day.js';
 
 test('a city, a zone id, an alias, an abbreviation or an offset finds its zone; nonsense finds none', () => {
   assert.deepEqual(findPlace('tokyo'), { name: 'Tokyo', tz: 'Asia/Tokyo' }); assert.equal(findPlace('Asia/Tokyo').tz, 'Asia/Tokyo'); assert.equal(findPlace('time in Tokyo').tz, 'Asia/Tokyo');
@@ -56,6 +56,9 @@ test('solar noon, the three twilights and golden hour within 2 minutes of NOAA; 
   assert.ok(s.noonAlt > 77 && s.noonAlt < 78.5, 'the sun 77.7° high at the solstice (90 - 35.69 + 23.44)');
   const full = sunDay({ name: 'Tokyo', tz }, [2026, 9, 26]).moon; assert.equal(full.name, 'full moon'); assert.ok(full.illumination > 97, 'the full moon of 26 October 2026: ' + full.illumination);
   assert.ok(full.rise || full.set, 'a moonrise or moonset');
+  // the phase needs no city: a time zone with no place on the map gets the same moon as a city on the same day and the same noon
+  assert.deepEqual(moonOfDay('Asia/Tokyo', [2026, 9, 26]), { name: full.name, illumination: full.illumination }, 'the phase without a city');
+  assert.equal(moonOfDay('Etc/UTC', [2026, 9, 26]).name, 'full moon', 'plain UTC on the full moon of 26 October 2026');
   assert.equal(sunDay({ name: 'Longyearbyen', tz: 'Arctic/Longyearbyen' }, [2026, 5, 21]).astronomical.dawn, null, 'never dark at midnight sun');
 });
 test('date to date: the start day counted, the end not, weekdays and weekends; business days on and back (weekends only)', () => {
@@ -73,4 +76,22 @@ test('the next clock change: forward in spring, back in autumn, to the minute; n
   assert.equal(lon.at.toISOString(), '2026-10-25T01:00:00.000Z'); assert.equal(lon.forward, false); assert.deepEqual([lon.before, lon.after], [[2, 0], [1, 0]]);
   assert.equal(nextChange('Asia/Tokyo', new Date(Date.UTC(2026, 0, 1))), null);
   const syd = nextChange('Australia/Sydney', new Date(Date.UTC(2026, 0, 1))); assert.equal(syd.at.toISOString(), '2026-04-04T16:00:00.000Z'); assert.equal(syd.forward, false);
+});
+
+test('a link place "City@Area/Zone" keeps its name and zone; no "@", an empty name or a zone the clock does not know gives none', () => {
+  assert.deepEqual(placeAt('Kahului@Pacific/Honolulu'), { name: 'Kahului', tz: 'Pacific/Honolulu' }); assert.deepEqual(placeAt('Kolkata@Asia/Kolkata'), { name: 'Kolkata', tz: 'Asia/Kolkata' });
+  for (const x of ['London', '@UTC', 'x@Mars/Olympus', 'x@<b>', 'x@', '']) assert.equal(placeAt(x), null, x);
+  assert.equal(placeAt('a'.repeat(80) + '@UTC').name.length, 60);
+});
+
+test('a clock as a city another page can look up: its own name, the zone city for a short form or your own clock, none for an offset', () => {
+  // the country of a zone, for the pages that open what is open in a country (/time/ -> /jobs/?cc=): every zone this engine knows has one, or is no one country's
+  assert.equal(countryOf('Asia/Tokyo'), 'JP'); assert.equal(countryOf('Europe/London'), 'GB'); assert.equal(countryOf('America/Chicago'), 'US');
+  assert.equal(countryOf('Asia/Calcutta'), 'IN', 'the older name a browser may still give'); assert.equal(countryOf('Europe/Kiev'), 'UA'); assert.equal(countryOf('America/Argentina/Buenos_Aires'), 'AR');
+  for (const no of ['UTC', 'Etc/GMT+3', '', null, 'constructor', '__proto__', 'Mars/Olympus']) assert.equal(countryOf(no), '', String(no) + ' is no country');
+  for (const z of Intl.supportedValuesOf('timeZone')) if (!/^(UTC|Etc\/|GMT)/.test(z)) assert.match(countryOf(z), /^[A-Z]{2}$/, z + ' has a country');
+  assert.equal(cityName({ name: 'Kyoto', tz: 'Asia/Tokyo' }), 'Kyoto');
+  assert.equal(cityName({ name: 'NYC', tz: 'America/New_York' }), 'New York');
+  assert.equal(cityName({ name: 'Your time (Los Angeles)', tz: 'America/Los_Angeles', you: true }), 'Los Angeles');
+  for (const p of [{ name: 'UTC+9', tz: 'Etc/GMT-9' }, { name: 'UTC', tz: 'UTC' }, null, {}]) assert.equal(cityName(p), '', JSON.stringify(p));
 });

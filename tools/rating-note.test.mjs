@@ -20,6 +20,8 @@ test('only experiment and tested speak; checked and proven stay quiet', () => {
 
 test('the real ratings file has names this can find', () => {
   const real = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
-  const any = real.families.flatMap((f) => f.skills).find((s) => THIN.includes(s.tier));
-  assert.ok(any, 'some skill is rated thin'); assert.ok(noteText(ratingOf(real, any.name)));
+  const all = real.families.flatMap((f) => f.skills);
+  assert.ok(all.length > 100, 'the file lists the skills');
+  // 2026-10-30: every skill reached checked or proven, so a thin one is not always there; each skill's note matches its tier
+  for (const s of all) assert.equal(!!noteText(ratingOf(real, s.name)), THIN.includes(s.tier), s.name);
 });

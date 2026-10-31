@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --energy: 0.5; --fitness: 0.5; }
+body { margin:0; background: hsl(var(--hue), 40%, 8%); color:#eee; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; z-index:1; }
+#tiles { position:absolute; inset:0; z-index:2; pointer-events:none; }
+.tile { position:absolute; pointer-events:auto; background:rgba(0,0,0,0.6); border:1px solid hsla(var(--hue),80%,60%,0.5); border-radius:8px; padding:8px; min-width:120px; min-height:60px; color:#fff; resize:both; overflow:auto; cursor:move; }
+#ui { position:absolute; top:10px; left:10px; z-index:3; background:rgba(0,0,0,0.7); padding:10px; border-radius:8px; font-size:12px; max-width:280px; }
+button { margin:2px; padding:4px 8px; background:#333; color:#fff; border:1px solid #666; border-radius:4px; cursor:pointer; }
+button:hover { background:#555; }
+#status { font-size:11px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-evo-particle-spatial-audio-dom-mind · Verse lab</title>
+<meta name="description" content="WebGPU Evo-Particle Spatial Audio DOM-Pusher Mind: GPU compute particles (WebGPU storage buffers + compute shader for integration) each carry a short genome of">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-evo-particle-spatial-audio-dom-mind · Verse lab">
+<meta property="og:description" content="WebGPU Evo-Particle Spatial Audio DOM-Pusher Mind: GPU compute particles (WebGPU storage buffers + compute shader for integration) each carry a short genome of">
+<meta property="og:url" content="https://a-to-mind.com/lab/f469-webgpu-evo-particle-spatial-audio-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f469-webgpu-evo-particle-spatial-audio-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="tiles"></div>
+<div id="ui">
+  <strong>F469 Evo-Particle Spatial Audio DOM Mind</strong><br>
+  Pointer attracts. Click particle to like (boost fitness). Drag tiles. Seal to persist.<br>
+  <button id="seal">Seal Living State</button>
+  <button id="restore">Restore</button>
+  <button id="audio">Toggle Audio</button>
+  <div id="status">Initializing…</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-evo-particle-spatial-audio-dom-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

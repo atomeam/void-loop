@@ -12,16 +12,18 @@
 // browser and today's date (some answers count days). The next --score run with the same hash prints that result at once
 // instead of replaying 1900 asks: a change that never touches the page (a server route, a doc, a workflow) costs nothing.
 // Only a passing run is remembered, so a failure is never skipped; CI and the weekly watchdog still run the real thing.
-// Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
+// Asks run BENCH_PAR at a time (default 6). Each page slot keeps one browser profile, so Verse's files load and compile from its caches after the first ask,
+// and each ask starts with the site's storage cleared (cookies, localStorage, IndexedDB, Cache Storage), so the order and the result don't change;
 // each waits for the page to log its answer (at most 4 s) and, when an ask has "says", for that value to show (at most 2.5 s more):
 // no fixed sleeps, so a fast answer is read at once and a busy machine still doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
-import { envName, latencyOf, assess } from './bench-load.mjs';
+import { envName, latencyOf, assess, againOf } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
+import { wikiquote, markets, openLibrary } from './bench-standins.mjs';
 // how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
 // (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
 const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
@@ -43,14 +45,14 @@ if (probeFile) { const have = new Set(JSON.parse(fs.readFileSync(path.join(here,
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
 // the cache key: every file the benchmark serves or reads, plus the browser and the day
-function benchKey() {
+function benchKey(withDay = true) {
   const h = crypto.createHash('sha256');
   const walk = (d) => { for (const n of fs.readdirSync(d).sort()) { const f = path.join(d, n), rel = path.relative(root, f);
     if (rel === 'functions' || n.startsWith('.')) continue;
     if (fs.statSync(f).isDirectory()) walk(f); else { h.update(rel + '\0'); h.update(fs.readFileSync(f)); } } };
   walk(root);
   for (const f of ['bench.json', 'bench.mjs']) h.update(fs.readFileSync(path.join(here, f)));
-  h.update(String(exeForKey()) + '\0' + new Date().toISOString().slice(0, 10));
+  h.update(String(exeForKey()) + '\0' + (withDay ? new Date().toISOString().slice(0, 10) : ''));
   return h.digest('hex');
 }
 const exeForKey = () => [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
@@ -60,15 +62,32 @@ const key = cacheable ? benchKey() : '';
 if (cacheable && !process.argv.includes('--fresh')) { try { const c = JSON.parse(fs.readFileSync(CACHE, 'utf8'));
   if (c.key === key && c.result) { console.log(JSON.stringify({ ...c.result, cached: c.at })); process.exit(0); } } catch (_) {} }
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json' };
-const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html'; const f = path.join(root, p);
-  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(res); }).listen(0);
+// the files do not change during a run, so the browser may keep them (cache-control); /__blank is the empty page an ask's storage is cleared on
+const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html';
+  if (p === '/__blank') { res.writeHead(200, { 'content-type': 'text/html' }); return res.end('<!doctype html><title>blank</title>'); } const f = path.join(root, p);
+  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain', 'cache-control': 'max-age=3600' }); fs.createReadStream(f).pipe(res); }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
-const browser = await chromium.launch({ executablePath: exe, headless: true });
+// no host but this machine resolves: every outside service is a stand-in below, and one that has none (a worker's request, a map in an iframe) fails at once
+// 2026-10-29: --disable-gl-drawing-for-tests was tried (#1627): an ask took 1.40 s on 3 pages, not 0.89 s, so it is gone again
+// 2026-10-29: --disable-gpu was tried (#1631): the GPU process still took 1.68 s of CPU for each ask and an ask took 0.93 s, so it is gone again
+const ARGS = ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1'];
+// The window is 800 by 540 (2026-10-29), not Playwright's 1280 by 720. With no GPU on a runner, every frame is drawn and composited in
+// software, and the GPU process took 1.68 s of CPU for each ask (#1631), more than the renderers. 800 is wider than every breakpoint in
+// index.html (700 at most), so the page keeps its desktop layout with 47% of the pixels.
+const VIEWPORT = { width: 800, height: 540 };
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+// A second run in the same CI run, after an inconclusive first one, runs again only the asks the first run missed (againOf, tools/bench-load.mjs).
+// The first run's results are kept for that in AGAIN_FILE, and the file is used once. Its key leaves out the day: on 2026-10-30 the first run
+// ended after midnight UTC, the day in `key` changed, and the second run ran all the asks again.
+const AGAIN_FILE = CACHE.replace('void-bench-pass-', 'void-bench-again-'), ciRun = process.env.GITHUB_RUN_ID ? process.env.GITHUB_RUN_ID + '.' + (process.env.GITHUB_RUN_ATTEMPT || '1') : '';
+const againKey = cacheable && ciRun ? benchKey(false) : ''; let prior = null; if (againKey) { try { prior = JSON.parse(fs.readFileSync(AGAIN_FILE, 'utf8')); } catch (_) {} try { fs.rmSync(AGAIN_FILE, { force: true }); } catch (_) {} }
+const again = againOf(prior, todo, { key: againKey, run: ciRun });
+if (again) { prior.out.forEach((x, i) => { out[i] = x; }); console.error('bench: second run after the inconclusive one of ' + prior.at + ': ' + again.length + ' of ' + todo.length + ' asks run again (the ones it missed); the rest keep their result'); }
+const order = again || todo.map((_, i) => i);
 // --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
 // right skill gave, with no "says" to check it, is read off the page and asked: is this card about the ask's subject? Reported
 // apart (tools/bench.ground.json); it never changes the score. A skill's trigger words are read off its own asks in bench.json.
@@ -76,19 +95,62 @@ const GROUND = process.argv.includes('--ground');
 const triggersOf = new Map();
 if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
   for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
-async function one({ ask: a, want, says, before }) {
-  // a light page. No service worker: on 127.0.0.1 the page registers /sw.js, and each new context installed it again, which fetches every
-  // tool page the worker keeps offline (sw.js KEPT, since 2026-10-24) while the ask runs. That is the cost that put the daily run on main past its
-  // 40 min (cancelled every day since 2026-10-22, last pass 2026-10-17). No ask is judged on the worker: it is network first, and on a first load it
-  // controls nothing. Also reduced motion (the page stops its idle animations, as for a person who asks for that) and no pictures, fonts or media
-  const ctx = await browser.newContext({ reducedMotion: 'reduce', serviceWorkers: 'block' }); const miss = [];
-  await ctx.route(/^http:\/\/127\.0\.0\.1:\d+\/(?!api\/)/, (r) => (/^(image|font|media)$/.test(r.request().resourceType()) ? r.fulfill({ status: 204, body: '' }) : r.fallback()));
-  await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
+// A page slot: one browser context for the whole run. Its cache is the point: a route (context.route or page.route) turns the browser cache
+// off while it intercepts (Playwright sets Network.setCacheDisabled), and each ask then loaded Verse's 320 skill files afresh: on CI that was
+// 3.0 s to open the page and 2.5 s to the answer, one ask in four waited the full 4 s, and the daily run stopped at its 40 min (cancelled every day
+// since 2026-10-22). So the stand-ins go through the page's own DevTools session (Fetch, https and /api only), and the cache stays on.
+// No service worker: on 127.0.0.1 the page registers /sw.js, which fetches every tool page it keeps offline. No ask is judged on it.
+// Reduced motion: the page stops its idle animations, as it does for a person who asks for that.
+// A profile on disk, not an incognito context (browser.newContext): Chromium keeps no compiled-code cache for an incognito profile, so each ask
+// compiled the 320 skill files again. With the cache on (2026-10-29, #1622) the page opened in 1.0 s, but the answer still took 3.0 s and the run
+// still stopped at 1600 of 3187 asks. Each slot is its own browser on its own empty profile, removed at the end of the run.
+const slotDirs = [];
+const slot = () => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-bench-slot-')); slotDirs.push(dir);
+  return chromium.launchPersistentContext(dir, { executablePath: exe, headless: true, args: ARGS, viewport: VIEWPORT, reducedMotion: 'reduce', serviceWorkers: 'block' }); };
+const CLEAR_STORAGE = async () => { localStorage.clear(); sessionStorage.clear();
+  for (const d of (indexedDB.databases ? await indexedDB.databases() : [])) if (d.name) await new Promise((r) => { const q = indexedDB.deleteDatabase(d.name); q.onsuccess = q.onerror = q.onblocked = () => r(); });
+  if (self.caches) for (const k of await caches.keys()) await caches.delete(k); };
+const header = (h, k) => { for (const [n, v] of Object.entries(h || {})) if (n.toLowerCase() === k) return v; return ''; };
+// answers one paused request with a stand-in: `handler` is written as a route handler (r.request().url(), r.fulfill(...)) and returns what it fulfills.
+// A request from the page to another origin gets the CORS headers Playwright's route.fulfill adds, and a preflight is allowed, as Playwright does.
+function standIn(cdp, e, handler) {
+  const rq = e.request, origin = header(rq.headers, 'origin'), cross = !!origin && !rq.url.startsWith(origin + '/');
+  const cors = cross ? [{ name: 'access-control-allow-origin', value: origin }, { name: 'access-control-allow-credentials', value: 'true' }, { name: 'vary', value: 'Origin' }] : [];
+  let res;
+  if (rq.method === 'OPTIONS') { const h = header(rq.headers, 'access-control-request-headers');
+    res = { status: 204, body: '', headers: [...cors, { name: 'access-control-allow-methods', value: header(rq.headers, 'access-control-request-method') || 'GET, POST, OPTIONS, DELETE' }, ...(h ? [{ name: 'access-control-allow-headers', value: h }] : [])] };
+  } else { const post = rq.postData || (rq.postDataEntries || []).map((x) => Buffer.from(x.bytes || '', 'base64').toString()).join('');
+    let r = {}; try { r = handler({ request: () => ({ url: () => rq.url, postData: () => post }), fulfill: (x) => x }) || {}; } catch (_) { r = { status: 204 }; }
+    res = { status: r.status || 200, body: r.body || '', headers: [...cors, ...(r.contentType ? [{ name: 'content-type', value: r.contentType }] : [])] }; }
+  cdp.send('Fetch.fulfillRequest', { requestId: e.requestId, responseCode: res.status, responseHeaders: res.headers, body: Buffer.from(res.body).toString('base64') }).catch(() => {});
+}
+const pace = { load: 0, answer: 0, full: 0, early: 0, task: 0, script: 0, layout: 0, style: 0 }; // where the time goes, for the pace line below
+// One tab for each slot, for the whole run (2026-10-29). A new tab for each ask started a new renderer process each time, and the runner spent
+// about 5.5 s of CPU on an ask: 2.4 s in the renderers, 2.2 s in Chrome's other processes. In the same tab Verse is loaded afresh for each ask
+// (a new document: no script state is kept), its storage and cookies are cleared first as before, and its files come from the same renderer's
+// memory. The stand-ins answer for the ask in progress (ctx.handlers). A tab that crashes is replaced.
+async function tabOf(ctx) {
+  if (ctx.tab && !ctx.tab.p.isClosed() && !ctx.tab.crashed) return ctx.tab;
+  const p = await ctx.newPage(), cdp = await ctx.newCDPSession(p), tab = { p, cdp, crashed: false, metrics: {} };
+  p.on('crash', () => { tab.crashed = true; });
+  cdp.on('Fetch.requestPaused', (e) => standIn(cdp, e, /^http:\/\/127\.0\.0\.1:\d+\/api\//.test(e.request.url) ? ctx.handlers.api : ctx.handlers.external));
+  await cdp.send('Fetch.enable', { patterns: [{ urlPattern: 'https://*' }, { urlPattern: 'http://127.0.0.1:*/api/*' }] });
+  await cdp.send('Performance.enable').catch(() => {}); // the page's own CPU time, read after each ask, for the pace line
+  return (ctx.tab = tab);
+}
+async function one(ctx, { ask: a, want, says, before }) {
+  const tOpen = Date.now(); const miss = [];
+  // the stand-ins: outside services, then Verse's own /api (served through the page's DevTools session, see standIn)
+  const external = (r) => { const u = r.request().url();
+    const wq = wikiquote(u); if (wq) return r.fulfill(json(wq)); // before the Wikipedia search below, which shares its /w/api.php path
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));
     // the place found is the place asked for (the coordinates and the rest stay the fixed stand-in), so a card names what was asked
     if (u.includes('geocoding-api.open-meteo.com')) { const q = String(new URL(u).searchParams.get('name') || 'Paris').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
       return r.fulfill(json({ results: [{ name, country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] })); }
+    // the eat skill's map search (skills/eat.js findPlace): one restaurant named for what was asked, so "order food from lovebird" finds a place to order from
+    if (u.includes('nominatim.openstreetmap.org/search')) { const q = String(new URL(u).searchParams.get('q') || 'Restaurant').trim(); const name = q.replace(/\b\w/g, (c) => c.toUpperCase());
+      return r.fulfill(json([{ name, type: 'restaurant', display_name: name + ', Main Street', lat: '48.85', lon: '2.35', address: { house_number: '1', road: 'Main Street' }, extratags: { cuisine: 'chicken' } }])); }
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
@@ -114,30 +176,40 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked
       return r.fulfill(json(Object.fromEntries(ids.map((id) => [id, { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 }])))); }
     if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
+    const ol = openLibrary(u); if (ol) return r.fulfill(json(ol)); // a title search answers with that book
     if (u.includes('openlibrary.org/search.json')) return r.fulfill(json({ docs: [{ key: '/works/OL1W', title: 'Kindred', author_name: ['Octavia E. Butler'], first_publish_year: 1979, subject: ['Science fiction', 'Time travel'] }, { key: '/works/OL2W', title: 'Hyperion', author_name: ['Dan Simmons'], first_publish_year: 1989, subject: ['Science fiction'] }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
-    return r.fulfill({ status: 204, body: '' }); });
-  await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
+    return r.fulfill({ status: 204, body: '' }); };
+  const api = (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
     // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
     if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
-    return r.fulfill({ status: 204, body: '' }); });
+    const mk = markets(u); if (mk) return r.fulfill(json(mk)); // a stock or index card reads its price here (skills/stocks.js)
+    return r.fulfill({ status: 204, body: '' }); };
+  ctx.handlers = { api, external }; const tab = await tabOf(ctx), { p, cdp } = tab;
+  for (const q of ctx.pages()) if (q !== p) await q.close().catch(() => {}); // a window an earlier ask opened
+  // the ask starts as on a first visit: the earlier ask's cookies and storage go, on an empty page of the same origin, before Verse loads
+  await ctx.clearCookies(); await p.goto(base + '__blank'); await p.evaluate(CLEAR_STORAGE);
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
-  const p = await ctx.newPage(); await p.goto(base);
+  await p.goto(base);
+  pace.load += Date.now() - tOpen;
   const logged = (q, ms) => p.waitForFunction((q) => { const w = document.getElementById('whisper'); if (w && w.textContent) window.__said = w.textContent; // keep the last whisper: it fades
     try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) && l.some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, q, { timeout: ms, polling: 50 }).catch(() => {});
   // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
   for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400);
     // Esc only closes an open page: pressed after every setup ask it is a double Esc (two within 450 ms), which undoes the last thing made, so a fast run lost the sticky a group or label ask needed
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
-  await p.evaluate(() => { window.__said = ''; });
+  // the echo card waits 4 s after the first answer before it asks for the second view (skills/echo-disagrees.js), as long as this
+  // wait for the log: the ask logged too late and read "said". Its own test knob takes the pause out here, as tools/test_void.mjs does.
+  await p.evaluate(() => { window.__said = ''; window.__a2mEchoDelay = 0; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
+  if (!(await p.evaluate(() => document.documentElement.dataset.skills === 'ready').catch(() => false))) pace.early++; // asked before every skill file was in: the answer may wait on them
   const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
-  const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
+  const ms = Date.now() - t0; pace.answer += ms; if (ms >= ASK_WAIT_MS) pace.full++; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   // a plain want ("timer", "list", "calc") is the ability, whichever code answers it: the page's own parser used to log "timer",
   // the skill it moved out to (cleanup step 6) logs "skill:timer", and both are the timer answering (2026-10-16: 20 first-session
@@ -158,24 +230,41 @@ async function one({ ask: a, want, says, before }) {
       const g = grounded(a, said + '\n' + card, triggersOf.get(skill)); if (g.subject.length) ground = { skill, ok: g.ok, missing: g.missing }; } }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
-  await ctx.close();
+  // the CPU this page used, by kind (seconds, from the browser, counted up across the tab's asks): where an ask's time goes when the machine is the limit
+  const m = await cdp.send('Performance.getMetrics').then((r) => Object.fromEntries(r.metrics.map((x) => [x.name, x.value]))).catch(() => ({}));
+  const grew = (k) => { const now = m[k] || 0, was = tab.metrics[k] || 0; tab.metrics[k] = now; return 1000 * (now >= was ? now - was : now); };
+  pace.task += grew('TaskDuration'); pace.script += grew('ScriptDuration'); pace.layout += grew('LayoutDuration'); pace.style += grew('RecalcStyleDuration');
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
 // default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
+// 2026-10-29: one page per core was tried (#1626): the load average went to 20 on 4 cores and an ask took 1.05 s, not 0.89 s, so it is one fewer again.
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
-// the pace on stderr every 500 asks, so a run cut off by a time limit still shows how far it got and how fast
+// the pace on stderr every 100 asks, so a run cut off by a time limit still shows how far it got, how fast, and where the time goes
 let done = 0; const began = Date.now();
-await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]);
-  if (++done % 500 === 0) console.error('bench: ' + done + ' of ' + todo.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s'); } }));
+// the CPU of each kind of process (Linux /proc, sampled each second, so a page's renderer that exits keeps what it used): where the machine's time goes
+const procCpu = { renderer: 0, gpu: 0, utility: 0, browser: 0, bench: 0 }, procSeen = new Map(); let idle0 = null, idleNow = null;
+const cpuOf = (st) => { const f = st.slice(st.lastIndexOf(')') + 2).split(' '); return (+f[11] + +f[12]) * 10; }; // utime + stime, at 100 ticks a second, in ms
+const procTimes = () => { try { const c = fs.readFileSync('/proc/stat', 'utf8').split('\n')[0].trim().split(/\s+/).slice(1).map(Number); return { idle: c[3] + c[4], all: c.reduce((a, b) => a + b, 0) }; } catch (_) { return null; } };
+const sampleCpu = () => { let pids = []; try { pids = fs.readdirSync('/proc').filter((d) => /^\d+$/.test(d)); } catch (_) { return; }
+  for (const pid of pids) { try { const cmd = fs.readFileSync('/proc/' + pid + '/cmdline', 'utf8'); const kind = +pid === process.pid ? 'bench' : !/chrom/i.test(cmd.split('\0')[0]) ? '' : /--type=renderer/.test(cmd) ? 'renderer' : /--type=gpu-process/.test(cmd) ? 'gpu' : /--type=/.test(cmd) ? 'utility' : 'browser';
+    if (!kind) continue; const ms = cpuOf(fs.readFileSync('/proc/' + pid + '/stat', 'utf8')), was = procSeen.get(pid) || 0; procCpu[kind] += Math.max(0, ms - was); procSeen.set(pid, ms); } catch (_) {} }
+  idleNow = procTimes(); if (!idle0) idle0 = idleNow; };
+const sampler = fs.existsSync('/proc/stat') ? setInterval(sampleCpu, 1000) : null; if (sampler) sampler.unref(); // never what keeps the run alive
+const procLine = () => { if (!sampler) return ''; const per = (k) => Math.round(procCpu[k] / done); const idle = idle0 && idleNow && idleNow.all > idle0.all ? Math.round(100 * (idleNow.idle - idle0.idle) / (idleNow.all - idle0.all)) : 0;
+  return '; machine CPU per ask: renderers ' + per('renderer') + ' ms, gpu ' + per('gpu') + ', other chrome ' + per('utility') + ', chrome main ' + per('browser') + ', bench ' + per('bench') + ', idle ' + idle + '%'; };
+await Promise.all(Array.from({ length: Math.min(PAR, order.length) }, async () => { const ctx = await slot(); try { while (next < order.length) { const i = order[next++]; out[i] = await one(ctx, todo[i]);
+  if (++done % 100 === 0) console.error('bench: ' + done + ' of ' + order.length + ' asks in ' + Math.round((Date.now() - began) / 1000) + ' s on ' + PAR + ' pages (' + os.cpus().length + ' cores): page open '
+    + Math.round(pace.load / done) + ' ms, answer ' + Math.round(pace.answer / done) + ' ms on average, ' + pace.full + ' waited the full ' + ASK_WAIT_MS + ' ms, ' + pace.early + ' asked before the skills were in, load ' + os.loadavg()[0].toFixed(1)
+    + '; page CPU per ask ' + Math.round(pace.task / done) + ' ms (script ' + Math.round(pace.script / done) + ', layout ' + Math.round(pace.layout / done) + ', style ' + Math.round(pace.style / done) + ')' + procLine()); } } finally { await ctx.close(); } }));
 // every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
 const full = !probeFile && !lastN && !process.env.BENCH_ASKS; // a partial replay is not scored against the floor, unless a floor is named
 const a = probeFile ? { score: out.filter((x) => x.right).length, total: out.length, wrong: [], loadMisses: [], unreplayed: 0, inconclusive: false, note: '', failed: false }
-  : await assess({ out, replay: async (i) => (await one(todo[i])).right, floor: full || process.env.BENCH_BEST ? best : null, latency, baseline: best.latency && best.latency[env], pages: PAR });
-await browser.close(); server.close();
+  : await assess({ out, replay: async (i) => { const c = await slot(); try { return (await one(c, todo[i])).right; } finally { await c.close(); } }, floor: full || process.env.BENCH_BEST ? best : null, latency, baseline: best.latency && best.latency[env], pages: PAR });
+if (sampler) clearInterval(sampler); server.close(); for (const d of slotDirs) fs.rmSync(d, { recursive: true, force: true });
 const loadSet = new Set(a.loadMisses);
 for (const x of out) if (!x.right) x.alone = loadSet.has(x.ask + ' -> ' + x.by) ? 'passed alone (load)' : 'misses alone';
 if (a.inconclusive) console.error(a.note);
@@ -184,7 +273,9 @@ if (process.argv.includes('--score')) {
   const result = { score: a.score, total: a.total, wrong: a.wrong, env, cores: os.cpus().length, pages: PAR, latency, sha, at: new Date().toISOString() };
   if (a.loadMisses.length) result.loadMisses = a.loadMisses;
   if (a.unreplayed) result.unreplayed = a.unreplayed;
+  if (again) result.rerun = { of: prior.at, asks: again.length }; // the second run of an inconclusive one: only its misses ran again
   if (a.inconclusive) { result.inconclusive = true; result.note = a.note; }
+  if (againKey && a.inconclusive && !again) try { fs.writeFileSync(AGAIN_FILE, JSON.stringify({ key: againKey, run: ciRun, at: result.at, out: out.map(({ ask, by, want, right, ms }) => ({ ask, by, want, right, ms })) })); } catch (_) {}
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
   if (cacheable && !a.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: result.at, result })); } catch (_) {}
   console.log(JSON.stringify(result)); process.exit(a.failed ? 1 : 0); }

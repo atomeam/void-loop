@@ -41,6 +41,7 @@ function firstSentence(t) {
 /** the one line a page says about a skill: the first sentence of its header after the skill's name. Pure.
  *  "weather skill — Open-Meteo, no key" -> "Open-Meteo, no key"; "sky — "sky", ...: the stage becomes ..." keeps the whole sentence.
  *  A line that is only a frontier number or a quoted ask carries the next sentence with it, so the page still says what the skill does. */
+const OPEN_END = /\b(?:a|an|the|and|or|nor|of|to|from|with|by|into|onto|than|its|their|your|our|my)$/i;
 export function oneLine(src, name) {
   const lines = headerLines(src);
   if (!lines.length) return '';
@@ -49,7 +50,9 @@ export function oneLine(src, name) {
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i], next = lines[i + 1] || '';
     cur = (cur ? cur + ' ' : '') + l;
-    if (/[.!?]["”)]?$/.test(l) || !next || (!/[,;:(—–-]$/.test(l) && /^(?:[A-Z"“]|Contract:|api:)/.test(next))) { sentences.push(cur); cur = ''; if (sentences.length >= 3) break; }
+    // a line that ends on a word no sentence ends on ("read from", "as an", "choose a") runs on into the next, even when that one starts
+    // with a capital (a name: "read from / Verse's own records"); the card showed "... read from" as its whole Adds line (2026-10-30)
+    if (/[.!?]["”)]?$/.test(l) || !next || (!/[,;:(—–-]$/.test(l) && !OPEN_END.test(l) && /^(?:[A-Z"“]|Contract:|api:)/.test(next))) { sentences.push(cur); cur = ''; if (sentences.length >= 3) break; }
   }
   if (cur) sentences.push(cur);
   let h = tidy(sentences[0] || '');
@@ -130,7 +133,7 @@ export function miniOwners(names, read) {
 const NAMED = { 'mind-field-mode': 'Mind Field', 'tilt-arena-mode': 'Tilt Arena', 'doodle-mind': 'Doodle Mind', 'echo-field': 'Echo Field', 'resonant-membrane': 'Resonant Membrane', 'gaze-chase': 'Gaze Chase', 'gpu-swarm': 'GPU Swarm', 'hand-arena': 'Hand Arena' }; // a family's front page carries the family's own name (owner, 2026-10-21: "make them all easier to find")
 const title = (s) => NAMED[s] || String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
 
-// Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
+// Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Book of Verse
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
 // epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
 // it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.
@@ -190,13 +193,14 @@ export function compose({ names = [], read = () => '', families = { families: []
   const chapter = (c) => { c.from = pages.length + 1; chapters.push(c); return c; };
   const skillPage = (name, chap) => {
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
-    const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
+    const flavor = flavorOf(name, fam.name, r.why, r.tier, lore), own = listOf(src, 'examples');
+    // examples quoted from the header (button labels, the owner's words) show on the page but are not asks the skill answers: the hardening plan skips them
     return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of Verse.',
-      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
+      examples: (own.length ? own : asksInHeader(src)).slice(0, 3), ...(own.length ? {} : { examplesFrom: 'header' }), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
-  page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
+  page({ kind: 'cover', chapter: 'front', title: 'The Book of Verse', line: 'Everything Verse can do, one page each, nothing left out.' });
   // the first asks over two pages (owner, 2026-10-21: the book cut the bottom of this page): the welcome and the first half, then the rest and the store
   const coreAll = core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })), half = Math.ceil(coreAll.length / 2);
   if (coreAll.length > 3) { page({ kind: 'how', chapter: 'front', title: 'How to ask', part: 1, core: coreAll.slice(0, half) }); page({ kind: 'how', chapter: 'front', title: 'More to ask', part: 2, core: coreAll.slice(half) }); }

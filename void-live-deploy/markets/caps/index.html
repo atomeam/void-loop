@@ -18,8 +18,8 @@
 <link rel="canonical" href="https://a-to-mind.com/markets/caps/">
 <style>
   /* a-to-mind.com/markets/caps/ (a page of the markets floor): one file and lib/markets.js; nothing is kept on the device */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -44,6 +44,7 @@
   .tk-row a { font: inherit; display: inline-flex; align-items: center; min-height: 40px; padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; color: inherit; text-decoration: none; }
   .srcs { font-size: 12px; color: var(--soft); margin-top: 14px; } .srcs a, footer a { color: inherit; } footer { font-size: 12px; color: var(--soft); margin-top: 18px; text-align: center; }
 </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -55,7 +56,7 @@
   <p class="note" id="note" role="status">Coins only. Company market caps, the ranking of shares by size, need share counts that no free source gives without a key, so Verse does not list them: for one company’s price use <a href="/markets/">quotes</a>.</p>
   <div class="row"><button type="button" id="share">Share link</button></div>
   <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
-  <p class="srcs">Prices and market caps are CoinGecko’s free public data, kept two to five minutes and shown as they came; they may be delayed. Not financial advice.</p>
+  <p class="srcs">Prices and market caps are CoinGecko’s free public data, kept two to five minutes and shown as they came; when CoinGecko does not answer, prices come from Yahoo Finance’s public feed over CoinGecko’s daily snapshot, as the line above the table says. They may be delayed. Not financial advice.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
@@ -68,7 +69,7 @@
     const spark = (td, vals, up) => { td.replaceChildren(); const d = M.sparkD(vals); if (!d) return; const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), p = document.createElementNS(NS, 'path'); svg.setAttribute('viewBox', '0 0 80 24'); svg.setAttribute('width', '80'); svg.setAttribute('height', '24'); svg.setAttribute('aria-hidden', 'true'); p.setAttribute('d', d); p.setAttribute('fill', 'none'); p.setAttribute('stroke-width', '1.6'); p.style.stroke = up ? 'var(--up)' : 'var(--down)'; svg.append(p); td.append(svg); };
     const cell = (td, t, cls) => { td.textContent = t; td.className = (td.className.replace(/\b(up|down)\b/g, '') + ' ' + (cls || '')).trim(); };
     const pct = (v) => (v == null ? '–' : (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2) + '%');
-    const short = (v) => { for (const [n, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M']]) if (v >= n) return +(v / n).toPrecision(3) + u; return String(Math.round(v)); };
+    const short = (v) => { for (const [n, u] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']]) if (v >= n) return +(v / n).toPrecision(3) + u; return String(Math.round(v)); };
     const usd = (v) => (v == null ? '–' : v >= 1000 ? '$' + Math.round(v).toLocaleString('en-US') : '$' + M.fmtPrice(v));
     function draw() {
       const f = $('q').value.trim().toLowerCase(), shown = rows.filter((r) => !f || r.name.toLowerCase().includes(f) || r.sym.toLowerCase() === f).sort((a, b) => (key === 'name' ? a.name.localeCompare(b.name) : (a[key] ?? -Infinity) - (b[key] ?? -Infinity)) * (key === 'rank' || key === 'name' ? dir : -dir));
@@ -86,7 +87,10 @@
     const snap = await fetch('/data/coins.json').then((r) => (r.ok ? r.json() : null)).catch(() => null), have = snap && snap.ok && Array.isArray(snap.caps) && snap.caps.length >= 10;
     if (have) { rows = snap.caps; label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices are loading.'); draw(); }
     let j; try { j = await (await fetch('/api/markets?caps=1')).json(); if (!j.ok) { await new Promise((r) => setTimeout(r, 2000)); j = await (await fetch('/api/markets?caps=1')).json(); } } catch (_) { j = { ok: false }; }
-    if (j.ok) { rows = j.coins; label('Live, as of ' + new Date(j.at).toISOString().slice(0, 16).replace('T', ' ') + ' UTC.'); draw(); return; }
+    const when = (t) => new Date(t).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+    // when CoinGecko does not answer, the API lays Yahoo's prices over the snapshot (j.live of them), or sends the snapshot itself (j.live 0): said so either way
+    if (j.ok && j.snapshot) { rows = j.coins; label(j.live ? 'Live prices for ' + j.live + ' of ' + rows.length + ' coins, as of ' + when(j.at) + '; the list, volume and the rest from the snapshot of ' + j.snapshot + ' UTC, market cap scaled to the price.' : 'Snapshot of ' + j.snapshot + ' UTC, not live.', j.live ? '' : 'Live prices did not answer just now.'); draw(); return; }
+    if (j.ok) { rows = j.coins; label('Live, as of ' + when(j.at) + '.'); draw(); return; }
     if (have) { label('Snapshot of ' + snap.day + ' UTC, not live.', 'Live prices did not answer just now.'); return; }
     $('note').textContent = 'The coin list could not be loaded right now, and there is no snapshot yet. Try again in a minute.';
   });

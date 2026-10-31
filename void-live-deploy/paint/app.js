@@ -2,6 +2,7 @@
 // numbered areas, tap an area to fill it, smooth zoom and pan (wheel, pinch, buttons, keys), the chosen number's areas highlighted, hints
 // that fly to an area, progress kept on this device after every tap, a reveal and a replay when the picture is done, and your own photo
 // turned into a sheet here in the browser. Nothing is uploaded. Every id and line tools/test_void.mjs and the paint probe read is kept.
+import { receiveImage, sendImage, canvasBlob } from '/lib/image-handoff.js';
 const $ = (id) => document.getElementById(id);
 const cv = $('c'), ctx = cv.getContext('2d'), say = (t) => { $('say').textContent = t; };
 const S = 4;                 // the sheet is drawn at 4 canvas pixels per picture pixel, so numbers and outlines stay sharp when zoomed
@@ -13,6 +14,23 @@ const state = { tpl: null, labels: null, region: null, areas: [], paper: null, p
 const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || '') ?? d; } catch (_) { return d; } };
 const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (_) { return false; } };
 const rgb = (hex) => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+// colours handed over in the link (?colours=1a5fb4,e4572e,...: a palette from /color/, or a shared link): the picture keeps its areas and
+// numbers, and each of its colours becomes the handed colour of the same lightness rank, so its dark parts stay dark and its light parts light
+export function coloursOf(s) {
+  return String(s || '').split(/[,\s]+/).map((x) => x.match(/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i)).filter(Boolean).slice(0, 16)
+    .map((m) => '#' + (m[1].length === 3 ? [...m[1]].map((c) => c + c).join('') : m[1]).toLowerCase());
+}
+const lum = (hex) => { const [r, g, b] = rgb(hex); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+export function restyled(palette, colours) {
+  let given = [...new Set(colours)].sort((a, b) => lum(a) - lum(b));
+  if (given.length === 1) { const c = rgb(given[0]); given = [c.map((v) => v * 0.35), c, c.map((v) => v + (255 - v) * 0.7)].map((k) => '#' + k.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')); }
+  const order = palette.map((_, i) => i).sort((a, b) => lum(palette[a]) - lum(palette[b])), n = order.length, m = given.length, out = palette.slice();
+  order.forEach((idx, r) => { const t = n > 1 ? (r / (n - 1)) * (m - 1) : (m - 1) / 2, lo = Math.floor(t), hi = Math.min(m - 1, lo + 1), f = t - lo, a = rgb(given[lo]), b = rgb(given[hi]);
+    out[idx] = '#' + a.map((v, k) => Math.round(v + (b[k] - v) * f).toString(16).padStart(2, '0')).join(''); });
+  return out;
+}
+let given = typeof location === 'undefined' ? [] : coloursOf(new URLSearchParams(location.search).get('colours') || new URLSearchParams(location.search).get('colors'));
+const colourTail = () => (given.length ? '&colours=' + given.map((h) => h.slice(1)).join(',') : '');
 
 // ---------- the sheet ----------
 function unpack(tpl) { const labels = new Uint8Array(tpl.w * tpl.h); let i = 0; for (const [v, len] of tpl.rle) { labels.fill(v, i, i + len); i += len; } return labels; }
@@ -290,16 +308,36 @@ $('rpng').onclick = () => $('png').click();
 $('rnext').onclick = () => { $('reveal').hidden = true; const list = PICTURES.filter((t) => !(progressOf(t.id) || {}).finished && t.id !== state.tpl.id); const t = list[0] || PICTURES[0]; open(t); };
 
 // ---------- export, share, gallery ----------
-$('png').onclick = () => {
+// the painting as it stands: the paper under any area not yet filled, the filled colours over it
+function paintingCanvas() {
   const out = document.createElement('canvas'); out.width = state.tpl.w * S; out.height = state.tpl.h * S;
   const g = out.getContext('2d'); g.fillStyle = '#fcfbf7'; g.fillRect(0, 0, out.width, out.height);
   if (state.done.size < state.areas.length) g.drawImage(state.paper, 0, 0);
   g.imageSmoothingEnabled = false; g.drawImage(state.painted, 0, 0, out.width, out.height);
-  const a = document.createElement('a'); a.href = out.toDataURL('image/png'); a.download = (state.tpl.id || 'painting') + '.png'; a.click();
+  return out;
+}
+// the whole picture in its own colours, painted or not: a gradient read from a half-painted sheet would be mostly paper white
+function wholeCanvas() {
+  const { w, h } = state.tpl, pal = state.tpl.palette.map(rgb), c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'), img = g.createImageData(w, h);
+  for (let p = 0; p < w * h; p++) { const k = pal[state.labels[p]]; img.data[p * 4] = k[0]; img.data[p * 4 + 1] = k[1]; img.data[p * 4 + 2] = k[2]; img.data[p * 4 + 3] = 255; }
+  g.putImageData(img, 0, 0); return c;
+}
+$('png').onclick = () => {
+  const a = document.createElement('a'); a.href = paintingCanvas().toDataURL('image/png'); a.download = (state.tpl.id || 'painting') + '.png'; a.click();
   say('PNG downloaded.');
 };
+// the painting into the photo pages, already open there (lib/image-handoff.js): a press keeps one PNG on this device and opens the page
+{ const row = $('related'), label = row && row.querySelector('.tk-label');
+  for (const [text, path] of [['Post your painting on a board', '/boards/?img=handoff'], ['Save your painting as a PDF', '/pdf/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
+    const a = document.createElement('a'); a.href = path; a.textContent = text; a.className = 'tk-hand';
+    a.addEventListener('click', (e) => { e.preventDefault(); if (!state.tpl || !state.painted) return;
+      sendImage(path, () => canvasBlob(path.startsWith('/gradient/') ? wholeCanvas() : paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
+        .then((ok) => { if (!ok) say('Your painting could not be kept for the next page in this browser.'); }); });
+    if (label) label.after(' ', a); }
+}
 $('share').onclick = () => {
-  const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done;
+  const done = [...state.done].sort((a, b) => a - b).join(','), q = '/paint/?p=' + encodeURIComponent(state.tpl.id) + '&done=' + done + colourTail();
   history.replaceState(null, '', q);
   const own = /^own-/.test(state.tpl.id) ? ' This picture is your own photo, so the link opens it only on this device.' : '';
   navigator.clipboard?.writeText(location.origin + q).then(() => say('Link copied: it carries the areas you finished.' + own), () => say('The link is in the address bar.' + own));
@@ -373,12 +411,13 @@ async function thumb(b) {
 async function open(t, doneFromLink) {
   let tpl;
   try { tpl = await fetchOne(t); } catch (_) { $('credit').textContent = t.name + ' could not be loaded just now; try again in a moment.'; return; }
-  loadTemplate({ ...tpl, id: t.id, name: t.name || tpl.name });
+  loadTemplate({ ...tpl, id: t.id, name: t.name || tpl.name, ...(given.length ? { palette: restyled(tpl.palette, given) } : {}) });
+  $('restyle').hidden = !given.length;
   const saved = progressOf(t.id), list = doneFromLink || (saved ? saved.done : []);
   for (const id of list) { const a = state.areas[id]; if (a && !state.done.has(id)) paintArea(id, true); }
   if (list.length) { keep(); status(); if (!doneFromLink) say('Welcome back: ' + state.done.size + ' of ' + state.areas.length + ' areas of ' + tpl.name + ' were kept on this device.'); }
   state.revealed = state.done.size === state.areas.length;
-  if (!doneFromLink) history.replaceState(null, '', '/paint/?p=' + encodeURIComponent(t.id));
+  if (!doneFromLink) history.replaceState(null, '', '/paint/?p=' + encodeURIComponent(t.id) + colourTail());
   if (innerWidth < 700 && document.activeElement && document.activeElement.closest('#templates')) stage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 }
 function loadTemplate(tpl) {
@@ -401,6 +440,9 @@ $('mode').onclick = () => {
   say(state.mode === 'brush' ? 'Brush on: drag to paint; two fingers still zoom.' : 'Tap an area to fill it; drag to move around.');
 };
 $('undo').onclick = undo;
+$('owncol').onclick = () => { // back to the picture's own colours; what is painted stays painted
+  const t = PICTURES.find((x) => x.id === state.tpl.id); given = []; if (t) open(t).then(() => say('Back to the picture\u2019s own colours.'));
+};
 $('reset').onclick = () => { if (!state.tpl) return; clearPainted(); keep(); status(); say('Started over.'); };
 
 // ---------- your own photo ----------
@@ -431,8 +473,9 @@ function photoSheet(img, k) {
   const runs = []; let prev = -1, cnt = 0; for (const v0 of lab) { const v = map.get(v0); if (v === prev) cnt++; else { if (prev >= 0) runs.push([prev, cnt]); prev = v; cnt = 1; } } runs.push([prev, cnt]);
   return { w: S2, h: S2, palette, rle: runs };
 }
-$('up').onchange = async (e) => {
-  const file = e.target.files?.[0]; if (!file) return;
+$('up').onchange = (e) => { const file = e.target.files?.[0]; if (file) paintFile(file); };
+// a photo becomes a sheet: chosen here, or handed over by another page (lib/image-handoff.js, ?img=handoff)
+function paintFile(file) {
   say('Cutting your photo into numbered areas…');
   const img = new Image();
   img.onload = () => {
@@ -446,9 +489,11 @@ $('up').onchange = async (e) => {
   };
   img.onerror = () => say('That file could not be read as a picture.');
   img.src = URL.createObjectURL(file);
-};
+}
 
 async function boot() {
+  // the address as it came in: opening a picture below rewrites it to ?p=…, which would drop a handed-over ?img=handoff
+  const arrived = { search: location.search, pathname: location.pathname, hash: location.hash };
   let index;
   try { const r = await fetch('/paint/templates/index.json'); index = await r.json(); }
   catch (_) { index = { categories: ['Masterpieces'], pictures: [{ id: 'wave', name: 'The Great Wave', cat: 'Masterpieces', file: '/paint/templates/wave.json' }, { id: 'starry', name: 'The Starry Night', cat: 'Masterpieces', file: '/paint/templates/starry.json' }] }; }
@@ -461,6 +506,7 @@ async function boot() {
   const link = params.has('done') ? (params.get('done') || '').split(',').filter((s) => s !== '').map(Number) : null;
   await open(first, link);
   if (link && link.length) keep();
+  await receiveImage((file) => paintFile(file), arrived);
 }
 boot().catch((err) => { $('count').textContent = 'The paintings did not load.'; say(String(err.message || err)); });
 if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)

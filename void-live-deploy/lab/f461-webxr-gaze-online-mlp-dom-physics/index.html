@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+:root { --bg: #0a0c10; --card: #161b22; --accent: #58a6ff; --text: #e6edf3; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+#canvas { position: fixed; inset: 0; pointer-events: none; }
+#ui { position: fixed; top: 12px; left: 12px; z-index: 100; display: flex; gap: 8px; flex-wrap: wrap; max-width: 90vw; }
+button { background: #21262d; color: var(--text); border: 1px solid #30363d; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+button:hover { border-color: var(--accent); }
+#status { position: fixed; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.8; z-index: 100; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 4px; }
+.card {
+  position: absolute; width: 140px; height: 90px; background: var(--card);
+  border: 1px solid #30363d; border-radius: 8px; padding: 8px; font-size: 11px;
+  pointer-events: auto; cursor: grab; user-select: none; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  transition: border-color 0.15s;
+}
+.card.focused { border-color: var(--accent); box-shadow: 0 0 12px rgba(88,166,255,0.4); }
+.card h4 { margin-bottom: 4px; font-size: 12px; color: var(--accent); }
+#xr-btn { background: #238636; border-color: #2ea043; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Gaze Online-MLP DOM Physics · Verse lab</title>
+<meta name="description" content="Novel combination that deliberately branches away from the recent evolutionary-genome / WebGPU SPH-PBD-spectral / hand-constraint / spatial-audio / L-system cluster.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Gaze Online-MLP DOM Physics · Verse lab">
+<meta property="og:description" content="Novel combination that deliberately branches away from the recent evolutionary-genome / WebGPU SPH-PBD-spectral / hand-constraint / spatial-audio / L-system cluster.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f461-webxr-gaze-online-mlp-dom-physics/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f461-webxr-gaze-online-mlp-dom-physics/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <button id="xr-btn">Enter WebXR Gaze</button>
+  <button id="seal-btn">Seal MLP Weights</button>
+  <button id="reset-btn">Reset Cards</button>
+  <button id="reward-btn">Reward Dwell</button>
+</div>
+<div id="status">Gaze MLP ready · pointer/orientation proxy active · offline</div>
+<div id="field"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Gaze Online-MLP DOM Physics</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -22,6 +22,7 @@ Every other workflow runs on the repo's own tools, Workers AI (the site's bindin
 | assemble-growth | (push trigger, no jobs run so far) | push | no | never ran |
 | automations-seed | puts the seeded automations on the site | after deploy, hand | no | s ×10 (952 runs) |
 | automerge | merges labelled PRs once Verse's review is clean | events, hourly | no | s ×10 (7,793 runs) |
+| baggage-live | the baggage card against the airlines' own pages | daily 13:41 | no | new (2026-10-30) |
 | bench | the everyday benchmark (1,900+ asks) | daily 09:47, PRs touching it | no | c c f f c… (cancelled and failing) |
 | better | daily "is Verse getting better" score | daily 06:51 | no | s ×9 |
 | build-miss | the miss board scaffolds a new skill with the free model | daily 15:23 | no | s ×9 |

@@ -18,8 +18,8 @@
 <link rel="canonical" href="https://a-to-mind.com/markets/screener/">
 <style>
   /* a-to-mind.com/markets/screener/ (a page of the markets floor): one file and lib/markets.js; nothing is kept on the device */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 860px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -46,6 +46,7 @@
   th:nth-child(1) { width: 33%; } th:nth-child(2) { width: 19%; } th:nth-child(3) { width: 21%; } th:nth-child(4), th:nth-child(5) { width: 13.5%; } td div, td.l small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } td.l small { display: block; margin: 0 0 0 28px; } td > div > svg { display: block; margin-left: auto; }
   td.l, th.l { text-align: left; } td.l a { color: inherit; font-weight: 600; text-decoration: none; } td.l small { margin-left: 4px; color: var(--soft); font-size: 12px; }
 </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -66,7 +67,7 @@
   <p class="note">The small line under each move is its chart (a year for stocks and indices, seven days for coins). Press ☆ beside a symbol to keep it on your watchlist, on this device (the watchlist is on the <a href="/markets/">quotes page</a>). “Below high” is the distance under the 52-week high for stocks and indices, and under the all-time high for coins. “Volume ×” is today’s volume over the 30-day average and is only known for stocks and indices.</p>
   <div class="row"><button type="button" id="share">Share link</button></div>
   <nav class="tk-row" aria-label="More markets"><span class="tk-label">Markets</span><a href="/markets/">Quotes and charts</a><a href="/markets/caps/">Crypto market caps</a><a href="/markets/screener/">Screener</a></nav>
-  <p class="srcs">Shares and indices come from Stooq (Yahoo Finance’s public chart feed fills in when it is down), coins from CoinGecko; all may be delayed. Not financial advice.</p>
+  <p class="srcs">Shares and indices come from Stooq (Yahoo Finance’s public chart feed fills in when it is down), coins from CoinGecko (when it does not answer, Yahoo Finance’s public prices over CoinGecko’s daily snapshot, as the line above the table says); all may be delayed. Not financial advice.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
@@ -97,6 +98,8 @@
       all = j.rows; total = Date.parse(j.at); lastTag = '';
       // the live answer can come back without its coins (CoinGecko busy): the snapshot's coins stay, said to be a snapshot, so the coin rows never vanish
       if (have && !all.some((r) => r.group === 'coins')) { all = all.concat(M.scanRows([], snap.scan)); draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live'); return; }
+      // CoinGecko busy, the API's coins are the snapshot with Yahoo's prices over some of them (coinFeed): said so
+      if (j.coinFeed) { const f = j.coinFeed, n = j.universe && j.universe.coins; draw(' · coin prices ' + (f.live ? 'live from Yahoo Finance for ' + f.live + ' of ' + n + ' coins, the rest from' : 'from') + ' the snapshot of ' + f.snapshot + ' UTC' + (f.live ? '' : ', not live')); return; }
       draw(''); return;
     }
     if (have) { draw(' · coins from the snapshot of ' + snap.day + ' UTC, not live; shares and indices could not be loaded just now'); return; }

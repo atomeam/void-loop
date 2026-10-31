@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#field { position:relative; width:100vw; height:100vh; }
+.agent {
+  position:absolute; width:72px; height:72px; border-radius:12px;
+  background:linear-gradient(135deg,#1a1a3a,#2a2a5a);
+  border:2px solid #4af; display:flex; align-items:center; justify-content:center;
+  font-size:11px; text-align:center; cursor:pointer; user-select:none;
+  transition:box-shadow 0.2s; will-change:transform;
+}
+.agent.highfit { box-shadow:0 0 18px #4af; border-color:#8cf; }
+.agent.lowfit { opacity:0.7; }
+#ui { position:fixed; top:12px; left:12px; background:rgba(0,0,20,0.85); padding:12px; border-radius:8px; z-index:10; max-width:280px; }
+button { margin:4px 4px 0 0; padding:6px 10px; background:#224; color:#cdf; border:1px solid #46a; border-radius:4px; cursor:pointer; }
+button:hover { background:#335; }
+#status { font-size:12px; margin-top:8px; line-height:1.4; }
+#orient { font-size:11px; color:#8af; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Competitive Local MLP DOM Genome Transfer · Verse lab</title>
+<meta name="description" content="Branches away from the recent dominant cluster of WebGPU particle/SPH/PBD/spectral kernels, WebXR hand/gaze MLP physics, Hopfield trajectory associative fields">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Competitive Local MLP DOM Genome Transfer · Verse lab">
+<meta property="og:description" content="Branches away from the recent dominant cluster of WebGPU particle/SPH/PBD/spectral kernels, WebXR hand/gaze MLP physics, Hopfield trajectory associative fields">
+<meta property="og:url" content="https://a-to-mind.com/lab/f464-competitive-local-mlp-dom-genome-transfer/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f464-competitive-local-mlp-dom-genome-transfer/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="field"></div>
+<div id="ui">
+  <strong>F464 Competitive Local MLP DOM</strong><br>
+  Agents: independent tiny MLPs (orient+pos → vel). Collision: fitter transfers genome weights.<br>
+  <button id="seal">Seal Top Genome</button>
+  <button id="reset">Reset Positions</button>
+  <button id="share">Broadcast Top</button><br>
+  <div id="orient">Orient: waiting...</div>
+  <div id="status">Loading...</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Competitive Local MLP DOM Genome Transfer</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

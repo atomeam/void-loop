@@ -7,6 +7,7 @@
 // the feed itself carries one, its short summary (cut to 220 characters), and always links out; it never copies an article, a picture or the
 // full text (content:encoded is not read at all). BBC states its feeds are for personal, non-commercial use: Verse is free, has no ads and no
 // account, which is the use the BBC describes, and the PR asks the owner to confirm it. Reuters withdrew its public feeds in 2020, so it is not here.
+// CBC refuses every request from a server (a 403 from its edge, Oct 2026), so CBS News, whose feeds answer, takes its place.
 export const SECTIONS = Object.freeze({
   top: 'Top stories', world: 'World', uk: 'UK', us: 'US', business: 'Business', tech: 'Technology', science: 'Science', sport: 'Sport', culture: 'Culture',
   africa: 'Africa', asia: 'Asia', europe: 'Europe', 'middle-east': 'Middle East', 'latin-america': 'Latin America',
@@ -14,7 +15,7 @@ export const SECTIONS = Object.freeze({
 export const LANGS = Object.freeze({ en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch' });
 export const SOURCES = Object.freeze({
   bbc: ['BBC News', 'https://www.bbc.co.uk/news'], gdn: ['The Guardian', 'https://www.theguardian.com/'], npr: ['NPR', 'https://www.npr.org/'], aje: ['Al Jazeera', 'https://www.aljazeera.com/'],
-  dw: ['DW', 'https://www.dw.com/'], f24: ['France 24', 'https://www.france24.com/'], cbc: ['CBC News', 'https://www.cbc.ca/news'], abc: ['ABC News Australia', 'https://www.abc.net.au/news'],
+  dw: ['DW', 'https://www.dw.com/'], f24: ['France 24', 'https://www.france24.com/'], cbs: ['CBS News', 'https://www.cbsnews.com/'], abc: ['ABC News Australia', 'https://www.abc.net.au/news'],
   sky: ['Sky News', 'https://news.sky.com/'], eur: ['Euronews', 'https://www.euronews.com/'], rnz: ['RNZ', 'https://www.rnz.co.nz/'], ars: ['Ars Technica', 'https://arstechnica.com/'],
   vrg: ['The Verge', 'https://www.theverge.com/'], hn: ['Hacker News', 'https://news.ycombinator.com/'], nat: ['Nature', 'https://www.nature.com/'], nasa: ['NASA', 'https://www.nasa.gov/'],
   sci: ['ScienceDaily', 'https://www.sciencedaily.com/'], afn: ['Africanews', 'https://www.africanews.com/'], elp: ['El País', 'https://elpais.com/'], lmd: ['Le Monde', 'https://www.lemonde.fr/'],
@@ -24,17 +25,17 @@ const B = 'https://feeds.bbci.co.uk/', G = 'https://www.theguardian.com/', N = (
 // [source, section, language, url]: the only addresses the server ever fetches
 export const FEEDS = Object.freeze([
   ['bbc', 'top', 'en', B + 'news/rss.xml'], ['gdn', 'top', 'en', G + 'world/rss'], ['npr', 'top', 'en', N(1001)], ['aje', 'top', 'en', 'https://www.aljazeera.com/xml/rss/all.xml'],
-  ['dw', 'top', 'en', DW('en-all')], ['f24', 'top', 'en', 'https://www.france24.com/en/rss'], ['cbc', 'top', 'en', 'https://www.cbc.ca/webfeed/rss/rss-topstories'],
+  ['dw', 'top', 'en', DW('en-all')], ['f24', 'top', 'en', 'https://www.france24.com/en/rss'], ['cbs', 'top', 'en', 'https://www.cbsnews.com/latest/rss/main'],
   ['abc', 'top', 'en', 'https://www.abc.net.au/news/feed/51120/rss.xml'], ['sky', 'top', 'en', 'https://feeds.skynews.com/feeds/rss/home.xml'], ['eur', 'top', 'en', 'https://www.euronews.com/rss'],
   ['bbc', 'world', 'en', B + 'news/world/rss.xml'], ['gdn', 'world', 'en', G + 'world/rss'], ['npr', 'world', 'en', N(1004)], ['aje', 'world', 'en', 'https://www.aljazeera.com/xml/rss/all.xml'],
-  ['dw', 'world', 'en', DW('en-world')], ['f24', 'world', 'en', 'https://www.france24.com/en/rss'], ['cbc', 'world', 'en', 'https://www.cbc.ca/webfeed/rss/rss-world'], ['rnz', 'world', 'en', 'https://www.rnz.co.nz/rss/world.xml'],
+  ['dw', 'world', 'en', DW('en-world')], ['f24', 'world', 'en', 'https://www.france24.com/en/rss'], ['cbs', 'world', 'en', 'https://www.cbsnews.com/latest/rss/world'], ['rnz', 'world', 'en', 'https://www.rnz.co.nz/rss/world.xml'],
   ['bbc', 'uk', 'en', B + 'news/uk/rss.xml'], ['gdn', 'uk', 'en', G + 'uk/rss'], ['sky', 'uk', 'en', 'https://feeds.skynews.com/feeds/rss/uk.xml'],
   ['bbc', 'us', 'en', B + 'news/world/us_and_canada/rss.xml'], ['gdn', 'us', 'en', G + 'us-news/rss'], ['npr', 'us', 'en', N(1003)],
-  ['bbc', 'business', 'en', B + 'news/business/rss.xml'], ['gdn', 'business', 'en', G + 'uk/business/rss'], ['npr', 'business', 'en', N(1006)], ['dw', 'business', 'en', DW('en-bus')], ['cbc', 'business', 'en', 'https://www.cbc.ca/webfeed/rss/rss-business'], ['sky', 'business', 'en', 'https://feeds.skynews.com/feeds/rss/business.xml'],
-  ['bbc', 'tech', 'en', B + 'news/technology/rss.xml'], ['gdn', 'tech', 'en', G + 'uk/technology/rss'], ['npr', 'tech', 'en', N(1019)], ['ars', 'tech', 'en', 'https://feeds.arstechnica.com/arstechnica/index'], ['vrg', 'tech', 'en', 'https://www.theverge.com/rss/index.xml'], ['hn', 'tech', 'en', 'https://news.ycombinator.com/rss'], ['cbc', 'tech', 'en', 'https://www.cbc.ca/webfeed/rss/rss-technology'],
+  ['bbc', 'business', 'en', B + 'news/business/rss.xml'], ['gdn', 'business', 'en', G + 'uk/business/rss'], ['npr', 'business', 'en', N(1006)], ['dw', 'business', 'en', DW('en-bus')], ['cbs', 'business', 'en', 'https://www.cbsnews.com/latest/rss/moneywatch'], ['sky', 'business', 'en', 'https://feeds.skynews.com/feeds/rss/business.xml'],
+  ['bbc', 'tech', 'en', B + 'news/technology/rss.xml'], ['gdn', 'tech', 'en', G + 'uk/technology/rss'], ['npr', 'tech', 'en', N(1019)], ['ars', 'tech', 'en', 'https://feeds.arstechnica.com/arstechnica/index'], ['vrg', 'tech', 'en', 'https://www.theverge.com/rss/index.xml'], ['hn', 'tech', 'en', 'https://news.ycombinator.com/rss'], ['cbs', 'tech', 'en', 'https://www.cbsnews.com/latest/rss/technology'],
   ['bbc', 'science', 'en', B + 'news/science_and_environment/rss.xml'], ['gdn', 'science', 'en', G + 'science/rss'], ['npr', 'science', 'en', N(1007)], ['nat', 'science', 'en', 'https://www.nature.com/nature.rss'], ['nasa', 'science', 'en', 'https://www.nasa.gov/feed/'], ['sci', 'science', 'en', 'https://www.sciencedaily.com/rss/top/science.xml'], ['dw', 'science', 'en', DW('en-sci')],
-  ['bbc', 'sport', 'en', B + 'sport/rss.xml'], ['gdn', 'sport', 'en', G + 'uk/sport/rss'], ['cbc', 'sport', 'en', 'https://www.cbc.ca/webfeed/rss/rss-sports'], ['sky', 'sport', 'en', 'https://feeds.skynews.com/feeds/rss/sport.xml'], ['abc', 'sport', 'en', 'https://www.abc.net.au/news/feed/45924/rss.xml'],
-  ['bbc', 'culture', 'en', B + 'news/entertainment_and_arts/rss.xml'], ['gdn', 'culture', 'en', G + 'uk/culture/rss'], ['npr', 'culture', 'en', N(1008)], ['sky', 'culture', 'en', 'https://feeds.skynews.com/feeds/rss/entertainment.xml'], ['cbc', 'culture', 'en', 'https://www.cbc.ca/webfeed/rss/rss-arts'],
+  ['bbc', 'sport', 'en', B + 'sport/rss.xml'], ['gdn', 'sport', 'en', G + 'uk/sport/rss'], ['sky', 'sport', 'en', 'https://feeds.skynews.com/feeds/rss/sport.xml'], ['abc', 'sport', 'en', 'https://www.abc.net.au/news/feed/45924/rss.xml'],
+  ['bbc', 'culture', 'en', B + 'news/entertainment_and_arts/rss.xml'], ['gdn', 'culture', 'en', G + 'uk/culture/rss'], ['npr', 'culture', 'en', N(1008)], ['sky', 'culture', 'en', 'https://feeds.skynews.com/feeds/rss/entertainment.xml'], ['cbs', 'culture', 'en', 'https://www.cbsnews.com/latest/rss/entertainment'],
   ['bbc', 'africa', 'en', B + 'news/world/africa/rss.xml'], ['gdn', 'africa', 'en', G + 'world/africa/rss'], ['afn', 'africa', 'en', 'https://www.africanews.com/feed/rss'],
   ['bbc', 'asia', 'en', B + 'news/world/asia/rss.xml'], ['gdn', 'asia', 'en', G + 'world/asia-pacific/rss'], ['rnz', 'asia', 'en', 'https://www.rnz.co.nz/rss/pacific.xml'],
   ['bbc', 'europe', 'en', B + 'news/world/europe/rss.xml'], ['gdn', 'europe', 'en', G + 'world/europe-news/rss'], ['eur', 'europe', 'en', 'https://www.euronews.com/rss'],

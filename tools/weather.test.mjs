@@ -1,7 +1,7 @@
 // lib/weather.js: the forecast read into a view on a fixture (no network), both scales agreeing, today first, the hours from the current
 // hour, the US alerts, and the tower's weather probe passing on the page's own text
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { viewOf, textOf, alertsOf, placeOf, locOf, both, dayName, hourName, radarLoop, alertsUrl } from '../void-live-deploy/lib/weather.js';
+import { viewOf, textOf, amount, alertsOf, placeOf, locOf, both, dayName, hourName, radarLoop, alertsUrl } from '../void-live-deploy/lib/weather.js';
 import { probeFor, score } from './tower-probes.mjs';
 
 const hours = Array.from({ length: 48 }, (_, i) => '2026-10-25T' + String(i % 24).padStart(2, '0') + ':00').map((t, i) => (i < 24 ? t : t.replace('-25T', '-26T')));
@@ -30,6 +30,17 @@ test('the view: now, the next 24 hours from the current hour, 7 days with today 
   for (const m of t.matchAll(/(-?\d+) °F \/ (-?\d+) °C/g)) assert.ok(Math.abs(+m[1] - (+m[2] * 9 / 5 + 32)) <= 1.5, m[0]); // the two scales agree everywhere
   assert.match(t, /Sunday \(today\) 64 °F \/ 18 °C high, 48 °F \/ 9 °C low, 20% chance of rain, Partly cloudy/);
   assert.equal(viewOf({}, null).hours.length, 0, 'no forecast: an empty view, never a throw');
+});
+test('the rain amount the forecast expects, next to the chance of rain', () => {
+  assert.equal(amount(0.44), '0.4 mm (0.02 in) expected'); assert.equal(amount(0.1), '0.1 mm (under 0.01 in) expected'); assert.equal(amount(12.6), '13 mm (0.50 in) expected');
+  assert.equal(amount(0), ''); assert.equal(amount(NaN), ''); assert.equal(amount(-1), '');
+  const wet = { ...FIX, hourly: { ...FIX.hourly, precipitation: hours.map((_, i) => (i === 14 ? 1.2 : 0)) }, daily: { ...FIX.daily, precipitation_sum: [0, 5.4, 22, 0, 0, 0, 0.2] } };
+  const v = viewOf(wet, LOC); assert.equal(v.hours[0].mm, 1.2); assert.equal(v.hours[1].mm, 0); assert.equal(v.days[2].mm, 22);
+  const t = textOf(v);
+  assert.match(t, /^2pm 54 °F \/ 12 °C 98% chance of rain 1\.2 mm \(0\.05 in\) expected /m);
+  assert.match(t, /^3pm [^\n]*% chance of rain [A-Z]/m, 'an hour with 0 mm shows no amount');
+  assert.match(t, /Tuesday 59 °F \/ 15 °C high, 45 °F \/ 7 °C low, 80% chance of rain, 22 mm \(0\.87 in\) expected, /);
+  assert.doesNotMatch(textOf(viewOf(FIX, LOC)), /mm/, 'a forecast with no amounts shows none');
 });
 test('alerts from the weather service, and none', () => {
   const a = alertsOf({ features: [{ properties: { event: 'Wind Advisory', headline: 'Wind Advisory until 6 PM EDT', severity: 'Moderate', ends: '2026-10-25T22:00:00-04:00' } }] });

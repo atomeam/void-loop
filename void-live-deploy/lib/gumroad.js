@@ -65,7 +65,10 @@ const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
 // only when it opens with a short request ("review my code" + the paste); otherwise it is prose, never a product ask.
 const ECHO = /from\s+a-to-mind\s*:[^\n]*|(?:https?:\/\/)?[\w-]+\.gumroad\.com\/\S*|written by (?:verse|v01d)[^\n]*/gi;
 // A buy/hire ask (used to decide whether a no-match is a product gap worth noting, lib/product-gap.js).
-export const isBuyAsk = (t) => /\b(?:buy|purchase|order|hire|pay\s+for|price\s+of|how\s+much|cost|subscribe|sell\s+me|for\s+sale|sell|services?|packages?|templates?|courses?|kits?|bundles?|shop|store)\b/i.test(intentOf(t));
+// "how much" is a price only as "how much for/is/are ..." or with a money word: "how much luggage weight allowed" and "how much water" are amounts, not buys.
+const BUY_WORDS = /\b(?:buy|purchase|order|hire|pay\s+for|price\s+of|cost|subscribe|sell\s+me|for\s+sale|sell|services?|packages?|templates?|courses?|kits?|bundles?|shop|store)\b/i;
+const HOW_MUCH_PRICE = /\bhow\s+much\s+(?:for|is|are|it|they|to)\b|\bhow\s+much\b.*\b(?:charges?|charged|price|pay|costs?)\b/i;
+export const isBuyAsk = (t) => { const s = intentOf(t); return BUY_WORDS.test(s) || HOW_MUCH_PRICE.test(s); };
 export function intentOf(ask) {
   const s = String(ask || '').replace(ECHO, ' ').replace(/\s+⏎\s*/g, '\n').trim();
   if (!s) return '';

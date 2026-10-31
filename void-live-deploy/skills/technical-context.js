@@ -1,5 +1,5 @@
 /**
- * technical-context skill - made with tools/new-skill.mjs (docs/UPGRADING.md).
+ * technical-context skill - why a risky code term such as Rust unwrap or shell=True can fail, with the safer line and a caution shape on the stage (made with tools/new-skill.mjs).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  *   match: true when this skill should take the ask (the first skill in skills/order/ to say yes wins).
  *   run:   shows the answer; api.showPage(build) puts a card on the stage and api.esc escapes text. Return the skill's name.

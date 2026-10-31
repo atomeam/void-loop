@@ -1,4 +1,4 @@
-// The tome: the Verse Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
+// The tome: the Book of Verse read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
 // make it like that ... its supposed to be the graphic style and visuals of the way they do books"). In Skyrim a book you pick
 // up fills the screen: the world dims behind it, a worn leather tome lies open on two parchment pages set in a serif with the
 // text of the book and nothing else (no menu, no tabs, no chrome), and your only controls are turning the page and closing it.
@@ -8,6 +8,7 @@
 import { glyphSvg, openerSvg, TIERS, TIER_MEANING } from './guide.js';
 import { artSvg, seasonOf } from './card-art.js';
 import { rulesPageHtml, RULES_CSS } from './rule-registry.js';
+import { dayLabel } from './book-news.js';
 
 export const SERIF = '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", Georgia, "Times New Roman", serif';
 
@@ -101,7 +102,7 @@ export const TOME_CSS = [
   // one page at a time on a phone: the book is a single sheet, the cover the same width
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
-  '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
+  '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition:none}}', // none, not .01s: a transform transition still waits on the compositor to start, and headless Chrome left the shut tilt standing (the tester saw the open book 312px left at 1920x1080)
 ].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Verse)
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
@@ -197,10 +198,12 @@ export function pageHtml(p, book, esc) {
       + '<p class="tome-note">A page with a box drawn on it is a game on the rack; a page headed 3D is a miniature a card carries.</p></div>';
   }
   if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
-  if (p.kind === 'news') { // a page of the newest ledger entries (lib/book-news.js): by day, then by kind, each line its own words and an ask to try it
-    const when = (d) => { const t = new Date(d + 'T12:00:00Z'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
-    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
-      + (p.days || []).map((d) => '<div class="tome-day">' + esc(when(d.day)) + (d.groups.some((g) => g.items.some((e) => e.try)) ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">show these on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? ' <a href="#" class="tome-tryit" data-ask="' + esc(e.try) + '">try it</a>' : '') + '</li>').join('') + '</ul>').join('')).join('') + '</div>';
+  if (p.kind === 'news') { // a page of the newest changes a visitor can try (lib/book-news.js): by the visitor's own day, then by kind; an ask is
+    // touched to run it on the stage, a page of the site opens as a link; a day with asks that answered live (claims-verified.json) plays them all
+    const tryLink = (t) => (t.charAt(0) === '/' ? ' <a href="' + esc(t) + '" class="tome-tryit">open it</a>' : ' <a href="#" class="tome-tryit" data-ask="' + esc(t) + '">try it</a>');
+    return '<div class="tome-kicker">Just shipped</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + verseUniverse(80, 320, p.grown)
+      + (p.days || []).map((d) => { const live = (d.all || d.groups.flatMap((g) => g.items)).filter((e) => e.live).length; // the whole day: the link plays every live line of it
+        return '<div class="tome-day">' + esc(dayLabel(d.day)) + (live ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">play ' + (live === 1 ? 'it' : 'all ' + live) + ' on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? tryLink(e.try) : '') + '</li>').join('') + '</ul>').join(''); }).join('') + '</div>';
   }
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
@@ -231,7 +234,7 @@ export function sheetHtml(p, book, side, esc) {
   if (!p) return '';
   const chap = chapterOf(book, p.chapter);
   // the running heads as a book sets them: the book's title on the left-hand page, the chapter on the right-hand page
-  const head = side === 'left' ? '<span>' + esc(book.title || 'The Verse Book') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
+  const head = side === 'left' ? '<span>' + esc(book.title || 'The Book of Verse') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
   // the page's words sit in .tome-fit, which skills/guide.js scales down until they all fit above the footer (the rating and the
   // folio, which keep their own reserved strip): the sheet never scrolls and never cuts a line
   const html = pageHtml(p, book, esc), at = html.lastIndexOf('<div class="tome-tier');
@@ -357,9 +360,9 @@ export function leatherSvg({ medallion = true, w = 730, h = 1000 } = {}) {
 }
 /** the back cover: the same tooled leather and medallion, and the last words. Pure. */
 export function backCoverHtml(book, esc) {
-  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Verse Book') + '</div><div class="gilt line foot">a-to-mind.com</div>';
+  return '<div class="cover-art cover-leather">' + leatherSvg({ medallion: true }) + '</div><div class="gilt title">The End</div><div class="gilt line">' + esc(book.title || 'The Book of Verse') + '</div><div class="gilt line foot">a-to-mind.com</div>';
 }
 /** the shut cover's face: the tooled leather board with the title stamped in gold above the medallion and nothing else (no tagline, no page count: owner, 2026-10-25, "no book ever lists its page count on the cover"). Pure. */
 export function coverHtml(book, esc) {
-  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Verse Book') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
+  return '<div class="face out"><div class="cover-art cover-leather">' + leatherSvg() + '</div><div class="gilt title">' + esc(book.title || 'The Book of Verse') + '</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }

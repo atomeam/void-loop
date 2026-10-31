@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PAGES, headTags, asksRow, llmsLines } from '../void-live-deploy/lib/seo.js';
-import { TOOLS, relatedOf } from '../void-live-deploy/lib/toolkit.js';
+import { TOOLS, MORE_PAGES, relatedOf } from '../void-live-deploy/lib/toolkit.js';
 import { PRODUCTS } from '../void-live-deploy/lib/products.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,10 +46,15 @@ export function withRelated(html, path) {
 /** the tools /tools/ does not list by hand yet, as one more section of real links (from lib/toolkit.js TOOLS, which every page's row uses). Pure. */
 export function moreTools(html) {
   const listed = new Set([...withoutBlock(html, MORE).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1].split('?')[0]));
-  const extra = [...Object.entries(TOOLS).filter(([p]) => p !== '/tools/' && !listed.has(p)), ['/code-review/', 'Code review'], ['/g/', 'Gists'], ['/fix/', 'Fix a broken automation'],
-    // pages of their own that no tool row reaches yet: linked here so none is an orphan (tools/seo-audit.mjs)
-    ['/books/', 'Bookshelf'], ['/films/', 'Films'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'], ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments']].filter(([p], i, a) => !listed.has(p) && a.findIndex((x) => x[0] === p) === i);
-  return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li><a href="' + esc(p) + '">' + esc(name) + '</a></li>').join('') + '</ul></section>';
+  // MORE_PAGES: pages of their own that no tool row reaches yet, linked here so none is an orphan (tools/seo-audit.mjs); the stage card lists them too
+  // one line per name: a page Verse built twice for two sites (lib/self-sites.js, /convert/unit-converter/ and -2/) is one tool to a reader
+  const names = new Set([...withoutBlock(html, MORE).matchAll(/href="\/[^"]*">([^<]*)</g)].map((m) => m[1].toLowerCase()));
+  const extra = [...Object.entries(TOOLS), ...MORE_PAGES].filter(([p], i, a) => p !== '/tools/' && !listed.has(p) && a.findIndex((x) => x[0] === p) === i)
+    .filter(([, name]) => { const k = String(name).toLowerCase(); if (names.has(k)) return false; names.add(k); return true; });
+  // each with the same "Open here" button as the hand-written rows, and the searches people make for it (lib/seo.js asks) for the page's find box
+  const asks = new Map(PAGES.map((g) => [g.path, (g.asks || []).join(' ')]));
+  return '<section><h2>More tools</h2><ul>' + extra.map(([p, name]) => '<li' + (asks.get(p) ? ' data-find="' + esc(asks.get(p)) + '"' : '') + '><a href="' + esc(p) + '">' + esc(name)
+    + '</a><button type="button" data-open="' + esc(p) + '">Open here</button></li>').join('') + '</ul></section>';
 }
 /** on each paid page: the other things Verse does for people, each with its one plain line (lib/products.js), and the free fixes. Pure. */
 export function offersRow(path) {

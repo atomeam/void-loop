@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Autopilot: what Verse did on its own · Verse</title>
+<meta name="description" content="What Verse built, fixed and took back on its own: its own commits on main, jobs, deploys and incidents, read live.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Autopilot · Verse">
+<meta property="og:description" content="What Verse built, fixed and shipped on its own in the last day, read live from its repository and its conductor.">
+<meta property="og:url" content="https://a-to-mind.com/autopilot/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/autopilot/">
+<meta name="verse-handoff" content="in: none; out: number, text">
+<style>
+  /* a-to-mind.com/autopilot/ (2026-10-30, owner: "make Verse autonomous without you"): the record of what Verse's own loops did, live */
+  :root { color-scheme: dark; --bg: #07060d; --panel: #100e1a; --ink: #ecebf5; --soft: #a3a0b3; --line: #262236; --accent: #a58bff; --good: #6fe3a5; --warn: #ffcf6e; --bad: #ff8a7e; }
+  html, body { margin: 0; background: radial-gradient(1200px 600px at 70% -10%, #1a1240 0%, transparent 60%), radial-gradient(900px 500px at -10% 110%, #0d1f3a 0%, transparent 55%), var(--bg); background-attachment: fixed; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; min-height: 100%; }
+  main { max-width: 980px; margin: 0 auto; padding: 22px 16px 48px; }
+  h1 { font-size: clamp(24px, 5vw, 34px); margin: 4px 0 2px; font-weight: 700; letter-spacing: -0.01em; }
+  .lede { color: var(--soft); margin: 0 0 18px; max-width: 62ch; }
+  h2 { font-size: 15px; font-weight: 600; color: var(--soft); margin: 26px 0 8px; text-transform: none; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 8px 0; padding: 0; list-style: none; }
+  .tiles li { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .tiles b { display: block; font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .tiles span { color: var(--soft); font-size: 13px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .meter { height: 10px; background: #1d1a2b; border-radius: 99px; overflow: hidden; margin: 8px 0 4px; }
+  .meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), #6fd3ff); border-radius: 99px; }
+  .meter.full i { background: linear-gradient(90deg, var(--warn), var(--bad)); }
+  .bars { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; height: 80px; margin: 6px 0 2px; }
+  .bars i { display: block; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 2px; opacity: .85; }
+  .bars i.zero { background: #2a2540; }
+  .axis { display: flex; justify-content: space-between; color: var(--soft); font-size: 12px; }
+  ul.feed { list-style: none; margin: 0; padding: 0; }
+  ul.feed li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+  ul.feed li:first-child { border-top: 0; }
+  .kind { font-size: 12px; font-weight: 600; border-radius: 99px; padding: 2px 9px; align-self: start; text-align: center; background: #1f1a35; color: var(--accent); }
+  .kind.fix { color: var(--good); background: #12291f; } .kind.revert { color: var(--bad); background: #2e1515; } .kind.measure { color: #6fd3ff; background: #102331; } .kind.build { color: var(--warn); background: #2b2312; }
+  .feed a { color: var(--ink); text-decoration: none; } .feed a:hover, .feed a:focus { text-decoration: underline; }
+  .when { color: var(--soft); font-size: 12px; display: block; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  .chip { font-size: 13px; border: 1px solid var(--line); border-radius: 99px; padding: 3px 10px; color: var(--soft); }
+  .chip b { color: var(--ink); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+  button { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; }
+  button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+  .note { font-size: 13px; color: var(--soft); }
+  .err { color: var(--bad); font-size: 14px; }
+  .ok { color: var(--good); } .warn { color: var(--warn); } .bad { color: var(--bad); }
+  .tk-row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 26px; font-size: 14px; }
+  .tk-row a, .tk-row button { color: var(--accent); }
+  .tk-label { color: var(--soft); }
+  footer { font-size: 12px; color: var(--soft); margin-top: 24px; text-align: center; } footer a { color: inherit; }
+  @media (prefers-reduced-motion: no-preference) { .tiles li, .panel { transition: border-color .2s; } .tiles li:hover { border-color: #3b3456; } }
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Autopilot: what Verse did on its own","url":"https://a-to-mind.com/autopilot/","description":"The commits Verse's own loops landed, the jobs its conductor started or held, its coder's model budget, deploys and incidents, read live.","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Autopilot","item":"https://a-to-mind.com/autopilot/"}]}]}</script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Autopilot</h1>
+  <p class="lede">What Verse did on its own: no person and no Claude session. Every number here is read live from Verse's repository and its own conductor; a source that does not answer says so instead of showing a guess.</p>
+
+  <div class="row" role="group" aria-label="Time window">
+    <button type="button" data-days="1" aria-pressed="true">Last 24 hours</button>
+    <button type="button" data-days="7" aria-pressed="false">Last 7 days</button>
+    <span class="note" id="asof"></span>
+  </div>
+
+  <ul class="tiles" id="tiles" aria-live="polite">
+    <li><b id="t-own">…</b><span>changes Verse landed on its own</span></li>
+    <li><b id="t-started">…</b><span>jobs the conductor started (24 h)</span></li>
+    <li><b id="t-deploys">…</b><span>deploys to a-to-mind.com</span></li>
+    <li><b id="t-reverts">…</b><span>breaking changes it took back</span></li>
+    <li><b id="t-open">…</b><span>open incidents on main</span></li>
+    <li><b id="t-keys">…</b><span>keys Verse mints for itself</span></li>
+  </ul>
+
+  <h2>Verse's coder: free model calls today</h2>
+  <div class="panel" id="coder"><span class="note">Reading the coder's budget…</span></div>
+
+  <h2>Jobs the conductor started, by hour (last 24 h)</h2>
+  <div class="panel">
+    <div class="bars" id="bars" role="img" aria-label="Jobs started each hour"></div>
+    <div class="axis"><span id="ax0"></span><span>now</span></div>
+    <div class="chips" id="held"></div>
+  </div>
+
+  <h2>What it landed on main</h2>
+  <div class="chips" id="kinds"></div>
+  <div class="panel"><ul class="feed" id="feed"><li><span class="kind">…</span><span class="note">Reading main's history…</span></li></ul></div>
+
+  <nav id="related" class="tk-row" aria-label="Related pages"><!-- related --><span class="tk-label">Use with</span> <a href="/ledger/">Repo activity ledger</a> <a href="/team/">Team chat</a> <a href="/brain/">Verse Brain</a> <a href="/kanban/">Kanban board</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Sources: GitHub's public API for <a href="https://github.com/atomeam/void-loop">atomeam/void-loop</a> (commits on main and deploy runs), the conductor's record <code>domains/conductor.json</code> (written every hour by its own clock), <code>/api/coder</code> and <code>/incidents.json</code>. "On its own" means a commit whose author is one of Verse's own loops (verse-loop, github-actions), not housekeeping like regenerated files. <a href="/">Ask Verse anything</a></footer>
+</main>
+<script type="module" src="./app.js"></script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

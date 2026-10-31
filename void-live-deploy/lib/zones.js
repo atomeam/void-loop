@@ -27,21 +27,26 @@ const fallbackZones = ['UTC', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 
 export const allZones = () => { try { return Intl.supportedValuesOf('timeZone'); } catch (_) { return fallbackZones; } };
 /** the city part of a zone id, as people write it: "America/Argentina/Buenos_Aires" -> "Buenos Aires". Pure. */
 export const cityOf = (tz) => String(tz).split('/').pop().replace(/_/g, ' ');
+/** a clock's place as a city another page can look up: its own name ("Kyoto"), its zone's city for a short form ("NYC" -> "New York") or for
+ *  the visitor's own clock ("Your time (Chicago)" -> "Chicago"), and '' for a bare offset or UTC, which is no place. Pure. */
+export const cityName = (p) => (p && p.tz && p.tz.includes('/') && !/^Etc\//.test(p.tz) ? (p.you || /^[A-Z]{2,4}$/.test(p.name || '') || !p.name ? cityOf(p.tz) : p.name) : '');
 /** the stage card for the clocks open: "time in <city>" for the city asked for, else "world clock for <cities>" (up to 8). A city keeps
  *  its name ("Mumbai"), but a short form ("NYC") is said as its zone's city ("New York") for the stage's geocoder; UTC offsets have none. Pure. */
 export function timeAsk(main, places = []) {
-  const city = (p) => (p && p.tz && p.tz.includes('/') && !/^Etc\//.test(p.tz) ? (/^[A-Z]{2,4}$/.test(p.name || '') || !p.name ? cityOf(p.tz) : p.name) : '');
-  if (main) { const c = city(main); if (c) return 'time in ' + c; }
-  const names = [...new Set(places.map(city).filter(Boolean))].slice(0, 8);
+  if (main) { const c = cityName(main); if (c) return 'time in ' + c; }
+  const names = [...new Set(places.map(cityName).filter(Boolean))].slice(0, 8);
   return names.length ? 'world clock for ' + names.join(', ') : 'world clock';
 }
 const key = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[.,]/g, ' ').replace(/\s+/g, ' ').trim();
 
 /** a city, zone id or zone abbreviation typed by a person -> { name, tz }, or null: "tokyo", "Asia/Tokyo", "san francisco", "EST", "são paulo". */
+const realZone = (tz) => { try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return true; } catch (_) { return false; } };
 export function findPlace(text, zones = allZones()) {
   const raw = String(text || '').trim(); if (!raw) return null;
   const k = key(raw.replace(/^(?:the\s+)?time\s+in\s+/i, '').replace(/\s+time$/i, ''));
   const exact = zones.find((z) => z.toLowerCase() === raw.toLowerCase()); if (exact) return { name: cityOf(exact), tz: exact };
+  const named = /^(.+?)@([A-Za-z_]+(?:\/[A-Za-z0-9_+-]+)*)$/.exec(raw); // "Kyoto@Asia/Tokyo", from a card's link (skills/worldtime.js timePage): its own name, in that zone
+  if (named && (zones.includes(named[2]) || realZone(named[2]))) return { name: named[1].trim(), tz: named[2] }; // a geocoder's zone may be an alias the list leaves out (Asia/Ho_Chi_Minh)
   if (ALIAS[k]) return { name: title(k), tz: ALIAS[k] };
   const byCity = zones.find((z) => key(cityOf(z)) === k); if (byCity) return { name: cityOf(byCity), tz: byCity };
   const z = zoneOf(k); if (z) return { name: z.name, tz: z.timezone };
@@ -49,6 +54,14 @@ export function findPlace(text, zones = allZones()) {
   if (off && +off[2] <= 14) { const tz = +off[2] === 0 ? 'UTC' : 'Etc/GMT' + (off[1] === '+' ? '-' : '+') + +off[2]; return { name: 'UTC' + off[1] + +off[2], tz }; }
   const starts = zones.find((z) => key(cityOf(z)).startsWith(k) && k.length >= 3); if (starts) return { name: cityOf(starts), tz: starts };
   return null;
+}
+/** a place a link names with its zone, "City@Area/Zone" (as the flights page writes for an airport's city): { name, tz }, or null when the text has no
+ *  "@" or the zone is not one this device's clock knows (an alias like Asia/Kolkata counts). The name keeps its own spelling, at most 60 characters. Pure. */
+export function placeAt(text) {
+  const raw = String(text || ''), i = raw.lastIndexOf('@'); if (i < 1) return null;
+  const tz = raw.slice(i + 1).trim(), name = raw.slice(0, i).replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 60);
+  if (!name || !/^[A-Za-z][\w+-]*(?:\/[\w+-]+){0,2}$/.test(tz)) return null;
+  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return { name, tz }; } catch (_) { return null; }
 }
 const title = (k) => k.replace(/\b\p{L}/gu, (c) => c.toUpperCase()).replace(/\bDc\b/, 'DC').replace(/\bNyc\b/, 'NYC').replace(/\bUk\b/, 'UK');
 
@@ -128,6 +141,52 @@ const COORDS = Object.fromEntries(('tokyo 35.69 139.69;osaka 34.69 135.50;kyoto 
   + 'rio de janeiro -22.91 -43.17;rio -22.91 -43.17;havana 23.11 -82.37;panama 8.98 -79.52;sydney -33.87 151.21;melbourne -37.81 144.96;brisbane -27.47 153.03;'
   + 'perth -31.95 115.86;adelaide -34.93 138.60;darwin -12.46 130.84;hobart -42.88 147.33;canberra -35.28 149.13;auckland -36.85 174.76;wellington -41.29 174.78;'
   + 'fiji -18.14 178.44;longyearbyen 78.22 15.65').split(';').map((r) => { const m = /^(.+) (-?[\d.]+) (-?[\d.]+)$/.exec(r); return [m[1], [+m[2], +m[3]]]; }));
+// the country of each zone, from the IANA time zone database's zone.tab (public domain) with its older names (Asia/Calcutta, Europe/Kiev, America/Buenos_Aires),
+// because browsers still give some zones by those. Grouped as "Area/CC:City,City CC:City;Area/...". Zones of no one country (UTC, Etc/) are not here.
+const ZONE_CC = 'Africa/AO:Luanda BF:Ouagadougou BI:Bujumbura BJ:Porto-Novo BW:Gaborone CD:Kinshasa,Lubumbashi CF:Bangui CG:Brazzaville CI:Abidjan CM:Douala '
+  + 'DJ:Djibouti DZ:Algiers EG:Cairo EH:El_Aaiun ER:Asmara,Asmera ES:Ceuta ET:Addis_Ababa GA:Libreville GH:Accra GM:Banjul GN:Conakry GQ:Malabo GW:Bissau '
+  + 'KE:Nairobi LR:Monrovia LS:Maseru LY:Tripoli MA:Casablanca ML:Bamako,Timbuktu MR:Nouakchott MW:Blantyre MZ:Maputo NA:Windhoek NE:Niamey NG:Lagos '
+  + 'RW:Kigali SD:Khartoum SL:Freetown SN:Dakar SO:Mogadishu SS:Juba ST:Sao_Tome SZ:Mbabane TD:Ndjamena TG:Lome TN:Tunis TZ:Dar_es_Salaam UG:Kampala '
+  + 'ZA:Johannesburg ZM:Lusaka ZW:Harare;America/AG:Antigua AI:Anguilla '
+  + 'AR:Argentina/Buenos_Aires,Argentina/Catamarca,Argentina/ComodRivadavia,Argentina/Cordoba,Argentina/Jujuy,Argentina/La_Rioja,Argentina/Mendoza,Argentina/Rio_Gallegos,Argentina/Salta,Argentina/San_Juan,Argentina/San_Luis,Argentina/Tucuman,Argentina/Ushuaia,Buenos_Aires,Catamarca,Cordoba,Jujuy,Mendoza,Rosario '
+  + 'AW:Aruba BB:Barbados BL:St_Barthelemy BO:La_Paz BQ:Kralendijk '
+  + 'BR:Araguaina,Bahia,Belem,Boa_Vista,Campo_Grande,Cuiaba,Eirunepe,Fortaleza,Maceio,Manaus,Noronha,Porto_Acre,Porto_Velho,Recife,Rio_Branco,Santarem,Sao_Paulo '
+  + 'BS:Nassau BZ:Belize '
+  + 'CA:Atikokan,Blanc-Sablon,Cambridge_Bay,Coral_Harbour,Creston,Dawson,Dawson_Creek,Edmonton,Fort_Nelson,Glace_Bay,Goose_Bay,Halifax,Inuvik,Iqaluit,Moncton,Montreal,Nipigon,Pangnirtung,Rainy_River,Rankin_Inlet,Regina,Resolute,St_Johns,Swift_Current,Thunder_Bay,Toronto,Vancouver,Whitehorse,Winnipeg,Yellowknife '
+  + 'CL:Coyhaique,Punta_Arenas,Santiago CO:Bogota CR:Costa_Rica CU:Havana CW:Curacao DM:Dominica DO:Santo_Domingo EC:Guayaquil GD:Grenada GF:Cayenne '
+  + 'GL:Danmarkshavn,Godthab,Nuuk,Scoresbysund,Thule GP:Guadeloupe GT:Guatemala GY:Guyana HN:Tegucigalpa HT:Port-au-Prince JM:Jamaica KN:St_Kitts KY:Cayman '
+  + 'LC:St_Lucia MF:Marigot MQ:Martinique MS:Montserrat '
+  + 'MX:Bahia_Banderas,Cancun,Chihuahua,Ciudad_Juarez,Ensenada,Hermosillo,Matamoros,Mazatlan,Merida,Mexico_City,Monterrey,Ojinaga,Santa_Isabel,Tijuana '
+  + 'NI:Managua PA:Panama PE:Lima PM:Miquelon PR:Puerto_Rico PY:Asuncion SR:Paramaribo SV:El_Salvador SX:Lower_Princes TC:Grand_Turk TT:Port_of_Spain '
+  + 'US:Adak,Anchorage,Atka,Boise,Chicago,Denver,Detroit,Fort_Wayne,Indiana/Indianapolis,Indiana/Knox,Indiana/Marengo,Indiana/Petersburg,Indiana/Tell_City,Indiana/Vevay,Indiana/Vincennes,Indiana/Winamac,Indianapolis,Juneau,Kentucky/Louisville,Kentucky/Monticello,Knox_IN,Los_Angeles,Louisville,Menominee,Metlakatla,New_York,Nome,North_Dakota/Beulah,North_Dakota/Center,North_Dakota/New_Salem,Phoenix,Shiprock,Sitka,Yakutat '
+  + 'UY:Montevideo VC:St_Vincent VE:Caracas VG:Tortola '
+  + 'VI:St_Thomas,Virgin;Antarctica/AQ:Casey,Davis,DumontDUrville,Mawson,McMurdo,Palmer,Rothera,South_Pole,Syowa,Troll,Vostok '
+  + 'AU:Macquarie;Arctic/SJ:Longyearbyen;Asia/AE:Dubai AF:Kabul AM:Yerevan AZ:Baku BD:Dacca,Dhaka BH:Bahrain BN:Brunei BT:Thimbu,Thimphu '
+  + 'CN:Chongqing,Chungking,Harbin,Kashgar,Shanghai,Urumqi CY:Famagusta,Nicosia GE:Tbilisi HK:Hong_Kong '
+  + 'ID:Jakarta,Jayapura,Makassar,Pontianak,Ujung_Pandang IL:Jerusalem,Tel_Aviv IN:Calcutta,Kolkata IQ:Baghdad IR:Tehran JO:Amman JP:Tokyo KG:Bishkek '
+  + 'KH:Phnom_Penh KP:Pyongyang KR:Seoul KW:Kuwait KZ:Almaty,Aqtau,Aqtobe,Atyrau,Oral,Qostanay,Qyzylorda LA:Vientiane LB:Beirut LK:Colombo '
+  + 'MM:Rangoon,Yangon MN:Choibalsan,Hovd,Ulaanbaatar,Ulan_Bator MO:Macao,Macau MY:Kuala_Lumpur,Kuching NP:Kathmandu,Katmandu OM:Muscat PH:Manila '
+  + 'PK:Karachi PS:Gaza,Hebron QA:Qatar '
+  + 'RU:Anadyr,Barnaul,Chita,Irkutsk,Kamchatka,Khandyga,Krasnoyarsk,Magadan,Novokuznetsk,Novosibirsk,Omsk,Sakhalin,Srednekolymsk,Tomsk,Ust-Nera,Vladivostok,Yakutsk,Yekaterinburg '
+  + 'SA:Riyadh SG:Singapore SY:Damascus TH:Bangkok TJ:Dushanbe TL:Dili TM:Ashgabat,Ashkhabad TR:Istanbul TW:Taipei UZ:Samarkand,Tashkent '
+  + 'VN:Ho_Chi_Minh,Saigon YE:Aden;Atlantic/BM:Bermuda CV:Cape_Verde ES:Canary FK:Stanley FO:Faeroe,Faroe GS:South_Georgia IS:Reykjavik NO:Jan_Mayen '
+  + 'PT:Azores,Madeira '
+  + 'SH:St_Helena;Australia/AU:ACT,Adelaide,Brisbane,Broken_Hill,Canberra,Currie,Darwin,Eucla,Hobart,LHI,Lindeman,Lord_Howe,Melbourne,NSW,North,Perth,Queensland,South,Sydney,Tasmania,Victoria,West,Yancowinna;Europe/AD:Andorra '
+  + 'AL:Tirane AT:Vienna AX:Mariehamn BA:Sarajevo BE:Brussels BG:Sofia BY:Minsk CH:Zurich CY:Nicosia CZ:Prague DE:Berlin,Busingen DK:Copenhagen EE:Tallinn '
+  + 'ES:Madrid FI:Helsinki FR:Paris GB:Belfast,London GG:Guernsey GI:Gibraltar GR:Athens HR:Zagreb HU:Budapest IE:Dublin IM:Isle_of_Man IT:Rome JE:Jersey '
+  + 'LI:Vaduz LT:Vilnius LU:Luxembourg LV:Riga MC:Monaco MD:Chisinau,Tiraspol ME:Podgorica MK:Skopje MT:Malta NL:Amsterdam NO:Oslo PL:Warsaw PT:Lisbon '
+  + 'RO:Bucharest RS:Belgrade RU:Astrakhan,Kaliningrad,Kirov,Moscow,Samara,Saratov,Ulyanovsk,Volgograd SE:Stockholm SI:Ljubljana SK:Bratislava '
+  + 'SM:San_Marino TR:Istanbul UA:Kiev,Kyiv,Simferopol,Uzhgorod,Zaporozhye VA:Vatican;Indian/CC:Cocos CX:Christmas IO:Chagos KM:Comoro MG:Antananarivo '
+  + 'MU:Mauritius MV:Maldives RE:Reunion SC:Mahe TF:Kerguelen YT:Mayotte;Pacific/AS:Pago_Pago,Samoa CK:Rarotonga CL:Easter EC:Galapagos FJ:Fiji '
+  + 'FM:Chuuk,Kosrae,Pohnpei,Ponape,Truk,Yap GU:Guam KI:Enderbury,Kanton,Kiritimati,Tarawa MH:Kwajalein,Majuro MP:Saipan NC:Noumea NF:Norfolk NR:Nauru '
+  + 'NU:Niue NZ:Auckland,Chatham PF:Gambier,Marquesas,Tahiti PG:Bougainville,Port_Moresby PN:Pitcairn PW:Palau SB:Guadalcanal TK:Fakaofo TO:Tongatapu '
+  + 'TV:Funafuti UM:Midway,Wake US:Honolulu,Johnston VU:Efate WF:Wallis WS:Apia';
+let zoneCc = null;
+/** the two-letter country (ISO 3166) a zone is in: countryOf('Asia/Tokyo') -> 'JP', countryOf('Asia/Calcutta') -> 'IN', a zone of no one country -> ''. Pure. */
+export function countryOf(tz) {
+  if (!zoneCc) { zoneCc = Object.create(null); for (const g of ZONE_CC.split(';')) { const i = g.indexOf('/'), area = g.slice(0, i); for (const e of g.slice(i + 1).split(' ')) { const [cc, cities] = e.split(':'); for (const c of cities.split(',')) zoneCc[area + '/' + c] = cc; } } }
+  return zoneCc[String(tz || '')] || '';
+}
 /** where a place stands: { lat, lon } from the table by its own name, else by the city its zone is named after when the name is that city; or null. Pure. */
 export function coordsOf(place) {
   if (!place) return null; const n = key(place.name), z = key(cityOf(place.tz || ''));

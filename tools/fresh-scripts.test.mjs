@@ -42,6 +42,16 @@ test('the worker asks the server again for any page script, and keeps none of th
   }
 });
 
+test('page code the worker keeps (a tool page\'s app.js, /lib/, /skills/) also goes back marked no-cache', async () => {
+  // 2026-10-30: a returning tab ran an old /metronome/app.js after a deploy, from its memory cache, until the tab was new
+  for (const p of ['/metronome/app.js', '/rap/app.js', '/lib/toolkit.js', '/skills/rap.js']) {
+    const w = worker(), res = await w.get(p);
+    assert.ok(res, p + ' passed through the worker untouched');
+    assert.deepEqual(w.calls, [{ url: 'https://a-to-mind.com' + p, cache: 'no-cache' }], p);
+    assert.equal(res.headers.get('cache-control'), 'no-cache', p + ' went back with the server\'s 4 hours on it, so the tab\'s memory cache keeps the old copy');
+  }
+});
+
 test('offline, a page script falls back to the browser\'s own copy', async () => {
   const w = worker({ offline: true }), res = await w.get('/stopwatch/app.js');
   assert.deepEqual(w.calls.map((c) => c.cache), ['no-cache', 'force-cache']);

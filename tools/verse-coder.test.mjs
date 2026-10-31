@@ -212,12 +212,11 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.ok(ps.every((p) => !/gpt-oss/.test(p.model)), 'no gpt-oss');
   assert.deepEqual(providersFrom({ CLOUDFLARE_API_TOKEN: 'x' }), [], 'Workers AI needs the account id too');
   assert.deepEqual(providersFrom({}), []);
-  assert.deepEqual(providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10) }).map((p) => p.name), ['workers-ai', 'github-models', 'openrouter', 'groq', 'gemini', 'cerebras'], 'GitHub Models follows Workers AI');
+  assert.deepEqual(providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10) }).map((p) => p.name), ['workers-ai', 'openrouter', 'groq', 'gemini', 'cerebras'], 'GitHub Models is retired: its token adds no provider');
   // Verse's own model leads when the owner token is there; a 2xx that is not JSON is named by status and type, never by its body
   const own = providersFrom({ ...env, GH_MODELS_TOKEN: 'gh'.repeat(10), VOID_OWNER_TOKEN: 'o'.repeat(30), VOID_SITE: 'https://example.invalid/' });
-  assert.deepEqual(own.map((p) => p.name), ['verse', 'workers-ai', 'github-models', 'openrouter', 'groq', 'gemini', 'cerebras']);
+  assert.deepEqual(own.map((p) => p.name), ['verse', 'workers-ai', 'openrouter', 'groq', 'gemini', 'cerebras']);
   assert.equal(own[0].url, 'https://example.invalid/api/coder'); assert.equal(own[0].shape, 'workers');
-  assert.equal(own[2].headers.accept, 'application/vnd.github+json', 'GitHub Models gets the headers its docs name');
   const sent = [];
   const odd = stackModel(own.slice(0, 3), { fetchImpl: async (url, init) => { sent.push([url, init.headers]);
     if (url.includes('example.invalid')) return { ok: true, status: 200, json: async () => ({ result: { response: call('finish'), usage: { total_tokens: 7 } } }) };
@@ -226,7 +225,17 @@ test('the free stack: Workers AI first, then the others in order; a 429 falls th
   assert.equal(sent.length, 1); assert.equal(sent[0][1].authorization, 'Bearer ' + 'o'.repeat(30)); assert.match(odd.last, /^verse /);
   const html = stackModel(own.slice(2, 3), { fetchImpl: async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': 'text/html; charset=utf-8' }), json: async () => { throw new SyntaxError('Unexpected token <'); } }) });
   const said = (await html([])).error;
-  assert.equal(said, 'no model answered (github-models 200 not JSON (text/html))'); assert.doesNotMatch(said, /Unexpected token/);
+  assert.equal(said, 'no model answered (openrouter 200 text/html not JSON)'); assert.doesNotMatch(said, /Unexpected token/);
+  // a body read as text: JSON parses, a stream of data: lines joins, anything else is named by status, type and size first
+  const page = '<!doctype html><title>x</title>';
+  const asText = (body, type) => async () => ({ ok: true, status: 200, headers: new Headers({ 'content-type': type }), text: async () => body });
+  const htmlText = await stackModel(own.slice(2, 3), { fetchImpl: asText(page, 'text/html') })([]);
+  assert.equal(htmlText.error, 'no model answered (openrouter 200 text/html ' + page.length + 'B not JSON)'); assert.doesNotMatch(htmlText.error, /doctype/);
+  assert.equal((await stackModel(own.slice(2, 3), { fetchImpl: asText('OK\n', 'text/plain') })([])).error, 'no model answered (openrouter 200 text/plain 2B not JSON "OK")', 'a short body is shown, escaped');
+  assert.match((await stackModel(own.slice(2, 3), { fetchImpl: asText('ghs_' + 'k'.repeat(36), 'text/plain') })([])).error, /"\[masked\]"\)$/, 'a key-like run in a short body is masked');
+  assert.deepEqual(await stackModel(own.slice(2, 3), { fetchImpl: asText(JSON.stringify({ choices: [{ message: { content: call('finish') } }], usage: { total_tokens: 9 } }), 'text/plain') })([]), { text: call('finish'), tokens: 9 }, 'JSON under the wrong type still reads');
+  const sse = ['data: {"choices":[{"delta":{"content":"' + 'he' + '"}}]}', '', 'data: {"choices":[{"delta":{"content":"llo"}}],"usage":{"total_tokens":5}}', '', 'data: [DONE]', ''].join('\n');
+  assert.deepEqual(await stackModel(own.slice(2, 3), { fetchImpl: asText(sse, 'text/event-stream') })([]), { text: 'hello', tokens: 5 }, 'a streamed reply joins its deltas');
   const seen = [];
   const fakeFetch = async (url, init) => {
     seen.push(url);
@@ -246,7 +255,7 @@ test('the CLI: no key means exit 4 with the keys it wants; a scripted model runs
   const s = repo();
   const bare = { PATH: process.env.PATH, HOME: process.env.HOME };
   let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
-  assert.equal(r.status, 4); assert.match(r.stdout, /VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, GH_MODELS_TOKEN.*?, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/);
+  assert.equal(r.status, 4); assert.match(r.stdout, /VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/); assert.doesNotMatch(r.stdout, /GH_MODELS/);
   const script = join(s.dir, 'script.json'), checks = join(s.dir, 'checks.json');
   writeFileSync(script, JSON.stringify([{ tool: 'edit', diff: FIX }, { tool: 'check', name: 'add' }, { tool: 'finish', summary: 'fixed' }]));
   writeFileSync(checks, JSON.stringify(CHECKS));

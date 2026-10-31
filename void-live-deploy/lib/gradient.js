@@ -58,6 +58,29 @@ export function fallback(g) {
 }
 /** the full rule a stylesheet takes: the fallback colour, then the gradient. Pure. */
 export const rule = (g) => { const c = css(g); return c ? 'background-color: ' + fallback(g) + ';\nbackground-image: ' + c + ';' : ''; };
+/** where a gradient lies on a w × h picture, as CSS draws it: a linear one's line (through the middle, long enough that its ends meet the
+ *  corners), a radial one's centre and radii (farthest-corner, the CSS default), a conic one's centre and its start as a canvas angle
+ *  (canvas counts from the right, CSS from the top). Pure. */
+export function geometry(g, w, h) {
+  const n = normal(g); if (!n || !(w > 0) || !(h > 0)) return null;
+  const cx = w / 2, cy = h / 2;
+  if (n.type === 'radial') return n.shape === 'circle' ? { type: 'radial', cx, cy, rx: Math.hypot(cx, cy), ry: Math.hypot(cx, cy) } : { type: 'radial', cx, cy, rx: cx * Math.SQRT2, ry: cy * Math.SQRT2 };
+  const a = (n.angle * Math.PI) / 180;
+  if (n.type === 'conic') return { type: 'conic', cx, cy, start: a - Math.PI / 2 };
+  const len = Math.abs(w * Math.sin(a)) + Math.abs(h * Math.cos(a)), dx = (Math.sin(a) * len) / 2, dy = (-Math.cos(a) * len) / 2;
+  return { type: 'linear', x0: cx - dx, y0: cy - dy, x1: cx + dx, y1: cy + dy };
+}
+/** draw a gradient on a 2D canvas context of w × h, the way the CSS shows it (the picture other pages take). true when drawn. */
+export function drawGradient(ctx, g, w, h) {
+  const n = normal(g), at = geometry(n, w, h); if (!at) return false;
+  let fill, scaleY = 1;
+  if (at.type === 'linear') fill = ctx.createLinearGradient(at.x0, at.y0, at.x1, at.y1);
+  else if (at.type === 'conic') { if (!ctx.createConicGradient) return false; fill = ctx.createConicGradient(at.start, at.cx, at.cy); }
+  else { scaleY = at.ry / at.rx; fill = ctx.createRadialGradient(at.cx, at.cy / scaleY, 0, at.cx, at.cy / scaleY, at.rx); }
+  for (const st of n.stops) fill.addColorStop(clamp(st.pos / 100, 0, 1), cssColour(st.color));
+  ctx.save(); ctx.clearRect(0, 0, w, h); ctx.scale(1, scaleY); ctx.fillStyle = fill; ctx.fillRect(0, 0, w, h / scaleY); ctx.restore();
+  return true;
+}
 
 const STOP = /((?:#[0-9a-f]{3,8})|(?:rgba?|hsla?)\([^)]*\)|[a-z]+)(?:\s+(-?[\d.]+)%)?/gi;
 /** a gradient read back from CSS ("linear-gradient(90deg, #f00 0%, rgba(0,0,255,.5) 100%)", "to right", "radial-gradient(circle, ...)",

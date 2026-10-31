@@ -50,7 +50,7 @@ const num = (v) => { const n = Number(v); return Number.isFinite(n) ? n : null; 
 const scoreOf = (v) => { if (v && typeof v === 'object') v = v.displayValue != null ? v.displayValue : v.value; const s = v == null ? '' : String(v).trim(); return /^\d{1,3}(?:\.0+)?$/.test(s) ? String(parseInt(s, 10)) : ''; };
 export const idOk = (s) => /^\d{1,12}$/.test(String(s));
 
-/** one ESPN event (a scoreboard row, or a team schedule row) as { id, state: pre|live|final, status, start, home, away, venue, events, round }. Pure. */
+/** one ESPN event (a scoreboard row, or a team schedule row) as { id, state: pre|live|final, status, start, home, away, venue, city (the venue's town, for the weather there), events, round }. Pure. */
 export function readEvent(ev) {
   if (!ev || typeof ev !== 'object') return null;
   const comp = arr(ev.competitions)[0] || {}, cs = arr(comp.competitors);
@@ -71,8 +71,12 @@ export function readEvent(ev) {
       text: str(ty2.text, 30), who: str(who.displayName || who.shortName, 40), team: str(d && d.team && d.team.id, 12) };
   }).filter((d) => d.kind !== 'other').slice(0, 30);
   return { id: str(ev.id, 12), state, status: state === 'pre' ? '' : str(ty.shortDetail || ty.detail || ty.description, 24), start: str(ev.date || comp.date, 24), home, away,
-    venue: str(comp.venue && comp.venue.fullName, 60), events: detail, round: str(ev.week && ev.week.number ? 'W' + ev.week.number : '', 6) };
+    venue: str(comp.venue && comp.venue.fullName, 60), city: str(comp.venue && comp.venue.address && comp.venue.address.city, 40), country: str(comp.venue && comp.venue.address && comp.venue.address.country, 40), events: detail, round: str(ev.week && ev.week.number ? 'W' + ev.week.number : '', 6) };
 }
+// ESPN names a ground's country its own way; the airport list (flights/airports.json) uses the state's name
+const AIR_COUNTRY = { england: 'United Kingdom', scotland: 'United Kingdom', wales: 'United Kingdom', 'northern ireland': 'United Kingdom', uk: 'United Kingdom', usa: 'United States', us: 'United States', 'united states of america': 'United States' };
+/** the words the flights page searches its airports by to reach a game's town ("Manchester United Kingdom", so not Manchester, New Hampshire), or '' without a town. Pure. */
+export const flightAsk = (g) => { const c = g && g.city; if (!c) return ''; const k = String(g.country || '').trim(), n = AIR_COUNTRY[k.toLowerCase()] || k; return n ? c + ' ' + n : c; };
 /** an ESPN scoreboard / schedule answer as [game]. Pure. */
 export const readScoreboard = (j) => arr(j && j.events).map(readEvent).filter(Boolean).slice(0, 80);
 
@@ -113,6 +117,9 @@ export function readStandings(j, grp) {
 export function readSummary(j) {
   const h = j && j.header, hc = h && arr(h.competitions)[0];
   const game = hc ? readEvent({ id: h.id, date: hc.date, status: hc.status, competitions: [hc] }) : null;
+  // the header competition often carries no venue: ESPN's gameInfo names the ground and its town
+  const gv = j && j.gameInfo && j.gameInfo.venue;
+  if (game && gv) { if (!game.venue) game.venue = str(gv.fullName, 60); if (!game.city) { game.city = str(gv.address && gv.address.city, 40); game.country = str(gv.address && gv.address.country, 40); } }
   const events = arr(j && j.keyEvents).map((k) => ({ min: str(k.clock && k.clock.displayValue, 10), kind: k.scoringPlay ? 'goal' : /red/i.test((k.type || {}).text || '') ? 'red' : /yellow/i.test((k.type || {}).text || '') ? 'yellow' : 'other',
     text: str(k.shortText || k.text || (k.type || {}).text, 120), team: str(k.team && k.team.displayName, 40) })).filter((k) => k.kind !== 'other' && k.min).slice(0, 40);
   const stats = arr(((j && j.boxscore) || {}).teams).map((t) => ({ team: str(t.team && (t.team.abbreviation || t.team.displayName), 12), side: t.homeAway || '',
@@ -151,6 +158,19 @@ export function icsOf(game, league) {
     'SUMMARY:' + icsEsc(title), 'LOCATION:' + icsEsc(game.venue || ''), 'DESCRIPTION:' + icsEsc((league ? league.name + '. ' : '') + 'https://a-to-mind.com/scores/?league=' + (league ? league.id : '')), 'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
 }
 
+/** the game as an event for Verse's own calendar: the base64url JSON that '/calendar/?e=' carries (the shape lib/calendar.js eventFromLink reads), its wall clock in `tz`
+ *  (the visitor's zone), the same title and length as icsOf, or '' when the start cannot be read or the zone is unknown. Pure. */
+export function calendarEvent(game, league, tz) {
+  const t = Date.parse(game && game.start); if (!Number.isFinite(t) || !tz) return '';
+  let wall; try { wall = (ms) => { const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).map((x) => [x.type, x.value]));
+    return p.year + '-' + p.month + '-' + p.day + 'T' + p.hour + ':' + p.minute; }; wall(t); } catch (_) { return ''; }
+  const len = (league && league.id === 'nfl' ? 3 : 2) * 3600000, title = game.kind === 'race' ? game.name : game.home.name + ' vs ' + game.away.name;
+  const ev = { title, start: wall(t), end: wall(t + len), tz, allDay: false, ...(game.venue ? { location: game.venue } : {}),
+    notes: (league ? league.name + '. ' : '') + 'The start time is from the league feed; the end is a typical length, not a schedule. https://a-to-mind.com/scores/?league=' + (league ? league.id : '') };
+  let bin = ''; for (const c of new TextEncoder().encode(JSON.stringify(ev))) bin += String.fromCharCode(c);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
 /** OpenLigaDB matches (getmatchdata/bl1/<season>) played on `day` ('YYYY-MM-DD', UTC) as games. Pure; `now` decides live. */
 export function readOpenLiga(list, day, now = Date.now(), span = 1) {
   const last = shiftDay(day, span - 1);
@@ -164,7 +184,7 @@ export function readOpenLiga(list, day, now = Date.now(), span = 1) {
       winner: fin && res ? (i ? res.pointsTeam2 > res.pointsTeam1 : res.pointsTeam1 > res.pointsTeam2) : false, record: '' });
     const home = team(m.team1, 0), away = team(m.team2, 1);
     return { id: 'ol' + str(m.matchID, 10), state: fin ? 'final' : live ? 'live' : 'pre', status: fin ? 'FT' : live ? 'LIVE' : '', start: new Date(start).toISOString(), home, away,
-      venue: str(m.location && m.location.locationStadium, 60), round: str(m.group && m.group.groupOrderID ? 'MD' + m.group.groupOrderID : '', 6),
+      venue: str(m.location && m.location.locationStadium, 60), city: str(m.location && m.location.locationCity, 40), country: m.location && m.location.locationCity ? 'Germany' : '', round: str(m.group && m.group.groupOrderID ? 'MD' + m.group.groupOrderID : '', 6),
       events: goals.map((g) => ({ min: str(g.matchMinute, 4) + (g.matchMinute ? "'" : ''), kind: g.isOwnGoal ? 'owngoal' : g.isPenalty ? 'pen' : 'goal', text: str(g.scoreTeam1 + '-' + g.scoreTeam2, 10), who: str(g.goalGetterName, 40), team: '' })).slice(0, 30) };
   });
 }
@@ -310,6 +330,36 @@ export function scoresAsk(text) {
   if (!m) return null; const k = m[1].toLowerCase().replace(/^la ?liga$/, 'la liga'); return { league: ALIAS[k], tab: /stand|table/i.test(m[2]) ? 'standings' : 'scores' };
 }
 
+// "lakers score last night", "how did the arsenal do yesterday", "did the yankees win": one team's game (2026-10-30: these fell to an article).
+const NOT_TEAM = /^(?:my|your|our|their|his|her|the|a|an|what|whats|credit|fico|test|sat|act|gre|gmat|lsat|mcat|quiz|exam|final|game|high|top|best|live|bowling|golf|wordle|chess|match|team|sports?|tennis|cricket|football|soccer|basketball|baseball|hockey|rugby|darts|boxing|ufc|mma|nascar|college|ncaa|world|cup|olympic|olympics)$/i;
+/** an ask for one team's game -> { team, day: 'yesterday' | 'today' | '' } | null; never a league ("nba scores" is scoresAsk's) and never a credit or test score. Pure. */
+export function teamScoreAsk(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+  const pats = [
+    /^(?:what was|what'?s|what is) the ([a-z][a-z .'&-]{1,30}?) (?:game )?(?:score|result)(?: (last night|yesterday|today|tonight))?$/,
+    /^how did the ([a-z][a-z .'&-]{1,30}?) do(?: (last night|yesterday|today|tonight))?$/,
+    /^did the ([a-z][a-z .'&-]{1,30}?) win(?: (last night|yesterday|today|tonight))?$/,
+    /^(?:the )?([a-z][a-z .'&-]{1,30}?) (?:game )?(?:score|scores|result|final score)(?: (last night|yesterday|today|tonight))?$/,
+  ];
+  let team = '', day = '';
+  for (const p of pats) {
+    const m = p.exec(t);
+    if (!m) continue;
+    const c = m[1].trim(), words = c.split(' ');
+    if (words.length > 3 || words.some((w) => NOT_TEAM.test(w)) || ALIAS[c] || /^(?:la ?liga|formula (?:1|one))$/.test(c)) continue;
+    team = c; day = m[2] || ''; break;
+  }
+  if (!team) return null;
+  return { team, day: /last night|yesterday/.test(day) ? 'yesterday' : day ? 'today' : '' };
+}
+/** the game a team played on a set of scoreboards ([{ league, games }]): the first whose home or away name, short name or abbreviation holds the team as whole words. Pure. */
+export function teamGame(boards, team) {
+  const want = String(team || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim(); if (!want) return null;
+  const has = (side) => side && [side.name, side.short, side.abbr].some((n) => (' ' + String(n || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ') + ' ').includes(' ' + want + ' '));
+  for (const b of Array.isArray(boards) ? boards : []) for (const g of Array.isArray(b && b.games) ? b.games : []) if (g && g.kind !== 'race' && (has(g.home) || has(g.away))) return { league: b.league, game: g };
+  return null;
+}
+
 /** a snake draft's order: teams 0..n-1 each round, the direction flipping every round; [{ pick, round, team }]. Pure. */
 export function draftOrder(teams, rounds) {
   const out = []; for (let r = 0; r < rounds; r++) for (let i = 0; i < teams; i++) out.push({ pick: out.length + 1, round: r + 1, team: r % 2 ? teams - 1 - i : i }); return out;
@@ -325,9 +375,9 @@ export function playersOf(text) {
 const EN = { scores: 'Scores', standings: 'Standings', mine: 'My teams', today: 'Today', yesterday: 'Yesterday', tomorrow: 'Tomorrow', live: 'LIVE', ft: 'FT', details: 'Details', back: 'Back', share: 'Share link', copied: 'Link copied',
   follow: 'Follow', unfollow: 'Unfollow', followLeague: 'Follow league', unfollowLeague: 'Following league', none: 'No games on this day.', loading: 'Loading', failed: 'The score feed did not answer just now.', saved: 'Showing the last saved result from',
   stale: 'The feed is not answering, so this is the last good copy from', delayed: 'Data may be delayed by a minute or more.', noMine: 'Follow a team with its star, or a league above, and its games show here.', noMineDay: 'None of your teams play on this day.',
-  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', story: 'Story', reportsTab: 'Verse reports', sportsTab: 'Sports', draft: 'Mock draft', pickem: "Pick'em", whatif: 'What if', fpts: 'Fantasy points (estimate: no fumbles, kickers or defences)', winp: 'Win chance (Verse\'s own estimate from score and clock)', rating: 'Verse rating', cal: 'Add to calendar', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', noNext: 'No next games listed', week: 'Week', dayView: 'Day', prevWeek: 'Previous week', nextWeek: 'Next week', thisWeek: 'This week', form: 'Form', plays: 'Play by play', h2h: 'Earlier meetings', last5: 'Last five', cut: 'Table key', badTable: 'Some numbers in this table do not add up:' };
+  last: 'Last games', next: 'Next games', events: 'Goals and cards', teamStats: 'Team stats', lineups: 'Starting line-ups', box: 'Box score', kick: 'Kick-off', venue: 'Venue', team: 'Team', offline: 'You are offline. ', refreshing: 'Updates every 30 seconds while a game is live.', race: 'Race', results: 'Result', driver: 'Driver', raceDay: 'Race day', story: 'Story', reportsTab: 'Verse reports', sportsTab: 'Sports', draft: 'Mock draft', pickem: "Pick'em", whatif: 'What if', fpts: 'Fantasy points (estimate: no fumbles, kickers or defences)', winp: 'Win chance (Verse\'s own estimate from score and clock)', rating: 'Verse rating', cal: 'Add to calendar', vcal: 'Add to my Verse calendar', vtime: 'The start in other cities', vwx: 'Weather at the ground', vfly: 'Flights to the game', search: 'Search teams', updated: 'Updated', showing: 'Showing the saved copy from', noNext: 'No next games listed', week: 'Week', dayView: 'Day', prevWeek: 'Previous week', nextWeek: 'Next week', thisWeek: 'This week', form: 'Form', plays: 'Play by play', h2h: 'Earlier meetings', last5: 'Last five', cut: 'Table key', badTable: 'Some numbers in this table do not add up:' };
 const DE = { scores: 'Ergebnisse', standings: 'Tabelle', mine: 'Meine Teams', today: 'Heute', yesterday: 'Gestern', tomorrow: 'Morgen', live: 'LIVE', ft: 'Ende', details: 'Details', back: 'Zurück', share: 'Link teilen', copied: 'Link kopiert',
   follow: 'Folgen', unfollow: 'Entfolgen', followLeague: 'Liga folgen', unfollowLeague: 'Liga gefolgt', none: 'Keine Spiele an diesem Tag.', loading: 'Lädt', failed: 'Die Ergebnisquelle hat gerade nicht geantwortet.', saved: 'Zuletzt gespeichertes Ergebnis von',
   stale: 'Die Quelle antwortet nicht, das ist die letzte gute Kopie von', delayed: 'Die Daten können eine Minute oder länger verzögert sein.', noMine: 'Folge einem Team mit dem Stern oder oben einer Liga, dann erscheinen ihre Spiele hier.', noMineDay: 'Keines deiner Teams spielt an diesem Tag.',
-  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', story: 'Bericht', reportsTab: 'Verse-Berichte', sportsTab: 'Sportarten', draft: 'Mock-Draft', pickem: 'Tippspiel', whatif: 'Was wäre wenn', fpts: 'Fantasy-Punkte (Schätzung: ohne Fumbles, Kicker und Defense)', winp: 'Siegchance (Verses eigene Schätzung aus Stand und Uhr)', rating: 'Verse-Rating', cal: 'In den Kalender', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', noNext: 'Keine nächsten Spiele gelistet', week: 'Woche', dayView: 'Tag', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', thisWeek: 'Diese Woche', form: 'Form', plays: 'Spielverlauf', h2h: 'Frühere Spiele', last5: 'Letzte fünf', cut: 'Legende', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
+  last: 'Letzte Spiele', next: 'Nächste Spiele', events: 'Tore und Karten', teamStats: 'Teamstatistik', lineups: 'Startaufstellung', box: 'Boxscore', kick: 'Anstoß', venue: 'Stadion', team: 'Team', offline: 'Du bist offline. ', refreshing: 'Aktualisiert alle 30 Sekunden, solange ein Spiel läuft.', race: 'Rennen', results: 'Ergebnis', driver: 'Fahrer', raceDay: 'Renntag', story: 'Bericht', reportsTab: 'Verse-Berichte', sportsTab: 'Sportarten', draft: 'Mock-Draft', pickem: 'Tippspiel', whatif: 'Was wäre wenn', fpts: 'Fantasy-Punkte (Schätzung: ohne Fumbles, Kicker und Defense)', winp: 'Siegchance (Verses eigene Schätzung aus Stand und Uhr)', rating: 'Verse-Rating', cal: 'In den Kalender', vcal: 'In meinen Verse-Kalender', vtime: 'Der Beginn in anderen Städten', vwx: 'Wetter am Stadion', vfly: 'Flüge zum Spiel', search: 'Teams suchen', updated: 'Aktualisiert', showing: 'Gespeicherte Kopie von', noNext: 'Keine nächsten Spiele gelistet', week: 'Woche', dayView: 'Tag', prevWeek: 'Vorige Woche', nextWeek: 'Nächste Woche', thisWeek: 'Diese Woche', form: 'Form', plays: 'Spielverlauf', h2h: 'Frühere Spiele', last5: 'Letzte fünf', cut: 'Legende', badTable: 'Manche Zahlen in dieser Tabelle gehen nicht auf:' };
 export const wordsFor = (lang) => (/^de\b/i.test(lang || '') ? DE : EN);

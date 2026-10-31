@@ -36,10 +36,11 @@ const TAG = /^(?:draft\s+)?f?-?\d+[\s:\u00b7\p{Pd}]*/iu;
 const plain = (s) => String(s).replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_`]+/g, '').replace(/\s+/g, ' ').trim();
 /** the first sentence or two of a line, at most `max` characters, cut at a sentence or a word and never closed with an ellipsis. Pure. */
 export function clip(text, max = 165) {
-  const s = plain(text); if (s.length <= max) return s;
+  // a line that stops on , ; or : (a SPEC line wrapped mid-sentence, a cut at '; ') ends with a full stop, never the dangling mark (26 /lab/ pages did)
+  const s = plain(text); if (s.length <= max) return s.replace(/[,;:]$/, '.');
   const cut = s.slice(0, max), dot = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('; '));
-  if (dot > 60) return cut.slice(0, dot + 1);
-  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s;:(\-]+$/, '');
+  if (dot > 60) return cut.slice(0, dot) + '.';
+  return cut.slice(0, cut.lastIndexOf(' ')).replace(/[\s,;:(\-]+$/, '');
 }
 /** SPEC.md -> { title, blurb }: the first heading (the F-number tag dropped) and the first prose line (after "Concept" when there is one). Nulls when absent. Pure. */
 export function parseSpec(md) {

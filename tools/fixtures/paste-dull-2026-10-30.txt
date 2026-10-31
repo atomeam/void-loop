@@ -1,0 +1,11 @@
+What is really true now
+Skill — The stage
+
+checking GitHub for main, the pull requests and the commits it names…
+
+What the report said
+
+Pull requests: #1980, #1981, #1982, #1991, #1992
+Changed: #1980, #1981, #1982 merged and deployed.
+Waiting: YAML to JSON card opened as #1993, waiting on CI.
+Nothing in it names a failure

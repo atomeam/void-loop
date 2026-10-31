@@ -8,6 +8,7 @@ import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
 import { sameAsk as sameAskCard } from './self-blocks.js';
+import { weakestFamily, wrongWeakest, weakestSentence } from './weakest.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -95,7 +96,18 @@ export function holdAsks(asks, held, target) {
 export function targetFacts(t, tg) {
   const f = t && Array.isArray(t.floors) ? t.floors[t.marker - 1] : null, id = tg && tg.id ? String(tg.id) : '';
   if (!f || !id || f.site !== id) return '';
-  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten. Asks that make Verse better than ' + id + ' come first.';
+  // what is left, by name and with its numbers, so the reflection copies the count instead of doing arithmetic on it (owner's
+  // card, 2026-10-30: an ask went out for "the two specific aspects" when the gate measured exactly one)
+  const left = (Array.isArray(f.left) ? f.left : []).filter((a) => typeof a === 'string' && a);
+  const named = left.slice(0, 3).map((a) => {
+    const r = f.ev && f.ev[a];
+    const nums = r && Number.isFinite(+r.verse) && Number.isFinite(+r.best) ? ' (Verse ' + r.verse + ' against their ' + r.best + ')' : '';
+    const slipped = r && (r.was === 'better' || r.was === 'equal-and-better') ? ', which passed before and has slipped' : '';
+    return a + nums + slipped;
+  });
+  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten.'
+    + (named.length ? ' The only aspects not ahead: ' + named.join(', ') + '. Every other aspect passes, so an ask that names another missing aspect is asking for something that is not missing.' : '')
+    + ' Asks that make Verse better than ' + id + ' come first.';
 }
 // A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
@@ -128,6 +140,11 @@ const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x
  *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
 export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '')) ? 'root' : kind === 'grow' ? 'surface' : null);
+// an ask that names a site (onlineconverter.com) is built only by evidence that names that site: the owner's review (2026-10-30) found
+// "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js" marked built by a ledger line about sycophanthex.com whose builder
+// had asked "a LANE_PAGES entry for any new tower" in nearly the same words. Pure.
+const SITE = /\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|app|dev|co|ai|me|tv|gg|xyz|info|site)\b/gi;
+export const sitesIn = (ask, evidence) => { const e = String(evidence || '').toLowerCase(); return (String(ask || '').match(SITE) || []).every((d) => e.includes(d.toLowerCase())); };
 export function followThrough(entries, ledger, links = []) {
   const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
   const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
@@ -144,15 +161,37 @@ export function followThrough(entries, ledger, links = []) {
   // and again). Still a link a builder wrote naming the entry, never a guess; reworded asks match it as they match each other.
   // A ledger `asked` that is free text (not ask-…) is the same kind of evidence: the builder named the ask's words (2026-10-14:
   // friction kept coming back because its id aged out of the live reflect window and only the id was on the ledger).
-  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt) })).filter((k) => k.x);
-  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e });
+  // A ledger `asked` is the builder naming the ask, so its words count as evidence; a link's words are only the ask copied back
+  // (tools/asks-link.mjs links by shared words), so a site the ask names must be in the ledger line itself (2026-10-30: the
+  // onlineconverter.com ask showed a sycophanthex.com line as what was built).
+  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt), proof: '' })).filter((k) => k.x);
+  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e, proof: String(e.asked) });
   const built = [], open = [];
   for (const g of groups) {
-    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
+    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => (k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) && sitesIn(g.ask, k.proof + ' ' + k.x.what + ' ' + (k.x.show || ''))) || {}).x;
     (hit ? built : open).push(hit ? { ...g, what: String(hit.what), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
+}
+/** Every ask the evidence says was built, newest first: [{ ask, at, ref, what, times, depth }], at being the time of the ledger entry
+ *  that built it. followThrough's built list only holds asks still in the live voice window, so once those asks roll off the
+ *  window (or are all still open) it is empty, and the wants card said "0 in the last 7 days" on a week of builds (owner,
+ *  2026-10-30). So this adds the rest of the same evidence: each link a builder wrote (void.asks.json: the ask's words and the
+ *  entry's time) and each ledger line that names an ask in words. Never a guess: a row needs a ledger entry at its time. One
+ *  entry that answers two wordings of one ask counts once. f: followThrough's result. Pure. */
+export function builtAsks(f, ledger, links = []) {
+  const byAt = new Map(); for (const x of Array.isArray(ledger) ? ledger : []) if (x && typeof x.what === 'string' && x.at) byAt.set(String(x.at), x);
+  const rows = [];
+  const add = (ask, at, times = 1) => {
+    const x = byAt.get(String(at || '')), w = String(ask || '').trim();
+    if (!x || !w || rows.some((r) => r.at === x.at && (r.ask.toLowerCase() === w.toLowerCase() || sameAsk(r.ask, w)))) return;
+    rows.push({ ask: w, at: x.at, ref: x.ref || null, what: String(x.what), times: +times || 1, depth: depthOf(x.kind) });
+  };
+  for (const g of (f && Array.isArray(f.built) ? f.built : [])) add(g.ask, g.builtAt, g.times);
+  for (const k of Array.isArray(links) ? links : []) if (k && typeof k.words === 'string') add(k.words, k.ledgerAt);
+  for (const x of byAt.values()) if (x.asked && !/^ask-\d/.test(String(x.asked))) add(String(x.asked), x.at);
+  return rows.sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
 /** The one record of Verse's asks, for the self card, the wants card and its own facts alike, so its counts agree with each other
  *  (asked by Verse, 2026-10-29; the self card said "3 waiting" beside "237 of 244 asks": 7 not built). The all-time totals
@@ -191,15 +230,16 @@ export function askRecord(entries, ledger, answered) {
 }
 // its skill families and how far each skill is checked (tools/families.mjs, Verse's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
-export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
+export function familyFacts(fam, now = new Date().toISOString().slice(0, 10), routed = 0) {
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   if (!F.length) return '';
   const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
-  const weakest = F.slice().sort((a, b) => (a.count.proven / a.skills.length) - (b.count.proven / b.skills.length))[0];
+  const weakest = weakestFamily(fam);
   const least = F.flatMap((f) => f.skills.filter((s) => s.tier === 'experiment' || s.tier === 'tested').map((s) => s.name)).slice(0, 8);
-  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
+  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families'
+    + (+routed > 0 ? ' (' + routed + ' of them answer an ask today; the rest are files no ask reaches, so they are not active)' : '') + ', '
     + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
-    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + weakest.name
+    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + (weakest ? weakest.name + ' (' + weakest.proven + ' of ' + weakest.total + ' proven, the lowest proven share; the family bars mark it weakest)' : 'none')
     + '. Some of my least-checked skills: ' + least.join(', ') + '.'
     + staleLine(fam, now);
 }
@@ -245,9 +285,12 @@ export async function readVoice(env) {
 }
 
 // a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Verse actually said
-export function voiceFacts(entries) {
-  const e = (entries || [])[0];
+export function voiceFacts(entries, fam = null) {
+  let e = (entries || [])[0];
   if (!e) return '';
+  // a readout that named the wrong family as least proven is not repeated to the next answer (owner's review, 2026-10-30)
+  const ww = wrongWeakest(e.weakest, fam); if (ww) e = { ...e, weakest: weakestSentence(ww.is) };
+  const wt = wrongWeakest(e.thoughts, fam); if (wt) e = { ...e, thoughts: String(e.thoughts).replace(wt.sentence, weakestSentence(wt.is)) };
   const asks = currentAsks(entries, 3).map((a) => a.ask).join('; ');
   return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + [e.thoughts, e.better, e.weakest].filter(Boolean).join(' ')
     + (asks ? ' My current asks: ' + asks : '');

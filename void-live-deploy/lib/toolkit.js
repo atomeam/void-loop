@@ -11,6 +11,8 @@ import { SITE_PAGES, PDF_SITES, KANBAN_SITES, SELF_SITES, PDF_ASK, KANBAN_ASK, p
 import { flightAskOf } from './flight-sites.js';
 import { jobAskOf } from './job-sites.js';
 import { converterAskOf } from './converter-ask.js';
+import { brainFullAsk } from './brain-ask.js';
+import { localAsk, linkOf as localLink } from './local-ask.js';
 export const ACCENT_KEY = 'a2m.void.accent.v1';
 
 export const TOOLS = Object.freeze({
@@ -18,11 +20,17 @@ export const TOOLS = Object.freeze({
   '/color/': 'Colour codes', '/gradient/': 'Gradient', '/wheel/': 'Wheel of names', '/random-user/': 'Made-up people', '/random/': 'Random number',
   '/ledger/': 'Repo activity ledger',
   '/flip/': 'Coin flip', '/stopwatch/': 'Stopwatch and timer', '/word-count/': 'Word counter', '/base-converter/': 'Base converter',
-  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64',
-  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/tools/': 'Every tool',
+  '/password-strength/': 'Password strength', '/resize-image/': 'Resize an image', '/convert/': 'Unit converter', '/calculator/': 'Calculator', '/calculators/': 'Formula calculators', '/time/': 'Time zones', '/base64/': 'Base64', '/stl/': 'STL checker',
+  '/password/': 'Password generator', '/weather/': 'Weather', '/translate/': 'Translate', '/recipes/': 'Recipes', '/markets/': 'Markets', '/podcasts/': 'Podcasts', '/local/': 'Local TV and radio', '/scores/': 'Scores', '/sports/': 'Sports', '/fantasy/': 'Fantasy tools', '/calendar/': 'Calendar', '/notes/': 'Notes', '/generators/': 'Generators', '/boards/': 'Boards', '/fanfic/': 'Fan fiction', '/team/': 'Team chat', '/learn-to-draw/': 'Learn to draw', '/brain/': 'Verse Brain', '/converter/': 'File converter', '/rap/': 'Verse raps', '/news/': 'News', '/music/': 'Music tools', '/metronome/': 'Metronome', '/piano/': 'Piano', '/tuner/': 'Tuner', '/bpm/': 'BPM counter', '/chords/': 'Chords and scales', '/image/': 'AI image generator', '/video/': 'AI video generator', '/emojis/': 'Emoji counts', '/emoji-combos/': 'Emoji combos', '/g/': 'Snippet / Note in a link', '/tools/': 'Every tool',
   // the PDF and Kanban floors: the leader's page and a page for each site of its lane (lib/tool-sites.js)
   ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.name])),
 });
+// pages /tools/ lists that TOOLS does not (no "Use with" row reaches them yet): the Tools page and its stage card list them both, from here
+export const MORE_PAGES = Object.freeze([['/prizes/', 'Prize wheel & payout odds'], ['/is-it/christmas', 'Is it…?'], ['/code-review/', 'Code review'], ['/fix/', 'Fix a broken automation'],
+  ['/books/', 'Bookshelf'], ['/films/', 'Films'], ['/obituaries/', 'Obituaries and lineage'], ['/cpan/', 'CPAN Testers studio'], ['/identity/', 'Identity studio'],
+  ['/hosting/', 'Hosting sizer: traffic, queue and uptime'], ['/lab/', 'Lab experiments'], ['/autopilot/', 'Autopilot: what Verse did on its own']].map(Object.freeze));
+/** every page /tools/ lists, as [href, label]: TOOLS, then MORE_PAGES, without /tools/ itself. Pure. */
+export const allTools = () => [...Object.entries(TOOLS), ...MORE_PAGES.filter(([p]) => !Object.hasOwn(TOOLS, p))].filter(([p]) => p !== '/tools/');
 // the tools that go with each one, closest first: colours with colours, ways of picking at random with each other, words with timing them
 // each PDF page leads to its sisters; each Kanban page to the others; the leaders reach the tools that go with them
 const sisters = (list, p) => list.map((x) => x.path).filter((x) => x !== p);
@@ -47,28 +55,32 @@ const HAND_RELATED = Object.freeze({
   '/calculator/': ['/base-converter/', '/convert/', '/random/', '/calculators/'],
   '/calculators/': ['/calculator/', '/convert/', '/base-converter/'],
   '/time/': ['/stopwatch/', '/weather/'],
-  '/weather/': ['/time/', '/stopwatch/'],
+  '/weather/': ['/time/', '/stopwatch/', '/local/'],
   '/translate/': ['/word-count/', '/time/', '/notes/'],
   '/recipes/': ['/stopwatch/', '/convert/', '/translate/'],
   '/scores/': ['/sports/', '/time/', '/calendar/'],
   '/sports/': ['/scores/', '/calendar/', '/time/'],
   '/fantasy/': ['/scores/', '/sports/', '/calculator/'],
-  '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/'],
+  '/podcasts/': ['/stopwatch/', '/translate/', '/word-count/', '/local/'],
+  // local TV and radio (owner, 2026-10-30: "Verse should pick up local tv and radio"): the weather and the time of the same place, the news, and podcasts to listen to next
+  '/local/': ['/weather/', '/news/', '/podcasts/', '/time/'],
   '/calendar/': ['/time/', '/stopwatch/', '/weather/'],
   '/markets/': ['/convert/', '/calculator/', '/time/'],
   '/generators/': ['/image/', '/random/', '/flip/', '/wheel/'],
-  '/image/': ['/generators/', '/resize-image/', '/color/'],
-  '/notes/': ['/word-count/', '/translate/', '/calendar/', '/fanfic/'],
-  '/base64/': ['/word-count/', '/base-converter/'],
+  '/image/': ['/video/', '/generators/', '/resize-image/', '/color/'],
+  '/video/': ['/image/', '/generators/', '/resize-image/'],
+  '/notes/': ['/word-count/', '/translate/', '/calendar/', '/fanfic/', '/rap/'],
+  '/base64/': ['/word-count/', '/base-converter/', '/g/', '/emojis/'],
   '/boards/': ['/fanfic/', '/resize-image/', '/translate/', '/notes/'],
   '/fanfic/': ['/generators/', '/word-count/', '/translate/', '/boards/'],
   '/team/': ['/kanban/', '/notes/', '/ledger/', '/boards/'],
   '/learn-to-draw/': ['/stopwatch/', '/color/', '/resize-image/', '/notes/'],
+  '/brain/': ['/piano/', '/tuner/', '/notes/', '/rap/', '/learn-to-draw/'],
   '/converter/': ['/photos/', '/pdf/', '/convert/', '/resize-image/'],
-  '/news/': ['/translate/', '/notes/', '/weather/'],
+  '/news/': ['/translate/', '/notes/', '/weather/', '/local/'],
   '/music/': ['/metronome/', '/piano/', '/tuner/', '/bpm/', '/chords/', '/rap/'],
   '/rap/': ['/music/', '/metronome/', '/word-count/', '/translate/'],
-  '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/'],
+  '/metronome/': ['/bpm/', '/tuner/', '/piano/', '/stopwatch/', '/rap/'],
   '/piano/': ['/chords/', '/metronome/', '/tuner/'],
   '/tuner/': ['/piano/', '/chords/', '/metronome/'],
   '/bpm/': ['/metronome/', '/stopwatch/', '/piano/'],
@@ -92,7 +104,16 @@ const HAND_RELATED = Object.freeze({
   '/jobs/tags/': ['/jobs/', '/jobs/categories/', '/jobs/salary/'],
   '/jobs/companies/': ['/jobs/', '/jobs/categories/', '/jobs/alerts/'],
   // the repo activity ledger (owner, 2026-10-28): a Kanban board and notes to plan from what it lists, the calendar for its dates
-  '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/'],
+  '/ledger/': ['/kanban/', '/team/', '/notes/', '/calendar/', '/g/'],
+  // the STL checker (asked by Verse): a part's size in other units, and the arithmetic of a print
+  '/stl/': ['/convert/', '/calculator/', '/calculators/'],
+  // emoji counts (2026-10-30, wired into the kit): an emoji's bytes in Base64, its length in words and characters, its name in another language,
+  // and a snippet to carry it in
+  '/emojis/': ['/emoji-combos/', '/word-count/', '/base64/', '/translate/'],
+  // emoji combos (2026-10-30, against emojicombos.com): single emoji counted, what was collected counted or encoded, or kept as a snippet
+  '/emoji-combos/': ['/emojis/', '/word-count/', '/base64/', '/g/'],
+  // the snippet in a link (/g/, the gist): its text in Base64, counted, kept as a note, or the repo it came from listed issue by issue
+  '/g/': ['/base64/', '/word-count/', '/notes/', '/ledger/'],
   '/tools/': ['/color/', '/wheel/', '/calculator/'],
 });
 // a page Verse built by itself (lib/self-sites.js) goes with its family's page first, then the tools that page goes with
@@ -103,10 +124,10 @@ const HAND_CARD_ASK = Object.freeze({
   '/photos/': 'edit a photo',
   '/color/': 'color #ff5733', '/gradient/': 'gradient from red to blue', '/wheel/': 'spin the wheel with ann, bob and cat', '/random-user/': 'fake name generator',
   '/random/': 'random number between 1 and 100', '/flip/': 'flip a coin', '/stopwatch/': 'start a stopwatch', '/word-count/': 'count words in the quick brown fox',
-  '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
+  '/base-converter/': 'convert 255 to binary', '/password-strength/': 'how secure is my password', '/stl/': 'check my stl file', '/resize-image/': 'resize an image', '/convert/': 'unit converter',
   '/calculator/': '17% of 240', '/calculators/': 'pipe surface area calculator', '/time/': 'time in tokyo', '/base64/': 'base64 encode hello', '/password/': 'generate a password', '/weather/': 'weather in boston',
-  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'search podcasts', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
-  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/ledger/': 'look at atomeam/void-loop', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
+  '/translate/': 'translate hello to spanish', '/recipes/': 'recipe for pancakes', '/markets/': 'crypto prices', '/podcasts/': 'podcasts about history', '/local/': 'local radio', '/scores/': 'nba scores', '/sports/': 'browse sports', '/fantasy/': 'fantasy tools', '/calendar/': 'my calendar', '/tools/': 'what tools do you have',
+  '/notes/': 'make a notepad', '/generators/': 'fantasy name generator', '/boards/': 'image boards', '/fanfic/': 'fan fiction', '/team/': 'team chat', '/learn-to-draw/': 'sketch pad', '/brain/': 'verse brain', '/converter/': 'file converter', '/rap/': 'write me a rap about pizza', '/news/': 'news today', '/music/': 'music tools', '/metronome/': 'metronome 120 bpm', '/piano/': 'online piano', '/tuner/': 'guitar tuner', '/bpm/': 'bpm counter', '/chords/': 'am7 chord', '/image/': 'draw a cartoon cat', '/video/': 'animate a cat chasing yarn', '/ledger/': 'look at atomeam/void-loop', '/emojis/': 'random emoji', '/emoji-combos/': 'cat emoji combos', '/g/': 'https://github.com/atomeam/void-loop/blob/main/README.md', ...Object.fromEntries(SITE_PAGES.map((p) => [p.path, p.card])),
 });
 // a self-built page opens its family's card on the stage
 export const CARD_ASK = Object.freeze({ ...HAND_CARD_ASK, ...Object.fromEntries(SELF_SITES.filter((r) => HAND_CARD_ASK[r.base]).map((r) => [r.path, HAND_CARD_ASK[r.base]])) });
@@ -176,6 +197,8 @@ export function setPalette(list) {
 // link, so "100 c to f" on the coin page opens the converter converted; an ask no tool takes goes to the stage, which answers anything. Pure.
 const NUM = String.raw`-?\d[\d.,/]*(?:\s+\d+/\d+)?`;
 const ROUTES = [
+  // Verse Brain full screen (owner, 2026-10-30: "verse brain needs a full screen"): 'full screen brain', 'open verse brain' open /brain/ (lib/brain-ask.js)
+  [{ exec: (t) => (brainFullAsk(t) ? [t] : null) }, () => '/brain/'],
   // the drawing course (2026-10-29, assimilates wheelroot.com): 'learn to draw', 'drawing course', 'drawing lessons', 'drawing exercises' open /learn-to-draw/
   // the file converter (2026-10-29, assimilates onlineconverter.com): 'mp4 to mp3', 'epub to txt', 'cut mp3', 'merge audio', 'file converter' open /converter/
   // with the ask; a picture or PDF ask stays with the photo and PDF tools, a unit with the unit converter (lib/converter-ask.js)
@@ -191,6 +214,8 @@ const ROUTES = [
   // podcasts: 'search podcasts', 'podcasts about history', 'top podcasts', 'podcast charts', 'podcast player' (the plain 'podcast' and 'play the podcast' stay with Verse's own show on the stage)
   [/^(?:search |find |browse )?podcasts? (?:about|on|for) (.+)$|^(?:search|find) (?:for )?(?:a )?podcasts?(?: (?:about|on|for) )?(.*)$/i, (m) => '/podcasts/' + (m[1] || m[2] ? '?q=' + encodeURIComponent((m[1] || m[2]).trim()) : '')],
   [/^(?:top |best |popular )?podcasts$|^podcast (?:charts?|player|directory|app)$/i, () => '/podcasts/'],
+  // local TV and radio (2026-10-30): 'local radio', 'radio stations near me', 'tv stations in denver' open /local/ with the place and the tab
+  [{ exec: (t) => (localAsk(t) ? [t] : null) }, (m, t) => { const a = localAsk(t); return localLink({ place: a.place, tab: a.kind === 'tv' ? 'tv' : '' }); }],
   // calendar: 'add dentist tomorrow 3pm to my calendar', 'remind me to call mum tomorrow 6pm', 'my calendar', "what's on tomorrow", 'my week'
   [/^(?:add|put) (.+?) (?:to|on|in) (?:my |the )?(?:calendar|verse|void)$|^(?:calendar|schedule|new event)[:,] (.+)$|^remind me (?:to |about |of )?(.+)$/i, (m) => '/calendar/?q=' + encodeURIComponent(m[1] || m[2] || m[3])],
   // generators: 'fantasy name', 'name generator', 'writing prompt', 'band name generator'
@@ -207,6 +232,9 @@ const ROUTES = [
   // image: 'ai image generator', 'text to image', 'generate an image of a fox in snow', 'ai art of a castle'; 'make a random generator' opens the editor
   [/^(?:free )?(?:ai )?(?:image|picture|art) generator$|^text to (?:image|picture)$|^(?:ai art|ai image|ai picture)$/i, () => '/image/'],
   [/^(?:generate|create|make) (?:an? )?(?:ai )?(?:image|picture|photo|art) (?:of|showing) (.+)$|^ai (?:art|image|picture) of (.+)$/i, (m) => '/image/?' + new URLSearchParams({ prompt: m[1] || m[2], go: '1' })],
+  // video: 'ai video generator', 'text to video', 'image to video', 'make a video of waves on a beach' (the words are filled in; a clip is made only on a press)
+  [/^(?:free )?(?:ai )?video (?:generator|maker)$|^(?:text|image|picture|photo) to video$|^animate (?:a |my |this )?(?:picture|image|photo)$/i, () => '/video/'],
+  [/^(?:generate|create|make) (?:an? )?(?:ai )?(?:video|clip|animation) (?:of|showing) (.+)$|^ai video of (.+)$/i, (m) => '/video/?' + new URLSearchParams({ prompt: m[1] || m[2] })],
   [/^(?:make|create|write|build) (?:a |my own |your own )?(?:random )?generator$|^(?:perchance|generator editor|list generator)$/i, () => '/generators/make/'],
   // music: 'metronome 120 bpm', '90 bpm 6/8 metronome', 'online piano', 'guitar tuner', 'tap tempo', 'bpm counter', 'am7 chord', 'c major scale', 'chord finder'
   [/^(?:an? |the |online |free )*metronome(?: (?:at|for))?\s*(\d{2,3})\s*(?:bpm)?(?: (\d{1,2}\/\d{1,2}))?$|^(\d{2,3})\s*bpm\s*(?:(\d{1,2}\/\d{1,2})\s*)?metronome$/i, (m) => '/metronome/?bpm=' + (m[1] || m[3]) + (m[2] || m[4] ? '&sig=' + encodeURIComponent(m[2] || m[4]) : '')],
@@ -245,6 +273,8 @@ const ROUTES = [
   [/^(?:a |one |some )?(?:random|fake|made-?up) (?:users?|people|persons?|names?)$|^(\d+) (?:random|fake|made-?up) (?:users?|people)$/i, (m) => '/random-user/' + (m[1] ? '?n=' + m[1] : '')],
   [/^(?:a )?random number(?: (?:between|from) (\d+) (?:and|to) (\d+))?$|^(?:roll|dice|d\d+)$/i, () => '/random/'],
   [/^(?:a |an? )?(?:strong )?(?:password|passphrase)(?: of (\d+)(?: characters| letters)?)?$|^(?:generate|make|new) (?:a |me a )?(?:strong )?(?:password|passphrase)(?: of (\d+))?$/i, (m) => '/password/' + (m[1] || m[2] ? '?len=' + (m[1] || m[2]) : '')],
+  // the STL checker (asked by Verse): 'check my stl file', 'is my stl watertight', 'stl checker'; the file itself is picked on the page, never put in a link
+  [/^(?:(?:check|verify|test|inspect|validate) (?:my |an? |the |this )?stl(?: file)?(?: for (?:holes|errors|problems))?|is (?:my |the |this |an? )?stl(?: file)? (?:watertight|manifold|printable|ok|okay)|stl (?:file )?(?:checker|check|validator|verifier|watertight(?:ness)?(?: check(?:er)?)?)|(?:my )?stl watertight)$/i, () => '/stl/'],
   [/^(?:how (?:strong|secure|safe) is|check(?: the)? (?:password|strength of)) (.+)$/i, () => '/password-strength/'], // the typed password never goes in an address: the page asks for it
   [/^(?:base64 )?decode (.+)$|^(.+) from base64$/i, (m) => '/base64/?mode=decode&t=' + encodeURIComponent(m[1] || m[2])],
   [/^(?:base64 )?encode (.+)$|^(.+) (?:to|in|as) base64$/i, (m) => '/base64/?t=' + encodeURIComponent(m[1] || m[2])],
@@ -262,12 +292,42 @@ const ROUTES = [
   [new RegExp('^(?:convert )?' + NUM + '\\s*[a-zµ°/²³]+\\s+(?:to|in|into|as)\\s+[a-zµ°/²³]+$', 'i'), (m, t) => '/convert/?q=' + encodeURIComponent(t)],
   [/^(?:what is |what's |calculate |calc )?[-\d.(][\d\s.,+\-*×÷/^%()!πe]*(?:\s*(?:of|percent of)\s*[\d.]+)?$/i, (m, t) => '/calculator/?q=' + encodeURIComponent(t.replace(/^(?:what is |what's |calculate |calc )/i, ''))],
 ];
-/** where an ask goes: the tool's link with the ask in it, or the stage for anything else. Pure. */
+// a tool's own name opens that tool (2026-10-30: 'word count' on the ask bar opened Wikipedia's article on the stage, and 'pdf', 'photo tools' and
+// 'code review' a stage answer, not the page): its name as /tools/ lists it, or its address in words ('/word-count/' is 'word count'), with an
+// 'open' or 'the' before it or 'tool' or 'page' after it. A plain word the stage answers itself stays with the stage, whose card links the page:
+// 'verse brain' (skills/verse-brain.js), 'news' (the headlines card), 'time' (the clock), 'flip' (the coin), 'rap' (a rap), and words that say too little.
+const STAGE_KEEPS = new Set(['verse brain', 'brain', 'news', 'time', 'random', 'flip', 'rap', 'color', 'convert', 'music', 'image', 'team', 'identity', 'fix']);
+const STAGE_KEEPS_JOINED = new Set([...STAGE_KEEPS].map((k) => k.replace(/ /g, '')));
+const plainName = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+let toolNames = null;
+export function toolNamed(t) {
+  if (!toolNames) {
+    toolNames = new Map();
+    // a name run together ('wordcount', as typed into an address) counts too, from five letters up
+    for (const [p, label] of allTools()) for (const w of [plainName(label), plainName(p)]) for (const k of [w, w.replace(/ /g, '')]) if (k.length > (k === w ? 2 : 4) && !toolNames.has(k)) toolNames.set(k, p);
+  }
+  const n = plainName(t).replace(/^(?:open |show |go to )?(?:the |my |a |an )?/, '');
+  for (const k of [n, n.replace(/ (?:tool|page|app)$/, '')]) if (!STAGE_KEEPS.has(k) && !STAGE_KEEPS_JOINED.has(k) && toolNames.has(k)) return toolNames.get(k);
+  return null;
+}
+/** the tool a missing address, or the words asked there, names ('/wordcount', '/password-generator/', '/search/?q=word+count'), as { href, label },
+ * or null. For the 404 page (2026-10-30): a typed address one letter or one dash off a tool led to a page with nothing on it. Pure. */
+export function toolNear(pathname, q) {
+  let path = String(pathname || ''); try { path = decodeURIComponent(path); } catch (e) { if (!(e instanceof URIError)) throw e; } // a broken escape (/%E0%A4) stays as typed
+  const segs = path.replace(/\.html?$/i, '').split('/').map(plainName).filter(Boolean);
+  for (const words of [String(q || '').trim(), segs.join(' '), segs[segs.length - 1] || '', segs[0] || '']) {
+    if (!words) continue;
+    const to = toolNamed(words);
+    if (to) return { href: to, label: (allTools().find(([p]) => p === to) || [to, to])[1] };
+  }
+  return null;
+}
+/** where an ask goes: the tool's link with the ask in it, the tool a name names, or the stage for anything else. Pure. */
 export function routeAsk(text) {
   const t = String(text || '').replace(/\s+/g, ' ').replace(/[?!.]+$/, '').trim();
   if (!t) return '';
   for (const [re, to] of ROUTES) { const m = re.exec(t); if (m) return to(m, t); }
-  return '/?q=' + encodeURIComponent(t);
+  return toolNamed(t) || '/?q=' + encodeURIComponent(t);
 }
 
 /** the "Use with" row: this page's hand-offs (carrying what is on it), then its related tools, then the accent it wears. card, when a page
@@ -303,7 +363,12 @@ export function mountRelated(el, path, handoffs = [], { card = null } = {}) {
   const label = d.createElement('span'); label.className = 'tk-label'; label.textContent = 'Use with';
   // the ask bar: any ask, to the tool that does it
   const form = d.createElement('form'); form.className = 'tk-ask'; const inp = d.createElement('input'); inp.type = 'search'; inp.placeholder = 'Ask any tool: 100 c to f, flip a coin, weather in boston'; inp.setAttribute('aria-label', 'Ask any tool'); inp.autocomplete = 'off';
-  form.append(inp); form.addEventListener('submit', (e) => { e.preventDefault(); const to = routeAsk(inp.value); if (to) d.defaultView.location.href = to; });
+  form.append(inp); form.addEventListener('submit', (e) => {
+    e.preventDefault(); const to = routeAsk(inp.value); if (!to) return;
+    // Verse Brain hears it next time it runs (lib/brain-host.js): kept on this device only, never sent, and never an owner key
+    if (!/^\s*(?:unlock\s*)+\S{16,}/i.test(inp.value)) try { const ls = d.defaultView.localStorage, k = 'a2m.brain.heard.v1', q = JSON.parse(ls.getItem(k) || '[]'); q.push({ text: inp.value.trim().slice(0, 120), from: path, to, at: Date.now() }); ls.setItem(k, JSON.stringify(q.slice(-24))); } catch (_) { /* no storage: the ask still goes */ }
+    d.defaultView.location.href = to;
+  });
   const style = d.createElement('style');
   style.textContent = '.tk-row{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:14px 0 4px;font-size:13px}.tk-label{color:var(--soft,var(--muted,#888))}'
     + '.tk-row a,.tk-row button{font:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;min-height:40px;padding:4px 12px;border:1px solid var(--line,#8884);border-radius:999px;color:inherit;text-decoration:none}'

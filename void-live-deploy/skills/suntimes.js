@@ -2,10 +2,17 @@
  * suntimes — "sunrise and sunset", "when is sunset", "what time does the sun rise in Tokyo", "how long is the day": the sun's rise and set (and the
  * length of the day, and twilight) for where you are or a named place. lib/astro.js; the polar day and night are said plainly.
  */
-import * as A from '../lib/astro.js';
-import { events, fmtTime, dayWord, inWords, skyNow, lightName } from '../lib/skyfacts.js';
-import { whereAmI, findPlace } from '../lib/where.js';
+import { loadLater } from '../lib/load-later.js';
 import { splitPlace, SKY_LINK } from '../lib/skyask.js';
+
+// the almanac (lib/astro.js, lib/skyfacts.js) and the place lookup load with the first sun answer, not with the routing order
+// (lib/load-later.js, owner 2026-10-30); sunAnswer reads them, so a caller awaits ready first
+let A, events, fmtTime, dayWord, inWords, skyNow, lightName, whereAmI, findPlace;
+export const ready = loadLater(() => Promise.all([
+  import('../lib/astro.js'),
+  import('../lib/skyfacts.js'),
+  import('../lib/where.js'),
+]).then(([a, f, w]) => { A = a; ({ events, fmtTime, dayWord, inWords, skyNow, lightName } = f); ({ whereAmI, findPlace } = w); }));
 
 export function sunAsk(text) {
   const { core, place } = splitPlace(text); const t = core.replace(/['’]s\b/g, 's');
@@ -34,6 +41,7 @@ export function sunAnswer(date, place) {
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = sunAsk(text) || {};
   const el = showPage((p) => { p.innerHTML = '<h2>Sunrise and sunset</h2><div class="sub">…</div>'; });
+  await ready();
   const place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'suntimes';
   if (!place) { el.innerHTML = `<h2>Sunrise and sunset</h2><p>${ask.place ? `I couldn't find "${esc(ask.place)}".` : 'I need a place for this: try "sunset in Oslo", or open the sky and set your location.'}</p>${SKY_LINK}`; return ask.place ? 'none' : 'suntimes'; }
@@ -51,4 +59,5 @@ export default {
   // the sun where you are; a sun ask that names a place ("sunset in Paris") is worldtime's, which reads it in that place's own time
   match(lower, text) { const a = sunAsk(text); return !!a && !a.place; },
   run,
+  ready,
 };

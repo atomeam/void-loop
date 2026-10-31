@@ -12,6 +12,7 @@ function placeOf(text) {
   if (!m) return null;
   const p = m[1].replace(/^(the\s+)/i, '').trim();
   if (!p || /^(everything|the map|you|i|my \w+|(?:(?:show|open|give|draw)(?: me)? )?(?:the |your |(?:verse|void)'?s |(?:verse|v01d)'?s )?(?:code |import |skill )?dependenc(?:y|ies))$/i.test(p)) return null; // "dependency map" is the deps card, not a street map
+  if (/^(?:great\s+circle|flight|flights|flight\s+route|air\s+route)$/i.test(p)) return null; // "great circle map" is the flights map, not a place called "great circle"
   // "what is a map", "how to read a map": a question about maps, not a place called "what is a"
   if (/^(?:what|what'?s|whats|who|whom|whose|why|how|which|when|is|are|was|were|do|does|did|can|could|should|would|will)\b/i.test(p)) return null;
   // "area of a circle with radius 5": geometry, not a neighbourhood

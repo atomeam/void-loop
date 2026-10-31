@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
+import { sentences, parseAnswer, familiesOf, pickCandidates, validTexts, fallbackTexts, brandTokens, slugFor, variantHtml, swWith, judgeRows, guardOf, reportLine, causeOfLap, isNoop, nextOf, sharesWords, textOf, MARK, RETRY_DAYS } from './tower-self.mjs';
 import { FLOORS, LANES, LANE_PAGES, passingRows } from '../void-live-deploy/lib/tower.js';
 import { SELF_SITES } from '../void-live-deploy/lib/self-sites.js';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
@@ -120,6 +120,7 @@ test('the model\'s answer is found however it is wrapped', () => {
 test('words are cut at a sentence, and an ask meets its family by the stem of its words', () => {
   assert.equal(sentences('One two three. Four five six seven eight nine ten eleven twelve.', 30), 'One two three.');
   assert.ok(!/,$/.test(sentences('a, '.repeat(200), 50)));
+  assert.equal(sentences('Type a value and every unit updates at once,', 320), 'Type a value and every unit updates at once.'); // a row cut before the sentence ended (/convert/unit-converter/)
   const conv = familiesOf().find((f) => f.id === 'unit converter'); assert.ok(sharesWords(conv, 'convert km to miles'));
 });
 
@@ -130,4 +131,27 @@ test('a reason is cut at a whole word, never mid-word (Versus job mvoxd09y: "a n
   assert.equal(clipWords(why, 140), why.replace(/ service$/, ''));
   assert.equal(clipWords('one, two, three', 9), 'one, two');
   assert.equal(clipWords('  short  ', 140), 'short');
+});
+
+test('a lap names the tower target as next, says why nothing was judged, and a lap with no growth stays out of the ledger (owner review)', () => {
+  const pick = { host: 'randomarea.com' }, target = { id: 'onlineconverter.com' };
+  assert.equal(nextOf(target, pick), 'onlineconverter.com (the target)'); assert.equal(nextOf(null, pick), 'randomarea.com'); assert.equal(nextOf({}, null), '');
+  const st = { 'a.test': { outcome: 'not-judged', why: 'the model answered 401' }, 'b.test': { outcome: 'not-judged', why: 'the model answered 401' } };
+  assert.equal(causeOfLap(st), 'the model answered 401 on every read, so no site was judged');
+  assert.equal(causeOfLap({ ...st, 'c.test': { outcome: 'no-family' } }), 'the model answered 401 on 2 of 3 reads, so those were not judged'); assert.equal(causeOfLap({ 'c.test': { outcome: 'no-family' } }), ''); assert.equal(causeOfLap({ 'a.test': { outcome: 'not-judged', why: 'x' }, 'b.test': { outcome: 'not-judged', why: 'y' } }), ''); assert.equal(causeOfLap({}), '');
+  const line = reportLine([], nextOf(target, pick), { 'not-judged': 2 }, causeOfLap(st));
+  assert.equal(line, 'Versus: took on no site (also read: 2 not-judged); the model answered 401 on every read, so no site was judged; next onlineconverter.com (the target)');
+  assert.ok(!line.includes('randomarea'));
+  assert.equal(isNoop({ line, built: 0, queued: 0, fixed: [] }), true);
+  assert.equal(isNoop({ line, built: 0, queued: 1, fixed: [] }), false);
+  assert.equal(isNoop({ line: reportLine([{ host: 'x.test', family: 'f', page: '/p/', n: 1, m: 2 }], 'y'), built: 0, queued: 0, fixed: [] }), false);
+  const sh = fs.readFileSync(new URL('./tower-self-report.sh', import.meta.url), 'utf8');
+  assert.match(sh, /if \[ -z "\$NOOP" \]; then\n\s+printf[^\n]+void\.agents\.log\.md\n\s+node tools\/grow\.mjs build/);
+});
+
+test('the guard lets the largest body /api/tower-self accepts reach it (a 413 left every site unjudged)', async () => {
+  const { LIMITS } = await import('../void-live-deploy/lib/guard.js'), { bodyOf } = await import('../void-live-deploy/functions/api/tower-self.js');
+  const big = { messages: [{ role: 'system', content: 'x'.repeat(4000) }, { role: 'user', content: '\u5316'.repeat(20000) }], schema: { name: 's', schema: { type: 'object', description: 'd'.repeat(3900) } }, max_tokens: 1400 };
+  assert.ok(bodyOf(big), 'the route accepts it');
+  assert.ok(Buffer.byteLength(JSON.stringify(big)) <= LIMITS['tower-self'].body, 'the guard lets it through');
 });

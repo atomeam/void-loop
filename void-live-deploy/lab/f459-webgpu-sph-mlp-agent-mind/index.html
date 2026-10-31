@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #ui { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(10,10,20,0.75); padding: 10px 14px; border-radius: 8px; font-size: 13px; max-width: 280px; }
+  button { background: #2a2a4a; color: #fff; border: 1px solid #555; padding: 6px 10px; margin: 4px 2px; border-radius: 4px; cursor: pointer; }
+  button:hover { background: #3a3a6a; }
+  #status { margin-top: 6px; font-size: 12px; opacity: 0.85; }
+  .transfer { position: absolute; pointer-events: none; color: #8f8; font-size: 11px; animation: fade 0.6s forwards; }
+  @keyframes fade { to { opacity: 0; transform: translateY(-20px); } }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU SPH MLP Agent Mind · Verse lab</title>
+<meta name="description" content="Novel combination that deliberately branches away from the recent WebXR-hand-PBD / spectral-audio-feedback / granular-broadcast-genome / L-system / expression-tree">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU SPH MLP Agent Mind · Verse lab">
+<meta property="og:description" content="Novel combination that deliberately branches away from the recent WebXR-hand-PBD / spectral-audio-feedback / granular-broadcast-genome / L-system / expression-tree">
+<meta property="og:url" content="https://a-to-mind.com/lab/f459-webgpu-sph-mlp-agent-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f459-webgpu-sph-mlp-agent-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <strong>F459 SPH MLP Agent Mind</strong><br>
+  <button id="seal">Seal MLP + Field</button>
+  <button id="reset">Reset</button>
+  <button id="xr">Try WebXR Hand</button>
+  <div id="status">Tilt device or move pointer. Agents compete & transfer.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU SPH MLP Agent Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
