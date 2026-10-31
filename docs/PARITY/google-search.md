@@ -12,7 +12,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | A full feature study of this site (not written yet) | Study | unreviewed | every site of this kind offers it | not studied yet |
-| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "il Search for Images Images Google apps Sign in Sign in Go to Google home Google What's on your mind? false Pr" | void-live-deploy//index.html:2629 `['on every device', 'remember me', 'a passkey, no password or email · sign in ·` |
+| An account that keeps your things on every device | Accounts | have | its live page (2026-10-28): "il Search for Images Images Google apps Sign in Sign in Go to Google home Google What's on your mind? false Pr" | void-live-deploy//index.html:2630 `['on every device', 'remember me', 'a passkey, no password or email · sign in ·` |
 | Dark mode | Settings | have | its live page (2026-10-28): "earch history Search help Send feedback Dark theme: Off Google apps" | void-live-deploy/lib/card-frame.js:187 `'.vpage.vcard[data-theme=collectible]{--foil:linear-gradient(135deg,#ffd447,#ff7a3d,#ffe` |
 | Store | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Gmail | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
