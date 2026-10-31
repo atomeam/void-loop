@@ -1,57 +1,60 @@
 # Fyta Domain Knowledge
 
-**Goal:** Make Verse fully immersed in Fyta so it can help with plant care, sensor data interpretation, troubleshooting, recommendations, and any related tasks.
+Verse should be fully immersed in **both** meanings of Fyta so it can help with either context instantly.
 
-## What is Fyta?
-Fyta (fyta.de) is a Berlin-based company that builds smart plant sensors and an AI-powered app for plant care. Their core product line measures real-time plant health data so users stop guessing and start tracking.
+---
 
-### Core Products
-- **FYTA Beam** – Main soil sensor that measures:
-  - Soil moisture (VWC)
-  - Nutrients / electrical conductivity (EC)
-  - Light (PPFD / DLI)
-  - Temperature
-  - Humidity
-- **FYTA Mini, Sphere, Terra** – Additional modular sensors for different setups (indoor, outdoor, hydroponics, larger plants, etc.)
+## 1. Fyta Gether – Main Character in Earth Defense Force: World Brothers 2
 
-### How it works
-1. Stick the sensor into the soil (or appropriate medium).
-2. Pair with the free Fyta app (iOS / Android).
-3. The app uses AI + a large plant database (thousands of species) to give personalized care advice:
-   - When to water
-   - When to fertilize
-   - Light adjustments
-   - Repotting needs
-   - Alerts and vacation mode
+**Full name:** Fyta Gether  
+**Role:** Protagonist / main playable Ranger from *Earth Defense Force 6*, introduced as a core story character in *World Brothers 2*.  
+**Name origin:** Pun on “Fight together”.
 
-### Key Strengths Verse should know
-- Data-driven instead of guesswork
-- Species-specific recommendations
-- Works for houseplants, herbs, outdoor plants, and more
-- Modular system so users can mix sensors
-- Strong focus on making plant care accessible and sustainable
+### Key facts Verse should know
+- He is the EDF6 Ranger representative in the voxel World Brothers universe.
+- Starts as a relatively new / up-and-coming soldier.
+- Default variants often feature classic Ranger loadouts (including shotguns like Slaughter on the “Up & Coming” variant).
+- Central to the story of *World Brothers 2* as Earth is shattered again by Gaiark.
+- Players recruit and switch between many Brothers & Sisters, but Fyta Gether is the narrative anchor / main character the player primarily identifies with.
 
-### How Verse can help (immersed assistance)
-- Interpret sensor readings and translate them into plain-language actions
-- Suggest which Fyta sensor fits a user’s plants / environment
-- Create custom care schedules
-- Troubleshoot common problems (overwatering, nutrient deficiency, light issues)
-- Recommend plants that match a user’s light / humidity conditions
-- Track long-term plant health trends if the user shares data
-- Generate planting / care guides in the same Prima/Brady style we use for games
-- Help with vacation mode planning or sharing plant duties
+### How Verse should help with Fyta Gether
+- Track his recruitment, skill level, armor, and weapon progress
+- Suggest best loadouts and team compositions that include him
+- Give tips for using him effectively in missions
+- Note when he appears in story scenes or special missions
+- Help with any related trophies or completion goals that involve the main character
 
-### Related Concepts Verse should connect
-- Soil science basics (VWC, EC, pH)
-- Photosynthetically Active Radiation (PAR / PPFD / DLI)
-- Common houseplant species and their needs
-- Hydroponics vs soil
-- Sustainable indoor gardening
+---
 
-## Implementation Notes for Verse
-- Treat Fyta as a first-class domain alongside games, trophies, and guides.
-- When a user mentions plants, sensors, watering, or Fyta, route to this knowledge.
-- Prefer actionable, data-backed advice over generic plant tips.
-- Keep learning: if the user shares specific sensor readings or plant species, update local context and improve future responses.
+## 2. Fyta – Smart Plant Sensors (fyta.de)
 
-Verse is now expected to become immersed in Fyta and help in any way it can.
+Berlin-based company that makes AI-powered plant care sensors and an accompanying app.
+
+### Core products
+- **FYTA Beam** – primary soil sensor
+- **FYTA Mini, Sphere, Terra** – modular sensors for different plant sizes and environments
+
+### What the sensors measure
+- Soil moisture (VWC)
+- Nutrients / electrical conductivity (EC)
+- Light (PPFD / DLI)
+- Temperature
+- Humidity
+
+### How Verse should help with plant Fyta
+- Interpret sensor readings into clear actions
+- Recommend which sensor fits the user’s plants
+- Build watering / fertilizing schedules
+- Troubleshoot common plant problems
+- Suggest plants that match the user’s light and humidity conditions
+- Support vacation mode and plant-sharing plans
+
+---
+
+## Verse Behavior Rules
+- When the user is talking about the game, teammates, EDF, trophies, or “Fyta” in a gaming context → treat it as **Fyta Gether**.
+- When the user mentions plants, sensors, watering, houseplants, or the company → treat it as the **plant sensor Fyta**.
+- If context is ambiguous, ask a quick clarifying question or cover both briefly.
+- Keep both knowledge bases active and up-to-date so Verse can switch fluidly and help in any way possible.
+
+Verse is now immersed in both.
