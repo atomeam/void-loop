@@ -46,10 +46,10 @@ test('grains that take the gene from the nearer lander land nearer the aim than 
   assert.ok(rows.every((r) => r.passed > 0 && r.still === 0), 'genes pass only where the mode says ' + say);
 });
 
-test('it runs in the brain as one of twenty-two organs: its aim follows the focus, it is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-three organs: its aim follows the focus, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('grains') && B.ORGAN_IDS.length === 22);
+  assert.ok(B.ORGAN_IDS.includes('grains') && B.ORGAN_IDS.length === 23);
   assert.ok(b.grains.bed.lives >= 20 && b.runs.grains > 200, 'lives ' + b.grains.bed.lives + ' runs ' + b.runs.grains);
   assert.ok(b.board.grains && b.board.grains.lives === b.grains.bed.lives, JSON.stringify(b.board.grains));
   const self = B.selfSays(b).find((l) => /^Grains:/.test(l)) || '';

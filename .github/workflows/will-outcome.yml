@@ -1,0 +1,33 @@
+# A closed pull request settles the queue job it came from (owner, 2026-10-30: close the feedback loop before unattended
+# straight-to-site). Merged -> live; closed unmerged -> declined, so an abandoned PR stops the will reopening the same want next hour.
+# A pull request with no `Job:` line settles nothing and writes nothing, so manual and maintenance PRs never fail this run.
+name: A closed pull request settles its queue job
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: will-outcome-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # without VOID_OWNER_TOKEN (the Pages READ_TOKEN) nothing is written and the run still exits 0: the link is a courtesy, never a gate
+      - name: Settle the job this pull request came from
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/will-outcome.mjs --event closed

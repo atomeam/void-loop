@@ -19,7 +19,7 @@ export const isKey = (t) => OWNER_KEY.test(String(t || ''));
 export const LOBES = [
   { id: 'feel', name: 'Feeling', note: 'what it senses of you', hue: 196, organs: ['senses', 'synapses', 'hearing'] },
   { id: 'guess', name: 'Guessing', note: 'what it expects next', hue: 268, organs: ['predictor', 'gestures', 'memory'] },
-  { id: 'words', name: 'Words', note: 'the ideas you give it', hue: 318, organs: ['concepts'] },
+  { id: 'words', name: 'Words', note: 'the ideas you give it', hue: 318, organs: ['concepts', 'dialogue'] },
   { id: 'decide', name: 'Deciding', note: 'what it does next', hue: 40, organs: ['will', 'arena'] },
   { id: 'life', name: 'Living tissue', note: 'the surface it thinks on', hue: 150, organs: ['tissue', 'gardener', 'rhythm', 'membrane', 'swarm'] },
   { id: 'flow', name: 'Moving matter', note: 'fluids and grains after its focus', hue: 176, organs: ['current', 'grains', 'pool', 'trace'] },
@@ -31,7 +31,7 @@ export const ROLE = {
   concepts: 'links the words you give it', tissue: 'the living surface', gardener: 'keeps the tissue at the edge of chaos', rhythm: 'keeps it in step',
   membrane: 'wraps what it attends to', swarm: 'particles that feed the tissue', synapses: 'a spiking eye that learns where to look', hearing: 'hears a hum as notes',
   painter: 'rewrites its own look', grower: 'grows a plant toward its focus', formula: 'evolves a formula for its tissue', creature: 'a creature that walks to its thought',
-  current: 'a flow your drag stirs', grains: 'grains that learn to land', pool: 'a fluid that follows its focus', trace: 'holds where its focus was',
+  current: 'a flow your drag stirs', grains: 'grains that learn to land', pool: 'a fluid that follows its focus', trace: 'holds where its focus was', dialogue: 'remembers what you asked before',
   will: 'decides what to do next', arena: 'tests whole brains in imagined futures'
 };
 export const regionName = (r) => ['top', 'middle', 'bottom'][Math.floor(r / REGIONS_X)] + ' ' + ['far left', 'left', 'right', 'far right'][r % REGIONS_X];

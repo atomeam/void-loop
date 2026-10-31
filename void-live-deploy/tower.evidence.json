@@ -8291,95 +8291,114 @@
   "calendar: calendar.zoho.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 104,
-    "best": 74,
-    "evidence": "Verse (/calendar/) 104 ms to the load event (median of 3, phone width) vs calendar.zoho.com 74 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
-    "at": "2026-10-28T13:05:54.676Z"
+    "verse": 110,
+    "best": 72,
+    "evidence": "Verse (/calendar/) 110 ms to the load event (median of 3, phone width) vs calendar.zoho.com 72 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs calendar.zoho.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:05:54.676Z"
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs calendar.zoho.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:05:54.676Z"
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs calendar.zoho.com 1 unnamed controls or images",
-    "at": "2026-10-28T13:05:54.676Z"
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs calendar.zoho.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:05:54.676Z"
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs calendar.zoho.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:05:54.676Z"
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not calendar.zoho.com (the site is not asked)",
-    "at": "2026-10-28T13:05:54.676Z",
+    "at": "2026-10-31T00:08:58.486Z",
     "of": 5
    },
    "design polish": {
     "verdict": "better",
     "verse": 0,
-    "best": 8,
-    "evidence": "Verse (/calendar/) 0 design defects vs calendar.zoho.com 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.22)",
-    "at": "2026-10-28T13:05:54.676Z"
+    "best": 7,
+    "evidence": "Verse (/calendar/) 0 design defects vs calendar.zoho.com 7 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), calendar.zoho.com (4 low-contrast texts, 3 small tap targets, layout shift 0.03)",
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 1 of 2 shown (Verse lacks: none; site lacks: notifications on the device)",
-    "at": "2026-10-28T13:05:54.676Z",
+    "at": "2026-10-31T00:08:58.486Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "invites": {
     "verdict": "better",
     "verse": 3,
     "best": 0,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs calendar.zoho.com 0 of 3 shown (Verse lacks: none; site lacks: invites, the .ics)",
-    "at": "2026-10-28T13:05:54.676Z",
+    "at": "2026-10-31T00:08:58.486Z",
     "of": 3,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "recurring events": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs calendar.zoho.com 0 of 2 shown (Verse lacks: none; site lacks: repeats)",
-    "at": "2026-10-28T13:05:54.676Z",
+    "at": "2026-10-31T00:08:58.486Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 20,
     "best": 6,
     "evidence": "Verse (/calendar/) 20 of 21 things a full answer shows vs calendar.zoho.com 6 of 21 things a full answer shows (Verse lacks: notifications; site lacks: today, repeating events, invites, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Multiple calendars shown together, each with a colour, Recurring events incl. custom rules, Guests with RSVP (yes/no/maybe) and guest list, Location with map link, Tasks on the calendar)",
-    "at": "2026-10-28T13:05:54.676Z",
-    "of": 21
+    "at": "2026-10-31T00:08:58.486Z",
+    "of": 21,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 6,
+    "evidence": "Verse (/calendar/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs calendar.zoho.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T00:08:58.486Z",
+    "siteRead": true
    }
   },
   "calendar: icloud.com": {
@@ -8724,52 +8743,58 @@
   "calendar: proton.me": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 141,
-    "best": 159,
-    "evidence": "Verse (/calendar/) 141 ms to the load event (median of 3, phone width) vs proton.me 159 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:06:00.847Z"
+    "verse": 122,
+    "best": 138,
+    "evidence": "Verse (/calendar/) 122 ms to the load event (median of 3, phone width) vs proton.me 138 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/calendar/) 3 of 3 loads answered vs proton.me 3 of 3 loads answered",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/calendar/) 0 px sideways overflow at 390 px vs proton.me 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/calendar/) 0 unnamed controls or images vs proton.me 1 unnamed controls or images",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/calendar/) 1 (1: the page shows itself again with the network cut) vs proton.me 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/calendar/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs proton.me 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 5,
     "best": 5,
     "evidence": "Verse (/calendar/) 5 of 5 right against the worked-out answer; judged against the standard, not proton.me (the site is not asked)",
-    "at": "2026-10-28T13:06:00.847Z",
+    "at": "2026-10-31T00:07:57.994Z",
     "of": 5
    },
    "design polish": {
@@ -8777,42 +8802,55 @@
     "verse": 0,
     "best": 8,
     "evidence": "Verse (/calendar/) 0 design defects vs proton.me 8 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), proton.me (0 low-contrast texts, 8 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:06:00.847Z"
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    },
    "reminders": {
     "verdict": "better",
     "verse": 2,
     "best": 0,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs proton.me 0 of 2 shown (Verse lacks: none; site lacks: reminders, notifications on the device)",
-    "at": "2026-10-28T13:06:00.847Z",
+    "at": "2026-10-31T00:07:57.994Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "invites": {
     "verdict": "better",
     "verse": 3,
     "best": 1,
     "evidence": "Verse (/calendar/) 3 of 3 shown vs proton.me 1 of 3 shown (Verse lacks: none; site lacks: the .ics)",
-    "at": "2026-10-28T13:06:00.847Z",
+    "at": "2026-10-31T00:07:57.994Z",
     "of": 3,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "recurring events": {
     "verdict": "better",
     "verse": 2,
     "best": 1,
     "evidence": "Verse (/calendar/) 2 of 2 shown vs proton.me 1 of 2 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-28T13:06:00.847Z",
+    "at": "2026-10-31T00:07:57.994Z",
     "of": 2,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 20,
     "best": 4,
     "evidence": "Verse (/calendar/) 20 of 21 things a full answer shows vs proton.me 4 of 21 things a full answer shows (Verse lacks: notifications; site lacks: a month view, a week view, today, reminders, a share link, .ics import and export, search, quick add in plain words, keyboard shortcuts, notifications, works offline, Day / week / month views, Multiple calendars shown together, each with a colour, Recurring events incl. custom rules, Guests with RSVP (yes/no/maybe) and guest list, Location with map link, Tasks on the calendar)",
-    "at": "2026-10-28T13:06:00.847Z",
-    "of": 21
+    "at": "2026-10-31T00:07:57.994Z",
+    "of": 21,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 5.5,
+    "evidence": "Verse (/calendar/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs proton.me 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T00:07:57.994Z",
+    "siteRead": true
    }
   },
   "random generators: seventhsanctum.com": {
@@ -10101,52 +10139,58 @@
   "docs and notes: anotepad.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 114,
-    "best": 316,
-    "evidence": "Verse (/notes/) 114 ms to the load event (median of 3, phone width) vs anotepad.com 316 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:07:15.027Z"
+    "verse": 95,
+    "best": 330,
+    "evidence": "Verse (/notes/) 95 ms to the load event (median of 3, phone width) vs anotepad.com 330 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs anotepad.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs anotepad.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 2,
     "evidence": "Verse (/notes/) 0 unnamed controls or images vs anotepad.com 2 unnamed controls or images",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs anotepad.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs anotepad.com 4 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not anotepad.com (the site is not asked)",
-    "at": "2026-10-28T13:07:15.027Z",
+    "at": "2026-10-31T01:48:16.129Z",
     "of": 4
    },
    "design polish": {
@@ -10154,93 +10198,112 @@
     "verse": 0,
     "best": 25,
     "evidence": "Verse (/notes/) 0 design defects vs anotepad.com 25 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), anotepad.com (24 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:07:15.027Z"
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    },
    "rich formatting": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 1 of 1 shown (Verse lacks: none; site lacks: bold, headings)",
-    "at": "2026-10-28T13:07:15.027Z",
+    "at": "2026-10-31T01:48:16.129Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "search": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-28T13:07:15.027Z",
+    "at": "2026-10-31T01:48:16.129Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "version history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs anotepad.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-28T13:07:15.027Z",
+    "at": "2026-10-31T01:48:16.129Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 18,
     "best": 8,
     "evidence": "Verse (/notes/) 18 of 21 things a full answer shows vs anotepad.com 8 of 21 things a full answer shows (Verse lacks: checklists, Lists and checklists, Slash commands; site lacks: rich formatting, headings, search, version history, a word count, markdown, print, keyboard shortcuts, works offline, on this device, Offline, Word count, Slash commands)",
-    "at": "2026-10-28T13:07:15.027Z",
-    "of": 21
+    "at": "2026-10-31T01:48:16.129Z",
+    "of": 21,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8.5,
+    "best": 5.5,
+    "evidence": "Verse (/notes/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs anotepad.com 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T01:48:16.129Z",
+    "siteRead": true
    }
   },
   "docs and notes: standardnotes.com": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 116,
-    "best": 285,
-    "evidence": "Verse (/notes/) 116 ms to the load event (median of 3, phone width) vs standardnotes.com 285 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:07:20.239Z"
+    "verse": 90,
+    "best": 320,
+    "evidence": "Verse (/notes/) 90 ms to the load event (median of 3, phone width) vs standardnotes.com 320 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/notes/) 3 of 3 loads answered vs standardnotes.com 3 of 3 loads answered",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/notes/) 0 px sideways overflow at 390 px vs standardnotes.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/notes/) 0 unnamed controls or images vs standardnotes.com 1 unnamed controls or images",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 (1: the page shows itself again with the network cut) vs standardnotes.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/notes/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs standardnotes.com 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/notes/) 4 of 4 right against the worked-out answer; judged against the standard, not standardnotes.com (the site is not asked)",
-    "at": "2026-10-28T13:07:20.239Z",
+    "at": "2026-10-31T01:49:18.723Z",
     "of": 4
    },
    "design polish": {
@@ -10248,42 +10311,55 @@
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/notes/) 0 design defects vs standardnotes.com 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), standardnotes.com (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:07:20.239Z"
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    },
    "rich formatting": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 1 of 1 shown (Verse lacks: none; site lacks: bold, headings)",
-    "at": "2026-10-28T13:07:20.239Z",
+    "at": "2026-10-31T01:49:18.723Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "search": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 0 of 1 shown (Verse lacks: none; site lacks: search across notes)",
-    "at": "2026-10-28T13:07:20.239Z",
+    "at": "2026-10-31T01:49:18.723Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "version history": {
     "verdict": "better",
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/notes/) 1 of 1 shown vs standardnotes.com 0 of 1 shown (Verse lacks: none; site lacks: version history)",
-    "at": "2026-10-28T13:07:20.239Z",
+    "at": "2026-10-31T01:49:18.723Z",
     "of": 1,
-    "part": true
+    "part": true,
+    "siteRead": true
    },
    "completeness": {
     "verdict": "better",
     "verse": 18,
     "best": 4,
     "evidence": "Verse (/notes/) 18 of 21 things a full answer shows vs standardnotes.com 4 of 21 things a full answer shows (Verse lacks: checklists, Lists and checklists, Slash commands; site lacks: rich formatting, headings, checklists, links, search, version history, a word count, export, import, markdown, print, a share link, keyboard shortcuts, on this device, Lists and checklists, Word count, Slash commands)",
-    "at": "2026-10-28T13:07:20.239Z",
-    "of": 21
+    "at": "2026-10-31T01:49:18.723Z",
+    "of": 21,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8.5,
+    "best": 7,
+    "evidence": "Verse (/notes/) 8.5 of 11 wider-use points (docs/WIDER-USE.md) vs standardnotes.com 7 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T01:49:18.723Z",
+    "siteRead": true
    }
   },
   "docs and notes: notepad.pw": {
@@ -22525,12 +22601,11 @@
   },
   "onlineconverter.com": {
    "speed": {
-    "verdict": "worse",
-    "verse": 243,
-    "best": 59,
-    "evidence": "Verse (/converter/) 243 ms to the load event (median of 3, phone width) vs onlineconverter.com 59 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-30T18:12:42.110Z",
-    "was": "equal-and-better",
+    "verdict": "equal-and-better",
+    "verse": 125,
+    "best": 43,
+    "evidence": "Verse (/converter/) 125 ms to the load event (median of 3, phone width) vs onlineconverter.com 43 ms to the load event (median of 3, phone width) (under the 200 ms bar: as fast as a page needs to be; the site's time is context)",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "reliability": {
@@ -22538,7 +22613,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/converter/) 3 of 3 loads answered vs onlineconverter.com 3 of 3 loads answered",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "mobile": {
@@ -22546,7 +22621,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/converter/) 0 px sideways overflow at 390 px vs onlineconverter.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "accessibility": {
@@ -22554,7 +22629,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/converter/) 0 unnamed controls or images vs onlineconverter.com 0 unnamed controls or images",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "offline": {
@@ -22562,7 +22637,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/converter/) 1 (1: the page shows itself again with the network cut) vs onlineconverter.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "sharing": {
@@ -22570,7 +22645,7 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/converter/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs onlineconverter.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "wider use": {
@@ -22578,7 +22653,7 @@
     "verse": 7.5,
     "best": 6,
     "evidence": "Verse (/converter/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs onlineconverter.com 6 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "accuracy": {
@@ -22586,7 +22661,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/converter/) 4 of 4 right against the worked-out answer; judged against the standard, not onlineconverter.com (the site is not asked)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "of": 4
    },
    "design polish": {
@@ -22594,7 +22669,7 @@
     "verse": 0,
     "best": 18,
     "evidence": "Verse (/converter/) 0 design defects vs onlineconverter.com 18 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), onlineconverter.com (1 low-contrast texts, 17 small tap targets, layout shift 0.00)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "siteRead": true
    },
    "completeness": {
@@ -22602,7 +22677,7 @@
     "verse": 10,
     "best": 9,
     "evidence": "Verse (/converter/) 10 of 10 things a full answer shows vs onlineconverter.com 9 of 10 things a full answer shows (Verse lacks: none; site lacks: nothing to install)",
-    "at": "2026-10-30T18:12:42.110Z",
+    "at": "2026-10-31T01:47:30.571Z",
     "of": 10,
     "siteRead": true
    },
@@ -22619,7 +22694,7 @@
      "after press Convert: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/converter/): 4 steps, every negative control held",
-    "at": "2026-10-30T18:13:30.524Z"
+    "at": "2026-10-31T01:50:03.829Z"
    },
    "journey: find a tool and share it, then reopen it from the link": {
     "verdict": "pass",
@@ -22643,7 +22718,7 @@
      "after open /converter/?t=cut-mp3: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/converter/): 9 steps, every negative control held",
-    "at": "2026-10-30T18:13:30.524Z"
+    "at": "2026-10-31T01:50:03.829Z"
    }
   },
   "emoji combos": {
@@ -23471,7 +23546,7 @@
   "mymemory.translated.net": "tower.icons/mymemory.translated.net.png",
   "icloud.com": "tower.icons/icloud.com.png",
   "outlook.live.com": "tower.icons/outlook.live.com.png",
-  "calendar.zoho.com": "tower.icons/calendar.zoho.com.png",
+  "calendar.zoho.com": "tower.icons/calendar.zoho.com.ico",
   "calendar.yahoo.com": "tower.icons/calendar.yahoo.com.png",
   "proton.me": "tower.icons/proton.me.png",
   "docs.google.com": "tower.icons/docs.google.com.ico",

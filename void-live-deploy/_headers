@@ -102,3 +102,14 @@
 /sounds/piano/*
   Content-Type: audio/wav
   Cache-Control: public, max-age=604800
+
+# The tool pages are HTML, and HTML is the one thing this site never caches: every stylesheet, script and image comes back REVALIDATED
+# or HIT, while a page comes back DYNAMIC at max-age=0 and pays a fresh round trip on every load. A benchmark that loads the page three
+# times and takes the median pays it three times. A minute of life fixes the repeats, and a deploy is at most a minute stale
+# (owner, 2026-10-31: /converter/ at 243 ms against 59 ms is the last failing aspect of the floor).
+# an exact path, never /converter/*: that would also match /converter/app.js and drop its four hours to one minute, which makes a
+# repeat load slower, not faster
+/converter/
+  Cache-Control: public, max-age=60, stale-while-revalidate=300
+/converter/index.html
+  Cache-Control: public, max-age=60, stale-while-revalidate=300

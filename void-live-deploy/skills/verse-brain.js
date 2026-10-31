@@ -1,7 +1,7 @@
 /**
  * verse-brain skill — Verse Brain, the one entity Grok's frontier drafts became (owner, 2026-10-29: "build all the unique builds as a
  * combination and that can be verse"; "the grok builds combined can be verse brain"; "combine all the builds into one entity"; "all the
- * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, twenty-two organs, attention, imagination, the
+ * pages are supposed to be able to work together"). The brain is lib/brain.js (one workspace, twenty-three organs, attention, imagination, the
  * self); lib/brain-drafts.json says which frontier drafts in atomeam/a-to-mind.com each organ is made from, and why the rest were left out.
  * The card shows the workspace live: the tissue tinted by the rhythm's phase, surprise in red, the memory's expectation in violet, the
  * attention spotlight, the swarm, the membrane. The words you type, what the gestures organ named, what the memory expects and what the will
@@ -347,7 +347,7 @@ function mount({ el, q, th, cv, tick, redraw, still }) {
 }
 
 const idea = {
-  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · twenty-two organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
+  id: 'verse-brain', title: 'Verse Brain', sub: 'one workspace · twenty-three organs · attention · imagination · a self', W: 360, H: 270, warm: 40,
   create, step, metrics, draw, status, mount,
   // the Mind Field modes, opened beside the brain (it stays): each one it then feels in the shared field and names on the card
   modes: { list: [BRAIN, ...MODES], label: 'Open a Mind Field mode beside the brain', beside: true, ask: (m) => (m.id === 'doodle-mind' ? 'mind field' : m.ask) },
@@ -362,7 +362,7 @@ const skill = fieldSkill({
   examples: ['verse brain', 'show me your brain', 'your brain', 'how do you think', 'what are you thinking about', 'show the shared field'],
   nearMisses: ['add a brain', 'summon a zombie and a brain', 'brain teaser', 'mind field', 'what do you think of this song'],
   idea,
-  say: "My brain, live: one workspace that twenty-two organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
+  say: "My brain, live: one workspace that twenty-three organs share, made from Grok's frontier drafts. Move over it, tell it something, and drag what it holds."
 });
 // "what are you thinking (about)?" opens the card and is answered in words by the brain itself, from the state it is in after hearing the
 // visitor's asks (lib/brain-host.js answer): what it attends to, what it chose and its goals. Any other ask opens the card as before.
