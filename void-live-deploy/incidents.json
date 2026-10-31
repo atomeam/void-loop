@@ -2,6 +2,44 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T15:58:03.439Z",
+   "sha": "3223ada948c4696d8280eb8783c4fc2dd6dc62d4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41214998837",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "skills: every skill in index.json gets its own examples and none of its near misses (388 skills)",
+    "error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none"
+   ],
+   "touched": [
+    "void-live-deploy/lab/catalog.json",
+    "void-live-deploy/lab/f468-webgpu-hebbian-resonance-cavity-mind/app.js",
+    "void-live-deploy/lab/f468-webgpu-hebbian-resonance-cavity-mind/index.html",
+    "void-live-deploy/lab/f468-webrtc-expression-agent-field/app.js",
+    "void-live-deploy/lab/f468-webrtc-expression-agent-field/index.html",
+    "void-live-deploy/lab/f469-webgpu-evo-particle-spatial-audio-dom-mind/app.js",
+    "void-live-deploy/lab/f469-webgpu-evo-particle-spatial-audio-dom-mind/index.html",
+    "void-live-deploy/lab/f470-webgpu-local-attention-reason-morph-mind/app.js",
+    "void-live-deploy/lab/f470-webgpu-local-attention-reason-morph-mind/index.html",
+    "void-live-deploy/lab/f471-webxr-hand-mlp-genome-competition/app.js",
+    "void-live-deploy/lab/f471-webxr-hand-mlp-genome-competition/index.html",
+    "void-live-deploy/lab/f472-webrtc-idb-shared-occupancy-navigators/app.js",
+    "void-live-deploy/lab/f472-webrtc-idb-shared-occupancy-navigators/index.html",
+    "void-live-deploy/lab/f473-webgpu-acoustic-nca-spatial-weaver-mind/app.js",
+    "void-live-deploy/lab/f473-webgpu-acoustic-nca-spatial-weaver-mind/index.html"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-10-31T07:30:52.930Z",
    "sha": "f656d40bb8cf2ad1fae9460c2645013ef2cc34d5",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41179043888",
@@ -981,30 +1019,6 @@
    "closedBy": "f85055a77733e7c027e0cf4b3560399cd828e593",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40998208515",
    "minutes": 88
-  },
-  {
-   "at": "2026-10-30T01:12:04.984Z",
-   "sha": "a10b9bff5d8cc35857aa0ad6a39dc170da098f4c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40981022214",
-   "suite": "browser suite on main",
-   "checks": [
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/TAGTEAM.md",
-    "void-live-deploy/lib/tower.js"
-   ],
-   "shards": [
-    4
-   ],
-   "passed": [
-    4
-   ],
-   "closedAt": "2026-10-30T03:33:32.544Z",
-   "closedBy": "7ed8ce7b788eabb318fb600bbe1deae86f9bf15a",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40996034633",
-   "minutes": 141
   }
  ]
 }
