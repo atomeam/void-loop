@@ -134,5 +134,7 @@
   {"check": "hints while typing", "sha": "d0f883ca9412accf1ff4900e1c34f6c97683773e", "at": "2026-10-30T16:32:55Z"},
   {"check": "money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes th", "sha": "d0f883ca9412accf1ff4900e1c34f6c97683773e", "at": "2026-10-30T16:32:55Z"},
   {"check": "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs tha", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:28:43Z"},
-  {"check": "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as an", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:28:43Z"}
+  {"check": "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as an", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:28:43Z"},
+  {"check": "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:31:33Z"},
+  {"check": "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not cou", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:31:33Z"}
 ]
