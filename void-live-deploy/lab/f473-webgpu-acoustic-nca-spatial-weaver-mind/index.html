@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --scale: 1; --blur: 0px; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; width:100%; height:100%; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,.5); padding:8px 12px; border-radius:8px; backdrop-filter:blur(4px); }
+button, input { margin:4px; }
+.weaver { position:absolute; width:140px; min-height:60px; background:rgba(20,30,50,.8); border:1px solid rgba(100,180,255,.6); border-radius:8px; padding:8px; color:#fff; resize:both; overflow:auto; cursor:move; z-index:5; transition:transform .2s; }
+.weaver:focus { outline:2px solid var(--hue); }
+#status { font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-acoustic-nca-spatial-weaver-mind · Verse lab</title>
+<meta name="description" content="Acoustic NCA Spatial Weaver Mind: a WebGPU compute (Canvas2D progressive fallback) multi-channel Neural Cellular Automata (NCA) lattice evolves under continuous">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-acoustic-nca-spatial-weaver-mind · Verse lab">
+<meta property="og:description" content="Acoustic NCA Spatial Weaver Mind: a WebGPU compute (Canvas2D progressive fallback) multi-channel Neural Cellular Automata (NCA) lattice evolves under continuous">
+<meta property="og:url" content="https://a-to-mind.com/lab/f473-webgpu-acoustic-nca-spatial-weaver-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f473-webgpu-acoustic-nca-spatial-weaver-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="mic">Enable Mic</button>
+  <button id="seal">Seal to IDB</button>
+  <button id="restore">Restore</button>
+  <span id="status">Offline ready · Canvas NCA</span>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-acoustic-nca-spatial-weaver-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

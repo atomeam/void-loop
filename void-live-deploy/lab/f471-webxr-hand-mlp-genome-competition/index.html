@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --sat: 70%; --energy: 0.5; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #0a0a12; color: #eee; font: 14px system-ui; overflow: hidden; }
+#canvas { display: block; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 50%, hsl(var(--hue), var(--sat), 8%), #000); }
+#ui { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; flex-wrap: wrap; pointer-events: none; }
+#ui > * { pointer-events: auto; }
+button, label { background: rgba(0,0,0,.6); border: 1px solid #444; color: #eee; padding: 6px 10px; border-radius: 6px; font: inherit; }
+#status { position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,.7); padding: 8px 12px; border-radius: 6px; max-width: 60%; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-hand-mlp-genome-competition · Verse lab</title>
+<meta name="description" content="WebXR Hand-MLP Genome Competition Mind: Immersive or inline WebXR session (hand-tracking preferred.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-hand-mlp-genome-competition · Verse lab">
+<meta property="og:description" content="WebXR Hand-MLP Genome Competition Mind: Immersive or inline WebXR session (hand-tracking preferred.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f471-webxr-hand-mlp-genome-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f471-webxr-hand-mlp-genome-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <button id="xrBtn">Enter XR (if available)</button>
+  <button id="sealBtn">Seal</button>
+  <button id="restoreBtn">Restore</button>
+  <label>Agents <input id="nAgents" type="range" min="8" max="32" value="16"></label>
+</div>
+<div id="status">Hand/pointer grasp + collision transfers genomes. Fitness = −MLP residual on hand motion.</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-hand-mlp-genome-competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

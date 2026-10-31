@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --entropy: 0.3; --recall: 0.5; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; width:100vw; height:100vh; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,20,0.7); padding:12px; border-radius:8px; max-width:320px; font-size:13px; }
+#ui h1 { margin:0 0 8px; font-size:15px; }
+textarea { width:100%; height:48px; background:#111; color:#fff; border:1px solid #444; }
+button { margin:4px 4px 0 0; background:#1a1a3a; color:#aaf; border:1px solid #55f; padding:4px 8px; }
+#status { font-size:11px; opacity:0.8; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>speech-vector-spatial-recall-mind · Verse lab</title>
+<meta name="description" content="Local Speech Vector Spatial Recall Mind: Continuous local SpeechRecognition (with keyboard fallback) emits short text snippets that are immediately embedded into">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="speech-vector-spatial-recall-mind · Verse lab">
+<meta property="og:description" content="Local Speech Vector Spatial Recall Mind: Continuous local SpeechRecognition (with keyboard fallback) emits short text snippets that are immediately embedded into">
+<meta property="og:url" content="https://a-to-mind.com/lab/f478-speech-vector-spatial-recall-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f478-speech-vector-spatial-recall-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+<h1>Speech Vector Spatial Recall</h1>
+<p>Speak or type short phrases. Related memories attract.</p>
+<textarea id="input" placeholder="Type a phrase and press Enter or Speak..."></textarea>
+<button id="speak">Start Speech</button>
+<button id="seal">Seal (S)</button>
+<button id="restore">Restore (R)</button>
+<div id="status">Ready. Offline capable.</div>
+</div>
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

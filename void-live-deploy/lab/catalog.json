@@ -1,5 +1,128 @@
 [
  {
+  "slug": "f479-motion-residual-crystal-lattice-mind",
+  "num": 479,
+  "title": "motion-residual-crystal-lattice-mind",
+  "blurb": "Motion Residual Crystal Lattice Mind: Local DeviceMotion / DeviceOrientation events feed a Web Worker evolutionary linear residual predictor (velocity → next",
+  "status": "works",
+  "source": "F479-motion-residual-crystal-lattice-mind",
+  "hash": "aceb187f79c1"
+ },
+ {
+  "slug": "f478-speech-vector-spatial-recall-mind",
+  "num": 478,
+  "title": "speech-vector-spatial-recall-mind",
+  "blurb": "Local Speech Vector Spatial Recall Mind: Continuous local SpeechRecognition (with keyboard fallback) emits short text snippets that are immediately embedded into",
+  "status": "works",
+  "source": "F478-speech-vector-spatial-recall-mind",
+  "hash": "1c3c3fc6384f"
+ },
+ {
+  "slug": "f477-webxr-gaze-hebbian-portal-competition",
+  "num": 477,
+  "title": "webxr-gaze-hebbian-portal-competition",
+  "blurb": "WebXR Gaze Hebbian Portal Competition Mind: Optional WebXR session (immersive-ar preferred.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F477-webxr-gaze-hebbian-portal-competition",
+  "hash": "94df145a0825"
+ },
+ {
+  "slug": "f476-webgpu-mic-spectral-policy-morph",
+  "num": 476,
+  "title": "webgpu-mic-spectral-policy-morph",
+  "blurb": "Microphone Spectral Residual Policy Morph Mind: Local population of tiny policy MLPs (3-6-2, tanh) evolved in a Web Worker.",
+  "status": "works",
+  "source": "F476-webgpu-mic-spectral-policy-morph",
+  "hash": "3a0eeeef34a5"
+ },
+ {
+  "slug": "f475-orient-mlp-genome-auction-lattice",
+  "num": 475,
+  "title": "orient-mlp-genome-auction-lattice",
+  "blurb": "Orientation-Driven Multi-Agent Genome Auction Lattice: a spatial field of CSS grid cells whose visual energy (color, opacity, scale) is controlled by competing",
+  "status": "works",
+  "source": "F475-orient-mlp-genome-auction-lattice",
+  "hash": "0e6661c31c72"
+ },
+ {
+  "slug": "f474-webgpu-sdf-recurrent-reasoner-morph-mind",
+  "num": 474,
+  "title": "webgpu-sdf-recurrent-reasoner-morph-mind",
+  "blurb": "SDF Recurrent Reasoner Morph Mind: a continuous soft-blended SDF spatial world (Canvas2D metaball approximation with WebGPU raymarch path prepared) of abstract",
+  "status": "works",
+  "source": "F474-webgpu-sdf-recurrent-reasoner-morph-mind",
+  "hash": "dc3add26a560"
+ },
+ {
+  "slug": "f473-webgpu-acoustic-nca-spatial-weaver-mind",
+  "num": 473,
+  "title": "webgpu-acoustic-nca-spatial-weaver-mind",
+  "blurb": "Acoustic NCA Spatial Weaver Mind: a WebGPU compute (Canvas2D progressive fallback) multi-channel Neural Cellular Automata (NCA) lattice evolves under continuous",
+  "status": "works",
+  "source": "F473-webgpu-acoustic-nca-spatial-weaver-mind",
+  "hash": "64b20c4967d9"
+ },
+ {
+  "slug": "f472-webrtc-idb-shared-occupancy-navigators",
+  "num": 472,
+  "title": "webrtc-idb-shared-occupancy-navigators",
+  "blurb": "Shared Occupancy Navigators Mind: A persistent spatial occupancy grid (Canvas2D, 32x32 cells) that agents explore and mark.",
+  "status": "works",
+  "source": "F472-webrtc-idb-shared-occupancy-navigators",
+  "hash": "3d7fa1996f2b"
+ },
+ {
+  "slug": "f471-webxr-hand-mlp-genome-competition",
+  "num": 471,
+  "title": "webxr-hand-mlp-genome-competition",
+  "blurb": "WebXR Hand-MLP Genome Competition Mind: Immersive or inline WebXR session (hand-tracking preferred.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F471-webxr-hand-mlp-genome-competition",
+  "hash": "d8fbd15a1303"
+ },
+ {
+  "slug": "f470-webgpu-local-attention-reason-morph-mind",
+  "num": 470,
+  "title": "webgpu-local-attention-reason-morph-mind",
+  "blurb": "Local Attention Reason Morph Mind: a lightweight local AI agent maintains a rolling memory of spatial-interaction tokens (pointer bins, click events, microphone",
+  "status": "works",
+  "source": "F470-webgpu-local-attention-reason-morph-mind",
+  "hash": "01c00865d166"
+ },
+ {
+  "slug": "f469-webgpu-evo-particle-spatial-audio-dom-mind",
+  "num": 469,
+  "title": "webgpu-evo-particle-spatial-audio-dom-mind",
+  "blurb": "WebGPU Evo-Particle Spatial Audio DOM-Pusher Mind: GPU compute particles (WebGPU storage buffers + compute shader for integration) each carry a short genome of",
+  "status": "works",
+  "source": "F469-webgpu-evo-particle-spatial-audio-dom-mind",
+  "hash": "ee8fb1f120a4"
+ },
+ {
+  "slug": "f468-webgpu-hebbian-resonance-cavity-mind",
+  "num": 468,
+  "title": "webgpu-hebbian-resonance-cavity-mind",
+  "blurb": "Hebbian Resonance Cavity Mind: a spatial wave-equation cavity (Canvas2D, WebGPU compute path noted) whose local propagation speeds and damping are biased by a",
+  "status": "works",
+  "source": "F468-webgpu-hebbian-resonance-cavity-mind",
+  "hash": "b90056e299ca"
+ },
+ {
+  "slug": "f468-webrtc-expression-agent-field",
+  "num": 468,
+  "title": "webrtc-expression-agent-field",
+  "blurb": "Sealed Local Expression-Tree Agents in a Shared WebRTC Field. Multiple independent agents each own a symbolic expression tree (arithmetic + sin/abs on",
+  "status": "works",
+  "source": "F468-webrtc-expression-agent-field",
+  "hash": "7ce09121889d"
+ },
+ {
   "slug": "f467-webgpu-causal-echo-lattice-mind",
   "num": 467,
   "title": "webgpu-causal-echo-lattice-mind",

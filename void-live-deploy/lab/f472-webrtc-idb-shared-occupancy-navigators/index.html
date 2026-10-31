@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --entropy: 0.5; --hue: 200; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#chrome { position:fixed; inset:0; pointer-events:none; background:radial-gradient(circle at 50% 50%, hsl(var(--hue),40%,8%) 0%, #000 70%); opacity:0.6; mix-blend-mode:screen; }
+canvas { display:block; background:#050510; cursor:crosshair; }
+#hud { position:fixed; top:10px; left:10px; background:rgba(0,0,20,0.7); padding:8px 12px; border-radius:8px; font-size:13px; pointer-events:none; }
+button { position:fixed; bottom:20px; right:20px; padding:10px 16px; background:#224; color:#cef; border:1px solid #46a; border-radius:6px; cursor:pointer; }
+button:hover { background:#335; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webrtc-idb-shared-occupancy-navigators · Verse lab</title>
+<meta name="description" content="Shared Occupancy Navigators Mind: A persistent spatial occupancy grid (Canvas2D, 32x32 cells) that agents explore and mark.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webrtc-idb-shared-occupancy-navigators · Verse lab">
+<meta property="og:description" content="Shared Occupancy Navigators Mind: A persistent spatial occupancy grid (Canvas2D, 32x32 cells) that agents explore and mark.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f472-webrtc-idb-shared-occupancy-navigators/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f472-webrtc-idb-shared-occupancy-navigators/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome"></div>
+<canvas id="c"></canvas>
+<div id="hud">Occupancy entropy: <span id="ent">0.00</span> | Navigators: 4 | Click to attract</div>
+<button id="seal">Seal to IDB</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">webrtc-idb-shared-occupancy-navigators</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
