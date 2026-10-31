@@ -17145,68 +17145,75 @@
   "photos: squoosh.app": {
    "speed": {
     "verdict": "worse",
-    "verse": 211,
-    "best": 68,
-    "evidence": "Verse (/photos/squoosh/) 211 ms to the load event (median of 3, phone width) vs squoosh.app 68 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:16:14.515Z",
-    "was": "equal-and-better"
+    "verse": 231,
+    "best": 78,
+    "evidence": "Verse (/photos/squoosh/) 231 ms to the load event (median of 3, phone width) vs squoosh.app 78 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T15:37:31.635Z",
+    "was": "equal-and-better",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/squoosh/) 3 of 3 loads answered vs squoosh.app 3 of 3 loads answered",
-    "at": "2026-10-28T13:16:14.515Z"
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/photos/squoosh/) 0 px sideways overflow at 390 px vs squoosh.app 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:16:14.515Z"
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "better",
     "verse": 0,
     "best": 1,
     "evidence": "Verse (/photos/squoosh/) 0 unnamed controls or images vs squoosh.app 1 unnamed controls or images",
-    "at": "2026-10-28T13:16:14.515Z"
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/photos/squoosh/) 1 (1: the page shows itself again with the network cut) vs squoosh.app 1 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-28T13:16:14.515Z"
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "sharing": {
     "verdict": "better",
     "verse": 4,
     "best": 3,
     "evidence": "Verse (/photos/squoosh/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs squoosh.app 3 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-28T13:16:14.515Z"
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "accuracy": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/photos/squoosh/) 3 of 3 right against the worked-out answer; judged against the standard, not squoosh.app (the site is not asked)",
-    "at": "2026-10-28T13:16:14.515Z",
+    "at": "2026-10-31T15:37:31.635Z",
     "of": 3
    },
    "design polish": {
     "verdict": "better",
     "verse": 1,
     "best": 8,
-    "evidence": "Verse (/photos/squoosh/) 1 design defects vs squoosh.app 8 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.02), squoosh.app (6 low-contrast texts, 2 small tap targets, layout shift 0.00)",
-    "at": "2026-10-28T13:16:14.515Z"
+    "evidence": "Verse (/photos/squoosh/) 1 design defects vs squoosh.app 8 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.05), squoosh.app (6 low-contrast texts, 2 small tap targets, layout shift 0.00)",
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    },
    "editing": {
     "verdict": "equal-and-better",
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/photos/squoosh/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:14.515Z",
+    "at": "2026-10-31T15:37:31.635Z",
     "of": 7,
     "part": true
    },
@@ -17215,7 +17222,7 @@
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/photos/squoosh/) 7 of 7 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:14.515Z",
+    "at": "2026-10-31T15:37:31.635Z",
     "of": 7,
     "part": true
    },
@@ -17224,7 +17231,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/photos/squoosh/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:16:14.515Z",
+    "at": "2026-10-31T15:37:31.635Z",
     "of": 2,
     "part": true
    },
@@ -17233,8 +17240,17 @@
     "verse": 27,
     "best": 2,
     "evidence": "Verse (/photos/squoosh/) 27 of 30 things a full answer shows vs squoosh.app 2 of 30 things a full answer shows (Verse lacks: Timeline by date, Duplicate handling, Location privacy on share; site lacks: JPEG, PNG, WebP, AVIF, a before and after slider, the size saved, resize, crop with shapes, rotate and flip, brightness and contrast, saturation, blur and sharpen, filters, text, drawing, undo and redo, EXIF, GPS, strip metadata, batch to a zip, paste or drop, nothing uploaded, Timeline by date, Duplicate handling, Location privacy on share, Compress with a quality slider, Before and after compare slider, Size saved readout)",
-    "at": "2026-10-28T13:16:14.515Z",
-    "of": 30
+    "at": "2026-10-31T15:37:31.635Z",
+    "of": 30,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 9,
+    "best": 5.5,
+    "evidence": "Verse (/photos/squoosh/) 9 of 11 wider-use points (docs/WIDER-USE.md) vs squoosh.app 5.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T15:37:31.635Z",
+    "siteRead": true
    }
   },
   "photos: photopea.com": {
@@ -22413,38 +22429,42 @@
   "squibler": {
    "speed": {
     "verdict": "equal-and-better",
-    "verse": 71,
-    "best": 633,
-    "evidence": "Verse (/books/) 71 ms to the load event (median of 3, phone width) vs squibler.io 633 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-28T13:20:59.704Z"
+    "verse": 87,
+    "best": 859,
+    "evidence": "Verse (/books/) 87 ms to the load event (median of 3, phone width) vs squibler.io 859 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    },
    "reliability": {
     "verdict": "equal-and-better",
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/books/) 3 of 3 loads answered vs squibler.io 3 of 3 loads answered",
-    "at": "2026-10-28T13:20:59.704Z"
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    },
    "mobile": {
     "verdict": "worse",
     "verse": 516,
     "best": 0,
     "evidence": "Verse (/books/) 516 px sideways overflow at 390 px vs squibler.io 0 px sideways overflow at 390 px",
-    "at": "2026-10-28T13:20:59.704Z"
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    },
    "accessibility": {
     "verdict": "equal-and-better",
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/books/) 0 unnamed controls or images vs squibler.io 0 unnamed controls or images",
-    "at": "2026-10-28T13:20:59.704Z"
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    },
    "offline": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 2,
     "part": true
    },
@@ -22453,7 +22473,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 2,
     "part": true
    },
@@ -22462,22 +22482,23 @@
     "verse": 7,
     "best": 7,
     "evidence": "Verse (/books/) 7 of 7 right against the worked-out answer; judged against the standard, not squibler.io (the site is not asked)",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 7
    },
    "design polish": {
     "verdict": "better",
     "verse": 3,
     "best": 36,
-    "evidence": "Verse (/books/) 3 design defects vs squibler.io 36 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.42), squibler.io (3 low-contrast texts, 33 small tap targets, layout shift 0.09)",
-    "at": "2026-10-28T13:20:59.704Z"
+    "evidence": "Verse (/books/) 3 design defects vs squibler.io 36 design defects: Verse (0 low-contrast texts, 2 small tap targets, layout shift 0.42), squibler.io (3 low-contrast texts, 33 small tap targets, layout shift 0.08)",
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    },
    "book studio": {
     "verdict": "equal-and-better",
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 2,
     "part": true
    },
@@ -22486,7 +22507,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 2,
     "part": true
    },
@@ -22495,7 +22516,7 @@
     "verse": 2,
     "best": 2,
     "evidence": "Verse (/books/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
-    "at": "2026-10-28T13:20:59.704Z",
+    "at": "2026-10-31T15:36:25.853Z",
     "of": 2,
     "part": true
    },
@@ -22504,8 +22525,17 @@
     "verse": 8,
     "best": 0,
     "evidence": "Verse (/books/) 8 of 8 things a full answer shows vs squibler.io 0 of 8 things a full answer shows (Verse lacks: none; site lacks: book studio, chapters, export markdown, export text, no credits, no subscriptions, works offline, back to Verse)",
-    "at": "2026-10-28T13:20:59.704Z",
-    "of": 8
+    "at": "2026-10-31T15:36:25.853Z",
+    "of": 8,
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 7.5,
+    "best": 4,
+    "evidence": "Verse (/books/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs squibler.io 4 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-10-31T15:36:25.853Z",
+    "siteRead": true
    }
   },
   "inkfluence": {
@@ -23120,12 +23150,11 @@
   },
   "emoji combos": {
    "speed": {
-    "verdict": "worse",
-    "verse": 238,
-    "best": 211,
-    "evidence": "Verse (/emoji-combos/) 238 ms to the load event (median of 3, phone width) vs emojicombos.com 211 ms to the load event (median of 3, phone width)",
-    "at": "2026-10-31T15:31:26.651Z",
-    "was": "equal-and-better",
+    "verdict": "better",
+    "verse": 211,
+    "best": 288,
+    "evidence": "Verse (/emoji-combos/) 211 ms to the load event (median of 3, phone width) vs emojicombos.com 288 ms to the load event (median of 3, phone width)",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "reliability": {
@@ -23133,7 +23162,7 @@
     "verse": 3,
     "best": 3,
     "evidence": "Verse (/emoji-combos/) 3 of 3 loads answered vs emojicombos.com 3 of 3 loads answered",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "mobile": {
@@ -23141,7 +23170,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emoji-combos/) 0 px sideways overflow at 390 px vs emojicombos.com 0 px sideways overflow at 390 px",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "accessibility": {
@@ -23149,7 +23178,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emoji-combos/) 0 unnamed controls or images vs emojicombos.com 0 unnamed controls or images",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "offline": {
@@ -23157,7 +23186,7 @@
     "verse": 0,
     "best": 0,
     "evidence": "Verse (/emoji-combos/) 0 (1: the page shows itself again with the network cut) vs emojicombos.com 0 (1: the page shows itself again with the network cut)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "sharing": {
@@ -23165,7 +23194,7 @@
     "verse": 4,
     "best": 1,
     "evidence": "Verse (/emoji-combos/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs emojicombos.com 1 of 4 (link-preview title, image, description; a share or copy-link control)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "wider use": {
@@ -23173,7 +23202,7 @@
     "verse": 7,
     "best": 5,
     "evidence": "Verse (/emoji-combos/) 7 of 11 wider-use points (docs/WIDER-USE.md) vs emojicombos.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "accuracy": {
@@ -23181,7 +23210,7 @@
     "verse": 4,
     "best": 4,
     "evidence": "Verse (/emoji-combos/) 4 of 4 right against the worked-out answer; judged against the standard, not emojicombos.com (the site is not asked)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "of": 4
    },
    "design polish": {
@@ -23189,7 +23218,7 @@
     "verse": 1,
     "best": 3,
     "evidence": "Verse (/emoji-combos/) 1 design defects vs emojicombos.com 3 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.55), emojicombos.com (3 low-contrast texts, 0 small tap targets, layout shift 0.00)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "siteRead": true
    },
    "fancy text": {
@@ -23197,7 +23226,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/emoji-combos/) 1 of 1 shown vs emojicombos.com 0 of 1 shown (Verse lacks: none; site lacks: fancy text)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "of": 1,
     "part": true,
     "siteRead": true
@@ -23207,7 +23236,7 @@
     "verse": 1,
     "best": 1,
     "evidence": "Verse (/emoji-combos/) 1 of 1 shown vs emojicombos.com 1 of 1 shown (Verse lacks: none; site lacks: none)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "of": 1,
     "part": true,
     "siteRead": true
@@ -23217,7 +23246,7 @@
     "verse": 1,
     "best": 0,
     "evidence": "Verse (/emoji-combos/) 1 of 1 shown vs emojicombos.com 0 of 1 shown (Verse lacks: none; site lacks: collect several into one)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "of": 1,
     "part": true,
     "siteRead": true
@@ -23227,7 +23256,7 @@
     "verse": 12,
     "best": 2,
     "evidence": "Verse (/emoji-combos/) 12 of 12 things a full answer shows vs emojicombos.com 2 of 12 things a full answer shows (Verse lacks: none; site lacks: tags, copy, collect several into one, make or submit your own, fancy text, single emoji, similar emoji, saved or voted favourites, a link to share, nothing sent anywhere)",
-    "at": "2026-10-31T15:31:26.651Z",
+    "at": "2026-10-31T15:35:17.086Z",
     "of": 12,
     "siteRead": true
    },
@@ -23246,7 +23275,7 @@
      "after type Hello into fancy text: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/emoji-combos/): 5 steps, every negative control held",
-    "at": "2026-10-31T15:34:27.663Z"
+    "at": "2026-10-31T15:37:59.736Z"
    },
    "journey: share the result and reopen it from the link": {
     "verdict": "pass",
@@ -23271,7 +23300,7 @@
      "after open /emoji-combos/?q=birthday&c=%F0%9F%8E%82%F0%9F%8E%89%F0%9F%8E%81: no stub, placeholder, error or empty page"
     ],
     "evidence": "Verse (/emoji-combos/): 10 steps, every negative control held",
-    "at": "2026-10-31T15:34:27.663Z"
+    "at": "2026-10-31T15:37:59.736Z"
    }
   },
   "team chat": {
