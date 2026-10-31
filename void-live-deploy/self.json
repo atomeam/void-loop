@@ -536,84 +536,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-30T19:20:50Z",
-   "subject": "Finding: rides asked a live routing service (findings/rides)"
-  },
-  {
-   "at": "2026-10-30T19:11:13Z",
+   "at": "2026-10-31T00:44:01Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T19:02:17Z",
-   "subject": "Incident: the browser suite failed on e28d7d21 (void-live-deploy/incidents.json)"
+   "at": "2026-10-31T00:40:58Z",
+   "subject": "narrow the page rule: /converter/ also matched app.js and would have slowed the repeat load"
   },
   {
-   "at": "2026-10-30T18:59:18Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T00:36:49Z",
+   "subject": "Incident: the browser suite failed on 04e7b346 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-30T18:58:54Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T00:32:12Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
   },
   {
-   "at": "2026-10-30T18:51:13Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T00:31:56Z",
+   "subject": "a tool page may live for a minute, so a load that repeats does not pay the round trip again"
   },
   {
-   "at": "2026-10-30T18:50:50Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T00:31:33Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-30T18:50:20Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-10-31T00:28:43Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-30T18:43:36Z",
+   "at": "2026-10-31T00:26:39Z",
+   "subject": "Incident: the browser suite failed on 13dc24ca (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T00:23:05Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
+  },
+  {
+   "at": "2026-10-31T00:22:45Z",
+   "subject": "the card stops claiming reach it does not have, and the tower fact names the one aspect that is left"
+  },
+  {
+   "at": "2026-10-31T00:18:48Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-30T18:39:59Z",
+   "at": "2026-10-31T00:13:38Z",
+   "subject": "Add rps skill: rock paper scissors game on stage"
+  },
+  {
+   "at": "2026-10-31T00:10:20Z",
+   "subject": "Tower gate: onlineconverter.com,calendar: proton.me,calendar: calendar.zoho.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-31T00:08:42Z",
+   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-31T00:08:10Z",
    "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-10-30T18:39:15Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:37:47Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:37:18Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:36:55Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:30:48Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:19:54Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:19:22Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:18:40Z",
-   "subject": "Regenerate the generated files after the merge"
-  },
-  {
-   "at": "2026-10-30T18:17:57Z",
-   "subject": "guide.json after the benchmark rows this PR moved (loan, book, notes-fill counts)"
-  },
-  {
-   "at": "2026-10-30T18:17:09Z",
+   "at": "2026-10-31T00:07:38Z",
    "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+  },
+  {
+   "at": "2026-10-31T00:02:10Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
+  },
+  {
+   "at": "2026-10-30T23:43:04Z",
+   "subject": "what Verse consumed reaches its brain, and an ended pull request settles its job — ported onto current main"
+  },
+  {
+   "at": "2026-10-30T23:06:27Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-30T22:46:11Z",
+   "subject": "Incident: the browser suite failed on 66fbe322 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

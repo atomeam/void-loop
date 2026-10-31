@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1092,
+ "counted": 1096,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2740,6 +2740,13 @@
    "tests": 1
   },
   {
+   "file": "lib/brain-recall.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/daily-photo.js",
    "skills": 0,
    "direct": 0,
@@ -2856,7 +2863,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 3
+   "tests": 5
   },
   {
    "file": "lib/recipeimport.js",
@@ -2919,7 +2926,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 1,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/zones.js",
@@ -3420,6 +3427,13 @@
   },
   {
    "file": "lib/units.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
+   "file": "lib/will-schema.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -4030,6 +4044,7 @@
     "lib/guard.js",
     "lib/models.js",
     "lib/shortfall.js",
+    "lib/brain-recall.js",
     "lib/propose-fix.js"
    ],
    "importedBy": []
@@ -5592,6 +5607,12 @@
     "lib/brain-host.js",
     "lib/brain-route.js",
     "skills/verse-brain.js"
+   ]
+  },
+  "lib/brain-recall.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/propose-fix.js"
    ]
   },
   "lib/brain-route.js": {
@@ -13230,6 +13251,10 @@
     "skills/walker.js"
    ]
   },
+  "lib/will-schema.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/wordcount.js": {
    "imports": [
     "skills/util.js"
@@ -13722,6 +13747,10 @@
    "importedBy": [
     "skills/palette.js"
    ]
+  },
+  "skills/compliment.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/connect4-rules.js": {
    "imports": [],
@@ -16244,6 +16273,10 @@
     "lib/routine-skill.js",
     "lib/shared-routines.js"
    ],
+   "importedBy": []
+  },
+  "skills/rps.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/rts.js": {
