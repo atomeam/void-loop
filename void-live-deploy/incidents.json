@@ -2,6 +2,212 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T00:36:49.427Z",
+   "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41148430998",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+   ],
+   "touched": [
+    ".github/workflows/will-outcome.yml",
+    "docs/MAP.md",
+    "tools/brain-recall.test.mjs",
+    "tools/checks.mjs",
+    "tools/knowledge-build.mjs",
+    "tools/knowledge-build.test.mjs",
+    "tools/will-guard.test.mjs",
+    "tools/will-outcome.mjs",
+    "tools/will-outcome.test.mjs",
+    "tools/will-schema.test.mjs",
+    "void-live-deploy/functions/api/propose-fix.js",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lib/brain-recall.js",
+    "void-live-deploy/lib/propose-fix.js",
+    "void-live-deploy/lib/will-guard.js"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T00:26:39.388Z",
+   "sha": "13dc24ca77d93d2cd799311751a833397344e792",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41148117777",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/self-identity.test.mjs",
+    "void-live-deploy/lib/self-context.js",
+    "void-live-deploy/skills/deps.json",
+    ".github/workflows/baggage-live.yml",
+    ".github/workflows/genre-refs.yml",
+    ".github/workflows/propose-fix.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "docs/PARITY/github.md",
+    "docs/PARITY/gmail.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "docs/PARITY/onlineconverter.com.md",
+    "docs/autonomy.md",
+    "domains/conductor.json"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T22:46:11.706Z",
+   "sha": "66fbe322f4d0416d1353980fb4cf712a2f03792f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41137097261",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "domains/conductor.json"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T20:36:58.384Z",
+   "sha": "5009df147d44fb5151f4e67397bf2761d647fc4d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41116842703",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/grow-self.state.json",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
+   ],
+   "shards": [
+    1,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T20:30:31.188Z",
+   "sha": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing"
+   ],
+   "touched": [
+    "domains/void.frontier.md",
+    "tools/guide.test.mjs",
+    "tools/report-to-growth.mjs",
+    "tools/report-to-growth.test.mjs",
+    "tools/self-context.mjs",
+    "tools/what-skills.mjs",
+    "tools/what-skills.test.mjs",
+    "void-live-deploy/lib/guide.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/what.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
+   ],
+   "shards": [
+    1,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T20:24:12.933Z",
+   "sha": "6358005835b363df7b3a15113df6c10191a54609",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41111174654",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing"
+   ],
+   "touched": [
+    ".github/workflows/genre-refs.yml",
+    "tools/checks.mjs",
+    "tools/genre-refs.mjs",
+    "tools/genre-score.test.mjs",
+    "void-live-deploy/lib/genre-score.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/music.js"
+   ],
+   "shards": [
+    1,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-30T20:10:22.243Z",
+   "sha": "083f07403ca482721e9367da6d85a156c7442bd6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41103887678",
+   "suite": "browser suite on main",
+   "checks": [
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes the loan ask"
+   ],
+   "touched": [
+    ".github/workflows/verse-watch.yml",
+    "findings/local/2026-10-30T1035.json",
+    "findings/local/2026-10-30T1644.json",
+    "tools/checks.mjs",
+    "tools/local-media.test.mjs",
+    "tools/local-tv.mjs",
+    "tools/models.test.mjs",
+    "tools/openapi-check.mjs",
+    "tools/watch-along.test.mjs",
+    "tools/watch.py",
+    "tools/will.py",
+    "tools/world-tv.mjs",
+    "tools/world-tv.test.mjs",
+    "void-live-deploy/functions/api/appraise.js",
+    "void-live-deploy/functions/api/local.js"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ],
+   "passed": [
+    2
+   ]
+  },
+  {
    "at": "2026-10-30T19:59:40.651Z",
    "sha": "90dcaf6e31395eaf00a6e12cb40cd6cc9d5b4876",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41090097093",
@@ -29,7 +235,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 31
   },
   {
    "at": "2026-10-30T19:02:16.898Z",
@@ -49,7 +262,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 88
   },
   {
    "at": "2026-10-30T16:44:46.167Z",
@@ -78,7 +298,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 226
   },
   {
    "at": "2026-10-30T15:08:02.597Z",
@@ -107,7 +334,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 322
   },
   {
    "at": "2026-10-30T13:37:55.692Z",
@@ -140,8 +374,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 413
   },
   {
    "at": "2026-10-30T12:13:24.946Z",
@@ -170,8 +409,13 @@
     3
    ],
    "passed": [
+    2,
     3
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 497
   },
   {
    "at": "2026-10-30T11:25:10.005Z",
@@ -252,8 +496,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 589
   },
   {
    "at": "2026-10-30T10:20:05.008Z",
@@ -290,7 +539,14 @@
    ],
    "shards": [
     2
-   ]
+   ],
+   "passed": [
+    2
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 610
   },
   {
    "at": "2026-10-30T08:34:27.681Z",
@@ -325,8 +581,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 716
   },
   {
    "at": "2026-10-30T08:23:36.059Z",
@@ -367,8 +628,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 727
   },
   {
    "at": "2026-10-30T08:21:32.007Z",
@@ -410,8 +676,13 @@
     4
    ],
    "passed": [
+    2,
     4
-   ]
+   ],
+   "closedAt": "2026-10-30T20:30:31.231Z",
+   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
+   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
+   "minutes": 729
   },
   {
    "at": "2026-10-30T02:37:47.980Z",
@@ -735,254 +1006,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 351
-  },
-  {
-   "at": "2026-10-29T10:48:24.159Z",
-   "sha": "8aa556a592f73a4a474673a9279a0a0a73ea87e2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40855694765",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
-    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
-   ],
-   "touched": [
-    "tools/fanfic.test.mjs",
-    "void-live-deploy/fanfic/app.js",
-    "void-live-deploy/fanfic/index.html",
-    "void-live-deploy/functions/fanfic/rss.js",
-    "void-live-deploy/lib/fanfic-de.js",
-    "void-live-deploy/lib/fanfic.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 488
-  },
-  {
-   "at": "2026-10-29T10:20:59.516Z",
-   "sha": "fbf2a00844807c184468d9b6412859865876b077",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40851990196",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
-    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
-   ],
-   "touched": [
-    "void-live-deploy/fanfic/index.html",
-    "docs/PARITY/github.md",
-    "docs/PARITY/hugging-face.md",
-    "docs/PARITY/lichess.md",
-    "domains/conductor.json",
-    "tools/test_void.mjs",
-    "void-live-deploy/convert/unit-converter-2/index.html",
-    "void-live-deploy/convert/unit-converter/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/recipe.js",
-    "void-live-deploy/skills/verse-brain.js",
-    "void-live-deploy/tower.evidence.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 516
-  },
-  {
-   "at": "2026-10-29T09:57:59.260Z",
-   "sha": "b9dde86ece362c297b5ec410f9a8d41478e696e5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40848882309",
-   "suite": "browser suite on main",
-   "checks": [
-    "verse brain: \"show me your brain\" opens one card (no figure), its thirteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/fanfic.test.mjs",
-    "void-live-deploy/fanfic/app.js",
-    "void-live-deploy/fanfic/index.html",
-    "void-live-deploy/lib/fanfic-de.js",
-    "void-live-deploy/lib/fanfic.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 539
-  },
-  {
-   "at": "2026-10-29T05:00:37.748Z",
-   "sha": "12e44a295bde2d0a596d6d68565eb710a6b84669",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40818422632",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "tower: wordcounter.net on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
-    "tower: a saved or copied tower card says the fight (wordcounter.net: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/card-cycle.json",
-    "tools/grow-self.state.json",
-    "void-live-deploy/void.growth.json",
-    "docs/wishlist.md",
-    "growth/entries/20261029T043002Z-claude-1411c18e.json",
-    "tools/asks-link.json",
-    "tools/voice.test.mjs",
-    "void-live-deploy/lib/self-context.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/void.asks.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 836
-  },
-  {
-   "at": "2026-10-29T04:47:44.038Z",
-   "sha": "0297c5ea8a0265f2fd3135bf8ca2355776746125",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40818858320",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/tower.test.mjs",
-    "void-live-deploy/functions/api/will.js",
-    "void-live-deploy/lib/tower.js",
-    "void-live-deploy/skills/tower.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 849
-  },
-  {
-   "at": "2026-10-29T03:47:37.470Z",
-   "sha": "d390475f7d8c097a4a1dce15fc3e0c22c5962605",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40810768253",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end",
-    "tower: wordcounter.net on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
-    "tower: a saved or copied tower card says the fight (wordcounter.net: 4 of N aspects beaten, what is still to beat, what is conquered) and no announcement twice",
-    "connected: every floor page links to at least four sibling Verse tools, so no new floor is a dead end",
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "service health (asked by Verse): \"is uber down\" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and Verse's own stability dial reads incidents.json (again on Check again)",
-    "shared Verse: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence",
-    "collectible card: \"make a collectible card of a dragon\" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under Verse's void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon",
-    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
-    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
-    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
-    "paid: signed out, a price question says the membership line AND opens the services card under it",
-    "confirm line: visitors cannot send",
-    "confirm line shows before a send (item 7)",
-    "confirm line: no = it does not run",
-    "paid: with a passkey, an outbound action still stops on the confirm line",
-    "worldtime: takes no other skill's examples (collision)",
-    "worldtime: \"make a clock\", \"make a 5 minute timer\" and \"what is time\" still go where they went before",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind"
-   ],
-   "touched": [
-    "void-live-deploy/skills/tower.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 909
-  },
-  {
-   "at": "2026-10-29T03:12:00.329Z",
-   "sha": "8560b02344b1393f118477cc2cc6f05b6fa59929",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40810369021",
-   "suite": "browser suite on main",
-   "checks": [
-    "identity: the footer links to at least four sibling Verse tools and hands the page to the stage",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "void-live-deploy/tower.evidence.json",
-    ".github/workflows/site-history.yml",
-    "docs/HISTORY/vcalc.com.md",
-    "docs/HISTORY/zapier.md",
-    "docs/MAP.md",
-    "tools/checks.mjs",
-    "tools/history-coverage.test.mjs",
-    "tools/site-history.mjs",
-    "void-live-deploy/history/vcalc.com.json",
-    "void-live-deploy/history/zapier.json",
-    "void-live-deploy/parity.json",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 945
   }
  ]
 }

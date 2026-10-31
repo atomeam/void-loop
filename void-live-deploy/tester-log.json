@@ -233,79 +233,79 @@
  ],
  "weekly": [
   {
-   "from": "2026-08-07",
+   "from": "2026-08-08",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-14",
+   "from": "2026-08-15",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-21",
+   "from": "2026-08-22",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-08-28",
+   "from": "2026-08-29",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-04",
+   "from": "2026-09-05",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-11",
+   "from": "2026-09-12",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-18",
+   "from": "2026-09-19",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-09-25",
+   "from": "2026-09-26",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-02",
+   "from": "2026-10-03",
    "runs": 0,
    "passed": 0,
    "of": 0
   },
   {
-   "from": "2026-10-09",
-   "runs": 93,
+   "from": "2026-10-10",
+   "runs": 95,
    "passed": 424,
-   "of": 1851,
-   "broken": 60,
-   "brokenOf": 1360,
+   "of": 1901,
+   "broken": 62,
+   "brokenOf": 1410,
    "brokenPassed": 22
   },
   {
-   "from": "2026-10-16",
-   "runs": 98,
+   "from": "2026-10-17",
+   "runs": 96,
    "passed": 2727,
-   "of": 3959,
-   "broken": 35,
-   "brokenOf": 878,
+   "of": 3909,
+   "broken": 33,
+   "brokenOf": 828,
    "brokenPassed": 0
   },
   {
-   "from": "2026-10-23",
+   "from": "2026-10-24",
    "runs": 0,
    "passed": 0,
    "of": 0
