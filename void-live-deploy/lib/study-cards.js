@@ -47,6 +47,11 @@ export function parseStudy(text) {
   if ((m = new RegExp('^' + LEAD + '(?:flash\\s?cards?|study\\s+cards?)' + FOR + '\\s*:\\s*([\\s\\S]+)$', 'i').exec(t))) {
     const pairs = parsePairs(m[2]); return pairs.length ? { mode: 'flash', title: tidy(m[1]), pairs } : null;
   }
+  const topic = flashTopic(t);
+  if (topic) {
+    const deck = STARTER_DECKS[starterKey(topic)];
+    return deck ? { mode: 'flash', title: deck.title, note: deck.note, pairs: deck.pairs.map(([q, a]) => ({ q, a })) } : { mode: 'flash', title: tidy(topic).slice(0, 40), pairs: [] };
+  }
   if ((m = new RegExp('^' + LEAD + '(?:language|vocab(?:ulary)?|translation|word)\\s+(?:drill|practice)' + FOR + '\\s*:\\s*([\\s\\S]+)$', 'i').exec(t))) {
     const pairs = parsePairs(m[2]); return pairs.length ? { mode: 'drill', title: tidy(m[1]), pairs } : null;
   }
@@ -198,8 +203,49 @@ export function checkAnswer(typed, answer) {
 /** a deck thing out of a parsed ask. Pure. */
 export function deckOf(p, today) {
   return { mode: p.mode === 'quiz' ? 'flash' : p.mode, typed: p.mode === 'drill' || p.mode === 'quiz', dir: 'fwd', title: p.title || (p.mode === 'drill' ? 'Language drill' : p.mode === 'quiz' ? 'Quiz' : 'Flashcards'),
-    cards: p.pairs.map((x) => newCard(x.q, x.a, today)), reviews: 0, rev: false, res: null };
+    note: p.note || '', cards: p.pairs.map((x) => newCard(x.q, x.a, today)), reviews: 0, rev: false, res: null };
 }
+
+/**
+ * The topic of "make flashcards for spanish verbs" or "spanish verb flashcards", an ask with no colon and no pairs, or ''.
+ * "what are flashcards" and "best flashcard app for ..." name no deck to make. Pure.
+ */
+export function flashTopic(text) {
+  const t = tidy(text).replace(/[?!.]+$/, '');
+  const m = /^(?:please\s+)?(?:(?:make|build|create|give|show|start)\s+(?:me\s+)?(?:a\s+|some\s+|the\s+)?(?:set\s+of\s+|deck\s+of\s+)?)?(?:flash\s?cards?|study\s+cards?|a\s+flash\s?card\s+deck)\s+(?:for|on|about|of)\s+(.{2,60})$/i.exec(t)
+    || /^(?:please\s+)?(?:make|build|create|give|show|start)\s+(?:me\s+)?(?:a\s+|some\s+)?(.{2,40}?)\s+(?:flash\s?cards?|flash\s?card\s+deck|study\s+cards?)$/i.exec(t);
+  if (!m) {
+    // a bare "spanish verb flashcards" counts only when Verse ships that deck, so "what are flashcards" is never a deck
+    const b = /^(.{2,40}?)\s+flash\s?cards?$/i.exec(t);
+    return b && STARTER_DECKS[starterKey(b[1])] ? b[1] : '';
+  }
+  if (/[:=]/.test(m[1])) return '';
+  const q = m[1].replace(/^(?:the|my|some|a|an)\s+/i, '').trim();
+  return /^(?:me|you|it|this|that|them|us|anything|something|everything)$/i.test(q) ? '' : q;
+}
+
+/** "Spanish verb", "common spanish verbs", "the basic Spanish verbs" all to "spanish verbs". Pure. */
+export function starterKey(topic) {
+  return tidy(topic).toLowerCase().replace(/^(?:the|some|common|basic|everyday|simple|useful|beginner|most\s+used)\s+/g, '').replace(/\bverb\b/, 'verbs').replace(/\s+/g, ' ');
+}
+
+/** Decks Verse ships with, so an ask that names one of these topics gets real cards (infinitive on the front, English on the back). */
+export const STARTER_DECKS = {
+  'spanish verbs': { title: 'Spanish verbs', note: 'A starter deck Verse ships with: the Spanish infinitive on the front, the English on the back.', pairs: [
+    ['ser', 'to be (what something is)'], ['estar', 'to be (a state or a place)'], ['tener', 'to have'], ['hacer', 'to do, to make'], ['ir', 'to go'],
+    ['poder', 'to be able to, can'], ['decir', 'to say, to tell'], ['dar', 'to give'], ['ver', 'to see'], ['saber', 'to know (a fact)'],
+    ['conocer', 'to know (a person or a place)'], ['querer', 'to want, to love'], ['llegar', 'to arrive'], ['pasar', 'to pass, to happen'], ['deber', 'must, to owe'],
+    ['poner', 'to put'], ['parecer', 'to seem'], ['quedar', 'to stay, to remain'], ['creer', 'to believe'], ['hablar', 'to speak'],
+    ['llevar', 'to carry, to wear'], ['dejar', 'to leave, to let'], ['seguir', 'to follow, to continue'], ['encontrar', 'to find'], ['llamar', 'to call'],
+    ['venir', 'to come'], ['pensar', 'to think'], ['salir', 'to go out, to leave'], ['volver', 'to return'], ['tomar', 'to take, to drink'],
+    ['vivir', 'to live'], ['sentir', 'to feel'], ['comer', 'to eat'], ['trabajar', 'to work'], ['escribir', 'to write']] },
+  'french verbs': { title: 'French verbs', note: 'A starter deck Verse ships with: the French infinitive on the front, the English on the back.', pairs: [
+    ['\u00eatre', 'to be'], ['avoir', 'to have'], ['faire', 'to do, to make'], ['aller', 'to go'], ['dire', 'to say, to tell'],
+    ['pouvoir', 'to be able to, can'], ['vouloir', 'to want'], ['savoir', 'to know (a fact)'], ['conna\u00eetre', 'to know (a person or a place)'], ['voir', 'to see'],
+    ['venir', 'to come'], ['devoir', 'must, to have to'], ['prendre', 'to take'], ['trouver', 'to find'], ['donner', 'to give'],
+    ['parler', 'to speak'], ['mettre', 'to put'], ['passer', 'to pass, to spend (time)'], ['croire', 'to believe'], ['penser', 'to think'],
+    ['partir', 'to leave'], ['manger', 'to eat'], ['finir', 'to finish'], ['aimer', 'to like, to love'], ['\u00e9crire', 'to write'], ['vivre', 'to live']] },
+};
 
 /** a glossary's entries, A to Z, one per term (a later definition replaces an earlier one). Pure. */
 export function glossaryAdd(entries, add) {

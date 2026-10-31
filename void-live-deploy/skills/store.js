@@ -1,5 +1,5 @@
 /**
- * store skill: "what can I buy" -> Verse's store, from the same catalog the /store page and /api/store use (lib/store.js).
+ * store skill: what you can buy from Verse, from the same catalog as the store page (lib/store.js, /api/store).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { buyAnswer, STORE_PRODUCTS, gumroadUrl, price } from '../lib/store.js';

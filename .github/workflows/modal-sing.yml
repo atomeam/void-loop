@@ -1,0 +1,104 @@
+# Verse's singing voice (lib/sing.js has the why): deploy ACE-Step 1.5 to the owner's Modal account (modal/verse_sing.py) and give the site
+# its address and key as Cloudflare Pages secrets (VERSE_SING_URL, VERSE_SING_KEY), so /api/sing can ask it. The owner's only step: save
+# the repo secrets MODAL_TOKEN_ID and MODAL_TOKEN_SECRET (Modal, Settings, API tokens). Until then every run is a notice and nothing else.
+# The shared key is made here, never typed by anyone: kept in the Modal Secret "verse-sing" and in the Pages secret, and made again only when
+# one of the two is missing. A Pages secret reaches the live site with its next deploy (the next merge to main); this workflow deploys no site.
+# Runs: on a change to modal/ or this file on main, every 2 hours until set up (then it stops at "already set up"), and by hand.
+name: modal sing
+on:
+  push:
+    branches: [main]
+    paths: ['modal/**', '.github/workflows/modal-sing.yml']
+  schedule:
+    - cron: '17 */2 * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency: modal-sing
+jobs:
+  sing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WRANGLER: npx --yes wrangler@3.114.17
+      PROJECT: a-to-mind
+    steps:
+      - name: secrets present?
+        id: have
+        run: |
+          if [ -z "$MODAL_TOKEN_ID" ] || [ -z "$MODAL_TOKEN_SECRET" ]; then
+            echo "::notice title=Verse cannot sing yet::repo secrets MODAL_TOKEN_ID and MODAL_TOKEN_SECRET are not set. Make a token on Modal (Settings, API tokens) and save both in this repo's Actions secrets."
+            echo "go=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning title=Verse cannot sing yet::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID is missing, so the site cannot be given the singer's address."
+            echo "go=no" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "go=yes" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.have.outputs.go == 'yes'
+      - uses: actions/setup-node@v4
+        if: steps.have.outputs.go == 'yes'
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        if: steps.have.outputs.go == 'yes'
+        with:
+          python-version: '3.12'
+      - name: install modal
+        if: steps.have.outputs.go == 'yes'
+        run: python -m pip install --quiet modal==1.6.3
+      - name: what is set up already
+        id: state
+        if: steps.have.outputs.go == 'yes'
+        run: |
+          names="$($WRANGLER pages secret list --project-name="$PROJECT" 2>/dev/null || true)"
+          site=no
+          if printf '%s' "$names" | grep -q 'VERSE_SING_URL' && printf '%s' "$names" | grep -q 'VERSE_SING_KEY'; then site=yes; fi
+          modal_secret="$(python -c "import modal
+          try:
+              modal.Secret.from_name('verse-sing').hydrate(); print('yes')
+          except modal.exception.NotFoundError:
+              print('no')")"
+          echo "site=$site" >> "$GITHUB_OUTPUT"
+          echo "modal_secret=$modal_secret" >> "$GITHUB_OUTPUT"
+          skip=no
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$site" = yes ] && [ "$modal_secret" = yes ]; then skip=yes; fi
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+          echo "site secrets: $site, Modal secret: $modal_secret, skip: $skip"
+          [ "$skip" = yes ] && echo "### Verse's singing voice is already set up" >> "$GITHUB_STEP_SUMMARY" || true
+      - name: make the shared key (only when one side is missing)
+        id: key
+        if: steps.have.outputs.go == 'yes' && steps.state.outputs.skip != 'yes' && (steps.state.outputs.site != 'yes' || steps.state.outputs.modal_secret != 'yes')
+        run: |
+          umask 077
+          key="$(openssl rand -hex 32)"
+          echo "::add-mask::$key"
+          printf '{"VERSE_SING_KEY":"%s"}' "$key" > "$RUNNER_TEMP/sing-key.json"
+          modal secret create verse-sing --from-json "$RUNNER_TEMP/sing-key.json" --force
+          printf '%s' "$key" | $WRANGLER pages secret put VERSE_SING_KEY --project-name="$PROJECT"
+          rm -f "$RUNNER_TEMP/sing-key.json"
+          echo "made=yes" >> "$GITHUB_OUTPUT"
+      - name: deploy the singer
+        if: steps.have.outputs.go == 'yes' && steps.state.outputs.skip != 'yes'
+        run: modal deploy modal/verse_sing.py
+      - name: fill the model cache (on a CPU, once; quick when already full)
+        if: steps.have.outputs.go == 'yes' && steps.state.outputs.skip != 'yes'
+        run: modal run modal/verse_sing.py::fetch_weights
+      - name: give the site the singer's address
+        if: steps.have.outputs.go == 'yes' && steps.state.outputs.skip != 'yes'
+        run: |
+          url="$(python -c "import modal; print(modal.Function.from_name('verse-sing', 'web').get_web_url() or '')")"
+          url="${url%/}"
+          if ! printf '%s' "$url" | grep -Eq '^https://[a-z0-9-]+\.modal\.run$'; then
+            echo "::error title=No singer address::modal did not give a web address for verse-sing/web (got '$url')"; exit 1
+          fi
+          printf '%s' "$url" | $WRANGLER pages secret put VERSE_SING_URL --project-name="$PROJECT"
+          {
+            echo "### Verse's singing voice is deployed"
+            echo "The site has its address and key. They reach a-to-mind.com with the next site deploy (the next merge to main)."
+          } >> "$GITHUB_STEP_SUMMARY"

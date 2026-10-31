@@ -37,3 +37,11 @@ test('the card lists the six pages, and an unknown ask falls back to /music/', (
   assert.match(el.innerHTML, /every sound is made in your browser, nothing is sent/);
   assert.deepEqual(open('make me a song'), ['/music/', 'Music tools', 'Music tools', '/music/']);
 });
+test('the metronome page gives its card the tempo on it, and the stage opens the metronome at that tempo', async () => {
+  const fs = await import('node:fs'), page = fs.readFileSync(new URL('../void-live-deploy/metronome/app.js', import.meta.url), 'utf8');
+  const ask = /\{ card: \(\) => ('metronome ' \+ Math\.round\(st\.bpm\) \+ ' bpm' \+ \(st\.sig === '4\/4' \? '' : ' ' \+ st\.sig\)) \}/.exec(page);
+  assert.ok(ask, 'the metronome page passes a card ask');
+  const of = (st) => new Function('st', 'return ' + ask[1])(st); // eslint-disable-line no-new-func
+  assert.deepEqual(open(of({ bpm: 93, sig: '4/4' })).slice(0, 2), ['/metronome/?bpm=93', 'Metronome at 93 BPM']);
+  assert.deepEqual(open(of({ bpm: 92.6, sig: '6/8' })).slice(0, 2), ['/metronome/?bpm=93&sig=6%2F8', 'Metronome at 93 BPM in 6/8']);
+});

@@ -25,7 +25,7 @@ export async function onRequestPost({ request, env }) {
       await ready(env);
       const me = await session(request, env);
       if (!me) return bad(401, 'sign in to Verse first (a passkey, at a-to-mind.com)');
-      if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'review keys come with Verse Pro', { buy: BUY_URL });
+      if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'review keys come with MultiVerse', { buy: BUY_URL });
       const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_review_keys WHERE user_id = ?').bind(me.userId).first();
       if (n && Number(n.n) >= MAX_KEYS) return bad(409, 'you have ' + MAX_KEYS + ' keys already: revoke one first');
       const key = newKey();
@@ -53,7 +53,7 @@ export async function onRequestPost({ request, env }) {
 
 export async function onRequestGet({ request, env }) {
   if (new URL(request.url).searchParams.has('offer')) {
-    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'Verse Pro', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
+    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'MultiVerse', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
   }
   try {
     await ready(env);

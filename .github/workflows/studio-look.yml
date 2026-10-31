@@ -1,0 +1,93 @@
+# The studio from GitHub's network (tools/studio-look.mjs): runs the image bench or makes one clip on the live site with the owner key, and puts
+# every picture, the clip, its frames and the scores on the branch studio-look (one commit, replaced each run), so a builder whose machine can't
+# reach a-to-mind.com can `git fetch origin studio-look` and look at them. Spends inside the bench's neuron cap and the studio's daily dollar
+# cap (functions/api/studio.js); main is never written. Once a day it benches the painters /image/ can afford (klein-4b, schnell and
+# sdxl-lightning, each at most klein-4b's 110 neurons a picture) on all eight reference prompts, about 1,400 neurons of pictures plus the
+# judge, inside the free share, so the board that picks /image/'s painter (functions/api/studio.js publicPainter) keeps learning from new pictures.
+name: Studio look
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      op:
+        description: bench, video, clip or board
+        default: bench
+        type: string
+      models:
+        description: image models, comma separated (empty = all)
+        default: ''
+        type: string
+      prompts:
+        description: reference prompts, comma separated (empty = all eight)
+        default: ''
+        type: string
+      size:
+        description: picture size (512, 768 or 1024)
+        default: '1024'
+        type: string
+      cap:
+        description: neurons a reference prompt may spend across the models
+        default: '3000'
+        type: string
+      prompt:
+        description: the clip's prompt (video)
+        default: ''
+        type: string
+      model:
+        description: the video model (p-video or ltx-fast)
+        default: p-video
+        type: string
+      seconds:
+        description: the clip's length
+        default: '5'
+        type: string
+      draft:
+        description: draft quality (p-video, cheapest)
+        default: 'true'
+        type: string
+
+permissions:
+  contents: write # the studio-look branch only
+
+concurrency:
+  group: studio-look
+  cancel-in-progress: false
+
+jobs:
+  look:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run
+        env:
+          READ_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          OP: ${{ inputs.op || 'bench' }}
+          MODELS: ${{ github.event_name == 'schedule' && 'klein-4b,schnell,sdxl-lightning' || inputs.models }}
+          PROMPTS: ${{ inputs.prompts }}
+          SIZE: ${{ inputs.size || '1024' }}
+          CAP: ${{ github.event_name == 'schedule' && '400' || inputs.cap }}
+          PROMPT: ${{ inputs.prompt }}
+          MODEL: ${{ inputs.model }}
+          SECONDS: ${{ inputs.seconds }}
+          DRAFT: ${{ inputs.draft }}
+        run: |
+          set -o pipefail
+          case "$OP" in
+            bench) node tools/studio-look.mjs bench ${MODELS:+--models "$MODELS"} ${PROMPTS:+--prompts "$PROMPTS"} --size "$SIZE" --cap "$CAP" | tee summary.txt ;;
+            video) node tools/studio-look.mjs video ${PROMPT:+--prompt "$PROMPT"} --model "$MODEL" --seconds "$SECONDS" --draft "$DRAFT" | tee summary.txt ;;
+            clip) node tools/studio-look.mjs clip | tee summary.txt ;;
+            *) node tools/studio-look.mjs board | tee summary.txt ;;
+          esac
+          { echo '### Studio look'; echo '```'; cut -c1-300 summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Put the outputs on studio-look
+        env:
+          OP: ${{ inputs.op || 'bench' }}
+        run: |
+          cp summary.txt out/ && cd out && git init -q && git checkout -q -b studio-look && git add . && git -c user.name=studio-look -c user.email=studio-look@users.noreply.github.com commit -qm "Studio look: $OP"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" studio-look

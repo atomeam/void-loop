@@ -1,5 +1,5 @@
 /**
- * translate skill — Google gtx, MyMemory fallback, no key
+ * translate skill — a word or phrase in another language, with a link to the full translator for 100 languages (Google gtx, MyMemory fallback, no key)
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
 import { bandMini } from '../lib/card-mini.js';

@@ -1,1 +1,0 @@
-{"at":"2026-10-29T14:54:46Z","by":"claude","kind":"fix","what":"The Versus queue and the versus-job picker rank and choose only on rows measured on the site: a row scored against the default bar because the site turned the checker away counts as not measured, never as a pass or a loss, and the aspects-left line flags it"}

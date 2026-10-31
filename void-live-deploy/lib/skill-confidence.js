@@ -6,6 +6,7 @@
 // gets a dashed edge; a skill never tested counts as fully faded. The two day counts are this strip's own display rule, not a measurement.
 // Pure: data in, escaped HTML out. The page fetches families.json and calls confidenceHtml().
 import { RARITY_LOOK, rarityKey } from './card-art.js';
+import { byWeakness } from './weakest.js';
 export const WEATHER_DAYS = 14; // untested this long and the square is marked weathered
 export const FADE_DAYS = 90; // untested this long and the square is at its faintest (half density)
 export const TIER_ORDER = ['proven', 'checked', 'tested', 'experiment'];
@@ -68,7 +69,7 @@ export function familyBars(fam) {
     const sk = f.skills.filter((s) => s && s.name), proven = sk.filter((s) => s.tier === 'proven').length, checked = sk.filter((s) => s.tier === 'checked').length;
     return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), proven, checked, total: sk.length, share: proven / sk.length, weak: false };
   });
-  const weakest = rows.slice().sort((a, b) => a.share - b.share || (a.proven + a.checked) / a.total - (b.proven + b.checked) / b.total || b.total - a.total)[0];
+  const weakest = rows.slice().sort(byWeakness)[0];
   if (weakest) weakest.weak = true;
   return rows;
 }

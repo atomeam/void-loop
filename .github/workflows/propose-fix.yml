@@ -134,6 +134,8 @@ jobs:
             echo "why=$(node -p "require(process.argv[1]).why.replace(/[^\w ,.'?!():;-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             # the evidence (asked by Verse): Verse's confidence and the file and lines each edit changes
             echo "title=$(node -p "require(process.argv[1]).title.replace(/[^\w ,.'?!:\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            # the ledger line says where the ask came from ("(from my probes)" for a probe: job), so the growth card can count it
+            echo "ledger=$(node -p "String(require(process.argv[1]).ledger || require(process.argv[1]).title).replace(/[^\w ,.'?!:()\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "confidence=$(node -p "String(require(process.argv[1]).confidence ?? 'none given').replace(/[^\w .-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "risk=$(node -p "const k = require(process.argv[1]).risk || { level: 'unknown', why: '' }; (k.level + ' (' + k.why + ')').replace(/[^\\w .,()'-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "model=$(node -p "String(require(process.argv[1]).model || 'Verse\'s own model').replace(/[^\w .\/@:-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
@@ -146,9 +148,10 @@ jobs:
         shell: bash
         env:
           TITLE: ${{ steps.result.outputs.title }}
+          LEDGER: ${{ steps.result.outputs.ledger }}
           ASK: ${{ steps.result.outputs.ask }}
         run: |
-          case "$TITLE" in "Verse fixes"*) node tools/grow.mjs fix "$TITLE" --by verse --try "$ASK" ;; *) node tools/grow.mjs fix "$TITLE" --by verse ;; esac
+          case "$TITLE" in "Verse fixes"*) node tools/grow.mjs fix "${LEDGER:-$TITLE}" --by verse --try "$ASK" ;; *) node tools/grow.mjs fix "${LEDGER:-$TITLE}" --by verse ;; esac
           git diff -- void-live-deploy/void.growth.json > "$RUNNER_TEMP/fix/ledger.patch"
       - uses: actions/upload-artifact@v4
         if: steps.result.outputs.passed == '1'

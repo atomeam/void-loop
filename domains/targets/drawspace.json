@@ -1,0 +1,16 @@
+{
+ "site": "drawspace.com",
+ "kind": "online drawing school: lessons and printable curriculum for beginners to advanced, used by millions of students and teachers",
+ "chosen": "2026-10-30",
+ "why": "target picked by the build queue: a structured, educator-grade drawing curriculum. Void's notch is lessons that adapt to the learner and become a drawing you can keep, not a fixed course.",
+ "source": ["https://drawspace.com", "https://drawspace.com/learn", "https://drawspace.com/teach"],
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts.",
+ "features": [
+  { "id": "lessons", "theirs": "hundreds of drawing lessons for absolute beginners to advanced, in popular formats, authored by world-renowned artists and educators", "plus_one": "lessons that start from what you can already draw and build from there, with a live critique of your own line", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "curriculum", "theirs": "printable curriculum formatted for modern classrooms", "plus_one": "a curriculum that rewrites itself to the class in front of you and prints only what that class needs", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "educators", "theirs": "lessons designed by experienced art educators and tested internationally by homeschoolers, teachers, professors and instructors", "plus_one": "an educator mode where Void co-teaches: it watches the student's strokes and suggests the next exercise", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "free-tier", "theirs": "free programs available so anyone can try the courses", "plus_one": "the whole first path free, with no account wall, and the paid part only when you want depth", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "skill-levels", "theirs": "progression from absolute beginner to advanced", "plus_one": "a single continuous path where the level is measured by what you draw, not by a quiz", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." },
+  { "id": "formats", "theirs": "lessons in popular formats", "plus_one": "lessons that run on the stage and in VR, so you draw in the room, not on a page", "void": "none", "progress": "2026-10-30: target chosen from the build queue. No work started yet." }
+ ]
+}

@@ -28,7 +28,7 @@ export function bookFromRepo() {
 /** the JSON text the page reads: the book without its builder-only field. Pure. */
 export function textOf(book) {
   const { unplaced, ...rest } = book;
-  return JSON.stringify({ note: 'The Verse Book: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site\'s own data. Do not edit by hand.', ...rest }, null, 1) + '\n';
+  return JSON.stringify({ note: 'The Book of Verse: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site\'s own data. Do not edit by hand.', ...rest }, null, 1) + '\n';
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

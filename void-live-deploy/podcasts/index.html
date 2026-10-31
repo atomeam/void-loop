@@ -15,8 +15,8 @@
 <script>if (location.search) document.documentElement.classList.add('pre'); // a show or episode is coming from the link: hold the paint until it is drawn (html.pre)</script>
 <style>
   /* a-to-mind.com/podcasts/ (Versus' Apple Podcasts floor): one file and two small modules; kept on the device: follows, places, queue, speed */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --bad: #d6334a; --box: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -128,7 +128,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/podcasts/?show=verse">Verse Out Loud</a><a href="/podcasts/?show=verse&amp;ep=ep1">Verse Out Loud episode 1</a><a href="/podcasts/?q=history">Search for history podcasts</a><a href="/podcasts/?q=science">Search for science podcasts</a><a href="/podcasts/?q=true%20crime">Search for true crime podcasts</a></nav>
 <!-- /asks -->
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/translate/">Translate</a> <a href="/word-count/">Word counter</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/stopwatch/">Stopwatch and timer</a> <a href="/translate/">Translate</a> <a href="/word-count/">Word counter</a> <a href="/local/">Local TV and radio</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <p class="srcs" id="srcs">Shows come from <a href="https://performance-partners.apple.com/search-api" rel="noopener">Apple's free public podcast directory</a> (search and charts), or from any RSS feed you paste. Verse reads a feed once through its own server, with a size and time limit and only public https addresses, and keeps the answer for 15 minutes; the audio always streams straight from the publisher and never passes through Verse. Follows, your place in each episode, the queue, speed and saved episodes stay on this device. There are no paid subscriptions, ratings or reviews, and nothing syncs between devices; export your follows as OPML to move them.</p>
   <footer><a href="/">Verse</a> · <a href="/podcast/">Verse Out Loud</a> · <a href="/tools/">every tool</a></footer>
 </main>
@@ -140,7 +140,7 @@
   // everything after the first paint: the page shows its box, its words and the pinned show at once; the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
     const $ = (id) => document.getElementById(id);
-    let mountRelated, P; try { [{ mountRelated }, P] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
+    let mountRelated, P, cardAsk; try { [{ mountRelated }, P, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/podcasts.js'), import('/lib/podcasts-card.js')]); } catch (_) { document.documentElement.classList.remove('pre'); $('note').textContent = 'The page code did not load. Check your connection and reload.'; return; }
     const au = $('au');
     const KEY = 'a2m.void.podcasts.v1', CACHE = 'a2m-podcast-audio-v1', MAX_EP = 150 * 1048576, MAX_ALL = 1024 * 1048576, SELF = 'https://a-to-mind.com/podcast/rss.xml';
     const h = (t, a, ...k) => { const e = document.createElement(t); for (const [n, v] of Object.entries(a || {})) { if (v == null || v === false) continue; if (n === 'class') e.className = v; else if (n === 'text') e.textContent = v; else if (n.startsWith('on')) e.addEventListener(n.slice(2), v); else e.setAttribute(n, v === true ? '' : v); } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)); } return e; };
@@ -152,7 +152,7 @@
     try { Object.assign(S, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (_) {}
     const save = () => { try { const keys = Object.keys(S.pos); if (keys.length > 400) for (const k of keys.sort((a, b) => (S.pos[a].u || 0) - (S.pos[b].u || 0)).slice(0, keys.length - 400)) delete S.pos[k]; localStorage.setItem(KEY, JSON.stringify(S)); } catch (_) {} };
     const say = (t, bad) => { const n = $('note'); n.textContent = t || ''; n.classList.toggle('bad', !!bad); };
-    const nav = mountRelated($('related'), '/podcasts/');
+    const nav = mountRelated($('related'), '/podcasts/', [], { card: () => cardAsk(location.search) });
     const keyOf = (show, ep) => P.hash(show.feed || show.id || 'x') + '.' + ep.id;
     const compact = (show, ep) => ({ id: ep.id, key: keyOf(show, ep), title: ep.title, audio: ep.audio, dur: ep.dur, pub: ep.pub, image: ep.image || show.image || '', notes: P.cutAt(ep.notes || '', 240), showTitle: show.title, showImage: show.image || '', feed: show.feed || '', showId: show.verse ? 'verse' : show.id || '', bytes: ep.bytes || 0, chaptersUrl: ep.chaptersUrl, transcripts: ep.transcripts, chapters: ep.chapters });
 
@@ -401,6 +401,7 @@
     $('pin').querySelector('a').addEventListener('click', (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); go({ show: 'verse' }); });
     async function route() {
       const q = here(); say('');
+      if (!q.get('show') && /^\d{1,12}$/.test(q.get('id') || '')) { q.set('show', q.get('id')); q.delete('id'); history.replaceState({}, '', '/podcasts/?' + q); } // a show link made before ?show= (?id=) still opens the show
       if (q.get('show') === 'verse') await showView({ verse: true }, q.get('ep'), +q.get('t') || 0);
       else if (q.get('show')) { if (/^\d{1,12}$/.test(q.get('show'))) await showView({ id: q.get('show') }, q.get('ep'), +q.get('t') || 0); else say('That link has no show.', true); }
       else if (q.get('feed')) { const w = P.whyNot(q.get('feed')); if (w) { say('That feed address cannot be read (' + w + ').', true); homeView(); } else await showView({ feed: q.get('feed') }, q.get('ep'), +q.get('t') || 0); }

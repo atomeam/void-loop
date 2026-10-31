@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { TYPES, parseDecl, declOf, inferTypes, usefulness, scan, legacy, pages, report } from './handoff-scan.mjs';
+import { TYPES, parseDecl, declOf, inferTypes, usefulness, scan, legacy, pages, report, builtFrom, buildersOf } from './handoff-scan.mjs';
 
 const site = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
 /** the number of pages in tools/handoff-types.json when the rule started (2026-10-28): it may fall, never rise */
@@ -56,9 +56,22 @@ test('the scan sees what is built: the BPM counter and the metronome hand each o
   const s = scan(), has = (a, b) => s.built.some((x) => x.from === a && x.to === b);
   assert.ok(has('/bpm/', '/metronome/') && has('/metronome/', '/bpm/'), 'bpm <-> metronome');
   assert.ok(has('/wheel/', '/tournaments/'), 'the verse_handoff ring');
+  assert.ok(has('/flights/', '/time/') && has('/flights/', '/calendar/'), 'links built in a module the page loads by <script src> and imports further down');
+  assert.ok(!has('/rap/', '/pdf/'), 'a shared library deep in another page\'s chain is not that page\'s own');
   assert.ok(!s.gaps.some((g) => g.from === '/bpm/' && g.to === '/metronome/'), 'a built connection is not a gap');
   assert.deepEqual(s.undeclared, []);
   assert.ok(s.gaps.length > 0 && s.gaps.every((g, i) => i === 0 || s.gaps[i - 1].score >= g.score), 'ranked, most useful first');
+});
+
+test('a call to one of lib/handoff.js\'s link builders counts as a link to its page (the fantasy page sends players to the ring)', () => {
+  const b = buildersOf(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'lib', 'handoff.js'), 'utf8'));
+  assert.deepEqual(b, { wheelLink: '/wheel/', prizesLink: '/prizes/', tournamentsLink: '/tournaments/' });
+  const routes = ['/fantasy/', '/wheel/', '/prizes/', '/tournaments/'];
+  assert.deepEqual(builtFrom('/fantasy/', '', 'href: () => wheelLink(n)', routes, b), ['/wheel/']);
+  assert.deepEqual(builtFrom('/wheel/', '', 'wheelLink(n) prizesLink(t)', routes, b), ['/prizes/']);
+  assert.deepEqual(builtFrom('/fantasy/', '', 'mywheelLink(n)', routes, b), []);
+  const s = scan(), has = (a, z) => s.built.some((x) => x.from === a && x.to === z);
+  for (const to of ['/wheel/', '/random/', '/prizes/', '/tournaments/']) assert.ok(has('/fantasy/', to), '/fantasy/ → ' + to);
 });
 
 test('docs/HANDOFF-GAPS.md is current (node tools/handoff-scan.mjs --write)', () => {

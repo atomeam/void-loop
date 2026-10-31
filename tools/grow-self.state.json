@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "40933640006",
-  "at": "2026-10-29T18:45:32Z",
-  "what": "Verse hardened itself: 4 benchmark ask(s) for password, emoji, magic8.  Why these: tab (no benchmark ask, evidence tier: checked, 20 failed runs name it); converter (no benchmark ask, evidence tier: checked, 10 failed runs name it); password (no benchmark ask, evidence tier: checked, 10 failed runs name it); eightball (no benchmark ask, evidence tier: checked); emoji (no benchmark ask, evidence tier: checked); magic8 (no benchmark ask, evidence tier: tested). New phrases: “random password” now opens password; “another password” now opens password; “another emoji” now opens emoji; “8 ball” now opens magic8. Did not route: put in the page; draft for me; mp4 to mp3; file converter.",
-  "try": "random password",
+  "run": "41099099736",
+  "at": "2026-10-30T17:33:59Z",
+  "what": "Verse hardened itself: 1 benchmark ask(s) for coin.  Why these: coin (only 1 benchmark ask); tab (no benchmark ask, evidence tier: checked, 6 failed runs name it); eightball (no benchmark ask, evidence tier: checked). New phrases: “heads or tails” now opens coin. Did not route: put in the page; draft for me; magic 8 ball should spawn an 8 ball.",
+  "try": "heads or tails",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-29T16:42:42Z",
-    "try": "2d6",
-    "closedAt": "2026-10-29T18:45:03Z"
+    "at": "2026-10-30T13:27:26Z",
+    "try": "animate a cat chasing yarn",
+    "closedAt": "2026-10-30T17:33:48Z"
   }
 }

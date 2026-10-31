@@ -1,0 +1,58 @@
+# The done gate for team jobs (tools/team-gate.mjs): a job an agent handed in with its pull request goes live only when that pull
+# request merged, changes the page or the code itself (a versus job: the page), takes nothing away from main, and the page answers on
+# a-to-mind.com; otherwise it goes back on the queue with why. Needs VOID_OWNER_TOKEN; without it the run says so and stops green.
+# The repository is public: the script prints job ids, pull request numbers and verdicts, never a job's text.
+name: Team gate
+
+on:
+  # after each deploy: a handed-in job is judged once its merge is live (GitHub's cron ran an hour late on 2026-10-30, so the
+  # schedule is only the fallback)
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+  schedule:
+    - cron: '7,37 * * * *'  # every 30 minutes
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: Say what it would do, move nothing
+        type: boolean
+        default: false
+      replay:
+        description: 'Judge merged pull requests as if handed in, moving nothing: 1766:versus:emojicombos.com,1786:versus:diffuse.tools'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+
+concurrency:
+  group: team-gate
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the handed-in jobs
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          DRY: ${{ inputs.dry }}
+          REPLAY: ${{ inputs.replay }}
+        run: |
+          set --
+          if [ "$DRY" = "true" ]; then set -- --dry; fi
+          if [ -n "$REPLAY" ]; then set -- "$@" "--replay=$REPLAY"; fi
+          code=0; node tools/team-gate.mjs "$@" > out.txt 2>&1 || code=$?
+          cat out.txt; cat out.txt >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=Team gate::$(sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g' out.txt)"
+          exit "$code"

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  .tile { position: absolute; min-width: 120px; min-height: 60px; padding: 8px; background: rgba(30,30,50,0.7); border: 1px solid #4af; border-radius: 8px; backdrop-filter: blur(4px); color: #fff; cursor: grab; user-select: none; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .tile:active { cursor: grabbing; }
+  #hud { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.6); padding: 8px; border-radius: 6px; font-size: 12px; z-index: 100; }
+  button { margin: 4px; padding: 4px 8px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-causal-echo-lattice-mind · Verse lab</title>
+<meta name="description" content="Causal Echo Lattice Mind: user pointer trajectories, device orientation, and optional microphone spectral energy generate delayed &quot;echo&quot; particles on a lattice.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-causal-echo-lattice-mind · Verse lab">
+<meta property="og:description" content="Causal Echo Lattice Mind: user pointer trajectories, device orientation, and optional microphone spectral energy generate delayed &quot;echo&quot; particles on a lattice.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f467-webgpu-causal-echo-lattice-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f467-webgpu-causal-echo-lattice-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="hud">
+  Residual: <span id="res">0</span> | Echoes: <span id="ec">0</span><br>
+  <button id="seal">Seal Echo</button>
+  <button id="addTile">Add Tile</button>
+  <button id="mic">Enable Mic</button>
+  Drag tiles to seed echoes. Tilt/move to influence.
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-causal-echo-lattice-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

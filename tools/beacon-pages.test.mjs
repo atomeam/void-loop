@@ -19,7 +19,7 @@ test('withBeacon: once, before </head>, nothing without a head', () => {
 
 test('the beacon is light: deferred, tiny, sent after the load event, never on other hosts', () => {
   const js = readFileSync(new URL('../void-live-deploy/visit.js', import.meta.url), 'utf8');
-  assert.ok(Buffer.byteLength(js) < 1500, 'visit.js grew past 1.5 KB');
+  assert.ok(Buffer.byteLength(js) < 1800, 'visit.js grew past 1.8 KB'); // 1.5 KB until the Verse Brain loader (tools/brain-everywhere.test.mjs)
   assert.match(TAG, /\bdefer\b/);
   assert.match(js, /addEventListener\('load'/); assert.match(js, /setTimeout\(go, 0\)/); assert.match(js, /sendBeacon/);
   assert.match(js, /a-to-mind\\\.com/);

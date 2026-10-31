@@ -15,8 +15,8 @@
 <script>if (/[?&](?:q|n)=/.test(location.search)) document.documentElement.classList.add('pre'); // the link carries a note: hold the paint until it is drawn (html.pre)</script>
 <style>
   /* a-to-mind.com/notes/ (Versus' Google Docs floor): one file and one module; nothing stored but your notes, in this browser */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --mark: #ffe58a; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --mark: #6b5a00; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #5d5a6b; --line: #d9d6e4; --accent: #6d4aff; --bad: #c62a40; --box: #fff; --tint: #efe9ff; --mark: #ffe58a; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #aaa7ba; --line: #2c2938; --accent: #a58bff; --bad: #ff6b7e; --on-accent: #15131c; --box: #14121c; --tint: #221c3a; --mark: #6b5a00; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 1040px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -191,7 +191,7 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread">Shopping list: milk, eggs, bread</a><a href="/notes/?q=note%3A%20buy%20milk">Buy milk</a><a href="/notes/?q=note%3A%20Packing%20-%20passport%2C%20charger%2C%20socks">Packing: passport, charger, socks</a><a href="/notes/?q=note%3A%20Meeting%20-%20agenda%2C%20minutes%2C%20actions">Meeting: agenda, minutes, actions</a><a href="/notes/?q=note%3A%20call%20mum%20on%20Sunday">Call mum on Sunday</a></nav>
 <!-- /asks -->
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/calendar/">Calendar</a> <a href="/fanfic/">Fan fiction</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/word-count/">Word counter</a> <a href="/translate/">Translate</a> <a href="/calendar/">Calendar</a> <a href="/fanfic/">Fan fiction</a> <a href="/rap/">Verse raps</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 
   <p class="srcs" id="srcs" data-w="note">Notes stay in this browser; nothing goes to a server. A share link carries the note itself.</p>
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
@@ -497,7 +497,8 @@
     show(cur()); drawList();
     addEventListener('offline', () => say(W.offline)); addEventListener('online', () => say(''));
     setTimeout(() => document.documentElement.classList.remove('pre'), 2500); document.documentElement.classList.remove('pre');
-    mountRelated($('related'), '/notes/', []);
+    // the note's title handed to the rap page as its topic (owner, 2026-10-30: "connect it all to work seemlessly"); off while the note has no title
+    mountRelated($('related'), '/notes/', [{ label: de ? 'Ein Rap darüber' : 'Rap about this note', href: () => { const t = String($('dtitle').textContent || '').trim(); return t ? '/rap/?t=' + encodeURIComponent(t.slice(0, 120)) : null; } }]); // the title as typed: the note itself saves 400 ms later
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

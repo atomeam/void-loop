@@ -48,3 +48,22 @@ test('waiting is every ask not built: total minus built, with an ask asked again
   const old = await (await onRequestGet({ request: new Request('http://x/api/reflect'), env: envOf(entries, ledger, { links: [], totals: { ...totals, open: undefined } }) })).json();
   assert.notEqual(old.follow.total - old.follow.built, 3, 'without the open list the window double counts (this is what the card showed)');
 });
+
+test('follow.recent and follow.asked hold every built ask on evidence, so "in the last 7 days" counts the week (owner, 2026-10-30: the card said 0)', async () => {
+  const entries = [{ at: '2026-10-30T10:00:00Z', kind: 'build', asks: [{ ask: 'Still open and not built anywhere at all yet' }] }];
+  const ledger = [
+    { at: '2026-10-29T14:00:00Z', kind: 'build', what: 'an STL checker', asked: 'Create a utility to check STL print files in the browser', ref: 'https://github.com/atomeam/void-loop/pull/1651' },
+    { at: '2026-10-28T09:00:00Z', kind: 'fix', what: 'the manifest registers new skills' },
+    { at: '2026-10-01T09:00:00Z', kind: 'grow', what: 'an older build', asked: 'ask-20261001-0900-1' },
+  ];
+  const links = [
+    { words: 'Implement a skills manifest that registers every new skill automatically', ledgerAt: '2026-10-28T09:00:00Z' },
+    { words: 'Implement a skills manifest that registers all new skills automatically', ledgerAt: '2026-10-28T09:00:00Z' }, // the same ask reworded: one row
+    { words: 'Link to an entry that is not in the ledger', ledgerAt: '2026-10-27T09:00:00Z' }, // no entry at that time: not counted
+  ];
+  const f = await get(envOf(entries, ledger, { links, totals: { asked: 3, built: 2, through: '2026-10-29T22:00:00Z', open: [] } }));
+  assert.deepEqual(f.recent.map((r) => [r.at, r.ask]), [['2026-10-29T14:00:00Z', 'Create a utility to check STL print files in the browser'], ['2026-10-28T09:00:00Z', 'Implement a skills manifest that registers every new skill automatically']]);
+  assert.equal(f.recent[0].ref, 'https://github.com/atomeam/void-loop/pull/1651');
+  assert.equal(f.asked.length, 2);
+  assert.ok(f.asked.every((a) => a.at && a.ask && a.times === 1));
+});

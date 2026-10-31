@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: anotepad.com (https://anotepad.com/)
-- Verse: /notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread (docs and notes: anotepad.com, tower gate 12 of 15)
+- Verse: /notes/?q=note%3A%20Shopping%20list%20-%20milk%2C%20eggs%2C%20bread (docs and notes: anotepad.com, tower gate 13 of 15)
 - Live scan: 2026-10-28, HTTP 200, page title "Online Notepad - Take Notes and Share Notes Online"
 - History: [docs/HISTORY/anotepad.com.md](../HISTORY/anotepad.com.md)
 
@@ -26,7 +26,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Import files | Files | have | its live page (2026-10-28): "kmark Whiteboard Spreadsheet Group Chat Import Docs Share AI Chat Note Content Maximize Editor Public Note ( R" | void-live-deploy/notes/index.html:117 `mportBtn" data-w="importFile">Import .md or .txt</button><input type="file" id="file" acce` |
 | Writing help (summarise, rewrite) | Writing | missing | its live page (2026-10-28): "preadsheet Group Chat Import Docs Share AI Chat Note Content Maximize Editor Public Note ( Register for privat" | no sign of it in the source of /notes/ |
 | An account that keeps your things on every device | Accounts | partial | its live page (2026-10-28): "navigation Templates Workspace Register/Login Online Notepad A free online notepad to take and share notes &#x" | void-live-deploy/notes/index.html:215 `try { store = N.load(localStorage.getItem(N.KEY)); } catch (_) {}` |
-| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "d. Mobile app downloads Download on the App Store Get it on Google Play Footer navigation aNotepad About Featu" | void-live-deploy/notes/index.html:503 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
+| Phone apps (iOS or Android) | Apps | have | its live page (2026-10-28): "d. Mobile app downloads Download on the App Store Get it on Google Play Footer navigation aNotepad About Featu" | void-live-deploy/notes/index.html:504 `<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.servi` |
 | A public API | Developers | missing | its live page (2026-10-28): "Creator&#x27;s Guide Buyer&#x27;s Guide Developers REST API AI Integration (MCP) Tools Resume Builder Free Fax" | no sign of it in the source of /notes/ |
 | Workspace | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Markdown | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

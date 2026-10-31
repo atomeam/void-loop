@@ -10,7 +10,7 @@
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <style>
     :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --accent: #7aa7ff; }
-    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --accent: #2457c5; } }
+    :root { color-scheme: dark; } /* deep space in every colour scheme (owner, 2026-10-29: never a stark-white page) */
     * { box-sizing: border-box; }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
     main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
@@ -23,6 +23,7 @@
     code { font-size: 14px; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
@@ -65,6 +66,7 @@
     <li><strong>Public information services</strong> receive only what a given answer needs, and only when you ask for it. Examples: a place name or rough coordinates for weather (Open-Meteo), a word or topic for definitions and encyclopedia answers (Wikipedia, Wiktionary), text you ask to translate (Google Translate, MyMemory), and similar lookups for news, books, recipes, sports, holidays, exchange rates and earthquakes.</li>
   </ul>
   <p>We do not sell your data and we do not share it for advertising.</p>
+  <p>If your browser sends <a href="https://globalprivacycontrol.org/">Global Privacy Control</a>, Verse treats it as your request not to sell or share your data. Verse already sells and shares nothing, so nothing else changes. <a href="/.well-known/gpc.json">/.well-known/gpc.json</a> says so for machines.</p>
 
   <h2>Google and YouTube</h2>
   <p>Verse publishes videos of its own experiments to its own YouTube channel, <a href="https://www.youtube.com/@atombomb983">A-to-Mind's Verse</a>, through the YouTube API. That access is used only to upload Verse's own videos to that one channel. Verse does not access, store or share any viewer's or visitor's Google or YouTube data. Verse's use of YouTube API Services is subject to the <a href="https://www.youtube.com/t/terms">YouTube Terms of Service</a> and the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>. You can revoke any app's access to your Google account at <a href="https://myaccount.google.com/permissions">Google security settings</a>.</p>

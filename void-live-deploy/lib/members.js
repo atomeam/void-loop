@@ -14,16 +14,22 @@ export const MONTHLY = 30; // and a month
 export const MIN_CHARS = 20, MAX_CHARS = 1200, MAX_LINKS = 2;
 export const BUY = 'https://moonbeam846.gumroad.com/l/yinmj'; // the paid Verse membership (lib/gumroad.js UNLOCKS)
 
-// What paid Verse gives, in the order the page lists it. live: true for what works today; the member lab's rows follow LIVE.
+// What paid Verse gives, in the order the page lists it. The member lab's rows (lab: true) are always listed, so the page says members
+// help build Verse (owner, 2026-10-30: "also needs to mention the build feature that allows members to help build features to verse");
+// until LIVE they say they open soon.
 export const PERKS = Object.freeze([
-  { id: 'build', title: 'Add to Verse', text: 'Send an idea and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
+  { id: 'build', title: 'Help build Verse', text: 'Send an idea for a feature and Verse\'s own agents build it into the site. Changes only ever add.', lab: true },
   { id: 'credit', title: 'Your name on what you add', text: 'Every idea of yours that ships is listed under Built by members, with your published Verse name if you have one.', lab: true },
   { id: 'publish', title: 'Publish your Verse', text: 'Your own page at a-to-mind.com/@name with your look and your cards.' },
   { id: 'follow', title: 'Your Verse follows you', text: 'Sign in with a passkey and your stage, memory and kept cards sync to every device.' },
   { id: 'watch', title: 'Watches', text: 'Ask Verse to keep an eye on something and tell you when it changes.' },
   { id: 'review', title: 'Code Review Pro', text: 'A Verse key for the AI closer read on your pull requests, with a daily allowance.' },
+  { id: 'films', title: 'Review Verse\'s films', text: 'Rate each new Verse film on the films page and leave a note. The owner reads every one.' },
+  { id: 'mark', title: 'The MultiVerse mark', text: 'Your stage and your published page show the MultiVerse mark in the corner. It opens this page.' },
+  { id: 'built', title: 'Built by you, on your page', text: 'Your published page lists the ideas of yours that Verse built, with a link to each change.' },
+  { id: 'share', title: 'Your page shares as yours', text: 'A link to your published page shows your name and your cards in iMessage, Discord, X and Slack, not the Verse home card.' },
 ]);
-export const perks = (live = LIVE) => PERKS.filter((p) => live || !p.lab).map(({ id, title, text }) => ({ id, title, text }));
+export const perks = (live = LIVE) => PERKS.map(({ id, title, text, lab }) => ({ id, title, text: lab && !live ? text + ' Opens soon.' : text }));
 
 // An idea that asks to take something away is refused before it is queued (the lap's add-only check is the second, binding wall).
 const SUBTRACT = /\b(?:remove|removing|delete|deleting|take (?:away|down|out|off)|get rid of|disable|turn off|switch off|shut (?:down|off)|hide|wipe|erase|strip out|rip out|drop (?:the|a|all|every)|kill (?:the|a|all|every)|ban|block (?:all|every|users?|visitors?)|lock (?:out|visitors?)|paywall|charge (?:visitors?|for)|make (?:\w+ ){0,3}paid|members?[- ]only|for members only|revert|roll back|undo|downgrade|lower (?:the )?(?:score|limit))\b/i;
@@ -73,7 +79,8 @@ export const jobAsk = (text) => 'A paid member asked Verse to add this (their wo
  * and the queue row is written only when the idea row was, in one batch (one transaction), so two sends at the same moment
  * cannot both pass a count read before either was written. */
 export async function queueIdea(env, userId, text, now = Date.now()) {
-  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm';
+  // the job id carries the idea's own random tail: two ideas in the same millisecond (two members, or one quick sender) are two jobs, not a clash that loses the second
+  const at = new Date(now).toISOString(), id = 'm' + now.toString(36) + Math.random().toString(36).slice(2, 6), job = now.toString(36) + 'm' + id.slice(-4);
   const r = await env.DB.batch([
     env.DB.prepare('INSERT INTO void_member_ideas (id, user_id, text, at, job) SELECT ?, ?, ?, ?, ? WHERE (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 10) = ?) < ? AND (SELECT COUNT(*) FROM void_member_ideas WHERE user_id = ? AND substr(at, 1, 7) = ?) < ?')
       .bind(id, userId, text, at, job, userId, at.slice(0, 10), DAILY, userId, at.slice(0, 7), MONTHLY),
@@ -96,6 +103,14 @@ export function stateText(state, note) {
 export async function mine(env, userId) {
   const { results } = await env.DB.prepare('SELECT i.id, i.text, i.at, q.state, q.note FROM void_member_ideas i LEFT JOIN void_queue q ON q.id = i.job WHERE i.user_id = ? ORDER BY i.at DESC LIMIT 50').bind(userId).all();
   return (results || []).map((r) => ({ id: r.id, text: r.text, at: r.at, ...stateText(r.state, r.note) }));
+}
+
+/** Built by @name: the shipped ideas of one published page's owner, newest first, for that page (members perk, 2026-10-30). */
+export async function builtBy(env, handle, limit = 6) {
+  try {
+    const { results } = await env.DB.prepare("SELECT i.text, q.updated AS at, q.note FROM void_pages p JOIN void_member_ideas i ON i.user_id = p.user_id JOIN void_queue q ON q.id = i.job WHERE p.handle = ? AND q.state IN ('done','live') ORDER BY q.updated DESC LIMIT ?").bind(handle, limit).all();
+    return (results || []).map((r) => ({ text: String(r.text).slice(0, 200), at: r.at, pr: stateText('done', r.note).pr }));
+  } catch (_) { return []; }
 }
 
 /** Built by members: shipped ideas, newest first, credited to the member's published @name when they have one. */

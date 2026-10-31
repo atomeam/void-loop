@@ -28,6 +28,7 @@ function similarity(a, b) {
 async function initGPU() {
   if (!navigator.gpu) { document.getElementById('status').textContent = 'WebGPU not available — Canvas fallback'; return; }
   const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) { document.getElementById('status').textContent = 'WebGPU not available — Canvas fallback'; return; }
   device = await adapter.requestDevice();
   context = canvas.getContext('webgpu');
   format = navigator.gpu.getPreferredCanvasFormat();

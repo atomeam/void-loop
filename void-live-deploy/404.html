@@ -25,6 +25,9 @@
     .code { font-size: 13px; letter-spacing: .2em; color: var(--ink-3); margin: 0 0 8px; }
     h1 { font-size: clamp(26px, 6vw, 34px); font-weight: 300; letter-spacing: -.02em; margin: 0 0 8px; }
     .path { color: var(--ink-3); font: 13px ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; margin: 0 0 28px; min-height: 1em; }
+    .near { margin: -12px 0 20px; color: var(--ink-2); }
+    .near a { color: rgb(var(--key)); font-weight: 600; text-decoration: none; display: inline-block; min-height: 44px; line-height: 44px; padding: 0 6px; }
+    .near a:hover { text-decoration: underline; }
     form { display: flex; gap: 8px; padding: 8px; border-radius: 18px; background: var(--glass);
       box-shadow: inset 0 1px 0 rgb(255 255 255 / .10), inset 0 -1px 0 rgb(0 0 0 / .4), 0 2px 2px rgb(0 0 0 / .4), 0 18px 40px -12px rgb(0 0 0 / .7), 0 80px 160px -40px rgb(var(--key) / .14);
       border: 1px solid rgb(var(--key) / .22); }
@@ -48,6 +51,7 @@
   <p class="code">404</p>
   <h1>Nothing lives at this address.</h1>
   <p class="path" id="path"></p>
+  <p class="near" id="near" hidden>Looking for <a id="near-a"></a>?</p>
   <form action="/" method="get" role="search">
     <label for="q">Ask Verse</label>
     <input id="q" name="q" type="text" maxlength="500" autocomplete="off" enterkeyhint="go" placeholder="Ask Verse for what you were looking for" autofocus>
@@ -68,5 +72,14 @@
 <script>document.getElementById('path').textContent = location.pathname.slice(0, 200);
 // autofocus is ignored on a phone (Chromium with mobile emulation, Safari on iOS), so the ask box is focused here too: the one thing to do on this page is ask
 var q = document.getElementById('q'); if (q && document.activeElement !== q) q.focus();</script>
+<script type="module">
+// the tool the address or the words asked here name ('/wordcount', '/search/?q=word+count'), offered as one link above the ask box; words asked
+// in ?q= go into the box, so Enter asks Verse for them. All on this device: lib/toolkit.js is a static file and nothing is sent anywhere.
+import { toolNear } from '/lib/toolkit.js';
+const q = new URLSearchParams(location.search).get('q') || '';
+const box = document.getElementById('q'); if (q && box && !box.value) box.value = q.slice(0, 500);
+const near = toolNear(location.pathname, q);
+if (near) { const a = document.getElementById('near-a'); a.href = near.href; a.textContent = near.label; document.getElementById('near').hidden = false; }
+</script>
 </body>
 </html>

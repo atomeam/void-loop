@@ -1,13 +1,20 @@
 /**
- * tictactoe skill — the first board game as a real skill (countdown's shape, not make's iframe).
+ * tictactoe skill — tic tac toe against Verse on the stage: you are X, and Verse answers each move.
+ * The first board game as a real skill (countdown's shape, not make's iframe).
  * "lets play tic tac toe" summons an interactive board on the stage; it stays until thrown off.
  * The engine is a flat 9-element board; the canvas maps it to a 3x3 grid of cells.
  * You are X and Verse is O: after each tap Verse answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
-import { levelPick } from './game-level.js';
-import { lift3d } from './lift3d.js';
-import { rulesLine } from './game-rules-line.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the level, the 3D lift and the rules line load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let levelPick, lift3d, rulesLine;
+export const ready = loadLater(() => Promise.all([
+  import('./game-level.js'),
+  import('./lift3d.js'),
+  import('./game-rules-line.js'),
+]).then(([g, l, r]) => { ({ levelPick } = g); ({ lift3d } = l); ({ rulesLine } = r); }));
 
 export function createTicTacToeState() {
   return {
@@ -160,6 +167,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!tictactoeOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'tictactoe');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'tictactoe'; } // one board at a time
   api.summon('tictactoe', { state: createTicTacToeState(), center: true });
@@ -177,5 +185,6 @@ export default {
   nearMisses: ['who invented tic tac toe', 'tic tac toe rules', 'connect 4', 'what is connect 4'],
   match(lower, text) { return !!tictactoeOf(text); },
   run,
-  stageKinds: { tictactoe: { mount } },
+  ready,
+  stageKinds: { tictactoe: { mount: ready.mount(mount) } },
 };

@@ -49,7 +49,7 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   for (const a of ['versus', 'Verse versus', 'the versus', 'show me versus', 'open versus', 'Versus?', 'the tower', 'verse tower', 'show me the tower']) assert.equal(sk.match(a.toLowerCase(), a), true, a);
   for (const a of sk.nearMisses) assert.equal(sk.match(a.toLowerCase(), a), false, a);
   const t = tower([], {}), h = sk.towerHtml(t, (s) => String(s));
-  assert.match(h, /<div class="tw-head">Versus<\/div>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
+  assert.match(h, /<h2 class="tw-head">Versus<\/h2>/); assert.doesNotMatch(h, /The tower|3D tower/); assert.match(sk.about, /^Versus: /);
   // nothing conquered yet: only the current site is drawn, with each of its aspects, and nothing above or after it
   assert.equal((h.match(/class="tower-floor"/g) || []).length, 1); assert.match(h, /data-state="current"/); assert.doesNotMatch(h, /data-state="ahead"|FINAL BOSS|YOU ARE HERE|data-boss/);
   assert.equal((h.match(/<li data-v=/g) || []).length, t.floors[0].m); assert.match(h, /class="tw-logo"/); // logos only (owner, 2026-10-25)
@@ -231,6 +231,10 @@ test('the card leads with the target: hero with logo, name and weight chips, thr
   assert.match(heroHtml(cur, esc), /Now assimilating[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
   assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
   assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
+  // the reason line says why, not what the chips and the matchup already show (owner, 2026-10-30: it repeated the counts above it)
+  const pinned = { ...cur, pinned: true, page: '/x/', n: 10, m: 12, lost: ['mobile'], weight: 13000, size: { bytes: 11264, scripts: 0, nodes: 187, routes: 11, controls: 22 } };
+  const why = (heroHtml(pinned, esc).match(/<p class="tw-why">([^<]*)<\/p>/) || [])[1] || '';
+  assert.match(why, /^Why this one: /); assert.doesNotMatch(why, /11 KB|scripts|elements|routes|aspects|loses|until Verse surpasses/, why);
   assert.match(actionsHtml({ id: 'x', page: '/x/', url: 'https://x.com/' }, esc), /Open Verse's page[\s\S]*Side by side[\s\S]*Visit/); assert.match(actionsHtml({ id: 'x' }, esc), /No Verse page yet/);
 });
 test('the want card and the Versus card name the same site: both rank with the target, so the fight in progress leads on each', async () => {

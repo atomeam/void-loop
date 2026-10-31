@@ -117,7 +117,7 @@ export function endWordOf(bar) { const words = String(bar || '').replace(/\([^)]
 // spelling to sound, for the end of a word only: enough that night/light/write/bite, flow/go/know/though, day/they/weigh, true/through/you
 // and rhyme/time/climb land on one key. Not a dictionary: a slant rhyme it misses is left unlettered, never claimed.
 const ENDS = [[/ough$/, 'o_'], [/(?:igh|ie|ye)$/, 'i_'], [/ight$/, 'i_t'], [/eigh$|ey$|ay$/, 'a_'], [/(?:ow|oe|eau)$/, 'o_'], [/(?:ue|ew|oo|ou)$/, 'u_'], [/(?:ee|ea|ie)$/, 'e_'],
-  [/([^aeiou])y$/, '$1i_'], [/^y$/, 'i_'], [/oul?d$/, 'ud'], [/([aeiou])([^aeiouwy]+)e$/, '$1_$2'], [/mb$/, 'm'], [/gh$/, ''], [/ck$/, 'k'], [/ph/g, 'f'], [/qu/g, 'kw'], [/c([eiy])/g, 's$1'], [/c/g, 'k'], [/y/g, 'i'], [/ai|ei/g, 'a_'], [/oa/g, 'o_'], [/ea|ee/g, 'e_'], [/oo|ou/g, 'u_']];
+  [/([^aeiou])y$/, '$1i_'], [/^y$/, 'i_'], [/oul?d$/, 'ud'], [/(?:or|er)eign$/, 'in'], [/eign$/, 'a_n'], [/ign$/, 'i_n'], [/ce$/, 'se'], [/ge$/, 'je'], [/([aeiou])([^aeiouwy]+)e$/, '$1_$2'], [/mb$/, 'm'], [/gh$/, ''], [/ck$/, 'k'], [/ph/g, 'f'], [/qu/g, 'kw'], [/c([eiy])/g, 's$1'], [/c/g, 'k'], [/y/g, 'i'], [/ai|ei/g, 'a_'], [/oa/g, 'o_'], [/ea|ee/g, 'e_'], [/oo|ou/g, 'u_']];
 // words whose spelling hides their sound
 const SOUNDS = { said: 'ed', again: 'en', been: 'in', were: 'ur', come: 'um', some: 'um', done: 'un', one: 'un', none: 'un', won: 'un', love: 'uv', above: 'uv', of: 'uv', what: 'ut', was: 'uz', does: 'uz', eye: 'i_', i: 'i_', my: 'i_', buy: 'i_', bye: 'i_' };
 /** a word's end rhyme as a sound key: the last vowel and what follows it. Pure. */
@@ -153,6 +153,10 @@ export function statsOf(r) {
   const bars = r ? r.sections.flatMap((s) => s.bars) : [], sc = schemeOf(bars), syl = bars.map(barSyllables);
   return { bars: bars.length, sections: r ? r.sections.length : 0, rhymed: sc.rhymed, avgSyllables: bars.length ? Math.round(syl.reduce((a, b) => a + b, 0) / bars.length * 10) / 10 : 0 };
 }
+
+/** the stage ask that opens a rap card on these settings (the page's "See it as a card" link follows the topic and style typed there), '' with no
+ *  topic: the link then keeps its example. rapAskOf reads it back as the same topic and style. Pure. */
+export const cardAsk = (s) => (s && String(s.topic || '').trim() ? 'write me a ' + (STYLES[s.style] ? s.style : 'boom bap') + ' rap about ' + String(s.topic).trim().slice(0, 120) : '');
 
 /** the beat for a rap: a piece from lib/compose.js (its chords, bass and melody, from the topic's own words) at the style's tempo with the style's
  *  drums, 8 bars that loop under the whole rap. Same settings, same beat. Pure. */
@@ -201,6 +205,12 @@ export function cleanRap(r) {
   const sections = r.sections.map((s) => ({ ...s, bars: s.bars.filter((b) => !UNCLEAN.test(b)) })).filter((s) => s.bars.length);
   const n = sections.reduce((a, s) => a + s.bars.length, 0);
   return n >= 8 ? { title: UNCLEAN.test(r.title) ? '' : r.title, sections } : null;
+}
+/** a bar as the voice says it (functions/api/rapvoice.js): ad-libs keep their words but lose their brackets, quotes are plain, anything but letters,
+ *  digits and plain punctuation goes; '' for an empty bar or one the clean rule refuses. Pure. */
+export function voiceText(bar) {
+  const t = String(bar || '').slice(0, LINE_MAX).replace(/[\u2018\u2019\u02bc]/g, "'").replace(/[\u201c\u201d"]/g, '').replace(/[\[\]()]/g, ' ').replace(/[^A-Za-z0-9',.!?& -]+/g, ' ').replace(/&/g, ' and ').replace(/\s+/g, ' ').replace(/ ([,.!?])/g, '$1').trim();
+  return t && /[A-Za-z]/.test(t) && !UNCLEAN.test(t) ? t : '';
 }
 export const RAP_SAYS = Object.freeze({
   unsuitable: 'That is not something I will rap about here.',

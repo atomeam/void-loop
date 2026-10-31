@@ -1,4 +1,7 @@
   import { mountRelated } from '/lib/toolkit.js';
+  import { receiveImage, sendImage } from '/lib/image-handoff.js';
+  // the photo on screen as it now comes out (edits, size and format), once it is ready; the send links below read it
+  let edited = () => null, mainHex = () => null;
   const boot = async () => {
   const E = await import('/lib/photo-edit.js'), { stripMeta } = await import('/lib/safety.js');
   const $ = (id) => document.getElementById(id), qa = (s, r = document) => [...r.querySelectorAll(s)];
@@ -72,19 +75,21 @@
     const blob = await new Promise((res) => c.toBlob(res, mime, +$('q').value / 100)); if (!blob) throw new Error('encode'); return { mime: blob.type || mime, w: size.w, h: size.h, bytes: new Uint8Array(await blob.arrayBuffer()) };
   }
   function outReq(it) { if (sc.pct === 1080 || sc.pct === 2048) { const long = Math.max(it.base.width, it.base.height); return it.base.width >= it.base.height ? { w: Math.min(sc.pct, long) } : { h: Math.min(sc.pct, long) }; } if (sc.last === 'w' && sc.w > 0) return { w: sc.w }; if (sc.last === 'h' && sc.h > 0) return { h: sc.h }; return { pct: sc.pct || 100 }; }
+  // the colour that covers most of the edited photo, read from the preview made small (for the colour page link)
+  const mainOf = (src) => { try { const c = mk(48, 48), x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(src, 0, 0, 48, 48); return E.mainColour(x.getImageData(0, 0, 48, 48).data, 48, 48); } catch (_) { return null; } };
   let later = 0; function dirty() { clearTimeout(later); later = setTimeout(refresh, 220); }
   async function refresh() {
     if (!cur) return; const mine = ++token, it = cur;
     $('q').disabled = !(mimeOut() === 'image/jpeg' || mimeOut() === 'image/webp' || mimeOut() === 'image/avif'); $('qrow').style.opacity = $('q').disabled ? '.55' : ''; $('cols').disabled = mimeOut() !== 'image/png'; $('cols').closest('label').hidden = mimeOut() !== 'image/png';
     let r; try { r = await encode(it, false); } catch (_) { $('line').textContent = say('bad'); return; } if (mine !== token) return;
-    it.out = r; for (const u of urls) URL.revokeObjectURL(u); urls = []; const url = URL.createObjectURL(new Blob([r.bytes], { type: r.mime })); urls.push(url);
+    it.out = r; r.main = mainOf(pv); for (const u of urls) URL.revokeObjectURL(u); urls = []; const url = URL.createObjectURL(new Blob([r.bytes], { type: r.mime })); urls.push(url);
     const a = $('dl'); a.href = url; a.download = E.outName(it.name, r.mime); a.hidden = false; a.textContent = say('save') + ' ' + E.EXT[r.mime].toUpperCase();
     $('w').placeholder = String(r.w); $('h').placeholder = String(r.h);
     const pct = E.savedPct(it.size, r.bytes.length);
     $('line').textContent = say('ba') + ': ' + E.sizeLabel(it.size) + ' → ' + E.sizeLabel(r.bytes.length) + ' · ' + (pct > 0 ? pct + '% ' + say('saved') : pct < 0 ? -pct + '% ' + say('bigger') : say('same')); $('line').className = pct > 0 ? 'ok' : '';
     $('note').textContent = r.w + ' × ' + r.h + ' px · ' + r.mime.replace('image/', '').toUpperCase() + (it.scaled ? ' · ' + say('big') : ''); $('batchnote').textContent = items.length > 1 ? items.length + ' ' + say('files') + ' · ' + say('zip') : '';
     // before and after: the original file against the result, side by side with a slider
-    const geo = Math.abs(it.base.width / it.base.height - (it.meta.width || it.base.width) / (it.meta.height || it.base.height)) > 0.01; $('cb').src = geo ? it.base.toDataURL('image/jpeg', 0.9) : it.url; $('ca').src = url; it.out.ready = true; setCmp($('cmpr').value); layout();
+    const geo = Math.abs(it.base.width / it.base.height - (it.meta.width || it.base.width) / (it.meta.height || it.base.height)) > 0.01; $('cb').src = geo ? it.base.toDataURL('image/jpeg', 0.9) : it.url; $('ca').src = url; it.out.ready = true; setCmp($('cmpr').value); layout(); document.dispatchEvent(new Event('tk:card'));
   }
   function setCmp(v) { $('ca').style.clipPath = 'inset(0 0 0 ' + v + '%)'; }
   $('cmpr').addEventListener('input', (e) => setCmp(e.target.value)); $('cmp').addEventListener('pointermove', (e) => { if (e.buttons) { const r = $('cmp').getBoundingClientRect(), v = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)); $('cmpr').value = v; setCmp(v); } });
@@ -163,9 +168,17 @@
   $('share').addEventListener('click', async () => { const u = location.origin + location.pathname + (cur ? '?tab=' + tab : ''); try { if (navigator.share) await navigator.share({ title: document.title, text: $('sub').textContent, url: u }); else { await navigator.clipboard.writeText(u); $('share').textContent = say('linkcopied'); setTimeout(() => { $('share').textContent = say('share'); }, 1600); } } catch (_) {} });
   $('lang').addEventListener('click', () => { L = L === 'de' ? 'en' : 'de'; tr(); fbox.firstChild.textContent = say('none'); if (cur) { refresh(); infoPanel(); } });
   tr(); fbox.firstChild.textContent = say('none');
+  mainHex = () => (cur && cur.out && cur.out.ready && cur.out.main) || null;
+  edited = () => (cur && cur.out && cur.out.ready ? { blob: new Blob([cur.out.bytes], { type: cur.out.mime }), name: E.outName(cur.name, cur.out.mime) } : null);
   window.__photos = { items: () => items, show };
   document.documentElement.dataset.photos = 'ready';
+  // a picture handed over by another page (lib/image-handoff.js, ?img=handoff) opens as if it was chosen here
+  await receiveImage((f) => add([f]));
   };
-  mountRelated(document.getElementById('related'), '/photos/');
+  // the edited photo, already open on the next picture page: a press keeps one copy on this device and opens the page
+  mountRelated(document.getElementById('related'), '/photos/', [['Save your edit as a PDF', '/pdf/?img=handoff'], ['Paint your edit by number', '/paint/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your edit', '/resize-image/?img=handoff'], ['Translate the words in it', '/translate/?img=handoff'], ['Post it on a board', '/boards/?img=handoff']].map(([label, path]) => ({ label, href: () => (edited() ? path : null),
+    go: () => { const got = edited(); if (!got) return false; sendImage(path, () => got.blob, { name: got.name, fromPage: '/photos/' }).then((ok) => { if (!ok) document.getElementById('line').textContent = 'This browser could not keep the photo for the next page.'; }); return false; } })).concat([
+    // the photo's main colour, opened on the colour page: its codes, shades and palettes
+    { label: 'Look up its main colour', href: () => { const m = mainHex(); return m ? '/color/?c=' + m.slice(1) : null; } }]));
   // the editor loads after the first paint, so the page itself is instant
   if (document.readyState === 'complete') boot(); else addEventListener('load', () => setTimeout(boot, 0));

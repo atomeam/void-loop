@@ -11,6 +11,6 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Live counts of emoji use | Emoji | have | its live page (2026-10-28): "emojitracker: realtime emoji use 💫 emojitracker: realtime emoji use Privacy Manager 💫 Emojitracker is broug" | void-live-deploy/emojis/index.html:76 `<h1>Emoji counts</h1>` |
-| Details of each emoji | Emoji | have | its live page (2026-10-28): "emojitracker: realtime emoji use 💫 emojitracker: realtime emoji use Privacy Manager 💫 Emojitracker is broug" | void-live-deploy/emojis/index.html:76 `<h1>Emoji counts</h1>` |
+| Live counts of emoji use | Emoji | have | its live page (2026-10-28): "emojitracker: realtime emoji use 💫 emojitracker: realtime emoji use Privacy Manager 💫 Emojitracker is broug" | void-live-deploy/emojis/index.html:79 `<h1>Emoji counts</h1>` |
+| Details of each emoji | Emoji | have | its live page (2026-10-28): "emojitracker: realtime emoji use 💫 emojitracker: realtime emoji use Privacy Manager 💫 Emojitracker is broug" | void-live-deploy/emojis/index.html:79 `<h1>Emoji counts</h1>` |
 | Cookie Choices | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

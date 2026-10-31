@@ -137,7 +137,8 @@ export const rowsFromFx = (j, to) => Object.entries((j && j.rates) || {}).filter
 /** A price for the screen: grouped, with the decimals a price of that size needs. Pure. */
 export function fmtPrice(v) {
   if (v == null || !Number.isFinite(v)) return '–'; const a = Math.abs(v);
-  return v.toLocaleString('en-US', { minimumFractionDigits: a >= 1 ? 2 : 0, maximumFractionDigits: a >= 1 ? 2 : a >= 0.01 ? 4 : 6 });
+  // under a cent the digits that mean anything start late: four of them are kept (Shiba Inu 0.00000469, not 0.000005)
+  return a > 0 && a < 0.01 ? v.toLocaleString('en-US', { maximumSignificantDigits: 4 }) : v.toLocaleString('en-US', { minimumFractionDigits: a >= 1 ? 2 : 0, maximumFractionDigits: a >= 1 ? 2 : 4 });
 }
 /** A big number short: 1.23T, 4.5B, 6.7M, 8.9K. Pure. */
 export function fmtBig(v) { if (v == null || !Number.isFinite(v)) return '–'; const a = Math.abs(v); for (const [n, s] of [[1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']]) if (a >= n) return +(v / n).toFixed(2) + s; return String(Math.round(v)); }

@@ -12,7 +12,7 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath, 
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), site = path.join(root, 'void-live-deploy');
 /** the types a handoff can carry, and how much a person gains when one page's result opens the next already filled in */
-export const TYPES = Object.freeze({ names: 3, items: 2, music: 3, numbers: 3, date: 3, event: 3, color: 3, palette: 3, image: 3, table: 3, location: 3, duration: 2, number: 2, url: 2, text: 1, code: 1 });
+export const TYPES = Object.freeze({ names: 3, items: 2, music: 3, numbers: 3, date: 3, event: 3, color: 3, palette: 3, image: 3, table: 3, location: 3, video: 3, duration: 2, number: 2, url: 2, text: 1, code: 1 });
 /** the routes that are not tools a person carries a result between (articles, money and admin pages, games' own boards) */
 const SKIP = /^\/(?:obituaries|privacy|fix|podcast|cheat-codes|keep-it-running|first-automation-setup|full-stack-audit|one-time-fix|hosting|store|ledger|identity|conquered|claims|models|studies|og|g|tools|music|humans|remediation|review|cpan|code-review|data|compare)\b/;
 
@@ -57,11 +57,15 @@ export function inferTypes(html, src = '') {
 }
 
 /** the routes this page already hands data to: a link to another page that carries something (?x= or #...), or the verse_handoff ring */
-export function builtFrom(route, html, src, routes) {
+export function builtFrom(route, html, src, routes, builders = {}) {
   const all = String(html) + '\n' + String(src), to = new Set();
   for (const m of all.matchAll(/["'`](\/[a-z0-9-]+(?:\/[a-z0-9-]+)*\/)(?:\?[a-z_]+=|#)/gi)) if (m[1] !== route && routes.includes(m[1])) to.add(m[1]);
+  for (const [fn, page] of Object.entries(builders)) if (page !== route && routes.includes(page) && new RegExp('\\b' + fn + '\\(').test(all)) to.add(page);
   return [...to];
 }
+/** lib/handoff.js's link builders and the page each one opens with the list in it (wheelLink: '/wheel/#...'), so a page that calls
+ *  wheelLink(names) counts as connected to /wheel/ the way a written '/wheel/#' link does. Pure. */
+export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/)[#?]/g)].map((m) => [m[1], m[2]]));
 
 /** a page that is one of its family's variants (/photos/squoosh/ beside /photos/) is not ranked on its own unless it has its own tag */
 const variant = (p) => p.route.split('/').length > 3 && !p.declared;
@@ -78,24 +82,34 @@ export function usefulness(from, to) {
 export const LEGACY_FILE = path.join(root, 'tools', 'handoff-types.json');
 export const legacy = (file = LEGACY_FILE) => { const o = JSON.parse(rd(file) || '{}'); delete o._; return o; };
 
-/** the modules a page imports that are its own (its app.js, or a lib module at most two pages import): a shared one (the toolkit's
- *  "Use with" links) would make every page look connected to every other */
+/** the modules a page imports that are its own: its app.js; a module its index.html imports that only its family and at most one
+ *  other reach; or a module further down whose file is named for the page (lib/flights-core.js for /flights/, followed through the
+ *  modules that import it). A module every page reaches (the toolkit's "Use with" links) would make every page look connected to
+ *  every other, and a shared library deep in the chain (lib/converter.js under /rap/'s video writer) builds links the page never
+ *  shows, so neither is its own. */
 function ownSources(dir, routes) {
-  const htmlOf = Object.fromEntries(routes.map((r) => [r, rd(path.join(dir, r, 'index.html'))]));
-  const importsOf = (h) => [...h.matchAll(/(?:from|import)\s*\(?\s*["'](\/[\w./-]+\.js)["']/g)].map((m) => m[1]);
-  const uses = {}; for (const r of routes) for (const m of new Set(importsOf(htmlOf[r]))) uses[m] = (uses[m] || 0) + 1;
-  return Object.fromEntries(routes.map((r) => [r, importsOf(htmlOf[r]).filter((m) => m.startsWith(r) || uses[m] <= 2).map((m) => rd(path.join(dir, m))).join('\n')]));
+  const importsOf = (code, from) => [...code.matchAll(/(?:from|import|<script\b[^>]*\bsrc=)\s*\(?\s*["']((?:\/|\.\.?\/)[\w./-]+\.js)["']/g)]
+    .map((m) => (m[1].startsWith('/') ? m[1] : path.posix.normalize(path.posix.join(path.posix.dirname(from), m[1]))));
+  const deps = {}, depsOf = (m) => (deps[m] ??= importsOf(rd(path.join(dir, m)), m));
+  const reach = (r) => { const seen = new Set(), todo = importsOf(rd(path.join(dir, r, 'index.html')), r + 'index.html');
+    while (todo.length && seen.size < 200) { const m = todo.pop(); if (seen.has(m)) continue; seen.add(m); todo.push(...depsOf(m)); } return seen; };
+  const reached = Object.fromEntries(routes.map((r) => [r, reach(r)])), families = {};
+  const direct = (r) => new Set(importsOf(rd(path.join(dir, r, 'index.html')), r + 'index.html'));
+  const named = (r, m) => path.posix.basename(m).startsWith(r.split('/')[1].split('-')[0]);
+  for (const r of routes) for (const m of reached[r]) (families[m] ??= new Set()).add(r.split('/')[1]);
+  return Object.fromEntries(routes.map((r) => [r, [...reached[r]].filter((m, _, __, top = direct(r)) => m.startsWith(r) || (families[m].size <= 2 && (top.has(m) || named(r, m)))).map((m) => rd(path.join(dir, m))).join('\n')]));
 }
 
 /** the whole scan: { pages: [{ route, declared, in, out, readsLink, built }], gaps: [{ from, to, shared, score }] ranked, built: n, undeclared } */
 export function scan(dir = site, types = legacy()) {
   const routes = pages(dir).filter((r) => !SKIP.test(r)), own = ownSources(dir, routes), rows = [], undeclared = [];
+  const hand = rd(path.join(dir, 'lib', 'handoff.js')), builders = buildersOf(hand);
   for (const r of routes) {
     const html = rd(path.join(dir, r, 'index.html')), src = own[r], tag = parseDecl(declOf(html)), d = tag || parseDecl(types[r]);
     if (!d) { undeclared.push(r); continue; }
-    rows.push({ route: r, declared: !!tag, in: d.in, out: d.out, readsLink: /URLSearchParams|location\.(?:search|hash)/.test(html + src), built: builtFrom(r, html, src, routes) });
+    rows.push({ route: r, declared: !!tag, in: d.in, out: d.out, readsLink: /URLSearchParams|location\.(?:search|hash)/.test(html + src), built: builtFrom(r, html, src, routes, builders) });
   }
-  const hand = rd(path.join(dir, 'lib', 'handoff.js')), ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/)'/g) || []).map((x) => x.slice(2, -1)) : [];
+  const ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/)'/g) || []).map((x) => x.slice(2, -1)) : [];
   const done = (a, b) => (ring.includes(a.route) && ring.includes(b.route)) || a.built.includes(b.route);
   const gaps = [], built = [];
   for (const a of rows) for (const b of rows) { if (a === b || a.route.split('/')[1] === b.route.split('/')[1] || variant(a) || variant(b)) continue;

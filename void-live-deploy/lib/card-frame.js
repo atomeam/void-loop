@@ -4,7 +4,7 @@
 // with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to Verse" line, and a footer with a collector
 // number and a power/toughness plate. Nothing is invented: the rarity is the skill's evidence rating (proven mythic, checked rare, tested
 // uncommon, experiment common); the cost is how many words you say to play it; power is its success rate out of nine and toughness the
-// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Verse Book; "adds" is the one line the book says it does. An answer
+// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the Book of Verse; "adds" is the one line the book says it does. An answer
 // fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how fresh the
 // source is (freshness). The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
@@ -47,8 +47,9 @@ export function keywordsOf({ tier = '', tested = '', arrows = 0, fetched = false
 const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk: l.ink, artWhy: l.why }; };
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
- *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false } = {}) {
+ *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is;
+ *  kept: the values were read from the named sources on a date and kept in Verse (a kitchen card), not fetched for this ask */
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null, notFound = false, kept = false } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -70,10 +71,25 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
-    adds: page && page.line ? String(page.line).replace(/\s+/g, ' ').slice(0, 120) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
+    adds: page && page.line ? addsLine(page.line) : fetched ? (kept ? 'Values read from the pages this card names, on the date shown, and kept in Verse.' : 'A fact it did not have to be taught: fetched, sourced and dated.') : '',
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
     keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
+}
+
+/** the Adds to Verse line: one line of plain spaces, at most n letters, so most lines show whole (owner, 2026-10-30: "instead of" ended one). A
+ *  longer line ends at its last whole sentence, else its last whole clause (a comma, semicolon or colon), else its last whole word, never in the
+ *  middle of a word ("and the role first or with a pl"), and with no ellipsis. Pure. */
+export function addsLine(s, n = 240) {
+  const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
+  if (t.length <= n) return t;
+  const head = t.slice(0, n + 1); let end = -1, m; const stop = /[.!?](?=\s)/g;
+  while ((m = stop.exec(head))) if (m.index > 40) end = m.index + 1;
+  if (end > 0) return t.slice(0, end);
+  const re = /[,;:](?=\s)/g;
+  while ((m = re.exec(head))) if (m.index > 40) end = m.index;
+  if (end < 0) { const sp = head.lastIndexOf(' '); end = sp > 40 ? sp : n; }
+  return t.slice(0, end).replace(/[\s,;:(“-]+$/, '');
 }
 
 /** a card whose numbers were worked out elsewhere (a merged card, lib/merge-rules.js): { tier, chapter, typeLine, cost, power, resistance, income, adds, name } -> what cardOf returns. Pure. */
@@ -82,7 +98,7 @@ export function ownCard(o = {}) {
   const chapter = String(o.chapter || 'games').slice(0, 20);
   return { rarity: RARITY[o.tier] || null, chapter, hue: hueOf(chapter), fetched: false, cost: n(o.cost, 9), typeLine: String(o.typeLine || '').slice(0, 80),
     power: n(o.power, 99), toughness: n(o.resistance, 99), income: n(o.income, 9), arrowsOut: 0, arrowIn: false, number: '', tested: '',
-    adds: String(o.adds || '').replace(/\s+/g, ' ').slice(0, 120), name: String(o.name || '').slice(0, 40) };
+    adds: addsLine(o.adds), name: String(o.name || '').slice(0, 40) };
 }
 
 const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color:' + r.gem + '" title="' + r.name + '"></i>' : '');
@@ -148,7 +164,7 @@ export const CARD_CSS = [
   '.vpage.vcard[data-poster] .vc-art img.vc-art-photo{object-fit:contain!important;object-position:50% 50%!important}',
   '.vpage.vcard[data-poster] .vc-title{margin-top:14px!important;justify-content:flex-start;text-align:left}',
   '.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-share,.vpage.vcard[data-poster] .vc-route,.vpage.vcard[data-poster] .vc-foot,.vpage.vcard[data-poster] .vc-arrows{grid-column:1 / -1}',
-  '.vpage.vcard[data-poster]>img{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the poster in the art box: not shown twice
+  '.vpage.vcard[data-poster]>img,.vpage.vcard>img[data-vc-art-src]{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the picture in the art box: not shown twice
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(60vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vpage.skyc .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vpage.vcard:not(.skyc) .vc-art{max-height:28vh;margin-top:4px}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds:not([data-facts]){height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds[data-facts] .vc-addstext,.vcard .vc-adds[data-facts] .vc-kws{display:block;height:0;margin:0;padding:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
   '@media (max-width:520px){.vpage.vcard[data-poster]{grid-template-columns:minmax(0,1fr)}.vpage.vcard[data-poster]>*{grid-column:1}.vpage.vcard[data-poster] .vc-art{grid-row:auto;justify-self:center;width:min(46%,170px);height:auto!important;margin:12px auto 4px!important;overflow:hidden}.vpage.vcard[data-poster] .vc-title{margin:8px 6px 0!important;justify-content:center;text-align:center}.vpage.vcard[data-poster] .vc-type,.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-foot{margin-left:6px}}',
   // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
@@ -217,9 +233,12 @@ export function lookup(stats, name) {
   const f = stats && stats.deps && stats.deps.files, d = f && f['skills/' + name + '.js'];
   return { skill, page, book, deps: d ? { imports: (d.imports || []).filter((x) => !/\/mini\//.test(x)), importedBy: d.importedBy || [] } : null };
 }
-/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), or null. Pure. */
+/** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), a card says its data is from
+ *  ("ECB rate of Thu, Oct 29, 2026") or a kept card says its values were read ("read 2026-10-30"), or null. A card with no date keeps freshness 1, so the date it prints must count. Pure. */
 export function editedDaysAgo(text, now = Date.now()) {
-  const m = /last edited ([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
+  const iso = /\bread (\d{4})-(\d{2})-(\d{2})\b/.exec(String(text || '')); // a kept card's "read 2026-10-30": the day its values were read from the pages it names
+  if (iso) { const t = Date.UTC(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3])); if (Number.isFinite(t)) return Math.max(0, (now - t) / 864e5); }
+  const m = /(?:last edited|rate of|as of|updated|published|dated) (?:[A-Z][a-z]{2,8}, )?([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
   const months = { Jan: 0, January: 0, Feb: 1, February: 1, Mar: 2, March: 2, Apr: 3, April: 3, May: 4, Jun: 5, June: 5, Jul: 6, July: 6, Aug: 7, August: 7, Sep: 8, September: 8, Oct: 9, October: 9, Nov: 10, November: 10, Dec: 11, December: 11 };
   const month = months[m[1]];
   const t = month == null ? NaN : Date.UTC(Number(m[3]), month, Number(m[2])); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
@@ -234,8 +253,8 @@ export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) 
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],
   password: ['/password/', 'Password generator'], base64: ['/base64/', 'Base64'], random: ['/random/', 'Random number'],
-  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], 'photo-tools': ['/photos/', 'Photo tools'], pwcheck: ['/password-strength/', 'Password strength'], toolkit: ['/tools/', 'Every tool'],
-  podcast: ['/podcasts/', 'Podcasts'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], fanfic: ['/fanfic/', 'Fan fiction'], 'team-chat': ['/team/', 'Team chat'], draw: ['/learn-to-draw/', 'Learn to draw'], converter: ['/converter/', 'File converter'], rap: ['/rap/', 'Verse raps'], markets: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'], formulas: ['/calculators/', 'Formula calculators'], repo: ['/ledger/', 'Repo activity ledger'] });
+  worldtime: ['/time/', 'Time zones'], imgfit: ['/resize-image/', 'Resize an image'], 'photo-tools': ['/photos/', 'Photo tools'], pwcheck: ['/password-strength/', 'Password strength'], 'stl-check': ['/stl/', 'STL checker'], toolkit: ['/tools/', 'Every tool'],
+  podcast: ['/podcasts/', 'Podcasts'], 'podcast-search': ['/podcasts/', 'Podcasts'], 'local-stations': ['/local/', 'Local TV and radio'], notepad: ['/notes/', 'Notes'], textgen: ['/generators/', 'Generators'], boards: ['/boards/', 'Boards'], fanfic: ['/fanfic/', 'Fan fiction'], 'team-chat': ['/team/', 'Team chat'], draw: ['/learn-to-draw/', 'Learn to draw'], 'verse-brain': ['/brain/', 'Verse Brain'], converter: ['/converter/', 'File converter'], rap: ['/rap/', 'Verse raps'], markets: ['/markets/', 'Markets'], stocks: ['/markets/', 'Markets'], news: ['/news/', 'News'], scores: ['/scores/', 'Scores'], 'sports-browse': ['/sports/', 'Sports'], fantasy: ['/fantasy/', 'Fantasy tools'], metronome: ['/metronome/', 'Metronome'], piano: ['/piano/', 'Piano'], tuner: ['/tuner/', 'Tuner'], bpm: ['/bpm/', 'BPM counter'], chordfinder: ['/chords/', 'Chords and scales'], 'music-tools': ['/music/', 'Music tools'], cartoon: ['/image/', 'AI image generator'], 'video-gen': ['/video/', 'AI video generator'], formulas: ['/calculators/', 'Formula calculators'], repo: ['/ledger/', 'Repo activity ledger'], emoji: ['/emojis/', 'Emoji counts'], 'emoji-combos': ['/emoji-combos/', 'Emoji combos'], 'gh-file': ['/g/', 'Snippet / Note in a link'] });
 // a card from a skill or a built-in answer that does several things (util: colours, word counts, passwords; the page's own calculator,
 // stopwatch and random number) names its page itself with data-page; only a page in this list is linked (owner, 2026-10-25: "and vice versa")
 export const PAGE_PATHS = Object.freeze(Object.fromEntries(Object.values(PAGE_OF).map(([href, label]) => [href, label])));
@@ -245,6 +264,14 @@ const PAGE_QUERY = /^\?[A-Za-z0-9_.=&%-]{1,200}$/;
 export const pageOfCard = (name, page) => {
   const i = page ? page.indexOf('?') : -1, base = i < 0 ? page : page.slice(0, i);
   return page && PAGE_PATHS[base] && (i < 0 || PAGE_QUERY.test(page.slice(i))) ? [page, PAGE_PATHS[base]] : PAGE_OF[name] || null;
+};
+/** a card with no data-page that links to its own skill's page with a plain query ('/translate/?q=good%20morning&to=fr') opens that page on
+ *  what it shows, not on its default: the first such href, or '' (also when the card links to the plain page too). hrefs: the card's own link targets. Pure. */
+export const ownPageOf = (name, hrefs) => {
+  const home = PAGE_OF[name] && PAGE_OF[name][0];
+  if (!home || (hrefs || []).includes(home)) return ''; // a card that links to its plain page as well chose that one (the STL card's sample cube is an extra)
+  for (const h of hrefs || []) { const i = String(h || '').indexOf('?'); if (i > 0 && h.slice(0, i) === home && PAGE_QUERY.test(h.slice(i))) return h; }
+  return '';
 };
 /** the link to a skill's full page, or '' when it has none. Pure. */
 export const pageLinkHtml = (name, esc, page = '') => { const p = pageOfCard(name, page); return p ? '<a class="vc-page" href="' + esc(p[0]) + '" style="display:inline-block;margin:6px 0 2px;font-size:13px;font-weight:600">Open the full ' + esc(p[1]) + ' page →</a>' : ''; };
@@ -260,8 +287,11 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   // a body that says it found nothing ("I do not have information ...") is a Not found card: no source count, no stats, no "Adds to Verse", a neutral picture
   const bodyText = !name && !own ? answerText(el) : '', notFound = !name && !own && (el.dataset.notFound !== undefined || (bodyText.length > 12 && isNoAnswer(bodyText)));
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  if (pageOfCard(name, el.dataset.page) && !el.querySelector(':scope > .vc-page')) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, el.dataset.page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), notFound, entity: notFound ? null : entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) ?? editedDaysAgo(el.textContent), kept: el.dataset.cardKept !== undefined });
+  // the card's own link to its page keeps what it shows (a translation, a search); it often arrives after the frame, so a drawn link is moved to it
+  const page = el.dataset.page || ownPageOf(name, Array.from(el.querySelectorAll('a[href^="/"]:not(.vc-page)'), (a) => a.getAttribute('href'))), drawn = el.querySelector(':scope > .vc-page'), want = pageOfCard(name, page);
+  if (drawn && want && drawn.getAttribute('href') !== want[0]) drawn.setAttribute('href', want[0]);
+  if (want && !drawn) { const t0 = document.createElement('template'); t0.innerHTML = pageLinkHtml(name, esc, page); /* void-review: ok: fixed table, escaped */ const a = t0.content.firstChild; let tail = el.lastElementChild; while (tail && (tail.classList.contains('vtail') || tail.classList.contains('vtell') || tail.classList.contains('vtell-box') || tail.classList.contains('vc-arrows') || tail.classList.contains('vc-foot') || tail.classList.contains('vc-adds'))) tail = tail.previousElementSibling; if (tail) tail.after(a); else el.appendChild(a); }
   // the frame follows the subject's kind, read from the fetched description (lib/subject-kinds.js): a theme, badges from the answer's own facts, and a
   // "not affiliated" line on a card about someone else's work
   const kindTitle = c.kindName ? c.kindName.charAt(0).toUpperCase() + c.kindName.slice(1) : '';
@@ -294,6 +324,10 @@ export function keep(el, esc, stats) {
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
   // a real picture is the art (owner, 2026-10-18): it is the only thing in the box, with no plate, seal, texture or painting under or over it
   const source = artSource({ photo, painting: !!el._vcForge, hasArt: !!el.querySelector(':scope > .vc-art') }); // lib/art-source.js: one picture in the slot
+  // the picture in the art box is the answer's own photo, so the copy of it in the body goes (2026-10-30: a recipe card showed its dish twice).
+  // Only a photo that stands on its own in the card goes; a thumbnail inside a list of results stays with its row.
+  for (const i of el.querySelectorAll(':scope > img[data-vc-art-src]')) if (source !== 'photo' || i !== photoImg) delete i.dataset.vcArtSrc;
+  if (source === 'photo' && photoImg && photoImg.parentNode === el) photoImg.dataset.vcArtSrc = '1';
   if (source === 'photo') { const box = el.querySelector(':scope > .vc-art'); if (box) {
     for (const n of box.querySelectorAll(':scope > svg, :scope > .vc-seal')) n.remove(); box.classList.remove('vc-sealed'); box.classList.add('has-photo');
     const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = ''; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = photo; box.appendChild(im);

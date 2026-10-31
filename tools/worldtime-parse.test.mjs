@@ -26,3 +26,21 @@ test('worldtime: GMT and UTC now, and look-alikes left alone', () => {
   for (const a of ['is the meeting at 2pm', 'is sydney ahead', 'meeting at 2pm tomorrow', 'is it ahead of schedule'])
     assert.ok(!parseWorldTime(a) || parseWorldTime(a).kind !== 'convert', a);
 });
+
+test('worldtime: the full link opens the Time zones page on the same places, by name and zone', async () => {
+  const { timePage } = await import('../void-live-deploy/skills/worldtime.js');
+  const { findPlace } = await import('../void-live-deploy/lib/zones.js');
+  const one = timePage([{ name: 'Kyoto', tz: 'Asia/Tokyo' }]);
+  assert.equal(one, '/time/?c=Kyoto%40Asia%2FTokyo');
+  // the page reads each place back with the name the card showed, not its zone's city
+  const asked = new URLSearchParams(one.slice(one.indexOf('?'))).get('c').split(/\s*[,;|]\s*/);
+  assert.deepEqual(asked.map((n) => findPlace(n)), [{ name: 'Kyoto', tz: 'Asia/Tokyo' }]);
+  const two = new URLSearchParams(timePage([{ name: 'São Paulo', tz: 'America/Sao_Paulo' }, { name: 'Ho Chi Minh City', tz: 'Asia/Ho_Chi_Minh' }]).split('?')[1]).get('c');
+  assert.deepEqual(two.split(/\s*[,;|]\s*/).map((n) => findPlace(n)), [{ name: 'São Paulo', tz: 'America/Sao_Paulo' }, { name: 'Ho Chi Minh City', tz: 'Asia/Ho_Chi_Minh' }]);
+  // a name that holds a separator cannot split the list; a zone that is not real is not taken
+  assert.ok(!/%2C.*%2C/.test(timePage([{ name: 'Washington, D.C.', tz: 'America/New_York' }])));
+  assert.equal(findPlace('Nowhere@Mars/Base'), null);
+  // and the card frame takes it as the Time zones page with a plain query
+  const { pageOfCard } = await import('../void-live-deploy/lib/card-frame.js');
+  assert.deepEqual(pageOfCard('worldtime', one), [one, 'Time zones']);
+});

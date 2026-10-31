@@ -11,6 +11,12 @@ const held = new Map(), sustained = new Set(); // id -> {note, midi}
 let sus = false, recording = false, recStart = 0, rec = [], sheetTimers = [], sheetNotes = [];
 const shift = () => num($('trans'), -12, 12, 0) + +$('oct').value;
 const keyEls = new Map();
+// the notes held down together in the latest press (a new press after every key is up starts a new group); two or more go to /chords/ to be named
+const group = new Set();
+function chordsLink(notes) {
+  const pcs = [...new Set([...notes].sort((a, b) => a - b).map((m) => noteName(m, false).replace(/-?\d+$/, '')))];
+  if (pcs.length < 2) return; const a = $('toChords'); a.href = '/chords/?notes=' + encodeURIComponent(pcs.join(',')); a.hidden = false;
+}
 
 function build() {
   const kbi = $('kbi'); kbi.textContent = ''; let wi = 0;
@@ -27,6 +33,7 @@ function labels() {
 function down(id, midi, vel = 0.8) {
   if (held.has(id)) return; const el = keyEls.get(midi); if (el) el.classList.add('on');
   const p = shift(), note = startNote(midi + p, $('ins').value, vel); held.set(id, { note, midi });
+  if (held.size === 1) group.clear(); group.add(midi + p); if (group.size > 1) chordsLink(group);
   if (recording) rec.push({ t: performance.now() - recStart, midi: midi + p, down: true });
 }
 function up(id) {
@@ -79,6 +86,10 @@ if (mem().rec) for (const b of ['replay', 'copyRec', 'clearRec']) $(b).disabled 
 // sheets
 wire($('song'), 'change', () => { const v = $('song').value, s = SHEETS.find((x) => x.id === v); if (s) { $('sheet').value = s.sheet; $('songBpm').value = s.bpm; } else if (v === 'mine') $('sheet').value = mem().rec || ''; else $('sheet').value = ''; });
 { const want = SHEETS.find((x) => x.id === new URLSearchParams(location.search).get('song')) || SHEETS[0]; $('song').value = want.id; $('sheet').value = want.sheet; $('songBpm').value = want.bpm; }
+// a sheet another page sends in the link (/chords/ sends a chord or a scale): ?sheet= in the plain letters, ?bpm= its tempo
+{ const q = new URLSearchParams(location.search), sh = (q.get('sheet') || '').slice(0, 4000).trim(), p = sh ? parseSheet(sh) : null;
+  if (p && p.events.length && !p.bad.length) { $('song').value = 'own'; $('sheet').value = sh; const b = +q.get('bpm'); if (b >= 30 && b <= 300) $('songBpm').value = Math.round(b);
+    $('sheetNote').textContent = t('This sheet came in the link:') + ' ' + p.events.reduce((n, ev) => n + ev.notes.length, 0) + ' ' + t('notes') + '. ' + t('Press Play the sheet to hear it.'); $('sheet').scrollIntoView({ block: 'center' }); } }
 function stopSheet() { for (const x of sheetTimers) clearTimeout(x); sheetTimers = []; for (const n of sheetNotes) n.release(); sheetNotes = []; for (const el of keyEls.values()) el.classList.remove('on'); }
 function playSheet() {
   stopSheet(); const p = parseSheet($('sheet').value), c = audio(); if (!c) { say_(t('This browser cannot make sound.')); return; }

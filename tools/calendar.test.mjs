@@ -210,3 +210,41 @@ test('a video call on an event, as Google Calendar adds one: made, kept, carried
   const inv = C.inviteLink({ ...e, invitees: ['a@b.co'] }, 'https://a-to-mind.com'); assert.match(decodeURIComponent(inv.mailto), /Video call: https:\/\/meet\.jit\.si\//);
   assert.equal(C.eventFromLink(inv.url.split('?e=')[1]).video, v);
 });
+test("the Calendar page's card opens on the day the page shows, and the card's page link follows the day back", async () => {
+  const A = await import('../void-live-deploy/lib/agenda.js');
+  const { parseCalendar } = await import('../void-live-deploy/skills/calendar.js');
+  const { pageOfDay } = await import('../void-live-deploy/skills/calendar3d.js');
+  assert.equal(A.cardAskOf('2026-12-03'), 'my calendar on 2026-12-03');
+  assert.equal(A.cardAskOf('2026-02-30'), '', 'no such day: no ask'); assert.equal(A.cardAskOf('soon'), '');
+  assert.deepEqual(parseCalendar('my calendar on 2026-12-03'), { kind: 'show', focus: '2026-12-03' });
+  assert.deepEqual(parseCalendar('my calendar'), { kind: 'show' }, 'the plain ask is as it was');
+  assert.equal(A.cardDayOf('my calendar on 2026-13-01'), '');
+  const d = A.dayOfKey('2026-12-03'); assert.equal([d.getFullYear(), d.getMonth(), d.getDate()].join(), '2026,11,3', 'a local day, not UTC midnight');
+  assert.equal(pageOfDay(2026, 11, '2026-12-3'), '/calendar/?d=2026-12-03', 'the day picked');
+  assert.equal(pageOfDay(2027, 0, null), '/calendar/?d=2027-01-01', 'a month turned to');
+  const page = fs.readFileSync(path.join(root, 'calendar', 'index.html'), 'utf8');
+  assert.match(page, /mountRelated\(\$\('related'\), '\/calendar\/'[\s\S]*?\{ card: \(\) => A\.cardAskOf\(C\.dayKey\(state\.cursor\)\) \}\)/, 'the page gives its card the day it shows');
+});
+
+test('the stage calendar card sways while new, then settles still so its days hold under a pointer and the frame loop stops', async () => {
+  const { swayAmp, SWAY_HOLD, SWAY_FADE } = await import('../void-live-deploy/skills/calendar3d.js');
+  assert.equal(swayAmp(0), 3);
+  assert.equal(swayAmp(SWAY_HOLD - 1), 3);
+  assert.ok(swayAmp(SWAY_HOLD + SWAY_FADE / 2) > 0 && swayAmp(SWAY_HOLD + SWAY_FADE / 2) < 3);
+  assert.equal(swayAmp(SWAY_HOLD + SWAY_FADE), 0);
+  assert.equal(swayAmp(60000), 0);
+});
+
+test('the Reduced motion hard switch holds the stage still: no card tilt toward the pointer, no calendar sway or page turn', () => {
+  // the switch's own promise (lib/a11y-modes.js): "the worlds and figures hold still"; the CSS stops easing, these stop the JS motion
+  const cal = fs.readFileSync(path.join(root, 'skills', 'calendar3d.js'), 'utf8');
+  assert.ok(cal.includes("document.documentElement.classList.contains('a11y-motion')"), 'the calendar reads the switch');
+  assert.ok(cal.includes('const amp = calm() ? 0 : swayAmp(now - woke);'), 'no sway with the switch on, read live');
+  assert.ok(cal.includes('if (calm()) { swap(); return; }'), 'a month swaps without the page turn');
+  assert.ok(cal.includes('let rx = reduce ? -6 : -8, ry = reduce ? -10 : -16,'), 'held still, the card opens at its rest pose: no easing in');
+  assert.ok(cal.includes('if (!drag && calm()) {') && cal.includes('vx = vy = 0; ry = Math.round((ry + 10) / 360) * 360 - 10; rx = -6; rest = !flip;'), 'held still, no spin after a drag and no easing back: it stands still at once, so a day can be tapped');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const tilt = html.slice(html.indexOf("const held = () => document.documentElement.classList.contains('a11y-motion');"));
+  assert.ok(tilt.length > 0 && html.includes("const held = () => document.documentElement.classList.contains('a11y-motion');"), 'the stage tilt reads the switch');
+  assert.ok(tilt.includes("const el = held() ? null : e.target.closest && e.target.closest('.vpage, .thing');"), 'with it on, no card is tilted and the last one is let go');
+});

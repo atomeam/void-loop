@@ -125,7 +125,7 @@
       box-shadow: inset 0 2px 10px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.45);
     }
     .clock > span { position: relative; display: inline-block; text-shadow: 0 0 0.12em currentColor, 0 0 0.45em currentColor; }
-    .clock > span::before { content: attr(data-ghost); position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
+    .clock > span::before { content: attr(data-ghost); content: attr(data-ghost) / ""; position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
     /* Caveat (SIL OFL 1.1, fonts/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
     @font-face { font-family: 'Verse Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
     /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
@@ -457,7 +457,7 @@
     .doc-map ol { margin: 4px 0 6px; padding-left: 18px; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
-    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; }
+    #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; overflow-wrap: anywhere; max-height: 4.6em; overflow-y: auto; }
     #hints div.sel, #hints div:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
     #hints b { font-weight: inherit; color: var(--fg); }
     #dock {
@@ -1146,6 +1146,13 @@
     html.void-edge #void-anchor, #void-anchor:hover, #void-anchor:focus-visible { opacity: 1; transform: scale(1.1); }
     #void-anchor:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { #void-anchor { transition: none; } html.void-edge #void-anchor, #void-anchor:hover { transform: none; } }
+    /* the MultiVerse mark (members perk, 2026-10-30): a paid Verse's stage shows it beside the anchor; it opens /members/. Never shown signed out */
+    #void-member { position: fixed; right: 46px; bottom: 14px; z-index: 6; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; gap: 5px; border-radius: 999px;
+      border: 1px solid rgba(150,120,255,.55); background: rgba(20,18,34,.72); color: #d7d2ff; font: 600 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-decoration: none; opacity: .7; transition: opacity .2s; }
+    #void-member::before { content: "\2726"; color: rgba(170,140,255,.95); }
+    #void-member:hover, #void-member:focus-visible { opacity: 1; }
+    #void-member:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+    @media (max-width: 700px) { #void-member { right: 40px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); opacity: .45; } }
     @media (max-width: 700px) { #void-anchor { right: 8px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); opacity: .22; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
 </head>
@@ -1276,6 +1283,11 @@
     function load() {
       if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
         things = {}; (PAGE.cards || []).forEach((c, i) => { const id = 'page' + i; things[id] = { id, kind: 'kept', x: 40 + (i % 3) * 340, y: 40 + Math.floor(i / 3) * 260, name: c.name, ask: c.ask, html: '<h2>' + esc(c.name || '') + '</h2><p>' + esc(c.text || '') + '</p>' }; });
+        if (Array.isArray(PAGE.built) && PAGE.built.length) { // Built by @name: the owner's ideas Verse built (members perk); a link only to a Verse pull request
+          const i = (PAGE.cards || []).length, name = 'Built by @' + PAGE.handle;
+          const li = PAGE.built.map((b) => '<li>' + esc(b.text || '') + (/^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(b.pr || '') ? ' <a href="' + b.pr + '" target="_blank" rel="noopener">see the change</a>' : '') + '</li>').join('');
+          things.pagebuilt = { id: 'pagebuilt', kind: 'kept', x: 40 + (i % 3) * 340, y: 40 + Math.floor(i / 3) * 260, name, ask: '', html: '<h2>' + esc(name) + '</h2><ul>' + li + '</ul>' };
+        }
         return;
       }
       try {
@@ -1465,8 +1477,28 @@ Object.values(things).forEach((th) => {
       }
       if (grownIds.size) requestAnimationFrame(() => layoutStage());
     }) : null;
+    // A published page lays its cards out to fit the screen (members perk, 2026-10-30: on a phone every card after the first sat
+    // off the right edge, out of reach): as many columns as fit the width, each card in the shortest column, in the page's order;
+    // the stage scrolls when the cards run past the bottom. Nothing is saved: the visitor's own stage stays untouched.
+    function flowPage() {
+      const order = Object.keys(things), els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth)
+        .sort((a, b) => order.indexOf(a.dataset.id) - order.indexOf(b.dataset.id));
+      if (!els.length) return;
+      const gap = 20, w = Math.max(...els.map((el) => el.offsetWidth)), sw = stage.clientWidth;
+      const cols = Math.max(1, Math.floor((sw - 40 + gap) / (w + gap))), x0 = cols > 1 ? 40 : Math.max(8, Math.round((sw - w) / 2)), tops = Array(cols).fill(40);
+      for (const el of els) {
+        const c = tops.indexOf(Math.min(...tops)), th = things[el.dataset.id];
+        th.x = x0 + c * (w + gap); th.y = tops[c]; placeThing(th); tops[c] += el.offsetHeight + gap;
+      }
+      // the last card scrolls clear of the ask bar, which sits over the bottom of the stage
+      const end = Math.max(...tops) + Math.max(0, Math.ceil(stage.getBoundingClientRect().bottom - dockSpace())) + gap;
+      let pad = stage.querySelector(':scope > .page-end'); if (!pad) { pad = document.createElement('div'); pad.className = 'page-end'; pad.setAttribute('aria-hidden', 'true'); pad.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none'; stage.appendChild(pad); }
+      pad.style.top = end + 'px'; stage.style.overflowY = end > stage.clientHeight ? 'auto' : '';
+    }
+    if (PAGE) addEventListener('resize', () => requestAnimationFrame(() => layoutStage()));
     function layoutStage() {
-      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      if (PAGE) { if (!document.documentElement.classList.contains('dragging')) flowPage(); return; }
+      if (!placement || document.documentElement.classList.contains('dragging')) return;
       const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
       if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
       if (!laidOut && !els.length) return; // the stage hasn't drawn yet: the first real look is the saved layout, never fresh cards
@@ -1780,6 +1812,7 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
+      ready: () => skillsReady, // every skill is in, so every saved card has its kind (skills/quiz.js settled: an ask right after a reload)
       closePage: () => closePage(),
       // the extension bridge the tab card draws with (skills/tab.js): the state the panel's messages fill, and the page's own senders
       ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
@@ -1806,6 +1839,7 @@ Object.values(things).forEach((th) => {
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
+        if (PAGE && e.pointerType === 'touch') return; // a finger on a published page scrolls it (flowPage), never drags a card off it
         if (th.locked) { selectedId = th.id; return; } // a locked card (skills/label.js, skills/stage-arrange.js) stays where it is: picked, never dragged or thrown
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
@@ -1984,11 +2018,12 @@ function wantsClearStage(lower) {
         || /\b(24\s*-?\s*h(our)?s?|24h|military|12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm|bold|seconds|date)\b/.test(lower);
     }
 
-    function findTargetThing(kind) {
+    function findTargetThing(kind, mayMake = true) {
       let th = (selectedId && things[selectedId] && things[selectedId].kind === kind && things[selectedId])
         || Object.values(things).find((t) => t.kind === kind);
       if (th) return th;
-      if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
+      // a built-in that moved to skills/ (cleanup step 6); made new only for an ask that makes one (lib/ask-text.js asksToMake)
+      if (mayMake && stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi);
       return null;
     }
 
@@ -2066,7 +2101,7 @@ function wantsClearStage(lower) {
     }
 
     const ALTER_WORDS = new Set(('a an the it its to be is in on at of and or please now just more less very bit little lot too much make turn set change paint color colour this that these those me my one all every each everything everywhere selected thing things stage screen page text font background shape shapes box circle square dot line card cards '
-      + 'blue red green yellow white black purple orange pink gray grey gold cyan teal clock time bigger smaller larger huge tiny big small bold seconds date top bottom left right center centre middle corner side up down').split(' '));
+      + 'blue red green yellow white black purple orange pink gray grey gold cyan teal clock time bigger smaller larger huge tiny big small bold seconds date top bottom left right center centre middle corner side up down are').split(' '));
     function onlyStageWords(lower) {
       const kinds = new Set(Object.keys(stageKinds).flatMap((k) => [k, k + 's']));
       return lower.replace(/#[0-9a-f]{3,6}\b/g, ' ').split(/[^a-z0-9]+/).filter(Boolean).every((w) => ALTER_WORDS.has(w) || kinds.has(w) || /^\d+(?:h|hr)?$/.test(w));
@@ -2093,6 +2128,13 @@ function wantsClearStage(lower) {
       }
       let ok = false;
       let detail = '';
+      // a tool opens only when the message asks for it (owner, 2026-10-30: "when clock is mentioned in any message it opens the clock
+      // only on verse"; lib/ask-text.js): a sentence about a tool ("my clock is broken", "I set a timer earlier but it never rang") and
+      // a paste that names one are answered, never put on the stage; "around the clock" and "5 o'clock" name no clock
+      const terse = onlyStageWords(lower);
+      if (askText && !askText.asksTheStage(text, terse)) return { ok: false, detail: 'not a stage ask' };
+      const mayMake = !askText || askText.asksToMake(text, terse);
+      const toolWords = askText ? askText.withoutIdioms(lower) : lower;
 
 // clear entire stage
       if (wantsClearStage(lower)) {
@@ -2100,6 +2142,7 @@ function wantsClearStage(lower) {
         things = {};
         selectedId = null;
         save(); render();
+        try { document.dispatchEvent(new CustomEvent('void:stage-cleared')); } catch (_) {} // what lives on the stage outside its record goes too (skills/walker.js: the walking cartoon)
         return { ok: true, detail: 'cleared' };
       }
 
@@ -2126,7 +2169,7 @@ say('nothing selected to remove');
 
       // batch targeting: "make all timers blue", "resize every clock",
       // "move all shapes to the top left", "make everything blue"
-      const batchKindList = batchKinds(lower);
+      const batchKindList = batchKinds(toolWords);
       if (wantsBatchAlter(lower, batchKindList)) {
         let batchChanged = 0;
         let batchFirstId = null;
@@ -2148,12 +2191,12 @@ say('nothing selected to remove');
 
       // multi-object targeting: "make the timer blue", "make the counter big",
       // "make the calc green", "move the notepad to the top right"
-      const targetKindName = resolveTargetKind(lower)
+      const targetKindName = resolveTargetKind(toolWords)
         || (selectedId && things[selectedId] && hasAlterProperty(lower) && /\b(it|this)\b/.test(lower)
           ? things[selectedId].kind
           : null);
       if (targetKindName && hasAlterProperty(lower) && !/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel)\b/.test(lower)) {
-        const tThing = findTargetThing(targetKindName);
+        const tThing = findTargetThing(targetKindName, mayMake);
         if (tThing && applyTargetAlters(tThing, targetKindName, lower)) {
           selectedId = tThing.id;
           save(); render();
@@ -2241,18 +2284,18 @@ say('nothing selected to remove');
 
       // remove clock, then create one (skills/clock.js, cleanup step 6), at the places in this order they always had
       if (stageKinds.clock && typeof stageKinds.clock.askRemove === 'function') {
-        const cr = stageKinds.clock.askRemove(lower, text, stageApi);
+        const cr = stageKinds.clock.askRemove(toolWords, text, stageApi);
         if (cr === 'no clock') return { ok: false, detail: 'no clock' };
         if (cr) return { ok: true, detail: cr };
-        const cc = stageKinds.clock.ask(lower, text, stageApi);
+        const cc = stageKinds.clock.ask(toolWords, text, stageApi);
         if (cc) return { ok: true, detail: cc };
       }
 
       // alter clock — create-then-apply when none exists yet
-      if (stageKinds.clock && (wantsAlter(lower) || /\bclock\b/.test(lower) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock'))) {
+      if (stageKinds.clock && (wantsAlter(lower) || /\bclock\b/.test(toolWords) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock'))) {
         // if sticky is selected and alter has no clock word, skip unless color/size typical of clock
         const sel = selectedId && things[selectedId];
-        if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(lower) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
+        if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(toolWords) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
           const scol = stageKinds.sticky && stageKinds.sticky.colorOf ? stageKinds.sticky.colorOf(lower) : null;
           if (scol) {
             sel.color = scol;
@@ -2260,10 +2303,12 @@ say('nothing selected to remove');
             return { ok: true, detail: 'sticky-altered' };
           }
         }
-        const c = stageKinds.clock.ensure(stageApi); // prefer create-then-apply (skills/clock.js)
-        selectedId = c.id;
-        ok = applyTargetAlters(c, 'clock', lower);
-        if (ok) {
+        // create-then-apply (skills/clock.js), and only for an ask that makes one with a change that applies to it: "my clock is
+        // broken" and "around the clock" put a clock nobody asked for on the stage (owner, 2026-10-30)
+        let c = Object.values(things).find((t) => t && t.kind === 'clock');
+        if (!c && mayMake && applyTargetAlters({ kind: 'clock', x: 0, y: 0, size: 56, color: '#e8e8e8', format: '12h', seconds: true, bold: false }, 'clock', lower)) c = stageKinds.clock.ensure(stageApi);
+        if (c && applyTargetAlters(c, 'clock', lower)) {
+          selectedId = c.id;
           save(); render();
           return { ok: true, detail: 'altered' };
         }
@@ -2429,11 +2474,7 @@ say('nothing selected to remove');
       const old = el.querySelector('.vtail'); if (old) old.remove();
       const d = document.createElement('div'); d.className = 'src vtail'; d.innerHTML = el._tail; el.appendChild(d);
     }
-    // Small talk lines (no network, nothing on the miss board). Facts are well-established ones; the encouragements are Verse's own.
-    const FUN_FACTS = ['Octopuses have three hearts and blue blood.', 'Honey found in ancient Egyptian tombs was still edible.', 'A day on Venus is longer than its year.',
-      'Bananas are berries; strawberries are not.', 'Wombat droppings are cube-shaped.', 'There are more trees on Earth than stars in the Milky Way, by most estimates.',
-      'The Eiffel Tower grows about 15 cm taller in summer heat.', 'Sharks existed before trees did.', 'A group of flamingos is called a flamboyance.',
-      'Your stomach gets a new lining every few days.', 'Hot water can freeze faster than cold under some conditions (the Mpemba effect).', 'Sea otters hold hands while they sleep so they don’t drift apart.'];
+    // Small talk lines (no network, nothing on the miss board). The encouragements are Verse's own; a fun fact is the fact skill's (skills/fact.js, sourced).
     const CHEERS = ['Start small: one thing, the next ten minutes.', 'You’ve done hard things before. This is one more.', 'Progress counts even when it’s quiet.',
       'Done beats perfect. Ship the first version.', 'Rest is part of the work.', 'The best time was earlier. The second best is now.'];
     const DINNERS = ['tacos', 'a stir-fry', 'pasta with garlic and olive oil', 'a big salad', 'curry', 'homemade pizza', 'soup and bread', 'fried rice', 'burrito bowls', 'grilled cheese and tomato soup'];
@@ -2448,7 +2489,6 @@ say('nothing selected to remove');
       if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+(?:verse|void))?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
       if (/^(?:you'?re|you\s+are)\s+(?:awesome|great|amazing|cool|the\s+best|smart|helpful)$|^(?:i\s+love\s+you|love\s+you|nice|cool|awesome|great\s+job|good\s+job|well\s+done)(?:\s+(?:verse|void))?$/.test(l)) return 'thank you';
       if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · play mancala · magic 8 ball · knock knock · tell me a fun fact';
-      if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
       if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
       // "games", "play a game", "what games do you have": the 3D game rack (skills/rack.js) answers these now, with the same hint
       { const AS = { cow: 'moo', dog: 'woof', cat: 'meow', pig: 'oink', sheep: 'baa', duck: 'quack', horse: 'neigh', chicken: 'cluck', rooster: 'cock-a-doodle-doo', owl: 'hoot', lion: 'roar', frog: 'ribbit', goat: 'maa', bee: 'buzz', snake: 'hiss', mouse: 'squeak', donkey: 'hee-haw', wolf: 'howl', bird: 'tweet', turkey: 'gobble' };
@@ -2461,10 +2501,15 @@ say('nothing selected to remove');
     // Read an answer page out: its title becomes the region's name, and its title and first lines go to the polite live
     // region. Pages that fill in later (weather, news) are read again once they settle.
     function srAnnounce(el) {
-      const say = () => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
-        const h = el.querySelector('h2'), t = (el.innerText || '').replace(/\s+/g, ' ').trim();
-        if (h) el.setAttribute('aria-label', h.textContent.trim());
-        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
+      // the card's own words, as copy text reads them (lib/card-share.js readCard), not its frame: the type line, the badges, the copy and
+      // save buttons and the reply box are left out (2026-10-30: it read "Answer from Verse … copy card save card share" before the weather)
+      const say = () => { if (vpageEl !== el) return; import('/lib/card-share.js').catch(() => null).then((sh) => { if (vpageEl !== el) return; const sr = document.getElementById('sr-say'); if (!sr) return;
+        const h = el.querySelector('h2'), d = sh && sh.readCard ? sh.readCard(el) : null;
+        const t = (d ? [d.t, d.b].filter(Boolean).join('. ') : el.innerText || '').replace(/\s+/g, ' ').trim();
+        // the card's name for a screen reader: its heading, or, on a card drawn with none (the translation: "hello · French", then the words), its first line
+        const name = h ? h.textContent.trim() : (d && d.b ? d.b.split('\n')[0].trim().slice(0, 120) : '');
+        if (name) el.setAttribute('aria-label', name);
+        sr.textContent = t.length > 280 ? t.slice(0, 277) + '…' : t; }); }; // ellipsis-ok: drawn picture or short label, the full text is on the card
       say(); let tm = 0; const mo = new MutationObserver(() => { clearTimeout(tm); tm = setTimeout(say, 400); });
       mo.observe(el, { childList: true, subtree: true, characterData: true }); setTimeout(() => mo.disconnect(), 15000);
     }
@@ -2671,8 +2716,30 @@ say('nothing selected to remove');
       }
       if (j.desc) { el.dataset.cardDesc = String(j.desc).slice(0, 160); el.dataset.cardExtract = String(j.answer).slice(0, 160); if (j.series) el.dataset.cardSeries = String(j.series).slice(0, 60); keepCard(el); } // the kind the source says it is types the card (lib/card-kinds.js)
       addCopy(el, false);
+      if (!page) recallNote(el, text, j.answer);
       say('');
       return 'answer';
+    }
+    // the conversation orb (lib/brain-dialogue.js): the brain keeps this ask and its answer on this device; a repeat says when it was asked
+    // and what Verse said then, and whether the answer is the same now; a follow-up names the ask it follows. Owner, 2026-10-30: "turn a
+    // repeated question from a failure into an upgrade". Only the visitor's own earlier asks and answers, from this device.
+    function whenSaid(at) {
+      const d = new Date(at), n = new Date(), day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(), gap = Math.round((day(n) - day(d)) / 86400000);
+      return gap <= 0 ? 'earlier today' : gap === 1 ? 'yesterday' : gap < 7 ? 'on ' + d.toLocaleDateString('en-US', { weekday: 'long' }) : 'on ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+    function recallNote(el, text, answer) {
+      const h = window.verseBrainHost; if (!h || !h.answered) return;
+      let r = null; try { r = h.answered(text, answer); } catch (_) { r = null; }
+      if (!r || !r.kind || !r.prior) return;
+      const p = r.prior, n = document.createElement('div'); n.className = 'sub recall'; n.dataset.recall = r.kind;
+      n.style.cssText = 'margin:0 0 8px;padding:6px 10px;border-left:2px solid #5fb8c9;color:#9fc4cc;font-size:13px';
+      if (r.kind === 'repeat') {
+        n.textContent = 'You asked this ' + whenSaid(p.at) + '.' + (p.answer ? ' I said: \u201c' + p.answer + '\u201d ' + (r.same ? 'My answer is the same now.' : 'Since then my answer changed; this is the new one.') : ' I had no answer for it then.');
+      } else {
+        n.append('Following on from your ask ' + whenSaid(p.at) + ': ');
+        const a = document.createElement('a'); a.href = '#'; a.dataset.ask = p.ask; a.textContent = '\u201c' + p.ask + '\u201d'; n.append(a);
+      }
+      const h2e = el.querySelector('h2'); if (h2e) { let after = h2e; while (after.nextElementSibling && after.nextElementSibling.classList.contains('sub')) after = after.nextElementSibling; after.after(n); } else el.prepend(n);
     }
     // Will engine: Verse says what it wants to become next (chosen by Verse from everything that exists).
     function wantsWill(lower) {
@@ -2690,11 +2757,13 @@ say('nothing selected to remove');
       if (vpageEl !== el) return;
       const why = (x) => (honest ? honest.honestBecause(x.because, x.evidence) : x.because);
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
-        // one block per want (owner, 2026-10-21: the wants ran together): the want, then its reason on its own line, then the recorded fact
-        + (w.wants.length ? '<ul class="will-list" style="list-style:none;padding:0;margin:10px 0">' + w.wants.map((x) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + esc(x.i_want) + '</b><div style="color:#8a8a8a;margin-top:4px">' + esc(why(x)) + '</div>'
-          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
-        // what I wanted and got: asks the ledger names as built, shown apart, never as a current want (functions/api/will.js splitBuilt)
-        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Got it</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li style="margin:0 0 10px;color:#9aa"><b style="display:block">' + esc(x.i_want) + '</b><div style="font-size:12px">built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
+        // one block per want (owner, 2026-10-21: the wants ran together; 2026-10-30: asks and reasons still read as one run of plain
+        // lines when copied): a numbered want, then "Why:" on its own line, then "Evidence:", so the copied text keeps the structure too
+        + (w.wants.length ? '<div class="vh">What I want next</div><ol class="will-list" style="list-style:none;padding:0;margin:6px 0 10px">' + w.wants.map((x, i) => '<li class="will-want" style="margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:10px"><b style="display:block">' + (i + 1) + '. ' + esc(x.i_want) + '</b><div class="will-why" style="color:#8a8a8a;margin-top:4px"><span style="color:#aab">Why:</span> ' + esc(why(x)) + '</div>'
+          + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px;margin-top:4px"><span style="color:#aab">Evidence:</span> ' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ol>' : '<p>Everything I last chose is built. I choose again within the hour.</p>')
+        // what I wanted and got: asks the ledger names as built, shown apart and marked done, never as a current want (functions/api/will.js
+        // splitBuilt; owner, 2026-10-30: a "Got it" line between the asks made the built repo ask read as one more want)
+        + (Array.isArray(w.got) && w.got.length ? '<div class="vh">Already built</div><ul class="will-got" style="list-style:none;padding:0;margin:6px 0">' + w.got.map((x) => '<li class="will-done" style="margin:0 0 10px;color:#9aa"><b style="display:block"><span style="color:#7d9">Done:</span> ' + esc(x.i_want) + '</b><div style="font-size:12px">Built ' + esc(x.builtAt) + (x.what ? ': ' + esc(x.what) : '') + '</div></li>').join('') + '</ul>' : '')
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
     }
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
@@ -2921,7 +2990,7 @@ say('nothing selected to remove');
           const sentence = topic.trim().replace(/\s+/g, '_').replace(/^./, (c) => c.toUpperCase()), title = topic.trim().split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_');
           const bare = query.trim().replace(/^(?:please\s+)?(?:tell me about|what(?:'s| is| are| was)|who(?:'s| is| was| are)|define|explain)\s+/i, ''), lead = /^the\s/i.test(bare) ? bare.split(/\s+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('_') : ''; // "the godfather" is The_Godfather, not the list of meanings of Godfather
           for (const t of [...new Set([lead, sentence, title].filter(Boolean))]) {
-            try { const x = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t)); if (!x.ok) continue; const y = await x.json(); if (y && /^List of /i.test(y.title || '') && !/^list\b/i.test(topic.trim())) { listPage = true; break; } /* the name is a section of a list page: the answer route reads that section */ if (y && y.title && (y.type === 'standard' || y.type === 'disambiguation')) { hit = { title: y.title }; break; } } catch (_) {}
+            try { const x = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t)); if (!x.ok) continue; const y = await x.json(); if (y && /^List of /i.test(y.title || '') && !/^list\b/i.test(topic.trim())) { listPage = true; break; } /* the name is a section of a list page: the answer route reads that section */ if (y && y.title && (y.type === 'standard' || y.type === 'disambiguation')) { hit = { title: y.title, page: y }; break; } } catch (_) {}
           }
         }
         if (listPage && !fromAnswer) return showAnswer(topic);
@@ -2942,8 +3011,8 @@ say('nothing selected to remove');
         }
         named = !!hit;
         if (!hit) throw new Error('none');
-        const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
-        const j = await r.json();
+        // the page that bears the name already came back whole above: it is used as it is, not fetched a second time (one round trip to Wikipedia saved on most asks)
+        const j = hit.page || await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_'))).then((r) => r.json());
         if (vpageEl !== el) return;
         // only a fuzzy neighbour came back (a name that lives in a section of a list page, "Happy Time Harry", finds "Happy Harry's"): the answer route reads the section, or says it found nothing
         if (!fromAnswer && !corrected && j.type !== 'disambiguation') { const NA = await import('/lib/no-answer.js').catch(() => null); if (vpageEl !== el) return; if (NA && NA.isNameAsk(topic) && !NA.sourcesMatch(topic, [{ title: j.title || hit.title, text: (j.description || '') + ' ' + (j.extract || '') }])) return showAnswer(topic); }
@@ -3107,7 +3176,7 @@ say('nothing selected to remove');
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency
@@ -3168,8 +3237,13 @@ say('nothing selected to remove');
       const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
       return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
     }
-    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart
-    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 200, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 227, rice: 185, oats: 90, 'rolled oats': 90, honey: 340, milk: 227, water: 236, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 198, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
+    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart (read 2026-10-30). 2026-10-30: seven of
+    // them were off the chart (sugar 200 for 198, butter 227 for 226, rice 185 for 198, oats 90 for 89, honey 340 for 336, olive oil 198
+    // for 200) and the cards gave no source. A row the chart gives for less than a cup (rice, honey, olive oil...) is scaled to a cup.
+    // Water is not from the chart: a US cup is 236.6 ml and water weighs 1 g a ml (KA_NOT).
+    const KA = [['King Arthur Baking: ingredient weight chart', 'https://www.kingarthurbaking.com/learn/ingredient-weight-chart']], KA_READ = '2026-10-30', KA_NOT = { water: 1 };
+    const cupSrc = (k) => (KA_NOT[k] ? {} : { src: KA, read: KA_READ });
+    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 198, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 226, rice: 198, oats: 89, 'rolled oats': 89, honey: 336, milk: 227, water: 237, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 200, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
     function numberWords(n) {
       if (n < 0) return 'minus ' + numberWords(-n); if (n === 0) return 'zero';
       const O = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'], T = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
@@ -3182,35 +3256,60 @@ say('nothing selected to remove');
     // the asked-for character keeps its case ("ascii code for A" is 65, not 97): find it in the original ask
     let lastAskRaw = '';
     function text0Char(lower, c) { const raw = lastAskRaw || ''; const m = raw.match(/(?:for|of)\s+["'“]?(.)["'”]?\s*\??\s*$/i); return m && m[1].toLowerCase() === c.toLowerCase() ? m[1] : c; }
-    // fixed facts for standard sizes and quantities, with the caveat people need
+    // fixed facts for standard sizes and quantities, with the caveat people need. 2026-10-30: the speed of sound, bulb lumens and drink
+    // sizes now carry the page they come from (read that day): The Physics Factbook for sound (343 m/s at 20 °C; 1,450 to 1,498 m/s in
+    // water), Energy Saver for lumens (it gives no LED wattage, so the old "LED equivalents use 8–10 W" is gone) and NIAAA for a 1.5 fl oz
+    // shot and a 5 fl oz glass of wine; the counts per bottle are worked out from those. A fifth element is the date its page was read.
+    const SOUND = [['The Physics Factbook: speed of sound in air', 'https://hypertextbook.com/facts/2000/CheukWong.shtml'], ['The Physics Factbook: speed of sound in water', 'https://hypertextbook.com/facts/2000/NickyDu.shtml']];
+    const LUMENS = [['Energy Saver: buy lumens, not watts', 'https://www.energy.gov/node/380665']];
+    const DRINKS = [['NIAAA: what is a standard drink', 'https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink']];
+    const WATER_POINTS = [['USDA FSIS: High Altitude Cooking', 'https://www.fsis.usda.gov/es/node/3340']];
+    // cooking amounts, read 2026-10-30: USA Rice for the water ratios and the 1 cup dry = 3 cups cooked yield (and 7 oz to a cup of dry rice),
+    // MSU Extension for the MyPlate ½ cup serving, the National Coffee Association for its 1–2 tablespoons per 6 oz golden ratio (it gives
+    // no cups per pound, so the old "about 48" is gone) and CSU Extension for meat per person (the old ½ lb had nothing behind it)
+    const RICE = [['USA Rice: how to cook rice', 'https://www.usarice.com/thinkrice/how-to/how-to-cook-rice']];
+    const RICE_SERVE = [RICE[0], ['MSU Extension: serving sizes (MyPlate)', 'https://www.montana.edu/extension/buyeatlivebetter/other_nep_resources/fact_sheets/servingsizes/Factsheet_Serving_Sizes_.pdf']];
+    const COFFEE = [['National Coffee Association: drip coffee', 'https://www.aboutcoffee.org/brewing/drip-coffee/']];
+    const MEAT = [['CSU Extension: holiday meat safety', 'https://extension.colostate.edu/resource/holiday-meat-safety/']];
+    // sports sizes, each from the rule that sets it, read 2026-10-30
+    const NFL_FIELD = [['NFL rulebook, Rule 1 (2024)', 'https://operations.nfl.com/media/24emxacq/2024-nfl-rulebook.pdf']];
+    const IFAB_FIELD = [['IFAB Laws of the Game, Law 1: the field of play', 'https://www.theifab.com/laws/latest/the-field-of-play/']];
+    const POOL = [['WA Government sports dimensions guide: swimming', 'https://dlgsc.wa.gov.au/sport-and-recreation/sports-dimensions-guide/swimming'], ['AP (via KSAT): Paris pool depth and the World Aquatics minimum', 'https://www.ksat.com/sports/2024/07/31/no-world-records-have-been-set-at-the-olympic-pool-is-it-too-shallow/']];
+    const STRIDE = [['University of Iowa Student Health: Taking Strides FAQs', 'https://studenthealth.uiowa.edu/assets/Taking-Strides-FAQs.pdf']];
+    const HOOP = [['NBA rulebook, Rule 1: court dimensions and equipment', 'https://official.nba.com/rule-no-1-court-dimensions-equipment'], ['FIBA official basketball rules 2026: equipment', 'https://assets.fiba.basketball/image/upload/documents-corporate-fiba-official-rules-2026-equipment-v1-0.pdf']];
+    const ITU_HD = [['ITU-R BT.1847-1: the 1280 × 720 format', 'https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.1847-1-201506-I!!PDF-E.pdf']];
+    const ITU_UHD = [['ITU-R BT.2100-2, table 1: image formats', 'https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2100-2-201807-S!!PDF-E.pdf']];
+    const DCI_FORMATS = [['DCI Digital Cinema System Specification 1.4.2, section 4.3.1', 'https://dcss.dcimovies.com/0c0cff34d231b516cb89ae3fad352d5cf37a9515/dcss.pdf']];
+    const SODA_CAN = [['FDA: Changes to the Nutrition Facts Label (soda serving)', 'https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/changes-nutrition-facts-label'], ['NIST Handbook 44 (2026), Appendix C: fluid ounce', 'https://www.nist.gov/document/2026-nist-handbook-44-appendix-c'], ['Coca-Cola HBC Italia: Coca-Cola Original Taste packs', 'https://it.coca-colahellenic.com/en/portafoglio-prodotti/esplora-i-nostri-brand/coca-cola-original-taste']];
+    const BEDS = [['Better Sleep Council (ISPA): mattress sizes', 'https://bettersleep.org/mattress-sizes/']];
     const SIZE_FACTS = [
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
-      [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
-      [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
-      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; faster in warm air, much faster in water (about 1,480 m/s)'],
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
-      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?twin(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '38 × 75 in', 'a US twin mattress (97 × 191 cm); twin XL is 38 × 80 in'],
-      [/^how\s+(?:big|large)\s+is\s+(?:an?\s+)?(?:american\s+)?football\s+field(?:\s+in\s+acres)?$/, 'about 1.32 acres', '360 × 160 ft with the end zones (57,600 sq ft); 1.1 acres without them'],
-      [/^how\s+(?:big|large)\s+is\s+a\s+soccer\s+(?:field|pitch)(?:\s+in\s+acres)?$/, 'about 1.76 acres', 'a typical 105 × 68 m pitch; FIFA allows a range'],
-      [/^how\s+(?:long|big)\s+is\s+an?\s+olympic(?:\s+swimming)?\s+pool$/, '50 m long', '25 m wide, at least 2 m deep; about 2,500,000 liters'],
-      [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the rim, from the floor, in the NBA and most leagues'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels', ITU_UHD, '2026-10-30'],
+      [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs (ITU-R BT.2100); cinema 4K (DCI) is 4096 × 2160', [ITU_UHD[0], DCI_FORMATS[0]], '2026-10-30'],
+      [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD; 921,600 pixels', ITU_HD, '2026-10-30'],
+      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; about 0.6 m/s faster for each °C warmer, and about 1,450–1,500 m/s in water at room temperature', SOUND, '2026-10-30'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)', BEDS, '2026-10-30'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in', BEDS, '2026-10-30'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '53 × 75 in', 'a US full (double) mattress (135 × 191 cm)', BEDS, '2026-10-30'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?twin(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '38 × 75 in', 'a US twin mattress (97 × 191 cm); twin XL is 38 × 80 in', BEDS, '2026-10-30'],
+      [/^how\s+(?:big|large)\s+is\s+(?:an?\s+)?(?:american\s+)?football\s+field(?:\s+in\s+acres)?$/, 'about 1.32 acres', '360 × 160 ft by the NFL rule, with the two 10-yard end zones (57,600 sq ft); about 1.1 acres for the 300 ft between the goal lines', NFL_FIELD, '2026-10-30'],
+      [/^how\s+(?:big|large)\s+is\s+a\s+soccer\s+(?:field|pitch)(?:\s+in\s+acres)?$/, 'about 1.6–2.0 acres', '100–110 × 64–75 m for international matches by Law 1 (a 105 × 68 m pitch is about 1.76 acres); other matches may be 90–120 m long and 45–90 m wide', IFAB_FIELD, '2026-10-30'],
+      [/^how\s+(?:long|big)\s+is\s+an?\s+olympic(?:\s+swimming)?\s+pool$/, '50 m long', 'at least 25 m wide, for the 10 lanes of at least 2.5 m that the Olympic Games need; World Aquatics now asks for at least 2.5 m deep (3 m is best), so about 3,125,000 liters at 25 m wide and 2.5 m deep', POOL, '2026-10-30'],
+      [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the top of the ring, from the floor: 10 ft in the NBA rule, 3,050 mm (± 6 mm) in the FIBA rule', HOOP, '2026-10-30'],
       [/^(?:what\s+is\s+(?:the\s+|a\s+)?)?standard\s+(?:interior\s+|front\s+|exterior\s+)?door\s+(?:width|size)$/, '36 in (exterior)', 'US: front doors 36 in wide; interior doors 28–32 in; both usually 80 in tall'],
-      [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', '355 ml in the US; 330 ml is common elsewhere'],
-      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses'],
-      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5-oz shots in a 750 ml bottle; about 39 in a 1.75 l handle'],
-      [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, 'about 48', '6-oz cups at 2 tablespoons of grounds each; stronger brewing gives fewer'],
+      [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', 'the FDA reference serving for soda; 12 × 29.573 ml is 355 ml. Coca-Cola HBC sells its Italian can at 330 ml', SODA_CAN, '2026-10-30'],
+      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses (a standard glass of wine is 5 fl oz)', DRINKS, '2026-10-30'],
+      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5 fl oz shots (a standard drink of spirits) in a 750 ml bottle; about 39 in a 1.75 l handle', DRINKS, '2026-10-30'],
+      [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, '1–2 tbsp per 6 oz', 'of water: the National Coffee Association golden ratio. How many cups a pound makes depends on the grind and how strong you brew, so this gives the ratio, not a count', COFFEE, '2026-10-30'],
       [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
-      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level; a tablespoon is about 12.5 g'],
-      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g'],
+      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level: 198 g a cup ÷ 48 teaspoons is 4.1 g; a tablespoon is about 12.4 g', KA],
+      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g', KA],
       [/^how\s+many\s+watts\s+does\s+a\s+(?:fridge|refrigerator)\s+use$/, 'about 100–250 W running', 'a modern fridge, while the compressor runs; it cycles, so about 1–2 kWh a day in all'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; LED equivalents use about 8–10 W (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)'],
-      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; an LED equivalent uses about 14–16 W'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; to replace a bulb, match its lumens, not its watts (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)', LUMENS, '2026-10-30'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; to replace a bulb, match its lumens, not its watts (60 W ≈ 800, 75 W ≈ 1,100)', LUMENS, '2026-10-30'],
       [/^how\s+many\s+(?:people|adults)\s+(?:per|does\s+a)\s+(?:large\s+)?pizza(?:\s+feed)?$/, '2–3 adults', 'a 14-inch large has 8 slices: about 3 slices each for adults, 2 for kids (so 4 kids)'],
-      [/^how\s+much\s+(?:uncooked\s+|dry\s+)?rice\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¼–½ cup uncooked', 'about 45–90 g dry, which cooks to ¾–1½ cups; use the smaller amount for a side'],
-      [/^(?:what\s+is\s+the\s+)?(?:rice\s+to\s+water|water\s+to\s+rice)\s+ratio(?:\s+for\s+(?:white\s+)?rice)?$|^how\s+much\s+water\s+(?:for|per)\s+(?:a\s+|1\s+|one\s+)?cup\s+of\s+rice$/, '1 : 2', '1 cup white rice to 2 cups water on the stove; jasmine and basmati about 1 : 1½, brown rice 1 : 2½'],
-      [/^how\s+(?:much|many\s+pounds\s+of)\s+meat\s+(?:per|for\s+(?:each|one|a))\s+person$/, '½ lb boneless', 'about 225 g boneless per adult; ¾–1 lb bone-in (ribs, whole chicken)'],
+      [/^how\s+much\s+(?:uncooked\s+|dry\s+)?rice\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¼–½ cup uncooked', 'about 50–100 g dry (a cup of dry rice is about 7 oz), which cooks to ¾–1½ cups; a MyPlate serving of cooked rice is ½ cup, so use the smaller amount for a side', RICE_SERVE, '2026-10-30'],
+      [/^(?:what\s+is\s+the\s+)?(?:rice\s+to\s+water|water\s+to\s+rice)\s+ratio(?:\s+for\s+(?:white\s+)?rice)?$|^how\s+much\s+water\s+(?:for|per)\s+(?:a\s+|1\s+|one\s+)?cup\s+of\s+rice$/, '1 : 2', '1 cup long-grain white rice to 2 cups water; U.S. jasmine and basmati also 1 : 2, medium grain 1 : 1½, short grain 1 : 1¼, brown and parboiled 1 : 2¼', RICE, '2026-10-30'],
+      [/^how\s+(?:much|many\s+pounds\s+of)\s+meat\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¾ lb boneless', 'per person for a boneless roast or turkey breast (about 340 g); 1–1½ lb for a whole bird or a bone-in roast or ham: the CSU Extension amounts for a holiday meal', MEAT, '2026-10-30'],
     ];
     // texting and office abbreviations, answered with what they stand for and where they are used
     const ABBR = { lol: ['laughing out loud', 'texting: it marks something as funny'], asap: ['as soon as possible', 'everyday and work'], brb: ['be right back', 'texting'], btw: ['by the way', 'texting'], fyi: ['for your information', 'work and email'], imo: ['in my opinion', 'texting'], imho: ['in my humble opinion', 'texting'], tbh: ['to be honest', 'texting'], idk: ["I don't know", 'texting'], omg: ['oh my god', 'texting'], rsvp: ['répondez s’il vous plaît: please reply', 'invitations: say whether you are coming'], eta: ['estimated time of arrival', 'travel and work'], faq: ['frequently asked questions', 'websites'], diy: ['do it yourself', 'crafts and home'], aka: ['also known as', 'everyday'], tba: ['to be announced', 'schedules'], tbd: ['to be determined', 'schedules'], fomo: ['fear of missing out', 'slang'], smh: ['shaking my head', 'texting: disappointment'], irl: ['in real life', 'online'], dm: ['direct message', 'social media'], afaik: ['as far as I know', 'texting'], tldr: ['too long; didn’t read', 'online: a short summary follows'], ootd: ['outfit of the day', 'social media'], nvm: ['never mind', 'texting'], ttyl: ['talk to you later', 'texting'], rofl: ['rolling on the floor laughing', 'texting'], jk: ['just kidding', 'texting'], ikr: ['I know, right?', 'texting'], ftw: ['for the win', 'slang'], goat: ['greatest of all time', 'slang, especially sports'], ama: ['ask me anything', 'online Q&A'], eod: ['end of day', 'work'], ooo: ['out of office', 'work'], wfh: ['working from home', 'work'], pto: ['paid time off', 'work'], roi: ['return on investment', 'business'], kpi: ['key performance indicator', 'business'], cc: ['carbon copy', 'email: a copy to someone else'], bcc: ['blind carbon copy', 'email: a copy the others cannot see'], ps: ['postscript', 'letters: something added at the end'], nb: ['nota bene: note well', 'writing'], ie: ['id est: that is', 'writing: restates'], eg: ['exempli gratia: for example', 'writing: gives examples'], etc: ['et cetera: and so on', 'writing'] , nasa: ['National Aeronautics and Space Administration', 'the US space agency'], fbi: ['Federal Bureau of Investigation', 'US federal police'], cia: ['Central Intelligence Agency', 'US foreign intelligence'], nato: ['North Atlantic Treaty Organization', 'a military alliance of North American and European countries'], unesco: ['United Nations Educational, Scientific and Cultural Organization', 'a UN agency'], unicef: ['United Nations Children\'s Fund (originally International Children\'s Emergency Fund)', 'a UN agency'], who: ['World Health Organization', 'the UN health agency'], eu: ['European Union', 'a union of European countries'], usa: ['United States of America', 'the country'], ceo: ['chief executive officer', 'business: the top manager'], cfo: ['chief financial officer', 'business'], cto: ['chief technology officer', 'business'], hr: ['human resources', 'work'], gdp: ['gross domestic product', 'economics: the value of all goods and services a country makes'], dna: ['deoxyribonucleic acid', 'biology: the molecule that carries genes'], rna: ['ribonucleic acid', 'biology'], ai: ['artificial intelligence', 'computing'], atm: ['automated teller machine', 'banking (a cash machine)'], url: ['uniform resource locator', 'the web: a page\'s address'], html: ['HyperText Markup Language', 'the web'], css: ['Cascading Style Sheets', 'the web'], pdf: ['Portable Document Format', 'files'], gif: ['Graphics Interchange Format', 'images'], jpeg: ['Joint Photographic Experts Group', 'images'], usb: ['Universal Serial Bus', 'computing'], gps: ['Global Positioning System', 'navigation'], scuba: ['self-contained underwater breathing apparatus', 'diving'], laser: ['light amplification by stimulated emission of radiation', 'physics'], radar: ['radio detection and ranging', 'physics'], ufo: ['unidentified flying object', 'everyday'] };
@@ -3243,7 +3342,8 @@ say('nothing selected to remove');
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
-      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      // also "roman numeral 2024" and "2024 roman numerals", with no "for" (2026-10-30: live, they went to the web and came back as a guess)
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:(?:for|of)\s+)?(\d{1,4})$/) || t.match(/^(\d{1,4})\s+roman\s+numerals?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
       // "0.2 as a percent", "0.875 to a percentage"
       m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
@@ -3303,9 +3403,9 @@ say('nothing selected to remove');
       // "0xff in decimal", "0b1010 in decimal"
       m = t.match(/^(0x[0-9a-f]+|0b[01]+|0o[0-7]+)(?:\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number))?$/);
       if (m) { const v = Number(m[1]); return { value: v.toLocaleString(), note: m[1] + ' = ' + v + ' in decimal' }; }
-      // dog years (the simple vets' rule: 15 for year one, 9 for year two, then about 5 a year for a medium dog)
+      // dog years: the AVMA rule for a medium-sized dog (15 for year one, about 9 for year two, about 5 a year after), as the AKC page gives it (read 2026-10-30)
       m = t.match(/(?:how\s+old\s+is\s+)?(?:my\s+|a\s+)?dog(?:'s)?.*?(?:in\s+human\s+years|human\s+age).*?(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:-|\s)?(?:year|yr)s?(?:\s+|-)old\s+dog\s+in\s+human\s+years|(\d+(?:\.\d+)?)\s+dog\s+years\s+in\s+human\s+years/);
-      if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium dog in human years (15 for the first year, 9 for the second, about 5 a year after; big dogs age faster)' }; } }
+      if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium-sized dog in human years (15 for the first year, about 9 for the second, about 5 a year after); larger breeds tend to have shorter lives', src: [['AKC: dog years to human years (the AVMA rule)', 'https://www.akc.org/expert-advice/health/how-to-calculate-dog-years-to-human-years/']], read: '2026-10-30' }; } }
       // dates from today: "what date is 90 days from today", "45 days from now", "the date next friday"
       m = t.match(/^(?:(?:what(?:'s|\s+is|\s+will\s+be)\s+)?the\s+date\s+|(?:what\s+)?date\s+(?:is|will\s+it\s+be)\s+|what\s+day\s+is\s+)?(\d{1,5})\s+(days?|weeks?|months?)\s+(?:from\s+(?:today|now)|after\s+today)$/);
       if (m) { const d = new Date(); d.setHours(12, 0, 0, 0); if (/^m/.test(m[2])) { const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + +m[1]); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); } else d.setDate(d.getDate() + +m[1] * (/^w/.test(m[2]) ? 7 : 1));
@@ -3324,23 +3424,28 @@ say('nothing selected to remove');
       if (m) { const n = +(m[1] || m[2]).replace(/,/g, ''); if (Number.isSafeInteger(n)) return { value: numberWords(n), note: n.toLocaleString() + ' in words' }; }
       // baking by weight: "2 cups of flour in grams", "how many grams in a cup of sugar"
       m = t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+cups?\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+(grams|g|ounces|oz)$/) || ((mm) => mm && [mm[0], '1', mm[2], mm[1]])(t.match(/^how\s+many\s+(grams|g|ounces|oz)\s+(?:is|are|in)\s+(?:a|one|1)\s+cup\s+of\s+([a-z -]+)$/));
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
-        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (about ' + g + ' g a cup, spooned and levelled; scooping packs more in)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
+        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (' + (KA_NOT[k] ? '236.6 ml a cup, 1 g a ml' : 'about ' + g + ' g a cup, spooned and levelled; scooping packs more in') + ')', ...cupSrc(k) }; } }
       // food safety: "what temperature to cook chicken", "safe internal temp for pork"
-      m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+beef|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temperature\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey)\s+(?:done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$/);
-      if (m) { const k = (m[1] || m[2] || m[3]).replace(/s$/, '');
-        if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)' };
-        const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
-        return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)' }; }
+      m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temp(?:erature)?\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey|lamb)\s+(?:done|be\s+done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$|^how\s+hot\s+(?:should|does|do)\s+(chicken|turkey|pork|beef|steak|lamb|ground\s+(?:beef|pork|lamb|turkey|chicken|meat)|sausages?|burgers?|fish|salmon|leftovers)\s+(?:need\s+to\s+)?be\s+cooked(?:\s+to)?$/);
+      // the chart's own page (FoodSafety.gov, last reviewed 2024-11-21, read 2026-10-30): the card said "(USDA)" with no link before
+      const FS = [['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']];
+      if (m) { const k = (m[1] || m[2] || m[3] || m[4]).replace(/s$/, '');
+        if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)', src: FS, read: '2026-10-30' };
+        const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger|sausage/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
+        return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)', src: FS, read: '2026-10-30' }; }
       // steak doneness: "medium rare steak temperature", "steak doneness temps", "temperature for a well done steak"
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(?:(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+)?(?:steak|beef)\s+(?:doneness\s+)?(?:internal\s+)?(?:temperatures?|temps?)$|^(?:what\s+)?(?:internal\s+)?(?:temperature|temp)\s+(?:for|is)\s+(?:a\s+)?(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+(?:steak|beef)$|^steak\s+doneness(?:\s+chart)?$/);
-      if (m) { const DONE = { rare: [125, 52], 'medium rare': [135, 57], medium: [145, 63], 'medium well': [150, 66], 'well done': [160, 71] }, k = (m[1] || m[2] || '').replace(/-/g, ' ');
-        const row = (d) => d + ' ' + DONE[d][0] + ' °F (' + DONE[d][1] + ' °C)';
-        return { value: k ? row(k) : Object.keys(DONE).map(row).join('\n'), note: 'internal temperature of a steak' + (k ? ' cooked ' + k : '') + ' after resting; take it off the heat about 5 °F (3 °C) sooner. USDA safe minimum for whole beef cuts is 145 °F (63 °C) with a 3-minute rest' }; }
+      // rare to medium well from Certified Angus Beef's doneness page; it gives no well-done steak temperature, so well done is ThermoWorks' "155 °F and up" (both read 2026-10-30)
+      if (m) { const DONE = { rare: [125, 52], 'medium rare': [135, 57], medium: [145, 63], 'medium well': [150, 66], 'well done': [155, 68] }, k = (m[1] || m[2] || '').replace(/-/g, ' ');
+        const row = (d) => d + ' ' + DONE[d][0] + ' °F (' + DONE[d][1] + ' °C)' + (d === 'well done' ? ' and up' : '');
+        const CAB = ['Certified Angus Beef: degree of doneness', 'https://www.certifiedangusbeef.com/en/cooking/degree-of-doneness'], TW = ['ThermoWorks: doneness temperatures', 'https://www.thermoworks.com/blogs/thermoblog/chef-recommended-tw-approved'];
+        return { value: k ? row(k) : Object.keys(DONE).map(row).join('\n'), note: 'internal temperature of a steak' + (k ? ' cooked ' + k : '') + ' after resting; take it off the heat about 5 °F (3 °C) sooner. USDA safe minimum for whole beef cuts is 145 °F (63 °C) with a 3-minute rest',
+          src: [...(k === 'well done' ? [] : [CAB]), ...(!k || k === 'well done' ? [TW] : []), ['FoodSafety.gov: safe minimum internal temperatures', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures']], read: '2026-10-30' }; }
       // grams to cups: "how many cups is 500g of flour", "250 g sugar in cups"
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
-      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
-        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      if (m) { const k = m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, ''), g = CUP_GRAMS[k]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
+        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup' + (KA_NOT[k] ? ' (236.6 ml, 1 g a ml)' : ' (spooned and levelled)'), ...cupSrc(k) }; } }
       return WM_NEXT;
     }
     // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
@@ -3360,8 +3465,10 @@ say('nothing selected to remove');
       if (m) { const k = (m[1] || m[2]), half = /^how\s+many\s+(?:[a-z]+\s+)?(?:is|are|in|make)\s+half/.test(t) || /half/.test(k), base = /baker/.test(k) ? 13 : /gross/.test(k) ? 144 : /score/.test(k) ? 20 : 12, v = half ? base / 2 : base;
         return { value: String(v), note: (half ? 'half ' : 'a ') + k.replace(/^half\s+/, '') + ' is ' + v + ({ 13: ' (twelve plus one: bakers added an extra loaf)', 144: ' (a dozen dozens)', 20: '' }[base] || '') }; }
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
-      if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
-        return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
+      // the times are the egg boards' own (read 2026-10-30); before that the card gave soft 6, medium 8 and hard 10 to 12 minutes with no source
+      if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$|^how\s+(?:to|do\s+(?:you|i))\s+(?:hard[\s-]|soft[\s-])?boil\s+(?:an?\s+|the\s+)?eggs?$|^how\s+to\s+make\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
+        return { value: 'hard 12 min off the heat\nsoft 4–6 min', note: 'hard: large eggs in one layer, cold water 1 inch over them, heated just to a boil, then covered off the heat for 12 minutes (9 for medium eggs, 15 for extra large) and cooled in cold water (American Egg Board). Lowered into simmering water instead: 10 minutes (British Egg Information Service). Soft, with a runny yolk: 4 to 6 minutes (Egg Farmers of Canada)',
+          src: [['American Egg Board: hard-boiled eggs', 'https://www.incredibleegg.org/recipe/how-to-make-hard-boiled-eggs/'], ['British Egg Information Service: hard boiled eggs', 'https://www.egginfo.co.uk/recipes/how-hard-boil-eggs'], ['Egg Farmers of Canada: boiled eggs', 'https://eggs.ca/eggs101/how-to-make-the-perfect-hard-boiled-egg/']], read: '2026-10-30' };
       // "2 hours and 15 minutes in minutes", "1 hr 30 min to hours"
       m = t.match(/^(?:what(?:'s|\s+is)\s+|convert\s+)?(\d+)\s*(?:hours?|hrs?|h)\s*(?:and\s+)?(\d+)\s*(?:minutes?|mins?|m)\s+(?:in|to|into)\s+(minutes?|mins|seconds?|secs|hours?|hrs)$/);
       if (m) { const min = +m[1] * 60 + +m[2], u = m[3].charAt(0) === 's' ? 'seconds' : m[3].charAt(0) === 'h' ? 'hours' : 'minutes';
@@ -3390,7 +3497,7 @@ say('nothing selected to remove');
       // "boiling point of water in fahrenheit", "what temperature does water freeze": at sea level
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(boiling|freezing)\s+point\s+(?:of\s+)?water(?:\s+(?:in|at)\s+(fahrenheit|celsius|centigrade|kelvin|f|c|k))?$|^(?:at\s+)?what\s+temp(?:erature)?\s+does\s+water\s+(boil|freeze)(?:\s+(?:in|at)\s+(fahrenheit|celsius|kelvin|f|c|k))?$/);
       if (m) { const boil = /boil/.test(m[1] || m[3]), u = (m[2] || m[4] || '').charAt(0), F = boil ? 212 : 32, C = boil ? 100 : 0, K = boil ? 373.15 : 273.15;
-        return { value: u === 'c' ? C + ' °C' : u === 'k' ? K + ' K' : u === 'f' ? F + ' °F' : F + ' °F (' + C + ' °C)', note: 'water ' + (boil ? 'boils' : 'freezes') + ' at ' + F + ' °F = ' + C + ' °C = ' + K + ' K at sea level' + (boil ? '; lower up high (about 203 °F in Denver)' : '') }; }
+        return { value: u === 'c' ? C + ' °C' : u === 'k' ? K + ' K' : u === 'f' ? F + ' °F' : F + ' °F (' + C + ' °C)', note: 'water ' + (boil ? 'boils' : 'freezes') + ' at ' + F + ' °F = ' + C + ' °C = ' + K + ' K at sea level' + (boil ? '; lower up high: just under 1 °F less for each 500 ft of elevation, so 208 °F at 2,000 ft and about 198 °F at 7,500 ft' : ''), ...(boil ? { src: WATER_POINTS, read: '2026-10-30' } : {}) }; }
       // height: "5 feet 10 inches in cm", "6'2 in cm", "5 ft 10 in to meters"
       m = t.match(/^(?:convert\s+)?(\d{1,2})\s*(?:'|’|ft|feet|foot)\s*(?:and\s+)?(\d{1,2}(?:\.\d+)?)?\s*(?:"|”|''|in|inch|inches)?\s+(?:in|to|into)\s+(cm|centimet(?:er|re)s?|m|met(?:er|re)s?)$/);
       if (m) { const inch = +m[1] * 12 + +(m[2] || 0), cm = Math.round(inch * 2.54 * 10) / 10, toM = /^m/.test(m[3]);
@@ -3465,10 +3572,10 @@ say('nothing selected to remove');
       // counting words: "how many is a baker's dozen", "how many in a gross", "what is a score"
       m = t.match(/^(?:how\s+many\s+(?:is|are|in)\s+(?:a|one)\s+|(?:what(?:'s|\s+is)\s+)?(?:a|one)\s+)(baker'?s\s+dozen|dozen|gross|score|great\s+gross|pair|brace|myriad|ream)(?:\s+in\s+numbers)?$/);
       if (m) { const k = m[1].replace(/\s+/g, ' ').replace(/'/g, ''), N = { 'bakers dozen': 13, dozen: 12, gross: 144, score: 20, 'great gross': 1728, pair: 2, brace: 2, myriad: 10000, ream: 500 }[k]; return { value: String(N), note: 'a ' + m[1] + (k === 'gross' ? ' (12 dozen)' : k === 'ream' ? ' (sheets of paper)' : k === 'bakers dozen' ? ' (12 plus one)' : '') }; }
-      // little body and health facts with their usual ranges
-      if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the classic average; healthy adults range about 97–99 °F (36.1–37.2 °C), lower in the morning; 100.4 °F (38 °C) or more counts as a fever' };
-      if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the old rule of thumb for a pound of body fat; real weight loss slows as the body adapts, so it is a rough guide' };
-      if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:a|one)\s+mile$/.test(t)) return { value: 'about 2,000–2,500', note: 'walking; it depends on stride length (taller people take fewer); running is about 1,400–1,700' };
+      // little body and health facts: body temperature from MedlinePlus, the pound-of-fat figure from Mayo Clinic (both read 2026-10-30); steps a mile has no source yet
+      if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the generally accepted average; some studies put normal at 97–99 °F (36.1–37.2 °C), lowest early in the morning; above 100.4 °F (38 °C) is usually a fever', src: [['MedlinePlus: body temperature norms', 'https://medlineplus.gov/ency/article/001982.htm']], read: '2026-10-30' };
+      if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the commonly accepted figure for a pound of fat (500 fewer a day is about a pound a week); a pound lost is fat, muscle and water, and metabolism changes the sum, so it is a rough guide', src: [['Mayo Clinic News Network: calories and weight loss', 'https://newsnetwork.mayoclinic.org/discussion/its-complicated-calories-and-other-factors-affect-weight-loss/']], read: '2026-10-30' };
+      if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:(?:a|one)\s+)?mile$/.test(t)) return { value: 'a little over 2,000', note: 'walking, at the average stride of about 2.5 ft (5,280 ft ÷ 2.5 ft is about 2,100); a longer stride takes fewer steps', src: STRIDE, read: '2026-10-30' };
       if (/^how\s+many\s+(?:work(?:ing)?\s+hours|hours\s+of\s+work)\s+(?:are\s+)?in\s+a\s+year$/.test(t)) return { value: '2,080', note: '40 hours a week × 52 weeks, before holidays and time off' };
       // fever and other temperatures: "102 f fever in celsius"
       m = t.match(/^(-?\d+(?:\.\d+)?)\s*°?\s*(f|c|fahrenheit|celsius)\s+(?:fever|temperature|temp|body\s+temp(?:erature)?)\s+(?:in|to)\s+(celsius|c|fahrenheit|f)$/);
@@ -3518,12 +3625,12 @@ say('nothing selected to remove');
       // "speed of light in mph"
       m = t.match(/^(?:the\s+)?speed\s+of\s+(light|sound)\s+in\s+(mph|km\/?h|kph|m\/s|miles?\s+per\s+(?:hour|second)|km\/s)$/);
       if (m) { const ms = m[1] === 'light' ? 299792458 : 343, u = m[2]; const v = /mph|miles?\s+per\s+hour/.test(u) ? ms / 0.44704 : /miles?\s+per\s+second/.test(u) ? ms / 1609.344 : /km\/?h|kph/.test(u) ? ms * 3.6 : /km\/s/.test(u) ? ms / 1000 : ms;
-        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature' }; }
+        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature', ...(m[1] === 'sound' ? { src: [SOUND[0]], read: '2026-10-30' } : {}) }; }
       // tiny definitions with numbers
       if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
       if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
       // standard sizes and everyday quantities: fixed facts answered here, each with its usual caveat
-      for (const [re, value, note] of SIZE_FACTS) if (re.test(t)) return { value, note };
+      for (const [re, value, note, src, read] of SIZE_FACTS) if (re.test(t)) return src ? { value, note, src, read: read || KA_READ } : { value, note };
       // paper in other units: "a4 in inches", "us letter size in mm"
       m = t.match(/^(?:what\s+(?:size|dimensions?)\s+is\s+)?(a[0-6]|us\s+letter|letter|legal|tabloid)(?:\s+(?:paper|size|sheet))*(?:\s+(?:in|to)\s+(mm|cm|inches|in))?$/);
       if (m) { const P = { a0: [841, 1189], a1: [594, 841], a2: [420, 594], a3: [297, 420], a4: [210, 297], a5: [148, 210], a6: [105, 148], letter: [215.9, 279.4], 'us letter': [215.9, 279.4], legal: [215.9, 355.6], tabloid: [279.4, 431.8] }[m[1].replace(/\s+/g, ' ')], u = m[2] || (/^a/.test(m[1]) ? 'mm' : 'in');
@@ -3536,8 +3643,9 @@ say('nothing selected to remove');
       if (m) { const inch = +m[1] * (/^m/.test(m[2]) ? 39.37 : 12), lo = Math.round(inch / 1.6 / 5) * 5, hi = Math.round(inch / 1.0 / 5) * 5; return { value: 'about ' + lo + '–' + Math.min(hi, 120) + ' inches', note: 'for 4K at ' + m[1] + ' ' + m[2] + ': the smaller end fills about 30° of your view (SMPTE), the larger about 40° (THX, more cinematic)' }; }
       // resolutions: "how many pixels in 1080p", "how many megapixels is 4k"
       m = t.match(/^how\s+many\s+(pixels|megapixels)\s+(?:is|are\s+in|in)\s+(?:a\s+)?(720p|1080p|1440p|2k|4k|8k|full\s+hd|uhd)(?:\s+(?:screen|image|video|resolution))?$/);
-      if (m) { const R = { '720p': [1280, 720], '1080p': [1920, 1080], 'full hd': [1920, 1080], '1440p': [2560, 1440], '2k': [2560, 1440], '4k': [3840, 2160], uhd: [3840, 2160], '8k': [7680, 4320] }[m[2].replace(/\s+/g, ' ')], px = R[0] * R[1];
-        return { value: m[1] === 'pixels' ? px.toLocaleString() : (Math.round(px / 1e5) / 10) + ' MP', note: R[0] + ' × ' + R[1] }; }
+      if (m) { const R = { '720p': [1280, 720], '1080p': [1920, 1080], 'full hd': [1920, 1080], '1440p': [2560, 1440], '2k': [2048, 1080], '4k': [3840, 2160], uhd: [3840, 2160], '8k': [7680, 4320] }[m[2].replace(/\s+/g, ' ')], px = R[0] * R[1];
+        const S = { '720p': ITU_HD, '1080p': ITU_UHD, 'full hd': ITU_UHD, '2k': DCI_FORMATS, '4k': ITU_UHD, uhd: ITU_UHD, '8k': ITU_UHD }[m[2].replace(/\s+/g, ' ')];
+        return { value: m[1] === 'pixels' ? px.toLocaleString() : (Math.round(px / 1e5) / 10) + ' MP', note: R[0] + ' × ' + R[1] + (m[2] === '2k' ? ', the DCI cinema 2K container' : m[2] === '1440p' ? ', 1440 lines at 16:9' : ''), ...(S ? { src: S, read: '2026-10-30' } : {}) }; }
       // print: "print size of 3000x2000 at 300 dpi", "72 dpi in pixels per cm"
       m = t.match(/^(?:the\s+)?print\s+size\s+(?:of|for)\s+(?:a\s+)?(\d{2,6})\s*[x×]\s*(\d{2,6})(?:\s+(?:image|photo|pixels?))?\s+at\s+(\d{2,4})\s*(?:dpi|ppi)$/);
       if (m) { const r = (x) => Math.round(x * 100) / 100, w = +m[1] / +m[3], h = +m[2] / +m[3]; return { value: r(w) + ' × ' + r(h) + ' in', note: r(w * 2.54) + ' × ' + r(h * 2.54) + ' cm at ' + m[3] + ' dpi (300 is photo quality)' }; }
@@ -3555,12 +3663,19 @@ say('nothing selected to remove');
       // ring sizes: "ring size 7 diameter", "17 mm ring size"
       m = t.match(/^(?:us\s+)?ring\s+size\s+(\d{1,2}(?:\.\d+)?)\s+(?:diameter|in\s+mm|inside\s+diameter|circumference)$/);
       if (m) { const dmm = 11.63 + 0.8128 * +m[1], r = (x) => Math.round(x * 100) / 100; return { value: /circum/.test(t) ? r(dmm * Math.PI) + ' mm around' : r(dmm) + ' mm', note: 'US ring size ' + m[1] + ': ' + r(dmm) + ' mm inside diameter, ' + r(dmm * Math.PI) + ' mm around' }; }
-      // turkey: "how long to cook a 12 pound turkey" (325 °F, unstuffed, USDA chart), "how long to thaw a 15 lb turkey in the fridge"
+      // turkey: "how long to cook a 12 pound turkey", "how long to thaw a 15 lb turkey in the fridge". 2026-10-30: the rows are the USDA FSIS
+      // "Let's Talk Turkey" tables (325 °F oven, read 2026-10-30), with the stuffed time from its own table (it was "add about 30 min"), the
+      // 4-8 lb row as a breast, a bird past 24 lb as past the table (it was "about 5 h or more"), and the thaw rows as the page gives them.
+      const TK = [['USDA FSIS: Let\u2019s Talk Turkey, roasting', 'https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/poultry/lets-talk-turkey-roasting']], TK_READ = '2026-10-30';
       m = t.match(/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:cook|roast|bake)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+for)?$/);
-      if (m) { const w = +m[1], R = [[12, '2¾–3 h'], [14, '3–3¾ h'], [18, '3¾–4¼ h'], [20, '4¼–4½ h'], [24, '4½–5 h']], r = (R.find((x) => w <= x[0]) || [0, 'about 5 h or more'])[1];
-        return { value: r, note: 'a ' + w + '-lb turkey, unstuffed, at 325 °F (USDA); add about 30 min if stuffed; it is done at 165 °F in the thickest part of the thigh, wing and breast' }; }
+      if (m) { const w = +m[1], R = [[8, '1½–3¼ h', '2½–3½ h', ' (a breast: USDA times a whole bird from 8 lb)'], [12, '2¾–3 h', '3–3½ h'], [14, '3–3¾ h', '3½–4 h'], [18, '3¾–4¼ h', '4–4¼ h'], [20, '4¼–4½ h', '4¼–4¾ h'], [24, '4½–5 h', '4¾–5¼ h']], r = R.find((x) => w <= x[0]);
+        if (!r || w < 4) return { value: w < 4 ? 'below the USDA table' : 'past the USDA table', note: 'the USDA roasting table at 325 °F runs from 4 to 24 lb; cook until a food thermometer reads 165 °F in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ };
+        return { value: r[1], note: 'a ' + w + '-lb turkey' + (r[3] || '') + ', unstuffed, in a 325 °F oven; stuffed: ' + r[2] + '. It is safe at 165 °F on a food thermometer in the thickest part of the thigh, wing and breast', src: TK, read: TK_READ }; }
       m = t.match(/^how\s+long\s+(?:does\s+it\s+take\s+)?to\s+(?:thaw|defrost)\s+(?:an?\s+)?(\d{1,2}(?:\.\d+)?)\s*(?:pounds?|lbs?|-?\s*lb)\s+turkey(?:\s+in\s+(?:the\s+)?(fridge|refrigerator|cold\s+water))?$/);
-      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''); return cold ? { value: 'about ' + Math.ceil(w / 2) + ' h', note: 'in cold water: 30 min per pound, changing the water every 30 minutes (USDA)' } : { value: 'about ' + Math.ceil(w / 4) + ' days', note: 'in the fridge: about one day for every 4–5 lb (USDA); keeps 1–2 more days thawed' }; }
+      if (m) { const w = +m[1], cold = /water/.test(m[2] || ''), F = [[12, '1–3 days'], [16, '3–4 days'], [20, '4–5 days'], [24, '5–6 days']], C = [[12, '2–6 h'], [16, '6–8 h'], [20, '8–10 h'], [24, '10–12 h']], r = (cold ? C : F).find((x) => w <= x[0]), hrs = w / 2;
+        const value = r ? r[1] : cold ? 'about ' + (hrs % 1 ? hrs.toFixed(1) : hrs) + ' h' : 'about ' + Math.ceil(w / 4) + ' days';
+        return cold ? { value, note: 'a ' + w + '-lb turkey in cold water: about 30 minutes per pound' + (r ? '' : ' (past the 24-lb table)') + '; change the water every 30 minutes and cook it right away (USDA)', src: TK, read: TK_READ }
+          : { value, note: 'a ' + w + '-lb turkey in the fridge: about 24 hours for every 4 to 5 pounds' + (r ? '' : ' (past the 24-lb table)') + '; it keeps 1–2 more days thawed (USDA)', src: TK, read: TK_READ }; }
       // recipe fractions: "double 3/4 cup", "half of 2/3 cup", "triple 1/3 cup"
       m = t.match(/^(double|triple|halve|half\s+of|a\s+third\s+of|quarter\s+of)\s+(\d+)\s*\/\s*(\d+)(?:\s+(cups?|tablespoons?|tbsp|teaspoons?|tsp|pounds?|lbs?|ounces?|oz))?$/);
       if (m && +m[3]) { const k = { double: [2, 1], triple: [3, 1], halve: [1, 2], 'half of': [1, 2], 'a third of': [1, 3], 'quarter of': [1, 4] }[m[1].replace(/\s+/g, ' ')], num = +m[2] * k[0], den = +m[3] * k[1], g = gcdOf(num, den), n = num / g, d = den / g, whole = Math.floor(n / d), rem = n % d;
@@ -3657,17 +3772,26 @@ say('nothing selected to remove');
       // range on fuel: "how many miles can i drive on 12 gallons at 30 mpg"
       m = t.match(/^how\s+(?:many\s+miles|far)\s+can\s+(?:i|you)\s+(?:drive|go)\s+on\s+(\d+(?:\.\d+)?)\s*(?:gallons?|gal)\s+(?:at|with|getting)\s+(\d+(?:\.\d+)?)\s*mpg$/);
       if (m) { const v = +m[1] * +m[2]; return { value: v.toLocaleString() + ' miles', note: m[1] + ' gal × ' + m[2] + ' mpg' }; }
-      // home projects: paint, mulch, concrete, heating and cooling
+      // home projects: paint, mulch, concrete, heating and cooling. Paint coverage is the low end of This Old House's 350-400 sq ft a gallon;
+      // concrete bag yields are Quikrete's Concrete Mix data sheet (40 lb 0.30, 50 lb 0.375, 60 lb 0.45, 80 lb 0.60 cu ft); both read 2026-10-30
       m = t.match(/^how\s+(?:many\s+gallons\s+of|much)\s+paint\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)(?:\s+(?:with\s+)?(one|two|1|2|three|3)\s+coats?)?$/);
-      if (m) { const coats = { one: 1, '1': 1, two: 2, '2': 2, three: 3, '3': 3 }[m[2] || 'two'], g = +m[1] * coats / 350; return { value: 'about ' + (Math.round(g * 10) / 10) + ' gallons', note: coats + (coats === 1 ? ' coat' : ' coats') + ' at about 350 sq ft per gallon; buy ' + Math.ceil(g) + '; rough or porous walls take more' }; }
+      if (m) { const coats = { one: 1, '1': 1, two: 2, '2': 2, three: 3, '3': 3 }[m[2] || 'two'], g = +m[1] * coats / 350; return { value: 'about ' + (Math.round(g * 10) / 10) + ' gallons', note: coats + (coats === 1 ? ' coat' : ' coats') + ' at about 350 sq ft per gallon (a gallon usually covers 350 to 400); buy ' + Math.ceil(g) + '; porous surfaces like stucco or unpainted drywall take more', src: [['This Old House: how much paint do I need', 'https://www.thisoldhouse.com/painting/how-much-paint-do-i-need']], read: '2026-10-30' }; }
       m = t.match(/^how\s+much\s+(mulch|soil|topsoil|gravel|sand|compost|stone)\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)\s+(?:at\s+)?(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:deep|thick)?$/);
       if (m) { const cf = +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet of ' + m[1] + ' · about ' + Math.ceil(cf / 2) + ' bags of 2 cu ft' }; }
       m = t.match(/^how\s+much\s+concrete\s+(?:do\s+i\s+need\s+)?(?:for|to\s+pour)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:x|by|×)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|foot|')?\s*(?:slab|patio|pad|floor)?\s*,?\s*(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:thick|deep)?$/);
-      if (m) { const cf = +m[1] * +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet · about ' + Math.ceil(cf / 0.6) + ' bags of 80 lb (0.6 cu ft each); order 10% extra' }; }
+      if (m) { const cf = +m[1] * +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet · about ' + Math.ceil(cf / 0.6) + ' bags of 80 lb (0.6 cu ft each); order 10% extra', src: [['Quikrete Concrete Mix data sheet (yield per bag)', 'https://www.quikrete.com/PDFs/DATA_SHEET-Concrete%20Mix%201101.pdf']], read: '2026-10-30' }; }
       m = t.match(/^how\s+many\s+(?:bags\s+of\s+)?(\d{2})\s*(?:-?\s*lbs?|\s*pounds?)\s+(?:bags\s+of\s+)?concrete(?:\s+bags)?\s+(?:for|in|make)\s+(?:a|one|1|(\d+(?:\.\d+)?))\s+cubic\s+yards?$/);
-      if (m) { const y = { 40: 0.3, 50: 0.375, 60: 0.45, 80: 0.6 }[m[1]]; if (y) { const n = Math.ceil(27 * +(m[2] || 1) / y); return { value: n + ' bags', note: m[1] + '-lb bags yield about ' + y + ' cu ft each; a cubic yard is 27 cu ft' }; } }
+      if (m) { const y = { 40: 0.3, 50: 0.375, 60: 0.45, 80: 0.6 }[m[1]]; if (y) { const n = Math.ceil(27 * +(m[2] || 1) / y); return { value: n + ' bags', note: m[1] + '-lb bags yield about ' + y + ' cu ft each; a cubic yard is 27 cu ft', src: [['Quikrete Concrete Mix data sheet (yield per bag)', 'https://www.quikrete.com/PDFs/DATA_SHEET-Concrete%20Mix%201101.pdf']], read: '2026-10-30' }; } }
       m = t.match(/^(?:how\s+many\s+)?btus?\s+(?:do\s+i\s+need\s+|needed\s+)?(?:for|to\s+(?:cool|heat))\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|area|house|home))?$|^what\s+size\s+(?:ac|air\s+conditioner|a\/c)(?:\s+unit)?\s+(?:do\s+i\s+need\s+)?for\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|house|home))?$/);
-      if (m) { const a = +(m[1] || m[2]), btu = Math.round(a * 20 / 500) * 500, tons = btu / 12000; return { value: btu.toLocaleString() + ' BTU' + (tons >= 1 ? ' (' + (Math.round(tons * 2) / 2) + ' tons)' : ''), note: 'about 20 BTU per square foot (ENERGY STAR); add 10% for a sunny room, 600 BTU per person over two, 4,000 for a kitchen' }; }
+      // 2026-10-30: this said "about 20 BTU per square foot (ENERGY STAR)", which ENERGY STAR does not say: it gives a room AC chart by
+      // area (400 sq ft got 8,000 BTU; the chart says 9,000). Now the chart rows, as ENERGY STAR prints them (100 to 1,000 sq ft; its
+      // 450-550 and 500-700 rows overlap, and its own example puts 525 sq ft at 14,000), and its adjustments, both read 2026-10-30.
+      // Heating, and an area off the chart, get no number: the chart is for cooling one room.
+      if (m) { const a = +(m[1] || m[2]), ES = [['ENERGY STAR: how to choose the right sized window AC', 'https://www.energystar.gov/products/ask-the-experts/how-choose-right-sized-window-ac'], ['ENERGY STAR: room air conditioners (sizing chart, PDF)', 'https://www.energystar.gov/ia/partners/manuf_res/marketing_res/ROOM_AIRCONDITIONER.pdf']];
+        const ADJ = 'adjust it: 10% less for a heavily shaded room, 10% more for a very sunny one, 600 BTU for each person over two, 4,000 more in a kitchen; then round down to the nearest thousand';
+        const R = [[150, 5000, '100 to 150'], [250, 6000, '150 to 250'], [300, 7000, '250 to 300'], [350, 8000, '300 to 350'], [400, 9000, '350 to 400'], [450, 10000, '400 to 450'], [500, 12000, '450 to 550'], [700, 14000, '500 to 700'], [1000, 18000, '700 to 1,000']], r = a >= 100 ? R.find((x) => a <= x[0]) : null;
+        if (/heat/.test(t) || !r) return { value: 'off the ENERGY STAR chart', note: 'the ENERGY STAR sizing chart is for cooling one room of 100 to 1,000 sq ft' + (/heat/.test(t) ? '; it gives no figure for heating' : '') + '; ' + a.toLocaleString() + ' sq ft' + (/heat/.test(t) ? ' to heat' : '') + ' is outside it', src: ES, read: '2026-10-30' };
+        const tons = Math.round(r[1] / 6000) / 2; return { value: r[1].toLocaleString() + ' BTU' + (r[1] >= 12000 ? ' (about ' + tons + (tons === 1 ? ' ton)' : ' tons)') : ''), note: a.toLocaleString() + ' sq ft is in the ' + r[2] + ' sq ft row of the ENERGY STAR room AC chart; ' + ADJ + (r[1] >= 12000 ? ' (a ton is 12,000 BTU an hour)' : ''), src: ES, read: '2026-10-30' }; }
       // gatherings: pizzas, drinks, seating
       m = t.match(/^how\s+many\s+(?:large\s+)?pizzas?\s+(?:do\s+i\s+need\s+)?(?:for|to\s+feed)\s+(\d+)\s+(?:people|guests|adults|kids|children)$/);
       if (m) { const n = +m[1], kids = /kids|children/.test(t); return { value: Math.ceil(n * (kids ? 2 : 3) / 8) + ' large pizzas', note: (kids ? 2 : 3) + ' slices each, 8 slices per 14-inch large' }; }
@@ -3690,7 +3814,8 @@ say('nothing selected to remove');
       // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
       m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
-      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/);
+      // also "roman numeral mmxxiv": the letters after the words, with nothing to say what to turn them into
+      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/) || t.match(/^(?:the\s+)?roman\s+numerals?\s+([mdclxvi]{1,15})$/);
       if (m) { const V = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 }; let n = 0; const r = m[1];
         for (let k = 0; k < r.length; k++) { const a = V[r[k]], b = V[r[k + 1]] || 0; n += a < b ? -a : a; }
         return { value: String(n), note: m[1].toUpperCase() + ' = ' + n }; }
@@ -3769,21 +3894,23 @@ say('nothing selected to remove');
         return { value: out, note: m[1] + 'd: every amount × ' + k }; }
       // butter: "2 sticks of butter in grams" (US stick = 113 g = 8 tbsp = ½ cup)
       m = t.match(/^(?:convert\s+|how\s+many\s+(grams|tablespoons|tbsp|cups|ounces|oz)\s+(?:is|are|in)\s+)?(\d+(?:\.\d+)?)\s+sticks?\s+(?:of\s+)?butter(?:\s+(?:in|to|into)\s+(grams|tablespoons|tbsp|cups|ounces|oz))?$/);
-      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113.4, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
-        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 113 g, 8 tbsp, ½ cup)' }; }
+      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
+        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 8 tbsp, ½ cup, 4 oz, 113 g)', src: KA, read: KA_READ }; }
       // "healthy weight for 5 foot 8", "ideal weight for 170 cm": the weights in the standard adult BMI band (18.5-24.9)
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:a\s+|the\s+|my\s+)?(?:healthy|ideal|normal|good|target)\s+weight\s+(?:range\s+)?(?:for|at)\s+(?:a\s+|someone\s+)?(?:(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?|(1[4-9]\d|2[0-2]\d)\s*cm)(?:\s+tall)?(?:\s+(?:man|woman|male|female|person|adult))?$/);
       if (m) { const inches = m[3] ? +m[3] / 2.54 : +m[1] * 12 + +(m[2] || 0), lo = 18.5 * inches * inches / 703, hi = 24.9 * inches * inches / 703;
         const h = m[3] ? m[3] + ' cm' : m[1] + ' ft ' + (m[2] || 0) + ' in';
         return { value: Math.round(lo) + '–' + Math.round(hi) + ' lb', note: Math.round(lo * 0.45359237) + '–' + Math.round(hi * 0.45359237) + ' kg: the weights where an adult ' + h + ' has a BMI of 18.5 to 24.9 (the standard healthy band; BMI ignores muscle, build and age)' }; }
-      // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs"
-      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for|at|if\s+i'?m)?\s*(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?\s*(?:and\s+|,\s*)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
+      // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs". 2026-10-30: "what is my bmi if i am 6 feet
+      // and 180 pounds" and "bmi 180 lbs 6 ft" fell to the article search, which had nothing to say; they are worked out here now, either order.
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for\s+|at\s+|if\s+i(?:'?m|\s+am)\s+)?(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?(?:\s+tall)?\s*(?:and\s+|,\s*)?(?:i\s+)?(?:weigh\s+)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
+      if (!m) { const w = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for\s+|at\s+|if\s+i\s+weigh\s+)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)\s*(?:and\s+|,\s*|at\s+)?(?:i(?:'?m|\s+am)\s+)?(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?(?:\s+tall)?$/); if (w) m = [w[0], w[2], w[3], w[1]]; }
       if (m) { const inches = +m[1] * 12 + +(m[2] || 0), lb = +m[3], v = 703 * lb / (inches * inches), r = Math.round(v * 10) / 10, band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range';
         return { value: String(r), note: 'BMI for ' + m[1] + ' ft ' + (m[2] || 0) + ' in and ' + lb + ' lb: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; }
-      // steps to distance (an average stride of 2.5 ft: about 2,100 steps a mile)
+      // steps to distance (the average stride of 2.5 ft that STRIDE gives: about 2,100 steps a mile)
       m = t.match(/^(?:convert\s+|how\s+(?:many\s+miles|far)\s+(?:is|are)\s+)?(\d[\d,]*)\s+steps(?:\s+(?:in|to|into)\s+(miles|km|kilometers))?$/);
       if (m && (m[2] || /how/.test(t))) { const st = +m[1].replace(/,/g, ''), mi = st * 2.5 / 5280, km = mi * 1.609344, u = m[2] && /k/.test(m[2]) ? 'km' : 'miles';
-        return { value: (u === 'km' ? km : mi).toFixed(1) + ' ' + u, note: st.toLocaleString() + ' steps at an average 2.5 ft stride (yours may differ)' }; }
+        return { value: (u === 'km' ? km : mi).toFixed(1) + ' ' + u, note: st.toLocaleString() + ' steps at an average 2.5 ft stride (yours may differ)', src: STRIDE, read: '2026-10-30' }; }
       // heart-rate zones by age (the 220 − age estimate)
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?(?:target\s+|max(?:imum)?\s+)?heart\s+rate(?:\s+zones?)?\s+(?:at|for|if\s+i'?m)\s+(?:age\s+)?(\d{1,3})(?:\s+years?\s+old)?$/);
       if (m) { const mx = 220 - +m[1], z = (a, b) => Math.round(mx * a) + '–' + Math.round(mx * b);
@@ -3933,9 +4060,10 @@ say('nothing selected to remove');
       // "8 percent tax on 49.99", "sales tax of 7% on $120": the tax and the total
       m = t.match(/^(?:(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$|^(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$/);
       if (m) { const r = +(m[1] || m[3]), amt = +(m[2] || m[4]), tax = Math.round(amt * r) / 100; return { value: '$' + (amt + tax).toFixed(2), note: r + '% tax on $' + amt.toFixed(2) + ' is $' + tax.toFixed(2) + ' · total $' + (amt + tax).toFixed(2) }; }
-      // "0.75 as a fraction": the simplest fraction within a tiny tolerance (continued fractions)
-      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$/);
-      if (m) { const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
+      // "0.75 as a fraction", "decimal to fraction 0.75" (2026-10-30: this one fell to an article), "convert decimal 0.75 to fraction",
+      // "0.75 decimal to fraction": the simplest fraction within a tiny tolerance (continued fractions)
+      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+|the\s+)?decimal\s+(-?\d*\.\d+|-?\d+)\s+(?:to|into)\s+(?:a\s+)?fraction$|^(?:convert\s+)?(?:a\s+)?decimal\s+(?:to|into)\s+(?:a\s+)?fraction:?\s+(-?\d*\.\d+|-?\d+)$|^(-?\d*\.\d+|-?\d+)\s+decimal\s+(?:to|into)\s+(?:a\s+)?fraction$/);
+      if (m) { m[1] = m[1] ?? m[2] ?? m[3] ?? m[4]; const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
         for (let i = 0; i < 32; i++) { const a = Math.floor(b); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1]; if (Math.abs(x - h1 / k1) < 1e-9 || b === a) break; b = 1 / (b - a); }
         return { value: h1 + '/' + k1, note: m[1] + ' = ' + h1 + '/' + k1 }; }
       // "average of 4 8 15 16", "mean of 2, 4, 9", "median of 3 9 4 7": a list of numbers
@@ -4095,7 +4223,7 @@ say('nothing selected to remove');
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
     // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Verse, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
+    function cookFlow(el, query, minutes = null) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc, minutes); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; }); el.dataset.page = '/calculator/'; // the card links to the full calculator (lib/card-frame.js pageOfCard)
@@ -4104,7 +4232,15 @@ say('nothing selected to remove');
       const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
-      if (wm) { setV(wm.value, wm.note); cookFlow(el, query); return 'calc'; }
+      if (wm) {
+        // a unit answer from word maths ("5 miles to km" is read here first) opens the unit converter on the same ask, as the unit branch below does;
+        // not the tail of a fraction ("3/4 cup in ml" would hand over "4 cup in ml")
+        const wu = lower.match(CALC_UNIT_RE); if (wu && !/[\d./]$/.test(lower.slice(0, wu.index))) el.dataset.page = '/convert/?q=' + encodeURIComponent(wu[0].trim());
+        // a kitchen fact names the pages it came from, so the card is sourced and dated, not "from Verse"
+        const wsrc = Array.isArray(wm.src) && wm.src.length ? 'Source: ' + wm.src.filter((x) => /^https:\/\/[^\s"'<>]+$/.test(x[1])).map((x) => '<a href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + esc(x[0]) + '</a>').join(' · ') + (wm.read ? ' · read ' + esc(wm.read) : '') : '';
+        if (wsrc) el.dataset.cardKept = ''; // read on a date and kept, not fetched for this ask (lib/card-frame.js)
+        setV(wm.value, wm.note, wsrc); const wmin = /\b(\d{1,3}) min\b/.exec(String(wm.value)); cookFlow(el, query, wmin ? +wmin[1] : null); return 'calc';
+      }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
       const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
@@ -4124,6 +4260,7 @@ say('nothing selected to remove');
       // unit conversion: "5 miles in km", "70 f in c", "10 lb in kg", "3 cups in ml"
       const um = lower.match(CALC_UNIT_RE);
       if (um && !hit) {
+        el.dataset.page = '/convert/?q=' + encodeURIComponent(um[0].trim()); // the full link opens the unit converter on this ask, all 495 units both ways
         const val = parseFloat(um[1]);
         const fromU = um[2], toU = um[3];
         if (/^(f|fah(?:renheit)?)$/i.test(fromU) && /^(c|celsius|centigrade)$/i.test(toU)) {
@@ -4151,6 +4288,7 @@ say('nothing selected to remove');
       const cm = parseCurrency(lower);
       if (cm && !hit) {
         const { amount, from, to } = cm;
+        if (from !== to) el.dataset.page = '/markets/?s=' + from + to; // the full link opens the pair on Markets: the same ECB rate over time, with a chart
         setV('…', 'checking rates');
         const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
         if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
@@ -4226,6 +4364,9 @@ say('nothing selected to remove');
       const b = await ownerCheck(t);
       if (b && b.renewed && typeof b.renewed.token === 'string' && ownerToken() === t) { try { localStorage.setItem(OWNER_KEY, b.renewed.token); } catch (_) {} }
     }
+    // one owner identity (lib/owner-link.js): a signed-in owner account gets an owner session here, so every owner page opens with no second sign-in
+    const ownerLinkNow = () => import('/lib/owner-link.js').then((m) => m.ownerLink()).catch(() => '');
+    ownerLinkNow();
     setTimeout(() => { ownerRenew(); setInterval(ownerRenew, 6 * 3600e3); }, 2000);
     async function bindOwner(credentialId, key) {
       let ok = false;
@@ -4665,12 +4806,13 @@ say('nothing selected to remove');
       const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
       return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
     }
-    async function firstSkill(lower0, text, deadline) {
+    async function firstSkill(lower0, text, deadline, all = false) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
       let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
-      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
+      if (skillsLoaded || !skillSlots) return all ? learnedSkills.filter(fits) : (learnedSkills.find(fits) || null); // all: every skill that can answer, for Verse Brain to choose from
+      if (all) return [];
       for (const slot of skillSlots) {
         // past the deadline a skill still loading is passed over at once: a zero timer per slot cost 4 ms or more each (nested timers),
         // a second or more across a couple of hundred slots on a busy page
@@ -4694,6 +4836,7 @@ say('nothing selected to remove');
     const SHARE_LIB_GRAPH = ['/lib/card-share.js', '/lib/card-image.js', '/lib/art-source.js', '/lib/card-art.js', '/lib/card-subject.js', '/lib/guide.js', '/lib/rule-registry.js', '/lib/art-rules.js', '/lib/merge-rules.js', '/lib/keeper.js', '/lib/qr.js'];
     for (const p of SHARE_LIB_GRAPH.slice(1)) import(p).catch(() => null);
     const shareReady = import('/lib/card-share.js').catch(() => null);
+    const pasteReady = import('/lib/paste-kind.js').catch(() => null); // what a paste is: report, card, note, ask or unclear (docs/RULES.md)
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
     function showSharedCard(sc) {
       currentAsk = sc.t;
@@ -4746,7 +4889,8 @@ say('nothing selected to remove');
         if (el.dataset && el.dataset.grounded) return; // the skill opened what the ask named (a lab tool by its own pattern)
         const r = g.judgeCard(text, el.innerText || '', skill);
         if (!r.unmet) return;
-        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing }]).slice(-20);
+        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing, refused: r.refuse }]).slice(-20);
+        if (r.refuse) { const t = el.querySelector('h2'); el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + esc(g.refusalLine(text, r.missing, t && t.textContent)) + '</p>'; } // a skill that looks a named thing up refuses a card about something else
         try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
       }, 1500)).catch(() => {});
     }
@@ -4755,8 +4899,31 @@ say('nothing selected to remove');
     let skillAliases = {};
     fetch('/skills/aliases.json').then((r) => r.ok ? r.json() : {}).then((j) => { skillAliases = j && typeof j === 'object' ? j : {}; }).catch(() => {});
     const aliasOf = (lower) => { const k = String(lower || '').trim().replace(/[\s?!.]+$/, ''); return Object.prototype.hasOwnProperty.call(skillAliases, k) ? String(skillAliases[k]) : ''; };
+    // Verse Brain routes the ask (lib/brain-route.js; owner, 2026-10-30: "give the brain more to do and more power in the site"): when more
+    // than one skill can answer, the brain picks, from what the page would pick, what happened after its past picks on this device, and
+    // what it is thinking about. What happens next teaches it: a card still up 20 s later was kept; one closed by then, undone, or followed
+    // by the same ask in other words was left. Its picks, with why, are on /brain/, where each lesson can be undone.
+    let routeWatch = null;
+    const routeWords = (t) => new Set(String(t || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3));
+    function settleRoute(why, next) {
+      const w = routeWatch; if (!w) return; routeWatch = null; clearTimeout(w.t);
+      const h = window.verseBrainHost; if (!h || !h.judge) return;
+      if (why === 'time') h.judge(w.id, vpageEl === w.el);
+      else if (why === 'undo') h.judge(w.id, false);
+      else if (why === 'ask') {
+        // the same ask in other words, that the page would send to another skill: it was not what they wanted. A new subject teaches nothing,
+        // and neither does the next ask for the same skill ("my period started on <date>" three times is a log, not a complaint: 2026-10-30,
+        // one shared word turned the second date into a calendar event)
+        const a = routeWords(w.text); if (![...routeWords(next)].some((x) => a.has(x))) return;
+        firstSkill(String(next || '').toLowerCase(), next, Date.now()).then((sk) => { if (!sk || sk.name !== w.pick) h.judge(w.id, false); }).catch(() => {});
+      }
+    }
+    function watchRoute(id, el, text, pick) { settleRoute(); routeWatch = { id, el, text, pick, t: setTimeout(() => settleRoute('time'), 20000) }; }
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
-      const skill = await firstSkill(lower0, text, deadline);
+      let skill = await firstSkill(lower0, text, deadline), routed = null;
+      if (skill && skillsLoaded && window.verseBrainHost && window.verseBrainHost.route) {
+        try { const all = await firstSkill(lower0, text, deadline, true); if (all.length > 1) { routed = window.verseBrainHost.route(text, all.map((sk) => sk.name)); const p = routed && all.find((sk) => sk.name === routed.pick); if (p) skill = p; } } catch (_) { routed = null; }
+      }
       {
         if (skill) {
           const api = {
@@ -4783,6 +4950,7 @@ say('nothing selected to remove');
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src !== 'none') graphNote(who, text, vpageEl && vpageEl !== cardBefore ? vpageEl : null);
           if (src === 'none') reportMiss(text, 'skill:' + who);
+          if (routed) { if (src !== 'none' && vpageEl && vpageEl !== cardBefore) watchRoute(routed.id, vpageEl, text, routed.pick); else if (src === 'none' && window.verseBrainHost) window.verseBrainHost.judge(routed.id, false); }
           return true;
         }
       }
@@ -4796,6 +4964,7 @@ say('nothing selected to remove');
       try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
     function undoLast() {
+      settleRoute('undo'); // undoing the card the brain picked teaches it that pick was wrong
       let snap = null;
       try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) {}
       const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY), nowAgenda = localStorage.getItem(AGENDA_KEY);
@@ -5193,7 +5362,8 @@ say('nothing selected to remove');
       pkLastId = r.body.credentialId || cred.id;
       const oSession = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
       if (oSession && !rawOwnerKey()) { try { localStorage.setItem(OWNER_KEY, oSession); } catch (_) {} } // the key itself, if this browser has it, stays
-      say(oSession ? 'welcome back · owner' : 'welcome back');
+      const ownerNow = oSession || (await ownerLinkNow());
+      say(ownerNow ? 'welcome back · owner' : 'welcome back');
       loopLog({ domain: 'void.me', ask: 'sign in', score: 'pass', note: immediate ? 'signed in (immediate)' : 'signed in' });
       return 'ok';
     }
@@ -5258,6 +5428,7 @@ say('nothing selected to remove');
     const PUBLISH_RE = /^publish\s+my\s+(?:void|verse)(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
     const UNPUBLISH_RE = /^(unpublish(\s+my\s+(?:verse|void))?|take\s+(down\s+my\s+((?:verse|void)|page)|my\s+((?:verse|void)|page)\s+down))\s*[.!]?$/;
     let pendingPublish = null;
+    let lastPaste = null; // a paste that asked for nothing, for ten minutes: "sum it up" answers the line Verse said for it (lib/paste-kind.js)
     function publishAnswer(lower) {
       const pp = pendingPublish; if (!pp) return false;
       pendingPublish = null; clearTimeout(pp.timer); whisper.textContent = '';
@@ -5364,6 +5535,17 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
+    // the MultiVerse mark (members perk, 2026-10-30): on a member's own stage, one tier read after load, only when this device is signed in;
+    // on a published page (/@name), when the server said its owner is a member (functions/[handle].js), with no read at all.
+    // The server's word decides: a free or failed read shows nothing
+    async function memberMark() {
+      if (document.getElementById('void-member')) return;
+      const label = PAGE ? (PAGE.member ? 'Made with MultiVerse: see what members get' : '') : (me && me.token && (await meTier()) === 'paid' ? 'MultiVerse member: your perks' : '');
+      if (!label || document.getElementById('void-member')) return;
+      const a = document.createElement('a'); a.id = 'void-member'; a.href = '/members/'; a.textContent = 'MultiVerse';
+      a.title = label; a.setAttribute('aria-label', label); document.body.append(a);
+    }
+    setTimeout(() => { memberMark().catch(() => {}); }, 0);
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
@@ -5447,7 +5629,12 @@ say('nothing selected to remove');
     // a paste of any size (owner, 2026-10-15: "I thought we fixed it so that we can paste any sized message"): the title ends
     // with … at a word, the server gets the start and the end of a long paste (errors sit at the end of a log) inside its 20 kB,
     // and the card folds away everything that was given, so it never looks cut off
-    const clipLine = (t, n) => { const l = String(t || '').split('\n')[0].trim(); if (l.length <= n) return l; const c = l.slice(0, n), sp = c.lastIndexOf(' ');
+    // a long first line ends at its last whole sentence when one ends past 40% of the room, and needs no ellipsis then (owner, 2026-10-30: a
+    // pasted status note's heading stopped at "The store…"); with no sentence end in reach it ends at a word, with an ellipsis
+    const clipLine = (t, n) => { const l = String(t || '').split('\n')[0].trim(); if (l.length <= n) return l;
+      const ends = [...l.slice(0, n + 1).matchAll(/[.!?\u3002\uff01\uff1f]["'\u201d\u2019)\]]*(?=\s|$)/g)].map((m) => m.index + m[0].length).filter((i) => i <= n);
+      if (ends.length && ends[ends.length - 1] > n * 0.4) return l.slice(0, ends[ends.length - 1]);
+      const c = l.slice(0, n), sp = c.lastIndexOf(' ');
       return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[\s,;:.\u2013-]+$/, '') + '\u2026'; }; // ellipsis-ok: drawn picture or short label, the full text is on the card
     const PASTE_BYTES = 18500;
     function fitPaste(ask, details) {
@@ -5518,7 +5705,7 @@ say('nothing selected to remove');
     // the four libs and every module they import, all asked for at once: imported level by level, each level queued behind the skill files
     // the lanes had in flight (approval-core -> keep-going -> automations -> watch; on a busy page the gated check waited 3.3 s for the fourth level)
     // ask-libs: tools/preload.mjs /lib/approval-core.js /lib/gumroad.js /lib/automation-fix.js /lib/code-review.js
-    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/code-review.js'];
+    const ASK_LIB_GRAPH = ['/lib/approval-core.js', '/lib/models.js', '/lib/keep-going.js', '/lib/automations.js', '/lib/watch.js', '/lib/gumroad.js', '/lib/automation-fix.js', '/lib/telemetry.js', '/lib/note-ask.js', '/lib/verse-secrets.js', '/lib/code-review.js'];
     const warmLibs = () => {
       for (const p of ASK_LIB_GRAPH) import(p).catch(() => null);
       const libs = Promise.allSettled([approvalReady(), storeReady(), fixReady(), reviewReady()]);
@@ -5658,6 +5845,10 @@ say('nothing selected to remove');
         .replace(/^(?:what(?:'s|\s+is)\s+)?my\s+age\s+in\s+(days|weeks|months)\s+(?:if\s+i\s+was\s+)?born\s+(?:on\s+|in\s+)?(.+?)\s*[?.!]*$/i, 'how many $1 old am i if i was born on $2')
         // "what day was i born if my birthday is july 4 1990", "what day of the week was i born on 3/14/2001": the weekday of that date
         .replace(/^(?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?was\s+i\s+born(?:\s+on|\s+if\s+(?:my\s+birthday\s+is|i\s+was\s+born\s+on)|\s*,?\s*(?:my\s+)?birthday\s+(?:is\s+)?)\s+(.*\d{4})\s*[?.!]*$/i, 'what day of the week was $1')
+        // "what day is 2026-10-30", "2026-10-30 day of week", a bare "2026-10-30" (2026-10-30: read as the sum 2026 − 10 − 30 = 1986): the weekday of that date
+        .replace(/^(?:((?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{4})-(\d{1,2})-(\d{1,2})|(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(?:day\s+of\s+(?:the\s+)?week|weekday))?)\s*[?.!]*$/i, (all, a, y1, m1, d1, y2, m2, d2) => {
+          const mo = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'][+(m1 || m2) - 1];
+          return mo ? (a || 'what day of the week is ') + mo + ' ' + +(d1 || d2) + ' ' + (y1 || y2) : all; })
         // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
         .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
@@ -5769,7 +5960,15 @@ say('nothing selected to remove');
     }
     // Chance: "flip a coin", "roll a dice" / "roll 2 dice" / "roll a d20", "pick a random number between 1 and 100". crypto.getRandomValues.
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
-    const coinSkill = () => !!(typeof skillsLoaded !== 'undefined' && skillsLoaded && learnedSkills.some((sk) => sk.name === 'coin'));
+    const skillHere = (name) => !!(typeof skillsLoaded !== 'undefined' && skillsLoaded && learnedSkills.some((sk) => sk.name === name));
+    const coinSkill = () => skillHere('coin');
+    // the items of a list to pick from: split on commas, "or" and "and"; or, with none of those, names with spaces alone, unless a word
+    // shows the words name a list and are not its items ("the comments", "my class")
+    function pickItems(s) {
+      let xs = s.split(/\s*(?:,\s*(?:or|and)\s+|,|\s+or\s+|\s+and\s+)\s*/).map((x) => x.trim()).filter(Boolean);
+      if (xs.length < 2) { xs = s.split(/\s+/).filter(Boolean); if (xs.some((x) => /^(?:a|an|the|my|our|your|this|these|those|list|names?|people|comments?|hat|group|team|class|friends?|students?|followers?|entries)$/.test(x))) return null; }
+      return xs.length >= 2 && xs.length <= 30 ? xs : null;
+    }
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
       // folded in from helper/random-num, helper/coin-flip and helper/magic-8ball (2026-10-22, the Game Box): "roll 1 to 6", "pick 1 to 10", "coin flip for dinner", "what does the 8 ball say"
@@ -5777,7 +5976,7 @@ say('nothing selected to remove');
       { const r = l.match(/^(?:coin\s+(?:flip|toss)|flip\s+(?:a\s+)?coin)\s+for\s+(.{1,60})$/); if (r && !coinSkill()) return { title: 'Coin for ' + r[1], big: rnd(2) ? 'Heads' : 'Tails', note: 'a fair coin' }; }
       if (/^what\s+(?:does|would)\s+the\s+(?:magic\s+)?8[\s-]?ball\s+say(?:\s.*)?$/.test(l)) l = 'magic 8 ball';
       // a coin is the coin skill's (skills/coin.js: the coin on the card, the tally); these answer only if that skill did not load
-      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l) && !coinSkill()) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip', owner: 'coin' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
@@ -5787,6 +5986,9 @@ say('nothing selected to remove');
       // "pick one: pizza, tacos, sushi", "choose between tea and coffee", "help me pick: a or b"
       m = l.match(/^(?:pick|choose|decide|help\s+me\s+(?:pick|choose|decide))(?:\s+(?:one|for\s+me))?(?:\s*:\s*|\s+(?:between|from|among)\s+)(.+)$/);
       if (m) { const xs = m[1].split(/\s*(?:,\s*(?:or|and)\s+|,|\s+or\s+|\s+and\s+)\s*/).map((x) => x.trim()).filter(Boolean); if (xs.length >= 2 && xs.length <= 30) return { title: 'Picked', big: xs[rnd(xs.length)], note: 'one of ' + xs.length + ', each equally likely' }; }
+      // "pick a random name from alice bob carol", "choose a winner from: ann, ben, cy" (2026-10-30: these fell to a web search that answered nothing)
+      m = l.match(/^(?:pick|choose|draw|select)\s+(?:a\s+)?(?:random\s+)?(?:name|winner|person|item|one)(?:\s+at\s+random)?(?:\s*:\s*|\s+(?:from|among|out\s+of)\s*:?\s*)(.+)$/);
+      if (m) { const xs = pickItems(m[1]); if (xs) return { title: 'Picked', big: xs[rnd(xs.length)], note: 'one of ' + xs.length + ', each equally likely' }; }
       // "shuffle red, green, blue"
       m = l.match(/^(?:shuffle|randomi[sz]e(?:\s+the\s+order\s+of)?)\s*:?\s+(.+(?:,|\s+and\s+).+)$/);
       if (m) { const xs = m[1].split(/\s*(?:,\s*and\s+|,|\s+and\s+)\s*/).filter(Boolean); if (xs.length >= 2 && xs.length <= 50) { for (let i = xs.length - 1; i > 0; i--) { const j = rnd(i + 1); [xs[i], xs[j]] = [xs[j], xs[i]]; } return { title: 'Shuffled', big: xs.join('\n'), note: xs.length + ' in a random order' }; } }
@@ -5794,11 +5996,12 @@ say('nothing selected to remove');
       if (/^(?:draw|pick|deal(?:\s+me)?|give\s+me)\s+a\s+(?:random\s+)?(?:playing\s+)?card$/.test(l)) { const R = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'], S = [['♠', 'Spades'], ['♥', 'Hearts'], ['♦', 'Diamonds'], ['♣', 'Clubs']], r = R[rnd(13)], su = S[rnd(4)]; return { title: 'Your card', big: r + ' ' + su[0], note: r + ' of ' + su[1] + ' · from a full 52-card deck' }; }
       // "flip 3 coins"
       m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
-      if (m && !coinSkill()) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }
+      if (m) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails', owner: 'coin' }; }
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+letter$/.test(l)) { const c = String.fromCharCode(65 + rnd(26)); return { title: 'Random letter', big: c, note: 'A to Z, each equally likely' }; }
-      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it' }; }
+      // a bare "random color" is the color skill's (skills/color.js shows the swatch, issue #1695): owner marks it, and the caller hands it over once the skills load
+      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it', owner: /^random\s+colou?r$/.test(l) ? 'color' : null }; }
       if (/^(?:yes\s+or\s+no|should\s+i\s+do\s+it|decide\s+for\s+me)$/.test(l)) return { title: 'Yes or no', big: rnd(2) ? 'Yes' : 'No', note: 'a fair coin decided' };
-      if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
+      if (/^(?:(?:ask|shake)\s+the\s+(?:magic\s+)?8[\s-]?ball|magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
       if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Verse’s throw: what was yours?' }; }
       m = l.match(/^(?:pick|give\s+me|choose|generate|think\s+of)\s+(?:me\s+)?a\s+(?:random\s+)?number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)?\s*(-?\d{1,9})\s+(?:and|to|-)\s+(-?\d{1,9}))?$/);
       if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely', lo: a, hi: b }; }
@@ -5815,6 +6018,8 @@ say('nothing selected to remove');
       [/independence\s+day|(?:the\s+)?4th\s+of\s+july|fourth\s+of\s+july/, 'Independence Day (US)', (y) => new Date(y, 6, 4)], [/labou?r\s+day/, 'Labor Day (US)', (y) => nthWeekday(y, 8, 1, 1)],
       [/memorial\s+day/, 'Memorial Day (US)', (y) => lastWeekday(y, 4, 1)], [/st\.?\s*patrick'?s?(\s+day)?/, 'St Patrick\'s Day', (y) => new Date(y, 2, 17)],
     ];
+    // the holiday's own day on the Calendar page, where the person can add a reminder for it ("YYYY-MM-DD" in local time, as lib/calendar.js parseLocal reads it)
+    const holidayPage = (d) => '/calendar/?d=' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '&view=day';
     function holidayOf(l) {
       const m = l.replace(/[?.!]+$/, '').match(/^(?:when\s+is|what\s+(?:day|date)\s+is)\s+(.+?)(?:\s+(?:this|next)\s+year|\s+\d{4})?$/);
       if (!m) return null;
@@ -5825,13 +6030,18 @@ say('nothing selected to remove');
       return null;
     }
     // Age: "how old is someone born in 1990", "how old am i if i was born on may 3 1990", "age if born 1985"
-    function ageOf(l) {
+    function ageOf(l, now = new Date()) {
       // the year first: "if i was born in 1990 how old am i", "i was born on may 3 1990, how old am i"
       l = l.replace(/[?.!]+$/, '').replace(/^(?:if\s+)?i\s+was\s+born\s+(in|on)\s+(.+?),?\s+how\s+old\s+(?:am\s+i|would\s+i\s+be)(?:\s+now|\s+today)?$/, 'how old am i if i was born $1 $2');
-      const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+old\s+(?:is\s+(?:someone|a\s+person|somebody)|am\s+i|would\s+i\s+be|are\s+you)\s+(?:if\s+(?:i\s+was|you(?:'re|\s+were)|they\s+were)\s+)?|age\s+(?:if|of\s+someone)\s+)born\s+(?:in|on)?\s*(.+)$/);
+      // "how old am i if born 1990-05-01" (2026-10-30: no "i was" fell to a web search that answered nothing)
+      const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+old\s+(?:is\s+(?:someone|a\s+person|somebody)|am\s+i|would\s+i\s+be|are\s+you)\s+(?:if\s+(?:(?:i\s+was|you(?:'re|\s+were)|they\s+were)\s+)?)?|age\s+(?:if|of\s+someone)\s+)born\s+(?:in|on)?\s*(.+)$/);
       if (!m) return null;
-      const s = m[1].trim(), now = new Date(), yOnly = /^\d{4}$/.test(s);
-      const b = yOnly ? new Date(+s, 0, 1) : new Date(Date.parse(s)); if (isNaN(b) || b > now || b.getFullYear() < 1850) return null;
+      const s = m[1].trim(), yOnly = /^\d{4}$/.test(s);
+      // a dashed date is a day here: Date.parse reads "1990-05-01" as UTC midnight, which is April 30 west of London; and "1990-02-30" is no day at all
+      const iso = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/);
+      const b = yOnly ? new Date(+s, 0, 1) : iso ? new Date(+iso[1], iso[2] - 1, +iso[3]) : new Date(Date.parse(s));
+      if (iso && (b.getMonth() !== iso[2] - 1 || b.getDate() !== +iso[3])) return { big: 'No such day', note: s + ' is not a day on the calendar' };
+      if (isNaN(b) || b > now || b.getFullYear() < 1850) return null;
       let a = now.getFullYear() - b.getFullYear(); if (!yOnly && (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate()))) a -= 1;
       return { big: yOnly ? (a - 1) + ' or ' + a : String(a), note: yOnly ? a + ' after their birthday this year, ' + (a - 1) + ' before it' : 'born ' + b.toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' }) };
     }
@@ -5866,13 +6076,14 @@ say('nothing selected to remove');
         el.querySelector('.sw-laps').innerHTML = sp.map((d, i) => '<li' + (d === lo ? ' style="color:#3fbf6a"' : d === hi ? ' style="color:#e0584a"' : '') + '>' + fmt(d) + (i ? ' <span style="color:#8a8a8a">(' + (d - sp[i - 1] >= 0 ? '+' : '\u2212') + fmt(Math.abs(d - sp[i - 1])) + ')</span>' : '') + ' <span style="color:#8a8a8a">· ' + fmt(laps[i]) + (d === lo ? ' · fastest' : d === hi ? ' · slowest' : '') + '</span></li>').join(''); });
       el.querySelector('.sw-reset').addEventListener('click', () => { acc = 0; t0 = performance.now(); laps = []; el.querySelector('.sw-laps').innerHTML = ''; el.querySelector('.sw').textContent = '0:00.0'; });
     }
-    const bigPage = (title, big, note) => showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
+    // page: the full page the card links to (lib/card-frame.js pageOfCard), e.g. a holiday's day on the Calendar
+    const bigPage = (title, big, note, page) => showPage((p) => { if (page) p.dataset.page = page; p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
       { const w = l.replace(/[?.!]+$/, '').match(/^how\s+many\s+(days|weeks|months)\s+(?:until|till|til|to|before)\s+(.+)$/), h = w && holidayOf('when is ' + w[2]);
         if (h) { const n = w[1] === 'days' ? h.days : w[1] === 'weeks' ? Math.round(h.days / 7 * 10) / 10 : Math.round(h.days / 30.44 * 10) / 10;
-          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
-      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
+      { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's'), holidayPage(h.d)); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
       { const a = ageOf(l); if (a) { bigPage('Age', a.big, a.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'age' }); return true; } }
       { const u = untilOf(l); if (u) { bigPage('Time until', u.big, u.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timeuntil' }); return true; } }
       if (/^(?:start|open|make|give\s+me)\s+(?:me\s+)?a\s+stop\s?watch$|^stop\s?watch$/.test(l.replace(/[?.!]+$/, ''))) { showStopwatch(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'stopwatch' }); return true; }
@@ -5881,10 +6092,12 @@ say('nothing selected to remove');
       if (wantsToday(l)) { showToday(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'today' }); return true; }
       if (wantsTimeNow(l)) { showTimeNow(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timenow' }); return true; }
       { const c = chanceOf(l);
+        // an ask a skill owns (c.owner) goes to that skill when it loads; the chance line answers only without it
+        if (c && c.owner) { await skillsReady; if (skillHere(c.owner)) return runLearnedSkills(text, l); }
         // the Magic 8 Ball is a ball in the void (skills/eightball.js): asking again shakes the same ball for a new answer
         // each ask is an event: the question, a shake, the answer chosen from the 20, shown on the ball, kept in its history
         if (c && c.eight) { await skillsReady; if (stageKinds.eightball) { const ball = Object.values(things).find((t) => t.kind === 'eightball');
-          const q = text.replace(/^\s*(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball\s*[,:?-]*\s*/i, '').trim().slice(0, 140) || null;
+          const q = text.replace(/^\s*(?:(?:ask|shake)\s+the\s+(?:magic\s+)?8[\s-]?ball|magic\s+8[\s-]?ball)\s*[,:?-]*\s*/i, '').trim().slice(0, 140) || null;
           const ev = { q, a: c.big, at: new Date().toISOString(), how: 'asked' };
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
@@ -5908,16 +6121,31 @@ say('nothing selected to remove');
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
-      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void')); // a taught wording runs as the ask it means
+      const alias = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()); // a taught wording runs as the ask it means
+      const text = alias || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void'));
+      // the old name read as the new one is logged as typed, as a typo is ("tell V01D what it got wrong" is that ask, not "tell Verse ...")
+      if (!alias && text !== fixed) typoFix = { from: typed, to: text };
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
-      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
+      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} ownerLinkNow(); say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
-      // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
-      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
+      // a typed question about a secret, token or key name is answered from the names Verse's code reads (lib/note-ask.js secretAsk), never looked up:
+      // "what is the Modal secret called?" went to Wikipedia, which suggested "model secret called" and showed a fashion model (live, 2026-10-30)
+      if (/\b(?:secrets?|tokens?|keys?|credentials?|variables?)\b/i.test(typed) && typed.length <= 160) {
+        const N = await import('/lib/note-ask.js').catch(() => null), facts = N ? N.secretAsk(typed) : [];
+        if (facts.length) { currentAsk = typed; showPage((p) => { p.innerHTML = '<h2>' + esc(typed.replace(/[?.!\s]+$/, '')) + '</h2>' + facts.map((f) => '<p>' + esc(f) + '</p>').join('') + '<div class="src">from Verse\u2019s own code (lib/verse-secrets.js), names only, never a value</div>'; }); say(''); loopLog({ domain: 'void.page', ask: typed, score: 'pass', note: 'secret names' }); return; }
+      }
+      // a paste is a report, a card, a note, an ask or unclear (owner rule, 2026-10-30, docs/RULES.md; lib/paste-kind.js)
+      const pk = await pasteReady, paste = pk ? pk.pasteKind(typed) : null;
+      { const lp = lastPaste; lastPaste = null; // the answer to "That reads as pasted text with no ask in it": the paste is summed up from its own words
+        if (lp && Date.now() < lp.until && !paste && pk && pk.sumsItUp(typed)) { currentAsk = lp.text; showAnswer(lp.text).then((src) => { if (src === 'none') reportMiss('[paste]', lookedUp()); }); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste summed up' }); return; } }
+      // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js).
+      // A copied report card is a report: it is checked against GitHub again, not reopened at its frozen "checking GitHub" line
+      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc && !(paste && paste.kind === 'report')) { showSharedCard(sc); return; } }
       if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
+      if (!quiet && !/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) settleRoute('ask', text); // the last pick the brain made learns from this ask, before this one is routed (an undo settles it in undoLast)
       if (!quiet) try { document.dispatchEvent(new CustomEvent('void:ask', { detail: { text } })); } catch (_) {} // the person's ask, after the owner key: Verse Brain (skills/verse-brain.js) takes it as a goal while its card is open
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
@@ -5969,6 +6197,8 @@ say('nothing selected to remove');
       const calcEarly = calcable && !skillsLoaded; // routed before every skill was in: one ranked above the calc may still take this ask
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
+      // a paste no skill took that asks for nothing: one line that asks what the person wants, and nothing guessed (no stock answer, no article)
+      if (paste && paste.kind === 'unclear') { lastPaste = { text, until: Date.now() + 600000 }; say(paste.line); loopLog({ domain: 'void.page', ask: '[paste]', score: 'pass', note: 'paste unclear' }); return; }
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
@@ -6031,6 +6261,9 @@ say('nothing selected to remove');
     function scoreHint(h, q) {
       const hl = h.toLowerCase();
       if (hl === q) return -1;
+      // a one-word hint the typed letters begin is the thing itself ("tim" -> "timer"): first, above the longer asks that begin the same
+      // way, so seven examples starting "tim" never crowd it out of the five lines (main's verify, 2026-10-30: "hints while typing" red)
+      if (hl.startsWith(q) && !/\s/.test(hl.trim())) return 4;
       if (hl.startsWith(q)) return 3;
       if (hl.split(/\s+/).some((w) => w.startsWith(q))) return 2;
       const words = q.split(/\s+/).filter(Boolean);
@@ -6054,7 +6287,7 @@ say('nothing selected to remove');
       } catch (_) { return []; }
     }
     function rememberAsk(text) {
-      const t = String(text || '').trim().slice(0, 240);
+      const t = String(text || '').trim().slice(0, 4000); // kept whole (skills/recent.js KEPT_ASK_MAX): a tap on it asks it again, and at 240 a pasted note was asked cut
       if (!t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return;
       try {
         const prev = recentAsks(12).filter((s) => s.toLowerCase() !== t.toLowerCase());
@@ -6379,6 +6612,15 @@ say('nothing selected to remove');
       };
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
+    // the community milestone card (asked by Verse, 2026-10-17; lib/join-watch.js): when someone joins MultiVerse, one quiet line under the
+    // stage with the join link. Read once the page is idle, then every 5 minutes while visible; the first ask clears it.
+    if (!PAGE) {
+      const startJoins = () => import('/lib/join-watch.js').then((J) => {
+        J.watch(document, awayNote);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') for (const c of document.querySelectorAll('.join-card')) c.remove(); });
+      }).catch(() => {});
+      if ('requestIdleCallback' in window) requestIdleCallback(() => skillsReady.then(startJoins), { timeout: 8000 }); else setTimeout(() => skillsReady.then(startJoins), 4000);
+    }
     // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of the build it
     // loaded with (lib/stale-tab.js: the commit the deploy writes to /build.json, else the page's ETag) and looks again when it comes back into view and about every
     // ten minutes, one small GET each. A different id shows one non-blocking line that reloads on tap; the page never reloads by itself, so nobody loses what they were typing.
@@ -6622,8 +6864,10 @@ say('nothing selected to remove');
       new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && n.dataset.id && !arrived.has(n.dataset.id)) { arrived.add(n.dataset.id); if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })
         .observe(document.getElementById('stage'), { childList: true });
       let hot = null;
+      // the Reduced motion hard switch (lib/a11y-modes.js) can go on while the page is open, so it is read on every move: with it on, cards hold still
+      const held = () => document.documentElement.classList.contains('a11y-motion');
       addEventListener('pointermove', (e) => {
-        const el = e.target.closest && e.target.closest('.vpage, .thing');
+        const el = held() ? null : e.target.closest && e.target.closest('.vpage, .thing');
         if (hot && hot !== el) { hot.style.removeProperty('--rx'); hot.style.removeProperty('--ry'); hot.classList.remove('lift'); }
         hot = el; if (!el) return;
         const b = el.getBoundingClientRect(); const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;

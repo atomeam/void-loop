@@ -12,8 +12,9 @@ const ABOUT = /^(?:code|history|alphabet|chart|table|meaning|definition|inventor
 /** the text to encode, or null when the ask is not one for this skill. Pure. */
 export function payloadOf(text) {
   const m = /^(?:please\s+)?(?:morse\s+code|morse|encode\s+in\s+morse(?:\s+code)?|translate\s+to\s+morse(?:\s+code)?)\s+(.+)$/i.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
-  if (!m) return null;
-  const p = m[1].trim();
+  const c = m ? null : /^(?:please\s+)?(?:convert|translate|turn|put|write)\s+(.+?)\s+(?:in)?to\s+morse(?:\s+code)?$/i.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
+  if (!m && !c) return null;
+  const p = (m || c)[1].trim().replace(/^["'“]|["'”]$/g, '');
   if (ABOUT.test(p) || /^(?:for|of)\s/i.test(p) || !/[a-z0-9]/i.test(p)) return null;
   return p;
 }

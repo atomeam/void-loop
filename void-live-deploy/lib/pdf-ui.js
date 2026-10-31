@@ -5,6 +5,7 @@
  * with its size. The pages tool is the visual one: thumbnails of every page of every file, each turned, deleted or moved by pointer, drag or keyboard.
  */
 import { tools, loadJs, renderPage, parsePages, sizeText, zip, compressByPictures, pagesToImages, toPdfImage, imageKind } from './pdf-tools.js';
+import { wantsImage, receiveImage, sendImage, sendDoc } from './image-handoff.js';
 
 const h = (tag, attrs = {}, ...kids) => {
   const e = document.createElement(tag);
@@ -36,7 +37,9 @@ export const TOOL_INFO = Object.freeze({
 export function mountPdf(root, cfg) {
   const ids = cfg.tools.filter((t) => TOOL_INFO[t]);
   const q = new URLSearchParams(location.search);
-  let current = ids.includes(q.get('tool')) ? q.get('tool') : ids[0];
+  // a picture handed over by another page (lib/image-handoff.js, ?img=handoff) opens the images-to-PDF tool with it already in the list
+  const handed = wantsImage(location.search) && ids.includes('img2pdf');
+  let current = handed ? 'img2pdf' : ids.includes(q.get('tool')) ? q.get('tool') : ids[0], imgPick = null;
   const tabs = h('div', { class: 'tabs', role: 'tablist', 'aria-label': 'PDF tools' }), body = h('div', { class: 'panel' });
   const say = h('p', { class: 'status', role: 'status', 'aria-live': 'polite' });
   const share = h('button', { type: 'button', class: 'share', onclick: async () => { const u = location.origin + location.pathname + (current ? '?tool=' + current : ''); try { await navigator.clipboard.writeText(u); status('Link copied: it opens this tool.'); } catch (_) { prompt('Share link', u); } } }, 'Share link');
@@ -46,7 +49,10 @@ export function mountPdf(root, cfg) {
   const downloads = new Set();
   const offer = (name, bytes, type, note) => {
     const url = URL.createObjectURL(new Blob([bytes], { type })); downloads.add(url);
-    results.append(h('p', { class: 'result' }, h('a', { class: 'dl', href: url, download: name }, 'Download ' + name), ' ', h('span', { class: 'note' }, sizeText(bytes.length) + (note ? ' · ' + note : ''))));
+    // a PDF made here goes on to the translate page (lib/image-handoff.js, ?doc=handoff): the press keeps it on this device and opens the page with it ready
+    const tr = type === 'application/pdf' ? h('a', { href: '/translate/?doc=handoff', onclick: (e) => { e.preventDefault();
+      sendDoc('/translate/', () => new Blob([bytes], { type }), { name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the PDF for the translate page.', true); }); } }, 'Translate it') : null;
+    results.append(h('p', { class: 'result' }, h('a', { class: 'dl', href: url, download: name }, 'Download ' + name), ' ', h('span', { class: 'note' }, sizeText(bytes.length) + (note ? ' · ' + note : '')), tr ? ' · ' : null, tr));
   };
   const reset = () => { for (const u of downloads) URL.revokeObjectURL(u); downloads.clear(); results.replaceChildren(); status(''); };
 
@@ -87,6 +93,15 @@ export function mountPdf(root, cfg) {
   const busy = async (btn, fn) => { btn.disabled = true; reset(); try { await fn(); } catch (e) { status(String(e && e.message || e), true); } finally { btn.disabled = false; } };
   let cleanup = () => {}, alsoMode = false, cleanups = [];
   const build = (id) => { cleanup = () => {}; const nodes = PANELS[id](); cleanups.push(cleanup); return nodes; };
+
+  // a page made into a picture goes on to the other picture pages (lib/image-handoff.js): the press keeps it on this device and opens the next page with it
+  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
+  function sendRow(imgs, mime) {
+    const pick = imgs.length > 1 ? h('select', { 'aria-label': 'Which page to send' }, imgs.map((x, i) => h('option', { value: i }, 'Page ' + ((x.name.match(/(\d+)\.\w+$/) || [])[1] || i + 1)))) : null;
+    const go = (href) => (e) => { e.preventDefault(); const x = imgs[pick ? +pick.value : 0];
+      sendImage(href.split('?')[0], () => new Blob([x.bytes], { type: mime }), { name: x.name, fromPage: location.pathname }).then((kept) => { if (!kept) status('This browser could not keep the picture for the next page.', true); }); };
+    return h('p', { class: 'result send' }, h('span', {}, imgs.length > 1 ? 'Open a page in another tool: ' : 'Open the page in another tool: '), pick, ...SEND.flatMap(([label, href], i) => [i ? ' · ' : ' ', h('a', { href, onclick: go(href) }, label)]));
+  }
 
   const PANELS = {
     merge() {
@@ -131,6 +146,7 @@ export function mountPdf(root, cfg) {
     },
     img2pdf() {
       const p = picker({ accept: 'image/*', multi: true, label: 'Choose images (JPG, PNG, WebP…)', onChange: () => { go.disabled = !p.files.length; } });
+      imgPick = p;
       const size = sel([['a4', 'A4'], ['letter', 'US Letter'], ['a5', 'A5'], ['legal', 'Legal'], ['fit', 'Same size as the picture']], 'a4'), land = sel([['0', 'Portrait'], ['1', 'Landscape']], '0'), mar = num(0, 0, 100);
       const go = h('button', { type: 'button', class: 'go', disabled: true, onclick: () => busy(go, async () => {
         const t = await tools(), items = []; for (const f of p.files) items.push(await toPdfImage(f.file));
@@ -145,6 +161,7 @@ export function mountPdf(root, cfg) {
         const f = p.files[0], imgs = await pagesToImages(f.bytes, { type: type.value, dpi: +dpi.value, spec: spec.value }, (i, n) => status('Page ' + i + ' of ' + n));
         if (!imgs.length) throw new Error('No such pages'); for (const x of imgs.slice(0, 12)) offer(x.name, x.bytes, type.value); if (imgs.length > 12) results.append(h('p', { class: 'note' }, '…and ' + (imgs.length - 12) + ' more, in the ZIP.'));
         if (imgs.length > 1) offer(baseOf(f.name) + '-pages.zip', zip(imgs), 'application/zip', imgs.length + ' pictures'); status('Done.');
+        results.append(sendRow(imgs, type.value));
       }) }, 'PDF to images');
       cleanup = p.destroy; return [p.el, field('Picture type', type), field('Quality', dpi), field('Pages', spec), go];
     },
@@ -254,6 +271,8 @@ export function mountPdf(root, cfg) {
     if (nx) { e.preventDefault(); show(nx); tabs.querySelector('[data-tool="' + nx + '"]').focus(); }
   } }, TOOL_INFO[id][0]));
   show(current);
+  // read after show(): it keeps ?tool=img2pdf, so tidying away ?img=handoff leaves the tool in the address
+  if (handed) receiveImage((file) => imgPick && imgPick.add([file]), { search: location.search, pathname: location.pathname, hash: location.hash });
   // keep the libraries for offline use: fetched once while the page is idle, so the service worker has them before the first tool is pressed
   setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.4.299/build/pdf.min.js', '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 4000);
   return { show };

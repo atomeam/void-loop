@@ -3,6 +3,7 @@
 // Run: node --test tools/date-pack.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import * as M from '../void-live-deploy/lib/date-math.js';
 import { dateAsk } from '../void-live-deploy/lib/date-ask.js';
 import grid, { gridAsk, markAsk, importAsk, exportAsk, anchorOf, marksSavedGrid } from '../void-live-deploy/skills/date-grid.js';
@@ -253,6 +254,13 @@ test('words: the asks date-calc takes and what it hands on', () => {
   assert.deepEqual(ask('every 2 weeks starting 2026-10-19 for 2 times').list, ['2026-10-19', '2026-11-02']);
   assert.equal(rowOf(ask('days until 2026-12-25'), 'Days to go'), '68');
   assert.equal(rowOf(ask('days since 2026-01-01'), 'Days since'), '290');
+  // whole words, no "1 weeks" and no "0 weeks"
+  assert.equal(rowOf(ask('days until 2026-10-26'), 'Weeks and days'), '1 week 1 day');
+  assert.equal(rowOf(ask('days until 2026-10-21'), 'Weeks and days'), '3 days');
+  assert.equal(rowOf(ask('days until 2026-10-25'), 'Weeks and days'), '1 week');
+  assert.equal(rowOf(ask('days since 2026-10-10'), 'Weeks and days'), '1 week 1 day');
+  assert.equal(rowOf(ask('weeks between 2026-10-01 and 2026-10-04'), 'Weeks'), '3 days');
+  assert.equal(rowOf(ask('months between 2026-01-01 and 2026-02-01'), 'Months'), '1 month');
   assert.equal(rowOf(ask('next birthday 1990-05-03'), 'Next birthday'), 'Thursday, May 3, 2027'.replace('Thursday', 'Monday'));
   assert.equal(rowOf(ask('my anniversary on june 12 2018'), 'Years'), '9');
   assert.equal(rowOf(ask('exact age born 1990-05-03'), 'Years, months, days'), '36 y 5 m 15 d');
@@ -340,4 +348,22 @@ test('skills: contract fields and the routing they claim', () => {
 test('the stage helper names a local day, not a UTC one', () => {
   assert.equal(localDay(new Date(2026, 9, 18, 23, 59)), '2026-10-18');
   assert.equal(localDay(new Date(2026, 0, 5, 0, 1)), '2026-01-05');
+});
+
+// the everyday benchmark (tools/bench.json) lets date-calc answer these date asks it used to leave to the calculator: its card must
+// carry the right date, worked out here a second way with plain Date arithmetic (the benchmark itself has no "says" for most of them)
+test('the benchmark date asks date-calc takes get the right dates', () => {
+  const plus = (n) => new Date(Date.UTC(2026, 9, 18 + n)).toISOString().slice(0, 10);
+  const iso = (q) => rowOf(ask(q), 'ISO');
+  assert.equal(iso('what was the date 30 days ago'), plus(-30));
+  assert.equal(iso('what is the date in 10 days'), plus(10));
+  assert.equal(iso("what's the date 3 weeks from today"), plus(21));
+  assert.equal(iso('what is the date 30 days from today'), plus(30));
+  assert.equal(iso('what was the date 100 days ago'), plus(-100));
+  assert.equal(iso("what's 2 weeks from today"), plus(14));
+  assert.equal(iso('what is the date next friday'), '2026-10-23');
+  assert.equal(rowOf(ask('what is my zodiac sign if i was born march 3'), 'Sun sign'), 'Pisces');
+  assert.equal(rowOf(ask('how many days old am i if born on june 1 1990'), 'Total days'), String((Date.UTC(2026, 9, 18) - Date.UTC(1990, 5, 1)) / 864e5));
+  const bench = JSON.parse(fs.readFileSync(new URL('./bench.json', import.meta.url), 'utf8'));
+  for (const q of ['what was the date 30 days ago', 'what is the date next friday', 'what is my zodiac sign if i was born march 3']) assert.ok(bench.find((x) => x.ask === q).want.split('|').includes('skill:date-calc'), q);
 });

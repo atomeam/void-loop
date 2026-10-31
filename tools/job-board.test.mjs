@@ -41,6 +41,14 @@ test('search: keyword, place, region, tag, type, salary, visa, days and sort', (
   const q = C.toQuery({ q: 'react', region: 'europe', visa: true, sort: 'salary' }); assert.equal(q, 'q=react&region=europe&visa=1&sort=salary'); assert.deepEqual(C.fromQuery('?' + q), { ...C.EMPTY, q: 'react', region: 'europe', visa: true, sort: 'salary' });
   assert.equal(C.fromQuery('?region=mars&src=evil&min=-5').region, ''); assert.equal(C.fromQuery('?src=evil').src, '');
 });
+test('a country code from another page opens the remote jobs open there', () => {
+  assert.equal(C.regionOfCountry('GB'), 'uk'); assert.equal(C.regionOfCountry('us'), 'usa'); assert.equal(C.regionOfCountry('PT'), 'europe');
+  assert.equal(C.regionOfCountry('AT'), 'europe', 'a listing open in Germany is not open in Austria'); assert.equal(C.regionOfCountry('JP'), 'asia');
+  for (const bad of ['XX', 'GBR', '', null, '1A']) assert.equal(C.regionOfCountry(bad), '');
+  for (const r of ['uk', 'usa', 'europe', 'asia', 'africa', 'latam', 'oceania', 'emea', 'canada', 'germany']) assert.ok(r in C.REGIONS, r);
+  assert.equal(C.fromQuery('?cc=GB').region, 'uk'); assert.equal(C.fromQuery('?region=europe&cc=US').region, 'europe', 'a region the link names wins');
+  assert.equal(C.fromQuery('?cc=XX').region, ''); assert.equal(C.toQuery(C.fromQuery('?cc=GB')), 'region=uk');
+});
 test('alerts: a saved search counts what is new since it was last seen', () => {
   const r = C.newSince(all(), { s: { q: '' }, seen: '2026-10-25T12:00:00.000Z' }); assert.equal(r.all.length, 3); assert.deepEqual(r.fresh.map((j) => j.company), ['Beta']);
 });
@@ -87,4 +95,39 @@ test('every English string of the screen has its German', () => {
   for (const m of src.matchAll(/\bt\('((?:[^'\\]|\\.)*)'\)/g)) if (!DE[m[1].replace(/\\'/g, "'")]) missing.push(m[1]);
   for (const v of [...Object.values(C.SORTS), ...Object.values(C.TYPES), ...Object.values(C.STAGES), ...Object.values(C.REGIONS)]) if (!DE[v]) missing.push(v);
   assert.deepEqual(missing, []);
+});
+test('a job reads as tracked only while the tracker holds its title, company and link', () => {
+  const j = { title: 'Product Designer', company: 'Acme', url: 'https://example.com/jobs/1' };
+  assert.equal(C.isTracked([], j), false); assert.equal(C.isTracked(undefined, j), false);
+  const apps = [C.cleanApp({ ...j, stage: 'saved' })];
+  assert.equal(C.isTracked(apps, j), true);
+  assert.equal(C.isTracked(apps, { ...j, url: 'https://example.com/jobs/2' }), false);
+  assert.equal(C.isTracked(apps.filter(() => false), j), false);
+  assert.equal(C.isTracked(apps, { title: '' }), false);
+  const src = fs.readFileSync(new URL('../void-live-deploy/lib/jobs-ui.js', import.meta.url), 'utf8');
+  assert.match(src, /'\.rm'\)\.addEventListener\('click', \(\) => \{[^}]*\}\); emitSaved\(\); \}\)/, 'Remove in the tracker tells the cards');
+});
+test('Himalayas category slugs read as words, cut at a word, and old hyphenated tags still match', () => {
+  assert.equal(C.slugWords('SaaS-Sales-Specialist'), 'SaaS Sales Specialist');
+  assert.equal(C.slugWords('Vice-President-of-Data-Strategy'), 'Vice President of Data Strategy');
+  assert.equal(C.slugWords('Director-Of-Advanced-Analytics-and-Precision-Medicine'), 'Director of Advanced Analytics', 'cut at a word, no joining word at the end');
+  assert.equal(C.slugWords('E-learning'), 'E-learning'); assert.equal(C.slugWords('Education & E-learning'), 'Education & E-learning');
+  const j = C.normalise('himalayas', { jobs: [{ ...HIMALAYAS.jobs[0], categories: ['Accounting-Analyst'], parentCategories: [] }] })[0];
+  assert.equal(j.cat, 'Accounting Analyst'); assert.deepEqual(j.tags, ['Accounting Analyst']);
+  assert.equal(C.checkJob({ ...j, cat: 'Accounting-Analyst', tags: ['Accounting-Analyst'] }).cat, 'Accounting Analyst', 'a listing stored before the fix reads as words too');
+  assert.equal(C.search([j], { tag: 'Accounting-Analyst' }).length, 1, 'an alert saved with the hyphenated tag still finds the job');
+});
+
+test('a free-text salary that is not one: two unrelated figures, or a small sum with no period', () => {
+  assert.equal(C.parseSalary('$35 - $3,000'), null, 'ends tenfold apart');
+  assert.equal(C.parseSalary('$1000'), null, 'no period and too small for a year');
+  assert.equal(C.parseSalary('USD 1,000 per year'), null);
+  assert.deepEqual(C.parseSalary('$1,000/month'), { min: 1000, max: 1000, cur: 'USD', per: 'month' });
+  assert.deepEqual(C.parseSalary('$25 - $35 /hour'), { min: 25, max: 35, cur: 'USD', per: 'hour' });
+  assert.deepEqual(C.parseSalary('$80k - $100k'), { min: 80000, max: 100000, cur: 'USD', per: 'year' });
+  assert.deepEqual(C.parseSalary('€60,000–70,000 per year'), { min: 60000, max: 70000, cur: 'EUR', per: 'year' });
+  const base = { id: 'himalayas:1', src: 'himalayas', title: 'T', company: 'C', url: 'https://himalayas.app/companies/c/jobs/t', loc: 'Worldwide', date: '2026-10-20T00:00:00Z' };
+  assert.equal(C.checkJob({ ...base, salary: { min: 96300, max: 1515360, cur: 'USD', per: 'year' } }).salary, null, 'a stored figure no year of pay reaches');
+  assert.equal(C.checkJob({ ...base, salary: { min: 35, max: 3000, cur: 'USD', per: 'year' } }).salary, null, 'a stored snapshot row from before');
+  assert.deepEqual(C.checkJob({ ...base, salary: { min: 50, max: 70, cur: 'EUR', per: 'hour' } }).salary, { min: 50, max: 70, cur: 'EUR', per: 'hour' });
 });

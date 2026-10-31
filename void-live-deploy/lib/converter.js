@@ -1,8 +1,8 @@
 // The file and unit converter (/converter/, 2026-10-29, assimilates onlineconverter.com). Pure parts, the same in the browser and in node tests:
 // the 106 tools that onlineconverter.com lists (read from its home page), each with Verse's honest status; the search ("mp4 to mp3"); the file
-// format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF); the sound edits (cut,
-// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
-// and written. Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
+// format read from the first bytes, not only from the name; the encoders Verse writes itself (WAV, AIFF, BMP, TIFF, GIF; FLAC and Ogg in audio-write.js); the sound edits (cut,
+// speed, volume, fades, silence, merge, mix, crossfade); the change of a GIF's speed; MP4, MOV, WEBM and MKV video and the video edits (run by /lib/video-write.js, written by /lib/video-mux.js); the words of TXT, HTML, RTF, DOCX, EPUB and PDF files read
+// and written; an EPUB's cover, the merge of EPUBs and the compression of an EPUB or a CBZ (/lib/epub-edit.js). Nothing here uploads a file: the page decodes pictures, sounds and PDFs with the browser and pdf.js, and writes with this file and
 // pdf-lib (vendored). Statuses: 'here' this page does it, 'verse' another Verse page does it, 'part' part of it (the note says which part),
 // 'no' not on Verse yet. A tool is never shown as done when it is not.
 import { unzip, paragraphsOf, OFFICE, docxOf, xml, unxml, pdfParagraphs } from './translate-docs.js';
@@ -14,36 +14,60 @@ const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 // ---- the catalog -------------------------------------------------------------------------------------------------------------------------
 export const CATS = Object.freeze(['Video', 'Audio', 'Image', 'Ebook', 'Document', 'Unit']);
 const NO = 'Not on Verse yet.';
-const NO_VIDEO = 'Not on Verse yet: Verse cannot write video files.';
-const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV or AIFF, but cannot write ' + f + '.';
+// the video formats Verse does not write, each with the reason
+const VIDEO_WHY = { WMV: 'Not on Verse yet: WMV needs Windows Media video, which no browser can code.' };
+const VIDEO_OUT_NOTE = { MP4: 'Any video your browser can play becomes an MP4 (H.264 video; AAC sound, or Opus where the browser has no AAC encoder), on this device. It takes as long as the video plays.', MOV: 'Any video your browser can play becomes a MOV (H.264 video; AAC sound, or Opus where the browser has no AAC encoder, which QuickTime Player does not play), on this device. It takes as long as the video plays.', WEBM: 'Any video your browser can play becomes a WEBM (VP9 video, Opus sound), on this device. It takes as long as the video plays.', MKV: 'Any video your browser can play becomes an MKV (VP9 video, Opus sound), on this device. It takes as long as the video plays.', AVI: 'Any video your browser can play becomes an AVI (H.264 video, 16-bit PCM sound, which every AVI player reads), on this device. It takes as long as the video plays. Browsers do not play AVI, so the page shows no preview.', '3GP': 'Any video your browser can play becomes a 3GP for phones (H.264 video, AAC sound), on this device. It takes as long as the video plays. Only in part: the sound has to be AAC (AMR, the other 3GP sound, no browser can code), so in a browser with no AAC encoder, such as Chrome on Linux, the 3GP has no sound. The page shows no preview, because most browsers do not play 3GP.', FLV: 'Any video your browser can play becomes an FLV (H.264 video; AAC sound, or 16-bit PCM at 44.1 kHz where the browser has no AAC encoder, since an FLV holds no Opus), on this device. It takes as long as the video plays. Browsers do not play FLV, so the page shows no preview.' };
+// a video tool: run 'video' with the edit (vop); each plays the video once, so it takes as long as the video plays
+const vid = (cat, name, vop, note, extra = {}) => tool(cat, name, 'here', { run: 'video', vop, from: 'video', note, ...extra });
+// the sounds Verse writes: WAV, AIFF, FLAC and ALAC with its own encoders; OGG and OPUS with the browser's Opus encoder in Verse's own Ogg pages
+const SOUND_OUT_NOTE = { WAV: 'WAV (16-bit PCM)', AIFF: 'AIFF (16-bit PCM)', FLAC: 'FLAC (16-bit and lossless: the same sound as a WAV, in less space)', ALAC: 'ALAC (Apple Lossless, 16-bit, in an .m4a file: the same sound as a WAV, in less space; Verse codes it itself)', M4A: 'an .m4a with AAC at 192 kbps where your browser codes AAC, and with Apple Lossless where it does not (the notes say which)', M4R: 'an iPhone ringtone (.m4r, AAC at 192 kbps, the first 40 seconds)', OGG: 'an OGG with Opus sound at 128 kbps (no browser can code Vorbis, the older OGG sound)', OPUS: 'OPUS (Ogg Opus at 128 kbps)' };
+const noAudio = (f) => 'Not on Verse yet: Verse opens ' + f + ' files and makes WAV, AIFF, FLAC, ALAC, M4A, M4R, OGG or OPUS, but cannot write ' + f + '.';
 const WORDS = 'The words and paragraphs only: pictures, tables and the page layout are left out.';
 const conv = (cat, f, status, extra = {}) => ({ id: slug(cat === 'Document' ? 'doc' : cat) + '-' + slug(f), cat, kind: 'converter', name: f, status, ...extra });
 const tool = (cat, name, status, extra = {}) => ({ id: slug(name), cat, kind: 'tool', name, status, ...extra });
 const UNIT = (name, href) => tool('Unit', name, 'verse', { href, note: 'On the Verse unit converter.' });
 
 export const CATALOG = Object.freeze([
-  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => conv('Video', f, 'no', { note: NO_VIDEO })),
-  ...['Add Audio to Video', 'Add Background to Video', 'Add Image to Video', 'Add Text to Video', 'Add Transition to Video', 'Blur Video', 'Brighten Video', 'Change Video Speed', 'Compress Video', 'Cut Video', 'Increase Video Volume', 'Make Split Screen Video', 'Merge Video', 'Repair MP4', 'Resize Video', 'Rotate Video', 'Stabilize Video', 'Sync Audio and Video', 'Watermark Video'].map((n) => tool('Video', n, 'no', { note: NO_VIDEO })),
-  ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (f === 'WAV' || f === 'AIFF'
-    ? conv('Audio', f, 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + f + ' (16-bit PCM), on this device.' })
-    : conv('Audio', f, 'no', { note: ['ALAC', 'AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
-  tool('Audio', 'Add Image to MP3', 'no', { note: NO }),
+  ...['MP4', '3GP', 'AVI', 'FLV', 'MKV', 'MOV', 'WEBM', 'WMV'].map((f) => (VIDEO_OUT_NOTE[f]
+    ? conv('Video', f, f === '3GP' ? 'part' : 'here', { to: f.toLowerCase(), from: 'video', note: VIDEO_OUT_NOTE[f] })
+    : conv('Video', f, 'no', { note: VIDEO_WHY[f] }))),
+  vid('Video', 'Add Audio to Video', 'add-sound', 'Puts a sound on a video, in place of its own sound or mixed with it. Pick one video and one sound.', { from: 'video+sound' }),
+  vid('Video', 'Add Background to Video', 'background', 'Puts the video on a square, tall (9:16) or wide (16:9) background: a colour, the video itself blurred, or a picture you add.', { from: 'video+picture?' }),
+  vid('Video', 'Add Image to Video', 'image', 'Puts a picture on the video, at the place, size and see-through level you pick, for all of it or from one second to another. Pick one video and one picture.', { from: 'video+picture' }),
+  vid('Video', 'Add Text to Video', 'text', 'Puts your words on the video, at the place, size and colour you pick, for all of it or from one second to another.'),
+  vid('Video', 'Add Transition to Video', 'transition', 'Joins 2 or more videos with one of 58 transitions (fades, wipes, slides, slices, circles, pixelize, zoom and more), or brings 1 video in from black, out to black, or both, over 1 to 10 seconds. The sound crossfades, or fades in and out, with the picture. Verse draws each transition itself, picture by picture; the 4 winds and Dissolve use Verse\'s own random pattern, so their grain is not the same as in other tools.'),
+  vid('Video', 'Blur Video', 'blur', 'Blurs every picture of the video by the amount you set.'),
+  vid('Video', 'Brighten Video', 'bright', 'Makes every picture of the video brighter or darker by the percent you set.'),
+  vid('Video', 'Change Video Speed', 'speed', 'Faster or slower (0.25 to 4 times). The sound changes speed too, so its pitch moves, as a tape does.'),
+  vid('Video', 'Compress Video', 'compress', 'A smaller file: a lower bit rate and, if you pick it, fewer pixels. It says how much smaller the file became.'),
+  vid('Video', 'Cut Video', 'cut', 'Keeps the video from one second to another, with its sound.'),
+  vid('Video', 'Increase Video Volume', 'gain', 'Makes the sound of a video louder or quieter by a number of decibels, with a count of clipped samples.'),
+  vid('Video', 'Make Split Screen Video', 'split', 'Plays 2 videos at once, side by side or one above the other, as one video: the first you pick is Video 1. You pick how long it runs (the longer video, or Video 1 or 2 with the other played again or held) and whose sound it has.', { from: 'video+video' }),
+  vid('Video', 'Merge Video', 'merge', 'Plays 2 or more videos one after another, in the order you pick them, as one video the size of the first.', { many: true }),
+  tool('Video', 'Repair MP4', 'part', { run: 'repair', from: 'repair', note: 'In part: mends an MP4, MOV or 3GP that will not play, on your device, by writing its index (the moov) again. A file cut short keeps every picture and sound that is whole; a fragmented file is joined into one. A file that lost its index (the camera stopped before it wrote it) gets a new one: Verse walks the H.264 or H.265 pictures in the data, with the settings of a good video from the same camera (Have Reference Video) or, when the camera repeats them in the data, with none. PCM and AMR sound comes back with the pictures; AAC sound, which most phones record, does not, because AAC frames do not say where they end. The pictures and sound are not coded again.' }),
+  vid('Video', 'Resize Video', 'resize', 'Makes the video the width you set; the height follows, so the shape stays.'),
+  vid('Video', 'Rotate Video', 'rotate', 'Turns the video 90, 180 or 270 degrees.'),
+  vid('Video', 'Stabilize Video', 'stabilize', 'Takes the shake out of a hand-held video. The video plays twice: the first time Verse follows how each picture moves (a move, a turn and a change of size, matched on a small gray copy), the second it turns and moves each picture onto a smooth path, zoomed in just enough to hide the edges. Stable to Most Stable average the path over a longer time (0.25 to 4 s) and allow more zoom (6% to 20%). The sound stays as it was.'),
+  vid('Video', 'Sync Audio and Video', 'shift', 'Moves the sound earlier or later against the pictures, by the seconds you set.'),
+  vid('Video', 'Watermark Video', 'watermark', 'Puts your words or a picture you add in a corner of the video, see-through by the amount you set.', { from: 'video+picture?' }),
+  ...['MP3', 'AIFF', 'ALAC', 'AMR', 'FLAC', 'M4A', 'M4R', 'OGG', 'OPUS', 'WAV', 'WMA'].map((f) => (SOUND_OUT_NOTE[f]
+    ? conv('Audio', f, f === 'M4R' ? 'part' : 'here', { to: f.toLowerCase(), from: 'sound', note: 'Any sound or video your browser can play becomes ' + SOUND_OUT_NOTE[f] + ', on this device.' + (f === 'M4R' ? ' Only in a browser that codes AAC: a ringtone has to be AAC, and Chrome on Linux has no AAC encoder, so there Verse stops and says so.' : '') })
+    : conv('Audio', f, 'no', { note: ['AMR', 'WMA'].includes(f) ? NO : noAudio(f) }))),
+  tool('Audio', 'Add Image to MP3', 'here', { run: 'mp3-image', from: 'mp3+picture', note: 'Puts a picture in the MP3 as its cover (the ID3 tag, as music players show it). The sound is not coded again, so it stays exactly as it was; title, artist and the other tag fields stay too.' }),
   tool('Audio', 'Add Transition to Audio', 'here', { run: 'crossfade', from: 'sound', many: true, note: 'Joins 2 or more sounds with a crossfade between each, as one WAV.' }),
-  tool('Audio', 'Audio to Video', 'no', { note: NO_VIDEO }),
+  vid('Audio', 'Audio to Video', 'sound-video', 'A sound becomes a video: the picture you add (or a colour) shown for as long as the sound plays.', { from: 'sound+picture?' }),
   tool('Audio', 'Change Audio Speed', 'here', { run: 'speed', from: 'sound', note: 'Faster or slower, as a tape plays it: the pitch moves with the speed. The result is a WAV.' }),
   tool('Audio', 'Compress MP3', 'no', { note: NO }),
-  tool('Audio', 'Cut MP3', 'part', { run: 'cut', from: 'sound', note: 'Cuts any sound from one second to another, MP3 included; the result is a WAV, not an MP3.' }),
+  tool('Audio', 'Cut MP3', 'here', { run: 'cut', from: 'sound', note: 'Keeps an MP3 from one second to another, and the result is an MP3. The sound is not coded again, so it loses nothing; with the LAME tag most MP3s have, the cut is exact to the sample, and with none it is on the frame lines, 26 ms apart. The tag (title, artist, cover) stays. Any other sound is cut too, and saved as the format you pick.' }),
   tool('Audio', 'Extract Audio from Video', 'here', { run: 'extract-audio', from: 'video', note: 'The sound of a video your browser can play, as a WAV.' }),
-  tool('Audio', 'Increase MP3 Volume', 'part', { run: 'gain', from: 'sound', note: 'Louder or quieter by a number of decibels, with a count of clipped samples; the result is a WAV, not an MP3.' }),
+  tool('Audio', 'Increase MP3 Volume', 'here', { run: 'gain', from: 'sound', note: 'Makes an MP3 louder or quieter, and the result is an MP3. The sound is not coded again, so it loses nothing: each piece of the MP3 keeps its data and gets a new level number, in steps of 1.5 dB, as MP3Gain does. Verse counts the samples that go past the top. The tag (title, artist, cover) stays. Any other sound is changed too, and saved as the format you pick.' }),
   tool('Audio', 'Merge Audio', 'here', { run: 'merge', from: 'sound', many: true, note: 'Plays 2 or more sounds one after another, in the order you pick them, as one WAV.' }),
   tool('Audio', 'Mix Audio', 'here', { run: 'mix', from: 'sound', many: true, note: 'Plays 2 or more sounds at the same time, as one WAV; it turns the mix down if it would clip, and says so.' }),
-  tool('Audio', 'Remove Audio from Video', 'no', { note: NO_VIDEO }),
-  tool('Audio', 'Remove Noise from Audio', 'no', { note: NO }),
+  vid('Audio', 'Remove Audio from Video', 'mute', 'The same video with no sound.'),
+  tool('Audio', 'Remove Noise from Audio', 'here', { run: 'denoise', from: 'sound', note: 'Takes a steady noise (hiss, hum, a fan, room tone) out of a sound, on your device. Verse learns the noise from the quietest part, or from the seconds you mark, then takes down each frequency band that is not above it (spectral gating). It says how far the noise went down. A noise that changes like the sound (voices, traffic) stays.' }),
   tool('Audio', 'Remove Silence from Audio', 'here', { run: 'silence', from: 'sound', note: 'Takes out every quiet stretch longer than you set, as a WAV, and says how much it took out.' }),
-  tool('Audio', 'Repair M4A', 'no', { note: NO }),
-  ...['JPG', 'BMP', 'DNG', 'GIF', 'PDF', 'PNG', 'TIFF', 'WEBP'].map((f) => (f === 'DNG'
-    ? conv('Image', f, 'no', { note: 'Not on Verse yet: Verse cannot write camera raw files.' })
-    : conv('Image', f, 'here', { to: f.toLowerCase(), from: 'picture', note: { JPG: 'With a quality you set.', BMP: '24-bit colour; see-through parts become white.', GIF: '256 colours with error diffusion; see-through parts stay see-through.', PDF: 'One picture to a page, the page the size of the picture.', PNG: 'Lossless, see-through parts kept.', TIFF: 'Uncompressed 8-bit colour, see-through parts kept.', WEBP: 'With a quality you set.' }[f] }))),
+  tool('Audio', 'Repair M4A', 'part', { run: 'repair', from: 'repair', note: 'In part: mends an M4A that will not play, on your device, by writing its index (the moov) again. A file cut short keeps every whole piece of sound, and a fragmented file is joined into one. A recording that lost its index cannot be mended: its AAC or ALAC frames do not say where they end, so without the index Verse cannot find them. The sound is not coded again.' }),
+  ...['JPG', 'BMP', 'DNG', 'GIF', 'PDF', 'PNG', 'TIFF', 'WEBP'].map((f) => conv('Image', f, 'here', { to: f.toLowerCase(), from: 'picture', note: { JPG: 'With a quality you set.', BMP: '24-bit colour; see-through parts become white.', DNG: 'A linear DNG, Adobe\'s raw format: the colours of the picture as 16-bit linear red, green and blue, with a small preview, for raw editors. It has the detail and the range of the picture, not the sensor data of a camera. See-through parts become white.', GIF: '256 colours with error diffusion; see-through parts stay see-through.', PDF: 'One picture to a page, the page the size of the picture.', PNG: 'Lossless, see-through parts kept.', TIFF: 'Uncompressed 8-bit colour, see-through parts kept.', WEBP: 'With a quality you set.' }[f] })),
   tool('Image', 'Blur Image', 'verse', { href: '/photos/?tab=adj', note: 'On Verse photo tools: Adjust, Blur.' }),
   tool('Image', 'Brighten Image', 'verse', { href: '/photos/?tab=adj', note: 'On Verse photo tools: Adjust, Brightness.' }),
   tool('Image', 'Change GIF Speed', 'here', { run: 'gif-speed', from: 'gif', note: 'Every frame of an animated GIF shown faster or slower; the pictures are not touched.' }),
@@ -51,23 +75,27 @@ export const CATALOG = Object.freeze([
   tool('Image', 'Compress Image', 'verse', { href: '/photos/?tab=out', note: 'On Verse photo tools, with a before and after slider and the size saved.' }),
   tool('Image', 'Cut Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
   tool('Image', 'Extract Image from Video', 'here', { run: 'frame', from: 'video', note: 'The picture at the second you set, as a PNG.' }),
-  tool('Image', 'GIF to Video', 'no', { note: NO_VIDEO }),
-  tool('Image', 'Image to Video', 'no', { note: NO_VIDEO }),
+  vid('Image', 'GIF to Video', 'gif-video', 'Every frame of an animated GIF, for its own time, as a video; see-through parts become the colour you pick.', { from: 'gif' }),
+  vid('Image', 'Image to Video', 'pictures-video', 'Shows 1 or more pictures one after another, for the seconds you set each, as a video; you can add a sound.', { from: 'picture+sound?' }),
   tool('Image', 'Merge Images', 'here', { run: 'merge-images', from: 'picture', many: true, note: 'Puts 2 or more pictures side by side or one above the other, as one PNG.' }),
   tool('Image', 'Remove Image Background', 'no', { note: NO }),
   tool('Image', 'Resize Image', 'verse', { href: '/resize-image/', note: 'On Verse: resize by pixels or by percent.' }),
   tool('Image', 'Rotate Image', 'verse', { href: '/photos/?tab=crop', note: 'On Verse photo tools: Crop and rotate.' }),
-  tool('Image', 'Watermark Image', 'part', { href: '/photos/?tab=text', note: 'On Verse photo tools: Text. A text watermark only, not a picture.' }),
+  tool('Image', 'Watermark Image', 'here', { run: 'watermark-image', from: 'picture+picture?', note: 'Puts your words, or a picture you pick as the mark (the smallest one), in a corner of each picture, see-through by the amount you set. A JPG stays a JPG, a PNG a PNG. Still pictures only: not an animated GIF.' }),
   ...['EPUB', 'AZW', 'DOCX', 'HTML', 'MOBI', 'PDF', 'RTF', 'TXT'].map((f) => (['AZW', 'MOBI'].includes(f)
     ? conv('Ebook', f, 'no', { note: 'Not on Verse yet: Verse cannot write Kindle files.' })
     : conv('Ebook', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of an EPUB, DOCX, PDF, RTF or HTML file as plain text.' : WORDS }))),
-  ...['Change EPUB Cover', 'Compress AZW3', 'Compress CBZ/CBR', 'Compress EPUB', 'Merge EPUB'].map((n) => tool('Ebook', n, 'no', { note: NO })),
+  tool('Ebook', 'Change EPUB Cover', 'here', { run: 'epub-cover', from: 'epub+picture', note: 'Puts a picture on an EPUB as its cover, the one readers show in the library and on the first page. An old cover keeps its file, so every page that showed it shows the new one; a book with no cover gets a cover page first. The text, the chapters and the other files stay byte for byte as they were.' }),
+  tool('Ebook', 'Merge EPUB', 'here', { run: 'epub-merge', from: 'epub', many: true, note: 'Joins 2 or more EPUB books into one, in the order you pick them. Each book keeps its own pages, pictures, styles and fonts, so it looks as it did; the table of contents has a part for each book, with its own chapters. A book with DRM cannot be read, so it cannot be merged.' }),
+  tool('Ebook', 'Compress EPUB', 'here', { run: 'epub-compress', from: 'epub', note: 'Makes an EPUB smaller: every file is packed again, and each JPEG, PNG and WebP picture is made again at the quality you pick and scaled down to the largest side you pick. A picture changes only when the new one is smaller, and keeps its name, so no page changes. The words, styles and fonts stay byte for byte as they were.' }),
+  tool('Ebook', 'Compress CBZ/CBR', 'part', { run: 'cbz-compress', from: 'cbz', note: 'CBZ only: each JPEG, PNG and WebP page is made again at the quality you pick and scaled down to the largest side you pick, and kept only when it is smaller, under its own name and in its own place. A CBR is a RAR archive, which Verse cannot open yet.' }),
+  tool('Ebook', 'Compress AZW3', 'no', { note: NO }),
   ...['PDF', 'DOCX', 'HTML', 'TXT'].map((f) => conv('Document', f, f === 'TXT' ? 'here' : 'part', { to: f.toLowerCase(), from: 'text', note: f === 'TXT' ? 'Every word of a PDF, DOCX, EPUB, RTF or HTML file as plain text.' : WORDS })),
   tool('Document', 'Add Image to PDF', 'here', { run: 'pdf-image', from: 'pdf+picture', note: 'Puts a picture on a page of a PDF, at the place and size you pick; the rest of the PDF stays as it was.' }),
   tool('Document', 'Compress PDF', 'verse', { href: '/pdf/?tool=compress', note: 'On Verse PDF tools.' }),
   tool('Document', 'Merge PDF', 'verse', { href: '/pdf/?tool=merge', note: 'On Verse PDF tools.' }),
-  tool('Document', 'PDF to Video', 'no', { note: NO_VIDEO }),
-  tool('Document', 'PPTX to Video', 'no', { note: NO_VIDEO }),
+  vid('Document', 'PDF to Video', 'pdf-video', 'Shows each page of a PDF for the seconds you set, as a video.', { from: 'pdf' }),
+  tool('Document', 'PPTX to Video', 'no', { note: 'Not on Verse yet: Verse cannot draw PowerPoint slides, so it cannot show them in a video.' }),
   tool('Document', 'Split PDF', 'verse', { href: '/pdf/?tool=split', note: 'On Verse PDF tools.' }),
   UNIT('Area', '/convert/?k=area'), tool('Unit', 'Currency', 'verse', { href: '/markets/?s=EURUSD', note: 'On Verse markets, at the European Central Bank rates.' }),
   UNIT('Length / Distance', '/convert/?k=length'), UNIT('Speed', '/convert/?k=speed'), UNIT('Temperature', '/convert/?k=temperature'), UNIT('Time', '/convert/?k=time'), // void-review: ok (k= names a unit kind on /convert/, not a key)
@@ -123,9 +151,9 @@ export function formatOf(bytes, name = '') {
 /** what a format can become on this page */
 export function targetsOf(f) {
   const k = kindOf(f), x = normFormat(f);
-  if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'pdf'].filter((t) => t !== x);
-  if (k === 'sound') return ['wav', 'aiff'].filter((t) => t !== x);
-  if (k === 'video') return ['wav', 'aiff'];
+  if (k === 'picture') return ['jpg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'dng', 'pdf'].filter((t) => t !== x);
+  if (k === 'sound') return ['wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
+  if (k === 'video') return ['mp4', 'mov', '3gp', 'webm', 'mkv', 'avi', 'flv', 'wav', 'aiff', 'flac', 'alac', 'm4a', 'm4r', 'ogg', 'opus'].filter((t) => t !== x);
   if (['pdf', 'docx', 'rtf', 'html', 'txt', 'epub'].includes(x)) return ['txt', 'html', 'docx', 'rtf', 'epub', 'pdf'].filter((t) => t !== x);
   return [];
 }
@@ -142,7 +170,7 @@ export function search(q) {
     const exact = CATALOG.find((t) => t.kind === 'converter' && t.cat === cat && normFormat(t.name) === to) || CATALOG.find((t) => t.kind === 'converter' && normFormat(t.name) === to);
     if (exact) out.push({ tool: exact, why: (from ? from.toUpperCase() + ' to ' : 'to ') + to.toUpperCase() });
     if (!exact || exact.status === 'no') {
-      const near = kindOf(to) === 'sound' || (kindOf(to) === 'video' && fk === 'video') ? toolOf('audio-wav') : kindOf(to) === 'video' && fk === 'picture' ? toolOf('image-gif') : fk === 'text' || kindOf(to) === 'text' ? toolOf('doc-txt') : null;
+      const near = kindOf(to) === 'video' && (fk === 'video' || fk === '') ? toolOf('video-mp4') : kindOf(to) === 'sound' ? toolOf('audio-wav') : kindOf(to) === 'video' && fk === 'picture' ? toolOf('image-gif') : fk === 'text' || kindOf(to) === 'text' ? toolOf('doc-txt') : null;
       if (near && near !== exact && (!from || fk === '' || near.from === 'sound' ? ['sound', 'video', ''].includes(fk) : true)) out.push({ tool: near, why: 'nearest on Verse: ' + near.name + (near.from === 'sound' ? ' (the sound, as a WAV)' : '') });
     }
     return out;
@@ -307,6 +335,41 @@ export function tiff(img) {
   tag(282, 5, 1, resAt); tag(283, 5, 1, resAt + 8); if (alpha) tag(338, 3, 1, 2); v.setUint32(t, 0, true);
   for (let i = 0; i < spp; i++) v.setUint16(bpsAt + i * 2, 8, true); v.setUint32(resAt, 72, true); v.setUint32(resAt + 4, 1, true); v.setUint32(resAt + 8, 72, true); v.setUint32(resAt + 12, 1, true);
   if (alpha) b.set(d, pix); else for (let i = 0, p = pix; i < w * h; i++) { b[p++] = d[i * 4]; b[p++] = d[i * 4 + 1]; b[p++] = d[i * 4 + 2]; }
+  return b;
+}
+/**
+ * a linear DNG (DNG 1.4, Adobe's raw format): the picture's colours, made linear again (the sRGB curve taken off) and kept as 16-bit
+ * red, green and blue, with the colour matrix of linear sRGB (D65) so a raw tool shows the same colours. IFD 0 is a small 8-bit
+ * preview (256 pixels on the long side), as the DNG specification asks; the full picture is in its SubIFD. See-through parts go on white.
+ * It is not a camera's sensor data: it has the detail and the range of the picture, no more.
+ */
+export function dng(img, { model = 'Verse picture' } = {}) {
+  const { width: w, height: h, data: d } = img, s = Math.min(1, 256 / Math.max(w, h)), tw = Math.max(1, Math.round(w * s)), th = Math.max(1, Math.round(h * s));
+  const on = (i, k) => { const a = d[i * 4 + 3] / 255; return d[i * 4 + k] * a + 255 * (1 - a); };
+  const lin = new Float64Array(256).map((_, v) => { const c = v / 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; });
+  // the preview: each preview pixel is the mean of the picture pixels it covers
+  const thumb = new Uint8Array(tw * th * 3);
+  for (let y = 0; y < th; y++) for (let x = 0; x < tw; x++) {
+    const x0 = Math.floor((x * w) / tw), x1 = Math.max(x0 + 1, Math.floor(((x + 1) * w) / tw)), y0 = Math.floor((y * h) / th), y1 = Math.max(y0 + 1, Math.floor(((y + 1) * h) / th)), sum = [0, 0, 0];
+    for (let yy = y0; yy < y1; yy++) for (let xx = x0; xx < x1; xx++) for (let k = 0; k < 3; k++) sum[k] += on(yy * w + xx, k);
+    for (let k = 0; k < 3; k++) thumb[(y * tw + x) * 3 + k] = Math.round(sum[k] / ((x1 - x0) * (y1 - y0)));
+  }
+  // XYZ (D65) to linear sRGB, IEC 61966-2-1: the DNG ColorMatrix goes from XYZ to the camera's colours, and here the camera is linear sRGB
+  const CM = [3.2404542, -1.5371385, -0.4985314, -0.969266, 1.8760108, 0.041556, 0.0556434, -0.2040259, 1.0572252];
+  const name = new TextEncoder().encode(model + '\0'), soft = new TextEncoder().encode('Verse (a-to-mind.com/converter/)\0');
+  const T0 = 22, T1 = 12, ifd0 = 8, ifd1 = ifd0 + 2 + T0 * 12 + 4; let at = ifd1 + 2 + T1 * 12 + 4;
+  const room = (n) => { const o = at; at += n + (n & 1); return o; };
+  const bps0 = room(6), nameAt = room(name.length), softAt = room(soft.length), cmAt = room(72), neutralAt = room(24), bps1 = room(6), whiteAt = room(12), thumbAt = room(thumb.length), pixAt = room(w * h * 6);
+  const b = new Uint8Array(at), v = new DataView(b.buffer); b.set([0x49, 0x49, 42, 0]); v.setUint32(4, ifd0, true);
+  // an IFD: the tags in rising order; a value of 4 bytes or less sits in the entry, a longer one at its offset
+  const dir = (start, list) => { list.sort((p, q) => p[0] - q[0]); v.setUint16(start, list.length, true); let t = start + 2; for (const [id, type, count, value] of list) { v.setUint16(t, id, true); v.setUint16(t + 2, type, true); v.setUint32(t + 4, count, true); if (type === 3 && count === 1) v.setUint16(t + 8, value, true); else if (type === 1) b.set(value, t + 8); else v.setUint32(t + 8, value, true); t += 12; } v.setUint32(t, 0, true); };
+  dir(ifd0, [[254, 4, 1, 1], [256, 4, 1, tw], [257, 4, 1, th], [258, 3, 3, bps0], [259, 3, 1, 1], [262, 3, 1, 2], [271, 2, name.length, nameAt], [272, 2, name.length, nameAt], [273, 4, 1, thumbAt], [274, 3, 1, 1], [277, 3, 1, 3], [278, 4, 1, th], [279, 4, 1, thumb.length], [284, 3, 1, 1], [305, 2, soft.length, softAt], [330, 4, 1, ifd1],
+    [50706, 1, 4, [1, 4, 0, 0]], [50707, 1, 4, [1, 1, 0, 0]], [50708, 2, name.length, nameAt], [50721, 10, 9, cmAt], [50728, 5, 3, neutralAt], [50778, 3, 1, 21]]);
+  dir(ifd1, [[254, 4, 1, 0], [256, 4, 1, w], [257, 4, 1, h], [258, 3, 3, bps1], [259, 3, 1, 1], [262, 3, 1, 34892], [273, 4, 1, pixAt], [277, 3, 1, 3], [278, 4, 1, h], [279, 4, 1, w * h * 6], [284, 3, 1, 1], [50717, 4, 3, whiteAt]]);
+  for (let i = 0; i < 3; i++) { v.setUint16(bps0 + i * 2, 8, true); v.setUint16(bps1 + i * 2, 16, true); v.setUint32(whiteAt + i * 4, 65535, true); v.setUint32(neutralAt + i * 8, 1, true); v.setUint32(neutralAt + i * 8 + 4, 1, true); }
+  b.set(name, nameAt); b.set(soft, softAt); b.set(thumb, thumbAt);
+  CM.forEach((c, i) => { v.setInt32(cmAt + i * 8, Math.round(c * 1e7), true); v.setInt32(cmAt + i * 8 + 4, 1e7, true); });
+  for (let i = 0, p = pixAt; i < w * h; i++) for (let k = 0; k < 3; k++, p += 2) { const a = d[i * 4 + 3] / 255, c = lin[d[i * 4 + k]] * a + (1 - a); v.setUint16(p, Math.round(c * 65535), true); }
   return b;
 }
 // the GIF palette: 6 levels of red, 7 of green, 6 of blue (252 colours), 3 greys, and index 255 for see-through
@@ -491,4 +554,4 @@ export function outName(name, ext, taken = new Set()) {
   const base = String(name || 'file').replace(/\.[a-z0-9]{1,5}$/i, '').replace(/[\\/:*?"<>|\x00-\x1f]+/g, '_').slice(0, 120) || 'file';
   let n = base + '.' + ext, k = 2; while (taken.has(n)) n = base + ' (' + k++ + ').' + ext; taken.add(n); return n;
 }
-export const MIME = Object.freeze({ wav: 'audio/wav', aiff: 'audio/aiff', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', zip: 'application/zip' });
+export const MIME = Object.freeze({ mp4: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm', mkv: 'video/x-matroska', avi: 'video/x-msvideo', flv: 'video/x-flv', '3gp': 'video/3gpp', wav: 'audio/wav', aiff: 'audio/aiff', flac: 'audio/flac', m4a: 'audio/mp4', m4r: 'audio/mp4', ogg: 'audio/ogg', opus: 'audio/ogg', mp3: 'audio/mpeg', jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp', tiff: 'image/tiff', dng: 'image/x-adobe-dng', pdf: 'application/pdf', txt: 'text/plain;charset=utf-8', html: 'text/html;charset=utf-8', rtf: 'application/rtf', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', epub: 'application/epub+zip', cbz: 'application/vnd.comicbook+zip', zip: 'application/zip' });

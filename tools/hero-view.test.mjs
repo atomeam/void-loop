@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { heroKind, heroView, inspectPrompt, HERO } from '../void-live-deploy/lib/hero-view.js';
 
 test('the kind of thing from its size: a book is flat, a figure is tall, a teapot is an object', () => {
-  assert.equal(heroKind({ x: 0.24, y: 0.035, z: 0.17 }), 'flat', 'the Verse Book');
+  assert.equal(heroKind({ x: 0.24, y: 0.035, z: 0.17 }), 'flat', 'the Book of Verse');
   assert.equal(heroKind({ x: 0.4, y: 0.02, z: 0.4 }), 'flat', 'a board');
   assert.equal(heroKind({ x: 0.05, y: 0.18, z: 0.05 }), 'tall', 'a figure');
   assert.equal(heroKind({ x: 0.06, y: 0.3, z: 0.06 }), 'tall', 'a lighthouse');

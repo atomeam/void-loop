@@ -18,8 +18,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/markets/ (Versus' Yahoo Finance floor): one file and lib/markets.js; the only thing kept on the device is the watchlist and the last quote */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; --up: #0a7a3a; --down: #c4263c; --box: #fff; --on-accent: #fff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --up: #3ddc84; --down: #ff6b7e; --box: #14121c; --on-accent: #15131c; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 760px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 4px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -186,7 +186,7 @@
 <script type="module">
   // everything after the first paint: the page shows its boxes and its words at once, the module lands after load (the gate measures speed)
   addEventListener('load', async () => {
-    const [{ mountRelated }, M] = await Promise.all([import('/lib/toolkit.js'), import('/lib/markets.js')]);
+    const [{ mountRelated }, M, { cardAsk }] = await Promise.all([import('/lib/toolkit.js'), import('/lib/markets.js'), import('/lib/markets-card.js')]);
     const $ = (id) => document.getElementById(id), KEY = 'a2m.void.markets.v1', qs = new URLSearchParams(location.search);
     let store = { list: [], q: {}, last: 'AAPL' };
     try { store = { ...store, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; } catch (_) {}
@@ -367,7 +367,7 @@
 
     if (qs.get('c')) { state.cmp = qs.get('c'); $('cmp').value = state.cmp; }
     setWatch(); paintList(); load(); if (list().length) refresh(); loadStrip(); loadMovers();
-    mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }]);
+    mountRelated($('related'), '/markets/', [{ label: 'Convert currency', href: () => '/convert/' }], { card: () => cardAsk(state.sym) }); // a coin open here: its own price card, not the board
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

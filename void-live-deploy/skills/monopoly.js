@@ -5,9 +5,17 @@
  * Every act is named for what it is: buying is your choice (Buy / Don't buy, never automatic), rent, tax, cards and Jail
  * are forced and the log says so, a trade is an offer Verse accepts or declines, and each choice Verse makes shows its reason.
  */
-import * as M from './monopoly-rules.js';
-import { lift3d } from './lift3d.js';
-import { rollDice } from '../lib/table-tools.js'; // the Game Box's dice (2026-10-22): your rolls use the box's fair dice; Verse's seats roll inside the rules as before
+import { loadLater } from '../lib/load-later.js';
+
+// the rules (spaceName and themeText read them too), the 3D lift and the Game Box's dice (2026-10-22: your rolls use the box's fair dice;
+// Verse's seats roll inside the rules as before)
+// load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let M, lift3d, rollDice;
+export const ready = loadLater(() => Promise.all([
+  import('./monopoly-rules.js'),
+  import('./lift3d.js'),
+  import('../lib/table-tools.js'),
+]).then(([m, l, t]) => { M = m; ({ lift3d } = l); ({ rollDice } = t); }));
 
 // VoidQuest (domains/void.canon.md): Verse's own space version of the property game, after Solar Quest, Verse as the rival.
 // "play voidquest" and "play solar quest" open it; it plays on the same rules (monopoly-rules.js) with its own board.
@@ -216,6 +224,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
 async function run(text, api) {
   const m = monopolyOf(text);
   if (!m) return 'none';
+  await ready();
   const kind = m.theme === 'voidquest' ? 'voidquest' : 'monopoly';
   const existing = Object.values(api.stage.things()).find((t) => t.kind === kind);
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return kind; }
@@ -236,5 +245,6 @@ export default {
   nearMisses: ['monopoly', 'what is a monopoly', 'is google a monopoly', 'monopoly money', 'play chess'],
   match(lower, text) { return !!monopolyOf(text); },
   run,
-  stageKinds: { monopoly: { mount: makeMount(THEMES.monopoly) }, voidquest: { mount: makeMount(THEMES.voidquest) } },
+  ready,
+  stageKinds: { monopoly: { mount: ready.mount(makeMount(THEMES.monopoly)) }, voidquest: { mount: ready.mount(makeMount(THEMES.voidquest)) } },
 };

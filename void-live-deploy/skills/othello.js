@@ -6,11 +6,18 @@
  * and the side with more discs wins.
  * Verse plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
-import { levelPick } from './game-level.js';
-import { lift3d } from './lift3d.js';
-import { showArena } from '../lib/arena-say.js';
-import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
-import { rulesLine } from './game-rules-line.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the level, the 3D lift, the arena line, the match history (a finished game goes on this device's record, asked by Verse) and
+// the rules line load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let levelPick, lift3d, showArena, finish, minutesSince, rulesLine;
+export const ready = loadLater(() => Promise.all([
+  import('./game-level.js'),
+  import('./lift3d.js'),
+  import('../lib/arena-say.js'),
+  import('../lib/match-history.js'),
+  import('./game-rules-line.js'),
+]).then(([g, l, a, h, r]) => { ({ levelPick } = g); ({ lift3d } = l); ({ showArena } = a); ({ finish, minutesSince } = h); ({ rulesLine } = r); }));
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -188,6 +195,7 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const ask = othelloOf(text);
   if (!ask) return 'none';
+  await ready();
   if (ask.kind === 'rating') { showArena(api, '/arena-othello.json', 'othello'); return 'othello'; } // the self-play record (frontier #5)
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
@@ -208,5 +216,6 @@ export default {
   nearMisses: ['who invented othello', 'othello by shakespeare', 'othello rules', 'tic tac toe', 'connect 4'],
   match(lower, text) { return !!othelloOf(text); },
   run,
-  stageKinds: { othello: { mount } },
+  ready,
+  stageKinds: { othello: { mount: ready.mount(mount) } },
 };

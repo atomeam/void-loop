@@ -3,11 +3,13 @@
 // stopped a proposal; the workflow runs nothing a model wrote under a write token.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { confidenceOf, FIX_SYSTEM, MAX_EDITS, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits, evidenceOf, whereOf } from '../void-live-deploy/lib/propose-fix.js';
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { join } from 'node:path';
+import os from 'node:os';
+import { confidenceOf, FIX_SYSTEM, MAX_EDITS, MAX_TRIED, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits, evidenceOf, whereOf, settleNote } from '../void-live-deploy/lib/propose-fix.js';
 import { models } from '../void-live-deploy/lib/models.js';
 import * as route from '../void-live-deploy/functions/api/propose-fix.js';
-import { pickJob, regressionAsks, noteFor, STEPS, letsGo } from './propose-fix.mjs';
+import { pickJob, regressionAsks, noteFor, STEPS, letsGo, answers, titleFor, collisionLines, landing, letGoJob, SETTLE_TRIES } from './propose-fix.mjs';
 
 const OWNER = 'owner-test-key-123456';
 const SOURCE = [
@@ -102,9 +104,9 @@ test('the tool: the oldest open probe: job, the skill\'s own asks replayed with 
   assert.equal(pickJob(q).id, 'a'); assert.equal(pickJob(q, 'b').id, 'b'); assert.equal(pickJob(q, 'c'), null); assert.equal(pickJob({ items: [] }), null);
   const bench = [{ ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }, { ask: '15% of 80', want: 'calc' }, { ask: 'Opposite of brave', want: 'skill:words' }];
   assert.deepEqual(regressionAsks({ ask: 'opposite of brave', want: 'skill:words' }, bench, 'words'), [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }]);
-  assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark \(2 line changes in skills\/words\.js\); it went onto main when Verse was sure/);
+  assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark, answers \(2 line changes in skills\/words\.js\); it went onto main when Verse was sure/);
   assert.match(noteFor({ passed: false, edits: 1, failed: 'benchmark', detail: '2 of 48 missed' }), /failed at: benchmark \(2 of 48 missed\)$/);
-  assert.deepEqual(STEPS, ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']);
+  assert.deepEqual(STEPS, ['collisions', 'lets go', 'unit test', 'void review', 'benchmark', 'answers']);
   assert.match(noteFor({ passed: true, edits: 1, skill: 'automation-fix', mode: 'narrow' }), /passed collisions, lets go, unit test, void review, benchmark/);
   // a routing correction: the oldest route: job is picked like a probe, and the bench replays only what the skill should keep
   const r = { items: [{ id: 'r', at: '2026-10-15T06:00:00Z', target: 'route:quoting', state: 'queued', ask: 'stop answering "quoting a chat about memory"', note: '(wrong skill:words) (wanted answer)' }, ...q.items] };
@@ -197,4 +199,79 @@ test('the source window: a small file whole, a big one as its head and its tail 
   assert.ok(w.startsWith('const css = "'), 'the head is there');
   assert.ok(w.endsWith('match(lower) { return /big/.test(lower); } };\n'), 'the tail with match() is there');
   assert.match(w, /clipped/);
+});
+
+// 2026-10-30: a fix for "how far is nyc to london" passed every step and went out as "Verse fixes its distance skill" while the live card said
+// "I couldn't find “is nyc”": the benchmark checks the route, not the answer. The answers step runs the edited skill and reads its card.
+test('answers: the card must answer the ask before a fix is called a fix; "fixes" in the title only then', async () => {
+  const dir = mkdtempSync(join(os.tmpdir(), 'pf-answers-'));
+  const skill = (name, body) => { const f = join(dir, name + '.js'); writeFileSync(f, 'export default { name: "' + name + '", match: () => true, async run(text, api) { ' + body + ' } };'); return f; };
+  assert.deepEqual(await answers(skill('found', 'api.showPage((p) => { p.innerHTML = "<h2>New York → London</h2><div>5,570 km</div>"; }); return "found";'), 'is nyc → london'), { outcome: 'answered', why: '' });
+  const no = await answers(skill('lost', 'api.showPage((p) => { p.innerHTML = "<h2>is nyc → London</h2><p>I couldn\'t find “is nyc”. Try a city name.</p>"; }); return "none";'), 'is nyc → london');
+  assert.equal(no.outcome, 'no answer'); assert.match(no.why, /couldn't find “is nyc”/);
+  assert.equal((await answers(skill('blank', 'return "none";'), 'x')).outcome, 'no answer', 'nothing drawn is no answer');
+  assert.equal((await answers(skill('dom', 'document.body.append("x"); return "dom";'), 'x')).outcome, 'not run', 'a skill that needs the real page cannot be checked here');
+  assert.equal((await answers(skill('slow', 'await new Promise(() => {});'), 'x', { timeoutMs: 50 })).outcome, 'not run');
+  const miss = { skill: 'distance', ask: 'how far is nyc to london' };
+  assert.equal(titleFor(miss, 'answered'), 'Verse fixes its distance skill: learn to handle "how far is nyc to london"');
+  assert.equal(titleFor(miss, 'not run'), 'Verse routes "how far is nyc to london" to its distance skill (the answer is not checked)');
+  assert.ok(!/fixes/.test(titleFor(miss, '')), 'no title says "fixes" before the answer is read');
+  assert.match(titleFor({ ...miss, mode: 'narrow' }, ''), /lets go of/);
+  assert.match(noteFor({ passed: false, edits: 1, failed: 'answers', detail: 'the card says: I couldn\'t find “is nyc”' }), /failed at: answers/);
+});
+
+test('settling an overlap: a try that does not settle goes back to the model with what the collision check said (2026-10-30: 95 of 136 died there)', () => {
+  assert.match(FIX_SYSTEM, /without changing the pattern match\(\) uses always fails/);
+  assert.match(settleNote('coin', 'coinflip', { applied: false }), /copied whole/);
+  assert.match(settleNote('coin', 'coinflip', { applied: true, loadError: 'Invalid regular expression' }), /did not load \(Invalid regular expression\)/);
+  assert.match(settleNote('coin', 'coinflip', { applied: true, takes: false }), /match\(\) still does not take "coinflip": change the pattern/);
+  assert.match(settleNote('suntimes', 'sun times chicago', { applied: true, takes: true, by: 'dates' }), /the dates skill comes earlier/);
+  const lines = ['dates: "what day is it" -> suntimes', 'coin: "coinflip" -> coin', 'a', 'b', 'c', 'd', 'e', 'f'];
+  const n = settleNote('suntimes', 'coinflip', { applied: true, takes: true, by: 'suntimes', lines });
+  assert.match(n, /dates: "what day is it" -> suntimes/); assert.ok(!n.includes('"coinflip" -> coin'), 'the ask\'s own line is not a breakage');
+  assert.match(n, /narrower/); assert.ok(n.length <= MAX_TRIED);
+  assert.ok(settleNote('x', 'y', { applied: true, takes: true, by: 'x', lines: ['z: "q" -> x'.repeat(200)] }).length <= MAX_TRIED);
+  const p = fixPrompt('coinflip', 'coin', 'const x = 1;', 'learn', '', 'match() still does not take it');
+  assert.match(p, /Your last try did not pass\. match\(\) still does not take it/); assert.ok(!/last try/.test(fixPrompt('coinflip', 'coin', 'const x = 1;')));
+  assert.ok(fixPrompt('a', 'b', 'c', 'learn', '', 'x'.repeat(5000)).length < 5000 + 300, 'the feedback is clipped');
+  assert.deepEqual(collisionLines('ok\n  dates: "x" -> coin  \nsuite failed: coin\nnothing'), ['dates: "x" -> coin', 'suite failed: coin']);
+  assert.ok(SETTLE_TRIES >= 2);
+});
+
+test('landing: where the ask goes with the edited file, the edited module standing in for its own skill in routing order', async () => {
+  const dir = mkdtempSync(join(os.tmpdir(), 'land-'));
+  writeFileSync(join(dir, 'dates.js'), "export default { name: 'dates', match: (l) => /\\b(day|times?)\\b/.test(l) };\n");
+  writeFileSync(join(dir, 'suntimes.js'), "export default { name: 'suntimes', match: (l) => /^sunrise\\b/.test(l) };\n");
+  const edited = join(dir, 'suntimes-edit.js');
+  writeFileSync(edited, "export default { name: 'suntimes', match: (l) => /^(sunrise|sun times)\\b/.test(l) };\n");
+  assert.deepEqual(await landing(edited, 'suntimes', 'sun times chicago', ['dates', 'suntimes'], dir), { takes: true, by: 'dates', loadError: '' });
+  assert.deepEqual(await landing(edited, 'suntimes', 'sun times chicago', ['suntimes', 'dates'], dir), { takes: true, by: 'suntimes', loadError: '' });
+  writeFileSync(edited, "export default { name: 'suntimes', match: (l) => /^sunrise\\b/.test(l) };\n");
+  assert.deepEqual(await landing(edited, 'suntimes', 'sun times chicago', ['suntimes', 'dates'], dir), { takes: false, by: 'dates', loadError: '' });
+  writeFileSync(edited, "export default { match: (l) => /(/.test(l) };\n");
+  const bad = await landing(edited, 'suntimes', 'sun times chicago', ['suntimes'], dir);
+  assert.equal(bad.takes, false); assert.ok(bad.loadError);
+});
+
+test('letGoJob: an ask an earlier skill takes first becomes a routing correction that jobAsk reads as narrow mode', () => {
+  const j = letGoJob('dates', 'suntimes', 'sun times chicago');
+  assert.equal(j.target, 'route:dates-sun-times-chicago'); assert.ok(j.target.length <= 40);
+  assert.deepEqual(jobAsk(j), { ask: 'sun times chicago', skill: 'dates', want: 'skill:suntimes', mode: 'narrow' });
+  assert.ok(pickJob({ items: [{ ...j, id: 'q1', state: 'queued', at: '2026-10-30' }] }, '', () => true), 'the forge picks it up on its next run');
+});
+
+test('the ledger line says when the ask came from a probe, so the growth card counts it (2026-10-30: 70 forge fixes that week, the card read 0)', async () => {
+  const { sourceOf, ledgerWhat } = await import('./propose-fix.mjs');
+  assert.equal(sourceOf({ target: 'probe:current-sky' }), 'probe');
+  assert.equal(sourceOf({ target: 'route:sky-x' }), 'route');
+  assert.equal(sourceOf({ target: 'miss:draw-a-mandala' }), 'miss');
+  assert.equal(sourceOf(null), null);
+  const t = 'Verse fixes its sky skill: learn to handle "current sky"';
+  assert.equal(ledgerWhat(t, 'probe'), t + ' (from my probes)');
+  assert.equal(ledgerWhat(t, 'miss'), t, 'a person\'s missed ask is not a probe');
+  const { measure } = await import('../void-live-deploy/lib/better.js');
+  const now = Date.parse('2026-10-30T20:00:00Z'), line = (what) => ({ at: '2026-10-30T19:00:00Z', by: 'verse', kind: 'fix', what });
+  assert.equal(measure({ ledger: [line(ledgerWhat(t, 'probe')), line(ledgerWhat(t, 'miss'))], now }).probeFixes, 1, 'the growth card counts the probe\'s fix and only it');
+  const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  assert.match(wf, /grow\.mjs fix "\$\{LEDGER:-\$TITLE\}"/, 'the workflow writes the ledger line, not the bare title');
 });

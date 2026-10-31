@@ -18,8 +18,8 @@ const ASKS = [
   /\b(?:any|find(?:\s+the)?|spot(?:\s+the)?)\s+bugs?\s+in\s+(?:my|this|the|these)\b/i,
   /\b(?:be\s+my|act\s+as\s+(?:a|my)|you\s+are\s+my)\s+code\s+reviewer\b/i,
 ];
-// "check my zip code", "review the dress code": a code that isn't program code
-const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b/i;
+// "check my zip code", "review the dress code": a code that isn't program code; an STL or 3MF print file isn't either
+const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b|\b(?:stl|3mf)\b/i; // "check my stl file" is a print file for /stl/, not program code
 
 export function isReviewAsk(text) {
   const s = String(text || '').trim();
@@ -559,7 +559,7 @@ const RULES = [
     '0.0.0.0/0 opens this to the whole internet. Fine for a public web port (80, 443); for SSH, databases or admin ports, allow only the addresses that need it'],
   ['grant-all', 'risk', ['sql'], (m) => /\bGRANT\s+ALL\b/i.test(m),
     'GRANT ALL gives this account every right (dropping tables, changing users), so one leaked password or injection can do anything. Grant only what the app needs, such as SELECT, INSERT, UPDATE on its own tables, and avoid \'%\' (any host) where you can'],
-  ['blank-no-opener', 'style', ['html', ...JS], (m, r) => /\btarget\s*=\s*["']?_blank\b/i.test(r) && !/[\s"'{]rel\s*=\s*["'{][^"'}]*\bno(?:opener|referrer)\b/i.test(r), // a real rel attribute, not data-rel
+  ['blank-no-opener', 'style', ['html', ...JS], (m, r) => /\btarget\s*=\s*["']?_blank\b/i.test(r) && !/[\s"'{.]rel\s*=\s*["'{][^"'}]*\bno(?:opener|referrer)\b/i.test(r), // a real rel attribute or a.rel = '…' in script, not data-rel
     'target="_blank" without rel="noopener": in older browsers the new tab can reach back through window.opener and send this page somewhere else. Add rel="noopener noreferrer" (new browsers already act this way)'],
   ['img-no-alt', 'style', ['html', ...JS], (m, r) => /<img\b(?![^>]*[\s"']alt\s*=)[^>]*>/i.test(r), // a real alt attribute, not data-alt
     'an image with no alt text: screen readers say the file name or nothing at all. Add alt="what it shows", or alt="" if it is only decoration'],

@@ -35,12 +35,17 @@ export const ROUTES = Object.freeze({
   novelty: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   auto: { wf: AGENT, input: 'job', claims: true, cap: 40 },
   flake: { wf: AGENT, input: 'job', claims: true, cap: 40 },
-  member: { wf: AGENT, input: 'job', claims: true, cap: 30 }, // a paid member's idea (lib/members.js); the lap holds it to add-only
+  // a paid member's idea (lib/members.js); the lap holds it to add-only. The cap counts every run of the coder today, and the coder starts
+  // about 144 a day (one a tick), so 30 shut members out by early morning UTC; lib/members.js limits each member, so the cap is one a tick.
+  member: { wf: AGENT, input: 'job', claims: true, cap: 144 },
 });
 
 // what a kind of job is worth (AGENTS.md: Verse's own asks come first; STANDING.md and RULES.md 2026-10-26: Verse earns on its own, and the
 // tower never stops). A broken loop stops everything after it, so its repair outranks all.
 export const WEIGHT = Object.freeze({ heal: 100, will: 95, voice: 95, 'store-gap': 90, member: 88, versus: 85, feature: 75, review: 70, miss: 60, gap: 60, novelty: 50, auto: 50, flake: 45, probe: 40 });
+// what goes before any score: a broken loop's repair, then a paid member's idea (2026-10-30: with every free versus job aged to 91, a member's
+// pilot idea at 88 waited behind them tick after tick; a member paid for Verse to build it, so it waits behind nothing but a repair)
+export const FIRST = Object.freeze({ heal: 2, member: 1 });
 export const MAX_TRIES = 3; // a job tried this often without landing is set aside with its last reason
 export const STALE_H = 3; // a job the conductor claimed that is still `building` after this long was left by a dead run
 export const SAME_JOB_H = 6; // an executor that claims for itself is not handed the same job again within this many hours
@@ -117,8 +122,8 @@ export function willDue({ exists, busy, lastRunMs, now }) {
 }
 /** should the conductor start a lap of the Verse loop this tick: the coder is idle, took no queue job this tick, is not paused, and the last
  *  lap is an hour old. Pure. */
-export function lapDue({ exists, busy, started, paused, lastRunMs, now }) {
-  return !!exists && !busy && !started && !paused && now - (lastRunMs || 0) >= LAP_EVERY_H * H;
+export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now }) {
+  return !!exists && !busy && !started && !paused && !noModel && now - (lastRunMs || 0) >= LAP_EVERY_H * H;
 }
 
 /**
@@ -147,7 +152,8 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
   }
   // the most valuable queued job each executor can take; one start per executor a tick, none while it runs, under its daily cap
   const taken = new Set();
-  const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => score(b, now) - score(a, now) || ms(a.at) - ms(b.at));
+  const first = (j) => FIRST[kindOf(j.target)] || 0;
+  const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => first(b) - first(a) || score(b, now) - score(a, now) || ms(a.at) - ms(b.at));
   for (const j of queued) {
     const r = routeOf(j);
     if (!r) { out.held.push({ id: j.id, why: 'no executor for ' + kindOf(j.target) }); continue; }
@@ -155,6 +161,8 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
     const s = wf[r.wf] || {};
     if (!s.exists) { out.held.push({ id: j.id, why: r.wf + ' is not on main yet' }); continue; }
     if (s.paused) { out.held.push({ id: j.id, why: r.wf + ' is paused (domains/verse-loop.pause)' }); continue; }
+    // the coder's free model calls are used up (functions/api/coder.js GET): a run now ends "no model answered" and spends one of the day's runs
+    if (s.noModel) { out.held.push({ id: j.id, why: 'Verse\'s coder has used its free model calls' + (s.noModel.until ? ' until ' + String(s.noModel.until).slice(11, 16) + ' UTC' : '') }); continue; }
     if (taken.has(r.wf) || s.busy || (ALSO_BUSY[r.wf] || []).some((f) => wf[f] && wf[f].busy)) continue;
     if (broken(r.wf) && kindOf(j.target) !== 'heal') { out.held.push({ id: j.id, why: r.wf + ' is broken (' + s.fails + ' failed runs); its repair is queued' }); continue; }
     if ((s.today || 0) >= r.cap) { out.held.push({ id: j.id, why: r.wf + ' reached its ' + r.cap + ' runs today' }); continue; }

@@ -26,7 +26,7 @@ export const weatherAsk = (place) => { const p = placeOf(place); return p ? 'wea
 export const geocodeUrl = (name) => 'https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&name=' + encodeURIComponent(name);
 export const forecastUrl = (lat, lon) => 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon
   + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,is_day'
-  + '&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,sunrise,sunset'
+  + '&hourly=temperature_2m,precipitation_probability,precipitation,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,weather_code,sunrise,sunset'
   + '&forecast_days=7&timezone=auto';
 export const pointUrl = (lat, lon) => 'https://api.weather.gov/points/' + (+lat).toFixed(4) + ',' + (+lon).toFixed(4);
 export const alertsUrl = (lat, lon) => 'https://api.weather.gov/alerts/active?point=' + (+lat).toFixed(4) + ',' + (+lon).toFixed(4);
@@ -50,9 +50,9 @@ export function viewOf(w, loc) {
   const c = (w && w.current) || {}, h = (w && w.hourly) || {}, d = (w && w.daily) || {};
   const T = Array.isArray(h.time) ? h.time : [], nowT = String(c.time || T[0] || '');
   let i0 = T.findIndex((t) => t > nowT); i0 = i0 < 0 ? Math.max(0, T.length - 1) : Math.max(0, i0 - 1); // the hour that holds now comes first
-  const hours = T.slice(i0, i0 + 24).map((t, k) => ({ at: hourName(t), temp: num(h.temperature_2m && h.temperature_2m[i0 + k]), rain: num(h.precipitation_probability && h.precipitation_probability[i0 + k]), code: num(h.weather_code && h.weather_code[i0 + k]) }));
+  const hours = T.slice(i0, i0 + 24).map((t, k) => ({ at: hourName(t), temp: num(h.temperature_2m && h.temperature_2m[i0 + k]), rain: num(h.precipitation_probability && h.precipitation_probability[i0 + k]), mm: num(h.precipitation && h.precipitation[i0 + k]), code: num(h.weather_code && h.weather_code[i0 + k]) }));
   const DT = Array.isArray(d.time) ? d.time : [];
-  const days = DT.slice(0, 7).map((t, k) => ({ name: dayName(t), today: k === 0, hi: num(d.temperature_2m_max && d.temperature_2m_max[k]), lo: num(d.temperature_2m_min && d.temperature_2m_min[k]), rain: num(d.precipitation_probability_max && d.precipitation_probability_max[k]), code: num(d.weather_code && d.weather_code[k]) }));
+  const days = DT.slice(0, 7).map((t, k) => ({ name: dayName(t), today: k === 0, hi: num(d.temperature_2m_max && d.temperature_2m_max[k]), lo: num(d.temperature_2m_min && d.temperature_2m_min[k]), rain: num(d.precipitation_probability_max && d.precipitation_probability_max[k]), mm: num(d.precipitation_sum && d.precipitation_sum[k]), code: num(d.weather_code && d.weather_code[k]) }));
   const wind = num(c.wind_speed_10m);
   return { place: loc && loc.name || '', us: !!(loc && loc.us), at: nowT, isDay: c.is_day !== 0,
     now: { temp: num(c.temperature_2m), feels: num(c.apparent_temperature), humidity: num(c.relative_humidity_2m), windKmh: wind, windMph: Number.isFinite(wind) ? Math.round(wind * 0.621371) : NaN, code: num(c.weather_code) },
@@ -63,11 +63,14 @@ export function alertsOf(json) {
   const fs = (json && Array.isArray(json.features)) ? json.features : [];
   return fs.map((f) => f && f.properties).filter(Boolean).map((p) => ({ event: String(p.event || 'Alert'), headline: String(p.headline || p.description || '').slice(0, 300), severity: String(p.severity || ''), until: String(p.ends || p.expires || '') })).slice(0, 12);
 }
+/** the rain, snow or showers the forecast expects in an hour or a day, in mm and inches ("0.4 mm (0.02 in) expected"); '' for none or no figure. The forecast's
+ *  own chance of rain and its weather code can disagree with each other (light rain at 0%), so the amount is shown too. Pure. */
+export const amount = (mm) => (Number.isFinite(mm) && mm > 0 ? (mm < 10 ? Math.round(mm * 10) / 10 : Math.round(mm)) + ' mm (' + (mm / 25.4 < 0.01 ? 'under 0.01' : (Math.round(mm / 25.4 * 100) / 100).toFixed(2)) + ' in) expected' : '');
 /** the view as the lines the page shows, for tests and for the plain copy. Pure. */
 export function textOf(v) {
   const out = [v.place, 'Now: ' + words(v.now.code) + ', ' + both(v.now.temp) + ', feels like ' + both(v.now.feels) + (Number.isFinite(v.now.humidity) ? ', humidity ' + Math.round(v.now.humidity) + '%' : '') + (Number.isFinite(v.now.windKmh) ? ', wind ' + v.now.windMph + ' mph / ' + Math.round(v.now.windKmh) + ' km/h' : '')];
   if (v.sunrise || v.sunset) out.push('Sunrise ' + v.sunrise + ' · Sunset ' + v.sunset);
-  out.push('Next 24 hours'); for (const h of v.hours) out.push(h.at + ' ' + both(h.temp) + (Number.isFinite(h.rain) ? ' ' + h.rain + '% chance of rain' : '') + ' ' + words(h.code));
-  out.push('7 days ahead'); for (const d of v.days) out.push(d.name + (d.today ? ' (today)' : '') + ' ' + both(d.hi) + ' high, ' + both(d.lo) + ' low' + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + ', ' + words(d.code));
+  out.push('Next 24 hours'); for (const h of v.hours) out.push(h.at + ' ' + both(h.temp) + (Number.isFinite(h.rain) ? ' ' + h.rain + '% chance of rain' : '') + (amount(h.mm) ? ' ' + amount(h.mm) : '') + ' ' + words(h.code));
+  out.push('7 days ahead'); for (const d of v.days) out.push(d.name + (d.today ? ' (today)' : '') + ' ' + both(d.hi) + ' high, ' + both(d.lo) + ' low' + (Number.isFinite(d.rain) ? ', ' + d.rain + '% chance of rain' : '') + (amount(d.mm) ? ', ' + amount(d.mm) : '') + ', ' + words(d.code));
   return out.join('\n');
 }

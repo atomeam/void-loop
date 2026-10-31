@@ -1,1 +1,0 @@
-{"at":"2026-10-29T14:41:18Z","by":"claude","kind":"fix","what":"Versus jobs only for sites of the smallest-first ranking, never a gambling or crypto site: checked before a site is read, before a job is queued and before a lap runs it (#1470)"}

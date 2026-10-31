@@ -11,11 +11,13 @@
 // check runs); the browser checks run one after another beside them, each taking the heavy lock itself (tools/heavy.mjs).
 // The slowest five and the wall time print after the list (owner, 2026-10-18: "how can we speed this all up?").
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
+import { inlineScripts } from './inline-scripts.mjs';
 import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './checks-changed.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -41,13 +43,15 @@ const ONLY_WHEN = {
   // the card art on pixels: the art, the forge, the miniatures, the page
   'art-pixels.mjs': /art|skills\/mini\/|card-forge|\.svg$|void\.html$|art-pixels/,
   'perf3d.test.mjs': /(?:^|\/)(?:mini\/|vendor\/|models\/)|scene3d|figures3d|fig3d|perf3d|three/,
+  // /converter/ on a 390 px phone and with the network cut (tools/converter-phone.test.mjs): the page, its engines, the worker
+  'converter-phone.test.mjs': /void-live-deploy\/(?:converter\/|sw\.js$|lib\/(?:converter|pdf-tools|transition|video-write|audio-write|mp3-edit|denoise|epub-edit|mp4-repair)\.js$)|converter-phone/,
   'persona-playtest.mjs': /skills\/(?:chess|checkers|go|othello|connect4|monopoly|battleship|poker|fireworks|mancala|aggravation|ringer|sorry|tictactoe|pong|snake|rack|gamebox|duel|rally|zorbleflux|arcade|game[\w-]*|side-card)\.js|lib\/game|persona-playtest/,
   // glitch titles in a real browser (~3 min): a rule may be a function of the path. A script matters only when it holds a glitch letter
   // (<span class="gl ...">: skills/films.js and skills/is-it.js today, any file that gains one tomorrow); the styles are the page's
   // every page doing its own job in a real browser (tools/real-pages.mjs): only the pages this branch changed, so a page edit is tested there
   'real-pages.mjs': /(?:^|\/)index\.html$|real-pages/,
   // the page-to-page handoffs built from docs/HANDOFF-GAPS.md, played end to end in a browser (tools/handoff-e2e.mjs)
-  'handoff-e2e.mjs': /void-live-deploy\/(?:bpm|metronome)\/|handoff/,
+  'handoff-e2e.mjs': /void-live-deploy\/(?:(?:bpm|metronome|chords|piano|calendar|time|weather|flights|local|fantasy)\/|lib\/(?:flights-|local-media|fantasy))|handoff/,
   'glitch-titles.mjs': (f) => /void\.html$|glitch-titles|films\/index\.html$/.test(f) || (/\.js$/.test(f) && /class=["'`]gl[\s"'`w]/.test(readText(f))),
 };
 const readText = (f) => { try { return readFileSync(resolve(here, '..', f), 'utf8'); } catch (_) { return ''; } }; // a deleted file is no title
@@ -62,7 +66,7 @@ const changedVsMain = () => {
 };
 /** why a slow check is skipped this run, or '' when it runs. */
 const skipWhy = (file) => (ALL || !ONLY_WHEN[file] || !changedVsMain() || changedVsMain().some((f) => covers(ONLY_WHEN[file], f)) ? '' : 'skipped: nothing it covers changed (verify.yml runs it on main; --all runs it here)');
-const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs', 'glitch-titles.mjs', 'persona-playtest.mjs', 'real-pages.mjs', 'handoff-e2e.mjs', 'fanfic-first-writer.test.mjs', 'fresh-scripts.test.mjs', 'converter-phone.test.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -85,6 +89,7 @@ for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
+  ['local-inference', 'local-inference.test.mjs'],
   ['grades', 'grades.test.mjs'],
   ['ritual', 'ritual.test.mjs'],
   ['podcast', 'podcast.test.mjs'],
@@ -105,6 +110,16 @@ for (const [name, file] of [
   ['boards', 'boards.test.mjs'],
   ['fanfic', 'fanfic.test.mjs'],
   ['rap', 'rap.test.mjs'],
+  ['rap-sound', 'rap-sound.test.mjs'],
+  ['rap-ears', 'rap-ears.test.mjs'],
+  ['genre-score', 'genre-score.test.mjs'],
+  ['rap-kit', 'rap-kit.test.mjs'],
+  ['rap-piano', 'rap-piano.test.mjs'],
+  ['rap-strings', 'rap-strings.test.mjs'],
+  ['emoji-combos', 'emoji-combos.test.mjs'],
+  ['local-media', 'local-media.test.mjs'],
+  ['watch-along', 'watch-along.test.mjs'],
+  ['world-tv', 'world-tv.test.mjs'], // the free channels beyond the local ones on /local/ (owner: "also find all free channels worldwide and add")
   ['fanfic-hits', 'fanfic-hits.test.mjs'],
   ['fanfic-first-writer', 'fanfic-first-writer.test.mjs'],
   ['team', 'team.test.mjs'],
@@ -117,6 +132,7 @@ for (const [name, file] of [
   ['generators', 'generators.test.mjs'],
   ['listgen', 'listgen.test.mjs'],
   ['image-gen', 'image-gen.test.mjs'],
+  ['video-gen', 'video-gen.test.mjs'],
   ['generators-hub', 'generators-hub.test.mjs'],
   ['gallery', 'gallery.test.mjs'],
   ['character', 'character.test.mjs'],
@@ -171,6 +187,8 @@ for (const [name, file] of [
   ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['selfcheck', 'selfcheck.test.mjs'], // Verse's check of its own pages: the judge, the report, /api/selfcheck and the status card's section
+  ['dark-pages', 'dark-pages.test.mjs'], // every page stays deep space in a light-mode browser too
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
@@ -217,6 +235,10 @@ for (const [name, file] of [
   ['map-coverage', 'map-coverage.test.mjs'],
   ['finish', 'finish.test.mjs'],
   ['job-link', 'job-link.test.mjs'],
+  ['will-outcome', 'will-outcome.test.mjs'],
+  ['will-schema', 'will-schema.test.mjs'],
+  ['knowledge-build', 'knowledge-build.test.mjs'],
+  ['brain-recall', 'brain-recall.test.mjs'],
   ['build-miss', 'build-miss.test.mjs'],
   ['flakes', 'flakes.test.mjs'],
   ['next', 'next.test.mjs'],
@@ -224,6 +246,7 @@ for (const [name, file] of [
   ['glyphs', 'test_glyphs.mjs'],
   ['glitch-titles', 'glitch-titles.mjs'],
   ['perf3d', 'perf3d.test.mjs'],
+  ['converter-phone', 'converter-phone.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
   ['scene3d-detail', 'scene3d.test.mjs'],
@@ -314,7 +337,8 @@ for (const [name, file] of [
   ['field-resonance', 'field-resonance.test.mjs'],
   ['field-swarm', 'field-swarm.test.mjs'],
   ['orb-field', 'orb-field.test.mjs'], // the memory orbs' bridge to the shared field: no field, null and nothing changes; skills/field.js gives free slots only
-  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty organs, attention, imagination, the mind layers, kept knowledge
+  ['orb-memories', 'orb-memories.test.mjs'], // the memory orbs show Verse's memories: a brain's told words where it holds them, other cards' slots, the fluid pulled to them
+  ['verse-brain', 'brain.test.mjs'], // Verse Brain: the workspace, twenty-three organs, attention, imagination, the mind layers, kept knowledge
   ['brain-remembers', 'brain-remembers.test.mjs'], // Verse Brain keeps its working memory and attention across a reload, through the shared field
   ['brain-synapses', 'brain-synapses.test.mjs'], // F217's spiking eye: dopamine teaches it, it runs in the brain, its wiring is kept, old records still load
   ['brain-creature', 'brain-creature.test.mjs'], // F304's Lenia creature: it follows a moving target, it learns by online evolution, it runs in the brain, its genome is kept
@@ -325,7 +349,14 @@ for (const [name, file] of [
   ['brain-formula', 'brain-formula.test.mjs'], // F451's evolved formula of the tissue: valid trees, tested skill above "nothing changes", evolution beats random search, it feeds the tissue, is kept
   ['brain-current', 'brain-current.test.mjs'], // F447's lattice-Boltzmann flow and evolved swimmers: mass and momentum kept, evolution beats random search and drifters, your drag stirs it, it is kept
   ['brain-grains', 'brain-grains.test.mjs'], // F456's granular grains: genes passed on touch from the nearer lander beat random passing and none, it runs in the brain, it is kept
+  ['brain-pool', 'brain-pool.test.mjs'], // F459's SPH pool: a tiny network that sets viscosity, stiffness and kernel size beats the best constant setting and random search, follows the slosh, runs in the brain, is kept
+  ['brain-map', 'brain-map.test.mjs'], // /brain/'s live map: every light, spark and line of its feed is a real turn, write or change in the brain's state
+  ['brain-trace', 'brain-trace.test.mjs'],
+  ['brain-dialogue', 'brain-dialogue.test.mjs'], // the conversation orb: a repeat says when it was asked and what Verse said, a follow-up names the ask it follows, kept on the device, counts only in the self // the NCA drafts' cellular automaton: its tuned rule holds where the focus was and lets it go, beats the drafts' rule and random search, runs in the brain, is kept
+  ['brain-dream', 'brain-dream.test.mjs'], // the brain's dreams: each fix, job and idea comes from something it read or holds, names it, is posted once by Verse, owner only, inside its limits
+  ['brain-everywhere', 'brain-everywhere.test.mjs'], // the brain on every page: /visit.js loads lib/brain-everywhere.js, so a page reads and writes the one brain of the browser, keeps writes when none runs, and starts one only with the lock
   ['brain-host', 'brain-host.test.mjs'], // Verse uses its brain on every page: it hears every ask, learns what you ask next, ranks the ask box by it (measured against newest-first) and answers "what are you thinking?"
+  ['brain-glow', 'brain-glow.test.mjs'], // a reload keeps what Verse Brain was just told: its lit ideas come back as bright as they were, dimmed by the time away
   ['shared-field', 'shared-field.test.mjs'], // the shared field (skills/field.js): its API, and Verse Brain feeling other skills' slots and publishing numbers only
   ['field-fluid-orbs', 'field-fluid-orbs.test.mjs'], // F-321: orientation leans the flow, a peak spawns an orb, seal then load gives the same SHA-256
   ['stage-camera', 'stage-camera.test.mjs'],
@@ -383,6 +414,8 @@ for (const [name, file] of [
   ['ledger-today', 'ledger-today.test.mjs'],
   ['will-last', 'will-last.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
+  ['shared-chain', 'shared-chain.test.mjs'],
+  ['confirm-line-strict', 'confirm-line-strict.test.mjs'],
   ['churn', 'churn.test.mjs'],
   ['coder-route', 'coder-route.test.mjs'],
   ['will-guard', 'will-guard.test.mjs'],
@@ -407,12 +440,15 @@ for (const [name, file] of [
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
+  ['baggage-live', 'baggage-live.test.mjs'],
+  ['video-gen-live', 'video-gen-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
   ['print-file', 'print-file.test.mjs'],
   ['aurora', 'aurora.test.mjs'],
   ['drone', 'drone.test.mjs'],
   ['cf-scope', 'cf-scope.test.mjs'],
+  ['key-keeper', 'key-keeper.test.mjs'],
   ['mirror', 'mirror.test.mjs'],
   ['digest-proposal', 'digest-proposal.test.mjs'],
   ['splat', 'splat.test.mjs'],
@@ -540,6 +576,7 @@ for (const [name, file] of [
   ['baseconv', 'baseconv.test.mjs'],
   ['imgfit', 'imgfit.test.mjs'],
   ['arrange', 'arrange.test.mjs'],
+  ['sing', 'sing.test.mjs'],
   ['wiki-look', 'wiki-look.test.mjs'],
   ['colour', 'colour.test.mjs'],
   ['tower-gate', 'tower-gate.test.mjs'],
@@ -563,6 +600,7 @@ for (const [name, file] of [
   ['zones', 'zones.test.mjs'],
   ['base64', 'base64.test.mjs'],
   ['toolkit', 'toolkit.test.mjs'],
+  ['studios', 'studios.test.mjs'], // the tower studios answer their own stage asks (skills/studios.js)
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
@@ -576,6 +614,7 @@ for (const [name, file] of [
   ['battleship skill', 'battleship-skill.test.mjs'],
   ['parody data', 'parody-data.test.mjs'],
   ['music-de', 'music-de.test.mjs'],
+  ['inline-scripts', 'inline-scripts.test.mjs'],
 ]) {
   addScript(name, file);
 }
@@ -586,11 +625,15 @@ add('files', async () => { const tracked = spawnSync('git', ['ls-files', '*.js',
   const files = narrowToChanged ? tracked.filter((f) => changedList.includes(f)) : tracked, counted = narrowToChanged ? files.length + ' changed of ' + tracked.length : String(tracked.length);
   const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
   const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(root, f), 'utf8')));
-  const checked = await Promise.all(files.filter((f) => /\.m?js$/.test(f)).map(async (f) => [f, await run(['--check', resolve(root, f)])]));
+  // a page's own <script> text is parsed too: an inline module that did not parse took /news/ down (#1741) with every check green
+  const tmp = mkdtempSync(resolve(tmpdir(), 'inline-scripts-'));
+  const inline = files.filter((f) => /\.html$/.test(f)).flatMap((f) => inlineScripts(readFileSync(resolve(root, f), 'utf8')).map((s, i) => {
+    const p = resolve(tmp, f.replace(/[^\w.-]/g, '_') + '.' + i + (s.module ? '.mjs' : '.cjs')); writeFileSync(p, s.code); return [f + ' (inline script ' + s.n + ')', p]; }));
+  const checked = await Promise.all([...files.filter((f) => /\.m?js$/.test(f)).map((f) => [f, resolve(root, f)]), ...inline].map(async ([f, p]) => [f, await run(['--check', p])]));
   const broken = checked.filter(([, r]) => !r.ok).map(([f]) => f);
   return [!garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
-    : counted + ' files: clean text, every script parses', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
+    : counted + ' files: clean text, every script parses (' + inline.length + ' inline in pages)', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
 // nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
 // back replaced the real folder with a link to itself
 add('tracked', async () => { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);

@@ -1,7 +1,13 @@
 {
-  "at": "2026-10-29T13:46:26.767Z",
+  "at": "2026-10-31T13:07:47.629Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261030-2212-2",
+      "ask": "Update the self-skill router so identity-based probes trigger self-portraits instead of being processed as questions.",
+      "target": "voice:ask-20261030-2212-2"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }

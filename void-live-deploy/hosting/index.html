@@ -55,6 +55,11 @@
   #domaintable td.st-taken { color:#f0b8c4; }
   #domaintable tr.first td:first-child { font-weight:600; }
   [hidden] { display:none !important; }
+  /* the "Use with" row, drawn like the toolkit's (lib/toolkit.js mountRelated); written into the page because no stage card answers for it yet */
+  #related.tk-row { display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:14px 0 4px; font-size:13px; }
+  #related .tk-label { color:var(--soft); }
+  #related a { display:inline-flex; align-items:center; min-height:40px; padding:4px 12px; border:1px solid var(--line); border-radius:999px; color:inherit; text-decoration:none; }
+  #related a:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
 </style>
 <script src="/visit.js" defer></script>
 </head>
@@ -207,6 +212,7 @@
   <footer>
     <p>Everything on this page is worked out on this device from the numbers you type: no account, no ads, nothing is sent anywhere, and it works offline with the numbers it last had. Bandwidth is decimal (1,000 KB to the MB); workers come from Little's law, capacity from one core at the worker time you give; the downtime table is 365 days, with a month as a twelfth of that and a week as seven days.</p>
   </footer>
+  <nav id="related" class="tk-row" aria-label="Related tools"><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/calculators/">Formula calculators</a> <a href="/base64/">Base64</a> <a href="/g/">Snippet / Note in a link</a> <a href="/tools/">All tools</a></nav>
 </main>
 <script type="module">
   const $ = (id) => document.getElementById(id);

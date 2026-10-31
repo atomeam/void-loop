@@ -6,7 +6,8 @@
  * one out, fmt() writes a number for people, and the query helpers make every answer a link. Pure. Tests: tools/calculators.test.mjs.
  */
 import { KINDS, unitOf, findUnit, toSI, fromSI } from './calc-units.js';
-import { payment, amortize, compound } from './fincalc.js';
+import { payment, amortize, compound, yearsMonths } from './fincalc.js';
+import { rentVsBuy } from './rentbuy.js';
 import { daysBetween, addDays, businessDaysBetween, ageParts, isDay, DAY_NAMES, parseClock } from './date-math.js';
 import { compileAll, compile } from './formula-engine.js';
 import { FORMULA_BATCHES } from './formulas.js';
@@ -375,7 +376,14 @@ CALCULATORS.push(
   make('payoff-time', 'Payment: months to pay off a loan', 'Money', 'n = −ln(1 − r × P ÷ payment) ÷ ln(1 + r), r = rate ÷ 12', ['P|Loan amount|money|$|20000', 'rate|Interest rate (a year)|ratio|%|7', 'pay|Monthly payment|money|$|500'],
     ['n|Months to pay off|number|months', 'years|Years and months|text', 'interest|Total interest|money|$'],
     (x) => { pos(x.P, 'Loan amount'); pos(x.pay, 'Monthly payment'); const r = x.rate / 12; need(x.pay > x.P * r, 'the payment does not cover the interest, so the loan never ends'); const n = r === 0 ? x.P / x.pay : -Math.log(1 - (r * x.P) / x.pay) / Math.log(1 + r), m = Math.ceil(n - 1e-9);
-      let bal = x.P, interest = 0; for (let k = 0; k < m && bal > 1e-9; k++) { const i = bal * r; interest += i; bal = bal + i - Math.min(x.pay, bal + i); } return { n, years: Math.floor(m / 12) + ' years ' + (m % 12) + ' months', interest }; }),
+      let bal = x.P, interest = 0; for (let k = 0; k < m && bal > 1e-9; k++) { const i = bal * r; interest += i; bal = bal + i - Math.min(x.pay, bal + i); } return { n, years: yearsMonths(m), interest }; }),
+  make('rent-vs-buy', 'Rent or buy', 'Money', 'month by month: the buyer pays the mortgage and tax, insurance and upkeep; the renter pays rent and invests the down payment and buying costs; whoever pays less invests the difference; buyer\u2019s wealth = home value \u00d7 (1 \u2212 selling costs) \u2212 loan owed + investments',
+    ['price|Home price|money|$|400000', 'down|Down payment|ratio|%|20', 'rate|Mortgage rate (a year)|ratio|%|6.5', 'term|Loan term|time|yr|30', 'rent|Rent a month now|money|$|2000', 'rg|Rent rises each year|ratio|%|3', 'hg|Home value rises each year|ratio|%|3', 'own|Tax, insurance and upkeep a year (share of the home\u2019s value)|ratio|%|2.5', 'buyc|Buying costs (share of the price)|ratio|%|3', 'sellc|Selling costs (share of the value)|ratio|%|6', 'inv|Investments earn each year|ratio|%|5', 'stay|Years you stay|time|yr|30'],
+    ['be|Buying gets ahead after|text', 'buyw|Buyer\u2019s wealth when you leave|money|$', 'rentw|Renter\u2019s wealth when you leave|money|$', 'buymo|Buyer pays the first month|money|$', 'rentmo|Renter pays the first month|money|$'],
+    (x) => { const stay = Math.round(x.stay / YEAR); need(stay >= 1 && stay <= 50, 'the stay is 1 to 50 years'); const o = rentVsBuy({ price: x.price, downPct: x.down * 100, ratePct: x.rate * 100, termYears: months(x.term, 'Loan term') / 12, rent: x.rent, rentGrowthPct: x.rg * 100, homeGrowthPct: x.hg * 100, ownPct: x.own * 100, buyPct: x.buyc * 100, sellPct: x.sellc * 100, investPct: x.inv * 100, years: stay });
+      need(o, 'check the price, the rent and the rate'); const end = o.years[o.years.length - 1];
+      return { be: o.breakEven ? (o.breakEven === 1 ? '1 year' : o.breakEven + ' years') : 'not within ' + stay + (stay === 1 ? ' year' : ' years'), buyw: end.buy, rentw: end.rent, buymo: o.buyFirst, rentmo: o.rentFirst,
+        table: { head: ['Year', 'Buyer\u2019s wealth', 'Renter\u2019s wealth', 'Ahead'], rows: o.years.map((y) => [y.year, money2(y.buy), money2(y.rent), y.buy >= y.rent ? 'buy' : 'rent']), money: [1, 2] } }; }),
   make('interest-rate', 'Interest rate of a loan', 'Money', 'the rate r where P × r ÷ (1 − (1 + r)^−n) = payment (found by bisection)', ['P|Loan amount|money|$|20000', 'pay|Monthly payment|money|$|386.66', 'term|Loan term|time|month|60'],
     ['rate|Interest rate (a year)|ratio|%', 'interest|Total interest|money|$'], (x) => { const n = months(x.term, 'Loan term'), r = rateFor(x.P, x.pay, n); need(r !== null, 'the payments add up to less than the loan'); return { rate: r, interest: x.pay * n - x.P }; }),
   make('retirement', 'Retirement savings', 'Money', 'at retirement = savings × (1 + r)^n + monthly × ((1 + r)^n − 1) ÷ r; income = that × q ÷ (1 − (1 + q)^−m)', ['age|Age now|number||35', 'at|Retirement age|number||67', 'have|Saved so far|money|$|50000', 'monthly|Saved each month|money|$|1000', 'ret|Return before retirement (a year)|ratio|%|6', 'years|Years the money must last|number||25', 'after|Return in retirement (a year)|ratio|%|4'],
@@ -711,6 +719,22 @@ CALCULATORS.push(
     (x) => { const s = String(x.s ?? ''); let out; if (x.how === 'dec') { try { out = decodeURIComponent(s.replace(/\+/g, ' ')); } catch { need(false, 'that has a % not followed by two hex digits of valid UTF-8'); } }
       else out = x.how === 'url' ? encodeURI(s) : encodeURIComponent(s).replace(/[!'()*]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase()); return { out, len: out.length }; },
     { src: 'https://www.rfc-editor.org/rfc/rfc3986#section-2.1' }),
+  // "unix timestamp 1700000000", "epoch converter", "2026-10-30 14:05 to unix time" (2026-10-30: these fell to an article). UTC only, so a
+  // shared link shows every reader the same answer; 12 to 14 digits read as milliseconds and 15 or more as microseconds, as epochconverter.com does
+  make('unix-time', 'Unix time (epoch) converter', 'Everyday', 'Unix time = seconds since 1970-01-01 00:00:00 UTC, leap seconds not counted',
+    ['v|Unix time, or a date and time in UTC|text||1700000000'],
+    ['utc|Date and time (UTC)|text', 'iso|ISO 8601|text', 's|Unix time (seconds)|text', 'ms|Unix time (milliseconds)|text', 'as|Read as|text'],
+    (x) => { const t = String(x.v ?? '').trim().replace(/,/g, ''); let ms, as;
+      if (/^-?\d+(?:\.\d+)?$/.test(t)) { const n = Number(t), d = t.replace(/^-/, '').split('.')[0].length; [ms, as] = d >= 15 ? [n / 1000, 'microseconds'] : d >= 12 ? [n, 'milliseconds'] : [n * 1000, 'seconds']; }
+      else { const m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?\s*(?:z|utc|gmt)?$/i);
+        need(m, 'type a Unix time like 1700000000, or a date like 2026-10-30 14:05 (UTC)'); const [Y, M, D, h = 0, mi = 0, se = 0] = m.slice(1).map((v) => (v === undefined ? 0 : Number(v)));
+        need(h < 24 && mi < 60 && se < 60, 'the time is past 23:59:59'); ms = Date.UTC(Y, M - 1, D, h, mi, se); need(new Date(ms).getUTCDate() === D && new Date(ms).getUTCMonth() === M - 1, 'that day is not on the calendar'); as = 'a date in UTC'; }
+      need(Number.isFinite(ms) && Math.abs(ms) <= 8.64e15, 'that is past the dates a computer clock can show (about 275,000 years either way)');
+      const d = new Date(ms), WD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], MO = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const p2 = (n) => String(n).padStart(2, '0');
+      return { utc: WD[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MO[d.getUTCMonth()] + ' ' + d.getUTCFullYear() + ', ' + p2(d.getUTCHours()) + ':' + p2(d.getUTCMinutes()) + ':' + p2(d.getUTCSeconds()),
+        iso: d.toISOString(), s: String(Math.floor(ms / 1000)), ms: String(Math.round(ms)), as }; },
+    { src: 'https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap04.html#tag_04_19' }),
   make('download-time', 'Download time (bandwidth)', 'Everyday', 'time = size × 8 bits ÷ (speed × (1 − overhead)); KB, MB, GB are powers of 1,000 and KiB, MiB, GiB powers of 1,024 (IEC 80000-13)',
     ['size|File size|number||1', SIZE, 'rate|Connection speed|number||100', RATE, 'ovh|Lost to protocol overhead|ratio|%|0'], ['t|Time|time|s', 'text|That is|text', 'per|Data an hour|number|GB'],
     (x) => { pos(x.size, 'File size'); pos(x.rate, 'Connection speed'); need(x.ovh >= 0 && x.ovh < 1, 'overhead is from 0% to under 100%'); const bits = x.size * Number(x.su) * 8, bps = x.rate * Number(x.ru) * (1 - x.ovh), t = bits / bps;

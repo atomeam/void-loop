@@ -4,8 +4,14 @@
  * stay face down until a showdown. Each choice Verse makes shows its estimate of how often it wins and why it chose.
  * The table stands in the void in 3D (mini/poker.js), lifted by skills/lift3d.js with this card beside it.
  */
-import * as P from './poker-rules.js';
-import { lift3d } from './lift3d.js';
+import { loadLater } from '../lib/load-later.js';
+
+// the rules and the 3D lift load with the first game, not with the routing order (lib/load-later.js, owner 2026-10-30)
+let P, lift3d;
+export const ready = loadLater(() => Promise.all([
+  import('./poker-rules.js'),
+  import('./lift3d.js'),
+]).then(([p, l]) => { P = p; ({ lift3d } = l); }));
 
 export function pokerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -85,6 +91,7 @@ function mount(th, stageApi) {
 
 async function run(text, api) {
   if (!pokerOf(text)) return 'none';
+  await ready();
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'poker');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'poker'; }
   api.summon('poker', { state: P.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 50 });
@@ -99,5 +106,6 @@ export default {
   nearMisses: ['poker', 'what is poker', 'poker face', 'how to play poker', 'play chess'],
   match(lower, text) { return !!pokerOf(text); },
   run,
-  stageKinds: { poker: { mount } },
+  ready,
+  stageKinds: { poker: { mount: ready.mount(mount) } },
 };

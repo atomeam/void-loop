@@ -11,12 +11,12 @@
  * the picture, its subject and the ask) so it is there on the next visit; "stop walking" takes it away and forgets it. The character is whatever
  * cartoon the person drew: nothing is drawn by this file.
  */
-import { step, startState, shadowOf, factLines, pickLine, recordOf, parseRecord, SPRITE, FLOOR, BUBBLE_MS, STORE_KEY } from '../lib/walker.js';
+import { step, startState, shadowOf, factLines, pickLine, recordOf, parseRecord, tossOf, fly, dropX, SPRITE, FLOOR, BUBBLE_MS, STORE_KEY, LIFT } from '../lib/walker.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const WHO = '(?:it|him|her|them|the (?:cartoon|toon|character|little guy))';
 const WALK_RE = new RegExp('^(?:please\\s+)?(?:(?:let|make|have) ' + WHO + ' (?:walk|pace|stroll)(?: around| across the stage| about)?|' + WHO + ' walks?|walk around|(?:go|take) (?:for )?a walk|start walking)$');
-const STOP_RE = /^(?:please\s+)?(?:stop (?:walking|the walk(?:ing|er)?|pacing)|(?:no more|enough) walking|(?:take|put) (?:it|him|her|them|the walker) (?:away|off the floor)|sit (?:it|him|her) down)$/;
+const STOP_RE = /^(?:please\s+)?(?:stop (?:walking|the walk(?:ing|er)?|pacing)|(?:no more|enough) walking|(?:take|put) (?:it|him|her|them|the walker) (?:away|off the floor)|sit (?:it|him|her) down|(?:clear|remove|delete|get rid of|hide|throw away) (?:the )?(?:walker|walking (?:cartoon|figure|guy)|cartoon (?:that is |that's )?walking(?: around)?))$/;
 
 /** 'walk' | 'stop' | null for an ask. Pure. */
 export function walkOf(text) {
@@ -29,7 +29,7 @@ export function walkOf(text) {
 const CSS = '.walker-root{position:absolute;inset:0;pointer-events:none;z-index:0}' // its bottom is lifted by however far the ask bar (#dock) overlaps the stage, so the floor is the visible floor
   + '.walker-floor{position:absolute;left:0;right:0;bottom:' + FLOOR + 'px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14) 15%,rgba(255,255,255,.14) 85%,transparent)}'
   + '.walker-shadow{position:absolute;bottom:' + (FLOOR - 5) + 'px;width:' + Math.round(SPRITE * 0.72) + 'px;height:12px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.9),rgba(0,0,0,.45) 55%,transparent 75%);filter:blur(2px);transform-origin:center}'
-  + '.walker{position:absolute;bottom:' + FLOOR + 'px;width:' + SPRITE + 'px;height:' + SPRITE + 'px;padding:0;margin:0;border:0;background:none;cursor:pointer;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 6px 4px rgba(0,0,0,.35));touch-action:manipulation}'
+  + '.walker{position:absolute;bottom:' + FLOOR + 'px;width:' + SPRITE + 'px;height:' + SPRITE + 'px;padding:0;margin:0;border:0;background:none;cursor:pointer;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 6px 4px rgba(0,0,0,.35));touch-action:none}' // none: a finger on the figure lifts it (a drag or a throw), never a scroll of the page
   + '.walker:focus-visible{outline:2px solid rgba(170,190,255,.85);outline-offset:4px;border-radius:12px}'
   + '.walker img{width:' + SPRITE + 'px;height:' + SPRITE + 'px;object-fit:contain;display:block;pointer-events:none}'
   + '.walker .walker-emoji{font-size:' + Math.round(SPRITE * 0.8) + 'px;line-height:1;pointer-events:none}'
@@ -103,6 +103,7 @@ function paint() {
 function frame(t) {
   if (!live) return;
   const dt = live.lastT ? t - live.lastT : 16; live.lastT = t;
+  if (live.held || live.flying) { live.raf = requestAnimationFrame(frame); return; } // in the hand or in the air: it does not walk
   const st = stageEl(); if (!st) { live.raf = requestAnimationFrame(frame); return; }
   if (!(live.n++ % 4)) { live.lift = dockLift(st); live.width = st.clientWidth; } // the floor and the width, looked up every few frames (the ask bar grows with a whispered line; a turned phone; a resized window)
   live.state.still = still();
@@ -124,6 +125,69 @@ function speak() {
   if (!facts) gatherFacts().then(() => { if (live && !live.bubble.hidden && lines.length === 0) { const l2 = pickLine(factLines(facts), Math.random); live.said = l2; live.bubble.textContent = l2; } }).catch(() => {});
 }
 
+// the friction slider's setting (skills/friction.js through the page's window.voidTossFriction), the stage's 0.995 when there is none
+const friction = () => { try { const f = typeof window !== 'undefined' && window.voidTossFriction ? window.voidTossFriction() : 0.995; return Number.isFinite(f) ? f : 0.995; } catch (_) { return 0.995; } };
+
+/** gone for good: off the stage and forgotten (a throw, a cleared stage) */
+function drop(me) {
+  cancelAnimationFrame(me.raf); cancelAnimationFrame(me.flyRaf || 0); clearTimeout(me.bubbleT); me.root.remove();
+  if (live === me) live = null;
+}
+
+/** a press on the figure, like any thing on the stage (index.html bindDrag): a tap is a tap (the click speaks), a move of LIFT px lifts it in the
+ *  hand, a flick (or a release off the stage) throws it: it flies with gravity and spin and is gone, and forgotten; a slow drop sets it back on the
+ *  floor where it was let go, and it walks on from there */
+function grab(e) {
+  e.stopPropagation(); // never a drag of the stage
+  const me = live, st = stageEl();
+  if (!me || !st || me.flying || e.button > 0) return;
+  const x0 = e.clientX, y0 = e.clientY;
+  let held = false, dx = 0, dy = 0, vx = 0, vy = 0, lx = x0, ly = y0, lt = performance.now();
+  const mirror = () => (me.state.dir < 0 ? ' scaleX(-1)' : '');
+  const move = (ev) => {
+    if (live !== me) return;
+    if (!held) {
+      if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < LIFT) return;
+      held = true; me.held = true; me.bubble.hidden = true; me.shadow.style.opacity = '0.2';
+      document.documentElement.classList.add('dragging');
+    }
+    dx = ev.clientX - x0; dy = ev.clientY - y0;
+    const now = performance.now(), dt = Math.max(16, now - lt); // a real frame's worth: synthetic near-zero gaps never read as a flick
+    vx = (ev.clientX - lx) / dt; vy = (ev.clientY - ly) / dt; lx = ev.clientX; ly = ev.clientY; lt = now;
+    me.el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) rotate(-6deg)' + mirror(); // lifted in the hand
+  };
+  const up = () => {
+    window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up);
+    if (!held) return;
+    document.documentElement.classList.remove('dragging');
+    me.heldAt = performance.now();
+    if (live !== me) return;
+    const sr = st.getBoundingClientRect(), r = me.el.getBoundingClientRect();
+    if (!tossOf({ x: r.left - sr.left, y: r.top - sr.top, w: r.width, h: r.height, vx, vy, stageW: sr.width, stageH: sr.height }).thrown) {
+      me.state = { ...me.state, x: dropX(me.state.x + dx, me.width || st.clientWidth), bob: 0 }; // a slow drop: back on the floor, here
+      me.el.style.transform = ''; me.shadow.style.opacity = ''; me.held = false; paint();
+      return;
+    }
+    // thrown: it leaves at once (forgotten now, so a reload during the flight does not bring it back); only its picture flies
+    me.held = false; me.flying = true; forget();
+    me.shadow.style.opacity = '0'; me.root.querySelector('.walker-floor').style.opacity = '0';
+    let f = { x: dx, y: dy, vx: vx || (dx < 0 ? -1.2 : 1.2), vy: vy || -0.4, spin: 0 }, prev = performance.now();
+    f.spin = f.vx * 40;
+    const fr = friction();
+    const stepFly = (t) => {
+      if (!me.root.isConnected) return;
+      const dt = Math.min(32, t - prev); prev = t;
+      f = fly(f, dt, fr);
+      me.el.style.transform = 'translate(' + f.x + 'px,' + f.y + 'px) rotate(' + f.spin + 'deg)' + mirror();
+      const s = st.getBoundingClientRect(), b = me.el.getBoundingClientRect();
+      if (b.right < s.left || b.bottom < s.top || b.left > s.right || b.top > s.bottom) { drop(me); return; }
+      me.flyRaf = requestAnimationFrame(stepFly);
+    };
+    me.flyRaf = requestAnimationFrame(stepFly);
+  };
+  window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up);
+}
+
 /** put the figure on the stage from a record; replaces one already walking */
 function mount(rec) {
   const st = stageEl(); if (!st) return null;
@@ -134,8 +198,8 @@ function mount(rec) {
   const el = document.createElement('button'); el.type = 'button'; el.className = 'walker'; el.dataset.subject = rec.subject || ''; el.setAttribute('aria-label', label(rec)); el.title = 'tap me';
   const bubble = document.createElement('div'); bubble.className = 'walker-bubble'; bubble.setAttribute('role', 'status'); bubble.hidden = true;
   el.append(figure(rec));
-  el.addEventListener('pointerdown', (e) => e.stopPropagation()); // never a drag of the stage
-  el.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); speak(); });
+  el.addEventListener('pointerdown', grab); // a press: a tap speaks, a move lifts it, a flick throws it away (never a drag of the stage)
+  el.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); if (live && (live.flying || performance.now() - (live.heldAt || -1e9) < 400)) return; speak(); }); // the click that ends a lift is not a tap
   root.append(floor, shadow, el, bubble); // the bubble beside the figure, not inside it: a figure facing left is mirrored, its words never are
   st.prepend(root); // under the cards: the figure walks the floor, the cards float above it
   live = { root, el, shadow, bubble, rec, state: startState(st.clientWidth, { still: still(), rnd: Math.random }), raf: 0, lastT: 0, said: '', bubbleT: 0, n: 0, lift: dockLift(st), width: st.clientWidth };
@@ -146,7 +210,7 @@ function mount(rec) {
 }
 
 function unmount(forgetToo = true) {
-  if (live) { cancelAnimationFrame(live.raf); clearTimeout(live.bubbleT); live.root.remove(); live = null; }
+  if (live) drop(live); // a figure in the air goes too
   if (forgetToo) forget();
 }
 
@@ -201,10 +265,12 @@ function restore() {
   const t0 = Date.now(), tick = () => { if (!go() && Date.now() - t0 < 15000) setTimeout(tick, 250); }; tick();
 }
 if (typeof document !== 'undefined' && typeof window !== 'undefined' && document.getElementById && document.getElementById('stage')) setTimeout(restore, 0);
+// "clear" clears the walker too (owner, 2026-10-30: "the cartoon walking around wont clear"): the page says so when it empties the stage
+if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('void:stage-cleared', () => { if (live) drop(live); forget(); });
 
 export default {
   name: 'walker',
-  examples: ['let it walk', 'make it walk', 'walk around', 'stop walking', 'let him walk around', 'take a walk'],
+  examples: ['let it walk', 'make it walk', 'walk around', 'stop walking', 'let him walk around', 'take a walk', 'remove the walker'],
   nearMisses: ['walk me through it', 'how far did i walk today', 'walking directions to the station', 'walk', 'walk the dog', 'walking dead'],
   walkOf,
   letWalk,

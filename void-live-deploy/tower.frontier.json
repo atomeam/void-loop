@@ -123,7 +123,8 @@
    "site": "communitydragon.org",
    "rank": 84864,
    "hardness": 39,
-   "title": "CommunityDragon"
+   "title": "CommunityDragon",
+   "family": "games"
   },
   {
    "site": "uptimer.dev",
@@ -135,7 +136,8 @@
    "site": "processchecker.com",
    "rank": 444498,
    "hardness": 39,
-   "title": "Processchecker.com"
+   "title": "Processchecker.com",
+   "family": "tools"
   },
   {
    "site": "randomuser.me",

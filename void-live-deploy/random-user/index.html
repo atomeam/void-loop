@@ -14,8 +14,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
   /* a-to-mind.com/random-user/ (owner, 2026-10-24: "find the site to conquer and get to work now"; the frontier's randomuser.me): one file and one small module, no third party */
-  :root { color-scheme: light dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; } }
+  :root { color-scheme: dark; --bg: #f7f6fb; --ink: #15131c; --soft: #625f70; --line: #d9d6e4; --accent: #6d4aff; }
+  :root { color-scheme: dark; --bg: #0b0a10; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
   main { max-width: 900px; margin: 0 auto; padding: 18px 16px 40px; }
   h1 { font-size: 18px; margin: 0 0 12px; text-align: center; font-weight: 600; color: var(--soft); }
@@ -51,9 +51,13 @@
 <link rel="modulepreload" href="/lib/job-sites.js">
 <link rel="modulepreload" href="/lib/self-sites.js">
 <link rel="modulepreload" href="/lib/converter-ask.js">
+<link rel="modulepreload" href="/lib/brain-ask.js">
+<link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/people-card.js">
 <link rel="modulepreload" href="/lib/fakeuser.js">
 <link rel="modulepreload" href="/lib/wheel.js">
+<link rel="modulepreload" href="/lib/handoff.js">
+<link rel="modulepreload" href="/lib/prizes.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -89,6 +93,7 @@
   import { mountRelated } from '/lib/toolkit.js';
   import { cardAsk } from '/lib/people-card.js';
   import { pack as wheelCode, entriesOf as wheelEntries } from '/lib/wheel.js';
+  import { prizesLink } from '/lib/handoff.js';
   import { people, only, format, NATS, FIELDS, PW_SETS } from '/lib/fakeuser.js';
   const $ = (id) => document.getElementById(id), el = (tag, props, kids) => { const e = document.createElement(tag); Object.assign(e, props || {}); for (const k of kids || []) e.append(k); return e; };
   const q = new URLSearchParams(location.search), DEFAULT_FIELDS = ['gender', 'title', 'name', 'email', 'phone', 'dob', 'age', 'street', 'city', 'state', 'postcode', 'country', 'username', 'password', 'picture'];
@@ -138,7 +143,10 @@
   $('uses').addEventListener('click', (e) => { const b = e.target.closest('button[data-use]'); if (!b) return; const [n, want] = USES[b.dataset.use]; $('n').value = n;
     for (const c of $('fields').querySelectorAll('input[type=checkbox]')) if (c.checked !== want.includes(c.value)) { c.checked = want.includes(c.value); c.dispatchEvent(new Event('change')); }
     make(); });
-  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: toWheel }, { label: 'Use them as a tournament roster', href: toCup }],
+  // the same names, one a line: /random/ draws one of them, /prizes/ makes each a slice of its prize wheel and works out the odds
+  const toPick = () => (names.length ? '/random/?list=' + encodeURIComponent(names.join('\n')) : null), toPrizes = () => (names.length ? prizesLink(names.join('\n')) : null);
+  mountRelated($('related'), '/random-user/', [{ label: 'Spin these names on a wheel', href: toWheel }, { label: 'Use them as a tournament roster', href: toCup },
+    { label: 'Pick one of these names at random', href: toPick }, { label: 'Prize odds for these names', href: toPrizes }],
     { card: () => cardAsk($('n').value, [...natsOn], $('gender').value, $('seed').value) });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>

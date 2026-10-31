@@ -34,11 +34,12 @@ export function providersFrom(env = process.env) {
   const out = [];
   // Verse's own model on the site's binding (functions/api/coder.js, the owner token): needs no Workers AI permission on any API token
   if (env.VOID_OWNER_TOKEN) out.push({ name: 'verse', model: FREE_MODEL, key: env.VOID_OWNER_TOKEN, url: String(env.VOID_SITE || 'https://a-to-mind.com').replace(/\/+$/, '') + '/api/coder', shape: 'workers' });
-  if (env.CLOUDFLARE_API_TOKEN && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: env.CLOUDFLARE_API_TOKEN,
+  // the key Verse minted for this run (tools/key-keeper.mjs, Workers AI only, expires in hours) first, else the old repo secret
+  const cfKey = env.CLOUDFLARE_AI_TOKEN || env.CLOUDFLARE_API_TOKEN;
+  if (cfKey && env.CLOUDFLARE_ACCOUNT_ID) out.push({ name: 'workers-ai', model: env.VERSE_CODER_CF_MODEL || FREE_MODEL, key: cfKey,
     url: 'https://api.cloudflare.com/client/v4/accounts/' + encodeURIComponent(env.CLOUDFLARE_ACCOUNT_ID) + '/ai/run/' + (env.VERSE_CODER_CF_MODEL || FREE_MODEL), shape: 'workers' });
   // GitHub Models (a free pool that needs no key to fetch: the workflow's own token with `models: read`); unverified against GitHub's docs from the sandbox, a refusal shows in the run log
-  if (env.GH_MODELS_TOKEN) out.push({ name: 'github-models', model: env.VERSE_CODER_GHMODELS_MODEL || 'openai/gpt-4.1', key: env.GH_MODELS_TOKEN, url: 'https://models.github.ai/inference/chat/completions', shape: 'openai',
-    headers: { accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' } });
+  // GitHub Models is gone: GitHub retired it on 2026-07-30 (docs.github.com/en/rest/models/inference), and its old endpoint answers 200 "OK" to every call
   const oa = (name, key, url, model) => { if (env[key]) out.push({ name, model, key: env[key], url, shape: 'openai' }); };
   oa('openrouter', 'OPENROUTER_API_KEY', 'https://openrouter.ai/api/v1/chat/completions', env.VERSE_CODER_OPENROUTER_MODEL || 'qwen/qwen3-coder:free');
   oa('groq', 'GROQ_API_KEY', 'https://api.groq.com/openai/v1/chat/completions', env.VERSE_CODER_GROQ_MODEL || 'llama-3.3-70b-versatile');
@@ -46,7 +47,35 @@ export function providersFrom(env = process.env) {
   oa('cerebras', 'CEREBRAS_API_KEY', 'https://api.cerebras.ai/v1/chat/completions', env.VERSE_CODER_CEREBRAS_MODEL || 'qwen-3-coder-480b');
   return out.filter((p) => !/gpt-oss/i.test(p.model));
 }
-export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'GH_MODELS_TOKEN (the workflow token, permissions: models: read)', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+export const KEY_NAMES = ['VOID_OWNER_TOKEN (Verse\'s own model, /api/coder)', 'CLOUDFLARE_AI_TOKEN (minted by tools/key-keeper.mjs) or CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID', 'OPENROUTER_API_KEY', 'GROQ_API_KEY', 'GEMINI_API_KEY', 'CEREBRAS_API_KEY'];
+
+/** a reply body as JSON. It reads the body once as text, then tries JSON, then a server-sent-event stream (data: lines).
+ * A 2xx that is neither says what came back first (status, type, size), never its body, so a 90-character note still holds the cause. */
+export async function readReply(r) {
+  const type = String((r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || 'no type').split(';')[0].trim().slice(0, 40);
+  const bad = (n) => ({ notJson: (r.status || 'ok') + ' ' + type + (n == null ? '' : ' ' + n + 'B') + ' not JSON' });
+  if (typeof r.text !== 'function') { try { return await r.json(); } catch (_) { return bad(null); } }
+  let t; try { t = await r.text(); } catch (_) { return bad(null); }
+  const s = String(t || '').replace(/^\uFEFF/, '').trim();
+  try { return JSON.parse(s); } catch (_) { /* not one JSON value */ }
+  if (/^(data|event|id):/m.test(s)) {
+    let text = '', usage = null, any = false;
+    for (const line of s.split(/\r?\n/)) {
+      const m = line.match(/^data:\s?(.*)$/); if (!m || m[1].trim() === '[DONE]') continue;
+      let o; try { o = JSON.parse(m[1]); } catch (_) { continue; }
+      any = true;
+      const c = o && o.choices && o.choices[0];
+      if (c && c.delta && typeof c.delta.content === 'string') text += c.delta.content;
+      else if (c && c.message && typeof c.message.content === 'string') text += c.message.content;
+      else if (typeof o.response === 'string') text += o.response;
+      if (o && o.usage) usage = o.usage;
+    }
+    if (any) return { choices: [{ message: { content: text } }], usage: usage || undefined };
+  }
+  // a body of 64 bytes or less with no markup is no page: show it, escaped, key-like runs masked, so "200 text/plain 2B" says which 2 bytes
+  const n = Buffer.byteLength(s);
+  return n <= 64 && !/[<>]/.test(s) ? { notJson: bad(n).notJson + ' ' + JSON.stringify(s.replace(/[A-Za-z0-9_\-]{20,}/g, '[masked]')) } : bad(n);
+}
 
 /** a model function over the providers: each call tries them in order from the last one that answered; a 429 or error moves on */
 export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, maxOut = 4096 } = {}) {
@@ -59,8 +88,8 @@ export function stackModel(providers, { fetchImpl = fetch, timeoutMs = 120000, m
         const body = p.shape === 'workers' ? { messages, max_tokens: maxOut, temperature: 0.2 } : { model: p.model, messages, max_tokens: maxOut, temperature: 0.2 };
         const r = await fetchImpl(p.url, { method: 'POST', signal: AbortSignal.timeout(timeoutMs), headers: { ...(p.headers || {}), authorization: 'Bearer ' + p.key, 'content-type': 'application/json' }, body: JSON.stringify(body) });
         if (!r.ok) { errs.push(p.name + ' ' + r.status); continue; }
-        // a 2xx that is not JSON says what came back (status and type), never its body: "github-models SyntaxError" told nobody anything
-        let j; try { j = await r.json(); } catch (_) { const t = (r.headers && typeof r.headers.get === 'function' && r.headers.get('content-type')) || 'no type'; errs.push(p.name + ' ' + (r.status || 'ok') + ' not JSON (' + String(t).split(';')[0].slice(0, 40) + ')'); continue; }
+        const j = await readReply(r);
+        if (j && j.notJson) { errs.push(p.name + ' ' + j.notJson); continue; }
         const x = p.shape === 'workers' ? (j && j.result) || {} : j || {};
         const text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String((x.choices && x.choices[0] && x.choices[0].message && x.choices[0].message.content) || '');
         if (!text.trim()) { errs.push(p.name + ' empty'); continue; }

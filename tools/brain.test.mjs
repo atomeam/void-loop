@@ -75,7 +75,9 @@ test('tissue and rhythm: the field stays varied and alive, and the oscillators l
 test('attention: the budget is spent where it is wanted, nothing starves, and the focus moves to what is new', () => {
   const b = B.createBrain(8);
   const ids = B.scheduleTick(b); assert.ok(ids.includes('senses')); assert.ok(ids.length <= b.budget + 1);
-  run(b, 600); for (const id of B.ORGAN_IDS) if (id !== 'senses' && id !== 'gestures' && id !== 'predictor') assert.ok(b.runs[id] > 0, id + ' ran');
+  run(b, 600); const rests = new Set(B.ORGANS.filter((o) => o.rests && o.rests(b)).map((o) => o.id)); // an organ with nothing to do rests; it is not starved
+  assert.deepEqual([...rests], ['dialogue'], 'only the dialogue organ rests, with no recalled ask'); assert.equal(b.runs.dialogue, 0, 'a resting organ takes no run');
+  for (const id of B.ORGAN_IDS) if (id !== 'senses' && id !== 'gestures' && id !== 'predictor' && !rests.has(id)) assert.ok(b.runs[id] > 0, id + ' ran');
   assert.ok(b.runs.predictor < b.runs.tissue, 'with nobody pointing the predictor gets less than the tissue');
   const before = b.focus.region; let tgt = before === 0 ? 11 : 0; const c = W.regionCenter(tgt);
   run(b, 200, () => ({ x: c.x, y: c.y, over: true, down: true }));
@@ -121,7 +123,10 @@ test('embodiment and the self: words, the action and the expectation become thin
 test('the draft map: every draft in atomeam/a-to-mind.com is either a part of an organ or left out with a reason', () => {
   assert.ok(drafts.total >= 233); assert.equal(drafts.total, drafts.drafts.length);
   for (const d of drafts.drafts) assert.ok(d.organ ? B.ORGAN_IDS.concat(['attention', 'imagination', 'embodiment', 'self', 'bridge']).includes(d.organ) : d.left, d.folder);
-  for (const id of B.ORGAN_IDS) assert.ok(drafts.drafts.some((d) => d.organ === id), id + ' is made from at least one draft');
+  // the conversation orb was asked for by the owner (2026-10-30), not built from a draft: it is the one organ no draft maps to
+  const FROM_OWNER = ['dialogue'];
+  for (const id of B.ORGAN_IDS) assert.ok(FROM_OWNER.includes(id) || drafts.drafts.some((d) => d.organ === id), id + ' is made from at least one draft');
+  for (const id of FROM_OWNER) assert.ok(!drafts.drafts.some((d) => d.organ === id), id + ' is not claimed for a draft it was not made from');
 });
 
 test('speed: a brain tick, imagination included, fits well inside a frame', () => {
@@ -219,7 +224,7 @@ test('history and explain: it says what just happened and why a region formed, f
 test('knowledge: what it learned survives a reload as numbers, a wrong record is ignored, and a seal still holds no words', () => {
   const b = run(B.createBrain(28), 900, circle); B.ask(b, 'romance'); run(b, 100, circle);
   const k = JSON.parse(JSON.stringify(B.knowledgeOf(b))), b2 = B.createBrain(29), done = B.loadKnowledge(b2, k);
-  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'formula', 'current', 'grains', 'asks', 'procedures', 'episodes']);
+  assert.deepEqual(done, ['q', 'memory', 'gestures', 'preferences', 'synapses', 'creature', 'hearing', 'painter', 'gardener', 'grower', 'formula', 'current', 'grains', 'pool', 'trace', 'asks', 'procedures', 'episodes']);
   assert.deepEqual(b2.creature.mean, b.creature.mean.map((v) => Math.round(v * 1000) / 1000), 'the creature keeps its evolved physics');
   assert.deepEqual(Array.from(b2.synapses.W), Array.from(b.synapses.W, (v) => Math.fround(Math.round(v * 1000) / 1000)), 'the eye keeps its learned wiring');
   assert.deepEqual(Array.from(b2.will.q), Array.from(b.will.q, (v) => Math.round(v * 1000) / 1000).map((v) => Math.fround(v)));

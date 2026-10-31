@@ -1,0 +1,1 @@
+{"cc":"BI","channels":[{"id":"RTNBDivertissement.bi@SD","t":"RTNB Divertissement","c":["entertainment"],"l":["eng","fra","run","swa"],"w":"https://www.rtnb.bi/","s":["https://tv2-stream.rtnb.bi/hls/master.m3u8"]},{"id":"RTNBTV.bi@SD","t":"RTNB TV","c":["general"],"l":["run","fra","swa","eng"],"w":"https://rtnb.bi/","s":["https://tv1-stream.rtnb.bi/hls/master.m3u8"]}]}

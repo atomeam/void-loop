@@ -1,9 +1,19 @@
 /**
- * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, hashes, diffs, Markdown, CSV, YAML, CSS
+ * Asked by the tool's name with no text yet ("qr code generator", "case converter"), the card is the tool: type and it answers as you type.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
+ * Everything runs in the browser (crypto for passwords, maths for the moon, lib/qr.js for QR codes, lib/hash.js for hashes, lib/textdiff.js
+ * for the diff checker, lib/markdown.js for Markdown, lib/csvjson.js for CSV and JSON,
+ * lib/yamljson.js for YAML and JSON, lib/cssmin.js for CSS); nothing is sent anywhere.
  */
 import { askColour, parse, toHex, describe } from '../lib/colour.js';
+import { qrMatrix, qrSvg } from '../lib/qr.js';
+import { ALGOS, algoOf, digestHex } from '../lib/hash.js';
+import { diffTexts, diffCounts, withContext, MAX_LINES } from '../lib/textdiff.js';
+import { mdToHtml } from '../lib/markdown.js';
+import { csvToJson, jsonToCsv } from '../lib/csvjson.js';
+import { yamlToJson, jsonToYaml } from '../lib/yamljson.js';
+import { minifyCss } from '../lib/cssmin.js';
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
@@ -23,9 +33,37 @@ export function utilOf(text) {
   const raw = String(text || '').trim(), t = raw.replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
   let m = l.match(/^(?:generate|make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:strong\s+|secure\s+|random\s+)*password(?:\s+(?:with|of)\s+(\d{1,3})\s+(?:characters|chars|letters))?$|^password\s+generator$/);
   if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +m[1] || 20)) };
+  // the length or the kind said another way (2026-10-30: "16 character password", "generate a password 16 characters", "strong password" and
+  // "random password generator" fell to an article). password.js keeps "random password", "another password" and "password of 20 characters"
+  const PW_LEAD = '^(?:please\\s+)?(?:(?:generate|make|create|give\\s+me|get\\s+me|i\\s+need|i\\s+want)\\s+(?:me\\s+)?)?(?:an?\\s+)?';
+  const PW_ADJ = '(?:(?:strong|secure|random|safe|complex|long|new)\\s+)*', PW_N = '(\\d{1,3})[\\s-]?(?:characters?|chars?|letters?)(?:\\s+long)?';
+  m = l.match(new RegExp(PW_LEAD + PW_ADJ + PW_N + '\\s+' + PW_ADJ + 'password(?:\\s+generator)?$|' + PW_LEAD + PW_ADJ + 'password\\s+' + PW_N + '$')); // void-review: ok (built from the constants above)
+  if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +(m[1] || m[2]))) };
+  if (/^(?:an?\s+)?(?=(?:\w+\s+)*(?:strong|secure|safe|complex)\s)(?:(?:strong|secure|random|safe|complex|long|new)\s+)+password$|^(?:an?\s+)?(?:free\s+|online\s+)?(?:(?:strong|secure|random|safe|complex)\s+)*password\s+(?:generator|maker|creator)$/.test(l)) return { kind: 'password', n: 20 };
   m = t.match(/^(?:make\s+(?:me\s+)?|create\s+|generate\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|with)\s+(.{1,300})$/i);
   if (m) return { kind: 'qr', data: m[1].trim() };
-  m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
+  // the tool asked for by its name, with no text yet (2026-10-30: "qr code generator" and "case converter" fell to an article): a card that does it as you type
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?qr(?:\s*code)?\s+(?:generator|maker|creator)$|^(?:make|create|generate)\s+(?:me\s+)?(?:an?\s+)?qr(?:\s*code)?$/.test(l)) return { kind: 'qrmaker' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+)?case\s+(?:converter|changer)$|^(?:convert|change)\s+(?:text\s+)?case$|^(?:upper|lower|title)\s*case\s+(?:converter|generator)$|^(?:upper\s*case\s+to\s+lower\s*case|lower\s*case\s+to\s+upper\s*case)$/.test(l)) return { kind: 'casemaker' };
+  // hashes (2026-10-30: "md5 of hello" and "sha256 generator" fell to an article). The tool by its name, with no text yet, is a card that hashes as you type
+  const ALGO = '(md5|sha-?1|sha-?256|sha-?384|sha-?512)';
+  if (new RegExp('^(?:(?:an?|the)\\s+)?(?:free\\s+|online\\s+)?(?:' + ALGO + '\\s+)?(?:hash|checksum|digest)?\\s*(?:generator|maker|calculator|creator)$|^' + ALGO + '\\s+(?:hash\\s+)?online$|^hash\\s+(?:a\\s+|some\\s+)?text$').test(l) && /md5|sha|hash|checksum|digest/.test(l)) {
+    const a = l.match(/(md5|sha-?1|sha-?256|sha-?384|sha-?512)/); return { kind: 'hashmaker', algo: a ? algoOf(a[1]) : 'sha256' }; }
+  // a diff checker and Markdown to HTML, asked for by name (2026-10-30: "diff checker" and "markdown to html" fell to an article that answered nothing)
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text\s+|line\s+)?(?:diff|difference)\s+(?:checker|tool|finder|viewer)$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:text|string)\s+(?:compare|comparison|diff)(?:\s+tool)?$|^(?:compare|diff)\s+(?:two\s+)?(?:texts|text|lists)$/.test(l)) return { kind: 'diffmaker' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:markdown|md)\s+(?:to\s+html(?:\s+converter)?|converter|preview(?:er)?|editor|viewer|renderer)$|^convert\s+markdown(?:\s+to\s+html)?$/.test(l)) return { kind: 'mdmaker' };
+  m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv|json)\s+(?:file\s+)?to\s+(csv|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(csv)\s+(?:to\s+)?json\s+converter$/);
+  if (m && (m[3] || m[1] !== m[2])) return { kind: 'csvjson', dir: m[3] || m[1] };
+  // YAML and JSON, both ways, and a YAML check (2026-10-30: "yaml to json" and "json to yaml" fell to an article that answered nothing)
+  m = l.match(/^(?:convert\s+(?:this\s+|a\s+|my\s+)?)?(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(ya?ml|json)\s+(?:file\s+)?to\s+(ya?ml|json)(?:\s+(?:converter|tool|online))?$|^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(ya?ml)\s+(?:to\s+)?json\s+converter$/);
+  if (m && (m[3] || (m[1] === 'json') !== (m[2] === 'json'))) return { kind: 'yamljson', dir: m[1] === 'json' ? 'json' : 'yaml' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:ya?ml\s+(?:validator|linter|lint|checker|parser|viewer)|(?:validate|check|lint|parse)\s+(?:my\s+|this\s+)?ya?ml)$/.test(l)) return { kind: 'yamljson', dir: 'yaml' };
+  if (/^(?:(?:an?|the)\s+)?(?:free\s+|online\s+)?(?:css\s+(?:minifier|minify|minification|compressor|compress|optimizer)(?:\s+tool)?|(?:minify|compress)\s+(?:my\s+|this\s+)?css)$/.test(l)) return { kind: 'cssmin' };
+  // "md5 of hello", "sha256 hash of hello world", "sha1 hello", "hash of hello", 'hash "hello"' (SHA-256 first, the others under it); the text keeps its case.
+  // A bare "hash" takes text only after of/for or in quotes: "hash browns" is food and "hash table" is a data structure
+  m = t.match(new RegExp('^(?:(?:what(?:\\s+is|\'s)\\s+)?the\\s+)?' + ALGO + '(?:\\s+(?:hash|checksum|digest|sum))?\\s+(?:of|for)\\s+(.{1,2000})$|^(?:hash|checksum)\\s+(?:(?:of|for)\\s+(.{1,2000})|(["“\'‘].{1,2000}["”\'’]))$|^' + ALGO + '(?:\\s+hash)?\\s+(?!(?:vs|versus|or|and|is|meaning|decrypt|decoder|decode|reverse|algorithm|collision|length|example)\\b)(.{1,2000})$', 'i'));
+  if (m) { const s = (m[2] ?? m[3] ?? m[4] ?? m[6]).replace(/^["“'‘](.*)["”'’]$/s, '$1'); if (s) return { kind: 'hash', algo: m[1] ? algoOf(m[1]) : m[5] ? algoOf(m[5]) : 'sha256', s }; }
+  m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/); // void-review: ok (m is declared with let at the top of utilOf)
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
   m = l.match(/^(#[0-9a-f]{6}|#[0-9a-f]{3})$/); // a bare hex code, the way people paste one into a colour site
   if (m) return { kind: 'color', c: m[1] };
@@ -58,7 +96,8 @@ export function utilOf(text) {
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
   if (m) return { kind: 'count', s: m[1].replace(/^(?:the\s+)?(?:word|name|phrase)\s+(?=\S)/i, '').replace(/^["“]|["”]$/g, ''), chars: true };
-  if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };
+  // "uuid", "generate a uuid", "uuid generator", "uuid v4 generator", "online uuid generator"; "random uuid" and "generate a random guid" are the uuid skill's
+  if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)(?:\s*v?4)?$|^(?:an?\s+)?(?:(?:online|free)\s+)?(?:uuid|guid)(?:\s*v?4)?(?:\s+(?:generator|maker|tool))?$/i.test(t)) return { kind: 'uuid' };
   m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
   // "nato alphabet for hello", "spell hello in nato", "morse code for sos", "hello in binary"
@@ -87,7 +126,7 @@ export function utilOf(text) {
   if (m) { const f = t.match(/^\S+(?:\s+case)?\s*:?\s+(this:?\s+)/i); if (f && f[1].trim().replace(/:$/, '') !== 'this') m[2] = f[1] + m[2]; }
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
   // the moon (phase, next full and new) is skills/moontonight.js now: lib/astro.js, good to minutes; the mean-cycle sum below was off by hours
-  m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
+  m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(?:generator|maker))?(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
 }
@@ -117,9 +156,153 @@ async function run(text, api) {
     const pw = Array.from(a, (x) => set[x % set.length]).join('');
     el = showPage((p) => { p.innerHTML = '<h2>Password</h2>' + big(pw, 26) + copyBtn + '<p style="color:#8a8a8a">' + q.n + ' characters, made in your browser and never sent anywhere · ask again for another</p>'; });
   } else if (q.kind === 'qr') {
-    const src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=' + encodeURIComponent(q.data);
-    el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div><img alt="QR code for ' + esc(q.data) + '" src="' + esc(src) + '" style="float:none;max-width:240px;max-height:240px;background:#fff;border-radius:8px;margin:8px 0">'
-      + '<div class="src">Source: <a href="https://goqr.me/api/" target="_blank" rel="noopener">goqr.me</a></div>'; });
+    // 2026-10-30: drawn here (lib/qr.js), not fetched from goqr.me. The fetched picture was an https image, so the card frame made it the art and
+    // cropped it to 16:10 (lib/card-frame.js), which cut the finder squares off and left a code no phone could scan. An inline SVG stays whole.
+    const code = qrMatrix(q.data, { ecl: 'M' });
+    const svg = code ? qrSvg(code, { margin: 4, label: 'QR code' }) : ''; // void-review: ok (qrSvg is built from numbers and a fixed label only)
+    el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div>'
+      + (svg ? '<div class="util-qr" style="width:min(240px,100%);aspect-ratio:1;margin:8px 0;border-radius:8px;overflow:hidden;background:#fff">' + svg.replace('<svg ', '<svg width="100%" height="100%" ') + '</div>'
+        + '<p style="color:#8a8a8a">Made in your browser and never sent anywhere · error correction M · scan it with a phone camera</p>'
+        : '<p>That text is too long for one QR code (a version 40 code holds about 2,300 characters).</p>'); });
+  } else if (q.kind === 'qrmaker') {
+    el = showPage((p) => { p.innerHTML = '<h2>QR code maker</h2><textarea class="util-in" rows="2" maxlength="2300" placeholder="a link or any text" aria-label="Text for the QR code" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<div class="util-qr" style="width:min(240px,100%);aspect-ratio:1;margin:8px 0;border-radius:8px;overflow:hidden;background:#fff;display:none"></div>'
+      + '<p class="util-qr-say" style="color:#8a8a8a">Type a link or any text and the code draws here. Made in your browser and never sent anywhere · error correction M</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), pic = el && el.querySelector && el.querySelector('.util-qr'), say = el && el.querySelector && el.querySelector('.util-qr-say');
+    if (box && pic) box.addEventListener('input', () => {
+      const s = box.value.trim(), code = s ? qrMatrix(s, { ecl: 'M' }) : null;
+      pic.innerHTML = code ? qrSvg(code, { margin: 4, label: 'QR code' }).replace('<svg ', '<svg width="100%" height="100%" ') : ''; // void-review: ok (qrSvg is built from numbers and a fixed label only)
+      pic.style.display = code ? '' : 'none';
+      if (say) say.textContent = !s ? 'Type a link or any text and the code draws here. Made in your browser and never sent anywhere · error correction M'
+        : code ? 'Scan it with a phone camera. Made in your browser and never sent anywhere · error correction M' : 'That text is too long for one QR code (a version 40 code holds about 2,300 characters).';
+    });
+  } else if (q.kind === 'casemaker') {
+    const HOWS = ['uppercase', 'lowercase', 'title case', 'capitalize words', 'reverse'];
+    el = showPage((p) => { p.innerHTML = '<h2>Case converter</h2><textarea class="util-in" rows="3" placeholder="your text" aria-label="Text to change" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<p>' + HOWS.map((k) => '<button type="button" class="util-case" data-how="' + esc(k) + '">' + esc(k.charAt(0).toUpperCase() + k.slice(1)) + '</button>').join(' ') + '</p>'
+      + '<div class="util-out" style="font-size:20px;line-height:1.4;margin:8px 0;word-break:break-word;white-space:pre-wrap"></div>' + copyBtn
+      + '<p style="color:#8a8a8a">Changed in your browser and never sent anywhere</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out');
+    let how = 'uppercase';
+    const paint = () => { if (out && box) out.textContent = CASES[how](box.value); };
+    if (box) box.addEventListener('input', paint);
+    for (const b of (el && el.querySelectorAll ? el.querySelectorAll('.util-case') : [])) b.addEventListener('click', () => { how = b.dataset.how; paint(); });
+  } else if (q.kind === 'hash') {
+    // the asked-for hash first and big, the others under it; every one is the UTF-8 bytes of the text, as `echo -n text | md5sum` gives
+    const order = [q.algo, ...ALGOS.map((a) => a.id).filter((x) => x !== q.algo)], name = (id) => ALGOS.find((a) => a.id === id).name;
+    const sums = await Promise.all(order.map((id) => digestHex(id, q.s).catch(() => '')));
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(name(q.algo)) + '</h2><div class="sub">of “' + esc(q.s.length > 120 ? q.s.slice(0, 120) + '…' : q.s) + '”</div>' + big(sums[0], 18) + copyBtn // ellipsis-ok: only the shown label is cut, the hash is of the whole text
+      + '<ul style="margin:10px 0 0;padding-left:18px;word-break:break-all;font-size:13px">' + order.slice(1).map((id, i) => '<li><b>' + esc(name(id)) + '</b> <code>' + esc(sums[i + 1]) + '</code></li>').join('') + '</ul>'
+      + '<p style="color:#8a8a8a">The text as UTF-8 bytes, hashed in your browser and never sent anywhere. MD5 and SHA-1 are broken for security: use SHA-256 or longer for anything that must not be forged.</p>'; });
+  } else if (q.kind === 'hashmaker') {
+    const order = [q.algo, ...ALGOS.map((a) => a.id).filter((x) => x !== q.algo)];
+    el = showPage((p) => { p.innerHTML = '<h2>Hash generator</h2><textarea class="util-in" rows="3" placeholder="your text" aria-label="Text to hash" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px"></textarea>'
+      + '<ul class="util-hashes" style="margin:10px 0 0;padding-left:18px;word-break:break-all;font-size:13px">' + order.map((id) => '<li><b>' + esc(ALGOS.find((a) => a.id === id).name) + '</b> <code data-algo="' + esc(id) + '"></code></li>').join('') + '</ul>'
+      + '<p style="color:#8a8a8a">Type and every hash updates. The text as UTF-8 bytes, hashed in your browser and never sent anywhere. MD5 and SHA-1 are broken for security: use SHA-256 or longer for anything that must not be forged.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), codes = el && el.querySelectorAll ? [...el.querySelectorAll('code[data-algo]')] : [];
+    let turn = 0;
+    const paint = async () => { const mine = ++turn, v = box ? box.value : ''; const sums = await Promise.all(codes.map((c) => digestHex(c.dataset.algo, v).catch(() => '')));
+      if (mine === turn) codes.forEach((c, i) => { c.textContent = sums[i]; }); }; // a slower answer for older text never overwrites a newer one
+    if (box) box.addEventListener('input', paint);
+    paint();
+  } else if (q.kind === 'diffmaker') {
+    // every character counts: a space, a blank line or a changed case is a difference (lib/textdiff.js)
+    const box = (cls, label) => '<label style="display:block;font-size:13px;color:#8a8a8a">' + label + '<textarea class="' + cls + '" rows="5" maxlength="200000" aria-label="' + label + ' text" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea></label>';
+    el = showPage((p) => { p.innerHTML = '<h2>Diff checker</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px">' + box('util-a', 'Original') + box('util-b', 'Changed') + '</div>' // void-review: ok (static markup; box() takes fixed labels, and typed text goes to textarea values only)
+      + '<p class="util-say" aria-live="polite" style="margin:8px 0 4px">Paste a text on each side</p>'
+      + '<pre class="util-diff" style="margin:0;max-height:260px;overflow:auto;font-size:13px;line-height:1.45;white-space:pre-wrap;word-break:break-word"></pre>'
+      + '<p style="color:#8a8a8a">Line by line: removed lines are red with −, added lines green with +. Compared in your browser and never sent anywhere.</p>'; });
+    const A = el && el.querySelector && el.querySelector('.util-a'), B = el && el.querySelector && el.querySelector('.util-b'), say = el && el.querySelector && el.querySelector('.util-say'), pre = el && el.querySelector && el.querySelector('.util-diff');
+    const paint = () => {
+      if (!A || !B || !say || !pre) return;
+      if (!A.value && !B.value) { say.textContent = 'Paste a text on each side'; pre.innerHTML = ''; return; }
+      const rows = diffTexts(A.value, B.value);
+      if (rows.tooLong) { say.textContent = 'Up to ' + MAX_LINES + ' lines a side'; pre.innerHTML = ''; return; }
+      const c = diffCounts(rows), n = (k, w) => k + ' ' + w + (k === 1 ? '' : 's');
+      say.textContent = !c.del && !c.add ? 'The two texts are the same' : n(c.del, 'line') + ' removed, ' + n(c.add, 'line') + ' added, ' + c.same + ' the same';
+      const num = (r) => String(r.t === 'add' ? r.b : r.a).padStart(4, ' ');
+      pre.innerHTML = c.del || c.add ? withContext(rows).map((r) => r.t === 'skip' ? '<span style="color:#8a8a8a">   ⋯ ' + r.n + ' unchanged line' + (r.n === 1 ? '' : 's') + '</span>'
+        : '<span style="' + (r.t === 'del' ? 'color:#ff8a8a;background:rgba(255,80,80,.12)' : r.t === 'add' ? 'color:#7fd6a0;background:rgba(80,220,140,.12)' : 'color:#9a9a9a') + '">'
+          + num(r) + ' ' + (r.t === 'del' ? '−' : r.t === 'add' ? '+' : ' ') + ' ' + esc(r.s) + '</span>').join('\n') : '';
+    };
+    for (const t of [A, B]) if (t) t.addEventListener('input', paint);
+  } else if (q.kind === 'csvjson') {
+    // one card both ways: CSV to JSON, or JSON to CSV after a press on the arrow (lib/csvjson.js); cells that are plain numbers, true, false or null become those values
+    let dir = q.dir;
+    const title = () => (dir === 'csv' ? 'CSV to JSON' : 'JSON to CSV');
+    const hint = () => (dir === 'csv' ? 'name,age&#10;Ann,30&#10;Bo,25' : '[{&quot;name&quot;: &quot;Ann&quot;, &quot;age&quot;: 30}]');
+    el = showPage((p) => { p.innerHTML = '<h2>' + title() + '</h2><textarea class="util-in" rows="6" maxlength="2000000" placeholder="' + hint() + '" aria-label="' + (dir === 'csv' ? 'CSV' : 'JSON') + '" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (title() is one of two fixed headings; typed text goes to the textarea value only)
+      + '<p style="margin:8px 0 4px"><button type="button" class="util-flip" aria-label="Swap the direction">⇄ swap</button> <span class="util-say" aria-live="polite">Paste ' + (dir === 'csv' ? 'CSV with a header row' : 'a JSON array') + '</span></p>'
+      + '<pre class="util-out" style="margin:0;max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Commas, semicolons or tabs, with quotes kept. The first row names the fields. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say'), flip = el && el.querySelector && el.querySelector('.util-flip'), head = el && el.querySelector && el.querySelector('h2');
+    const n = (k, w) => k + ' ' + w + (k === 1 ? '' : 's');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste ' + (dir === 'csv' ? 'CSV with a header row' : 'a JSON array'); return; }
+      const r = dir === 'csv' ? csvToJson(box.value) : jsonToCsv(box.value);
+      if (r.error) { out.textContent = ''; say.textContent = r.error; return; }
+      out.textContent = dir === 'csv' ? r.json : r.csv;
+      say.textContent = n(r.rows, 'row') + ', ' + n(r.cols, dir === 'csv' ? 'field' : 'column');
+    };
+    if (box) box.addEventListener('input', paint);
+    if (flip) flip.addEventListener('click', () => {
+      // the output becomes the new input, so a round trip is one press
+      dir = dir === 'csv' ? 'json' : 'csv';
+      if (head) head.textContent = title();
+      if (box) { if (out && out.textContent) box.value = out.textContent; box.setAttribute && box.setAttribute('aria-label', dir === 'csv' ? 'CSV' : 'JSON'); }
+      paint();
+    });
+  } else if (q.kind === 'yamljson') {
+    // one card both ways: YAML to JSON, or JSON to YAML after a press on the arrow (lib/yamljson.js); a fault in the YAML names its line
+    let dir = q.dir;
+    const title = () => (dir === 'yaml' ? 'YAML to JSON' : 'JSON to YAML');
+    const hint = () => (dir === 'yaml' ? 'name: Ann&#10;tags: [a, b]&#10;address:&#10;  city: Oslo' : '{&quot;name&quot;: &quot;Ann&quot;, &quot;tags&quot;: [&quot;a&quot;, &quot;b&quot;]}');
+    el = showPage((p) => { p.innerHTML = '<h2>' + title() + '</h2><textarea class="util-in" rows="7" maxlength="2000000" placeholder="' + hint() + '" aria-label="' + (dir === 'yaml' ? 'YAML' : 'JSON') + '" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (title() is one of two fixed headings; typed text goes to the textarea value only)
+      + '<p style="margin:8px 0 4px"><button type="button" class="util-flip" aria-label="Swap the direction">⇄ swap</button> <span class="util-say" aria-live="polite">Paste ' + (dir === 'yaml' ? 'YAML' : 'JSON') + '</span></p>'
+      + '<pre class="util-out" style="margin:0;max-height:260px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Maps, lists, quotes, | and > blocks, comments, anchors and several documents. Words like yes and no stay text, and the YAML it writes quotes them. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say'), flip = el && el.querySelector && el.querySelector('.util-flip'), head = el && el.querySelector && el.querySelector('h2');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste ' + (dir === 'yaml' ? 'YAML' : 'JSON'); return; }
+      const r = dir === 'yaml' ? yamlToJson(box.value) : jsonToYaml(box.value);
+      if (r.error) { out.textContent = ''; say.textContent = r.error; return; }
+      out.textContent = dir === 'yaml' ? r.json : r.yaml;
+      say.textContent = (dir === 'yaml' ? 'Valid YAML: ' : '') + r.what;
+    };
+    if (box) box.addEventListener('input', paint);
+    if (flip) flip.addEventListener('click', () => {
+      // the output becomes the new input, so a round trip is one press
+      dir = dir === 'yaml' ? 'json' : 'yaml';
+      if (head) head.textContent = title();
+      if (box) { if (out && out.textContent) box.value = out.textContent; box.setAttribute && box.setAttribute('aria-label', dir === 'yaml' ? 'YAML' : 'JSON'); }
+      paint();
+    });
+  } else if (q.kind === 'cssmin') {
+    // safe only: comments and spaces go, nothing is renamed, merged or moved (lib/cssmin.js)
+    el = showPage((p) => { p.innerHTML = '<h2>CSS minifier</h2><textarea class="util-in" rows="6" maxlength="2000000" placeholder="a {&#10;  color: red;&#10;}" aria-label="CSS" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
+      + '<p class="util-say" aria-live="polite" style="margin:8px 0 4px">Paste CSS</p>'
+      + '<pre class="util-out" style="margin:0;max-height:220px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-all"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Removes comments (a /*! note stays) and the spaces CSS does not need. Rules are never renamed, merged or moved, so the page looks the same. Minified in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), out = el && el.querySelector && el.querySelector('.util-out'), say = el && el.querySelector && el.querySelector('.util-say');
+    const paint = () => {
+      if (!box || !out || !say) return;
+      if (!box.value.trim()) { out.textContent = ''; say.textContent = 'Paste CSS'; return; }
+      const r = minifyCss(box.value);
+      out.textContent = r.css;
+      say.textContent = r.before + ' bytes to ' + r.after + ' bytes (' + Math.round((1 - r.after / r.before) * 100) + '% smaller)';
+    };
+    if (box) box.addEventListener('input', paint);
+  } else if (q.kind === 'mdmaker') {
+    el = showPage((p) => { p.innerHTML = '<h2>Markdown to HTML</h2><textarea class="util-in" rows="6" maxlength="200000" placeholder="# A heading&#10;&#10;Some **bold** text and a [link](https://a-to-mind.com)" aria-label="Markdown" style="display:block;width:100%;max-width:100%;box-sizing:border-box;resize:vertical;font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px;font-family:ui-monospace,monospace;font-size:13px"></textarea>' // void-review: ok (static markup; typed text goes to the textarea value only)
+      + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">Preview</div><div class="util-md" style="max-height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:2px 10px"></div>'
+      + '<div style="font-size:13px;color:#8a8a8a;margin:8px 0 2px">HTML</div><pre class="util-out" style="margin:0;max-height:160px;overflow:auto;font-size:12px;white-space:pre-wrap;word-break:break-word"></pre>' + copyBtn
+      + '<p style="color:#8a8a8a">Headings, bold, italic, links, images, lists, quotes, code and rules. Tables and raw HTML are not converted: HTML you type shows as text. Converted in your browser and never sent anywhere.</p>'; });
+    const box = el && el.querySelector && el.querySelector('.util-in'), view = el && el.querySelector && el.querySelector('.util-md'), out = el && el.querySelector && el.querySelector('.util-out');
+    // the preview is the converter's own HTML: every text is escaped and a link keeps only an http, https, mailto or relative address (lib/markdown.js)
+    const paint = () => { if (!box || !view || !out) return; const h = mdToHtml(box.value); view.innerHTML = h; out.textContent = h; }; // void-review: ok (mdToHtml escapes every text and keeps only http, https, mailto or relative addresses)
+    if (box) box.addEventListener('input', paint);
   } else if (q.kind === 'color') {
     const h = hex(q.c), v = hsl(h), rgb = parse(h), d = rgb ? describe(rgb) : null;
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
@@ -175,8 +358,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight'],
+  examples: ['generate a password', '16 character password', 'strong password', 'csv to json', 'yaml to json', 'json to yaml', 'yaml validator', 'minify css', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum', 'qr code generator', 'case converter', 'lorem ipsum generator', 'md5 of hello', 'sha256 hash generator', 'hash of hello world', 'diff checker', 'markdown to html', 'uuid generator'],
+  nearMisses: ['what is csv', 'csv vs json', 'what is yaml', 'yaml vs json', 'yaml syntax', 'what is css', 'minify js', 'what is a palindrome', 'reset my password', 'strong password tips', 'password manager', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight', 'qr code scanner', 'what is a case converter', 'md5 vs sha256', 'what is md5', 'md5 decrypt', 'hash browns', 'what is a diff', 'git diff', 'what is markdown', 'markdown syntax', 'what is a uuid', 'uuid vs guid'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

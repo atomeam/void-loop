@@ -62,7 +62,7 @@ async function run(text, api) {
   const page = h ? bookPage(h.game) || { kind: 'skill', name: h.game, title: TITLES[h.game], line: '', examples: playAsk, n: 0 } : s && s.book ? resolveSkill(text, s.book) : null;
   if (!page) { const q = parseAsk(text); api.say(q ? 'no skill called ' + q.topic + ' yet · "open the book" shows what I can do' : "couldn't"); return 'none'; }
   let about = '';
-  try { about = aboutText(await import('./' + page.name + '.js')); } catch (_) { /* a page with no module of its own (a family member, a game box): the page's line */ } // void-review: ok
+  try { const mod = await import('./' + page.name + '.js'); if (mod.default && typeof mod.default.ready === 'function') await mod.default.ready(); about = aboutText(mod); } catch (_) { /* a page with no module of its own (a family member, a game box): the page's line */ } // void-review: ok
   const a = aboutOf(page, s ? s.fam : null, await overlaps(), { book: s ? s.book : null, about });
   let sum = null;
   if (GAMES.includes(a.name)) { const log = loadGames(); sum = summary(log, { game: a.name }); a.history = historyHtml(esc, sum, log); } // a game's card: your record on this device

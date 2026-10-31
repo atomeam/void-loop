@@ -773,7 +773,7 @@
 // asked again of the server (an unchanged file costs a 304): Cloudflare keeps .js in the browser for 4 hours, and a page not yet under the
 // current service worker (sw.js asks again the same way) ran an old app.js under a new page after a deploy (2026-10-29, the post form's
 // "A new fandom" choice missing). The list is the module's static imports; tools/fanfic.test.mjs fails when it falls behind them.
-const CODE = ['/fanfic/app.js', '/lib/fanfic.js', '/lib/boards.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-bridge.js', '/lib/fanfic-de.js'];
+const CODE = ['/fanfic/app.js', '/lib/fanfic.js', '/lib/boards.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/local-ask.js', '/lib/brain-bridge.js', '/lib/fanfic-de.js'];
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/fanfic/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>

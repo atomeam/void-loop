@@ -44,6 +44,16 @@ const article = (minWords = 120) => async (t) => {
   const words = (await t.p.locator('body').innerText()).split(/\s+/).length; t.ok(words >= minWords, words + ' words of real content');
   await t.links();
 };
+// what does not fit a phone screen inside a part of the page: the page scrolling sideways, an element past either edge (one word longer than the
+// screen is added to the first bar so the wrapping is tested, not assumed), and a button or select under 40 px tall to tap (2026-10-30)
+const phoneFit = (p, sel) => p.evaluate((s) => {
+  const w = innerWidth, root = document.querySelector(s); if (!root) return 'there is no ' + s;
+  const t0 = root.querySelector('.rp-t'); if (t0) t0.textContent += ' a-to-mind.com/rap/?topic=acatwhorunsthenightshiftandnevertakesabreak';
+  const name = (e) => e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className ? '.' + e.className.trim().split(/\s+/).join('.') : '');
+  const past = [...root.querySelectorAll('*')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > w + 1 || r.left < -1); }).map(name);
+  const small = [...root.querySelectorAll('button, select, a.rp-btn')].filter((e) => e.offsetParent && e.getBoundingClientRect().height < 40).map((e) => (e.textContent || e.id || name(e)).trim().slice(0, 24));
+  return [document.documentElement.scrollWidth > w + 1 ? 'the page scrolls sideways (' + document.documentElement.scrollWidth + ' px)' : '', past.length ? past.length + ' past the edge: ' + past.slice(0, 4).join(' ') : '', small.length ? 'under 40 px to tap: ' + small.slice(0, 4).join(', ') : ''].filter(Boolean).join('; ');
+}, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
   '/calculators/': async (t) => {
@@ -135,6 +145,59 @@ export const SPECS = {
   },
   // the file converter (onlineconverter.com assimilated, 2026-10-29): a search opens the tool, a real HTML file becomes plain text on the device,
   // the text file is checked word for word, and the share link opens the same tool with no file in it
+  // Verse Brain full screen (owner, 2026-10-30): the field fills the window at the device's pixel ratio between the bar and the numbers, which
+  // never cover it, a word told becomes an orb on it, the live numbers and what it says about itself are the brain's own, Good is heard, the
+  // panel and the numbers fold away, and a smaller window refits the field
+  '/brain/': async (t) => {
+    await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
+    const fit = () => t.p.evaluate(() => {
+      const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');
+      const top = document.querySelector('#bar').getBoundingClientRect().bottom, hud = live.hidden ? innerHeight : live.getBoundingClientRect().top;
+      const mv = document.querySelector('#mapView'), m = mv && !mv.hidden ? mv.getBoundingClientRect() : null, wide = innerWidth > 720; // the live map beside the field (a phone: above it)
+      return { w: Math.round(r.width), h: Math.round(r.height), top: Math.round(r.top), bottom: Math.round(r.bottom), left: Math.round(r.left), bar: Math.round(top), hud: Math.round(hud), mw: m && wide ? Math.round(m.width) : 0, mh: m && !wide ? Math.round(m.height) : 0, vw: innerWidth, vh: innerHeight, cw: c.width, ch: c.height, d, sw: document.documentElement.scrollWidth };
+    });
+    const docked = (f) => Math.abs(f.top - f.bar - f.mh) <= 2 && Math.abs(f.bottom - f.hud) <= 2 && Math.abs(f.left - f.mw) <= 2; // the field starts under the bar (and the map) and ends at the numbers: neither covers it
+    const side = await fit(), pw = await t.p.locator('#panel').evaluate((e) => e.getBoundingClientRect().width);
+    t.ok(side.mw > 200 && Math.abs(side.w + pw + side.mw - side.vw) <= 2 && Math.abs(side.cw - side.w * side.d) <= 2 && docked(side), 'with the map and the panel open the field fills the rest of the window, nothing over it or under the panel: ' + JSON.stringify(side));
+    await t.click('#panelBtn'); await t.p.waitForTimeout(400);
+    const a = await fit();
+    t.ok(Math.abs(a.w + a.mw - a.vw) <= 2 && docked(a) && Math.abs(a.cw - a.w * a.d) <= 2 && Math.abs(a.ch - a.h * a.d) <= 2 && a.sw <= a.vw, 'the field fills the window beside the map, between the bar and the numbers, drawn at the pixel ratio: ' + JSON.stringify(a));
+    // the map: organs light when they take a turn, the feed says what changed, and the box shows the path of a thought
+    await t.p.waitForTimeout(1500);
+    const lit = await t.p.evaluate(() => [...document.querySelectorAll('#map .organ')].filter((g) => +getComputedStyle(g).getPropertyValue('--lit') > 0).length);
+    const nodes = await t.p.locator('#map .organ').count();
+    t.ok(nodes >= 21 && lit >= 1, 'the map draws every organ and lights the ones that took a turn: ' + lit + ' of ' + nodes + ' lit');
+    t.ok(/thoughts a second/.test(await t.text('#mapCounts')), 'the map counts what the brain does: ' + (await t.text('#mapCounts')).slice(0, 80));
+    await t.fill('#mapWord', 'lighthouse storm'); await t.click('#mapAsk button'); await t.p.waitForTimeout(5200);
+    const feed = await t.text('#feed');
+    t.ok(/After you asked, in order/.test(feed) && /"lighthouse"/.test(feed), 'an ask shows the path of the thought in the feed: ' + feed.slice(0, 120));
+    t.ok(((await t.p.locator('#map .path').getAttribute('points')) || '').split(' ').length >= 2, 'and draws it on the map');
+    await t.click('#viewBtn'); await t.p.waitForTimeout(400);
+    const solo = await fit();
+    t.ok(solo.mw === 0 && Math.abs(solo.w - solo.vw) <= 2 && docked(solo), 'Tissue only gives the field the whole window: ' + JSON.stringify(solo));
+    await t.click('#viewBtn'); await t.p.waitForTimeout(400);
+    t.ok(await t.p.locator('#panel').evaluate((e) => e.hidden), 'the panel folds away');
+    await t.click('#numBtn'); await t.p.waitForTimeout(400);
+    const n = await fit();
+    t.ok(Math.abs(n.h - (n.vh - n.bar)) <= 2 && Math.abs(n.ch - n.h * n.d) <= 2, 'with the numbers hidden the field is all of the window under the bar: ' + JSON.stringify(n));
+    await t.click('#numBtn'); await t.click('#panelBtn'); await t.p.waitForTimeout(400);
+    await t.fill('.vb-word', 'ocean memory'); await t.click('.vb-tell'); await t.p.waitForTimeout(900);
+    const orbs = await t.p.evaluate(() => [...document.querySelectorAll('#field .vb-orb')].map((o) => o.textContent));
+    t.ok(orbs.some((x) => /ocean|memory/i.test(x)), 'a word told becomes an orb on the field: ' + JSON.stringify(orbs).slice(0, 90));
+    t.ok(/region \d+ of 12/.test(await t.text('#liveNow')) && /utility/.test(await t.text('#liveNow')), 'the live numbers show its focus and will: ' + (await t.text('#liveNow')).slice(0, 80));
+    const lines = await t.p.evaluate(() => [...document.querySelectorAll('#says li')].map((l) => l.textContent));
+    t.ok(lines.length >= 3 && /^Focus: region \d+ of 12/.test(lines[0]) && lines.some((l) => /^Genome /.test(l)), 'what it says about itself is listed: ' + lines.length + ' lines');
+    t.ok((await t.p.locator('.vb-organs tr').count()) >= 20, 'the organ table lists every organ');
+    await t.click('.vb-good'); t.ok(/Rewarded/.test(await t.waitText('.vb-said', /Rewarded/, 3000)), 'Good rewards the will');
+    await t.p.setViewportSize({ width: 390, height: 780 }); await t.p.waitForTimeout(500);
+    const b = await fit();
+    t.ok(Math.abs(b.w - 390) <= 2 && docked(b) && b.mh > 250 && b.h >= 120 && b.sw <= 390, 'a phone-sized window puts the map on top and the field under it, between the bar and the numbers, with no sideways scroll: ' + JSON.stringify(b));
+    await t.p.setViewportSize({ width: 1200, height: 900 }); await t.p.waitForTimeout(300);
+    // a link that asks it something (?t=, the common asks): answered from its own state on load
+    const p2 = await t.p.context().newPage(); await p2.goto(new URL('/brain/?t=' + encodeURIComponent('what are you doing?'), t.p.url()).href, { waitUntil: 'load' });
+    const ans = await p2.waitForFunction(() => { const e = document.querySelector('.vb-said'); return e && e.textContent.length > 20 && e.textContent; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+    t.ok(/\w/.test(ans) && !/Nothing it could hold/.test(ans), 'a ?t= link is answered on load: ' + String(ans).slice(0, 90)); await p2.close();
+  },
   '/converter/': async (t) => {
     t.ok(/106 tools: 21 on this page, \d+ on another Verse page, \d+ in part, \d+ not on Verse yet/.test(await t.text('#counts')), 'all 106 tools counted: ' + (await t.text('#counts')).slice(0, 80));
     await t.fill('#q', 'epub to txt'); await t.click('#find button[type=submit]'); await t.p.waitForTimeout(300);
@@ -152,6 +215,11 @@ export const SPECS = {
     await t.click('#connectlive'); await t.waitText('#livestatus', /Live:|did not answer|no distribution/, 15000);
     t.ok(/Live: Moo [\d.]+.*pass/.test(await t.text('#livestatus')), 'the live feed reads Moo\'s real CPAN Testers totals: ' + (await t.text('#livestatus')).slice(0, 90));
     await t.click('#exportjson'); t.ok(/"fail": 1/.test(await t.p.locator('body').innerText()), 'the export counts 1 fail');
+  },
+  '/emoji-combos/': async (t) => {
+    await t.fill('#q', 'cat'); await t.p.waitForTimeout(400); t.ok(/\d+ combos for cat/.test(await t.p.locator('main').innerText()), 'a search for cat lists cat combos');
+    await t.click('#results .combo button[data-act="collect"] >> nth=0'); await t.p.waitForTimeout(200); t.ok((await t.p.inputValue('#build')).length > 0, 'collect puts the combo in the box');
+    await t.share('#share');
   },
   '/emojis/': async (t) => { await t.fill('#q', 'heart'); await t.p.waitForTimeout(400); t.ok(/heart/i.test(await t.p.locator('main').innerText()), 'a search for heart lists hearts'); },
   '/fantasy/': async (t) => { await t.click('#example'); await t.p.waitForTimeout(500); t.ok((await t.text('#out')).length > 80 && !/Open or paste a sheet/.test(await t.text('#out')), 'the example sheet is read into a board'); await t.share('#share'); },
@@ -185,7 +253,17 @@ export const SPECS = {
     const got = await t.waitText('#rap', /verse 1[\s\S]*hook[\s\S]*verse 2/i, 60000); t.ok(/verse 1[\s\S]*hook[\s\S]*verse 2/i.test(got), 'a rap with two verses and a hook is written for the topic');
     t.ok(/\d+ bars in \d parts · \d+ of \d+ bars end on a rhyme/.test(await t.text('#rap')), 'the bars and rhymes are counted');
     await t.clickText('Rap it yourself'); await t.p.waitForTimeout(3500); t.ok((await t.p.locator('.rp-bar.on').count()) === 1, 'a bar lights up on its measure over the beat'); await t.clickText('Stop');
-    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1'); await t.share('#share');
+    await t.copies('button.rp-btn >> text="Copy the lyrics"', 'Verse 1');
+    // phone width (2026-10-30): at 375 px the rap and its controls stay on the screen and big enough to tap, a word longer than the screen included
+    await t.p.setViewportSize({ width: 375, height: 812 }); await t.p.waitForTimeout(300);
+    const narrow = await phoneFit(t.p, '#out'); t.ok(!narrow, 'at 375 px the rap fits the screen' + (narrow ? ': ' + narrow : ''));
+    await t.p.setViewportSize({ width: 1200, height: 900 }); await t.share('#share');
+    // the stage's rap card at phone width: asked on the chat, it is written, and its bars and buttons stay on the screen
+    await t.p.setViewportSize({ width: 375, height: 812 }); await t.p.goto(new URL('/', t.p.url()).href);
+    await t.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 25000 }).catch(() => {});
+    await t.fill('#input', 'rap about a cat who runs the night shift'); await t.p.keyboard.press('Enter');
+    const card = await t.p.waitForSelector('.rp-card .rp-bar', { timeout: 60000 }).then(() => true, () => false); t.ok(card, 'the stage writes a rap card for the ask at phone width');
+    if (card) { const s = await phoneFit(t.p, '.rp-card'); t.ok(!s, 'at 375 px the stage\'s rap card fits the screen' + (s ? ': ' + s : '')); }
   },
   // the scored drawing course (wheelroot.com assimilated, 2026-10-29): begin opens the first drill, a stroke drawn on the sheet is scored 0 to 100 on Done, and the drawing travels in a link
   '/learn-to-draw/': async (t) => {
@@ -214,6 +292,7 @@ export const SPECS = {
     await t.download('#download', /\.json$/i); await t.share('#share', async (p) => /Lee Park/.test(await p.locator('#profileout').innerText()));
   },
   '/image/': async (t) => { t.ok((await t.p.locator('#prompt').count()) === 1 && (await t.p.locator('#make').count()) === 1, 'the picture form is there (making one spends the owner\'s model, so it is not run here)'); },
+  '/video/': async (t) => { t.ok((await t.p.locator('#prompt').count()) === 1 && (await t.p.locator('#make').count()) === 1 && (await t.p.locator('#state').count()) === 1, 'the clip form and its on/off line are there (a clip spends credits, so none is made here)'); },
   '/markets/': async (t) => { await t.fill('#q', 'AAPL'); await t.click('#go'); const m = await t.waitText('main', /Apple Inc\.[\s\S]*?\d+\.\d\d|could not|not reach|unavailable|try again/i, 20000);
     t.ok(/Apple Inc\.[\s\S]{0,80}\d+\.\d\d/.test(m) && /as of/.test(m), 'AAPL has a live, dated price: ' + ((m.match(/Apple Inc\.[\s\S]{0,60}/) || [m.slice(0, 60)])[0]).replace(/\s+/g, ' ')); await t.share('#share'); },
   '/markets/caps/': async (t) => { await t.p.waitForTimeout(3000); t.ok(/Bitcoin|BTC/i.test(await t.p.locator('main').innerText()), 'the coin table lists Bitcoin'); },
@@ -241,6 +320,12 @@ export const SPECS = {
   '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/merge/': pdfMake, '/pdf/organize/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake, '/pdf/toolbox/': pdfMake,
   '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); }, '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
+  '/local/': async (t) => {
+    await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);
+    t.ok((await t.p.locator('#radio-list li').count()) > 0, 'Boston has real radio stations listed: ' + (await t.text('#radio-note')).slice(0, 90));
+    await t.click('#tab-tv'); await t.waitText('#tv-note', /stations broadcasting|No local TV/, 20000);
+    t.ok((await t.p.locator('#tv-list li').count()) > 0, 'Boston has local TV stations listed: ' + (await t.text('#tv-note')).slice(0, 90));
+  },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },
   '/random-user/': async (t) => { await t.click('#go'); await t.p.waitForTimeout(300); t.ok(/"results"/.test(await t.text('#out')), 'users made as JSON'); await t.download('#dl'); await t.share('#link'); },
@@ -249,6 +334,12 @@ export const SPECS = {
   '/scores/': async (t) => { await t.p.waitForTimeout(4000); t.ok(!/couldn.t|error|unavailable/i.test(await t.text('#out')), 'scores load: ' + (await t.text('#out')).slice(0, 60)); await t.share('#share'); },
   '/sports/': async (t) => { await t.clickText('Basketball'); await t.p.waitForTimeout(800); t.ok(/NBA|basketball/i.test(await t.text('#out')), 'basketball opens its leagues'); await t.share('#share'); },
   '/stopwatch/': async (t) => { await t.click('#swgo'); await t.p.waitForTimeout(1200); await t.click('#swgo'); t.ok(/0?0?:?0?1[.:]\d/.test(await t.p.locator('main').innerText()) || /1\.\d\d/.test(await t.p.locator('main').innerText()), 'about a second passes on the stopwatch'); await t.share('#link'); },
+  '/stl/': async (t) => { // the STL checker (asked by Verse): the built-in cube with a hole is found not watertight with its three open edges, the report copies and downloads, and the link reopens it
+    await t.click('#sHole'); const v = await t.waitText('#verdict', /watertight/i, 15000); t.ok(/^Not watertight: 3 open edges around 1 hole/.test(v), 'a cube with a hole: ' + v.slice(0, 60));
+    await t.click('#sCube'); t.ok(/^Watertight: ready for the slicer/.test(await t.waitText('#verdict', /ready/, 8000)), 'a closed cube is ready for the slicer');
+    await t.click('#sHole'); await t.waitText('#verdict', /Not watertight/, 8000); await t.copies('#copy', 'Open edges: 3'); await t.download('#dlTxt', /\.txt$/i); await t.download('#dlMend', /-mended\.stl$/i);
+    await t.share('#link', async (p2) => { await p2.waitForFunction(() => /Not watertight/.test(document.getElementById('verdict').textContent), null, { timeout: 8000 }); return true; });
+  },
   '/store/': async (t) => { await t.fill('#q', 'board'); await t.p.waitForTimeout(400); t.ok(/Big Board/i.test(await t.p.locator('main').innerText()), 'a store search finds The Big Board'); },
   '/time/': async (t) => {
     await t.fill('#d1', '2026-10-28'); await t.fill('#d2', '2026-11-27'); await t.p.waitForTimeout(200); t.ok(/^30 days \(4 weeks and 2 days\) · 22 weekdays/.test(await t.text('#dout')), 'Oct 28 to Nov 27 2026 is 30 days, 22 weekdays');
@@ -273,6 +364,22 @@ const LEDGER_FIX = [
   { number: 2, title: 'Login bug on the map page', html_url: 'https://github.com/test-owner/test-repo/issues/2', user: { login: 'bo', type: 'User' }, state: 'open', created_at: '2026-10-02T10:00:00Z', closed_at: null, updated_at: '2026-10-02T10:00:00Z', labels: [{ name: 'bug' }], comments: 1 },
   { number: 1, title: 'Add a dark theme', html_url: 'https://github.com/test-owner/test-repo/issues/1', user: { login: 'ana', type: 'User' }, state: 'closed', created_at: '2026-10-01T10:00:00Z', closed_at: '2026-10-05T10:00:00Z', updated_at: '2026-10-05T10:00:00Z', labels: [], comments: 0 },
 ];
+// /autopilot/: what Verse did on its own. The page's API is faked with a fixed record so the check reads exact values, and a dead source must say so
+const AUTOPILOT_FIX = { days: 1, read: new Date().toISOString(), sources: { commits: 'ok', deploys: 'ok', conductor: 'ok' }, ownCount: 2, merged: 5, complete: true, kinds: { fix: 1, measure: 1 }, deploys: 9,
+  own: [{ sha: 'a'.repeat(40), at: '2026-10-30T09:00:00Z', kind: 'fix', title: 'Verse fixes its sky skill', url: 'https://github.com/atomeam/void-loop/commit/' + 'a'.repeat(40) }, { sha: 'b'.repeat(40), at: '2026-10-30T08:00:00Z', kind: 'measure', title: 'Site test: new ground passed', url: 'https://github.com/atomeam/void-loop/commit/' + 'b'.repeat(40) }],
+  conductor: { updated: new Date().toISOString(), last24h: { started: 130, requeued: 4, probes: 15 }, byHour: Array.from({ length: 24 }, (_, i) => i % 5), held: 3, heldWhy: ["Verse's coder has used its free model calls until 00:00 UTC"], broken: 0 } };
+SPECS['/autopilot/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/autopilot', (r) => { const d = new URL(r.request().url()).searchParams.get('days'); return d === '7' ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ days: 7, read: new Date().toISOString(), sources: { commits: 'HTTP 403', deploys: 'HTTP 403', conductor: 'HTTP 403' } }) }) : r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AUTOPILOT_FIX) }); });
+  await t.p.route((u) => u.pathname === '/api/coder', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ model: '@cf/google/gemma-4-26b-a4b-it', hour: { used: 0, cap: 90 }, day: { used: 360, cap: 360 }, room: false, until: '2026-10-31T00:00:00.000Z' }) }));
+  await t.p.reload(); await t.waitText('#t-own', /2/, 10000);
+  t.ok((await t.text('#t-own')) === '2' && (await t.text('#t-deploys')) === '9' && (await t.text('#t-started')) === '130', 'the tiles read the record: 2 own changes, 9 deploys, 130 jobs started');
+  t.ok((await t.p.locator('#feed li').count()) === 2 && /Verse fixes its sky skill/.test(await t.text('#feed')), 'the feed lists the two commits Verse landed');
+  t.ok((await t.p.locator('#bars i').count()) === 24, 'one bar for each of the last 24 hours');
+  t.ok(/360 of 360/.test(await t.text('#coder')) && /holds coding jobs/.test(await t.text('#coder')), 'the coder panel says the budget is used up and the conductor holds jobs');
+  await t.click('[data-days="7"]'); await t.waitText('#feed', /did not answer/, 8000);
+  t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
+  t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first
@@ -385,7 +492,7 @@ export async function run({ base, only, jobs = 4, log = console.log }) {
       },
       links: async () => {
         const hrefs = [...new Set(await p.locator('main a[href^="/"], article a[href^="/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href').split('#')[0]).filter((h) => h && !h.startsWith('/api/'))))].slice(0, 12);
-        let dead = []; for (const h of hrefs) { const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
+        let dead = []; for (const h of hrefs) { if (origin !== LIVE && EXTRA.includes(h)) continue; /* a live-only route has no file here */ const res = await ctx.request.get(origin + h, { timeout: 15000 }).catch(() => null); if (!res || res.status() >= 400) dead.push(h); }
         ok(dead.length === 0, hrefs.length + ' same-site links resolve' + (dead.length ? ' (dead: ' + dead.join(', ') + ')' : ''));
       },
     };

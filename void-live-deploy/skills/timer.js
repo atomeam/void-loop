@@ -9,7 +9,6 @@
  * challenge draws with too.
  */
 
-import { record, readLog, writeLog, entryOf, rateWords } from '../lib/practice.js';
 const NUMBER_WORDS = {
   a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
   eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
@@ -230,6 +229,7 @@ function mount(th, stageApi) {
   // answer as that goal's success_rate and last_tested, and says how the goal is going
   const askMet = () => {
     if (!th.goal || th.answered || th.running || th.remaining > 0) return;
+    const practice = import('../lib/practice.js'); practice.catch(() => {}); // the practice log loads when a practice timer asks, not with the routing order (owner 2026-10-30)
     const box = document.createElement('div');
     box.className = 'practice-met';
     box.dataset.goal = th.goal;
@@ -240,10 +240,10 @@ function mount(th, stageApi) {
       const b = document.createElement('button');
       b.type = 'button'; b.textContent = label; b.dataset.met = met ? 'yes' : 'no';
       b.style.cssText = 'font:inherit;padding:2px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.3);background:transparent;color:inherit;cursor:pointer';
-      b.addEventListener('click', (e) => {
+      b.addEventListener('click', async (e) => {
         e.stopPropagation();
         let words = '';
-        try { const log = record(readLog(localStorage), th.goal, met); writeLog(localStorage, log); words = rateWords(entryOf(log, th.goal)); } catch (_) {}
+        try { const { record, readLog, writeLog, entryOf, rateWords } = await practice; const log = record(readLog(localStorage), th.goal, met); writeLog(localStorage, log); words = rateWords(entryOf(log, th.goal)); } catch (_) {}
         th.answered = met ? 'met' : 'not yet'; stageApi.save();
         box.textContent = words ? 'Logged: ' + words : 'Logged here only';
         stageApi.say('"' + th.goal + '": ' + (met ? 'met' : 'not yet') + (words ? ' · ' + words : ''));

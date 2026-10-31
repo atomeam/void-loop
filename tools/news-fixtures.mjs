@@ -16,7 +16,7 @@ export function fixtureFor(url) {
   if (u.host === 'feeds.npr.org') return rss([[STORY.quake[2], 'https://www.npr.org/c1', S, 9], ['Farmers brace for a dry summer ahead', 'https://www.npr.org/c2', S, 300]]);
   if (u.host === 'rss.dw.com') return rdf([['Germany opens its largest offshore wind farm', 'https://www.dw.com/en/d1', S, 40], ['Berlin museum returns artefacts to Nigeria', 'https://www.dw.com/en/d2', S, 120]]);
   if (u.host === 'www.aljazeera.com') return atom([['Ceasefire talks resume in Geneva this week', 'https://www.aljazeera.com/e1', S, 33], ['Ships queue as the canal reopens', 'https://www.aljazeera.com/e2', S, 75]]);
-  if (u.host === 'www.cbc.ca') return rss([['Hockey league announces a new expansion city', 'https://www.cbc.ca/f1', S, 61]]);
+  if (u.host === 'www.cbsnews.com') return rss([['Hockey league announces a new expansion city', 'https://www.cbsnews.com/f1', S, 61]]);
   if (u.host === 'www.france24.com') return '<html>not a feed</html>';
   throw new Error('fixture: no network for ' + u.host);
 }

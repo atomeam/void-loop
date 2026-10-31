@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 200; --energy: 0.3; --entropy: 0.5; }
+body { margin:0; background: hsl(var(--hue), 40%, 8%); color:#eee; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; }
+#stage { position:absolute; inset:0; z-index:2; pointer-events:none; }
+.thought { position:absolute; min-width:140px; max-width:220px; padding:8px 12px; background:rgba(0,0,0,0.55); border:1px solid hsla(var(--hue),80%,60%,0.6); border-radius:12px; pointer-events:auto; resize:both; overflow:auto; font-size:13px; line-height:1.3; transition: transform 0.4s ease, opacity 0.4s; box-shadow:0 4px 20px rgba(0,0,0,0.4); }
+.thought:focus { outline:2px solid hsl(var(--hue),80%,70%); }
+#chrome { position:fixed; bottom:12px; left:12px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:12px; pointer-events:auto; }
+button { margin:0 4px; padding:4px 10px; background:hsl(var(--hue),50%,30%); color:#fff; border:none; border-radius:6px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-local-attention-reason-morph-mind · Verse lab</title>
+<meta name="description" content="Local Attention Reason Morph Mind: a lightweight local AI agent maintains a rolling memory of spatial-interaction tokens (pointer bins, click events, microphone">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-local-attention-reason-morph-mind · Verse lab">
+<meta property="og:description" content="Local Attention Reason Morph Mind: a lightweight local AI agent maintains a rolling memory of spatial-interaction tokens (pointer bins, click events, microphone">
+<meta property="og:url" content="https://a-to-mind.com/lab/f470-webgpu-local-attention-reason-morph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f470-webgpu-local-attention-reason-morph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="stage"></div>
+<div id="chrome">
+  Attention Mind · Entropy <span id="ent">0.5</span> · Energy <span id="en">0.3</span>
+  <button id="seal">Seal</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-local-attention-reason-morph-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

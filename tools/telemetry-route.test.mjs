@@ -2,7 +2,7 @@
 // node --test tools/telemetry-route.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { telemetryOf, failuresOf, summaryOf, signalsOf } from '../void-live-deploy/lib/telemetry.js';
+import { telemetryOf, failuresOf, summaryOf, signalsOf, LINE_MAX } from '../void-live-deploy/lib/telemetry.js';
 import skill from '../void-live-deploy/skills/telemetry-route.js';
 
 const LOG = `Fixes so far:
@@ -27,10 +27,23 @@ test('questions, instructions and short lines are never taken', () => {
   assert.equal(telemetryOf('a '.repeat(200)), null, 'long but no evidence');
 });
 
-test('failuresOf drops lines that say nothing failed, caps at six and clips long lines', () => {
+test('failuresOf drops lines that say nothing failed, caps at six and shows each line whole, never cut with "..."', () => {
   assert.deepEqual(failuresOf('no failures here at all, everything is fine today\nNothing red and no conflicts in this one'), []);
   const many = Array.from({ length: 9 }, (_, i) => 'FAIL check number ' + i + ' ' + 'x'.repeat(130)).join('\n');
-  const f = failuresOf(many); assert.equal(f.length, 6); assert.ok(f.every((l) => l.length <= 110));
+  const f = failuresOf(many); assert.equal(f.length, 6); assert.ok(f.every((l) => l.endsWith('x'.repeat(130))), 'a 150-letter line is whole: ' + f[0]);
+  const long = failuresOf('FAIL check ' + 'word '.repeat(80));
+  assert.equal(long.length, 1); assert.ok(long[0].length <= LINE_MAX && /word$/.test(long[0]), 'past LINE_MAX it ends at a whole word: ' + long[0]);
+  for (const l of [...f, ...long]) assert.ok(!/(?:\.\.\.|\u2026)$/.test(l), 'no "..." at the end: ' + l);
+});
+
+// the 2026-10-30 card: Adam pasted a builder's progress list, and the card named 2 things as failing: "Claude's progress: ... Done: Self probes
+// routed and ..." (a list of done steps, cut at 107 letters) and "2005 merge conflict cleared" (a cleared conflict, its "#" stripped)
+test('a pasted progress list is no failure: done steps, a cleared conflict and a ticked line are left out, and a "#" stays', () => {
+  const paste = ["Claude\u2019s progress: What I want to become: self probes, MCP skills, card fixes Done: Self probes routed and covered by regression tests (#1999 merged) Done: Card fixes: no stray line, clear asks list, repo ask shown done (PR #2005) Done: Cut-off note fix merged (#1992) In progress: MCP: the browser suite timed out once and passed again on a re-run",
+    '#2005 merge conflict cleared (generated deps file)', '\u2713 #2005 merge conflict cleared', 'Merge conflicts resolved on #1998 and pushed.'].join('\n');
+  assert.deepEqual(failuresOf(paste), [], JSON.stringify(failuresOf(paste)));
+  assert.deepEqual(failuresOf('Claude\u2019s progress: Ship the card Done: Card heading fixed Not started: #2010 is red on main since the deploy'), ['#2010 is red on main since the deploy'], 'a step not started that names a failure stays');
+  assert.deepEqual(failuresOf('#2005 has a merge conflict in deps.json'), ['#2005 has a merge conflict in deps.json'], 'an open conflict stays, with its "#"');
 });
 
 test('the skill takes its example and leaves its near misses; the card escapes what it shows', () => {
@@ -58,7 +71,7 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   assert.ok(t && t.prs.includes('1090') && t.shas.includes('92189bd'), 'still read as a report');
   assert.equal(t.failures.length, 2, 'two real ones, not six: ' + JSON.stringify(t.failures));
   assert.deepEqual(failuresOf('the error garden grows a sprout for every red check of the suite; red checks grow in it by themselves'), [], '"red checks" as a name is not a state');
-  assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since 411: the proposal card check FAILS on every head'], 'a state line stays (clean() strips the #)');
+  assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since #411: the proposal card check FAILS on every head'], 'a state line stays, with its "#"');
 });
 
 test('a builder\'s own sentence behind a list marker, and a failure that passed on its own, are not still failing (2026-10-18 card)', () => {
@@ -125,6 +138,7 @@ test('a pasted status report is read back as what changed, what waits and the ne
   assert.deepEqual(statusReadOf(PASTED_STATUS), {
     changed: ["Verse's own job loop merged #1470 by itself.", 'It adds a /prizes/ row for crypto rewards and gambling, marked core.', 'The sprite sheet cleaner is live.'],
     waits: ["That thread didn't start.", 'A safety check blocked it because it would merge and deploy to the live site, and your message was only the screenshot.', "Nobody chose that, so it's worth a look.", "The fix for the will's coder is set to ship after the 8 PM run limit resets."],
+    blocked: [],
     next: 'If you want it, say so in words: promote the checked and tested skills, add edge caching for answers, build the STL checker, and deploy.',
   });
   const t = telemetryOf(PASTED_STATUS);
@@ -137,6 +151,31 @@ test('a pasted status report is read back as what changed, what waits and the ne
   assert.ok(!lines.some((l) => /broken|automation|troubleshoot/i.test(l)));
 });
 
+// The report the owner pasted into Verse on 2026-10-30, rebuilt from the card it made: a copied chat, with its ⏎ line marks, an old question
+// and the chat's own "Today 7:34 AM" stamp. The card filed the stamp and the question under "Changed", "Video is blocked" under "Waiting",
+// and still said "Nothing in it names a failure".
+export const PASTED_CHAT = "The image page on a-to-mind.com is live and now picks its model from Verse's own scores.\nA 5 second draft clip costs about 3 cents. ⏎ Should I build the video page once you add AI Gateway credits? ⏎ Today 7:34 AM ⏎ The video page is live at a-to-mind.com/video/.\nIt says \"video turns on when credits are added\".\nVerse runs a test every few hours and turns the page on by itself after the first real clip. ⏎ The clip link fix and the fix to Verse's code review are merged and live. ⏎ The one step left is yours: add AI Gateway credits in your Cloudflare account.\nI checked today's test pictures by eye. klein-4b scores best, and the test runs again every day. ⏎ Video is blocked.";
+
+test('a copied chat is read line by line: its stamps and old questions are dropped, and a thing that is blocked is shown as blocked (the 2026-10-30 card)', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const r = statusReadOf(PASTED_CHAT);
+  assert.ok(r);
+  assert.deepEqual(r.blocked, ['Video is blocked.']);
+  assert.equal(r.next, 'The one step left is yours: add AI Gateway credits in your Cloudflare account.');
+  assert.ok(r.changed.includes('The video page is live at a-to-mind.com/video/.'));
+  assert.ok(r.changed.includes("The clip link fix and the fix to Verse's code review are merged and live."));
+  const all = [...r.changed, ...r.waits, ...r.blocked, r.next].join('\n');
+  assert.doesNotMatch(all, /⏎|Today 7:34|\?/, 'no chat mark, stamp or question is read as a fact');
+  const lines = summaryOf(telemetryOf(PASTED_CHAT));
+  assert.ok(lines.includes('Blocked: Video is blocked.'));
+  assert.ok(lines.includes('1 thing is blocked, and nothing in it names a failure'));
+  assert.ok(!lines.some((l) => /^Nothing in it names a failure/.test(l)), 'the plain "nothing failing" line is not shown over a blocker');
+  // "a check blocked it" is still a wait, and a line that only starts like a day is not a stamp
+  assert.deepEqual(statusReadOf('The new header on the home page is live for everyone. A safety check blocked the deploy of the footer for now. Monitor: the menu fix shipped this morning. The footer is set to ship after the run limit resets tonight.'), {
+    changed: ['The new header on the home page is live for everyone.', 'Monitor: the menu fix shipped this morning.'],
+    waits: ['A safety check blocked the deploy of the footer for now.', 'The footer is set to ship after the run limit resets tonight.'], blocked: [], next: null });
+});
+
 test('a status read needs both a change and a wait, and never takes a complaint that something is broken', async () => {
   const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
   for (const t of [
@@ -145,4 +184,49 @@ test('a status read needs both a change and a wait, and never takes a complaint 
     'why did the deploy not start? It was merged an hour ago and it is still pending on the queue with nothing in the log at all, which is odd for this repo.',
     "That thread didn't start.",
   ]) assert.equal(statusReadOf(t), null, t.slice(0, 50));
+});
+
+// The report behind the card the owner pasted on 2026-10-30 (lines joined by ⏎, as a copied chat joins them). The card read its closing checks and a
+// time stamp back as "Changed:" lines, and said four were still failing over a main that had passed every shard: the noun "the red", a sentence on what
+// the suite does, and a red the report itself bounds in time.
+test('the 2026-10-30 report: closing checks and time stamps are not changes, and "the red", a suite rule and a bounded red are not failing', async () => {
+  const { statusReadOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const report = ['The walking cartoon fix (#1748) merged at 05:44Z.', 'I have no result yet. ⏎ Merging before test-and-deploy finished, as #1668 did, is by design.',
+    'The browser run is not finished. ⏎ Remainder: unverified ⏎ [HYGIENE CHECK] ⏎ Request names: the walking cartoon: clear it and throw it. ⏎ Change reaches: walker.js (the skill and the lib), plus the stage-cleared event in void.html and its 2 deploy copies. ⏎ Outside: none ⏎ Decision: keep ⏎ Today 2:15 AM ⏎ The walking cartoon passes in the real browser: all 6 walker checks are green on main.',
+    'The reviewer is right about the red. The copies check went red on main. The full suite runs on main and reverts a commit that fails it.',
+    'Main was red from about 05:44Z to 05:48Z because of my missed copy. #1764 is merged, so Verse\'s review now compares void.html with both deploy copies.',
+    'Automerge waits only for Verse\'s review. Commit 2fbc0ee8 and PR #1773 and #1337.'].join('\n');
+  const f = failuresOf(report);
+  assert.ok(!f.some((l) => /right about the red|reverts a commit|from about 05:44Z/.test(l)), JSON.stringify(f));
+  assert.ok(f.some((l) => /copies check went red on main/.test(l)), 'a red the report does not bound stays: ' + JSON.stringify(f));
+  const read = statusReadOf(report);
+  const said = [...read.changed, ...read.waits].join(' | ');
+  assert.ok(!/HYGIENE|Remainder|Decision|Outside|Request names|Change reaches|2:15 AM|⏎/.test(said), said);
+  assert.ok(read.waits.some((w) => /not finished/.test(w)) && read.waits.some((w) => /no result yet/.test(w)), said);
+  assert.ok(read.changed.some((c) => /#1748\) merged/.test(c)), said);
+  assert.match(summaryOf(telemetryOf(report)).pop(), /^It names 1 thing as failing$/);
+});
+
+// The report the owner pasted on 2026-10-30 at 16:19Z, cut at "The Versus jo" (lines joined by ⏎). Before #1978 Verse answered it with "I keep my keys
+// and settings locked away"; then the page read it as a broken automation ("Not found", "fix", "jobs"), because "is on automerge" and "gave back"
+// were not read as open, so it was no status report.
+export const REPORT_1030 = 'The "5 m c" fix is live. The card no longer labels 5 m/s as Mach and makes no notation claim. ⏎ "The 3 mile run" showed a new fault live: the card said Not found, because the model\'s refusal hid the exact conversion. The fix (#1775) is on automerge, and I will check the live card after it deploys. ⏎ Beam\'s log shows the rekey ran and the old key stopped. Beam also gave back 2 Versus jobs because it found no spec for them. ⏎ Today 2:35 AM ⏎ "the 3 mile run" is fixed and verified live. It now answers "3 miles is 4.83 km (4,828 m)." and no longer shows Not found (#1775, deployed). ⏎ The Versus jo';
+test('the 2026-10-30 16:19Z report is read as a report: what is live and verified, and what is still open', async () => {
+  const { statusReadOf, isStatusReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const { intentOf, isFixAsk, hasDetails } = await import('../void-live-deploy/lib/automation-fix.js');
+  assert.equal(isStatusReport(REPORT_1030), true);
+  assert.equal(intentOf(REPORT_1030).intent, 'report'); assert.equal(isFixAsk(REPORT_1030), false); assert.equal(hasDetails(REPORT_1030), false);
+  assert.deepEqual(statusReadOf(REPORT_1030), {
+    changed: ['The "5 m c" fix is live.', '"the 3 mile run" is fixed and verified live.', 'It now answers "3 miles is 4.83 km (4,828 m)." and no longer shows Not found (#1775, deployed).'],
+    // "#1775 is on automerge, and I will check the live card after it deploys" is closed by the later "(#1775, deployed)"
+    waits: ['Beam also gave back 2 Versus jobs because it found no spec for them.'],
+    blocked: [],
+    next: null,
+  });
+  // a wait no later line closes stays open
+  const open = REPORT_1030.replace(/ ⏎ Today 2:35 AM[\s\S]*$/, '');
+  assert.ok(statusReadOf(open).waits.includes('The fix (#1775) is on automerge.'), JSON.stringify(statusReadOf(open)));
+  const t = telemetryOf(REPORT_1030);
+  assert.equal(t.kind, 'status'); assert.deepEqual(t.failures, []);
+  assert.equal(skill.match(REPORT_1030.toLowerCase(), REPORT_1030), true);
 });
