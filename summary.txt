@@ -1,0 +1,24 @@
+fox | sdxl-lightning | 69 | 6847ms | 1024x1024 | the fox is standing rather than sitting and the legs are anatomically distorted
+fox | schnell | 98 | 2163ms | 1024x1024 | none
+fox | klein-4b | 100 | 7380ms | 1024x1024 | none
+hands | sdxl-lightning | 48.5 | 3768ms | 1024x1024 | deformed hands and missing steam
+hands | schnell | 64 | 2540ms | 1024x1024 | extra/melted fingers merging into the mug
+hands | klein-4b | 59.5 | 4629ms | 1024x1024 | extra fingers and merged hand anatomy
+sign | sdxl-lightning | 55.5 | 5697ms | 1024x1024 | garbled and misspelled text
+sign | schnell | 98 | 2382ms | 1024x1024 | none
+sign | klein-4b | 100 | 9591ms | 1024x1024 | none
+astronaut | sdxl-lightning | 89 | 14885ms | 1024x1024 | the horse's anatomy and legs are slightly warped
+astronaut | schnell | 82.5 | 2143ms | 1024x1024 | only one moon visible
+astronaut | klein-4b | 95.5 | 12199ms | 1024x1024 | minor anatomical stiffness in the horse's front legs
+anime | sdxl-lightning | 91 | 3463ms | 1024x1024 | slightly warped hand/fingers
+anime | schnell | 89 | 2353ms | 1024x1024 | slightly unnatural hand/finger positioning
+anime | klein-4b | 91 | 8269ms | 1024x1024 | garbled text on book cover
+still | sdxl-lightning | 73 | 3660ms | 1024x1024 | broken perspective and warped fruit shapes
+still | schnell | 89 | 2131ms | 1024x1024 | unnatural fruit textures and lighting inconsistencies
+still | klein-4b | 89 | 13500ms | 1024x1024 | slight distortion in the glass rim and fruit merging
+market | sdxl-lightning | 80 | 3524ms | 1024x1024 | distorted and illegible text on stalls
+market | schnell | 93.5 | 2457ms | 1024x1024 | slight blurring in distant background
+market | klein-4b | 93 | 11369ms | 1024x1024 | minor anatomical distortion in background figures
+robot | sdxl-lightning | 78 | 4296ms | 1024x1024 | missing watering can
+robot | schnell | 78 | 1801ms | 1024x1024 | missing watering can
+robot | klein-4b | 91 | 10512ms | 1024x1024 | slight blurring of the water stream and plant leaves
