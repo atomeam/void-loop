@@ -246,6 +246,12 @@
    "date": "2026-10-29",
    "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
    "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "word ladder skill: transform one word to another by changing one letter at a time",
+   "from": "new idea by growth agent; already on main"
   }
  ],
  "open": [
@@ -536,8 +542,60 @@
  },
  "commits": [
   {
+   "at": "2026-10-31T01:50:21Z",
+   "subject": "Tower gate: onlineconverter.com,docs and notes: anotepad.com,docs and notes: standardnotes.com measured against their live sites"
+  },
+  {
+   "at": "2026-10-31T01:35:31Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-31T01:22:00Z",
+   "subject": "Verse routes \"london to sydney flight\" to its flights skill the answer is not checked"
+  },
+  {
+   "at": "2026-10-31T01:21:15Z",
+   "subject": "Incident: the browser suite failed on 532b1cea (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T01:19:32Z",
+   "subject": "Incident: the browser suite failed on 980bd134 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T01:16:56Z",
+   "subject": "Incident: the browser suite failed on e9be83fe (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T01:11:59Z",
+   "subject": "Incident: the browser suite failed on d8e1c46b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T01:09:58Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-10-31T01:09:47Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-31T00:49:34Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-10-31T00:49:29Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-10-31T00:45:29Z",
+   "subject": "Verse loop: task, Queue job mvvmgn8m (heal: grow-self.yml): Repair grow-self.y"
+  },
+  {
    "at": "2026-10-31T00:44:01Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-31T00:42:34Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-10-31T00:40:58Z",
@@ -562,58 +620,6 @@
   {
    "at": "2026-10-31T00:28:43Z",
    "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-31T00:26:39Z",
-   "subject": "Incident: the browser suite failed on 13dc24ca (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-31T00:23:05Z",
-   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
-  },
-  {
-   "at": "2026-10-31T00:22:45Z",
-   "subject": "the card stops claiming reach it does not have, and the tower fact names the one aspect that is left"
-  },
-  {
-   "at": "2026-10-31T00:18:48Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
-  },
-  {
-   "at": "2026-10-31T00:13:38Z",
-   "subject": "Add rps skill: rock paper scissors game on stage"
-  },
-  {
-   "at": "2026-10-31T00:10:20Z",
-   "subject": "Tower gate: onlineconverter.com,calendar: proton.me,calendar: calendar.zoho.com measured against their live sites"
-  },
-  {
-   "at": "2026-10-31T00:08:42Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-31T00:08:10Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-31T00:07:38Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
-  },
-  {
-   "at": "2026-10-31T00:02:10Z",
-   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
-  },
-  {
-   "at": "2026-10-30T23:43:04Z",
-   "subject": "what Verse consumed reaches its brain, and an ended pull request settles its job — ported onto current main"
-  },
-  {
-   "at": "2026-10-30T23:06:27Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
-  },
-  {
-   "at": "2026-10-30T22:46:11Z",
-   "subject": "Incident: the browser suite failed on 66fbe322 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
@@ -856,7 +862,7 @@
    "emojicombos.com",
    "thunit.com"
   ],
-  "beaten": 1,
+  "beaten": 2,
   "total": 1269
  }
 }
