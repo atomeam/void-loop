@@ -1,5 +1,5 @@
 {
- "at": "2026-10-30T11:44:27.339Z",
+ "at": "2026-10-31T11:19:17.735Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -194,7 +194,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "Paris is the capital and largest city of France, with an estimated city population of 2.04"
    },
@@ -327,7 +327,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
    },
@@ -808,7 +808,7 @@
   {
    "ask": "how to bake bread",
    "ok": true,
-   "kind": "Skill — Words and the world",
+   "kind": "Skill — Body and mind",
    "title": "Rye bread",
    "theme": "",
    "photo": true,
