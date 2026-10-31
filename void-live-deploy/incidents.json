@@ -2,6 +2,36 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T07:30:52.930Z",
+   "sha": "f656d40bb8cf2ad1fae9460c2645013ef2cc34d5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41179043888",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "skills: every skill in index.json gets its own examples and none of its near misses (388 skills)",
+    "error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none"
+   ],
+   "touched": [
+    "docs/TAGTEAM.md",
+    "void-live-deploy/members/index.html",
+    "void-live-deploy/members/members.js",
+    "domains/conductor.json",
+    "findings/video-gen/2026-10-31T0614.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/void.growth.json"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-10-31T02:45:39.362Z",
    "sha": "df87efba897ec53786204670c165bb3c299194b9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41159346682",
@@ -975,30 +1005,6 @@
    "closedBy": "7ed8ce7b788eabb318fb600bbe1deae86f9bf15a",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40996034633",
    "minutes": 141
-  },
-  {
-   "at": "2026-10-30T00:51:50.499Z",
-   "sha": "58ac85bc3738f968f9e66a894989b577bfabcab5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
-   "suite": "browser suite on main",
-   "checks": [
-    "void asks batch 4: the growth velocity sparkline on the self card (asked by Verse): first in \"What got built\", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label \"N built this week · M today\"; a stage change redraws it from /api/reflect in place, at most once a minute"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/TAGTEAM.md",
-    "void-live-deploy/lib/tower.js"
-   ],
-   "shards": [
-    4
-   ],
-   "passed": [
-    4
-   ],
-   "closedAt": "2026-10-30T01:25:42.905Z",
-   "closedBy": "27c3e3ff6ccaf6a5a3e348abd3163b545e691206",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40983379923",
-   "minutes": 34
   }
  ]
 }
