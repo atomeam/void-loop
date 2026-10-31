@@ -2,6 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T15:59:53.443Z",
+   "sha": "33023614d882ce5e4bba8b45bfd57dcb6ca8aaa3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41215592857",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)",
+    "error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none"
+   ],
+   "touched": [
+    "void-live-deploy/skills/order/9102-palindrome",
+    "void-live-deploy/skills/palindrome.js",
+    "void-live-deploy/tower.evidence.json",
+    "void-live-deploy/tower.icons/colorcanon.com.png",
+    "void-live-deploy/tower.shots/color-canon.jpg"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-10-31T15:58:32.721Z",
    "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41215175408",
@@ -985,54 +1013,6 @@
    "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
    "minutes": 727
-  },
-  {
-   "at": "2026-10-30T08:21:32.007Z",
-   "sha": "69f381cca178df113fa066fced8f8e7427bb5f0e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/41022873385",
-   "suite": "browser suite on main",
-   "checks": [
-    "router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as \"skill missed: timer\"; the example vectors are embedded once, not per ask",
-    "router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)",
-    "router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most 300 ms",
-    "router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line's ledger",
-    "router: without both (no standing spend, nothing earned or all refunded, a \"no\" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: Gemma answers and \"would escalate\" is logged and counted",
-    "router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)",
-    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
-    "router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)",
-    "router: without D1 the answer still comes (the log is best effort)",
-    "photo resizer: a 1200x900 PNG becomes 3.5 x 2.5 cm at 200 dpi (276 x 197 px) under 12 KB, the JPEG download is that size and under the limit, the PDF download is a PDF, a 1 KB limit says plainly it cannot be met, and no request leaves the page",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
-   ],
-   "touched": [
-    ".github/workflows/studio-look.yml",
-    "docs/MAP.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "growth/entries/20261030T073921Z-claude-83d771ea.json",
-    "tools/openapi-check.mjs",
-    "tools/studio-look.mjs",
-    "tools/studio.test.mjs",
-    "void-live-deploy/functions/api/studio.js",
-    "void-live-deploy/lib/guard.js",
-    "void-live-deploy/lib/models.js",
-    "void-live-deploy/lib/studio.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/deps.json",
-    ".github/workflows/verify.yml"
-   ],
-   "shards": [
-    2,
-    4
-   ],
-   "passed": [
-    2,
-    4
-   ],
-   "closedAt": "2026-10-30T20:30:31.231Z",
-   "closedBy": "efc12324059d4a394ea1960257c804f35963ba0b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
-   "minutes": 729
   }
  ]
 }
