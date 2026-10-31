@@ -54,7 +54,7 @@ fetch('/api/catalog').then((r) => r.json()).then((c) => {
   if (v && v.price_cents) $('price').textContent = ' · $' + (v.price_cents / 100).toFixed(v.price_cents % 100 ? 2 : 0) + (v.recurrence === 'monthly' ? ' a month' : v.recurrence === 'yearly' ? ' a year' : '');
 }).catch(() => {});
 
-$('send').addEventListener('click', async () => {
+async function sendIdea() {
   const idea = $('idea').value.trim(), say = $('say');
   if (!idea) { say.textContent = 'Write your idea first.'; return; }
   $('send').disabled = true; say.textContent = 'Sending…';
@@ -63,6 +63,14 @@ $('send').addEventListener('click', async () => {
   if (r && r.ok && j && j.ok) { say.textContent = 'Sent. Verse will build it and list it under your ideas.'; $('idea').value = ''; }
   else say.textContent = (j && j.error) || 'It did not send; try again.';
   await load();
+}
+
+$('send').addEventListener('click', sendIdea);
+$('idea').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendIdea();
+  }
 });
 
 // the buyer pays in a new tab; when they come back here, the page reads the tier again (the ping lands within seconds)
