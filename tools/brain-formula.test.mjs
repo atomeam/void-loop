@@ -48,10 +48,10 @@ test('on changes it had not seen it beats "nothing changes", and evolution beats
   assert.ok(mean(diffs) > 0, 'mean ' + diffs.map((d) => d.toFixed(3)).join(' '));
 });
 
-test('it runs in the brain as one of twenty-two organs: it evolves, feeds the tissue, is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-three organs: it evolves, feeds the tissue, is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 1400; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('formula') && B.ORGAN_IDS.length === 22);
+  assert.ok(B.ORGAN_IDS.includes('formula') && B.ORGAN_IDS.length === 23);
   assert.ok(b.formula.gen > 30 && b.runs.formula > 30, 'gen ' + b.formula.gen + ' runs ' + b.runs.formula);
   assert.ok(b.formula.fed > 0, 'it fed the tissue where it expected new life');
   assert.ok(b.board.formula && /^life next = life now [+-] /.test(b.board.formula.text), JSON.stringify(b.board.formula));
