@@ -73,7 +73,10 @@
   <section id="lab" hidden>
     <h2>Send an idea</h2>
     <div class="panel">
-      <label for="idea" class="muted">What should Verse add, and where?</label>
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <label for="idea" class="muted">What should Verse add, and where?</label>
+        <span class="muted" style="font-size: 12px; opacity: 0.7;">Press Enter to send</span>
+      </div>
       <textarea id="idea" maxlength="1200" placeholder="Add a dark star chart to the night sky page that shows which planets are up tonight."></textarea>
       <button id="send" type="button">Send to Verse</button>
       <p id="say" aria-live="polite"></p>
