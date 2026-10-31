@@ -407,9 +407,10 @@
    "title": "Commumity DNS - Anycast Leaders"
   },
   "syncsketch.dev": {
-   "at": "2026-10-31T08:46:55Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-10-31T15:55:35Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a specialized visual collaboration and media review platform for creative professionals (animation, VFX, gaming) that includes real-time)",
+   "title": "SyncSketch"
   },
   "speedtest.ru": {
    "at": "2026-10-31T08:47:03Z",
@@ -428,6 +429,47 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is an e-commerce portal for automotive wheels. Verse does not have a page for a shop or a service that sells physical products.)",
    "title": "wheeloutlet.com - Select your country & onlineshop"
+  },
+  "hexen.ai": {
+   "at": "2026-10-31T15:55:43Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service provider offering custom AI development, consulting, and infrastructure solutions. Verse is a collection of individual utility tools)",
+   "title": "Hexen"
+  },
+  "fakemailgenerator.com": {
+   "at": "2026-10-31T15:55:48Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Fake Mail Generator - Free temporary email addresses"
+  },
+  "opentimestamps.org": {
+   "at": "2026-10-31T15:55:52Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "OpenTimestamps"
+  },
+  "searchexpertfind.com": {
+   "at": "2026-10-31T15:55:52Z",
+   "outcome": "walled",
+   "why": "robots.txt asks robots not to read it"
+  },
+  "sketch.io": {
+   "at": "2026-10-31T15:55:57Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Sketch.IO - The Maker of Sketchpad"
+  },
+  "gmgcolor.com": {
+   "at": "2026-10-31T15:56:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial enterprise providing professional color management and proofing software for the printing industry. Verse does not have a tool for)",
+   "title": "GMG Color - Color Management Software & Proofing Solution"
+  },
+  "convertcart.com": {
+   "at": "2026-10-31T15:56:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides professional B2B e-commerce growth, CRO, and email marketing services. Verse is a collection of individual utility tools for end-users)",
+   "title": "eCommerce Growth Platform and Consulting | Convertcart"
   }
  },
  "runs": [
