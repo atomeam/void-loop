@@ -96,7 +96,7 @@ export async function onRequestPost({ request, env }) {
   let queued = null, skipped = [];
   // the guard on the build loop (lib/will-guard.js): a want whose earlier jobs were set aside or failed twice in 14 days waits, and the next want is queued;
   // a history that cannot be read means no guard, never no will
-  let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
+  let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed','declined','deferred') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
   // churn caps (lib/churn.js): a want whose reason names a file changed more than 12 times in 7 days waits; the list is /churn.json, written by the deploy
   // from git. A list that cannot be read, or is older than the window, means no churn cap, never no will.
   let hot = []; if (!open) { try { hot = hotOf(await (await env.ASSETS.fetch(new Request(new URL('/churn.json', request.url)))).json(), Date.parse(at)); } catch (_) { hot = []; } }

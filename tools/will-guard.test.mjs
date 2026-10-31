@@ -2,7 +2,7 @@
 // Run: node --test tools/will-guard.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { slug, targetOf, triesOf, pickWant, skippedNote, sinceOf, MAX_TRIES, WINDOW_DAYS } from '../void-live-deploy/lib/will-guard.js';
+import { slug, targetOf, triesOf, pickWant, skippedNote, sinceOf, MAX_TRIES, WINDOW_DAYS, TERMINAL, outcomeOf } from '../void-live-deploy/lib/will-guard.js';
 import { coveredByBuilt } from '../void-live-deploy/lib/will-guard.js';
 
 const row = (title, state) => ({ target: targetOf(title), state });
@@ -37,7 +37,7 @@ test('the first want that has tries left is picked; wants above it are named as 
 
 test('the note says how many wants waited and why; the window is 14 days back from now', () => {
   assert.equal(skippedNote([]), '');
-  assert.match(skippedNote([{ title: 'a', tries: 2 }]), / · 1 want above it waits: its jobs were set aside or failed 2 times in 14 days$/);
+  assert.match(skippedNote([{ title: 'a', tries: 2 }]), / · 1 want above it waits: its jobs ended without shipping 2 times in 14 days$/);
   assert.match(skippedNote([{ title: 'a' }, { title: 'b' }]), /2 wants above it waits/);
   const now = Date.parse('2026-10-18T12:00:00Z');
   assert.equal(WINDOW_DAYS, 14);
@@ -68,4 +68,20 @@ test('coveredByBuilt: a want for an ask already linked as built is dropped; one 
   assert.equal(coveredByBuilt('learn to handle "self"', built), false);
   assert.equal(coveredByBuilt('teach my look skill "open the self card"', []), false);
   assert.equal(coveredByBuilt('Absorb and connect every repo', built), false);
+});
+
+test('an ended pull request is a state the guard counts, and one pull request is one try (owner, 2026-10-30)', () => {
+  assert.deepEqual(TERMINAL, ['set aside', 'failed', 'declined', 'deferred']);
+  // the outcome hook writes these two; the guard must count both, or an abandoned PR comes back on top for ever
+  assert.equal(outcomeOf({ merged: true }), 'live');
+  assert.equal(outcomeOf({ merged: false, closed: true }), 'declined');
+  assert.equal(outcomeOf({ merged: false, closed: false }), null, 'an open pull request has not ended');
+  assert.equal(outcomeOf({}), null);
+  const rows = [{ target: targetOf('Tides'), state: 'declined' }, { target: targetOf('Tides'), state: 'deferred' }];
+  assert.equal(triesOf(rows, 'Tides'), 2, 'both endings count');
+  // one row is one job: a PR that failed and was then closed moved the same row, so it is one try, not two
+  const one = [{ target: targetOf('Tides'), state: 'declined' }];
+  assert.equal(triesOf(one, 'Tides'), 1);
+  assert.deepEqual(pickWant([{ title: 'Tides' }, { title: 'Moons' }], [...one, ...one]),
+    { want: { title: 'Moons' }, skipped: [{ title: 'Tides', tries: 2 }] });
 });

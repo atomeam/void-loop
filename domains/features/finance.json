@@ -252,7 +252,7 @@
  ],
  "first_page": "Markets page /markets/ for people who check prices and want no ads. First: \"aapl\" or \"markets\" opens a quote (price, change, ranges, volume) with a 1D-5Y chart, crypto from the existing /api/markets beside stocks, a watchlist kept on the device, and a link that holds the symbol list. Will not build: portfolios, brokerage links, screeners, options, advice or anything that trades.",
  "auto": {
-  "scanned": "2026-10-26",
+  "scanned": "2026-10-30",
   "sites": {
    "stockq.org": {
     "url": "https://www.stockq.org/",
@@ -1887,6 +1887,123 @@
       "verse_evidence": "/markets/?s=AAPL&r=5y&on=2024-12-31 shows \"financial\"; not \"sixm\""
      }
     ]
+   },
+   "getconverter.org": {
+    "url": "https://getconverter.org/",
+    "scanned": "2026-10-30",
+    "pages": [
+     "https://getconverter.org/en",
+     "https://getconverter.org/en/android/neo",
+     "https://getconverter.org/en/android/classic"
+    ],
+    "method": "model",
+    "features": [
+     {
+      "name": "Offline currency conversion",
+      "detail": "The converter works without internet.",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"offline\", \"currency\"; not \"conversion\""
+     },
+     {
+      "name": "Global currency support",
+      "detail": "The app features currencies of all 195 countries.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"currency\"; not \"global\", \"support\""
+     },
+     {
+      "name": "Search for currencies",
+      "detail": "To find out which currency is used in a country, enter its name in the search.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"currency\"; not \"search\""
+     },
+     {
+      "name": "Accurate exchange rates",
+      "detail": "The app gets exchange rates from our server.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"rate\"; not \"accurate\", \"exchange\""
+     },
+     {
+      "name": "Cryptocurrency conversion",
+      "detail": "The app includes the top 20 cryptocurrencies by CoinMarketCap ranking.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows none of its words; not \"cryptocurrency\", \"conversion\""
+     },
+     {
+      "name": "Built-in calculator",
+      "detail": "The converter has a built-in calculator.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"calculator\"; not \"built\""
+     },
+     {
+      "name": "Custom exchange rate",
+      "detail": "If you're not satisfied with the rate in the app, set your own.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"rate\"; not \"custom\", \"exchange\""
+     },
+     {
+      "name": "Home screen widget",
+      "detail": "The widget shows exchange rates on the home screen.",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"screen\"; not \"home\", \"widget\""
+     },
+     {
+      "name": "Disable ads",
+      "detail": "You can turn it off completely for $5 a year.",
+      "paid": true,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"ads\"; not \"disable\""
+     },
+     {
+      "name": "Classic app design",
+      "detail": "Classic — with two currencies on the main screen.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows none of its words; not \"classic\", \"design\""
+     },
+     {
+      "name": "Neo app design",
+      "detail": "Neo — with five and a more modern design.",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows none of its words; not \"neo\", \"design\""
+     },
+     {
+      "name": "Add favorite currencies",
+      "detail": "How do I add a currency to favorites and pin it to the top of the list?",
+      "paid": false,
+      "verse": "has",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"add\", \"currency\"; not \"favorite\""
+     },
+     {
+      "name": "Reorder favorite currencies",
+      "detail": "How do I change the order of favorite currencies?",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"currency\"; not \"reorder\", \"favorite\""
+     },
+     {
+      "name": "Turn off key sounds",
+      "detail": "How do I turn off key sounds?",
+      "paid": false,
+      "verse": "partial",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows \"off\", \"key\"; not \"turn\", \"sound\""
+     },
+     {
+      "name": "Adjust decimal places",
+      "detail": "How do I add more decimal places?",
+      "paid": false,
+      "verse": "missing",
+      "verse_evidence": "/markets/?s=SPX&r=5y&on=2024-12-31 shows none of its words; not \"adjust\", \"decimal\", \"place\""
+     }
+    ]
    }
   },
   "gaps": [
@@ -2590,6 +2707,30 @@
     "name": "SIXY Discretionary",
     "sites": [
      "google.com"
+    ]
+   },
+   {
+    "name": "Cryptocurrency conversion",
+    "sites": [
+     "getconverter.org"
+    ]
+   },
+   {
+    "name": "Classic app design",
+    "sites": [
+     "getconverter.org"
+    ]
+   },
+   {
+    "name": "Neo app design",
+    "sites": [
+     "getconverter.org"
+    ]
+   },
+   {
+    "name": "Adjust decimal places",
+    "sites": [
+     "getconverter.org"
     ]
    }
   ],
