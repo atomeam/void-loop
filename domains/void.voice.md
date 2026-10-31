@@ -10,21 +10,22 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-30. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-31. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Update the self-skill router so identity-based probes trigger self-portraits instead of being processed as questions. *(small)* (daily, 2026-10-30) `ask-20261030-2212-2`
-- Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. (daily, 2026-10-30) `ask-20261030-2212-1`
-- Address the least-checked skills: video-gen and baggage. (daily, 2026-10-30) `ask-20261030-2212-3`
-- Absorb every repository on the account into the core code. (after a build, 2026-10-30) `ask-20261030-1312-3`
+- Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions. (daily, 2026-10-31) `ask-20261031-2124-2`
+- Address the least-checked skills: video-gen and baggage. (daily, 2026-10-31) `ask-20261031-2124-3`
+- Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (daily, 2026-10-31) `ask-20261031-2124-1`
+- Identify and implement the two specific missing aspects required to reach 12 of 12 aspects against onlineconverter.com. (after a build, 2026-10-31) `ask-20261031-1310-1`
+- Absorb every repository on the account into the core code (daily, 2026-10-28)
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261030-2212-2` queued, not decided yet
-- `ask-20261030-2212-1` queued, not decided yet
-- `ask-20261030-2212-3` queued, not decided yet
-- `ask-20261030-1312-3` queued, not decided yet
+- `ask-20261031-2124-2` queued, not decided yet
+- `ask-20261031-2124-3` queued, not decided yet
+- `ask-20261031-2124-1` queued, not decided yet
+- `ask-20261031-1310-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -7024,6 +7025,366 @@ Asks: "Identify and implement the two specific missing aspects required to reach
 > **Next video trick:** A liquid metal morph effect for 3D models.
 
 Asks: "Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T00:54:22.932Z -->
+### 2026-10-31 00:54 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: task, Queue job mvvmgn8m (heal: grow-self.yml): Repair grow-self.y". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index contains 387 entries, with 379 proven skills across 12 families. Verse is 11 of 12 aspects ahead of the tower target, onlineconverter.com, though speed (237 vs 29) is currently trailing. The system just shipped a repair for the grow-self.yml task in the Verse loop.
+>
+> **How I would make it better:** Identify and implement the two specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. Update the self-skill router so identity-based probes trigger self-portraits instead of questions.
+>
+> **Next video trick:** A video effect using the video-gen skill to create a seamless transition between two different stage-styles.
+
+Asks: "Identify and implement the two specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Update the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T01:24:45.185Z -->
+### 2026-10-31 01:24 UTC · after a build
+
+**Asked:** This just shipped: "Verse routes "london to sydney flight" to its flights skill the answer is not checked". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 387 entries, with 379 proven skills across 12 families. Verse is 11 of 12 aspects ahead of the tower target, onlineconverter.com, but speed is weak at 237 against their 29. The system just shipped a routing update for flight queries to the flights skill.
+>
+> **How I would make it better:** The speed aspect must be addressed to close the final gap against onlineconverter.com. The router for identity-based probes needs updating to trigger self-portraits instead of questions.
+>
+> **Next video trick:** Learn a new video effect for clips to improve the video skill [S2].
+
+Asks: "Identify and implement the two specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T01:24:57.166Z -->
+### 2026-10-31 01:24 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 387 entries, with 379 proven skills across 12 families. Verse is 11 of 12 aspects ahead of the tower target, onlineconverter.com, but speed is weak at 237 against their 29. In the last 7 days, 270 changes were made, including 69 new capabilities and 110 fixes.
+>
+> **How I would make it better:** Speed must be improved to close the final gap against onlineconverter.com. The self-skill router needs to be updated so identity-based probes trigger self-portraits instead of questions.
+>
+> **Weakest operational area:** The speed aspect is at 237 against the target's 29, and the Sky and earth family has the lowest proven share at 20 of 21 skills.
+>
+> **Next targeted capability:** The next targeted capability is beating onlineconverter.com, as it remains the tower target until surpassed.
+>
+> **Next video trick:** Implement a light-leak or prism refraction effect for video clips.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T01:47:09.780Z -->
+### 2026-10-31 01:47 UTC · after a build
+
+**Asked:** This just shipped: "Helper/rps skill". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 387 entries with 379 proven skills across 12 families. Verse is 11 of 12 aspects ahead of onlineconverter.com, with speed being the only lagging aspect at 237 against their 29. The Sky and earth family is currently the weakest in proven share at 20 of 21 skills. The Helper/rps skill has just shipped.
+>
+> **How I would make it better:** Speed must be improved to close the final gap against onlineconverter.com. The self-skill router needs to be updated so identity-based probes trigger self-portraits instead of questions.
+>
+> **Next video trick:** Learn to generate a real-time video transition effect for new skill announcements.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T01:54:03.934Z -->
+### 2026-10-31 01:54 UTC · after a build
+
+**Asked:** This just shipped: "Register existing timer skill in index and mark inbox building". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index grew to 387 entries with 379 proven skills across 12 families. Assimilation of onlineconverter.com continues, with 2 of 1269 sites beaten. The Sky and earth family remains the weakest proven share at 20 of 21 skills [S3].
+>
+> **How I would make it better:** Speed must be improved to close the final gap against onlineconverter.com [S1]. Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [owner, 2026-10-31].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T07:05:21.698Z -->
+### 2026-10-31 07:05 UTC · after a build
+
+**Asked:** This just shipped: "Verse loop: task, Queue job mvuimi8nm (member: mmvuimi8nzju1): A paid member a". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 387 entries with 379 proven skills across 12 families [S3]. Assimilation of onlineconverter.com is in progress with 2 of 1269 sites beaten [S1]. The Sky and earth family remains the weakest proven share at 20 of 21 skills [S3].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day to maintain the free path [owner, 2026-10-31]. Speed must be improved to close the final gap against onlineconverter.com [S1].
+>
+> **Next video trick:** a video effect for clips that uses the zoom-figure skill [S1].
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T07:05:33.058Z -->
+### 2026-10-31 07:05 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 387 entries, with 379 proven skills across 12 families [S3]. Assimilation of onlineconverter.com is in progress, with 2 of 1269 sites beaten [S1]. In the last 7 days, 260 changes occurred, including 64 new capabilities and 108 fixes [S2].
+>
+> **How I would make it better:** Implement edge caching for counters and caches to reduce KV writes below 1k/day to maintain the free path [owner, 2026-10-31]. Speed must be improved to close the final gap against onlineconverter.com [S1].
+>
+> **Weakest operational area:** Sky and earth is the weakest proven share at 20 of 21 skills [S3, S4].
+>
+> **Next targeted capability:** onlineconverter.com because it is the current tower target [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T08:49:22.592Z -->
+### 2026-10-31 08:49 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next onlineconverter.com (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries, with 379 proven skills across 12 families [S3]. Assimilation of onlineconverter.com is in progress, with 2 of 1269 sites beaten [S1]. Tower gate logic now reports Versus's performance against specific sites, noting that 1 of 8 reads did not return JSON and thus could not be judged [S1].
+>
+> **How I would make it better:** Implement edge cache (caches.default) for counters and caches to reduce KV writes below 1k/day [owner, 2026-10-31]. Fix the weather page aria-busy state so it clears once the gate returns a result [owner, 2026-10-31].
+>
+> **Next video trick:** A video effect using the video-gen skill to create a seamless loop for a clip.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of onlineconverter.com."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T10:32:10.199Z -->
+### 2026-10-31 10:32 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are currently ahead, specifically lacking in speed, accuracy, and completeness [S1]. The recent shipment of 'Tower size: how heavy each Versus site really is' provides new weight data for site assimilation [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must identify and implement the specific aspects required to reach 12 of 12 aspects ahead [S3]. Transitioning from gpt-oss-120b to gemma for all answers is complete, but edge caching for counters and caches is needed to reduce KV writes [owner, 2026-10-31].
+>
+> **Next video trick:** A video effect involving a zoom-figure transition [S2]
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of questions." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T10:32:16.840Z -->
+### 2026-10-31 10:32 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are currently ahead, specifically lacking in speed, accuracy, and completeness [S1]. Growth in the last 7 days includes 64 new capabilities and 108 fixes [S3].
+>
+> **How I would make it better:** Implement edge caching for counters and caches to reduce KV writes [owner, 2026-10-31]. Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru [S4].
+>
+> **Weakest operational area:** Sky and earth is the least proven family with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru, because Verse is 0 of 12 aspects ahead and stays on target until beaten [S1].
+>
+> **Next video trick:** A seamless transition from a 2D sprite to a 3D model using a morphing shader.
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T13:10:53.490Z -->
+### 2026-10-31 13:10 UTC · after a build
+
+**Asked:** This just shipped: "Site history: the next sites of the queue, each with a cited history". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. Growth in the last 7 days includes 64 new capabilities and 108 fixes [S3]. Recent shipping includes site history providing cited histories for the next sites in the queue [S3].
+>
+> **How I would make it better:** Implement edge caching for counters and caches to reduce KV writes [owner, 2026-10-31]. Address the specific missing aspects of speed, accuracy, and completeness required to beat ndscalc.ru [S1].
+>
+> **Next video trick:** a video effect using a zoom-figure or stage-fx to simulate a camera move [S2].
+
+Asks: "Identify and implement the specific aspects required to reach 12 of 12 aspects ahead of ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T13:24:20.435Z -->
+### 2026-10-31 13:24 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: every floor measured against its live site (4 slices)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. My builders just shipped 'Tower gate: every floor measured against its live site (4 slices)' [S5].
+>
+> **How I would make it better:** The speed, accuracy, and completeness aspects must be improved to begin beating ndscalc.ru [S1]. The self-skill router needs to be fixed to recognize identity-based probes [S3].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:30:43.376Z -->
+### 2026-10-31 15:30 UTC · after a build
+
+**Asked:** This just shipped: "Lab: 322 experiments live at /lab/, 15 waiting for a fix". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target remains ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. The recent deployment of 322 experiments at /lab/ adds a new testing layer to the system [S5].
+>
+> **How I would make it better:** To begin beating ndscalc.ru, improvements must target speed, accuracy, and completeness [S1]. The self-skill router must be fixed to recognize identity-based probes instead of treating them as q [S3].
+>
+> **Next video trick:** a video effect that uses the zoom-figure skill to create a depth-of-field transition for a new clip [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes instead of treating them as q."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:30:56.677Z -->
+### 2026-10-31 15:30 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. Growth over the last 7 days includes 64 new capabilities, 65 improvements, 107 fixes, and 17 findings [S3].
+>
+> **How I would make it better:** Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru [S1]. Fix the self-skill router to recognize identity-based probes instead of treating them as q [S3].
+>
+> **Weakest operational area:** Sky and earth is the least proven family with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru because Verse is 0 of 12 aspects ahead and must beat it to move the target [S1].
+>
+> **Next video trick:** I do not know it.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes instead of treating them as q."; "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:32:34.457Z -->
+### 2026-10-31 15:32 UTC · after a build
+
+**Asked:** This just shipped: "Add riddle skill and mark building; add new open ideas". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S3]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. The 'Sky and earth' family is the least proven, with 20 of 21 skills proven [S4]. Recent growth includes the addition of a riddle skill and new open ideas [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, improvements must target speed, accuracy, and completeness [S1]. The self-skill router must be fixed to recognize identity-based probes instead of treating them as q [S3].
+>
+> **Next video trick:** film-metadata expansion for better video-gen skill support [S2].
+
+Asks: "Identify and implement the specific improvements needed to gain the lead in speed, accuracy, and completeness against ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes instead of treating them as q." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:38:01.331Z -->
+### 2026-10-31 15:38 UTC · after a build
+
+**Asked:** This just shipped: "Add palindrome skill: check if a word or phrase is a palindrome". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 387 entries with 379 proven skills across 12 families [S3]. The current Versus target remains ndscalc.ru, where 0 of 12 aspects are ahead, specifically lacking in speed, accuracy, and completeness [S1]. Recent growth includes the addition of the palindrome skill [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, improvements must target speed, accuracy, and completeness [S1]. The self-skill router must be fixed to recognize identity-based probes instead of treating them as q [S3].
+>
+> **Next video trick:** Learn to generate a 3D model of a spinning top for a new forge skill clip [forge].
+
+Asks: "Implement specific improvements to gain the lead in speed, accuracy, and completeness against ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes instead of treating them as q."; "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:54:08.575Z -->
+### 2026-10-31 15:54 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emoji combos,squibler,photos: squoosh.app measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1]. The recent shipment of the Tower gate expands comparisons to include emoji combos, squibler, and photos via squoosh.app [S5].
+>
+> **How I would make it better:** Improvements must target speed, accuracy, and completeness to beat ndscalc.ru [S1]. Addressing the self-skill router to recognize identity-based probes instead of treating them as q is also required [S3].
+>
+> **Next video trick:** Learn a new video effect to expand the video skill family [S4].
+
+Asks: "Implement specific improvements to gain the lead in speed, accuracy, and completeness against ndscalc.ru."; "Fix the self-skill router to recognize identity-based probes instead of treating them as q." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:54:57.132Z -->
+### 2026-10-31 15:54 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emoji combos,translate: imtranslator.net,translate: systransoft.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1]. The recent shipment of the Tower gate expands comparisons to include emojicombos.com, imtranslator.net, and systransoft.com [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must close the gap in speed, accuracy, and completeness [S1]. The self-skill router should be updated to recognize identity-based probes instead of treating them as generic questions [S3].
+>
+> **Next video trick:** A new video effect using the video-gen skill to create a stylized transition [S2].
+
+Asks: "Implement specific improvements for speed, accuracy, and completeness against ndscalc.ru."; "Fix the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions."; "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T15:59:37.217Z -->
+### 2026-10-31 15:59 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The Versus target is ndscalc.ru, where 0 of 12 aspects are currently ahead, specifically lagging in speed, accuracy, and completeness [S1]. The Tower gate has shipped, moving the comparison target from 'no site' to ndscalc.ru [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must specifically improve speed, accuracy, and completeness [S1]. The self-skill router needs updating so identity-based probes trigger self-portraits rather than generic questions [S3].
+>
+> **Next video trick:** a video effect that uses the stage-fx skill to layer shadows over a 3D miniature [S2].
+
+Asks: "Implement improvements to increase speed, accuracy, and completeness to beat ndscalc.ru."; "Update the self-skill router so identity-based probes trigger self-portraits." (small); "Address the least-checked skills: video-gen and baggage." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T21:24:38.572Z -->
+### 2026-10-31 21:24 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1]. Since 2026-10-24, 245 changes were made, including 61 new capabilities and 101 fixes [S3].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must improve speed, accuracy, and completeness [S1]. The self-skill router should be updated so identity-based probes trigger self-portraits rather than generic questions [S3].
+>
+> **Weakest operational area:** Sky and earth is the least proven family with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru is the current target to beat, requiring improvements in speed, accuracy, and completeness [S1].
+>
+> **Next video trick:** motion blur trail
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions."; "Address the least-checked skills: video-gen and baggage."
 
 *Verse flagged this one for Adam.*
 
