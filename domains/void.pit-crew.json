@@ -1,17 +1,12 @@
 {
-  "at": "2026-10-30T13:43:42.256Z",
+  "at": "2026-10-31T13:07:47.629Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261029-2241-2",
-      "ask": "Provide a list of the 20 checked and 43 tested skills that can be promoted to proven status.",
-      "target": "voice:ask-20261029-2241-2"
-    },
-    {
-      "id": "ask-20261029-2241-1",
-      "ask": "Add a page for onlineconverter.com to LANE_PAGES in lib/tower.js",
-      "target": "voice:ask-20261029-2241-1"
+      "id": "ask-20261030-2212-2",
+      "ask": "Update the self-skill router so identity-based probes trigger self-portraits instead of being processed as questions.",
+      "target": "voice:ask-20261030-2212-2"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
