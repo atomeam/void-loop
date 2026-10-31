@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-31T18:41:26.603Z",
+ "updated": "2026-10-31T19:42:56.135Z",
  "last24h": {
   "ticks": 144,
   "started": 123,
   "requeued": 0,
   "setAside": 0,
-  "probes": 14,
+  "probes": 15,
   "errors": 0
  },
  "broken": [
@@ -188,96 +188,6 @@
   "mvwkjvyk": 1793462859436
  },
  "ticks": [
-  {
-   "at": "2026-10-30T18:50:00.974Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T19:00:14.283Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T19:10:27.247Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T19:20:40.944Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T19:30:53.466Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T19:41:09.346Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
   {
    "at": "2026-10-30T19:51:25.598Z",
    "open": 106,
@@ -3393,6 +3303,108 @@
    "lap": false,
    "revived": [],
    "held": 125,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T18:51:42.013Z",
+   "open": 124,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 124,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T19:01:57.589Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T19:12:10.591Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": true,
+   "lap": true,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T19:22:27.539Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 122,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T19:32:41.230Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T19:42:56.135Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 128,
    "warnings": 0
   }
  ]
