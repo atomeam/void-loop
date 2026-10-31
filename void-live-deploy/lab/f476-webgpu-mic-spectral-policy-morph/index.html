@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --entropy: 0.3;
+    --hue: 200;
+    --bg: hsl(var(--hue), 40%, calc(8% + var(--entropy)*12%));
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: #eee; font: 14px system-ui; overflow: hidden; }
+  canvas { display: block; width: 100%; height: 100%; }
+  #ui { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,.5); padding: 8px 12px; border-radius: 8px; max-width: 280px; }
+  button { margin: 4px; padding: 6px 10px; }
+  #status { font-size: 12px; opacity: .8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-mic-spectral-policy-morph · Verse lab</title>
+<meta name="description" content="Microphone Spectral Residual Policy Morph Mind: Local population of tiny policy MLPs (3-6-2, tanh) evolved in a Web Worker.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-mic-spectral-policy-morph · Verse lab">
+<meta property="og:description" content="Microphone Spectral Residual Policy Morph Mind: Local population of tiny policy MLPs (3-6-2, tanh) evolved in a Web Worker.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f476-webgpu-mic-spectral-policy-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f476-webgpu-mic-spectral-policy-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div><strong>Mic Spectral Policy Morph</strong></div>
+  <div id="status">requesting mic…</div>
+  <button id="seal">Seal (S)</button>
+  <button id="restore">Restore (R)</button>
+  <button id="mic">Toggle Mic</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-mic-spectral-policy-morph</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

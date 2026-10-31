@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --energy: 0.5; --assoc: 0.3; }
+body { margin:0; background: hsl(220, 30%, calc(8% + var(--energy)*10%)); color:#eee; font-family: system-ui, sans-serif; overflow:hidden; }
+canvas { display:block; cursor:crosshair; }
+#hud { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.5); padding:10px 14px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#222; color:#eee; border:1px solid #555; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { font-size:11px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webxr-gaze-hebbian-portal-competition · Verse lab</title>
+<meta name="description" content="WebXR Gaze Hebbian Portal Competition Mind: Optional WebXR session (immersive-ar preferred.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webxr-gaze-hebbian-portal-competition · Verse lab">
+<meta property="og:description" content="WebXR Gaze Hebbian Portal Competition Mind: Optional WebXR session (immersive-ar preferred.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f477-webxr-gaze-hebbian-portal-competition/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f477-webxr-gaze-hebbian-portal-competition/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="hud">
+  <div><strong>Gaze Hebbian Portal</strong></div>
+  <div id="status">Move pointer or enter XR to gaze. Agents form associations & transfer on contact.</div>
+  <div>
+    <button id="xrBtn">Enter XR</button>
+    <button id="sealBtn">Seal (S)</button>
+    <button id="restoreBtn">Restore (R)</button>
+  </div>
+  <div>Agents: <span id="nAgents">16</span> | Energy: <span id="energy">0.50</span> | Assoc: <span id="assoc">0.30</span></div>
+</div>
+<canvas id="c"></canvas>
+<script src="app.js"></script>
+<h1 class="vl-sr">webxr-gaze-hebbian-portal-competition</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

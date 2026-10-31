@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --hue: 220; --sat: 70%; --blur: 0px; --scale: 1; }
+body { margin:0; background: hsl(var(--hue), var(--sat), 8%); color:#eee; font-family: system-ui, sans-serif; overflow:hidden; transition: background 0.3s; }
+canvas { display:block; position:absolute; inset:0; width:100%; height:100%; }
+#labels { position:absolute; inset:0; pointer-events:none; }
+.label { position:absolute; background:rgba(0,0,0,0.6); padding:4px 8px; border-radius:6px; font-size:12px; transform:translate(-50%,-50%); pointer-events:auto; border:1px solid rgba(255,255,255,0.3); min-width:60px; text-align:center; }
+#controls { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.5); padding:10px; border-radius:8px; }
+button, input { margin:4px; padding:6px 10px; }
+#status { position:absolute; bottom:12px; left:12px; font-size:11px; opacity:0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-sdf-recurrent-reasoner-morph-mind · Verse lab</title>
+<meta name="description" content="SDF Recurrent Reasoner Morph Mind: a continuous soft-blended SDF spatial world (Canvas2D metaball approximation with WebGPU raymarch path prepared) of abstract">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-sdf-recurrent-reasoner-morph-mind · Verse lab">
+<meta property="og:description" content="SDF Recurrent Reasoner Morph Mind: a continuous soft-blended SDF spatial world (Canvas2D metaball approximation with WebGPU raymarch path prepared) of abstract">
+<meta property="og:url" content="https://a-to-mind.com/lab/f474-webgpu-sdf-recurrent-reasoner-morph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f474-webgpu-sdf-recurrent-reasoner-morph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div id="controls">
+  <button id="seal">Seal</button>
+  <button id="restore">Restore</button>
+  <button id="reset">Reset</button>
+  <input id="kw" placeholder="keyword seed" style="width:120px">
+  <button id="inject">Inject</button>
+</div>
+<div id="status">SDF Recurrent Reasoner — drag shapes, type keywords</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-sdf-recurrent-reasoner-morph-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
