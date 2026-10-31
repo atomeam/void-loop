@@ -61,7 +61,10 @@ export async function onRequestPost({ request, env }) {
     // the asks held behind it (void.asks.json `held`) are named, so the reflection does not ask for them again while the target stands
     const hd = tf ? (answered && Array.isArray(answered.held) ? answered.held : []).filter((h) => h && h.until === tg.id && typeof h.words === 'string').map((h) => '"' + h.words + '"') : [];
     if (tf) pieces.unshift(['tower.target.json, void.asks.json held and the tower ranking (lib/tower.js)', tf + (hd.length ? ' These asks wait until ' + tg.id + ' is beaten, so do not ask for them now: ' + hd.join(', ') + '.' : '')]); } catch (_) { /* no tower */ }
-  const famJson = facts.families || await asset('/skills/families.json'), fams = familyFacts(famJson); if (fams) pieces.push(['skills/families.json', fams]);
+  // the routed count rides with the family facts: a family total counts skill files, and some of them answer no ask (owner's card,
+  // 2026-10-30: it said 386 active skills when the router serves 332)
+  const idxJson = await asset('/skills/index.json');
+  const famJson = facts.families || await asset('/skills/families.json'), fams = familyFacts(famJson, undefined, Array.isArray(idxJson) ? idxJson.length : 0); if (fams) pieces.push(['skills/families.json', fams]);
   // what its owner told it when it spoke before (functions/api/voice-reply.js): its memory of the conversation, corrections first
   const told = replyFacts(await readReplies(env)); if (told) pieces.push(['the owner\'s replies and corrections (voice-replies)', told]);
   const { text: context, sources } = taggedFacts(pieces);

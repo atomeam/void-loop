@@ -96,7 +96,18 @@ export function holdAsks(asks, held, target) {
 export function targetFacts(t, tg) {
   const f = t && Array.isArray(t.floors) ? t.floors[t.marker - 1] : null, id = tg && tg.id ? String(tg.id) : '';
   if (!f || !id || f.site !== id) return '';
-  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten. Asks that make Verse better than ' + id + ' come first.';
+  // what is left, by name and with its numbers, so the reflection copies the count instead of doing arithmetic on it (owner's
+  // card, 2026-10-30: an ask went out for "the two specific aspects" when the gate measured exactly one)
+  const left = (Array.isArray(f.left) ? f.left : []).filter((a) => typeof a === 'string' && a);
+  const named = left.slice(0, 3).map((a) => {
+    const r = f.ev && f.ev[a];
+    const nums = r && Number.isFinite(+r.verse) && Number.isFinite(+r.best) ? ' (Verse ' + r.verse + ' against their ' + r.best + ')' : '';
+    const slipped = r && (r.was === 'better' || r.was === 'equal-and-better') ? ', which passed before and has slipped' : '';
+    return a + nums + slipped;
+  });
+  return 'The current Versus target is ' + id + ': Verse is ' + f.n + ' of ' + f.m + ' aspects ahead of it, and it stays the target until it is beaten.'
+    + (named.length ? ' The only aspects not ahead: ' + named.join(', ') + '. Every other aspect passes, so an ask that names another missing aspect is asking for something that is not missing.' : '')
+    + ' Asks that make Verse better than ' + id + ' come first.';
 }
 // A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
@@ -219,13 +230,14 @@ export function askRecord(entries, ledger, answered) {
 }
 // its skill families and how far each skill is checked (tools/families.mjs, Verse's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
-export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
+export function familyFacts(fam, now = new Date().toISOString().slice(0, 10), routed = 0) {
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   if (!F.length) return '';
   const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
   const weakest = weakestFamily(fam);
   const least = F.flatMap((f) => f.skills.filter((s) => s.tier === 'experiment' || s.tier === 'tested').map((s) => s.name)).slice(0, 8);
-  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
+  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families'
+    + (+routed > 0 ? ' (' + routed + ' of them answer an ask today; the rest are files no ask reaches, so they are not active)' : '') + ', '
     + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
     + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + (weakest ? weakest.name + ' (' + weakest.proven + ' of ' + weakest.total + ' proven, the lowest proven share; the family bars mark it weakest)' : 'none')
     + '. Some of my least-checked skills: ' + least.join(', ') + '.'
