@@ -470,6 +470,53 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website provides professional B2B e-commerce growth, CRO, and email marketing services. Verse is a collection of individual utility tools for end-users)",
    "title": "eCommerce Growth Platform and Consulting | Convertcart"
+  },
+  "mail-tester.com": {
+   "at": "2026-10-31T21:49:59Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service for testing email spam scores and deliverability, which involves receiving emails on a remote server to analyze them. None of the)",
+   "title": "Newsletters spam test by mail-tester.com"
+  },
+  "koanruler.com": {
+   "at": "2026-10-31T21:50:47Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "duniter.org": {
+   "at": "2026-10-31T21:50:58Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a project landing page for a specific decentralized monetary system (Duniter/G1). While Verse has a 'finance' page, that page is for looking up)",
+   "title": "Duniter | Home"
+  },
+  "openspeedtest.com": {
+   "at": "2026-10-31T21:51:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a network speed test service. While Verse has 'hosting' and 'nameunit' which deal with server sizing and bandwidth capacity, those are)",
+   "title": "SpeedTest by OpenSpeedTest™ HTML5 Internet Speed Test."
+  },
+  "ecommunity.com": {
+   "at": "2026-10-31T21:51:18Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a healthcare provider network offering medical services, patient portals, and billing information. Verse does not have a medical service, doctor)",
+   "title": "Home | Community Health Network"
+  },
+  "dafont.com": {
+   "at": "2026-10-31T21:51:27Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website dafont.com is a font repository for downloading various typefaces. None of the existing Verse pages provide a service for searching, previewing, or)",
+   "title": "DaFont - Download fonts"
+  },
+  "videounit.net": {
+   "at": "2026-10-31T21:51:32Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a service for downloading videos from various social media platforms via a browser extension, which does not match any of the specialized tools)",
+   "title": "Video Downloader for U - Download Videos with Ease"
+  },
+  "communityos.org": {
+   "at": "2026-10-31T21:51:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a complex B2B enterprise software platform for community service management, disaster relief, and 2-1-1 systems. Verse provides small)",
+   "title": "Visionlink"
   }
  },
  "runs": [
