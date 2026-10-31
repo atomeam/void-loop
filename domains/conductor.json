@@ -1,8 +1,8 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-31T22:06:49.986Z",
+ "updated": "2026-10-31T23:08:21.415Z",
  "last24h": {
-  "ticks": 145,
+  "ticks": 144,
   "started": 122,
   "requeued": 0,
   "setAside": 0,
@@ -13,7 +13,7 @@
   {
    "wf": "grow-self.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/41237925266"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/41247498786"
   }
  ],
  "held": [
@@ -188,111 +188,6 @@
   "mvwkjvyk": 1793462859436
  },
  "ticks": [
-  {
-   "at": "2026-10-30T22:14:36.793Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T22:15:04.650Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T22:25:18.451Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T22:35:33.034Z",
-   "open": 107,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 106,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T22:45:46.711Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 113,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T22:56:00.309Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T23:06:13.757Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
   {
    "at": "2026-10-30T23:16:28.807Z",
    "open": 114,
@@ -3430,6 +3325,108 @@
   },
   {
    "at": "2026-10-31T22:06:49.986Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T22:17:06.050Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T22:27:22.291Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T22:37:36.265Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T22:47:50.987Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T22:58:04.877Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": true,
+   "lap": true,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:08:21.415Z",
    "open": 127,
    "started": [],
    "requeued": 0,
