@@ -288,18 +288,18 @@
   },
   {
    "from": "2026-10-10",
-   "runs": 139,
-   "passed": 623,
-   "of": 3014,
+   "runs": 140,
+   "passed": 643,
+   "of": 3044,
    "broken": 95,
    "brokenOf": 2238,
    "brokenPassed": 22
   },
   {
    "from": "2026-10-17",
-   "runs": 52,
-   "passed": 2528,
-   "of": 2796
+   "runs": 51,
+   "passed": 2508,
+   "of": 2766
   },
   {
    "from": "2026-10-24",
