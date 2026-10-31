@@ -1182,3 +1182,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-30T22:41:15Z | verse | build | Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows (also read: 7 no-family); next onlineconverter.com (the target)
 2026-10-30T22:44:35Z | verse | build | Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed 12 of 15 rows; next onlineconverter.com (the target)
 2026-10-31T08:47:23Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next onlineconverter.com (the target)
+2026-10-31T15:56:49Z | verse | build | Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)

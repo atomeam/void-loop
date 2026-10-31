@@ -669,6 +669,15 @@
    "pages_per_day": 1,
    "reads_next": "syncsketch.dev",
    "noop": true
+  },
+  {
+   "at": "2026-10-31T15:56:49Z",
+   "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "mail-tester.com"
   }
  ]
 }
