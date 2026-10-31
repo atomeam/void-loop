@@ -2,6 +2,209 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T01:21:15.193Z",
+   "sha": "532b1ceaf34a1382b2e65067150928662c61e175",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41152402569",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will"
+   ],
+   "touched": [
+    "docs/TAGTEAM.md",
+    "tools/lacks.mjs",
+    "docs/PARITY/github.md",
+    "tools/brain-current.test.mjs",
+    "tools/brain-dialogue.test.mjs",
+    "tools/brain-formula.test.mjs",
+    "tools/brain-gardener.test.mjs",
+    "tools/brain-grains.test.mjs",
+    "tools/brain-grower.test.mjs",
+    "tools/brain-hearing.test.mjs",
+    "tools/brain-painter.test.mjs",
+    "tools/brain-pool.test.mjs",
+    "tools/brain-trace.test.mjs",
+    "tools/brain.test.mjs",
+    "tools/checks.mjs"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T01:19:31.617Z",
+   "sha": "980bd13449c5584acda78cc97f3bc2c6080a64e6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41152217875",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will"
+   ],
+   "touched": [
+    "docs/PARITY/github.md",
+    "growth/entries/20261030T162858Z-claude-a86aa668.json",
+    "tools/brain-current.test.mjs",
+    "tools/brain-dialogue.test.mjs",
+    "tools/brain-formula.test.mjs",
+    "tools/brain-gardener.test.mjs",
+    "tools/brain-grains.test.mjs",
+    "tools/brain-grower.test.mjs",
+    "tools/brain-hearing.test.mjs",
+    "tools/brain-painter.test.mjs",
+    "tools/brain-pool.test.mjs",
+    "tools/brain-trace.test.mjs",
+    "tools/brain.test.mjs",
+    "tools/checks.mjs",
+    "tools/test_void.mjs"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T01:16:56.167Z",
+   "sha": "e9be83fe4278a15c04723223c9f1652793a51d11",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41152182673",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will"
+   ],
+   "touched": [
+    "tools/families.mjs",
+    "tools/voice.test.mjs",
+    "void-live-deploy/functions/api/reflect.js",
+    "void-live-deploy/lib/voice.js",
+    "void-live-deploy/skills/families.json",
+    ".github/workflows/will-outcome.yml",
+    "domains/conductor.json",
+    "findings/mcp/2026-10-31T0007.json",
+    "findings/mcp/2026-10-31T0008.json",
+    "tools/brain-recall.test.mjs",
+    "tools/checks.mjs",
+    "tools/flakes.json",
+    "tools/knowledge-build.mjs",
+    "tools/knowledge-build.test.mjs",
+    "tools/self-identity.test.mjs"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T01:11:59.672Z",
+   "sha": "d8e1c46b9334fad251c532ad1f0ce21b834b687e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41151895204",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will"
+   ],
+   "touched": [
+    "docs/TAGTEAM.md",
+    "tools/lacks.mjs"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T00:36:49.427Z",
+   "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41148430998",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step's thing away, and puts the new thing where it landed (asked by Verse)"
+   ],
+   "touched": [
+    ".github/workflows/will-outcome.yml",
+    "docs/MAP.md",
+    "tools/brain-recall.test.mjs",
+    "tools/checks.mjs",
+    "tools/knowledge-build.mjs",
+    "tools/knowledge-build.test.mjs",
+    "tools/will-guard.test.mjs",
+    "tools/will-outcome.mjs",
+    "tools/will-outcome.test.mjs",
+    "tools/will-schema.test.mjs",
+    "void-live-deploy/functions/api/propose-fix.js",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lib/brain-recall.js",
+    "void-live-deploy/lib/propose-fix.js",
+    "void-live-deploy/lib/will-guard.js"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "at": "2026-10-31T00:26:39.388Z",
+   "sha": "13dc24ca77d93d2cd799311751a833397344e792",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41148117777",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/self-identity.test.mjs",
+    "void-live-deploy/lib/self-context.js",
+    "void-live-deploy/skills/deps.json",
+    ".github/workflows/baggage-live.yml",
+    ".github/workflows/genre-refs.yml",
+    ".github/workflows/propose-fix.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "docs/PARITY/github.md",
+    "docs/PARITY/gmail.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "docs/PARITY/onlineconverter.com.md",
+    "docs/autonomy.md",
+    "domains/conductor.json"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-10-30T22:46:11.706Z",
    "sha": "66fbe322f4d0416d1353980fb4cf712a2f03792f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41137097261",
@@ -803,204 +1006,6 @@
    "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
    "minutes": 204
-  },
-  {
-   "at": "2026-10-29T20:59:39.335Z",
-   "sha": "d52321f2e0390999e3562488721b750d3efe9fb2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40950633954",
-   "suite": "browser suite on main",
-   "checks": [
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
-   ],
-   "touched": [
-    "tools/bench.mjs"
-   ],
-   "shards": [
-    1,
-    2
-   ],
-   "passed": [
-    1,
-    2
-   ],
-   "closedAt": "2026-10-30T00:51:50.542Z",
-   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
-   "minutes": 232
-  },
-  {
-   "at": "2026-10-29T20:34:05.810Z",
-   "sha": "158ab096449a2d62da8a160dff47537b1773d8ad",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40944261443",
-   "suite": "browser suite on main",
-   "checks": [
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
-   ],
-   "touched": [
-    "tools/bench.mjs"
-   ],
-   "shards": [
-    1,
-    2
-   ],
-   "passed": [
-    1,
-    2
-   ],
-   "closedAt": "2026-10-30T00:51:50.542Z",
-   "closedBy": "58ac85bc3738f968f9e66a894989b577bfabcab5",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40978826948",
-   "minutes": 258
-  },
-  {
-   "at": "2026-10-29T16:53:46.677Z",
-   "sha": "cd360ad03ae234e9eab1902f6425585d427fd745",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40911797802",
-   "suite": "browser suite on main",
-   "checks": [
-    "poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half",
-    "WebMCP: a paid Verse ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout",
-    "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\"",
-    "pick for me: says one found pick with its honest why (leaning on the thumbs-up kind), \"something else\" gives a different one, \"funnier\" sends only the mood word, the thumb is kept in the browser, only the pick line is spoken, \"forget my taste\" clears it",
-    "what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Verse"
-   ],
-   "touched": [
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "docs/PARITY/github.md",
-    "docs/PARITY/hugging-face.md",
-    "docs/PARITY/lichess.md",
-    "tools/card-reply.test.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/corrections.js",
-    "void-live-deploy/void.html",
-    "void.html"
-   ],
-   "shards": [
-    1,
-    2,
-    4
-   ],
-   "passed": [
-    1,
-    2,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 123
-  },
-  {
-   "at": "2026-10-29T13:05:55.568Z",
-   "sha": "96ff518205447b3b2ddc02e3b412ac03933ec4a6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40874469214",
-   "suite": "browser suite on main",
-   "checks": [
-    "is it: \"is it christmas?\" shows one giant NO (80 px or more), whole on the card with no art panel, says when Christmas is and today's date, and its countdown ticks",
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
-    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
-    "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no \"waking up\" is left behind"
-   ],
-   "touched": [
-    "tools/brain.test.mjs",
-    "void-live-deploy/lib/brain.js",
-    "void-live-deploy/skills/verse-brain.js",
-    "domains/growth-inbox.md",
-    "tools/checks.mjs",
-    "tools/fanfic-first-writer.test.mjs",
-    "tools/fanfic.test.mjs",
-    "void-live-deploy/fanfic/app.js",
-    "void-live-deploy/fanfic/index.html",
-    "void-live-deploy/lib/fanfic-de.js",
-    "void-live-deploy/lib/fanfic.js",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/yesno.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 351
-  },
-  {
-   "at": "2026-10-29T10:48:24.159Z",
-   "sha": "8aa556a592f73a4a474673a9279a0a0a73ea87e2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40855694765",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
-    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
-   ],
-   "touched": [
-    "tools/fanfic.test.mjs",
-    "void-live-deploy/fanfic/app.js",
-    "void-live-deploy/fanfic/index.html",
-    "void-live-deploy/functions/fanfic/rss.js",
-    "void-live-deploy/lib/fanfic-de.js",
-    "void-live-deploy/lib/fanfic.js"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 488
-  },
-  {
-   "at": "2026-10-29T10:20:59.516Z",
-   "sha": "fbf2a00844807c184468d9b6412859865876b077",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40851990196",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
-    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
-   ],
-   "touched": [
-    "void-live-deploy/fanfic/index.html",
-    "docs/PARITY/github.md",
-    "docs/PARITY/hugging-face.md",
-    "docs/PARITY/lichess.md",
-    "domains/conductor.json",
-    "tools/test_void.mjs",
-    "void-live-deploy/convert/unit-converter-2/index.html",
-    "void-live-deploy/convert/unit-converter/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/recipe.js",
-    "void-live-deploy/skills/verse-brain.js",
-    "void-live-deploy/tower.evidence.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 516
   }
  ]
 }

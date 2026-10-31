@@ -57,10 +57,10 @@ test('the tuned rule misses far less than the drafts\' rule and than random sear
   assert.ok(rows.every((r) => r.hold > 0.5 && r.stale < r.hold - 0.3 && r.empty < 0.05), 'holds fresh, lets old go ' + say);
 });
 
-test('it runs in the brain as one of twenty-two organs: the focus seeds it, it is kept, and the self says so', () => {
+test('it runs in the brain as one of twenty-three organs: the focus seeds it, it is kept, and the self says so', () => {
   const b = B.createBrain(7); B.tell(b, 'river stone light');
   for (let t = 0; t < 3000; t++) { const a = t * 0.013; B.stepBrain(b, { x: 0.5 + 0.35 * Math.cos(a), y: 0.45 + 0.3 * Math.sin(a * 1.3), over: true }); }
-  assert.ok(B.ORGAN_IDS.includes('trace') && B.ORGAN_IDS.length === 22);
+  assert.ok(B.ORGAN_IDS.includes('trace') && B.ORGAN_IDS.length === 23);
   assert.ok(b.trace.lives >= 5 && b.runs.trace > 150, 'lives ' + b.trace.lives + ' runs ' + b.runs.trace);
   assert.ok(b.board.trace && b.board.trace.lives === b.trace.lives, JSON.stringify(b.board.trace));
   const self = B.selfSays(b).find((l) => /^Trace:/.test(l)) || '';
