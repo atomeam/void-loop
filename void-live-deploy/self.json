@@ -536,8 +536,24 @@
  },
  "commits": [
   {
+   "at": "2026-10-31T00:44:01Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
+  },
+  {
+   "at": "2026-10-31T00:40:58Z",
+   "subject": "narrow the page rule: /converter/ also matched app.js and would have slowed the repeat load"
+  },
+  {
    "at": "2026-10-31T00:36:49Z",
    "subject": "Incident: the browser suite failed on 04e7b346 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-31T00:32:12Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
+  },
+  {
+   "at": "2026-10-31T00:31:56Z",
+   "subject": "a tool page may live for a minute, so a load that repeats does not pay the round trip again"
   },
   {
    "at": "2026-10-31T00:31:33Z",
@@ -552,16 +568,20 @@
    "subject": "Incident: the browser suite failed on 13dc24ca (void-live-deploy/incidents.json)"
   },
   {
+   "at": "2026-10-31T00:23:05Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
+  },
+  {
+   "at": "2026-10-31T00:22:45Z",
+   "subject": "the card stops claiming reach it does not have, and the tower fact names the one aspect that is left"
+  },
+  {
    "at": "2026-10-31T00:18:48Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-10-31T00:14:42Z",
-   "subject": "Fix growth-inbox.md for stopwatch skill building status"
-  },
-  {
-   "at": "2026-10-31T00:14:06Z",
-   "subject": "Add stopwatch skill: simple stopwatch on the stage"
+   "at": "2026-10-31T00:13:38Z",
+   "subject": "Add rps skill: rock paper scissors game on stage"
   },
   {
    "at": "2026-10-31T00:10:20Z",
@@ -594,26 +614,6 @@
   {
    "at": "2026-10-30T22:46:11Z",
    "subject": "Incident: the browser suite failed on 66fbe322 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-30T22:44:35Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed…"
-  },
-  {
-   "at": "2026-10-30T22:41:16Z",
-   "subject": "Tower gate: Versus by itself, Versus: took on getconverter.org (finance, /markets/currency-converter/?s=SPX&r=5y&on=2024-12-31), surpassed…"
-  },
-  {
-   "at": "2026-10-30T22:38:03Z",
-   "subject": "Versus by itself: finance: getconverter.org, the sites read recorded"
-  },
-  {
-   "at": "2026-10-30T22:37:18Z",
-   "subject": "Finding: video-gen checked against the live site (findings/video-gen)"
-  },
-  {
-   "at": "2026-10-30T22:14:49Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
   }
  ],
  "builders": {
