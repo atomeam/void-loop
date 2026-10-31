@@ -1,35 +1,13 @@
-// Trophy / Completionist + Strategy Guide trainer
-// Teaches Verse to write Brady/Prima-style guides while rewarding full clears
-// Dropped in to make games feel worth finishing again
-
 export const name = 'trophy';
 export const examples = [
   'show my trophies',
   'what have I completed',
   'beat all the games',
-  'completionist progress',
-  'generate strategy guide for [game]',
-  'make a prima guide for othello',
-  'how do I 100% monopoly',
-  'verse conqueror status',
-  'trophy progress',
-  'my platinum games'
+  'mark this game clear',
+  'easiest trophy next',
+  'completion progress'
 ];
 
-export const nearMisses = [
-  'achievements',
-  'trophies',
-  'platinum',
-  '100%',
-  'strategy guide',
-  'walkthrough',
-  'prima',
-  'brady',
-  'completionist'
-];
-
-// Simple browser-local tracker for now.
-// Later: persist per signed-in Verse identity or cloud.
 const STORAGE_KEY = 'a2m.void.trophies.v1';
 
 function load() {
@@ -48,56 +26,56 @@ export function getProgress() {
   return load();
 }
 
-export function markClear(game, tier = 'bronze') {
+export function markClear(game, tier = 'bronze', notes = '') {
   const data = load();
-  if (!data[game]) data[game] = {};
-  data[game][tier] = true;
-  data[game].updated = new Date().toISOString();
+  if (!data[game]) data[game] = { tiers: [], notes: [], lastUpdated: null };
+  if (!data[game].tiers.includes(tier)) {
+    data[game].tiers.push(tier);
+  }
+  if (notes) data[game].notes.push({ tier, notes, at: new Date().toISOString() });
+  data[game].lastUpdated = new Date().toISOString();
   save(data);
-  return data;
+  return data[game];
 }
 
-// Hook this into game end states later (chess, othello, etc.)
 export function onGameComplete(game, details = {}) {
-  markClear(game, 'bronze');
-  if (details.hard || details.difficulty === 'hard') markClear(game, 'gold');
-  if (details.full || details.platinum) markClear(game, 'platinum');
-  if (details.collectibles) markClear(game, 'silver');
-  return { status: 'recorded', game, tiers: load()[game] };
+  return markClear(game, details.tier || 'gold', details.notes || 'Game completed');
 }
 
-// Main entry – used by the router
 export async function handle(ask, ctx) {
-  const lower = (ask || '').toLowerCase();
+  const data = load();
+  const lower = ask.toLowerCase();
 
-  if (/progress|trophies|completed|conqueror|clearer|my (platinum|trophies|completion)/.test(lower)) {
-    const progress = getProgress();
-    const games = Object.keys(progress);
-    const platinumCount = games.filter(g => progress[g].platinum).length;
-    const totalKnown = 12; // update as more games land
+  // Auto-detect current game context if available
+  const currentGame = ctx?.currentGame || 'Earth Defense Force: World Brothers 2';
 
+  if (lower.includes('easiest') || lower.includes('next trophy') || lower.includes('what next')) {
     return {
-      type: 'card',
-      title: 'Verse Completionist',
-      body: {
-        summary: `${platinumCount} Platinum · ${games.length} games tracked`,
-        progress,
-        status: platinumCount >= totalKnown ? 'Verse Conqueror' :
-                platinumCount >= Math.ceil(totalKnown / 2) ? 'Verse Clearer' : 'In progress',
-        next: 'Play more games and mark them clear, or ask for a Prima-style strategy guide.'
-      }
+      type: 'advice',
+      text: `For ${currentGame}: keep rescuing every downed Brother/Sister and clear missions on the lowest difficulty that still feels good. Character collection and story progress unlock the easiest trophies first. Switch teams often — the game rewards experimentation.`
     };
   }
 
-  if (/guide|walkthrough|strategy|prima|brady|how (do i|to) (100%|beat|clear)/.test(lower)) {
-    // Hand off to or enhance the existing guide / book skill.
-    // This is where the training happens: every Platinum improves future guides.
-    return {
-      type: 'guide',
-      style: 'prima',
-      note: 'Generating / improving Brady-Prima style guide. Completion data from trophy system feeds quality.'
-    };
+  if (lower.includes('progress') || lower.includes('what have i') || lower.includes('show')) {
+    const games = Object.keys(data);
+    if (games.length === 0) {
+      return { type: 'status', text: 'No completion data yet. Mark games as you clear them and I will track everything.' };
+    }
+    const summary = games.map(g => {
+      const t = data[g];
+      return `${g}: ${t.tiers.join(', ') || 'in progress'}`;
+    }).join('\n');
+    return { type: 'status', text: `Completion progress:\n${summary}` };
   }
 
-  return null; // let other skills try
+  if (lower.includes('mark') || lower.includes('clear') || lower.includes('beat') || lower.includes('finished')) {
+    const tier = lower.includes('platinum') ? 'platinum' : lower.includes('gold') ? 'gold' : lower.includes('silver') ? 'silver' : 'bronze';
+    const result = markClear(currentGame, tier);
+    return { type: 'success', text: `Marked ${currentGame} as ${tier}. Current tiers: ${result.tiers.join(', ')}` };
+  }
+
+  return {
+    type: 'help',
+    text: 'I track completion across games. Say things like "easiest trophy next", "mark this clear", or "show my progress". I will keep the guides and incentives updated automatically.'
+  };
 }
