@@ -381,6 +381,53 @@
    "outcome": "no-family",
    "why": "no floor does its job (none)",
    "title": "Diffen - Compare Anything. Diffen. Discern. Decide."
+  },
+  "kingdraw.cn": {
+   "at": "2026-10-31T08:45:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a specialized chemical structure editor and scientific drawing tool. While Verse has a 'formula calculators' page, that tool is for performing)",
+   "title": "KingDraw官网_化学结构式编辑器"
+  },
+  "zoopicker.com": {
+   "at": "2026-10-31T08:46:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a niche birdwatching social platform and utility for logging sightings and finding locations. Verse does not have a page for biological)",
+   "title": "Enjoy Birding more with ZooPicker | ZooPicker"
+  },
+  "convertytmp3.org": {
+   "at": "2026-10-31T08:46:10Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a YouTube to MP3/MP4 converter. None of the available Verse pages provide video-to-audio or video-to-video conversion services. While there is a)",
+   "title": "YTMP3 - YouTube to MP3 Converter"
+  },
+  "communitydns.net": {
+   "at": "2026-10-31T08:46:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides professional DNS resolution and anycast network services, which is a specialized infrastructure service that Verse does not have a page)",
+   "title": "Commumity DNS - Anycast Leaders"
+  },
+  "syncsketch.dev": {
+   "at": "2026-10-31T08:46:55Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "speedtest.ru": {
+   "at": "2026-10-31T08:47:03Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an internet speed test tool, which measures network performance parameters like download/upload speed, ping, and jitter. None of the provided)",
+   "title": "Проверка скорости интернета - speedtest онлайн"
+  },
+  "unit.no": {
+   "at": "2026-10-31T08:47:08Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Sikt – Kunnskapssektorens tjenesteleverandør"
+  },
+  "wheeloutlet.com": {
+   "at": "2026-10-31T08:47:12Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an e-commerce portal for automotive wheels. Verse does not have a page for a shop or a service that sells physical products.)",
+   "title": "wheeloutlet.com - Select your country & onlineshop"
   }
  },
  "runs": [
