@@ -206,7 +206,7 @@ async function main(argv) {
   if (cmd === 'settle') {
     const [candFile, logFile] = argv.slice(1).filter((a) => !a.startsWith('--') && a !== opt('--out') && a !== opt('--report') && a !== opt('--failed'));
     if (!candFile || !logFile || !existsSync(candFile) || !existsSync(logFile)) { console.error('usage: lacks.mjs settle cand.json probe.log --out passing.json --report report.md'); return 2; }
-    const cands = JSON.parse(readFileSync(candFile, 'utf8')), data = JSON.parse(readFileSync(candFile + '.plan', 'utf8').toString());
+    const cands = JSON.parse(readFileSync(candFile, 'utf8')), data = JSON.parse(readFileSync(candFile + '.plan', 'utf8'));
     const s0 = settle(cands, readFileSync(logFile, 'utf8'));
     const { answers } = await import('./propose-fix.mjs');
     const check = (name, ask) => { const f = resolve(root, 'void-live-deploy', 'skills', name + '.js'); return existsSync(f) ? answers(f, ask, { timeoutMs: 8000 }) : { outcome: 'not run' }; };
