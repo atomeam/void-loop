@@ -31,14 +31,27 @@ export function coveredByBuilt(title, builtWords) {
   return q.split(' ').length >= 2 && builtWords.some((w) => String(w).toLowerCase().includes(q));
 }
 
-export const MAX_TRIES = 2;     // a want whose jobs ended set aside or failed this many times waits
+// every state a job can end in without shipping. tools/will-outcome.mjs writes the last two when a pull request ends, and the
+// guard counts all four the same way: a want whose jobs ended this way keeps its place in the will and loses its turn in the queue.
+export const TERMINAL = ['set aside', 'failed', 'declined', 'deferred'];
+export const MAX_TRIES = 2;     // a want whose jobs ended this way this many times waits
 export const WINDOW_DAYS = 14;  // ... counting the ones that ended this recently
 /** the queue target a want's job has: 'will:' and the title as a short slug. */
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 export const targetOf = (title) => 'will:' + slug(title);
 
-/** how many of the rows ({ target, state }) are earlier jobs of this want that were set aside or failed. Pure. */
-export const triesOf = (rows, title) => (Array.isArray(rows) ? rows : []).filter((r) => r && r.target === targetOf(title) && /^(?:set aside|failed)$/.test(String(r.state))).length;
+/** how many of the rows ({ target, state }) are earlier jobs of this want that ended without shipping (TERMINAL). Pure. */
+export const triesOf = (rows, title) => (Array.isArray(rows) ? rows : []).filter((r) => r && r.target === targetOf(title) && TERMINAL.includes(String(r.state))).length;
+
+/**
+ * The state a queue job gets when its pull request ends: 'live' when it merged, 'declined' when it was closed without merging, null
+ * while it is still open. The one place the outcome hook and its test agree on what an end means. Pure.
+ */
+export function outcomeOf({ merged, closed } = {}) {
+  if (merged === true) return 'live';
+  if (closed === true) return 'declined';
+  return null;
+}
 
 /** the first want that has not used up its tries, and the wants above it that were skipped: { want, skipped: [{ title, tries }] }; want is null when every want
  *  has used up its tries. The churn cap never starves the loop: when every want left names a hot file, the first of them goes ahead anyway and the result
@@ -58,9 +71,12 @@ export function pickWant(wants, rows, max = MAX_TRIES, hot = []) {
 
 /** what the queued job's note says about the wants skipped for it, and about a want that went ahead over the churn cap ('' when neither). Pure. */
 export function skippedNote(skipped, overCap) {
-  const l = Array.isArray(skipped) ? skipped : [], hot = l.filter((x) => x.churn && x.churn.length), tried = l.length - hot.length;
+  const l = (Array.isArray(skipped) ? skipped : []).filter(Boolean);
+  const hot = l.filter((x) => x.churn && x.churn.length), gate = l.filter((x) => x.gate);
+  const tried = l.filter((x) => !(x.churn && x.churn.length) && !x.gate).length;
   const part = (n, why) => n + ' want' + (n === 1 ? '' : 's') + ' above it waits: ' + why;
-  return (tried ? ' · ' + part(tried, 'its jobs were set aside or failed ' + MAX_TRIES + ' times in ' + WINDOW_DAYS + ' days') : '')
+  return (gate.length ? ' · ' + part(gate.length, 'it needs a key or a paid plan of its own, which is a spend decision') : '')
+    + (tried ? ' · ' + part(tried, 'its jobs ended without shipping ' + MAX_TRIES + ' times in ' + WINDOW_DAYS + ' days') : '')
     + (hot.length ? ' · ' + part(hot.length, 'it names ' + [...new Set(hot.flatMap((x) => x.churn))].slice(0, 3).join(', ') + ', changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days') : '')
     + (Array.isArray(overCap) && overCap.length ? ' · every want left names a file changed more than ' + MAX_CHANGES + ' times in ' + CHURN_DAYS + ' days, so this one goes ahead anyway (' + overCap.slice(0, 3).join(', ') + ')' : '');
 }

@@ -6,6 +6,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { models } from '../../lib/models.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
+import { recall, lessonsBlock } from '../../lib/brain-recall.js';
 import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, MAX_TRIED, fixPrompt, parseEdits, evidenceOf } from '../../lib/propose-fix.js';
 
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
@@ -25,9 +26,18 @@ async function propose({ request, env }) {
   if (!env.AI) return new Response('no model bound', { status: 503 });
   // one call on the will path (Gemma 4): the review path's two back-to-back calls to the 120B model outlasted the platform's limit
   // and came back as Cloudflare's HTML 502 (2026-10-15 22:02 and 2026-10-16 03:03), never reaching this code
+  // what Verse learned that bears on this ask (lib/brain-recall.js), from the knowledge file this deploy serves: no file, no
+  // lessons, and a failure here costs the lessons, never the proposal
+  let carry = '';
+  try {
+    if (env.ASSETS) {
+      const kr = await env.ASSETS.fetch(new Request(new URL('/void.knowledge.json', request.url)));
+      if (kr.ok) carry = lessonsBlock(recall(ask, await kr.json()));
+    }
+  } catch (_) { carry = ''; }
   let said = '';
   try {
-    const r = await env.AI.run(models('will'), { messages: [{ role: 'system', content: mode === 'narrow' ? NARROW_SYSTEM : FIX_SYSTEM }, { role: 'user', content: fixPrompt(ask, skill, source, mode, note, tried) }], max_tokens: 900, chat_template_kwargs: { enable_thinking: false } });
+    const r = await env.AI.run(models('will'), { messages: [{ role: 'system', content: mode === 'narrow' ? NARROW_SYSTEM : FIX_SYSTEM }, { role: 'user', content: fixPrompt(ask, skill, source, mode, note, tried, carry) }], max_tokens: 900, chat_template_kwargs: { enable_thinking: false } });
     said = pick(r); if (said && typeof said !== 'string') said = JSON.stringify(said);
   } catch (e) { await recordShortfall(env, 'propose-fix', reasonOf(e)); return Response.json({ error: 'Verse could not propose a fix just now: ' + reasonOf(e) }, { status: 503 }); }
   const { edits, why, confidence } = parseEdits(said, source);
