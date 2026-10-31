@@ -2,6 +2,41 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-31T00:26:39.388Z",
+   "sha": "13dc24ca77d93d2cd799311751a833397344e792",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41148117777",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it"
+   ],
+   "touched": [
+    "tools/self-identity.test.mjs",
+    "void-live-deploy/lib/self-context.js",
+    "void-live-deploy/skills/deps.json",
+    ".github/workflows/baggage-live.yml",
+    ".github/workflows/genre-refs.yml",
+    ".github/workflows/propose-fix.yml",
+    "docs/HANDOFF-GAPS.md",
+    "docs/MAP.md",
+    "docs/PARITY/github.md",
+    "docs/PARITY/gmail.md",
+    "docs/PARITY/hugging-face.md",
+    "docs/PARITY/lichess.md",
+    "docs/PARITY/onlineconverter.com.md",
+    "docs/autonomy.md",
+    "domains/conductor.json"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-10-30T22:46:11.706Z",
    "sha": "66fbe322f4d0416d1353980fb4cf712a2f03792f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41137097261",
@@ -963,44 +998,6 @@
    "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
    "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
    "minutes": 488
-  },
-  {
-   "at": "2026-10-29T10:20:59.516Z",
-   "sha": "fbf2a00844807c184468d9b6412859865876b077",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/40851990196",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end",
-    "field minds: memory orbs (F-321) pours energy into a fluid the agents push, its density peaks become orb elements on the card, a tapped orb seals (SHA-256), Recall loads it back and it seals to the same hash, the mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio, the chrome follows the field on the card, never the page, and with no shared field the card works on its own, and Open its colour hands the colour of an orb to the colour page",
-    "verse brain: \"show me your brain\" opens one card (no figure), its fourteen organs run on one workspace (the organ table lists them with live use), it chose actions only after imagining them, typed words become orbs you can drag, another Verse page in the same browser tells it a word and hears its state back, the tab reaches it as window.verseBrain, the card says how many frontier drafts it is made from, and Seal keeps no typed word"
-   ],
-   "touched": [
-    "void-live-deploy/fanfic/index.html",
-    "docs/PARITY/github.md",
-    "docs/PARITY/hugging-face.md",
-    "docs/PARITY/lichess.md",
-    "domains/conductor.json",
-    "tools/test_void.mjs",
-    "void-live-deploy/convert/unit-converter-2/index.html",
-    "void-live-deploy/convert/unit-converter/index.html",
-    "void-live-deploy/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/recipe.js",
-    "void-live-deploy/skills/verse-brain.js",
-    "void-live-deploy/tower.evidence.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html"
-   ],
-   "passed": [
-    1,
-    2,
-    3,
-    4
-   ],
-   "closedAt": "2026-10-29T18:56:38.082Z",
-   "closedBy": "dda352deff810f7ffbb31addb783bb5db1c2b86b",
-   "closedRun": "https://github.com/atomeam/void-loop/actions/runs/40930614688",
-   "minutes": 516
   }
  ]
 }
