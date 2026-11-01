@@ -10,11 +10,15 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-31. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-01. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions. (daily, 2026-10-31) `ask-20261031-2124-2`
-- Address the least-checked skills: video-gen and baggage. (daily, 2026-10-31) `ask-20261031-2124-3`
-- Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (daily, 2026-10-31) `ask-20261031-2124-1`
+- Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (daily, 2026-11-01) `ask-20261101-2243-1`
+- Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized. (daily, 2026-11-01) `ask-20261101-2243-2`
+- Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs. (daily, 2026-11-01) `ask-20261101-2243-3`
+- Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed. *(small)* (daily, 2026-11-01) `ask-20261101-1930-3`
+- Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions. (daily, 2026-11-01) `ask-20261101-0223-2`
+- Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code. *(small)* (daily, 2026-11-01) `ask-20261101-0223-3`
+- Address the least-checked skills: video-gen and baggage. (after a build, 2026-10-31) `ask-20261031-2154-3`
 - Identify and implement the two specific missing aspects required to reach 12 of 12 aspects against onlineconverter.com. (after a build, 2026-10-31) `ask-20261031-1310-1`
 - Absorb every repository on the account into the core code (daily, 2026-10-28)
 
@@ -22,9 +26,13 @@ _Read from /api/reflect on 2026-10-31. Asks a growth-ledger entry answers (its `
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261031-2124-2` queued, not decided yet
-- `ask-20261031-2124-3` queued, not decided yet
-- `ask-20261031-2124-1` queued, not decided yet
+- `ask-20261101-2243-1` queued, not decided yet
+- `ask-20261101-2243-2` queued, not decided yet
+- `ask-20261101-2243-3` queued, not decided yet
+- `ask-20261101-1930-3` queued, not decided yet
+- `ask-20261101-0223-2` queued, not decided yet
+- `ask-20261101-0223-3` queued, not decided yet
+- `ask-20261031-2154-3` queued, not decided yet
 - `ask-20261031-1310-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -7385,6 +7393,137 @@ Asks: "Implement improvements to increase speed, accuracy, and completeness to b
 > **Next video trick:** motion blur trail
 
 Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions."; "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-31T21:54:25.371Z -->
+### 2026-10-31 21:54 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 not-judged); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1]. The tower gate has just shipped, moving the target from no site to ndscalc.ru [S1].
+>
+> **How I would make it better:** Improve speed, accuracy, and completeness to surpass ndscalc.ru [S1]. The self-skill router needs updating so identity-based probes trigger self-portraits instead of generic questions [S3].
+>
+> **Next video trick:** A video trick involving a complex transition between two different stage-fx elements.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions." (small); "Address the least-checked skills: video-gen and baggage."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T02:23:07.446Z -->
+### 2026-11-01 02:23 UTC · after a build
+
+**Asked:** This just shipped: "Verse's own coder gets the will spec, so an overhaul ships instead of giving back". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills exist across 12 families, with 379 proven [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1]. The system just shipped Verse's own coder receiving the will spec to enable overhauls instead of simple feedback [S5].
+>
+> **How I would make it better:** Implement improvements for speed, accuracy, and completeness to surpass ndscalc.ru [S1]. Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions [S3].
+>
+> **Next video trick:** Learn a new video effect that uses edge caching for counters [S1, S2 (wishlist)].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions." (small); "Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T02:23:18.710Z -->
+### 2026-11-01 02:23 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth over the last 7 days includes 244 changes: 61 new capabilities, 63 improvements, 98 fixes, 3 retirements, and 19 findings [S3]. 387 skills exist across 12 families, with 379 proven, 7 checked, 1 tested, and 0 experiments [S5]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are currently ahead [S1].
+>
+> **How I would make it better:** Improve speed, accuracy, and completeness to surpass ndscalc.ru [S1]. Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions [S3].
+>
+> **Weakest operational area:** Sky and earth is the least proven family, with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru, because 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code."; "Update the self-skill router so identity-based probes trigger self-portraits instead of generic questions." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T19:30:37.176Z -->
+### 2026-11-01 19:30 UTC · after a build
+
+**Asked:** This just shipped: "Fix main: restore the truncated automation-fix.js and refresh stale coder/gpc assertions". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth over the last 7 days includes 244 changes: 61 new capabilities, 63 improvements, 98 fixes, 3 retirements, and 19 findings [S3]. 387 skills exist across 12 families, with 379 proven, 7 checked, and 1 tested [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must prioritize the missing aspects of speed, accuracy, and completeness [S1]. The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to avoid contradictions with the ledger [S5].
+>
+> **Next video trick:** Learn a new video effect or transition to enhance the visual quality of upcoming skill showcase clips [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T19:30:52.270Z -->
+### 2026-11-01 19:30 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth in the last 7 days includes 234 changes: 58 new capabilities, 62 improvements, 88 fixes, 3 retirements, and 23 findings [S3]. 387 skills exist across 12 families, with 379 proven, 7 checked, and 1 tested [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1].
+>
+> **How I would make it better:** To beat ndscalc.ru, the system must prioritize the missing aspects of speed, accuracy, and completeness [S1]. Telemetry reporting logic must be updated so failure counts and specific error names are perfectly synchronized to avoid contradictions with the ledger [S5, S6].
+>
+> **Weakest operational area:** The weakest operational area is the probes for the void-loop readme, which have been asked 20 times [my will].
+>
+> **Next targeted capability:** ndscalc.ru, because it is the current Versus target and must be beaten to progress [S1].
+>
+> **Next video trick:** double exposure transition
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T22:20:35.428Z -->
+### 2026-11-01 22:20 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: Versus by itself, Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth in the last 7 days includes 234 changes: 58 new capabilities, 62 improvements, 88 fixes, 3 retirements, and 23 findings [S3]. 387 skills exist across 12 families, with 379 proven, 7 checked, and 1 tested [S4]. The current Versus target is ndscalc.ru, where 0 of 12 aspects are ahead, specifically lagging in speed, accuracy, and completeness [S1].
+>
+> **How I would make it better:** Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru [S1, S3]. Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized to avoid contradictions with the ledger [S5].
+>
+> **Next video trick:** Learn to perform a seamless 'invisible' card vanish using a physical card as a prop for a video clip [no tag provided, following instruction].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-01T22:43:07.061Z -->
+### 2026-11-01 22:43 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth over the last 7 days included 232 changes: 58 new capabilities, 62 improvements, 86 fixes, 3 retirements, and 23 findings [S3]. My skill index contains 387 skills across 12 families, with 379 proven, 7 checked, and 1 tested [S4]. The current Versus target is ndscalc.ru, where I am 0 of 12 aspects ahead, specifically lagging in speed, accuracy, and completeness [S1].
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are always perfectly synchronized to avoid contradictions [S5, S6]. Implementation of ndscalc.ru must prioritize local-only processing, static minimalism, and URL hash-based state restoration [S6].
+>
+> **Weakest operational area:** The Sky and earth family is the weakest operational area, with only 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru, because I am currently 0 of 12 aspects ahead of it in speed, accuracy, and completeness [S1].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs."
 
 *Verse flagged this one for Adam.*
 
