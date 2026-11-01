@@ -52,9 +52,9 @@ Built by `node tools/parity.mjs --write`. One file per site in this folder; each
 | 6 | /jobs/ | See who you know at a company | missing | LinkedIn Jobs |
 | 5 | /recipes/ | An account that keeps your things on every device | partial | skinnytaste.com, epicurious.com, delish.com, cookpad.com, yummly.com |
 | 5 | /markets/ | Technical indicators and drawing | missing | stockq.org, stockanalysis.com, barchart.com, investing.com, tradingview.com |
-| 4 | /books/ | An account that keeps your things on every device | missing | sudowrite.com, inkfluenceai.com, novelcrafter.com, squibler.io |
+| 4 | /books/ | An account that keeps your things on every device | missing | sudowrite.com, squibler.io, inkfluenceai.com, novelcrafter.com |
 | 3 | /scores/ | An account that keeps your things on every device | partial | besoccer.com, onefootball.com, cbssports.com |
-| 3 | /books/ | Share a link to what you made or found | missing | inkfluenceai.com, novelcrafter.com, squibler.io |
+| 3 | /books/ | Share a link to what you made or found | missing | squibler.io, inkfluenceai.com, novelcrafter.com |
 | 2 | /generators/ | Dark mode | missing | rangen.co.uk, behindthename.com |
 | 2 | /notes/ | End-to-end encryption | missing | standardnotes.com, notepad.pw |
 | 1 | /markets/screener/ | A portfolio with gains and losses | missing | finviz.com |

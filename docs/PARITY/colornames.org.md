@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: colornames.org (https://colornames.org/)
-- Verse: /color/ (color names, tower gate 0 of 12)
+- Verse: /color/ (color names, tower gate 7 of 12)
 - Live scan: not scanned yet
 - History: [docs/HISTORY/colornames.org.md](../HISTORY/colornames.org.md)
 
