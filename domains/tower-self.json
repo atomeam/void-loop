@@ -798,6 +798,15 @@
    "pages_per_day": 1,
    "reads_next": "koanruler.com",
    "noop": true
+  },
+  {
+   "at": "2026-11-01T09:37:56Z",
+   "line": "Versus: took on no site (also read: 7 no-family, 1 discarded); next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 6,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "seriouswheels.com"
   }
  ]
 }
