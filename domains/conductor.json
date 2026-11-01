@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-10-31T23:08:21.415Z",
+ "updated": "2026-11-01T00:09:47.134Z",
  "last24h": {
   "ticks": 144,
   "started": 122,
@@ -18,84 +18,8 @@
  ],
  "held": [
   {
-   "id": "mvt653u1",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvoodfj",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvudhzwf",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvbl52gd",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvu167w7",
-   "why": "store-gap.yml reached its 6 runs today"
-  },
-  {
-   "id": "mvr9jgxe",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mv8nfpvu",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mv8nfqtm",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mv8nfroq",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvukie6p",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvuqmbwm",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvo2ae7i",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvo2aeng",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvo2af8e",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3k6y",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3knw",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3l3f",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3ljc",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3lyx",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvvk3mdz",
-   "why": "verse-job.yml reached its 40 runs today"
+   "id": "mvvql4d9",
+   "why": "no executor for route"
   }
  ],
  "coder": {
@@ -105,16 +29,16 @@
    "cap": 90
   },
   "day": {
-   "used": 215,
+   "used": 0,
    "cap": 360
   },
   "room": true,
   "until": null
  },
  "handed": {
-  "mvbl52gd": 1793448606478,
-  "mveb8rsi": 1793426947866,
-  "mva30i2e": 1793448606478,
+  "mvbl52gd": 1793491787134,
+  "mveb8rsi": 1793491787134,
+  "mva30i2e": 1793491787134,
   "mveb8svc": 1793405892378,
   "mva30j4u": 1793449228181,
   "mvu167w7": 1793427567953,
@@ -188,127 +112,6 @@
   "mvwkjvyk": 1793462859436
  },
  "ticks": [
-  {
-   "at": "2026-10-30T23:16:28.807Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T23:26:42.104Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T23:36:55.483Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T23:47:11.134Z",
-   "open": 114,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 114,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-30T23:57:23.397Z",
-   "open": 115,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 115,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-31T00:07:51.141Z",
-   "open": 115,
-   "started": [
-    {
-     "id": "mvvmgn8m",
-     "kind": "heal",
-     "wf": "verse-job.yml",
-     "score": 100
-    },
-    {
-     "id": "mvbl52gd",
-     "kind": "store-gap",
-     "wf": "store-gap.yml",
-     "score": 118
-    },
-    {
-     "id": "mveb8rsi",
-     "kind": "miss",
-     "wf": "build-miss.yml",
-     "score": 84
-    },
-    {
-     "id": "mva30i2e",
-     "kind": "probe",
-     "wf": "propose-fix.yml",
-     "score": 70
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 0,
-   "warnings": 0
-  },
   {
    "at": "2026-10-31T00:18:12.378Z",
    "open": 114,
@@ -3440,6 +3243,133 @@
    "lap": false,
    "revived": [],
    "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:18:36.916Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:28:50.109Z",
+   "open": 127,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 127,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:39:04.081Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:49:16.781Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-10-31T23:59:31.306Z",
+   "open": 128,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 128,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-01T00:09:47.134Z",
+   "open": 128,
+   "started": [
+    {
+     "id": "mvt653u1",
+     "kind": "heal",
+     "wf": "verse-job.yml",
+     "score": 80
+    },
+    {
+     "id": "mvbl52gd",
+     "kind": "store-gap",
+     "wf": "store-gap.yml",
+     "score": 120
+    },
+    {
+     "id": "mveb8rsi",
+     "kind": "miss",
+     "wf": "build-miss.yml",
+     "score": 86
+    },
+    {
+     "id": "mva30i2e",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 70
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 1,
    "warnings": 0
   }
  ]
