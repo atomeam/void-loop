@@ -560,6 +560,53 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is a tool for checking website responsiveness across different screen sizes. None of the provided Verse pages offer a web design preview, viewport)",
    "title": "Responsive Website Design Tester | Media Genesis"
+  },
+  "seriouswheels.com": {
+   "at": "2026-11-01T16:54:18Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a car encyclopedia and wallpaper site. Verse does not have a page for browsing vehicle specifications, car photography, or automotive news.)",
+   "title": "Serious Wheels, Car Information, Car Comparison"
+  },
+  "hexasoftware.dev": {
+   "at": "2026-11-01T16:54:24Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional services company providing software development, mobile app development, and UI/UX design. None of the Verse tools offer)",
+   "title": "Hexa Software – Hexa Software Technology Company"
+  },
+  "wheelroot.com": {
+   "at": "2026-11-01T16:54:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial course for learning drawing fundamentals. Verse is a collection of functional tools and apps, not a platform for hosting educational)",
+   "title": "Drawing Fundamentals | Slate Studio"
+  },
+  "coloringnation.com": {
+   "at": "2026-11-01T16:54:33Z",
+   "outcome": "no-family",
+   "why": "the model chose paint but the site says none of its words",
+   "title": "Coloring Nation - Tons of Free Coloring Pages - Coloring Nation"
+  },
+  "zischexpress.de": {
+   "at": "2026-11-01T16:54:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a beverage delivery service for specific German locations. Verse does not have a tool for shopping, local services, or beverage delivery.)",
+   "title": "ZischExpress Getränke - Lieferservice"
+  },
+  "coloringhome.com": {
+   "at": "2026-11-01T16:54:54Z",
+   "outcome": "not-judged",
+   "why": "the answer was not JSON"
+  },
+  "slackcommunity.com": {
+   "at": "2026-11-01T16:55:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a community platform for a specific software product, focused on local meetups and professional networking. None of the available Verse tools)",
+   "title": "Slack Community | Slack Community"
+  },
+  "ndscalc.ru": {
+   "at": "2026-11-01T16:55:26Z",
+   "outcome": "discarded",
+   "family": "formula calculators",
+   "why": "failed tests"
   }
  },
  "runs": [
