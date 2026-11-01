@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root {
+    --bg: #0a0c10;
+    --fg: #e8eef6;
+    --accent: #6cf;
+    --glow: 0;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, sans-serif; }
+  #stage { display: flex; flex-direction: column; height: 100%; }
+  header { padding: 8px 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-bottom: 1px solid #222; }
+  button, label { background: #1a1e26; color: var(--fg); border: 1px solid #333; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  #canvas-wrap { flex: 1; position: relative; min-height: 0; }
+  canvas { width: 100%; height: 100%; display: block; background: #05070a; }
+  #receivers { position: absolute; inset: 0; pointer-events: none; }
+  .card {
+    position: absolute; width: 120px; height: 72px; border-radius: 12px;
+    background: rgba(20,24,32,.75); border: 1px solid #334;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+    transform: scale(calc(0.9 + var(--glow) * 0.4));
+    box-shadow: 0 0 calc(var(--glow) * 40px) rgba(100,200,255, calc(var(--glow) * 0.8));
+    transition: transform .15s, box-shadow .15s;
+    backdrop-filter: blur(4px);
+  }
+  .card span { opacity: .9; }
+  #status { font-size: 12px; opacity: .7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Photonic Waveguide MLP Mind · Verse lab</title>
+<meta name="description" content="A 2D photonic-like waveguide is simulated on a discrete grid via the scalar wave equation (variable local speed of light set by a dielectric map).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Photonic Waveguide MLP Mind · Verse lab">
+<meta property="og:description" content="A 2D photonic-like waveguide is simulated on a discrete grid via the scalar wave equation (variable local speed of light set by a dielectric map).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0484-webgpu-photonic-waveguide-mlp-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0484-webgpu-photonic-waveguide-mlp-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <header>
+    <strong>F0484 Photonic Waveguide MLP Mind</strong>
+    <button id="seal">Seal (S)</button>
+    <button id="restore">Restore (R)</button>
+    <button id="reset">Reset Field</button>
+    <span id="status">Canvas2D · ready</span>
+  </header>
+  <div id="canvas-wrap">
+    <canvas id="c"></canvas>
+    <div id="receivers"></div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Photonic Waveguide MLP Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,5 +1,140 @@
 [
  {
+  "slug": "f493-webgpu-implicit-sculptor-mind",
+  "num": 493,
+  "title": "webgpu-implicit-sculptor-mind",
+  "blurb": "A local evolutionary sculptor mind (population of genomes in a Web Worker) continuously mutates and selects parameters for a parametric signed-distance field",
+  "status": "works",
+  "source": "F493-webgpu-implicit-sculptor-mind",
+  "hash": "0dad02fee62c"
+ },
+ {
+  "slug": "f492-webxr-hand-constraint-mlp-mind",
+  "num": 492,
+  "title": "webxr-hand-constraint-mlp-mind",
+  "blurb": "True WebXR hand-tracking (immersive-ar preferred; pointer/mouse fallback) injects multi-joint forces into a local mass-spring constraint network of particles.",
+  "status": "works",
+  "needs": [
+   "webxr"
+  ],
+  "source": "F492-webxr-hand-constraint-mlp-mind",
+  "hash": "b267dadf8c06"
+ },
+ {
+  "slug": "f491-persistent-broadcast-sealed-genome-dom-swarm-mind",
+  "num": 491,
+  "title": "persistent-broadcast-sealed-genome-dom-swarm-mind",
+  "blurb": "Persistent multi-tab sealed genome auction for a swarm of local tiny MLPs. Agents compete for a shared resource field.",
+  "status": "works",
+  "source": "F491-persistent-broadcast-sealed-genome-dom-swarm-mind",
+  "hash": "abb78982f00f"
+ },
+ {
+  "slug": "f490-causal-bayesian-lattice-verse-mind",
+  "num": 490,
+  "title": "Causal Bayesian Lattice Verse Mind",
+  "blurb": "A spatial lattice of interactive DOM Verse cards forms a local Bayesian belief network.",
+  "status": "works",
+  "source": "F490-causal-bayesian-lattice-verse-mind",
+  "hash": "c45a3a0ddd1a"
+ },
+ {
+  "slug": "f489-mic-spectral-reservoir-css3d-crystal-mind",
+  "num": 489,
+  "title": "Mic Spectral Echo-State Reservoir CSS3D Crystal Mind",
+  "blurb": "Live microphone audio is analysed into spectral bins that continuously drive a shared local echo-state reservoir (fixed random recurrent weights, spectral radius",
+  "status": "works",
+  "source": "F489-mic-spectral-reservoir-css3d-crystal-mind",
+  "hash": "7c0eb5097c6b"
+ },
+ {
+  "slug": "f488-orient-reservoir-dom-auction-mind",
+  "num": 488,
+  "title": "Orientation-Driven Echo State Reservoir Mind with Hybrid DOM Embodiments and Sealed Readout Auction",
+  "blurb": "A population of hybrid-embodied agents exist as physical DOM cards.",
+  "status": "works",
+  "source": "F488-orient-reservoir-dom-auction-mind",
+  "hash": "e4e9e240ba7b"
+ },
+ {
+  "slug": "f487-webgpu-attention-cluster-dom-mind",
+  "num": 487,
+  "title": "Local Attention Particle Swarm with Spatial Cluster DOM Projection Mind",
+  "blurb": "A swarm of particles lives on a 2D canvas. Each particle carries a short state vector and, each frame, computes a simplified local self-attention over its k-nearest",
+  "status": "works",
+  "source": "F487-webgpu-attention-cluster-dom-mind",
+  "hash": "3ca4ad938c50"
+ },
+ {
+  "slug": "f486-orient-rnn-dom-physical-auction-mind",
+  "num": 486,
+  "title": "Orientation RNN DOM Physical Genome Auction Mind",
+  "blurb": "A population of hybrid-embodied agents exist as physical DOM elements (absolutely positioned cards).",
+  "status": "works",
+  "source": "F486-orient-rnn-dom-physical-auction-mind",
+  "hash": "021ed08e2c08"
+ },
+ {
+  "slug": "f485-webgpu-lbm-audio-feedback-mind",
+  "num": 485,
+  "title": "WebGPU Lattice Boltzmann fluid with closed-loop Web Audio feedback and local MLP agents",
+  "blurb": "A discrete 2D Lattice Boltzmann Method (LBM) fluid simulation runs on a WebGPU compute grid (with Canvas2D finite-difference fallback).",
+  "status": "works",
+  "source": "F485-webgpu-lbm-audio-feedback-mind",
+  "hash": "88904da073e9"
+ },
+ {
+  "slug": "f0484-webgpu-photonic-waveguide-mlp-mind",
+  "num": 484,
+  "title": "WebGPU Photonic Waveguide MLP Mind",
+  "blurb": "A 2D photonic-like waveguide is simulated on a discrete grid via the scalar wave equation (variable local speed of light set by a dielectric map).",
+  "status": "works",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F0484-webgpu-photonic-waveguide-mlp-mind",
+  "hash": "86bba2f52b0d"
+ },
+ {
+  "slug": "f0483-webgpu-wavelet-mlp-dom-morph",
+  "num": 483,
+  "title": "WebGPU Wavelet MLP DOM Morph Mind",
+  "blurb": "A short circular buffer of pointer velocity samples is fed to a WebGPU compute shader that performs a discrete Haar wavelet transform (previously unused kernel).",
+  "status": "needs-webgpu",
+  "needs": [
+   "webgpu"
+  ],
+  "source": "F0483-webgpu-wavelet-mlp-dom-morph",
+  "hash": "88e1a4140099"
+ },
+ {
+  "slug": "f0482-webgpu-softbody-policy-mind",
+  "num": 482,
+  "title": "WebGPU Softbody Policy Mind",
+  "blurb": "A mass-spring softbody mesh is simulated in a WebGPU compute pass (Canvas2D fallback).",
+  "status": "works",
+  "source": "F0482-webgpu-softbody-policy-mind",
+  "hash": "f8efc09448e3"
+ },
+ {
+  "slug": "f0481-speech-nca-portal-mind",
+  "num": 481,
+  "title": "Speech-Seeded WebGPU NCA Portal Mind",
+  "blurb": "Web Speech Recognition (or keyboard fallback) produces a transcript that is locally hashed into a seed vector.",
+  "status": "works",
+  "source": "F0481-speech-nca-portal-mind",
+  "hash": "fcbd60001ba8"
+ },
+ {
+  "slug": "f480-orient-mlp-voronoi-territory-mind",
+  "num": 480,
+  "title": "Orient-MLP Voronoi Territory Mind",
+  "blurb": "DeviceOrientation (beta/gamma/alpha) is causal input to a local tiny MLP (3→4→2) that biases agent velocities.",
+  "status": "works",
+  "source": "F480-orient-mlp-voronoi-territory-mind",
+  "hash": "329f7de813c2"
+ },
+ {
   "slug": "f479-motion-residual-crystal-lattice-mind",
   "num": 479,
   "title": "motion-residual-crystal-lattice-mind",
