@@ -1692,8 +1692,8 @@ try {
     check('404 page: a missing path answers 404 (not the homepage), noindex, Verse\'s dark stage, the path shown as text, the ask box focused, fits a 390 px phone',
       res && res.status() === 404 && info.robots === 'noindex' && info.bg === 'rgb(5, 5, 5)' && info.path === '/no-such-page/at-all' && info.focused === 'q' && info.fits,
       JSON.stringify({ status: res && res.status(), ...info }));
-    check('404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed',
-      info.links.length >= 4 && linkStatus.every((s) => s === 200) && wkStatus[0] === 200 && wkStatus[1] === 200 && wkStatus[2] === 404,
+    check('404 page: every link on it is a page that answers 200; security.txt, humans.txt and gpc.json are there',
+      info.links.length >= 4 && linkStatus.every((s) => s === 200) && wkStatus[0] === 200 && wkStatus[1] === 200 && wkStatus[2] === 200,
       JSON.stringify(info.links) + ' ' + JSON.stringify(linkStatus) + ' ' + JSON.stringify(wkStatus));
     check('404 page: typing in its ask box goes to /?q=<words> and Verse answers it there',
       new URL(sent).pathname === '/' && new URL(sent).searchParams.get('q') === 'what time is it in Tokyo' && ran,

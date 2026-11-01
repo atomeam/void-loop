@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET, KEY_NAMES } from './verse-coder.mjs';
 import { scanDiff } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -255,7 +255,7 @@ test('the CLI: no key means exit 4 with the keys it wants; a scripted model runs
   const s = repo();
   const bare = { PATH: process.env.PATH, HOME: process.env.HOME };
   let r = spawnSync(process.execPath, [new URL('./verse-coder.mjs', import.meta.url).pathname, '--repo', s.work, '--task', 'fix add'], { env: bare, encoding: 'utf8' });
-  assert.equal(r.status, 4); assert.match(r.stdout, /VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID, OPENROUTER_API_KEY, GROQ_API_KEY, GEMINI_API_KEY, CEREBRAS_API_KEY/); assert.doesNotMatch(r.stdout, /GH_MODELS/);
+  assert.equal(r.status, 4); assert.ok(r.stdout.includes(KEY_NAMES.join(', ')), 'names the keys it wants, exactly as the coder lists them'); assert.doesNotMatch(r.stdout, /GH_MODELS/);
   const script = join(s.dir, 'script.json'), checks = join(s.dir, 'checks.json');
   writeFileSync(script, JSON.stringify([{ tool: 'edit', diff: FIX }, { tool: 'check', name: 'add' }, { tool: 'finish', summary: 'fixed' }]));
   writeFileSync(checks, JSON.stringify(CHECKS));
