@@ -9,7 +9,7 @@
 // Never stores stream material. Only Verse's own idea notes (kind=idea) become open build rows.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { promoteIdeas } from '../void-live-deploy/lib/watch-along.js';
-import { FRONTIER, openItems, addOpen, frontierAsks } from './frontier.mjs';
+import { FRONTIER, openItems, addOpen } from './frontier.mjs';
 import { asksIn } from './grow-ideas.mjs';
 
 const SITE = process.env.VERSE_SITE || 'https://a-to-mind.com';
