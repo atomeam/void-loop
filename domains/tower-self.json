@@ -592,9 +592,10 @@
    "title": "ZischExpress Getränke - Lieferservice"
   },
   "coloringhome.com": {
-   "at": "2026-11-01T16:54:54Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-11-01T22:16:53Z",
+   "outcome": "no-family",
+   "why": "the model chose paint but the site says none of its words",
+   "title": "Coloring Nation - Tons of Free Coloring Pages - Coloring Nation"
   },
   "slackcommunity.com": {
    "at": "2026-11-01T16:55:04Z",
@@ -607,6 +608,47 @@
    "outcome": "discarded",
    "family": "formula calculators",
    "why": "failed tests"
+  },
+  "ww2incolor.com": {
+   "at": "2026-11-01T22:16:59Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a curated historical archive of colorized World War II photographs. While Verse has a 'photos' tool, that tool is for image processing (editing)",
+   "title": "World War II In Color"
+  },
+  "justfont.com": {
+   "at": "2026-11-01T22:17:07Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (the website is a specialized font design studio and educational service that sells proprietary typefaces and offers design courses; Verse does not have a page)",
+   "title": "justfont｜新世代中文字型設計與字體教育團隊"
+  },
+  "streamingunity.dog": {
+   "at": "2026-11-01T22:17:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a streaming service for movies and TV shows, which is a commercial content platform. Verse does not have a tool for streaming video content or a)",
+   "title": "StreamingUnity"
+  },
+  "streamingunity.fun": {
+   "at": "2026-11-01T22:17:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "StreamingUnity"
+  },
+  "streamingunity.win": {
+   "at": "2026-11-01T22:17:26Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "StreamingUnity"
+  },
+  "colorfulbox.jp": {
+   "at": "2026-11-01T22:17:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial web hosting service provider offering server plans, domain registration, and AI website builders. Verse's 'hosting' tool is a)",
+   "title": "レンタルサーバー ColorfulBox（カラフルボックス）｜ 30日間無料お試し"
+  },
+  "communitycollegejobs.com": {
+   "at": "2026-11-01T22:17:46Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (44 characters: a redirect stub, or a page that draws itself with no text)"
   }
  },
  "runs": [
