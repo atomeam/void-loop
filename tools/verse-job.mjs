@@ -16,7 +16,7 @@ import { kindOf, triesOf, withTries } from './conductor-core.mjs';
 import { SURFACES } from './lap-items.mjs';
 import { rankingOf, versusAllowed } from './versus-ranking.mjs';
 import { FLOORS } from '../void-live-deploy/lib/tower.js';
-import { GUIDE, versusSpec } from '../void-live-deploy/lib/job-guide.js';
+import { GUIDE, versusSpec, willSpec } from '../void-live-deploy/lib/job-guide.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEXT_MAX = 1800;
@@ -50,8 +50,10 @@ export function startHere(job, skills = []) {
 export function taskText(job, skills = []) {
   const kind = kindOf(job.target), note = String(job.note || '').replace(/^claimed by [^·]*·?\s*/i, '').replace(/\btries \d+\s*·?\s*/g, '').trim();
   const head = `Queue job ${job.id} (${kind}${job.target && job.target.includes(':') ? ': ' + String(job.target).split(':').slice(1).join(':') : ''}): ${String(job.ask || '').trim()}`;
-  // a versus job with a site carries its whole spec (target, what to build, files, verify, deliver); the cap grows by the spec, so it is never cut
-  const spec = kind === 'versus' ? versusSpec(job) : '', extra = spec ? '\n' + spec + '\n' + LOOP_DELIVER : '';
+  // a versus job with a site, and a will job that names a lap item, carry their whole spec (target, what to build, files, verify, deliver);
+  // the cap grows by the spec, so it is never cut. 2026-10-31: "Overhaul surface:cards" reached this coder with only the thin Start here,
+  // ran growth-suites, and gave back "No spec/template" at the 250000-token cap after 19 turns; the team agents already had willSpec.
+  const spec = kind === 'versus' ? versusSpec(job) : kind === 'will' ? willSpec(job, skills) : '', extra = spec ? '\n' + spec + '\n' + LOOP_DELIVER : '';
   return [head.slice(0, 400), startHere(job, skills), note && 'Note: ' + note.slice(0, 600), (GUIDE[kind] || 'Do this, small and tested.') + extra].filter(Boolean).join('\n\n').slice(0, TEXT_MAX + extra.length);
 }
 

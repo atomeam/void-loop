@@ -53,6 +53,20 @@ test('a lap want names where its item lives and the step that counts, so the cod
   assert.equal(startHere(job()), ''); assert.equal(startHere(job({ ask: 'Overhaul surface:nowhere: x' }), skills), '');
 });
 
+test('a will overhaul reaches Verse\'s own coder with the full spec the team agents get, so it ships instead of giving back', () => {
+  // issue #2037: "Overhaul surface:cards" stopped at the 250000-token cap after 19 turns with "No spec/template for 'will:overhaul-surface-cards'"
+  const want = job({ target: 'will:overhaul-surface-cards', ask: 'Overhaul surface:cards: persona playtest, best-site check, rebuild what is weak (wider use per docs/WIDER-USE.md, layout, completeness, speed, beauty, no cut-off)', note: 'tries 2 � no-change: stopped at the token cap (250000) after 19 turns � Verse chose this: its turn in this lap (before: skills 41, tests 12)' });
+  const skills = ['card-frame', 'card-art', 'duel', 'binder', 'notes'];
+  const t = taskText(want, skills);
+  for (const part of ['Target: surface:cards', 'What to build: ', 'Files to touch: ', 'Measured by: skills 41, tests 12', 'Verify: ', 'Deliver: ']) assert.ok(t.includes(part), part + ' is in the task');
+  assert.match(t, /void-live-deploy\/skills\/card-frame\.js/);
+  assert.match(t, /One item, one change, one pull request/, 'bounded to one skill, not the whole surface');
+  assert.match(t, /This is the spec, so do not give it back for lack of one/);
+  assert.ok(t.includes(startHere(want, skills)), 'where to start reading is still there');
+  assert.ok(t.length > 1800, 'the spec grows the cap instead of being cut');
+  assert.doesNotMatch(taskText(job({ target: 'will:other', ask: 'add a small thing' })), /Target: /, 'a will job that names no lap item gets no spec');
+});
+
 test('the lap\'s answer is the last JSON line of its output', () => {
   assert.deepEqual(lastJson('· picked\n{"a":1}\nnoise {x}\n{"outcome":"shipped","pr":"u"}\n'), { outcome: 'shipped', pr: 'u' });
   assert.equal(lastJson('no json here'), null); assert.equal(lastJson(''), null);
