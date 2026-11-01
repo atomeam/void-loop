@@ -916,6 +916,16 @@
    "pages_per_day": 0,
    "reads_next": "calculoexato.com.br",
    "noop": true
+  },
+  {
+   "at": "2026-11-01T22:20:26Z",
+   "line": "Versus: took on no site; next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "calculoexato.com.br",
+   "noop": true
   }
  ]
 }
