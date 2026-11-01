@@ -63,6 +63,8 @@ test('a will job that names a surface gets a spec: the surface, its skill files,
   assert.match(s, /void-live-deploy\/skills\/card\.js; void-live-deploy\/skills\/rally\.js; void-live-deploy\/skills\/binder\.js; void-live-deploy\/skills\/collectible\.js/);
   assert.doesNotMatch(s, /weather/);
   assert.match(s, /Measured by: skills 4, tests 1 .*Ship when one rises and none falls/);
+  assert.match(s, /One item, one change, one pull request/, 'the surface is bounded, not overhauled in one run');
+  assert.match(s, /This is the spec, so do not give it back for lack of one/);
   for (const part of ['What to build:', 'Files to touch:', 'Verify:']) assert.ok(s.includes(part), part);
 });
 
