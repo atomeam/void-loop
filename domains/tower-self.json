@@ -478,9 +478,10 @@
    "title": "Newsletters spam test by mail-tester.com"
   },
   "koanruler.com": {
-   "at": "2026-10-31T21:50:47Z",
-   "outcome": "not-judged",
-   "why": "the answer was not JSON"
+   "at": "2026-11-01T09:36:50Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a company profile and product catalog for a medical device manufacturer and telemedicine service provider. Verse does not have a page for)",
+   "title": "重庆康如来科技有限公司-医疗器械生产企业/远程医疗运营和服务企业/医疗健康产品/远程心电/心电监护/动态心电血压/多参数监护/遥测/神经康复/生物反馈/高压氧舱"
   },
   "duniter.org": {
    "at": "2026-10-31T21:50:58Z",
@@ -517,6 +518,48 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is a complex B2B enterprise software platform for community service management, disaster relief, and 2-1-1 systems. Verse provides small)",
    "title": "Visionlink"
+  },
+  "speedchecker.com": {
+   "at": "2026-11-01T09:36:53Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides B2B telecommunications infrastructure insights, crowdsourced network performance datasets, and SDKs for mobile operators and regulators.)",
+   "title": "Crowdsourcing for Telecoms & Regulators"
+  },
+  "drawnames.com": {
+   "at": "2026-11-01T09:37:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "drawnames | Wish Lists, Secret Santa, Gift Finder"
+  },
+  "illicitencounters.com": {
+   "at": "2026-11-01T09:37:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a dating service for married individuals, which is a specialized social/service platform. Verse provides utility tools, calculators, and)",
+   "title": "Married Dating UK | Discreet Dating Site | Illicit Encounters"
+  },
+  "speedcheckerapi.com": {
+   "at": "2026-11-01T09:37:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides professional B2B/B2G telecommunications crowdsourcing data, network quality insights, and SDKs for mobile/fixed operators and regulators.)",
+   "title": "Crowdsourcing for Telecoms & Regulators"
+  },
+  "resizepixel.com": {
+   "at": "2026-11-01T09:37:50Z",
+   "outcome": "discarded",
+   "family": "photos",
+   "why": "failed tests"
+  },
+  "fasterwheeler.com": {
+   "at": "2026-11-01T09:37:39Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a database of motorcycle prices and specifications, which does not match any of the specific utility or media tools provided by Verse.)",
+   "title": "Bike, Motorbike, Motorcycle Prices And Specifications - Fasterwheeler"
+  },
+  "responsivedesignchecker.com": {
+   "at": "2026-11-01T09:37:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a tool for checking website responsiveness across different screen sizes. None of the provided Verse pages offer a web design preview, viewport)",
+   "title": "Responsive Website Design Tester | Media Genesis"
   }
  },
  "runs": [
