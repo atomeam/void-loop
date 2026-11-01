@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-01T17:39:40.661Z",
+ "updated": "2026-11-01T18:10:24.186Z",
  "last24h": {
   "ticks": 145,
   "started": 74,
@@ -23,7 +23,7 @@
   {
    "wf": "grow-self.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/41322995630"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/41333484686"
   }
  ],
  "held": [
@@ -48,6 +48,10 @@
    "why": "store-gap.yml reached its 6 runs today"
   },
   {
+   "id": "mvukie6p",
+   "why": "verse-job.yml reached its 40 runs today"
+  },
+  {
    "id": "mv8nfpvu",
    "why": "verse-job.yml reached its 40 runs today"
   },
@@ -57,10 +61,6 @@
   },
   {
    "id": "mv8nfroq",
-   "why": "verse-job.yml reached its 40 runs today"
-  },
-  {
-   "id": "mvukie6p",
    "why": "verse-job.yml reached its 40 runs today"
   },
   {
@@ -153,57 +153,6 @@
   "mvxblthi": 1793508521947
  },
  "ticks": [
-  {
-   "at": "2026-10-31T17:39:56.261Z",
-   "open": 125,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 125,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-31T17:50:13.015Z",
-   "open": 125,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 125,
-   "warnings": 0
-  },
-  {
-   "at": "2026-10-31T18:00:26.883Z",
-   "open": 125,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 125,
-   "warnings": 0
-  },
   {
    "at": "2026-10-31T18:10:42.045Z",
    "open": 125,
@@ -3207,6 +3156,63 @@
   },
   {
    "at": "2026-11-01T17:39:40.661Z",
+   "open": 134,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "deploy.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 134,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-01T17:49:54.768Z",
+   "open": 134,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "deploy.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 134,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-01T18:00:09.154Z",
+   "open": 134,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "deploy.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 134,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-01T18:10:24.186Z",
    "open": 134,
    "started": [],
    "requeued": 0,
