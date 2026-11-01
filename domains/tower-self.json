@@ -560,6 +560,95 @@
    "outcome": "no-family",
    "why": "no floor does its job (The website is a tool for checking website responsiveness across different screen sizes. None of the provided Verse pages offer a web design preview, viewport)",
    "title": "Responsive Website Design Tester | Media Genesis"
+  },
+  "seriouswheels.com": {
+   "at": "2026-11-01T16:54:18Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a car encyclopedia and wallpaper site. Verse does not have a page for browsing vehicle specifications, car photography, or automotive news.)",
+   "title": "Serious Wheels, Car Information, Car Comparison"
+  },
+  "hexasoftware.dev": {
+   "at": "2026-11-01T16:54:24Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a professional services company providing software development, mobile app development, and UI/UX design. None of the Verse tools offer)",
+   "title": "Hexa Software – Hexa Software Technology Company"
+  },
+  "wheelroot.com": {
+   "at": "2026-11-01T16:54:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial course for learning drawing fundamentals. Verse is a collection of functional tools and apps, not a platform for hosting educational)",
+   "title": "Drawing Fundamentals | Slate Studio"
+  },
+  "coloringnation.com": {
+   "at": "2026-11-01T16:54:33Z",
+   "outcome": "no-family",
+   "why": "the model chose paint but the site says none of its words",
+   "title": "Coloring Nation - Tons of Free Coloring Pages - Coloring Nation"
+  },
+  "zischexpress.de": {
+   "at": "2026-11-01T16:54:38Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a beverage delivery service for specific German locations. Verse does not have a tool for shopping, local services, or beverage delivery.)",
+   "title": "ZischExpress Getränke - Lieferservice"
+  },
+  "coloringhome.com": {
+   "at": "2026-11-01T22:16:53Z",
+   "outcome": "no-family",
+   "why": "the model chose paint but the site says none of its words",
+   "title": "Coloring Nation - Tons of Free Coloring Pages - Coloring Nation"
+  },
+  "slackcommunity.com": {
+   "at": "2026-11-01T16:55:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a community platform for a specific software product, focused on local meetups and professional networking. None of the available Verse tools)",
+   "title": "Slack Community | Slack Community"
+  },
+  "ndscalc.ru": {
+   "at": "2026-11-01T16:55:26Z",
+   "outcome": "discarded",
+   "family": "formula calculators",
+   "why": "failed tests"
+  },
+  "ww2incolor.com": {
+   "at": "2026-11-01T22:16:59Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a curated historical archive of colorized World War II photographs. While Verse has a 'photos' tool, that tool is for image processing (editing)",
+   "title": "World War II In Color"
+  },
+  "justfont.com": {
+   "at": "2026-11-01T22:17:07Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (the website is a specialized font design studio and educational service that sells proprietary typefaces and offers design courses; Verse does not have a page)",
+   "title": "justfont｜新世代中文字型設計與字體教育團隊"
+  },
+  "streamingunity.dog": {
+   "at": "2026-11-01T22:17:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a streaming service for movies and TV shows, which is a commercial content platform. Verse does not have a tool for streaming video content or a)",
+   "title": "StreamingUnity"
+  },
+  "streamingunity.fun": {
+   "at": "2026-11-01T22:17:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "StreamingUnity"
+  },
+  "streamingunity.win": {
+   "at": "2026-11-01T22:17:26Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "StreamingUnity"
+  },
+  "colorfulbox.jp": {
+   "at": "2026-11-01T22:17:44Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial web hosting service provider offering server plans, domain registration, and AI website builders. Verse's 'hosting' tool is a)",
+   "title": "レンタルサーバー ColorfulBox（カラフルボックス）｜ 30日間無料お試し"
+  },
+  "communitycollegejobs.com": {
+   "at": "2026-11-01T22:17:46Z",
+   "outcome": "walled",
+   "why": "a nearly empty page (44 characters: a redirect stub, or a page that draws itself with no text)"
   }
  },
  "runs": [
@@ -807,6 +896,36 @@
    "fixed": [],
    "pages_per_day": 0,
    "reads_next": "seriouswheels.com"
+  },
+  {
+   "at": "2026-11-01T16:55:28Z",
+   "line": "Versus: took on no site (also read: 6 no-family, 1 not-judged, 1 discarded); the answer was not JSON on 1 of 8 reads, so those were not judged; next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "coloringhome.com",
+   "noop": true
+  },
+  {
+   "at": "2026-11-01T22:17:52Z",
+   "line": "Versus: took on no site (also read: 7 no-family, 1 walled); next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "calculoexato.com.br",
+   "noop": true
+  },
+  {
+   "at": "2026-11-01T22:20:26Z",
+   "line": "Versus: took on no site; next ndscalc.ru (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "calculoexato.com.br",
+   "noop": true
   }
  ]
 }

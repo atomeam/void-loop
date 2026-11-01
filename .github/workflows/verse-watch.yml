@@ -2,7 +2,8 @@
 # radio on its own to learn if it wants to"). Every hour Verse is shown a few free stations from /local/'s own lists and Radio Browser,
 # chooses one or none, and keeps short notes in its own words (tools/watch.py, /api/watchalong). For TV this runner reads about 75
 # seconds of the stream with ffmpeg for its captions and one still, in a temporary folder that the script deletes. Nothing of the stream
-# is kept or committed. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.
+# is kept or committed. After learning, tools/watch-ideas.mjs promotes idea notes onto the frontier + growth-inbox and opens a small PR
+# when there is something new (so growth builders ship them onto the site). Needs VOID_OWNER_TOKEN for the watch step.
 name: Verse watch
 
 on:
@@ -31,3 +32,78 @@ jobs:
         run: |
           if [ -z "$VOID_OWNER_TOKEN" ]; then echo "VOID_OWNER_TOKEN is not set: Verse did not watch" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
           set -o pipefail; python3 tools/watch.py 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # Promote learned app ideas onto the build path as a reviewable PR (not a silent push to main).
+  # Only touches domains/void.frontier.md and domains/growth-inbox.md. Automerge label so Verse review can land it.
+  promote-ideas:
+    needs: watch
+    if: always() && needs.watch.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Promote idea notes (or stop if none)
+        id: promo
+        run: |
+          echo "open=0" >> "$GITHUB_OUTPUT"
+          set -o pipefail
+          out=$(node tools/watch-ideas.mjs 2>&1 | tee -a "$GITHUB_STEP_SUMMARY") || true
+          if echo "$out" | grep -q '^none$'; then
+            echo "No new idea notes to promote" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # only the two queue files may change
+          changed=$(git diff --name-only -- domains/void.frontier.md domains/growth-inbox.md)
+          other=$(git diff --name-only | grep -vE '^(domains/void\.frontier\.md|domains/growth-inbox\.md)$' || true)
+          if [ -n "$other" ]; then
+            echo "::error title=Unexpected change::$other"
+            exit 1
+          fi
+          if [ -z "$changed" ]; then
+            echo "Files unchanged after promote" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "open=1" >> "$GITHUB_OUTPUT"
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+      - name: Open PR for the build queue
+        if: steps.promo.outputs.open == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="helper/watch-ideas-$(date -u +%Y%m%d%H%M)"
+          git config user.name "verse-watch"
+          git config user.email "verse-watch@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add domains/void.frontier.md domains/growth-inbox.md
+          git commit -m "watch-along: queue app ideas learned from TV/radio onto the frontier"
+          git push -u origin "$branch"
+          # skip if an open promote PR already exists
+          open=$(gh pr list --repo "${{ github.repository }}" --state open --search "watch-along: queue app ideas" --json number --jq 'length')
+          if [ "$open" != "0" ]; then
+            echo "An idea-promote PR is already open; leaving $branch without a second PR" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          gh pr create --repo "${{ github.repository }}" \
+            --base main --head "$branch" \
+            --title "watch-along: queue app ideas learned from TV/radio" \
+            --body "## Brief
+Idea notes Verse learned from local TV/radio are promoted onto the one build order so builders can ship them onto the site.
+
+**Touched only:** domains/void.frontier.md, domains/growth-inbox.md
+
+**Source:** tools/watch-ideas.mjs after the hourly verse-watch learn step. Stream material is never stored.
+
+Label for automerge when review is clean." \
+            --label automerge || gh pr create --repo "${{ github.repository }}" \
+            --base main --head "$branch" \
+            --title "watch-along: queue app ideas learned from TV/radio" \
+            --body "Idea notes from TV/radio → frontier + growth-inbox. Stream material never stored."
+          echo "Opened idea-promote PR" | tee -a "$GITHUB_STEP_SUMMARY"
