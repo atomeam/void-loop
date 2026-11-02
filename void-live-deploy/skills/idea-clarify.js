@@ -1,64 +1,143 @@
 /**
- * idea-clarify skill — turns a rough business idea into a clarified canvas with systems to design, build, connect, test, and monitor, plus handoff points.
- * Helps capture and clarify ideas so A-to-Mind can take over the heavy lifting.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * idea-clarify skill — "clarify this idea", "structure this business idea", "turn this idea into a plan"
+ * Turns a raw business idea into an editable structured card: problem, audience, solution, unique angle, next steps, risks.
+ * Helps capture and clarify ideas so delivery (design, build, handoff) starts from a clear brief. Nothing is sent.
+ * Rules-based so it always works; empty stage stays empty.
  */
-const WHEN = /(?:clarify|structure|break down|outline|canvas|map).*(?:idea|business|venture|product|saas|service|platform)|(?:business|product|service) idea|heavy lifting|systems for|canvas for/i;
+import { tidy } from '../lib/stage-pack.js';
 
-function extractIdea(text) {
-  // Strip the trigger phrases and take the rest as the idea.
-  return text.replace(/^(?:clarify|help me structure|break down|outline|make a canvas for|map)\s+(?:my\s+)?(?:business\s+)?idea(?:\s*:\s*|\s+about\s+)?/i, '').trim() || text;
+const ASK_RE = /^(?:please\s+)?(?:(?:clarify|structure|organize|break down|turn into a plan|make a plan from|clarify this)\s+(?:this\s+)?(?:business\s+)?idea|idea\s+(?:clarify|structure|plan)|clarify\s+idea)(?:\s*[:\-–—]?\s*(.*))?$/i;
+
+export function ideaOf(text) {
+  const t = tidy(text);
+  if (!t) return null;
+  const m = ASK_RE.exec(t.replace(/[?!.]+$/, ''));
+  if (!m) return null;
+  const rest = (m[1] || '').trim();
+  return { idea: rest };
 }
 
-function run(text, api) {
-  const { showPage, esc } = api;
-  const idea = extractIdea(text);
-  const canvas = {
-    core: idea,
-    customer: "Who pays or benefits? (e.g. students, parents, schools)",
-    problem: "What pain or job does this solve?",
-    solution: "The offering in one sentence.",
-    systems: [
-      "Capture: intake form or chat that records the idea and constraints",
-      "Design: mockups or architecture of the core loop (match, schedule, deliver)",
-      "Build: MVP of the primary transaction (payment, matching, content)",
-      "Connect: integrations (calendar, payments, auth, notifications)",
-      "Test: acceptance checks for the happy path and edge cases",
-      "Monitor: status dashboard, error alerts, usage metrics",
-      "Handoff: client-ready docs, running automation summary, ownership transfer"
-    ],
-    next: "Pick the smallest system that reduces client work first (usually capture + handoff status)."
-  };
+const FIELDS = [
+  ['problem', 'Problem'],
+  ['audience', 'Who it is for'],
+  ['solution', 'Solution'],
+  ['unique', 'What makes it different'],
+  ['next', 'Next steps'],
+  ['risks', 'Risks / open questions'],
+];
 
-  showPage((el) => {
-    el.innerHTML = `
-      <h2>${esc("Clarified idea")}</h2>
-      <p><strong>Core:</strong> ${esc(canvas.core)}</p>
-      <p><strong>Customer:</strong> ${esc(canvas.customer)}</p>
-      <p><strong>Problem:</strong> ${esc(canvas.problem)}</p>
-      <p><strong>Solution:</strong> ${esc(canvas.solution)}</p>
-      <h3>Systems to own the heavy lifting</h3>
-      <ul>${canvas.systems.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
-      <p><strong>Next:</strong> ${esc(canvas.next)}</p>
-      <div class="src">Source: structured from your words · A-to-Mind idea-to-system · as of 2026-11</div>
-    `;
+function ruleClarify(idea) {
+  const base = (idea || '[paste the idea]').slice(0, 280);
+  return {
+    problem: base,
+    audience: '[who has this problem]',
+    solution: '[how we solve it]',
+    unique: '[why us / this way]',
+    next: '1. Clarify the brief\n2. Design the system\n3. Build and test\n4. Hand off with docs and running automations',
+    risks: '[what could go wrong]',
+  };
+}
+
+function mount(th, stageApi) {
+  const el = (tag, css, text) => {
+    const e = document.createElement(tag);
+    if (css) e.style.cssText = css;
+    if (text != null) e.textContent = text;
+    return e;
+  };
+  const card = el('div');
+  card.className = 'thing kept-card idea-clarify-card';
+  card.dataset.id = th.id;
+  card.style.cssText = 'left:' + (th.x || 40) + 'px;top:' + (th.y || 40) + 'px;width:min(480px, calc(100vw - 20px))';
+  const head = el('div');
+  head.className = 'g-head';
+  head.innerHTML = '<span class="g-title">Idea clarified</span><span class="g-sub">editable · copy as Markdown for handoff</span>';
+  card.append(head);
+  const status = el('div', 'margin-top:6px;color:var(--muted,#9a9aa2);font-size:13px');
+  status.setAttribute('aria-live', 'polite');
+  card.append(status);
+  stageApi.bindDrag(card, th);
+  stageApi.stage.appendChild(card);
+
+  const paste = el('div', 'margin-top:8px');
+  const area = el('textarea', 'width:100%;min-height:80px;font:inherit;background:rgba(0,0,0,.22);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px');
+  area.placeholder = 'Paste the raw idea here';
+  area.value = th.idea || '';
+  const goBtn = el('button', null, 'Clarify');
+  goBtn.type = 'button';
+  goBtn.className = 'g-btn g-primary';
+  goBtn.addEventListener('click', () => clarify(area.value));
+  paste.append(area, goBtn);
+  card.append(paste);
+
+  const form = el('div', 'margin-top:8px;display:none');
+  const inputs = {};
+  for (const [k, label] of FIELDS) {
+    const row = el('label', 'display:block;margin-top:8px;font-size:12px;color:var(--muted,#9a9aa2)', label);
+    const f = el(k === 'next' || k === 'risks' ? 'textarea' : 'input', 'width:100%;min-height:34px;font:inherit;background:rgba(0,0,0,.22);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 8px');
+    f.dataset.field = k;
+    f.addEventListener('input', () => {
+      th.fields = th.fields || {};
+      th.fields[k] = f.value;
+      stageApi.save();
+    });
+    row.append(f);
+    form.append(row);
+    inputs[k] = f;
+  }
+  const bar = el('div', 'display:flex;gap:6px;flex-wrap:wrap;margin-top:10px');
+  const md = () => '# Idea clarified\n\n' + FIELDS.map(([k, label]) => '## ' + label + '\n\n' + ((th.fields && th.fields[k]) || '')).join('\n\n') + '\n';
+  const copyBtn = el('button', null, 'Copy Markdown');
+  copyBtn.type = 'button';
+  copyBtn.className = 'g-btn';
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(md());
+      status.textContent = 'copied as Markdown for handoff';
+    } catch (_) {
+      status.textContent = 'select the text and copy';
+    }
   });
-  return "idea-clarify";
+  bar.append(copyBtn);
+  form.append(bar);
+  card.append(form);
+
+  const paint = (fields) => {
+    th.fields = fields;
+    for (const [k] of FIELDS) inputs[k].value = fields[k] || '';
+    paste.style.display = 'none';
+    form.style.display = '';
+    stageApi.save();
+    status.textContent = 'Clarified by rule · edit any field · copy for client handoff';
+  };
+  const clarify = (idea) => {
+    th.idea = idea;
+    stageApi.save();
+    status.textContent = 'clarifying…';
+    const fields = ruleClarify(idea);
+    paint(fields);
+  };
+  if (th.fields) paint(th.fields);
+  else if (th.idea) clarify(th.idea);
+}
+
+async function run(text, api) {
+  const p = ideaOf(text);
+  if (!p) return 'none';
+  api.summon('idea-clarify', { center: true, idea: p.idea });
+  api.say(p.idea ? 'Idea clarified · structured brief ready to edit and hand off' : 'Idea · paste the raw idea into the card');
+  return 'idea-clarify';
 }
 
 export default {
-  name: "idea-clarify",
-  examples: [
-    "clarify my business idea: online tutoring platform for high school math",
-    "help me structure this idea into systems we can build",
-    "break down the idea of a local bakery delivery service",
-    "canvas for a B2B SaaS that automates invoice chasing"
-  ],
-  nearMisses: [
-    "what's the weather",
-    "calculate 2+2",
-    "tell me a joke"
-  ],
-  match(lower) { return WHEN.test(lower); },
-  run
+  name: 'idea-clarify',
+  examples: ['clarify this idea', 'structure this business idea', 'turn this idea into a plan', 'clarify idea: we need automated invoicing'],
+  nearMisses: ['what is an idea', 'idea for a movie', 'business plan template', 'clarify the rules'],
+  match(lower, text) { return !!ideaOf(text); },
+  run,
+  stageKinds: { 'idea-clarify': { mount } },
+  suite() {
+    const ok = !!ideaOf('clarify this idea') && !!ideaOf('structure this business idea') && !ideaOf('what is an idea');
+    return { ok, got: 'match works' };
+  }
 };
