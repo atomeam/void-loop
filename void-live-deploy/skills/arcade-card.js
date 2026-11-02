@@ -4,7 +4,7 @@
  */
 export function arcadeCard(th, stageApi, { cls, title, sub, w, h }) {
   const el = document.createElement('div');
-  el.className = 'thing kept-card game-card ' + cls; el.dataset.id = th.id; el.tabIndex = 0;
+  el.className = 'thing kept-card game-card ' + cls; el.dataset.id = th.id; el.tabIndex = 0; el.setAttribute('aria-label', 'Arcade game: ' + title);
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(' + (w + 24) + 'px, calc(100vw - 20px))';
   el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub"></span></div>';
   el.querySelector('.g-title').textContent = title; el.querySelector('.g-sub').textContent = sub;
