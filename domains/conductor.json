@@ -1,6 +1,6 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-02T21:06:32.798Z",
+ "updated": "2026-11-02T21:37:17.359Z",
  "last24h": {
   "ticks": 144,
   "started": 50,
@@ -137,60 +137,6 @@
   "mvygqckh": 1793578258289
  },
  "ticks": [
-  {
-   "at": "2026-11-01T21:15:29.241Z",
-   "open": 134,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": true,
-   "revived": [],
-   "held": 134,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-01T21:25:45.076Z",
-   "open": 134,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 134,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-01T21:35:58.904Z",
-   "open": 134,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 134,
-   "warnings": 0
-  },
   {
    "at": "2026-11-01T21:46:15.896Z",
    "open": 134,
@@ -3031,6 +2977,60 @@
   },
   {
    "at": "2026-11-02T21:06:32.798Z",
+   "open": 137,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 137,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-02T21:16:47.079Z",
+   "open": 137,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 137,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-02T21:27:02.021Z",
+   "open": 137,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 137,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-02T21:37:17.359Z",
    "open": 137,
    "started": [],
    "requeued": 0,
