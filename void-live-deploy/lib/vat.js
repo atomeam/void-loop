@@ -32,6 +32,8 @@ function roundHalfUp(numerator, denominator) {
   return (r * 2n >= denominator) ? q + 1n : q;
 }
 
+export const DEFAULT_RATE = 2200n;
+
 export const RATE_PRESETS = [
   { id: '0', rate: 0n, note: 'zero rate' },
   { id: '10', rate: 1000n, note: '10% rate' },
@@ -58,4 +60,32 @@ export function vatFromGross(grossKop, bp) {
   const vat = roundHalfUp(gross * rate, 10000n + rate);
   const net = gross - vat;
   return { net, vat, gross };
+}
+
+export function compute(s) {
+  if (s.mode === 'add') {
+    return vatFromNet(s.amount, s.rate);
+  } else {
+    return vatFromGross(s.amount, s.rate);
+  }
+}
+
+export function parseAmount(value) {
+  return normalizeAmount(value);
+}
+
+export function parseRate(value) {
+  return normalizeRate(value);
+}
+
+export function rateText(rate) {
+  if (rate === null) return '0';
+  const r = Number(rate) / 100;
+  return r.toString();
+}
+
+export function money(value, locale = 'en') {
+  if (value === null || value === undefined) return '0.00';
+  const v = Number(value) / 100;
+  return v.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
