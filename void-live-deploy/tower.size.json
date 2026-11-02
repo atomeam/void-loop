@@ -2326,14 +2326,17 @@
    "at": "2026-10-30"
   },
   "colorblockhome.com": {
-   "bytes": 595727,
+   "bytes": 595776,
+   "controls": 208,
    "scripts": 99,
    "styles": 49,
    "nodes": 1677,
    "routes": 5,
-   "weight": 812997,
-   "at": "2026-10-29",
-   "counted": "unrendered"
+   "htmlControls": 168,
+   "counted": "rendered",
+   "shell": "none",
+   "weight": 813046,
+   "at": "2026-11-02"
   },
   "colorbond.com": {
    "bytes": 1156145,
