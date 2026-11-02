@@ -2,6 +2,8 @@
 // The VAT amount is rounded half up to a whole kopeck, and the other side of the pair is derived
 // by addition or subtraction so net + vat = gross always holds exactly.
 
+export const DEFAULT_RATE = 2000n;
+
 const MAX_AMOUNT = 10n ** 15n;
 const MAX_RATE = 10000n;
 
@@ -58,4 +60,39 @@ export function vatFromGross(grossKop, bp) {
   const vat = roundHalfUp(gross * rate, 10000n + rate);
   const net = gross - vat;
   return { net, vat, gross };
+}
+
+export function compute(netKop, grossKop, bp) {
+  const netRes = vatFromNet(netKop, bp);
+  if (!netRes.error) return netRes;
+  const grossRes = vatFromGross(grossKop, bp);
+  if (!grossRes.error) return grossRes;
+  return { error: 'inconsistent' };
+}
+
+export function parseAmount(text) {
+  const clean = String(text || '').replace(/[^0-9.-]/g, '');
+  if (!clean || clean === '-' || clean === '.') return null;
+  const val = parseFloat(clean);
+  if (isNaN(val)) return null;
+  const kop = BigInt(Math.round(val * 100));
+  return kop >= 0n ? kop : null;
+}
+
+export function parseRate(text) {
+  const clean = String(text || '').replace(/[^0-9.]/g, '');
+  if (!clean) return null;
+  const val = parseFloat(clean);
+  if (isNaN(val)) return null;
+  const rate = BigInt(Math.round(val * 100));
+  return rate >= 0n ? rate : null;
+}
+
+export function money(kop, locale) {
+  const val = Number(kop) / 100;
+  return new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
+}
+
+export function rateText(rate) {
+  return (Number(rate) / 100).toFixed(0);
 }
