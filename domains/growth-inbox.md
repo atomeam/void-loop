@@ -6,7 +6,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 
 | status | date | ask | source |
 | --- | --- | --- | --- |
-| building | 2026-11-02 | idea-clarify skill: canvas a rough business idea into systems for design/build/monitor/handoff | growth agent; helper/idea-clarify |
 | shipped 2e52327 | 2026-10-02 | share this card | plan item 10, shared Voids |
 | shipped 8642810 | 2026-10-02 | answer me in Spanish | plan item 9, Verse in other languages |
 | shipped d972baf | 2026-10-02 | remind me at 5 | plan item 7, connector behind the confirm line |
@@ -81,3 +80,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-30 | fortune skill: a random fortune cookie message | new idea by growth agent |
 | open | 2026-10-30 | pig latin skill: convert text to pig latin | new idea by growth agent |
 | open | 2026-10-30 | acronym skill: expand or make an acronym | new idea by growth agent |
+| building | 2026-11-02 | idea-clarify skill: structured brief from a raw business idea (problem, audience, solution, next steps) for clearer handoff | new idea by growth agent; helper/idea-clarify |
