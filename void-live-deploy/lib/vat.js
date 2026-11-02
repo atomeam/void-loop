@@ -14,6 +14,24 @@ function toBigInt(value, kind) {
   return null;
 }
 
+export function parseAmount(text) {
+  const s = String(text || '').replace(/[^0-9.]/g, '');
+  if (!s) return null;
+  const parts = s.split('.');
+  const integerPart = BigInt(parts[0] || '0');
+  const decimalPart = parts[1] ? BigInt(parts[1].padEnd(2, '0').slice(0, 2)) : 0n;
+  return integerPart * 100n + decimalPart;
+}
+
+export function parseRate(text) {
+  const s = String(text || '').replace(/[^0-9.]/g, '');
+  if (!s) return null;
+  const parts = s.split('.');
+  const integerPart = BigInt(parts[0] || '0');
+  const decimalPart = parts[1] ? BigInt(parts[1].padEnd(2, '0').slice(0, 2)) : 0n;
+  return integerPart * 100n + decimalPart;
+}
+
 function normalizeAmount(value) {
   const v = toBigInt(value, 'amount');
   if (v === null || v < 0n || v > MAX_AMOUNT) return null;
@@ -38,6 +56,30 @@ export const RATE_PRESETS = [
   { id: '20', rate: 2000n, note: 'shipments before 2026-01-01 and corrections to them.' },
   { id: '22', rate: 2200n, note: 'standard rate since 2026-01-01.' },
 ];
+
+export const DEFAULT_RATE = 2200n;
+
+export function compute(state) {
+  const { amount, rate, mode } = state;
+  if (mode === 'add') {
+    const res = vatFromNet(amount, rate);
+    if (res.error) return null;
+    return { ...res, rate };
+  } else {
+    const res = vatFromGross(amount, rate);
+    if (res.error) return null;
+    return { ...res, rate };
+  }
+}
+
+export function money(kop, locale) {
+  const val = Number(kop) / 100;
+  return new Intl.NumberFormat(locale, { style: 'currency', currency: 'EUR' }).format(val);
+}
+
+export function rateText(rate) {
+  return String(Number(rate) / 100);
+}
 
 export function vatFromNet(netKop, bp) {
   const net = normalizeAmount(netKop);
