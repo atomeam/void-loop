@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --energy: 0.3;
+  --fitness: 0.5;
+  --bg: hsl(220, 15%, calc(8% + var(--energy) * 4%));
+  --accent: hsl(calc(180 + var(--fitness) * 80), 70%, 55%);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: #e0e0e0; font-family: system-ui, sans-serif; overflow: hidden; }
+#canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+.chrome { position: absolute; top: 12px; left: 12px; z-index: 10; background: rgba(0,0,0,0.55); padding: 10px 14px; border-radius: 8px; backdrop-filter: blur(4px); font-size: 13px; max-width: 280px; }
+.chrome button { margin: 4px 4px 0 0; padding: 4px 10px; background: var(--accent); border: none; color: #111; border-radius: 4px; cursor: pointer; }
+.facet {
+  position: absolute; width: 90px; height: 64px; background: rgba(30,30,40,0.75);
+  border: 1px solid var(--accent); border-radius: 6px; padding: 6px; font-size: 11px;
+  pointer-events: none; transition: background 0.2s; z-index: 5;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.status { position: absolute; bottom: 12px; left: 12px; font-size: 12px; opacity: 0.8; z-index: 10; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Softbody Policy Mind · Verse lab</title>
+<meta name="description" content="A mass-spring softbody mesh is simulated in a WebGPU compute pass (Canvas2D fallback).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Softbody Policy Mind · Verse lab">
+<meta property="og:description" content="A mass-spring softbody mesh is simulated in a WebGPU compute pass (Canvas2D fallback).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0482-webgpu-softbody-policy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0482-webgpu-softbody-policy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="chrome">
+  <strong>Softbody Policy Mind</strong><br>
+  Pointer is the target. Policy evolves to track it.<br>
+  <button id="seal">Seal (S)</button>
+  <button id="restore">Restore (R)</button>
+  <button id="reset">Reset Pose</button>
+  <button id="mode">Chase</button>
+</div>
+<div id="facets"></div>
+<div class="status" id="status">Energy: — Fitness: — Gen: 0</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Softbody Policy Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

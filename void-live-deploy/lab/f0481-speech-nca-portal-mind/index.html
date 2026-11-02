@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --entropy: 0.3; --portals: 1; --hue: 200; }
+body { margin:0; background:hsl(var(--hue),40%,8%); color:#eee; font-family:system-ui; overflow:hidden; }
+#canvas { width:100vw; height:100vh; display:block; touch-action:none; }
+#ui { position:absolute; top:12px; left:12px; background:rgba(0,0,0,.5); padding:10px; border-radius:8px; max-width:280px; }
+button, input { margin:4px 0; padding:6px; background:#222; color:#eee; border:1px solid #555; }
+#status { font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Speech-Seeded WebGPU NCA Portal Mind · Verse lab</title>
+<meta name="description" content="Web Speech Recognition (or keyboard fallback) produces a transcript that is locally hashed into a seed vector.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Speech-Seeded WebGPU NCA Portal Mind · Verse lab">
+<meta property="og:description" content="Web Speech Recognition (or keyboard fallback) produces a transcript that is locally hashed into a seed vector.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0481-speech-nca-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0481-speech-nca-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <div>Speech-Seeded NCA Portals</div>
+  <input id="seedInput" placeholder="type seed or speak..." />
+  <button id="speakBtn">Speak Seed</button>
+  <button id="sealBtn">Seal (S)</button>
+  <button id="restoreBtn">Restore (R)</button>
+  <div id="status">Ready. Speak or type to nucleate.</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Speech-Seeded WebGPU NCA Portal Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

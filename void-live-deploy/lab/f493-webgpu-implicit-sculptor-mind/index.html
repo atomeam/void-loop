@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root {
+  --diversity: 0.3;
+  --fitness: 0.5;
+  --radius: calc(8px + var(--diversity) * 40px);
+  --panel-opacity: calc(0.15 + var(--fitness) * 0.4);
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #0a0a12;
+  color: #e0e0ff;
+  font-family: system-ui, sans-serif;
+}
+canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a12 100%);
+}
+#chrome {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  pointer-events: none;
+  border-radius: var(--radius);
+  border: 2px solid rgba(100, 200, 255, var(--panel-opacity));
+  padding: 12px 16px;
+  background: rgba(10, 20, 40, var(--panel-opacity));
+  backdrop-filter: blur(4px);
+  font-size: 14px;
+  transition: border-radius 0.4s ease, opacity 0.4s ease;
+}
+#chrome h1 { margin: 0 0 4px 0; font-size: 18px; }
+#status { font-variant-numeric: tabular-nums; }
+button, .btn {
+  pointer-events: auto;
+  background: #2a3a5a;
+  border: 1px solid #4af;
+  color: #cef;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+button:hover { background: #3a4a6a; }
+#info {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  font-size: 12px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-implicit-sculptor-mind · Verse lab</title>
+<meta name="description" content="A local evolutionary sculptor mind (population of genomes in a Web Worker) continuously mutates and selects parameters for a parametric signed-distance field">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-implicit-sculptor-mind · Verse lab">
+<meta property="og:description" content="A local evolutionary sculptor mind (population of genomes in a Web Worker) continuously mutates and selects parameters for a parametric signed-distance field">
+<meta property="og:url" content="https://a-to-mind.com/lab/f493-webgpu-implicit-sculptor-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f493-webgpu-implicit-sculptor-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome">
+  <h1>Implicit Sculptor Mind · F-493</h1>
+  <div id="status">diversity 0.00 · fitness 0.00 · particles 0 · generation 0</div>
+  <div style="margin-top:8px">
+    <button id="sealBtn">Seal Form (S)</button>
+    <button id="restoreBtn">Restore (R)</button>
+    <button id="resetBtn">Reset Population</button>
+  </div>
+</div>
+<canvas id="c"></canvas>
+<div id="info">Move pointer to guide the sculptor. High dwell near the surface raises fitness. Seal stores a SHA-256 form memory. Offline after load. WebGPU path noted for next.</div>
+
+<script src="app.js"></script>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

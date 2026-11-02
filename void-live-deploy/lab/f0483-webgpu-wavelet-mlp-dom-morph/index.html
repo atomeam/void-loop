@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --energy: 0.3; --hue: 200; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#chrome { position:fixed; inset:0; pointer-events:none; background:radial-gradient(circle at 50% 50%, hsl(var(--hue),40%,calc(8% + var(--energy)*12%)) 0%, #000 70%); transition:background 0.3s; }
+#grid { position:absolute; inset:40px; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:12px; }
+.card { background:hsl(var(--h),60%,20%); border:1px solid hsl(var(--h),80%,50%); border-radius:12px; padding:16px; transform:scale(var(--s,1)) translate(var(--tx,0),var(--ty,0)); filter:blur(var(--b,0px)); transition:transform 0.15s, filter 0.2s, background 0.3s; display:flex; align-items:center; justify-content:center; font-size:14px; text-align:center; }
+#controls { position:fixed; bottom:12px; left:12px; z-index:10; display:flex; gap:8px; }
+button { background:#222; color:#fff; border:1px solid #555; padding:6px 10px; border-radius:6px; cursor:pointer; }
+canvas { position:absolute; inset:0; pointer-events:none; opacity:0.4; }
+#status { position:fixed; top:8px; left:8px; font-size:12px; opacity:0.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Wavelet MLP DOM Morph Mind · Verse lab</title>
+<meta name="description" content="A short circular buffer of pointer velocity samples is fed to a WebGPU compute shader that performs a discrete Haar wavelet transform (previously unused kernel).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Wavelet MLP DOM Morph Mind · Verse lab">
+<meta property="og:description" content="A short circular buffer of pointer velocity samples is fed to a WebGPU compute shader that performs a discrete Haar wavelet transform (previously unused kernel).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0483-webgpu-wavelet-mlp-dom-morph/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0483-webgpu-wavelet-mlp-dom-morph/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/lab/needs.js" data-needs="webgpu" defer></script>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="chrome"></div>
+<div id="grid"></div>
+<canvas id="c"></canvas>
+<div id="status">move pointer • S seal • R restore</div>
+<div id="controls">
+  <button id="seal">Seal</button>
+  <button id="restore">Restore</button>
+  <button id="reset">Reset</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Wavelet MLP DOM Morph Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

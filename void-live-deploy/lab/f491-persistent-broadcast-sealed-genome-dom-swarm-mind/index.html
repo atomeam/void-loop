@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+#stage { perspective:800px; width:100vw; height:100vh; position:relative; }
+.agent { position:absolute; width:60px; height:40px; background:rgba(80,120,255,0.7); border:1px solid #aaf; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; transition:transform 0.1s; box-shadow:0 4px 12px rgba(0,0,0,0.4); }
+.agent.sealed { border-color:#ff0; background:rgba(255,200,0,0.8); }
+.agent.weak { opacity:0.6; }
+#ui { position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.7); padding:10px; border-radius:8px; z-index:10; max-width:280px; }
+button { margin:4px; padding:6px 10px; background:#224; color:#fff; border:1px solid #44a; border-radius:4px; cursor:pointer; }
+#log { font-size:11px; max-height:120px; overflow:auto; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>persistent-broadcast-sealed-genome-dom-swarm-mind · Verse lab</title>
+<meta name="description" content="Persistent multi-tab sealed genome auction for a swarm of local tiny MLPs. Agents compete for a shared resource field.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="persistent-broadcast-sealed-genome-dom-swarm-mind · Verse lab">
+<meta property="og:description" content="Persistent multi-tab sealed genome auction for a swarm of local tiny MLPs. Agents compete for a shared resource field.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f491-persistent-broadcast-sealed-genome-dom-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f491-persistent-broadcast-sealed-genome-dom-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <h3>F491 Sealed Genome Swarm</h3>
+  <p>Click agent to seal genome. Click weak to transfer. Multi-tab sync via BroadcastChannel. Persists in IndexedDB.</p>
+  <button id="reset">Reset Population</button>
+  <button id="save">Force Save</button>
+  <div id="log"></div>
+</div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">persistent-broadcast-sealed-genome-dom-swarm-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
