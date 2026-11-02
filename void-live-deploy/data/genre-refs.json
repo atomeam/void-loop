@@ -1,0 +1,1018 @@
+{
+ "made": "2026-11-02",
+ "source": "Internet Archive netlabels (archive.org/details/netlabels), Creative Commons, no NonCommercial licence",
+ "tool": "tools/genre-refs.mjs",
+ "genres": {
+  "heavy": {
+   "id": "heavy",
+   "label": "metal and hard rock",
+   "subjects": [
+    "metal",
+    "heavy metal",
+    "thrash metal",
+    "hard rock",
+    "punk"
+   ],
+   "tracks": [
+    {
+     "id": "gt536Maelstrom-ThePassage",
+     "title": "In a Painted Black World",
+     "creator": "Maelstrom",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt536Maelstrom-ThePassage",
+     "file": "01-Maelstrom-InAPaintedBlackWorld.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 105.2,
+      "confidence": 0.05,
+      "swing": 0.74,
+      "tight": 31.6,
+      "late": -2.3,
+      "density": 4.07,
+      "lufs": -11.2,
+      "peak": -0.9,
+      "plr": 10.3,
+      "bands": {
+       "sub": -12.8,
+       "low": -3.4,
+       "mid": -5.2,
+       "presence": -7.4,
+       "air": -19.1
+      },
+      "width": -2.8
+     }
+    },
+    {
+     "id": "gt390FandorinProjet2",
+     "title": "01 Marsh Goblins - Tunguska in my heart (Intro)",
+     "creator": "Marsh Goblins",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt390FandorinProjet2",
+     "file": "01MarshGoblins-TunguskaInMyHeartintro.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 63.8,
+      "confidence": 0.26,
+      "swing": 0.503,
+      "tight": 52.7,
+      "late": -0.7,
+      "density": 6.78,
+      "lufs": -7.1,
+      "peak": 0.7,
+      "plr": 7.8,
+      "bands": {
+       "sub": -12.7,
+       "low": -5.6,
+       "mid": -3.4,
+       "presence": -7.8,
+       "air": -13.9
+      },
+      "width": -25
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -12.75,
+     "low": -4.5,
+     "mid": -4.3,
+     "presence": -7.6,
+     "air": -16.5
+    },
+    "bpm": 84.5,
+    "swing": 0.62,
+    "tight": 42.15,
+    "density": 5.43,
+    "lufs": -9.15,
+    "plr": 9.05,
+    "width": -13.9,
+    "seconds": 120
+   }
+  },
+  "beat": {
+   "id": "beat",
+   "label": "hip hop",
+   "subjects": [
+    "hip hop",
+    "hip-hop",
+    "rap",
+    "instrumental hip hop"
+   ],
+   "tracks": [
+    {
+     "id": "fixture",
+     "title": "Critical Anti-Government Love Triangle",
+     "creator": "Scrap Heap",
+     "license": "http://creativecommons.org/licenses/publicdomain/",
+     "page": "https://archive.org/details/fixture",
+     "file": "01-critical_anti_government_love_triangle.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 85.1,
+      "confidence": 0.23,
+      "swing": 0.51,
+      "tight": 7.7,
+      "late": 4.5,
+      "density": 6.18,
+      "lufs": -12.5,
+      "peak": 0.1,
+      "plr": 12.6,
+      "bands": {
+       "sub": -6.9,
+       "low": -2.6,
+       "mid": -6.8,
+       "presence": -14.5,
+       "air": -26.1
+      },
+      "width": -13.5
+     }
+    },
+    {
+     "id": "gt390FandorinProjet2",
+     "title": "01 Marsh Goblins - Tunguska in my heart (Intro)",
+     "creator": "Marsh Goblins",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt390FandorinProjet2",
+     "file": "01MarshGoblins-TunguskaInMyHeartintro.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 63.8,
+      "confidence": 0.26,
+      "swing": 0.503,
+      "tight": 52.7,
+      "late": -0.7,
+      "density": 6.78,
+      "lufs": -7.1,
+      "peak": 0.7,
+      "plr": 7.8,
+      "bands": {
+       "sub": -12.7,
+       "low": -5.6,
+       "mid": -3.4,
+       "presence": -7.8,
+       "air": -13.9
+      },
+      "width": -25
+     }
+    },
+    {
+     "id": "onmp163",
+     "title": "Go deeper",
+     "creator": "Zinoeki",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/onmp163",
+     "file": "01_Zinoeki_Godeeper.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 65,
+      "confidence": 0.21,
+      "swing": 0.483,
+      "tight": 13.4,
+      "late": -7.9,
+      "density": 6.93,
+      "lufs": -10,
+      "peak": 0.7,
+      "plr": 10.7,
+      "bands": {
+       "sub": -5.6,
+       "low": -2.3,
+       "mid": -11.7,
+       "presence": -14.5,
+       "air": -15.5
+      },
+      "width": -11
+     }
+    },
+    {
+     "id": "USR-021",
+     "title": "CellarDoor - The Filmstrip",
+     "creator": "CellarDoor",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/USR-021",
+     "file": "01_Cellardoor_-_The_Filmstrip.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 99.9,
+      "confidence": 0.07,
+      "swing": 0.433,
+      "tight": 17.1,
+      "late": -2.3,
+      "density": 6.92,
+      "lufs": -12.5,
+      "peak": 0.4,
+      "plr": 13,
+      "bands": {
+       "sub": -5.4,
+       "low": -4.6,
+       "mid": -5.2,
+       "presence": -14,
+       "air": -16.9
+      },
+      "width": -0.8
+     }
+    },
+    {
+     "id": "USR-010",
+     "title": "Declaration Of Independence",
+     "creator": "Abraham Lincoln",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/USR-010",
+     "file": "Track01-DeclarationOfIndependence.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 73.9,
+      "confidence": 0.41,
+      "swing": 0.587,
+      "tight": 41.5,
+      "late": 0.2,
+      "density": 6.02,
+      "lufs": -10.1,
+      "peak": 1.3,
+      "plr": 11.3,
+      "bands": {
+       "sub": -9.2,
+       "low": -3.9,
+       "mid": -4.2,
+       "presence": -11.8,
+       "air": -15
+      },
+      "width": -12.7
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -7.96,
+     "low": -3.8,
+     "mid": -6.26,
+     "presence": -12.52,
+     "air": -17.48
+    },
+    "bpm": 77.54,
+    "swing": 0.5,
+    "tight": 26.48,
+    "density": 6.57,
+    "lufs": -10.44,
+    "plr": 11.08,
+    "width": -12.6,
+    "seconds": 300
+   }
+  },
+  "rainy": {
+   "id": "rainy",
+   "label": "lo-fi and chill",
+   "subjects": [
+    "lo-fi",
+    "lofi",
+    "chillout",
+    "downtempo"
+   ],
+   "tracks": [
+    {
+     "id": "Hfr022-zakWhitefield-DormRoomEp",
+     "title": "Break Your Fall",
+     "creator": "Zak Whitefield",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/uk/",
+     "page": "https://archive.org/details/Hfr022-zakWhitefield-DormRoomEp",
+     "file": "BreakYourFall.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 120,
+      "confidence": 0.32,
+      "swing": 0.676,
+      "tight": 22.2,
+      "late": -2.7,
+      "density": 4.87,
+      "lufs": -15.2,
+      "peak": 0.1,
+      "plr": 15.3,
+      "bands": {
+       "sub": -25.7,
+       "low": -4.4,
+       "mid": -2.2,
+       "presence": -17.1,
+       "air": -18.8
+      },
+      "width": -7.8
+     }
+    },
+    {
+     "id": "puMpL006_-_postunder_records_-_minimags_compilation_vol_1",
+     "title": "Birds Don't Fly. They Just Jump Really High.",
+     "creator": "Afshar",
+     "license": "http://creativecommons.org/licenses/by-nd/2.5/",
+     "page": "https://archive.org/details/puMpL006_-_postunder_records_-_minimags_compilation_vol_1",
+     "file": "afshar_-_birds_dont_fly_they_just_jump_really_high.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 95,
+      "confidence": 0.01,
+      "swing": 0.449,
+      "tight": 9.3,
+      "late": -4.5,
+      "density": 5.32,
+      "lufs": -13.4,
+      "peak": -0.1,
+      "plr": 13.4,
+      "bands": {
+       "sub": -3.9,
+       "low": -3.6,
+       "mid": -10.1,
+       "presence": -12.7,
+       "air": -22.3
+      },
+      "width": -9.7
+     }
+    },
+    {
+     "id": "In_Vitro_-_Phantastico_Dogma_Remixes",
+     "title": "Cuix amo nican nica nimonantzin (horiso remix)",
+     "creator": "In Vitro",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/In_Vitro_-_Phantastico_Dogma_Remixes",
+     "file": "brhnet13_01_In_Vitro_-_Cuix_amo_nican_nica_nimonantzin_horiso_rmx.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 83.9,
+      "confidence": 0.29,
+      "swing": 0.55,
+      "tight": 46.3,
+      "late": -2.7,
+      "density": 5.03,
+      "lufs": -17.5,
+      "peak": -3.8,
+      "plr": 13.8,
+      "bands": {
+       "sub": -5.5,
+       "low": -4.2,
+       "mid": -4.7,
+       "presence": -24.6,
+       "air": -34.4
+      },
+      "width": -13.6
+     }
+    },
+    {
+     "id": "001records.com-02-_REFLEJO_Reflejo_21",
+     "title": "01_fiebre_polar",
+     "creator": "Reflejo",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/cl/",
+     "page": "https://archive.org/details/001records.com-02-_REFLEJO_Reflejo_21",
+     "file": "01_fiebre_polar.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 119,
+      "confidence": 0.19,
+      "swing": 0.468,
+      "tight": 4.8,
+      "late": 3.4,
+      "density": 7.22,
+      "lufs": -13.9,
+      "peak": -2.2,
+      "plr": 11.7,
+      "bands": {
+       "sub": -6.1,
+       "low": -2.8,
+       "mid": -7.5,
+       "presence": -16.2,
+       "air": -16
+      },
+      "width": -11.2
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -10.3,
+     "low": -3.75,
+     "mid": -6.12,
+     "presence": -17.65,
+     "air": -22.87
+    },
+    "bpm": 104.48,
+    "swing": 0.54,
+    "tight": 20.65,
+    "density": 5.61,
+    "lufs": -15,
+    "plr": 13.55,
+    "width": -10.57,
+    "seconds": 240
+   }
+  },
+  "dark": {
+   "id": "dark",
+   "label": "dark ambient",
+   "subjects": [
+    "dark ambient",
+    "darkwave"
+   ],
+   "tracks": [
+    {
+     "id": "SPNet071-PHANTASMNOCTURNES-CANNIBALRITES",
+     "title": "Impending Doom",
+     "creator": "PHANTASM NOCTURNES",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/SPNet071-PHANTASMNOCTURNES-CANNIBALRITES",
+     "file": "Spnet071-PhantasmNocturnes-CannibalRites-01-ImpendingDoom.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 83.7,
+      "confidence": 0.05,
+      "swing": 0.602,
+      "tight": 40.8,
+      "late": 3.1,
+      "density": 7.17,
+      "lufs": -6,
+      "peak": -0.1,
+      "plr": 5.9,
+      "bands": {
+       "sub": -6.1,
+       "low": -1.4,
+       "mid": -16.2,
+       "presence": -22.5,
+       "air": -37.9
+      },
+      "width": -10.8
+     }
+    },
+    {
+     "id": "gt390FandorinProjet2",
+     "title": "01 Marsh Goblins - Tunguska in my heart (Intro)",
+     "creator": "Marsh Goblins",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt390FandorinProjet2",
+     "file": "01MarshGoblins-TunguskaInMyHeartintro.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 63.8,
+      "confidence": 0.26,
+      "swing": 0.503,
+      "tight": 52.7,
+      "late": -0.7,
+      "density": 6.78,
+      "lufs": -7.1,
+      "peak": 0.7,
+      "plr": 7.8,
+      "bands": {
+       "sub": -12.7,
+       "low": -5.6,
+       "mid": -3.4,
+       "presence": -7.8,
+       "air": -13.9
+      },
+      "width": -25
+     }
+    },
+    {
+     "id": "MNF041_Callejas--Paramo",
+     "title": "Páramo 1",
+     "creator": "Callejas",
+     "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+     "page": "https://archive.org/details/MNF041_Callejas--Paramo",
+     "file": "01_Callejas_-_Páramo_1.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 62,
+      "confidence": 0.36,
+      "swing": 0.488,
+      "tight": 19,
+      "late": -6.8,
+      "density": 3.95,
+      "lufs": -14,
+      "peak": -0.2,
+      "plr": 13.8,
+      "bands": {
+       "sub": -4.3,
+       "low": -2.6,
+       "mid": -11.2,
+       "presence": -24.6,
+       "air": -31.8
+      },
+      "width": -8.1
+     }
+    },
+    {
+     "id": "gt453ChernobylNuclearPowerPlant",
+     "title": "1. Morbid Silence - Mists Over The Chernobyl",
+     "creator": "unknown",
+     "license": "http://creativecommons.org/publicdomain/zero/1.0/",
+     "page": "https://archive.org/details/gt453ChernobylNuclearPowerPlant",
+     "file": "1.MorbidSilence-MistsOverTheChernobyl.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 75.3,
+      "confidence": 0.05,
+      "swing": 0.572,
+      "tight": 48.9,
+      "late": -1.6,
+      "density": 7.07,
+      "lufs": -19.9,
+      "peak": -6.5,
+      "plr": 13.4,
+      "bands": {
+       "sub": -17.2,
+       "low": -2.8,
+       "mid": -3.5,
+       "presence": -18.6,
+       "air": -42.3
+      },
+      "width": -0.1
+     }
+    },
+    {
+     "id": "dlnet006",
+     "title": "Home Is Where The Heart Stops",
+     "creator": "Remote Jesus",
+     "license": "http://creativecommons.org/licenses/by-nd/2.0/",
+     "page": "https://archive.org/details/dlnet006",
+     "file": "eight.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 99.8,
+      "confidence": 0.06,
+      "swing": 0.532,
+      "tight": 39.7,
+      "late": -0.4,
+      "density": 5.33,
+      "lufs": -17.5,
+      "peak": -3.3,
+      "plr": 14.2,
+      "bands": {
+       "sub": -8.3,
+       "low": -2.5,
+       "mid": -5.6,
+       "presence": -21.3,
+       "air": -33.7
+      },
+      "width": -8.5
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -9.72,
+     "low": -2.98,
+     "mid": -7.98,
+     "presence": -18.96,
+     "air": -31.92
+    },
+    "bpm": 76.92,
+    "swing": 0.54,
+    "tight": 40.22,
+    "density": 6.06,
+    "lufs": -12.9,
+    "plr": 11.02,
+    "width": -10.5,
+    "seconds": 300
+   }
+  },
+  "epic": {
+   "id": "epic",
+   "label": "cinematic and soundtrack",
+   "subjects": [
+    "cinematic",
+    "soundtrack",
+    "orchestral"
+   ],
+   "tracks": [
+    {
+     "id": "ambientcollective005",
+     "title": "Alone In The Dark - Na-Koja-Abad",
+     "creator": "Na-Koja-Abad",
+     "license": "http://creativecommons.org/licenses/by-nd/2.5/",
+     "page": "https://archive.org/details/ambientcollective005",
+     "file": "01.alone-in-the-dark-by-Na-Koja-Abad.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 89.4,
+      "confidence": 0.02,
+      "swing": 0.525,
+      "tight": 42.5,
+      "late": 2.7,
+      "density": 2.33,
+      "lufs": -18.7,
+      "peak": -5.2,
+      "plr": 13.5,
+      "bands": {
+       "sub": -20.8,
+       "low": -1,
+       "mid": -7.6,
+       "presence": -17.7,
+       "air": -42.6
+      },
+      "width": -1
+     }
+    },
+    {
+     "id": "hc151_hippocamp_winter_compilation",
+     "title": "bathwater, rust metal and rain",
+     "creator": "autistici",
+     "license": "http://creativecommons.org/licenses/by-nd/2.5/",
+     "page": "https://archive.org/details/hc151_hippocamp_winter_compilation",
+     "file": "hc151_01_bathwater_rust_metal_and_rain_by_autistici.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.3,
+      "confidence": 0.04,
+      "swing": 0.63,
+      "tight": 41.9,
+      "late": 0.9,
+      "density": 5.15,
+      "lufs": -17.4,
+      "peak": -0.4,
+      "plr": 17,
+      "bands": {
+       "sub": -3.6,
+       "low": -4.4,
+       "mid": -7.3,
+       "presence": -21.4,
+       "air": -28.1
+      },
+      "width": -21.2
+     }
+    },
+    {
+     "id": "Various_Artists_-_Psicotropicodelia_Music_Vol._1",
+     "title": "A Bifurcacao Da Dobra Quantica",
+     "creator": "Sonido Sintetico",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/Various_Artists_-_Psicotropicodelia_Music_Vol._1",
+     "file": "01_-_SONIDO_SINTETICO_-_A_Bifurcacao_Da_Dobra_Quantica.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 67,
+      "confidence": 0.36,
+      "swing": 0.488,
+      "tight": 36.4,
+      "late": -1.9,
+      "density": 6.32,
+      "lufs": -11.3,
+      "peak": -0.3,
+      "plr": 11,
+      "bands": {
+       "sub": -10,
+       "low": -3.1,
+       "mid": -5,
+       "presence": -12.7,
+       "air": -13.9
+      },
+      "width": -3.5
+     }
+    },
+    {
+     "id": "mt008",
+     "title": "As soon as I close my eyes (I can't recall what my face is like)",
+     "creator": "Doc & Lena Selyanina",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/mt008",
+     "file": "04_-_As_soon_as_I_close_my_eyes_I_cant_recall_what_my_face_is_like.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 88.6,
+      "confidence": 0.02,
+      "swing": 0.615,
+      "tight": 44.3,
+      "late": -3.1,
+      "density": 4.88,
+      "lufs": -17.3,
+      "peak": -0.1,
+      "plr": 17.2,
+      "bands": {
+       "sub": -10.5,
+       "low": -2.2,
+       "mid": -5.3,
+       "presence": -20.8,
+       "air": -35.9
+      },
+      "width": -3.4
+     }
+    },
+    {
+     "id": "AMR045",
+     "title": "Dark Ages",
+     "creator": "Upheaval",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/AMR045",
+     "file": "01_Dark_Ages.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.3,
+      "confidence": 0.03,
+      "swing": 0.557,
+      "tight": 42,
+      "late": -2.7,
+      "density": 6.4,
+      "lufs": -24.3,
+      "peak": -6.3,
+      "plr": 18.1,
+      "bands": {
+       "sub": -15,
+       "low": -5.2,
+       "mid": -1.8,
+       "presence": -25.2,
+       "air": -47.9
+      },
+      "width": -0.3
+     }
+    },
+    {
+     "id": "hr046",
+     "title": "Carotza",
+     "creator": "no artist",
+     "license": "http://creativecommons.org/licenses/publicdomain/",
+     "page": "https://archive.org/details/hr046",
+     "file": "01_carotza.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 92.3,
+      "confidence": 0.03,
+      "swing": 0.58,
+      "tight": 39.7,
+      "late": 4.9,
+      "density": 3.88,
+      "lufs": -11.3,
+      "peak": 0.3,
+      "plr": 11.5,
+      "bands": {
+       "sub": -16.2,
+       "low": -6.1,
+       "mid": -3.5,
+       "presence": -5.8,
+       "air": -16.2
+      },
+      "width": -3.6
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -12.68,
+     "low": -3.67,
+     "mid": -5.08,
+     "presence": -17.27,
+     "air": -30.77
+    },
+    "bpm": 86.98,
+    "swing": 0.57,
+    "tight": 41.13,
+    "density": 4.83,
+    "lufs": -16.72,
+    "plr": 14.72,
+    "width": -5.5,
+    "seconds": 360
+   }
+  },
+  "lullaby": {
+   "id": "lullaby",
+   "label": "lullabies and gentle piano",
+   "subjects": [
+    "lullaby",
+    "piano",
+    "solo piano"
+   ],
+   "tracks": [
+    {
+     "id": "mt008",
+     "title": "As soon as I close my eyes (I can't recall what my face is like)",
+     "creator": "Doc & Lena Selyanina",
+     "license": "http://creativecommons.org/licenses/by/2.5/",
+     "page": "https://archive.org/details/mt008",
+     "file": "04_-_As_soon_as_I_close_my_eyes_I_cant_recall_what_my_face_is_like.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 88.6,
+      "confidence": 0.02,
+      "swing": 0.615,
+      "tight": 44.3,
+      "late": -3.1,
+      "density": 4.88,
+      "lufs": -17.3,
+      "peak": -0.1,
+      "plr": 17.2,
+      "bands": {
+       "sub": -10.5,
+       "low": -2.2,
+       "mid": -5.3,
+       "presence": -20.8,
+       "air": -35.9
+      },
+      "width": -3.4
+     }
+    },
+    {
+     "id": "toulp1",
+     "title": "Eternal Truth",
+     "creator": "Psychadelik Pedestrian",
+     "license": "http://creativecommons.org/licenses/by-sa/3.0/",
+     "page": "https://archive.org/details/toulp1",
+     "file": "toulp1a.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 83,
+      "confidence": 0.16,
+      "swing": 0.465,
+      "tight": 28.6,
+      "late": -0.4,
+      "density": 6.97,
+      "lufs": -10.5,
+      "peak": 0.2,
+      "plr": 10.7,
+      "bands": {
+       "sub": -16.3,
+       "low": -3.6,
+       "mid": -3,
+       "presence": -17.2,
+       "air": -18.2
+      },
+      "width": -4.2
+     }
+    },
+    {
+     "id": "WT_WTW",
+     "title": "Nexus",
+     "creator": "Whalt Thisney",
+     "license": "http://creativecommons.org/licenses/by-nd/4.0/",
+     "page": "https://archive.org/details/WT_WTW",
+     "file": "1. Nexus.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 69,
+      "confidence": 0,
+      "swing": 0.557,
+      "tight": 53.3,
+      "late": -0.1,
+      "density": 5.85,
+      "lufs": -10.8,
+      "peak": 0.1,
+      "plr": 11,
+      "bands": {
+       "sub": -14.3,
+       "low": -5.3,
+       "mid": -1.9,
+       "presence": -16,
+       "air": -28.4
+      },
+      "width": -0.2
+     }
+    },
+    {
+     "id": "Chozas_amp055",
+     "title": "choza 1",
+     "creator": "Otra Carpeta",
+     "license": "http://creativecommons.org/licenses/by-nd/2.5/mx/",
+     "page": "https://archive.org/details/Chozas_amp055",
+     "file": "01_choza_1.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 108.7,
+      "confidence": 0.64,
+      "swing": null,
+      "tight": 32.1,
+      "late": 4.6,
+      "density": 5.65,
+      "lufs": -20.1,
+      "peak": -3.4,
+      "plr": 16.7,
+      "bands": {
+       "sub": -67.3,
+       "low": -27.9,
+       "mid": 0,
+       "presence": -38.2,
+       "air": -67
+      },
+      "width": -6.1
+     }
+    },
+    {
+     "id": "hnr026",
+     "title": "Her Last Temptation",
+     "creator": "Tearsfallen",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/",
+     "page": "https://archive.org/details/hnr026",
+     "file": "01.HerLastTemptation.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 96.1,
+      "confidence": 0.1,
+      "swing": 0.526,
+      "tight": 36.7,
+      "late": 2.9,
+      "density": 5.85,
+      "lufs": -23.1,
+      "peak": -7.8,
+      "plr": 15.4,
+      "bands": {
+       "sub": -6.8,
+       "low": -5.4,
+       "mid": -3,
+       "presence": -26.4,
+       "air": -56
+      },
+      "width": -1.2
+     }
+    },
+    {
+     "id": "mt021",
+     "title": "Wanderer",
+     "creator": "Doc & Lena Selyanina",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/mt021",
+     "file": "01_-_Wanderer.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 100.3,
+      "confidence": 0.05,
+      "swing": 0.473,
+      "tight": 35.6,
+      "late": -8.5,
+      "density": 6.58,
+      "lufs": -18.6,
+      "peak": -2.9,
+      "plr": 15.7,
+      "bands": {
+       "sub": -13.3,
+       "low": -3.6,
+       "mid": -3,
+       "presence": -17.7,
+       "air": -40.3
+      },
+      "width": -5.1
+     }
+    },
+    {
+     "id": "vigil",
+     "title": "vigil_001",
+     "creator": "Phillip Wilkerson",
+     "license": "http://creativecommons.org/licenses/by-nd/3.0/us/",
+     "page": "https://archive.org/details/vigil",
+     "file": "vigil_001.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 82.8,
+      "confidence": 0.33,
+      "swing": 0.528,
+      "tight": 47.5,
+      "late": -1.5,
+      "density": 8.55,
+      "lufs": -16.1,
+      "peak": -1.1,
+      "plr": 15,
+      "bands": {
+       "sub": -30.3,
+       "low": -2,
+       "mid": -4.3,
+       "presence": -34.6,
+       "air": -41.4
+      },
+      "width": -3.1
+     }
+    },
+    {
+     "id": "mt015",
+     "title": "Alexander's Walk",
+     "creator": "Doc & Lena Selyanina",
+     "license": "http://creativecommons.org/licenses/by/3.0/",
+     "page": "https://archive.org/details/mt015",
+     "file": "02_-_Alexanders_Walk.mp3",
+     "profile": {
+      "seconds": 60,
+      "bpm": 76.3,
+      "confidence": 0,
+      "swing": null,
+      "tight": 48.9,
+      "late": -0.5,
+      "density": 7.12,
+      "lufs": -19.5,
+      "peak": -4.2,
+      "plr": 15.2,
+      "bands": {
+       "sub": -21.8,
+       "low": -12.8,
+       "mid": -0.4,
+       "presence": -17,
+       "air": -27.7
+      },
+      "width": -1.9
+     }
+    }
+   ],
+   "average": {
+    "bands": {
+     "sub": -22.58,
+     "low": -7.85,
+     "mid": -2.61,
+     "presence": -23.49,
+     "air": -39.36
+    },
+    "bpm": 88.1,
+    "swing": 0.53,
+    "tight": 40.88,
+    "density": 6.43,
+    "lufs": -17,
+    "plr": 14.61,
+    "width": -3.15,
+    "seconds": 480
+   }
+  }
+ }
+}
