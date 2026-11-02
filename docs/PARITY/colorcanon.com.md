@@ -3,7 +3,7 @@
 Written by `node tools/parity.mjs --write` from the feature rows in `tools/parity-catalog.mjs` and the live scan in `docs/PARITY/live.json`. Fix a wrong row in the catalogue, not here. Its obituary may say "beaten" only when this page has no missing, partial or unreviewed rows and the tower gate has 9 of 9 with evidence.
 
 - Original: colorcanon.com (https://colorcanon.com/)
-- Verse: /color/ (color canon, tower gate 0 of 12)
+- Verse: /color/ (color canon, tower gate 7 of 12)
 - Live scan: not scanned yet
 - History: [docs/HISTORY/colorcanon.com.md](../HISTORY/colorcanon.com.md)
 

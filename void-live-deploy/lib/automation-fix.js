@@ -30,10 +30,19 @@ export function errorEvidence(text) {
 }
 // A discussion, not an incident: several sentences of prose about how things should work, and no error quoted in it. Pure.
 const DESIGN = /\b(?:should|would|could|propos(?:e|al)|design|i think|we need|in order of|leverage|the point|the gap|i'?d (?:suggest|recommend)|rules?|router|routing|intent|types?|loop|feedback|correct(?:ion)?s?)\b/gi;
+// A reader-facing, conversational update about CI or a run is not a broken automation: it describes the work, asks for a step, or says what is still open, and it has no error text.
+const READER_PROSE = /(?:that doesn't change anything on my side|it is useful to hear from|open the .*?(?:actions?|run) tab|open the .*?run|send me|then i['’]ll|i['’]ll write|i['’]d write|this doesn't look like an automation|what is it)/i;
+function proseToReader(text) {
+  const s = String(text || '');
+  if (!s || errorEvidence(s).length) return false;
+  if (!READER_PROSE.test(s)) return false;
+  return /\b(?:i|we|you|me|my|our)\b/i.test(s) && !/\b(?:jobs?:|workflows?|github actions|browser-suite|python-tests|runs-on|steps:|workflow_dispatch|actions?)\b/i.test(s);
+}
 export function intentOf(text) {
   const s = String(text || '').trim(), evidence = errorEvidence(s);
   if (isChatLog(s)) return { intent: 'note', evidence }; // a copied chat (time stamps, "Edited", "You allowed this") is read as a chat, never as a broken automation (owner, 2026-10-30; lib/note-ask.js)
   if (isBuildersReport(s)) return { intent: 'report', evidence }; // a builder's report on CI and pull requests that quotes a timeout is the telemetry route's, not a fix (owner, 2026-10-18)
+  if (proseToReader(s)) return { intent: 'note', evidence }; // a reader-facing, first-person update is not a broken automation to fix
   if (evidence.length) return { intent: 'incident', evidence };
   if (isStatusReport(s) && [null, 'script'].includes(platformOf(s))) return { intent: 'report', evidence }; // a pasted status report: what changed, what waits, the next step (owner, 2026-10-29)
   const sentences = (s.match(/[.!?](?:\s|$)/g) || []).length, design = (s.match(DESIGN) || []).length;

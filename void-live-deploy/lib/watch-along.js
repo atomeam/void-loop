@@ -3,6 +3,7 @@
 // and even making new apps and other things from anything it sees"; "make it so verse can watch tv or listen to the radio on its own to learn
 // if it wants to"). The pure half: the caption buffer, the model messages, the shape of a learned note and how notes reach the appraiser.
 // The route is functions/api/watchalong.js, the page half is local/watch.js, Verse's own watching is tools/watch.py.
+// Idea notes can be promoted onto the site build path by tools/watch-ideas.mjs (frontier + growth-inbox).
 //
 // WHAT VERSE KEEPS. Never the stream, a frame or the captions: those are read for one answer and dropped. Verse keeps only short notes it
 // wrote itself (at most NOTE_MAX characters each), with the station, the show and the day it heard them, so a later answer can say where
@@ -72,7 +73,7 @@ export function learnMessages({ station, captions = '', frame = '' }) {
   const sys = 'You are Verse, learning from what plays on ' + s.name + (s.network ? ' (' + s.network + ')' : '') + '. Write what is worth keeping as JSON, nothing else: ' +
     '{"show": "the program\'s name if the material names it, else empty", "notes": [{"kind": "appraisal" | "fact" | "idea", "topic": "2 to 5 words", "note": "one sentence in your own words, at most 200 characters", "value_cents": integer or null}]}. ' +
     'appraisal: an object that was valued or priced, with what drives its value; put the dollar value in value_cents (whole cents, the low end of a range) only when the material states it. ' +
-    'fact: something specific and checkable that was said. idea: a small app or tool Verse could build for people, inspired by what played. ' +
+    'fact: something specific and checkable that was said. idea: a small app or tool Verse could build for people, inspired by what played. Prefer ideas that help a business capture a workflow, automate a handoff, or take over heavy lifting. ' +
     'At most ' + NOTES_MAX + ' notes. No notes for ads, weather or chatter. Never copy more than a few words of the material; never invent a value, a name or a show. ' +
     'When the material is too thin to learn from, answer {"show": "", "notes": []}. ' + DATA_RULE;
   const text = 'Station: ' + s.name + '\n' + (captions ? 'What played (' + (s.kind === 'radio' ? 'speech to text' : 'captions') + '):\n"""\n' + clean(captions, CAPTION_MAX) + '\n"""' : 'No transcript; one picture of the screen is attached.');
@@ -119,6 +120,42 @@ export function heardFor(desc, notes, max = 2) {
 export function heardLine(n) {
   const from = [n.show, n.station].filter(Boolean).join(' on ');
   return 'Heard on ' + (from || 'TV') + (n.day ? ', ' + n.day : '') + ': ' + n.note;
+}
+
+/** Turn an idea note into a short visitor-style ask a skill or frontier row can take. Pure. */
+export function ideaAskFromNote(n) {
+  if (!n || n.kind !== 'idea') return '';
+  const topic = clean(n.topic, TOPIC_MAX), note = clean(n.note, NOTE_MAX);
+  if (note.length < 12) return '';
+  // Prefer a concrete "do X" ask over the full essay sentence.
+  const stripped = note.replace(/^(?:verse could |we could |someone could |a (?:small )?(?:app|tool|card) (?:that |to |could )?)/i, '').trim();
+  const ask = (topic && topic.length >= 4 ? topic : stripped).replace(/[.]+$/, '').trim();
+  return ask.length >= 8 ? ask.slice(0, 120) : '';
+}
+
+/** From a list of stored notes, the idea notes worth promoting onto the build path, newest first, deduped by ask. Pure. */
+export function promoteIdeas(notes, { limit = 8, have = [] } = {}) {
+  const skip = new Set((have || []).map((s) => String(s || '').toLowerCase()));
+  const out = [], seen = new Set();
+  for (const n of Array.isArray(notes) ? notes : []) {
+    if (!n || n.kind !== 'idea') continue;
+    const ask = ideaAskFromNote(n);
+    if (!ask) continue;
+    const key = ask.toLowerCase();
+    if (seen.has(key) || skip.has(key)) continue;
+    seen.add(key);
+    out.push({
+      ask,
+      note: clean(n.note, NOTE_MAX),
+      topic: clean(n.topic, TOPIC_MAX),
+      station: clean(n.station, 90),
+      show: clean(n.show, SHOW_MAX),
+      day: clean(n.day, 10),
+      source: 'watch-along',
+    });
+    if (out.length >= limit) break;
+  }
+  return out;
 }
 
 /** the stations Verse may pick from on its own, each { kind, cc, id, name, network, watched } with how often it watched it lately; the pick

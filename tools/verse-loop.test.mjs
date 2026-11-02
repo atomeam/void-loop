@@ -177,7 +177,7 @@ test('negative controls: a change that breaks a green check, a no-op, a key, a d
 
   s = sandbox({ red: ['alpha'] });
   r = await lap(parseArgs(['--dry-run']), { cwd: s.work, env: { ...env(s, ''), ...NO_KEYS }, log: quiet });
-  assert.equal(r.outcome, 'idle'); assert.match(r.why, /coder needs one model key in the environment: VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_API_TOKEN/);
+  assert.equal(r.outcome, 'idle'); assert.match(r.why, /coder needs one model key in the environment: VOID_OWNER_TOKEN \(Verse's own model, \/api\/coder\), CLOUDFLARE_AI_TOKEN \(minted by tools\/key-keeper\.mjs\) or CLOUDFLARE_API_TOKEN \+ CLOUDFLARE_ACCOUNT_ID/);
   assert.deepEqual(r.task, { kind: 'fix', check: 'alpha' }, 'red: Verse takes the check');
 });
 

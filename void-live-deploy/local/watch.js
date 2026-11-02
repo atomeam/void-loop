@@ -2,8 +2,9 @@
 // is on, and lets Verse learn from it: the TV player's closed captions (CEA-608, read by the full hls.js build in app.js) are kept here as a
 // running transcript, a still of the screen is taken only when there are no captions or the person asks Verse to look, and radio is heard by
 // Verse's server itself for a few seconds (functions/api/watchalong.js). Nothing of the stream is stored anywhere: Verse keeps only the short
-// notes it writes. Everything shown comes from textContent, never markup.
-import { addCue } from '/lib/watch-along.js';
+// notes it writes. Idea notes can be opened as a system blueprint on the main stage so learning becomes buildable work on the site.
+// Everything shown comes from textContent, never markup.
+import { addCue, ideaAskFromNote } from '/lib/watch-along.js';
 
 const $ = (id) => document.getElementById(id);
 const panel = $('watch'), log = $('watch-log'), form = $('watch-form'), input = $('watch-q'), learnBox = $('watch-learn'), hears = $('watch-hears'), learnedList = $('watch-learned');
@@ -69,8 +70,22 @@ $('watch-whats-on').addEventListener('click', () => ask('What is on right now?',
 
 function showLearned(notes) {
   for (const n of notes) {
-    const li = document.createElement('li'); li.textContent = n.note;
-    const k = document.createElement('small'); k.textContent = ' ' + ({ appraisal: 'for appraisals', fact: 'a fact', idea: 'an app idea' }[n.kind] || n.kind); li.append(k);
+    const li = document.createElement('li');
+    li.textContent = n.note;
+    const k = document.createElement('small');
+    k.textContent = ' ' + ({ appraisal: 'for appraisals', fact: 'a fact', idea: 'an app idea' }[n.kind] || n.kind);
+    li.append(k);
+    if (n.kind === 'idea') {
+      const ask = ideaAskFromNote(n);
+      if (ask) {
+        const a = document.createElement('a');
+        a.href = '/?q=' + encodeURIComponent('blueprint this: ' + ask);
+        a.textContent = ' blueprint on stage';
+        a.className = 'w-blueprint';
+        a.rel = 'noopener';
+        li.append(a);
+      }
+    }
     learnedList.prepend(li);
   }
   while (learnedList.children.length > 12) learnedList.lastChild.remove();
