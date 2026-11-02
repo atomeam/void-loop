@@ -1,9 +1,9 @@
 {
- "at": "2026-11-01T13:50:07.381Z",
- "score": 80,
+ "at": "2026-11-02T16:36:33.676Z",
+ "score": 79,
  "parts": {
-  "self": 97,
-  "asks": 88,
+  "self": 98,
+  "asks": 79,
   "friction": 97,
   "bench": 99,
   "probes": 20
@@ -59,12 +59,12 @@
   }
  ],
  "facts": {
-  "week": 235,
-  "owner": 6,
+  "week": 222,
+  "owner": 5,
   "askedBuilt": 9,
   "medianLagDays": 0.3,
-  "open": 4,
-  "oldestOpenDays": 1,
+  "open": 8,
+  "oldestOpenDays": 2.1,
   "skills": 387,
   "failing": 11,
   "unsure": 1,
@@ -73,14 +73,14 @@
   "probeFixes": 2
  },
  "trend": {
-  "score": 80,
-  "day": 0,
+  "score": 79,
+  "day": -1,
   "week": 4,
   "weakest": "probes",
-  "at": "2026-11-01T13:50:07.381Z",
-  "frictionWeek": 20
+  "at": "2026-11-02T16:36:33.676Z",
+  "frictionWeek": 31
  },
- "summary": "better: 80 of 100 (level since yesterday) (up 4 on the week); weakest: probes",
+ "summary": "better: 79 of 100 (down 1 since yesterday) (up 4 on the week); weakest: probes",
  "means": {
   "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
   "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
