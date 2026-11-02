@@ -1,5 +1,5 @@
 {
- "at": "2026-10-26T11:02:54.174Z",
+ "at": "2026-11-02T13:27:22.826Z",
  "note": "one polite request per source; no keys, no picture bytes",
  "sources": {
   "commons": {
@@ -8,7 +8,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 553,
+   "ms": 937,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -57,91 +57,11 @@
   },
   "openverse": {
    "name": "Openverse",
-   "state": "works",
+   "state": "blocked or failed",
    "why": "",
-   "query": "football",
-   "status": 200,
-   "ms": 273,
-   "via": "primary",
+   "status": 0,
    "rate": {},
-   "topKeys": [
-    "result_count",
-    "page_count",
-    "page_size",
-    "page",
-    "results"
-   ],
-   "resultShape": {
-    "path": "$.results",
-    "n": 10,
-    "keys": [
-     "id",
-     "title",
-     "indexed_on",
-     "foreign_landing_url",
-     "url",
-     "creator",
-     "creator_url",
-     "license",
-     "license_version",
-     "license_url",
-     "provider",
-     "source",
-     "category",
-     "filesize",
-     "filetype",
-     "tags",
-     "attribution",
-     "fields_matched",
-     "mature",
-     "height",
-     "width",
-     "thumbnail",
-     "detail_url",
-     "related_url",
-     "unstable__sensitivity"
-    ],
-    "rights": {
-     "license": "\"by\"",
-     "license_version": "\"2.0\"",
-     "license_url": "\"https://creativecommons.org/licenses/by/2.0/\""
-    }
-   },
-   "found": 10,
-   "accepted": 10,
-   "refused": {},
-   "licenceShapes": [
-    {
-     "licRaw": "CC BY",
-     "licVersion": "2.0",
-     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
-     "own": false,
-     "hasAuthor": true,
-     "hasSourcePage": true,
-     "thumbHost": "api.openverse.org",
-     "taken": ""
-    },
-    {
-     "licRaw": "CC BY",
-     "licVersion": "2.0",
-     "licUrl": "https://creativecommons.org/licenses/by/2.0/",
-     "own": false,
-     "hasAuthor": true,
-     "hasSourcePage": true,
-     "thumbHost": "api.openverse.org",
-     "taken": ""
-    },
-    {
-     "licRaw": "CC BY-SA",
-     "licVersion": "2.0",
-     "licUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
-     "own": false,
-     "hasAuthor": true,
-     "hasSourcePage": true,
-     "thumbHost": "api.openverse.org",
-     "taken": ""
-    }
-   ]
+   "error": "timed out"
   },
   "nasa": {
    "name": "NASA Image and Video Library",
@@ -149,7 +69,7 @@
    "why": "",
    "query": "moon",
    "status": 200,
-   "ms": 334,
+   "ms": 279,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -207,7 +127,7 @@
    "why": "",
    "query": "baseball",
    "status": 200,
-   "ms": 352,
+   "ms": 716,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -344,7 +264,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 391,
+   "ms": 368,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -394,9 +314,12 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 271,
+   "ms": 304,
    "via": "primary",
-   "rate": {},
+   "rate": {
+    "x-ratelimit-limit": "60",
+    "x-ratelimit-remaining": "59"
+   },
    "topKeys": [
     "preference",
     "pagination",
@@ -465,7 +388,7 @@
    "why": "",
    "query": "horse",
    "status": 200,
-   "ms": 1011,
+   "ms": 585,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -606,7 +529,7 @@
    "why": "",
    "query": "football",
    "status": 200,
-   "ms": 550,
+   "ms": 287,
    "via": "primary",
    "rate": {},
    "topKeys": [
@@ -617,6 +540,7 @@
     "path": "$.response.docs",
     "n": 10,
     "keys": [
+     "creator",
      "date",
      "identifier",
      "licenseurl",
@@ -624,16 +548,26 @@
      "title"
     ],
     "rights": {
-     "date": "\"2010-12-04T00:00:00Z\"",
-     "licenseurl": "\"https://creativecommons.org/publicdomain/zero/1.0/\""
+     "date": "\"1994-01-01T00:00:00Z\"",
+     "licenseurl": "\"http://creativecommons.org/licenses/by-nc-nd/4.0/\""
     }
    },
    "found": 10,
    "accepted": 9,
    "refused": {
-    "a logo, sponsor or advertising category": 1
+    "a non-commercial or no-derivatives licence": 1
    },
    "licenceShapes": [
+    {
+     "licRaw": "",
+     "licVersion": "",
+     "licUrl": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+     "own": false,
+     "hasAuthor": true,
+     "hasSourcePage": true,
+     "thumbHost": "archive.org",
+     "taken": "1994-01-01"
+    },
     {
      "licRaw": "",
      "licVersion": "",
@@ -653,16 +587,6 @@
      "hasSourcePage": true,
      "thumbHost": "archive.org",
      "taken": "2009-09-16"
-    },
-    {
-     "licRaw": "",
-     "licVersion": "",
-     "licUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-     "own": false,
-     "hasAuthor": false,
-     "hasSourcePage": true,
-     "thumbHost": "archive.org",
-     "taken": "2009-08-19"
     }
    ]
   }
