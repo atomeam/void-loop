@@ -1,5 +1,5 @@
 {
- "at": "2026-10-31T11:19:17.735Z",
+ "at": "2026-11-02T13:56:16.958Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -194,7 +194,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "Paris is the capital and largest city of France, with an estimated city population of 2.04"
    },
@@ -327,7 +327,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
    },
@@ -358,7 +358,7 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": true,
+   "photo": false,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
