@@ -80,3 +80,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-30 | fortune skill: a random fortune cookie message | new idea by growth agent |
 | open | 2026-10-30 | pig latin skill: convert text to pig latin | new idea by growth agent |
 | open | 2026-10-30 | acronym skill: expand or make an acronym | new idea by growth agent |
+| building | 2026-11-02 | business-brief skill: capture and clarify a business idea into a handoff-ready system brief | new idea by growth agent; helper/business-brief |
