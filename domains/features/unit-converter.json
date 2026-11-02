@@ -427,6 +427,13 @@
     "host": "convertlive.com",
     "at": "2026-10-29",
     "id": "mvswwyjf"
+   },
+   {
+    "target": "feature:convertunits-com-491b824a",
+    "feature": "calculate date difference",
+    "host": "convertunits.com",
+    "at": "2026-11-02",
+    "id": "mvz9eg2g"
    }
   ]
  }

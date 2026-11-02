@@ -48,6 +48,21 @@
  "verse_extra": [],
  "auto": {
   "scanned": "2026-10-26",
-  "queued": []
+  "queued": [
+   {
+    "target": "feature:heycolor-com-a5daa3cb",
+    "feature": "Hey Color",
+    "host": "heycolor.com",
+    "at": "2026-11-02",
+    "id": "mvz9ef86"
+   },
+   {
+    "target": "feature:heycolor-com-d11a6f08",
+    "feature": "Play Free",
+    "host": "heycolor.com",
+    "at": "2026-11-02",
+    "id": "mvz9efo5"
+   }
+  ]
  }
 }
