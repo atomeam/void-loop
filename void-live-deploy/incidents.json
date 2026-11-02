@@ -2,6 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-11-02T04:15:15.498Z",
+   "sha": "73cc2d2282ca4fb6c481e0f0aa0a677ac6284717",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/41385402201",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+    "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+    "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+    "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)",
+    "error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none"
+   ],
+   "touched": [
+    "docs/TAGTEAM.md",
+    "void-live-deploy/lib/vat.js"
+   ],
+   "shards": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
    "at": "2026-11-02T04:11:43.390Z",
    "sha": "550d2ddb405f13c83d787756a2dc6ce94bb14c8d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/41384515715",
@@ -855,36 +879,6 @@
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/void.growth.json"
-   ],
-   "shards": [
-    1,
-    3
-   ]
-  },
-  {
-   "at": "2026-10-30T20:30:31.188Z",
-   "sha": "efc12324059d4a394ea1960257c804f35963ba0b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/41114270410",
-   "suite": "browser suite on main",
-   "checks": [
-    "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
-    "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing"
-   ],
-   "touched": [
-    "domains/void.frontier.md",
-    "tools/guide.test.mjs",
-    "tools/report-to-growth.mjs",
-    "tools/report-to-growth.test.mjs",
-    "tools/self-context.mjs",
-    "tools/what-skills.mjs",
-    "tools/what-skills.test.mjs",
-    "void-live-deploy/lib/guide.js",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/what.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
    ],
    "shards": [
     1,
