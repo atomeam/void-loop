@@ -32,6 +32,14 @@ function roundHalfUp(numerator, denominator) {
   return (r * 2n >= denominator) ? q + 1n : q;
 }
 
+export const DEFAULT_RATE = 2200n;
+
+export function parseAmount(v) { return normalizeAmount(v); }
+export function parseRate(v) { return normalizeRate(v); }
+export function compute(net, rate) { return vatFromNet(net, rate); }
+export function money(v) { return normalizeAmount(v); }
+export function rateText(r) { return `${Number(r) / 100}%`; }
+
 export const RATE_PRESETS = [
   { id: '0', rate: 0n, note: 'zero rate' },
   { id: '10', rate: 1000n, note: '10% rate' },
