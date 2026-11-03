@@ -1,6 +1,14 @@
 {
  "changelog": [
   {
+   "at": "2026-11-03T18:22:38.982Z",
+   "id": "v01d-clips-pack",
+   "name": "Verse Clips Pack (10 shorts)",
+   "what": "unpublished automatically: unreachable: fetch failed",
+   "price": "Free · pay what you want",
+   "status": "unpublished"
+  },
+  {
    "at": "2026-10-21T22:28:32.773Z",
    "id": "remix-kit",
    "name": "Verse Remix Kit",
@@ -22,7 +30,7 @@
    "name": "Verse Clips Pack (10 shorts)",
    "what": "published by V01D: 11 files, 37.8 MB",
    "price": "Free · pay what you want",
-   "status": "live"
+   "status": "unpublished"
   },
   {
    "at": "2026-10-15T06:08:27.657Z",
