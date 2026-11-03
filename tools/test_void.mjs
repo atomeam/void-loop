@@ -8912,8 +8912,9 @@ try {
     const refused = await G.page(); await G.p.waitForTimeout(1800);
     const wrong = await G.p.evaluate(() => window.voidUngrounded || []);
     const missed = sent.filter((b) => b.ask === 'how do i make shakshuka' && b.fallback === 'skill:recipe');
+    // the same words a second time made no new TheMealDB request (2026-11-03: main red since 10-31 on this), so the good card is asked for in other words
     dish = 'Shakshuka';
-    await G.ask('how do i make shakshuka', 800); await G.p.waitForTimeout(2200);
+    await G.ask('recipe for shakshuka', 800); await G.p.waitForTimeout(2200);
     const after = await G.p.evaluate(() => (window.voidUngrounded || []).length);
     const good = await G.page();
     // Adam's incident card, 2026-10-30: a question for one dish got another dish's card and was only reported quietly; now it is refused
