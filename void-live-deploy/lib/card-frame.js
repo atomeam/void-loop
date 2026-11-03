@@ -248,7 +248,7 @@ export function editedDaysAgo(text, now = Date.now()) {
 // carries a link to its page, the one the Versus fights are measured on
 import { SITE_PAGES } from './tool-sites.js';
 export const PAGE_OF = Object.freeze({ ...Object.fromEntries(SITE_PAGES.map((p) => ['site ' + p.path, [p.path, p.name]])), 'pdf-tools': ['/pdf/', 'PDF tools'], 'kanban-board': ['/kanban/', 'Kanban board'], calendar: ['/calendar/', 'Calendar'], 'calendar-file': ['/calendar/', 'Calendar'], translate: ['/translate/', 'Translate'],
-  weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], 'calc-more': ['/calculator/', 'Calculator'],
+  weather: ['/weather/', 'Weather'], recipe: ['/recipes/', 'Recipes'], calc: ['/calculator/', 'Calculator'], vat: ['/vat/', 'VAT calculator'], 'calc-more': ['/calculator/', 'Calculator'],
   convert: ['/convert/', 'Unit converter'], gradient: ['/gradient/', 'Gradient'], wheel: ['/wheel/', 'Wheel of names'], coin: ['/flip/', 'Coin flip'],
   'is-it': ['/is-it/christmas', 'Is it…?'], baseconv: ['/base-converter/', 'Base converter'], timer: ['/stopwatch/', 'Stopwatch and timer'],
   words: ['/word-count/', 'Word counter'], fakeuser: ['/random-user/', 'Made-up people'], time: ['/time/', 'Time zones'], colour: ['/color/', 'Colour codes'], color: ['/color/', 'Colour codes'],

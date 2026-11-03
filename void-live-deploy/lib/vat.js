@@ -32,13 +32,6 @@ function roundHalfUp(numerator, denominator) {
   return (r * 2n >= denominator) ? q + 1n : q;
 }
 
-export function parseAmount(v) { return normalizeAmount(v); }
-export function parseRate(v) { return normalizeRate(v); }
-export const DEFAULT_RATE = 2200n;
-
-export function compute(net, rate) { return vatFromNet(net, rate); }
-export function money(amount) { return amount; }
-export function rateText(rate) { return (Number(rate) / 100).toFixed(2) + '%'; }
 
 export const RATE_PRESETS = [
   { id: '0', rate: 0n, note: 'zero rate' },
@@ -66,4 +59,86 @@ export function vatFromGross(grossKop, bp) {
   const vat = roundHalfUp(gross * rate, 10000n + rate);
   const net = gross - vat;
   return { net, vat, gross };
+}
+
+// The page's API (/vat/app.js, lib/vat-ask.js, tools/vat.test.mjs): amounts in roubles and rates in percent, as typed. 2026-11-03: a loop lap
+// had pointed these names at the kopeck engine (compute(net, rate) with BigInt kopecks, DEFAULT_RATE 2200n), so the page's compute({ amount,
+// rate, mode }) got an error object, every ask parse returned null and tools/vat.test.mjs could not load. They are the first version's API
+// again (a63b9e775), and compute now goes through the kopeck engine below, so net + vat = gross to the kopeck.
+export const RATES = Object.freeze([22, 20, 18, 10, 5, 0]);
+export const DEFAULT_RATE = 22;
+export const MODES = Object.freeze(['extract', 'add']);
+
+const clean = (s) => String(s == null ? '' : s).replace(/[\s\u00a0\u2009\u202f]/g, '');
+const isNum = (v) => typeof v === 'number' && Number.isFinite(v);
+
+/** a typed amount ('1 000,50', '1000.5', 1000) as a number, or null when it is not one or is negative. Pure. */
+export function parseAmount(v) {
+  if (isNum(v)) return v >= 0 ? v : null;
+  let s = clean(v).replace(/[^\d.,\-]/g, '');
+  if (!s || s === '-' || s === '.' || s === ',') return null;
+  const dot = s.lastIndexOf('.'), comma = s.lastIndexOf(',');
+  if (dot >= 0 && comma >= 0) s = dot > comma ? s.replace(/,/g, '') : s.replace(/\./g, '').replace(/,/g, '.');
+  else if (comma >= 0) s = s.replace(/,/g, '.');
+  if ((s.match(/\./g) || []).length > 1 || s.startsWith('-')) return null;
+  const n = Number(s);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
+/** a rate in percent, 0 to 100, or null. Pure. */
+export function parseRate(v) { const n = parseAmount(v); return n != null && n <= 100 ? n : null; }
+
+/** a number to the kopeck, half away from zero. Pure. */
+export function round2(n) {
+  const x = Number(n); if (!Number.isFinite(x)) return 0;
+  return (x < 0 ? -1 : 1) * (Math.round((Math.abs(x) + Number.EPSILON) * 100) / 100);
+}
+
+const toKop = (n) => BigInt(Math.round(round2(n) * 100)), toBp = (r) => BigInt(Math.round(r * 100)), fromKop = (k) => Number(k) / 100;
+
+/** { amount, rate, mode } as typed to { ok, mode, amount, rate, net, vat, gross } in roubles, through the kopeck engine; null when not valid. Pure. */
+export function compute({ amount, rate = DEFAULT_RATE, mode = 'extract' } = {}) {
+  const a = parseAmount(amount), r = parseRate(rate);
+  if (a == null || r == null || a * 100 > Number.MAX_SAFE_INTEGER) return null;
+  const add = mode === 'add', k = (add ? vatFromNet : vatFromGross)(toKop(a), toBp(r));
+  if (!k || k.error) return null;
+  return { ok: true, mode: add ? 'add' : 'extract', amount: round2(a), rate: r, net: fromKop(k.net), vat: fromKop(k.vat), gross: fromKop(k.gross) };
+}
+
+/** 1234.5 as '1 234,50' (ru) or '1,234.50'. Pure. */
+export function money(n, lang = 'ru') {
+  const x = round2(n), [whole, frac] = Math.abs(x).toFixed(2).split('.');
+  return (x < 0 ? '-' : '') + whole.replace(/\B(?=(\d{3})+(?!\d))/g, lang === 'ru' ? '\u00a0' : ',') + (lang === 'ru' ? ',' : '.') + frac;
+}
+
+/** a rate as written, 22 or 7,5. Pure. */
+export function rateText(rate) {
+  const x = Number(rate); if (!Number.isFinite(x)) return String(DEFAULT_RATE);
+  return String(Math.round(x * 1000) / 1000).replace('.', ',');
+}
+
+/** the page state a link's query carries (?sum=&rate=&mode=&lang=). Pure. */
+export function stateFromQuery(search) {
+  const q = new URLSearchParams(String(search || '').replace(/^\?/, '')), raw = q.has('sum') ? q.get('sum') : q.get('amount'), rate = parseRate(q.get('rate'));
+  return { amount: raw == null ? '' : String(raw).slice(0, 40), rate: rate == null ? DEFAULT_RATE : rate, mode: q.get('mode') === 'add' ? 'add' : 'extract', lang: q.get('lang') === 'en' ? 'en' : 'ru' };
+}
+
+/** the shortest query for a state (a default rate and mode left out). Pure. */
+export function queryFromState({ amount = '', rate = DEFAULT_RATE, mode = 'extract', lang = 'ru' } = {}) {
+  const q = new URLSearchParams(), a = clean(amount);
+  if (a) q.set('sum', a);
+  if (rate !== DEFAULT_RATE) q.set('rate', String(rate));
+  if (mode === 'add') q.set('mode', 'add');
+  q.set('lang', lang === 'en' ? 'en' : 'ru'); // a shared link opens in the language it was made in
+  return '?' + q.toString();
+}
+
+/** the two lines of working for a compute() result. Pure. */
+export function workingOf(r, lang = 'ru') {
+  if (!r || !r.ok) return [];
+  const m = (n) => money(n, lang), pct = rateText(r.rate), ru = lang === 'ru';
+  if (r.mode === 'add') return ru ? ['НДС = ' + m(r.net) + ' × ' + pct + ' / 100 = ' + m(r.vat), 'Сумма с НДС = ' + m(r.net) + ' + ' + m(r.vat) + ' = ' + m(r.gross)]
+    : ['VAT = ' + m(r.net) + ' × ' + pct + ' / 100 = ' + m(r.vat), 'Total with VAT = ' + m(r.net) + ' + ' + m(r.vat) + ' = ' + m(r.gross)];
+  return ru ? ['Сумма без НДС = ' + m(r.gross) + ' / (1 + ' + pct + ' / 100) = ' + m(r.net), 'НДС = ' + m(r.gross) + ' − ' + m(r.net) + ' = ' + m(r.vat)]
+    : ['Net = ' + m(r.gross) + ' / (1 + ' + pct + ' / 100) = ' + m(r.net), 'VAT = ' + m(r.gross) + ' − ' + m(r.net) + ' = ' + m(r.vat)];
 }

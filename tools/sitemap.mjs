@@ -80,6 +80,7 @@ export function pages({ tools = TOOLS, fixPages = [], days = DAYS, lab = [], flo
   for (const p of Object.keys(tools)) out.push({ loc: p, changefreq: 'weekly', priority: '0.9', files: [D + p.slice(1) + 'index.html'] });
   for (const p of PHOTO_PAGES) out.push({ loc: '/photos/' + p.slug + '/', changefreq: 'weekly', priority: '0.8', files: [D + 'photos/' + p.slug + '/index.html'] }); // the photos lane's own pages (tools/photos-pages.mjs)
   out.push({ loc: '/conquered/', changefreq: 'daily', priority: '0.8', files: [D + 'conquered/index.html', D + 'tower.frontier.json'] });
+  out.push({ loc: '/assimilated/', changefreq: 'daily', priority: '0.6', files: [D + 'assimilated/index.html', D + 'assimilated.json'] }); // every site Versus took on (tools/assimilated.mjs), linked from /conquered/
   out.push({ loc: '/compare/', changefreq: 'daily', priority: '0.6', files: [D + 'compare/index.html', D + 'tower.frontier.json'] });
   for (const [loc, changefreq, priority, files] of KEPT) out.push({ loc, changefreq, priority, files });
   // the studios the tower floors link to (/paint/, /cpan/, /books/ ...): linked from /conquered/, so a person reaches them; now a search engine and the self-check do too

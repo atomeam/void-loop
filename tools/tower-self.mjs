@@ -38,6 +38,16 @@ export const STATE = path.join(root, 'domains', 'tower-self.json'), ROWS = path.
 const ORIGIN = 'https://a-to-mind.com', SITE_API = (process.env.VERSE_SITE || ORIGIN).replace(/\/+$/, '');
 export const RETRY_DAYS = 60; // a site no floor covered is tried again after this (the floors grow)
 export const MAX_READ = 8, MAX_BUILT = 4, MAX_OPEN_JOBS = 6; // per run: sites read, pages built; versus jobs open at once
+// one site's read may take this long (2026-11-03: serverdiscounter.com's read never returned, so four runs in a row hit the job's 75 minutes, were
+// cancelled with nothing landed, and every next run picked the same eight sites again: the tower stood still from 2026-11-02 to 2026-11-03)
+export const SITE_DEADLINE_MS = 3 * 60000;
+// and no new site is started after this much of the run, so the push, the deploy and the gate still fit in the job's 75 minutes
+export const BUILD_BUDGET_MS = 30 * 60000;
+/** p, or a rejection saying what did not finish in ms. The timer never keeps the process alive. */
+export function withDeadline(p, ms, what) {
+  let t; const late = new Promise((_, no) => { t = setTimeout(() => no(Object.assign(new Error(what + ' did not finish in ' + Math.round(ms / 1000) + ' s'), { late: true })), ms); if (t.unref) t.unref(); });
+  return Promise.race([Promise.resolve(p), late]).finally(() => clearTimeout(t));
+}
 const now = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z'), today = () => now().slice(0, 10);
 const clip = (s, n) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, n);
 // a cut at a whole word, never mid-word (Versus job mvoxd09y: "a niche professional servic)")
@@ -81,6 +91,18 @@ export const familyWords = (fam) => [...new Set([fam.id, fam.label, ...(fam.extr
 export const sharesWords = (fam, text) => { const t = norm(text); return familyWords(fam).some((w) => new RegExp('(?<![a-z])' + w.slice(0, Math.max(4, Math.min(w.length, 6))).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i').test(t)); }; // 'converter' meets 'convert'
 
 // ---- pick ----
+/** how easy a frontier site is, from what the scans measured (owner, 2026-11-03: "fix the tower so it goes after the easiest site automatically"):
+ *  the same evidence and order the queue uses (lib/tower.js frontierOf): the controls its home page offers (tools/easiest-sites.mjs: fewer is
+ *  easier), then its page weight in bytes, then the scan's hardness (easiest-sites.mjs: how much the home page does, its controls, words, links
+ *  and scripts), then its traffic (Tranco: a smaller site first). score is 0-100, higher is
+ *  easier: 100 / (1 + controls / 10 + bytes / 1 MB), or 50 / (1 + hardness / 10) for a site the scan has not sized yet. place is its place in
+ *  this run's queue (1 = taken on first). A site whose read came back walled, gone or stuck is never picked again (pickCandidates). Pure. */
+export function easeOf(x, place = null) {
+  const sized = Number.isFinite(x.controls) && x.controls !== null && Number.isFinite(x.bytes) && x.bytes !== null;
+  const score = sized ? 100 / (1 + x.controls / 10 + x.bytes / 1e6) : 50 / (1 + (Number.isFinite(x.hardness) && x.hardness !== null ? x.hardness : 50) / 10);
+  const why = sized ? x.controls + ' controls, ' + Math.round(x.bytes / 1000) + ' KB' : 'not sized yet' + (x.hardness !== null && x.hardness !== undefined ? ', hardness ' + x.hardness : '');
+  return { score: Math.round(score * 10) / 10, ...(place ? { place } : {}), why: why + (x.rank ? ', Tranco ' + x.rank : ', outside the Tranco list') };
+}
 /** the next sites to read: the frontier easiest first, never a site that is already a floor, a site blocked by its own wall, or one tried lately
  *  (a site no floor covered is tried again after RETRY_DAYS). Pure. */
 export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date.now(), floors = FLOORS } = {}) {
@@ -89,7 +111,7 @@ export function pickCandidates(frontier, state = {}, { max = MAX_READ, at = Date
     if (x.blocked || offLimits(x.host, ranking)) continue; // never a gambling or crypto site (tools/versus-ranking.mjs) if (!buildable(badgeOf({ id: x.host, site: x.host, url: 'https://' + x.host + '/' }))) continue; // only Code work, or stage 1 on a regulated site (lib/gate-badge.js)
     const t = tried[x.host];
     if (t && t.outcome !== 'not-judged' && (!['no-family', 'discarded'].includes(t.outcome) || at - Date.parse(t.at || 0) < RETRY_DAYS * 864e5)) continue; // a site the model never judged is read again next run
-    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes }); if (out.length >= max) break;
+    out.push({ host: x.host, url: 'https://' + x.host + '/', rank: x.rank, hardness: x.hardness, controls: x.controls, bytes: x.bytes, ease: easeOf(x, out.length + 1) }); if (out.length >= max) break;
   }
   return out;
 }
@@ -210,37 +232,45 @@ async function build(planFile, outFile, maxBuilt) {
   const exists = (p) => taken.has(p) || fs.existsSync(path.join(SITE_DIR, p));
   if (!plan.length) { fs.writeFileSync(outFile, JSON.stringify(decision)); console.log('nothing to take on'); return; }
   const { scanSite, scanFloor, floorsOf } = await import('./feature-scan.mjs'), floorList = floorsOf();
-  const { chromium } = await import('playwright-core'); const b = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  const { chromium } = await import('playwright-core'), launch = () => chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', args: ['--no-sandbox'] });
+  let b = await launch();
+  // a stuck page can hold the browser: close it (its pages with it) and go on with a new one
+  const fresh = async () => { const old = b; b = await launch(); old.close().catch(() => {}); };
+  const save = () => fs.writeFileSync(outFile, JSON.stringify(decision, null, 1)); // after every site, so a later failure still leaves what was read
   try {
+    const started = Date.now();
     for (const c of plan) {
       if (decision.rows.length >= maxBuilt) break;
-      const r = await scanSite(b, c.url).catch((e) => ({ problem: 'not read (' + clip(e && e.message || e, 80) + ')', pages: [] }));
-      if (r.problem || !r.pages.length) { decision.state[c.host] = { at: now(), outcome: /parked|did not load|answered [45]\d\d|no page read/.test(r.problem || 'no page read') ? 'gone' : 'walled', why: clip(r.problem || 'no page read', 160) }; console.log(c.host + ': ' + decision.state[c.host].why); continue; }
+      if (Date.now() - started > BUILD_BUDGET_MS) { console.log('the run\'s reading time is up: ' + c.host + ' and the rest wait for the next run'); break; }
+      const pick = c.ease ? { ease: c.ease } : {};
+      const r = await withDeadline(scanSite(b, c.url), SITE_DEADLINE_MS, 'the read').catch((e) => ({ problem: 'not read (' + clip(e && e.message || e, 80) + ')', late: !!(e && e.late), pages: [] }));
+      if (r.late) await fresh();
+      if (r.problem || !r.pages.length) { decision.state[c.host] = { at: now(), outcome: /parked|did not load|answered [45]\d\d|no page read/.test(r.problem || 'no page read') ? 'gone' : 'walled', why: clip(r.problem || 'no page read', 160), ...pick }; console.log(c.host + ': ' + decision.state[c.host].why); save(); continue; }
       const site = { host: c.host, pages: r.pages }, siteText = r.pages.map((p) => p.title + ' ' + (p.headings || []).join(' ') + ' ' + p.text).join(' ');
-      const a = await askModel(messagesOf(site, fams));
-      if (a.error) { decision.state[c.host] = { at: now(), outcome: 'not-judged', why: a.error }; console.log(c.host + ': ' + a.error); continue; }
+      const a = await withDeadline(askModel(messagesOf(site, fams)), SITE_DEADLINE_MS, 'the model').catch((e) => ({ error: clip(e && e.message || e, 120) }));
+      if (a.error) { decision.state[c.host] = { at: now(), outcome: 'not-judged', why: a.error, ...pick }; save(); console.log(c.host + ': ' + a.error); continue; }
       const fam = fams.find((f) => f.id === String(a.family || '').trim().toLowerCase());
       if (!fam || !sharesWords(fam, siteText)) {
         const why = !fam ? 'no floor does its job (' + clipWords(a.why, 160) + ')' : 'the model chose ' + fam.id + ' but the site says none of its words';
-        decision.state[c.host] = { at: now(), outcome: 'no-family', why: clip(why, 200), title: clip(r.pages[0].title, 80) };
+        decision.state[c.host] = { at: now(), outcome: 'no-family', why: clip(why, 200), title: clip(r.pages[0].title, 80), ...pick }; save();
         decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') needs a page no floor has yet: ' + clipWords(a.why, 90), 200) });
         console.log(c.host + ': ' + why); continue;
       }
       const baseText = textOf(baseHtmlOf(fam.base)) + ' ' + fam.does;
       let t = validTexts(a, { host: c.host, baseText, fam }), refused = '';
       if (t.problem) { refused = t.problem; const fb = fallbackTexts(fam), mine = (a.asks || []).map((x) => clip(x, 60).toLowerCase()).filter((x) => x.length >= 3 && sharesWords(fam, x) && !brandTokens(c.host).some((bt) => x.replace(/[^a-z0-9]/g, '').includes(bt)) && !DOMAIN.test(x) && !/\bbest\b|#1|better than/.test(x)); t = { ...fb, slug: SLUG.test(String(a.slug || '')) && !brandTokens(c.host).some((bt) => String(a.slug).replace(/-/g, '').includes(bt)) ? String(a.slug) : '', asks: [...new Set([...mine, ...fb.asks])].slice(0, 6) }; }
-      const p = slugFor(t.slug, fam, exists); if (!p) { decision.state[c.host] = { at: now(), outcome: 'discarded', why: 'no free folder under ' + fam.base }; continue; }
+      const p = slugFor(t.slug, fam, exists); if (!p) { decision.state[c.host] = { at: now(), outcome: 'discarded', why: 'no free folder under ' + fam.base, ...pick }; save(); continue; }
       taken.add(p);
       const lane = fam.id + ': ' + hostOf(c.url);
       const row = { path: p, base: fam.base, page: p + fam.pageTail, ...(fam.askTail !== null ? { ask: p + fam.askTail } : {}), family: fam.id, lane, url: c.url, name: t.name, h1: t.h1, intro: t.intro, does: t.does, asks: t.asks, added: now() };
       // the site's features, read by feature-scan's own code from the pages already read, marked against the family's page
       const floor = floorList.find((f) => f.id === fam.id);
-      if (floor) { try { const res = await scanFloor(b, floor, [{ url: c.url, host: hostOf(c.url) }], { calls: 1, read: async () => r, model: featuresByModel }); decision.features[floor.slug] = { floor: { id: floor.id, slug: floor.slug, page: floor.page }, sites: { ...((decision.features[floor.slug] || {}).sites || {}), ...res.sites } }; } catch (e) { console.log('::warning::features of ' + c.host + ' not read: ' + clip(e && e.message || e, 80)); } }
-      decision.rows.push(row); decision.state[c.host] = { at: now(), outcome: 'built', family: fam.id, id: lane, page: row.page, ...(refused ? { words: 'the family page\'s own (the model\'s were refused: ' + clip(refused, 120) + ')' } : {}) };
-      console.log(c.host + ': joins ' + fam.id + ' at ' + row.page + (refused ? ' (its own words refused: ' + refused + ')' : ''));
+      if (floor) { try { const res = await withDeadline(scanFloor(b, floor, [{ url: c.url, host: hostOf(c.url) }], { calls: 1, read: async () => r, model: featuresByModel }), SITE_DEADLINE_MS, 'the feature read'); decision.features[floor.slug] = { floor: { id: floor.id, slug: floor.slug, page: floor.page }, sites: { ...((decision.features[floor.slug] || {}).sites || {}), ...res.sites } }; } catch (e) { if (e && e.late) await fresh(); console.log('::warning::features of ' + c.host + ' not read: ' + clip(e && e.message || e, 80)); } }
+      decision.rows.push(row); decision.state[c.host] = { at: now(), outcome: 'built', family: fam.id, id: lane, page: row.page, ...pick, ...(refused ? { words: 'the family page\'s own (the model\'s were refused: ' + clip(refused, 120) + ')' } : {}) };
+      console.log(c.host + ': joins ' + fam.id + ' at ' + row.page + (refused ? ' (its own words refused: ' + refused + ')' : '')); save();
     }
-  } finally { await b.close(); }
-  fs.writeFileSync(outFile, JSON.stringify(decision, null, 1));
+  } finally { await b.close().catch(() => {}); }
+  save();
 }
 
 // ---- apply: the decision onto the tree ----
@@ -347,7 +377,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (cmd === 'plan') {
     const site = opt('--site'), max = Number(opt('--max')) || MAX_READ;
     const list = site ? site.split(',').map((h) => hostOf(h)).filter(Boolean).filter((h) => !FLOORS.some((f) => hostOf(f.url) === h)).map((h) => ({ host: h, url: 'https://' + h + '/' })) : pickCandidates(frontier, readState(), { max });
-    const out = JSON.stringify(list, null, 1); if (opt('--out')) fs.writeFileSync(opt('--out'), out); console.log(list.map((x) => x.host).join(', ') || 'nothing to take on');
+    const out = JSON.stringify(list, null, 1); if (opt('--out')) fs.writeFileSync(opt('--out'), out); console.log(list.map((x) => x.host + (x.ease ? ' (ease ' + x.ease.score + ': ' + x.ease.why + ')' : '')).join(', ') || 'nothing to take on');
   } else if (cmd === 'build') await build(argv[1], argv[2], Number(opt('--built')) || MAX_BUILT);
   else if (cmd === 'apply') await apply(argv[1]);
   else if (cmd === 'paths') console.log(SELF_SITES.map((r) => 'void-live-deploy' + r.path.replace(/\/$/, '')).join('\n'));
