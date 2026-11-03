@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #eee; font-family: system-ui, sans-serif; overflow: hidden; }
+  #palace { position: relative; width: 100vw; height: 100vh; perspective: 1200px; transform-style: preserve-3d; }
+  canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+  .locus { position: absolute; width: 140px; height: 80px; background: rgba(30,40,60,0.85); border: 1px solid #4af; border-radius: 8px; padding: 8px; box-sizing: border-box; cursor: grab; z-index: 10; transition: transform 0.3s; backdrop-filter: blur(4px); }
+  .locus:active { cursor: grabbing; }
+  #chrome { position: fixed; top: 10px; left: 10px; z-index: 20; font-size: 12px; opacity: 0.7; }
+  button { background: #224; color: #eee; border: 1px solid #4af; padding: 4px 8px; margin: 2px; cursor: pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Memory Palace Evolutionary Mind · Verse lab</title>
+<meta name="description" content="Slug: webgpu-memory-palace-evolutionary-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Memory Palace Evolutionary Mind · Verse lab">
+<meta property="og:description" content="Slug: webgpu-memory-palace-evolutionary-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f511-webgpu-memory-palace-evolutionary-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f511-webgpu-memory-palace-evolutionary-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="palace">
+  <canvas id="field" width="800" height="500"></canvas>
+  <div id="chrome">
+    <div>F511 Memory Palace · entropy: <span id="ent">0</span></div>
+    <button id="seal">Seal state</button>
+    <button id="reset">Reset</button>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Memory Palace Evolutionary Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
