@@ -6,6 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
+import { towerArtSvg } from '../lib/tower-art.js';
 import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-68';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
@@ -222,10 +223,15 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     + '<div class="tw-score tower-line">' + esc(t.beaten + ' surpassed' + (cur ? (cur.pinned ? ' · now assimilating: ' : ' · easiest site left: ') + cur.site : '')) + '</div>'
     + (cur && !on ? heroHtml(cur, esc) : '') + (cur ? vsHtml(cur, esc, { enter }) : '')
     + (mini ? '<div class="tw-mini" data-share-skip style="height:' + (typeof innerWidth === 'number' && Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px;margin:8px 0 4px"></div>' : '')
+    // the card's picture (owner, 2026-11-03: "make the 3d tower on the card 2d but still update with each floor", "make the tower look like an
+    // epic card picture"): a flat SVG from the same floors, one lit floor per site surpassed and the one being fought glowing on top (lib/tower-art.js)
+    + (mini ? '' : '<div class="tw-art-wrap" data-share-skip style="margin:8px auto 4px;max-width:360px">' + towerArtSvg(miniFloors(t)) + '</div>')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
     + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) : '') + '</div>'
     + (on || !cur ? '' : actionsHtml(cur, esc)) + (on ? '' : nextHtml(t, esc))
-    + (on ? '' : '<div class="tw-won"><p class="tw-wonhead" style="margin:8px 0 2px;font-size:13px"><b>Surpassed (' + won.length + ')</b></p>' + (won.length ? won.map((f) => row(f) + links(f)).join('') : empty) + '</div>')
+    // the surpassed list folded (owner, 2026-11-03: the card is a compact summary; "the history of each site should be with what each site taught me"):
+    // tap it for each site, its links and what it taught; the whole history, with dates, tries and ease, is /assimilated/ (tools/assimilated.mjs)
+    + (on ? '' : '<details class="tw-won"><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Surpassed (' + won.length + ')</b> · each site and what it taught me</summary>' + (won.length ? won.map((f) => row(f) + links(f) + (learnedOf(f) ? '<div class="tw-taught" style="margin:-2px 0 8px 10px;font-size:12px;opacity:.85">' + esc(learnedOf(f)) + '</div>' : '')).join('') : empty) + '<div style="font-size:12px;margin:4px 0 0 10px"><a href="/assimilated/">The full history: every site, its dates, tries and lessons</a></div></details>')
     + takeHtml(t, esc) + lastRow
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
 }
@@ -289,7 +295,7 @@ async function run(text, api) {
     el.classList.add('tower-card');
     el.innerHTML = '<div class="tw-root"></div><div class="tw-live" data-share-skip aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></div><div class="tw-updated" style="text-align:center;font-size:11px;opacity:.55;margin-top:6px"></div>';
     const root = el.querySelector('.tw-root'), live = el.querySelector('.tw-live'), stamp = el.querySelector('.tw-updated');
-    let bySizeOn = readBySize(), picked = 0, shown = false, mini = !!(api.stage && api.stage.miniature);
+    let bySizeOn = readBySize(), picked = 0, shown = false, mini = false; // the 2D picture now (lib/tower-art.js); the 3D one (skills/mini/tower.js) stays for the stage, unused here
     const miniKey = 'tower:' + Date.now().toString(36);
     const pick = (f) => { if (!f) return; picked = f.floor; const det = root.querySelector('.tower-detail'); if (det) det.textContent = detailText(f); };
     const draw = (flash) => {

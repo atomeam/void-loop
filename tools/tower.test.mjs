@@ -58,7 +58,8 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
   assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · easiest site left: /);
-  assert.ok(h3.indexOf(FLOORS[2].site) < h3.indexOf(FLOORS[0].site));
+  const list = h3.slice(h3.indexOf('class="tw-won"')); // the list, not the picture (lib/tower-art.js draws them bottom up)
+  assert.ok(list.indexOf(FLOORS[2].site) < list.indexOf(FLOORS[0].site));
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;

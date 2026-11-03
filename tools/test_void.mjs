@@ -5291,7 +5291,7 @@ try {
     const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
     // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
     // and shows what was said on this ask before
-    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    await O.ask('5 miles in km', 300); await until(async () => /replied here once before/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
     const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
     await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
     await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
@@ -5305,11 +5305,11 @@ try {
     await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
     const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
     await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which says in one line how many replies its ask already has (never the replies themselves: owner, 2026-11-03, "the card holds all the replies to it") and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
       /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
         && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
-        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You have replied here once before/.test(cardBefore) && !/Earlier on this card|I kept that/.test(cardBefore) && lastIsReply
         && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
         && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
       JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));
