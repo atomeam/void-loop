@@ -78,7 +78,13 @@
     <p class="note">Length, weight and temperature. Or type it in the sum: 5 miles to km, 100 c to f.</p>
   </section>
 
-  <section id="more" aria-labelledby="mh"><h2 id="mh">Money and health calculators</h2>
+  <section id="more" aria-labelledby="mh"><h2 id="mh">VAT, money and health calculators</h2>
+    <details id="c-vat"><summary>VAT: add it or take it out</summary><div class="form" id="vatform">
+      <label>Sum <input class="box" id="va" type="text" inputmode="decimal" value="1000" aria-label="Sum for VAT"></label>
+      <label>Rate (%) <input class="box" id="vr" type="text" inputmode="decimal" value="22" list="vrates" aria-label="VAT rate"></label><datalist id="vrates"><option value="22"><option value="20"><option value="18"><option value="10"><option value="5"><option value="0"></datalist>
+      <label>The sum is <select id="vm" aria-label="What the sum is"><option value="extract">the total, VAT in it (take VAT out)</option><option value="add">the net, before VAT (add VAT)</option></select></label></div>
+      <div class="out" id="vout" aria-live="polite"></div><p class="note" id="vwork"></p>
+      <p class="note">To the kopeck or cent, so net plus VAT is the total exactly. <a id="vlink" href="/vat/">The VAT calculator in Russian, English or German</a>.</p></details>
     <details id="c-loan"><summary>Loan, with an amortization schedule and chart</summary><div class="form"><label>Amount <input class="box" id="la" type="text" inputmode="decimal" value="20000"></label><label>Interest rate (% a year) <input class="box" id="lr" type="text" inputmode="decimal" value="7"></label><label>Years <input class="box" id="ly" type="text" inputmode="decimal" value="5"></label><label>Extra each month <input class="box" id="lx" type="text" inputmode="decimal" value="0"></label></div>
       <div class="out" id="lout"></div><div class="chart" id="lchart"></div><div class="row"><button type="button" id="lmonths">Show every month</button></div><div class="tbl" id="ltable"></div></details>
     <details id="c-mortgage"><summary>Mortgage, with taxes, insurance and fees</summary><div class="form"><label>Home price <input class="box" id="mp" type="text" inputmode="decimal" value="400000"></label><label>Down payment (%) <input class="box" id="md" type="text" inputmode="decimal" value="20"></label><label>Interest rate (% a year) <input class="box" id="mr" type="text" inputmode="decimal" value="6.5"></label><label>Years <input class="box" id="my" type="text" inputmode="decimal" value="30"></label><label>Property tax a year <input class="box" id="mt" type="text" inputmode="decimal" value="4800"></label><label>Insurance a year <input class="box" id="mi" type="text" inputmode="decimal" value="1200"></label><label>HOA a month <input class="box" id="mh" type="text" inputmode="decimal" value="0"></label></div>
@@ -106,7 +112,7 @@
 <nav id="related" aria-label="Related tools" style="min-height:106px"><!-- related --><span class="tk-label">Use with</span> <a href="/base-converter/">Base converter</a> <a href="/convert/">Unit converter</a> <a href="/random/">Random number</a> <a href="/calculators/">Formula calculators</a> <a href="/vat/">VAT calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav> <!-- void-review: ok: "VAT" is the link text of /vat/, not a name in code -->
   <footer>Worked out on this device, with no third party; it opens offline after one visit. <a href="/">Ask Verse anything</a></footer>
 </main>
-<script>{ const d = document.getElementById('c-' + location.hash.slice(1)); if (d && d.tagName === 'DETAILS') d.open = true; } // a link to a panel shows it open from the first paint</script>
+<script>{ const q = new URLSearchParams(location.search), d = document.getElementById('c-' + (q.get('mode') === 'vat' || q.has('vat') ? 'vat' : location.hash.slice(1))); if (d && d.tagName === 'DETAILS') d.open = true; } // a link to a panel shows it open from the first paint</script>
 <script type="module">
   // the keypad is in the HTML and paints at once; the calculator's code comes in after the load event (calculator.net reaches its load event in
   // 83 ms and the tower gate times that), so nothing but this page's own bytes stands before it. A sum in the link is still worked out on arrival.
@@ -217,6 +223,24 @@
   import('/lib/calc-panels.js').then((m) => m.mount()).catch(() => {});
   // the "Use with" row last of all
   import('/lib/toolkit.js').then((m) => m.mountRelated(document.getElementById('related'), '/calculator/', [], { card: () => boxAsk(ex.value, hist, done, { deg, ans, mem }) })).catch(() => {}); // its stage card works out the sum in the box, or the sum that gave the answer in it
+  });
+</script>
+<script type="module">
+  // VAT mode (owner, 2026-11-03: "always combine pages when possible"): the calculator adds VAT to a net sum or takes it out of a total, through
+  // the same kopeck engine as /vat/ (lib/vat.js); /calculator/?mode=vat or #vat opens it, ?vat=add&sum=1000&rate=20 fills it
+  addEventListener('load', async () => {
+    const V = await import('/lib/vat.js'), $ = (id) => document.getElementById(id), q = new URLSearchParams(location.search);
+    if (q.has('sum')) $('va').value = String(q.get('sum')).slice(0, 40);
+    if (V.parseRate(q.get('rate')) != null) $('vr').value = q.get('rate');
+    if (q.get('vat') === 'add' || q.get('vat') === 'extract') $('vm').value = q.get('vat');
+    const draw = () => {
+      const r = V.compute({ amount: $('va').value, rate: $('vr').value, mode: $('vm').value }), m = (n) => V.money(n, 'en');
+      $('vout').textContent = r ? 'Net ' + m(r.net) + ' · VAT ' + m(r.vat) + ' · Total ' + m(r.gross) : 'Type a sum and a rate from 0 to 100.';
+      $('vwork').textContent = r ? V.workingOf(r, 'en').join('; ') : '';
+      if (r) $('vlink').href = '/vat/' + V.queryFromState({ amount: $('va').value, rate: r.rate, mode: r.mode, lang: 'en' });
+    };
+    for (const id of ['va', 'vr', 'vm']) $(id).addEventListener('input', draw);
+    draw();
   });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
