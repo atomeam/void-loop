@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Verse Bookshelf · Verse</title>
-<meta name="description" content="A sovereign book studio: compile chapters from Verse's own growth ledger and capability families into a readable volume. No subscriptions, no credits, works offline.">
+<meta name="description" content="A sovereign book studio: every chapter is compiled from Verse's own lap inventory, so the book is always what the site holds now. No subscriptions, no credits, works offline.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Verse Bookshelf · Verse">
-<meta property="og:description" content="Compile a book from Verse's own ledger and capability families. No subscriptions, no credits, works offline.">
+<meta property="og:description" content="A book compiled from Verse's own lap inventory: every chapter is what the site holds now. No subscriptions, no credits, works offline.">
 <meta property="og:url" content="https://a-to-mind.com/books/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -29,32 +29,40 @@
   .chapter p { margin:6px 0; color:var(--soft); font-size:14px; }
   .siblings { display:flex; flex-wrap:wrap; gap:0 14px; margin:10px 0 0; }
   .siblings a { display:inline-block; padding:8px 4px; min-height:24px; min-width:24px; }
+  .chapter-nav { display:flex; flex-wrap:wrap; gap:4px 12px; margin:0 0 10px; }
+  .chapter-nav a { color:#cfc6ff; padding:6px 2px; }
+  .chapter .count { color:var(--soft); font-size:12px; font-weight:400; }
+  .chapter h3 { scroll-margin-top:12px; }
+  #bookbox { white-space:pre-wrap; overflow-wrap:anywhere; max-height:320px; overflow:auto; }
   footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid #1c1c26; padding-top:12px; }
-  footer a, .siblings a { color:#cfc6ff; }
+  footer a, .siblings a, .note a { color:#cfc6ff; }
   [hidden] { display:none !important; }
 </style><script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
   <h1>Verse Bookshelf</h1>
-  <p class="sub">A sovereign book studio: compile chapters from Verse's own growth ledger and capability families into a readable volume. No subscriptions, no credits, no API keys, works offline.</p>
+  <p class="sub">A sovereign book studio: every chapter is compiled from Verse's own lap inventory, so the volume is always what the site holds now. No subscriptions, no credits, no API keys, works offline.</p>
+  <p class="note">New here? Type <a href="/?ask=open%20the%20book">open the book</a> on the stage for the 3D edition, or start with a chapter below. Every number below is read from the site's own ledger; nothing here is written by hand.</p>
 
   <section class="card" aria-labelledby="h-chapters">
     <h2 id="h-chapters">Chapters</h2>
-    <p class="note">Each chapter maps to a capability family. Compiled from the live Tower evidence and growth ledger.</p>
-    <div id="chapters">Reading the ledger…</div>
+    <p class="note" id="chaptersay">Reading the ledger.</p>
+    <nav class="chapter-nav" id="chapternav" aria-label="Jump to a chapter"></nav>
+    <div id="chapters"></div>
   </section>
 
   <section class="card" aria-labelledby="h-export">
-    <h2 id="h-export">Export</h2>
+    <h2 id="h-export">Export or copy</h2>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button type="button" id="copymd" aria-label="Copy the whole book as Markdown">Copy Markdown</button>
       <button type="button" id="exportmd" aria-label="Export book as Markdown">Export Markdown</button>
       <button type="button" id="exporttxt" aria-label="Export book as text">Export text</button>
     </div>
     <pre id="bookbox" aria-label="Compiled book" style="min-height:120px;"></pre>
   </section>
 
-  <p class="note">No credits, no subscriptions, no bring-your-own API keys. Everything compiled on this device from the ledger.</p>
+  <p class="note">No credits, no subscriptions, no bring-your-own API keys. Everything compiled on this device from the ledger, with no page load of its own beyond the one small inventory file.</p>
 
   <nav class="siblings" aria-label="Use together with">
     <a href="/g/">Gist creator</a>
@@ -66,31 +74,29 @@
   </nav>
 </main>
 <script type="module">
+  import { compileBook, bookText } from '/lib/books-shelf.js';
   const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s == null ? '' : s);
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   async function draw() {
-    const [inv, ev, growth] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/void.growth.json')]);
-    const chapters = [
-      { title: 'Chapter 1: Making Things', body: 'The evolution of 3D printing specs, Motelet, and physical-feeling cards.' },
-      { title: 'Chapter 2: Games & Rack', body: 'The logic of local minimax engines: Tic-Tac-Toe, Go, and Monopoly.' },
-      { title: 'Chapter 3: The Versus Ladder', body: 'The chronicle of surpassing real-world sites, aspect by aspect.' },
-      { title: 'Chapter 4: Verse Itself', body: 'The philosophy of self-hosting, neuron quotas, and sovereign AI infrastructure.' },
-    ];
-    const beaten = (ev && ev.floors) ? Object.keys(ev.floors).filter((k) => ev.floors[k] && Object.values(ev.floors[k]).some((v) => v && v.verdict === 'better' || v && v.verdict === 'equal-and-better')).length : 0;
-    chapters[2].body += ' Surpassed ' + beaten + ' sites so far.';
-    const box = $('chapters');
-    box.textContent = '';
-    for (const c of chapters) {
-      const div = document.createElement('div'); div.className = 'chapter';
-      const h = document.createElement('h3'); h.textContent = c.title; div.appendChild(h);
-      const p = document.createElement('p'); p.textContent = c.body; div.appendChild(p);
-      box.appendChild(div);
+    const book = compileBook(await get('/lap.items.json'));
+    const md = bookText(book);
+    const box = $('chapters'), nav = $('chapternav');
+    box.textContent = ''; nav.textContent = '';
+    if (!book.ok) $('chaptersay').textContent = 'The ledger did not answer just now. The chapters are still here; their numbers will be again when the ledger does.';
+    else $('chaptersay').textContent = book.totals.items + ' items in ' + book.totals.groups + ' chapters, read from the live lap inventory.';
+    for (const c of book.chapters) {
+      const a = document.createElement('a'); a.href = '#' + c.id; a.textContent = c.title; nav.appendChild(a);
+      const div = document.createElement('div'); div.className = 'chapter'; div.id = c.id;
+      const h = document.createElement('h3'); h.textContent = c.title;
+      if (book.ok && c.count) { const s = document.createElement('span'); s.className = 'count'; s.textContent = ' ' + c.count + (c.count === 1 ? ' item' : ' items'); h.appendChild(s); }
+      const plain = document.createElement('p'); plain.className = 'tome-sub'; plain.textContent = c.plain || '';
+      const p = document.createElement('p'); p.textContent = c.body;
+      div.append(h, plain, p); box.appendChild(div);
     }
-    const md = chapters.map((c) => '## ' + c.title + '\n\n' + c.body + '\n').join('\n');
     $('bookbox').textContent = md;
     $('exportmd').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md], { type: 'text/markdown' })); a.download = 'verse-book.md'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
     $('exporttxt').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md], { type: 'text/plain' })); a.download = 'verse-book.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); };
+    $('copymd').onclick = async () => { const b = $('copymd'), was = b.textContent; try { await navigator.clipboard.writeText(md); b.textContent = 'Copied'; } catch (_) { b.textContent = 'Press Ctrl+C to copy'; } setTimeout(() => { b.textContent = was; }, 1500); };
   }
   draw();
 </script>
