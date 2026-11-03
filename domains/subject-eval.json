@@ -1,5 +1,5 @@
 {
- "at": "2026-11-02T13:56:16.958Z",
+ "at": "2026-11-03T13:06:00.859Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -327,7 +327,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "Zeus is the supreme deity of the Greek pantheon. He is a sky and thunder god in ancient Gr"
    },
@@ -365,7 +365,7 @@
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": true,
+    "pic": false,
     "sources": [],
     "answer": "World War II, or the Second World War, was a global conflict between two coalitions: the A"
    },
