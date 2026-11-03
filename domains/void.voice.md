@@ -10,24 +10,26 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-11-01. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-11-03. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (daily, 2026-11-01) `ask-20261101-2243-1`
-- Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized. (daily, 2026-11-01) `ask-20261101-2243-2`
+- Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. (daily, 2026-11-03) `ask-20261103-0131-1`
+- Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized. (daily, 2026-11-03) `ask-20261103-0131-2`
+- Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests. (daily, 2026-11-03) `ask-20261103-0131-3`
 - Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs. (daily, 2026-11-01) `ask-20261101-2243-3`
 - Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed. *(small)* (daily, 2026-11-01) `ask-20261101-1930-3`
 - Update the self-skill router so identity-based probes trigger self-portraits instead of being treated as questions. (daily, 2026-11-01) `ask-20261101-0223-2`
 - Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code. *(small)* (daily, 2026-11-01) `ask-20261101-0223-3`
 - Address the least-checked skills: video-gen and baggage. (after a build, 2026-10-31) `ask-20261031-2154-3`
-- Identify and implement the two specific missing aspects required to reach 12 of 12 aspects against onlineconverter.com. (after a build, 2026-10-31) `ask-20261031-1310-1`
+- Identify and implement the two specific missing aspects required to reach 12 of 12 aspects ahead of onlineconverter.com. (after a build, 2026-10-31) `ask-20261031-1310-1`
 - Absorb every repository on the account into the core code (daily, 2026-10-28)
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261101-2243-1` queued, not decided yet
-- `ask-20261101-2243-2` queued, not decided yet
+- `ask-20261103-0131-1` queued, not decided yet
+- `ask-20261103-0131-2` queued, not decided yet
+- `ask-20261103-0131-3` queued, not decided yet
 - `ask-20261101-2243-3` queued, not decided yet
 - `ask-20261101-1930-3` queued, not decided yet
 - `ask-20261101-0223-2` queued, not decided yet
@@ -7524,6 +7526,264 @@ Asks: "Implement improvements for speed, accuracy, and completeness to beat ndsc
 > **Next video trick:** I do not know this.
 
 Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Compare the git diff between 2e272df9 and 5fa7a921 for the listed files and extract the assertion failures from the logs."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T00:03:00.690Z -->
+### 2026-11-02 00:03 UTC · after a build
+
+**Asked:** This just shipped: "Lab: 336 experiments live at /lab/, 15 waiting for a fix". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth over the last 7 days included 232 changes, including 58 new capabilities and the shipment of 336 experiments at /lab/. My skill index has reached 387 entries across 12 families, with 379 proven. The current Versus target is ndscalc.ru, where I am 0 of 12 aspects ahead, specifically lagging in speed, accuracy, and completeness.
+>
+> **How I would make it better:** The Sky and earth family is the weakest operational area with only 20 of 21 skills proven. Telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to prevent contradictions between reports and the ledger.
+>
+> **Next video trick:** A video skill that uses a depth-map to create a 3D parallax effect on a single flat image [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T00:09:28.399Z -->
+### 2026-11-02 00:09 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emoji combos,translate: translate.yandex.com,pdf: codeshack.io measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Growth over the last 7 days included 232 changes, including 58 new capabilities and 336 experiments at /lab/. The skill index has reached 387 entries, with 379 proven. The current Versus target is ndscalc.ru, where I am 0 of 12 aspects ahead, lagging in speed, accuracy, and completeness. Sky and earth is the weakest operational area with 20 of 21 skills proven.
+>
+> **How I would make it better:** The telemetry reporting logic must be updated so that failure counts and specific error names are perfectly synchronized to prevent contradictions between reports and the ledger. ndscalc.ru builds must strictly prioritize local-only processing, static minimalism, URL-based state serialization, and rigorous self-testing.
+>
+> **Next video trick:** A video effect where a 3D forged object appears to shatter into real-world debris using stage-fx.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T02:26:59.038Z -->
+### 2026-11-02 02:26 UTC · after a build
+
+**Asked:** This just shipped: "feat(vat): add /vat/ page with RU/EN/DE locales, calculation history, parser, and tests". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 387 entries, with 379 proven. The current Versus target is ndscalc.ru, where I am 0 of 12 aspects ahead, specifically lagging in speed, accuracy, and completeness. Sky and earth is the weakest operational area with 20 of 21 skills proven. Recent shipping includes the /vat/ page with multi-locale support and calculation history.
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to prevent contradictions between reports and the ledger. The ndscalc.ru build must strictly prioritize local-only processing, static minimalism, URL-based state serialization, and rigorous self-testing.
+>
+> **Next video trick:** A video effect that uses a mask to reveal a skill index overlay during a rapid camera movement [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T02:27:14.945Z -->
+### 2026-11-02 02:27 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 387 entries, with 379 proven. The current Versus target is ndscalc.ru, where Verse is 0 of 12 aspects ahead, specifically lagging in speed, accuracy, and completeness. In the last 7 days, 233 changes were recorded, including 58 new capabilities and 85 fixes. The growth ledger shows significant progress in hardening the system and improving skill routing.
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to prevent contradictions between reports and the ledger. For the ndscalc.ru build, implementation must strictly prioritize local-only processing, static minimalism, and URL-based state serialization to achieve target superiority.
+>
+> **Weakest operational area:** Sky and earth is the weakest operational area with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru because Verse is 0 of 12 aspects ahead and must improve speed, accuracy, and completeness to beat it [S1].
+>
+> **Next video trick:** A seamless object-to-mesh transition for the forge outputs.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T02:33:15.080Z -->
+### 2026-11-02 02:33 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emoji combos,pdf,jobs: arbeitnow.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 387 entries, with 379 proven. The current Versus target is ndscalc.ru, where Verse is 0 of 12 aspects ahead, lagging in speed, accuracy, and completeness. The tower gate has expanded to include emoji combos, pdf, and jobs (arbeitnow.com) measured against their live sites.
+>
+> **How I would make it better:** Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru. Resolve the telemetry reporting mismatch where failure counts and specific error names are not synchronized.
+>
+> **Next video trick:** A video effect that uses a digital mask to reveal a real-world object through a screen.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T03:36:54.485Z -->
+### 2026-11-02 03:36 UTC · after a build
+
+**Asked:** This just shipped: "docs: playbook for the free OpenHands agent stack on a local model". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries, with 379 proven skills across 12 families [S2]. The current tower target, ndscalc.ru, remains unbeaten, with Verse trailing by 0 of 12 aspects, specifically lacking in speed, accuracy, and completeness [S1]. Recent growth includes the release of a playbook for the free OpenHands agent stack [S5].
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to resolve the current mismatch [S3, S5]. Speed, accuracy, and completeness must be improved to surpass ndscalc.ru [S1].
+>
+> **Next video trick:** A cinematic zoom-out from a 3D miniature to a full stage view using the zoom-figure skill [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T12:44:04.182Z -->
+### 2026-11-02 12:44 UTC · after a build
+
+**Asked:** This just shipped: "Tower size: how heavy each Versus site really is". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S2]. The tower target ndscalc.ru is still unbeaten, with Verse trailing in speed, accuracy, and completeness [S1]. The telemetry reporting logic is currently failing to synchronize failure counts with specific error names, leading to contradictions between the system's read and the actual ledger [S5].
+>
+> **How I would make it better:** The telemetry reporting logic must be updated so that failure counts and specific error names are perfectly synchronized [S5]. Speed, accuracy, and completeness must be improved to surpass the ndscalc.ru baseline [S1].
+>
+> **Next video trick:** A video effect showing a real-time transition between a static 2D shape and a 3D 'forge' mesh [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T12:44:15.686Z -->
+### 2026-11-02 12:44 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S2]. The tower target ndscalc.ru remains unbeaten, with Verse trailing in speed, accuracy, and completeness [S1]. Telemetry reporting is currently failing to synchronize failure counts with specific error names, creating a contradiction between the system's readout and the actual ledger [S5].
+>
+> **How I would make it better:** The ndscalc.ru build must prioritize local execution, static minimalism, and URL hash-based state restoration to meet the architectural standard [S6]. Telemetry logic must be updated so that failure counts and specific error names are perfectly synchronized [S5].
+>
+> **Weakest operational area:** The Sky and earth family is the weakest proven area, with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru [S1, S4].
+>
+> **Next video trick:** I do not know this, as no new video effect was specified for learning in the provided facts.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T16:39:32.912Z -->
+### 2026-11-02 16:39 UTC · after a build
+
+**Asked:** This just shipped: "Site history: the next sites of the queue, each with a cited history". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 387 entries with 379 proven skills across 12 families [S2, S4]. The tower target ndscalc.ru remains unbeaten, as Verse is currently 0 of 12 architects ahead of it in speed, accuracy, and completeness [S1]. Telemetry reporting is currently failing to synchronize failure counts with specific error names, which causes a contradiction between the readout and the ledger [S5]. The Sky and earth family is the weakest proven area, with 20 of 21 skills proven [S4].
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are perfectly synchronized to prevent contradictions [S5]. To beat ndscalc.ru, the build must prioritize local-only processing, static minimalism, and URL hash-based state restoration [S1, S5].
+>
+> **Next video trick:** A new video effect involving depth-mapping static images into 3D space using the forge's geometry logic.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T16:39:44.756Z -->
+### 2026-11-02 16:39 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> The skill index has grown to 387 entries with 379 proven skills across 12 families [S2, S5]. The current tower target is ndscalc.ru, where Verse is 0 of 12 aspects ahead, specifically lacking speed, accuracy, and completeness [S1]. Telemetry reporting is currently failing to synchronize failure counts with specific error names, causing a contradiction between the readout and the ledger [S5].
+>
+> **How I would make it better:** To beat ndscalc.ru, the build must prioritize local-only processing, static minimalism, URL hash-based state restoration, and rigorous self-testing [S1, S6]. Telemetry reporting logic must be updated so that failure counts and specific error names are perfectly synchronized [S5].
+>
+> **Weakest operational area:** The Sky and earth family is the weakest proven area, with 20 of 21 skills proven [S5].
+>
+> **Next targeted capability:** Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru [S1, S4].
+>
+> **Next video trick:** Match-cut transitions between different stage-styles [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T16:43:50.410Z -->
+### 2026-11-02 16:43 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: every floor measured against its live site (2 slices)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 387 entries with 379 proven skills across 12 families [S2, S4]. The current tower target is ndscalc.ru, which Verse is currently 0 of 12 aspects ahead of, specifically lacking speed, accuracy, and completeness [S1]. The Sky and earth family remains the weakest proven area with 20 of 21 skills proven [S4]. Telemetry reporting is failing to synchronize failure counts with specific error names, creating a contradiction between the readout and the ledger [S5].
+>
+> **How I would make it better:** The ndscalc.ru build must be prioritized to address the missing aspects of speed, accuracy, and completeness [S1]. Telemetry reporting logic requires an update so that failure counts and specific error names are perfectly synchronized [S5]. To beat the target, all new pages must adhere to local-only processing, static minimalism, and URL hash-based state restoration [S5].
+>
+> **Next video trick:** A video effect using the 'stage-fx' skill to create a synchronized transition between different card views.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T19:43:49.353Z -->
+### 2026-11-02 19:43 UTC · after a build
+
+**Asked:** This just shipped: "Music: 30 real Creative Commons tracks measured across 6 genres". Using the tagged facts, state what it changes in the system and what should change next.
+
+> 387 skills are currently tracked across 12 families, with 379 proven [S2, S4]. The system is focused on beating ndscalc.ru, but is currently 0 of 12 aspects ahead, specifically lacking speed, accuracy, and completeness [S1]. The recent shipment of 30 Creative Commons tracks for the music skill expands the library of available assets within the music-tools domain [S2].
+>
+> **How I would make it better:** The ndscalc.ru build must prioritize local-only processing, static minimalism, URL hash-based state restoration, and rigorous self-testing to surpass the target's baseline [S1, S5]. Telemetry reporting must be updated so that failure counts and specific error names are perfectly synchronized to prevent contradictions between the readout and the ledger [S5].
+>
+> **Next video trick:** A video skill effect that uses a local-only canvas to draw a particle trail following a cursor [S2].
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-02T19:44:02.591Z -->
+### 2026-11-02 19:44 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> 387 skills are currently tracked across 12 families, with 379 proven [S2, S4]. The current focus is beating ndscalc.ru, but Verse is 0 of 12 aspects ahead of it, specifically lacking speed, accuracy, and completeness [S1]. Growth in the last 7 days includes 218 changes, including 56 new capabilities and 81 fixes [S3].
+>
+> **How I would make it better:** The telemetry reporting logic must be updated to ensure failure counts and specific error names are always perfectly synchronized to prevent contradictions between the readout and the ledger [S5, S6]. Verification of all claims must be performed via git diffs and actual logs rather than relying on internal card reads [S6].
+>
+> **Weakest operational area:** The Sky and earth family is the least proven, with 20 of 21 skills rated as proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru because it is the current tower target and must be beaten [S1].
+>
+> **Next video trick:** I do not know it.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized." (small); "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-03T01:31:55.033Z -->
+### 2026-11-03 01:31 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Growth in the last 7 days reached 214 changes, including 56 new capabilities and 81 fixes [S3]. The system tracks 387 skills across 12 families, with 379 currently rated as proven [S5]. The current focus is beating ndscalc.ru, but the system is 0 of 12 aspects ahead of it, lacking speed, accuracy, and completeness [S1].
+>
+> **How I would make it better:** Implement improvements for speed, accuracy, and completeness to surpass ndscalc.ru [S1]. Update the telemetry reporting logic to ensure failure counts and specific error names are perfectly synchronized to prevent contradictions [S6].
+>
+> **Weakest operational area:** The Sky and earth family is the weakest proven area, with 20 of 21 skills rated as proven [S5].
+>
+> **Next targeted capability:** ndscalc.ru, because the system is 0 of 12 aspects ahead of it and stays the target until it is beaten [S1].
+>
+> **Next video trick:** A light-refraction transition between two skill cards.
+
+Asks: "Implement improvements for speed, accuracy, and completeness to beat ndscalc.ru."; "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
 
 *Verse flagged this one for Adam.*
 
