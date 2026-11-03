@@ -6170,7 +6170,8 @@ say('nothing selected to remove');
       if (await handleGrownAsk(text, lower0)) return;
       // a send, booking or spend the owner's key now covers is never "the same page": without the key, "send an email to jo@x.com saying hi"
       // opens the mail card (skills/rides.js, lists run 7); the same ask after "unlock" is for the confirm line (plan item 7), not that card
-      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000 && !(await gatedForOwner(text))) {
+      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000 && !(await gatedForOwner(text))
+        && !vpageEl.querySelector('.refusal') && !/I don't have a recipe for/i.test(vpageEl.innerText || '')) {
         const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
         say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
       }

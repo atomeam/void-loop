@@ -86,6 +86,7 @@ export default {
   name: 'joke',
   examples: ['tell me a joke', 'make me laugh', 'dad joke', 'knock knock joke', 'a joke about cats', 'tell me a dad joke about pizza'],
   nearMisses: ['what is a joke', 'who is the joker', 'history of comedy', 'jokes about me', 'is this a joke about money'],
-  match(lower, text) { return isJoke(text) || isKnock(text) || isRiddle(text) || isTwister(text) || !!jokeTopic(text); },
+  // a riddle is the riddle skill's (skills/riddle.js). This card still knows how to show one when it is asked directly.
+  match(lower, text) { return isJoke(text) || isKnock(text) || isTwister(text) || !!jokeTopic(text); },
   run
 };
