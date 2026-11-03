@@ -19,7 +19,7 @@ Nothing by hand. `.github/workflows/grow-clock.yml` runs one conductor tick ever
    - **Probe asks** (`probe-asks.yml`) only when 2 or fewer probes wait: hourly, or every 6 hours while fewer than 1 in 10 of its fixes pass (the probes and fixes spend the free model budget the site shares with visitors).
    - **The proving pass** (`grow-self.yml`) at most every 2 hours. It locks in asks Verse answers right and queues the ones it misses as fixes. The owner's 2026-10-24 words were read as "no self hardening" and the pass was taken off the clock; the owner put it right on 2026-10-26: "never said there a no self hardening i said to elaborate what that means", "it needs to say what it improved".
 4. Acts: requeues, sets aside, queues repairs, claims (the coding agent's jobs only; the others claim for themselves), starts runs. A start that fails gives the claimed job back.
-5. Writes `domains/conductor.json` (the last 24 hours of ticks, broken loops, held jobs; counts and ids only) and the run summary. The clock commits it once an hour.
+5. Writes `domains/conductor.json` (the last 24 hours of ticks, broken loops, held jobs; counts and ids only) and the run summary. The clock commits it every 3 hours (and on the last tick of a run). Hourly commits were 27 of main's 78 commits in a day (2026-11-03); the runner keeps the state between commits.
 
 ## The coding agent's contract
 
@@ -44,3 +44,4 @@ The conductor claims the job (`building`, note `claimed by conductor`) and runs 
 - A broken loop shut forever deadlocks (it can never succeed again); the half-open trial run fixes that.
 - `ticks` from a hand run went into bash arithmetic, which would evaluate an expression; it is checked as digits first.
 - Never print a whole GitHub API response while debugging: filter it (`--jq`).
+- Committing `domains/conductor.json` every hour was 27 of main's 78 commits in a day (2026-11-03). The clock still ticks every 10 minutes; it writes the record every 3 hours (`i % 18`) and on the last tick.

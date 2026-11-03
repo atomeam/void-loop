@@ -22,6 +22,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      full:
+        description: "Also run the browser suite on a branch that is not main (main always runs it)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -79,9 +84,13 @@ jobs:
   # slow check, outgrew three runners; the budget stays. Each job runs the sections whose heading hashes to its shard
   # (tools/test_void.mjs --shard i/n, tools/shard.mjs), every section in exactly one of them (86 / 112 / 96 / 118 sections; the
   # shared-page section, the longest, is in the second), each job its own verdict; the revert reads them all (tools/revert-target.mjs isSuiteJob).
+  # Off a branch (2026-11-03): the loop starts this on every loop/* branch it pushes, and four 25-minute shards there bought nothing the
+  # suite on main does not (main is tested after the merge and reverts what breaks it); 18 laps on 2-3 November ran 72 shards, all red
+  # because main was. A branch gets the fast tests; `full: true` asks for the suite on a branch by hand.
   browser-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: github.ref == 'refs/heads/main' || inputs.full
     strategy:
       fail-fast: false
       matrix:
@@ -168,7 +177,7 @@ jobs:
           retention-days: 3
 
       - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
-        if: failure() && steps.test.outcome == 'failure'
+        if: failure() && steps.test.outcome == 'failure' && github.ref == 'refs/heads/main' # a branch's red is the branch's, never main's to revert or record
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} # the spotter queues a flake job (tools/flakes.mjs); unset = it only records
@@ -249,7 +258,7 @@ jobs:
   # 29 October), and a close that waited for four green shards on one head never came. An automatic revert is skipped.
   incident:
     needs: browser-suite
-    if: always() && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success' || needs.browser-suite.result == 'cancelled')
+    if: always() && github.ref == 'refs/heads/main' && (needs.browser-suite.result == 'failure' || needs.browser-suite.result == 'success' || needs.browser-suite.result == 'cancelled')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
