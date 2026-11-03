@@ -649,6 +649,98 @@
    "at": "2026-11-01T22:17:46Z",
    "outcome": "walled",
    "why": "a nearly empty page (44 characters: a redirect stub, or a page that draws itself with no text)"
+  },
+  "calculoexato.com.br": {
+   "at": "2026-11-03T23:37:16Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a comprehensive collection of specialized calculators for finance, labor, rent, and more. Verse's 'formula calculators' is too general and)",
+   "title": "Cálculo Exato - Menu",
+   "ease": {
+    "score": 6,
+    "place": 1,
+    "why": "not sized yet, hardness 73, Tranco 75661"
+   }
+  },
+  "emojigraph.org": {
+   "at": "2026-11-03T23:37:24Z",
+   "outcome": "built",
+   "family": "emoji combos",
+   "id": "emoji combos: emojigraph.org",
+   "page": "/emoji-combos/emoji-dictionary/",
+   "ease": {
+    "score": 6,
+    "place": 2,
+    "why": "not sized yet, hardness 73, Tranco 68841"
+   },
+   "words": "the family page's own (the model's were refused: says what the page does not do (extensive, encyclopedia, discover, their, meanings))",
+   "rows": "11/15",
+   "gated": "2026-11-03T23:42:06Z"
+  },
+  "serverdiscounter.com": {
+   "at": "2026-11-03T23:37:29Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a commercial web hosting and server provider offering various paid infrastructure services like VPS, Dedicated Servers, and Domains. Verse is a)",
+   "title": "Serverdiscounter | Cloud und Bare-Metal Anbieter in Deutschland",
+   "ease": {
+    "score": 6,
+    "place": 3,
+    "why": "not sized yet, hardness 74, Tranco 367380"
+   }
+  },
+  "colorpop.ai": {
+   "at": "2026-11-03T23:37:37Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a coloring application and AI generator, which is a creative game/app service. Verse does not have a page for digital coloring tools or AI art)",
+   "title": "Color Pop - Free Color App & Coloring Games",
+   "ease": {
+    "score": 6,
+    "place": 4,
+    "why": "not sized yet, hardness 74, Tranco 238104"
+   }
+  },
+  "arkencounter.com": {
+   "at": "2026-11-03T23:38:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a theme park/attraction website. Verse has no page for attractions, theme parks, or travel planning services.)",
+   "title": "Life-size Noah’s Ark | Ark Encounter",
+   "ease": {
+    "score": 6,
+    "place": 5,
+    "why": "not sized yet, hardness 74, Tranco 182002"
+   }
+  },
+  "epoch.com": {
+   "at": "2026-11-03T23:38:09Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provided is a merchant services and billing platform for accepting online payments and managing customer transactions. Verse does not have a page)",
+   "title": "Epoch.com - Accept Payments Online Worldwide",
+   "ease": {
+    "score": 6,
+    "place": 6,
+    "why": "not sized yet, hardness 74, Tranco 138737"
+   }
+  },
+  "distancescalculator.com": {
+   "at": "2026-11-03T23:38:14Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a distance calculator for cities. While Verse has a 'unit converter' and 'formula calculators', neither is a dedicated tool for calculating)",
+   "title": "Distance calculator",
+   "ease": {
+    "score": 6,
+    "place": 7,
+    "why": "not sized yet, hardness 74, Tranco 73325"
+   }
+  },
+  "worldsmostethicalcompanies.com": {
+   "at": "2026-11-03T23:38:20Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a corporate recognition program and certification for ethical business practices. Verse does not have a page for business ethics)",
+   "title": "World's Most Ethical Companies - World's Most Ethical Companies",
+   "ease": {
+    "score": 5.8,
+    "place": 8,
+    "why": "not sized yet, hardness 76, Tranco 397940"
+   }
   }
  },
  "runs": [
@@ -926,6 +1018,15 @@
    "pages_per_day": 0,
    "reads_next": "calculoexato.com.br",
    "noop": true
+  },
+  {
+   "at": "2026-11-03T23:42:07Z",
+   "line": "Versus: took on emojigraph.org (emoji combos, /emoji-combos/emoji-dictionary/), surpassed 11 of 15 rows (also read: 7 no-family); next ndscalc.ru (the target)",
+   "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitingchurch.org.au"
   }
  ]
 }

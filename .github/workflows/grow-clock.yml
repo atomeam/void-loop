@@ -5,7 +5,7 @@
 # and the newest runs of every loop, puts back jobs a dead run left, sets aside jobs tried three times, queues a heal: job for a loop that
 # failed three runs in a row, starts the most valuable job on each idle executor (propose-fix, build-miss, store-gap, the coding agent),
 # and starts probe-asks when Verse should write new probe asks. Before this the clock only alternated probe-asks and propose-fix, and every
-# other queued job waited for a person. Its record of the last 24 hours is committed hourly to domains/conductor.json.
+# other queued job waited for a person. Its record of the last 24 hours is committed every 3 hours to domains/conductor.json.
 #
 # GitHub ran a '*/15' schedule about once every five hours (void-tick.yml, 2026-10-14), so one run keeps the time itself: a tick every
 # 10 minutes for about five and a half hours, then it starts the next run, whatever happened (a failed tick never stops the clock; only the
@@ -33,7 +33,7 @@ concurrency:
 
 permissions:
   actions: write   # start the executors and the next clock run (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
-  contents: write  # commit domains/conductor.json once an hour
+  contents: write  # commit domains/conductor.json every 3 hours
 
 jobs:
   clock:
@@ -62,8 +62,9 @@ jobs:
             # the newest conductor each tick: a fix pushed to main reaches the clock within 10 minutes, not at the next run
             git fetch -q origin main && git reset -q --hard origin/main
             timeout 300 node tools/conductor.mjs tick $DRY --state "$state" || echo "::warning title=Conductor::tick $i ended badly; the clock goes on"
-            # once an hour (and on the last tick) the record goes to main; a push that loses a race is retried from the newest main
-            if [ -z "$DRY" ] && { [ $((i % 6)) -eq 0 ] || [ "$i" -eq "$n" ]; }; then
+            # every 3 hours (and on the last tick) the record goes to main; a push that loses a race is retried from the newest main.
+            # Hourly was 27 of main's 78 commits in a day (2026-11-03); the clock keeps its own state in the runner between commits
+            if [ -z "$DRY" ] && { [ $((i % 18)) -eq 0 ] || [ "$i" -eq "$n" ]; }; then
               for t in 1 2 3; do
                 git fetch -q origin main && git reset -q --hard origin/main && cp "$state" domains/conductor.json && git add domains/conductor.json
                 git diff --cached --quiet && break

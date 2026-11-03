@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write # the day's will in domains/void.will.md, once a day
   actions: write # revive the conductor's clock (grow-clock.yml) when its chain is down
 
 jobs:
@@ -41,6 +41,28 @@ jobs:
         run: |
           if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Verse's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
           python3 tools/will.py | tee -a "$GITHUB_STEP_SUMMARY"
+      # the will chose hourly but only the site kept it (/api/will), so domains/void.will.md on main still said 2026-09-28 (stale since the
+      # Oct 18 rename). The first run of each UTC day writes it to main: builders read the current wants, and 23 of 24 runs add no commit.
+      # The CI run never holds owner-only notes (earnings are left out in CI), so nothing private reaches the public file.
+      - name: The day's will on main (once a day)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          f=domains/void.will.md
+          day() { sed -n 's/^Chosen \([0-9-]*\)T.*/\1/p' "$1" | head -1; }
+          new=$(day "$f"); old=$(git show origin/main:"$f" 2>/dev/null > /tmp/old.md && day /tmp/old.md)
+          [ -n "$new" ] || { echo "no fresh will written: nothing to commit"; exit 0; }
+          [ "$new" = "$old" ] && { echo "today's will is on main already ($old)"; exit 0; }
+          grep -qi "owner only" "$f" && { echo "::warning::owner-only lines in the will: not committed"; exit 0; }
+          cp "$f" /tmp/will.md
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for t in 1 2 3; do
+            git fetch -q origin main && git reset -q --hard origin/main && cp /tmp/will.md "$f" && git add "$f"
+            git diff --cached --quiet && exit 0
+            git commit -q -m "Verse's will: today's three wants (domains/void.will.md)" && git push -q origin HEAD:main && exit 0
+            sleep $((t * 5))
+          done
+          echo "::warning::could not push today's will"
       # the second heartbeat (2026-10-26: "get Verse automated like its very life depends on it"): this runs every hour and after every
       # deploy, so when the conductor's clock chain is down (no grow-clock run going or waiting) it is started again within the hour
       - name: Keep the conductor's clock running

@@ -91,17 +91,17 @@ jobs:
             echo "An idea-promote PR is already open; leaving $branch without a second PR" | tee -a "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
+          # the body is written to a file: its lines sat at column 0 inside run: | and made the whole file invalid YAML (2026-11-03), so
+          # the workflow never ran and propose-fix's workflow-parse gate failed on every PR
+          body="$RUNNER_TEMP/idea-pr.md"
+          printf '%s\n' '## Brief' 'Idea notes Verse learned from local TV/radio are promoted onto the one build order so builders can ship them onto the site.' '' \
+            '**Touched only:** domains/void.frontier.md, domains/growth-inbox.md' '' \
+            '**Source:** tools/watch-ideas.mjs after the hourly verse-watch learn step. Stream material is never stored.' '' \
+            'Label for automerge when review is clean.' > "$body"
           gh pr create --repo "${{ github.repository }}" \
             --base main --head "$branch" \
             --title "watch-along: queue app ideas learned from TV/radio" \
-            --body "## Brief
-          Idea notes Verse learned from local TV/radio are promoted onto the one build order so builders can ship them onto the site.
-
-          **Touched only:** domains/void.frontier.md, domains/growth-inbox.md
-
-          **Source:** tools/watch-ideas.mjs after the hourly verse-watch learn step. Stream material is never stored.
-
-          Label for automerge when review is clean." \
+            --body-file "$body" \
             --label automerge || gh pr create --repo "${{ github.repository }}" \
             --base main --head "$branch" \
             --title "watch-along: queue app ideas learned from TV/radio" \
