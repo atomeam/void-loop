@@ -7,7 +7,7 @@
  */
 export function isDeliveryPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:(?:package|pack|handoff|delivery)\s+(?:this\s+)?(?:idea|business|plan)|(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan))(?:\s*[:\-]\s*.+)?$/i.test(t);
+  return /^(?:(?:package|pack|handoff|delivery)\s+(?:this\s+)?(?:idea|business|plan|pack|package)|(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan))(?:\s*(?:[:\-]|for|of)\s*.+)?$/i.test(t);
 }
 
 function extractIdea(text) {
