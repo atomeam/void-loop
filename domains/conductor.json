@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-03T02:36:54.792Z",
+ "updated": "2026-11-03T03:08:01.395Z",
  "last24h": {
   "ticks": 144,
-  "started": 42,
+  "started": 41,
   "requeued": 1,
   "setAside": 0,
   "probes": 0,
@@ -12,16 +12,40 @@
  "broken": [
   {
    "wf": "propose-fix.yml",
-   "fails": 7,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/41519943359"
+   "fails": 9,
+   "url": "https://github.com/atomeam/void-loop/actions/runs/41567557315"
   },
   {
    "wf": "grow-self.yml",
    "fails": 10,
-   "url": "https://github.com/atomeam/void-loop/actions/runs/41554905098"
+   "url": "https://github.com/atomeam/void-loop/actions/runs/41568291525"
   }
  ],
  "held": [
+  {
+   "id": "mva30i2e",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
+  {
+   "id": "mva30j4u",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
+  {
+   "id": "mvygqbol",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
+  {
+   "id": "mvygqckh",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
+  {
+   "id": "mvyvpf3o",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
+  {
+   "id": "mvyvpfxi",
+   "why": "propose-fix.yml is broken (9 failed runs); its repair is queued"
+  },
   {
    "id": "mvvql4d9",
    "why": "no executor for route"
@@ -30,11 +54,11 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 24,
+   "used": 0,
    "cap": 90
   },
   "day": {
-   "used": 185,
+   "used": 209,
    "cap": 360
   },
   "room": true,
@@ -53,81 +77,6 @@
   "mvvjzso8": 1793667848732
  },
  "ticks": [
-  {
-   "at": "2026-11-02T02:46:09.649Z",
-   "open": 132,
-   "started": [
-    {
-     "id": "mvymnftz",
-     "kind": "will",
-     "wf": "verse-job.yml",
-     "score": 95
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 5,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-02T02:56:27.423Z",
-   "open": 132,
-   "started": [
-    {
-     "id": "mvymnftz",
-     "kind": "will",
-     "wf": "verse-job.yml",
-     "score": 95
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 5,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-02T03:06:46.242Z",
-   "open": 132,
-   "started": [
-    {
-     "id": "mvymnftz",
-     "kind": "will",
-     "wf": "verse-job.yml",
-     "score": 95
-    }
-   ],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 5,
-   "warnings": 0
-  },
   {
    "at": "2026-11-02T03:17:09.454Z",
    "open": 132,
@@ -2926,6 +2875,74 @@
    "lap": false,
    "revived": [],
    "held": 1,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-03T02:47:19.790Z",
+   "open": 138,
+   "started": [
+    {
+     "id": "mvuqmbwm",
+     "kind": "versus",
+     "wf": "verse-job.yml",
+     "score": 92
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 7,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-03T02:57:45.307Z",
+   "open": 138,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 7,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-03T03:08:01.395Z",
+   "open": 138,
+   "started": [
+    {
+     "id": "mvo2ae7i",
+     "kind": "feature",
+     "wf": "verse-job.yml",
+     "score": 92
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [
+    "propose-fix.yml",
+    "grow-self.yml"
+   ],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 7,
    "warnings": 0
   }
  ]
