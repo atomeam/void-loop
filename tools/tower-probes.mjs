@@ -639,7 +639,7 @@ export const PROBES = Object.freeze({
       ['export text', /Export text/],
       ['no credits', /no credits/i],
       ['no subscriptions', /no subscriptions/i],
-      ['no API keys', /no API keys/i],
+      ['no API keys', /no (?:API keys|keys to paste)/i],
       ['works offline', /works offline/i],
     ],
     askParts: {

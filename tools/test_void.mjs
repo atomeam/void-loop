@@ -398,7 +398,7 @@ function memoryStoreD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
     if (/^SELECT place, reason, SUM\(n\) AS n FROM void_shortfalls WHERE day >= \? GROUP BY place, reason$/.test(sql)) { need('void_shortfalls'); const g = new Map(); for (const r of T.shortfalls.values()) if (r.day >= a[0]) { const k = r.place + '|' + r.reason; g.set(k, { place: r.place, reason: r.reason, n: (g.get(k) ? g.get(k).n : 0) + r.n }); } return { results: [...g.values()] }; }
-    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
+    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'(?:,'declined','deferred')?\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed|declined|deferred)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
     if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
@@ -8882,7 +8882,7 @@ try {
     const down = await (await post(E)).json(), downQ = jobs(E);
     check("will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
       one.queued && oneQ.length === 1 && oneQ[0].target === 'will:answer-tide-questions' && !one.skipped
-      && two.queued && twoQ.length === 1 && twoQ[0].target === 'will:answer-moon-questions' && JSON.stringify(two.skipped) === '[{"title":"Answer tide questions","tries":2}]' && /^Verse chose this: people ask for the moon · 1 want above it waits: its jobs were set aside or failed 2 times in 14 days$/.test(twoQ[0].note) && two.wants[0].title === 'Answer tide questions'
+      && two.queued && twoQ.length === 1 && twoQ[0].target === 'will:answer-moon-questions' && JSON.stringify(two.skipped) === '[{"title":"Answer tide questions","tries":2}]' && /^Verse chose this: people ask for the moon · 1 want above it waits: its jobs (?:were set aside or failed|ended without shipping) 2 times in 14 days$/.test(twoQ[0].note) && two.wants[0].title === 'Answer tide questions'
       && old.queued && oldQ[0].target === 'will:answer-tide-questions' && !old.skipped
       && down.queued && downQ[0].target === 'will:answer-tide-questions',
       JSON.stringify({ one: [one.queued, oneQ.map((q) => q.target), one.skipped], two: [two.queued, twoQ.map((q) => [q.target, q.note]), two.skipped], old: [old.queued, oldQ.map((q) => q.target)], down: [down.queued, downQ.map((q) => q.target)] }).slice(0, 700));
