@@ -171,7 +171,10 @@ test('every pick carries its ease, from the scan\'s own numbers, easiest first (
 });
 test('a read that never returns is cut off and recorded, so the next run moves on (2026-11-03: four runs cancelled on one stuck site)', async () => {
   assert.ok(SITE_DEADLINE_MS > 0 && BUILD_BUDGET_MS + 3 * SITE_DEADLINE_MS <= 45 * 60000, 'the reading ends with time left in the job\'s 75 minutes for the push, deploy and gate');
-  await assert.rejects(withDeadline(new Promise(() => {}), 20, 'the read'), (e) => e.late === true && /the read did not finish/.test(e.message));
+  // a read far slower than its deadline (its own timer keeps the event loop up: the deadline's timer is unref'd, and Node 20/22 end a test
+  // whose only pending work is an unref'd timer, which held #2076 at the automerge safety-check)
+  let slow; await assert.rejects(withDeadline(new Promise((r) => { slow = setTimeout(r, 2000); }), 20, 'the read'), (e) => e.late === true && /the read did not finish/.test(e.message));
+  clearTimeout(slow);
   assert.equal(await withDeadline(Promise.resolve(7), 1000, 'x'), 7);
   const at = Date.parse('2026-11-03T00:00:00Z'), frontier = { sites: [{ site: 'stuck.test', hardness: 1 }, { site: 'next.test', hardness: 2 }] };
   const state = { sites: { 'stuck.test': { at: '2026-11-03T00:00:00Z', outcome: 'walled', why: 'not read (the read did not finish in 240 s)' } } };
