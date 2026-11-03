@@ -234,6 +234,25 @@ export function failedLoopPr(prs, heals = {}) {
   return null;
 }
 
+// One open PR per task (2026-11-03): with main red and the loop's PRs unable to merge, every lap opened another "Verse loop: fix
+// growth-suites" (18 open at once, #2049-#2073) and spent up to 30 coder turns on each, so the coder's 360 free calls a day ran out
+// and the conductor held every queued job. Now a lap whose PR would repeat an open loop PR opened under DUP_HOURS ago spends nothing
+// (outcome skipped, which counts neither way); an older twin is replaced by the new PR, and the older ones are closed as superseded.
+export const DUP_HOURS = 12;
+/** The PR title a lap of this task opens. Pure. */
+export function titleFor(task, probe = null) {
+  return task.kind === 'fix' ? `Verse loop: fix ${task.check}`
+    : task.kind === 'groom' ? GROOM_TITLE
+    : task.kind === 'probe' ? String((probe && probe.title) || 'Verse fixes ' + ((probe && probe.skill) || 'a skill')).slice(0, 90)
+    : `Verse loop: ${task.n != null ? 'NEXT ' + task.n : 'task'}, ${String(task.text || '').replace(/\*\*/g, '').slice(0, 60)}`;
+}
+/** The open loop/* PRs with this title, newest first, each with ageH (hours since it was opened, Infinity when unknown). Pure. */
+export function twins(prs, title, now = Date.now()) {
+  return (prs || []).filter((p) => /^loop\//.test(p.headRefName || '') && p.title === title)
+    .map((p) => { const t = Date.parse(p.createdAt || ''); return { number: p.number, url: p.url, branch: p.headRefName, ageH: Number.isFinite(t) ? (now - t) / 3600e3 : Infinity }; })
+    .sort((a, b) => a.ageH - b.ageH);
+}
+
 /** The assimilation gaps docs/PARITY.md names: each section's "Still missing" or "Gaps." line that is not "None". Pure. */
 export function assimilationGaps(doc) {
   const out = []; let title = '';
@@ -347,6 +366,8 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     }
     const r = await oneLap();
     if (keep) {
+      // a PR this lap closed as superseded was replaced, not refused: it never counts as "closed without merging"
+      if (r.superseded) state = { ...state, prs: (state.prs || []).filter((u) => !r.superseded.includes(u)) };
       state = recordOutcome(state, r.outcome, { pr: r.pr, why: r.why, at: now });
       if (r.healed) state = { ...state, heals: { ...(state.heals || {}), [r.healed]: ((state.heals || {})[r.healed] || 0) + 1 } };
       if (r.outcome === 'healed') state = { ...state, fails: 0 };
@@ -418,7 +439,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     };
 
     // self-heal first: an open loop/* PR with a failed check is fixed on its own branch, and the lap does nothing else
-    const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup', '--limit', '100') || [];
+    const open = ghJson('pr', 'list', '--state', 'open', '--json', 'number,url,title,headRefName,statusCheckRollup,createdAt', '--limit', '100') || [];
     const sick = failedLoopPr(open, state.heals || {});
     if (sick) {
       report.healed = sick.branch;
@@ -467,6 +488,12 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     } else {
       task = pickTask({ before, agent: opts.agent, next, task: opts.task, probe: !!env.VOID_OWNER_TOKEN });
       if (task.kind === 'idle') return done(task.kind, task.why);
+    }
+
+    // one open PR per task: a twin opened under DUP_HOURS ago is still the answer, so this lap spends no model calls on it
+    if (task.kind === 'fix' || task.kind === 'next') {
+      const twin = twins(open, titleFor(task), now)[0];
+      if (twin && twin.ageH < DUP_HOURS) return done('skipped', `an open loop PR already does this (${twin.url}, opened ${twin.ageH.toFixed(1)} h ago); no model calls spent`, { duplicateOf: twin.url });
     }
 
     let probe = null;
@@ -523,10 +550,7 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     }
 
     const branch = 'loop/' + stamp();
-    const title = task.kind === 'fix' ? `Verse loop: fix ${task.check}`
-      : task.kind === 'groom' ? GROOM_TITLE
-      : task.kind === 'probe' ? String(probe.title || 'Verse fixes ' + probe.skill).slice(0, 90)
-      : `Verse loop: ${task.n != null ? 'NEXT ' + task.n : 'task'}, ${task.text.replace(/\*\*/g, '').slice(0, 60)}`;
+    const title = titleFor(task, probe);
     const line = `- ${new Date().toISOString().slice(0, 16)}Z verse-loop (${opts.agent}): ${title.replace(/^Verse loop: /, '')}; ${v.why}; branch ${branch}`;
     Object.assign(report, { branch, title, tagteamLine: line });
     if (opts.dryRun) return done('would-ship', v.why + ' (dry run: no commit, push or PR; the changes are left in the tree)');
@@ -550,6 +574,13 @@ export async function lap(opts, { cwd = process.cwd(), env = process.env, log = 
     if (pr.code) { git('checkout', '-q', '--detach', 'origin/' + opts.base); return done('pushed', 'pushed ' + branch + ' but the PR was not opened: ' + pr.out.trim()); }
     report.pr = pr.out.trim().split('\n').pop();
     step('PR ' + report.pr);
+    // the older open PRs for the same task are replaced by this one (it starts from the newest main): closed, their branches deleted
+    const gone = twins(open, title, now).filter((t) => t.url !== report.pr);
+    for (const t of gone) {
+      const c = gh('pr', 'close', String(t.number), '--delete-branch', '--comment', `Superseded by ${report.pr}: the same task, started from a newer main (tools/verse-loop.mjs keeps one open PR per task).`);
+      step(c.code ? 'could not close ' + t.url + ': ' + c.out.trim().slice(0, 160) : 'closed ' + t.url + ' (superseded)');
+    }
+    if (gone.length) report.superseded = gone.map((t) => t.url);
     verify(branch);
     git('checkout', '-q', '--detach', 'origin/' + opts.base);
     return done('shipped', v.why);

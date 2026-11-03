@@ -6,7 +6,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync, rmSync
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
+import { parseArgs, topItem, scanDiff, pickTask, verdict, takeLock, agentCommand, buildPrompt, lap, groomNext, assimilationGaps, ease, pauseState, recordOutcome, settlePrs, failedLoopPr, loadState, titleFor, twins, DUP_HOURS, PAUSE_TITLE, GROOM_TITLE, LOOP_CODE } from './verse-loop.mjs';
 
 const quiet = () => {};
 const sh = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(a.join(' ') + ': ' + r.stderr); return r.stdout.trim(); };
@@ -450,4 +450,33 @@ test('a groom lap: when Verse\'s queue changed it ships docs/NEXT.md alone, no b
   r = await lap(parseArgs(['--dry-run', '--agent', 'cmd']), { cwd: t.work, env: env(t, 'echo b > b.txt'), log: quiet });
   assert.equal(r.outcome, 'would-ship'); assert.match(r.task.text, /^\[assimilation gap\] site A/, 'the groomed top, from memory');
   assert.equal(readFileSync(join(t.work, 'docs/NEXT.md'), 'utf8'), HAND_NEXT, 'no second groom while one is open');
+});
+
+test('one open PR per task: a lap that would repeat a fresh open loop PR spends nothing; an older twin is replaced and closed as superseded', async () => {
+  const now = Date.parse('2026-11-03T12:00:00Z');
+  const pr = (n, h, title = 'Verse loop: fix alpha') => ({ number: n, url: 'https://github.com/example/repo/pull/' + n, title, headRefName: 'loop/x' + n, createdAt: new Date(now - h * 3600e3).toISOString(), statusCheckRollup: [] });
+  assert.equal(titleFor({ kind: 'fix', check: 'alpha' }), 'Verse loop: fix alpha');
+  assert.equal(titleFor({ kind: 'next', n: 2, text: '**Calculator sitemap** easiest' }), 'Verse loop: NEXT 2, Calculator sitemap easiest');
+  assert.deepEqual(twins([pr(1, 30), pr(2, 2), pr(3, 1, 'Verse loop: fix beta'), { ...pr(4, 1), headRefName: 'feature/y' }], 'Verse loop: fix alpha', now).map((t) => t.number), [2, 1]);
+  assert.equal(twins([{ ...pr(5, 1), createdAt: undefined }], 'Verse loop: fix alpha', now)[0].ageH, Infinity);
+  // a fresh twin: the brain never runs (it would write ran.txt), nothing is pushed or opened
+  const s = sandbox({ red: ['alpha'] });
+  setGh(s, { 'pr list': [pr(9, 2)] });
+  const r = await lap(parseArgs(['--agent', 'cmd']), { cwd: s.work, env: env(s, 'echo ran > ran.txt; rm -f red-alpha'), log: quiet, now });
+  assert.equal(r.outcome, 'skipped', r.why);
+  assert.equal(r.duplicateOf, 'https://github.com/example/repo/pull/9');
+  assert.ok(!existsSync(join(s.work, 'ran.txt')), 'no brain, no model calls');
+  assert.ok(!existsSync(join(s.dir, 'gh-args.txt')), 'no new PR');
+  assert.equal(loadState(join(s.work, '.git', 'verse-loop.state.json')).fails, 0, 'a skip counts neither way');
+  // an old twin (past DUP_HOURS): the lap ships, then closes the old one as superseded, and the close does not count as a failure
+  const s2 = sandbox({ red: ['alpha'] });
+  setGh(s2, { 'pr list': [pr(9, DUP_HOURS + 1), pr(8, DUP_HOURS + 5)] });
+  const r2 = await lap(parseArgs(['--agent', 'cmd']), { cwd: s2.work, env: env(s2, 'rm -f red-alpha; echo fixed > fixed.txt'), log: quiet, now });
+  assert.equal(r2.outcome, 'shipped', r2.why);
+  assert.deepEqual(r2.superseded, ['https://github.com/example/repo/pull/9', 'https://github.com/example/repo/pull/8']);
+  const calls = ghCalls(s2).map((c) => c.slice(0, 4).join(' '));
+  assert.ok(calls.includes('pr close 9 --delete-branch') && calls.includes('pr close 8 --delete-branch'), calls.join('\n'));
+  const st = loadState(join(s2.work, '.git', 'verse-loop.state.json'));
+  assert.deepEqual(st.prs, ['https://github.com/example/repo/pull/7']);
+  assert.equal(st.fails, 0);
 });
