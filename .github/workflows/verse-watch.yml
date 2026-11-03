@@ -95,13 +95,13 @@ jobs:
             --base main --head "$branch" \
             --title "watch-along: queue app ideas learned from TV/radio" \
             --body "## Brief
-Idea notes Verse learned from local TV/radio are promoted onto the one build order so builders can ship them onto the site.
+          Idea notes Verse learned from local TV/radio are promoted onto the one build order so builders can ship them onto the site.
 
-**Touched only:** domains/void.frontier.md, domains/growth-inbox.md
+          **Touched only:** domains/void.frontier.md, domains/growth-inbox.md
 
-**Source:** tools/watch-ideas.mjs after the hourly verse-watch learn step. Stream material is never stored.
+          **Source:** tools/watch-ideas.mjs after the hourly verse-watch learn step. Stream material is never stored.
 
-Label for automerge when review is clean." \
+          Label for automerge when review is clean." \
             --label automerge || gh pr create --repo "${{ github.repository }}" \
             --base main --head "$branch" \
             --title "watch-along: queue app ideas learned from TV/radio" \

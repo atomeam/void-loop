@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1099,
+ "counted": 1105,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1760,6 +1760,13 @@
    "tests": 1
   },
   {
+   "file": "lib/vat.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
@@ -2243,6 +2250,13 @@
    "tests": 1
   },
   {
+   "file": "lib/vat-ask.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
@@ -2569,7 +2583,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/wiki-look.js",
@@ -2979,6 +2993,13 @@
   },
   {
    "file": "lib/beacon.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/books-shelf.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5261,6 +5282,10 @@
     "skills/about-skill.js",
     "skills/own-parts.js"
    ]
+  },
+  "lib/books-shelf.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/brain-ask.js": {
    "imports": [],
@@ -12728,6 +12753,21 @@
     "skills/v01d-fixes.js"
    ]
   },
+  "lib/vat-ask.js": {
+   "imports": [
+    "lib/vat.js"
+   ],
+   "importedBy": [
+    "skills/vat.js"
+   ]
+  },
+  "lib/vat.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/vat-ask.js",
+    "skills/vat.js"
+   ]
+  },
   "lib/verse-secrets.js": {
    "imports": [],
    "importedBy": [
@@ -13966,6 +14006,10 @@
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
+  },
+  "skills/delivery-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -15829,6 +15873,10 @@
    ],
    "importedBy": []
   },
+  "skills/palindrome.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/part.js": {
    "imports": [
     "lib/ask-text.js"
@@ -17213,6 +17261,13 @@
   "skills/v01d-fixes.js": {
    "imports": [
     "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/vat.js": {
+   "imports": [
+    "lib/vat-ask.js",
+    "lib/vat.js"
    ],
    "importedBy": []
   },

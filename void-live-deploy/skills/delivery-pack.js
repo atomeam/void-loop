@@ -7,11 +7,12 @@
  */
 export function isDeliveryPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:(?:package|pack|handoff|delivery)\s+(?:this\s+)?(?:idea|business|plan)|(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan))(?:\s*[:\-]\s*.+)?$/i.test(t);
+  return /^(?:please\s+)?(?:(?:package|pack)\s+(?:(?:this|my|the|an?|our)\s+)?(?:idea|business|plan)\b.*|(?:handoff|hand-off|delivery)\s+(?:pack|package|plan)\b(?:\s+for\s+.+|\s*[:\-]\s*.+)?|(?:create|make|generate|build)\s+(?:(?:a|an|the|my)\s+)?(?:handoff|hand-off|delivery)\s+(?:pack|package|plan)\b.*)$/i.test(t);
 }
 
 function extractIdea(text) {
-  const m = String(text || '').match(/(?:idea|business|plan|for)\s*[:\-]\s*(.+)/i);
+  const t = String(text || '').trim().replace(/[?!.]+$/, '');
+  const m = t.match(/(?:idea|business|plan|pack|package)\s*[:\-]\s*(.+)/i) || t.match(/\bfor\s+(?:(?:my|our|the|an?)\s+)?(.+)/i);
   return m ? m[1].trim() : 'unspecified business idea';
 }
 
@@ -53,9 +54,12 @@ export default {
   match(lower, text) { return isDeliveryPack(text); },
   run,
   suite() {
-    const ok = isDeliveryPack('package this idea: automate onboarding') &&
-               isDeliveryPack('handoff pack for my SaaS') &&
-               !isDeliveryPack('what is a package');
+    const yes = ['package this idea: automate onboarding', 'handoff pack for my SaaS', 'handoff pack for my SaaS idea',
+      'delivery package: invoice reminders that run themselves', 'make a delivery pack for the support ticket router'];
+    const no = ['what is a package', 'ship the package', 'package.json', 'pack my bags'];
+    const ok = yes.every(isDeliveryPack) && !no.some(isDeliveryPack) &&
+      extractIdea('handoff pack for my SaaS idea') === 'SaaS idea' &&
+      extractIdea('delivery package: invoice reminders') === 'invoice reminders';
     return { ok, got: 'match works' };
   }
 };
