@@ -23,6 +23,7 @@
 //   node tools/tower-self.mjs judge ids.txt [--queue]                         read the gate's rows, apply mechanical fixes, queue the rest, report
 //   node tools/tower-self.mjs guard                                           exit 1 when a frontier site at the front of the queue has no page
 //   node tools/tower-self.mjs status                                          what the loop has done and how many pages a day
+import { topicOf } from '../void-live-deploy/lib/tower-topic.js';
 import { badgeOf, buildable } from '../void-live-deploy/lib/gate-badge.js';
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { FLOORS, tower, frontierOf, hostOf, noShotOf, gate, barRow } from '../void-live-deploy/lib/tower.js';
@@ -246,6 +247,12 @@ async function build(planFile, outFile, maxBuilt) {
       const r = await withDeadline(scanSite(b, c.url), SITE_DEADLINE_MS, 'the read').catch((e) => ({ problem: 'not read (' + clip(e && e.message || e, 80) + ')', late: !!(e && e.late), pages: [] }));
       if (r.late) await fresh();
       if (r.problem || !r.pages.length) { decision.state[c.host] = { at: now(), outcome: /parked|did not load|answered [45]\d\d|no page read/.test(r.problem || 'no page read') ? 'gone' : 'walled', why: clip(r.problem || 'no page read', 160), ...pick }; console.log(c.host + ': ' + decision.state[c.host].why); save(); continue; }
+      // a job an existing page already does is that page's, extended, never a new page (owner, 2026-11-03: "always combine pages when possible"):
+      // the site is recorded against the page by topic (lib/tower-topic.js) and a job asks for its missing features as a mode or section there
+      const covered = topicOf(r.pages.map((p) => p.title).join(' '), c.host);
+      if (covered) { decision.state[c.host] = { at: now(), outcome: 'covered', page: covered.page, topic: covered.topic, title: clip(r.pages[0].title, 80), why: 'its job is ' + covered.topic + ', which ' + covered.page + ' already does: extend that page, not a new one', ...pick }; save();
+        decision.jobs.push({ target: ('versus:' + c.host).slice(0, 40), ask: clip('Versus: extend ' + covered.page + ' with what ' + c.host + ' (' + clip(r.pages[0].title, 60) + ') does that it lacks, as a mode or section of that page, not a new page', 200) });
+        console.log(c.host + ': covered by ' + covered.page + ' (' + covered.topic + ')'); continue; }
       const site = { host: c.host, pages: r.pages }, siteText = r.pages.map((p) => p.title + ' ' + (p.headings || []).join(' ') + ' ' + p.text).join(' ');
       const a = await withDeadline(askModel(messagesOf(site, fams)), SITE_DEADLINE_MS, 'the model').catch((e) => ({ error: clip(e && e.message || e, 120) }));
       if (a.error) { decision.state[c.host] = { at: now(), outcome: 'not-judged', why: a.error, ...pick }; save(); console.log(c.host + ': ' + a.error); continue; }

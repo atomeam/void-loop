@@ -21,7 +21,8 @@ test('one row per site, at its furthest outcome, with the ease it was picked by 
   assert.deepEqual(by['easy.example'].ease, { score: 42, place: 1, why: '12 controls, 80 KB' });
   assert.equal(by['pw.example'].learned, 'nothing leaves the device');
   const f = fileOf(rows);
-  assert.deepEqual(f.counts, { sites: 5, surpassed: 2, assimilated: 1, tried: 2 });
+  assert.deepEqual(f.counts, { sites: 5, surpassed: 2, assimilated: 1, current: 0, tried: 2 });
+  assert.equal(f.target, null);
 });
 
 test('the first commit that named each host, from git log text', () => {
@@ -38,4 +39,13 @@ test('the real list: every site Versus by itself read and every lane page is in 
   assert.ok(j.counts.surpassed >= 2 && j.counts.assimilated >= 1);
   const page = readFileSync(new URL('../void-live-deploy/assimilated/index.html', import.meta.url), 'utf8');
   assert.match(page, /fetch\('\/assimilated\.json'/); assert.match(readFileSync(new URL('../void-live-deploy/conquered/index.html', import.meta.url), 'utf8'), /href="\/assimilated\/"/, 'Versus links to it');
+});
+
+test('the card\'s target is the history\'s target, with its page by topic and its score; a site covered by an existing page counts as assimilated', () => {
+  const rows = historyOf({ floors: [{ state: 'current', site: 'ndscalc.ru', url: 'https://ndscalc.ru/', page: '/calculator/?mode=vat', topic: 'vat', n: 3, m: 12 }],
+    state: { sites: { 'calc.example': { at: '2026-11-03T20:00:00Z', outcome: 'covered', page: '/calculator/', topic: 'calculator' } } } });
+  const f = fileOf(rows), by = Object.fromEntries(rows.map((r) => [r.site, r]));
+  assert.deepEqual(f.target, { site: 'ndscalc.ru', page: '/calculator/?mode=vat', score: { n: 3, m: 12 } });
+  assert.equal(by['ndscalc.ru'].status, 'now assimilating'); assert.equal(by['calc.example'].status, 'assimilated into an existing page');
+  assert.equal(f.counts.current, 1); assert.equal(f.counts.assimilated, 1);
 });
