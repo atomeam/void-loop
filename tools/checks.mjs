@@ -533,6 +533,7 @@ for (const [name, file] of [
   ['tower', 'tower.test.mjs'],
   ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
+  ['assimilated', 'assimilated.test.mjs'], // the history of every site Versus took on (/assimilated/, tools/assimilated.mjs)
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
   ['tower-falsepass', 'tower-falsepass.test.mjs'],

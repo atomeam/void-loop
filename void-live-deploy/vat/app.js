@@ -1,7 +1,8 @@
 import { mountRelated } from '/lib/toolkit.js';
 import { compute, money, rateText } from '/lib/vat.js';
 
-const $ = (id) => document.getElementById(id);
+// every call names the element as '#id' (2026-11-03: with getElementById('#rates') null the page stopped at its first line and never mounted its links)
+const $ = (id) => document.getElementById(String(id).replace(/^#/, ''));
 const stateKey = 'a2m.void.vat.v1';
 const historyKey = 'a2m.void.vat.history.v1';
 const rates = [22, 20, 18, 10, 5, 0];
@@ -293,8 +294,11 @@ buildRateButtons();
 restoreState();
 bind();
 render();
+// the hand-off carries this page's sum to the calculator; the related tools themselves come from lib/toolkit.js (RELATED['/vat/'])
 mountRelated(document.getElementById('related'), '/vat/', [
-  { label: 'Calculator', href: () => '/calculator/' },
-  { label: 'Unit converter', href: () => '/convert/' },
-  { label: 'Base converter', href: () => '/base-converter/' },
+  { label: 'Check it in the calculator', href: () => {
+    const a = Number($('#amount').value), r = Number($('#rate').value);
+    if (!Number.isFinite(a) || !Number.isFinite(r)) return '';
+    return '/calculator/?q=' + encodeURIComponent($('#mode').value === 'add' ? a + '*(1+' + r + '/100)' : a + '/(1+' + r + '/100)');
+  } },
 ]);

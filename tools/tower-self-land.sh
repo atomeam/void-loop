@@ -22,8 +22,9 @@ for i in 1 2 3 4 5; do
       git reset -q --hard origin/main; node tools/tower-self.mjs discard "$DEC" "failed $why"; node tools/tower-self.mjs apply "$DEC"; built=0
     }
   fi
+  node tools/assimilated.mjs >/dev/null || true # the history page's list (/assimilated/): every site this run read, with its ease, after a discard too
   pages=$(node tools/tower-self.mjs paths)
-  git add void-live-deploy/lib/self-sites.js void-live-deploy/sw.js void-live-deploy/llms.txt void-live-deploy/sitemap.xml domains/tower-self.json domains/features $pages
+  git add void-live-deploy/lib/self-sites.js void-live-deploy/sw.js void-live-deploy/llms.txt void-live-deploy/sitemap.xml void-live-deploy/assimilated.json domains/tower-self.json domains/features $pages
   stray=$(git status --porcelain --untracked-files=no | grep -v '^[AM] ' || true)
   [ -n "$stray" ] && { echo "::warning::left out (not the loop's to change):"; echo "$stray"; }
   if git diff --cached --quiet; then echo "nothing to land"; echo "pushed=no" >>"$OUT"; echo "built=no" >>"$OUT"; exit 0; fi
