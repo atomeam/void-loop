@@ -19,3 +19,9 @@ test("change-curator", () => {
   assert.equal(b.run("{\"citations\":[\"#1\"],\"rollback\":[\"revert\"],\"metric\":\"ctr\",\"risk\":\"low\",\"idempotent\":true}"), "approved");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("retry-backoff", () => {
+  const b = bot("retry-backoff"); assert.ok(b && BOT("retry-backoff"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("attempt 9, 200s in"), "stop: 3 minutes used, report it down");
+  assert.ok(lineage(b), 'lineage is real');
+});
