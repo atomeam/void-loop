@@ -114,3 +114,12 @@ test('a member proposes in #ideas and cannot invite, remove, queue or make chann
   assert.deepEqual(T.quickPost('Idea - more stars'), { c: 'ideas', body: 'more stars' });
   assert.equal(T.quickPost('   '), null);
 });
+
+test('the stage: "help build verse" and the owner\'s "team job: ..." go to the team skill; a job search does not', async () => {
+  const { default: skill, postLink } = await import('../void-live-deploy/skills/team-chat.js');
+  for (const q of ['help build verse', 'how can i help build verse?', 'verse jobs', 'team job: add a tide table', 'post an idea to the team: a members call']) assert.ok(skill.match(q.toLowerCase(), q), q);
+  for (const q of ['jobs near me', 'post a job', 'team building ideas']) assert.ok(!skill.match(q.toLowerCase(), q), q);
+  assert.equal(postLink('team job: add a tide table'), '/team/?job=add+a+tide+table#build');
+  assert.equal(postLink('Verse idea, a members call'), '/team/?idea=a+members+call#build');
+  assert.equal(postLink('help build verse'), '');
+});
