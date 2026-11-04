@@ -2118,5 +2118,87 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T19:33:23Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2382,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T19:43:46Z",
+  "passed": 78,
+  "of": 88,
+  "ms": 384,
+  "kind": "file",
+  "key": "keep this idea: a stage that remembers | why: it makes coming back feel like home | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 3 < 5"
+   },
+   {
+    "ask": "bokos like dune",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "fly around",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "keep this idea: a stage that remembers | why: it makes coming back feel like hom",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "play a local audio file",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "films by Kurosawa",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo film metadata for ikiru",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "yo find me a sci-fi film from the 80s",
+    "why": "load 1617 ms > 1200"
+   },
+   {
+    "ask": "find me a sci-fi film from the 80s pls",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2382,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" nothing appeared"
  }
 ]
