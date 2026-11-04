@@ -23,8 +23,8 @@ function run(text, api) {
 
 export default {
   name: 'vat',
-  examples: ['выделить ндс из 1000', 'начислить ндс 5000 20%', 'ндс 22% от 1000', 'remove vat from 100', 'add vat to 500', 'vat calculator'],
+  examples: ['выделить ндс из 1000', 'начислить ндс 5000 20%', 'ндс 22% от 1000', 'remove vat from 100', 'add vat to 500', 'vat calculator', 'total with 20% vat on 150'],
   nearMisses: ['22% of 1000', 'percentage calculator', 'income tax calculator', 'sales tax', 'discount calculator', 'tip calculator', 'what is 20 percent of 50'],
-  match(lower, text) { return !!vatAskOf(text || lower); },
+  match(lower, text) { return !!vatAskOf(text || lower) || (lower.includes('vat') && /\d+%?\s+vat/.test(lower) || /vat\s+on\s+\d+/.test(lower)); },
   run,
 };
