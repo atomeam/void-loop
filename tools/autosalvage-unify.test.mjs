@@ -19,7 +19,7 @@ test('evaluate classifies unified, live, history, salvageable, skipped', () => {
     { id: 'e', kind: 'outside', name: 'x/z', path: 'https://github.com/x/z', files: 1, license: 'MIT', author: 'x' },
     { id: 'f', kind: 'draft', name: 'done', path: 'drafts/done', files: 1 },
   ];
-  const rows = evaluate(pieces, { unified: { f: { target: 'bot', into: '/bots/', test: 't.mjs' } }, named: (n) => n === 'liveone' });
+  const rows = evaluate(pieces, { unified: { f: { target: 'bot', into: '/bots/', test: 't.mjs' } }, pathNamed: (p) => p === 'drafts/liveone' });
   assert.deepEqual(rows.map((r) => r.status), ['history', 'live', 'salvageable', 'skipped', 'salvageable', 'unified']);
   assert.equal(rows[2].target, 'skill');
   const s = summarize(rows, '2026-11-03');
@@ -34,4 +34,15 @@ test('shelf rows and targets', () => {
   assert.deepEqual(shelfRows('| `tools/x.mjs` | a | b | S |\n<!-- autosalvage:start -->\n| `no/y` | a | b | S |').map((r) => r.path), ['tools/x.mjs']);
   assert.equal(targetOf({ name: 'helper-bot', kind: 'draft', path: '' }), 'bot');
   assert.equal(targetOf({ name: 'x', kind: 'old workflow', path: '' }), 'tool');
+});
+
+test('a shared name alone is not live; stubs and copies are history', () => {
+  const rows = evaluate([
+    { id: 'n', kind: 'draft', name: 'sharedname', path: 'drafts/sharedname', files: 2, code: 1, codeBytes: 5000 },
+    { id: 's', kind: 'archived part', name: 'pages', path: 'x/pages', files: 9, code: 9, codeBytes: 1800 },
+    { id: 'a', kind: 'archived part', name: 'lib', path: 'a/lib', files: 3, code: 3, codeBytes: 9000, sig: 'same' },
+    { id: 'b', kind: 'archived part', name: 'lib', path: 'b/lib', files: 3, code: 3, codeBytes: 9000, sig: 'same' },
+  ], { named: () => true, pathNamed: () => false });
+  assert.deepEqual(rows.map((r) => r.status), ['salvageable', 'history', 'salvageable', 'history']);
+  assert.match(rows[0].why, /shares its name/);
 });

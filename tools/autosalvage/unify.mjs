@@ -41,7 +41,11 @@ export function scan() {
   const files = (dir) => { try { return execFileSync('git', ['ls-files', dir], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 }).split('\n').filter(Boolean); } catch (_) { return []; } };
   const facts = (path) => {
     const fs = isDir(path) ? files(path) : [path];
-    return { files: fs.length, code: fs.filter((f) => /\.(m?js|ts|tsx|py|html)$/.test(f)).length, tests: fs.filter((f) => /test/i.test(f)).length,
+    const codeFiles = fs.filter((f) => /\.(m?js|ts|tsx|py|html)$/.test(f));
+    const size = (f) => { try { return statSync(resolve(root, f)).size; } catch (_) { return 0; } };
+    const codeBytes = codeFiles.reduce((n, f) => n + size(f), 0);
+    const sig = fs.map((f) => f.slice(path.length)).sort().join('|') + '#' + fs.reduce((n, f) => n + size(f), 0);
+    return { codeBytes, sig, files: fs.length, code: fs.filter((f) => /\.(m?js|ts|tsx|py|html)$/.test(f)).length, tests: fs.filter((f) => /test/i.test(f)).length,
       readme: fs.some((f) => /readme\.md$/i.test(f)), docs: fs.filter((f) => /\.md$/.test(f)).length, json: fs.filter((f) => /\.json$/.test(f)).length };
   };
   for (const repo of ls('archive/repos')) {
@@ -92,7 +96,7 @@ export function targetOf(p) {
 }
 /** a rough value score: more real work, tests and docs, and a named gap, rank higher. Pure. */
 export function valueOf(p) {
-  let v = Math.log2((p.files || 0) + 1) * 6 + Math.min(p.code || 0, 40) * 0.6 + Math.min(p.tests || 0, 20) * 1.5 + (p.readme ? 4 : 0) + Math.min(p.docs || 0, 10) * 0.5;
+  let v = Math.log2((p.files || 0) + 1) * 3 + Math.log2((p.codeBytes || 0) / 1000 + 1) * 4 + Math.min(p.code || 0, 40) * 0.6 + Math.min(p.tests || 0, 20) * 1.5 + (p.readme ? 4 : 0) + Math.min(p.docs || 0, 10) * 0.5;
   if (p.kind === 'outside') v += 18;
   if (/^(L)$/.test(p.size || '')) v += 6; else if (p.size === 'M') v += 4; else if (p.size === 'S') v += 2;
   if (/money|ledger|bot|agent|skill|router|free|salvage|brief|handoff|memory/i.test(p.name + ' ' + (p.gap || '') + ' ' + (p.said || ''))) v += 6;
@@ -100,8 +104,10 @@ export function valueOf(p) {
 }
 
 /** classify every piece. `named(name)` says whether Verse's live code names it. Pure given named. */
-export function evaluate(pieces, { unified = {}, named = () => false } = {}) {
+export function evaluate(pieces, { unified = {}, named = () => false, pathNamed = () => false } = {}) {
+  const seen = new Map();
   return pieces.map((p) => {
+    const dupOf = p.sig && p.files > 1 ? seen.get(p.sig) : null; if (p.sig && !seen.has(p.sig)) seen.set(p.sig, p.id);
     const u = unified[p.id];
     if (u) return { ...p, status: 'unified', target: u.target, into: u.into, test: u.test, pr: u.pr || null, value: valueOf(p) };
     if (p.kind === 'outside') {
@@ -113,12 +119,25 @@ export function evaluate(pieces, { unified = {}, named = () => false } = {}) {
     if (p.kind === 'github repo' && !p.files) return { ...p, status: 'history', why: 'empty repository', value: 0 };
     if (HISTORY.test(basename(p.path + ''))) return { ...p, status: 'history', why: 'a dated, superseded or one-off file', value: 0 };
     if (p.kind === 'shelf row' && /^none$/i.test(p.size || '')) return { ...p, status: 'history', why: 'the shelf says it is done or history', value: 0 };
-    if (p.kind !== 'outside' && p.name.length >= 5 && !GENERIC.has(p.name.toLowerCase()) && named(p.name)) return { ...p, status: 'live', why: "Verse's live code already names it", value: 0 };
+    if (dupOf && !unified[dupOf]) return { ...p, status: 'history', why: 'a copy of ' + dupOf + ' (salvaged there)', value: 0 };
+    if (p.code >= 5 && p.codeBytes / p.code < 400) return { ...p, status: 'history', why: 'template stubs: ' + p.code + ' code files averaging under 400 bytes', value: 0 };
+    // live only when Verse's live code points at the piece itself (its path), not merely shares a word with it
+    if (p.kind !== 'outside' && p.kind !== 'github repo' && pathNamed(p.path)) return { ...p, status: 'live', why: "Verse's live code reads this path", value: 0 };
     if (!p.files) return { ...p, status: 'history', why: 'nothing left to reuse', value: 0 };
-    return { ...p, status: 'salvageable', target: targetOf(p), value: valueOf(p) };
+    const hint = p.name.length >= 5 && !GENERIC.has(p.name.toLowerCase()) && named(p.name);
+    const v = valueOf(p);
+    return { ...p, status: 'salvageable', target: targetOf(p), value: hint ? Math.round(v * 6) / 10 : v, why: hint ? 'live code shares its name; check for overlap before migrating' : (p.why || '') };
   });
 }
 
+/** git grep for the piece's own path in Verse's live code (the site, tools, workflows), not docs, the archive or this tool. */
+function pathInLive(path) {
+  if (!path || /^https?:/.test(path) || path.startsWith('?/')) return false;
+  try {
+    execFileSync('git', ['grep', '-q', '-F', path, '--', 'void-live-deploy', 'tools', '.github', ':!tools/autosalvage', ':!tools/autosalvage-unify.test.mjs', ':!void-live-deploy/salvage.json'], { cwd: root, stdio: 'ignore' });
+    return true;
+  } catch (_) { return false; }
+}
 /** git grep over Verse's live code (the site, tools, workflows), not the archive or this tool. */
 function namedInLive(name) {
   try {
@@ -161,7 +180,7 @@ function main() {
     writeFileSync(resolve(root, OUTSIDE), JSON.stringify(o, null, 2) + '\n');
   }
   const unified = readJson(UNIFIED, { pieces: {} }).pieces || {};
-  const s = summarize(evaluate(scan(), { unified, named: namedInLive }), new Date().toISOString().slice(0, 10));
+  const s = summarize(evaluate(scan(), { unified, named: namedInLive, pathNamed: pathInLive }), new Date().toISOString().slice(0, 10));
   if (args.includes('--write')) {
     writeFileSync(resolve(root, OUT), JSON.stringify(s, null, 1) + '\n');
     writeFileSync(resolve(root, DOC), docWith(readFileSafe(DOC), s));
