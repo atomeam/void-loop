@@ -20,7 +20,9 @@
   ],
   "shortcuts": [
     { "name": "VERSE FILMS", "short_name": "Films", "description": "Watch and review VERSE FILMS", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
-    { "name": "What's new", "short_name": "New", "url": "/?q=what%27s%20new&source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+    { "name": "What's new", "short_name": "New", "url": "/?q=what%27s%20new&source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Bots", "short_name": "Bots", "url": "/bots/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Tower", "short_name": "Tower", "url": "/conquered/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ],
   "share_target": {
     "action": "/",

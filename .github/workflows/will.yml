@@ -71,4 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           live=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/grow-clock.yml/runs?per_page=5" --jq '[.workflow_runs[] | select(.status != "completed")] | length' 2>/dev/null || echo 1)
-          if [ "$live" = "0" ]; then gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "the clock was down: started again" >> "$GITHUB_STEP_SUMMARY"; else echo "clock running"; fi
+          created=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/grow-clock.yml/runs?per_page=1" --jq '.workflow_runs[0].created_at // empty' 2>/dev/null || echo "")
+          young=0
+          if [ -n "$created" ]; then age=$(( $(date +%s) - $(date -d "$created" +%s) )); [ "$age" -lt 600 ] && young=1; fi
+          if [ "$live" = "0" ] && [ "$young" = "0" ]; then gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && echo "the clock was down: started again" >> "$GITHUB_STEP_SUMMARY"; else echo "clock running"; fi
