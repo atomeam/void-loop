@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T08:19:31.717Z",
+  "at": "2026-11-04T08:52:14.823Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,7 +32,7 @@
       }
     },
     "podcasts": {
-      "score": 88,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -93,11 +93,13 @@
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "audio",
             "episode"
           ],
-          "score": 57.1
+          "score": 28.6
         }
       ],
       "holdout": {
@@ -146,7 +148,7 @@
       }
     },
     "weather": {
-      "score": 98.3,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -162,7 +164,7 @@
           "failed": [
             "skill"
           ],
-          "score": 85.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -365,16 +367,17 @@
       ]
     },
     "units": {
-      "score": 85.8,
+      "score": 82.5,
       "of": 6,
       "measured": 6,
       "fails": [
         {
           "ask": "1 byte in bits",
           "failed": [
-            "skill"
+            "skill",
+            "rival"
           ],
-          "score": 80
+          "score": 60
         },
         {
           "ask": "convert 2",
@@ -422,7 +425,7 @@
       ]
     },
     "timers": {
-      "score": 73.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -450,11 +453,9 @@
         {
           "ask": "temporizador de 3 minutos",
           "failed": [
-            "answered",
-            "skill",
-            "fast"
+            "skill"
           ],
-          "score": 40
+          "score": 80
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -518,10 +519,17 @@
       ]
     },
     "prices": {
-      "score": 83.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "100 usd in eur",
+          "failed": [
+            "rival"
+          ],
+          "score": 80
+        },
         {
           "ask": "price",
           "failed": [
@@ -599,7 +607,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 73.3
+    "domain": "images",
+    "score": 73.9
   }
 }
