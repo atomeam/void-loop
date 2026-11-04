@@ -295,84 +295,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T02:58:58Z",
-   "subject": "Main green: verse-watch parses, every skill has its order place, the red checks fixed (takes over #2064) (#2080)"
+   "at": "2026-11-04T04:40:01Z",
+   "subject": "Shorts: the daily improvement loop films champion and challenger (#2138)"
   },
   {
-   "at": "2026-11-04T02:58:18Z",
-   "subject": "tower-self test, again: gradient is the colour page's mode (#2100). The exam revert took back #2106, a test-only change no visitor can see…"
+   "at": "2026-11-04T04:28:32Z",
+   "subject": "Merge remote-tracking branch 'origin/main' into helper/shorts-music (#2137)"
   },
   {
-   "at": "2026-11-04T02:55:42Z",
-   "subject": "The gradient editor is a mode of the colour page, so it is not its own family."
+   "at": "2026-11-04T04:27:20Z",
+   "subject": "Turn off the old record and clips schedules (#2136)"
   },
   {
-   "at": "2026-11-04T02:55:11Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-04T04:26:40Z",
+   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19 (#2131)"
   },
   {
-   "at": "2026-11-04T02:50:27Z",
-   "subject": "Lab: 361 experiments live at /lab/, 17 waiting for a fix (#2074)"
+   "at": "2026-11-04T04:20:16Z",
+   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate (#2129)"
   },
   {
-   "at": "2026-11-04T02:47:59Z",
-   "subject": "Revert 01c8c7c7fcdcc77bd2f405c38c3b91a1b8402fe0: an outcome-exam domain fell by 5 or more (exam.yml)"
+   "at": "2026-11-04T04:18:28Z",
+   "subject": "Outcome exam: images 73.9"
   },
   {
-   "at": "2026-11-04T02:45:27Z",
+   "at": "2026-11-04T04:18:15Z",
+   "subject": "Add the daily gate-checked Shorts workflow (#2135)"
+  },
+  {
+   "at": "2026-11-04T04:15:06Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T02:43:43Z",
-   "subject": "Main green: CSP page rules fit Cloudflare's 100 again (two pages share a directory rule), price-lock reads the free items from the store…"
+   "at": "2026-11-04T04:13:56Z",
+   "subject": "Turn on the treasury workflow (#2128)"
   },
   {
-   "at": "2026-11-04T02:42:10Z",
-   "subject": "Score Verse by visitor outcomes, and raise the lowest domains (#2097)"
+   "at": "2026-11-04T04:06:01Z",
+   "subject": "shorts: the answer pattern is a SCENES constant (void-review: ok)"
   },
   {
-   "at": "2026-11-04T02:41:06Z",
-   "subject": "Keep main's parity catalog after the refresh."
+   "at": "2026-11-04T04:05:00Z",
+   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
   },
   {
-   "at": "2026-11-04T02:40:51Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-04T04:03:41Z",
+   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19"
   },
   {
-   "at": "2026-11-04T02:38:40Z",
-   "subject": "List the tools the directory was missing, so the search block matches the table."
+   "at": "2026-11-04T03:56:05Z",
+   "subject": "/emoji/<emoji> lands on its every-platform grid: a Pages Function makes the hop (Pages leaves :splat unfilled in a query string, live…"
   },
   {
-   "at": "2026-11-04T02:37:36Z",
-   "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
+   "at": "2026-11-04T03:52:01Z",
+   "subject": "Films: the watch player fits the 9:16 Short, no black bars beside it (#2127)"
   },
   {
-   "at": "2026-11-04T02:36:00Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-04T03:50:52Z",
+   "subject": "checks: keep main's list, add only video-gate"
   },
   {
-   "at": "2026-11-04T02:33:26Z",
-   "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
+   "at": "2026-11-04T03:50:25Z",
+   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate"
   },
   {
-   "at": "2026-11-04T02:31:25Z",
-   "subject": "Keep main's parity catalog. The refresh rewrote it, and the parity check was already red on main."
+   "at": "2026-11-04T03:50:01Z",
+   "subject": "Main green: tower pages preload what they import, /conquered/ spec reads the new card wording, MAP and doc-drift fixed (#2123)"
   },
   {
-   "at": "2026-11-04T02:28:12Z",
-   "subject": "tower-self test: gradient is the colour page's mode since the pages were combined (#2100), so the family check stops failing every merge…"
+   "at": "2026-11-04T03:49:18Z",
+   "subject": "Cards: moving a card keeps its video playing; answer card no longer echoes the whole input (#2126)"
   },
   {
-   "at": "2026-11-04T02:27:53Z",
-   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+   "at": "2026-11-04T03:47:04Z",
+   "subject": "team crew: leave the generated files to the deploy (#2112)"
   },
   {
-   "at": "2026-11-04T02:27:31Z",
-   "subject": "Make the outcome exam harder, then lift code and word problems (#2105)"
-  },
-  {
-   "at": "2026-11-04T02:27:09Z",
-   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
+   "at": "2026-11-04T03:46:01Z",
+   "subject": "Outcome exam: images 73.9"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 26,
-  "week": 542
+  "day": 36,
+  "week": 552
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
