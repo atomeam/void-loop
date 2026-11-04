@@ -1,21 +1,14 @@
 {
-  "at": "2026-11-04T09:50:16.456Z",
+  "at": "2026-11-04T15:27:52.374Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 97.7,
+      "score": 98.5,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play a video about cooking pasta",
-          "failed": [
-            "topic"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the trailer",
           "failed": [
@@ -39,16 +32,24 @@
       }
     },
     "podcasts": {
-      "score": 85.6,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of the daily",
+          "ask": "play the latest episode of radiolab",
           "failed": [
             "audio"
           ],
           "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of hardcore history",
+          "failed": [
+            "show",
+            "episode"
+          ],
+          "score": 71.4
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -100,20 +101,19 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
-            "answered",
             "skill",
-            "fast",
             "audio",
             "episode"
           ],
-          "score": 28.6
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -162,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 98.3,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -178,7 +178,7 @@
           "failed": [
             "skill"
           ],
-          "score": 85.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -533,17 +533,10 @@
       ]
     },
     "prices": {
-      "score": 80,
+      "score": 83.3,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "100 usd in eur",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
         {
           "ask": "price",
           "failed": [

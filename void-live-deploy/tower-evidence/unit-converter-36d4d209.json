@@ -1,0 +1,106 @@
+{
+ "id": "unit converter",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 91,
+   "best": 97,
+   "evidence": "Verse (/convert/) 91 ms to the load event (median of 3, phone width) vs unitconverters.net 97 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/convert/) 0 px sideways overflow at 390 px vs unitconverters.net 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/convert/) 0 unnamed controls or images vs unitconverters.net 1 unnamed controls or images",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/convert/) 3 of 3 loads answered vs unitconverters.net 3 of 3 loads answered",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/convert/) 1 (1: the page shows itself again with the network cut) vs unitconverters.net 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 1,
+   "evidence": "Verse (/convert/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs unitconverters.net 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/convert/) 1 of 1 right against the worked-out answer; judged against the standard, not unitconverters.net (the site is not asked)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "of": 1
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/convert/) 0 design defects vs unitconverters.net 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), unitconverters.net (0 low-contrast texts, 1 small tap targets, layout shift 0.00)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  },
+  "unit breadth": {
+   "verdict": "equal-and-better",
+   "verse": 21,
+   "best": 21,
+   "evidence": "Verse (/convert/) 21 of 21 shown vs unitconverters.net 21 of 21 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "of": 21,
+   "part": true,
+   "siteRead": true
+  },
+  "both directions": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 1,
+   "evidence": "Verse (/convert/) 2 of 2 shown vs unitconverters.net 1 of 2 shown (Verse lacks: none; site lacks: swap)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 31,
+   "best": 27,
+   "evidence": "Verse (/convert/) 31 of 31 things a full answer shows vs unitconverters.net 27 of 31 things a full answer shows (Verse lacks: none; site lacks: a swap or reverse control, the formula, precision, Many units per kind)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "of": 31,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 3.5,
+   "evidence": "Verse (/convert/) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs unitconverters.net 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T14:38:16.842Z",
+   "siteRead": true
+  }
+ }
+}

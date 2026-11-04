@@ -1,0 +1,116 @@
+{
+ "id": "podcasts",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 86,
+   "best": 639,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 86 ms to the load event (median of 3, phone width) vs Apple Podcasts 639 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 loads answered vs Apple Podcasts 3 of 3 loads answered",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 px sideways overflow at 390 px vs Apple Podcasts 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 5,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 unnamed controls or images vs Apple Podcasts 5 unnamed controls or images",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 (1: the page shows itself again with the network cut) vs Apple Podcasts 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Apple Podcasts 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 31,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 0 design defects vs Apple Podcasts 31 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), Apple Podcasts (0 low-contrast texts, 31 small tap targets, layout shift 0.00)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 5,
+   "best": 5,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 right against the worked-out answer; judged against the standard, not Apple Podcasts (the site is not asked)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "of": 5
+  },
+  "subscriptions": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 2,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 3 of 3 shown vs Apple Podcasts 2 of 3 shown (Verse lacks: none; site lacks: the shows you follow)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "of": 3,
+   "part": true,
+   "siteRead": true
+  },
+  "playback controls": {
+   "verdict": "better",
+   "verse": 5,
+   "best": 0,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 5 of 5 shown vs Apple Podcasts 0 of 5 shown (Verse lacks: none; site lacks: speed, skip back and forward, a sleep timer, a queue, an audio element that read its length)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "of": 5,
+   "part": true,
+   "siteRead": true
+  },
+  "catalogue": {
+   "verdict": "worse",
+   "verse": 1,
+   "best": 2,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 1 of 2 shown for the question (Verse lacks: real results from the directory); judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:03:29.347Z",
+   "was": "equal-and-better",
+   "of": 2,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 19,
+   "best": 8,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 19 of 19 things a full answer shows vs Apple Podcasts 8 of 19 things a full answer shows (Verse lacks: none; site lacks: search any show, paste an RSS link, episode lengths, a queue, playback speed, skip back and forward, a sleep timer, share, Search and browse directory, Show pages, Up Next queue)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "of": 19,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 7.5,
+   "best": 5,
+   "evidence": "Verse (/podcasts/?show=verse&ep=ep1) 7.5 of 11 wider-use points (docs/WIDER-USE.md) vs Apple Podcasts 5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T15:03:29.347Z",
+   "siteRead": true
+  }
+ }
+}
