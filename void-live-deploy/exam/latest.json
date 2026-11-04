@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T20:58:49.060Z",
+  "at": "2026-11-04T21:26:17.963Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,12 +32,19 @@
       }
     },
     "podcasts": {
-      "score": 85.6,
+      "score": 84.8,
       "of": 18,
       "measured": 18,
       "fails": [
         {
           "ask": "play the latest episode of this american life",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        },
+        {
+          "ask": "play the latest episode of planet money",
           "failed": [
             "audio"
           ],
@@ -155,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 96.7,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -170,9 +177,10 @@
           "ask": "météo à lyon",
           "failed": [
             "skill",
-            "temp"
+            "temp",
+            "close"
           ],
-          "score": 66.7
+          "score": 57.1
         }
       ],
       "holdout": {
@@ -211,7 +219,7 @@
       }
     },
     "recipes": {
-      "score": 96.3,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -226,10 +234,9 @@
         {
           "ask": "receta de guacamole",
           "failed": [
-            "skill",
-            "method"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -527,10 +534,17 @@
       ]
     },
     "prices": {
-      "score": 83.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "100 usd in eur",
+          "failed": [
+            "rival"
+          ],
+          "score": 80
+        },
         {
           "ask": "price",
           "failed": [
