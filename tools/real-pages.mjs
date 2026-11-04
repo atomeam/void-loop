@@ -360,7 +360,7 @@ export const SPECS = {
     await t.p.waitForFunction(() => document.documentElement.dataset.aicheck === 'ready', null, { timeout: 10000 }).catch(() => {});
     await t.p.setInputFiles('#aifile', t.tmp('lighthouse.png', png));
     const v = await t.waitText('#aiout', /Signs of AI generation/, 5000); t.ok(/Signs of AI generation/.test(v) && /Stable Diffusion settings/.test(v), 'a Stable Diffusion PNG reads as AI, naming its settings chunk');
-    const body = Buffer.from('http://ns.adobe.com/xap/1.0/\0<x:xmpmeta xmp:CreatorTool="Adobe Photoshop 25.0" stEvt:action="saved"/>', 'latin1');
+    const body = Buffer.from('http://ns.adobe.com/xap/1.0/\0<x:xmpmeta xmp:CreatorTool="Adobe Photoshop 25.0" stEvt:action="saved"/>', 'latin1'); // void-review: ok (the XMP namespace name every JPEG carries, not a request)
     const jpg = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe1, (body.length + 2) >> 8, (body.length + 2) & 255]), body, Buffer.from([0xff, 0xda, 0, 2, 1, 2, 0xff, 0xd9])]);
     await t.p.setInputFiles('#aifile', t.tmp('edited.jpg', jpg));
     const e = await t.waitText('#aiout', /Edited or re-saved/, 5000); t.ok(/Edited or re-saved/.test(e) && /Saved by Adobe Photoshop/.test(e), 'a Photoshop-saved JPEG reads as edited, naming Photoshop');

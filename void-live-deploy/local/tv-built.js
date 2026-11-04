@@ -21,7 +21,7 @@ export function rowOf(b) {
     if (!r.ok) return;
     const j = await r.json(), builds = Array.isArray(j.builds) ? j.builds : [];
     if (!builds.length) return;
-    list.innerHTML = builds.slice(0, 20).map(rowOf).join('');
+    list.innerHTML = builds.slice(0, 20).map(rowOf).join(''); // void-review: ok (rowOf escapes every field)
     box.hidden = false;
     if (location.hash === '#tv-built') box.scrollIntoView();
   } catch (_) { /* no log yet: the section stays hidden */ }
