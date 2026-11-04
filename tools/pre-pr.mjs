@@ -15,7 +15,7 @@ import { APPEND_JSON, APPEND_TEXT } from './records.mjs';
 import { COMMON } from './collide.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
 
 /** the most changed lines one pull request may carry (owner, 2026-11-04: "only open easily clearable ones"). */
 export const MAX_LINES = 400;
@@ -71,11 +71,11 @@ export function refusals({ behind, files, numstat, prs, self, max = MAX_LINES })
 }
 
 function openPrs() {
-  const r = spawnSync('gh', ['api', '--paginate', 'repos/{owner}/{repo}/pulls?state=open&per_page=100', '--jq', '.[] | {number, title, head: .head.ref}'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+  const r = spawnSync('gh', ['api', '--paginate', 'repos/{owner}/{repo}/pulls?state=open&per_page=100', '--jq', '.[] | {number, title, head: .head.ref}'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
   if (r.status !== 0) return null;
   const prs = String(r.stdout || '').split('\n').filter(Boolean).map((l) => JSON.parse(l));
   for (const p of prs) {
-    const f = spawnSync('gh', ['api', '--paginate', 'repos/{owner}/{repo}/pulls/' + p.number + '/files?per_page=100', '--jq', '.[].filename'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+    const f = spawnSync('gh', ['api', '--paginate', 'repos/{owner}/{repo}/pulls/' + p.number + '/files?per_page=100', '--jq', '.[].filename'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
     p.files = f.status === 0 ? String(f.stdout || '').split('\n').filter(Boolean) : [];
   }
   return prs;
