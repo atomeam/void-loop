@@ -4,6 +4,8 @@
 import { GUARDS, summarize } from '../../lib/status.js';
 
 export const TTL = 60;
+// one fixed query: a ? per fixed guard id (GUARDS), never a value pasted in
+const SQL = "SELECT ref, state, result, started FROM void_actions WHERE kind = 'watch.check' AND owner = 'owner' AND ref IN (" + GUARDS.map(() => '?').join(',') + ') AND started >= ? ORDER BY started DESC LIMIT 1000'; // void-review: ok (placeholders only)
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': status === 200 ? 'public, max-age=60' : 'no-store' } });
 
 export async function readStatus(env, now = Date.now()) {
@@ -11,8 +13,7 @@ export async function readStatus(env, now = Date.now()) {
   const ids = GUARDS.map((g) => g.id), since = new Date(now - 7 * 864e5).toISOString();
   let rows = [];
   try {
-    rows = (await env.DB.prepare(`SELECT ref, state, result, started FROM void_actions WHERE kind = 'watch.check' AND owner = 'owner' AND ref IN (${ids.map(() => '?').join(',')}) AND started >= ? ORDER BY started DESC LIMIT 1000`)
-      .bind(...ids, since).all()).results || []; // void-review: ok (the placeholders are fixed: one ? per fixed guard id)
+    rows = (await env.DB.prepare(SQL).bind(...ids, since).all()).results || [];
   } catch (_) { return { ...summarize([], now), note: 'the guards\' record did not answer' }; }
   return summarize(rows, now);
 }
