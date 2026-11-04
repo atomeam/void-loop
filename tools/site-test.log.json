@@ -2218,5 +2218,87 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T20:24:30Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2057,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T20:34:49Z",
+  "passed": 78,
+  "of": 88,
+  "ms": 335,
+  "kind": "file",
+  "key": "films by kurosawa pls | nothing appeared",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play solarquest",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 2 < 5"
+   },
+   {
+    "ask": "set a timer for 5 minutes",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "what is 17 times 23",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "play reversi",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "show the days until a date",
+    "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+   },
+   {
+    "ask": "films by kurosawa pls",
+    "why": "nothing appeared"
+   },
+   {
+    "ask": "film meatdata for ikiru",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   },
+   {
+    "ask": "arcade games",
+    "why": "nothing appeared"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2057,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 16169 ms"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"films by kurosawa pls\" nothing appeared"
  }
 ]

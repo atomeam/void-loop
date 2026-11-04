@@ -1,16 +1,73 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 84,
- "runsTotal": 223,
+ "runsTotal": 225,
  "kinds": {
   "grow": 68,
-  "file": 73,
+  "file": 74,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 28
+  "visitor": 29
  },
  "runs": [
+  {
+   "at": "2026-11-04T20:34:49Z",
+   "passed": 78,
+   "of": 88,
+   "kind": "file",
+   "ms": 335,
+   "note": "fix: \"films by kurosawa pls\" nothing appeared",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "play solarquest",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 2 < 5"
+    },
+    {
+     "ask": "set a timer for 5 minutes",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "what is 17 times 23",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "play reversi",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "show the days until a date",
+     "why": "console: Failed to load resource: the server responded with a status of 403 ()"
+    },
+    {
+     "ask": "films by kurosawa pls",
+     "why": "nothing appeared"
+    },
+    {
+     "ask": "film meatdata for ikiru",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "arcade games",
+     "why": "nothing appeared"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-04T20:24:30Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T19:56:54Z",
    "passed": 0,
@@ -225,20 +282,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T06:45:46Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T06:16:39Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -313,10 +356,10 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 32,
-   "passed": 300,
-   "of": 349,
-   "ms": 400
+   "runs": 34,
+   "passed": 378,
+   "of": 437,
+   "ms": 384
   }
  ],
  "seen": {
@@ -327,16 +370,16 @@
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-17T23:49:12Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
-  "skill:automations": "2026-11-04T19:43:46Z",
+  "skill:automations": "2026-11-04T20:34:49Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-11-04T19:43:46Z",
+  "skill:book": "2026-11-04T20:34:49Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
-  "skill:define": "2026-11-04T19:43:46Z",
+  "skill:define": "2026-11-04T20:34:49Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-04T19:43:46Z",
+  "skill:cartoon": "2026-11-04T20:34:49Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
