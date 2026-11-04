@@ -295,88 +295,96 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T05:20:17Z",
-   "subject": "real-pages: specs for /salvage/ and /credits/"
+   "at": "2026-11-04T06:31:33Z",
+   "subject": "Give Verse a doctor, a live check, a priority pick and a measured loop share. (#2172)"
   },
   {
-   "at": "2026-11-04T05:10:02Z",
-   "subject": "/bots/: real-pages spec and share card (#2149)"
+   "at": "2026-11-04T06:31:21Z",
+   "subject": "grow: pull the home style and main script out of the served page (#2174)"
   },
   {
-   "at": "2026-11-04T05:08:39Z",
-   "subject": "Verse as an A2A agent: /.well-known/agent-card.json + /api/a2a (#2150)"
-  },
-  {
-   "at": "2026-11-04T05:07:22Z",
-   "subject": "autosalvage: 'already live' needs the piece's own path in live code; stubs and copies are history"
-  },
-  {
-   "at": "2026-11-04T05:03:37Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 74c3b3baec07d6820d32e2c5d52674a09c9b737d (tools/flakes.json)"
-  },
-  {
-   "at": "2026-11-04T04:59:36Z",
-   "subject": "Bot families: 2,748 live bots, each passing independent checks; grown bots need a judge (#2146)"
-  },
-  {
-   "at": "2026-11-04T04:58:47Z",
-   "subject": "autosalvage: revive as Verse's unifier (scan, evaluate, /salvage/, /credits/, outside work with license checks)"
-  },
-  {
-   "at": "2026-11-04T04:57:33Z",
-   "subject": "Add the bot-factory workflow (#2145)"
-  },
-  {
-   "at": "2026-11-04T04:54:22Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T04:52:49Z",
+   "at": "2026-11-04T06:31:13Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T04:50:48Z",
-   "subject": "/bots/: run any of Verse's live bots, its bots on /team/, and the bot-factory schedule (#2143)"
+   "at": "2026-11-04T06:25:28Z",
+   "subject": "autosalvage: revive as Verse's unifier, with /salvage/ and /credits/ (#2151)"
   },
   {
-   "at": "2026-11-04T04:49:12Z",
-   "subject": "regex-tester: cap the pattern and text length (#2144)"
-  },
-  {
-   "at": "2026-11-04T04:48:40Z",
-   "subject": "Verse bot factory: 77 bots live, each only after its probe passes on a real task (#2139)"
-  },
-  {
-   "at": "2026-11-04T04:47:08Z",
-   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
-  },
-  {
-   "at": "2026-11-04T04:46:59Z",
+   "at": "2026-11-04T06:25:23Z",
    "subject": "Outcome exam: images 73.9"
   },
   {
-   "at": "2026-11-04T04:40:14Z",
-   "subject": "main checks: /api/crew marked internal, handoff metas on /treasury/ and /emojis/everywhere/, MAP lines for shorts/treasury, regenerated…"
+   "at": "2026-11-04T06:05:39Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T04:40:05Z",
-   "subject": "/team/: Verse's 20 free bots in the sidebar, each with a free-bot badge and a link to its page (read from /tools.json) (#2140)"
+   "at": "2026-11-04T06:05:32Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T04:40:01Z",
-   "subject": "Shorts: the daily improvement loop films champion and challenger (#2138)"
+   "at": "2026-11-04T05:58:43Z",
+   "subject": "Board: helper/under-the-hood shipped (https://github.com/atomeam/void-loop/pull/2120)"
   },
   {
-   "at": "2026-11-04T04:28:32Z",
-   "subject": "Merge remote-tracking branch 'origin/main' into helper/shorts-music (#2137)"
+   "at": "2026-11-04T05:58:22Z",
+   "subject": "Under the hood: /under-the-hood/ live numbers, speculation rules, prerender-safe visits, page fades, agent files (#2120)"
   },
   {
-   "at": "2026-11-04T04:27:20Z",
-   "subject": "Turn off the old record and clips schedules (#2136)"
+   "at": "2026-11-04T05:57:27Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
+  },
+  {
+   "at": "2026-11-04T05:55:58Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-04T05:55:13Z",
+   "subject": "Verse fixes its podcast-search skill: learn to handle \"top pod for true crime\""
+  },
+  {
+   "at": "2026-11-04T05:54:53Z",
+   "subject": "Better at stopwatch, compliment, drive share and 3 more: 13 more ways of asking answered right — new phrases: “stopwatch” now opens…"
+  },
+  {
+   "at": "2026-11-04T05:44:12Z",
+   "subject": "Scoreboard: Verse's live measured numbers at /scoreboard/ (#2148)"
+  },
+  {
+   "at": "2026-11-04T05:32:03Z",
+   "subject": "Trust pages: /security/ and /limits/ (what Verse won't do) (#2152)"
+  },
+  {
+   "at": "2026-11-04T05:31:55Z",
+   "subject": "Free-resource router: registry of free tiers/credits/grants, failover with per-provider quotas, /free/ (#2153)"
+  },
+  {
+   "at": "2026-11-04T05:31:20Z",
+   "subject": "/bots/ scales to thousands: search, categories with counts, 48 a page, family bots built in the browser, free site tools from /tools.json…"
+  },
+  {
+   "at": "2026-11-04T05:28:44Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T05:16:20Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-04T05:13:23Z",
+   "subject": "Only open a PR that clears easily: pre-pr refuses over 400 changed lines or a file another open PR changes (#2130)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "/under-the-hood/ live-numbers page, speculation rules, prerender-safe…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
+   },
+   {
+    "name": "fix #2120: page fades no longer throw, /emoji left out of speculation rules…",
+    "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
+   },
    {
     "name": "cursor",
     "line": "the pointing arrow is a core skill, world clock and word definitions lead the MCP tools at https://a-to-mind.com/api/mcp, the Nov 1 git-diff asks are retired, and the wants card leads with counts and the top 3…"
@@ -392,14 +400,6 @@
    {
     "name": "Claude (F321 thread, 2026-10-29)",
     "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
-   },
-   {
-    "name": "Main green, tower checks (box, 2026-10-28)",
-    "line": "the gradient floor (colorzilla.com's gradient editor, /gradient/) was dropped by the paint commit b0a8f3a10 while its probe stayed: restored, so every probe has a floor again; the books probe is keyed by the floor it measures (sudowrite…"
-   },
-   {
-    "name": "Lists run 7 (grok, 2026-10-28)",
-    "line": "store and services are one shop family (rank 1035, 0 moved over 5,461 asks); email asks open a mail card that hands off to the person's own mail app (Gmail, Outlook, Yahoo, Proton, iCloud), and a visitor's \"email sam that…\" reaches it…"
    }
   ],
   "ladders": [
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 40,
-  "week": 556
+  "day": 46,
+  "week": 562
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
