@@ -352,10 +352,10 @@ async function drawBoard() {
   if (!r.ok || !Array.isArray(r.jobs)) { $('boardLine').textContent = r.say || 'The board did not answer. Try again in a minute.'; return; }
   if (!$('mprod').options.length) $('mprod').innerHTML = (r.products || []).map((p) => '<option value="' + esc(p.slug) + '">' + esc(p.name) + '</option>').join(''); // void-review: ok (fixed names from the server, escaped)
   const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
-  $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · join to claim one')
+  $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · members claim with one click')
     : 'Nothing open right now: every job is taken. Propose one in #ideas.';
   $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + '</span>' + esc(j.title) + '</span>'
-    + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Join to claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
+    + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Members claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
 }
 async function drawCredits() {
   const r = await api('?credits'); if (!r.ok || !Array.isArray(r.people) || !Array.isArray(r.shipped)) return;
