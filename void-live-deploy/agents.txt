@@ -1,0 +1,26 @@
+# agents.txt · https://a-to-mind.com/agents.txt
+# For AI agents and the people who run them. Plain text; the same facts in llms.txt (/llms.txt), with more detail.
+
+Site: Verse by A-to-Mind
+What: one box that does whatever anyone asks. Type an ask and the answer appears; there is nothing to sign up for.
+
+# How to use Verse as an agent
+Ask-by-link: https://a-to-mind.com/?q=<url-encoded ask>
+MCP: https://a-to-mind.com/api/mcp (Streamable HTTP, JSON-RPC 2.0; every skill is a tool)
+MCP-Server-Card: https://a-to-mind.com/api/mcp/server-card
+OpenAPI: https://a-to-mind.com/openapi.json
+API-Catalog: https://a-to-mind.com/.well-known/api-catalog
+Tools: https://a-to-mind.com/tools.json
+Docs: https://a-to-mind.com/llms.txt
+
+# What is allowed
+Allowed: reading every public page, asking Verse, calling the MCP server and the public API, at a polite rate.
+Not allowed for agents: "remember me", "sign in", "sign out" and "forget me" (passkeys are for people, and need one present).
+Not allowed: buying on someone's behalf without that person at the checkout; posting in /boards/ or /team/ as a person.
+Rate: the API answers 429 when asked too fast. Wait for the Retry-After it sends.
+Privacy: no cookie, no tracking. Global Privacy Control is honored (/.well-known/gpc.json). A visit is counted once per page load with no identifier.
+
+# People
+Security: https://a-to-mind.com/.well-known/security.txt
+Humans: https://a-to-mind.com/humans.txt
+Source: https://github.com/atomeam/void-loop

@@ -101,7 +101,8 @@ export function edgeGate({ request, body, ask, masked, self, told, paste }) {
 }
 
 // the fields an answer the edge may hold has (functions/api/answer.js modelAnswer and the D1 hit); any other field means it is not one
-export const ANSWER_FIELDS = new Set(['answer', 'sources', 'at', 'route', 'near', 'pic', 'fuzzy', 'name', 'desc', 'series', 'cached']);
+// 'source' names the free resource that wrote it (lib/answer-free.js): workers-ai-chat or the D1 cache, never anything personal
+export const ANSWER_FIELDS = new Set(['answer', 'sources', 'at', 'route', 'near', 'pic', 'fuzzy', 'name', 'desc', 'series', 'cached', 'source']);
 /** may this finished answer body be stored? Only a real answer from a free model, with no field outside ANSWER_FIELDS. Pure. */
 export function storable(body, { paid = false, status = 200 } = {}) {
   if (paid || status !== 200 || !body || typeof body !== 'object' || Array.isArray(body)) return false;
