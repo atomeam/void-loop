@@ -55,3 +55,45 @@ test('the real home page paints the hero from HTML and keeps each script parseab
     assert.equal(r.status, 0, name + ' ' + (r.stderr || '').slice(0, 200));
   }
 });
+
+test('the sky and the other decor scripts never run before the main script has run (live: things is not defined)', () => {
+  const html = '<html><body>\n  <script>\n    // Private learning log\n    let things = {};\n  </script>\n  <style>\n    /* home polish: x */\n  </style>\n  <script>\n  // ---- The sky: a\n  Object.keys(things);\n  </script>\n  <script>\n  // ---- Presence: b\n  </script>\n  <script>\n  // ---- Synapses: c\n  </script>\n</body></html>';
+  const split = splitHome(html);
+  assert.ok(split);
+  const loader = split.html.slice(split.html.lastIndexOf('<script>') + 8, split.html.lastIndexOf('</script>'));
+  // run the loader with a fake DOM where scripts finish in the worst order: decor is asked for first, the main script loads last
+  const added = []; let lcp = null, timer = null, raf = [];
+  const el = () => ({ set src(v) { this._src = v; }, get src() { return this._src; } });
+  const document = { readyState: 'complete', body: { appendChild: (s) => added.push(s) }, head: { appendChild() {} }, createElement: el, getElementById: () => null, addEventListener() {} };
+  const window = { addEventListener() {} };
+  class PerformanceObserver { constructor(f) { lcp = () => f({ getEntries: () => [1] }, this); } observe() {} disconnect() {} }
+  new Function('document', 'window', 'PerformanceObserver', 'requestAnimationFrame', 'setTimeout', loader)(document, window, PerformanceObserver, (f) => raf.push(f), (f) => { timer = f; });
+  lcp(); // the largest paint lands before the two frames that start boot
+  const srcs = () => added.map((s) => s.src);
+  assert.deepEqual(srcs(), ['/void-boot.js'], 'only the main script is fetched before it has run');
+  timer(); assert.deepEqual(srcs(), ['/void-boot.js']);
+  while (raf.length) raf.shift()();
+  assert.deepEqual(srcs(), ['/void-boot.js'], 'boot is added once');
+  added[0].onload();
+  assert.ok(srcs().includes('/void-sky.js') && srcs().indexOf('/void-sky.js') > 0);
+  assert.equal(srcs().filter((s) => s === '/void-sky.js').length, 1);
+});
+
+test('an ask typed before the main script has run is asked once it has run (live: the returning visit\'s "films" never opened)', () => {
+  const html = '<html><body>\n  <script>\n    // Private learning log\n  </script>\n  <style>\n    /* home polish: x */\n  </style>\n  <script>\n  // ---- The sky: a\n  </script>\n  <script>\n  // ---- Presence: b\n  </script>\n  <script>\n  // ---- Synapses: c\n  </script>\n</body></html>';
+  const split = splitHome(html);
+  const loader = split.html.slice(split.html.lastIndexOf('<script>') + 8, split.html.lastIndexOf('</script>'));
+  const on = (o) => { o.h = {}; o.addEventListener = (t, f) => { (o.h[t] ||= []).push(f); }; return o; };
+  const input = on({ value: '' }), asked = [];
+  const go = on({ click() { for (const f of go.h.click || []) f(); if (go.real) go.real(input.value); } });
+  const added = [];
+  const document = { readyState: 'complete', body: { appendChild: (s) => added.push(s) }, head: { appendChild() {} }, createElement: () => ({}), getElementById: (id) => ({ input, go })[id] || null, addEventListener() {} };
+  new Function('document', 'window', 'PerformanceObserver', 'requestAnimationFrame', 'setTimeout', loader)(document, { addEventListener() {} }, undefined, () => {}, () => {});
+  input.value = 'films'; for (const f of input.h.keydown) f({ key: 'Enter' });
+  assert.deepEqual(added.map((s) => s.src), ['/void-boot.js'], 'an early Enter starts the main script at once');
+  go.real = (v) => asked.push(v); // the main script has run: its click handler is on the button
+  added[0].onload();
+  assert.deepEqual(asked, ['films']);
+  go.click(); assert.deepEqual(asked, ['films', 'films'], 'after boot the loader keeps out of the way');
+  assert.equal(added.filter((s) => s.src === '/void-boot.js').length, 1);
+});

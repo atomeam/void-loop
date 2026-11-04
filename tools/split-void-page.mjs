@@ -2,7 +2,8 @@
 // copies after tools/public-quotes.mjs. The repo's void.html stays the file editors change.
 // The served page paints from the HTML and a small critical style that stays inline. The rest of the style loads
 // without blocking. The main script is added on the frame after the first paint. The sky, the presence rim, the
-// synapse canvas, the command palette and the WebGL wash are fetched only after the largest paint, or after four seconds.
+// synapse canvas, the command palette and the WebGL wash are fetched only after the largest paint, or after four seconds,
+// and never before the main script has run (they read its globals).
 // The ask engine stays one file: its parts share one scope. Skill modules start on a key, a tap, or an idle callback.
 //   node tools/split-void-page.mjs            rewrite the served copies and write the files
 //   node tools/split-void-page.mjs --dry      print the sizes only
@@ -17,10 +18,20 @@ const CSS_TAG = '  <link rel="stylesheet" href="/void-home.css" media="print" on
 const AFTER = [
   '<script>',
   '(function(){',
-  '  var bootDone = false, decorDone = false;',
-  '  function add(src, type){ var s = document.createElement("script"); if (type) s.type = type; s.src = src; document.body.appendChild(s); }',
-  '  function boot(){ if (bootDone) return; bootDone = true; add("/void-boot.js"); }',
+  '  var bootDone = false, booted = false, decorWanted = false, decorDone = false;',
+  '  function add(src, type){ var s = document.createElement("script"); if (type) s.type = type; s.src = src; document.body.appendChild(s); return s; }',
+  // the decor scripts read the main script's globals (the sky reads things), and an added script runs when its download ends,
+  // so the small sky file used to run before the big main one: decor is asked for at the largest paint and starts once boot has run
+  // an ask typed before the main script has run (the box is in the HTML from the first paint) is kept and asked once it has run,
+  // so an Enter on a fast reload is never lost (Site test, tools/glitch-titles.mjs --live: the returning visit's "films" never opened)
+  '  var early = null, input0 = document.getElementById("input"), go0 = document.getElementById("go");',
+  '  function keep(){ if (booted || !input0 || !input0.value.trim()) return; early = input0.value; boot(); }',
+  '  if (input0) input0.addEventListener("keydown", function(e){ if (e.key === "Enter" && !e.isComposing) keep(); });',
+  '  if (go0) go0.addEventListener("click", keep);',
+  '  function ready(){ booted = true; if (early !== null && input0 && go0) { input0.value = early; early = null; go0.click(); } if (decorWanted) decor(); }',
+  '  function boot(){ if (bootDone) return; bootDone = true; var s = add("/void-boot.js"); s.onload = ready; s.onerror = ready; }',
   '  function decor(){',
+  '    decorWanted = true; if (!booted) { boot(); return; }',
   '    if (decorDone) return; decorDone = true;',
   '    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/verse.css"; document.head.appendChild(l);',
   '    add("/void-sky.js"); add("/void-presence.js"); add("/void-synapses.js");',
