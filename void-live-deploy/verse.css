@@ -1,0 +1,186 @@
+/* Verse design tokens and the app shell. One file (docs/design.md).
+   The home page still carries the same colour values inline so the void paints if this file is slow.
+   Other pages take colour, type, glass and motion from here. */
+
+:root {
+  color-scheme: dark;
+  --bg: #050505;
+  --fg: #e8e8e8;
+  --muted: #8a8a8a;
+  --line: #1a1a1a;
+  --accent: #cfcfcf;
+  --d-ink: #f2f4fb;
+  --d-ink-2: #c3c8d8;
+  --d-ink-3: #8e94a8;
+  --d-key: 158 178 255;
+  --d-warm: 255 170 214;
+  --d-teal: 92 232 205;
+  --d-glass: linear-gradient(165deg, rgba(40, 46, 70, .80) 0%, rgba(16, 18, 28, .88) 46%, rgba(20, 22, 40, .90) 100%);
+  --d-rim: conic-gradient(from 200deg, rgb(var(--d-key) / .55), rgba(255, 255, 255, .05) 22%, rgb(var(--d-warm) / .32) 50%, rgba(255, 255, 255, .05) 74%, rgb(var(--d-teal) / .38) 90%, rgb(var(--d-key) / .55));
+  --d-lift: 0 1px 0 rgba(255, 255, 255, .10) inset, 0 -1px 0 rgba(0, 0, 0, .5) inset, 0 2px 6px rgba(0, 0, 0, .30), 0 18px 40px rgba(0, 0, 0, .42), 0 60px 120px rgba(0, 0, 0, .55);
+  --d-ease-out: cubic-bezier(.16, 1, .3, 1);
+  --d-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --vs-bar: 48px;
+  --vs-touch: 44px;
+}
+
+html { scroll-padding-top: calc(var(--vs-bar) + env(safe-area-inset-top, 0px) + 12px); }
+body { font-family: var(--font); text-rendering: optimizeLegibility; }
+/* the nav is painted by script into a gap this padding already reserved, so the page does not jump */
+body:not(:has(#stage)) { padding-top: calc(var(--vs-bar) + env(safe-area-inset-top, 0px)); }
+
+/* the shader wash sits under the existing horizon. Reduced motion never mounts the canvas. */
+#verse-field {
+  position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+  opacity: .34; mix-blend-mode: screen;
+}
+
+.vs-skip {
+  position: absolute; left: 12px; top: 8px; z-index: 80;
+  transform: translateY(-150%);
+  padding: 10px 14px; min-height: var(--vs-touch);
+  background: #0b0c14; color: var(--d-ink);
+  border-radius: 10px; text-decoration: none;
+  outline: 2px solid rgb(var(--d-key));
+}
+.vs-skip:focus { transform: none; }
+
+.vs-chrome {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgb(5 5 5 / .72);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+body:has(#stage) .vs-chrome {
+  z-index: 6;
+  background: linear-gradient(to bottom, rgb(5 5 5 / .72), rgb(5 5 5 / .28) 70%, transparent);
+  border-bottom: 0; backdrop-filter: none; -webkit-backdrop-filter: none;
+  pointer-events: none;
+}
+body:has(#stage) .vs-chrome a,
+body:has(#stage) .vs-chrome button { pointer-events: auto; }
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    body:not(:has(#stage)) .vs-chrome {
+      animation: vs-bar-in linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 72px;
+    }
+  }
+}
+@keyframes vs-bar-in {
+  from { background-color: rgb(5 5 5 / .45); }
+  to { background-color: rgb(5 5 5 / .94); }
+}
+
+.vs-app {
+  display: flex; align-items: center; gap: 8px;
+  min-height: var(--vs-bar);
+  padding: 0 max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+  font: 14px/1 var(--font);
+}
+.vs-brand {
+  flex: none; min-height: var(--vs-touch); padding: 0 4px;
+  display: inline-flex; align-items: center;
+  color: var(--d-ink); text-decoration: none;
+  font-weight: 300; font-size: 18px; letter-spacing: -.03em;
+}
+.vs-links {
+  display: flex; gap: 2px; flex: 1; min-width: 0;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.vs-links::-webkit-scrollbar { display: none; }
+.vs-links a, .vs-k {
+  flex: none; min-height: var(--vs-touch); min-width: var(--vs-touch);
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 12px; border-radius: 999px;
+  color: var(--d-ink-2); text-decoration: none;
+  background: transparent; border: 0; font: inherit; cursor: pointer;
+}
+.vs-links a:hover, .vs-k:hover { color: var(--d-ink); background: rgba(255, 255, 255, .06); }
+.vs-links a[aria-current="page"] {
+  color: var(--d-ink);
+  background: rgb(var(--d-key) / .18);
+  box-shadow: inset 0 0 0 1px rgb(var(--d-key) / .35);
+}
+.vs-links a:focus-visible, .vs-brand:focus-visible, .vs-k:focus-visible, .vs-pal button:focus-visible, .vs-pal input:focus-visible {
+  outline: 2px solid rgb(var(--d-key)); outline-offset: 2px;
+}
+.vs-k { color: var(--d-ink-3); letter-spacing: .04em; }
+
+.vs-proof {
+  margin: 0; padding: 0 16px 8px;
+  text-align: center; font: 13px/1.3 var(--font); color: var(--d-ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+body:has(#stage) .vs-proof { pointer-events: none; padding-bottom: 0; }
+
+/* the ask keys are thumb-sized. 16px type so a phone does not zoom the page. */
+#go, #mic { min-width: var(--vs-touch); min-height: var(--vs-touch); }
+#input { font-size: 16px; }
+
+.vs-pal {
+  width: min(480px, calc(100vw - 24px));
+  margin: auto; padding: 0; border: 0; border-radius: 18px;
+  background: var(--d-glass); color: var(--d-ink);
+  box-shadow: var(--d-lift);
+}
+.vs-pal::backdrop { background: rgb(0 0 0 / .55); }
+.vs-pal form { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.vs-pal input {
+  width: 100%; box-sizing: border-box; min-height: var(--vs-touch);
+  padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .12);
+  background: rgb(6 8 14 / .55); color: var(--d-ink); font: 16px/1.3 var(--font);
+}
+.vs-pal ul { list-style: none; margin: 0; padding: 0; max-height: min(50vh, 320px); overflow: auto; }
+.vs-pal button[role="option"] {
+  width: 100%; text-align: left; min-height: var(--vs-touch);
+  padding: 0 12px; border: 0; border-radius: 10px;
+  background: transparent; color: var(--d-ink-2); font: 15px/1.2 var(--font); cursor: pointer;
+}
+.vs-pal button[aria-selected="true"], .vs-pal button[role="option"]:hover {
+  background: rgb(var(--d-key) / .16); color: var(--d-ink);
+}
+
+.vs-page { max-width: 880px; margin: 0 auto; padding: 28px 16px 72px; color: var(--d-ink); }
+.vs-page h1 {
+  margin: 0 0 8px; font-weight: 280; letter-spacing: -.03em;
+  font-size: clamp(32px, 8vw, 56px); line-height: 1.05;
+  background: linear-gradient(180deg, #fff 30%, rgb(var(--d-key)));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.vs-page .lead { margin: 0 0 22px; color: var(--d-ink-2); max-width: 62ch; }
+.vs-card {
+  position: relative; margin: 0 0 10px; padding: 14px 16px; border-radius: 16px;
+  background: var(--d-glass); box-shadow: var(--d-lift); isolation: isolate;
+}
+.vs-card h2 { margin: 0 0 4px; font-size: 18px; font-weight: 600; letter-spacing: -.015em; }
+.vs-card p { margin: 0; color: var(--d-ink-2); }
+.vs-card .meta { margin-top: 6px; color: var(--d-ink-3); font-size: 13px; }
+.vs-page a { color: rgb(var(--d-key)); }
+body.vs-stand { margin: 0; min-height: 100vh; background: var(--bg); color: var(--d-ink); font: 16px/1.5 var(--font); }
+
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation-duration: 180ms; animation-timing-function: var(--d-ease-out); }
+::view-transition-new(root) { animation-duration: 220ms; animation-timing-function: var(--d-ease-out); }
+
+@media (max-width: 700px) {
+  body:has(#verse-nav) .top { top: calc(var(--vs-bar) + env(safe-area-inset-top, 0px)); }
+}
+@media (min-width: 701px) {
+  body:has(#verse-nav) .top { top: calc(var(--vs-bar) + env(safe-area-inset-top, 0px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-chrome { animation: none !important; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  #verse-field { display: none; }
+}
+@media (forced-colors: active) {
+  #verse-field, .vs-chrome { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .vs-page h1 { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
+}

@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/verse-shell-wire-32c3 · the service worker dresses the home, Team, Bots, Agents, Tower, Films and Treasury with the shell: command palette, live line, WebGL wash off when motion is reduced · 2026-11-04 06:20 UTC
+- Cursor cloud agent · helper/verse-glass-32c3 · Verse design tokens in one file (verse.css) and the pure helpers for the nav, the live line and dressing a shell page · https://github.com/atomeam/void-loop/pull/2170 · 2026-11-04 05:30 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the deploy pulls the home style and the main script out of the served HTML so the first download is the shell; void.html stays the editor file · 2026-11-04 06:30 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
