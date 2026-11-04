@@ -38,10 +38,13 @@ jobs:
         env:
           MERGE_GATE_BASE: origin/${{ github.event.pull_request.base.ref || 'main' }}
         run: node tools/merge-gate.mjs
-      - name: Wake automerge
-        if: always()
+      # A gate started by a pull_request event wakes automerge through workflow_run already. Only a dispatched gate (a run started
+      # with the workflow's token fires no workflow_run) wakes it here, for its one PR (2026-11-04: double wakes spent the API quota).
+      - name: Wake automerge (only after a dispatched gate)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-        run: gh workflow run automerge.yml --repo "$REPO" --ref main
+          PR: ${{ inputs.pr }}
+        run: gh workflow run automerge.yml --repo "$REPO" --ref main -f pr="$PR"

@@ -36,12 +36,11 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # one run per PR: a new push cancels the older run of that PR at once. On main, the deploy in progress
-    # finishes and one newer deploy waits; a third push replaces the waiting one. verify.yml still tests every
-    # head, so a deploy that waits and is replaced is not an untested commit. A group per run id queued a
-    # deploy for every merge, which is the opposite of what this comment used to claim.
+    # one run per PR: a new push cancels the older run of that PR at once. On main each deploy has its own group and runs side by
+    # side (owner, 2026-10-25: "no need to serialize"); a run stops itself before the upload when a newer head's deploy is on its
+    # way (the step below), and verify.yml tests every head, so no head goes untested.
     concurrency:
-      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
+      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
@@ -310,7 +309,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: void-members-paid-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main' }}
+      group: void-members-paid-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
       # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no

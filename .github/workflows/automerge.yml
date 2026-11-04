@@ -14,23 +14,28 @@ on:
     types: [completed]
   pull_request_review:
     types: [submitted]
-  pull_request_review_comment:
-    types: [created]
-  issue_comment:
-    types: [created, edited]
+  # no issue_comment / pull_request_review_comment (2026-11-04): a comment never changes whether a PR is ready (pr-ready.mjs reads
+  # checks only; CodeRabbit is an extra), and 29 of 100 runs were comment wakes spending the repository's shared API quota.
   pull_request:
     types: [labeled, opened, synchronize, reopened, ready_for_review] # every PR merges by itself (owner, 2026-10-15: "automerge everything always")
   schedule:
     - cron: "17 * * * *" # a check or review that finished without waking this workflow
     - cron: "17 11 * * *" # once a day, the stuck-pull-request sweep (STUCK=1 below)
   workflow_dispatch:
+    inputs:
+      pr:
+        description: Look at this pull request only (void-review.yml and merge-gate.yml pass the one they checked). Empty = sweep every open PR.
+        required: false
+        default: ""
 
 # One group. The sweep in progress finishes: cancel-in-progress is false, so a new event does not kill it.
 # A second event waits, and a third replaces that waiting run. The sweep reads every open pull request, so a
 # waiting run that never started is not a missed merge. A group per run id queued a sweep for every event
 # (15 were waiting on 2026-11-04). That queue was the backlog. The in-progress sweep is never cancelled.
+# Since the bot looks only at the PR an event is about (tools/automerge.mjs, scopedPr), the group is per PR: events about one PR
+# share one running and one waiting run, so a burst about PR A never replaces the waiting run for PR B. Sweeps share "sweep".
 concurrency:
-  group: void-automerge
+  group: void-automerge-${{ github.event.pull_request.number || inputs.pr || (github.event.workflow_run && github.event.workflow_run.pull_requests[0].number) || 'sweep' }}
   cancel-in-progress: false
 
 permissions:
@@ -41,8 +46,8 @@ permissions:
 
 jobs:
   automerge:
-    # issue comments on plain issues never matter here
-    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
+    # a run on main that is not about a pull request (a deploy, the review of main) changes no PR: no runner at all
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.head_branch != 'main' || github.event.workflow_run.pull_requests[0]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
