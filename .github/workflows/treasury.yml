@@ -42,8 +42,9 @@ jobs:
       - name: Weekly review
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          REVIEW: ${{ inputs.review }}
         run: |
-          if [ "$(date -u +%u)" = "1" ] || [ "${{ inputs.review }}" = "true" ]; then
+          if [ "$(date -u +%u)" = "1" ] || [ "$REVIEW" = "true" ]; then
             node tools/treasury-review.mjs | tee -a "$GITHUB_STEP_SUMMARY"
           else
             echo "not Monday: no review"

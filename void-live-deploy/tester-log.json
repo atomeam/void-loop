@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 199,
+ "runsTotal": 200,
  "kinds": {
   "grow": 67,
   "file": 71,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 7
+  "visitor": 8
  },
  "runs": [
+  {
+   "at": "2026-11-04T04:00:05Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T03:27:08Z",
    "passed": 0,
@@ -274,13 +281,6 @@
    "of": 68,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
-  },
-  {
-   "at": "2026-10-18T13:46:58Z",
-   "passed": 57,
-   "of": 68,
-   "kind": "file",
-   "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "weekly": [
@@ -355,7 +355,7 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 8,
+   "runs": 9,
    "passed": 58,
    "of": 87,
    "ms": 554
