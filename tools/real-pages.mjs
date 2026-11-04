@@ -67,6 +67,10 @@ export const SPECS = {
     await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
     await t.click('#cats [data-c="all"]'); await t.fill('#q', 'mi-to-km'); await t.p.waitForTimeout(400); t.ok(await t.p.locator('#mi-to-km').count() === 1, 'search finds a family bot (mi-to-km) among thousands');
   },
+  '/scoreboard/': async (t) => {  // measured numbers only: every card drawn from its public source, the bots card counts registry.json's live bots
+    await t.waitText('#cards', /Bots live/, 20000); t.ok((await t.p.locator('#cards .card').count()) >= 8, 'every scoreboard card is drawn: ' + (await t.p.locator('#cards .card').count()));
+    const bots = await t.p.locator('#cards .card', { hasText: 'Bots live' }).first().locator('b').textContent(); t.ok(Number(String(bots).replace(/[^0-9]/g, '')) >= 50, 'the bots card reads the live bots from bots/registry.json: ' + bots);
+  },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
     await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
