@@ -295,84 +295,84 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T02:38:01Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-04T01:27:26Z",
+   "subject": "Verse routes \"tell me a riddle about time\" to its riddle skill the answer is not checked"
   },
   {
-   "at": "2026-11-04T02:37:36Z",
-   "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
+   "at": "2026-11-04T01:27:04Z",
+   "subject": "A clean merge is not reported as a conflict (#2096)"
   },
   {
-   "at": "2026-11-04T02:37:35Z",
-   "subject": "team: Verse's crew (8 server-side bots on the 15-min clock) and Verse's own evidence-grounded wants queue, live on /team/ and /brain/"
+   "at": "2026-11-04T01:27:02Z",
+   "subject": "business-clarify: register the skill and add its suite check (#2098)"
   },
   {
-   "at": "2026-11-04T02:36:00Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+   "at": "2026-11-04T01:23:09Z",
+   "subject": "Combined pages: code, tests and generated pages name the mode addresses"
   },
   {
-   "at": "2026-11-04T02:33:26Z",
-   "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
+   "at": "2026-11-04T01:22:21Z",
+   "subject": "Combined pages: card links and tests name the mode addresses"
   },
   {
-   "at": "2026-11-04T02:28:12Z",
-   "subject": "tower-self test: gradient is the colour page's mode since the pages were combined (#2100), so the family check stops failing every merge…"
+   "at": "2026-11-04T01:21:39Z",
+   "subject": "Incident: the browser suite failed on cfd93e58 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T02:27:53Z",
+   "at": "2026-11-04T01:20:31Z",
+   "subject": "Combine overlapping pages into modes; old addresses 301 to their mode"
+  },
+  {
+   "at": "2026-11-04T01:19:15Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-04T02:27:31Z",
-   "subject": "Make the outcome exam harder, then lift code and word problems (#2105)"
-  },
-  {
-   "at": "2026-11-04T02:27:09Z",
-   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:17:41Z",
-   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:07:16Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T02:06:17Z",
-   "subject": "Let Verse's review approve and merge itself (#2103)"
-  },
-  {
-   "at": "2026-11-04T02:03:35Z",
-   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:55:03Z",
+   "at": "2026-11-04T01:14:24Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T01:55:00Z",
-   "subject": "/fix/ hub: the combined page's mode bar comes from tools/fix-pages.mjs, so a regenerate keeps it (#2104)"
+   "at": "2026-11-04T01:11:12Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T01:50:46Z",
-   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
+   "at": "2026-11-04T01:06:27Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-04T01:50:06Z",
-   "subject": "Incident: the browser suite failed on c0b0ab8e (void-live-deploy/incidents.json)"
+   "at": "2026-11-04T01:04:22Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T01:46:28Z",
-   "subject": "test_void: the gradient check's regex is /gradient/ again (a path rename in #2100 turned it into an invalid regex) (#2102)"
+   "at": "2026-11-04T00:57:40Z",
+   "subject": "Feature scan: color-canon,color-names,emoji-combos,music,stl-check,team-chat researched by Verse"
   },
   {
-   "at": "2026-11-04T01:45:41Z",
-   "subject": "Incident: the browser suite failed on 486e7f46 (void-live-deploy/incidents.json)"
+   "at": "2026-11-04T00:56:55Z",
+   "subject": "Merge main: one idea-clarify retirement line"
   },
   {
-   "at": "2026-11-04T01:37:08Z",
-   "subject": "Combine overlapping pages into modes; old addresses 301 to their mode (#2100)"
+   "at": "2026-11-04T00:53:31Z",
+   "subject": "skills-check green on main: idea-clarify (#2091) duplicates business-clarify, so it is retired with that reason"
+  },
+  {
+   "at": "2026-11-04T00:50:01Z",
+   "subject": "status: the guard query is one fixed constant (void-review)"
+  },
+  {
+   "at": "2026-11-04T00:50:01Z",
+   "subject": "Verse's own status page on /autopilot/ (/status/ opens it): guard uptime, live speed incl. MCP, main CI, last deploy, incidents"
+  },
+  {
+   "at": "2026-11-04T00:47:32Z",
+   "subject": "Build new skills by calling skills Verse already has."
+  },
+  {
+   "at": "2026-11-04T00:43:46Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T00:43:29Z",
+   "subject": "Tower: a site is PASSED and the Tower moves on once Verse leads on everything measured and meets its own bar; CONQUERED at 100%. No target…"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 538
+  "day": 18,
+  "week": 534
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1127,
+ "counted": 1122,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -566,7 +566,7 @@
    "file": "lib/telemetry.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 94,
+   "dependants": 92,
    "tests": 2
   },
   {
@@ -762,21 +762,21 @@
    "file": "lib/verse-secrets.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 94,
+   "dependants": 92,
    "tests": 1
   },
   {
    "file": "lib/note-ask.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 93,
+   "dependants": 91,
    "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 91,
+   "dependants": 89,
    "tests": 9
   },
   {
@@ -1000,7 +1000,7 @@
    "file": "lib/pay-share.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 31,
    "tests": 1
   },
   {
@@ -2309,14 +2309,14 @@
    "file": "lib/owner-accounts.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 89,
+   "dependants": 87,
    "tests": 0
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 88,
+   "dependants": 86,
    "tests": 32
   },
   {
@@ -2330,21 +2330,21 @@
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 52,
    "tests": 1
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 54,
+   "dependants": 52,
    "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 53,
+   "dependants": 51,
    "tests": 9
   },
   {
@@ -2561,22 +2561,22 @@
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 12,
+   "dependants": 10,
    "tests": 2
   },
   {
    "file": "lib/brain-dream.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11,
+   "dependants": 9,
    "tests": 1
   },
   {
    "file": "lib/team.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11,
-   "tests": 4
+   "dependants": 9,
+   "tests": 3
   },
   {
    "file": "lib/mcp-run.js",
@@ -2656,13 +2656,6 @@
    "tests": 0
   },
   {
-   "file": "lib/status.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
    "file": "lib/translate-langs.js",
    "skills": 0,
    "direct": 0,
@@ -2692,13 +2685,6 @@
   },
   {
    "file": "lib/sale-jobs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
-   "file": "lib/team-crew.js",
    "skills": 0,
    "direct": 0,
    "dependants": 3,
@@ -2741,13 +2727,6 @@
   },
   {
    "file": "lib/music-tools.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2,
-   "tests": 1
-  },
-  {
-   "file": "lib/team-crew-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2,
@@ -2915,13 +2894,6 @@
    "tests": 1
   },
   {
-   "file": "lib/photo-edit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 2
-  },
-  {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
@@ -2978,6 +2950,13 @@
    "tests": 1
   },
   {
+   "file": "lib/status.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/team-mcp.js",
    "skills": 0,
    "direct": 0,
@@ -3011,13 +2990,6 @@
    "direct": 0,
    "dependants": 1,
    "tests": 4
-  },
-  {
-   "file": "lib/ai-check.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
   },
   {
    "file": "lib/ai-generators.js",
@@ -3391,6 +3363,13 @@
    "tests": 1
   },
   {
+   "file": "lib/photo-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
+  },
+  {
    "file": "lib/podcasts-card.js",
    "skills": 0,
    "direct": 0,
@@ -3536,13 +3515,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
-  },
-  {
-   "file": "lib/watch-build.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 0
   },
   {
    "file": "lib/will-schema.js",
@@ -3699,8 +3671,7 @@
   "functions/api/automations/tick.js": {
    "imports": [
     "lib/guard.js",
-    "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/automations-run.js"
    ],
    "importedBy": []
   },
@@ -3798,12 +3769,6 @@
     "lib/automation-fix.js",
     "lib/keeper.js",
     "lib/comments.js"
-   ],
-   "importedBy": []
-  },
-  "functions/api/crew.js": {
-   "imports": [
-    "lib/team-crew-run.js"
    ],
    "importedBy": []
   },
@@ -4345,13 +4310,7 @@
    "imports": [
     "lib/status.js"
    ],
-   "importedBy": [
-    "lib/team-crew-run.js"
-   ],
-   "reachedBy": [
-    "functions/api/automations/tick.js",
-    "functions/api/crew.js"
-   ]
+   "importedBy": []
   },
   "functions/api/store/[[path]].js": {
    "imports": [
@@ -4426,14 +4385,12 @@
    "importedBy": [
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
-    "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/automations-run.js"
    ],
    "reachedBy": [
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/crew.js",
     "functions/api/hook/[id].js",
     "functions/api/watch.js"
    ]
@@ -4664,12 +4621,6 @@
    "reachedBy": [
     "skills/dates.js"
    ]
-  },
-  "lib/ai-check.js": {
-   "imports": [
-    "lib/photo-edit.js"
-   ],
-   "importedBy": []
   },
   "lib/ai-generators.js": {
    "imports": [],
@@ -5118,7 +5069,6 @@
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/bench.js",
-    "functions/api/crew.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -5167,7 +5117,6 @@
     "lib/paid-access.js",
     "lib/routine-skill.js",
     "lib/self-context.js",
-    "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "skills/repo.js",
     "skills/routine.js",
@@ -5510,13 +5459,11 @@
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/crew.js",
     "functions/api/hook/[id].js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
-    "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/automations-run.js"
    ]
   },
   "lib/brain-everywhere.js": {
@@ -7788,7 +7735,6 @@
     "functions/[handle].js",
     "functions/api/answer.js",
     "functions/api/card-art.js",
-    "functions/api/crew.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -7816,8 +7762,7 @@
     "functions/films/rss.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
-    "lib/bench-asks.js",
-    "lib/team-crew-run.js"
+    "lib/bench-asks.js"
    ]
   },
   "lib/guide.js": {
@@ -8157,13 +8102,11 @@
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/crew.js",
     "functions/api/hook/[id].js",
     "functions/api/watch.js",
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
-    "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/automations-run.js"
    ]
   },
   "lib/job-regions.js": {
@@ -9512,7 +9455,6 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
@@ -9587,7 +9529,6 @@
     "lib/routine-skill.js",
     "lib/self-context.js",
     "lib/shared-routines.js",
-    "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
     "skills/repo.js",
@@ -9756,7 +9697,6 @@
     "functions/api/clip.js",
     "functions/api/coder.js",
     "functions/api/comments.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/earnings.js",
     "functions/api/film-review.js",
@@ -9827,7 +9767,6 @@
     "lib/bench-asks.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
-    "lib/team-crew-run.js",
     "lib/void-me.js"
    ]
   },
@@ -9874,7 +9813,6 @@
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -9915,8 +9853,7 @@
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js",
-    "lib/team-crew-run.js"
+    "lib/paid-access.js"
    ]
   },
   "lib/paid-access.js": {
@@ -10098,7 +10035,6 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
-    "lib/ai-check.js",
     "lib/bench-asks.js",
     "lib/price-lock.js",
     "skills/shop.js",
@@ -10193,9 +10129,7 @@
    "imports": [
     "lib/pay-share.js"
    ],
-   "importedBy": [
-    "lib/ai-check.js"
-   ]
+   "importedBy": []
   },
   "lib/photo-library.js": {
    "imports": [],
@@ -12204,11 +12138,6 @@
    "imports": [],
    "importedBy": [
     "functions/api/status.js"
-   ],
-   "reachedBy": [
-    "functions/api/automations/tick.js",
-    "functions/api/crew.js",
-    "lib/team-crew-run.js"
    ]
   },
   "lib/stigmergy-law.js": {
@@ -12504,27 +12433,6 @@
     "skills/pick-for-me.js"
    ]
   },
-  "lib/team-crew-run.js": {
-   "imports": [
-    "lib/team-crew.js",
-    "functions/api/status.js",
-    "functions/api/team.js"
-   ],
-   "importedBy": [
-    "functions/api/automations/tick.js",
-    "functions/api/crew.js"
-   ]
-  },
-  "lib/team-crew.js": {
-   "imports": [],
-   "importedBy": [
-    "lib/team-crew-run.js"
-   ],
-   "reachedBy": [
-    "functions/api/automations/tick.js",
-    "functions/api/crew.js"
-   ]
-  },
   "lib/team-mcp.js": {
    "imports": [
     "lib/mcp.js"
@@ -12546,11 +12454,9 @@
     "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/crew.js",
     "functions/api/hook/[id].js",
     "functions/api/watch.js",
-    "lib/automations-run.js",
-    "lib/team-crew-run.js"
+    "lib/automations-run.js"
    ]
   },
   "lib/technical-context.js": {
@@ -12583,7 +12489,6 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
@@ -12658,7 +12563,6 @@
     "lib/routine-skill.js",
     "lib/self-context.js",
     "lib/shared-routines.js",
-    "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
     "skills/repo.js",
@@ -13058,7 +12962,6 @@
     "functions/api/card-art.js",
     "functions/api/clip.js",
     "functions/api/comments.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/figurescript.js",
     "functions/api/film-review.js",
@@ -13135,7 +13038,6 @@
     "lib/routine-skill.js",
     "lib/self-context.js",
     "lib/shared-routines.js",
-    "lib/team-crew-run.js",
     "lib/team-mcp.js",
     "lib/voice.js",
     "skills/repo.js",
@@ -13277,7 +13179,6 @@
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/film-views.js",
     "functions/api/gallery.js",
@@ -13304,8 +13205,7 @@
     "functions/team/join/[code].js",
     "functions/team/mcp.js",
     "lib/automations-run.js",
-    "lib/bench-asks.js",
-    "lib/team-crew-run.js"
+    "lib/bench-asks.js"
    ]
   },
   "lib/void-seal.js": {
@@ -13343,10 +13243,6 @@
     "functions/api/sing.js",
     "functions/api/translate.js"
    ]
-  },
-  "lib/watch-build.js": {
-   "imports": [],
-   "importedBy": []
   },
   "lib/watch.js": {
    "imports": [],
@@ -13446,7 +13342,6 @@
     "functions/api/bench.js",
     "functions/api/card-art.js",
     "functions/api/clip.js",
-    "functions/api/crew.js",
     "functions/api/daily-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
@@ -13487,8 +13382,7 @@
     "lib/automations-run.js",
     "lib/bench-asks.js",
     "lib/memory-scope.js",
-    "lib/paid-access.js",
-    "lib/team-crew-run.js"
+    "lib/paid-access.js"
    ]
   },
   "lib/wheel.js": {
