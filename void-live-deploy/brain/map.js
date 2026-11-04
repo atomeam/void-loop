@@ -90,14 +90,21 @@ const paintCells = (b, flow) => {
   });
   const t = b && b.board.thinking; parts.think.textContent = (b ? 'Focus: ' + M.regionName(b.focus.region) : '') + (t ? ' · thinking about "' + t + '"' : '');
 };
-const KIND_EVERY = { gen: 9000, gesture: 4000, motif: 6000, surprise: 2500, focus: 1500 }; // the feed stays readable: a busy kind speaks at most this often
+const KIND_EVERY = { gen: 9000, gesture: 4000, motif: 6000, surprise: 2500, focus: 1500, moment: 3000, chose: 3000 }; // the feed stays readable: a busy kind speaks at most this often
 const spoke = {};
+// the feed holds 7 lines; the newest answer to your ask (li.thought) stays until a newer one comes, so Memory and Will, which speak every few
+// hundred ms, cannot push it out before it is read (2026-11-04: it was gone within two seconds of appearing)
+const push = (li) => {
+  feed.prepend(li);
+  const newest = feed.querySelector('li.thought');
+  while (feed.children.length > 7) { let n = feed.lastElementChild; while (n && n === newest) n = n.previousElementSibling; (n || feed.lastElementChild).remove(); }
+};
 const say = (e, now) => {
   const key = e.organ + ':' + e.kind, gap = KIND_EVERY[e.kind] || 0;
   if (gap && spoke[key] && now - spoke[key] < gap) return; spoke[key] = now;
   const li = document.createElement('li'); li.style.setProperty('--h', hueOf(e.organ, layoutNow || { nodes: {} }));
   const who = document.createElement('b'); who.textContent = M.nameOf(e.organ); li.append(who, ' ' + e.text.replace(new RegExp('^' + M.nameOf(e.organ) + ' '), ''));
-  feed.prepend(li); while (feed.children.length > 7) feed.lastElementChild.remove();
+  push(li);
 };
 const read = (now) => {
   const b = brain(); if (!b) return;
@@ -125,7 +132,7 @@ const endTrace = () => {
   const li = document.createElement('li'); li.className = 'thought';
   const h = document.createElement('b'); h.textContent = steps.length > 1 ? 'After you asked, in order:' : 'After you asked, nothing it holds changed yet.'; li.append(h);
   const ol = document.createElement('ol'); for (const s of steps.slice(1)) { const i = document.createElement('li'); i.textContent = s.text; ol.append(i); } li.append(ol);
-  feed.prepend(li); while (feed.children.length > 7) feed.lastElementChild.remove();
+  push(li);
   const pts = steps.map((s) => center(s.organ)).filter(Boolean).map((p) => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
   if (parts) { parts.path.setAttribute('points', pts); parts.path.classList.remove('show'); void parts.path.getBBox(); parts.path.classList.add('show'); }
 };
@@ -135,7 +142,7 @@ form.addEventListener('submit', (e) => {
   const b = brain(); if (!b) return;
   if (B.isQuestion(t)) { // a question about itself is answered from its state, and changes nothing
     const r = B.ask(b, t), li = document.createElement('li'); li.className = 'thought'; const h = document.createElement('b'); h.textContent = 'You asked "' + t.slice(0, 60) + '". It answers from its own state:';
-    li.append(h, ' ' + (r.answer || []).join(' ')); feed.prepend(li); while (feed.children.length > 7) feed.lastElementChild.remove(); return;
+    li.append(h, ' ' + (r.answer || []).join(' ')); push(li); return;
   }
   const cardBox = document.querySelector('#card .vb-word'), cardForm = document.querySelector('#card .vb-form');
   trace = { text: t, at: performance.now(), events: [] };

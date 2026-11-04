@@ -12,7 +12,7 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | A random number in a range | Numbers | have | every site of this kind offers it | void-live-deploy/random/coin/index.html:46 `nt:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif">` |
-| Share a link to what you made or found | Sharing | have | its live page (2026-10-28): "Toggle blue scheme Toggle green scheme Share The Coin! Facebook Twitter WhatsApp On This Page: Flip A Coin Ab" | void-live-deploy/random/coin/index.html:69 `if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }` |
+| Share a link to what you made or found | Sharing | have | its live page (2026-10-28): "Toggle blue scheme Toggle green scheme Share The Coin! Facebook Twitter WhatsApp On This Page: Flip A Coin Ab" | void-live-deploy/random/coin/index.html:70 `if (navigator.share) { navigator.share({ title, url }).catch(() => {}); return ''; }` |
 | Facebook | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Twitter | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | WhatsApp | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
