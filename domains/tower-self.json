@@ -1250,6 +1250,16 @@
    "fixed": [],
    "pages_per_day": 1,
    "reads_next": "bestfonts.pro"
+  },
+  {
+   "at": "2026-11-04T18:15:51Z",
+   "line": "Versus: took on no site; next  (the target)",
+   "built": 0,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "bestfonts.pro",
+   "noop": true
   }
  ]
 }
