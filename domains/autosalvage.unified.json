@@ -42,6 +42,12 @@
       "into": "/bots/ (secret-sniffer)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/the-void": {
+      "target": "bot",
+      "into": "/bots/ (journal-day)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

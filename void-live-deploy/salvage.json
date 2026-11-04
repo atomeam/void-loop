@@ -2,8 +2,8 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 7,
-  "live": 72,
+  "unified": 8,
+  "live": 71,
   "salvageable": 439,
   "history": 24,
   "skipped": 3
@@ -4741,12 +4741,12 @@
   {
    "id": "archive/repos/the-void",
    "kind": "archived repo",
-   "status": "live",
-   "target": null,
-   "value": 0,
-   "why": "Verse's live code reads this path",
-   "into": null,
-   "test": null,
+   "status": "unified",
+   "target": "bot",
+   "value": 84,
+   "why": "",
+   "into": "/bots/ (journal-day)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },
