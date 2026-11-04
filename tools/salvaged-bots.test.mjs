@@ -55,3 +55,9 @@ test("journal-day", () => {
   assert.equal(b.run("2024-02-29"), "2024-02-29 · Thursday, February 29");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("free-api-finder", () => {
+  const b = bot("free-api-finder"); assert.ok(b && BOT("free-api-finder"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("pokemon"), "PokeAPI, pokeapi.co");
+  assert.ok(lineage(b), 'lineage is real');
+});
