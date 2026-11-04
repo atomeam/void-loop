@@ -648,7 +648,10 @@ for (const [name, file] of [
   ['music-de', 'music-de.test.mjs'],
   ['inline-scripts', 'inline-scripts.test.mjs'],
 ]) {
-  addScript(name, file);
+  // the load-bench test spawns the real bench, which needs the installed packages (bench.mjs imports playwright-core): with
+  // VOID_SKIP_BENCH it runs from a worktree without node_modules (merge-gate.mjs), so it sits out with the bench check above
+  if (name === 'bench-load' && process.env.VOID_SKIP_BENCH) add(name, async () => [true, 'skipped: the bench family needs installed packages, not a gate worktree (bench.yml covers a harness change)'], false, file);
+  else addScript(name, file);
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
 // a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).
