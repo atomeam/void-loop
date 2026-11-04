@@ -101,7 +101,9 @@ async function fileFixes(jobs) {
   const tok = process.env.VOID_OWNER_TOKEN || '';
   if (!jobs.length) return console.log('fix jobs: none, every bot passed');
   if (!tok) return console.log('fix jobs: ' + jobs.length + ' listed in bots/registry.json, not filed (no VOID_OWNER_TOKEN)');
-  for (const j of jobs.slice(0, 25)) { const r = await fetch((process.env.VOID_SITE || 'https://a-to-mind.com') + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify(j) }).catch((e) => ({ status: e.message })); console.log('fix job ' + j.target + ': ' + r.status); }
+  const post = (j) => fetch((process.env.VOID_SITE || 'https://a-to-mind.com') + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify(j) }).then((r) => r.status, (e) => e.message);
+  const done = await Promise.all(jobs.slice(0, 25).map(post)); // all at once, awaited once
+  done.forEach((st, i) => console.log('fix job ' + jobs[i].target + ': ' + st));
 }
 function write() {
   const rows = gate(), held = rows.filter((r) => r.status === 'held').length, fams = familyRows(), live = rows.filter((r) => r.status === 'live').length + fams.reduce((t, f) => t + f.live, 0), total = rows.length + fams.reduce((t, f) => t + f.total, 0);
