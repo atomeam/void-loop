@@ -6,7 +6,7 @@ const day = (d) => { const t = Date.parse(d + 'T12:00:00Z'); return Number.isFin
 
 export function rowOf(b) {
   const s = b.source || {}, from = [s.station, s.network && '(' + s.network + ')', s.show && '· ' + s.show].filter(Boolean).join(' ');
-  return '<li class="tvb"><b><a href="' + esc(b.feature) + '">' + esc(b.topic) + '</a></b>' +
+  return '<li class="tvb"><b><a href="' + esc(b.mode || b.feature) + '">' + esc(b.topic) + '</a></b>' +
     '<small class="hint" style="display:block">Heard on ' + esc(s.medium === 'radio' ? 'radio' : 'TV') + ': ' + esc(from) + ', ' + day(s.day) + (s.note ? ' — “' + esc(s.note) + '”' : '') + '</small>' +
     '<small class="hint" style="display:block">' + (b.action === 'improve' ? 'Improved ' : 'Built ') + '<a href="' + esc(b.feature) + '">' + esc(b.feature) + '</a>' +
     (b.pr ? ' in <a href="' + REPO + Number(b.pr) + '" rel="noopener">#' + Number(b.pr) + '</a>' : '') +

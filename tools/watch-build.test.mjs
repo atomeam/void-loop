@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
-import { scoreIdea, matchPage, productFor, planCycle, jobOf, tvSpec, assembleLog, slugOf } from '../void-live-deploy/lib/watch-build.js';
+import { categoryOf, scoreIdea, matchPage, productFor, planCycle, jobOf, tvSpec, assembleLog, slugOf } from '../void-live-deploy/lib/watch-build.js';
 import { ROUTES, WEIGHT } from './conductor-core.mjs';
 import { briefOf } from '../void-live-deploy/lib/job-guide.js';
 
@@ -34,6 +34,16 @@ test('a page that already does the job is improved, not duplicated', () => {
   assert.equal(matchPage(fake, [{ route: '/video/', title: 'Video player' }]), null, 'one shared word is not the same job');
 });
 
+test('one page per category: an idea with no page of its own folds into its category page as a mode', () => {
+  const pages = [{ route: '/photos/exif/', title: 'Photo details checker' }, { route: '/markets/', title: 'Markets' }, { route: '/video/', title: 'Video player' }];
+  const p = planCycle([fake], { pages, today: '2026-11-03' });
+  assert.equal(p.action, 'improve'); assert.equal(p.page, '/photos/exif/'); assert.ok(p.matched.category);
+  assert.match(tvSpec({ id: 'j1', ...jobOf(p) }, p), /as a mode .*do not add a second page or a separate matching tool/);
+  assert.equal(categoryOf({ topic: 'Agricultural market tracker', note: 'livestock auction prices' }, pages).route, '/markets/');
+  assert.equal(categoryOf({ topic: 'Irish pub locator', note: 'find a pub' }, pages), null, 'nothing fits: a new page is allowed');
+  assert.equal(categoryOf(fake, [{ route: '/video/', title: 'Video player' }]), null, 'a category page the site lacks does not count');
+});
+
 test('each build names a store product', () => {
   assert.match(productFor({ topic: 'uptime monitor', note: 'tell me about an outage' }).url, /keep-it-running/);
   assert.match(productFor({ topic: 'Zap fixer', note: 'fix a broken automation workflow' }).url, /eozcma/);
@@ -46,7 +56,7 @@ test('the job fits the queue and carries its source; the spec rebuilds from the 
   assert.match(j.ask, /^Build \/ai-authenticity-checker\/: AI authenticity checker \(heard on WFTV/);
   const spec = tvSpec({ id: 'j9', ...j });
   assert.match(spec, /build \/ai-authenticity-checker\//); assert.match(spec, /yinmj/); assert.match(spec, /tools\/real-pages\.mjs/); assert.match(spec, /domains\/tv-built\/ai-authenticity-checker\.json/); assert.match(spec, /"j9"/);
-  assert.match(tvSpec({ target: 'tv:x', ask: 'Improve /healthy-snacks/: snacks (heard on WXYZ)' }), /Improve that page; do not add a second page/);
+  assert.match(tvSpec({ target: 'tv:x', ask: 'Improve /healthy-snacks/: snacks (heard on WXYZ)' }), /as a mode .*do not add a second page/);
   assert.match(briefOf({ id: 'j9', ...j }, 'tv'), /never an idea list/);
 });
 
@@ -61,7 +71,7 @@ test('the served log is newest first with each pull request, and every lineage f
   const dir = new URL('../domains/tv-built/', import.meta.url);
   for (const f of readdirSync(dir).filter((x) => x.endsWith('.json'))) {
     const e = JSON.parse(readFileSync(new URL(f, dir), 'utf8'));
-    assert.equal(e.slug + '.json', f); assert.match(e.feature, /^\/[a-z0-9-]+\/$/); assert.ok(e.source && e.source.station && e.source.day, f + ' names its broadcast');
+    assert.equal(e.slug + '.json', f); assert.match(e.feature, /^\/[a-z0-9\/-]+\/$/); assert.ok(e.source && e.source.station && e.source.day, f + ' names its broadcast');
     assert.match(e.product.url, /^https:\/\/moonbeam846\.gumroad\.com\/l\//, f + ' earns through the store');
     assert.ok(readdirSync(new URL('../void-live-deploy' + e.feature, import.meta.url)).includes('index.html'), f + ' points at a real page');
   }

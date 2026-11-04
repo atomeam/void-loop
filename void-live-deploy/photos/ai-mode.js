@@ -1,22 +1,26 @@
-// /ai-authenticity-checker/: the page around lib/ai-check.js. Files are read on the device; nothing is uploaded.
+// /photos/exif/'s AI check mode (owner, 2026-11-03: fold new features into the one page for their category as a mode). Verse heard it on TV
+// (WFTV (ABC), 30 Oct 2026: a tool to verify whether video evidence was synthetically altered; domains/tv-built/). The photo details page
+// already reads what a file records, so this mode reads what it says about who made it: Content Credentials (C2PA), the IPTC AI source
+// type, Stable Diffusion and ComfyUI settings, generator and editor names and the camera (lib/ai-check.js). Photos and videos are read on
+// the device; nothing is uploaded. It runs on its own input (videos too) and on every photo dropped into the page's editor.
 import { checkFile, reportOf } from '/lib/ai-check.js';
 
-const $ = (id) => document.getElementById(id), out = $('out'), drop = $('drop');
-const LEVEL = { ai: 'AI', 'ai-edit': 'AI edit', edit: 'Edited', camera: 'Camera', info: 'Info' };
+const $ = (id) => document.getElementById(id), out = $('aiout'), box = $('ai');
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const LEVEL = { ai: 'AI', 'ai-edit': 'AI edit', edit: 'Edited', camera: 'Camera', info: 'Info' };
 
 function card(r) {
-  const el = document.createElement('section'); el.className = 'card'; el.dataset.verdict = r.verdict;
-  el.innerHTML = '<p class="verdict v-' + r.verdict + '">' + esc(r.headline) + '</p>' +
+  const el = document.createElement('section'); el.className = 'aicard'; el.dataset.verdict = r.verdict;
+  el.innerHTML = '<p class="aiv v-' + r.verdict + '">' + esc(r.headline) + '</p>' +
     '<p class="meta">' + esc(r.name) + ' · ' + esc(r.kind.toUpperCase()) + ' · ' + (r.bytes / 1024 / 1024).toFixed(2) + ' MB</p>' +
     '<ul class="sig">' + (r.signals.length ? r.signals.map((s) => '<li><span class="tag l-' + s.level + '">' + LEVEL[s.level] + '</span>' + esc(s.label) + (s.detail ? '<span class="detail">' + esc(s.detail) + '</span>' : '') + '</li>').join('') : '<li class="note">The file carries no metadata about how it was made.</li>') + '</ul>' +
-    '<div class="row"><button type="button" class="dl">Download report</button><button type="button" class="cp">Copy report</button></div>';
+    '<div class="airow"><button type="button" class="aidl">Download report</button><button type="button" class="aicp">Copy report</button></div>';
   const text = reportOf(r);
-  el.querySelector('.dl').addEventListener('click', () => {
+  el.querySelector('.aidl').addEventListener('click', () => {
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
     a.download = (r.name || 'file').replace(/\.[^.]+$/, '') + '-ai-check.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   });
-  el.querySelector('.cp').addEventListener('click', async (e) => { try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; } catch (_) { e.target.textContent = 'Copy failed'; } });
+  el.querySelector('.aicp').addEventListener('click', async (e) => { try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; } catch (_) { e.target.textContent = 'Copy failed'; } });
   return el;
 }
 
@@ -39,13 +43,18 @@ export async function bytesOf(f, LIMIT = 32 * 1024 * 1024) {
 }
 
 async function check(files) {
+  if (!out || !files || !files.length) return;
   out.textContent = '';
   for (const f of [...files].slice(0, 20)) out.append(card(checkFile(await bytesOf(f), f.name)));
   document.documentElement.dataset.checked = String(out.children.length);
 }
 
-$('file').addEventListener('change', (e) => check(e.target.files));
-drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
-drop.addEventListener('dragleave', () => drop.classList.remove('over'));
-drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files.length) check(e.dataTransfer.files); });
-document.documentElement.dataset.aicheck = 'ready';
+if (box && out) {
+  $('aifile').addEventListener('change', (e) => check(e.target.files));
+  const main = $('file'); if (main) main.addEventListener('change', (e) => check(e.target.files)); // a photo opened in the editor is checked too
+  box.addEventListener('dragover', (e) => { e.preventDefault(); box.classList.add('over'); });
+  box.addEventListener('dragleave', () => box.classList.remove('over'));
+  box.addEventListener('drop', (e) => { e.preventDefault(); box.classList.remove('over'); if (e.dataTransfer.files.length) check(e.dataTransfer.files); });
+  if (new URLSearchParams(location.search).get('mode') === 'ai' || location.hash === '#ai') { box.open = true; box.scrollIntoView(); }
+  document.documentElement.dataset.aicheck = 'ready';
+}
