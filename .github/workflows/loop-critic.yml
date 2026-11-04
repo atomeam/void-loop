@@ -5,6 +5,9 @@ name: Loop critic
 on:
   pull_request:
     paths: ['void-live-deploy/**', 'void.html']
+concurrency:
+  group: loop-critic-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:

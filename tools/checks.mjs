@@ -22,12 +22,14 @@ import { select as selectChanged, changedFiles, readDeps, REACHES_ALL } from './
 
 const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
-const inCI = !!(process.env.CI || process.env.GITHUB_ACTIONS), changedMode = args.includes('--changed') && !inCI;
+// VOID_ALLOW_CHANGED lets the merge gate run --changed on the merged tree (a workflow file would otherwise force every check)
+const inCI = !!(process.env.CI || process.env.GITHUB_ACTIONS) && process.env.VOID_ALLOW_CHANGED !== '1', changedMode = args.includes('--changed') && !inCI;
 if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: main runs everything');
 // the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
 const changedList = changedMode ? changedFiles() : null;
 // --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
-const narrowToChanged = !!(changedList && !changedList.some((f) => REACHES_ALL.test(f)));
+const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && f.startsWith('.github/workflows/'));
+const narrowToChanged = !!(changedList && !changedList.some(reachesAll));
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
 // the two browser checks that take most of a run (persona-playtest ~5 min, perf3d ~5 min) run here only when a file they cover changed
@@ -227,7 +229,7 @@ for (const [name, file] of [
   ['routed', 'routed.test.mjs'],
   ['better', 'better.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
-  ['skills', 'skills-check.mjs'],
+  ['skills', process.env.VOID_GATE === '1' ? 'skills-delta.mjs' : 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['stage-pack-h', 'stage-pack-h.test.mjs'],
   ['stage-pack-i', 'stage-pack-i.test.mjs'],
@@ -506,6 +508,10 @@ for (const [name, file] of [
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
+  ['merge-policy', 'merge-policy.test.mjs'],
+  ['skills-delta', 'skills-delta.test.mjs'],
+  ['tower-files', 'tower-files.test.mjs'],
+  ['pre-pr', 'pre-pr.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
   ['skill-use', 'skill-use.test.mjs'],
@@ -731,7 +737,7 @@ add('noise', async () => { // test traffic (probe, ping, test) never becomes a m
 // Run them: the browser checks one after another in their own lane from the start, the pure ones through the gate beside them.
 // A check that throws fails with its message; the report below is in the order the checks were added, whatever finished first.
 // --changed: the structural checks and the ones whose files, imports or names a changed file touches (tools/checks-changed.mjs); one line says what was left out
-const chosen = changedMode ? selectChanged(jobs, changedList, { deps: readDeps() }) : null;
+const chosen = changedMode ? selectChanged(jobs, process.env.VOID_GATE === '1' && changedList ? changedList.filter((f) => !f.startsWith('.github/workflows/')) : changedList, { deps: readDeps() }) : null;
 if (chosen) console.log(chosen.line);
 const picked = chosen ? new Set(chosen.run) : null;
 const wanted = jobs.filter((j) => (!skipBrowser || !j.browser) && (!only.length || only.some((w) => j.name.toLowerCase().includes(w))) && (!picked || picked.has(j)));

@@ -257,7 +257,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
   if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));
   if (process.argv.includes('--check')) {
-    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) problems.push('void-live-deploy/skills/families.json is out of date (node tools/families.mjs)');
+    // the file is a build output (deploy runs this). A pull request that also commits it conflicts with every other one.
+    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) console.log('families.json lags the skills; the deploy rewrites it (node tools/families.mjs)');
     if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
     console.log('ok: ' + names.length + ' skills in ' + b.families.length + ' families'); process.exit(0);
   }

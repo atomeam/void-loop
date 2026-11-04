@@ -28,6 +28,16 @@ The product is **Verse** (V01D, said "void", until 2026-10-18; the owner renamed
 - Skills: 115 on 2026-10-10 (`void-live-deploy/skills/index.json`; ask "what can you do" on the site). Next steps come from what people ask.
 - Older files in `domains/` (venture catalog `A2M.ops.md`, venture files, shared-parts diagrams) came from an earlier framing; they are being catalogued on the salvage shelf (`docs/SALVAGE.md`), not deleted.
 
+## Landing clean (owner, 2026-11-04)
+
+Atom, 2026-11-04: "the code needs to be perfect going in, why does every single merge have conflicts." And: shipping every few minutes is fine. He wants compounding growth, not less of it. Bots keep shipping as often as they like. Each change lands cleanly.
+
+- **One pull request per task.** Rebase on main before you open it (`node tools/merge-main.mjs`, then `node tools/pre-pr.mjs`).
+- **Never edit a generated file by hand.** The index is `skills/order/` (one file per skill). The ledger's new lines are `growth/entries/`. A red suite is `incidents/entries/` (one file per run). A Versus floor is `tower-evidence/` (one file per floor). `deploy.yml` assembles what the site fetches (`index.json`, `families.json`, `guide.json`, `deps.json`, `what.json`, `incidents.json`, `tower.evidence.json`, `sitemap.xml`). A pull request that commits one of those is sent back.
+- **The merge is tested as it will land.** `merge-gate.yml` merges main, regenerates those build outputs, and runs the fast checks on that tree. The full suite still runs on main afterwards.
+- **Green pull requests merge themselves.** A pull request labelled `automerge`, and one the Actions app or atomeam opened on `helper/*`, `loop/*` or `lab/*`, gets GitHub auto-merge (squash). One that falls behind main is updated. An older `lab/sync-*` or `loop/*` pull request is closed when a newer one is open. Once a day, one open more than 6 hours is merged if it is green, or told the blocker if it is not.
+- **Cut wasted runs, never the pace.** A second push to the same ref cancels the run it made obsolete. A heavy check runs when the files it covers change. The schedules that ship Verse stay as often as they are.
+
 ## Where things are
 
 Two builders share the work: read `domains/handoff.md` at the start of every session and update it at the start and the end (who is on what, what was finished and how, ladders and lessons).
