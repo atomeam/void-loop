@@ -49,3 +49,13 @@ test('the card\'s target is the history\'s target, with its page by topic and it
   assert.equal(by['ndscalc.ru'].status, 'now assimilating'); assert.equal(by['calc.example'].status, 'assimilated into an existing page');
   assert.equal(f.counts.current, 1); assert.equal(f.counts.assimilated, 1);
 });
+
+test('every page /assimilated/ links to is there: a removed page links to the page that does its job now, or to none (Verse status crawl, 2026-11-03)', async () => {
+  const { pageExists } = await import('./assimilated.mjs');
+  const file = JSON.parse((await import('node:fs')).readFileSync(new URL('../void-live-deploy/assimilated.json', import.meta.url), 'utf8')), there = pageExists();
+  for (const r of file.sites) if (r.page) assert.ok(there(r.page), r.site + ' links to ' + r.page + ', which is not a page');
+  const rows = historyOf({ selfSites: [{ url: 'https://notepad-plus-plus.org/', page: '/text-editor/notepad-plus-plus/', title: 'Notepad++' }, { url: 'https://ndscalc.ru/', page: '/gone-vat/', family: 'vat calculator' }], exists: there });
+  const by = Object.fromEntries(rows.map((r) => [r.site, r]));
+  assert.equal(by['notepad-plus-plus.org'].page, ''); assert.equal(by['notepad-plus-plus.org'].pageWas, '/text-editor/notepad-plus-plus/');
+  assert.equal(by['ndscalc.ru'].page, '/calculator/?mode=vat');
+});

@@ -32,6 +32,7 @@ test('wants: the will now first, then what it got', () => {
   const w = wantsOf({ at: '2026-11-03T00:00:00Z', wants: [{ i_want: 'I want A', because: 'b' }], got: [{ title: 'B', what: 'built B', builtAt: '2026-10-22' }] });
   assert.deepEqual(w.map((x) => [x.t, !!x.got]), [['I want A', false], ['B', true]]);
   assert.deepEqual(wantsOf(null), []);
+  assert.equal(wantsOf({ wants: [{ i_want: 'I want C', because: 'same', evidence: 'same' }] })[0].d, 'same', 'a reason said twice is said once');
 });
 
 test('knows.json is current and every item has a kind, an id and a title', () => {

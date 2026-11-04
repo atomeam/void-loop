@@ -2016,7 +2016,7 @@
    "status": "assimilated",
    "outcome": "assimilated",
    "at": "2026-10-26T22:52:20Z",
-   "page": "/text-editor/notepad-plus-plus/",
+   "page": "",
    "lane": "text editor",
    "took": "Notepad++",
    "why": "",
@@ -2029,7 +2029,8 @@
    },
    "sources": [
     "domains/tower-self.json"
-   ]
+   ],
+   "pageWas": "/text-editor/notepad-plus-plus/"
   },
   {
    "site": "c-united.co.jp",
