@@ -50,7 +50,7 @@ test('a try a visitor can use: an ask or a page of the site, never a developer s
   assert.equal(visitorTry('hangman'), 'hangman');
   assert.equal(visitorTry('node --test tools/verse-coder.test.mjs'), '');
   assert.equal(visitorTry('watch the next verse-job run ship'), '');
-  assert.equal(visitorTry('a-to-mind.com/gradient/ then See it as a card on the stage'), '/color/gradient/');
+  assert.equal(visitorTry('a-to-mind.com/gradient/ then See it as a card on the stage'), '/gradient/');
   assert.equal(visitorTry('Open /calculator/?q=(3%2B4)*5 and read the stage card link'), '/calculator/?q=(3%2B4)*5');
   assert.equal(visitorTry('/weather/?q=Paris, then See it as a card on the stage'), '/weather/?q=Paris');
   assert.equal(visitorTry('Type I hate rainy weather on /translate/, to French, and press the card link'), '');

@@ -179,7 +179,7 @@ export const JOURNEYS = {
     const d = new Date(Date.now() + 9 * 86400000), soon = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     const ev = (id, name, date, hs, as) => ({ id, name, date, league: 'English Premier League', sport: 'Soccer', home: 'Arsenal', away: 'Chelsea', hs, as, src: 'TheSportsDB' });
     await p.route('**/api/sportsearch?**', (r) => r.fulfill({ json: { ok: true, teams: [], events: [ev('1', 'Arsenal vs Chelsea', '2019-05-01', '3', '1'), ev('2', 'Arsenal vs Chelsea', soon, '', '')], venues: [], players: [], source: 'TheSportsDB' } }));
-    await p.goto(ORIGIN + '/sports/?q=Arsenal%20vs%20Chelsea', { waitUntil: 'load' }); await p.waitForSelector('ul.ev li a[href^="/calendar/?e="]');
+    await p.goto(ORIGIN + '/scores/sports/?q=Arsenal%20vs%20Chelsea', { waitUntil: 'load' }); await p.waitForSelector('ul.ev li a[href^="/calendar/?e="]');
     const links = await p.locator('ul.ev li', { hasText: 'Arsenal vs Chelsea' }).evaluateAll((ls) => ls.map((l) => !!l.querySelector('a[href^="/calendar/"]')));
     if (links.join() !== 'false,true') throw new Error('the calendar links on the two matches are ' + links.join() + ', not only on the one still to come');
     await check('the search shows the match on ' + soon + ' with a link to the calendar, and the 2019 match without one');

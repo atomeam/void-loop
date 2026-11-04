@@ -73,7 +73,7 @@
   "/recipes/": "in: text, items, number; out: items, text",
   "/resize-image/": "in: image; out: image",
   "/scores/": "in: date, text; out: event, table, date",
-  "/sports/": "in: text; out: event, table",
+  "/scores/sports/": "in: text; out: event, table",
   "/stopwatch/": "in: duration; out: duration, table",
   "/time/": "in: date, location; out: date, location",
   "/tournaments/": "in: names; out: table, names",

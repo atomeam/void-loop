@@ -162,7 +162,7 @@ export const CATALOG = {
     ['streaming', 'Media', 'Watch games live', T('watch live|stream'), T('stream'), null, ['ESPN']],
     ...COMMON,
   ],
-  '/sports/': [
+  '/scores/sports/': [
     ['sports', 'Data', 'Many sports, leagues, teams and players', T('sport|league|team'), T('Sports with live scores'), null, 'core'],
     ['artwork', 'Data', 'Team badges and artwork', T('badge|logo|artwork'), T('badge|crest'), null, 'core'],
     ['api', 'Developers', 'A free public API', T('api'), T('openapi|/api/'), null, 'core'],

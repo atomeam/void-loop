@@ -65,7 +65,7 @@ export function builtFrom(route, html, src, routes, builders = {}) {
 }
 /** lib/handoff.js's link builders and the page each one opens with the list in it (wheelLink: '/random/wheel/#...'), so a page that calls
  *  wheelLink(names) counts as connected to /wheel/ the way a written '/random/wheel/#' link does. Pure. */
-export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/)[#?]/g)].map((m) => [m[1], m[2]]));
+export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/(?:[a-z0-9-]+\/)*)[#?]/g)].map((m) => [m[1], m[2]]));
 
 /** a page that is one of its family's variants (/photos/squoosh/ beside /photos/) is not ranked on its own unless it has its own tag */
 const variant = (p) => p.route.split('/').length > 3 && !p.declared;

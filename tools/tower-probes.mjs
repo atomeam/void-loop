@@ -1241,7 +1241,7 @@ const LANE_PROBES = Object.freeze({
     facts: [['companies', /Companies hiring/], ['A to Z', /A to Z/], ['categories', /Category/], ['keyword', /Keyword/], ['job type', /Job type/], ['saved jobs', /Saved jobs/], ['alerts', /alert/i], ['tracker', /Applications/], ['RSS', /RSS/], ['no account', /no account/i], ['works offline', /\boffline\b/i]],
   },
   'sports: thesportsdb.com': {
-    ask: { verse: '/sports/?q=arsenal' },
+    ask: { verse: '/scores/sports/?q=arsenal' },
     truth: [['Arsenal found as a team', /Teams[\s\S]{0,400}Arsenal/], ['its sport, soccer', /\bSoccer\b/], ['the source named', /TheSportsDB/]],
     askParts: { 'sport search': [['a search across sports', /Search every sport/i], ['teams', /\bTeams\b/], ['venues or events', /\bVenues\b|\bEvents\b/], ['players', /\bPlayers\b/]],
       'born on this day': [['born on this day', /Born on this day/i], ['a year and a name', /(?:1[89]|20)\d\d\s*[\s\S]{2,70} — /]],
