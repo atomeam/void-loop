@@ -1,5 +1,5 @@
 {
- "at": "2026-11-03T13:06:00.859Z",
+ "at": "2026-11-04T13:22:59.822Z",
  "mode": "live",
  "pass": 54,
  "total": 54,
@@ -358,14 +358,14 @@
    "kind": "Event — 1939",
    "title": "World War II",
    "theme": "plain",
-   "photo": false,
+   "photo": true,
    "api": {
     "name": "World War II",
     "desc": "Global conflict from 1939 to 1945",
     "fuzzy": false,
     "noAnswer": false,
     "guess": "",
-    "pic": false,
+    "pic": true,
     "sources": [],
     "answer": "World War II, or the Second World War, was a global conflict between two coalitions: the A"
    },
