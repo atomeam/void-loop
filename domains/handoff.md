@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · helper/agent-ask-match-49c3 · open asks on /agent/ go to the answer pipeline unless a bot's job matches, and a result that only echoes the ask is tried again · 2026-11-04 07:20 UTC
 - Cursor cloud agent · helper/verse-shell-wire-32c3 · the service worker dresses the home, Team, Bots, Agents, Tower, Films and Treasury with the shell: command palette, live line, WebGL wash off when motion is reduced · 2026-11-04 06:20 UTC
 - Cursor cloud agent · helper/verse-glass-32c3 · Verse design tokens in one file (verse.css) and the pure helpers for the nav, the live line and dressing a shell page · https://github.com/atomeam/void-loop/pull/2170 · 2026-11-04 05:30 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the deploy pulls the home style and the main script out of the served HTML so the first download is the shell; void.html stays the editor file · 2026-11-04 06:30 UTC
