@@ -69,7 +69,7 @@ export const CORE = [
 
 const clip = (t, n) => {
   const x = String(t == null ? '' : t).replace(/\s+/g, ' ').trim();
-  return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '\u2026';
+  return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '\u2026'; // ellipsis-ok: a stored field's length cap, not page text
 };
 const str = (v) => String(v == null ? '' : v);
 
