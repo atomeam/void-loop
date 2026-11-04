@@ -43,3 +43,9 @@ test("atari-playfield", () => {
   assert.equal(b.run("00 00 00"), "····················");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("secret-sniffer", () => {
+  const b = bot("secret-sniffer"); assert.ok(b && BOT("secret-sniffer"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("hello world"), "no secrets spotted");
+  assert.ok(lineage(b), 'lineage is real');
+});
