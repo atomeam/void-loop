@@ -2200,5 +2200,23 @@
    ]
   },
   "note": "fix: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T19:56:54Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2527,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
