@@ -47,8 +47,8 @@ function main() {
       }
     }
     // commit the merge so the checks see this pull request's files, not every file main just brought in
-    git(['commit', '-q', '--no-edit'], dir);
-    // the generators, so the checks see the tree the deploy will serve
+    const committed = git(['commit', '-q', '--no-edit'], dir);
+    // the generators, so a build output that conflicted is rewritten before we put the tree back
     for (const args of [
       ['tools/skills-index.mjs', '--write'],
       ['tools/deps.mjs'],
@@ -61,6 +61,9 @@ function main() {
       const r = spawnSync(process.execPath, [resolve(dir, args[0]), ...args.slice(1)], { cwd: dir, encoding: 'utf8' });
       if (r.status !== 0) console.log('merge-gate: ' + args[0] + ' exited ' + r.status + ' (the check below says if that matters)');
     }
+    // the generators rewrite build outputs in the worktree. Put those back so a rewritten index.html does not make every check run.
+    if (committed.status === 0) git(['reset', '--hard', 'HEAD'], dir);
+    git(['clean', '-fd'], dir);
     const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', stdio: 'inherit',
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
