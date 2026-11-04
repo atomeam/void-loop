@@ -6,7 +6,7 @@
  */
 export function isIdeaClarify(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:(?:clarify|capture and clarify|idea clarify|clarify idea)\s+(?:this\s+)?(?:idea|business|plan)|(?:capture|clarify)\s+(?:and\s+)?(?:clarify\s+)?(?:the\s+)?(?:idea|business|flow|onboarding|system))(?:\s*[:\-]\s*.+)?$/i.test(t);
+  return /^(?:(?:clarify|capture and clarify|idea clarify|clarify idea)(?:\s+(?:this\s+)?(?:idea|business|plan))?|(?:capture|clarify)\s+(?:and\s+)?(?:clarify\s+)?(?:the\s+)?(?:idea|business|flow|onboarding|system))(?:\s*[:\-]\s*.+)?$/i.test(t);
 }
 
 function extractIdea(text) {
