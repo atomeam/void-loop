@@ -391,6 +391,14 @@ export const SPECS = {
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
 SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
+// one emoji on every platform (lib/emoji-looks.js): the grid draws, a search for fire swaps it, the pictures load, the link keeps the emoji
+SPECS['/emojis/everywhere/'] = async (t) => {
+  t.ok((await t.p.locator('#grid .lk-tile').count()) >= 12, 'the grid shows 12 or more platforms');
+  await t.fill('#q', 'fire'); await t.p.waitForTimeout(500); await t.click('#sugg button >> nth=0'); await t.p.waitForTimeout(300);
+  t.ok(/fire/i.test(await t.text('#ename')) && /e=%F0%9F%94%A5|e=🔥/.test(t.p.url()), 'a search for fire shows 🔥 and the link keeps it: ' + t.p.url().slice(-30));
+  await t.p.waitForFunction(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length >= 6, null, { timeout: 15000 }).catch(() => {});
+  t.ok((await t.p.evaluate(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length)) >= 6, 'six or more platform pictures loaded');
+};
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
