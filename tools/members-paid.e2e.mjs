@@ -159,17 +159,16 @@ test('the idea box: a member sends an idea, it is queued for the coder and liste
   await p.close();
 });
 
-test('the MultiVerse mark: the member\'s stage shows it and it opens /members/; a free account\'s stage does not', async () => {
+test('the MultiVerse mark: no stage shows it any more, only a published page does', async () => {
   const mark = (p) => p.evaluate(() => { const a = document.getElementById('void-member'); return a ? { href: a.getAttribute('href'), text: a.textContent, shown: a.getClientRects().length > 0 } : null; });
   const p = await ctx.newPage();
-  await p.goto(ORIGIN + '/'); await p.waitForSelector('#void-member', { timeout: 15000 });
-  assert.deepEqual(await mark(p), { href: '/members/', text: 'MultiVerse', shown: true });
-  await p.click('#void-member'); await p.waitForURL(ORIGIN + '/members/');
+  // the home stage is blank (owner, 2026-11-04): no mark, no nav, no ticker, no hero
+  await p.goto(ORIGIN + '/'); await p.waitForTimeout(1500);
+  assert.equal(await mark(p), null, 'no mark on the member\'s own stage');
   await p.close();
   const free = await context(FREE_TOKEN, FREE_USER), f = await free.newPage();
-  const asked = f.waitForRequest((r) => r.url().endsWith('/api/passkey') && /"tier"/.test(r.postData() || ''), { timeout: 15000 });
-  await f.goto(ORIGIN + '/'); await asked; await f.waitForTimeout(800);
-  assert.equal(await mark(f), null, 'no mark for a free account');
+  await f.goto(ORIGIN + '/'); await f.waitForTimeout(1500);
+  assert.equal(await mark(f), null, 'no mark for a free account either');
   await free.close();
 });
 

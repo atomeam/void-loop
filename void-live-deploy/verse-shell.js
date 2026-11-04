@@ -1,10 +1,13 @@
 // The app shell on every Verse page that links it: the nav's current page, the command palette (Ctrl+K or ⌘K),
-// a one-line live proof on the home page, speculation-rules prefetch, and a short haptic tick on a tap.
+// speculation-rules prefetch, and a short haptic tick on a tap. The home page draws no chrome at all (owner, 2026-11-04).
 // Team keeps its own Ctrl+K (the channel jump). Drawing is here; the wording is lib/verse-shell.js.
-import { NAV, currentNav, proofLine, commands, filterCommands, speculationRules, dressPath } from '/lib/verse-shell.js';
+import { NAV, currentNav, commands, filterCommands, speculationRules, dressPath } from '/lib/verse-shell.js';
 
 function ensureChrome() {
   if (!dressPath(location.pathname) || document.getElementById('verse-nav')) return;
+  // the home page is the word and the input, nothing else (owner, 2026-11-04: "the words do not belong on verse homepage").
+  // The pages it used to list are still on ⌘K (commands()), and a page is never left without a way back.
+  if (location.pathname === '/') return;
   const header = document.createElement('header');
   header.className = 'vs-chrome';
   const nav = document.createElement('nav');
@@ -34,14 +37,6 @@ function ensureChrome() {
   k.append(shown);
   nav.append(brand, links, k);
   header.append(nav);
-  if (location.pathname === '/') {
-    const proof = document.createElement('p');
-    proof.id = 'verse-proof';
-    proof.className = 'vs-proof';
-    proof.setAttribute('role', 'status');
-    proof.textContent = 'Verse, live';
-    header.append(proof);
-  }
   document.body.prepend(header);
 }
 
@@ -149,20 +144,6 @@ function onKey(e) {
   }
 }
 
-async function paintProof() {
-  const el = document.getElementById('verse-proof');
-  if (!el) return;
-  try {
-    const [crewRes, selfRes] = await Promise.all([
-      fetch('/api/crew').then((r) => (r.ok ? r.json() : null)).catch(() => null),
-      fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
-    ]);
-    const beaten = selfRes && selfRes.tower ? selfRes.tower.beaten : undefined;
-    const line = proofLine({ crew: crewRes && crewRes.crew, beaten });
-    if (line) el.textContent = line;
-  } catch (_) {}
-}
-
 ensureChrome();
 markCurrent();
 armSpeculation();
@@ -179,8 +160,3 @@ if (k) k.addEventListener('click', () => {
   }
   openPalette();
 });
-if (document.getElementById('verse-proof')) {
-  const run = () => { if (document.visibilityState !== 'hidden') paintProof(); };
-  if (document.readyState === 'complete') run(); else addEventListener('load', run);
-  setInterval(run, 30000);
-}
