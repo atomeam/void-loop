@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 export const SUITE = resolve(here, 'site-test.json'), LOG = resolve(here, 'site-test.log.json'), SEEN = resolve(here, 'site-test.seen.json');
 export const NEW_PER_RUN = 4;
-export const GAP_MS = 3000, UA_TAG = 'VerseSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
+export const GAP_MS = 3000, POOL = 3, UA_TAG = 'VerseSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
 export const REFUSAL = /don.t know this yet|couldn.t find|isn.t connected|something went wrong/i;
 /** the asks that failed this run and the first reason each, so the log (and the tester card) can name them, not only count them
  *  (owner, 2026-10-19: the card said "64 of 74" every run and nobody could tell which ten). The suite's own asks only, never a visitor's. Pure. */
@@ -169,8 +169,15 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://a-to-mind.com', shots = 'site-test-shots' } = {}) {
   mkdirSync(shots, { recursive: true }); const { b, ctx } = await browser(); const out = [];
-  try { for (const c of onceEach(suite.cases)) {
+  // Asks start at most one every GAP_MS, as before, but the next one no longer waits for the last to finish: each takes about 8 s
+  // (load, the 4 s read, a screenshot), so the suite ran one ask per 11 s and outgrew the step's 12 minutes as it grew by one a run
+  // (Site test on main, 2026-11-04: cut off at case 60 of 87, so the run's improvement and log were never written). Up to POOL asks
+  // are open at once, each in its own fresh context; a case that measures frames runs alone, so a busy runner cannot cost it fps.
+  const cases = onceEach(suite.cases), slots = new Array(cases.length); let open = 0, solo = false, lastStart = 0;
+  const one = async (c, k) => { try { slots[k] = await runCase(c); } catch (e) { slots[k] = { ...judge(c, { text: '', errors: ['tester: ' + String(e && e.message || e).split('\n')[0].slice(0, 160)] }, suite.limits), ...meta(c) }; console.log('FAIL ' + (c.ask || c.path) + ' · ' + slots[k].why.join('; ')); } };
+  const runCase = async (c) => {
     const cx = await ctx(), p = await cx.newPage(), errors = [];
+    try {
     p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR|cloudflareinsights|Permissions policy violation/i.test(m.text()) && errors.push(m.text()));
     // a script answered with the wrong type: name the file (the console line alone does not, issue #757)
     p.on('response', (res) => { const q = res.request(), ct = res.headers()['content-type'] || ''; if (q.resourceType() === 'script' && res.status() < 300 && !/javascript|wasm|json/.test(ct)) errors.unshift('script ' + new URL(res.url()).pathname + ' served as ' + (ct || 'nothing') + ' (' + res.status() + ')'); });
@@ -179,8 +186,8 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     // (issues #1022, #1028: 1244 and 1426 ms once, while the same pages load well inside the ceiling run after run). A slow site stays slow twice.
     if (suite.limits && suite.limits.loadMs && loadMs > suite.limits.loadMs) { const t1 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); loadMs = Math.min(loadMs, Date.now() - t1); }
     if (c.page) { await p.waitForTimeout(1500); const text = (await p.evaluate(() => document.body.innerText)).slice(0, 1500);
-      const v = judge(c, { text, errors, loadMs }, suite.limits); out.push({ ...v, ...meta(c), loadMs, chars: text.trim().length });
-      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); await cx.close(); await wait(GAP_MS); continue; }
+      const v = judge(c, { text, errors, loadMs }, suite.limits);
+      console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); return { ...v, ...meta(c), loadMs, chars: text.trim().length }; }
     await p.waitForSelector('#input', { timeout: 15000 }); await p.waitForTimeout(800);
     const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText }));
     await p.fill('#input', c.ask); await p.keyboard.press('Enter');
@@ -193,10 +200,24 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     if (c.fps && suite.limits && suite.limits.fpsMin && fps < suite.limits.fpsMin) { await p.waitForTimeout(1500); fps = Math.max(fps, await fpsOf(p)); }
     const slug = c.ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40); await p.screenshot({ path: resolve(shots, slug + '.png') }).catch(() => {});
     const statsIdleMs = await p.evaluate(() => { const e = performance.getEntriesByName('card-stats-idle').pop(); return e ? Math.round(e.duration) : null; }).catch(() => null);
-    const v = judge(c, { ...seen, errors, fps, loadMs, statsIdleMs }, suite.limits); out.push({ ...v, ...meta(c), fps, loadMs, statsIdleMs, chars: seen.text.trim().length });
+    const v = judge(c, { ...seen, errors, fps, loadMs, statsIdleMs }, suite.limits);
     console.log((v.ok ? 'ok   ' : 'FAIL ') + c.ask + (fps ? ' · ' + fps + ' fps' : '') + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; ')) + (v.flags.length ? ' · flag: ' + v.flags.join('; ') : ''));
-    await cx.close(); await wait(GAP_MS);
-  } } finally { await b.close(); }
+    return { ...v, ...meta(c), fps, loadMs, statsIdleMs, chars: seen.text.trim().length };
+    } finally { await cx.close().catch(() => {}); }
+  };
+  const running = new Set();
+  try {
+    for (let k = 0; k < cases.length; k++) {
+      const c = cases[k], alone = !!c.fps;
+      // a frames case waits for the others to finish and holds the next one back; everything else waits for a free slot
+      while (solo || open >= POOL || (alone && open > 0)) await Promise.race(running);
+      const since = Date.now() - lastStart; if (lastStart && since < GAP_MS) await wait(GAP_MS - since);
+      lastStart = Date.now(); open++; if (alone) solo = true;
+      const job = one(c, k).finally(() => { open--; if (alone) solo = false; running.delete(job); }); running.add(job);
+    }
+    await Promise.all(running);
+  } finally { await b.close(); }
+  for (const r of slots) if (r) out.push(r);
   return out;
 }
 
