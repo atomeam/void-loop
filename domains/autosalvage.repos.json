@@ -4,15 +4,8 @@
     {
       "name": "a-to-mind.com",
       "description": "",
-      "updatedAt": "2026-11-04T03:09:41Z",
-      "size": 13419,
-      "archived": false
-    },
-    {
-      "name": "adventure-lab",
-      "description": "",
-      "updatedAt": "2026-06-13T01:57:47Z",
-      "size": 72,
+      "updatedAt": "2026-11-04T17:08:27Z",
+      "size": 10624,
       "archived": false
     },
     {
@@ -37,20 +30,6 @@
       "archived": false
     },
     {
-      "name": "autosalvage",
-      "description": "Scan, classify, and safely migrate legacy repositories",
-      "updatedAt": "2026-08-02T05:19:45Z",
-      "size": 13,
-      "archived": false
-    },
-    {
-      "name": "Broke",
-      "description": "",
-      "updatedAt": "2026-05-06T04:56:03Z",
-      "size": 0,
-      "archived": false
-    },
-    {
       "name": "Crypto-Cryptids",
       "description": "pokemon clone with cryptids merging crypto assets with legendary creatures",
       "updatedAt": "2026-05-06T05:40:12Z",
@@ -58,24 +37,10 @@
       "archived": false
     },
     {
-      "name": "fire-ember-mountain-cabin",
-      "description": "",
-      "updatedAt": "2026-09-28T02:52:47Z",
-      "size": 6682,
-      "archived": false
-    },
-    {
       "name": "glassbox",
       "description": "Public execution ledgers for A-to-Mind Glass-Box Operator runs. Proof of work is the PR, not a marketing page.",
       "updatedAt": "2026-09-20T22:37:01Z",
       "size": 11,
-      "archived": false
-    },
-    {
-      "name": "hold",
-      "description": "A-to-Mind Phase 1.5 — CRA Art.14 clock, human hold-gate, AlphaGenome dry-run. Not Aether.",
-      "updatedAt": "2026-09-20T22:43:31Z",
-      "size": 56474,
       "archived": false
     },
     {
@@ -116,15 +81,8 @@
     {
       "name": "void-loop",
       "description": "",
-      "updatedAt": "2026-11-04T04:54:27Z",
-      "size": 118722,
-      "archived": false
-    },
-    {
-      "name": "wix",
-      "description": "",
-      "updatedAt": "2026-06-12T05:23:59Z",
-      "size": 165,
+      "updatedAt": "2026-11-04T17:06:07Z",
+      "size": 119872,
       "archived": false
     }
   ]
