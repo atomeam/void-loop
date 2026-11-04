@@ -1349,6 +1349,15 @@
    "pages_per_day": 1,
    "reads_next": "bestfonts.pro",
    "noop": true
+  },
+  {
+   "at": "2026-11-04T23:55:48Z",
+   "line": "Versus: took on no site (also read: 6 no-family, 1 gone, 1 covered); next  (the target)",
+   "built": 0,
+   "queued": 4,
+   "fixed": [],
+   "pages_per_day": 0,
+   "reads_next": "coreldrawdesign.com"
   }
  ]
 }
