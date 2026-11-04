@@ -39,5 +39,5 @@ application is `ready to claim`; Verse never signs up, files or claims in anyone
 
 `docs/treasury.workflow.yml` is the daily found-money scan and the Monday cut review. It lives in docs/ because the agents' GitHub
 token cannot write `.github/workflows/` (no `workflow` scope). To switch it on, a push with that scope copies it to
-`.github/workflows/treasury.yml`. Until then the ledger, the split, the spend queue and the weekly review all run in
+.github/workflows/treasury.yml (not in the repo until then). Until then the ledger, the split, the spend queue and the weekly review all run in
 `/api/treasury` itself, and `found.json` is as of its last commit.
