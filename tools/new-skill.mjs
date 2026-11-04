@@ -9,7 +9,8 @@ import { writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { ranksOf, writeIndex, ORDER_DIR } from './skills-index.mjs';
+import { ranksOf, writeIndex, writeLineage, ORDER_DIR } from './skills-index.mjs';
+import { stampFile } from './skill-compose.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const skillsDir = resolve(root, 'void-live-deploy', 'skills');
@@ -62,7 +63,7 @@ export default {
 `;
 }
 
-function main(argv) {
+async function main(argv) {
   const args = argv.slice(2), name = args[0] && !args[0].startsWith('--') ? args[0] : '';
   const all = (flag) => args.flatMap((a, i) => (a === flag && args[i + 1] ? [args[i + 1]] : []));
   const examples = all('--ask'), near = all('--near'), rankArg = all('--rank')[0];
@@ -75,11 +76,16 @@ function main(argv) {
   if (existsSync(file)) { console.error('new-skill: ' + file + ' exists'); return 2; }
   writeFileSync(file, render({ name, examples, near }));
   writeFileSync(resolve(ORDER_DIR, String(rank).padStart(4, '0') + '-' + name), '');
+  try {
+    const made = await stampFile(file, examples[0]);
+    if (made.parts.length) console.log('built with ' + made.parts.join(', ') + (made.examples.length ? '; reused ' + made.examples.slice(0, 3).join(' | ') : ''));
+  } catch (e) { console.error('skill-compose: ' + String(e && e.message || e).slice(0, 160)); }
   writeIndex();
+  writeLineage();
   const c = spawnSync(process.execPath, [resolve(root, 'tools', 'skills-check.mjs')], { encoding: 'utf8' });
   console.log(((c.stdout || '') + (c.stderr || '')).trim());
   console.log(`\nwrote void-live-deploy/skills/${name}.js, skills/order/${String(rank).padStart(4, '0')}-${name}, skills/index.json\nnext: edit ANSWER and WHEN in the new file; node tools/checks.mjs; add one line for it to docs/MAP.md; node tools/push.mjs`);
   return c.status === 0 ? 0 : 1;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(main(process.argv));
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv).then((c) => process.exit(c));
