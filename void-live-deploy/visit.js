@@ -1,7 +1,13 @@
-// Every Verse page loads this one small file. It counts the visit, keeps scripts fresh, loads Verse Brain and turns on page fades.
+// Every Verse page loads this one small file. It counts the visit, keeps scripts fresh, loads Verse Brain and catches a skipped page fade.
 // Each step runs after load. A page Chrome prerendered ahead of a click (/speculation-rules.json) waits until the reader opens it.
 (function () {
   var d = document, w = navigator.serviceWorker;
+  // A skipped fade rejects a promise nobody is waiting on ("Transition was aborted because of invalid state") and the page throws.
+  // pageswap and pagereveal hand over the transition when there is one; a skip that never does still rejects, so that one is caught too.
+  var swallow = function () {}, quiet = function (t) { if (!t) return; ['finished', 'ready', 'updateCallbackDone'].forEach(function (k) { var p = t[k]; if (p && p.catch) p.catch(swallow); }); };
+  addEventListener('pageswap', function (e) { quiet(e.viewTransition); });
+  addEventListener('pagereveal', function (e) { quiet(e.viewTransition); });
+  addEventListener('unhandledrejection', function (e) { var m = e.reason && (e.reason.message || e.reason); if (typeof m === 'string' && m.indexOf('Transition was aborted because of invalid state') === 0) e.preventDefault(); });
   var after = function (ms, f) {
     var run = function () { setTimeout(f, ms); }, loaded = function () { d.readyState == 'complete' ? run() : addEventListener('load', run, { once: true }); };
     d.prerendering ? d.addEventListener('prerenderingchange', loaded, { once: true }) : loaded();
@@ -20,6 +26,4 @@
     s[p] = 1; fetch(u.href, { cache: 'no-cache' }).catch(function () {}); }); }); // void-review: ok (offline)
   // Verse Brain on every page: lib/brain-everywhere.js (window.verseBrain), after load
   after(1500, function () { var s = d.createElement('script'); s.type = 'module'; s.src = '/lib/brain-everywhere.js'; d.head.appendChild(s); });
-  // Cross-document view transitions: same-origin pages fade into each other, unless the reader asked for less motion
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) { var v = d.createElement('style'); v.textContent = '@view-transition{navigation:auto}'; d.head.appendChild(v); }
 })();

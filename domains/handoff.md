@@ -16,6 +16,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Grok Bot (hood) · helper/under-the-hood · /under-the-hood/ live-numbers page, speculation rules, prerender-safe visit.js, page fades, llms.txt links, agents.txt, favicon.ico · 2026-11-04 03:19 UTC
+- Cursor cloud agent · helper/under-the-hood · fix #2120: page fades no longer throw, /emoji left out of speculation rules, brain loader and llms.txt counts match the new visit.js · 2026-11-04 04:30 UTC
 - Grok Bot (box, ship loop) · helper/main-green-1103 · main green, taking over the stale #2064 (fix/main-green, conflicting, no commit since 2026-11-03 02:39 UTC): (verse-watch.yml's parse fix landed from the cloud agent's 6608751dc), the duplicate stopwatch order file, order files for compliment, riddle (before joke), rps (before video-play), delivery-pack and vat, delivery-pack's match takes its own examples, tower-plan file:// import, generated cards refreshed · 2026-11-03 23:20 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
 - Cursor cloud agent · helper/suite-reds-15b2 · the red browser checks that were already failing before the throttle: shakshuka asked again, riddle and rps routing, the book pages for riddle/rps/delivery-pack/compliment, the keyless bookshelf line, the will guard's note, and a repeated will plant in the error garden · 2026-11-03 23:55 UTC

@@ -32,7 +32,11 @@ function vitals() {
     tile(from, 'this page came from', pre || from !== 'the network' ? 'ok' : ''),
   ]);
 }
-const watch = (type, fn, opts) => { try { new PerformanceObserver((l) => { l.getEntries().forEach(fn); vitals(); }).observe({ type, buffered: true, ...opts }); } catch { /* an older browser: that tile stays — */ } };
+const watch = (type, fn, opts) => {
+  if (typeof PerformanceObserver !== 'function') return; // an older browser: that tile stays —
+  try { new PerformanceObserver((l) => { l.getEntries().forEach(fn); vitals(); }).observe({ type, buffered: true, ...opts }); }
+  catch (err) { if (err && (err.name === 'NotSupportedError' || err.name === 'TypeError')) return; throw err; } // only an entry type this browser does not observe
+};
 const act0 = () => (performance.getEntriesByType('navigation')[0] || {}).activationStart || 0;
 watch('paint', (e) => { if (e.name === 'first-contentful-paint') v.fcp = Math.max(0, e.startTime - act0()); });
 watch('largest-contentful-paint', (e) => { v.lcp = Math.max(0, e.startTime - act0()); });

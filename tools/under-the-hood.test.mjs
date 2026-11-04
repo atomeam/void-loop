@@ -7,7 +7,9 @@
 // Run: node --test tools/under-the-hood.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const D = new URL('../void-live-deploy/', import.meta.url);
 const read = (p) => readFileSync(new URL(p, D), 'utf8');
@@ -47,11 +49,27 @@ test('speculation rules: sent on every page, served with the type Chrome reads, 
   }
 });
 
-test('visit.js: a prerendered page waits to be opened, and fades respect reduced motion', () => {
+test('visit.js: a prerendered page waits to be opened, and a skipped fade never throws', () => {
   const v = read('visit.js');
   assert.match(v, /d\.prerendering \? d\.addEventListener\('prerenderingchange', loaded/);
-  assert.match(v, /prefers-reduced-motion: reduce\)'\)\.matches\) \{[^}]*@view-transition\{navigation:auto\}/);
   assert.match(v, /e\.transferSize \|\| !e\.decodedBodySize/, 'a script downloaded on this load was asked for again, so a first visit fetched each file twice');
+  // this file is deferred, so it cannot opt the next page in before pagereveal. The rule lives in view-transition.css.
+  assert.doesNotMatch(v, /@view-transition/, 'a rule added here opts in the page you leave and not the one you open, and the fade throws');
+  assert.match(v, /addEventListener\('pageswap'/); assert.match(v, /addEventListener\('pagereveal'/);
+  assert.match(v, /updateCallbackDone/); assert.match(v, /Transition was aborted because of invalid state/);
+});
+
+test('page fades are an inline style on every page, off when the reader asked for less motion', () => {
+  // An external sheet is too late: Chrome checks the opt-in before it arrives, skips the fade and the page throws.
+  // The rule has to be in the page's own HTML, ahead of the visit beacon, so both sides of a click have opted in.
+  const style = '<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>';
+  const walk = (dir, out) => { for (const e of readdirSync(dir, { withFileTypes: true })) { const p = join(dir, e.name); if (e.isDirectory()) walk(p, out); else if (e.name.endsWith('.html')) out.push(p); } return out; };
+  const files = walk(fileURLToPath(new URL('../void-live-deploy/', import.meta.url)), [fileURLToPath(new URL('../void.html', import.meta.url))]);
+  const missing = [];
+  for (const f of files) { const html = readFileSync(f, 'utf8'); if (html.includes('src="/visit.js"') && !html.includes(style)) missing.push(f); }
+  assert.deepEqual(missing, [], 'a page with the beacon and no fade rule throws on the way to the next page');
+  const hood = read('under-the-hood/index.html');
+  assert.ok(hood.indexOf(style) < hood.indexOf('</head>'), 'on this page the rule is in the head');
 });
 
 test('llms.txt starts with markdown links, agents.txt names the MCP server, favicon.ico is a real icon', () => {

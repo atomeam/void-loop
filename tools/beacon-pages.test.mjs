@@ -19,7 +19,7 @@ test('withBeacon: once, before </head>, nothing without a head', () => {
 
 test('the beacon is light: deferred, tiny, sent after the load event, never on other hosts', () => {
   const js = readFileSync(new URL('../void-live-deploy/visit.js', import.meta.url), 'utf8');
-  assert.ok(Buffer.byteLength(js) < 2800, 'visit.js grew past 2.8 KB'); // 1.5 KB until the Verse Brain loader (tools/brain-everywhere.test.mjs), 2.8 KB with prerender-safe counting and page fades (/under-the-hood/)
+  assert.ok(Buffer.byteLength(js) < 3200, 'visit.js grew past 3.2 KB'); // 1.5 KB until the Verse Brain loader, 2.8 KB with prerender-safe counting, 3.2 KB once a skipped fade is caught instead of thrown (/under-the-hood/)
   assert.match(TAG, /\bdefer\b/);
   assert.match(js, /addEventListener\('load'/); assert.match(js, /after\(0, function \(\) \{[^}]*\n[^]*?sendBeacon/); assert.match(js, /sendBeacon/);
   assert.match(js, /d\.prerendering \? d\.addEventListener\('prerenderingchange'/, 'a page Chrome prerendered and nobody opened was counted as a visit');
