@@ -12,10 +12,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Many boards on different topics | Boards | have | every site of this kind offers it | void-live-deploy/boards/index.html:125 `el class="vh" for="sort">Sort the boards</label>` |
-| Start a thread with an image | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:129 `/boards/?all=1">Every board's new threads</a></p>` |
-| Reply, quoting other posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:222 `ton" class="go" id="replyOpen">Reply</button></div>` |
-| Post without an account | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:209 `<p>Posts are anonymous. Verse keeps a keyed hash of your connection for limits and ban` |
-| Images on posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:154 `e="radio" name="nMode" value="images" checked> Pictures and text (a thread starts with a p` |
-| Reports and moderators | Safety | have | every site of this kind offers it | void-live-deploy/boards/index.html:201 `ection id="review" hidden><h2>Reported and hidden posts (the owner)</h2><div id="revList">` |
-| A name or tripcode | Posting | have | studied by hand: 2chan.net offers this (https://www.2chan.net/) | void-live-deploy/boards/index.html:116 `chive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on y` |
+| Many boards on different topics | Boards | have | every site of this kind offers it | void-live-deploy/boards/index.html:126 `el class="vh" for="sort">Sort the boards</label>` |
+| Start a thread with an image | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:130 `/boards/?all=1">Every board's new threads</a></p>` |
+| Reply, quoting other posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:223 `ton" class="go" id="replyOpen">Reply</button></div>` |
+| Post without an account | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:210 `<p>Posts are anonymous. Verse keeps a keyed hash of your connection for limits and ban` |
+| Images on posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:155 `e="radio" name="nMode" value="images" checked> Pictures and text (a thread starts with a p` |
+| Reports and moderators | Safety | have | every site of this kind offers it | void-live-deploy/boards/index.html:202 `ection id="review" hidden><h2>Reported and hidden posts (the owner)</h2><div id="revList">` |
+| A name or tripcode | Posting | have | studied by hand: 2chan.net offers this (https://www.2chan.net/) | void-live-deploy/boards/index.html:117 `chive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on y` |

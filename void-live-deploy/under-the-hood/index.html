@@ -1,0 +1,105 @@
+<!doctype html>
+<!--
+  Under the hood · https://a-to-mind.com/under-the-hood/
+
+  Hello, reader of source. Every number on this page is one of two kinds:
+    live      measured in your browser while you read it (/under-the-hood/app.js, about 9 KB, no libraries), or
+    dated     measured by a public tool anyone can run again, with the tool and the date beside it.
+  None is typed in to look good. If a live number is bad, the page says so.
+
+  The page has no inline script, so the site's script policy can stay strict (tools/csp-hashes.mjs).
+  The source of everything is public: https://github.com/atomeam/void-loop
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Under the hood · Verse</title>
+<meta name="description" content="How Verse is built, with numbers your own browser measures live: load timing, security headers, the Mozilla Observatory grade, offline pages, prerendering and every file written for machines.">
+<meta name="verse-handoff" content="in: none; out: none">
+<link rel="canonical" href="https://a-to-mind.com/under-the-hood/">
+<meta property="og:title" content="Under the hood · Verse">
+<meta property="og:description" content="Live numbers, measured in your browser as you read: speed, security headers, offline, prerender, and the files written for AI agents.">
+<meta property="og:url" content="https://a-to-mind.com/under-the-hood/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+<script type="module" src="/under-the-hood/app.js"></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --card: #100e19; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --bad: #ff8d84; --ok: #7ddeaf; --warn: #ffbe5a; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 16px 72px; }
+  h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 0 0 6px; }
+  h2 { font-size: 1.15rem; margin: 40px 0 4px; }
+  a { color: var(--accent); }
+  .lede { color: var(--soft); max-width: 62ch; margin: 0; }
+  .note { color: var(--soft); font-size: 14px; margin: 4px 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-height: 76px; }
+  .tile b { display: block; font-size: 1.45rem; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .tile span { color: var(--soft); font-size: 13px; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--soft); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code, pre { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  pre { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; margin: 6px 0 0; }
+  details { margin: 2px 0; } summary { cursor: pointer; }
+  .scroll { overflow-x: auto; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 36px; }
+  @media (prefers-reduced-motion: no-preference) { .tile b { transition: color .3s; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Under the hood</h1>
+  <p class="lede">Verse is one HTML page, a few hundred small skill modules and no framework. This page measures it while you read. Live numbers come from your own browser. Dated numbers come from public tools, and each one has a link so you can run it again.</p>
+
+  <h2 id="you">This page, measured in your browser</h2>
+  <p class="note">Navigation Timing, Paint Timing, Largest Contentful Paint, Layout Shift and Event Timing, read from <code>performance</code> as they happen. Click anywhere to add an interaction.</p>
+  <div class="grid" id="vitals"><div class="tile"><b>…</b><span>measuring</span></div></div>
+
+  <h2 id="headers">Security headers, read live from the home page</h2>
+  <p class="note">A same-origin <code>fetch('/')</code> with the cache skipped. Checked here against what the browser enforces, not against a list.</p>
+  <div class="scroll"><table><thead><tr><th>Header</th><th>Result</th><th>What it does</th></tr></thead><tbody id="hdrs"><tr><td colspan="3">Reading…</td></tr></tbody></table></div>
+
+  <h2 id="observatory">Mozilla HTTP Observatory, asked now</h2>
+  <p class="note">The latest public scan of a-to-mind.com from Mozilla's API, fetched by your browser. <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=a-to-mind.com" rel="noopener">Scan it again on MDN</a>.</p>
+  <div class="grid" id="obs"><div class="tile"><b>…</b><span>asking Mozilla</span></div></div>
+  <div class="scroll"><table><tbody id="obs-tests"></tbody></table></div>
+
+  <h2 id="verse">Verse, counted live</h2>
+  <p class="note">Read from the files the site serves, so these counts change when a deploy changes them.</p>
+  <div class="grid" id="counts"><div class="tile"><b>…</b><span>counting</span></div></div>
+
+  <h2 id="instant">Instant pages</h2>
+  <p class="note">The site sends a <code>Speculation-Rules</code> header. When you hold the pointer over a link, Chrome prerenders that page, so it opens instantly. A prerendered page counts its visit only once it opens. Pages fade into each other with cross-document view transitions, and the fade is off when you ask for reduced motion.</p>
+  <div class="grid" id="spec"><div class="tile"><b>…</b><span>checking</span></div></div>
+  <details><summary>The rules, as served</summary><pre id="rules">…</pre></details>
+
+  <h2 id="machines">For machines</h2>
+  <p class="note">Files written for AI agents, crawlers and security researchers. Each row is fetched live, with its status, type and size.</p>
+  <div class="scroll"><table><thead><tr><th>File</th><th>Status</th><th>Type</th><th class="num">Bytes</th><th>For</th></tr></thead><tbody id="files"></tbody></table></div>
+
+  <h2 id="measured">Before and after, measured</h2>
+  <p class="note">Lighthouse 13 (lab, mobile emulation with 4× CPU slowdown, best of one run), Mozilla Observatory and securityheaders.com, run against the live site on 2026-11-03 before this work and after it shipped. Scores change from run to run, so run them yourself: <a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fa-to-mind.com%2F" rel="noopener">PageSpeed Insights</a>, <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=a-to-mind.com" rel="noopener">Observatory</a>, <a href="https://securityheaders.com/?q=a-to-mind.com&amp;followRedirects=on" rel="noopener">securityheaders.com</a>.</p>
+  <div class="scroll"><table id="ba"><thead><tr><th>Measure</th><th class="num">Before</th><th class="num">After</th></tr></thead><tbody>
+    <!-- measured:start · rewritten by hand from /workspace/hood reports, with the date above -->
+    <tr><td>Observatory grade</td><td class="num">B+ (80)</td><td class="num" data-after>—</td></tr>
+    <tr><td>securityheaders.com grade</td><td class="num">A</td><td class="num" data-after>—</td></tr>
+    <tr><td>Lighthouse best practices, every page</td><td class="num">77–81</td><td class="num" data-after>—</td></tr>
+    <tr><td>Lighthouse performance, home (mobile)</td><td class="num">72</td><td class="num" data-after>—</td></tr>
+    <tr><td>Script requests on a first visit to home</td><td class="num">1,030</td><td class="num" data-after>—</td></tr>
+    <tr><td>Lighthouse agentic browsing, home</td><td class="num">67</td><td class="num" data-after>—</td></tr>
+    <!-- measured:end -->
+  </tbody></table></div>
+
+  <h2 id="yourself">Check it yourself</h2>
+  <p class="note">View the source of any page. The code, its tests and the git history of every change are public at <a href="https://github.com/atomeam/void-loop" rel="noopener">github.com/atomeam/void-loop</a>. Lighthouse from a terminal: <code>npx lighthouse https://a-to-mind.com/ --view</code>.</p>
+
+  <nav id="related" aria-label="Related pages"><!-- related --><span class="tk-label">Use with</span> <a href="/progress/">What Verse can do</a> <a href="/brain/">Verse Brain</a> <a href="/tools/">All tools</a> <a href="/">Ask Verse</a><!-- /related --></nav>
+</main>
+</body>
+</html>

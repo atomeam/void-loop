@@ -76,6 +76,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **/under-the-hood/ live-numbers page, speculation rules, prerender-safe visit.js, page fades, llms.txt links, agents.txt, favicon.ico (Grok Bot (hood), 2026-11-04)**: shipped in https://github.com/atomeam/void-loop/pull/2120.
+- **fix #2120: page fades no longer throw, /emoji left out of speculation rules, brain loader and llms.txt counts match the new visit.js (Cursor cloud agent, 2026-11-04)**: shipped in https://github.com/atomeam/void-loop/pull/2120.
 - Cursor cloud agent · t2097 (cursor/outcome-exam-4178) · the outcome exam records one drop of 5 or more and reverts a deploy only after two runs in a row that each drop by 5 or more. The holdout line in exam.yml is marked void-review: ok (a GitHub secret written to a gitignored file). https://github.com/atomeam/void-loop/pull/2097 · 2026-11-04
 - Cursor cloud agent · cursor/harder-exam-4178 · scale 2 of the outcome exam: rival answers, ambiguous, follow-up, non-English, narrow and slow asks, plus emoji, translation, units, maps, timers, images, prices, definitions, word problems and code. Baseline lowest was code at 57.5; code and word problems then reached 100, and images is next at 73.9. The progress page keeps the fixed asks and adds the domain scores. https://github.com/atomeam/void-loop/pull/2105 · 2026-11-04
 - Cursor cloud agent · cursor/outcome-exam-4178 · directions 67.7 to 100, calculator 72.5 to 100, news holdout 85.8 to 100, and no other domain fell. A directions ask names the kilometres, a landmark Open-Meteo misses is found on Wikipedia, VAT is in the routing order, and business and science news open that section. https://github.com/atomeam/void-loop/pull/2097 · 2026-11-04

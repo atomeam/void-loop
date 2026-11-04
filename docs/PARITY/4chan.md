@@ -12,18 +12,18 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Many boards on different topics | Boards | have | every site of this kind offers it | void-live-deploy/boards/index.html:125 `el class="vh" for="sort">Sort the boards</label>` |
-| Start a thread with an image | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:129 `/boards/?all=1">Every board's new threads</a></p>` |
-| Reply, quoting other posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:222 `ton" class="go" id="replyOpen">Reply</button></div>` |
-| Post without an account | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:209 `<p>Posts are anonymous. Verse keeps a keyed hash of your connection for limits and ban` |
-| Images on posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:154 `e="radio" name="nMode" value="images" checked> Pictures and text (a thread starts with a p` |
-| A catalogue view of threads | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:116 `o makes it. Every board has a catalog of its threads, index pages in bump order, threads t` |
-| Archived threads | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:116 `;&gt;quotes and greentext, an archive of old threads, search, tripcodes, sage and spoilers` |
-| Search | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:119 `<label class="vh" for="sq">Search every board</label>` |
-| Watch threads for new replies | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:196 `on type="button" id="watchBtn">Watch</button><a class="btn" id="toTop" href="#top">Top</a>` |
-| Threads update by themselves | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:196 `ton type="button" id="updNow">Update now</button><button type="button" id="watchBtn">Watch` |
-| Hide posts by words | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:130 `"panel" id="filterP"><summary>Hide posts with these words</summary>` |
-| Reports and moderators | Safety | have | every site of this kind offers it | void-live-deploy/boards/index.html:201 `ection id="review" hidden><h2>Reported and hidden posts (the owner)</h2><div id="revList">` |
-| A name or tripcode | Posting | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:116 `chive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on y` |
-| Text formatting (quotes, spoilers) | Posting | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:164 `<summary>Try the formatting</summary>` |
+| Many boards on different topics | Boards | have | every site of this kind offers it | void-live-deploy/boards/index.html:126 `el class="vh" for="sort">Sort the boards</label>` |
+| Start a thread with an image | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:130 `/boards/?all=1">Every board's new threads</a></p>` |
+| Reply, quoting other posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:223 `ton" class="go" id="replyOpen">Reply</button></div>` |
+| Post without an account | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:210 `<p>Posts are anonymous. Verse keeps a keyed hash of your connection for limits and ban` |
+| Images on posts | Posting | have | every site of this kind offers it | void-live-deploy/boards/index.html:155 `e="radio" name="nMode" value="images" checked> Pictures and text (a thread starts with a p` |
+| A catalogue view of threads | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:117 `o makes it. Every board has a catalog of its threads, index pages in bump order, threads t` |
+| Archived threads | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:117 `;&gt;quotes and greentext, an archive of old threads, search, tripcodes, sage and spoilers` |
+| Search | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:120 `<label class="vh" for="sq">Search every board</label>` |
+| Watch threads for new replies | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:197 `on type="button" id="watchBtn">Watch</button><a class="btn" id="toTop" href="#top">Top</a>` |
+| Threads update by themselves | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:197 `ton type="button" id="updNow">Update now</button><button type="button" id="watchBtn">Watch` |
+| Hide posts by words | Reading | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:131 `"panel" id="filterP"><summary>Hide posts with these words</summary>` |
+| Reports and moderators | Safety | have | every site of this kind offers it | void-live-deploy/boards/index.html:202 `ection id="review" hidden><h2>Reported and hidden posts (the owner)</h2><div id="revList">` |
+| A name or tripcode | Posting | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:117 `chive of old threads, search, tripcodes, sage and spoilers, and a thread watcher kept on y` |
+| Text formatting (quotes, spoilers) | Posting | have | studied by hand: 4chan offers this (https://www.4chan.org/) | void-live-deploy/boards/index.html:165 `<summary>Try the formatting</summary>` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://www.4chan.org/ | not compared yet |
