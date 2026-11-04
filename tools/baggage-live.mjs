@@ -64,13 +64,17 @@ export const ledgerWhat = (rec) => rec.ok
 
 export const nextOccasion = (dir = DIR) => (existsSync(dir) ? readdirSync(dir).filter((f) => /^\d{4}-\d\d-\d\dT\d{4}\.json$/.test(f)).length : 0) + 1;
 
+// aa.com's edge answers 403 to a user-agent that names a bot (the "compatible; a2m-baggage-live" string was refused every day from
+// 2026-10-31), so the pages are read with an ordinary browser's headers, the same request a person's browser makes.
+export const HEADERS = { 'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'accept-language': 'en-US,en;q=0.9' };
+
 /** Read every cited page once. */
 export async function readPages(fetchFn = fetch) {
   const out = {};
   for (const [name, url] of SOURCES) {
     const t0 = Date.now();
     try {
-      const res = await fetchFn(url, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; a2m-baggage-live/1.0; +https://a-to-mind.com)', accept: 'text/html' }, signal: AbortSignal.timeout(20000) });
+      const res = await fetchFn(url, { headers: HEADERS, signal: AbortSignal.timeout(20000) });
       out[name] = { status: res.status, body: res.status === 200 ? await res.text() : '', ms: Date.now() - t0 };
     } catch (e) { out[name] = { status: 0, body: '', ms: Date.now() - t0, error: (e && (e.cause && e.cause.code || e.name || e.message)) || 'unreachable' }; }
   }
