@@ -8,6 +8,7 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { plan, probeDue, growDue, willDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
+import { wantsOf } from './visitor-pass.mjs';
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
@@ -82,6 +83,20 @@ async function tick() {
     const target = ('heal:' + h.wf).slice(0, 40), ask = `Repair ${h.wf}: ${h.fails} failed runs in a row on main, the latest ${h.url}`.slice(0, 200);
     if (await act('heal ' + h.wf, async () => (await queue('POST', { ask, target })).status === 200)) done.healed.push(h.wf);
   }
+  // visitor asks the site tester just failed, filed once each as a visible fix (weight visit, above the tower). The tester writes the
+  // row; this tick, which holds the owner token, puts it on the queue. A tick with no token still plans everything else.
+  try {
+    const log = JSON.parse(fs.readFileSync('tools/site-test.log.json', 'utf8'));
+    const seen = new Set((state.visitorFiled || []).concat(jobs.map((j) => j.target)));
+    const last = [...log].reverse().find((x) => x && x.visitor && Array.isArray(x.visitor.failed));
+    const fresh = last && last.at && last.at !== state.visitorAt;
+    if (fresh && !DRY) {
+      for (const job of wantsOf(last.visitor.failed.map((f) => ({ ok: false, ask: f.ask, why: f.why })), [...seen])) {
+        if (await act('visit ' + job.target, async () => (await queue('POST', { ask: job.ask, target: job.target })).status === 200)) seen.add(job.target);
+      }
+      state.visitorAt = last.at; state.visitorFiled = [...seen].slice(-80);
+    }
+  } catch (e) { if (!/ENOENT/.test(String(e && e.code || e.message))) warn('visitor: ' + String(e.message || e).slice(0, 80)); }
   for (const s of p.start) {
     const ok = await act('start ' + s.id, async () => {
       if (s.claims) {
@@ -129,7 +144,7 @@ function finish(state, now, t) {
     setAside: ticks.reduce((n, x) => n + (x.setAside || 0), 0), probes: ticks.filter((x) => x.probe).length, errors: ticks.filter((x) => x.error).length };
   const broken = t ? Object.entries(t.wf).filter(([, s]) => s.exists && s.fails >= 3).map(([f, s]) => ({ wf: f, fails: s.fails, url: s.url })) : (state.broken || []);
   const out = { about: 'What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.',
-    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, ticks };
+    updated: at, last24h: day, broken, held: t ? t.held.slice(0, 20) : (state.held || []), coder: t ? (t.coder || null) : (state.coder || null), handed: state.handed || {}, visitorAt: state.visitorAt || null, visitorFiled: state.visitorFiled || [], ticks };
   if (!DRY) { fs.mkdirSync(STATE.replace(/\/[^/]*$/, '') || '.', { recursive: true }); fs.writeFileSync(STATE, JSON.stringify(out, null, 1) + '\n'); }
   const lines = [`### Conductor ${at}${DRY ? ' (dry run)' : ''}`, t ? `open jobs ${t.open}; started ${t.done.started.map((s) => `${s.kind}:${s.id}→${s.wf}`).join(', ') || 'none'}; requeued ${t.done.requeued.length}; set aside ${t.done.setAside.length}; repairs queued ${t.done.healed.join(', ') || 'none'}; probe asks ${t.done.probe ? 'started' : 'not due'}; Verse loop lap ${t.done.lap ? 'started' : 'not due'}; proving pass ${t.done.grow ? 'started (locks in asks Verse answers right, queues the ones it misses as fixes)' : 'not due'}` : 'no plan: ' + (warnings[0] || ''),
     t && t.held.length ? 'held: ' + [...new Set(t.held.map((h) => h.why))].slice(0, 6).join('; ') : '', broken.length ? 'broken loops: ' + broken.map((b) => `${b.wf} (${b.fails})`).join(', ') : 'no broken loops',

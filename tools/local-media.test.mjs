@@ -120,6 +120,8 @@ test('the stage ask: local radio and TV, near me or in a place; questions and lo
   assert.deepEqual(L.localAsk('what radio stations are near me'), { kind: 'radio', place: '' });
   assert.deepEqual(L.localAsk('local tv and radio'), { kind: 'both', place: '' });
   assert.deepEqual(L.localAsk('boston radio stations'), { kind: 'radio', place: 'boston' });
+  assert.deepEqual(L.localAsk('play music'), { kind: 'radio', place: '' });
+  assert.deepEqual(L.localAsk('play some music'), { kind: 'radio', place: '' });
   for (const n of skill.nearMisses) assert.equal(L.localAsk(n), null, n);
   for (const x of skill.examples) assert.ok(skill.match(x.toLowerCase(), x), x);
   assert.equal(skill.suite().ok, true);

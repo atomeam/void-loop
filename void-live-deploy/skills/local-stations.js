@@ -50,7 +50,7 @@ export default {
   run,
   suite() {
     const ok = localAsk('local radio').kind === 'radio' && localAsk('tv stations in denver').place === 'denver' && localAsk('local tv').kind === 'tv'
-      && localAsk('what radio stations are near me').place === '' && localAsk('boston radio stations').place === 'boston' && localAsk('what is a radio') === null && localAsk('radio button') === null;
+      && localAsk('what radio stations are near me').place === '' && localAsk('boston radio stations').place === 'boston' && localAsk('play music').kind === 'radio' && localAsk('what is a radio') === null && localAsk('radio button') === null;
     return { ok, got: 'match works' };
   },
 };
