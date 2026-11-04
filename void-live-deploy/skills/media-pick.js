@@ -113,7 +113,7 @@ async function runShows(api) {
 
 export default {
   name: 'media-pick',
-  examples: ['pick something to listen to with me', 'pick a song', 'pick something to watch', 'music card for Hey Jude by The Beatles', 'pick a tv show', 'show card for Severance (2022)', 'best sci-fi movies 2024'],
+  examples: ['pick something to listen to with me', 'pick a song', 'play a song', 'play some music', 'pick something to watch', 'music card for Hey Jude by The Beatles', 'pick a tv show', 'show card for Severance (2022)', 'best sci-fi movies 2024'],
   nearMisses: ['pick a color', 'film metadata for inception', 'what should we play', 'pick a movie to watch with me', 'how do I listen to my heart'],
   match(lower, text) { return !!pickKind(text) || !!musicCardAsk(text) || !!showCardAsk(text) || /best .* movies \d{4}/i.test(text); },
   run(text, api) {
@@ -124,6 +124,6 @@ export default {
   },
   suite() {
     const c = musicCardAsk('music card for Hey Jude by The Beatles');
-    return { ok: !!pickKind('pick a song') && pickKind('pick a tv show').kind === 'show' && !pickKind('pick a color') && c && c.artist === 'The Beatles' && cleanTitle('<b>x</b>') === 'b x b' };
+    return { ok: !!pickKind('pick a song') && pickKind('play a song').kind === 'music' && pickKind('play some music').kind === 'music' && pickKind('pick a tv show').kind === 'show' && !pickKind('pick a color') && c && c.artist === 'The Beatles' && cleanTitle('<b>x</b>') === 'b x b' };
   },
 };

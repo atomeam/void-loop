@@ -13,7 +13,7 @@ const NOUN = { movie: /^(?:movies?|films?)$/, music: /^(?:songs?|music|tracks?|t
 // KINDS above is what Verse may choose for you by itself (the day's rotation); NOUN also names kinds you can ask for by name, like shows.
 const VERB = { watch: 'movie', listen: 'music' };
 
-/** which kind a pick ask is for: a named kind ("pick a song"), a verb ("something to listen to"), or none named, then Verse chooses by the day (`day` = days since 1970).
+/** which kind a pick or generic play ask is for: a named kind ("pick a song"), a verb ("something to listen to"), or none named, then Verse chooses by the day (`day` = days since 1970).
  *  Returns { kind, chosen } (chosen: Verse picked the kind) or null when this is not a pick ask for a built kind. Pure. */
 export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
@@ -29,6 +29,9 @@ export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   // "good movies to watch tonight", "some good songs to listen to": a pick asked by what it is, with no verb in front
   m = t.match(new RegExp('^(?:some\\s+|any\\s+)?(?:good|great|best|fun|new)\\s+(\\w+)\\s+to\\s+(?:watch|stream|listen\\s+to|hear)' + on + tail + '$'));
   if (m) for (const k of Object.keys(NOUN)) if (NOUN[k].test(m[1])) return { kind: k, chosen: false };
+  // "play a song" is an ask for a recording, not for Verse to compose one or to search video: give it the same legal iTunes pick as "pick a song".
+  if (/^(?:please\s+)?(?:play|put\s+on)\s+(?:me\s+|us\s+)?(?:a\s+|an\s+|some\s+|any\s+|another\s+)?(?:random\s+|surprise\s+|official\s+)?(?:song|songs|track|tracks|tune|tunes|music)$/.test(t)) return { kind: 'music', chosen: false };
+  if (/^(?:please\s+)?(?:play|put\s+on)\s+(?:me\s+|us\s+)?(?:something|anything)\s*(?:to\s+)?(?:listen\s+to|hear)$/.test(t)) return { kind: 'music', chosen: false };
   if (new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?)?(?:something|anything)' + tail + '$').test(t) && /^(?:pick|choose|suggest|recommend|find|give)/.test(t)) {
     const ks = Object.keys(KINDS); return { kind: ks[((day % ks.length) + ks.length) % ks.length], chosen: true };
   }
