@@ -2,26 +2,14 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 4,
+  "unified": 5,
   "live": 71,
-  "salvageable": 443,
+  "salvageable": 442,
   "history": 24,
   "skipped": 3
  },
- "remaining": 443,
+ "remaining": 442,
  "top10": [
-  {
-   "id": "archive/repos/a-to-mind.com",
-   "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 83,
-   "why": "live code shares its name; check for overlap before migrating",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
   {
    "id": "archive/repos/the-void/src/components",
    "kind": "archived part",
@@ -125,6 +113,18 @@
    "target": "tool",
    "value": 33.4,
    "why": "live code shares its name; check for overlap before migrating",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "archive/repos/a-to-mind.com/drafts/023-agentic-personalization-with-hold-gate",
+   "kind": "archived part",
+   "status": "salvageable",
+   "target": "bot",
+   "value": 33,
+   "why": "",
    "into": null,
    "test": null,
    "pr": null,
@@ -673,12 +673,12 @@
   {
    "id": "archive/repos/a-to-mind.com",
    "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 83,
-   "why": "live code shares its name; check for overlap before migrating",
-   "into": null,
-   "test": null,
+   "status": "unified",
+   "target": "bot",
+   "value": 138.4,
+   "why": "",
+   "into": "/bots/ (header-grader)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },

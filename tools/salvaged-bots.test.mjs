@@ -31,3 +31,9 @@ test("wiki-links", () => {
   assert.equal(b.run("plain note"), "links: none · tags: none");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("header-grader", () => {
+  const b = bot("header-grader"); assert.ok(b && BOT("header-grader"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("content-security-policy: a\nstrict-transport-security: b\nx-content-type-options: c\nreferrer-policy: d\npermissions-policy: e\ncross-origin-opener-policy: f"), "6/6 · all present");
+  assert.ok(lineage(b), 'lineage is real');
+});
