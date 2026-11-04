@@ -5,7 +5,7 @@
 // sources, two dictionaries). Give it "input => answer" to check a claim, or just the input to check the bot's own answer.
 // Checks per checker: it agrees with the real bot on real inputs, it catches a planted wrong answer, and its road skips the bot.
 import { book } from './lang-pairs.js';
-import { APIS, read } from './api-bots.js';
+import { APIS, read, askAt } from './api-bots.js';
 import KEPT from './api-fixtures.js';
 const num = (s) => parseFloat(String(s).replace(/,/g, '')), close = (a, b, tol = 1e-6) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
 const bump = (s) => String(s).replace(/-?\d+(\.\d+)?(e[+-]?\d+)?/i, (n) => String(+n * 1.01 + 1));
@@ -66,7 +66,7 @@ const PAIRS = [
 const plant = (v) => (Array.isArray(v) ? v.map((x) => x + 1) : typeof v === 'number' ? v * 1.1 : 'not-' + v);
 function apiChecks() {
   return PAIRS.map((p) => ({ id: 'check-' + p.id, cat: 'checks', family: 'independent checks/two sources', job: p.job + ' (live)', from: ['bots/claim-checker', 'skills/witness-claims.js'], path: ['api-' + p.a, 'api-' + p.b], sample: p.sample,
-    run: async (q) => { const get = async (id, x) => { const r = await fetch(A(id).url(x)); if (!r.ok) throw new Error(A(id).name + ' answered ' + r.status); return r.json(); }; const qb = p.qb ? p.qb(q) : q, x = p.fa(await get(p.a, q), q), y = p.fb(await get(p.b, qb), q); return (p.same(x, y) ? 'agrees: ' : 'disagrees: ') + A(p.a).name + ' ' + JSON.stringify(x) + ', ' + A(p.b).name + ' ' + JSON.stringify(y); },
+    run: async (q) => { const get = async (id, x) => { const r = await fetch(askAt(A(id), x)); if (!r.ok) throw new Error(A(id).name + ' answered ' + r.status); return r.json(); }; const qb = p.qb ? p.qb(q) : q, x = p.fa(await get(p.a, q), q), y = p.fb(await get(p.b, qb), q); return (p.same(x, y) ? 'agrees: ' : 'disagrees: ') + A(p.a).name + ' ' + JSON.stringify(x) + ', ' + A(p.b).name + ' ' + JSON.stringify(y); },
     checks: [
       ['both kept real calls agree', () => p.same(pickKept(p.a, (j) => p.fa(j, p.sample)), pickKept(p.b, (j) => p.fb(j, p.sample)))],
       ['catches a planted wrong value', () => !p.same(plant(pickKept(p.a, (j) => p.fa(j, p.sample))), pickKept(p.b, (j) => p.fb(j, p.sample)))],

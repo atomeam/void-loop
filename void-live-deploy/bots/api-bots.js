@@ -3,7 +3,7 @@
 // the answer, url-decoder builds the address) and is credited on /credits/ (bots/credits.json). Its Run button calls the API live from the
 // browser. Checks, never its own first answer: a real call made by tools/api-bots.mjs is kept in bots/api-fixtures.js (date, address,
 // status, CORS header, answer); the bot must build that same address for its sample, read a right answer out of that real reply (a
-// known word for the sample, e.g. 33801 is Lakeland), be callable from a-to-mind.com (CORS) and need no key. An API that refused, moved
+// known word for the sample, e.g. 33801 is Lakeland), be callable from a-to-mind.com (CORS, or through Verse's own relay /api/apibot for an API that sends none) and need no key. An API that refused, moved
 // or blocks browsers fails, is not live, and becomes a fix job.
 import KEPT from './api-fixtures.js';
 const E = encodeURIComponent, ll = (q) => { const m = String(q).match(/(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)/); return m ? [m[1], m[2]] : ['28.04', '-81.95']; };
@@ -75,10 +75,16 @@ export const APIS = [
   { id: 'food-product', name: 'Open Food Facts', home: 'https://world.openfoodfacts.org/data', license: 'ODbL 1.0', job: 'A food product by barcode: name and brand', sample: '737628064502', url: (q) => 'https://world.openfoodfacts.org/api/v2/product/' + w(q).replace(/\D/g, '') + '.json?fields=product_name,brands', pick: (j) => j.product.product_name + ' (' + j.product.brands + ')', want: /Thai peanut noodle kit.*\(Simply Asia, Thai Kitchen\)/ },
   { id: 'star-wars', name: 'SWAPI', home: 'https://swapi.dev/', license: 'Free, no key (BSD code)', job: 'A Star Wars character by number', sample: '1', url: (q) => 'https://swapi.dev/api/people/' + (parseInt(q, 10) || 1) + '/', pick: (j) => j.name + ': ' + j.height + ' cm, born ' + j.birth_year, want: /^Luke Skywalker: 172 cm, born 19BBY$/ },
   { id: 'isro-craft', name: 'ISRO API', home: 'https://isro.vercel.app/', license: 'Free, no key (MIT code)', job: 'Indian Space Research Organisation spacecraft, counted and the first named', sample: 'isro', url: () => 'https://isro.vercel.app/api/spacecrafts', pick: (j) => j.spacecrafts.length + ' spacecraft, starting with ' + j.spacecrafts[0].name, want: /^\d+ spacecraft, starting with Aryabhata$/ },
-  { id: 'xkcd', name: 'xkcd JSON', home: 'https://xkcd.com/json.html', license: 'CC BY-NC 2.5', job: 'An xkcd comic by number: title and year', sample: '614', url: (q) => 'https://xkcd.com/' + (parseInt(q, 10) || 614) + '/info.0.json', pick: (j) => '#' + j.num + ' ' + j.safe_title + ' (' + j.year + ')', want: /^#614 Woodpecker \(2009\)$/ },
-  { id: 'fruit-nutrition', name: 'Fruityvice', home: 'https://www.fruityvice.com/', license: 'Free, no key', job: 'Calories and sugar in 100 g of a fruit', sample: 'banana', url: (q) => 'https://www.fruityvice.com/api/fruit/' + E(w(q).toLowerCase()), pick: (j) => j.name + ': ' + j.nutritions.calories + ' kcal, ' + j.nutritions.sugar + ' g sugar per 100 g', want: /^Banana: \d+ kcal, [\d.]+ g sugar per 100 g$/ },
+  { id: 'xkcd', via: 'verse', name: 'xkcd JSON', home: 'https://xkcd.com/json.html', license: 'CC BY-NC 2.5', job: 'An xkcd comic by number: title and year', sample: '614', url: (q) => 'https://xkcd.com/' + (parseInt(q, 10) || 614) + '/info.0.json', pick: (j) => '#' + j.num + ' ' + j.safe_title + ' (' + j.year + ')', want: /^#614 Woodpecker \(2009\)$/ },
+  { id: 'fruit-nutrition', via: 'verse', name: 'Fruityvice', home: 'https://www.fruityvice.com/', license: 'Free, no key', job: 'Calories and sugar in 100 g of a fruit', sample: 'banana', url: (q) => 'https://www.fruityvice.com/api/fruit/' + E(w(q).toLowerCase()), pick: (j) => j.name + ': ' + j.nutritions.calories + ' kcal, ' + j.nutritions.sugar + ' g sugar per 100 g', want: /^Banana: \d+ kcal, [\d.]+ g sugar per 100 g$/ },
 ];
 const corsOk = (c) => c === '*' || c === 'https://a-to-mind.com';
+// An API that answers well but sends no CORS header (a browser on a-to-mind.com may not read it) is marked via: 'verse': its Run goes through
+// Verse's own relay, /api/apibot (functions/api/apibot.js, same origin, closed list, the API's own host only), so CORS is not needed.
+/** where the browser asks: the API itself, or Verse's relay for a via-verse API. Pure. */
+export const askAt = (a, q) => (a.via === 'verse' ? '/api/apibot?id=' + E(a.id) + '&q=' + E(String(q)) : a.url(q));
+/** can a page on a-to-mind.com read this API's kept reply: CORS from the API, or a via-verse API whose relay allows its own host. Pure. */
+export const reachable = (a, k) => !!k && (a.via === 'verse' ? k.status === 200 && new URL(a.url(a.sample)).protocol === 'https:' : corsOk(k.cors));
 /** read a reply the way the bot does: JSON unless the API answers in plain text */
 export const read = (a, body, q) => a.pick(a.text ? body : typeof body === 'string' ? JSON.parse(body) : body, q);
 /** every API bot, same shape as bots/families.js variants */
@@ -86,12 +92,12 @@ export function apiBots() {
   return APIS.map((a) => {
     const k = KEPT[a.id];
     return { id: 'api-' + a.id, cat: 'free APIs', family: 'free APIs', job: a.job + ' (' + a.name + ', live)', from: ['bots/url-decoder', 'bots/json-fixer'], sample: a.sample, api: a.home,
-      run: async (q) => { const r = await fetch(a.url(q)); if (!r.ok) throw new Error(a.name + ' answered ' + r.status); return read(a, a.text ? await r.text() : await r.json(), q); },
+      run: async (q) => { const r = await fetch(askAt(a, q)); if (!r.ok) throw new Error(a.name + ' answered ' + r.status); return read(a, a.text ? await r.text() : await r.json(), q); },
       checks: [
         ['kept a real call', () => !!k && k.status === 200 && /^\d{4}-\d\d-\d\d/.test(k.at)],
         ['builds the same address', () => !!k && a.url(a.sample) === k.url],
         ['right answer from the real reply', () => !!k && a.want.test(String(read(a, k.body, a.sample)))],
-        ['works from a-to-mind.com (CORS)', () => !!k && corsOk(k.cors)],
+        [a.via === 'verse' ? 'works from a-to-mind.com (through Verse\'s relay, /api/apibot)' : 'works from a-to-mind.com (CORS)', () => reachable(a, k)],
         ['needs no key', () => !/[?&](api_?key|key|token|access_token|appid)=/i.test(a.url(a.sample))],
       ] };
   });
