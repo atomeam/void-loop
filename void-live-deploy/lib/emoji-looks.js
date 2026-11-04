@@ -85,6 +85,7 @@ export const LOOKS_CSS = '.lk-grid{list-style:none;margin:8px 0;padding:0;displa
   + '.lk-compact .lk-tile{padding:6px 4px;gap:2px}'
   + '.lk-tile:hover,.lk-tile:focus-visible{border-color:#8b7bff;outline:none}'
   + '.lk-tile img{display:block;object-fit:contain}'
+  + '.lk-tile[data-vendor="openmoji-line"] img{background:#f4f4f8;border-radius:10px;padding:3px;box-sizing:border-box}' // black lines stay visible on the dark page
   + '.lk-name{font-size:13px;font-weight:600}.lk-compact .lk-name{font-size:11px;font-weight:500}'
   + '.lk-where{font-size:11px;opacity:.7;line-height:1.3}'
   + '.lk-tile.lk-none img{display:none}.lk-tile.lk-none::before{content:"not in this set";font-size:11px;opacity:.6;height:36px;display:flex;align-items:center}'
