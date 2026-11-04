@@ -139,5 +139,6 @@
   {"check": "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not cou", "sha": "04e7b346c539ec37728cfbee24ddaa6802ab6474", "at": "2026-10-31T00:31:33Z"},
   {"check": "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
   {"check": "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not cou", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
-  {"check": "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"}
+  {"check": "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
+  {"check": "suite ran to the end", "sha": "74c3b3baec07d6820d32e2c5d52674a09c9b737d", "at": "2026-11-04T05:03:37Z"}
 ]

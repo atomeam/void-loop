@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BOTS, BOT, probe, compose } from '../void-live-deploy/bots/kit.js';
+import { families, check } from '../void-live-deploy/bots/families.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const site = resolve(root, 'void-live-deploy');
@@ -26,7 +27,7 @@ export function gate(grown = read(GROWN, [])) {
   for (const b of all) {
     const p = probe(b), bad = b.from.filter((r) => !lineageReal(r, ids));
     rows.push({ id: b.id, cat: b.cat, job: b.job, from: b.from, ...(b.pipe ? { pipe: b.pipe } : {}), probe: { in: b.probe[0], out: p.out.slice(0, 300) },
-      status: p.ok && !bad.length ? 'live' : 'failed', ...(bad.length ? { why: 'lineage not found: ' + bad.join(', ') } : !p.ok ? { why: 'probe failed' } : {}) });
+      status: !p.ok || bad.length ? 'failed' : b.pipe && !b.vetted ? 'held' : 'live', ...(bad.length ? { why: 'lineage not found: ' + bad.join(', ') } : !p.ok ? { why: 'probe failed' } : b.pipe && !b.vetted ? { why: 'held: needs the independent checks and a judge (next scheduled run)' } : {}) });
   }
   return rows;
 }
@@ -40,10 +41,10 @@ export function gaps() {
   return out;
 }
 
-async function askAI(prompt) {
+async function askAI(prompt, model = '@cf/meta/llama-3.1-8b-instruct') {
   const { CF_ACCOUNT_ID: acct, CF_API_TOKEN: tok } = process.env;
   if (!acct || !tok) return null;
-  const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/@cf/meta/llama-3.1-8b-instruct', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 900 }) });
+  const r = await fetch('https://api.cloudflare.com/client/v4/accounts/' + acct + '/ai/run/' + model, { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 900 }) });
   const j = await r.json().catch(() => ({})); return (j.result && j.result.response) || null;
 }
 
@@ -51,28 +52,46 @@ async function askAI(prompt) {
 export function parseProposal(text, live) {
   const m = String(text || '').match(/\[[\s\S]*\]/); if (!m) return [];
   let arr; try { arr = JSON.parse(m[0]); } catch (_) { return []; }
-  return arr.filter((x) => x && /^[a-z0-9-]{3,40}$/.test(x.id) && Array.isArray(x.pipe) && x.pipe.length >= 2 && x.pipe.every((id) => live.has(id)) && typeof x.job === 'string' && x.probe && typeof x.probe.in === 'string')
-    .map((x) => ({ id: x.id, cat: String(x.cat || 'mixed').slice(0, 20), job: x.job.slice(0, 120), from: x.pipe.map((id) => 'bots/' + id), pipe: x.pipe, probe: { in: x.probe.in, want: null } }));
+  return arr.filter((x) => x && /^[a-z0-9-]{3,40}$/.test(x.id) && Array.isArray(x.pipe) && x.pipe.length >= 2 && x.pipe.every((id) => live.has(id)) && typeof x.job === 'string' && x.probe && (typeof x.probe.in === 'string' || (Array.isArray(x.probe.in) && x.probe.in.every((v) => typeof v === 'string'))))
+    .map((x) => ({ id: x.id, cat: String(x.cat || 'mixed').slice(0, 20), job: x.job.slice(0, 120), from: x.pipe.map((id) => 'bots/' + id), pipe: x.pipe, probe: { in: [].concat(x.probe.in)[0], ins: [].concat(x.probe.in).slice(0, 3), want: null } }));
 }
 
-/** a grown bot's probe: the pipeline must run, answer something non-empty and different from its input; the answer it gives is then pinned */
-export function pin(spec) { try { const out = compose({ ...spec, probe: { in: spec.probe.in } }).run(spec.probe.in); if (!out || String(out) === spec.probe.in || /NaN|undefined/.test(out)) return null; return { ...spec, probe: { in: spec.probe.in, want: String(out) } }; } catch (_) { return null; } }
+/** a grown bot is kept only on independent checks, never its own first answer: it runs on three different real inputs with no error,
+ *  NaN or undefined; it answers the same input the same way twice; it does not answer every input the same (not a constant); and, when
+ *  a judge is given (a second model, not the one that proposed it), the judge says the answer does the job. Its pinned probe is then only
+ *  a regression guard. Without a judge a proposal is held, not live. */
+export async function vet(spec, inputs, judge) {
+  const bot = compose({ ...spec, probe: { in: spec.probe.in } }), outs = [];
+  for (const x of inputs) { let o; try { o = String(bot.run(x)); } catch (_) { return null; } if (!o.trim() || /NaN|undefined|Infinity/.test(o) || o === x) return null; if (String(bot.run(x)) !== o) return null; outs.push(o); }
+  if (new Set(outs).size < 2) return null;
+  if (!judge) return null;
+  for (let k = 0; k < inputs.length; k++) if (!(await judge(spec.job, inputs[k], outs[k]))) return null;
+  return { ...spec, probe: { in: inputs[0], want: outs[0] }, vetted: 'properties + judge' };
+}
+export function pin(spec) { try { const out = compose({ ...spec, probe: { in: spec.probe.in } }).run(spec.probe.in); return out ? { ...spec, probe: { in: spec.probe.in, want: String(out) } } : null; } catch (_) { return null; } }
 
 async function grow(n) {
   const rows = gate(), live = new Set(rows.filter((r) => r.status === 'live').map((r) => r.id)), grown = read(GROWN, []);
   const menu = rows.filter((r) => r.status === 'live').map((r) => r.id + ': ' + r.job).join('\n');
-  const text = await askAI('You build new bots for Verse by chaining existing bots. Existing bots:\n' + menu + '\n\nGaps people asked for:\n' + gaps().join('\n') + '\n\nPropose ' + n + ' NEW bots, each a pipeline of 2-3 existing bot ids whose output feeds the next. Answer only a JSON array: [{"id":"kebab-id","cat":"writing|code|math|money|media|research|ops|fun","job":"one line","pipe":["bot-a","bot-b"],"probe":{"in":"a realistic input for the first bot"}}]');
+  const text = await askAI('You build new bots for Verse by chaining existing bots. Existing bots:\n' + menu + '\n\nGaps people asked for:\n' + gaps().join('\n') + '\n\nPropose ' + n + ' NEW bots, each a pipeline of 2-3 existing bot ids whose output feeds the next. Answer only a JSON array: [{"id":"kebab-id","cat":"writing|code|math|money|media|research|ops|fun","job":"one line","pipe":["bot-a","bot-b"],"probe":{"in":["three","different realistic inputs","for the first bot"]}}]');
   if (!text) { console.log('grow: no Workers AI credentials (CF_ACCOUNT_ID, CF_API_TOKEN); nothing grown'); return 0; }
   const taken = new Set([...live, ...grown.map((g) => g.id)]); let added = 0;
-  for (const spec of parseProposal(text, live)) { if (taken.has(spec.id)) continue; const p = pin(spec); if (p) { grown.push(p); taken.add(p.id); added++; } }
+  const judge = async (job, input, output) => /^\s*yes/i.test((await askAI('A bot\'s job: ' + job + '\nInput: ' + input + '\nOutput: ' + output + '\nDoes the output correctly do the job for this input? Answer yes or no, then one reason.', '@cf/qwen/qwen1.5-14b-chat-awq')) || '');
+  for (const spec of parseProposal(text, live)) { if (taken.has(spec.id) || spec.probe.ins.length < 3) continue; const p = await vet(spec, spec.probe.ins, judge); if (p) { grown.push(p); taken.add(p.id); added++; } }
   writeFileSync(GROWN, '[\n' + grown.map((g) => JSON.stringify(g)).join(',\n') + '\n]\n'); return added;
 }
 
+/** every family variant's checks, summed per family */
+export function familyRows() {
+  const by = {};
+  for (const b of families()) { const r = check(b), f = (by[b.family] ||= { family: b.family, cat: b.cat, total: 0, live: 0, failed: [] }); f.total++; if (r.ok) f.live++; else f.failed.push(b.id + ': ' + r.fails.join(', ')); }
+  return Object.values(by);
+}
 function write() {
-  const rows = gate(), live = rows.filter((r) => r.status === 'live').length;
-  writeFileSync(REG, JSON.stringify({ about: 'Verse\'s bots. Live only when the probe passes on a real task (tools/bot-factory.mjs).', live, failed: rows.length - live, bots: rows }, null, 0).replace(/\},\{"id"/g, '},\n{"id"') + '\n');
-  console.log('bot-factory: ' + live + ' live, ' + (rows.length - live) + ' failed');
-  for (const r of rows.filter((x) => x.status !== 'live')) console.log('  failed ' + r.id + ': ' + r.why);
+  const rows = gate(), held = rows.filter((r) => r.status === 'held').length, fams = familyRows(), live = rows.filter((r) => r.status === 'live').length + fams.reduce((t, f) => t + f.live, 0), total = rows.length + fams.reduce((t, f) => t + f.total, 0);
+  writeFileSync(REG, JSON.stringify({ about: 'Verse\'s bots. Live only when the probe passes on a real task (tools/bot-factory.mjs).', live, failed: total - live - held, held, families: fams, bots: rows }, null, 0).replace(/\},\{"id"/g, '},\n{"id"') + '\n');
+  console.log('bot-factory: ' + live + ' live, ' + (total - live - held) + ' failed, ' + held + ' held (' + fams.length + ' families)');
+  for (const r of rows.filter((x) => x.status === 'failed')) console.log('  failed ' + r.id + ': ' + r.why);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
