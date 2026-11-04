@@ -1,119 +1,7 @@
 {
  "about": "Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [],
- "open": [
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse as a tool inside other AIs",
-   "from": "void.plan.md Next #11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "WebMCP origin trial",
-   "from": "void.plan.md Now #5",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything that passes through Verse is input",
-   "from": "void.plan.md Next #14"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Verse fixes any automation, as it is",
-   "from": "void.plan.md Next #13",
-   "waits": "the miss board"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Paid Verse",
-   "from": "void.plan.md Next #12",
-   "waits": "the owner"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Fix pages that bring buyers",
-   "from": "claude, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Shared Voids, live",
-   "from": "void.plan.md Next #10"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Tasks that keep running after you leave, with an approve card",
-   "from": "void.assimilate.md row 3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "One owner page: board, agent log and live checks",
-   "from": "void.assimilate.md row 9"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Everything built before becomes a skill",
-   "from": "void.plan.md Next #8"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a device, novelty jobs, moved-check"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks their own runner so a ship waits less",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for the card to settle before checking it",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the notepad",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
-   "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
-  }
- ],
+ "open": [],
  "games": [
   "tictactoe",
   "othello",
@@ -286,93 +174,86 @@
    "last": "2026-10-07"
   }
  ],
- "building": {
-  "at": "2026-10-18T08:58:46Z",
-  "date": "2026-10-15",
-  "by": "claude",
-  "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
- },
  "commits": [
   {
-   "at": "2026-11-04T07:37:04Z",
-   "subject": "autosalvage: unify archive/repos/HomeBase-/lib/kraken as the secret-sniffer bot (#2162)"
+   "at": "2026-11-04T17:32:33Z",
+   "subject": "the harness answers _redirects and the floor gates fail alone"
   },
   {
-   "at": "2026-11-04T07:36:56Z",
+   "at": "2026-11-04T17:30:05Z",
+   "subject": "Spotter: 4 check(s) healed with no revert after b6acc53b4cdc47a4b70caf01c0d590f506be5124 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-11-04T17:27:09Z",
+   "subject": "Outcome exam: timers 73.3"
+  },
+  {
+   "at": "2026-11-04T17:25:02Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T07:36:55Z",
-   "subject": "grow: paint the Verse hero before any script (#2177)"
+   "at": "2026-11-04T17:06:01Z",
+   "subject": "Music asks: play a song opens a licensed preview (#2215)"
   },
   {
-   "at": "2026-11-04T07:34:32Z",
-   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2194)"
+   "at": "2026-11-04T16:58:51Z",
+   "subject": "Mark business-clarify as shipped (main SHA 39769b632): enhanced extraction for idea-to-system delivery (#2217)"
   },
   {
-   "at": "2026-11-04T07:31:32Z",
-   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2192)"
+   "at": "2026-11-04T16:56:41Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T07:31:03Z",
-   "subject": "autosalvage: unify archive/repos/adventure-lab as the atari-playfield bot (#2161)"
+   "at": "2026-11-04T16:56:18Z",
+   "subject": "Merge gate: the load-bench test sits out the gate (#2218)"
   },
   {
-   "at": "2026-11-04T07:29:06Z",
-   "subject": "Handoff: the agent ask match is in review"
+   "at": "2026-11-04T16:39:29Z",
+   "subject": "Paid price asks: open the services card from the services skill when it is not already loaded (#2214)"
   },
   {
-   "at": "2026-11-04T07:26:29Z",
-   "subject": "A conductor tick no longer holds a runner for hours (#2190)"
+   "at": "2026-11-04T16:12:15Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T07:24:22Z",
-   "subject": "autosalvage: unify archive/repos/a-to-mind.com as the header-grader bot (#2160)"
+   "at": "2026-11-04T15:46:18Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-04T07:19:32Z",
-   "subject": "autosalvage: unify archive/repos/the-void/src/lib as the wiki-links bot (#2159)"
+   "at": "2026-11-04T15:46:17Z",
+   "subject": "Verse loop: nightly (#2213)"
   },
   {
-   "at": "2026-11-04T07:18:52Z",
-   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
+   "at": "2026-11-04T15:44:33Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T07:16:45Z",
-   "subject": "Verse agent: keep the ask check beside the answer pipeline"
+   "at": "2026-11-04T15:41:17Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-11-04T07:14:21Z",
-   "subject": "Verse agent: send open asks to the answer pipeline"
+   "at": "2026-11-04T15:40:05Z",
+   "subject": "Music asks: play a song opens a licensed preview"
   },
   {
-   "at": "2026-11-04T07:14:02Z",
+   "at": "2026-11-04T15:27:56Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-04T15:20:09Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T07:13:24Z",
-   "subject": "Hourly bot factory, and cancel a superseded heavy run (#2186)"
+   "at": "2026-11-04T15:18:20Z",
+   "subject": "Tower gate: every floor measured against its live site (3 slices)"
   },
   {
-   "at": "2026-11-04T07:13:16Z",
-   "subject": "api-bots: mark the hop-by-hop redirect loop and kept http:// reply text for Verse review (#2188)"
+   "at": "2026-11-04T15:16:40Z",
+   "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T07:12:47Z",
-   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
-  },
-  {
-   "at": "2026-11-04T07:07:55Z",
-   "subject": "Verse loop: task, Queue job want-exam-images (gap: want-exam-images): Raise th (#2183)"
-  },
-  {
-   "at": "2026-11-04T07:07:33Z",
+   "at": "2026-11-04T15:10:19Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T07:05:51Z",
-   "subject": "Bot factory: 68 free API bots (no key), each checked against a kept real call; 2 that block browsers become fix jobs (#2185)"
   }
  ],
  "builders": {
@@ -554,8 +435,8 @@
   }
  ],
  "visible": {
-  "day": 53,
-  "week": 569
+  "day": 68,
+  "week": 584
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
@@ -607,8 +488,8 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 55 (337 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-03T12:49Z",
+  "line": "People this week: 78 (253 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-11-04T13:00Z",
   "source": "verse"
  },
  "tower": {
