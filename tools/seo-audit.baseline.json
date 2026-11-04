@@ -1,8 +1,9 @@
 {
  "pages": 507,
- "defects": 167,
+ "defects": 169,
  "notes": 189,
  "byKind": {
+  "h1": 2,
   "duplicate": 166,
   "broken": 1
  },
