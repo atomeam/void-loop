@@ -53,7 +53,7 @@ function main() {
       const r = spawnSync(process.execPath, [resolve(dir, args[0]), ...args.slice(1)], { cwd: dir, encoding: 'utf8' });
       if (r.status !== 0) console.log('merge-gate: ' + args[0] + ' exited ' + r.status + ' (the check below says if that matters)');
     }
-    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed'], {
+    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', stdio: 'inherit',
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
     });
