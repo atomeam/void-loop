@@ -71,6 +71,7 @@
         <div><dt>Codepoint</dt><dd><span id="cp">U+1F600</span><button type="button" data-copy-from="cp" aria-label="Copy the codepoint">Copy</button></dd></div>
         <div><dt>Shortcode</dt><dd><span id="sc">:grinning:</span><button type="button" data-copy-from="sc" aria-label="Copy the shortcode">Copy</button></dd></div>
         <div><dt>HTML</dt><dd><span id="ent">&amp;#x1F600;</span><button type="button" data-copy-from="ent" aria-label="Copy the HTML entity">Copy</button></dd></div>
+        <div><dt>Also called</dt><dd id="aka">grinning</dd></div>
         <div><dt>Group</dt><dd id="cat">Smileys &amp; Emotion</dd></div>
         <div><dt>Emoji version</dt><dd id="ver">1.0</dd></div>
       </dl>
@@ -106,6 +107,7 @@
     const name = (rec && rec.n) || 'this emoji';
     $('glyph').textContent = c; $('copyglyph').textContent = c; $('ename').textContent = name;
     $('cp').textContent = codepointOf(c); $('sc').textContent = shortcodeOf(rec) || '(none)'; $('ent').textContent = entOf(c);
+    $('aka').textContent = rec ? ([...new Set(rec.sn.map((x) => String(x).replace(/_/g, ' ')))].filter((x) => x && x !== rec.n).join(', ') || '(no other name)') : '…';
     $('cat').textContent = rec ? rec.cat + (rec.sub ? ' · ' + rec.sub.replace(/-/g, ' ') : '') : '…'; $('ver').textContent = rec && rec.v ? rec.v : '…';
     $('gridhead').textContent = 'How ' + c + ' ' + (rec ? rec.n : '') + ' looks on ' + (VENDORS.length + 1) + ' platforms: Apple iPhone, Android, Windows and more';
     $('grid').innerHTML = gridHtml(c, { name: rec ? rec.n : '' }); // void-review: ok (gridHtml escapes every value)
