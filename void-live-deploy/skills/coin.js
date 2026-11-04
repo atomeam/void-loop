@@ -97,7 +97,7 @@ function worthButton(el, getImage, note) {
 /** the coin page on an ask, as a plain query the card frame takes (lib/card-frame.js pageOfCard), else the page itself. Pure. */
 export function pageOfFlip(text) {
   const q = encodeURIComponent(String(text || '').trim().replace(/\s+/g, ' '));
-  return /^[A-Za-z0-9_.%-]{1,180}$/.test(q) ? '/flip/?q=' + q : '/flip/';
+  return /^[A-Za-z0-9_.%-]{1,180}$/.test(q) ? '/random/coin/?q=' + q : '/random/coin/';
 }
 
 function run(text, api) {
@@ -195,9 +195,9 @@ function flipCard(text, api, ask, look, keepEl) {
       + '<div class="coin-row"></div><div class="coin-word" aria-live="polite"></div><div class="coin-tally"><span class="coin-tally-name">Flip counter</span><span class="coin-tally-n"></span></div><div class="coin-everyone" hidden></div>'
       + '<div class="coin-tools"><button type="button" class="coin-again">Flip again</button><button type="button" class="coin-sound"></button><button type="button" class="coin-reset">Reset tally</button></div>'
       + '<div class="src">' + (look ? esc(look.src) : (ask.p === 0.5 ? 'A fair flip' : 'Weighted ' + Math.round(ask.p * 100) + '% heads') + ' from this device’s secure random numbers, no network') + '</div>'
-      // on the stage, the way to the coin's own page (/flip/) and what it adds there; the page itself needs no link to itself
+      // on the stage, the way to the coin's own page (/random/coin/) and what it adds there; the page itself needs no link to itself
       + '<div class="src">Tap the coin to flip it again — the animation is drawn live, and the result is shown under the coin.</div>'
-      + (typeof location !== 'undefined' && /^\/flip\//.test(location.pathname) ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/flip/" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
+      + (typeof location !== 'undefined' && /^\/flip\//.test(location.pathname) ? '' : '<p class="coin-full" style="text-align:center;font-size:13px;margin:8px 0"><a href="/random/coin/" style="color:inherit">The full coin flip page: Space or Enter flips again, a Share button, and it opens offline after one visit</a></p>');
   });
   if (!el || !el.querySelector) return 'coin';
   const row = el.querySelector('.coin-row'), word = el.querySelector('.coin-word'), tally = el.querySelector('.coin-tally'), snd = el.querySelector('.coin-sound');

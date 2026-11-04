@@ -9,7 +9,7 @@ test('one row per site, at its furthest outcome, with the ease it was picked by 
     selfSites: [{ url: 'https://convertlive.com/', page: '/convert/unit-converter/', family: 'unit converter', added: '2026-10-26T07:26:14Z' }],
     state: { sites: { 'convertlive.com': { at: '2026-10-26T07:26:26Z', outcome: 'surpassed', page: '/convert/unit-converter/' }, 'vcalc.com': { at: '2026-10-26T07:10:49Z', outcome: 'gone', why: 'answered 403' },
       'easy.example': { at: '2026-11-03T10:00:00Z', outcome: 'no-family', ease: { score: 42, place: 1, why: '12 controls, 80 KB' } } } },
-    floors: [{ site: 'pw.example', url: 'https://www.pw.example/', page: '/password-strength/', beaten: true, n: 15, m: 15, learned: 'nothing leaves the device', at: '2026-10-30T05:29:02Z' }, { site: 'no.example', beaten: false }],
+    floors: [{ site: 'pw.example', url: 'https://www.pw.example/', page: '/password/strength/', beaten: true, n: 15, m: 15, learned: 'nothing leaves the device', at: '2026-10-30T05:29:02Z' }, { site: 'no.example', beaten: false }],
     backfill: { hosts: { 'codeshack.io': { at: '2026-10-26T03:18:08Z', sha: 'faa6aacdd', file: 'void-live-deploy/lib/tower.js' } } },
   });
   assert.deepEqual(rows.map((r) => r.site), ['easy.example', 'pw.example', 'convertlive.com', 'vcalc.com', 'codeshack.io'], 'newest first; the lane leader "pdf" and an unbeaten floor are not sites');

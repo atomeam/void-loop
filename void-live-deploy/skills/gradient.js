@@ -8,7 +8,7 @@ import { askGradient, css, pack, rule, textContrast } from '../lib/gradient.js';
 
 function run(text, api) {
   const { showPage, esc } = api, q = askGradient(text), g = q && q.g; if (!g) return null;
-  const c = css(g), href = '/gradient/#' + pack(g), tc = textContrast(g);
+  const c = css(g), href = '/color/gradient/#' + pack(g), tc = textContrast(g);
   showPage((el) => {
     el.dataset.cardKind = 'CSS gradient';
     el.innerHTML = '<h2>CSS gradient</h2>' // void-review: ok (escaped)

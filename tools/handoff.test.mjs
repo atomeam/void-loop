@@ -16,8 +16,8 @@ test('wheel to prizes: plain names arrive as value 1, weight 1 (nothing NaN); wh
 
 test('prizes to wheel: the :value:weight comes off; the wheel opens with the bare names', () => {
   const labels = labelsOf(parseSlices('Grand prize:500:1\nTote bag:10:39'));
-  const href = wheelLink(labels); assert.ok(href.startsWith('/wheel/#'));
-  assert.deepEqual(open(href.slice('/wheel/#'.length)), [{ label: 'Grand prize', weight: 1 }, { label: 'Tote bag', weight: 1 }]);
+  const href = wheelLink(labels); assert.ok(href.startsWith('/random/wheel/#'));
+  assert.deepEqual(open(href.slice('/random/wheel/#'.length)), [{ label: 'Grand prize', weight: 1 }, { label: 'Tote bag', weight: 1 }]);
   assert.deepEqual(labelsFrom('Grand prize:500:1\nAnn *2\nann'), ['Grand prize', 'Ann'], 'suffixes off, each name once');
   assert.equal(wheelLink([]), null);
 });
@@ -33,11 +33,11 @@ test('to tournaments: the labels become a roster on 0 points under Game night', 
 
 test('localStorage verse_handoff: written only by put, read back checked; junk and unknown pages ignored', () => {
   const s = mem(); assert.equal(get(s), null);
-  assert.equal(KEY, 'verse_handoff'); assert.deepEqual(RING.map((r) => r[0]), ['/wheel/', '/prizes/', '/tournaments/', '/random/', '/generators/']);
-  put('list', 'wheel entries', ['Ann', 'Bob'], '/wheel/', s);
-  assert.deepEqual(JSON.parse(s.getItem(KEY)), { type: 'list', label: 'wheel entries', data: ['Ann', 'Bob'], fromPage: '/wheel/' });
-  const h = get(s); assert.deepEqual(h, { type: 'list', label: 'wheel entries', data: ['Ann', 'Bob'], fromPage: '/wheel/' }); assert.equal(textOfHandoff(h), 'Ann\nBob');
+  assert.equal(KEY, 'verse_handoff'); assert.deepEqual(RING.map((r) => r[0]), ['/random/wheel/', '/prizes/', '/tournaments/', '/random/', '/generators/']);
+  put('list', 'wheel entries', ['Ann', 'Bob'], '/random/wheel/', s);
+  assert.deepEqual(JSON.parse(s.getItem(KEY)), { type: 'list', label: 'wheel entries', data: ['Ann', 'Bob'], fromPage: '/random/wheel/' });
+  const h = get(s); assert.deepEqual(h, { type: 'list', label: 'wheel entries', data: ['Ann', 'Bob'], fromPage: '/random/wheel/' }); assert.equal(textOfHandoff(h), 'Ann\nBob');
   s.setItem(KEY, '{bad'); assert.equal(get(s), null);
   s.setItem(KEY, JSON.stringify({ type: 'list', label: 'x', data: ['a'], fromPage: 'https://evil.example/' })); assert.equal(get(s), null);
-  s.setItem(KEY, JSON.stringify({ type: 'list', label: 'x', data: [], fromPage: '/wheel/' })); assert.equal(get(s), null);
+  s.setItem(KEY, JSON.stringify({ type: 'list', label: 'x', data: [], fromPage: '/random/wheel/' })); assert.equal(get(s), null);
 });

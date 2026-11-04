@@ -9,7 +9,7 @@
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Binary, decimal, hex and octal converter · Verse">
 <meta property="og:description" content="Type a number in binary, octal, decimal or hex and see it in all four at once, exact at any size, with its signed reading and its text. No ads, nothing sent anywhere.">
-<meta property="og:url" content="https://a-to-mind.com/base-converter/">
+<meta property="og:url" content="https://a-to-mind.com/base64/bases/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -34,8 +34,8 @@
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
-<link rel="canonical" href="https://a-to-mind.com/base-converter/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Binary, decimal, hex and octal converter","url":"https://a-to-mind.com/base-converter/","description":"Type a number in binary, octal, decimal, hex or any base up to 36 and see it in all of them at once, exact at any size, fractions too (a repeating part in brackets), with its signed reading, its text and the working step by step.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"binary to decimal, hex to binary, decimal to binary, hex to decimal, octal converter, binary translator, number base converter","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/base-converter/?v={value}&b={base}"},"value-input":"required name=value"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Binary, decimal, hex and octal converter","item":"https://a-to-mind.com/base-converter/"}]}]}</script>
+<link rel="canonical" href="https://a-to-mind.com/base64/bases/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Binary, decimal, hex and octal converter","url":"https://a-to-mind.com/base64/bases/","description":"Type a number in binary, octal, decimal, hex or any base up to 36 and see it in all of them at once, exact at any size, fractions too (a repeating part in brackets), with its signed reading, its text and the working step by step.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"binary to decimal, hex to binary, decimal to binary, hex to decimal, octal converter, binary translator, number base converter","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"},"potentialAction":{"@type":"ViewAction","target":{"@type":"EntryPoint","urlTemplate":"https://a-to-mind.com/base64/bases/?v={value}&b={base}"},"value-input":"required name=value"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"Binary, decimal, hex and octal converter","item":"https://a-to-mind.com/base64/bases/"}]}]}</script>
 <!-- /seo -->
 <script src="/visit.js" defer></script>
 
@@ -50,8 +50,12 @@
 <link rel="modulepreload" href="/lib/local-ask.js">
 <link rel="modulepreload" href="/lib/baseconv.js">
 <!-- /modulepreload -->
+<meta name="verse-handoff" content="in: number, text; out: number, text">
 </head>
 <body>
+<!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
+<nav class="v-modes" aria-label="Encode modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/base64/">Base64</a><a href="/base64/bases/" aria-current="page">Number bases</a></nav>
+
 <main>
   <h1>Convert numbers: binary, octal, decimal, hex and any base</h1>
   <p class="lead" id="lead">Turn a number into binary, hex or any base and back: for colours, file sizes, permissions or homework. Type in any box; the others follow.</p>
@@ -67,7 +71,7 @@
   <section aria-labelledby="wh"><h2 id="wh">How it is worked out</h2><div id="steps"><p class="hint">Type a number above to see each step, a fraction too (0.1, ff.8, 10.101).</p></div></section>
   <details><summary>Hex digits in binary and decimal</summary><table class="map"><thead><tr><th>Hex</th><th>Binary</th><th>Decimal</th></tr></thead><tbody><tr><td>0</td><td>0000</td><td>0</td></tr><tr><td>1</td><td>0001</td><td>1</td></tr><tr><td>2</td><td>0010</td><td>2</td></tr><tr><td>3</td><td>0011</td><td>3</td></tr><tr><td>4</td><td>0100</td><td>4</td></tr><tr><td>5</td><td>0101</td><td>5</td></tr><tr><td>6</td><td>0110</td><td>6</td></tr><tr><td>7</td><td>0111</td><td>7</td></tr><tr><td>8</td><td>1000</td><td>8</td></tr><tr><td>9</td><td>1001</td><td>9</td></tr><tr><td>A</td><td>1010</td><td>10</td></tr><tr><td>B</td><td>1011</td><td>11</td></tr><tr><td>C</td><td>1100</td><td>12</td></tr><tr><td>D</td><td>1101</td><td>13</td></tr><tr><td>E</td><td>1110</td><td>14</td></tr><tr><td>F</td><td>1111</td><td>15</td></tr></tbody></table><p class="hint">Each hex digit is four bits, each octal digit three, so hex to binary is one digit at a time.</p></details>
   <!-- asks -->
-<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/base-converter/?v=ff&amp;b=16">ff in hex</a><a href="/base-converter/?v=1010&amp;b=2">1010 in binary</a><a href="/base-converter/?v=255&amp;b=10">255 in decimal</a><a href="/base-converter/?v=777&amp;b=8">777 in octal</a><a href="/base-converter/?v=deadbeef&amp;b=16">deadbeef in hex</a><a href="/base-converter/?v=11111111&amp;b=2">11111111 in binary</a><a href="/base-converter/?v=1024&amp;b=10">1024 in decimal</a></nav>
+<nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/base64/bases/?v=ff&amp;b=16">ff in hex</a><a href="/base64/bases/?v=1010&amp;b=2">1010 in binary</a><a href="/base64/bases/?v=255&amp;b=10">255 in decimal</a><a href="/base64/bases/?v=777&amp;b=8">777 in octal</a><a href="/base64/bases/?v=deadbeef&amp;b=16">deadbeef in hex</a><a href="/base64/bases/?v=11111111&amp;b=2">11111111 in binary</a><a href="/base64/bases/?v=1024&amp;b=10">1024 in decimal</a></nav>
 <!-- /asks -->
 <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/convert/">Unit converter</a> <a href="/color/">Colour codes</a> <a href="/random/">Random number</a> <a href="/calculator/">Calculator</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Type in any box; the others follow. Exact at any size (up to 4,096 digits), never rounded. A <code>0x</code>, <code>0b</code> or <code>0o</code> in front is understood, spaces and commas are ignored. Everything is worked out on this device; nothing is sent. <a href="/">Ask Verse anything</a></footer>

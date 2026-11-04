@@ -9,7 +9,7 @@
 // them: the stage, Verse's own pages (the store, its films and its podcast, the privacy policy and the boards' rules among them), articles, the Versus page, and the services pages (/code-review/ and its family, every /fix/ page), which
 // link to each other instead. A file the sitemap lists (/llms.txt) is not a page and has no row either.
 export const NOT_TOOLS = Object.freeze(['/', '/privacy/', '/boards/rules/', '/members/', '/store/', '/store/receipt/', '/calendar/embed/', '/conquered/', '/history/', '/handoff.html',
-  '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/full-stack-audit/', '/keep-it-running/', '/one-time-fix/', '/films/', '/podcast/']);
+  '/compare/', '/cheat-codes/', '/code-review/', '/first-automation-setup/', '/fix/audit/', '/keep-it-running/', '/fix/one-time/', '/films/', '/podcast/']);
 export const KINDS = Object.freeze({
   status: 'does not open', script: 'script error', request: 'a file or API it needs fails', empty: 'shows nothing', light: 'light page (off design)',
   link: 'dead link', wording: 'wording', unwired: 'not wired into the tools', unfinished: 'looks unfinished',

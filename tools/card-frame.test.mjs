@@ -143,7 +143,7 @@ test('the full-page link keeps what the card shows when the card links to its ow
   assert.equal(ownPageOf('translate', ['/translate/?q=<b>']), '', 'a query that is not plain is not carried');
   assert.equal(ownPageOf('nope', ['/translate/?q=a']), '', 'a skill with no page has none');
   assert.equal(ownPageOf('stl-check', ['/stl/', '/stl/?sample=hole']), '', 'a card that links to its plain page too keeps it: the sample is an extra');
-  assert.equal(ownPageOf('baseconv', ['/base-converter/?b=16&v=ff']), '/base-converter/?b=16&v=ff');
+  assert.equal(ownPageOf('baseconv', ['/base64/bases/?b=16&v=ff']), '/base64/bases/?b=16&v=ff');
 });
 
 test('a unit answer opens the unit converter on that ask, not the plain calculator (2026-10-30: "convert 5 miles to km" linked to an empty /calculator/)', async () => {

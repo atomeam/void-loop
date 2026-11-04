@@ -26,13 +26,13 @@ test('ff hex to binary: grouped answer, all four bases, 8 bits, signed -1, the l
   assert.equal(out(h), '1111 1111');
   assert.deepEqual(rows(h), ['Binary=1111 1111', 'Octal=377', 'Decimal=255', 'Hex=FF']);
   assert.ok(h.includes('>8 bits; as a signed 8-bit number: -1.</p>'), h);
-  assert.ok(h.includes('<a class="bc-open" href="/base-converter/?b=16&amp;v=ff">Open the converter</a>'));
+  assert.ok(h.includes('<a class="bc-open" href="/base64/bases/?b=16&amp;v=ff">Open the converter</a>'));
 });
 test('0xff in decimal reads the prefix as hex; what is 1010 in decimal reads 0s and 1s as binary (decimal to decimal answers nothing)', () => {
   let h = card('0xff in decimal').h; assert.ok(h.startsWith('<h2>ff hex to decimal</h2>')); assert.equal(out(h), '255');
   h = card('what is 1010 in decimal').h; assert.ok(h.startsWith('<h2>1010 binary to decimal</h2>')); assert.equal(out(h), '10');
   assert.deepEqual(rows(h), ['Binary=1010', 'Octal=12', 'Decimal=10', 'Hex=0A']);
-  assert.ok(h.includes('href="/base-converter/?b=2&amp;v=1010"'));
+  assert.ok(h.includes('href="/base64/bases/?b=2&amp;v=1010"'));
   assert.equal(out(card('what is 101010 in decimal').h), '42');
   assert.equal(out(card('what is 1020 in decimal').h), '1,020', 'a 2 in it: decimal, as before');
   assert.equal(out(card('42 in binary').h), '0010 1010', 'to binary: the decimal number, as before');
@@ -44,6 +44,6 @@ test('4142 hex to decimal: its text reading, escaped quotes', () => {
 });
 test('a digit the base does not have: the reason and the plain converter link, no table', () => {
   const h = card('12 binary to hex').h;
-  assert.equal(h, '<h2>Base converter</h2><p>&quot;12&quot; is not a base 2 number: digits 0 to 1 only.</p><p><a href="/base-converter/">Open the converter</a></p>');
-  assert.equal(card('hello').h, '<h2>Base converter</h2><p>I could not read that.</p><p><a href="/base-converter/">Open the converter</a></p>');
+  assert.equal(h, '<h2>Base converter</h2><p>&quot;12&quot; is not a base 2 number: digits 0 to 1 only.</p><p><a href="/base64/bases/">Open the converter</a></p>');
+  assert.equal(card('hello').h, '<h2>Base converter</h2><p>I could not read that.</p><p><a href="/base64/bases/">Open the converter</a></p>');
 });
