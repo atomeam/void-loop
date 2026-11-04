@@ -1,12 +1,12 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-04T08:53:30.820Z",
+ "updated": "2026-11-04T11:28:52.534Z",
  "last24h": {
   "ticks": 139,
-  "started": 90,
+  "started": 99,
   "requeued": 1,
   "setAside": 0,
-  "probes": 7,
+  "probes": 10,
   "errors": 0
  },
  "broken": [],
@@ -95,7 +95,7 @@
  "coder": {
   "model": "@cf/google/gemma-4-26b-a4b-it",
   "hour": {
-   "used": 22,
+   "used": 0,
    "cap": 90
   },
   "day": {
@@ -148,362 +148,101 @@
   "mw1tha5c": 1793779934753,
   "mw1uo98g": 1793781172925,
   "mw1uo9t9": 1793781791754,
-  "mw1uoadj": 1793782410820
+  "mw1uoadj": 1793782410820,
+  "mw1uoaya": 1793783030973,
+  "mw1wvv8q": 1793784888772,
+  "mw1wvvpq": 1793786133618,
+  "mw1wvw6b": 1793786755342,
+  "mw1wvwna": 1793787378823,
+  "mw1z429z": 1793788626529,
+  "mw1z42ua": 1793789249293,
+  "mw1z43dg": 1793789869696,
+  "mw1z43va": 1793790492448
  },
- "visitorAt": "2026-11-04T08:16:04Z",
+ "visitorAt": "2026-11-04T09:44:49Z",
  "visitorFiled": [
-  "flake:growth-touching-a-branch-says-what",
-  "flake:chess-while-void-thinks-the-line-u",
-  "miss:i-can-t-sleep",
-  "miss:tell-me-about-zorbleflux",
-  "miss:films",
-  "flake:figures-together-with-no-figure-it",
-  "flake:paste-any-size-and-read-aloud-a-3",
-  "flake:pdf-card-ask-questions-about-a-pdf",
-  "flake:four-in-a-row-on-a-phone-the-3d-fr",
-  "probe:best-way-to-get-from-sf-to-oakland",
-  "probe:why-does-my-feed-only-show-me-poli",
-  "review:calendar",
-  "store-gap:answer-bleed-isnt",
-  "flake:3d-counter-make-a-counter-puts-a-c",
-  "flake:appraise-what-is-this-coin-worth-o",
-  "flake:label-label-the-clock-kitchen-and",
-  "flake:quiz-card-asks-the-gear-card-s-own",
-  "flake:check-timeout-no-check-finished-wi",
-  "novelty:attention-74",
-  "flake:fly-stars-move-after-d-is-held-in",
-  "flake:void-seal-every-card-s-art-box-car",
-  "flake:stage-pack-h-nothing-echoes-until",
-  "miss:what-countries-border-germany",
-  "miss:chance-of-rain-today",
-  "gap:se-23378",
-  "miss:tell-me-everything-about-the-deep-",
-  "flake:refusal-object-every-i-cannot-name",
-  "feature:seventhsanctum-com-4059e6a8",
-  "feature:rangen-co-uk-0af3da6b",
-  "feature:tools-dungeonmasters-9427c1d8",
-  "flake:shared-verse-a-clock-summoned-in-o",
-  "flake:weather-on-a-phone-the-hours-sit-s",
-  "flake:voice-verse-says-what-it-thinks-of",
-  "versus:bouldercolorado.gov",
-  "versus:hyperunit.xyz",
-  "feature:yunite-xyz-b0979f7e",
-  "feature:yunite-xyz-c905f5ad",
-  "feature:yunite-xyz-1f220f16",
-  "versus:besslerwheel.com",
-  "versus:freefonts.co",
-  "feature:calculator-net-f655db8f",
-  "feature:convertlive-com-e9d52132",
-  "feature:convertlive-com-f78edf99",
-  "versus:colorjigsaw.com",
-  "store-gap:receipt",
-  "flake:the-book-asked-by-verse-show-the-r",
-  "versus:kingdraw.com",
-  "miss:routines-from-others",
-  "versus:getconverter.org:wider use",
-  "versus:getconverter.org:journey: do the ",
-  "versus:getconverter.org:journey: share t",
-  "versus:randomarea.com",
-  "versus:email-checker.net",
-  "versus:copyemojio.com",
-  "heal:grow-self.yml",
-  "route:dates-sky-tonight-nyc",
-  "versus:kingdraw.cn",
-  "review:2105",
-  "review:2109",
-  "review:2112",
-  "review:2120",
-  "visit:what-time-is-it",
-  "review:2126",
-  "review:2128",
-  "review:2130",
-  "review:2125",
-  "review:2129",
-  "heal:want-guard-hourly-main-green",
-  "review:2131",
-  "review:2132",
-  "review:2148",
-  "review:2147",
-  "gap:want-exam-timers",
-  "feature:want-revenue-2026-11",
-  "feature:want-idea-298bf37d16",
-  "will:overhaul-surface-games-persona-playtest-",
-  "probe:total-with-20-vat-on-150",
-  "probe:split-uber-bill-3-ways-42-50",
-  "probe:how-much-is-5000-in-binance-btc",
-  "probe:stock-price-nvda"
+  "feature:podchaser-com-c86b8e98",
+  "versus:nameunit.com",
+  "feature:amazon-com-00694bb6",
+  "feature:amazon-com-10408b2b",
+  "feature:amazon-com-292bb8bb",
+  "versus:heycolor.com",
+  "versus:yunite.xyz",
+  "versus:hexonet.net",
+  "feature:justflipacoin-com-c1be037d",
+  "feature:base64encode-org-80e5908f",
+  "feature:companiesmarketcap-c-b38ba761",
+  "gap:se-221848",
+  "miss:preview-my-memory",
+  "miss:show-the-reasoning-behind-your-wan",
+  "miss:tester-log",
+  "versus:c-united.co.jp",
+  "versus:hexdb.io",
+  "versus:speedtest.org",
+  "versus:unitedworx.com",
+  "versus:wheelockweb.net",
+  "feature:emojitracker-com-78b6be34",
+  "feature:random-org-dac2f8d3",
+  "feature:random-org-99750ba1",
+  "versus:diffuse.tools",
+  "versus:drawspace.com",
+  "versus:hexo.io",
+  "versus:ajsonline.org",
+  "versus:facemojikeyboard.com",
+  "versus:greenwichcommunitydirectory.org.u",
+  "versus:unitedbrands.wine",
+  "versus:vtuner.com",
+  "versus:racetimer.se",
+  "versus:zoopicker.com",
+  "versus:convertytmp3.org",
+  "versus:communitydns.net",
+  "versus:speedtest.ru",
+  "versus:unit.no",
+  "versus:syncsketch.dev",
+  "versus:hexen.ai",
+  "versus:fakemailgenerator.com",
+  "versus:opentimestamps.org",
+  "versus:sketch.io",
+  "versus:gmgcolor.com",
+  "flake:will-one-set-aside-job-does-not-st",
+  "heal:propose-fix.yml",
+  "versus:koanruler.com",
+  "versus:speedchecker.com",
+  "versus:drawnames.com",
+  "versus:illicitencounters.com",
+  "versus:speedcheckerapi.com",
+  "versus:fasterwheeler.com",
+  "heal:deploy.yml",
+  "feature:heycolor-com-a5daa3cb",
+  "feature:heycolor-com-d11a6f08",
+  "feature:convertunits-com-491b824a",
+  "gap:se-358423",
+  "visit:what-can-you-do",
+  "visit:capital-of-france",
+  "review:2114",
+  "review:2116",
+  "versus:want-tower-assistant",
+  "review:2139",
+  "versus:want-tower-maps",
+  "review:2162",
+  "review:2163",
+  "review:2164",
+  "review:2165",
+  "review:2169",
+  "review:2178",
+  "review:2185",
+  "probe:total-cost-of-500-usd-loan-at-12-f",
+  "probe:how-much-will-50-a-week-grow-to-in",
+  "probe:convert-100-celsius-to-f",
+  "versus:unitingchurch.org.au",
+  "versus:hexler.net",
+  "versus:deadlinkchecker.com",
+  "versus:testandcalc.com",
+  "versus:portchecker.co",
+  "versus:custompricecalculator.com",
+  "visit:convert-100-usd-to-eur"
  ],
  "ticks": [
-  {
-   "at": "2026-11-03T08:58:31.199Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T09:08:47.096Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T09:19:04.689Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T09:29:20.998Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T09:39:39.332Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T09:49:54.990Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:00:09.953Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:10:27.141Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:20:44.991Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:31:00.587Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:41:17.613Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T10:51:32.519Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T11:01:48.977Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": true,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T11:12:07.126Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T11:22:23.439Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 136,
-   "warnings": 0
-  },
   {
    "at": "2026-11-03T11:32:37.818Z",
    "open": 138,
@@ -3161,6 +2900,316 @@
    "lap": false,
    "revived": [],
    "held": 162,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T09:03:50.973Z",
+   "open": 165,
+   "started": [
+    {
+     "id": "mw1uoaya",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 162,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T09:14:09.145Z",
+   "open": 164,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [],
+   "held": 162,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T09:24:28.464Z",
+   "open": 164,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 162,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T09:34:48.772Z",
+   "open": 168,
+   "started": [
+    {
+     "id": "mw1wvv8q",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 162,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T09:45:09.440Z",
+   "open": 167,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": true,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 162,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-04T09:55:33.618Z",
+   "open": 173,
+   "started": [
+    {
+     "id": "mw1wvvpq",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 168,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T10:05:55.342Z",
+   "open": 173,
+   "started": [
+    {
+     "id": "mw1wvw6b",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 169,
+   "warnings": 1
+  },
+  {
+   "at": "2026-11-04T10:16:18.823Z",
+   "open": 172,
+   "started": [
+    {
+     "id": "mw1wvwna",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T10:26:45.045Z",
+   "open": 171,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T10:37:06.529Z",
+   "open": 175,
+   "started": [
+    {
+     "id": "mw1z429z",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T10:47:29.293Z",
+   "open": 174,
+   "started": [
+    {
+     "id": "mw1z42ua",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T10:57:49.696Z",
+   "open": 173,
+   "started": [
+    {
+     "id": "mw1z43dg",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T11:08:12.448Z",
+   "open": 172,
+   "started": [
+    {
+     "id": "mw1z43va",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T11:18:33.567Z",
+   "open": 171,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [],
+   "held": 169,
+   "warnings": 2
+  },
+  {
+   "at": "2026-11-04T11:28:52.534Z",
+   "open": 171,
+   "started": [],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": true,
+   "grow": false,
+   "will": false,
+   "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
    "warnings": 0
   }
  ]
