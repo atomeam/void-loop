@@ -13,8 +13,8 @@
  "smoke_at": "2026-11-03",
  "bench_at": "2026-10-30",
  "totals": {
-  "experiment": 4,
-  "tested": 2,
+  "experiment": 3,
+  "tested": 1,
   "checked": 7,
   "proven": 379
  },
@@ -1325,7 +1325,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
     "proven": 25
    },
@@ -1423,13 +1423,6 @@
      "success_rate": 1,
      "promoted": "2026-10-29",
      "streak": 15
-    },
-    {
-     "name": "drive-share",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-11-04",
-     "last_tested_by": "its tests"
     },
     {
      "name": "tip",
@@ -3487,7 +3480,7 @@
    ],
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 2,
+    "experiment": 1,
     "tested": 0,
     "checked": 2,
     "proven": 47
@@ -3712,14 +3705,6 @@
      ],
      "streak": 0,
      "since": "2026-11-03"
-    },
-    {
-     "name": "business-clarify",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
-     "last_tested": "2026-11-03",
-     "last_tested_by": "the daily smoke test",
-     "since": "2026-11-04"
     },
     {
      "name": "store",

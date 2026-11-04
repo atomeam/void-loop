@@ -3,9 +3,10 @@
 // while skills-check, which only looks at listed skills, said "clean". This finds skill files (a default export with a name,
 // a match function and a run function) that the index does not list. Helper modules (rules, 3D libraries, workers) export no
 // such object and are not reported.
-import { readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { readOrder } from './skills-index.mjs';
 
 // skill files that are deliberately not in the index; say why next to the name
 export const RETIRED = [
@@ -18,7 +19,9 @@ export const RETIRED = [
 ];
 
 export async function unlistedSkills(dir, retired = RETIRED) {
-  const listed = new Set(JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8')));
+  const orderDir = resolve(dir, 'order');
+  // the order files are the source; index.json is the copy the deploy rewrites, so a skill with an order file is listed
+  const listed = new Set(existsSync(orderDir) ? readOrder(orderDir) : JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8')));
   // a family skill (lib/skill-family.js) lists its members: they are loaded through it, so they are not unlisted
   for (const n of [...listed]) { try { const d = (await import(pathToFileURL(resolve(dir, n + '.js')).href)).default; if (d && d.family) for (const p of d.parts || []) listed.add(p); } catch (_) {} }
   const found = [];

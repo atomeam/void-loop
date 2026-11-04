@@ -56,6 +56,7 @@ export const FAMILIES = [
   { id: 'decide', name: 'Deciding', for: 'ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards', skills: ['decide-cards', 'decision-matrix', 'triangulate'] },
   { id: 'safety-play', name: 'Safety and small delights', for: 'privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)', skills: ['advice', 'pwcheck', 'safety-kit', 'photo-scrub', 'stage-fx', 'card-play'] },
 ];
+import { readOrder } from './skills-index.mjs';
 import { promote, streaksOf } from './streaks.mjs';
 import { SOURCE_FAMILIES, scanSkill, reliabilityOf, familySources } from './source-reliability.mjs';
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
@@ -243,8 +244,10 @@ export function build(names, ev, meta = {}) {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   // a family skill (lib/skill-family.js) is rated by its members, each still a skill with its own evidence
-  const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8')).flatMap((n) => {
-    const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'));
+  // skills/order/ is the source. index.json is the copy the deploy writes, so a new skill is in a family before that copy exists.
+  const names = readOrder().flatMap((n) => {
+    let src = ''; try { src = readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'); } catch (_) { return [n]; }
+    const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(src);
     return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
   let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
   const readRepo = (p) => readFileSync(resolve(root, p), 'utf8');
@@ -257,7 +260,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
   if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));
   if (process.argv.includes('--check')) {
-    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) problems.push('void-live-deploy/skills/families.json is out of date (node tools/families.mjs)');
+    // the file is a build output (deploy runs this). A pull request that also commits it conflicts with every other one.
+    if (!existsSync(OUT) || readFileSync(OUT, 'utf8') !== json) console.log('families.json lags the skills; the deploy rewrites it (node tools/families.mjs)');
     if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
     console.log('ok: ' + names.length + ' skills in ' + b.families.length + ' families'); process.exit(0);
   }

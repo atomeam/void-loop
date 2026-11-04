@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1112,
+ "counted": 1108,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -185,13 +185,6 @@
    "tests": 1
   },
   {
-   "file": "lib/where.js",
-   "skills": 13,
-   "direct": 11,
-   "dependants": 20,
-   "tests": 1
-  },
-  {
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
@@ -291,6 +284,13 @@
   },
   {
    "file": "lib/skyfacts.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 16,
+   "tests": 1
+  },
+  {
+   "file": "lib/where.js",
    "skills": 9,
    "direct": 8,
    "dependants": 16,
@@ -1186,13 +1186,6 @@
    "tests": 1
   },
   {
-   "file": "lib/convert-math.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2,
-   "tests": 2
-  },
-  {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
@@ -1526,7 +1519,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 5,
-   "tests": 6
+   "tests": 5
   },
   {
    "file": "lib/video-mux.js",
@@ -1898,6 +1891,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/convert-math.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/council-law.js",
@@ -2558,13 +2558,6 @@
    "tests": 3
   },
   {
-   "file": "lib/mcp-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2573,6 +2566,13 @@
   },
   {
    "file": "lib/drive.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 6,
@@ -3424,13 +3424,6 @@
    "direct": 0,
    "dependants": 0,
    "tests": 12
-  },
-  {
-   "file": "lib/skill-compose.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 2
   },
   {
    "file": "lib/speak.js",
@@ -6589,9 +6582,6 @@
    "imports": [],
    "importedBy": [
     "skills/convert.js"
-   ],
-   "reachedBy": [
-    "skills/drive-share.js"
    ]
   },
   "lib/converter-ask.js": {
@@ -8705,8 +8695,7 @@
   "lib/mcp-run.js": {
    "imports": [],
    "importedBy": [
-    "lib/mcp.js",
-    "lib/skill-compose.js"
+    "lib/mcp.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -11540,12 +11529,6 @@
     "functions/api/sing.js"
    ]
   },
-  "lib/skill-compose.js": {
-   "imports": [
-    "lib/mcp-run.js"
-   ],
-   "importedBy": []
-  },
   "lib/skill-confidence.js": {
    "imports": [
     "lib/card-art.js",
@@ -13331,15 +13314,12 @@
    "importedBy": [
     "skills/aurora-tonight.js",
     "skills/constellation.js",
-    "skills/distance.js",
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
-    "skills/place.js",
     "skills/quake.js",
     "skills/sky.js",
-    "skills/suntimes.js",
-    "skills/weather.js"
+    "skills/suntimes.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -13349,7 +13329,6 @@
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
-    "skills/country.js",
     "skills/time.js"
    ]
   },
@@ -13730,10 +13709,6 @@
    "imports": [],
    "importedBy": []
   },
-  "skills/business-clarify.js": {
-   "imports": [],
-   "importedBy": []
-  },
   "skills/busy-blocks.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -13750,8 +13725,7 @@
   "skills/calc.js": {
    "imports": [],
    "importedBy": [
-    "lib/calculator.js",
-    "skills/drive-share.js"
+    "lib/calculator.js"
    ]
   },
   "skills/calendar-file.js": {
@@ -13991,9 +13965,7 @@
    "imports": [
     "lib/convert-math.js"
    ],
-   "importedBy": [
-    "skills/drive-share.js"
-   ]
+   "importedBy": []
   },
   "skills/converter.js": {
    "imports": [
@@ -14206,9 +14178,7 @@
    "importedBy": []
   },
   "skills/distance.js": {
-   "imports": [
-    "lib/where.js"
-   ],
+   "imports": [],
    "importedBy": [
     "lib/mcp-skills.js",
     "skills/country.js"
@@ -14245,13 +14215,6 @@
    "imports": [
     "skills/scene3d.js",
     "skills/forge-rules.js"
-   ],
-   "importedBy": []
-  },
-  "skills/drive-share.js": {
-   "imports": [
-    "skills/calc.js",
-    "skills/convert.js"
    ],
    "importedBy": []
   },
@@ -15041,10 +15004,6 @@
     "lib/stage-pack.js",
     "lib/stage-words.js"
    ],
-   "importedBy": []
-  },
-  "skills/idea-clarify.js": {
-   "imports": [],
    "importedBy": []
   },
   "skills/image.js": {
@@ -16109,9 +16068,7 @@
    "importedBy": []
   },
   "skills/place.js": {
-   "imports": [
-    "lib/where.js"
-   ],
+   "imports": [],
    "importedBy": []
   },
   "skills/plan-stability.js": {
@@ -17542,7 +17499,6 @@
   },
   "skills/weather.js": {
    "imports": [
-    "lib/where.js",
     "skills/live.js"
    ],
    "importedBy": [
