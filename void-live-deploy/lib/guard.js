@@ -86,6 +86,7 @@ export const LIMITS = {
   video: { rpm: 30, body: 0 }, // Verse's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
   weather: { rpm: 30, body: 0 }, // the weather page's forecast for a place (functions/api/weather.js): GET, edge-cached ten minutes, 10 fresh lookups a minute, no model, no KV
   autopilot: { rpm: 20, body: 0 }, // what Verse did on its own (functions/api/autopilot.js): GET, edge-cached ten minutes, reads GitHub and the conductor's record, no model, no write
+  status: { rpm: 30, body: 0 }, // Verse's uptime from its own hourly guards (functions/api/status.js): GET, no input, edge-cached a minute, one fixed D1 read, yes/no and times out
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   filmfind: { rpm: 20, body: 0 }, // film discovery as JSON (functions/api/filmfind.js): GET only, one fixed host (iTunes), at most 10 upstream GETs per call, edge-cached a day, no KV, no model, nothing written
