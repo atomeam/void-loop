@@ -12,17 +12,17 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Live scores as games happen | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:94 `s="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL,` |
-| Fixtures and results by day | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:112 `n" id="dTom" data-k="tomorrow">Tomorrow</button>` |
-| Many leagues and sports | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:96 `av class="chips" id="leagues" aria-label="League">` |
-| Standings and tables | Tables | have | every site of this kind offers it | void-live-deploy/scores/index.html:102 `sed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pre` |
-| A match page: lineups, events and stats | Match | have | every site of this kind offers it | void-live-deploy/scores/index.html:127 `and schedules for 12 leagues, box scores and play by play, standings, team pages, favourit` |
-| Favourite teams | Personal | have | every site of this kind offers it | void-live-deploy/scores/index.html:102 `pressed="false" data-k="mine">My teams</button></div>` |
+| Live scores as games happen | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:95 `s="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL,` |
+| Fixtures and results by day | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:113 `n" id="dTom" data-k="tomorrow">Tomorrow</button>` |
+| Many leagues and sports | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:97 `av class="chips" id="leagues" aria-label="League">` |
+| Standings and tables | Tables | have | every site of this kind offers it | void-live-deploy/scores/index.html:103 `sed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pre` |
+| A match page: lineups, events and stats | Match | have | every site of this kind offers it | void-live-deploy/scores/index.html:128 `and schedules for 12 leagues, box scores and play by play, standings, team pages, favourit` |
+| Favourite teams | Personal | have | every site of this kind offers it | void-live-deploy/scores/index.html:103 `pressed="false" data-k="mine">My teams</button></div>` |
 | Goal and score alerts | Personal | missing | studied by hand: ESPN offers this (https://www.espn.com/) | no sign of it in the source of /scores/ |
-| Player pages and stats | Stats | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:127 `for teams, events, venues and players, stories written by Verse from the data, and a free` |
-| Sports news | News | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:103 `d="false" data-k="reportsTab">Verse reports</button>` |
+| Player pages and stats | Stats | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:128 `for teams, events, venues and players, stories written by Verse from the data, and a free` |
+| Sports news | News | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:104 `d="false" data-k="reportsTab">Verse reports</button>` |
 | Highlights and video | Media | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/lib/daily-art.js:137 `(/^[A-Za-z0-9_-]{11}$/.test(o.video // '')) u += '&video=' + o.video; }` |
-| Fantasy games and pick'em | Games | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:103 `essed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-presse` |
-| Odds | Games | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:128 `teams stay on this device. No odds, no betting, no fantasy.</p>` |
-| Search teams and players | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:115 `><label class="vh" for="find">Search teams</label><input type="search" id="find" placehold` |
+| Fantasy games and pick'em | Games | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:104 `essed="false" data-k="pickem">Pick'em</button><button type="button" id="tWhat" aria-presse` |
+| Odds | Games | have | studied by hand: ESPN offers this (https://www.espn.com/) | void-live-deploy/scores/index.html:129 `teams stay on this device. No odds, no betting, no fantasy.</p>` |
+| Search teams and players | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:116 `><label class="vh" for="find">Search teams</label><input type="search" id="find" placehold` |
 | Watch games live | Media | missing | studied by hand: ESPN offers this (https://www.espn.com/) | no sign of it in the source of /scores/ |

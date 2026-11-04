@@ -105,7 +105,7 @@ test('llms.txt lines: one per page, honest, each ending in its url; and llms.txt
   const text = readFileSync(new URL('../void-live-deploy/llms.txt', import.meta.url), 'utf8');
   assert.ok(text.includes('## Tool pages'), 'the section is there');
   assert.equal(llmsOf(text), text, 'llms.txt is up to date (node tools/seo-pages.mjs)');
-  for (const p of PAGES) assert.equal((text.match(new RegExp(SITE.replace(/\./g, '\\.') + p.path.replace(/\//g, '\\/') + '(?=[\\s.,)]|$)', 'g')) || []).length, p.path === '/tools/' ? 2 : 1, p.path + ' once in llms.txt (the kit page twice: the intro and its own line); a link with a setting (?q=) is not the page');
+  for (const p of PAGES) assert.equal((text.match(new RegExp(SITE.replace(/\./g, '\\.') + p.path.replace(/\//g, '\\/') + '(?=[\\s.,)]|$)', 'g')) || []).length, p.path === '/tools/' ? 3 : 1, p.path + ' once in llms.txt (the kit page three times: Start here, the intro and its own line); a link with a setting (?q=) is not the page');
   assert.equal(llmsOf('no markers here'), null);
 });
 

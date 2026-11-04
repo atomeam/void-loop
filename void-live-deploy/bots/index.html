@@ -26,15 +26,22 @@
   .bot small { display: block; color: var(--ink-3); margin: .3rem 0; } .bot textarea { width: 100%; box-sizing: border-box; background: rgba(6,8,14,.6); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: inherit; }
   .bot button { margin-top: .3rem; background: rgb(var(--key) / .2); color: var(--ink); border: 1px solid rgb(var(--key) / .5); border-radius: 8px; padding: .2rem .8rem; cursor: pointer; }
   .bot output { display: block; white-space: pre-wrap; margin-top: .4rem; font-family: ui-monospace, monospace; font-size: .85rem; }
+  #find input { width: min(28rem, 100%); background: rgba(6,8,14,.6); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: .4rem .6rem; font: inherit; }
+  .pager { margin: 1rem 0; display: flex; gap: .6rem; align-items: center; } .pager button { background: none; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: .2rem .8rem; cursor: pointer; } .pager button:disabled { opacity: .4; }
 </style>
+<meta name="verse-handoff" content="in: none; out: none">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
 </head>
 <body>
 <main>
   <h1>Verse's bots</h1>
   <p class="muted" id="sum">Reading the bots…</p>
   <p class="muted">Verse builds these from its own skills and earlier bots (each card shows what it was built from). The factory runs every bot's probe on a real task; only bots that pass are listed live. New bots come as pipelines of live bots, proposed by free Workers AI and kept only when they work. Also on <a href="/team/">/team/</a>.</p>
+  <form id="find" role="search"><label for="q">Search the bots</label> <input id="q" type="search" placeholder="mi to km, csv, caesar, loan…" autocomplete="off"></form>
   <nav class="cats" id="cats" aria-label="Categories"></nav>
   <div id="grid"></div>
+  <nav class="pager" aria-label="Pages"><button type="button" id="prev">Previous</button> <span id="page" class="muted"></span> <button type="button" id="next">Next</button></nav>
 </main>
 <script type="module" src="/bots/app.js"></script>
 </body>

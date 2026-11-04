@@ -17,7 +17,7 @@ export function routes() {
   const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
-const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
+const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/'];
 const near = (a, b, e = 0.01) => Math.abs(Number(String(a).replace(/[^0-9.eE+-]/g, '')) - b) <= e;
 
 // ---- the specs: one per route. t.* helpers are defined in run(). ----
@@ -56,11 +56,16 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/free/': async (t) => {  // the free-resource registry: every resource listed, the search narrows it
+    await t.waitText('#count', /resources/, 15000); t.ok(Number((await t.text('#count')).match(/of (\d+)/)[1]) >= 30, 'the whole registry is listed: ' + (await t.text('#count')));
+    await t.fill('#find', 'groq'); t.ok((await t.p.locator('tr.res').count()) === 1, 'a search for groq finds the one Groq row');
+  },
 
   '/bots/': async (t) => {  // Verse's bots: at least 50 live, each card runs its bot on what the visitor types
     await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/\d+/)[0]) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
     await t.fill('#roman-numerals textarea', '1999'); await t.click('#roman-numerals button'); t.ok((await t.text('#roman-numerals output')).trim() === 'MCMXCIX', 'roman-numerals runs on new input');
     await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
+    await t.click('#cats [data-c="all"]'); await t.fill('#q', 'mi-to-km'); await t.p.waitForTimeout(400); t.ok(await t.p.locator('#mi-to-km').count() === 1, 'search finds a family bot (mi-to-km) among thousands');
   },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
@@ -72,6 +77,13 @@ export const SPECS = {
     await t.click('#spin'); const r = await t.waitText('#result', /\S/, 8000); t.ok(r.trim().length > 0, 'a spin lands on a slice: ' + r.slice(0, 50));
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
+  },
+  '/under-the-hood/': async (t) => { // live numbers only: each section fills from the reader's own browser or a served file
+    await t.waitText('h1', /Under the hood/, 8000);
+    const v = await t.waitText('#vitals', /time to first byte/, 8000); t.ok(/\d+ ms|\d\.\d+ s/.test(v), 'the reader\'s own time to first byte is measured: ' + v.slice(0, 60));
+    const h = await t.waitText('#hdrs', /strict-transport-security/, 10000); t.ok(/content-security-policy/.test(h) && /sent|strict/.test(h), 'the home page\'s headers are read live');
+    const c = await t.waitText('#counts', /skill modules/, 10000); t.ok(/\d{3}/.test(c), 'the skill count is read from /skills/index.json: ' + c.slice(0, 60));
+    const f = await t.waitText('#files', /llms\.txt/, 10000); t.ok(/\/llms\.txt\s*200/.test(f) && /\/agents\.txt\s*200/.test(f), 'every machine file answers 200: ' + f.slice(0, 80));
   },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
     await t.waitText('h1', /What Verse can actually do/, 8000);
