@@ -25,7 +25,7 @@ export function sitePages(dir = join(root, 'void-live-deploy')) {
     if (title) out.push({ route: '/' + rel + '/', title: title.replace(/\s*·\s*Verse\s*$/, ''), desc });
   };
   for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (!e.isDirectory() || /^(lib|skills|functions|vendor|data|_|\.)/.test(e.name)) continue;
+    if (!e.isDirectory() || /^(lib|lab|skills|functions|vendor|data|_|\.)/.test(e.name)) continue;
     read(e.name);
     for (const s of readdirSync(join(dir, e.name), { withFileTypes: true })) if (s.isDirectory()) read(e.name + '/' + s.name);
   }
