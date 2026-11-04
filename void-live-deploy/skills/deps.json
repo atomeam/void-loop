@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1143,
+ "counted": 1138,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -2330,8 +2330,8 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 64,
-   "tests": 14
+   "dependants": 62,
+   "tests": 13
   },
   {
    "file": "lib/pages.js",
@@ -2376,14 +2376,14 @@
    "tests": 6
   },
   {
-   "file": "lib/shortfall.js",
+   "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38,
+   "dependants": 36,
    "tests": 0
   },
   {
-   "file": "lib/persona.js",
+   "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
    "dependants": 36,
@@ -2397,13 +2397,6 @@
    "tests": 3
   },
   {
-   "file": "lib/daily-cap.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 31,
-   "tests": 1
-  },
-  {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
@@ -2411,7 +2404,7 @@
    "tests": 8
   },
   {
-   "file": "lib/free-router.js",
+   "file": "lib/daily-cap.js",
    "skills": 0,
    "direct": 0,
    "dependants": 29,
@@ -2437,13 +2430,6 @@
    "direct": 0,
    "dependants": 28,
    "tests": 0
-  },
-  {
-   "file": "lib/answer-free.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 27,
-   "tests": 1
   },
   {
    "file": "lib/cite.js",
@@ -2817,20 +2803,6 @@
    "tests": 1
   },
   {
-   "file": "lib/agent-answer.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/agent-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/approval-gate.js",
    "skills": 0,
    "direct": 0,
@@ -2909,6 +2881,13 @@
   },
   {
    "file": "lib/flights-de.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/free-router.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1,
@@ -3220,7 +3199,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/epub-edit.js",
@@ -3608,13 +3587,6 @@
    "tests": 2
   },
   {
-   "file": "lib/verse-shell.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
    "file": "lib/will-schema.js",
    "skills": 0,
    "direct": 0,
@@ -3660,17 +3632,6 @@
    ],
    "importedBy": []
   },
-  "functions/api/agent.js": {
-   "imports": [
-    "lib/agent-core.js",
-    "lib/agent-answer.js",
-    "lib/daily-cap.js",
-    "lib/models.js",
-    "lib/shortfall.js",
-    "lib/answer-free.js"
-   ],
-   "importedBy": []
-  },
   "functions/api/answer.js": {
    "imports": [
     "lib/price-lock.js",
@@ -3710,7 +3671,6 @@
     "lib/answer-edge.js",
     "lib/note-ask.js",
     "lib/telemetry.js",
-    "lib/answer-free.js",
     "lib/no-answer.js"
    ],
    "importedBy": [
@@ -4820,20 +4780,6 @@
     "skills/dates.js"
    ]
   },
-  "lib/agent-answer.js": {
-   "imports": [],
-   "importedBy": [
-    "functions/api/agent.js"
-   ]
-  },
-  "lib/agent-core.js": {
-   "imports": [
-    "lib/models.js"
-   ],
-   "importedBy": [
-    "functions/api/agent.js"
-   ]
-  },
   "lib/ai-check.js": {
    "imports": [
     "lib/photo-edit.js"
@@ -4892,44 +4838,6 @@
   "lib/answer-edge.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/answer.js"
-   ],
-   "reachedBy": [
-    "functions/api/a2a.js",
-    "functions/api/bench.js",
-    "functions/api/card-art.js",
-    "functions/api/clip.js",
-    "functions/api/daily-art.js",
-    "functions/api/gallery.js",
-    "functions/api/image.js",
-    "functions/api/local.js",
-    "functions/api/markets.js",
-    "functions/api/mcp.js",
-    "functions/api/merge.js",
-    "functions/api/news.js",
-    "functions/api/podcasts.js",
-    "functions/api/rapvoice.js",
-    "functions/api/recipeimport.js",
-    "functions/api/recipes.js",
-    "functions/api/repo.js",
-    "functions/api/report.js",
-    "functions/api/scores.js",
-    "functions/api/sing.js",
-    "functions/api/sportsearch.js",
-    "functions/api/translate.js",
-    "functions/api/watchalong.js",
-    "functions/api/weather.js",
-    "lib/bench-asks.js"
-   ]
-  },
-  "lib/answer-free.js": {
-   "imports": [
-    "bots/kit.js",
-    "bots/families.js",
-    "lib/free-router.js"
-   ],
-   "importedBy": [
-    "functions/api/agent.js",
     "functions/api/answer.js"
    ],
    "reachedBy": [
@@ -7127,7 +7035,6 @@
   "lib/daily-cap.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/daily-art.js",
@@ -7158,7 +7065,6 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
-    "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
   },
@@ -7910,37 +7816,7 @@
     "lib/shortfall.js"
    ],
    "importedBy": [
-    "functions/api/free.js",
-    "lib/answer-free.js"
-   ],
-   "reachedBy": [
-    "functions/api/a2a.js",
-    "functions/api/agent.js",
-    "functions/api/answer.js",
-    "functions/api/bench.js",
-    "functions/api/card-art.js",
-    "functions/api/clip.js",
-    "functions/api/daily-art.js",
-    "functions/api/gallery.js",
-    "functions/api/image.js",
-    "functions/api/local.js",
-    "functions/api/markets.js",
-    "functions/api/mcp.js",
-    "functions/api/merge.js",
-    "functions/api/news.js",
-    "functions/api/podcasts.js",
-    "functions/api/rapvoice.js",
-    "functions/api/recipeimport.js",
-    "functions/api/recipes.js",
-    "functions/api/repo.js",
-    "functions/api/report.js",
-    "functions/api/scores.js",
-    "functions/api/sing.js",
-    "functions/api/sportsearch.js",
-    "functions/api/translate.js",
-    "functions/api/watchalong.js",
-    "functions/api/weather.js",
-    "lib/bench-asks.js"
+    "functions/api/free.js"
    ]
   },
   "lib/fuzzy.js": {
@@ -9560,7 +9436,6 @@
   "lib/models.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/appraise.js",
     "functions/api/bench.js",
@@ -9582,7 +9457,6 @@
     "functions/api/voice-reply.js",
     "functions/api/watchalong.js",
     "functions/api/will.js",
-    "lib/agent-core.js",
     "lib/approval-core.js",
     "lib/clef.js",
     "lib/review-api.js",
@@ -12055,7 +11929,6 @@
   "lib/shortfall.js": {
    "imports": [],
    "importedBy": [
-    "functions/api/agent.js",
     "functions/api/answer.js",
     "functions/api/coder.js",
     "functions/api/earnings.js",
@@ -12093,7 +11966,6 @@
     "functions/api/translate.js",
     "functions/api/watchalong.js",
     "functions/api/weather.js",
-    "lib/answer-free.js",
     "lib/bench-asks.js"
    ]
   },
@@ -13679,10 +13551,6 @@
     "skills/routine.js",
     "skills/work.js"
    ]
-  },
-  "lib/verse-shell.js": {
-   "imports": [],
-   "importedBy": []
   },
   "lib/video-gen.js": {
    "imports": [
