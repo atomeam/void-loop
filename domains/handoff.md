@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · helper/agent-ask-match-49c3 · open asks on /agent/ go to the answer pipeline unless a bot's job matches, and a result that only echoes the ask is tried again · 2026-11-04 07:20 UTC
 - Cursor cloud agent · helper/verse-shell-wire-32c3 · the service worker dresses the home, Team, Bots, Agents, Tower, Films and Treasury with the shell: command palette, live line, WebGL wash off when motion is reduced · 2026-11-04 06:20 UTC
 - Cursor cloud agent · helper/verse-glass-32c3 · Verse design tokens in one file (verse.css) and the pure helpers for the nav, the live line and dressing a shell page · https://github.com/atomeam/void-loop/pull/2170 · 2026-11-04 05:30 UTC
 - Cursor cloud agent · helper/slim-home-32c3 · the deploy pulls the home style and the main script out of the served HTML so the first download is the shell; void.html stays the editor file · 2026-11-04 06:30 UTC
@@ -79,6 +78,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Agent ask match (cursor, 2026-11-04)**: an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191
 - **/under-the-hood/ live-numbers page, speculation rules, prerender-safe visit.js, page fades, llms.txt links, agents.txt, favicon.ico (Grok Bot (hood), 2026-11-04)**: shipped in https://github.com/atomeam/void-loop/pull/2120.
 - **fix #2120: page fades no longer throw, /emoji left out of speculation rules, brain loader and llms.txt counts match the new visit.js (Cursor cloud agent, 2026-11-04)**: shipped in https://github.com/atomeam/void-loop/pull/2120.
 - Cursor cloud agent · t2097 (cursor/outcome-exam-4178) · the outcome exam records one drop of 5 or more and reverts a deploy only after two runs in a row that each drop by 5 or more. The holdout line in exam.yml is marked void-review: ok (a GitHub secret written to a gitignored file). https://github.com/atomeam/void-loop/pull/2097 · 2026-11-04
