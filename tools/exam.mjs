@@ -145,9 +145,11 @@ function emojiRival(ask) {
   return null;
 }
 function codeRan(text, probe) {
-  const fenced = String(text).match(/```(?:python|py)?\s*([\s\S]*?)```/i);
-  const loose = String(text).match(/\bdef\s+[a-zA-Z_][\s\S]{0,500}/);
-  const src = (fenced && fenced[1]) || (loose && loose[0]) || '';
+  const raw = String(text);
+  const fenced = raw.match(/```(?:python|py)?\s*([\s\S]*?)```/i);
+  // the function only: indented lines after the def, not the sentence that follows it
+  const loose = raw.match(/def\s+[A-Za-z_]\w*\s*\([^)]*\)\s*:(?:\r?\n[ \t]+.*)+/);
+  const src = ((fenced && fenced[1]) || (loose && loose[0]) || '').trim();
   if (!src || /import|open\s*\(|exec\s*\(|eval\s*\(|__|subprocess|os\./.test(src)) return false;
   const r = spawnSync('python3', ['-c', src + '\n' + probe], { timeout: 3000, encoding: 'utf8' });
   return r.status === 0 && /\bok\b/.test(r.stdout || '');

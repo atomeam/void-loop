@@ -24,8 +24,8 @@ export const ALLOW = Object.freeze({
   images: ['image', 'draw', 'cartoon'],
   prices: ['crypto', 'markets', 'calc'],
   definitions: ['define'],
-  wordproblems: ['calc'],
-  code: ['dev-tools'],
+  wordproblems: ['calc', 'sums'],
+  code: ['dev-tools', 'snippet'],
 });
 export const FAST_MS = 12000;
 export const SLOW_MS = 20000;
