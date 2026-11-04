@@ -12,11 +12,11 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Live scores as games happen | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:91 `s="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL,` |
-| Fixtures and results by day | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:109 `n" id="dTom" data-k="tomorrow">Tomorrow</button>` |
-| Many leagues and sports | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:93 `av class="chips" id="leagues" aria-label="League">` |
-| Standings and tables | Tables | have | every site of this kind offers it | void-live-deploy/scores/index.html:99 `sed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pre` |
-| A match page: lineups, events and stats | Match | have | every site of this kind offers it | void-live-deploy/scores/index.html:124 `and schedules for 12 leagues, box scores and play by play, standings, team pages, favourit` |
-| Favourite teams | Personal | have | every site of this kind offers it | void-live-deploy/scores/index.html:99 `pressed="false" data-k="mine">My teams</button></div>` |
-| Search teams and players | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:112 `><label class="vh" for="find">Search teams</label><input type="search" id="find" placehold` |
+| Live scores as games happen | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:94 `s="sub" id="sub" data-k="sub">Live scores, schedules and standings for football, NBA, NFL,` |
+| Fixtures and results by day | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:112 `n" id="dTom" data-k="tomorrow">Tomorrow</button>` |
+| Many leagues and sports | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:96 `av class="chips" id="leagues" aria-label="League">` |
+| Standings and tables | Tables | have | every site of this kind offers it | void-live-deploy/scores/index.html:102 `sed="false" data-k="standings">Standings</button><button type="button" id="tMine" aria-pre` |
+| A match page: lineups, events and stats | Match | have | every site of this kind offers it | void-live-deploy/scores/index.html:127 `and schedules for 12 leagues, box scores and play by play, standings, team pages, favourit` |
+| Favourite teams | Personal | have | every site of this kind offers it | void-live-deploy/scores/index.html:102 `pressed="false" data-k="mine">My teams</button></div>` |
+| Search teams and players | Scores | have | every site of this kind offers it | void-live-deploy/scores/index.html:115 `><label class="vh" for="find">Search teams</label><input type="search" id="find" placehold` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://www.sofascore.com/ | not compared yet |
