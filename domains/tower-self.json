@@ -1241,6 +1241,15 @@
    "pages_per_day": 1,
    "reads_next": "agechecker.net",
    "noop": true
+  },
+  {
+   "at": "2026-11-04T18:13:16Z",
+   "line": "Versus: took on no site (also read: 5 no-family, 3 covered); next  (the target)",
+   "built": 0,
+   "queued": 1,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "bestfonts.pro"
   }
  ]
 }

@@ -1195,3 +1195,4 @@ Format: `ISO | slug | role | event | note`
 2026-11-04T07:14:16Z | cursor | fix | Open asks on /agent/ go to the answer pipeline unless a bot's declared job matches. A reply that only echoes the ask, such as a keyword line for three free things to do, is rejected and tried again on a better bot.
 2026-11-04T07:05:00Z | cursor | grow | The home hero is in the HTML. The largest paint is the word Verse, from the critical style alone. The ask engine starts on the next frame, the sky and the WebGL wash after that paint, and a phone does not fetch skill modules until a tap.
 2026-11-04T09:47:51Z | verse | build | Versus: took on no site (also read: 6 no-family, 2 covered); next  (the target)
+2026-11-04T18:13:17Z | verse | build | Versus: took on no site (also read: 5 no-family, 3 covered); next  (the target)
