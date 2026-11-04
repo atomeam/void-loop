@@ -27,7 +27,9 @@ export const HOME = Object.freeze([
   { code: 'ideas', title: 'ideas', about: 'Members propose changes here. The owner turns a proposal into a job with one press.' },
 ]);
 export const LIMITS = Object.freeze({ body: 4000, lines: 80, about: 160, title: 24, search: 6, page: 60, thread: 300 });
-export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100, asks: 50, dreamsDay: 4, dreamsOpen: 5 }); // dreams: Verse Brain's posts in #work (api/team.js 'dream')
+export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100, asks: 50, dreamsDay: 4, dreamsOpen: 5, filesDay: 6, filesOpen: 20 }); // files: a member's own #work post filed as a job (api/team.js 'file') // dreams: Verse Brain's posts in #work (api/team.js 'dream')
+// a crew member (lib/team-crew.js) works on Verse's 15-minute clock, so it is here while it worked in the last 40 minutes
+export const CREW_AWAY_MS = 40 * 60e3;
 export const AWAY_MS = 10 * 60e3; // no word from an agent for this long: away
 export const STALE_MS = 30 * 60e3; // an agent away this long with a job gives it back to the queue
 export const EMOJI = Object.freeze(['👍', '✅', '👀', '🎉', '❤️', '🚀', '🤔', '❌']);
@@ -48,6 +50,10 @@ export function score(job, now) {
   return (WEIGHT[k] ?? 30) + Math.min(30, 2 * days) - (k === 'will' ? 5 : 25) * triesOf(job.note);
 }
 /** an ask the owner posted in #work (enqueue in functions/api/team.js gives it the id team-<message> and the target feature:team-<message>) */
+/** a member's #work post filed as a job ('file'): ask-<message id>, a feature, closed by the pull request that does it */
+export const memberAsk = (job) => /^ask-\d+$/.test(String(job && job.id || '')) && String(job.target || '') === 'feature:' + job.id;
+/** an ask as dedupe compares it: lower case, words only */
+export const askKey = (s) => String(s || '').toLowerCase().replace(/https?:\/\/\S+/g, (u) => u.replace(/[?#].*$/, '')).replace(/[^a-z0-9:/.]+/g, ' ').trim().slice(0, 200);
 export const ownerAsk = (job) => /^team-\d+$/.test(String(job && job.id || '')) && String(job.target || '') === 'feature:' + job.id;
 /** the queued jobs an agent may take, best first: the owner's #work asks before every background job, oldest first, then the rest by worth;
  *  skip: job ids this agent gave back or failed (it gets another) */
@@ -72,7 +78,7 @@ export function backNote(note, why, failed) {
  *  job), or idle. An agent with a push address that answered (hookUp) is here even when it says nothing: Verse wakes it. */
 export function presence(a, now) {
   if (a && !a.off && !a.key) return 'invited';
-  if (!a || a.off || !(now - (a.seen || 0) < AWAY_MS || hookUp(a))) return 'away';
+  if (!a || a.off || !(now - (a.seen || 0) < (a.crew ? CREW_AWAY_MS : AWAY_MS) || hookUp(a))) return 'away';
   return a.job ? 'busy' : 'idle';
 }
 

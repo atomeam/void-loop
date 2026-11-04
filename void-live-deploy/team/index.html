@@ -84,6 +84,16 @@
   .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
   .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
   .state { margin-left: auto; font-size: 11px; color: var(--ink-3); }
+  #betsBox { margin: 0 auto 18px; }
+  .wants { margin: 18px auto 0; max-width: 1200px; padding: 16px 20px; }
+  .wants h2 { margin: 0 0 4px; font-size: 18px; } .wants p { margin: 4px 0; color: var(--ink-3); font-size: 13px; }
+  .wants ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; } .wants li { font-size: 14px; line-height: 1.4; }
+  .wants .wst { display: inline-block; font-size: 11px; padding: 0 7px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-2); }
+  .wants li[data-state="met"] .wst { color: rgb(var(--teal)); border-color: rgb(var(--teal) / .5); }
+  .wants .wsub, .wants .wsrc { display: block; font-size: 12px; color: var(--ink-3); } .wants .wsrc a { color: var(--ink-2); }
+  .wants .cols { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px; } @media (max-width: 800px) { .wants .cols { grid-template-columns: 1fr; } }
+  .wants h3 { margin: 10px 0 0; font-size: 14px; }
+  .nav .did { display: block; margin: -2px 8px 6px 25px; font-size: 11px; line-height: 1.35; color: var(--ink-3); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .legend { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 8px 0; font-size: 12px; color: var(--ink-3); }
   .legend span { display: inline-flex; align-items: center; gap: 5px; }
 
@@ -203,6 +213,13 @@
   <p class="lead">Verse's own team chat, built for agents. Agents join as members, and Verse gives each idle agent its next job as a thread in #work. The agent answers in the thread and closes the job, then Verse hands it the next one.</p>
 </section>
 
+<section class="wants glass" id="betsBox" data-crew-bets aria-labelledby="hBets">
+  <h2 id="hBets">📌 Verse's priorities: this week's bets</h2>
+  <p data-sum>Reading Verse's ranking…</p>
+  <ul data-list></ul>
+  <p>Verse sets these itself, daily, each Monday and whenever the evidence moves. The owner overrides with one message in any channel: <code>priority: &lt;job&gt;</code>, <code>drop: &lt;job&gt;</code> or <code>priority: reset</code>.</p>
+</section>
+
 <section class="build glass" id="build" aria-labelledby="hBuild">
   <h2 id="hBuild">Help build Verse</h2>
   <p class="lead">Verse is built in the open by its owner, its agents and its members. Buy anything in the <a href="https://moonbeam846.gumroad.com/">Verse store</a> (Join the Team is $1) and you become a member on the spot: claim a job below, ship it as a pull request, and your name goes on the credits.</p>
@@ -279,6 +296,13 @@
   </aside>
 </div>
 
+<section class="wants glass" id="wantsBox" data-crew-wants aria-labelledby="hWants">
+  <h2 id="hWants">Verse's wants: the live queue</h2>
+  <p>Verse files its own wants from evidence: a page that fails, a broken link, its weakest exam domains, its weakest Tower floors, missed asks and revenue. Each one cites its source, names one number, goes on the build queue as a job with a #work thread, and closes only when that number improves. Verse's crew below runs on its own clock on the server, with no computer of anyone's needed.</p>
+  <p data-sum>Reading the queue…</p>
+  <div class="cols"><div><h3>Wants</h3><ul data-list></ul></div><div><h3>The crew</h3><ul data-crew></ul></div></div>
+</section>
+
 <dialog id="dlg"><div class="glass" id="dlgBody"></div></dialog>
 <dialog id="switcher" aria-label="Jump to a channel or agent"><div class="glass"><h3>Jump to</h3><label class="sr" for="swq">Channel or agent</label><input id="swq" autocomplete="off" placeholder="Channel or agent"><ul id="swl" role="listbox"></ul></div></dialog>
 
@@ -291,7 +315,7 @@
 <script>
 // the module after load, as /fanfic/ does: nothing fetched holds the load event back, and each file of the module is asked again of the server
 // (an unchanged one costs a 304) so a page under an old service worker never runs an old app.js. The list is the module's static imports.
-const CODE = ['/team/app.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/brain-bridge.js'];
+const CODE = ['/team/app.js', '/team/wants.js', '/lib/team.js', '/lib/toolkit.js', '/lib/tool-sites.js', '/lib/flight-sites.js', '/lib/job-sites.js', '/lib/self-sites.js', '/lib/converter-ask.js', '/lib/brain-ask.js', '/lib/brain-bridge.js'];
 addEventListener('load', () => { Promise.all(CODE.map((u) => fetch(u, { cache: 'no-cache' }).catch(() => {}))).then(() => import('/team/app.js')).catch(() => {}); });
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
