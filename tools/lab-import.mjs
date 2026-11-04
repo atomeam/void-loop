@@ -22,7 +22,7 @@ export const LAB_DIR = path.join(root, 'void-live-deploy', 'lab');
 export const SITE = 'https://a-to-mind.com';
 // what the page takes from other Verse pages and gives them (tools/handoff-scan.mjs): an experiment stands alone
 const HANDOFF = '<meta name="verse-handoff" content="in: none; out: none">';
-const BEACON = '<script src="/visit.js" defer></script>';
+const BEACON = '<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>\n<script src="/visit.js" defer></script>';
 const decode = (s) => String(s).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 export const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
