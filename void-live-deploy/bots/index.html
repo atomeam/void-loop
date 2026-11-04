@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#050505">
+<title>Verse's bots: every one passes its probe · Verse</title>
+<meta name="description" content="Bots Verse builds for itself from its own skills: writing, code, math, money, media, research, ops and fun. Each is live only when its probe passes on a real task. Try any one here.">
+<link rel="canonical" href="https://a-to-mind.com/bots/">
+<style>
+  :root { color-scheme: dark; --bg: #050505; --ink: #f2f4fb; --ink-3: #8e94a8; --key: 158 178 255; --teal: 92 232 205; --line: rgba(255,255,255,.10); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 72rem; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  h1 { margin: 0 0 .3rem; } .muted { color: var(--ink-3); }
+  nav.cats { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0; } nav.cats button { background: none; color: var(--ink); border: 1px solid var(--line); border-radius: 99px; padding: .25rem .8rem; cursor: pointer; } nav.cats button[aria-pressed="true"] { border-color: rgb(var(--key)); }
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: .8rem; }
+  .bot { border: 1px solid var(--line); border-radius: 14px; padding: .9rem; background: linear-gradient(165deg, rgba(40,46,70,.7), rgba(16,18,28,.85)); }
+  .bot h2 { font-size: 1.02rem; margin: 0; } .bot .ok { color: rgb(var(--teal)); font-size: .8rem; }
+  .bot small { display: block; color: var(--ink-3); margin: .3rem 0; } .bot textarea { width: 100%; box-sizing: border-box; background: rgba(6,8,14,.6); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  .bot button { margin-top: .3rem; background: rgb(var(--key) / .2); color: var(--ink); border: 1px solid rgb(var(--key) / .5); border-radius: 8px; padding: .2rem .8rem; cursor: pointer; }
+  .bot output { display: block; white-space: pre-wrap; margin-top: .4rem; font-family: ui-monospace, monospace; font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Verse's bots</h1>
+  <p class="muted" id="sum">Reading the bots…</p>
+  <p class="muted">Verse builds these from its own skills and earlier bots (each card shows what it was built from). The factory runs every bot's probe on a real task; only bots that pass are listed live. New bots come as pipelines of live bots, proposed by free Workers AI and kept only when they work. Also on <a href="/team/">/team/</a>.</p>
+  <nav class="cats" id="cats" aria-label="Categories"></nav>
+  <div id="grid"></div>
+</main>
+<script type="module" src="/bots/app.js"></script>
+</body>
+</html>
