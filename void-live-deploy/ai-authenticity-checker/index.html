@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI authenticity checker: is this photo or video AI-made or edited? · Verse</title>
+<meta name="description" content="Drop a photo or video and see what it says about who made it: Content Credentials (C2PA), the IPTC AI source type, Stable Diffusion and ComfyUI settings, Midjourney, Firefly, DALL·E and other generator names, the editor that saved it, and the camera or phone that recorded it. On your device, nothing uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="AI authenticity checker · Verse">
+<meta property="og:description" content="Is this photo or video AI-made or edited? Read its Content Credentials, AI source type, generator and editor fields and camera, on your device.">
+<meta property="og:url" content="https://a-to-mind.com/ai-authenticity-checker/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* a-to-mind.com/ai-authenticity-checker/: built from what Verse watched (WFTV, ABC, 2026-10-30; domains/tv-built/ai-authenticity-checker.json) */
+  :root { color-scheme: dark; --bg: #0b0a10; --panel: #13121b; --ink: #ecebf5; --soft: #a3a0b3; --line: #2c2938; --accent: #a58bff; --ai: #ff8a7e; --edit: #f5c46b; --cam: #7fd9a8; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+  main { max-width: 820px; margin: 0 auto; padding: 18px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } .lede { color: var(--soft); margin: 0 0 14px; }
+  #drop { display: block; border: 2px dashed var(--line); border-radius: 14px; padding: 28px 16px; text-align: center; cursor: pointer; background: var(--panel); }
+  #drop.over { border-color: var(--accent); } #drop b { color: var(--accent); }
+  #file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  #out { margin-top: 16px; } .card { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 0 0 12px; background: var(--panel); }
+  .verdict { font-size: 20px; font-weight: 700; margin: 0 0 4px; } .v-ai { color: var(--ai); } .v-ai-edited { color: var(--ai); } .v-edited { color: var(--edit); } .v-camera { color: var(--cam); } .v-unknown { color: var(--soft); }
+  .meta { color: var(--soft); font-size: 14px; margin: 0 0 8px; overflow-wrap: anywhere; }
+  ul.sig { list-style: none; padding: 0; margin: 0; } ul.sig li { padding: 8px 0; border-top: 1px solid var(--line); } ul.sig li:first-child { border-top: 0; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 999px; padding: 1px 8px; margin-right: 6px; border: 1px solid currentColor; }
+  .l-ai, .l-ai-edit { color: var(--ai); } .l-edit { color: var(--edit); } .l-camera { color: var(--cam); } .l-info { color: var(--accent); }
+  .detail { display: block; color: var(--soft); font-size: 14px; overflow-wrap: anywhere; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  button, .btn { font: inherit; font-size: 14px; border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; min-height: 40px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+  .note { font-size: 14px; color: var(--soft); } .note a, footer a, .pro a { color: var(--accent); }
+  .pro { border: 1px solid var(--accent); border-radius: 14px; padding: 12px 16px; margin: 18px 0 0; }
+  footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; }
+</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Is this photo or video AI-made or edited?</h1>
+  <p class="lede">Drop a file and Verse reads what it says about who made it: Content Credentials, the AI source type, generator settings, the editor that saved it and the camera or phone that recorded it.</p>
+  <label id="drop" for="file"><b>Choose a photo or video</b> or drop it here<br><span class="note">JPEG, PNG, WebP, HEIC, MP4, MOV. It stays on your device.</span></label>
+  <input type="file" id="file" accept="image/*,video/*,.heic,.mov,.mp4" multiple>
+  <div id="out" aria-live="polite"></div>
+  <p class="note" data-honest>What this can and cannot tell: it reads the file's metadata and Content Credentials, the way a forensic examiner's first look does. It does not judge the pixels. Metadata can be stripped (most social apps strip it) or faked, so "no signs" is never proof that a file is real. To check that a Content Credentials signature is valid, open the file at <a href="https://contentcredentials.org/verify" target="_blank" rel="noopener">contentcredentials.org/verify</a>.</p>
+  <div class="pro" id="pro">
+    <b>Checking files for a case, a newsroom or a business?</b>
+    <p class="note" style="margin:4px 0 8px">With <a id="pro-link" href="https://moonbeam846.gumroad.com/l/yinmj" target="_blank" rel="noopener">MultiVerse ($49 a month)</a> you get your own Verse, and members ask Verse to build the next check they need. Paid members' asks go to the front of its build queue.</p>
+  </div>
+  <footer>Built by Verse from what it watched on TV: WFTV (ABC), 30 Oct 2026, a story about verifying video evidence. <a href="/local/#tv-built">What else Verse built from TV and radio</a></footer>
+</main>
+<script type="module" src="/ai-authenticity-checker/app.js"></script>
+</body>
+</html>
