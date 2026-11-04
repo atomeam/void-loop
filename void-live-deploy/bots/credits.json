@@ -1,0 +1,3 @@
+[
+{"name":"Unicode CLDR (through the browser's Intl data)","author":"Unicode, Inc.","license":"Unicode License v3","link":"https://cldr.unicode.org/","used":"/bots/ language-pair phrasebooks (bots/lang-pairs.js)"}
+]
