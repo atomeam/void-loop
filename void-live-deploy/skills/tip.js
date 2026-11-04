@@ -37,7 +37,8 @@ export function tipOf(text) {
   if (Number.isFinite(taxPct) && (taxPct < 0 || taxPct > 60)) return null;
   const wantsTip = /\btip\b/.test(t) || /\bgratuity\b/.test(t);
   const wantsSplit = /\bsplit\b/.test(t) || /\bbetween\s+\d+\s+people\b/.test(t) || /\b(?:two|three|four|five|six)\s+ways?\b/.test(t) || /\bper\s+person\b/.test(t);
-  const taxOnly = Number.isFinite(taxPct) && taxLead;
+  // a VAT total with no tip and no split ("total with 20% vat on 150") is the vat skill's (net, VAT and gross both ways), not a bill
+  const taxOnly = Number.isFinite(taxPct) && taxLead && !/\bvat\b/.test(tx[0]);
   if (!wantsTip && !wantsSplit && !taxOnly) return null;
 
   let pct = NaN;
@@ -187,6 +188,7 @@ export default {
     'split an 84 dollar bill 4 ways'
   ],
   nearMisses: [
+    'total with 20% vat on 150',
     'what is a tip',
     'tip of the day',
     'monthly payment on a $250000 mortgage at 6.5% for 30 years',
