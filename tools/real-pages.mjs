@@ -166,6 +166,12 @@ export const SPECS = {
   // never cover it, a word told becomes an orb on it, the live numbers and what it says about itself are the brain's own, Good is heard, the
   // panel and the numbers fold away, and a smaller window refits the field
   '/brain/': async (t) => {
+    // Knows first: what Verse knows, searchable, with no simulation loaded until Watch it think
+    await t.p.waitForFunction(() => document.body.dataset.knowsReady === '1', null, { timeout: 15000 }).catch(() => {});
+    t.ok(await t.p.evaluate(() => !window.verseBrainField && document.querySelectorAll('#kList .k-item').length >= 10), 'Knows opens with what Verse knows and no simulation running');
+    await t.fill('#kFind', 'pdf'); await t.p.waitForTimeout(300);
+    const hit = await t.text('#kSum'); t.ok(/^\d+ things? match “pdf”/.test(hit) && !/^0 /.test(hit), 'search finds what it knows: ' + hit);
+    await t.click('#watchBtn');
     await t.p.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 15000 }).catch(() => {});
     const fit = () => t.p.evaluate(() => {
       const c = document.querySelector('#field canvas'), r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1), live = document.querySelector('#live');

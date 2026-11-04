@@ -121,6 +121,29 @@
   }
   @media (min-width: 721px) { body.panel-open #bar, body.panel-open #field, body.panel-open #live { right: var(--pw); } } /* nothing of the field hides under the panel: it fills what is left, and all of the screen once the panel is hidden */
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  /* Knows, the first view (brain/knows.js): what Verse knows, searchable, plain 2D. The simulation's parts wait hidden until "Watch it think". */
+  body.knows-on #field, body.knows-on #mapView, body.knows-on #live, body.knows-on #panel, body.knows-on .hint, body.knows-on #viewBtn, body.knows-on #numBtn, body.knows-on #fs, body.knows-on #panelBtn { display: none !important; }
+  body.knows-on { overflow: auto; }
+  #knows { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: calc(var(--top, 60px) + 12px) 16px 40px; }
+  #knows[hidden] { display: none; }
+  #knows h1 { font-size: 22px; margin: 0 0 4px; }
+  #knows .lede { font-size: 14px; }
+  #kForm { display: flex; gap: 8px; margin: 12px 0 8px; }
+  #kFind { flex: 1; min-width: 0; font: inherit; font-size: 16px; color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+  #kChips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  .k-chip { font: inherit; font-size: 13px; color: var(--ink); background: rgba(255,255,255,.05); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; min-height: 34px; cursor: pointer; }
+  .k-chip[aria-pressed=true] { border-color: var(--accent); background: rgba(165,139,255,.16); }
+  #kSum, #kWill, #kNote { font-size: 13px; color: var(--soft); margin: 4px 0; }
+  #kList { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; }
+  .k-item { padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.04); border-left: 3px solid var(--line); }
+  .k-want { border-left-color: var(--warm); } .k-site { border-left-color: var(--cool, #5ad1ff); } .k-lesson { border-left-color: var(--accent); } .k-did { border-left-color: #7be3a0; }
+  .k-head { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline; }
+  .k-tag, .k-st { font: 600 10.5px/1.6 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--soft); background: rgba(255,255,255,.06); border-radius: 6px; padding: 0 6px; }
+  .k-t { font-weight: 600; text-decoration: none; overflow-wrap: anywhere; } .k-t:hover { text-decoration: underline; }
+  .k-d { margin: 4px 0 0; font-size: 13.5px; color: var(--ink); opacity: .88; overflow-wrap: anywhere; }
+  .k-f { margin: 4px 0 0; font-size: 12.5px; color: var(--soft); overflow-wrap: anywhere; } .k-at { float: right; }
+  .k-none { color: var(--soft); padding: 12px; }
+  #kMore { margin: 8px 0; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/brain/">
@@ -129,52 +152,8 @@
 <script src="/visit.js" defer></script>
 
 <!-- modulepreload: tools/preload.mjs -->
-<link rel="modulepreload" href="/brain/app.js">
-<link rel="modulepreload" href="/skills/verse-brain.js">
-<link rel="modulepreload" href="/lib/field-stage.js">
-<link rel="modulepreload" href="/lib/field-kit.js">
-<link rel="modulepreload" href="/lib/motion-throttle.js">
-<link rel="modulepreload" href="/lib/shared-field.js">
-<link rel="modulepreload" href="/lib/mode-field.js">
-<link rel="modulepreload" href="/lib/live-cards.js">
-<link rel="modulepreload" href="/lib/mind-field-modes.js">
-<link rel="modulepreload" href="/lib/brain.js">
-<link rel="modulepreload" href="/lib/brain-workspace.js">
-<link rel="modulepreload" href="/lib/brain-organs.js">
-<link rel="modulepreload" href="/lib/brain-mind.js">
-<link rel="modulepreload" href="/lib/brain-creature.js">
-<link rel="modulepreload" href="/lib/brain-hearing.js">
-<link rel="modulepreload" href="/lib/brain-painter.js">
-<link rel="modulepreload" href="/lib/brain-gardener.js">
-<link rel="modulepreload" href="/lib/brain-grower.js">
-<link rel="modulepreload" href="/lib/brain-formula.js">
-<link rel="modulepreload" href="/lib/brain-current.js">
-<link rel="modulepreload" href="/lib/brain-grains.js">
-<link rel="modulepreload" href="/lib/brain-pool.js">
-<link rel="modulepreload" href="/lib/brain-trace.js">
-<link rel="modulepreload" href="/lib/brain-dialogue.js">
-<link rel="modulepreload" href="/lib/brain-route.js">
-<link rel="modulepreload" href="/lib/brain-watch.js">
-<link rel="modulepreload" href="/lib/field-resonance.js">
-<link rel="modulepreload" href="/lib/brain-synapses.js">
-<link rel="modulepreload" href="/lib/brain-bridge.js">
-<link rel="modulepreload" href="/lib/brain-host.js">
-<link rel="modulepreload" href="/lib/brain-store.js">
-<link rel="modulepreload" href="/lib/brain-glow.js">
-<link rel="modulepreload" href="/lib/brain-everywhere.js">
-<link rel="modulepreload" href="/lib/brain-field.js">
-<link rel="modulepreload" href="/lib/brain-ask.js">
-<link rel="modulepreload" href="/lib/toolkit.js">
-<link rel="modulepreload" href="/lib/tool-sites.js">
-<link rel="modulepreload" href="/lib/flight-sites.js">
-<link rel="modulepreload" href="/lib/job-sites.js">
-<link rel="modulepreload" href="/lib/self-sites.js">
-<link rel="modulepreload" href="/lib/converter-ask.js">
-<link rel="modulepreload" href="/lib/local-ask.js">
-<link rel="modulepreload" href="/brain/map.js">
-<link rel="modulepreload" href="/lib/brain-map.js">
-<link rel="modulepreload" href="/brain/dreams.js">
-<link rel="modulepreload" href="/lib/brain-dream.js">
+<link rel="modulepreload" href="/brain/knows.js">
+<link rel="modulepreload" href="/lib/brain-knows.js">
 <!-- /modulepreload -->
 </head>
 <body>
@@ -188,6 +167,15 @@
     <p class="note" id="mapCounts"></p>
   </div>
 </section>
+<section id="knows" hidden aria-label="What Verse knows">
+  <h1>What Verse knows</h1>
+  <p class="lede">Its wants right now, every skill and the page it powers, every tool page, every site it took on and what that taught it, the lessons it recalls when it proposes a fix, and what it did lately. Search it, or ask Verse.</p>
+  <form id="kForm" role="search"><label class="vh" for="kFind">Search what Verse knows</label><input id="kFind" type="search" maxlength="120" autocomplete="off" placeholder="Search: pdf, baggage, convert, weather…"><a class="tb" id="kAsk" href="/">Ask Verse</a></form>
+  <div id="kChips" role="toolbar" aria-label="Kinds"></div>
+  <p id="kSum" aria-live="polite"></p><p id="kWill"></p><p id="kNote"></p>
+  <ul id="kList"></ul>
+  <button type="button" class="tb" id="kMore" hidden>Show more</button>
+</section>
 <header id="bar">
   <span id="brand"><span id="pulse" aria-hidden="true"></span>Verse Brain</span>
   <span class="note hint">Move over it · arrows move you · Esc leaves</span>
@@ -195,6 +183,7 @@
   <button type="button" class="tb" id="numBtn" aria-controls="live" aria-expanded="true">Hide numbers</button>
   <button type="button" class="tb" id="fs" aria-pressed="false">Fill the screen</button>
   <button type="button" class="tb" id="panelBtn" aria-controls="panel" aria-expanded="true">Hide panel</button>
+  <button type="button" class="tb" id="watchBtn" aria-pressed="false">Watch it think</button>
   <a class="tb" id="exit" href="/">Leave</a>
 </header>
 <section id="live" aria-label="Live numbers from the brain" aria-live="off">
@@ -219,10 +208,9 @@
   <footer><a href="/">Verse</a> · <a href="/tools/">every tool</a></footer>
 </main>
 <script type="module">
-  // the page is whole before this runs: the brain itself is a module its head preloads
-  import '/brain/app.js';
-  import '/brain/map.js';
-  import '/brain/dreams.js';
+  // the page is whole before this runs. Knows (what Verse knows, searchable) is the first view; the simulation, /brain/app.js,
+  // /brain/map.js and /brain/dreams.js, loads only on "Watch it think", ?view=watch or ?t= (brain/knows.js)
+  import '/brain/knows.js';
 </script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); // opens offline after one visit (sw.js TOOLS)</script>
 </body>
