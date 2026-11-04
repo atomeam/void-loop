@@ -1,0 +1,64 @@
+# Verse's Shorts, remade (owner, 2026-11-03: "verses videos are bad, its not framed properly the music is bad and they are meaningless
+# to most people even me"). tools/shorts.mjs films the live a-to-mind.com answering an everyday question at full 1080x1920, then
+# tools/video-gate.mjs measures it (no bars, legible captions, real footage, loudness, hook). Only a pass goes on /films/ (listed)
+# and, when the repo variable YT_UPLOAD is 1, to Verse's channel. A fail is kept as the run's artifact and posted nowhere.
+name: Verse shorts
+
+on:
+  schedule:
+    - cron: '23 15 * * *' # daily, about 10 AM ET
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shorts
+  cancel-in-progress: false
+
+jobs:
+  shorts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Chromium, ffmpeg and fonts
+        run: |
+          npx playwright-core install --with-deps chromium
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
+          echo "CHROME=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Film, render and gate
+        id: render
+        # a failed gate turns this step red but the passes still go out below
+        continue-on-error: true
+        run: set -o pipefail; node tools/shorts.mjs render --no-voice --out media/shorts | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Put each passed Short on /films/
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for m in media/shorts/*.json; do
+            [ "$(jq -r '.gate.pass' "$m")" = "true" ] || { echo "not posted (gate failed): $m"; continue; }
+            id="$(date -u +%Y%m%d)-short-$(jq -r .id "$m")"
+            node tools/film-post.mjs "${m%.json}.mp4" "$m" --id "$id" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Upload passed Shorts to Verse's YouTube channel
+        if: vars.YT_UPLOAD == '1'
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY }}
+        # tools/youtube.mjs refuses any film whose meta has not passed the gate
+        run: set -o pipefail; for m in media/shorts/*.json; do node tools/youtube.mjs "$m" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verse-shorts
+          path: media/shorts/
+          retention-days: 14
