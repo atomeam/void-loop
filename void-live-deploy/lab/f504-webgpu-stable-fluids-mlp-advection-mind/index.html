@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --ke: 0; --hue: 200; }
+body { margin:0; background:#0a0a12; color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { position:absolute; inset:0; width:100%; height:100%; }
+#agents { position:absolute; inset:0; pointer-events:none; }
+.agent {
+  position:absolute; width:72px; height:48px; border-radius:8px;
+  background:hsla(var(--hue),70%,50%,0.85); color:#111; font-size:11px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  pointer-events:auto; cursor:grab; box-shadow:0 4px 12px rgba(0,0,0,.4);
+  transform-origin:center; transition:filter .2s;
+}
+#hud {
+  position:absolute; top:12px; left:12px; background:rgba(0,0,0,.65); padding:10px 14px;
+  border-radius:10px; font-size:13px; max-width:280px; z-index:10;
+}
+button, input { margin:4px 4px 0 0; }
+#info { position:absolute; bottom:12px; left:12px; font-size:12px; opacity:.7; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-stable-fluids-mlp-advection-mind · Verse lab</title>
+<meta name="description" content="A 2D Navier-Stokes fluid (stable fluids method: advection, diffusion, projection via Jacobi) is simulated with a WebGPU compute path reserved.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-stable-fluids-mlp-advection-mind · Verse lab">
+<meta property="og:description" content="A 2D Navier-Stokes fluid (stable fluids method: advection, diffusion, projection via Jacobi) is simulated with a WebGPU compute path reserved.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f504-webgpu-stable-fluids-mlp-advection-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f504-webgpu-stable-fluids-mlp-advection-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="agents"></div>
+<div id="hud">
+  <div><b>F504 · Stable Fluids + MLP Advection Mind</b></div>
+  <button id="add">Add Agent</button>
+  <button id="seal">Seal All</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear Field</button><br>
+  Viscosity <input type="range" id="visc" min="0.0001" max="0.01" step="0.0001" value="0.001">
+  <div id="status">ready</div>
+</div>
+<div id="info">Pointer paints dye & force · Agents inject via MLP and are advected · Seal genomes to IndexedDB</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-stable-fluids-mlp-advection-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

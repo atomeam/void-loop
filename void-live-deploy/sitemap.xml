@@ -320,7 +320,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/tools/</loc>
-    <lastmod>2026-11-03</lastmod>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -506,13 +506,13 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/markets/currency-converter/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://a-to-mind.com/emoji-combos/emoji-dictionary/</loc>
-    <lastmod>2026-11-04</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -854,7 +854,7 @@
   </url>
   <url>
     <loc>https://a-to-mind.com/lab/</loc>
-    <lastmod>2026-11-01</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1221,6 +1221,12 @@
   <url>
     <loc>https://a-to-mind.com/lab/f0484-webgpu-photonic-waveguide-mlp-mind/</loc>
     <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f0485-webxr-hand-reservoir-kuramoto-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -2859,6 +2865,150 @@
   <url>
     <loc>https://a-to-mind.com/lab/f493-webgpu-implicit-sculptor-mind/</loc>
     <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f494-webgpu-ifs-fractal-policy-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f495-webgpu-ising-orient-domain-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f496-devicemotion-kalman-portal-physics-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f497-webgpu-echo-state-living-dom-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f498-webgpu-wfc-mlp-living-grid-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f499-webgpu-battery-metabolism-particle-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f500-webgpu-amplitude-collapse-portal-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f501-ambient-light-metabolic-swarm-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f501-pressure-tilt-mlp-card-sculptor/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f502-webgpu-kuramoto-phase-dom-orchestra-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f503-lennard-jones-mlp-dom-swarm-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f504-webgpu-poisson-potential-mlp-dom-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f504-webgpu-stable-fluids-mlp-advection-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f505-webgpu-implicit-mind-surface/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f506-tilt-gaze-rnn-tensegrity-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f507-webrtc-rnn-spatial-dom-auction-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f509-webxr-hand-gaze-rnn-sph-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f510-webgpu-quantum-walk-observer-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f511-webgpu-memory-palace-evolutionary-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f511-webxr-lorentz-magnetic-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f512-webgpu-entangled-pair-portal-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f513-mlp-voter-model-dom-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f514-acoustic-swarm-consonance-dom-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://a-to-mind.com/lab/f516-webmidi-local-rnn-spatial-score-mind/</loc>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>

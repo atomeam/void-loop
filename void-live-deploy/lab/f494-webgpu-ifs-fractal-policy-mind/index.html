@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --complexity: 0.3; --hue: 220; --energy: 0.4; }
+body { margin:0; background:hsl(var(--hue),30%,6%); color:#eee; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; width:100%; height:100%; }
+#portals { position:absolute; inset:0; pointer-events:none; }
+.portal { position:absolute; width:90px; height:70px; background:hsla(var(--hue),60%,40%,0.35); border:1px solid hsla(var(--hue),80%,70%,0.6); border-radius:calc(8px + var(--complexity)*20px); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; font-size:12px; text-align:center; transform:translate(-50%,-50%); transition:transform 0.15s; box-shadow:0 0 calc(var(--energy)*20px) hsla(var(--hue),80%,60%,0.5); }
+header { position:absolute; top:12px; left:12px; z-index:10; background:hsla(0,0%,0%,0.55); padding:8px 14px; border-radius:8px; }
+button { margin:0 6px; padding:6px 10px; background:#222; color:#eee; border:1px solid #555; border-radius:4px; cursor:pointer; }
+button:hover { background:#333; }
+#status { position:absolute; bottom:12px; left:12px; font-size:13px; opacity:0.8; z-index:10; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-ifs-fractal-policy-mind · Verse lab</title>
+<meta name="description" content="A population of local policy genomes encodes the affine transforms of an Iterated Function System (IFS).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-ifs-fractal-policy-mind · Verse lab">
+<meta property="og:description" content="A population of local policy genomes encodes the affine transforms of an Iterated Function System (IFS).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f494-webgpu-ifs-fractal-policy-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f494-webgpu-ifs-fractal-policy-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<header>
+  <strong>F494 IFS Fractal Policy Mind</strong>
+  <button id="seal">Seal (S)</button>
+  <button id="restore">Restore (R)</button>
+  <button id="reset">Reset</button>
+</header>
+<div id="status">Move pointer to guide the attractor · S seal · R restore</div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-ifs-fractal-policy-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
