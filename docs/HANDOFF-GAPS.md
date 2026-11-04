@@ -77,6 +77,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /chords/ | text, music | music | yes | its tag |
 | /color/ | color | color, palette | yes | handoff-types.json |
 | /color/gradient/ | color, palette, image | code, palette, image | yes | its tag |
+| /contribute/ | - | - | no | its tag |
 | /convert/ | number | number | yes | handoff-types.json |
 | /convert/unit-converter-2/ | number | number | yes | handoff-types.json |
 | /convert/unit-converter/ | number | number | yes | handoff-types.json |
