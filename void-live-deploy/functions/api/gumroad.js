@@ -173,6 +173,32 @@ export async function claimSale(env, voidId, ref, email) {
   return { ok: true, tier: unlock.tier };
 }
 
+// A buyer joins the Verse team with the Order ID and email from the receipt (functions/api/team.js joinMember), for a product whose license
+// key they cannot find. The sale must be a keyed ping already in void_sales, or, with GUMROAD_ACCESS_TOKEN set, a sale Gumroad's API
+// returns; it must be one of the store products that open the team (ids, slugs), paid with that email, and not refunded, disputed,
+// cancelled or ended. -> { ok: true, sale } (Gumroad's sale id) or { ok: false, status, why }
+export async function findMemberSale(env, ref, email, ids = [], slugs = []) {
+  const sid = String(ref || '').trim(), mail = String(email || '').trim().toLowerCase();
+  if (!/^[A-Za-z0-9=_+/-]{6,80}$/.test(sid) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return { ok: false, status: 400, why: 'give the Order ID from your Gumroad receipt and the email you paid with' };
+  await ensureStoreTables(env); await ensureTables(env);
+  const fits = (q) => ids.includes(String(q.product_id || '')) || slugs.includes(String(q.product_permalink || q.permalink || '').replace(/^.*\/l\//, '').toLowerCase());
+  let p = null;
+  for (const r of ((await env.DB.prepare("SELECT raw FROM void_sales WHERE resource = 'sale' AND sale_id = ? ORDER BY at DESC LIMIT 5").bind(sid).all()).results || [])) { const q = parsePing(r.raw); if (fits(q)) { p = q; break; } }
+  if (!p && env.GUMROAD_ACCESS_TOKEN && !/^\d+$/.test(sid)) {
+    let j = null;
+    try { j = await (await (env.GUMROAD_FETCH || fetch)('https://api.gumroad.com/v2/sales/' + encodeURIComponent(sid), { headers: { authorization: 'Bearer ' + env.GUMROAD_ACCESS_TOKEN } })).json(); } catch (_) { j = null; }
+    const s = j && j.success && j.sale;
+    if (s && s.id === sid) p = { sale_id: s.id, email: s.email, product_id: s.product_id, product_permalink: s.product_permalink, subscription_id: s.subscription_id || '', refunded: String(!!(s.refunded || s.chargedback || s.disputed)) };
+  }
+  if (!p || !fits(p)) return { ok: false, status: 404, why: 'Verse has no record of that order for a team product yet. Use the license key from the receipt instead.' };
+  if (String(p.email || '').trim().toLowerCase() !== mail) return { ok: false, status: 403, why: 'that email is not the one on this order' };
+  if (String(p.refunded) === 'true' || String(p.disputed) === 'true' || String(p.chargebacked) === 'true') return { ok: false, status: 403, why: 'that order was refunded or disputed' };
+  const sub = p.subscription_id || null;
+  const down = await env.DB.prepare(DOWN_SQL).bind(p.sale_id, sub, sub).first();
+  if (down && down.n > 0) return { ok: false, status: 403, why: 'that purchase was refunded, disputed or cancelled' };
+  return { ok: true, sale: String(p.sale_id) };
+}
+
 // The owner's own purchase links itself (coordinator, 2026-10-30: "buyers should never have to paste an Order ID"). Gumroad makes a
 // test ping only when the creator buys their own product, so a trusted test sale that reached Verse with no Verse id belongs to the
 // owner. It is linked to the account the owner signs in with: an account with a passkey the owner bound (void_owner_passkeys, which

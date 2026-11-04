@@ -226,6 +226,10 @@ const ROUTES = [
   [/^(?:my |the |open (?:the |my )?)?writing room$/i, () => '/fanfic/?v=room'],
   // the team chat: 'team chat', 'open the team chat', 'agent workspace', 'slack alternative', 'my agents'
   [/^(?:the |a |open (?:the |my )?|my )?(?:team ?chat|team workspace|agents? (?:chat|workspace)|chat (?:for|with) (?:my |the )?agents|slack alternative)$|^(?:my|the) agents$/i, () => '/team/'],
+  // help build Verse (owner, 2026-11-03): 'help build verse', 'join the team', 'contribute to verse', 'open jobs' land on the board and the member join;
+  // the owner's one line, 'team job: add a tide table' or 'verse idea: a members call', lands in the team's one-line box (one press posts it)
+  [/^(?:how (?:can|do) i )?(?:help (?:to )?build|contribute to|work on|build) (?:verse|a-to-mind|the void)\??$|^(?:join|become a member of) (?:the |verse'?s? )?(?:verse )?team$|^(?:verse|team) (?:open )?jobs(?: board)?$|^(?:good first|open) (?:tasks|issues) (?:for|on|in) verse$/i, () => '/team/#build'],
+  [/^(?:team|verse) (job|idea)[:,] (.+)$|^(?:post|add) (?:a |an )?(job|idea) (?:to|for|in) (?:the )?(?:verse )?team[:,]? (.+)$/i, (m) => '/team/?' + new URLSearchParams({ [(m[1] || m[3]).toLowerCase()]: (m[2] || m[4]).trim().slice(0, 1000) }) + '#build'],
   // boards: 'image boards', 'text boards', 'the chans', '/tech/', 'make a board'
   [/^(?:make|create|start|new) (?:a |an |my own )?(?:image |text )?board$/i, () => '/boards/?new=1'],
   [/^\/([a-z0-9]{1,10})\/$/i, (m) => '/boards/?b=' + m[1].toLowerCase()],
