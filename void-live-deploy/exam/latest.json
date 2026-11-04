@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T04:18:24.802Z",
+  "at": "2026-11-04T04:46:55.969Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,25 +32,10 @@
       }
     },
     "podcasts": {
-      "score": 85.6,
+      "score": 86.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of the daily",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
         {
           "ask": "play the latest episode of crime junkie",
           "failed": [
@@ -93,9 +78,11 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio",
+            "episode"
           ],
-          "score": 85.7
+          "score": 57.1
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -155,7 +142,7 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 98.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -171,7 +158,7 @@
           "failed": [
             "skill"
           ],
-          "score": 83.3
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -526,17 +513,10 @@
       ]
     },
     "prices": {
-      "score": 80,
+      "score": 83.3,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "100 usd in eur",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
         {
           "ask": "price",
           "failed": [
