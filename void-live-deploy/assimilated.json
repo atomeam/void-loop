@@ -10,14 +10,182 @@
   }
  },
  "counts": {
-  "sites": 271,
+  "sites": 279,
   "surpassed": 2,
   "passed": 143,
-  "assimilated": 11,
+  "assimilated": 12,
   "current": 1,
-  "tried": 114
+  "tried": 121
  },
  "sites": [
+  {
+   "site": "realtimerental.com",
+   "url": "https://realtimerental.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:55:40Z",
+   "page": "",
+   "lane": "",
+   "took": "RealTimeRental — Vacation Rental & Property Management Software",
+   "why": "no floor does its job (The website is a B2B software-as-a-service (SaaS) platform for property management and vacation rental businesses. Verse does not have a page that provides)",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 8,
+    "why": "not sized yet, hardness 85, Tranco 198688"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "epochteca.com",
+   "url": "https://epochteca.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:55:33Z",
+   "page": "",
+   "lane": "",
+   "took": "Epochteca - La solución está en TI",
+   "why": "no floor does its job (The website is a professional IT services and software development company. Verse provides specialized tools and utility pages, but does not offer a page for)",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 7,
+    "why": "not sized yet, hardness 85, Tranco 272125"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "icalculator.com",
+   "url": "https://icalculator.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T23:55:30Z",
+   "page": "/calculators/",
+   "lane": "",
+   "took": "iCalculator™ | Free Online Tax, Salary, Mortgage & Business Calculators",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 6,
+    "why": "not sized yet, hardness 84, Tranco 8446"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "jsonline.com",
+   "url": "https://jsonline.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:55:26Z",
+   "page": "",
+   "lane": "",
+   "took": "Milwaukee Journal Sentinel",
+   "why": "no floor does its job (The website is a news organization (Milwaukee Journal Sentinel). The only news-related Verse page available is 'news', but that page is a curated aggregator of)",
+   "learned": "",
+   "ease": {
+    "score": 5.3,
+    "place": 5,
+    "why": "not sized yet, hardness 84, Tranco 10263"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "speedtest.com.sg",
+   "url": "https://speedtest.com.sg/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:55:00Z",
+   "page": "",
+   "lane": "",
+   "took": "Speedtest Singapore — Free Broadband & Internet Speed Test | speedtest.sg",
+   "why": "no floor does its job (none)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 4,
+    "why": "not sized yet, hardness 83, Tranco 145374"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "ofont.ru",
+   "url": "https://ofont.ru/",
+   "status": "could not be read",
+   "outcome": "gone",
+   "at": "2026-11-04T23:54:52Z",
+   "page": "",
+   "lane": "",
+   "took": "",
+   "why": "did not load (page.goto: Timeout 20000ms exceeded.)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 3,
+    "why": "not sized yet, hardness 83, Tranco 182726"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "speedtest.sg",
+   "url": "https://speedtest.sg/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:54:31Z",
+   "page": "",
+   "lane": "",
+   "took": "Speedtest Singapore — Free Broadband & Internet Speed Test | speedtest.sg",
+   "why": "no floor does its job (The website is an internet speed test tool. While Verse has a 'hosting' tool for calculating server capacity and traffic, it does not have a tool for end-users)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 2,
+    "why": "not sized yet, hardness 83, Tranco 327511"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "bestfonts.pro",
+   "url": "https://bestfonts.pro/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T23:54:25Z",
+   "page": "",
+   "lane": "",
+   "took": "Каталог качественных шрифтов для Web — BestFonts.pro",
+   "why": "no floor does its job (The website is a catalog for downloading fonts, but Verse does not have a page for browsing or downloading fonts/typography assets. The existing tools focus on)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 1,
+    "why": "not sized yet, hardness 83, Tranco 407199"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
   {
    "site": "coloradosos.gov",
    "url": "https://coloradosos.gov/",
