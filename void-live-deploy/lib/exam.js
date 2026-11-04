@@ -212,13 +212,24 @@ export function compareRuns(prev, next, drop = DROP) {
 }
 
 /**
+ * True while the latest runs are still the new baseline after the exam scale itself changed.
+ * The run that changes scale, and the runs after it until three in a row share one scale, are not a rollback. Pure.
+ */
+export function scaleSettling(runs) {
+  const list = Array.isArray(runs) ? runs : [];
+  if (list.length < 2) return false;
+  const s = list.slice(-3).map((r) => Number(r && r.scale) || 1);
+  return s.some((n) => n !== s[0]);
+}
+
+/**
  * Whether the deploy should be reverted. `runs` is oldest first and includes the run just recorded.
- * A revert needs two runs in a row that each fell by `drop` points or more. One drop is recorded and left.
- * A new scale is a new baseline, so it does not count as a drop. Pure.
+ * A revert needs two runs in a row that each fell by `drop` points or more, all on the same scale.
+ * One drop is recorded and left. The first runs after a scale change are a new baseline. Pure.
  */
 export function revertAfter(runs, drop = DROP) {
   const list = Array.isArray(runs) ? runs : [];
-  if (list.length < 3) return { revert: false, first: null, second: null };
+  if (list.length < 3 || scaleSettling(list)) return { revert: false, first: null, second: null };
   const first = compareRuns(list[list.length - 3], list[list.length - 2], drop);
   const second = compareRuns(list[list.length - 2], list[list.length - 1], drop);
   return { revert: !first.ok && !second.ok, first, second };
