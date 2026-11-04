@@ -1,0 +1,15 @@
+{
+ "at": "2026-11-04T15:30:46.609Z",
+ "share": {
+  "loop": 76,
+  "outside": 817,
+  "bot": 57,
+  "of": 893,
+  "share": 8.5
+ },
+ "pick": {
+  "kind": "exam",
+  "id": "images",
+  "why": "lowest exam domain images at 73.9"
+ }
+}
