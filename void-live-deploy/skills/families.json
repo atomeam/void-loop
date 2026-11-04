@@ -13,10 +13,10 @@
  "smoke_at": "2026-11-03",
  "bench_at": "2026-10-30",
  "totals": {
-  "experiment": 3,
+  "experiment": 5,
   "tested": 3,
   "checked": 8,
-  "proven": 379
+  "proven": 380
  },
  "families": [
   {
@@ -1149,7 +1149,7 @@
     "experiment": 0,
     "tested": 0,
     "checked": 0,
-    "proven": 19
+    "proven": 20
    },
    "skills": [
     {
@@ -1185,6 +1185,14 @@
      "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
      "last_tested": "2026-11-03",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1
+    },
+    {
+     "name": "stopwatch",
+     "tier": "proven",
+     "why": "a self-test, 6 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-11-04",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1324,7 +1332,7 @@
    "name": "Numbers and money",
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 1,
     "checked": 0,
     "proven": 25
@@ -1373,6 +1381,14 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 0.996,
      "streak": 15
+    },
+    {
+     "name": "vat",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-03",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-11-04"
     },
     {
      "name": "convert",
@@ -1718,19 +1734,19 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 1,
+    "experiment": 2,
     "tested": 1,
     "checked": 1,
     "proven": 42
    },
    "sources": {
-    "read": 26,
-    "named": 24,
+    "read": 27,
+    "named": 25,
     "second": 15,
     "answered": 0,
-    "points": 1.5,
+    "points": 1.48,
     "one_live_from_proven": [],
-    "words": "Source reliability: 26 skills answer from outside sources; 24 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.5 of 3 on average)."
+    "words": "Source reliability: 27 skills answer from outside sources; 25 name the source on the card, 15 have a second source, 0 have a kept live answer from it (1.48 of 3 on average)."
    },
    "skills": [
     {
@@ -1867,6 +1883,24 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 15
+    },
+    {
+     "name": "hear",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-11-03",
+     "last_tested_by": "the daily smoke test",
+     "source": {
+      "sites": [
+       "apple.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: apple.com; named on the card; no second source; no kept live answer yet"
+     },
+     "since": "2026-11-04"
     },
     {
      "name": "define",
