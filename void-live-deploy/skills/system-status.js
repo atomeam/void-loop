@@ -22,25 +22,22 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const system = extractSystem(text);
   const el = showPage((p) => { p.innerHTML = '<h2>System status</h2><div class="sub">building…</div>'; });
-  const status = [
-    `<h2>System status: ${esc(system)}</h2>`,
-    `<p class="sub">We own the heavy lifting. This is the live handoff view.</p>`,
-    `<h3>Current state</h3>`,
-    `<p>Running. Last green check: today. No open incidents.</p>`,
-    `<h3>What we monitor</h3><ul>`,
-    `<li>Intake and clarify steps complete</li>`,
-    `<li>Connected tools responding</li>`,
-    `<li>Automations firing on schedule</li>`,
-    `<li>Status line and docs up to date</li>`,
-    `</ul>`,
-    `<h3>Ownership</h3>`,
-    `<p><strong>We own:</strong> design, build, connect, test, monitor, and the running automations.</p>`,
-    `<p><strong>Client owns:</strong> the outcome and any final approvals on the confirm line.</p>`,
-    `<h3>Next handoff</h3>`,
-    `<p>Status card + docs package ready. Client can review and keep the outcome.</p>`,
-    `<div class="src">Source: A-to-Mind system ownership practice</div>`
-  ].join('');
-  el.innerHTML = status;
+  el.innerHTML = '<h2>System status: ' + esc(system) + '</h2>'
+    + '<p class="sub">We own the heavy lifting. This is the live handoff view.</p>'
+    + '<h3>Current state</h3>'
+    + '<p>Running. Last green check: today. No open incidents.</p>'
+    + '<h3>What we monitor</h3><ul>'
+    + '<li>Intake and clarify steps complete</li>'
+    + '<li>Connected tools responding</li>'
+    + '<li>Automations firing on schedule</li>'
+    + '<li>Status line and docs up to date</li>'
+    + '</ul>'
+    + '<h3>Ownership</h3>'
+    + '<p><strong>We own:</strong> design, build, connect, test, monitor, and the running automations.</p>'
+    + '<p><strong>Client owns:</strong> the outcome and any final approvals on the confirm line.</p>'
+    + '<h3>Next handoff</h3>'
+    + '<p>Status card + docs package ready. Client can review and keep the outcome.</p>'
+    + '<div class="src">Source: A-to-Mind system ownership practice</div>';
   return 'system-status';
 }
 
