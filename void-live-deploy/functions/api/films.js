@@ -77,11 +77,15 @@ export async function onRequestGet({ request, env }) {
   const listed = await env.FILMS.list({ prefix: 'films/', limit: 1000 });
   const mp4s = (listed.objects || []).filter((o) => o.key.endsWith('.mp4'))
     .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded)).slice(0, LIST_MAX);
-  const films = await Promise.all(mp4s.map(async (o) => {
+  const all = await Promise.all(mp4s.map(async (o) => {
     const id = o.key.slice(6, -4);
     let w = {}; try { const j = await env.FILMS.get('films/' + id + '.json'); if (j) w = JSON.parse(await j.text()); } catch (_) { w = {}; }
-    return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now) };
+    return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now), ...(w.gate === 'pass' ? {} : { unlisted: true }) };
   }));
+  // unlisted until it passes the quality gate (owner, 2026-11-03: "verses videos are bad, its not framed properly the music is bad and
+  // they are meaningless to most people"): a film shows to everyone only when its words say gate 'pass' (tools/video-gate.mjs). The
+  // rest stay stored and the owner still sees them, marked unlisted, so this is reversible: post the words again with gate 'pass'.
+  const films = p && p.owner ? all : all.filter((f) => !f.unlisted);
   const reviews = p ? await forFilms(env, films.map((f) => f.id), p).catch(() => ({})) : {};
   for (const f of films) f.reviews = reviews[f.id] || null;
   return good({ films, owner: !!(p && p.owner), member: !!p, buy: BUY_URL, until: new Date(now + WATCH_MS).toISOString() });
@@ -102,7 +106,7 @@ export async function onRequestPost({ request, env }) {
     return good({ ok: true, id, bytes: bytes.byteLength });
   }
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return bad(400, 'send the film as video/mp4, or its words as JSON { title, description, tags }'); }
-  const w = { title: words(b && b.title, 200), description: words(b && b.description, WORDS_MAX), tags: words(b && b.tags, 500) };
+  const w = { title: words(b && b.title, 200), description: words(b && b.description, WORDS_MAX), tags: words(b && b.tags, 500), gate: b && b.gate === 'pass' ? 'pass' : '' };
   if (!w.title) return bad(400, 'a film needs a title');
   await env.FILMS.put('films/' + id + '.json', JSON.stringify(w), { httpMetadata: { contentType: 'application/json' } });
   return good({ ok: true, id });
