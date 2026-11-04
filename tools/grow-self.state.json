@@ -1,15 +1,15 @@
 {
   "status": "open",
-  "run": "41767820636",
-  "at": "2026-11-04T03:34:58Z",
-  "what": "Verse hardened itself: 15 benchmark ask(s) for rps, delivery-pack, hear, riddle, snippet, business-clarify, and the card art floors rise to 99 and 74.  Why these: rps (no benchmark ask, evidence tier: experiment); delivery-pack (no benchmark ask, evidence tier: experiment); hear (no benchmark ask, evidence tier: experiment); riddle (no benchmark ask, evidence tier: experiment); snippet (no benchmark ask, evidence tier: checked); business-clarify (no benchmark ask, evidence tier: tested). New phrases: “play rps” now opens rps; “package this idea: automate client onboarding” now opens delivery-pack; “handoff pack for my SaaS idea” now opens delivery-pack; “delivery package: invoice reminders that run themselves” now opens delivery-pack; “play bohemian rhapsody by queen” now opens hear; “play billie jean by michael jackson” now opens hear; “play imagine by john lennon” now opens hear; “riddle” now opens riddle; “give me a riddle” now opens riddle; “write a python function factorial of n” now opens snippet; “write a python function reverse that reverses a string” now opens snippet; “code” now opens snippet; “clarify this business idea: a tool that turns customer emails into running automations” now opens business-clarify; “turn this idea into a system plan: weekly status reports that write themselves” now opens business-clarify; “structure this business idea for Verse to own the heavy lifting” now opens business-clarify. Did not route: play rock paper scissors.",
-  "try": "play rps",
+  "run": "41780320552",
+  "at": "2026-11-04T05:50:41Z",
+  "what": "Verse hardened itself: 13 benchmark ask(s) for stopwatch, compliment, drive-share, palindrome, sums, pointing-arrow.  Why these: stopwatch (only 1 benchmark ask); compliment (no benchmark ask, evidence tier: tested); drive-share (no benchmark ask, evidence tier: tested); palindrome (no benchmark ask, evidence tier: tested); sums (no benchmark ask, evidence tier: tested); pointing-arrow (only 1 benchmark ask, evidence tier: checked). New phrases: “stopwatch” now opens stopwatch; “show stopwatch” now opens stopwatch; “give me a compliment” now opens compliment; “compliment me” now opens compliment; “say something nice” now opens compliment; “split a 90 mile drive costing 36 dollars between 3 people” now opens drive-share; “share a 40 km trip that cost 24 dollars 4 ways” now opens drive-share; “palindrome check for a man a plan a canal panama” now opens palindrome; “check if kayak is a palindrome” now opens palindrome; “if 3 apples cost 2.40 how much do 7 cost” now opens sums; “a train travels 120 km in 2 hours what is its speed” now opens sums; “posner cueing test” now opens pointing-arrow; “posner test” now opens pointing-arrow.",
+  "try": "stopwatch",
   "closedAt": null,
   "proof": null,
   "note": "",
   "previous": {
-    "at": "2026-10-30T17:33:59Z",
-    "try": "heads or tails",
-    "closedAt": "2026-11-04T03:34:43Z"
+    "at": "2026-11-04T03:34:58Z",
+    "try": "play rps",
+    "closedAt": "2026-11-04T05:50:18Z"
   }
 }

@@ -36,8 +36,9 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
-    # (Only the newest pending production deploy runs; the suite is verify.yml, one run per head, so no head goes untested.)
+    # one run per PR: a new push cancels the older run of that PR at once. On main each deploy has its own group and runs side by
+    # side (owner, 2026-10-25: "no need to serialize"); a run stops itself before the upload when a newer head's deploy is on its
+    # way (the step below), and verify.yml tests every head, so no head goes untested.
     concurrency:
       group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}

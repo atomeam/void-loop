@@ -10,32 +10,41 @@ import { splitHome } from './split-void-page.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-test('a small page splits into a stylesheet, a boot script and deferred sections', () => {
+test('a small page splits into a stylesheet and scripts that wait for the first paint', () => {
   const html = '<html><head><title>Verse</title></head><body>\n  <style>\n    /* home polish: x */\n    body{margin:0}\n  </style>\n  <script>\n    // Private learning log\n    const LOOP_KEY = 1;\n  </script>\n  <script>\n  // ---- The sky: a\n  const sky = 1;\n  </script>\n  <script>\n  // ---- Presence: b\n  const presence = 1;\n  </script>\n  <script>\n  // ---- Synapses: c\n  const synapses = 1;\n  </script>\n</body></html>';
   const split = splitHome(html);
   assert.ok(split);
   assert.match(split.html, /href="\/void-home\.css"/);
-  assert.match(split.html, /rel="preload" href="\/void-boot\.js"/);
-  assert.match(split.html, /src="\/void-boot\.js" defer/);
-  assert.match(split.html, /src="\/void-sky\.js" defer/);
-  assert.match(split.html, /src="\/void-presence\.js" defer/);
-  assert.match(split.html, /src="\/void-synapses\.js" defer/);
+  assert.match(split.html, /media="print"/);
+  assert.doesNotMatch(split.html, /rel="preload" href="\/void-boot\.js"/);
+  assert.doesNotMatch(split.html, /<script src="\/void-/);
+  assert.match(split.html, /add\("\/void-boot\.js"\)/);
+  assert.match(split.html, /requestAnimationFrame\(boot\)/);
+  assert.match(split.html, /add\("\/void-sky\.js"\)/);
+  assert.match(split.html, /add\("\/verse-field\.js", "module"\)/);
+  assert.match(split.html, /largest-contentful-paint/);
   assert.doesNotMatch(split.html, /<style>/);
   assert.equal(split.files['void-boot.js'].includes('LOOP_KEY'), true);
   assert.equal(split.files['void-home.css'].includes('home polish'), true);
   assert.equal(splitHome(split.html), null);
 });
 
-test('the real home page loses the main script and the style, and each script still parses', () => {
+test('the real home page paints the hero from HTML and keeps each script parseable', () => {
   const html = readFileSync(resolve(root, 'void.html'), 'utf8');
   const before = Buffer.byteLength(html);
   const split = splitHome(html);
   assert.ok(split);
   const after = Buffer.byteLength(split.html);
   assert.ok(after < before / 3, after + ' of ' + before);
+  assert.match(split.html, /id="verse-hero"/);
+  assert.match(split.html, /id="verse-critical"/);
   assert.match(split.html, /id="input"/);
-  assert.match(split.html, /src="\/void-boot\.js" defer/);
+  assert.doesNotMatch(split.html, /home polish/);
+  assert.doesNotMatch(split.html, /rel="preload" href="\/void-boot\.js"/);
+  assert.doesNotMatch(split.html, /rel="preload" href="\/skills\/index\.json"/);
+  assert.match(split.html, /add\("\/void-boot\.js"\)/);
   assert.equal(split.files['void-boot.js'].includes('const LOOP_KEY'), true);
+  assert.equal(split.files['void-boot.js'].includes('or idle'), true);
   assert.equal(split.files['void-sky.js'].includes('sky-rules.js'), true);
   const dir = mkdtempSync(join(tmpdir(), 'void-split-'));
   for (const [name, body] of Object.entries(split.files)) {

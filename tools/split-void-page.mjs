@@ -1,9 +1,9 @@
-// The home page is one HTML file of about 700 KB (about 220 KB compressed). Most of that is the style block and the
-// main script, which the parser has to download before the ask bar can paint. The deploy pulls them out of the served
-// copies (void-live-deploy/index.html and void.html) after tools/public-quotes.mjs. The repo's void.html stays the one
-// file editors change. The later decorative scripts (sky, presence, synapses) are their own files and load with defer,
-// so they do not hold up the first paint. The main script stays one file: its pieces share one scope (const and let),
-// so they cannot be split into separate classic scripts without changing when they run.
+// The home page is one HTML file of about 700 KB. The deploy pulls the style and the scripts out of the served
+// copies after tools/public-quotes.mjs. The repo's void.html stays the file editors change.
+// The served page paints from the HTML and a small critical style that stays inline. The rest of the style loads
+// without blocking. The main script is added on the frame after the first paint. The sky, the presence rim, the
+// synapse canvas, the command palette and the WebGL wash are fetched only after the largest paint, or after four seconds.
+// The ask engine stays one file: its parts share one scope. Skill modules start on a key, a tap, or an idle callback.
 //   node tools/split-void-page.mjs            rewrite the served copies and write the files
 //   node tools/split-void-page.mjs --dry      print the sizes only
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -12,16 +12,40 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OPEN = { css: '  <style>\n', js: '  <script>\n' };
+// The hero uses the system font. Caveat is the handwriting on a note, fetched when a note is shown, not for the first paint.
+const CSS_TAG = '  <link rel="stylesheet" href="/void-home.css" media="print" onload="this.media=\'all\'">\n  <noscript><link rel="stylesheet" href="/void-home.css"></noscript>\n';
+const AFTER = [
+  '<script>',
+  '(function(){',
+  '  var bootDone = false, decorDone = false;',
+  '  function add(src, type){ var s = document.createElement("script"); if (type) s.type = type; s.src = src; document.body.appendChild(s); }',
+  '  function boot(){ if (bootDone) return; bootDone = true; add("/void-boot.js"); }',
+  '  function decor(){',
+  '    if (decorDone) return; decorDone = true;',
+  '    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/verse.css"; document.head.appendChild(l);',
+  '    add("/void-sky.js"); add("/void-presence.js"); add("/void-synapses.js");',
+  '    add("/verse-shell.js", "module"); add("/verse-field.js", "module");',
+  '  }',
+  '  function frame(){ requestAnimationFrame(function(){ requestAnimationFrame(boot); }); }',
+  '  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", frame); else frame();',
+  '  try { var po = new PerformanceObserver(function(list, obs){ if (list.getEntries().length) { obs.disconnect(); decor(); } }); po.observe({ type: "largest-contentful-paint", buffered: true }); } catch (e) {}',
+  '  setTimeout(decor, 4000);',
+  '  var install = document.getElementById("verse-install"), promptEv = null;',
+  '  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); promptEv = e; if (install) install.hidden = false; });',
+  '  if (install) install.addEventListener("click", function(){ if (!promptEv) return; promptEv.prompt(); promptEv = null; install.hidden = true; });',
+  '})();',
+  '</script>',
+].join('\n');
 
 const BLOCKS = [
-  { file: 'void-home.css', start: '  <style>\n    /* home polish:', end: '\n  </style>', kind: 'css', tag: '  <link rel="stylesheet" href="/void-home.css">\n' },
-  { file: 'void-boot.js', start: '  <script>\n    // Private learning log', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-boot.js" defer></script>\n' },
-  { file: 'void-sky.js', start: '  <script>\n  // ---- The sky:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-sky.js" defer></script>\n' },
-  { file: 'void-presence.js', start: '  <script>\n  // ---- Presence:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-presence.js" defer></script>\n' },
-  { file: 'void-synapses.js', start: '  <script>\n  // ---- Synapses:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-synapses.js" defer></script>\n' },
+  { file: 'void-home.css', start: '  <style>\n    /* home polish:', end: '\n  </style>', kind: 'css', tag: CSS_TAG },
+  { file: 'void-boot.js', start: '  <script>\n    // Private learning log', end: '\n  </script>', kind: 'js', tag: '' },
+  { file: 'void-sky.js', start: '  <script>\n  // ---- The sky:', end: '\n  </script>', kind: 'js', tag: '' },
+  { file: 'void-presence.js', start: '  <script>\n  // ---- Presence:', end: '\n  </script>', kind: 'js', tag: '' },
+  { file: 'void-synapses.js', start: '  <script>\n  // ---- Synapses:', end: '\n  </script>', kind: 'js', tag: '' },
 ];
 
-/** pull the home style and scripts out of `html`. Null when the main script marker is not there (already split, or not the home page). Pure. */
+/** pull the home style and scripts out of `html`. Null when the main script marker is not there. Pure. */
 export function splitHome(html) {
   const text = String(html || '');
   if (!text.includes('// Private learning log')) return null;
@@ -38,9 +62,7 @@ export function splitHome(html) {
     files[block.file] = inner;
     out = out.slice(0, s) + block.tag + out.slice(e + block.end.length);
   }
-  if (!out.includes('rel="preload" href="/void-boot.js"')) {
-    out = out.replace('</head>', '  <link rel="preload" href="/void-boot.js" as="script">\n</head>');
-  }
+  if (!out.includes('void-boot.js')) out = out.replace('</body>', AFTER + '\n</body>');
   return { html: out, files };
 }
 

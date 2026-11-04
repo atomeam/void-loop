@@ -124,6 +124,18 @@ export const SPECS = {
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
     await t.links();
   },
+  '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
+    const n = await t.waitText('#n', /scanned/, 10000); t.ok(/\d+\s*scanned/.test(n), 'it counts what was scanned: ' + n.slice(0, 80));
+    t.ok((await t.p.locator('#top tr').count()) > 0, 'the next pieces by value are listed');
+    const all = await t.p.locator('#all tr').count(); t.ok(all > 10, all + ' pieces listed');
+    await t.links();
+  },
+  '/credits/': async (t) => { // the outside work Verse builds on, from /salvage.json: each with its author, license and link
+    await t.p.waitForFunction(() => document.querySelectorAll('#c tr').length > 1, null, { timeout: 10000 }).catch(() => {});
+    const rows = await t.p.locator('#c tr').allInnerTexts(); t.ok(rows.length > 1, (rows.length - 1) + ' credits listed');
+    t.ok(rows.slice(1).every((r) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(r)), 'every credit names its license');
+    await t.links();
+  },
   '/films/': async (t) => {
     const n = await t.waitText('main, body', /\d+ videos, newest first/, 20000); const c = +((n.match(/(\d+) videos, newest first/) || [])[1] || 0);
     t.ok(c > 0, c + ' films listed from the feed'); await t.links();
@@ -461,6 +473,20 @@ SPECS['/autopilot/'] = async (t) => {
   await t.click('[data-days="7"]'); await t.waitText('#feed', /did not answer/, 8000);
   t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
   t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
+};
+// /agent/: Verse's agent. The API is faked: one finished task with its steps, one waiting on a yes
+const AGENT_FIX = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, running: 0, text: 'Made 1 thing in the last day. 1 waiting on your yes.' },
+  tiers: [{ name: 'free', month_cents: 0 }, { name: 'strong', month_cents: 500 }],
+  tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
+    { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
+AGENT_FIX.made = [AGENT_FIX.tasks[1]];
+SPECS['/agent/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/agent', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AGENT_FIX) }));
+  await t.p.reload(); await t.waitText('#brief', /Daily brief/, 10000);
+  t.ok(/1 waiting on your yes/.test(await t.text('#brief')), 'the daily brief counts what waits');
+  t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
+  t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
+  t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },
