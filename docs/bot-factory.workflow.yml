@@ -1,4 +1,4 @@
-# Copy to .github/workflows/bot-factory.yml (needs a token with the workflow scope).
+# Live at .github/workflows/bot-factory.yml. The GH_TOKEN line there is a block, because ${{ }} inside { } does not parse.
 # Every hour Verse grows new bots with free Workers AI, gates them (probe must pass), and opens a helper/* PR that automerges when green.
 name: bot-factory
 on:
@@ -21,7 +21,8 @@ jobs:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: node tools/bot-factory.mjs --grow 20 --file-fixes && node --test tools/bot-factory.test.mjs tools/lang-pairs.test.mjs
       - name: Open a PR when bots were added
-        env: { GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git diff --quiet -- void-live-deploy/bots && exit 0
           b=helper/bot-factory-$(date -u +%Y%m%d%H%M)
