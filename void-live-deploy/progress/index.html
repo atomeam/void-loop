@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="verse-handoff" content="in: text; out: text">
-<title>Progress: what Verse can actually do · Verse</title>
-<meta name="description" content="Verse's outcome exam: fixed asks that must keep passing, and a score per domain from real asks on the live site. A song counts when audio plays and the title matches.">
+<title>What Verse can actually do · Verse</title>
+<meta name="description" content="Verse's outcome exam: a score per domain from real asks on the live site. A song counts when audio plays and the title matches. Ledger counts are not a score.">
 <link rel="canonical" href="https://a-to-mind.com/progress/">
-<meta property="og:title" content="Progress: what Verse can actually do · Verse">
-<meta property="og:description" content="Fixed asks that must keep passing, and scores from an exam a visitor would pass or fail.">
+<meta property="og:title" content="What Verse can actually do · Verse">
+<meta property="og:description" content="Scores from an exam a visitor would pass or fail. The lowest domain is what Verse works on next.">
 <meta property="og:url" content="https://a-to-mind.com/progress/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <script src="/visit.js" defer></script>
@@ -25,12 +25,8 @@
   .num { font-variant-numeric: tabular-nums; }
   .low { color: var(--bad); }
   .hi { color: var(--ok); }
-  .ok { color: var(--ok); }
-  .bad { color: var(--bad); }
   .fails { color: var(--soft); font-size: 14px; margin: 0; }
   .fails li { margin: 4px 0; }
-  #list { padding: 0; list-style: none; margin: 0 0 18px; }
-  #list li { padding: 8px 0; border-top: 1px solid var(--line); }
   svg { width: 100%; height: 72px; }
   .note { color: var(--soft); font-size: 14px; }
   nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 22px; }
@@ -38,10 +34,8 @@
 </head>
 <body>
 <main>
-  <h1>Progress: what Verse can actually do</h1>
-  <p class="note">The outcome exam. Each line is an ask whose result is fixed, and below it the score a visitor would get on a phone-width page: the right skill, a result in 12 seconds, and the thing the ask named. A pull request that makes a passing one fail is not merged. Verse reviews the pull request and merges it when the review, the merge gate and this exam pass. Spending money, and a message sent to someone outside, still wait on the confirm line. A song counts when an audio file plays and the title and artist match. Counts of skills, pull requests and lesson sentences are not a score.</p>
-  <p id="sum" class="note">Reading the exam.</p>
-  <ul id="list"></ul>
+  <h1>What Verse can actually do</h1>
+  <p class="note">Each score is the share of objective checks a real ask passed on a phone-width page: the right skill, a result in 12 seconds, the thing the ask named, and — where a free source has an answer — that source's answer, not a different one. Ambiguous asks have to say there is more than one. A song counts when an audio file plays and the title and artist match iTunes. A holdout set, rotated each week and not published, is scored beside the public one. A new scale is a new baseline. Counts of skills, pull requests and lesson sentences are not a score.</p>
   <p id="when" class="note">Loading the latest run…</p>
   <div id="chart"></div>
   <table>
@@ -50,8 +44,12 @@
   </table>
   <h2>What failed</h2>
   <div id="fails"></div>
+  <h2>Fixed asks</h2>
+  <p id="fixed" class="note">Reading the fixed asks.</p>
+  <ul id="fixed-list" class="fails"></ul>
   <nav id="related" aria-label="Related pages"><!-- related --><span class="tk-label">Use with</span> <a href="/brain/">Verse Brain</a> <a href="/autopilot/">Autopilot</a> <a href="/news/">News</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script src="/progress/app.js" defer></script>
+
 </body>
 </html>

@@ -19,7 +19,7 @@ function row(name, d) {
 }
 Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/history.json').then((r) => r.json()).catch(() => [])]).then(([latest, history]) => {
   const when = document.getElementById('when');
-  when.textContent = 'Run ' + (latest.at || '').replace('T', ' ').slice(0, 16) + ' UTC against ' + (latest.against || 'live') + '. Lowest: ' + (latest.lowest ? latest.lowest.domain + ' at ' + latest.lowest.score : '—') + '. A star on a holdout score means it was not remeasured this run.';
+  when.textContent = 'Run ' + (latest.at || '').replace('T', ' ').slice(0, 16) + ' UTC against ' + (latest.against || 'live') + (latest.scale ? ', scale ' + latest.scale : '') + '. Lowest: ' + (latest.lowest ? latest.lowest.domain + ' at ' + latest.lowest.score : '—') + '. A star on a holdout score means it was not remeasured this run.';
   document.getElementById('chart').innerHTML = chart(history);
   const body = document.getElementById('rows'), fails = document.getElementById('fails');
   body.innerHTML = Object.entries(latest.domains || {}).map(([k, v]) => row(k, v)).join('');
@@ -28,21 +28,21 @@ Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/hist
     if (!list.length) return '';
     return '<h3>' + esc(k) + '</h3><ul class="fails">' + list.map((f) => '<li>' + esc(f.ask) + ' <span class="note">(' + esc((f.failed || []).join(', ')) + ')</span></li>').join('') + '</ul>';
   }).join('') || '<p class="note">Nothing failed the checks that were measured.</p>';
-}).catch(() => { document.getElementById('when').textContent = 'No exam run is published yet.'; });
+}).catch(() => { const when = document.getElementById('when'); if (when) when.textContent = 'No domain exam is published yet.'; });
 fetch('/progress/exam.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
   const cases = (j && j.cases) || [], failed = cases.filter((c) => !c.ok);
-  const sum = document.getElementById('sum');
-  if (sum) sum.textContent = failed.length ? 'Regressed: ' + failed.map((c) => c.ask).join('; ') : 'No regression. ' + cases.length + ' outcomes hold.';
-  const list = document.getElementById('list');
+  const sum = document.getElementById('fixed');
+  if (sum) sum.textContent = failed.length ? 'Regressed: ' + failed.map((c) => c.ask).join('; ') : 'No regression. ' + cases.length + ' fixed asks hold. A pull request that makes one fail is not merged.';
+  const list = document.getElementById('fixed-list');
   if (!list) return;
   list.textContent = '';
   for (const c of cases) {
     const li = document.createElement('li');
     const mark = document.createElement('span');
-    mark.className = c.ok ? 'ok' : 'bad';
+    mark.className = c.ok ? 'hi' : 'low';
     mark.textContent = c.ok ? 'holds' : 'regressed';
     li.appendChild(mark);
     li.appendChild(document.createTextNode(' · ' + String(c.ask || '')));
     list.appendChild(li);
   }
-}).catch(() => { const sum = document.getElementById('sum'); if (sum) sum.textContent = 'The exam did not load.'; });
+}).catch(() => { const sum = document.getElementById('fixed'); if (sum) sum.textContent = 'The fixed asks did not load.'; });

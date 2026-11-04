@@ -68,11 +68,11 @@ export const SPECS = {
     await t.share('#share');
   },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
-    await t.waitText('h1', /Progress/, 8000);
-    await t.waitText('#sum', /No regression|Regressed|did not load/, 8000);
-    t.ok(/time in Tokyo/.test(await t.text('#list')), 'the Tokyo case is on the outcome exam');
-    t.ok(/confirm line/.test(await t.p.locator('main').innerText()), 'money and outside messages stay on the confirm line');
-    await t.waitText('#when', /Run \d{4}-\d\d-\d\d|No exam run/, 15000);
+    await t.waitText('h1', /What Verse can actually do/, 8000);
+    await t.waitText('#fixed', /No regression|Regressed|did not load/, 8000);
+    t.ok(/time in Tokyo/.test(await t.text('#fixed-list')), 'the Tokyo case is on the outcome exam');
+    t.ok(/not merged/.test(await t.p.locator('main').innerText()), 'a pull request that fails a fixed ask is not merged');
+    await t.waitText('#when', /Run \d{4}-\d\d-\d\d|No domain exam/, 15000);
     const rows = await t.p.locator('#rows tr').count();
     t.ok(rows >= 3, 'a score row for each domain: ' + rows);
     t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
