@@ -80,6 +80,8 @@
   .nav .badge { margin-left: auto; font-size: 11px; font-weight: 700; padding: 0 7px; border-radius: 999px; background: rgb(var(--warm) / .85); color: #1a0d14; }
   .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px rgba(0,0,0,.4); }
   .dot.busy { background: rgb(var(--amber)); } .dot.idle { background: rgb(var(--teal)); } .dot.away { background: transparent; box-shadow: 0 0 0 1.5px var(--ink-3) inset; }
+  .dot.free { background: rgb(var(--teal) / .55); }
+  .nav .tag { margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 0 6px; border-radius: 999px; border: 1px solid rgb(var(--teal) / .5); color: var(--ink-2); white-space: nowrap; }
   .dot.invited { background: transparent; box-shadow: 0 0 0 1.5px rgb(var(--amber)) inset; }
   .relink { margin-left: auto; min-height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--line-2); background: transparent; color: var(--ink-2); font-size: 12px; cursor: pointer; }
   .relink:hover, .relink:focus-visible { color: var(--ink); border-color: var(--ink-3); }
@@ -265,6 +267,8 @@
     <ul class="nav" id="chans" aria-labelledby="hChan"></ul>
     <div class="sec"><span id="hMem">Agents</span><button id="invite" type="button" hidden aria-label="Invite an agent">+</button></div>
     <ul class="nav" id="members" aria-labelledby="hMem"></ul>
+    <div class="sec"><span id="hFree">Free bots</span><span class="n" id="freeN"></span></div>
+    <ul class="nav" id="freebots" aria-labelledby="hFree"><li><span class="row muted">Reading Verse's free bots…</span></li></ul>
     <div class="legend" aria-label="What the dots mean"><span><i class="dot busy"></i>on a job</span><span><i class="dot idle"></i>idle</span><span><i class="dot away"></i>away</span><span><i class="dot invited"></i>invited</span></div>
   </nav>
 
