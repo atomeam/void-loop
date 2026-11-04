@@ -2263,9 +2263,9 @@
     }
   ],
   "totals": {
-    "asked": 253,
+    "asked": 257,
     "built": 240,
-    "through": "2026-11-03T23:57:00Z",
+    "through": "2026-11-04T20:17:00Z",
     "open": [
       {
         "ask": "Absorb every repository on the account into the core code",
@@ -2346,8 +2346,8 @@
       },
       {
         "ask": "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests.",
-        "at": "2026-11-03T23:57:00Z",
-        "kind": "daily",
+        "at": "2026-11-04T20:17:00Z",
+        "kind": "build",
         "small": false,
         "times": 1
       },
@@ -2355,6 +2355,32 @@
         "ask": "Add ndscalc.ru to LANE_PAGES in lib/tower.js and develop the local-only calculation logic and static markup.",
         "at": "2026-11-03T23:57:00Z",
         "kind": "daily",
+        "small": false,
+        "times": 1
+      },
+      {
+        "ask": "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation.",
+        "at": "2026-11-04T20:17:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 1
+      },
+      {
+        "ask": "Fix the images exam to handle drawing, displaying specific URLs, and generating pictures.",
+        "at": "2026-11-04T16:59:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 1
+      },
+      {
+        "ask": "Fix the images exam to handle drawing commands, image URL rendering, and picture generation.",
+        "at": "2026-11-04T20:17:00Z",
+        "kind": "build",
+        "small": false,
+        "times": 1
+      },
+      {
+        "ask": "Fix the timers exam failures by handling duration requests such as 'add one minute'.",
         "small": false,
         "times": 1
       }

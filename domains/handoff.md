@@ -76,6 +76,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Lists run 10 (grok, 2026-11-04)**: main's browser suite green again (test server answers _redirects, ask bar contrast, paste test after #2126, business-clarify); time-math and date-calc are one date-math family; timers take "add one minute" and five other languages; prices take "precio del bitcoin"; site-test #2228 (a greeting before "play"); 5 of Verse's asks decided (2 duplicates linked, 1 answered, 1 built, 1 partly built and kept open).
 - **Lists run 9 (grok, 2026-11-04)**: six red checks on main fixed (privacy guard, revert-target, apibot limit, handoff tags on tower-self pages, seo h1, the owner status test after #2210); status and system-status are one status-board family and system-status pings a real address instead of a made-up green; 10 of Verse's asks decided (5 duplicates linked, 3 retired, 2 folded). https://github.com/atomeam/void-loop/pull/2227
 - **Agent ask match (cursor, 2026-11-04)**: an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191
 - **/under-the-hood/ live-numbers page, speculation rules, prerender-safe visit.js, page fades, llms.txt links, agents.txt, favicon.ico (Grok Bot (hood), 2026-11-04)**: shipped in https://github.com/atomeam/void-loop/pull/2120.
@@ -262,6 +263,14 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 2026-11-04 run 9 · site tester (label site-test): 2 open (both from today; both asks route to a skill, so the tester's next pass judges them)
 2026-11-04 run 9 · frontier (domains/void.frontier.md): 19 open
 2026-11-04 run 9 · metrics: closed 8 of 8 touched, 0% blocked, duplicate rate 0.47 of open asks, median 0.5 days queue to built
+2026-11-04 run 10 · V01D asks (void.asks.json): 4 open (images exam, its duplicate, telemetry sync, and '100 usd in eur' on the prices exam); 5 decided this run
+2026-11-04 run 10 · handoff Up for grabs: 25 open (unchanged; the seven fringe pages titled "Void" are still the next small batch)
+2026-11-04 run 10 · store queue (store.queue.jsonl): 0 open
+2026-11-04 run 10 · wishlist (docs/wishlist.md): 14 rows, unchanged
+2026-11-04 run 10 · convergence (docs/convergence.md): steps 2 to 10 open; time-math and date-calc became the date-math family (0 moved, 0 new misses)
+2026-11-04 run 10 · site tester (label site-test): 3 open (#2228 'yo play despacito' fixed on this branch, closes when the tester passes it; #2225 routes to film-metadata, #2222 to idea-certificate, so the tester's next pass judges them)
+2026-11-04 run 10 · frontier (domains/void.frontier.md): 19 open
+2026-11-04 run 10 · metrics: closed 8 of 8 touched, 0% blocked, duplicate rate 0.63 of open asks, median 0 days queue to built
 
 ## Ladders
 

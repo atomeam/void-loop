@@ -12,8 +12,10 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-11-04. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests. (after a build, 2026-11-04) `ask-20261104-2017-2`
-- Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation. *(small)* (after a build, 2026-11-04) `ask-20261104-2017-3`
+- Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation. (after a build, 2026-11-04) `ask-20261104-2101-1`
+- Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests. (after a build, 2026-11-04) `ask-20261104-2101-2`
+- Fix the prices exam by solving failures in ethereum and currency conversion queries. (after a build, 2026-11-04) `ask-20261104-2101-3`
+- Implement a clear, useful answer for 'what can you do' for visitors. *(small)* (after a build, 2026-11-04) `ask-20261104-2054-3`
 - Fix the images exam to handle drawing commands, image URL rendering, and picture generation. (after a build, 2026-11-04) `ask-20261104-2017-1`
 - Fix the images exam to handle drawing, displaying specific URLs, and generating pictures. (after a build, 2026-11-04) `ask-20261104-1659-3`
 - Fix the timers exam failures by handling duration requests such as 'add one minute'. (after a build, 2026-11-04) `ask-20261104-0859-2`
@@ -32,11 +34,13 @@ _Read from /api/reflect on 2026-11-04. Asks a growth-ledger entry answers (its `
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261104-2017-2` retired: lists run 9 (2026-11-04): duplicate of ask-20261103-2357-2, answered: the four failed jobs at 814032d5 were python-tests and browser-suite shards; python-tests is green on main since
-- `ask-20261104-2017-3` queued, not decided yet
+- `ask-20261104-2101-1` built: lists run 10 (2026-11-04): duplicate: emojigraph.org is already a lane page through lib/self-sites.js (65ac2bbae)
+- `ask-20261104-2101-2` built: lists run 10 (2026-11-04): answered: 814032d5 is the merge of #2039; its only failed run was Verse verify 41264790432, jobs python-tests, browser-suite (1), (2) and (3); python-tests failed in tools/verse-loop.test.mjs:151 (the coder key message gained CLOUDFLARE_AI_TOKEN and the regex did not), and that file passes 22/22 on main now
+- `ask-20261104-2101-3` queued: lists run 10 (2026-11-04): "precio del bitcoin" and other-language price asks now name the coin (crypto.js priceEnglish, tools/crypto.test.mjs) and "how much is ethereum" passes live; "100 usd in eur" still fails only the rival check, so the ask stays open for that
+- `ask-20261104-2054-3` built: lists run 10 (2026-11-04): duplicate: "what can you do" routes to the self route (lib/router.js) and opens the menu book of what Verse can do; it is a bench ask (tools/bench.json, want self) and covered by the browser suite
 - `ask-20261104-2017-1` queued, not decided yet
 - `ask-20261104-1659-3` queued: lists run 9 (2026-11-04): duplicate of ask-20261104-2017-1 (the images exam); one build answers both
-- `ask-20261104-0859-2` queued, not decided yet
+- `ask-20261104-0859-2` built: lists run 10 (2026-11-04): the timer skill takes "add one minute" / "add 30 seconds to the timer" / "extend it by 5 minutes" (duration and time left both grow) and timer asks in Spanish, French, German, Italian and Portuguese ("pon un temporizador de cinco minutos"); tools/timer.test.mjs
 - `ask-20261104-0746-3` queued: lists run 9 (2026-11-04): duplicate of ask-20261103-2357-3 (telemetry counts and names in sync); one build answers both
 - `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
@@ -104,6 +108,7 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261101-0223-2` built: lists run 9 (2026-11-04): duplicate: identity probes are answered from Verse's own facts, not with a question back (802a05802 (#2017))
 - `ask-20261031-2154-3` built: lists run 9 (2026-11-04): duplicate: video-gen and baggage each have a suite in tools/checks.mjs (video-gen.test.mjs, video-gen-live.test.mjs, baggage-live.test.mjs)
 - `ask-20261031-1310-1` retired: lists run 9 (2026-11-04): superseded: a stalled target now gives way after 3 days with no aspect gained (067ad844c), and onlineconverter.com did; the Tower took on the next site
+- `ask-20261104-2017-2` retired: lists run 9 (2026-11-04): duplicate of ask-20261103-2357-2, answered: the four failed jobs at 814032d5 were python-tests and browser-suite shards; python-tests is green on main since
 
 ## Log, oldest first
 
@@ -8462,3 +8467,71 @@ Asks: "Fix the images exam to handle drawing commands, image URL rendering, and 
 *Verse flagged this one for Adam.*
 
 <sub>model @cf/google/gemma-4-26b-a4b-it · asked by owner</sub>
+
+<!-- voice:2026-11-04T20:52:27.339Z -->
+### 2026-11-04 20:52 UTC · after a build
+
+**Asked:** This just shipped: "Baggage live: read airline pages with ordinary browser headers". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 346 entries across 12 families, including the recently shipped baggage skill for reading airline pages [S1]. 240 of 255 asks are built, though the tower target emojigraph.org remains an open assimilation task [S2]. Numbers and money is the weakest family with the lowest proven share at 26 of 29 [S3].
+>
+> **How I would make it better:** The system needs to resolve the prices exam failures in ethereum and currency conversion to improve the Numbers and money family [S1]. Implementation of a clear 'what can you do' response for visitors is required to address a current presence weakness [S1].
+>
+> **Next video trick:** A video effect that uses the stage-fx skill to animate a 3D model morphing into a different shape [S1].
+
+Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation." (small); "Fix the prices exam by solving failures in ethereum and currency conversion queries."; "Implement a clear, useful answer for 'what can you do' for visitors."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-04T20:54:47.690Z -->
+### 2026-11-04 20:54 UTC · after a build
+
+**Asked:** This just shipped: "Mark system-status skill shipped (main SHA 25990ecbc): client handoff status cards". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has reached 346 entries across 12 families, with the recently shipped system-status skill providing client-visible status cards for owned states, monitors, and handoffs [S1]. Assimilation of emojigraph.org is the current tower target, with 2 of 1269 sites beaten so far [S1]. The Numbers and money family is currently the weakest, with a proven share of 26 of 29 [S3].
+>
+> **How I would make it better:** The system must resolve image exam failures in 'draw a red circle' and 'picture of a cat' to improve vision capabilities [S1]. The Numbers and money family requires fixes for ethereum and currency conversion queries to reach full proven status [S1].
+>
+> **Next video trick:** a video clip demonstrating a seamless transition between different stage-fx layers [S1].
+
+Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation." (small); "Fix the prices exam by solving failures in ethereum and currency conversion queries."; "Implement a clear, useful answer for 'what can you do' for visitors." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-04T20:59:01.433Z -->
+### 2026-11-04 20:59 UTC · after a build
+
+**Asked:** This just shipped: "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has 346 active entries across 12 families, with 385 total skills across the system [S1, S3]. Assimilation of emojigraph.org is the current tower target, with 2 of 1269 sites beaten so far [S1]. The Numbers and money family is the weakest proven area, with a 26 of 29 proven ratio [S3].
+>
+> **How I would make it better:** The system must resolve image processing and generation failures in the vision exam to improve scoring [S1]. Addressing the weather page aria-busy state and synchronizing telemetry failure counts with specific job names is required for operational accuracy [S1].
+>
+> **Next video trick:** A video effect that uses a split-screen to show a skill being performed in real-time versus its final 3D miniature state.
+
+Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation." (small); "Fix the prices exam by solving failures in ethereum and currency conversion queries."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-11-04T21:01:51.086Z -->
+### 2026-11-04 21:01 UTC · after a build
+
+**Asked:** This just shipped: "Lists run 9: main's red checks fixed, status + system-status one family, asks triaged". Using the tagged facts, state what it changes in the system and what should change next.
+
+> The skill index has grown to 346 active entries across 12 families, with 385 total skills [S1]. Assimilation of emojigraph.org is the current tower target, with 2 of 1269 sites beaten so far [S1]. The Numbers and money family remains the weakest proven area with a 26 of 29 proven ratio [S3]. Recent shipping includes Lists run 9, which fixed red checks on main and unified status and system-status into one family [S1].
+>
+> **How I would make it better:** The system must resolve image processing and generation failures in the vision exam to improve scores [S1]. Telemetry reporting requires synchronization so failure counts and specific error names are always perfectly matched [S4].
+>
+> **Next video trick:** I do not know this.
+
+Asks: "Add emojigraph.org to LANE_PAGES in lib/tower.js and begin target assimilation."; "Open the GitHub Actions tab for commit 814032d5, identify the four specific failed job names, and extract the last 30 lines of the failing step within python-tests."; "Fix the prices exam by solving failures in ethereum and currency conversion queries."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>

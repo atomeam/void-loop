@@ -1,5 +1,5 @@
 {
- "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason. 2026-11-04: open-tool~stopwatch and palindrome~util are the order files the index had left out; riddle~textgen and rps~video-play already overlapped on main. Lists run 9 (2026-11-04): status~system-status merged into the status-board family; local-stations~media-pick came with #2215 (\"play some music\": media-pick answers it at rank 1410, local-stations' \"play music\" is its radio fallback at 9102).",
+ "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason. 2026-11-04: open-tool~stopwatch and palindrome~util are the order files the index had left out; riddle~textgen and rps~video-play already overlapped on main. Lists run 9 (2026-11-04): status~system-status merged into the status-board family; local-stations~media-pick came with #2215 (\"play some music\": media-pick answers it at rank 1410, local-stations' \"play music\" is its radio fallback at 9102). Lists run 10 (2026-11-04): date-calc~time-math are one family now (skills/date-math.js), so the pair is same-family.",
  "pairs": [
   "about-skill~wants",
   "anneal-ambition~weather",

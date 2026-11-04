@@ -68,12 +68,42 @@ export function parseTargetDate(text) {
   return null;
 }
 
+// other languages' timer words, so "temporizador de 3 minutos" or "minuteur de 5 minutes" is the English ask. Pure.
+const OTHER = [
+  [/\b(?:temporizador|cron[oó]metro|minuteur|minuterie|zeitschalter|temporizzatore|cronometro)\b/g, 'timer'],
+  [/\b(?:cuenta\s+atr[aá]s|compte\s+[aà]\s+rebours|countdown)\b/g, 'countdown'],
+  [/\b(?:minutos?|minuten?|minuti|minuto)\b/g, 'minutes'], [/\b(?:segundos?|secondes?|sekunden?|secondi)\b/g, 'seconds'],
+  [/\b(?:horas?|heures?|stunden?|ore)\b/g, 'hours'],
+  [/\b(?:pon(?:er|me)?|crea|configura|mets|lance|stelle)\b/g, 'set'],
+  [/\b(?:un|una|une|uno|ein|eine)\b(?=\s+(?:timer|countdown|minutes|seconds|hours))/g, 'a'],
+  [/\b(?:dos|deux|zwei|due)\b/g, '2'], [/\b(?:tres|trois|drei|tre)\b/g, '3'], [/\b(?:cuatro|quatre|vier|quattro)\b/g, '4'],
+  [/\b(?:cinco|cinq|f[uü]nf|cinque)\b/g, '5'], [/\b(?:diez|dix|zehn|dieci)\b/g, '10'], [/\b(?:quince|quinze|f[uü]nfzehn)\b/g, '15'],
+  [/\b(?:veinte|vingt|zwanzig|venti)\b/g, '20'], [/\b(?:treinta|trente|drei[sß]ig|trenta)\b/g, '30'],
+];
+export function timerEnglish(lower) {
+  let s = String(lower || '');
+  if (!/[a-z]/i.test(s) || !/(?:temporizador|cron[oó]metro|minuteur|minuterie|cuenta\s+atr|compte\s+[aà]\s+rebours|minutos|minuten|minuti\b|segundos?\b|secondes|secondi|sekunden|horas?\b|heures?\b|stunden)/i.test(s)) return s;
+  for (const [re, to] of OTHER) s = s.replace(re, to);
+  return s.replace(/\b(timer|countdown)\s+(?:de|von|di|of)\s+/g, '$1 for ').replace(/\b(set\s+(?:a\s+)?(?:timer|countdown))\s+(?:de|de\s+la|para|pour|f[uü]r|per)\s+/g, '$1 for ');
+}
+
+/** "add one minute", "add 30 seconds to the timer", "plus 2 minutes", "extend it by 5 minutes": the length to add, or 0. Pure. */
+export function addMs(lower) {
+  const s = timerEnglish(String(lower || '').toLowerCase().trim().replace(/[?.!]+$/, ''));
+  const m = /^(?:please\s+)?(?:add|plus|put\s+on|give\s+(?:it|me)|extend\s+(?:it|the\s+(?:timer|countdown))\s+by|another)\s+(?:an?\s+other\s+|another\s+|an?\s+extra\s+|extra\s+)?(.+?)(?:\s+(?:more|extra))?(?:\s+(?:to|on(?:to)?)\s+(?:the\s+|my\s+|it|that)?\s*(?:timer|countdown)?)?(?:\s+please)?$/.exec(s);
+  if (!m || !/(?:hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/.test(m[1])) return 0;
+  return parseDuration(m[1].replace(/^another\s+/, 'one '));
+}
+
+const clock = (ms) => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor((t % 3600) / 60), x = t % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : String(m)) + ':' + String(x).padStart(2, '0'); };
+
 /** the length an ask names, in ms: an alarm, "days until …", "1 hour 30 minutes", "half an hour", a bare number of
  *  minutes; 0 when none. */
 export function parseDuration(text) {
   const alarm = alarmMs(text);
   if (alarm) return alarm;
-  const lower = (text || '').toLowerCase().replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+  const lower = timerEnglish((text || '').toLowerCase()).replace(/[-‐‑‒–—]/g, ' ').replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
   const daysUntil = lower.match(/(?:how\s+many\s+)?days?\s+until\s+(.+)$/i);
   if (daysUntil) {
     const target = parseTargetDate(daysUntil[1].trim());
@@ -109,6 +139,7 @@ export function isDurationRequest(lower) {
 
 /** the ask makes a timer. */
 export function wantsCreate(lower) {
+  lower = timerEnglish(lower);
   const mentionsTimer = /\b(timers?|countdowns?|pomodoros?)\b/.test(lower);
   const duration = parseDuration(lower);
   if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
@@ -263,6 +294,7 @@ function mount(th, stageApi) {
 /** create, at the place the timer code ran: 'timer-start' (it runs: it was asked with a length, or "start …", or "remind
  *  me …") or 'timer' (it waits: "make a timer", "… paused"), or '' */
 export function ask(lower, text, stageApi) {
+  lower = timerEnglish(lower);
   if (!wantsCreate(lower)) return '';
   const dur = parseDuration(lower) || 60000; // default 1 min
   const t = ensure(stageApi, dur, wantsFresh(lower) && timers(stageApi).length > 0);
@@ -276,6 +308,16 @@ export function ask(lower, text, stageApi) {
 /** start / pause / reset (the first timer, as it always was): what it did, 'no timer' when one was named and there is none,
  *  or '' */
 export function askAction(lower, text, stageApi) {
+  // "add one minute" to the picked (or first) timer: the length and what is left both grow, and the answer names the new length
+  const more = addMs(lower);
+  const tm = more > 0 ? (pickedTimer(stageApi) || timers(stageApi)[0]) : null;
+  if (tm) {
+    tm.duration = (tm.duration || 0) + more; tm.remaining = (tm.remaining || 0) + more;
+    const left = tm.running ? tm.remaining - (Date.now() - tm.startedAt) : tm.remaining;
+    stageApi.save(); stageApi.render();
+    stageApi.say('added ' + clock(more) + ' · the timer is ' + clock(tm.duration) + ' (' + Math.round(tm.duration / 1000) + ' s) · ' + clock(left) + ' left');
+    return 'timer-add';
+  }
   const action = wantsAction(lower, stageApi);
   if (!action) return '';
   const timerMentioned = /\b(timer|countdown)\b/.test(lower) || !!pickedTimer(stageApi);

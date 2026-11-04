@@ -299,6 +299,27 @@
     "ask-20261104-0746-3": {
       "decision": "queued",
       "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-3 (telemetry counts and names in sync); one build answers both"
+    },
+    "ask-20261104-2101-1": {
+      "decision": "built",
+      "why": "lists run 10 (2026-11-04): duplicate: emojigraph.org is already a lane page through lib/self-sites.js",
+      "commit": "65ac2bbae"
+    },
+    "ask-20261104-0859-2": {
+      "decision": "built",
+      "why": "lists run 10 (2026-11-04): the timer skill takes \"add one minute\" / \"add 30 seconds to the timer\" / \"extend it by 5 minutes\" (duration and time left both grow) and timer asks in Spanish, French, German, Italian and Portuguese (\"pon un temporizador de cinco minutos\"); tools/timer.test.mjs"
+    },
+    "ask-20261104-2101-3": {
+      "decision": "queued",
+      "why": "lists run 10 (2026-11-04): \"precio del bitcoin\" and other-language price asks now name the coin (crypto.js priceEnglish, tools/crypto.test.mjs) and \"how much is ethereum\" passes live; \"100 usd in eur\" still fails only the rival check, so the ask stays open for that"
+    },
+    "ask-20261104-2101-2": {
+      "decision": "built",
+      "why": "lists run 10 (2026-11-04): answered: 814032d5 is the merge of #2039; its only failed run was Verse verify 41264790432, jobs python-tests, browser-suite (1), (2) and (3); python-tests failed in tools/verse-loop.test.mjs:151 (the coder key message gained CLOUDFLARE_AI_TOKEN and the regex did not), and that file passes 22/22 on main now"
+    },
+    "ask-20261104-2054-3": {
+      "decision": "built",
+      "why": "lists run 10 (2026-11-04): duplicate: \"what can you do\" routes to the self route (lib/router.js) and opens the menu book of what Verse can do; it is a bench ask (tools/bench.json, want self) and covered by the browser suite"
     }
   },
   "ask-20261013-1850-1": {
