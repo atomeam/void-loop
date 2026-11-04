@@ -34,7 +34,8 @@ export function book(l) {
 /** translate each comma- or line-separated item from a to b; an item not in the phrasebook comes back marked */
 export function translate(a, b, s) {
   const A = book(a), B = book(b);
-  return String(s).split(/\s*[,;\n]\s*/).filter(Boolean).map((w) => { const ks = A.index.get(low(w, a)); return ks ? [...new Set(ks.map((k) => B.words[k]))].join(' / ') : '(not in the phrasebook: ' + w + ')'; }).join(', ');
+  // an item may itself be "a / b" (another phrasebook bot's answer with two meanings): every meaning is carried through
+  return String(s).split(/\s*[,;\n]\s*/).filter(Boolean).map((w) => { const ks = w.split(/\s+\/\s+/).flatMap((x) => A.index.get(low(x, a)) || []); return ks.length ? [...new Set(ks.map((k) => B.words[k]))].join(' / ') : '(not in the phrasebook: ' + w + ')'; }).join(', ');
 }
 const EN = new Intl.DisplayNames('en', { type: 'language' }), name = (l) => EN.of(l);
 const has = (out, want, l) => out.split(' / ').some((x) => low(x, l) === low(want, l));

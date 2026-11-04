@@ -4,6 +4,7 @@
 // answer from a published constant. tools/bot-factory.mjs runs every check; a variant that fails any one is not live.
 import { langPairs } from './lang-pairs.js';
 import { apiBots } from './api-bots.js';
+import { crossChecks } from './cross-checks.js';
 const near = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 const rnd = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 // factors to one base unit per dimension (SI or exact legal definitions)
@@ -75,6 +76,7 @@ export function families() {
       checks: [['round trip', () => DATES[a](DPARSE[b](f(DATES[a](d)))) === DATES[a](d)], ['known answer', () => f(DATES[a](d)) === ({ iso: '2026-11-04', us: '11/04/2026', eu: '04.11.2026', unix: '1793750400', compact: '20261104', julian: '2461348.5' }[b])]] });
   }
   out.push(...langPairs(), ...apiBots());
+  out.push(...crossChecks(out));
   return out;
 }
 /** run one family bot's checks */
