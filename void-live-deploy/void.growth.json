@@ -6119,5 +6119,6 @@
   {"at": "2026-11-04T07:05:00Z", "by": "cursor", "kind": "grow", "what": "The home hero paints from HTML and CSS. The ask engine, the sky and the WebGL wash wait, and a phone loads skill modules on a tap", "show": "A Verse wordmark over the horizon, with the ask bar under it", "try": "ask anything"},
   {"at": "2026-11-04T07:14:16Z", "by": "cursor", "kind": "fix", "what": "Open asks on the agent go to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again on a better bot."},
   {"at": "2026-11-04T18:13:17Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 5 no-family, 3 covered); next  (the target)"},
-  {"at": "2026-11-04T19:22:39Z", "by": "verse", "kind": "fix", "what": "Verse routes \"400  562  129\" to its sums skill (the answer is not checked) (from my probes)"}
+  {"at": "2026-11-04T19:22:39Z", "by": "verse", "kind": "fix", "what": "Verse routes \"400  562  129\" to its sums skill (the answer is not checked) (from my probes)"},
+  {"at": "2026-11-04T19:59:21Z", "by": "video-gen-live", "kind": "finding", "what": "video-gen checked against the live site, occasion 14: video is off: the partner video model says the account has no AI Gateway credits yet; Verse last tested the video model at 2026-11-04T15:01:14.324Z, and /video/ is served (artifact findings/video-gen/2026-11-04T1959.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/video-gen/2026-11-04T1959.json"}
 ]
