@@ -1,0 +1,18 @@
+{
+ "at": "2026-11-04T01:50:46.027Z",
+ "sha": "85f588b22b3407e7dc5099b4e611e4ec9fec562f",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41754143464",
+ "suite": "browser suite on main",
+ "checks": [
+  "business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\""
+ ],
+ "touched": [
+  "tools/checks.mjs",
+  "tools/merge-gate.mjs"
+ ],
+ "shards": [
+  2,
+  4
+ ]
+}
