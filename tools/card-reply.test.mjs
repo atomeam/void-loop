@@ -160,3 +160,35 @@ test('a reply kept before cards had a family is placed once, from the loop log; 
   assert.equal(readCorrections(st)[0].family, undefined);
   assert.equal(placeUnplacedOnce({ getItem() { throw new Error('x'); }, setItem() {} }, log, familyOfNote), 0, 'bad storage never throws');
 });
+
+// owner, 2026-11-03: "the card holds all the replies to it". A card opened again and again on the same ask, with replies kept on it,
+// draws the same body each time: one line counting them, never the replies. A tiny DOM, enough for mountReply.
+test('asking about any card N times does not grow it (owner, 2026-11-03: "all the cards are leaving the replies to the card on the card"): Versus, What I want built, Verse status, a song', async () => {
+  const { mountReply, earlierLine } = await import('../void-live-deploy/lib/card-reply.js');
+  const node = (tag) => { const n = { tag, children: [], attrs: {}, className: '', textContent: '', parentNode: null,
+    classList: { contains: (c) => String(n.className).split(/\s+/).includes(c) },
+    setAttribute(k, v) { n.attrs[k] = String(v); },
+    append(...xs) { xs.forEach((x) => n.appendChild(typeof x === 'string' ? Object.assign(node('#text'), { textContent: x }) : x)); },
+    appendChild(x) { x.parentNode = n; n.children.push(x); return x; },
+    insertBefore(x, ref) { x.parentNode = n; n.children.splice(n.children.indexOf(ref), 0, x); return x; },
+    get nextElementSibling() { const p = n.parentNode; return p ? p.children[p.children.indexOf(n) + 1] || null : null; },
+    querySelector(q) { return /vreply/.test(q) ? n.children.find((c) => c.classList.contains('vreply')) || null : null; } }; return n; };
+  const doc = { createElement: (t) => node(t) };
+  const kept = { replies: Array.from({ length: 9 }, (_, i) => ({ at: '2026-11-03T2' + i + ':00:00Z', about: { ask: 'versus' }, text: 'reply ' + i, answer: 'a long answer ' + i })) };
+  const fetchFn = async () => ({ ok: true, json: async () => kept });
+  const size = (n) => (n.textContent || '').length + n.children.reduce((s, c) => s + size(c), 0) + n.children.length;
+  for (const [ask, title] of [['versus', 'Versus'], ['what do you want built', 'What I want built'], ['verse status', 'Verse status'], ['make a song about rain', 'Rain song']]) {
+  kept.replies.forEach((r) => { r.about = { ask }; });
+  const bodies = [];
+  for (let i = 0; i < 5; i++) {
+    const el = node('div'); el.appendChild(Object.assign(node('h2'), { textContent: title }));
+    const sec = mountReply(el, doc, { owner: 'k', fetchFn, card: () => ({ ask, title, said: '' }) });
+    await new Promise((r) => setTimeout(r, 0)); await new Promise((r) => setTimeout(r, 0));
+    const talk = sec.children.find((c) => c.attrs['data-reply-talk']);
+    assert.equal(talk.children.length, 0, 'no kept reply is drawn on the card');
+    bodies.push(size(el));
+  }
+  assert.equal(new Set(bodies).size, 1, title + ': the same body every time: ' + bodies);
+  }
+  assert.match(earlierLine(9), /6 or more times/); assert.equal(earlierLine(1), 'You have replied here once before; I keep what you taught me.'); assert.equal(earlierLine(0), '');
+});

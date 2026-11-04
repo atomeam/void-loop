@@ -2937,7 +2937,8 @@ say('nothing selected to remove');
       const show = (r) => { line('You', r.text, 'v-you'); line('Verse', r.answer || 'I could not answer just now; I kept what you said and will read it when I next reflect.', 'v-me' + (r.correction ? ' v-corrected' : '')); };
       for (const ev of ['pointerdown', 'keydown']) box.addEventListener(ev, (e) => e.stopPropagation());
       const auth = { authorization: 'Bearer ' + owner };
-      try { const r = await fetch('/api/voice-reply', { headers: auth }); if (r.ok) { const j = await r.json(); (j.replies || []).filter((x) => x.to === to).slice(0, 6).reverse().forEach(show); } } catch (_) {}
+      // the replies already sent here are counted, not drawn again (owner, 2026-11-03: "all the cards are leaving the replies to the card on the card"); a reply sent now shows until the card closes
+      try { const r = await fetch('/api/voice-reply', { headers: auth }); if (r.ok) { const j = await r.json(), n = (j.replies || []).filter((x) => x.to === to).length; if (n) line('Verse', 'You have replied here ' + (n >= 6 ? '6 or more times' : n === 1 ? 'once' : n + ' times') + ' before; I keep what you taught me.', 'v-me v-earlier'); } } catch (_) {}
       send.addEventListener('click', async () => {
         const text = box.value.trim(); if (!text || send.disabled) return;
         send.disabled = true; send.textContent = '…';
