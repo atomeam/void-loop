@@ -2,13 +2,13 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 1,
-  "live": 69,
-  "salvageable": 448,
+  "unified": 2,
+  "live": 70,
+  "salvageable": 446,
   "history": 24,
   "skipped": 3
  },
- "remaining": 448,
+ "remaining": 446,
  "top10": [
   {
    "id": "archive/repos/a-to-mind.com",
@@ -16,18 +16,6 @@
    "status": "salvageable",
    "target": "skill",
    "value": 83,
-   "why": "live code shares its name; check for overlap before migrating",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "archive/repos/ALPHA",
-   "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 78.4,
    "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
@@ -95,18 +83,6 @@
    "license": null
   },
   {
-   "id": "archive/repos/ALPHA/packages/alpha-core",
-   "kind": "archived part",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 45.7,
-   "why": "",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "archive/repos/HomeBase-",
    "kind": "archived repo",
    "status": "salvageable",
@@ -125,6 +101,30 @@
    "target": "tool",
    "value": 40.5,
    "why": "",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "archive/repos/a-to-mind.com/drafts/028-attested-security-txt",
+   "kind": "archived part",
+   "status": "salvageable",
+   "target": "skill",
+   "value": 35.3,
+   "why": "",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "archive/repos/atomarcade-bridge",
+   "kind": "archived repo",
+   "status": "salvageable",
+   "target": "skill",
+   "value": 34.6,
+   "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
    "pr": null,
@@ -193,10 +193,10 @@
   {
    "id": "archive/repos/ALPHA",
    "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 78.4,
-   "why": "live code shares its name; check for overlap before migrating",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
    "into": null,
    "test": null,
    "pr": null,
@@ -289,12 +289,12 @@
   {
    "id": "archive/repos/ALPHA/packages/alpha-core",
    "kind": "archived part",
-   "status": "salvageable",
-   "target": "skill",
+   "status": "unified",
+   "target": "bot",
    "value": 45.7,
    "why": "",
-   "into": null,
-   "test": null,
+   "into": "/bots/ (change-curator)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },

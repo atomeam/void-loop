@@ -6,6 +6,12 @@
       "into": "/bots/ (cra-clock)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/ALPHA/packages/alpha-core": {
+      "target": "bot",
+      "into": "/bots/ (change-curator)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
