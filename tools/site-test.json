@@ -282,6 +282,9 @@
     {
       "ask": "yo watch the apollo 11 landing",
       "taught": "video-play"
+    },
+    {
+      "ask": "yo what language does the word kindergarten come from"
     }
   ],
   "candidates": [],
