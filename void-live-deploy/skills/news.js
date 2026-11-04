@@ -57,6 +57,12 @@ export function topicNewsOf(text) {
   const m = String(text || '').trim().replace(/[?!.]+$/, '').match(/^(?:(?:show\s+me\s+|give\s+me\s+|any\s+)?(?:the\s+)?(?:latest\s+|recent\s+)?news|headlines)\s+(?:about|on|for)\s+(.{2,40})$/i);
   return m ? m[1].trim() : null;
 }
+// "business news", "science news": those sections of the news page (lib/news.js), not a Hacker News search and not the quake list.
+const SECTION = { business: 'Business', science: 'Science' };
+export function sectionNewsOf(text) {
+  const m = String(text || '').trim().replace(/[?!.]+$/, '').match(/^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+|latest\s+)?)?(business|science)\s+(?:news|headlines)(?:\s+today|\s+now|\s+please)?$/i);
+  return m ? m[1].toLowerCase() : null;
+}
 async function runTopic(topic, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">…</div>'; const page = pageOfNews(topic); if (page && p.dataset) p.dataset.page = page; });
@@ -65,7 +71,7 @@ async function runTopic(topic, api) {
     const j = await fetch(weekUrl(topic)).then((r) => r.json());
     if (!api._pageStill(el)) return;
     const items = weekItems(j, topic);
-    if (!items.length) { el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><p>No Hacker News stories mention “' + esc(topic) + '” this past week. For general headlines, ask “news today”.</p>'; return; }
+    if (!items.length) { el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><p>No Hacker News stories mention “' + esc(topic) + '” this past week. For general headlines, ask “news today”.</p><div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a></div>'; return; }
     el.innerHTML = '<h2>News about ' + esc(topic) + '</h2><div class="sub">Hacker News stories from the past week</div>' + list(esc, items)
       + '<div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a> (tech-leaning; for world headlines ask “news today”)</div>';
   });
@@ -73,8 +79,24 @@ async function runTopic(topic, api) {
 export function isNews(text) {
   return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?)(?:\s+today|\s+now|\s+right\s+now)?|what\s+is\s+in\s+the\s+news(?:\s+today|\s+now|\s+right\s+now)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
+async function runSection(sec, api) {
+  const { showPage, esc } = api, title = SECTION[sec] + ' news';
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; if (p.dataset) p.dataset.page = '/news/?sec=' + sec; });
+  el._title = title; el._feed = 'news feeds';
+  return liveCard(api, el, 'news', 30 * 60e3, async () => {
+    const j = await fetch('/api/news?sec=' + encodeURIComponent(sec)).then((r) => r.json());
+    if (!api._pageStill(el)) return;
+    const items = ((j && j.stories) || []).filter((s) => s && s.title && /^https:\/\//.test(s.link || '')).slice(0, 8);
+    if (!items.length) throw 0;
+    el.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">' + esc(SECTION[sec]) + ' headlines, now</div><ul>'
+      + items.map((s) => '<li style="margin:6px 0"><a href="' + esc(s.link) + '" target="_blank" rel="noopener">' + esc(s.title) + '</a></li>').join('') + '</ul>'
+      + '<div class="src">Source: the ' + esc(SECTION[sec].toLowerCase()) + ' feeds on <a href="https://a-to-mind.com/news/?sec=' + sec + '">the news page</a></div>';
+  });
+}
 async function run(text, api) {
   if (isTechNews(text)) return runTech(api);
+  const sec = sectionNewsOf(text);
+  if (sec) return runSection(sec, api);
   const topic = topicNewsOf(text);
   if (topic) return runTopic(topic, api);
   const { showPage, esc } = api;
@@ -94,8 +116,8 @@ async function run(text, api) {
 }
 export default {
   name: 'news',
-  examples: ['news today', 'what\'s in the news', 'headlines', 'latest news', 'tech news', 'news about spacex'],
+  examples: ['news today', 'what\'s in the news', 'headlines', 'latest news', 'tech news', 'news about spacex', 'business news', 'science news'],
   nearMisses: ['what is fake news', 'news anchor jobs', 'history of newspapers'],
-  match(lower, text) { return isNews(text) || isTechNews(text) || !!topicNewsOf(text); },
+  match(lower, text) { return isNews(text) || isTechNews(text) || !!sectionNewsOf(text) || !!topicNewsOf(text); },
   run
 };

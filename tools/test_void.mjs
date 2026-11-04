@@ -646,7 +646,7 @@ try {
     const bubble = await until(() => P.p.$eval('#stage .walker-bubble', (b) => (b.hidden ? '' : b.textContent)).catch(() => ''), 3000);
     const inside = await P.p.evaluate(() => { const b = document.querySelector('#stage .walker-bubble').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(), w = document.querySelector('#stage .walker').getBoundingClientRect(); return b.left >= s.left && b.right <= s.right && b.bottom <= w.top && b.width > 40; });
     const m = /^I have ([\d,]+) skills? right now/.exec(bubble || '');
-    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I(?:'ve| haven't) surpassed|^The last thing I learned: .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
+    const trueLine = /^I have [\d,]+ skills? right now\. Ask for anything\.$|^I(?:'ve| haven't) surpassed|^The last thing (?:I learned|that shipped): .{4,}\.$|^“.+\.”$|^Verse by A-to-Mind does whatever anyone asks/.test(bubble || '') && (!m || Number(m[1].replace(/,/g, '')) === skillsN);
     if (process.env.VOID_SHOTS) await P.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'walker.png') }).catch(() => {});
     await P.p.waitForTimeout(4300);
     const gone = await P.p.$eval('#stage .walker-bubble', (b) => b.hidden);

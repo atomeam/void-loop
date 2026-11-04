@@ -71,11 +71,26 @@ const ms = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t)
 // 95 that had one try sank to 75 and waited behind every one of them until it was set aside untried; Verse's own ask comes first, and
 // MAX_TRIES and the 2N-hour wait still stop a hopeless want)
 export const TRY_COST = Object.freeze({ will: 5 });
-/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try (TRY_COST for the will). Pure. */
-export function score(job, now) {
+/** extra weight when a job names the exam's lowest domain or one of its failing asks. Pure. */
+export function examBoost(job, exam) {
+  const low = exam && exam.lowest;
+  if (!low || !low.domain) return 0;
+  const blob = ((job && job.ask) || '') + ' ' + ((job && job.target) || '') + ' ' + ((job && job.note) || '');
+  const dom = String(low.domain).toLowerCase();
+  let n = new RegExp('\\b' + dom + '\\b', 'i').test(blob) ? 40 : 0;
+  const fails = (exam.domains && exam.domains[dom] && exam.domains[dom].fails) || [];
+  for (const f of fails) {
+    const bit = String((f && f.ask) || '').toLowerCase().slice(0, 48);
+    if (bit.length > 8 && blob.toLowerCase().includes(bit)) n += 25;
+  }
+  return n;
+}
+/** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try (TRY_COST for the will),
+ *  plus a lift when it is the outcome exam's lowest domain (tools/exam.mjs). Pure. */
+export function score(job, now, exam) {
   const k = kindOf(job.target), w = WEIGHT[k] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
   // Atom, 2026-11-03: a visitor-facing fix (a broken card, a wrong answer, a laggy render) ranks above internal work
-  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note) + rankAdjust(String(job.note || '') + ' ' + String(job.target || ''));
+  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note) + rankAdjust(String(job.note || '') + ' ' + String(job.target || '')) + examBoost(job, exam);
 }
 
 /** where a job goes: { wf, input, claims, cap } or null when nothing can run it. Pure. */
@@ -140,7 +155,7 @@ export function lapDue({ exists, busy, started, paused, noModel, lastRunMs, now 
  * @param {number} p.now
  * @returns {{ start: Array, requeue: Array, setAside: Array, heal: Array, held: Array }}
  */
-export function plan({ jobs = [], wf = {}, handed = {}, now }) {
+export function plan({ jobs = [], wf = {}, handed = {}, now, exam }) {
   const out = { start: [], requeue: [], setAside: [], heal: [], held: [] };
   // broken and still cooling down; a broken loop whose newest run is RETRY_BROKEN_H old gets one trial run (a circuit breaker's half-open
   // state), so a fix that landed elsewhere, or the agent's own repair, is found out instead of the loop staying shut for good
@@ -158,7 +173,7 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
   // the most valuable queued job each executor can take; one start per executor a tick, none while it runs, under its daily cap
   const taken = new Set();
   const first = (j) => FIRST[kindOf(j.target)] || 0;
-  const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => first(b) - first(a) || score(b, now) - score(a, now) || ms(a.at) - ms(b.at));
+  const queued = jobs.filter((j) => j.state === 'queued').sort((a, b) => first(b) - first(a) || score(b, now, exam) - score(a, now, exam) || ms(a.at) - ms(b.at));
   for (const j of queued) {
     const r = routeOf(j);
     if (!r) { out.held.push({ id: j.id, why: 'no executor for ' + kindOf(j.target) }); continue; }
@@ -175,7 +190,7 @@ export function plan({ jobs = [], wf = {}, handed = {}, now }) {
     if (triesOf(j.note) && now - ms(j.updated) < 2 * triesOf(j.note) * H) continue;
     if (!r.claims && handed[j.id] && now - handed[j.id] < SAME_JOB_H * H) continue;
     taken.add(r.wf);
-    out.start.push({ id: j.id, kind: kindOf(j.target), wf: r.wf, input: r.input, claims: r.claims, score: Math.round(score(j, now)) });
+    out.start.push({ id: j.id, kind: kindOf(j.target), wf: r.wf, input: r.input, claims: r.claims, score: Math.round(score(j, now, exam)) });
   }
   return out;
 }
