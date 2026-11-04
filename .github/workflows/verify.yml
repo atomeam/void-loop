@@ -12,10 +12,11 @@
 # can no longer hide the suite's result (a held-file test red on the runner kept every head of main unverified for an hour).
 # The revert reads the browser-suite job (and older verdicts, named verify-main) and names the job it decided from.
 # 2026-10-26 (owner: "ok whats the hold up, fix it so we stop having holdups"; growth over upkeep, 2026-10-15): one group per job (per
-# shard for the suite), shared by every head. A group per head put 13 heads of 25-minute suites in the queue. 2026-11-04 that
-# per-head group was back and 9 suites were waiting while 4 ran. cancel-in-progress: a newer head replaces the suite already
-# running and the one waiting. A head skipped this way is inside the newer head. A red run still reverts through
-# tools/revert-target.mjs, which checks its target is still on main.
+# shard for the suite), shared by every head of the same branch. A group per head queued a suite per commit. GitHub keeps the
+# run that has a runner and one waiting run, and cancels the older waiting runs: a newer push of main supersedes them, and
+# that waiting run does the same checks. The run already going is not cancelled (owner: nothing goes away, only conquered).
+# Cancelling it meant a suite never finished while commits arrived faster than it, so a red run never got to revert.
+# A red run still reverts through tools/revert-target.mjs, which checks its target is still on main.
 name: Verse verify
 
 on:
@@ -43,8 +44,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
-      group: void-verify-fast # one group for every head: a newer head cancels the suite already running
-      cancel-in-progress: true
+      group: void-verify-fast-${{ github.ref }} # one group for this branch: a newer push replaces the waiting run
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
@@ -98,8 +99,8 @@ jobs:
       matrix:
         shard: [1, 2, 3, 4]
     concurrency:
-      group: void-verify-${{ matrix.shard }} # one group per shard, shared by every head: a newer head cancels the older shard
-      cancel-in-progress: true
+      group: void-verify-${{ matrix.shard }}-${{ github.ref }} # one group per shard on this branch: a newer push replaces the waiting shard
+      cancel-in-progress: false
     permissions:
       contents: write # push the revert
       actions: write # start the deploy of the reverted main

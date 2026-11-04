@@ -15,7 +15,7 @@ on:
 
 concurrency:
   group: site-test
-  cancel-in-progress: true # a newer deploy's pass replaces the one already running
+  cancel-in-progress: false # one pass finishes and files its finding; a newer deploy replaces the one waiting
 
 permissions:
   contents: write # the suite, seen-set and run log on main

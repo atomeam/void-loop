@@ -5,17 +5,20 @@
 # and the newest runs of every loop, puts back jobs a dead run left, sets aside jobs tried three times, queues a heal: job for a loop that
 # failed three runs in a row, starts the most valuable job on each idle executor (propose-fix, build-miss, store-gap, the coding agent),
 # and starts probe-asks when Verse should write new probe asks. Before this the clock only alternated probe-asks and propose-fix, and every
-# other queued job waited for a person. Its record of the last 24 hours is committed every 3 hours to domains/conductor.json.
+# other queued job waited for a person. Its record of the last 24 hours is on the conductor-state branch every tick, and on main every 3 hours
+# (domains/conductor.json).
 #
-# GitHub ran a '*/15' schedule about once every five hours (void-tick.yml, 2026-10-14), so one run keeps the time itself: a tick every
-# 10 minutes for about five and a half hours, then it starts the next run, whatever happened (a failed tick never stops the clock; only the
-# chain's start below can, and it is retried). The hourly schedule and will.yml (after every deploy) restart a broken chain. Actions minutes
-# are free for a public repo. Playbook: docs/playbooks/conductor.md.
+# One run used to sleep on the runner for 33 ticks (about five and a half hours). That held a runner the whole time, the next scheduled run
+# sat pending behind it, and a git fetch with no timeout could sit there until the 345-minute job limit. A tick is one short job. The schedule
+# is every 10 minutes. A dispatch (will.yml, or by hand) that finds the last tick already stale starts the next run; a tick that just landed
+# does not chain, so the runs do not pile up. The state between ticks is the conductor-state branch, not a sleeping runner, so a push to main
+# does not follow every tick.
 name: Verse grows
 
 on:
   schedule:
-    - cron: '7 * * * *'
+    - cron: '*/10 * * * *'
+    - cron: '7 * * * *' # the hourly restart if the 10-minute schedule is late
   workflow_dispatch:
     inputs:
       dry:
@@ -23,9 +26,9 @@ on:
         type: boolean
         default: false
       ticks:
-        description: "how many ticks this run (33 is about five and a half hours)"
+        description: "kept so a hand run can still ask; a run does one tick either way"
         type: string
-        default: '33'
+        default: '1'
 
 concurrency:
   group: grow-clock
@@ -33,16 +36,17 @@ concurrency:
 
 permissions:
   actions: write   # start the executors and the next clock run (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
-  contents: write  # commit domains/conductor.json every 3 hours
+  contents: write  # the conductor-state branch every tick, and domains/conductor.json on main every 3 hours
 
 jobs:
   clock:
     runs-on: ubuntu-latest
-    timeout-minutes: 345
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -52,35 +56,55 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           DRY: ${{ inputs.dry && '--dry' || '' }}
-          TICKS: ${{ inputs.ticks || '33' }}
         run: |
           set +e
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          state="$RUNNER_TEMP/conductor.json"; cp domains/conductor.json "$state" 2>/dev/null || echo '{}' > "$state"
-          case "$TICKS" in ''|*[!0-9]*) n=33 ;; *) n=$(( 10#$TICKS > 0 && 10#$TICKS <= 33 ? 10#$TICKS : 33 )) ;; esac # digits only: bash arithmetic would run anything else
-          for i in $(seq 1 "$n"); do
-            # the newest conductor each tick: a fix pushed to main reaches the clock within 10 minutes, not at the next run
-            git fetch -q origin main && git reset -q --hard origin/main
-            timeout 300 node tools/conductor.mjs tick $DRY --state "$state" || echo "::warning title=Conductor::tick $i ended badly; the clock goes on"
-            # every 3 hours (and on the last tick) the record goes to main; a push that loses a race is retried from the newest main.
-            # Hourly was 27 of main's 78 commits in a day (2026-11-03); the clock keeps its own state in the runner between commits
-            if [ -z "$DRY" ] && { [ $((i % 18)) -eq 0 ] || [ "$i" -eq "$n" ]; }; then
-              for t in 1 2 3; do
-                git fetch -q origin main && git reset -q --hard origin/main && cp "$state" domains/conductor.json && git add domains/conductor.json
-                git diff --cached --quiet && break
-                git commit -q -m "Conductor: the last 24 hours of Verse running itself" && git push -q origin HEAD:main && break
-                sleep $((t * 5))
-              done
+          timeout 90 git fetch -q origin main || echo "::warning title=Conductor::git fetch of main did not finish in 90s"
+          timeout 30 git reset -q --hard origin/main || echo "::warning title=Conductor::could not reset to main"
+          state="$RUNNER_TEMP/conductor.json"
+          timeout 60 git fetch -q origin conductor-state || true
+          git show origin/conductor-state:domains/conductor.json > "$state" 2>/dev/null || cp domains/conductor.json "$state" 2>/dev/null || echo '{}' > "$state"
+          if [ -z "$DRY" ]; then
+            node --input-type=module -e "import fs from 'node:fs'; const j=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); const age=Date.now()-Date.parse(j.updated||0); if (Number.isFinite(age) && age < 8*60*1000) process.exit(2)" "$state"
+            if [ "$?" -eq 2 ]; then echo "chain=no" >> "$GITHUB_OUTPUT"; echo "a tick landed in the last 8 minutes"; exit 0; fi
+          fi
+          timeout 900 node tools/conductor.mjs tick $DRY --state "$state" || echo "::warning title=Conductor::tick ended badly; the clock goes on"
+          if [ -n "$DRY" ]; then echo "chain=no" >> "$GITHUB_OUTPUT"; exit 0; fi
+          dir="$RUNNER_TEMP/conductor-publish"
+          git worktree remove --force "$dir" >/dev/null 2>&1 || true
+          rm -rf "$dir"
+          if timeout 60 git fetch -q origin conductor-state && git rev-parse --verify origin/conductor-state >/dev/null 2>&1; then
+            git worktree add --detach "$dir" origin/conductor-state
+          else
+            git worktree add --detach "$dir" HEAD
+            git -C "$dir" checkout --orphan conductor-state
+            git -C "$dir" reset -q
+            find "$dir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          fi
+          mkdir -p "$dir/domains"
+          cp "$state" "$dir/domains/conductor.json"
+          git -C "$dir" add domains/conductor.json
+          if ! git -C "$dir" diff --cached --quiet; then
+            git -C "$dir" commit -q -m "Conductor: this tick"
+            timeout 90 git -C "$dir" push -q origin HEAD:conductor-state || echo "::warning title=Conductor::the tick record did not push; the next tick retries"
+          fi
+          # the public record on main, every 3 hours, the same pace as the old in-runner clock
+          node --input-type=module -e "import fs from 'node:fs'; let age=1e12; try { age=Date.now()-Date.parse(JSON.parse(fs.readFileSync('domains/conductor.json','utf8')).updated||0) } catch {} if (!(age>3*3600*1000)) process.exit(2)" 
+          if [ "$?" -ne 2 ]; then
+            cp "$state" domains/conductor.json
+            git add domains/conductor.json
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Conductor: the last 24 hours of Verse running itself"
+              timeout 90 git push -q origin HEAD:main || echo "::warning title=Conductor::the main record did not push; the next tick retries"
             fi
-            if [ "$i" -lt "$n" ]; then sleep 600; fi
-          done
+          fi
           echo "chain=yes" >> "$GITHUB_OUTPUT"
-      # whatever the ticks did, the next clock run starts (a failed or cancelled run ended the chain before 2026-10-26, and the hourly
-      # schedule can come hours late); a manual dry run with fewer ticks does not chain
+      # a dispatch that just ticked starts one more run, which no-ops if the tick is fresh, so a late schedule still gets a tick
+      # and the runs do not chain without end. A scheduled tick leaves the next one to the schedule.
       - name: Start the next clock run
-        if: always() && !inputs.dry
+        if: always() && !inputs.dry && github.event_name == 'workflow_dispatch' && steps.clock.outputs.chain == 'yes'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           for t in 1 2 3; do gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main && exit 0; sleep $((t * 10)); done
-          echo "::warning title=Clock chain broke::the next run did not start; the hourly schedule and will.yml restart it"
+          echo "::warning title=Clock chain broke::the next run did not start; the 10-minute schedule and will.yml restart it"
