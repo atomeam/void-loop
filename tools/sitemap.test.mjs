@@ -63,10 +63,12 @@ test('the XML is well formed: a declaration, one urlset, balanced url tags, abso
   assert.equal(xml([{ loc: '/a?b=1&c=2', lastmod: '2026-01-01', changefreq: 'daily', priority: '0.5' }]).includes('<loc>' + SITE + '/a?b=1&amp;c=2</loc>'), true);
 });
 
-test('the committed sitemap.xml lists the same pages as the generator (run node tools/sitemap.mjs when not)', () => {
+test('the committed sitemap.xml lists no page the generator dropped (a new page is written at deploy)', () => {
+  // sitemap.xml is a build output (tools/generated.mjs). A pull request does not commit it, and deploy.yml rewrites it
+  // from this generator, so a page the generator added may be absent from the committed file until that deploy.
+  // A page the generator no longer lists must not remain, or a refresh that failed to rewrite would publish a dead URL.
   const have = locsOf(readFileSync(resolve(root, OUT), 'utf8')), want = locsOf(xml(entries));
   assert.deepEqual(have.filter((u) => !want.includes(u)), [], 'pages the generator no longer lists');
-  assert.deepEqual(want.filter((u) => !have.includes(u)), [], 'pages the committed file is missing');
 });
 
 test('lastmod is a day from git, and today for a file git does not know', () => {
