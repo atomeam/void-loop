@@ -67,6 +67,12 @@ export const SPECS = {
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
   },
+  '/progress/': async (t) => { // the outcome exam's scores (tools/exam.mjs writes /exam/latest.json): one row a domain, a number in each
+    await t.waitText('#when', /Run \d{4}-\d\d-\d\d/, 15000);
+    const rows = await t.p.locator('#rows tr').count();
+    t.ok(rows >= 3, 'a score row for each domain: ' + rows);
+    t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
+  },
   '/compare/': async (t) => {
     const hint = await t.waitText('#who', /floor=\S+/, 10000); const id = ((hint.match(/floor=(.+)$/) || [])[1] || '').trim();
     t.ok(!!id, 'with no floor it says how to name one (' + hint.slice(0, 60) + ')');

@@ -8,7 +8,7 @@ Owner, 2026-11-03: Verse was not getting better at videos, podcasts or songs; th
 
 ## What it does
 
-Sixteen public asks a domain (videos, podcasts, songs, weather, directions, recipes, calculator, news, sports), taken from `tools/bench.json` where that file has the ask, and the same kind of ask where the public repo has no visitor log for it. Verbatim visitor asks are not committed (`domains/void.misses.md` is gitignored). The holdout is four more asks a domain, rotated by ISO week from `tools/exam-holdout.json`, which is gitignored. Builders do not get that file. The published run stores holdout scores and ids, not the words.
+Sixteen public asks a domain (videos, podcasts, songs, weather, directions, recipes, calculator, news, sports), taken from `tools/bench.json` where that file has the ask, and the same kind of ask where the public repo has no visitor log for it. Verbatim visitor asks are not committed (domains/void.misses.md is gitignored). The holdout is four more asks a domain, rotated by ISO week from tools/exam-holdout.json, which is gitignored. Builders do not get that file. The published run stores holdout scores and ids, not the words.
 
 Each ask is typed into live https://a-to-mind.com at phone width. A non-GET is answered inside the browser. The score is the share of checks that passed: a result that is not a refusal, the skill that owns the domain, under 12 seconds, the card fits the phone, and the domain's own check. A song passes when an `audio` element's time advances, the file returns 200 or 206 with an `audio/*` type, and the title and artist on the card are the ones iTunes Search returned for that ask. A check whose outside service did not answer is left out of the score, not failed.
 
