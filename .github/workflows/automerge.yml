@@ -25,8 +25,10 @@ on:
     - cron: "17 11 * * *" # once a day, the stuck-pull-request sweep (STUCK=1 below)
   workflow_dispatch:
 
+# Each run gets its own group. A shared group keeps only one queued run, and a stream of
+# workflow_run events was cancelling that run before a runner ever started it, so nothing merged.
 concurrency:
-  group: void-automerge
+  group: void-automerge-${{ github.run_id }}
   cancel-in-progress: false
 
 permissions:
