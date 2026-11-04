@@ -21,7 +21,7 @@ test('examples taken, near misses refused, and a few more asks', () => {
   for (const e of quake.examples) assert.ok(quake.match(e.toLowerCase(), e), e);
   for (const n of quake.nearMisses) assert.ok(!quake.match(n.toLowerCase(), n), n);
   for (const a of ['any earthquakes today', 'seismic activity in Chile', 'tremors near Naples', 'was there an earth quake in Lima']) assert.ok(quake.match(a.toLowerCase(), a), a);
-  for (const a of ['earthquake insurance', 'earthquake proof buildings', 'define earthquake', 'weather and earthquakes in Tokyo', 'earthquake drill at school']) assert.ok(!quake.match(a.toLowerCase(), a), a);
+  for (const a of ['earthquake insurance', 'earthquake proof buildings', 'define earthquake', 'weather and earthquakes in Tokyo', 'earthquake drill at school', 'news about earthquakes']) assert.ok(!quake.match(a.toLowerCase(), a), a);
 });
 
 test('run near a place: geocodes it, asks USGS within 500 km from M2.5, lists each quake with its band, age and depth', async () => {

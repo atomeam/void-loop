@@ -34,3 +34,6 @@ The will (`tools/will.py`) adds the three failing public asks of the lowest doma
 - An `audio` with `width:100%` plus the card frame's 18px side margins is 36px wider than the phone card, so the mobile check fails. `max-width:100%` and no forced width fits.
 - A bare "play despacito" is still a video search. The recording skill takes "play … by …" only, so the two do not overlap and the exam can check an artist.
 - Missing domains must not count as zero, or the lowest domain is whichever one the run did not measure.
+- A directions card can draw a real map and still fail `route`: the check reads the card's words, and an address that lives only in a link's `href` is not among them. Say the kilometres, or the site name, in the text. A landmark Open-Meteo does not know ("eiffel tower", "Penn Station") comes back as "couldn't find", which the exam counts as a refusal. Wikipedia's coordinates cover those. "get me to …" was a food order, so the place skill never ran.
+- The VAT card was not in the routing order, so "add vat to 100" never reached it. An order file is what puts a skill on the page.
+- "news about earthquakes" was taken by the quake list, and "business news" / "science news" matched nothing. A news ask has to reach the news skill, and a section ask should open that section of `/api/news`.
