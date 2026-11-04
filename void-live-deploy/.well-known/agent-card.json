@@ -1,0 +1,43 @@
+{
+  "name": "Verse",
+  "description": "Verse by A-to-Mind: a self-improving agent that answers questions in plain words, citing its sources. Read-only over A2A: it never sends, spends or remembers anything for a caller.",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "A-to-Mind",
+    "url": "https://a-to-mind.com/"
+  },
+  "documentationUrl": "https://a-to-mind.com/llms.txt",
+  "iconUrl": "https://a-to-mind.com/icon-512.png",
+  "supportedInterfaces": [
+    {
+      "url": "https://a-to-mind.com/api/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "ask",
+      "name": "Ask Verse",
+      "description": "Ask anything in plain words; Verse answers briefly and lists the pages it drew on.",
+      "tags": [
+        "question-answering",
+        "research"
+      ],
+      "examples": [
+        "what is a black hole",
+        "what are you building?"
+      ]
+    }
+  ]
+}
