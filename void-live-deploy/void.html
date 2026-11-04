@@ -1342,6 +1342,25 @@
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
     }
 
+    // keepVideosTake/keepVideosPut: every <video> on a card is remembered by its card id and src before a redraw; the redrawn card's matching
+    // <video> is swapped for the old element (same buffer, same spot), and one that was playing plays on (taking it out of the page paused it)
+    function keepVideosTake(root) {
+      const out = [];
+      for (const v of root.querySelectorAll('[data-id] video')) {
+        const card = v.closest('[data-id]'); const src = v.currentSrc || v.getAttribute('src') || '';
+        if (card && src) out.push({ id: card.dataset.id, src, v, playing: !v.paused && !v.ended, t: v.currentTime });
+      }
+      return out;
+    }
+    function keepVideosPut(root, vids) {
+      for (const k of vids) {
+        const card = root.querySelector('[data-id="' + CSS.escape(k.id) + '"]'); if (!card) continue;
+        const fresh = [...card.querySelectorAll('video')].find((n) => n !== k.v && (n.getAttribute('src') || n.currentSrc || '') === (k.v.getAttribute('src') || k.src));
+        if (fresh) fresh.replaceWith(k.v); else if (!card.contains(k.v)) continue;
+        try { if (Math.abs(k.v.currentTime - k.t) > 0.5) k.v.currentTime = k.t; } catch (_) {}
+        if (k.playing && k.v.paused) { try { const p = k.v.play(); if (p && p.catch) p.catch(() => {}); } catch (_) {} }
+      }
+    }
     function render() {
       // a live card (a field mind: the memory orbs, Swarm, Verse Brain) keeps running across a redraw instead of starting over
       // (asked 2026-10-29: a new card restarted every mind on the stage): it says when it can stay as it is (el._liveKeep,
@@ -1350,12 +1369,14 @@
       for (const el of stage.querySelectorAll(':scope > [data-id]')) { try { const th = things[el.dataset.id]; if (th && el._liveKeep && el._liveKeep(th)) live.set(th.id, el); } catch (_) {} }
       stage.querySelectorAll('.clock').forEach((el) => clearInterval(el._timer));
       stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
+      const vids = keepVideosTake(stage); // a playing video rides through the redraw as the same element (owner, 2026-11-03: moving a card restarted its video)
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         const kept = live.get(th.id);
         if (kept) { kept.style.left = th.x + 'px'; kept.style.top = th.y + 'px'; stage.appendChild(kept); return; }
         if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      keepVideosPut(stage, vids);
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
@@ -5655,7 +5676,7 @@ say('nothing selected to remove');
       const lines = String(details).split('\n').length;
       return '<details class="vpaste" style="margin:10px 0 4px"><summary style="cursor:pointer;opacity:.75;font-size:13px">Everything you gave it \u00b7 '
         + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
-        + '<pre style="white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto;background:rgba(255,255,255,.05);padding:10px 12px;border-radius:8px;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace">' + esc(details) + '</pre></details>';
+        + '<div style="opacity:.7;font-size:12px;margin-top:6px">' + esc(clipLine(String(details).replace(/\s+/g, ' '), 90)) + '</div></details>'; // a one-line glimpse, never the whole paste echoed back (owner, 2026-11-03)
     }
     async function showFix(ask, details) {
       const title = clipLine(ask, 120), sent = fitPaste(title, String(details || ''));
