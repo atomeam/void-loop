@@ -25,3 +25,12 @@ test('the asks, and the near misses that stay elsewhere', () => {
   for (const a of ['plant tomato failures', 'what are test failures', 'visualize your data', 'plant my mistake:']) assert.equal(gardenIntent(a), null, a);
   assert.ok(garden.match('plant my test failures', 'plant my test failures'));
 });
+
+test('a check titled only with stop words ("will") is one plant, not a new one on every reading', () => {
+  const items = [{ text: 'will', count: 3 }, { text: 'skills', count: 2 }];
+  const a = plantMany([], items, 1);
+  const b = plantMany(a, items, 2);
+  assert.equal(a.length, 2);
+  assert.equal(b.length, 2);
+  assert.equal(b.find((p) => p.text === 'will').count, 3);
+});
