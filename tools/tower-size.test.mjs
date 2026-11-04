@@ -116,11 +116,11 @@ test('the target stands first and the card says it is the target, not the easies
   const size = { sites: { 'isitchristmas.com': { bytes: 700, controls: 3, scripts: 0, nodes: 20, routes: 0 }, 'calculator.net': { bytes: 2.4e6, controls: 400, scripts: 40, nodes: 9000, routes: 600 } } };
   const free = tower([], {}, null, null, rank, size), c0 = free.floors.find((f) => f.state === 'current');
   assert.equal(c0.id, 'is it'); assert.equal(c0.pinned, false);
-  const h0 = sk.towerHtml(free, (s) => String(s)); assert.match(h0, /easiest site left: /); assert.doesNotMatch(h0, /the target until Verse surpasses it/);
+  const h0 = sk.towerHtml(free, (s) => String(s)); assert.match(h0, /easiest site left: /); assert.doesNotMatch(h0, /the target until Verse passes it/);
   const held = tower([], {}, null, null, rank, size, 'calculator'), c1 = held.floors.find((f) => f.state === 'current');
   assert.equal(c1.id, 'calculator'); assert.equal(c1.pinned, true);
-  const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /now assimilating: /); assert.doesNotMatch(h1, /easiest site left: calculator/);
-  assert.match(h1, /the target until Verse surpasses it/);
+  const h1 = sk.towerHtml(held, (s) => String(s)); assert.match(h1, /now taking on: /); assert.doesNotMatch(h1, /easiest site left: calculator/);
+  assert.match(h1, /the target until Verse passes it/);
   assert.equal(held.floors.find((f) => f.id === 'is it').pinned, false);
 });
 

@@ -24685,6 +24685,89 @@
     "of": 13,
     "siteRead": true
    }
+  },
+  "ndscalc.ru": {
+   "speed": {
+    "verdict": "equal-and-better",
+    "verse": 140,
+    "best": 1146,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 140 ms to the load event (median of 3, phone width) vs ndscalc.ru 1146 ms to the load event (median of 3, phone width)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "reliability": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 3 of 3 loads answered vs ndscalc.ru 3 of 3 loads answered",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "mobile": {
+    "verdict": "equal-and-better",
+    "verse": 0,
+    "best": 0,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 0 px sideways overflow at 390 px vs ndscalc.ru 0 px sideways overflow at 390 px",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "accessibility": {
+    "verdict": "better",
+    "verse": 0,
+    "best": 1,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 0 unnamed controls or images vs ndscalc.ru 1 unnamed controls or images",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "offline": {
+    "verdict": "better",
+    "verse": 1,
+    "best": 0,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 1 (1: the page shows itself again with the network cut) vs ndscalc.ru 0 (1: the page shows itself again with the network cut)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "sharing": {
+    "verdict": "better",
+    "verse": 4,
+    "best": 1,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs ndscalc.ru 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "wider use": {
+    "verdict": "better",
+    "verse": 8,
+    "best": 4.5,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 8 of 11 wider-use points (docs/WIDER-USE.md) vs ndscalc.ru 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "accuracy": {
+    "verdict": "equal-and-better",
+    "verse": 3,
+    "best": 3,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 3 of 3 right against the worked-out answer; judged against the standard, not ndscalc.ru (the site is not asked)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "of": 3
+   },
+   "design polish": {
+    "verdict": "better",
+    "verse": 3,
+    "best": 5,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 3 design defects vs ndscalc.ru 5 design defects: Verse (3 low-contrast texts, 0 small tap targets, layout shift 0.00), ndscalc.ru (0 low-contrast texts, 4 small tap targets, layout shift 0.22)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "siteRead": true
+   },
+   "completeness": {
+    "verdict": "better",
+    "verse": 6,
+    "best": 4,
+    "evidence": "Verse (/calculator/?mode=vat&vat=extract&sum=1000&rate=22) 6 of 9 things a full answer shows vs ndscalc.ru 4 of 9 things a full answer shows (Verse lacks: 20%, 22%, sum in words; site lacks: 20%, 22%, gross or total, the working shown, sum in words)",
+    "at": "2026-11-04T00:36:53.511Z",
+    "of": 9,
+    "siteRead": true
+   }
   }
  },
  "icons": {
@@ -24877,6 +24960,7 @@
   "emojicombos.com": "tower.icons/emojicombos.com.png",
   "getconverter.org": "tower.icons/getconverter.org.png",
   "colorcanon.com": "tower.icons/colorcanon.com.png",
-  "emojigraph.org": "tower.icons/emojigraph.org.png"
+  "emojigraph.org": "tower.icons/emojigraph.org.png",
+  "ndscalc.ru": "tower.icons/ndscalc.ru.ico"
  }
 }
