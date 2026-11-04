@@ -16,3 +16,13 @@ test('a locked target stays first while a lighter site appears, and the next sma
   assert.equal(nextTarget({ lock: 'coin flip', floors: t0.floors }), 'coin flip'); assert.equal(nextTarget({ lock: 'coin flip', floors: t2.floors }), 'random number');
   assert.equal(nextTarget({ lock: null, floors: t0.floors }), 'random number');
 });
+
+test('a target with no aspect gained for STALL_DAYS gives way and says why; progress resets the clock (2026-11-03)', async () => {
+  const { stallCheck, STALL_DAYS } = await import('./tower-target.mjs');
+  const floors = [{ id: 'a', n: 2, m: 12 }];
+  assert.equal(stallCheck({ id: 'a', n: 2, progressAt: '2026-10-31' }, floors, '2026-11-03').stalled, STALL_DAYS <= 3);
+  assert.match(stallCheck({ id: 'a', n: 2, progressAt: '2026-10-31' }, floors, '2026-11-03').why, /stayed at 2 of 12/);
+  assert.equal(stallCheck({ id: 'a', n: 1, progressAt: '2026-10-01' }, floors, '2026-11-03').stalled, false, 'a gained aspect is progress');
+  assert.equal(stallCheck({ id: 'a', n: 2, progressAt: '2026-11-02' }, floors, '2026-11-03').stalled, false);
+  assert.equal(stallCheck({ id: 'a', since: '2026-10-01' }, floors, '2026-11-03').stalled, false, 'no count yet: the clock starts now');
+});

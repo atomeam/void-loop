@@ -6,7 +6,7 @@
  * better by a head-to-head check against the live site (tools/tower-gate.mjs, tower.evidence.json). Tapping a site shows N of M aspects
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-67';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf } from '../lib/tower.js?v=ladder-68';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -117,7 +117,9 @@ export const saveBySize = (on) => { try { const s = prefStore(); if (s) s.setIte
 const pageLang = () => { try { return (typeof document !== 'undefined' && document.documentElement.lang) || (typeof navigator !== 'undefined' && navigator.language) || 'en'; } catch (_) { return 'en'; } };
 /** the "By size" list: every site, smallest first, with its size and where it stands. Pure. */
 /** an entry's own Verse page as a link ("Verse's page /flights/"), or "no Verse page yet" when it has none. Pure. */
-export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' + esc(f.page) + '">Verse\'s page ' + esc(String(f.page).replace(/\?.*$/, '')) + '</a>' : '<span class="tw-page tw-nopage">no Verse page yet</span>');
+// a page's mode rides in its name (owner, 2026-11-03: ndscalc.ru is "Verse's page /calculator/ (VAT)"), so a mode of a combined page reads as that mode
+export const pageName = (page) => { const p = String(page || ''), m = (p.match(/[?&]mode=([a-z0-9-]+)/i) || [])[1]; return p.replace(/\?.*$/, '') + (m ? ' (' + (m.length <= 4 ? m.toUpperCase() : m) + ')' : ''); };
+export const pageLink = (f, esc) => (f && f.page ? '<a class="tw-page" href="' + esc(f.page) + '">Verse\'s page ' + esc(pageName(f.page)) + '</a>' : '<span class="tw-page tw-nopage">no Verse page yet</span>');
 export function sizeListHtml(t, esc, lang = 'en') {
   const rk = t.rank || {}, w = words(lang), ranks = rk.ranks || {}, order = rk.order || {};
   return '<ol class="tw-sizelist" aria-label="' + esc(w.bySizeOn) + '">' + bySize(t.floors, ranks, order).map((f) => '<li data-id="' + esc(f.id) + '" data-state="' + f.state + '"><span class="tw-name">' + esc(f.site) + '</span><span class="tw-size" title="' + esc(w.rank + (order[f.id] != null ? ' (' + w.hand + ')' : '')) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>'
@@ -237,7 +239,7 @@ export function verseTake(t) {
   let now = '';
   if (cur) {
     const lead = cur.aspects.filter((a) => !cur.left.includes(a)), open = cur.left.filter((a) => !cur.lost.includes(a));
-    now = (cur.page ? 'My page for ' + cur.site + ' is a-to-mind.com' + cur.page.replace(/\?.*$/, '') + '. ' : 'I answer ' + cur.site + '\'s job on the stage; it has no page of mine yet. ')
+    now = (cur.page ? 'My page for ' + cur.site + ' is a-to-mind.com' + pageName(cur.page) + '. ' : 'I answer ' + cur.site + '\'s job on the stage; it has no page of mine yet. ')
       + (lead.length ? 'I lead on ' + lead.join(', ') + '. ' : 'Nothing is measured in my favour yet. ')
       + (cur.lost.length ? 'I lose on ' + cur.lost.join(', ') + ', so that comes first. ' : '') + (open.length ? 'Still to prove: ' + open.join(', ') + '.' : '')
       + (fatalityOf(cur) ? ' The edge I am building: ' + fatalityOf(cur) + '.' : '');
