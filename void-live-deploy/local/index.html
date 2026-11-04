@@ -102,6 +102,12 @@
     <div id="tv-world" class="world"></div>
   </section>
 
+  <section id="tv-built" aria-labelledby="tv-built-h" hidden>
+    <h2 id="tv-built-h">Built from what Verse watched</h2>
+    <p class="hint">Verse does not stop at ideas: each hour it takes the best one it heard on TV or radio, checks whether the site already does it, and builds it onto a-to-mind.com. Each line goes from the broadcast to the page to the pull request that shipped it.</p>
+    <ul class="list" id="tv-built-list"></ul>
+  </section>
+
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/local/?place=Boston">Radio in Boston</a><a href="/local/?place=Philadelphia&amp;tab=tv">TV in Philadelphia</a><a href="/local/?place=Chicago">Radio in Chicago</a><a href="/local/?place=Los%20Angeles&amp;tab=tv">TV in Los Angeles</a><a href="/local/?place=London">Radio in London</a></nav>
 <!-- /asks -->
@@ -117,5 +123,6 @@
 <audio id="audio" preload="none"></audio>
 <script type="module" src="/local/app.js"></script>
 <script type="module" src="/local/watch.js"></script>
+<script type="module" src="/local/tv-built.js"></script>
 </body>
 </html>

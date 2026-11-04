@@ -56,6 +56,7 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
     await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
@@ -351,13 +352,31 @@ export const SPECS = {
     await t.click('#leak'); await t.p.waitForTimeout(3000); t.ok(/leak|breach|found|not found|seen/i.test(await t.p.locator('main').innerText()), 'the leak check answers');
   },
   '/pdf/': pdfMake, '/pdf/editor/': pdfMake, '/pdf/merge/': pdfMake, '/pdf/organize/': pdfMake, '/pdf/studio/': pdfMake, '/pdf/suite/': pdfMake, '/pdf/toolbox/': pdfMake,
-  '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); }, '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
+  '/photos/': async (t) => { await t.share('#share'); }, '/photos/exif/': async (t) => { await t.share('#share'); // the AI check mode, built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
+    const crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
+    const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
+    const zlib = await import('node:zlib'), png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]), chunk('IHDR', Buffer.concat([be(2), be(2), Buffer.from([8, 2, 0, 0, 0])])),
+      chunk('tEXt', Buffer.from('parameters\0a lighthouse at dusk\nSteps: 30, Sampler: DPM++ 2M, CFG scale: 7, Seed: 42', 'latin1')), chunk('IDAT', zlib.deflateSync(Buffer.alloc(14))), chunk('IEND', Buffer.alloc(0))]);
+    await t.p.waitForFunction(() => document.documentElement.dataset.aicheck === 'ready', null, { timeout: 10000 }).catch(() => {});
+    await t.p.setInputFiles('#aifile', t.tmp('lighthouse.png', png));
+    const v = await t.waitText('#aiout', /Signs of AI generation/, 5000); t.ok(/Signs of AI generation/.test(v) && /Stable Diffusion settings/.test(v), 'a Stable Diffusion PNG reads as AI, naming its settings chunk');
+    const body = Buffer.from('http://ns.adobe.com/xap/1.0/\0<x:xmpmeta xmp:CreatorTool="Adobe Photoshop 25.0" stEvt:action="saved"/>', 'latin1'); // void-review: ok (the XMP namespace name every JPEG carries, not a request)
+    const jpg = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe1, (body.length + 2) >> 8, (body.length + 2) & 255]), body, Buffer.from([0xff, 0xda, 0, 2, 1, 2, 0xff, 0xd9])]);
+    await t.p.setInputFiles('#aifile', t.tmp('edited.jpg', jpg));
+    const e = await t.waitText('#aiout', /Edited or re-saved/, 5000); t.ok(/Edited or re-saved/.test(e) && /Saved by Adobe Photoshop/.test(e), 'a Photoshop-saved JPEG reads as edited, naming Photoshop');
+    await t.download('#aiout .aidl', /edited-ai-check\.txt$/);
+    t.ok(/moonbeam846\.gumroad\.com\/l\/yinmj/.test(await t.p.locator('#pro-link').getAttribute('href')), 'the paid line links to MultiVerse on the store');
+  },
+  '/photos/exifeditor/': async (t) => { await t.share('#share'); }, '/photos/iloveimg/': async (t) => { await t.share('#share'); }, '/photos/photopea/': async (t) => { await t.share('#share'); }, '/photos/squoosh/': async (t) => { await t.share('#share'); }, '/photos/tinypng/': async (t) => { await t.share('#share'); },
   '/piano/': async (t) => { await t.p.keyboard.press('q'); await t.p.waitForTimeout(400); t.ok((await t.act()).sound > 0, 'a key plays a note'); },
   '/local/': async (t) => {
     await t.fill('#q', 'Boston'); await t.clickText('Find stations'); await t.waitText('#radio-note', /stations within|No radio/, 20000);
     t.ok((await t.p.locator('#radio-list li').count()) > 0, 'Boston has real radio stations listed: ' + (await t.text('#radio-note')).slice(0, 90));
     await t.click('#tab-tv'); await t.waitText('#tv-note', /stations broadcasting|No local TV/, 20000);
     t.ok((await t.p.locator('#tv-list li').count()) > 0, 'Boston has local TV stations listed: ' + (await t.text('#tv-note')).slice(0, 90));
+    const log = await t.p.evaluate(async () => { const r = await fetch('/tv-built.json').catch(() => null); return r && r.ok ? r.json() : null; }); // built at deploy (tools/watch-build.mjs assemble)
+    if (log && log.builds && log.builds.length) { await t.p.waitForSelector('#tv-built:not([hidden]) #tv-built-list li', { timeout: 5000 }).catch(() => {}); const b = log.builds[0];
+      t.ok((await t.p.locator('#tv-built-list a[href="' + b.feature + '"]').count()) > 0 && /Heard on/.test(await t.text('#tv-built-list')), 'Built from what Verse watched lists ' + b.feature + ' with the broadcast it came from'); }
   },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },

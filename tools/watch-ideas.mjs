@@ -37,6 +37,10 @@ function appendInbox(text, ideas, date) {
 }
 
 async function main(argv) {
+  // Retired 2026-11-03 (owner: "rather it takes what it learns from the tv and radio and build useful monetizable things right onto the
+  // site"): idea lists are no longer the output. tools/watch.py now runs tools/watch-build.mjs queue, which picks the best idea and
+  // queues it as a tv: build job that ships a page. verse-watch.yml's promote step reads 'none' and does nothing; --legacy still lists.
+  if (!argv.includes('--legacy')) { console.log('none'); console.log('retired: ideas become built features through tools/watch-build.mjs (see /local/#tv-built)'); return 0; }
   const dry = argv.includes('--dry');
   const fileFlag = argv.indexOf('--file');
   const notes = fileFlag >= 0 && argv[fileFlag + 1]
