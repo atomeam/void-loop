@@ -11,6 +11,7 @@
 //   node tools/automerge.mjs 205 --label     from a session: add the label and go (GitHub merges it when it is ready)
 import { execFileSync } from 'node:child_process';
 import { dirname } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { readiness, resolveMain } from './pr-ready.mjs';
 import { safety } from './skill-safety.mjs';
@@ -18,9 +19,58 @@ import { jobOfBody, moveJob } from './job-link.mjs';
 import { eligible, superseded, stuckDecision } from './merge-policy.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
-const one = process.argv.slice(2).find((a) => /^\d+$/.test(a));
-const run = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input });
-const gh = (path) => JSON.parse(run(['api', path]) || 'null');
+// The API budget (2026-11-04). Every workflow in this repository shares one GITHUB_TOKEN quota (1,000 REST calls an hour). A sweep
+// reads ~8 endpoints per open PR, and this bot woke on every CI finish, comment and review: 77 sweeps in 40 minutes over 20 PRs spent
+// the hour's quota, and then every automerge, helper PR and dispatch failed with "API rate limit exceeded for installation" (403).
+// So: an event about one PR looks at that PR only (scope.mjs below; the hourly run and a bare dispatch still sweep all), the check
+// runs of a head are read once (not once per check name), and the quota is read first (GET /rate_limit costs nothing): under the
+// floor the run says when it resets and exits 0, and a 403 mid-sweep stops the sweep the same way. The next wake (an event, or the
+// hourly run) tries again, so a rate limit is a wait, never a red run and never a lost merge.
+export const RATE_FLOOR = +(process.env.AUTOMERGE_RATE_FLOOR || 120);
+export const isRateLimit = (e) => /rate limit exceeded|secondary rate limit|abuse detection/i.test(String((e && (e.stderr || e.message)) || e));
+let limited = '';
+const one = process.argv.slice(2).find((a) => /^\d+$/.test(a)) || scopedPr();
+const runRaw = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input, stdio: ['pipe', 'pipe', 'pipe'] });
+const run = (args, input) => {
+  try { return runRaw(args, input); }
+  catch (e) { if (isRateLimit(e)) limited = limited || String(e.stderr || e.message).split('\n')[0].slice(0, 160); throw e; }
+};
+// the check runs of one head are read once per run (readiness and the merge gate below both ask)
+const seen = new Map();
+const gh = (path) => {
+  if (/\/check-runs\?/.test(path) && seen.has(path)) return seen.get(path);
+  const v = JSON.parse(run(['api', path]) || 'null');
+  if (/\/check-runs\?/.test(path)) seen.set(path, v);
+  return v;
+};
+function budget() {
+  try { const c = JSON.parse(runRaw(['api', 'rate_limit'])).resources.core; return { left: c.remaining, reset: new Date(c.reset * 1000).toISOString() }; }
+  catch (_) { return { left: Infinity, reset: '' }; }
+}
+function stopForQuota(why) {
+  console.log(`::notice::automerge paused: ${why}. Nothing failed; the next wake (an event, or the hourly run) carries on.`);
+  process.exit(0);
+}
+// the PR an event is about (pull_request, pull_request_review, a dispatch with input pr, a check run on a PR's branch); '' = sweep all
+function scopedPr() {
+  if (process.argv.includes('--all')) return '';
+  try {
+    const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
+    if (ev.pull_request && ev.pull_request.number) return String(ev.pull_request.number);
+    if (ev.inputs && /^\d+$/.test(String(ev.inputs.pr || ''))) return String(ev.inputs.pr);
+    const wr = ev.workflow_run;
+    if (wr && wr.pull_requests && wr.pull_requests.length === 1) return String(wr.pull_requests[0].number);
+  } catch (_) {}
+  return '';
+}
+// a check run that finished on main (a deploy, a review of main) changes no PR's readiness: nothing to look at
+function idleEvent() {
+  try {
+    const ev = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH || '', 'utf8'));
+    const wr = ev.workflow_run;
+    return !!(wr && !(wr.pull_requests || []).length && wr.head_branch === 'main');
+  } catch (_) { return false; }
+}
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -40,13 +90,20 @@ if (process.argv.includes('--label')) {
   process.exit(0);
 }
 
+if (!one && idleEvent()) { console.log('a run on main finished: no pull request changed, nothing to look at (the hourly run sweeps)'); process.exit(0); }
+{ const b = budget(); if (b.left < RATE_FLOOR) stopForQuota(`${b.left} API calls left this hour (floor ${RATE_FLOOR}), the quota resets at ${b.reset}`); }
+console.log(one ? `looking at #${one} only (the event is about it)` : 'sweeping every open pull request');
+
 // GitHub will not auto-merge until the repository allows it. The token often cannot change that setting; say so and carry on.
-try {
+// Once per sweep, not on every event: it is the same setting each time.
+if (!one) try {
   run(['api', '-X', 'PATCH', `repos/${repo}`, '-F', 'allow_auto_merge=true', '-F', 'allow_squash_merge=true']);
   console.log('allow_auto_merge is on');
 } catch (e) { console.log('allow_auto_merge: ' + String(e.stderr || e.message || e).slice(0, 240)); }
 
-const prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?state=open&per_page=100`);
+let prs;
+try { prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?state=open&per_page=100`); }
+catch (e) { if (limited) stopForQuota(limited); throw e; }
 const stuck = process.env.STUCK === '1', STUCK_MARK = '<!-- void-stuck -->';
 function noteStuck(p, why) {
   if (!stuck || stuckDecision(p, [], Date.now()).action === 'young') return;
@@ -70,6 +127,8 @@ for (const row of superseded(prs)) {
 let merged = 0;
 const closed = new Set(superseded(prs).map((r) => r.number));
 for (let p of prs) {
+  if (limited) { console.log(`::notice::stopped the sweep at #${p && p.number}: ${limited}. The next wake carries on; nothing failed.`); break; }
+  if (!one && budget().left < RATE_FLOOR) { console.log(`::notice::stopped the sweep at #${p && p.number}: under ${RATE_FLOOR} API calls left this hour. The next wake carries on.`); break; }
   if (!p || p.state !== 'open' || closed.has(p.number)) continue;
   // every PR from this repository is merged automatically (owner, 2026-10-15: "automerge everything always"): a PR nobody
   // labelled gets the label here, so the rest of the loop (and anyone reading the PR) sees the same thing
@@ -94,7 +153,9 @@ for (let p of prs) {
   }
   // GitHub works out whether a PR is mergeable only when asked; the first answer after a push is "unknown", so ask once more
   if (p.mergeable_state === 'unknown') { try { execFileSync('sleep', ['4']); p = gh(`repos/${repo}/pulls/${p.number}`) || p; } catch (_) {} }
-  const r = readiness(gh, repo, p.number);
+  let r;
+  try { r = readiness(gh, repo, p.number); }
+  catch (e) { if (limited) continue; console.log(`#${p.number}: could not read its state: ${String(e.stderr || e.message || e).slice(0, 200)}`); continue; }
   console.log(`#${p.number}: ${r.state} (${r.why})` + (r.extra ? ' · ' + r.extra : ''));
   if (r.state === 'resolve') {
     const m = resolveMain(ex, gh, { repo, pr: p.number, branch: r.branch, tools: here });
@@ -112,7 +173,7 @@ for (let p of prs) {
   // the merge gate tests the result of merging main. Missing on this head: start it and wait (a token push starts no pull_request run).
   // A repository that does not have the workflow yet (this file's first merge) is told so, and the older rule stands.
   try {
-    const gate = (gh(`repos/${repo}/commits/${r.sha}/check-runs?check_name=merge-gate&per_page=20`).check_runs || []).sort((a, b) => b.id - a.id)[0];
+    const gate = (gh(`repos/${repo}/commits/${r.sha}/check-runs?per_page=100`).check_runs || []).filter((c) => c.name === 'merge-gate').sort((a, b) => b.id - a.id)[0];
     if (!gate && r.branch) {
       try { run(['workflow', 'run', 'merge-gate.yml', '--repo', repo, '--ref', r.branch, '-f', `pr=${p.number}`]); console.log(`#${p.number}: merge gate started on ${r.sha.slice(0, 7)}`); continue; }
       catch (e) { console.log(`#${p.number}: no merge gate on this repository yet (${String(e.stderr || e.message || e).slice(0, 120)}); merging on Verse's review`); }

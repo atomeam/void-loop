@@ -13,6 +13,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: review-bench
+  cancel-in-progress: false
+
 jobs:
   review-bench:
     runs-on: ubuntu-latest
