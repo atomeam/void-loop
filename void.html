@@ -1155,6 +1155,7 @@
     @media (max-width: 700px) { #void-anchor { right: 8px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); opacity: .22; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
   <style id="verse-critical">
+    .vs-chrome,#verse-nav,#verse-proof,#void-anchor,#void-member{display:none!important;visibility:hidden!important}
     *,*::before,*::after{box-sizing:border-box}
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
@@ -1190,6 +1191,13 @@
       setTimeout(function () { e.remove(); }, 1900);
     })();
   </script>
+  <script>
+    (function () {
+      var remove = function () { document.querySelectorAll('.vs-chrome, #verse-nav, #verse-proof, #void-member').forEach(function (el) { el.remove(); }); };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', remove, { once: true }); else remove();
+      if (window.MutationObserver) new MutationObserver(remove).observe(document.documentElement, { childList: true, subtree: true });
+    })();
+  </script>
   <header id="verse-hero"><h1>Verse</h1><p>ASK ANYTHING</p></header>
   <button id="verse-install" type="button" hidden>Install</button>
   <noscript><main style="max-width:640px;margin:20vh auto;padding:0 16px;color:#cfcfcf;font:15px/1.5 system-ui,sans-serif">
@@ -1201,7 +1209,6 @@
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
-  <a id="void-anchor" href="/store/" aria-label="support Verse: the store" title="support Verse" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
@@ -5601,17 +5608,6 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
-    // the MultiVerse mark (members perk, 2026-10-30): on a member's own stage, one tier read after load, only when this device is signed in;
-    // on a published page (/@name), when the server said its owner is a member (functions/[handle].js), with no read at all.
-    // The server's word decides: a free or failed read shows nothing
-    async function memberMark() {
-      if (document.getElementById('void-member')) return;
-      const label = PAGE ? (PAGE.member ? 'Made with MultiVerse: see what members get' : '') : (me && me.token && (await meTier()) === 'paid' ? 'MultiVerse member: your perks' : '');
-      if (!label || document.getElementById('void-member')) return;
-      const a = document.createElement('a'); a.id = 'void-member'; a.href = '/members/'; a.textContent = 'MultiVerse';
-      a.title = label; a.setAttribute('aria-label', label); document.body.append(a);
-    }
-    setTimeout(() => { memberMark().catch(() => {}); }, 0);
     async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'MultiVerse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'MultiVerse adds ' + PAID_ADDS;
@@ -6668,26 +6664,7 @@ say('nothing selected to remove');
       if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
       clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { if (awayNote.textContent.startsWith(text)) awayNote.textContent = ''; }, 9000); // a line added since (what Verse made) stays
     }
-    // what Verse made while you were away (skills/showcase.js): on a returning visitor's first touch, move or key, one quiet line
-    // with "show me"; a first visit only remembers when it was (the empty page loads nothing for it). Gone with the first ask.
-    if (!PAGE) {
-      const kick = () => {
-        for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, kick, true);
-        skillsReady.then(() => import('/skills/showcase.js')).then((m) => { m.watch(stageApi, awayNote); return m.nudge(stageApi, awayNote); }).then((n) => {
-          if (n) input.addEventListener('keydown', function off(e) { if (e.key === 'Enter') { input.removeEventListener('keydown', off); if (awayNote.querySelector('.showcase-pill')) awayNote.textContent = ''; } });
-        }).catch(() => {});
-      };
-      for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
-    }
-    // the community milestone card (asked by Verse, 2026-10-17; lib/join-watch.js): when someone joins MultiVerse, one quiet line under the
-    // stage with the join link. Read once the page is idle, then every 5 minutes while visible; the first ask clears it.
-    if (!PAGE) {
-      const startJoins = () => import('/lib/join-watch.js').then((J) => {
-        J.watch(document, awayNote);
-        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') for (const c of document.querySelectorAll('.join-card')) c.remove(); });
-      }).catch(() => {});
-      if ('requestIdleCallback' in window) requestIdleCallback(() => skillsReady.then(startJoins), { timeout: 8000 }); else setTimeout(() => skillsReady.then(startJoins), 4000);
-    }
+    // what Verse made while you were away and community milestones stay out of the blank stage; they only open when asked for
     // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of the build it
     // loaded with (lib/stale-tab.js: the commit the deploy writes to /build.json, else the page's ETag) and looks again when it comes back into view and about every
     // ten minutes, one small GET each. A different id shows one non-blocking line that reloads on tap; the page never reloads by itself, so nobody loses what they were typing.

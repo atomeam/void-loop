@@ -1,7 +1,7 @@
 // Verse's service worker: lets the installed app open offline. Network first, always,
 // so every deploy shows up on the next load; the cache is only a fallback. /api is never touched.
-const CACHE = 'void-shell-v2';
-const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json', '/verse.css', '/verse-shell.js', '/verse-field.js'];
+const CACHE = 'void-shell-v3';
+const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json', '/verse.css', '/verse-shell.js'];
 // the one-tool pages open offline too (owner, 2026-10-24: the tower gate measures offline): each page is kept under its own path, with the
 // modules its generated modulepreload block names (tools/preload.mjs), fetched once at install
 const TOOLS = ['/bots/', '/agent/', '/photos/', '/brain/', '/progress/', '/ledger/', '/autopilot/', '/stopwatch/', '/word-count/', '/color/', '/color/gradient/', '/random/wheel/', '/random/people/', '/base64/bases/', '/convert/', '/resize-image/', '/password/strength/', '/random/', '/random/coin/', '/base64/', '/stl/', '/calculator/', '/calculators/', '/vat/', '/time/', '/password/', '/weather/', '/local/', '/translate/', '/recipes/', '/markets/', '/markets/caps/', '/metronome/', '/paint/', '/emojis/', '/emoji-combos/', '/tournaments/', '/prizes/', '/hosting/', '/identity/', '/cpan/', '/obituaries/', '/books/', '/podcasts/', '/scores/', '/scores/sports/', '/fantasy/', '/calendar/', '/notes/', '/generators/', '/boards/', '/fanfic/', '/team/', '/learn-to-draw/', '/converter/', '/rap/', '/news/', '/image/', '/video/', '/pdf/', '/pdf/merge/', '/pdf/organize/', '/pdf/toolbox/', '/pdf/editor/', '/pdf/suite/', '/pdf/studio/', '/kanban/', '/kanban/simple/', '/kanban/quick/', '/kanban/teams/', '/kanban/flow/', '/g/', '/is-it/christmas', '/tools/', '/markets/currency-converter/', '/emoji-combos/emoji-dictionary/', '/emojis/everywhere/', '/convert/unit-converter/', '/convert/unit-converter-2/'];
@@ -54,23 +54,6 @@ self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE && k !== CACHE_3D && k !== CACHE_SCORES).map((k) => caches.delete(k)))).then(() => self.clients.claim())
     .then(() => self.clients.matchAll({ type: 'window' })).then((cs) => caches.open(CACHE).then((c) => Promise.all(cs.map((x) => new URL(x.url).pathname).filter(isTool).map((t) => keepWhole(c, t))))).catch(() => {}));
 });
-// The home page and the shell pages are open in other pull requests, so the nav is added here on the way to the
-// browser (lib/verse-shell.js dressHtml is the same edit). A page that already has the shell script is left alone.
-const DRESS = new Set(['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
-function dress(res, path) {
-  if (!res || res.status !== 200 || !/text\/html/.test(res.headers.get('content-type') || '')) return Promise.resolve(res);
-  const p = !path || path === '/' ? '/' : (path.endsWith('/') ? path : path + '/');
-  if (!DRESS.has(p)) return Promise.resolve(res);
-  return res.clone().text().then((html) => {
-    if (!html || html.includes('/verse-shell.js') || !html.includes('</body>')) return res;
-    let out = html.includes('/verse.css') ? html : html.replace('</head>', '<link rel="stylesheet" href="/verse.css">\n</head>');
-    const field = p === '/' ? '<script type="module" src="/verse-field.js"></script>\n' : '';
-    out = out.replace('</body>', '<script type="module" src="/verse-shell.js"></script>\n' + field + '</body>');
-    const headers = new Headers(res.headers);
-    headers.delete('content-length');
-    return new Response(out, { status: res.status, statusText: res.statusText, headers });
-  }).catch(() => res);
-}
 self.addEventListener('fetch', (e) => {
   const req = e.request, url = new URL(req.url);
   if (req.method === 'GET' && url.origin === location.origin && url.pathname === '/api/scores') {
@@ -111,6 +94,6 @@ self.addEventListener('fetch', (e) => {
     // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
     const tool = nav && isTool(url.pathname);
     if (res.ok && (!nav || tool || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(tool ? url.pathname : nav ? '/' : req, copy)); }
-    return nav ? dress(res, url.pathname) : res;
-  }).catch(() => (nav && isTool(url.pathname) ? caches.match(url.pathname).then((r) => r || caches.match('/')) : caches.match(nav ? '/' : req)).then((r) => (r ? dress(r, url.pathname) : Response.error()))));
+    return res;
+  }).catch(() => (nav && isTool(url.pathname) ? caches.match(url.pathname).then((r) => r || caches.match('/')) : caches.match(nav ? '/' : req)).then((r) => r || Response.error())));
 });

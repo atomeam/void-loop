@@ -1,9 +1,9 @@
 // The home page is one HTML file of about 700 KB. The deploy pulls the style and the scripts out of the served
 // copies after tools/public-quotes.mjs. The repo's void.html stays the file editors change.
 // The served page paints from the HTML and a small critical style that stays inline. The rest of the style loads
-// without blocking. The main script is added on the frame after the first paint. The sky, the presence rim, the
-// synapse canvas, the command palette and the WebGL wash are fetched only after the largest paint, or after four seconds,
-// and never before the main script has run (they read its globals).
+// without blocking. The main script is added on the frame after the first paint. The sky, the presence rim and the
+// command palette are fetched only after the largest paint, or after four seconds, and never before the main script
+// has run (they read its globals).
 // The ask engine stays one file: its parts share one scope. Skill modules start on a key, a tap, or an idle callback.
 //   node tools/split-void-page.mjs            rewrite the served copies and write the files
 //   node tools/split-void-page.mjs --dry      print the sizes only
@@ -35,7 +35,7 @@ const AFTER = [
   '    if (decorDone) return; decorDone = true;',
   '    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/verse.css"; document.head.appendChild(l);',
   '    add("/void-sky.js"); add("/void-presence.js"); add("/void-synapses.js");',
-  '    add("/verse-shell.js", "module"); add("/verse-field.js", "module");',
+  '    add("/verse-shell.js", "module");',
   '  }',
   '  function frame(){ requestAnimationFrame(function(){ requestAnimationFrame(boot); }); }',
   '  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", frame); else frame();',

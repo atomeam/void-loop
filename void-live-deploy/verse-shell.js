@@ -1,59 +1,8 @@
-// The app shell on every Verse page that links it: the nav's current page, the command palette (Ctrl+K or ⌘K),
-// a one-line live proof on the home page, speculation-rules prefetch, and a short haptic tick on a tap.
-// Team keeps its own Ctrl+K (the channel jump). Drawing is here; the wording is lib/verse-shell.js.
-import { NAV, currentNav, proofLine, commands, filterCommands, speculationRules, dressPath } from '/lib/verse-shell.js';
-
-function ensureChrome() {
-  if (!dressPath(location.pathname) || document.getElementById('verse-nav')) return;
-  const header = document.createElement('header');
-  header.className = 'vs-chrome';
-  const nav = document.createElement('nav');
-  nav.id = 'verse-nav';
-  nav.className = 'vs-app';
-  nav.setAttribute('aria-label', 'Verse');
-  const brand = document.createElement('a');
-  brand.className = 'vs-brand';
-  brand.href = '/';
-  brand.textContent = 'Verse';
-  const links = document.createElement('div');
-  links.className = 'vs-links';
-  for (const item of NAV) {
-    const a = document.createElement('a');
-    a.href = item.href;
-    a.textContent = item.label;
-    links.append(a);
-  }
-  const k = document.createElement('button');
-  k.type = 'button';
-  k.className = 'vs-k';
-  k.setAttribute('aria-label', 'Commands ⌘K');
-  k.setAttribute('aria-keyshortcuts', 'Control+K Meta+K');
-  const shown = document.createElement('span');
-  shown.setAttribute('aria-hidden', 'true');
-  shown.textContent = '⌘K';
-  k.append(shown);
-  nav.append(brand, links, k);
-  header.append(nav);
-  if (location.pathname === '/') {
-    const proof = document.createElement('p');
-    proof.id = 'verse-proof';
-    proof.className = 'vs-proof';
-    proof.setAttribute('role', 'status');
-    proof.textContent = 'Verse, live';
-    header.append(proof);
-  }
-  document.body.prepend(header);
-}
+// The hidden command palette for every Verse page that links it. It creates no visible chrome.
+// Team keeps its own Ctrl+K (the channel jump). The wording is lib/verse-shell.js.
+import { NAV, commands, filterCommands, speculationRules, dressPath } from '/lib/verse-shell.js';
 
 const reduce = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) { return false; } };
-
-function markCurrent() {
-  const cur = currentNav(location.pathname);
-  for (const a of document.querySelectorAll('#verse-nav .vs-links a')) {
-    if (cur && a.getAttribute('href') === cur.href) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
-  }
-}
 
 function tick() {
   if (reduce()) return;
@@ -140,6 +89,23 @@ function openPalette() {
   if (typeof dlg._open === 'function') dlg._open();
 }
 
+function killInjectedChrome() {
+  for (const el of document.querySelectorAll('.vs-chrome, #verse-nav, #verse-proof')) el.remove();
+}
+
+if (dressPath(location.pathname)) {
+  document.addEventListener('keydown', onKey, true);
+  if (window.MutationObserver) {
+    const observer = new MutationObserver(killInjectedChrome);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    killInjectedChrome();
+  }
+  document.addEventListener('pointerdown', (e) => {
+    if (e.target && e.target.closest && e.target.closest('#go, #mic')) tick();
+  }, { passive: true });
+  armSpeculation();
+}
+
 function onKey(e) {
   if (location.pathname === '/team' || location.pathname.startsWith('/team/')) return;
   if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
@@ -147,40 +113,4 @@ function onKey(e) {
     e.stopImmediatePropagation();
     openPalette();
   }
-}
-
-async function paintProof() {
-  const el = document.getElementById('verse-proof');
-  if (!el) return;
-  try {
-    const [crewRes, selfRes] = await Promise.all([
-      fetch('/api/crew').then((r) => (r.ok ? r.json() : null)).catch(() => null),
-      fetch('/self.json').then((r) => (r.ok ? r.json() : null)).catch(() => null),
-    ]);
-    const beaten = selfRes && selfRes.tower ? selfRes.tower.beaten : undefined;
-    const line = proofLine({ crew: crewRes && crewRes.crew, beaten });
-    if (line) el.textContent = line;
-  } catch (_) {}
-}
-
-ensureChrome();
-markCurrent();
-armSpeculation();
-document.addEventListener('keydown', onKey, true);
-document.addEventListener('pointerdown', (e) => {
-  const t = e.target && e.target.closest && e.target.closest('#go, #mic, .vs-links a, .vs-k, .vs-brand');
-  if (t) tick();
-}, { passive: true });
-const k = document.querySelector('.vs-k');
-if (k) k.addEventListener('click', () => {
-  if (location.pathname === '/team' || location.pathname.startsWith('/team/')) {
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
-    return;
-  }
-  openPalette();
-});
-if (document.getElementById('verse-proof')) {
-  const run = () => { if (document.visibilityState !== 'hidden') paintProof(); };
-  if (document.readyState === 'complete') run(); else addEventListener('load', run);
-  setInterval(run, 30000);
 }

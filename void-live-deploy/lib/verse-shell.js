@@ -90,12 +90,7 @@ export function dressPath(path) {
   return DRESS.has(p);
 }
 
-/** put the token file and the shell script on a shell page that does not have them yet. Other HTML is returned unchanged. */
-export function dressHtml(html, path) {
-  const text = String(html || '');
-  if (!dressPath(path) || text.includes('/verse-shell.js')) return text;
-  let out = text;
-  if (!out.includes('/verse.css')) out = out.replace('</head>', '<link rel="stylesheet" href="/verse.css">\n</head>');
-  const field = (path === '/' || path === '') ? '<script type="module" src="/verse-field.js"></script>\n' : '';
-  return out.replace('</body>', '<script type="module" src="/verse-shell.js"></script>\n' + field + '</body>');
+/** the hidden command palette never requires a page rewrite. Other HTML is returned unchanged. */
+export function dressHtml(html) {
+  return String(html || '');
 }
