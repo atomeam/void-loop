@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-04T15:21:44.410Z",
+ "updated": "2026-11-04T15:41:42.102Z",
  "last24h": {
-  "ticks": 119,
-  "started": 101,
+  "ticks": 118,
+  "started": 102,
   "requeued": 1,
   "setAside": 0,
   "probes": 10,
@@ -159,7 +159,8 @@
   "mw1z43dg": 1793789869696,
   "mw1z43va": 1793790492448,
   "mw21bvh9": 1793804931467,
-  "mw21bw4i": 1793805704410
+  "mw21bw4i": 1793805704410,
+  "mw21bwrs": 1793806902102
  },
  "visitorAt": "2026-11-04T15:01:25Z",
  "visitorFiled": [
@@ -245,42 +246,6 @@
   "visit:convert-100-usd-to-eur"
  ],
  "ticks": [
-  {
-   "at": "2026-11-03T15:29:48.083Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 138,
-   "warnings": 0
-  },
-  {
-   "at": "2026-11-03T15:40:07.738Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": false,
-   "lap": false,
-   "revived": [],
-   "held": 138,
-   "warnings": 0
-  },
   {
    "at": "2026-11-03T15:50:25.385Z",
    "open": 138,
@@ -2858,6 +2823,30 @@
    "grow": false,
    "will": false,
    "lap": true,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 169,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T15:41:42.102Z",
+   "open": 174,
+   "started": [
+    {
+     "id": "mw21bwrs",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
    "revived": [
     "void-tick.yml"
    ],
