@@ -95,7 +95,7 @@ export function mountPdf(root, cfg) {
   const build = (id) => { cleanup = () => {}; const nodes = PANELS[id](); cleanups.push(cleanup); return nodes; };
 
   // a page made into a picture goes on to the other picture pages (lib/image-handoff.js): the press keeps it on this device and opens the next page with it
-  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
+  const SEND = [['Paint it by number', '/paint/?img=handoff'], ['Edit it in photo tools', '/photos/?img=handoff'], ['Take its colours as a gradient', '/color/gradient/?img=handoff'], ['Resize it', '/resize-image/?img=handoff']];
   function sendRow(imgs, mime) {
     const pick = imgs.length > 1 ? h('select', { 'aria-label': 'Which page to send' }, imgs.map((x, i) => h('option', { value: i }, 'Page ' + ((x.name.match(/(\d+)\.\w+$/) || [])[1] || i + 1)))) : null;
     const go = (href) => (e) => { e.preventDefault(); const x = imgs[pick ? +pick.value : 0];

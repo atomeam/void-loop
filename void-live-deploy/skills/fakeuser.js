@@ -11,7 +11,7 @@ function run(text, api) {
   // the page's card names its seed, so the stage shows the page's own people; any other ask gets new ones
   const seed = q.seed || Array.from(crypto.getRandomValues(new Uint8Array(4)), (b) => b.toString(36).padStart(2, '0')).join('');
   const shown = people({ seed, n: Math.min(q.n, 3), nats: q.nats, gender: q.gender });
-  const href = '/random-user/?' + new URLSearchParams({ n: String(q.n), nat: q.nats.join(','), ...(q.gender ? { g: q.gender } : {}), seed });
+  const href = '/random/people/?' + new URLSearchParams({ n: String(q.n), nat: q.nats.join(','), ...(q.gender ? { g: q.gender } : {}), seed });
   showPage((el) => {
     el.dataset.cardKind = 'Made-up people'; el.dataset.page = href; // the card's page link opens these same people
     el.innerHTML = '<h2>' + esc(q.n + ' made-up ' + (q.n === 1 ? 'person' : 'people')) + '</h2>' // void-review: ok (escaped)

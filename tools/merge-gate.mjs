@@ -18,7 +18,7 @@ export function onlyBuildConflicts(files) {
 }
 
 function git(args, cwd) {
-  return spawnSync('git', args, { cwd, encoding: 'utf8' });
+  return spawnSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 20e6 });
 }
 
 function main() {
@@ -28,19 +28,28 @@ function main() {
   if (add.status !== 0) { console.error('merge-gate: ' + (add.stderr || add.stdout)); process.exit(2); }
   try {
     const base = process.env.MERGE_GATE_BASE || 'origin/main';
+    git(['config', 'user.email', 'merge-gate@users.noreply.github.com'], dir);
+    git(['config', 'user.name', 'merge-gate'], dir);
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
     if (merged.status !== 0) {
       const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
-      if (!onlyBuildConflicts(files)) {
-        console.error('merge-gate: conflicts with main in ' + files.join(', '));
+      const merging = git(['rev-parse', '-q', '--verify', 'MERGE_HEAD'], dir).status === 0;
+      if (!files.length && merging) console.log('merge-gate: main is in, nothing left unmerged');
+      else if (!onlyBuildConflicts(files)) {
+        console.error('merge-gate: conflicts with main in ' + (files.join(', ') || '(none)'));
+        console.error(String(merged.stderr || merged.stdout || (merged.error && merged.error.message) || '').slice(0, 800));
         console.error('A build output is regenerated here. These files need a person: run node tools/merge-main.mjs on the branch.');
         process.exit(1);
+      } else {
+        for (const f of files) git(['checkout', '--ours', '--', f], dir);
+        git(['add', '--', ...files], dir);
+        console.log('merge-gate: regenerated through the conflict in ' + files.join(', '));
       }
-      for (const f of files) git(['checkout', '--ours', '--', f], dir);
-      git(['add', '--', ...files], dir);
-      console.log('merge-gate: regenerated through the conflict in ' + files.join(', '));
     }
-    // the generators, so the checks see the tree the deploy will serve
+    // commit the merge so the checks see this pull request's files, not every file main just brought in
+    const committed = git(['commit', '-q', '--no-edit'], dir);
+    if (committed.status === 0) console.log('merge-gate: committed the merge');
+    // the generators, so a build output that conflicted is rewritten before we put the tree back
     for (const args of [
       ['tools/skills-index.mjs', '--write'],
       ['tools/deps.mjs'],
@@ -53,7 +62,11 @@ function main() {
       const r = spawnSync(process.execPath, [resolve(dir, args[0]), ...args.slice(1)], { cwd: dir, encoding: 'utf8' });
       if (r.status !== 0) console.log('merge-gate: ' + args[0] + ' exited ' + r.status + ' (the check below says if that matters)');
     }
-    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed'], {
+    // the generators rewrite build outputs in the worktree. Put those back so a rewritten file does not
+    // pull a pre-existing red check into this pull request. Do it even when the merge commit was a no-op.
+    git(['reset', '--hard', 'HEAD'], dir);
+    git(['clean', '-fd'], dir);
+    const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', stdio: 'inherit',
       env: { ...process.env, VOID_ALLOW_CHANGED: '1', VOID_SKIP_BENCH: '1', VOID_GATE: '1', CI: '', GITHUB_ACTIONS: '' },
     });

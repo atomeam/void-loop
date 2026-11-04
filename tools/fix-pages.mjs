@@ -53,7 +53,7 @@ const PRICE_JS = `<script>
     if (!row) return; // the page's own price and link stand
     const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
     if (row.price_cents && price) price.textContent = money(row);
-    if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
+    if (row.available === false && buy) { buy.href = '/fix/one-time/'; return; }
     if (/^https:\\/\\//.test(row.url || '') && buy) buy.href = row.url;
   }).catch(function (e) { console.warn('[fix] the live price could not load; the page\\'s own price and link stand', e); });
 })();
@@ -101,7 +101,7 @@ function helpBoxes(ask) {
       <a class="btn solid" id="fix-buy" data-fix="buy" href="${BUY}" rel="noopener">Get the One-Time Fix</a>
     </div>
   </div>
-  <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>. Several workflows breaking? The <a href="/full-stack-audit/">Full Stack Audit</a> reviews them all. Want them watched so this does not happen again? The <a href="/keep-it-running/">Keep-It-Running Plan</a>.</p>
+  <p class="muted">The One-Time Fix covers one workflow. <a href="/fix/one-time/">What you send and what you get back</a>. Several workflows breaking? The <a href="/fix/audit/">Full Stack Audit</a> reviews them all. Want them watched so this does not happen again? The <a href="/keep-it-running/">Keep-It-Running Plan</a>.</p>
 `;
 }
 
@@ -136,6 +136,8 @@ ${PRICE_JS}
 `;
 }
 
+// the /fix/ hub is the combined page of the error fixes and the paid fixes (owner, 2026-11-03: "always combine pages when possible"): its mode bar
+const HUB_MODES = '<!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->\n<nav class="v-modes" aria-label="Fix modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/fix/" aria-current="page">Error fixes</a><a href="/fix/one-time/">One-Time Fix</a><a href="/fix/audit/">Full Stack Audit</a></nav>\n';
 export function hubOf(pages) {
   const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
   const named = platforms.length > 1 ? platforms.slice(0, -1).join(', ') + ' and ' + platforms[platforms.length - 1] : platforms.join('');
@@ -145,7 +147,7 @@ export function hubOf(pages) {
     hasPart: pages.map((p) => ({ '@type': 'TechArticle', headline: p.title, url: SITE + '/fix/' + p.slug + '/' })) };
   const group = (name) => pages.filter((p) => p.platform === name)
     .map((p) => `    <li><a href="/fix/${p.slug}/">${esc(p.short)}</a> <span class="muted">${esc(p.error)}</span></li>`).join('\n');
-  return head(title, desc, '/fix/', ld) + `  <h1>Fix a broken automation</h1>
+  return head(title, desc, '/fix/', ld).replace('<body>\n', '<body>\n' + HUB_MODES) + `  <h1>Fix a broken automation</h1>
   <p class="lead">The errors that stop ${esc(named)} automations, each with what it means and the steps that fix it.</p>
 ${platforms.map((name) => `
   <h2>${esc(name)}</h2>

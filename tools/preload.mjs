@@ -1,5 +1,5 @@
 // Speed for the direct pages (owner, 2026-10-24: "speed fixes a lot of our other issues and is worth fixing permanently"): a page whose module
-// imports a module that imports another is a waterfall, one round trip per level (/flip/ was page -> skills/coin.js -> lib/tally.js ->
+// imports a module that imports another is a waterfall, one round trip per level (/random/coin/ was page -> skills/coin.js -> lib/tally.js ->
 // lib/reactions.js and lost the tower's speed aspect, 1747 ms against 860). Every module a direct page reaches by static imports is listed in its
 // head as <link rel="modulepreload">, between two marker comments, so the browser asks for all of them at once. Generated, never kept by hand:
 //   node tools/preload.mjs          rewrite the lists (the pages under void-live-deploy/<name>/index.html that load modules)
