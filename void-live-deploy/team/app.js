@@ -57,15 +57,17 @@ const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minut
 const dayOf = (t) => { const d = new Date(t), today = new Date(); const y = new Date(); y.setDate(today.getDate() - 1);
   return d.toDateString() === today.toDateString() ? 'Today' : d.toDateString() === y.toDateString() ? 'Yesterday' : d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }); };
 const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'just now' : m < 60 ? m + ' min' : m < 1440 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' d'; };
-const stateWord = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
+const stateWord = (m) => (m.role === 'member' ? 'member · ' : '') + stateWord0(m);
+const stateWord0 = (m) => m.state === 'busy' ? 'on a job' + (m.since ? ' · ' + ago(m.since) : '') : m.state === 'idle' ? 'idle' : m.state === 'invited' ? 'invited, not joined yet' : 'away';
 
 function msgHtml(m, prev, { inThread = false } = {}) {
   const cont = prev && prev.by === m.by && m.at - prev.at < 5 * 60e3 && !(m.replies && !inThread) && new Date(prev.at).toDateString() === new Date(m.at).toDateString();
-  const tag = m.kind === 'verse' ? '<span class="tag">Verse</span>' : m.kind === 'owner' ? '<span class="tag">owner</span>' : '<span class="tag">agent</span>';
+  const tag = m.kind === 'verse' ? '<span class="tag">Verse</span>' : m.kind === 'owner' ? '<span class="tag">owner</span>' : m.kind === 'member' ? '<span class="tag">member</span>' : '<span class="tag">agent</span>';
   const reacts = (m.reacts || []).map((r) => '<button type="button" data-react="' + esc(r.e) + '" data-id="' + m.id + '" aria-pressed="' + (r.me ? 'true' : 'false') + '" title="' + esc(r.who.join(', ')) + '">' + esc(r.e) + ' ' + r.n + '</button>').join('');
   const thread = !inThread && m.replies ? '<div class="tlink"><button type="button" data-thread="' + m.id + '">' + m.replies + (m.replies === 1 ? ' reply' : ' replies') + '</button> <span class="muted">last ' + (m.lastReply ? ago(m.lastReply) : '') + '</span></div>' : '';
   const acts = S.me ? '<div class="acts" role="group" aria-label="Message actions">' + T.EMOJI.slice(0, 4).map((e) => '<button type="button" data-react="' + e + '" data-id="' + m.id + '" aria-label="React ' + e + '">' + e + '</button>').join('')
-    + (!inThread ? '<button type="button" data-thread="' + m.id + '" aria-label="Reply in thread">💬</button>' : '') + '</div>' : '';
+    + (!inThread ? '<button type="button" data-thread="' + m.id + '" aria-label="Reply in thread">💬</button>' : '')
+    + (!inThread && !m.job && m.c === 'ideas' && S.me.kind === 'owner' && m.kind !== 'verse' ? '<button type="button" data-promote="' + m.id + '" aria-label="Make this proposal a job">Make it a job</button>' : '') + '</div>' : '';
   return '<article class="msg' + (cont ? ' cont' : '') + '" id="m' + m.id + '" data-id="' + m.id + '">' + avatar(m)
     + '<div class="meta"><b>' + esc(m.by) + '</b>' + tag + '<time datetime="' + new Date(m.at).toISOString() + '">' + clock(m.at) + '</time></div>'
     + '<div class="body">' + rendered(m.body) + (m.job ? '<div><span class="job">job ' + esc(m.job) + '</span></div>' : '') + '</div>'
@@ -341,6 +343,67 @@ function showId(el, id) {
 }
 const incoming = new URLSearchParams(location.search).get('q'); // text another page handed over (/team/?q=...) waits in the message box
 
+// ---- Help build Verse (#build): the public jobs board with one-click claim, the member join, the credits, and the owner's one line ----
+// /team/?job=<words> or ?idea=<words> (the stage's "post a job: ..." hands over here) fills the owner's one-line box; one press posts it.
+const LANDING = new URLSearchParams(location.search), quickIn = LANDING.get('job') ? 'job: ' + LANDING.get('job') : LANDING.get('idea') ? 'idea: ' + LANDING.get('idea') : '';
+const isWorker = () => !!(S.me && S.me.kind === 'agent');
+async function drawBoard() {
+  const r = await api('?jobs');
+  if (!r.ok || !Array.isArray(r.jobs)) { $('boardLine').textContent = r.say || 'The board did not answer. Try again in a minute.'; return; }
+  if (!$('mprod').options.length) $('mprod').innerHTML = (r.products || []).map((p) => '<option value="' + esc(p.slug) + '">' + esc(p.name) + '</option>').join(''); // void-review: ok (fixed names from the server, escaped)
+  const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
+  $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · members claim with one click')
+    : 'Nothing open right now: every job is taken. Propose one in #ideas.';
+  $('board').innerHTML = r.jobs.map((j) => '<li><span class="t"><span class="k' + (j.good ? ' good1' : '') + '">' + esc(j.label) + (j.good ? ' · good first task' : '') + (j.waiting ? ' · waiting ' + j.waiting + ' d' : '') + '</span>' + esc(j.title) + '</span>'
+    + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Members claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
+}
+async function drawCredits() {
+  const r = await api('?credits'); if (!r.ok || !Array.isArray(r.people) || !Array.isArray(r.shipped)) return;
+  const members = r.people.filter((p) => p.role === 'member').length, builders = r.people.filter((p) => p.shipped || p.done);
+  $('creditLine').textContent = r.people.length + ' in the team · ' + members + ' member' + (members === 1 ? '' : 's') + (builders.length ? ' · ' + builders.map((p) => p.name + ' ' + (p.shipped || p.done)).join(', ') : '');
+  $('credits').innerHTML = r.shipped.length ? r.shipped.map((c) => '<li><span class="t"><span class="k">' + esc(c.role) + ' · ' + esc(c.state) + ' · ' + esc(new Date(c.at).toLocaleDateString()) + '</span><b>' + esc(c.name) + '</b> handed in ' + esc(c.job) + '</span><a href="' + esc(c.link) + '" rel="noopener">PR</a></li>').join('')
+    : '<li class="muted">No hand-ins yet. The first one puts your name here.</li>'; // void-review: ok (every value escaped; links are GitHub pull requests the server checked)
+}
+function drawBuild() {
+  $('joinBox').hidden = !!S.me; $('quick').hidden = !(S.me && S.me.kind === 'owner');
+  if (quickIn && S.me && S.me.kind === 'owner' && !$('qline').value) { $('qline').value = quickIn.slice(0, 1000); $('build').scrollIntoView({ block: 'start' }); $('qline').focus(); }
+  drawBoard(); drawCredits();
+}
+document.addEventListener('click', async (e) => {
+  const c = e.target.closest('[data-claim]'), jf = e.target.closest('[data-joinfirst]'), pr = e.target.closest('[data-promote]');
+  if (jf) { $('joinBox').scrollIntoView({ block: 'center' }); $('mname').focus(); return; }
+  if (c) {
+    c.disabled = true; const r = await api('', { do: 'claim', job: c.dataset.claim });
+    if (!r.ok) { $('boardLine').textContent = r.say || 'Not claimed.'; c.disabled = false; drawBoard(); return; }
+    S.me.job = r.job.job; S.me.thread = r.thread; $('boardLine').textContent = 'Yours: ' + r.job.job + '. Its thread is open in #work.';
+    drawBoard(); location.hash = 'c=work&t=' + r.thread; return;
+  }
+  if (pr && S.me && S.me.kind === 'owner') {
+    pr.disabled = true; const r = await api('', { do: 'promote', id: Number(pr.dataset.promote) });
+    pr.textContent = r.ok ? 'A job: ' + r.job : (r.say || 'not made a job'); if (r.ok) { drawBoard(); openChannel(S.view.c, { keep: true }); }
+  }
+});
+$('mjoin').addEventListener('submit', async (e) => {
+  e.preventDefault(); const say = $('mjoinSay'), key = $('mkey').value.trim(), order = $('morder').value.trim();
+  const bad = (t) => { say.textContent = t; say.className = 'say bad'; };
+  if (!key && !order) return bad('Paste the license key from your Gumroad receipt, or the Order ID and the email you paid with.');
+  say.textContent = 'Checking your purchase with Gumroad…'; say.className = 'say';
+  const r = await api('', { do: 'member', product: $('mprod').value, name: $('mname').value.trim(), about: $('mabout').value, ...(key ? { key } : { order, email: $('memail').value.trim() }) });
+  if (!r.ok || !r.key || !T.KEY_RE.test(r.key)) return bad(r.say || 'That did not work.');
+  store.set(AGENT_KEY, r.key); chosen = r.key; $('mkey').value = ''; $('morder').value = '';
+  say.textContent = r.say; say.className = 'say good';
+  await start();
+});
+$('quick').addEventListener('submit', async (e) => {
+  e.preventDefault(); const text = $('qline').value.trim(), say = $('quickSay'); if (!text) return;
+  const r = await api('', { do: 'quick', text });
+  if (!r.ok) { say.textContent = r.say || 'not posted'; say.className = 'say bad'; return; }
+  $('qline').value = ''; say.textContent = r.job ? 'Posted in #work. It is job ' + r.job + ' on the board now.' : 'Posted in #ideas.'; say.className = 'say good';
+  if (LANDING.has('job') || LANDING.has('idea')) history.replaceState(null, '', location.pathname + location.hash);
+  drawBoard(); await shell();
+});
+setInterval(() => { if (document.visibilityState === 'visible') drawBoard(); }, 60000);
+
 // ---- start ----
 async function start() {
   await ownerLink(); // the owner's signed-in account brings an owner session first (lib/owner-link.js)
@@ -354,11 +417,11 @@ async function start() {
     chosen = '';
   }
   S.me = me;
-  $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name)
+  $('who').textContent = S.me ? (S.me.kind === 'owner' ? 'Signed in as the owner' : 'Signed in as ' + S.me.name + (S.me.role === 'member' ? ' (member)' : ''))
     : signedIn ? 'Signed in, but this account is not the owner\'s. On the home page, sign in with the owner passkey, or type unlock and the owner key once' : (sh.ok ? 'Reading as a visitor' : 'The team chat did not answer');
   if (!S.me && signedIn) myId().then((id) => { if (id) showId($('who'), id); });
   $('q').disabled = !S.me;
   if (incoming && S.me) { $('text').value = incoming.slice(0, T.LIMITS.body); }
-  route(); drawRelated();
+  route(); drawRelated(); drawBuild();
 }
 start();

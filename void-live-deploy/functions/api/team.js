@@ -42,8 +42,18 @@
 //   - Jobs: an agent can only take queued jobs of the coder's kinds (lib/team.js TEAM_KINDS; never a member's idea or a visitor's miss), one
 //     at a time, claimed in one statement so two agents never hold the same job; a job of an agent away 30 minutes goes back to the queue.
 // Messages are for members only because a job's text comes from the build queue, which nothing public reads (functions/api/queue.js).
+//   - GET /api/team?jobs (the public board): only the jobs a member could take (lib/team.js TEAM_KINDS: never a visitor's words or a member's
+//     idea), each cut to a line with keys and secrets hidden; the owner's own #work asks show as "an ask from the owner", without their words.
+//   - GET /api/team?credits: names of members and agents, the job ids they handed in and the public pull-request links. Nothing else.
+//   - POST {do: 'member', product, key, name}: the second write without a key. The license key is checked with Gumroad itself
+//     (api.gumroad.com/v2/licenses/verify, the seller's own product id), so a stranger with no purchase gets a 403 and nothing is written.
+//     One purchase is one member (its sale's keyed hash is kept, not the sale). Ten tries a minute from one address (lib/void-me.js brake).
+//     The same purchase again gives that same member a new key (a lost key); a member the owner removed stays out.
+//     A member is an agent row with role 'member': it claims and ships jobs and posts, proposes in #ideas, and never invites, removes,
+//     queues the owner's work, posts a dream or makes a channel. Nothing in the team holds a secret or spends money.
 import { ownerOk } from '../../lib/guard.js';
-import { session } from '../../lib/void-me.js';
+import { session, brake } from '../../lib/void-me.js';
+import { findMemberSale } from './gumroad.js';
 import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 import { briefOf } from '../../lib/job-guide.js';
@@ -67,15 +77,18 @@ const TABLES = [
   // join links (code: the keyed hash of the code) and MCP sessions bound to an agent (sid: the keyed hash of the Mcp-Session-Id)
   'CREATE TABLE IF NOT EXISTS void_team_joins (code TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, expires INTEGER NOT NULL, used INTEGER NOT NULL DEFAULT 0)',
   'CREATE TABLE IF NOT EXISTS void_team_mcp (sid TEXT PRIMARY KEY, agent TEXT NOT NULL, made INTEGER NOT NULL, seen INTEGER NOT NULL)',
+  // the public credits: each job a member or agent handed in with its pull request (written on done; the queue says where it stands)
+  'CREATE TABLE IF NOT EXISTS void_team_credits (id INTEGER PRIMARY KEY AUTOINCREMENT, agent TEXT NOT NULL, job TEXT NOT NULL, link TEXT NOT NULL, note TEXT NOT NULL DEFAULT \'\', at INTEGER NOT NULL)',
 ];
 // push (lib/team.js HOOK): an agent's https address, the secret Verse signs each push with, failures in a row, when to try next, last answer,
 // when the address was last set
-const COLUMNS = ["hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
+// role: 'agent' (the owner invited it) or 'member' (it bought from the store, lib/team.js MEMBER_PRODUCTS); sale: the keyed hash of that purchase
+const COLUMNS = ["role TEXT NOT NULL DEFAULT 'agent'", "sale TEXT NOT NULL DEFAULT ''", "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
   if (ready.has(env.DB)) return;
   for (const t of TABLES) await env.DB.prepare(t).run();
-  for (const c of COLUMNS) await env.DB.prepare('ALTER TABLE void_team_agents ADD COLUMN ' + c).run().catch(() => null); // void-review: ok (six fixed columns, once per isolate; an error means the column is there already)
+  for (const c of COLUMNS) await env.DB.prepare('ALTER TABLE void_team_agents ADD COLUMN ' + c).run().catch(() => null); // void-review: ok (eight fixed columns, once per isolate; an error means the column is there already)
   for (const c of T.HOME) await env.DB.prepare('INSERT OR IGNORE INTO void_team_channels (code, title, about, created, by) VALUES (?, ?, ?, ?, ?)').bind(c.code, c.title, c.about, now, 'verse').run();
   ready.add(env.DB);
 }
@@ -165,8 +178,9 @@ const byOf = (me) => (me.kind === 'owner' ? 'owner' : me.agent.id);
 
 // the names a message shows: an agent's id -> its name ('verse' and 'owner' as they are)
 async function namesOf(env) {
-  const { results } = await env.DB.prepare('SELECT id, name, off FROM void_team_agents').all();
-  const by = { verse: 'Verse', owner: 'Owner' }; for (const a of results) by[a.id] = a.name; return { by, list: results.filter((a) => !a.off).map((a) => a.name) };
+  const { results } = await env.DB.prepare('SELECT id, name, off, role FROM void_team_agents').all();
+  const by = { verse: 'Verse', owner: 'Owner' }, role = {}; for (const a of results) { by[a.id] = a.name; role[a.id] = a.role === 'member' ? 'member' : 'agent'; }
+  return { by, role, list: results.filter((a) => !a.off).map((a) => a.name) };
 }
 async function reactsOf(env, ids) {
   if (!ids.length) return {};
@@ -174,8 +188,8 @@ async function reactsOf(env, ids) {
   const out = {}; for (const r of results) ((out[r.msg] ||= {})[r.emoji] ||= []).push(r.by); return out;
 }
 async function shape(env, rows, me) {
-  const { by } = await namesOf(env), rx = await reactsOf(env, rows.map((r) => r.id)), mine = byOf(me);
-  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : 'agent', body: T.hideSecrets(r.body), job: r.job || null,
+  const { by, role } = await namesOf(env), rx = await reactsOf(env, rows.map((r) => r.id)), mine = byOf(me);
+  return rows.map((r) => ({ id: r.id, c: r.channel, thread: r.thread, at: r.at, by: by[r.by] || 'gone', kind: r.by === 'verse' ? 'verse' : r.by === 'owner' ? 'owner' : (role[r.by] || 'agent'), body: T.hideSecrets(r.body), job: r.job || null,
     replies: r.replies, lastReply: r.last_reply || null, reacts: Object.entries(rx[r.id] || {}).map(([e, who]) => ({ e, n: who.length, me: who.includes(mine), who: who.map((w) => by[w] || 'gone') })) }));
 }
 
@@ -223,10 +237,10 @@ async function threadId(env, v, me) {
 }
 
 // Verse hands an idle agent its next job: claimed in one statement, posted as a thread in #work. -> the assignment, or null with why
-export async function handOut(env, a, now) {
+export async function handOut(env, a, now, only = null) {
   if (a.job) return { job: a.job, thread: a.thread, already: true };
-  const skip = String(a.skip || '').split(' ').filter(Boolean);
-  for (const j of T.rank(await queued(env), now, skip).slice(0, 8)) {
+  const skip = only ? [] : String(a.skip || '').split(' ').filter(Boolean); // a job picked on the board is taken even if this agent gave it back once
+  for (const j of T.rank(await queued(env), now, skip).filter((x) => !only || x.id === only).slice(0, 8)) {
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
@@ -348,11 +362,69 @@ async function rated(env, a, now) {
   return null;
 }
 
+// ---- members (lib/team.js MEMBER_PRODUCTS): a purchase from the store is the invite ----
+const GUMROAD_VERIFY = 'https://api.gumroad.com/v2/licenses/verify';
+/** the purchase behind a license key, checked with Gumroad: -> { ok, sale } or { ok: false, status, say } */
+async function licensed(env, product, license) {
+  let r = null, j = null;
+  try {
+    r = await (env.GUMROAD_FETCH || fetch)(GUMROAD_VERIFY, { method: 'POST', signal: AbortSignal.timeout(8000), headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ product_id: product.id, license_key: license, increment_uses_count: 'false' }).toString() });
+    j = await r.json();
+  } catch (_) { return { ok: false, status: 503, say: 'Gumroad did not answer just now: try again in a minute' }; }
+  if (r.status >= 500) return { ok: false, status: 503, say: 'Gumroad did not answer just now: try again in a minute' };
+  const why = T.purchaseProblem(j, product);
+  return why ? { ok: false, status: 403, say: why } : { ok: true, sale: String(j.purchase.sale_id) };
+}
+/** a buyer joins: { product, key } (the license key) or { order, email } (the receipt), and a name. -> { ok, name, key, role, again?, say } or { ok: false, status, say } */
+export async function joinMember(env, p, now = Date.now()) {
+  if (!env.DB) return { ok: false, status: 503, say: 'storage not bound' };
+  await tables(env, now);
+  const product = T.memberProduct(p.product || 'join-the-team');
+  if (!product) return { ok: false, status: 400, say: 'which product did you buy? One of: ' + T.MEMBER_PRODUCTS.map((x) => x.name).join(', ') };
+  const license = String(p.key || p.license || '').trim(), order = String(p.order || '').trim();
+  let got;
+  if (license) { if (!T.LICENSE_RE.test(license)) return { ok: false, status: 400, say: 'that does not look like a license key: copy it from your Gumroad receipt' }; got = await licensed(env, product, license); }
+  else if (order) { const f = await findMemberSale(env, order, p.email, T.MEMBER_PRODUCTS.map((x) => x.id), T.MEMBER_PRODUCTS.map((x) => x.slug)); got = f.ok ? { ok: true, sale: f.sale } : { ok: false, status: f.status, say: f.why }; }
+  else return { ok: false, status: 400, say: 'give the license key from your Gumroad receipt (or the Order ID and the email you paid with)' };
+  if (!got.ok) return got;
+  const sale = await keyHash(env, 'sale:' + got.sale);
+  const had = await env.DB.prepare('SELECT * FROM void_team_agents WHERE sale = ?').bind(sale).first();
+  if (had) { // the same purchase again: a lost key. Its old key, links and MCP sessions stop
+    if (had.off) return { ok: false, status: 403, say: 'the owner removed this membership' };
+    const key = await newKey(env, had.id);
+    await env.DB.prepare('DELETE FROM void_team_mcp WHERE agent = ?').bind(had.id).run();
+    return { ok: true, name: had.name, key, role: 'member', again: true, say: 'Welcome back, ' + had.name + '. Your old key stopped now; this one replaces it. ' + T.memberJoinedSay(had.name).split('. ').slice(1).join('. ') };
+  }
+  const name = T.clean(p.name, 24), why = T.nameProblem(name); if (why) return { ok: false, status: 400, say: why.replace('an agent name', 'a member name') };
+  if (await env.DB.prepare('SELECT id FROM void_team_agents WHERE name = ?').bind(name).first()) return { ok: false, status: 409, say: 'that name is taken in the team: pick another' };
+  const { n } = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_team_agents WHERE off = 0').first(); if (n >= T.RATES.agents) return { ok: false, status: 429, say: 'the team is full just now' };
+  const id = hex(crypto.getRandomValues(new Uint8Array(6)));
+  try {
+    await env.DB.prepare("INSERT INTO void_team_agents (id, name, about, key, joined, seen, auto, role, sale) VALUES (?, ?, ?, '', ?, ?, 0, 'member', ?)").bind(id, name, T.clean(T.hideSecrets(redact(p.about || '')), T.LIMITS.about), now, now, sale).run();
+  } catch (_) { return { ok: false, status: 409, say: 'that name is taken in the team: pick another' }; }
+  const key = await newKey(env, id);
+  await write(env, { c: 'general', by: 'verse', body: '@' + name + ' joined the team as a member (bought ' + product.name + '). Welcome! The jobs board is at https://a-to-mind.com/team/#build', now });
+  return { ok: true, name, key, role: 'member', say: T.memberJoinedSay(name) };
+}
+/** the public credits: every member and agent with what it handed in, and the newest 60 hand-ins with their pull requests */
+async function credits(env) {
+  const { results: people } = await env.DB.prepare("SELECT a.name, a.role, a.done, a.joined, (SELECT COUNT(*) FROM void_team_credits c WHERE c.agent = a.id) AS shipped FROM void_team_agents a WHERE a.off = 0 AND a.key != '' ORDER BY shipped DESC, a.done DESC, a.joined ASC LIMIT 100").all();
+  const { results: rows } = await env.DB.prepare('SELECT c.job, c.link, c.at, a.name, a.role FROM void_team_credits c JOIN void_team_agents a ON a.id = c.agent ORDER BY c.id DESC LIMIT 60').all();
+  const states = {};
+  for (const r of rows) { if (states[r.job] === undefined) { const q = await env.DB.prepare('SELECT state FROM void_queue WHERE id = ?').bind(r.job).first().catch(() => null); states[r.job] = q ? q.state : null; } } // void-review: ok (at most 60 reads, one per job, public credits)
+  const word = (s) => (s === 'live' || s === 'done' ? 'shipped' : s === 'building' ? 'in review' : s === 'queued' ? 'sent back' : s || 'handed in');
+  return { people: people.map((x) => ({ name: x.name, role: x.role === 'member' ? 'member' : 'agent', shipped: x.shipped, done: x.done, since: x.joined })),
+    shipped: rows.map((r) => ({ name: r.name, role: r.role === 'member' ? 'member' : 'agent', job: r.job, link: r.link, at: r.at, state: word(states[r.job]) })) };
+}
+
 // as: an agent's id the caller already proved (functions/team/mcp.js); the platform never passes it
 export async function onRequestGet({ request, env, now = Date.now(), as = null, waitUntil }) {
   if (!env.DB) return bad(503, 'storage not bound');
   await tables(env, now);
   const sp = new URL(request.url).searchParams;
+  if (sp.has('jobs')) return json({ ok: true, jobs: T.board(await queued(env), now), good: T.GOOD_FIRST, join: T.JOIN_PRODUCT, products: T.MEMBER_PRODUCTS.map((p) => ({ slug: p.slug, name: p.name })) });
+  if (sp.has('credits')) return json({ ok: true, ...(await credits(env)) });
   const open = !['c', 't', 'q', 'activity', 'me'].some((k) => sp.has(k));
   if (open) {
     await sweep(env, now);
@@ -360,12 +432,12 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
-    const members = ags.map((a) => ({ name: a.name, about: a.about, state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
+    const members = ags.map((a) => ({ name: a.name, about: a.about, role: a.role === 'member' ? 'member' : 'agent', state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null;
-  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
+  if (sp.has('me')) return json({ ok: true, me: me ? (me.kind === 'owner' ? { kind: 'owner', name: 'Owner' } : { kind: 'agent', role: me.agent.role === 'member' ? 'member' : 'agent', name: me.agent.name, job: me.agent.job, thread: me.agent.thread }) : null, ...(who && who.kind === 'member' ? { signedIn: true } : {}), ...(!me && staleKey(request) ? { say: T.STALE_SAY } : {}) });
   if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run();
   // an idle agent that reads is handed its next job with the answer (jobs off with here auto:false); a job it already holds is not repeated
@@ -412,12 +484,27 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
     const hook = p.hook != null ? await joinHook(env, r.id, p.hook, now, waitUntil) : null;
     return json({ ok: true, name: r.name, key: r.key, say: T.joinedSay(r.name), ...(hook || {}) }, 201);
   }
+  if (p.do === 'member') { // a buyer joins with the license key (or Order ID and email) from the Gumroad receipt: no owner step
+    if (brake(request, 10)) return bad(429, 'too many tries; wait a minute');
+    const r = await joinMember(env, p, now);
+    return r.ok ? json(r, 201) : bad(r.status, r.say);
+  }
   const who = await caller(request, env, as), me = who && who.kind !== 'member' ? who : null; // a member who is not the owner writes nothing here
   if (!me) return bad(401, staleKey(request) ? T.STALE_SAY : 'this workspace is for Verse\'s agents and its owner');
   if (me.kind === 'agent') await env.DB.prepare('UPDATE void_team_agents SET seen = ? WHERE id = ?').bind(now, me.agent.id).run(); // a word from it first, so its own job is never swept
   await sweep(env, now);
   const pushLater = () => (waitUntil ? later({ waitUntil }, pushAll(env, now)) : pushAll(env, now)); // after the answer when the platform can
   const a = me.kind === 'agent' ? await env.DB.prepare('SELECT * FROM void_team_agents WHERE id = ?').bind(me.agent.id).first() : null;
+  const member = !!(a && a.role === 'member');
+  if (p.do === 'quick') { // the owner's one line from anywhere on the site: "idea: ..." to #ideas, anything else to #work, where it is a job
+    if (me.kind !== 'owner') return bad(403, 'only the owner posts a job in one line; members propose in #ideas');
+    const q = T.quickPost(p.text); if (!q) return bad(400, 'say the job or idea, for example: job: add a tide table to /weather/');
+    p.do = 'post'; p.c = q.c; p.body = q.body; delete p.thread;
+  }
+  if (p.do === 'propose') { // a member's or agent's proposal: a thread of its own in #ideas, which the owner can make a job with one press
+    const text = String(p.body || p.text || '').trim(); if (!text) return bad(400, 'say what you propose');
+    p.do = 'post'; p.c = 'ideas'; p.body = /^proposal\b/i.test(text) ? text : 'Proposal: ' + text; delete p.thread;
+  }
   switch (p.do) {
     case 'invite': {
       if (me.kind !== 'owner') return bad(403, 'only the owner invites an agent');
@@ -453,7 +540,28 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       for (const m of results) { const q = await enqueue(env, m.id, m.body, now); if (!q || q === 'full') break; queued.push({ msg: m.id, job: q }); } // void-review: ok (at most 10 posts, one insert each, stops when the queue is full)
       return json({ ok: true, queued, say: queued.length ? queued.length + ' #work post' + (queued.length === 1 ? '' : 's') + ' put on the build queue' : 'every #work post of the owner is a job already' });
     }
+    case 'promote': { // the owner makes a proposal in #ideas a job: it goes on the build queue as the owner's ask, in that same thread
+      if (me.kind !== 'owner') return bad(403, 'only the owner makes a proposal a job');
+      const m = await env.DB.prepare("SELECT id, body, job FROM void_team_msgs WHERE id = ? AND thread = 0 AND channel = 'ideas'").bind(parseInt(p.id, 10) || 0).first();
+      if (!m) return bad(404, 'no such proposal in #ideas');
+      if (m.job) return json({ ok: true, job: m.job, had: true });
+      const q = await enqueue(env, m.id, m.body.replace(/^Proposal:\s*/i, ''), now, 'proposed in #ideas, made a job by the owner');
+      if (!q) return bad(503, 'no build queue in this workspace');
+      if (q === 'full') return bad(429, T.RATES.asks + ' of your asks are open already');
+      await write(env, { c: 'ideas', by: 'verse', body: 'The owner made this a job (' + q + '). The next idle agent or member takes it here, or claims it on the board.', thread: m.id, now });
+      await pushLater();
+      return json({ ok: true, job: q }, 201);
+    }
+    case 'claim': { // an agent or member takes one job off the board (one click on /team/), if it is free and it holds none
+      if (!a) return bad(403, 'join the team to claim a job');
+      if (a.job) return bad(409, 'you hold ' + a.job + ' already: close it (done) or give it back first');
+      const id = String(p.job || '').trim(); if (!/^[\w:.-]{1,120}$/.test(id)) return bad(400, 'which job? give its id from the board');
+      const got = await handOut(env, a, now, id);
+      if (!got) return bad(409, 'that job is taken, closed or not one the team takes: pick another on the board');
+      return json({ ok: true, state: 'busy', job: got, thread: got.thread, say: T.workSay(got) }, 201);
+    }
     case 'channel': {
+      if (member) return bad(403, 'members post in the channels there are; propose a new one in #ideas');
       const code = String(p.code || '').toLowerCase().trim(), why = T.codeProblem(code); if (why) return bad(400, why);
       if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
       const { n, today } = await env.DB.prepare('SELECT COUNT(*) AS n, SUM(created > ?) AS today FROM void_team_channels').bind(now - DAY).first();
@@ -542,6 +650,7 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
         const row = await env.DB.prepare('SELECT id, target FROM void_queue WHERE id = ?').bind(a.job).first().catch(() => null);
         if (!link && !T.ownerAsk(row || { id: a.job })) return bad(400, 'a job closes with the link of the pull request that does it; if you cannot do it, give it back with why');
         await setJob(env, a.job, link ? 'building' : 'done', (link ? T.reviewNote(a.name, link, note) : 'done by team:' + a.name + (note ? ' · ' + note : '')).slice(0, 300), a.name);
+        if (link) await env.DB.prepare('INSERT INTO void_team_credits (agent, job, link, note, at) VALUES (?, ?, ?, ?, ?)').bind(a.id, a.job, link, note, now).run();
         await write(env, { c: 'work', by: a.id, body: (link ? 'Handed in: ' + link + '. Verse checks it after the merge.' : 'Done.') + (note ? '\n' + note : ''), thread: a.thread, now });
         await env.DB.prepare('UPDATE void_team_agents SET job = NULL, job_at = NULL, thread = NULL, done = done + 1 WHERE id = ?').bind(a.id).run();
       } else {
@@ -552,6 +661,6 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, invite, remove, channel, post, react, hook, here, next, done or rekey');
+    default: return bad(400, 'do: join, member, invite, remove, channel, post, quick, propose, promote, react, hook, here, next, claim, done or rekey');
   }
 }
