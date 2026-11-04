@@ -208,6 +208,10 @@ test('a big file is outlined, then a region, a line patch and a split: the model
   assert.equal(region.hits.length, 1);
   assert.match(region.hits[0], new RegExp(lines.length + '\texport function tail'));
   assert.equal(regionsOf(text, '(').error.startsWith('bad pattern'), true);
+  // a nested repeat can hang the search on a long line: refused before it runs; plain words, classes and one repeat still search
+  for (const p of ['(a+)+$', '(x*)*y', '(a|aa)+b', '(\\w+\\s?){2,}$', 'x'.repeat(201)]) assert.match(regionsOf(text, p).error || '', /^bad pattern/, p);
+  for (const p of ['function tail', 'fun\\w+ tail', '(tail|head)', '^export ']) assert.equal(regionsOf(text, p).error, undefined, p);
+  { const t0 = Date.now(); regionsOf('a'.repeat(50000) + 'b', 'a+c'); assert.ok(Date.now() - t0 < 1000, 'a long line is tried on its first 2,000 characters'); }
   assert.equal(applyLines('a\nb\nc\n', 2, 2, 'B').text, 'a\nB\nc\n');
   assert.ok(functionLossOk(['it lost a function: head'], 'export function head() { return 1; }\n'));
   assert.equal(functionLossOk(['it is shorter'], 'export function head() {}'), false);

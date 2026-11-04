@@ -236,11 +236,17 @@ export function outlineOf(text, limit = 60) {
   return { lines: lines.length, chars: String(text || '').length, marks };
 }
 /** matching windows with line numbers, skipping ahead past each window so a noisy pattern does not fill the turn. Pure. */
+// a search pattern the model wrote: a regex on purpose, so it is not escaped. What can hang the run is a nested repeat ((a+)+, (x*)*,
+// (a|aa)+) on a long line, so those are refused and each line is tried on its first 2,000 characters.
+export const NESTED_REPEAT = /\((?:[^()\\]|\\.)*(?:[+*]|\{\d+,\d*\}|\|)(?:[^()\\]|\\.)*\)\s*(?:[+*]|\{\d+,\d*\})/;
 export function regionsOf(text, pattern, { pad = 4, max = 6 } = {}) {
-  let re; try { re = new RegExp(pattern, 'i'); } catch (e) { return { error: 'bad pattern: ' + e.message }; }
+  const src = String(pattern == null ? '' : pattern);
+  if (src.length > 200) return { error: 'bad pattern: longer than 200 characters; search for a shorter piece' };
+  if (NESTED_REPEAT.test(src)) return { error: 'bad pattern: a repeat inside a repeated group (like (a+)+) can hang the search; use a plain word or one repeat' };
+  let re; try { re = new RegExp(src, 'i'); } catch (e) { return { error: 'bad pattern: ' + e.message }; } // void-review: ok (the model's search is a regex by design; nested repeats and long patterns are refused above, lines are capped below)
   const lines = String(text || '').split('\n'), hits = [];
   for (let i = 0; i < lines.length && hits.length < max; i++) {
-    if (!re.test(lines[i])) continue;
+    if (!re.test(lines[i].slice(0, 2000))) continue;
     const a = Math.max(0, i - pad), b = Math.min(lines.length, i + pad + 1);
     hits.push((a + 1) + '-' + b + '\n' + lines.slice(a, b).map((l, k) => (a + k + 1) + '\t' + l).join('\n'));
     i = b - 1;
