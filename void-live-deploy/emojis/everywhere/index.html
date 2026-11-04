@@ -128,7 +128,8 @@
     state.list = list;
     if (!list.length) { say('The emoji names could not be read just now; the pictures still show.'); return; }
     let rec = recordOf(list, first);
-    if (seed && !rec && !/\p{Extended_Pictographic}/u.test(seed)) { rec = findEmoji(list, seed); if (rec) { show(rec.c, rec, false); return; } }
+    // a name or :shortcode: in the link (/emoji/fire) finds its emoji; an emoji in the link is drawn as it is
+    if (seed && seed !== first) { const hit = findEmoji(list, seed); if (hit) { show(hit.c, recordOf(list, hit.c) || hit, false); return; } say('No emoji called "' + seed.slice(0, 40) + '"; here is 😀'); }
     show(first, rec, false);
   });
   let t = null;
