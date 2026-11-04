@@ -6,6 +6,7 @@
 //   node tools/brain-knows.mjs            write void-live-deploy/brain/knows.json
 //   node tools/brain-knows.mjs --check    exit 1 when it is stale (refresh.mjs: volatile, the deploy rewrites it, since the commits move)
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { withLine, SAY } from '../void-live-deploy/lib/skill-compose.js';
 import { execFileSync } from 'node:child_process';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,13 +18,20 @@ export const DID_MAX = 60;
 const clip = (s, n) => { const t = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, '') + '…' : t; };
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(join(root, f), 'utf8')); } catch (_) { return d; } };
 
-/** the skills, from the book (skills/guide.json), the one-line answers (skills/what.json) and the page each powers (lib/card-frame.js PAGE_OF). Pure. */
-export function skillsOf(guide, what, pageOf) {
+/** the skills, from the book (skills/guide.json), the one-line answers (skills/what.json) and the page each powers (lib/card-frame.js PAGE_OF).
+ *  lineage is { skillName: ['calc', 'convert'] } from skills/lineage.json. A skill built from other skills carries `with` and `withLine`. Pure. */
+export function skillsOf(guide, what, pageOf, lineage = {}) {
   const out = [], seen = new Set();
+  const title = {};
+  for (const p of (guide && guide.pages) || []) if (p && p.name && p.title) title[p.name] = p.title;
   for (const p of (guide && guide.pages) || []) {
     if (p.kind !== 'skill' || !p.name || seen.has(p.name)) continue; seen.add(p.name);
     const pg = pageOf[p.name] || null, ex = (p.examples || []).slice(0, 3);
-    out.push({ k: 'skill', id: p.name, t: p.title || p.name, d: clip(what[p.name] || p.line || '', 220), ex, tier: p.tier || '', u: pg ? pg[0] : (ex[0] ? '/?q=' + encodeURIComponent(ex[0]) : '') });
+    const parts = Array.isArray(lineage[p.name]) ? lineage[p.name] : [];
+    const titles = Object.fromEntries(parts.map((id) => [id, SAY[id] || title[id] || id]));
+    const row = { k: 'skill', id: p.name, t: p.title || p.name, d: clip(what[p.name] || p.line || '', 220), ex, tier: p.tier || '', u: pg ? pg[0] : (ex[0] ? '/?q=' + encodeURIComponent(ex[0]) : '') };
+    if (parts.length) { row.with = parts; row.withLine = withLine(parts, titles); }
+    out.push(row);
   }
   return out.sort((a, b) => (a.id < b.id ? -1 : 1));
 }
@@ -53,10 +61,11 @@ export function didOf(lines, repo = 'atomeam/void-loop', max = DID_MAX) {
 }
 
 /** the file: a note, the counts and the items, in KINDS order. Pure. */
-export function build({ guide, what, pageOf, pages, assimilated, knowledge, log }) {
-  const items = [...skillsOf(guide, what, pageOf), ...pagesOf(pages), ...sitesOf(assimilated), ...lessonsOf(knowledge), ...didOf(log)];
+export function build({ guide, what, pageOf, pages, assimilated, knowledge, log, lineage = {} }) {
+  const items = [...skillsOf(guide, what, pageOf, lineage), ...pagesOf(pages), ...sitesOf(assimilated), ...lessonsOf(knowledge), ...didOf(log)];
   const counts = Object.fromEntries(KINDS.map((k) => [k, items.filter((i) => i.k === k).length]));
-  return { note: 'What Verse knows, for /brain/: written by tools/brain-knows.mjs from the book, the tool pages, assimilated.json, void.knowledge.json and main\'s commits. Do not edit by hand.', counts, items };
+  const builtWith = items.filter((i) => i.k === 'skill' && i.with && i.with.length).length;
+  return { note: 'What Verse knows, for /brain/: written by tools/brain-knows.mjs from the book, the tool pages, assimilated.json, void.knowledge.json, main\'s commits and skills/lineage.json. Do not edit by hand.', counts, builtWith, items };
 }
 export const render = (o) => JSON.stringify(o) + '\n';
 
@@ -65,10 +74,11 @@ async function main() {
   const { PAGE_OF } = await import('../void-live-deploy/lib/card-frame.js');
   let log = [];
   try { log = execFileSync('git', ['log', '--no-merges', '-300', '--format=%H%x09%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8' }).split('\n'); } catch (_) { /* no git: no commits listed */ }
+  const lineage = readJson('void-live-deploy/skills/lineage.json', {});
   const o = build({ guide: readJson('void-live-deploy/skills/guide.json', {}), what: readJson('void-live-deploy/skills/what.json', {}), pageOf: PAGE_OF, pages: PAGES,
-    assimilated: readJson('void-live-deploy/assimilated.json', {}), knowledge: readJson('void-live-deploy/void.knowledge.json', []), log });
+    assimilated: readJson('void-live-deploy/assimilated.json', {}), knowledge: readJson('void-live-deploy/void.knowledge.json', []), log, lineage: lineage.skills || {} });
   const text = render(o), target = join(root, OUT), before = existsSync(target) ? readFileSync(target, 'utf8') : '';
-  const said = Object.entries(o.counts).map(([k, n]) => n + ' ' + k).join(', ');
+  const said = Object.entries(o.counts).map(([k, n]) => n + ' ' + k).join(', ') + '; ' + o.builtWith + ' skills built with skills';
   if (process.argv.includes('--check')) { console.log((before === text ? 'current: ' : 'stale: ') + OUT + ' (' + said + ')'); process.exit(before === text ? 0 : 1); }
   writeFileSync(target, text); console.log((before === text ? 'unchanged: ' : 'wrote: ') + OUT + ' (' + said + ', ' + Math.round(text.length / 1024) + ' KB)');
 }
