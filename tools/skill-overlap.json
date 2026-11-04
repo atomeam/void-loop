@@ -1,5 +1,5 @@
 {
- "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason",
+ "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason. 2026-11-04: open-tool~stopwatch and palindrome~util are the order files the index had left out; riddle~textgen and rps~video-play already overlapped on main.",
  "pairs": [
   "about-skill~wants",
   "anneal-ambition~weather",
@@ -57,11 +57,15 @@
   "place~rebuild-map",
   "place~sky",
   "place~skycard",
+  "open-tool~stopwatch",
+  "palindrome~util",
   "podcast~video-play",
   "poker~video-play",
   "rack~video-play",
   "recipe~stage-organize",
+  "riddle~textgen",
   "room~walls",
+  "rps~video-play",
   "services~store",
   "spanish~translate",
   "stage-export~stage-print",

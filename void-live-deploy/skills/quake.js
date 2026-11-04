@@ -158,6 +158,7 @@ export default {
     'weather in Tokyo',
     'air quality in Lisbon',
     'what is an earthquake',
+    'news about earthquakes',
     'map of California',
     'UV index in Miami'
   ],
@@ -165,6 +166,7 @@ export default {
     if (/\b(what\s+is|define|meaning\s+of|wikipedia)\b/.test(lower) && TYPES.test(lower)) return false;
     if (/\b(weather|forecast|air\s*quality|a\.?q\.?i\.?|uv\s*index)\b/.test(lower)) return false;
     if (/\bearthquake\s+(proof|insurance|drill|engineering)\b/.test(lower)) return false;
+    if (/\bnews\b/.test(lower)) return false; // "news about earthquakes" is the news card, not the quake list
     return TYPES.test(lower)
       || /\b(was\s+there\s+an?\s+earth\s*quake|any\s+earth\s*quakes?|seismic\s+activity)\b/.test(lower);
   },

@@ -34,6 +34,7 @@ const KEPT = [
   // pages the site links to that no other list holds: Verse's own films and podcast, the obituaries studio, the markets screener
   ['/films/', 'weekly', '0.6', [D + 'films/index.html']],
   ['/podcast/', 'weekly', '0.6', [D + 'podcast/index.html']],
+  ['/progress/', 'daily', '0.6', [D + 'progress/index.html', D + 'exam/latest.json']],
   ['/obituaries/', 'weekly', '0.7', [D + 'obituaries/index.html']],
   ['/markets/screener/', 'weekly', '0.7', [D + 'markets/screener/index.html']],
   // pages linked from the site and its footers that no list held, so neither a search engine nor the self-check opened them: the privacy policy,
