@@ -1,7 +1,8 @@
 # The outcome exam (tools/exam.mjs). After each deploy, and once a day: sixteen public asks per domain on live
 # a-to-mind.com, plus the sealed holdout when the EXAM_HOLDOUT secret is set. The run is committed as data
 # (void-live-deploy/exam/). One run that falls by 5 or more is recorded. Two runs in a row that each fall by 5
-# or more revert the deploy that just went out. A daily run records the drop and does not revert.
+# or more revert the deploy that just went out, unless that commit changes nothing under void-live-deploy/, or the
+# exam scale itself just changed (those first runs are a new baseline). A daily run records the drop and does not revert.
 name: Outcome exam
 
 on:
@@ -61,6 +62,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch -q origin main && git checkout -q -B main origin/main
           git merge-base --is-ancestor "$SHA" HEAD || { echo "the deploy commit is not on main"; exit 0; }
+          git rev-parse --verify --quiet "${SHA}^1" >/dev/null || { echo "the deploy commit has no parent"; exit 0; }
+          site=$(git diff --name-only "${SHA}^1" "$SHA" -- void-live-deploy/)
+          if [ -z "$site" ]; then echo "the deploy changes nothing under void-live-deploy/; not reverted"; exit 0; fi
+          if git diff -U0 "${SHA}^1" "$SHA" -- void-live-deploy/lib/exam.js | grep -Eq '^[+-]export const SCALE '; then
+            echo "this deploy changes the exam scale; a new baseline, not reverted"; exit 0
+          fi
+          settling=no
+          if [ -f void-live-deploy/exam/history.json ]; then
+            settling=$(node --input-type=module -e "import { readFileSync } from 'node:fs'; import { scaleSettling } from './void-live-deploy/lib/exam.js'; const raw = JSON.parse(readFileSync('void-live-deploy/exam/history.json','utf8')); process.stdout.write(scaleSettling(raw) ? 'yes' : 'no')") || settling=no
+          fi
+          if [ "$settling" = yes ]; then echo "the first runs after an exam scale change are a new baseline; not reverted"; exit 0; fi
           parents=$(git rev-list --parents -n 1 "$SHA" | wc -w)
           msg="Revert $SHA: two outcome-exam runs in a row each fell by 5 or more (exam.yml)"
           if [ "$parents" -gt 2 ]; then git revert --no-edit -m 1 "$SHA"; else git revert --no-edit "$SHA"; fi || { git revert --abort || true; echo "::warning::the revert conflicts; a builder looks"; exit 0; }

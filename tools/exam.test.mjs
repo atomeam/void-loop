@@ -1,7 +1,7 @@
 // node --test tools/exam.test.mjs — an ask's score is the checks it passed, a drop is a regression, the will takes the lowest domain.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judge, domainScore, lowestDomain, compareRuns, revertAfter, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
+import { judge, domainScore, lowestDomain, compareRuns, revertAfter, scaleSettling, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
 import { examBoost, score } from './conductor-core.mjs';
 import { songAskOf } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -56,6 +56,11 @@ test('a deploy reverts only after two runs in a row each drop by 5 or more', () 
   assert.equal(revertAfter([at(90), at(80), at(80)]).revert, false);
   assert.equal(revertAfter([at(90, 90), at(80, 90), at(80, 80)]).revert, true);
   assert.equal(revertAfter([{ scale: 1, domains: { weather: { score: 100 } } }, { scale: SCALE, domains: { weather: { score: 40 } } }, { scale: SCALE, domains: { weather: { score: 30 } } }]).revert, false);
+  const run = (scale, weather) => ({ scale, domains: { weather: { score: weather } } });
+  assert.equal(scaleSettling([run(1, 100), run(SCALE, 40)]), true);
+  assert.equal(scaleSettling([run(1, 100), run(SCALE, 40), run(SCALE, 30)]), true);
+  assert.equal(scaleSettling([run(SCALE, 40), run(SCALE, 30), run(SCALE, 20)]), false);
+  assert.equal(revertAfter([run(SCALE, 90), run(SCALE, 80), run(SCALE, 70)]).revert, true);
 });
 
 test('the rival check is the other source\'s answer, and an ambiguous ask has to say so', () => {
