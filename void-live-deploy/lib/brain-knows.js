@@ -7,7 +7,7 @@ export const LABEL = Object.freeze({ want: 'Want', got: 'Built want', skill: 'Sk
 
 /** the will's answer as items: the wants it holds now first, then the ones it got (built). Pure. */
 export function wantsOf(will) {
-  const w = (will && Array.isArray(will.wants) ? will.wants : []).map((x, i) => ({ k: 'want', id: 'want-' + i, t: x.i_want || x.title || '', d: [x.because, x.evidence].filter(Boolean).join(' · '), src: x.source || x.kind || '', at: will.at || '' }));
+  const w = (will && Array.isArray(will.wants) ? will.wants : []).map((x, i) => ({ k: 'want', id: 'want-' + i, t: x.i_want || x.title || '', d: [...new Set([x.because, x.evidence].filter(Boolean))].join(' · '), src: x.source || x.kind || '', at: will.at || '' }));
   const g = (will && Array.isArray(will.got) ? will.got : []).map((x, i) => ({ k: 'want', got: true, id: 'got-' + i, t: x.i_want || x.title || '', d: [x.what, x.builtAt ? 'built ' + x.builtAt : ''].filter(Boolean).join(' · '), at: x.builtAt || '' }));
   return [...w, ...g].filter((x) => x.t);
 }
