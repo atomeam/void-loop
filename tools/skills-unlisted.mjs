@@ -14,6 +14,7 @@ export const RETIRED = [
   'map', // older map card; `place` and `rebuild-map` answer maps now, and nothing loads this file
   'vat', // the VAT calculator page is another worker's (Versus /vat/). This skill file stays off the routing order until that work lists it itself.
   'stopwatch', // "show stopwatch" is already taken by open-tool; this file stays off the order until its asks are its own
+  'idea-clarify', // #2091 shipped it beside business-clarify, which answers the same "clarify this business idea" asks; it stays off the order so the two never fight
   'palindrome', // "is racecar a palindrome" is already taken by util; this file stays off the order until its asks are its own
   'idea-clarify', // the shipped card is business-clarify (order 9500); this file is the earlier draft and stays off the routing order
 ];

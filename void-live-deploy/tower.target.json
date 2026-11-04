@@ -1,5 +1,37 @@
 {
- "about": "The site Verse is assimilating. It stays the target until it is beaten; then the next smallest site takes over (tools/tower-target.mjs).",
- "id": "ndscalc.ru",
- "since": "2026-10-31"
+ "about": "The site Verse is taking on. It passes when Verse leads or ties on everything measured, is behind on nothing, meets Verse's own bar (fast, mobile, accessible, correct on its main job) and is better on one thing; the rest is conquered in the background. No site holds the Tower more than 1 day (tools/tower-target.mjs).",
+ "id": "emoji combos: emojigraph.org",
+ "since": "2026-11-04",
+ "n": 11,
+ "progressAt": "2026-11-04",
+ "passed": [
+  {
+   "id": "ndscalc.ru",
+   "at": "2026-11-04",
+   "n": 10,
+   "m": 12,
+   "open": [
+    "journey: do the main job and see the result",
+    "journey: share the result and reopen it from the link"
+   ]
+  }
+ ],
+ "background": [
+  {
+   "id": "ndscalc.ru",
+   "aspect": "journey: do the main job and see the result",
+   "since": "2026-11-04",
+   "job": "script the journey with steps and negative controls"
+  },
+  {
+   "id": "ndscalc.ru",
+   "aspect": "journey: share the result and reopen it from the link",
+   "since": "2026-11-04",
+   "job": "script the journey with steps and negative controls"
+  }
+ ],
+ "last": {
+  "at": "2026-11-04",
+  "why": "passed ndscalc.ru (10/12, conquering in background)"
+ }
 }
