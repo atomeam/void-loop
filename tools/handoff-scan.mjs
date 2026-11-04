@@ -63,9 +63,9 @@ export function builtFrom(route, html, src, routes, builders = {}) {
   for (const [fn, page] of Object.entries(builders)) if (page !== route && routes.includes(page) && new RegExp('\\b' + fn + '\\(').test(all)) to.add(page);
   return [...to];
 }
-/** lib/handoff.js's link builders and the page each one opens with the list in it (wheelLink: '/wheel/#...'), so a page that calls
- *  wheelLink(names) counts as connected to /wheel/ the way a written '/wheel/#' link does. Pure. */
-export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/)[#?]/g)].map((m) => [m[1], m[2]]));
+/** lib/handoff.js's link builders and the page each one opens with the list in it (wheelLink: '/random/wheel/#...'), so a page that calls
+ *  wheelLink(names) counts as connected to /random/wheel/ the way a written '/random/wheel/#' link does. Pure. */
+export const buildersOf = (hand) => Object.fromEntries([...String(hand).matchAll(/export const (\w+Link) = [^\n]*?'(\/[a-z0-9-]+\/(?:[a-z0-9-]+\/)*)[#?]/g)].map((m) => [m[1], m[2]]));
 
 /** a page that is one of its family's variants (/photos/squoosh/ beside /photos/) is not ranked on its own unless it has its own tag */
 const variant = (p) => p.route.split('/').length > 3 && !p.declared;
@@ -109,7 +109,7 @@ export function scan(dir = site, types = legacy()) {
     if (!d) { undeclared.push(r); continue; }
     rows.push({ route: r, declared: !!tag, in: d.in, out: d.out, readsLink: /URLSearchParams|location\.(?:search|hash)/.test(html + src), built: builtFrom(r, html, src, routes, builders) });
   }
-  const ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/)'/g) || []).map((x) => x.slice(2, -1)) : [];
+  const ring = /verse_handoff/.test(hand) ? (hand.match(/\['(\/[a-z-]+\/(?:[a-z-]+\/)*)'/g) || []).map((x) => x.slice(2, -1)) : [];
   const done = (a, b) => (ring.includes(a.route) && ring.includes(b.route)) || a.built.includes(b.route);
   const gaps = [], built = [];
   for (const a of rows) for (const b of rows) { if (a === b || a.route.split('/')[1] === b.route.split('/')[1] || variant(a) || variant(b)) continue;

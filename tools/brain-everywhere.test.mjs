@@ -82,7 +82,7 @@ test('with no brain anywhere, a page keeps what it writes, and the next brain he
 });
 
 test('a read with no brain anywhere and the lock free starts the brain on this page and answers from it', async () => {
-  const p = page('/wheel/', 'Wheel of names · Verse');
+  const p = page('/random/wheel/', 'Wheel of names · Verse');
   let host = null;
   const api = E.start({ win: p.win, doc: p.doc, wait: 300, poll: 50, locks: { request: (n, o, f) => Promise.resolve(f({ name: n })) },
     startHost: () => { host = startHost({ win: { localStorage: memStore() }, ticking: false, store: { loadKept: () => null, keep: () => true } }); return host; } });

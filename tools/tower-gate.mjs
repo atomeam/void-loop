@@ -364,7 +364,10 @@ export function pick(evidence = {}, frontier = null, changed = [], max = 3, rank
   // hexcolor16.com, on the same page, with a reading from before it), the unbeaten first, at most 10; and when the service worker changed, every
   // unbeaten floor whose last offline reading is not a win
   const OKV = new Set(['better', 'equal-and-better']), room = Math.max(max, 10), addMore = (id) => { if (id && ids.has(id) && !out.includes(id) && out.length < room) out.push(id); };
-  const onPage = GATE_FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page); return d && changed.some((c) => c.startsWith('void-live-deploy/' + d + '/')); });
+  // a mode of a combined page (/random/coin/ under /random/, 2026-11-03) is its own floor's page: a change there is not the hub floor's
+  const full = (u) => { const m = String(u || '').match(/^\/([\w/-]+?)\/(?:[?#]|$)/); return m ? m[1] : ''; };
+  const deeper = GATE_FLOORS.map((f) => full((probeFor(f.id) || {}).verse) || full(f.page)).filter((d) => d.includes('/'));
+  const onPage = GATE_FLOORS.filter((f) => { const d = dir((probeFor(f.id) || {}).verse) || dir(f.page), own = full((probeFor(f.id) || {}).verse) || full(f.page); const under = (c, x) => c.startsWith('void-live-deploy/' + x + '/'); return d && changed.some((c) => (own !== d && under(c, own)) || (under(c, d) && !deeper.some((x) => x !== own && under(c, x)))); });
   const beatenOf = (id) => { const g = t.floors.find((x) => x.id === id); return !!(g && g.beaten); };
   for (const f of onPage.filter((f) => !beatenOf(f.id)).concat(onPage.filter((f) => beatenOf(f.id)))) addMore(f.id);
   if (changed.includes('void-live-deploy/sw.js')) for (const f of t.floors) if (ids.has(f.id) && !f.beaten && !OKV.has(((evidence[f.id] || {}).offline || {}).verdict)) addMore(f.id);

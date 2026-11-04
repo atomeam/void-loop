@@ -72,9 +72,9 @@ function mount({ el, q, th, cv, still, redraw }) {
   recall.after(toColor);
   // and Verse's remembered words to the wheel, in the link's hash (it never reaches a server)
   const toWheel = document.createElement('a');
-  toWheel.className = 'g-btn fo-wheel'; toWheel.href = '/wheel/'; toWheel.textContent = 'Spin its words';
+  toWheel.className = 'g-btn fo-wheel'; toWheel.href = '/random/wheel/'; toWheel.textContent = 'Spin its words';
   toWheel.title = 'put the words Verse remembers on the wheel of names'; toWheel.style.cssText = 'text-decoration:none;color:inherit';
-  const aimWheel = () => { const u = wheelLink(Mem.wordsOf(mems)); toWheel.href = u || '/wheel/'; return u; };
+  const aimWheel = () => { const u = wheelLink(Mem.wordsOf(mems)); toWheel.href = u || '/random/wheel/'; return u; };
   toWheel.addEventListener('pointerdown', (e) => { e.stopPropagation(); aimWheel(); });
   toWheel.addEventListener('focus', aimWheel);
   toWheel.addEventListener('click', (e) => { if (!aimWheel()) { e.preventDefault(); sealed.textContent = 'Verse remembers no words yet: tell it something first.'; } });
