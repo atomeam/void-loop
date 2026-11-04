@@ -83,3 +83,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 94eaa48 | 2026-11-03 | delivery-pack skill: package a business idea into a client handoff (clarify, systems, status/docs/automations, we own the heavy lifting) | new idea by growth agent; helper/delivery-pack |
 | open | 2026-11-04 | Numbers and money family: prove the last 3 of 29 skills, starting with vat and hear (least checked) | asked by Verse (void-voice 2026-11-04, twice) |
 | open | 2026-11-04 | Versus topic pages: replace the flat tower placeholder with a real per-topic experience | asked by Verse (void-voice 2026-11-04) |
+| building | 2026-11-04 | system-status skill: client-visible status card for a system Verse owns (state, monitors, ownership, handoff) | new idea by growth agent; helper/system-status |
