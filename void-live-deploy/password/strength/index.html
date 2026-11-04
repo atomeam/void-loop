@@ -9,7 +9,7 @@
 <meta property="og:site_name" content="Verse">
 <meta property="og:title" content="Password strength · Verse">
 <meta property="og:description" content="How long a password would take to guess, why, and what to change. Worked out on your device: the password is never sent anywhere.">
-<meta property="og:url" content="https://a-to-mind.com/password-strength/">
+<meta property="og:url" content="https://a-to-mind.com/password/strength/">
 <meta property="og:image" content="https://a-to-mind.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -36,8 +36,8 @@
   footer { font-size: 12px; color: var(--soft); margin-top: 22px; text-align: center; } footer a { color: inherit; }
 </style>
 <!-- seo -->
-<link rel="canonical" href="https://a-to-mind.com/password-strength/">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"How secure is my password?","url":"https://a-to-mind.com/password-strength/","description":"How long a password would take to guess, why, and what to change, worked out on your device: the password is never sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"how secure is my password, password strength checker, password checker, how long to crack my password, is my password strong, password entropy","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"How secure is my password?","item":"https://a-to-mind.com/password-strength/"}]}]}</script>
+<link rel="canonical" href="https://a-to-mind.com/password/strength/">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"How secure is my password?","url":"https://a-to-mind.com/password/strength/","description":"How long a password would take to guess, why, and what to change, worked out on your device: the password is never sent anywhere.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"keywords":"how secure is my password, password strength checker, password checker, how long to crack my password, is my password strong, password entropy","publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Verse","item":"https://a-to-mind.com/"},{"@type":"ListItem","position":2,"name":"How secure is my password?","item":"https://a-to-mind.com/password/strength/"}]}]}</script>
 <!-- /seo -->
 <script src="/visit.js" defer></script>
 
@@ -53,8 +53,12 @@
 <link rel="modulepreload" href="/lib/pwcheck.js">
 <link rel="modulepreload" href="/lib/pw-handover.js">
 <!-- /modulepreload -->
+<meta name="verse-handoff" content="in: text; out: text">
 </head>
 <body>
+<!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
+<nav class="v-modes" aria-label="Passwords modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/password/">Generator</a><a href="/password/strength/" aria-current="page">Strength check</a></nav>
+
 <main>
   <h1>How secure is my password?</h1>
   <div class="box"><input id="pw" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="128" aria-label="Password to check" placeholder="Type a password" autofocus></div>
@@ -67,7 +71,7 @@
   </div>
   <ul id="why"></ul><ul id="tips"></ul>
   <div class="opt"><label><input type="checkbox" id="show"> show it</label><button type="button" id="leak" class="go">Has it leaked?</button><button type="button" id="link" title="Copies the link to this checker; the password is never in it">Copy link</button><span id="leakmsg" role="status"></span></div>
-  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/">Password generator</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/">Password generator</a> <a href="/random/people/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
   <footer>Worked out on this device; the password is never sent anywhere, stored, or put in the address. It is an estimate: words and patterns are priced the way a guesser would try them, and what we do not recognise is priced as random. "Has it leaked?" sends only the first 5 characters of a fingerprint of the password to the Have I Been Pwned list, which answers with every fingerprint that starts the same; the match is made here. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">

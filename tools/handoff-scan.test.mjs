@@ -55,7 +55,7 @@ test('inferTypes reads a page\'s controls (a hint for a tag)', () => {
 test('the scan sees what is built: the BPM counter and the metronome hand each other the tempo; the ring is built', () => {
   const s = scan(), has = (a, b) => s.built.some((x) => x.from === a && x.to === b);
   assert.ok(has('/bpm/', '/metronome/') && has('/metronome/', '/bpm/'), 'bpm <-> metronome');
-  assert.ok(has('/wheel/', '/tournaments/'), 'the verse_handoff ring');
+  assert.ok(has('/random/wheel/', '/tournaments/'), 'the verse_handoff ring');
   assert.ok(has('/flights/', '/time/') && has('/flights/', '/calendar/'), 'links built in a module the page loads by <script src> and imports further down');
   assert.ok(!has('/rap/', '/pdf/'), 'a shared library deep in another page\'s chain is not that page\'s own');
   assert.ok(!s.gaps.some((g) => g.from === '/bpm/' && g.to === '/metronome/'), 'a built connection is not a gap');
@@ -65,13 +65,13 @@ test('the scan sees what is built: the BPM counter and the metronome hand each o
 
 test('a call to one of lib/handoff.js\'s link builders counts as a link to its page (the fantasy page sends players to the ring)', () => {
   const b = buildersOf(fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy', 'lib', 'handoff.js'), 'utf8'));
-  assert.deepEqual(b, { wheelLink: '/wheel/', prizesLink: '/prizes/', tournamentsLink: '/tournaments/' });
-  const routes = ['/fantasy/', '/wheel/', '/prizes/', '/tournaments/'];
-  assert.deepEqual(builtFrom('/fantasy/', '', 'href: () => wheelLink(n)', routes, b), ['/wheel/']);
-  assert.deepEqual(builtFrom('/wheel/', '', 'wheelLink(n) prizesLink(t)', routes, b), ['/prizes/']);
+  assert.deepEqual(b, { wheelLink: '/random/wheel/', prizesLink: '/prizes/', tournamentsLink: '/tournaments/' });
+  const routes = ['/fantasy/', '/random/wheel/', '/prizes/', '/tournaments/'];
+  assert.deepEqual(builtFrom('/fantasy/', '', 'href: () => wheelLink(n)', routes, b), ['/random/wheel/']);
+  assert.deepEqual(builtFrom('/random/wheel/', '', 'wheelLink(n) prizesLink(t)', routes, b), ['/prizes/']);
   assert.deepEqual(builtFrom('/fantasy/', '', 'mywheelLink(n)', routes, b), []);
   const s = scan(), has = (a, z) => s.built.some((x) => x.from === a && x.to === z);
-  for (const to of ['/wheel/', '/random/', '/prizes/', '/tournaments/']) assert.ok(has('/fantasy/', to), '/fantasy/ → ' + to);
+  for (const to of ['/random/wheel/', '/random/', '/prizes/', '/tournaments/']) assert.ok(has('/fantasy/', to), '/fantasy/ → ' + to);
 });
 
 test('docs/HANDOFF-GAPS.md is current (node tools/handoff-scan.mjs --write)', () => {

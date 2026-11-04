@@ -3,7 +3,7 @@
 const KIND = 'a2m-pw-handover', WAIT = 30000;
 
 // open url in a new tab and hand pw to that tab when it asks. false when the tab did not open (nothing is carried then)
-export function handOver(win, pw, url = '/password-strength/') {
+export function handOver(win, pw, url = '/password/strength/') {
   if (typeof pw !== 'string' || !pw) return false;
   const w = win.open(url, '_blank'); if (!w) return false;
   const origin = win.location.origin; let held = pw;

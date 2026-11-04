@@ -307,24 +307,28 @@
    "subject": "business-clarify: register the skill and add its suite check (#2098)"
   },
   {
+   "at": "2026-11-04T01:23:09Z",
+   "subject": "Combined pages: code, tests and generated pages name the mode addresses"
+  },
+  {
+   "at": "2026-11-04T01:22:21Z",
+   "subject": "Combined pages: card links and tests name the mode addresses"
+  },
+  {
    "at": "2026-11-04T01:21:39Z",
    "subject": "Incident: the browser suite failed on cfd93e58 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T01:20:31Z",
+   "subject": "Combine overlapping pages into modes; old addresses 301 to their mode"
   },
   {
    "at": "2026-11-04T01:19:15Z",
    "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-04T01:14:45Z",
-   "subject": "Note the outcome exam pull request on the handoff."
-  },
-  {
    "at": "2026-11-04T01:14:24Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T01:14:06Z",
-   "subject": "Score Verse by what a visitor gets, and play the real episode."
   },
   {
    "at": "2026-11-04T01:11:12Z",
@@ -369,10 +373,6 @@
   {
    "at": "2026-11-04T00:43:29Z",
    "subject": "Tower: a site is PASSED and the Tower moves on once Verse leads on everything measured and meets its own bar; CONQUERED at 100%. No target…"
-  },
-  {
-   "at": "2026-11-04T00:38:21Z",
-   "subject": "Drop the administration permission actionlint does not know."
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 17,
-  "week": 533
+  "day": 18,
+  "week": 534
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

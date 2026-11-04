@@ -1,4 +1,4 @@
-// lib/handoff.js: carrying a list between the prize, picking and scoring pages (/wheel/, /prizes/, /tournaments/, with /random/ and
+// lib/handoff.js: carrying a list between the prize, picking and scoring pages (/random/wheel/, /prizes/, /tournaments/, with /random/ and
 // /generators/ in the same strip). The list always travels in the link it opens; a click on a "send" link also leaves one copy in this
 // browser's localStorage (verse_handoff: { type, label, data, fromPage }) so the next page can offer a quiet "Paste from /x/" pill. Nothing
 // is written until a person clicks, and nothing leaves the browser: no server, no account. Tests: tools/handoff.test.mjs.
@@ -6,7 +6,7 @@ import { pack, entriesOf } from './wheel.js';
 import { parseSlices, labelsOf } from './prizes.js';
 
 export const KEY = 'verse_handoff';
-export const RING = Object.freeze([['/wheel/', 'Wheel of names'], ['/prizes/', 'Prize odds'], ['/tournaments/', 'Tournament standings'], ['/random/', 'Random number'], ['/generators/', 'Generators']]);
+export const RING = Object.freeze([['/random/wheel/', 'Wheel of names'], ['/prizes/', 'Prize odds'], ['/tournaments/', 'Tournament standings'], ['/random/', 'Random number'], ['/generators/', 'Generators']]);
 /** Game night: the point system a roster from the wheel starts under (every team on 0 until a result is typed) */
 export const GAME_NIGHT = Object.freeze({ name: 'Game night', win: 3, top5: 1, elim: 0 });
 const MAX = 200;
@@ -18,7 +18,7 @@ const uniq = (names) => { const seen = new Set(); return names.filter((n) => { c
 export const labelsFrom = (text) => uniq(labelsOf(parseSlices(text)));
 
 /** the links that carry a list (null when there is nothing to carry) */
-export const wheelLink = (labels) => { const e = entriesOf(uniq(labels.map(clean)).join('\n')); return e.length ? '/wheel/#' + pack(e) : null; };
+export const wheelLink = (labels) => { const e = entriesOf(uniq(labels.map(clean)).join('\n')); return e.length ? '/random/wheel/#' + pack(e) : null; };
 export const prizesLink = (text) => { const t = String(text == null ? '' : text).trim().slice(0, 20000); return t ? '/prizes/?s=' + encodeURIComponent(t) : null; };
 export const tournamentsLink = (labels) => { const r = uniq(labels.map(teamName)); return r.length ? '/tournaments/?roster=' + encodeURIComponent(r.join('\n')) + '&preset=gamenight' : null; };
 
