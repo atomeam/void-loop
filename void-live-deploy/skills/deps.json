@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1117,
+ "counted": 1120,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1137,6 +1137,13 @@
    "tests": 2
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
@@ -1176,7 +1183,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/arcade-ghost.js",
@@ -1662,13 +1669,6 @@
    "tests": 3
   },
   {
-   "file": "lib/podcasts.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1778,7 +1778,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/video-gen.js",
@@ -2033,6 +2033,13 @@
    "tests": 1
   },
   {
+   "file": "lib/hear.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
@@ -2275,7 +2282,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/visible.js",
@@ -3126,6 +3133,13 @@
   },
   {
    "file": "lib/epub-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/exam.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7065,6 +7079,10 @@
     "skills/event-countdown.js"
    ]
   },
+  "lib/exam.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/fakeuser.js": {
    "imports": [],
    "importedBy": [
@@ -7927,6 +7945,12 @@
    "imports": [],
    "importedBy": [
     "skills/health-habits.js"
+   ]
+  },
+  "lib/hear.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/hear.js"
    ]
   },
   "lib/heat-dose.js": {
@@ -10194,7 +10218,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/podcasts.js",
-    "skills/podcast-search.js"
+    "skills/podcast-search.js",
+    "skills/podcast.js"
    ],
    "reachedBy": [
     "lib/podcasts-card.js"
@@ -15013,6 +15038,12 @@
    ],
    "importedBy": []
   },
+  "skills/hear.js": {
+   "imports": [
+    "lib/hear.js"
+   ],
+   "importedBy": []
+  },
   "skills/heart.js": {
    "imports": [
     "skills/nutrition.js"
@@ -16174,7 +16205,9 @@
    ]
   },
   "skills/podcast.js": {
-   "imports": [],
+   "imports": [
+    "lib/podcasts.js"
+   ],
    "importedBy": []
   },
   "skills/pointing-arrow.js": {
