@@ -1,0 +1,37 @@
+{
+ "at": "2026-11-04T01:50:06.611Z",
+ "sha": "c0b0ab8eee14de9f6577c8df4754f53ccd0ebfed",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41752585307",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\""
+ ],
+ "touched": [
+  "growth/entries/20261104T004344Z-grokbot-e6ac27ca.json",
+  "tools/openapi-check.mjs",
+  "tools/status-page.test.mjs",
+  "void-live-deploy/_redirects",
+  "void-live-deploy/autopilot/app.js",
+  "void-live-deploy/autopilot/index.html",
+  "void-live-deploy/functions/api/status.js",
+  "void-live-deploy/lib/guard.js",
+  "void-live-deploy/lib/status.js",
+  "STANDING.md",
+  "docs/MAP.md",
+  "docs/playbooks/README.md",
+  "docs/playbooks/build-miss.md",
+  "docs/playbooks/skills-from-skills.md",
+  "docs/playbooks/visible-progress.md"
+ ],
+ "shards": [
+  1,
+  2,
+  4
+ ],
+ "passed": [
+  1
+ ]
+}
