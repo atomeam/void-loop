@@ -33,6 +33,9 @@ export function overlap(a, b) {
 
 /** are two texts the same thing said twice? Pure. */
 export function sameThing(a, b, threshold = 0.75) {
+  const na = String(a || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const nb = String(b || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  if (na && na === nb) return true; // "will" is only a stop word, so the word overlap below would never call it the same plant twice
   const wa = words(a), wb = words(b);
   return wa.length > 0 && wb.length > 0 && overlap(wa, wb) >= threshold;
 }

@@ -53,6 +53,7 @@
   </table>
   <p class="note" id="foot"></p>
   <noscript><p>The list is <a href="/assimilated.json">/assimilated.json</a>.</p></noscript>
+<nav id="related" class="tk-row" aria-label="Related tools" style="display:flex;flex-wrap:wrap;gap:6px 12px;margin:18px 0 0;font-size:14px"><span class="tk-label">Use with</span> <a href="/conquered/">Versus, full screen</a> <a href="/compare/">Side by side</a> <a href="/calculator/?mode=vat">VAT calculator</a> <a href="/tools/">All tools</a></nav>
 </main>
 <script type="module">
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -74,7 +75,7 @@
         + '<td>' + (r.ease ? esc(r.ease.score) + (r.ease.place ? ' (pick ' + esc(r.ease.place) + ')' : '') + '<small>' + esc(r.ease.why) + '</small>' : '<small>' + (r.sources.includes('domains/tower-self.json') ? 'not recorded then' : '') + '</small>') + '</td>'
         + '<td>' + rec + '</td></tr>';
     }).join('') || '<tr><td colspan="6">No site matches.</td></tr>';
-    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' surpassed, ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus itself after every run.';
+    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' surpassed, ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus itself after every run.' + (data.target ? ' Now assimilating: ' + data.target.site + (data.target.page ? ' into ' + data.target.page : '') + (data.target.score ? ', ' + data.target.score.n + ' of ' + data.target.score.m : '') + ' (the same target as the Versus card).' : '');
   }
   async function load() {
     try { const r = await fetch('/assimilated.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); data = await r.json(); $('foot').textContent = data.note; draw(); }

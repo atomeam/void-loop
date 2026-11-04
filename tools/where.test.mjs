@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { savedPlace, savePlace, findPlace, whereAmI, latLonText } from '../void-live-deploy/lib/where.js';
+import { savedPlace, savePlace, findPlace, whereAmI, latLonText, placeTries } from '../void-live-deploy/lib/where.js';
 import { onRequestGet } from '../void-live-deploy/functions/api/where.js';
 
 const store = () => { const m = new Map(); return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) }; };
@@ -34,6 +34,13 @@ test('without a chosen place: the device if already allowed, then the network\'s
   const tz = await whereAmI({ store: store(), navigator: null, timeZone: 'Pacific/Auckland', fetch: (u) => (String(u).startsWith('/api/where') ? json({ ok: false }) : json({ results: [{ name: 'Auckland', country: 'New Zealand', latitude: -36.85, longitude: 174.76, timezone: 'Pacific/Auckland' }] })) });
   assert.deepEqual(tz, { lat: -36.85, lon: 174.76, name: 'Auckland, New Zealand', tz: 'Pacific/Auckland', source: 'timezone' });
   assert.equal(await whereAmI({ store: store(), navigator: null, timeZone: '', fetch: () => json({ ok: false }) }), null, 'nothing known: null, never a made-up place');
+});
+
+test('a state stuck on a city is asked again as the city', () => {
+  assert.deepEqual(placeTries('Lakeland Florida'), ['Lakeland Florida', 'Lakeland']);
+  assert.deepEqual(placeTries('Lakeland, FL'), ['Lakeland, FL', 'Lakeland']);
+  assert.deepEqual(placeTries('New York'), ['New York']);
+  assert.deepEqual(placeTries('South Carolina'), ['South Carolina']);
 });
 
 test('a place by name', async () => {

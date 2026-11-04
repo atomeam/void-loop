@@ -398,7 +398,7 @@ function memoryStoreD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
     if (/^SELECT place, reason, SUM\(n\) AS n FROM void_shortfalls WHERE day >= \? GROUP BY place, reason$/.test(sql)) { need('void_shortfalls'); const g = new Map(); for (const r of T.shortfalls.values()) if (r.day >= a[0]) { const k = r.place + '|' + r.reason; g.set(k, { place: r.place, reason: r.reason, n: (g.get(k) ? g.get(k).n : 0) + r.n }); } return { results: [...g.values()] }; }
-    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
+    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed','declined','deferred'\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed|declined|deferred)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
     if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
@@ -1863,7 +1863,7 @@ try {
     await E.ctx.setOffline(false); await E.p.waitForTimeout(500);
     const back = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline') }));
     check('empty state: offline shows a calm amber halo and one plain line in the bar, locks nothing (a calculation still answers), and clears the moment the connection returns',
-      !online0.off && online0.ph === 'Command the Verse' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Command the Verse', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
+      !online0.off && online0.ph === 'Ask anything' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Ask anything', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
     // 2) the on-screen keyboard: with a mocked visual viewport 300 px shorter, the bar sits above it
     const vh = (await E.p.evaluate(() => innerHeight));
     await E.p.evaluate(() => { window.__vv.height = innerHeight - 300; window.__vv.dispatchEvent(new Event('resize')); }); await E.p.waitForTimeout(300);
@@ -5281,7 +5281,7 @@ try {
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
-    await O.ask('what do you think of yourself?', 300); await until(async () => !!(await O.p.$('.vpage.on [data-v-talk]')) && (await O.p.$eval('.vpage.on [data-v-talk]', (e) => e.textContent).catch(() => '')).includes('terrain now'), 4000);
+    await O.ask('what do you think of yourself?', 300); await until(async () => !!(await O.p.$('.vpage.on [data-v-talk]')) && (await O.p.$eval('.vpage.on [data-v-talk]', (e) => e.textContent).catch(() => '')).includes('replied here once before'), 4000);
     // "Talk to me" is a folded section since the self card's redesign (2026-10-18): open it as the owner would before reading the thread and typing
     await O.p.evaluate(() => { const d = document.querySelector('.vpage.on details[data-sec=talk]'); if (d) d.open = true; });
     const before = await O.page();
@@ -5291,7 +5291,7 @@ try {
     const selfReply = await O.p.$$eval('.vpage.on .vreply', (l) => l.length); // the self card keeps its own Talk to me: no second box
     // and on every other card (owner, 2026-10-29): "Reply to what I said, or correct me" at its end sends the ask, the card's title and what it said,
     // and shows what was said on this ask before
-    await O.ask('5 miles in km', 300); await until(async () => /Earlier on this card/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
+    await O.ask('5 miles in km', 300); await until(async () => /replied here once before/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
     const cardBefore = await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '');
     await O.p.fill('.vpage.on .vreply textarea', 'Say it to two decimals.');
     await O.p.click('.vpage.on .vreply [data-reply-send]'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
@@ -5305,11 +5305,11 @@ try {
     await until(async () => /Kept on this device/.test(await S.p.$eval('.vpage.on .vreply', (e) => e.textContent).catch(() => '')), 4000);
     const kept = await S.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.corrections.v1') || '[]'); } catch (_) { return []; } });
     await S.ctx.close();
-    check('talk back: the owner replies to Verse on its self card: the thread so far shows (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which shows the earlier replies on its ask and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
-      /You: Your maps are not flat any more\./.test(before) && /Verse: You are right: the map card has terrain now\./.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
+    check('talk back: the owner replies to Verse on its self card: the replies so far are counted in one line, never drawn again (this reflection only), a reply goes to /api/voice-reply with the owner key and Verse\'s answer appears under it as text; every other card ends with "Reply to what I said, or correct me", which says in one line how many replies its ask already has (never the replies themselves: owner, 2026-11-03, "the card holds all the replies to it") and sends its ask, title and words; a stranger\'s reply on a card stays in the correction log on the device',
+      /You have replied here once before/.test(before) && !/Your maps are not flat|terrain now/.test(before) && !/not this thread/.test(before) && !/Earlier on this card/.test(before)
         && posts.length === 2 && posts[0].b.to === AT && /^Rides is live/.test(posts[0].b.text) && posts[0].auth === 'Bearer owner-k'
         && /Verse: Heard\. I will check the live finding/.test(after) && /<img src=x/.test(after) && imgs === 0 && x === 0 && !!stillOpen && !stranger && !O.errors.length && selfReply === 0
-        && /Reply to what I said, or correct me/.test(cardBefore) && /You: Earlier on this card\./.test(cardBefore) && /Verse: I kept that\./.test(cardBefore) && lastIsReply
+        && /Reply to what I said, or correct me/.test(cardBefore) && /You have replied here once before/.test(cardBefore) && !/Earlier on this card|I kept that/.test(cardBefore) && lastIsReply
         && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Reply to what I said/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && posts[1].auth === 'Bearer owner-k'
         && strangerSelf === 0 && !strangerPosts.includes('POST') && kept.length === 1 && kept[0].ask === '5 miles in km' && kept[0].text === 'Kilometres, not km.',
       JSON.stringify({ before: before.slice(-300), after: after.slice(-300), cardBefore, posts, imgs, x, stranger, strangerSelf, strangerPosts, kept, lastIsReply, selfReply, errors: O.errors }));

@@ -14,6 +14,7 @@ const withGeo = async (fn) => { const real = globalThis.fetch, urls = []; global
 const apiOf = () => { const pages = []; return { pages, esc, showPage: (fn) => { const el = { innerHTML: '' }; fn(el); pages.push(el); return el; }, _pageStill: () => true }; };
 
 test('the asks: from and to, either wording, flights, and the ones it refuses', () => {
+  assert.deepEqual(placesOf('directions from Lakeland FL to Tampa'), { a: 'Lakeland FL', b: 'Tampa' });
   assert.deepEqual(placesOf('distance from London to Paris'), { a: 'London', b: 'Paris' });
   assert.deepEqual(placesOf('how far is Tokyo from Osaka'), { a: 'Osaka', b: 'Tokyo' }); // "how far is B from A" reads A to B
   assert.deepEqual(placesOf('distance between Lyon and Turin'), { a: 'Lyon', b: 'Turin' });

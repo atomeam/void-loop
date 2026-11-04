@@ -1,0 +1,74 @@
+{
+ "floor": "emoji combos",
+ "verse_page": "/emoji-combos/",
+ "researched": "2026-11-03",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "emojigraph.org": {
+   "url": "https://emojigraph.org/",
+   "scanned": "2026-11-03",
+   "pages": [
+    "https://emojigraph.org/"
+   ],
+   "method": "model",
+   "features": [
+    {
+     "name": "Emoji dictionary",
+     "detail": "Now, you can quickly tell emoji meanings with a simple search using our emoji encyclopedia.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/emoji-combos/ shows \"emoji\"; not \"dictionary\""
+    },
+    {
+     "name": "Emoji decoder",
+     "detail": "Our emoji decoder will tell you what a laughing smiley with tears in its eyes means, so you don’t have to keep guessing what your friend meant when he sent that to you.",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/emoji-combos/ shows \"emoji\"; not \"decoder\""
+    },
+    {
+     "name": "Copy and paste emojis",
+     "detail": "With our extensive collection of emoji to copy and paste, you can easily convey emotions effectively and summarize whole sentences and paragraphs with just a smiley.",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/emoji-combos/ shows \"copy\", \"paste\", \"emoji\""
+    },
+    {
+     "name": "Emoji keyboard",
+     "detail": "⌨️ Emoji Keyboard",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/emoji-combos/ shows \"emoji\"; not \"keyboard\""
+    },
+    {
+     "name": "Concentration game",
+     "detail": "🕹️ Concentration Game",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/emoji-combos/ shows none of its words; not \"concentration\", \"game\""
+    },
+    {
+     "name": "Fancy font generator",
+     "detail": "🖋️Fancy Font Generator",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/emoji-combos/ shows \"fancy\"; not \"font\", \"generator\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Concentration game",
+   "sites": [
+    "emojigraph.org"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-03",
+  "queued": []
+ }
+}

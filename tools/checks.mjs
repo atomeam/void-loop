@@ -214,6 +214,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['visitor-pass', 'visitor-pass.test.mjs'],
   ['product-tail', 'product-tail.test.mjs'],
   ['product-gap', 'product-gap.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
@@ -534,6 +535,8 @@ for (const [name, file] of [
   ['tower-plan', 'tower-plan.test.mjs'],
   ['tower-self', 'tower-self.test.mjs'],
   ['assimilated', 'assimilated.test.mjs'], // the history of every site Versus took on (/assimilated/, tools/assimilated.mjs)
+  ['tower-topic', 'tower-topic.test.mjs'], // a Versus site matched to the Verse page that does its job (lib/tower-topic.js)
+  ['tower-art', 'tower-art.test.mjs'], // the Versus card's flat picture (lib/tower-art.js)
   ['gate-badge', 'gate-badge.test.mjs'],
   ['tower-mini', 'tower-mini.test.mjs'],
   ['tower-falsepass', 'tower-falsepass.test.mjs'],
