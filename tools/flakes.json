@@ -152,5 +152,8 @@
   {"check": "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count a", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T19:49:23Z"},
   {"check": "empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T19:49:23Z"},
   {"check": "the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T19:49:23Z"},
-  {"check": "suite ran to the end", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T19:49:23Z"}
+  {"check": "suite ran to the end", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T19:49:23Z"},
+  {"check": "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T20:17:37Z"},
+  {"check": "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS a", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T20:17:37Z"},
+  {"check": "suite budget: the whole suite ran past 1680 s", "sha": "3921a32e5d817022d053f4b18eef77046fb5192d", "at": "2026-11-04T20:17:37Z"}
 ]
