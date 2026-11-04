@@ -295,6 +295,62 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T02:37:36Z",
+   "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
+  },
+  {
+   "at": "2026-11-04T02:36:00Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T02:33:26Z",
+   "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
+  },
+  {
+   "at": "2026-11-04T02:28:12Z",
+   "subject": "tower-self test: gradient is the colour page's mode since the pages were combined (#2100), so the family check stops failing every merge…"
+  },
+  {
+   "at": "2026-11-04T02:27:53Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
+  },
+  {
+   "at": "2026-11-04T02:27:31Z",
+   "subject": "Make the outcome exam harder, then lift code and word problems (#2105)"
+  },
+  {
+   "at": "2026-11-04T02:27:09Z",
+   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T02:24:00Z",
+   "subject": "Keep the merge gate on the exam change"
+  },
+  {
+   "at": "2026-11-04T02:18:10Z",
+   "subject": "exam: the merge gate does not run every check for an offline-shell address"
+  },
+  {
+   "at": "2026-11-04T02:17:41Z",
+   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T02:07:16Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T02:06:17Z",
+   "subject": "Let Verse's review approve and merge itself (#2103)"
+  },
+  {
+   "at": "2026-11-04T02:03:35Z",
+   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T02:00:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
    "at": "2026-11-04T01:59:21Z",
    "subject": "exam: revert a deploy only after two runs in a row each drop by 5"
   },
@@ -317,62 +373,6 @@
   {
    "at": "2026-11-04T01:50:06Z",
    "subject": "Incident: the browser suite failed on c0b0ab8e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:46:28Z",
-   "subject": "test_void: the gradient check's regex is /gradient/ again (a path rename in #2100 turned it into an invalid regex) (#2102)"
-  },
-  {
-   "at": "2026-11-04T01:45:49Z",
-   "subject": "Fix the browser suite's gradient regex (#2100 renamed it into a path); tools list and offline cache are main's plus /progress/; palindrome…"
-  },
-  {
-   "at": "2026-11-04T01:45:41Z",
-   "subject": "Incident: the browser suite failed on 486e7f46 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:41:36Z",
-   "subject": "palindrome stays off the order: util answers 'is racecar a palindrome' (main retired it)"
-  },
-  {
-   "at": "2026-11-04T01:41:04Z",
-   "subject": "/progress/ stays in the tools list"
-  },
-  {
-   "at": "2026-11-04T01:40:15Z",
-   "subject": "real-pages: a spec for /progress/; the exam playbook names the gitignored files without backticks"
-  },
-  {
-   "at": "2026-11-04T01:37:08Z",
-   "subject": "Combine overlapping pages into modes; old addresses 301 to their mode (#2100)"
-  },
-  {
-   "at": "2026-11-04T01:36:40Z",
-   "subject": "Raise the directions, calculator and news exam scores."
-  },
-  {
-   "at": "2026-11-04T01:36:05Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T01:35:42Z",
-   "subject": "Leave the skills index and what.json to the deploy"
-  },
-  {
-   "at": "2026-11-04T01:35:36Z",
-   "subject": "exam: a saved log that is not an array reads as empty"
-  },
-  {
-   "at": "2026-11-04T01:34:18Z",
-   "subject": "Let an automerge run actually start (#2101)"
-  },
-  {
-   "at": "2026-11-04T01:33:58Z",
-   "subject": "Incident: the browser suite failed on d8bd3a30 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:29:56Z",
-   "subject": "Regenerate the generated files after the merge"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 22,
-  "week": 538
+  "day": 26,
+  "week": 542
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
