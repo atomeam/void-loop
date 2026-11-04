@@ -165,5 +165,21 @@ def main():
         return
 
 
+def build():
+    # what Verse learned becomes a feature, not an idea list (owner, 2026-11-03): tools/watch-build.mjs picks the most useful, monetizable
+    # idea from the recent notes, checks the site for a page that already does it, and queues one tv: build job (the conductor hands it to
+    # Verse's coder, which ships it with a test, a paid link and its lineage in domains/tv-built/). Best effort: it never fails the watch.
+    if not TOK or "--options" in sys.argv or not shutil.which("node"):
+        return
+    try:
+        r = subprocess.run(["node", str(pathlib.Path(__file__).with_name("watch-build.mjs")), "queue"], capture_output=True, text=True, timeout=120)
+        print("build:", (r.stdout or r.stderr).strip()[-600:])
+    except Exception as e:
+        print("build: skipped,", e)
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        build()

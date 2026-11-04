@@ -21,6 +21,8 @@ import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
 import { parsePing, readEarnings, recordMilestones } from '../../lib/earnings.js';
 import { saleToJob } from '../../lib/sale-jobs.js';
+import { fire } from '../../lib/automations-run.js';
+import { gumroadEvent } from '../../lib/automations.js';
 
 const DOWN = ['refund', 'dispute', 'cancellation', 'subscription_ended'];
 const UP_AGAIN = ['subscription_restarted', 'dispute_won'];
@@ -46,7 +48,7 @@ async function verifySale(env, p, unlock) {
   return { ok: true, subscription_id: s.subscription_id || p.subscription_id || null };
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   const key = new URL(request.url).searchParams.get('k') || '';
   if (!env.GUMROAD_PING_KEY) return reply(503, { ok: false, error: 'ping not configured' });
   if (!(await sameSecret(key, env.GUMROAD_PING_KEY))) return reply(403, { ok: false, error: 'wrong key' });
@@ -96,6 +98,10 @@ export async function onRequestPost({ request, env }) {
     // the running total (all products, net of refunds); a milestone is recorded the first time it's crossed, never again
     let crossed = [];
     try { crossed = await recordMilestones(env, await readEarnings(env)); } catch (_) {}
+    // the owner's automations with when.on 'gumroad' (lib/automations.js): once per new record, after the answer when the platform can;
+    // what sold and for how much, never who bought it (gumroadEvent). A broken rule never fails the ping (fire never throws).
+    const fired = fire(env, 'gumroad', gumroadEvent(p, { resource, effect, at: now }));
+    if (typeof waitUntil === 'function') { try { waitUntil(fired); } catch (_) {} } else await fired;
     return reply(200, { ok: true, effect, ...(service ? { service } : {}), ...(crossed.length ? { milestones: crossed } : {}) });
   } catch (_) { return reply(503, { ok: false, error: 'not recorded, Gumroad will retry' }); }
 }
@@ -171,6 +177,32 @@ export async function claimSale(env, voidId, ref, email) {
   } catch (_) { return { ok: false, status: 409, why: 'that order already unlocks another Verse' }; }
   if (rowId) await env.DB.prepare('UPDATE void_sales SET verified = 1, effect = ?, void_id = ? WHERE id = ?').bind('tier ' + unlock.tier + ' (claimed with the receipt)', voidId, rowId).run();
   return { ok: true, tier: unlock.tier };
+}
+
+// A buyer joins the Verse team with the Order ID and email from the receipt (functions/api/team.js joinMember), for a product whose license
+// key they cannot find. The sale must be a keyed ping already in void_sales, or, with GUMROAD_ACCESS_TOKEN set, a sale Gumroad's API
+// returns; it must be one of the store products that open the team (ids, slugs), paid with that email, and not refunded, disputed,
+// cancelled or ended. -> { ok: true, sale } (Gumroad's sale id) or { ok: false, status, why }
+export async function findMemberSale(env, ref, email, ids = [], slugs = []) {
+  const sid = String(ref || '').trim(), mail = String(email || '').trim().toLowerCase();
+  if (!/^[A-Za-z0-9=_+/-]{6,80}$/.test(sid) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) return { ok: false, status: 400, why: 'give the Order ID from your Gumroad receipt and the email you paid with' };
+  await ensureStoreTables(env); await ensureTables(env);
+  const fits = (q) => ids.includes(String(q.product_id || '')) || slugs.includes(String(q.product_permalink || q.permalink || '').replace(/^.*\/l\//, '').toLowerCase());
+  let p = null;
+  for (const r of ((await env.DB.prepare("SELECT raw FROM void_sales WHERE resource = 'sale' AND sale_id = ? ORDER BY at DESC LIMIT 5").bind(sid).all()).results || [])) { const q = parsePing(r.raw); if (fits(q)) { p = q; break; } }
+  if (!p && env.GUMROAD_ACCESS_TOKEN && !/^\d+$/.test(sid)) {
+    let j = null;
+    try { j = await (await (env.GUMROAD_FETCH || fetch)('https://api.gumroad.com/v2/sales/' + encodeURIComponent(sid), { headers: { authorization: 'Bearer ' + env.GUMROAD_ACCESS_TOKEN } })).json(); } catch (_) { j = null; }
+    const s = j && j.success && j.sale;
+    if (s && s.id === sid) p = { sale_id: s.id, email: s.email, product_id: s.product_id, product_permalink: s.product_permalink, subscription_id: s.subscription_id || '', refunded: String(!!(s.refunded || s.chargedback || s.disputed)) };
+  }
+  if (!p || !fits(p)) return { ok: false, status: 404, why: 'Verse has no record of that order for a team product yet. Use the license key from the receipt instead.' };
+  if (String(p.email || '').trim().toLowerCase() !== mail) return { ok: false, status: 403, why: 'that email is not the one on this order' };
+  if (String(p.refunded) === 'true' || String(p.disputed) === 'true' || String(p.chargebacked) === 'true') return { ok: false, status: 403, why: 'that order was refunded or disputed' };
+  const sub = p.subscription_id || null;
+  const down = await env.DB.prepare(DOWN_SQL).bind(p.sale_id, sub, sub).first();
+  if (down && down.n > 0) return { ok: false, status: 403, why: 'that purchase was refunded, disputed or cancelled' };
+  return { ok: true, sale: String(p.sale_id) };
 }
 
 // The owner's own purchase links itself (coordinator, 2026-10-30: "buyers should never have to paste an Order ID"). Gumroad makes a
