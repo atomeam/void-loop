@@ -56,6 +56,21 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/ai-authenticity-checker/': async (t) => { // built from what Verse watched (domains/tv-built/): a real Stable Diffusion PNG and a real phone-style JPEG go in, each gets the exact verdict, the report downloads, the paid link is the store's
+    const crc = (b) => { let c = ~0; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1)); } return ~c >>> 0; };
+    const be = (n) => { const b = Buffer.alloc(4); b.writeUInt32BE(n >>> 0); return b; }, chunk = (type, d) => Buffer.concat([be(d.length), Buffer.from(type), d, be(crc(Buffer.concat([Buffer.from(type), d])))]);
+    const zlib = await import('node:zlib'), png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 13, 10, 26, 10]), chunk('IHDR', Buffer.concat([be(2), be(2), Buffer.from([8, 2, 0, 0, 0])])),
+      chunk('tEXt', Buffer.from('parameters\0a lighthouse at dusk\nSteps: 30, Sampler: DPM++ 2M, CFG scale: 7, Seed: 42', 'latin1')), chunk('IDAT', zlib.deflateSync(Buffer.alloc(14))), chunk('IEND', Buffer.alloc(0))]);
+    await t.p.waitForFunction(() => document.documentElement.dataset.aicheck === 'ready', null, { timeout: 10000 }).catch(() => {});
+    await t.p.setInputFiles('#file', t.tmp('lighthouse.png', png));
+    const v = await t.waitText('#out', /Signs of AI generation/, 5000); t.ok(/Signs of AI generation/.test(v) && /Stable Diffusion settings/.test(v), 'a Stable Diffusion PNG reads as AI, naming its settings chunk');
+    const body = Buffer.from('http://ns.adobe.com/xap/1.0/\0<x:xmpmeta xmp:CreatorTool="Adobe Photoshop 25.0" stEvt:action="saved"/>', 'latin1');
+    const jpg = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe1, (body.length + 2) >> 8, (body.length + 2) & 255]), body, Buffer.from([0xff, 0xda, 0, 2, 1, 2, 0xff, 0xd9])]);
+    await t.p.setInputFiles('#file', t.tmp('edited.jpg', jpg));
+    const e = await t.waitText('#out', /Edited or re-saved/, 5000); t.ok(/Edited or re-saved/.test(e) && /Saved by Adobe Photoshop/.test(e), 'a Photoshop-saved JPEG reads as edited, naming Photoshop');
+    await t.download('#out .dl', /edited-ai-check\.txt$/);
+    t.ok(/moonbeam846\.gumroad\.com\/l\/yinmj/.test(await t.p.locator('#pro-link').getAttribute('href')), 'the paid line links to MultiVerse on the store');
+  },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
     await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
