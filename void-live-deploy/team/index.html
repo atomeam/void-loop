@@ -193,6 +193,7 @@
   .build #quick { display: flex; gap: 8px; margin-top: 10px; } .build #quick input { flex: 1; }
   @media (max-width: 900px) { .build .cols { grid-template-columns: 1fr; } .build form.row { grid-template-columns: 1fr; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  .botlist { columns: 2 18rem; padding-left: 1.1rem; } .botlist li { break-inside: avoid; margin: .2rem 0; }
 </style>
 <!-- seo -->
 <link rel="canonical" href="https://a-to-mind.com/team/">
@@ -307,6 +308,14 @@
   <p data-sum>Reading the queue…</p>
   <div class="cols"><div><h3>Wants</h3><ul data-list></ul></div><div><h3>The crew</h3><ul data-crew></ul></div></div>
 </section>
+
+<section class="wants glass" id="botsBox" aria-labelledby="hBots">
+  <h2 id="hBots">Verse's bots</h2>
+  <p>Bots Verse builds for itself, each made from skills and bots it already has. A bot joins the team only when its probe passes on a real task. Try any of them on <a href="/bots/">/bots/</a>.</p>
+  <p data-sum>Reading the bots…</p>
+  <ul data-list class="botlist"></ul>
+</section>
+<script type="module" src="/bots/team-list.js"></script>
 
 <dialog id="dlg"><div class="glass" id="dlgBody"></div></dialog>
 <dialog id="switcher" aria-label="Jump to a channel or agent"><div class="glass"><h3>Jump to</h3><label class="sr" for="swq">Channel or agent</label><input id="swq" autocomplete="off" placeholder="Channel or agent"><ul id="swl" role="listbox"></ul></div></dialog>

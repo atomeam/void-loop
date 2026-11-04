@@ -57,6 +57,11 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
 
+  '/bots/': async (t) => {  // Verse's bots: at least 50 live, each card runs its bot on what the visitor types
+    await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/\d+/)[0]) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
+    await t.fill('#roman-numerals textarea', '1999'); await t.click('#roman-numerals button'); t.ok((await t.text('#roman-numerals output')).trim() === 'MCMXCIX', 'roman-numerals runs on new input');
+    await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
+  },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
     await t.p.locator('#hits a, #hits button').first().click({ timeout: 5000 }); const big = await t.waitText('#big', /\d/, 5000); t.ok(/\d/.test(big), 'the calculator it opens works out a number: ' + big.slice(0, 30));
