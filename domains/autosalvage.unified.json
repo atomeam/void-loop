@@ -36,6 +36,12 @@
       "into": "/bots/ (atari-playfield)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/HomeBase-/lib/kraken": {
+      "target": "bot",
+      "into": "/bots/ (secret-sniffer)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

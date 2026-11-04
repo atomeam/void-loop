@@ -2,13 +2,13 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 6,
-  "live": 74,
-  "salvageable": 438,
+  "unified": 7,
+  "live": 75,
+  "salvageable": 436,
   "history": 24,
   "skipped": 3
  },
- "remaining": 438,
+ "remaining": 436,
  "top10": [
   {
    "id": "archive/repos/the-void/src/components",
@@ -29,18 +29,6 @@
    "target": "tool",
    "value": 47.9,
    "why": "",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
-   "id": "archive/repos/HomeBase-",
-   "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 40.9,
-   "why": "live code shares its name; check for overlap before migrating",
    "into": null,
    "test": null,
    "pr": null,
@@ -120,6 +108,18 @@
   },
   {
    "id": "archive/repos/a-to-mind.com/drafts/030-attested-contact-channel",
+   "kind": "archived part",
+   "status": "salvageable",
+   "target": "skill",
+   "value": 32.9,
+   "why": "",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "archive/repos/a-to-mind.com/drafts/039-attested-permissions-policy",
    "kind": "archived part",
    "status": "salvageable",
    "target": "skill",
@@ -601,10 +601,10 @@
   {
    "id": "archive/repos/HomeBase-",
    "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 40.9,
-   "why": "live code shares its name; check for overlap before migrating",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
    "into": null,
    "test": null,
    "pr": null,
@@ -613,12 +613,12 @@
   {
    "id": "archive/repos/HomeBase-/lib/kraken",
    "kind": "archived part",
-   "status": "salvageable",
-   "target": "tool",
+   "status": "unified",
+   "target": "bot",
    "value": 14.3,
    "why": "",
-   "into": null,
-   "test": null,
+   "into": "/bots/ (secret-sniffer)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },
