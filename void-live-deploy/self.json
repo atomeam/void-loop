@@ -295,88 +295,92 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T06:31:33Z",
-   "subject": "Give Verse a doctor, a live check, a priority pick and a measured loop share. (#2172)"
+   "at": "2026-11-04T07:37:04Z",
+   "subject": "autosalvage: unify archive/repos/HomeBase-/lib/kraken as the secret-sniffer bot (#2162)"
   },
   {
-   "at": "2026-11-04T06:31:21Z",
-   "subject": "grow: pull the home style and main script out of the served page (#2174)"
-  },
-  {
-   "at": "2026-11-04T06:31:13Z",
+   "at": "2026-11-04T07:36:56Z",
    "subject": "Site test: visitor pass 14/15"
   },
   {
-   "at": "2026-11-04T06:25:28Z",
-   "subject": "autosalvage: revive as Verse's unifier, with /salvage/ and /credits/ (#2151)"
+   "at": "2026-11-04T07:36:55Z",
+   "subject": "grow: paint the Verse hero before any script (#2177)"
   },
   {
-   "at": "2026-11-04T06:25:23Z",
-   "subject": "Outcome exam: images 73.9"
+   "at": "2026-11-04T07:34:32Z",
+   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2194)"
   },
   {
-   "at": "2026-11-04T06:05:39Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-11-04T07:31:32Z",
+   "subject": "/contribute/: declare its verse-handoff tag so handoff-scan passes on main again (#2192)"
   },
   {
-   "at": "2026-11-04T06:05:32Z",
+   "at": "2026-11-04T07:31:03Z",
+   "subject": "autosalvage: unify archive/repos/adventure-lab as the atari-playfield bot (#2161)"
+  },
+  {
+   "at": "2026-11-04T07:29:06Z",
+   "subject": "Handoff: the agent ask match is in review"
+  },
+  {
+   "at": "2026-11-04T07:26:29Z",
+   "subject": "A conductor tick no longer holds a runner for hours (#2190)"
+  },
+  {
+   "at": "2026-11-04T07:24:22Z",
+   "subject": "autosalvage: unify archive/repos/a-to-mind.com as the header-grader bot (#2160)"
+  },
+  {
+   "at": "2026-11-04T07:19:32Z",
+   "subject": "autosalvage: unify archive/repos/the-void/src/lib as the wiki-links bot (#2159)"
+  },
+  {
+   "at": "2026-11-04T07:18:52Z",
+   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
+  },
+  {
+   "at": "2026-11-04T07:16:45Z",
+   "subject": "Verse agent: keep the ask check beside the answer pipeline"
+  },
+  {
+   "at": "2026-11-04T07:14:21Z",
+   "subject": "Verse agent: send open asks to the answer pipeline"
+  },
+  {
+   "at": "2026-11-04T07:14:02Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T05:58:43Z",
-   "subject": "Board: helper/under-the-hood shipped (https://github.com/atomeam/void-loop/pull/2120)"
+   "at": "2026-11-04T07:13:24Z",
+   "subject": "Hourly bot factory, and cancel a superseded heavy run (#2186)"
   },
   {
-   "at": "2026-11-04T05:58:22Z",
-   "subject": "Under the hood: /under-the-hood/ live numbers, speculation rules, prerender-safe visits, page fades, agent files (#2120)"
+   "at": "2026-11-04T07:13:16Z",
+   "subject": "api-bots: mark the hop-by-hop redirect loop and kept http:// reply text for Verse review (#2188)"
   },
   {
-   "at": "2026-11-04T05:57:27Z",
-   "subject": "Conductor: the last 24 hours of Verse running itself"
+   "at": "2026-11-04T07:12:47Z",
+   "subject": "Verse agent: a bot takes a task only on a real match (two words, or half a short ask); one shared word like 'three' no longer hands a…"
   },
   {
-   "at": "2026-11-04T05:55:58Z",
-   "subject": "Outcome exam: images 73.9"
+   "at": "2026-11-04T07:07:55Z",
+   "subject": "Verse loop: task, Queue job want-exam-images (gap: want-exam-images): Raise th (#2183)"
   },
   {
-   "at": "2026-11-04T05:55:13Z",
-   "subject": "Verse fixes its podcast-search skill: learn to handle \"top pod for true crime\""
+   "at": "2026-11-04T07:07:33Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T05:54:53Z",
-   "subject": "Better at stopwatch, compliment, drive share and 3 more: 13 more ways of asking answered right — new phrases: “stopwatch” now opens…"
-  },
-  {
-   "at": "2026-11-04T05:44:12Z",
-   "subject": "Scoreboard: Verse's live measured numbers at /scoreboard/ (#2148)"
-  },
-  {
-   "at": "2026-11-04T05:32:03Z",
-   "subject": "Trust pages: /security/ and /limits/ (what Verse won't do) (#2152)"
-  },
-  {
-   "at": "2026-11-04T05:31:55Z",
-   "subject": "Free-resource router: registry of free tiers/credits/grants, failover with per-provider quotas, /free/ (#2153)"
-  },
-  {
-   "at": "2026-11-04T05:31:20Z",
-   "subject": "/bots/ scales to thousands: search, categories with counts, 48 a page, family bots built in the browser, free site tools from /tools.json…"
-  },
-  {
-   "at": "2026-11-04T05:28:44Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T05:16:20Z",
-   "subject": "Outcome exam: images 73.9"
-  },
-  {
-   "at": "2026-11-04T05:13:23Z",
-   "subject": "Only open a PR that clears easily: pre-pr refuses over 400 changed lines or a file another open PR changes (#2130)"
+   "at": "2026-11-04T07:05:51Z",
+   "subject": "Bot factory: 68 free API bots (no key), each checked against a kept real call; 2 that block browsers become fix jobs (#2185)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Agent ask match (cursor, 2026-11-04)",
+    "line": "an open ask on /agent/ goes to the answer pipeline unless a bot's declared job matches, and a reply that only echoes the ask is tried again. https://github.com/atomeam/void-loop/pull/2191"
+   },
    {
     "name": "/under-the-hood/ live-numbers page, speculation rules, prerender-safe…",
     "line": "shipped in https://github.com/atomeam/void-loop/pull/2120."
@@ -396,10 +400,6 @@
    {
     "name": "Visitor pass (cursor, 2026-11-04)",
     "line": "everyday asks on the live site. A city typed with its state is found, directions between two places open the distance card, sports scores open the NFL board, play music opens local radio, and the empty bar says Ask anything. The site…"
-   },
-   {
-    "name": "Claude (F321 thread, 2026-10-29)",
-    "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
    }
   ],
   "ladders": [
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 46,
-  "week": 562
+  "day": 53,
+  "week": 569
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
