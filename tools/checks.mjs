@@ -214,6 +214,7 @@ for (const [name, file] of [
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
+  ['visitor-pass', 'visitor-pass.test.mjs'],
   ['product-tail', 'product-tail.test.mjs'],
   ['product-gap', 'product-gap.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],

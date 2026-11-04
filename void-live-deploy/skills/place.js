@@ -2,6 +2,7 @@
  * place skill — street map of any place. Open-Meteo geocoding + OpenStreetMap embed, no key.
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
+import { placeTries } from '../lib/where.js';
 function placeOf(text) {
   const t = text.trim().replace(/[?!.]+$/, '');
   const m = t.match(/^(?:show\s+(?:me\s+)?)?(?:a\s+|the\s+)?(?:street\s+)?map\s+(?:of|for)\s+(.+)$/i)
@@ -60,9 +61,13 @@ async function run(text, api) {
     return 'place';
   }
   try {
-    const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(place)).then((r) => r.json());
+    let rs = [];
+    for (const q of placeTries(place)) {
+      const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(q)).then((r) => r.json());
+      rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
+      if (rs.length) break;
+    }
     if (!api._pageStill(el)) return 'place';
-    const rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
     if (!rs.length) { el.innerHTML = '<h2>' + esc(place) + '</h2><p>I couldn\'t find that place yet. Try a city or town name, like "map of Lisbon".</p>'; if (api.reportMiss) api.reportMiss(text); return 'none'; }
     draw(el, rs[0], rs, api, !!dir);
     return 'place';

@@ -8,6 +8,7 @@
  * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
  * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).
  */
+import { placeTries } from '../lib/where.js';
 const WX = {
   0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
@@ -105,9 +106,11 @@ async function run(text, api) {
   try {
     let loc = null;
     if (place) {
-      const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(place)).then((r) => r.json());
-      const r0 = g.results && g.results[0];
-      if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') };
+      for (const q of placeTries(place)) {
+        const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json());
+        const r0 = g.results && g.results[0];
+        if (r0) { loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') }; break; }
+      }
     } else {
       // where you are: the device's location if already allowed (no prompt), else the city your time zone names
       let granted = false;
@@ -174,7 +177,17 @@ async function run(text, api) {
 
 // the card's 3D miniature (skills/mini/weather.js): a diorama with the sky the forecast reports, rain or snow falling,
 // day or night by the place's own clock, and a thermometer at the real temperature. Without WebGL the band goes away.
+function lightOnly() {
+  try {
+    const c = navigator.connection;
+    if (c && (c.saveData || /^(?:slow-)?2g$/.test(c.effectiveType || ''))) return true;
+    if (matchMedia('(max-width: 700px)').matches) return true;
+  } catch (_) {}
+  return false;
+}
 function weatherMini(api, el, w, loc, place) {
+  // a phone or a slow link gets the 2D forecast only; the diorama pulls in the 3D engine (owner: keep the first answer light)
+  if (lightOnly()) return;
   const c = w && w.current; if (!c || !api.stage || !api.stage.miniature || !api._pageStill(el)) return;
   const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
   const host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 180 : 230) + 'px;margin:0 0 6px';

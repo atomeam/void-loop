@@ -326,8 +326,12 @@ export function survivorState(picks, weeks) {
 const ALIAS = { 'premier league': 'epl', epl: 'epl', 'english premier league': 'epl', 'la liga': 'laliga', laliga: 'laliga', bundesliga: 'bundesliga', 'serie a': 'seriea', 'ligue 1': 'ligue1', mls: 'mls', 'champions league': 'ucl', ucl: 'ucl', nba: 'nba', nfl: 'nfl', mlb: 'mlb', nhl: 'nhl', f1: 'f1', 'formula 1': 'f1', 'formula one': 'f1' };
 /** a plain ask for scores or a table, "nba scores", "premier league results today", "bundesliga table": { league, tab } or null (no league named means null: "scores" alone goes to the page). Pure. */
 export function scoresAsk(text) {
-  const m = /^(?:live |today'?s? )?(premier league|english premier league|epl|la ?liga|bundesliga|serie a|ligue 1|mls|champions league|ucl|nba|nfl|mlb|nhl|f1|formula 1|formula one) (?:live )?(scores?|results?|fixtures|games|matches|standings?|table|schedule)(?: (?:today|now|tonight))?$/i.exec(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
-  if (!m) return null; const k = m[1].toLowerCase().replace(/^la ?liga$/, 'la liga'); return { league: ALIAS[k], tab: /stand|table/i.test(m[2]) ? 'standings' : 'scores' };
+  const raw = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = /^(?:live |today'?s? )?(premier league|english premier league|epl|la ?liga|bundesliga|serie a|ligue 1|mls|champions league|ucl|nba|nfl|mlb|nhl|f1|formula 1|formula one) (?:live )?(scores?|results?|fixtures|games|matches|standings?|table|schedule)(?: (?:today|now|tonight))?$/i.exec(raw);
+  if (m) { const k = m[1].toLowerCase().replace(/^la ?liga$/, 'la liga'); return { league: ALIAS[k], tab: /stand|table/i.test(m[2]) ? 'standings' : 'scores' }; }
+  // "sports scores" names no league. NFL is the board; "live scores" stays the page's own ask (a near miss of this card).
+  if (/^(?:today'?s\s+)?sports\s+scores?$|^scoreboard$/i.test(raw)) return { league: 'nfl', tab: 'scores' };
+  return null;
 }
 
 // "lakers score last night", "how did the arsenal do yesterday", "did the yankees win": one team's game (2026-10-30: these fell to an article).
