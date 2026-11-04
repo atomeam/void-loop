@@ -63,7 +63,7 @@ async function run(text, api) {
   try {
     let rs = [];
     for (const q of placeTries(place)) {
-      const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(q)).then((r) => r.json());
+      const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
       rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
       if (rs.length) break;
     }

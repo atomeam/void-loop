@@ -64,7 +64,7 @@ export function flightTime(d) {
 }
 export async function geo(name) {
   for (const q of placeTries(name)) {
-    const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(q.split(',')[0])).then((r) => r.json());
+    const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(q.split(',')[0])).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
     const hit = ((g && g.results) || []).sort((x, y) => (y.population || 0) - (x.population || 0))[0];
     if (hit) return hit;
   }

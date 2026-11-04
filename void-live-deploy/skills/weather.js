@@ -107,7 +107,7 @@ async function run(text, api) {
     let loc = null;
     if (place) {
       for (const q of placeTries(place)) {
-        const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json());
+        const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
         const r0 = g.results && g.results[0];
         if (r0) { loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') }; break; }
       }
