@@ -1,0 +1,29 @@
+{
+ "at": "2026-11-04T01:21:38.487Z",
+ "sha": "cfd93e58d9e37696b876878096215e8a0fd6eb7b",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41750504908",
+ "suite": "browser suite on main",
+ "checks": [
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\""
+ ],
+ "touched": [
+  "tools/assimilated.mjs",
+  "tools/assimilated.test.mjs",
+  "tools/skills-unlisted.mjs",
+  "tools/test_void.mjs",
+  "tools/tower-gate.test.mjs",
+  "tools/tower-probes.mjs",
+  "tools/tower-size.test.mjs",
+  "tools/tower-target.mjs",
+  "tools/tower-target.test.mjs",
+  "tools/tower.test.mjs",
+  "void-live-deploy/assimilated.json",
+  "void-live-deploy/assimilated/index.html",
+  "void-live-deploy/lib/tower.js",
+  "void-live-deploy/skills/tower.js",
+  "void-live-deploy/tower.evidence.json"
+ ],
+ "shards": [
+  4
+ ]
+}
