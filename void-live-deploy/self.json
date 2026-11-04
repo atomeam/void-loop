@@ -295,8 +295,36 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T04:49:12Z",
+   "subject": "regex-tester: cap the pattern and text length (#2144)"
+  },
+  {
+   "at": "2026-11-04T04:48:40Z",
+   "subject": "Verse bot factory: 77 bots live, each only after its probe passes on a real task (#2139)"
+  },
+  {
+   "at": "2026-11-04T04:47:08Z",
+   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
+  },
+  {
+   "at": "2026-11-04T04:46:59Z",
+   "subject": "Outcome exam: images 73.9"
+  },
+  {
+   "at": "2026-11-04T04:40:14Z",
+   "subject": "main checks: /api/crew marked internal, handoff metas on /treasury/ and /emojis/everywhere/, MAP lines for shorts/treasury, regenerated…"
+  },
+  {
+   "at": "2026-11-04T04:40:05Z",
+   "subject": "/team/: Verse's 20 free bots in the sidebar, each with a free-bot badge and a link to its page (read from /tools.json) (#2140)"
+  },
+  {
    "at": "2026-11-04T04:40:01Z",
    "subject": "Shorts: the daily improvement loop films champion and challenger (#2138)"
+  },
+  {
+   "at": "2026-11-04T04:33:24Z",
+   "subject": "Keep the fast checks honest after the fade line."
   },
   {
    "at": "2026-11-04T04:28:32Z",
@@ -305,6 +333,10 @@
   {
    "at": "2026-11-04T04:27:20Z",
    "subject": "Turn off the old record and clips schedules (#2136)"
+  },
+  {
+   "at": "2026-11-04T04:26:40Z",
+   "subject": "Fix page fades so a skipped transition does not throw."
   },
   {
    "at": "2026-11-04T04:26:40Z",
@@ -331,16 +363,8 @@
    "subject": "Turn on the treasury workflow (#2128)"
   },
   {
-   "at": "2026-11-04T04:06:01Z",
-   "subject": "shorts: the answer pattern is a SCENES constant (void-review: ok)"
-  },
-  {
-   "at": "2026-11-04T04:05:00Z",
-   "subject": "Shorts: a daily one-knob trial kept on real outcomes (views, clicks), quality claimed only when the gate score rises (owner: 'it should…"
-  },
-  {
-   "at": "2026-11-04T04:03:41Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19"
+   "at": "2026-11-04T04:10:59Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
    "at": "2026-11-04T03:56:05Z",
@@ -349,30 +373,6 @@
   {
    "at": "2026-11-04T03:52:01Z",
    "subject": "Films: the watch player fits the 9:16 Short, no black bars beside it (#2127)"
-  },
-  {
-   "at": "2026-11-04T03:50:52Z",
-   "subject": "checks: keep main's list, add only video-gate"
-  },
-  {
-   "at": "2026-11-04T03:50:25Z",
-   "subject": "Shorts: real a-to-mind.com answers at full 1080x1920, no music, and a pre-upload quality gate"
-  },
-  {
-   "at": "2026-11-04T03:50:01Z",
-   "subject": "Main green: tower pages preload what they import, /conquered/ spec reads the new card wording, MAP and doc-drift fixed (#2123)"
-  },
-  {
-   "at": "2026-11-04T03:49:18Z",
-   "subject": "Cards: moving a card keeps its video playing; answer card no longer echoes the whole input (#2126)"
-  },
-  {
-   "at": "2026-11-04T03:47:04Z",
-   "subject": "team crew: leave the generated files to the deploy (#2112)"
-  },
-  {
-   "at": "2026-11-04T03:46:01Z",
-   "subject": "Outcome exam: images 73.9"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 36,
-  "week": 552
+  "day": 41,
+  "week": 557
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
