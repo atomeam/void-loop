@@ -1992,5 +1992,23 @@
    ]
   },
   "note": "new ground passed, kept as a regression case: \"yo what language does the word kindergarten come from\" (skill:define)"
+ },
+ {
+  "at": "2026-11-04T11:32:55Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2750,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12089 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
