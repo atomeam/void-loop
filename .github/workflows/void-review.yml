@@ -152,7 +152,7 @@ jobs:
       # The review decides (Atom, 2026-11-04: a review is not a person clicking approve). A pass comments the verdict and
       # submits an approving review. A fail comments the reason and files one fix job. Spending money and a message
       # sent outside stay on the confirm line; this step never holds a pull request for a person.
-      - name: Verdict: merge, or a fix job
+      - name: "Verdict: merge, or a fix job"
         if: ${{ always() && inputs.report_only != true }}
         env:
           GH_TOKEN: ${{ github.token }}
