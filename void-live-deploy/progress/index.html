@@ -35,7 +35,7 @@
 <body>
 <main>
   <h1>What Verse can actually do</h1>
-  <p class="note">Each score is the share of objective checks a real ask passed on a phone-width page: the right skill, a result in 12 seconds, and the thing the ask named. A song counts when an audio file plays and the title and artist match iTunes. A holdout set, rotated each week and not published, is scored beside the public one. Counts of skills, pull requests and lesson sentences are not a score.</p>
+  <p class="note">Each score is the share of objective checks a real ask passed on a phone-width page: the right skill, a result in 12 seconds, the thing the ask named, and — where a free source has an answer — that source's answer, not a different one. Ambiguous asks have to say there is more than one. A song counts when an audio file plays and the title and artist match iTunes. A holdout set, rotated each week and not published, is scored beside the public one. A new scale is a new baseline. Counts of skills, pull requests and lesson sentences are not a score.</p>
   <p id="when" class="note">Loading the latest run…</p>
   <div id="chart"></div>
   <table>
@@ -66,7 +66,7 @@ function row(name, d) {
 }
 Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/history.json').then((r) => r.json()).catch(() => [])]).then(([latest, history]) => {
   const when = document.getElementById('when');
-  when.textContent = 'Run ' + (latest.at || '').replace('T', ' ').slice(0, 16) + ' UTC against ' + (latest.against || 'live') + '. Lowest: ' + (latest.lowest ? latest.lowest.domain + ' at ' + latest.lowest.score : '—') + '. A star on a holdout score means it was not remeasured this run.';
+  when.textContent = 'Run ' + (latest.at || '').replace('T', ' ').slice(0, 16) + ' UTC against ' + (latest.against || 'live') + (latest.scale ? ', scale ' + latest.scale : '') + '. Lowest: ' + (latest.lowest ? latest.lowest.domain + ' at ' + latest.lowest.score : '—') + '. A star on a holdout score means it was not remeasured this run.';
   document.getElementById('chart').innerHTML = chart(history);
   const body = document.getElementById('rows'), fails = document.getElementById('fails');
   body.innerHTML = Object.entries(latest.domains || {}).map(([k, v]) => row(k, v)).join('');

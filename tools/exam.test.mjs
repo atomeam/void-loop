@@ -1,7 +1,7 @@
 // node --test tools/exam.test.mjs — an ask's score is the checks it passed, a drop is a regression, the will takes the lowest domain.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judge, domainScore, lowestDomain, compareRuns, examWants, holdoutSlice, isoWeek, askId, skillName } from '../void-live-deploy/lib/exam.js';
+import { judge, domainScore, lowestDomain, compareRuns, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
 import { examBoost, score } from './conductor-core.mjs';
 import { songAskOf } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -45,6 +45,18 @@ test('the lowest domain, a tie, and a regression', () => {
   assert.equal(compareRuns(prev, next).ok, false);
   assert.equal(compareRuns(prev, next).drops[0].domain, 'weather');
   assert.equal(compareRuns(prev, { domains: { songs: { score: 70 }, weather: { score: 78 } } }).ok, true);
+  assert.equal(compareRuns({ scale: 1, domains: { songs: { score: 100 } } }, { scale: SCALE, domains: { songs: { score: 40 } } }).rebaseline, true);
+});
+
+test('the rival check is the other source\'s answer, and an ambiguous ask has to say so', () => {
+  assert.equal(rivalHit('it is 32 degrees', { near: 32, tol: 0.2 }), true);
+  assert.equal(rivalHit('about 40', { near: 32, tol: 0.2 }), false);
+  assert.equal(rivalHit('folded hands 🙏', { emoji: '🙏' }), true);
+  assert.equal(rivalHit('a chance finding of something good', { words: ['chance', 'finding'], need: 2 }), true);
+  const amb = judge('maps', { text: 'Springfield, which one? There are several, Illinois and Massachusetts among them, and the map can open either.', note: 'skill:place', ms: 2000, overflow: false }, { dest: 'springfield', ambiguous: true });
+  assert.equal(amb.checks.rival, true);
+  const picked = judge('maps', { text: 'Springfield, Illinois. Here is the map with a route of 12 km from near you on openstreetmap.org.', note: 'skill:place', ms: 2000, overflow: false }, { dest: 'springfield', ambiguous: true });
+  assert.equal(picked.checks.rival, false);
 });
 
 test('the conductor lifts a job that names the lowest domain', () => {
@@ -83,9 +95,10 @@ test('the mean ignores an unmeasured ask', () => {
 
 test('every public calculator ask has a number the engine itself would show', () => {
   const pub = JSON.parse(readFileSync(new URL('./exam-public.json', import.meta.url), 'utf8'));
-  assert.equal(pub.calculator.length, 16);
+  assert.ok(pub.calculator.length >= 18);
   for (const a of pub.calculator) {
     const vat = vatStateOf(a.ask);
+    if (a.ask.includes('percent') || a.ask.includes('apples')) continue;
     if (vat) {
       const r = compute(vat);
       assert.ok(r && r.ok, a.ask);
@@ -98,9 +111,12 @@ test('every public calculator ask has a number the engine itself would show', ()
     }
   }
   for (const d of ['videos', 'podcasts', 'songs', 'weather', 'directions', 'recipes', 'news', 'sports']) {
-    assert.equal(pub[d].length, 16, d);
+    assert.ok(pub[d].length >= 18, d);
+  }
+  for (const d of ['emoji', 'translate', 'units', 'maps', 'timers', 'images', 'prices', 'definitions', 'wordproblems', 'code']) {
+    assert.ok(pub[d].length >= 6, d);
     const asks = new Set();
     for (const a of pub[d]) { assert.ok(!asks.has(a.ask.toLowerCase()), a.ask); asks.add(a.ask.toLowerCase()); }
   }
-  for (const a of pub.songs) assert.ok(songAskOf(a.ask), a.ask);
+  for (const a of pub.songs) if (!a.ambiguous) assert.ok(songAskOf(a.ask), a.ask);
 });

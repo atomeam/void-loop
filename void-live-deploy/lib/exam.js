@@ -3,9 +3,9 @@
 // and its title matches the iTunes row, a sum on screen is the sum, a forecast is near the forecast. Nothing here is a count
 // of skills, pull requests or lesson sentences. Pure: the browser run lives in tools/exam.mjs and hands this what it saw.
 
-export const DOMAINS = Object.freeze(['videos', 'podcasts', 'songs', 'weather', 'directions', 'recipes', 'calculator', 'news', 'sports']);
-// when two domains tie, work on the one the owner named first
-const TIE = Object.freeze(['songs', 'podcasts', 'videos', 'weather', 'directions', 'recipes', 'calculator', 'news', 'sports']);
+export const DOMAINS = Object.freeze(['videos', 'podcasts', 'songs', 'weather', 'directions', 'recipes', 'calculator', 'news', 'sports', 'emoji', 'translate', 'units', 'maps', 'timers', 'images', 'prices', 'definitions', 'wordproblems', 'code']);
+// when two domains tie, work on the one the owner named first. The later names are the harder scale (2026-11-04).
+const TIE = Object.freeze(['songs', 'podcasts', 'videos', 'weather', 'directions', 'recipes', 'calculator', 'news', 'sports', 'code', 'images', 'wordproblems', 'translate', 'units', 'maps', 'timers', 'prices', 'definitions', 'emoji']);
 export const ALLOW = Object.freeze({
   videos: ['video', 'video-play'],
   podcasts: ['podcast'],
@@ -16,8 +16,21 @@ export const ALLOW = Object.freeze({
   calculator: ['calc', 'vat'],
   news: ['news'],
   sports: ['scores', 'sports-browse', 'sport'],
+  emoji: ['emoji'],
+  translate: ['translate'],
+  units: ['calc', 'convert'],
+  maps: ['place'],
+  timers: ['timer'],
+  images: ['image', 'draw', 'cartoon'],
+  prices: ['crypto', 'markets', 'calc'],
+  definitions: ['define'],
+  wordproblems: ['calc'],
+  code: ['dev-tools'],
 });
 export const FAST_MS = 12000;
+export const SLOW_MS = 20000;
+// scale 2 is the harder exam (rival answer, ambiguous and follow-up asks, more domains). A run on a new scale is a new baseline, not a regression.
+export const SCALE = 2;
 // a domain blocks a merge or a deploy when its public score falls by at least this many points (about one ask of sixteen)
 export const DROP = 5;
 const REFUSAL = /don.?t know this yet|couldn.?t find|isn.?t connected|something went wrong|didn.?t answer just now|no skill caught/i;
@@ -78,6 +91,27 @@ const has = (text, words) => {
 };
 const audioOk = (a) => !!(a && /^https:\/\//.test(a.src || '') && (a.status === 200 || a.status === 206) && /^audio\//i.test(a.type || '') && a.currentTime > 0.2);
 
+/** does the card carry the rival's answer (the best free source), not merely some answer. Pure. */
+export function rivalHit(text, rival) {
+  if (!rival || typeof rival !== 'object') return null;
+  const raw = String(text || ''), low = raw.toLowerCase();
+  if (typeof rival.ok === 'boolean') return rival.ok;
+  if (rival.phrase) return rival.phrase.test(raw);
+  if (rival.emoji) return raw.includes(rival.emoji);
+  if (Array.isArray(rival.any) && rival.any.length) return rival.any.some((s) => s && low.includes(String(s).toLowerCase()));
+  if (Number.isFinite(rival.near)) {
+    const tol = Number.isFinite(rival.tol) ? rival.tol : Math.max(0.05, Math.abs(rival.near) * (Number.isFinite(rival.pct) ? rival.pct : 0.02));
+    return (raw.match(/-?\d+(?:[.,]\d+)?/g) || []).map((n) => Number(String(n).replace(/,/g, ''))).some((n) => Number.isFinite(n) && Math.abs(n - rival.near) <= tol);
+  }
+  if (Array.isArray(rival.words) && rival.words.length) {
+    const need = Math.min(rival.need || 2, rival.words.length);
+    return rival.words.filter((w) => w && low.includes(String(w).toLowerCase())).length >= need;
+  }
+  if (rival.text) return low.includes(String(rival.text).toLowerCase());
+  return null;
+}
+const AMBIGUOUS = /which|several|more than one|do you mean|which one|a few different|did you mean|or the other/i;
+
 /** one ask's checks. A check is true, false, or null when the outside service the check needs did not answer (null is left out of the score). Pure. */
 export function judge(domain, obs, truth = {}) {
   const o = obs || {}, t = truth || {}, text = String(o.text || '');
@@ -122,7 +156,15 @@ export function judge(domain, obs, truth = {}) {
   } else if (domain === 'sports') {
     checks.team = (t.team || t.league) ? (has(text, t.team || '') || has(text, t.league || '')) : null;
     checks.board = /\d+\s*[–\-]\s*\d+|standings|\bwon\b|\bpoints\b|\btable\b|\bfinal\b|\blive\b|\bvs\b/i.test(text);
+  } else if (domain === 'images') {
+    checks.picture = t.wantPicture ? !!o.drawn : null;
   }
+  if (t.gap) {
+    checks.answered = text.trim().length > 20;
+    checks.rival = /don.?t know|couldn.?t find|no (?:definition|entry|page)|isn.?t (?:a |in the )|not (?:a word|in the dictionary)|nothing (?:for|called)/i.test(text);
+  } else if (t.ambiguous) checks.rival = AMBIGUOUS.test(text);
+  else if (t.rival) { const hit = rivalHit(text, t.rival); checks.rival = hit === null ? null : hit; }
+  if (t.slow) checks.patient = !!(checks.answered && Number.isFinite(o.ms) && o.ms <= SLOW_MS);
   const names = Object.keys(checks);
   const measured = names.filter((k) => checks[k] !== null);
   const passed = measured.filter((k) => checks[k] === true);
@@ -157,6 +199,8 @@ export function lowestDomain(scores) {
  */
 export function compareRuns(prev, next, drop = DROP) {
   const drops = [], rises = [];
+  // a harder scale is a new baseline: the old 100s are not a bar the new asks have to clear
+  if (next && Number(next.scale) && Number(next.scale) !== Number(prev && prev.scale || 1)) return { ok: true, drops, rises, rebaseline: true };
   const pd = (prev && prev.domains) || {}, nd = (next && next.domains) || {};
   for (const d of DOMAINS) {
     const a = pd[d] && pd[d].score, b = nd[d] && nd[d].score;

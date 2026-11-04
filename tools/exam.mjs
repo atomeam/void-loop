@@ -12,10 +12,13 @@ import { request as httpsRequest } from 'node:https';
 import { resolve, dirname, extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
-import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, isoWeek, holdoutSlice, askId, DROP } from '../void-live-deploy/lib/exam.js';
+import { spawnSync } from 'node:child_process';
+import { DOMAINS, judge, domainScore, lowestDomain, compareRuns, isoWeek, holdoutSlice, askId, DROP, SCALE } from '../void-live-deploy/lib/exam.js';
 import { songAskOf, findTrack } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
 import { compute, money } from '../void-live-deploy/lib/vat.js';
+import { EMOJI } from '../void-live-deploy/lib/emoji.js';
+import translateSkill from '../void-live-deploy/skills/translate.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
@@ -92,7 +95,104 @@ async function enclosuresOf(feedUrl) {
   } catch (_) { return []; } finally { clearTimeout(t); }
 }
 
-async function truthFor(domain, ask) {
+const STOP = new Set('which their there about would could should these those other first after before under again while where when what with from that this have been were into your more most some than then also just only very'.split(' '));
+function glossWords(html) {
+  return String(html || '').replace(/<[^>]+>/g, ' ').toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4 && !STOP.has(w)).slice(0, 8);
+}
+async function googleTranslate(q, to) {
+  const j = await getJson('https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=en&tl=' + encodeURIComponent(to) + '&q=' + encodeURIComponent(q));
+  const parts = j && j[0];
+  if (!Array.isArray(parts)) return '';
+  return parts.map((p) => (p && p[0]) || '').join('').trim();
+}
+const LANG = { spanish: 'es', french: 'fr', german: 'de', japanese: 'ja', italian: 'it', portuguese: 'pt', korean: 'ko', arabic: 'ar', russian: 'ru' };
+function unitRival(ask) {
+  const t = String(ask).toLowerCase();
+  let m = t.match(/(-?\d+(?:\.\d+)?)\s*(?:degrees?\s+)?(?:°\s*)?(celsius|fahrenheit|c|f)\b.*\b(?:in|to|as|en)\b.*\b(celsius|fahrenheit|c|f)\b/);
+  if (m) {
+    const n = Number(m[1]), fromC = m[2] === 'c' || m[2] === 'celsius', toC = m[3] === 'c' || m[3] === 'celsius';
+    const v = fromC === toC ? n : fromC ? (n * 9 / 5 + 32) : ((n - 32) * 5 / 9);
+    return { near: Math.round(v * 10) / 10, tol: 0.2 };
+  }
+  m = t.match(/(\d+)\s*(?:feet|foot|ft)\s+(\d+)\s*(?:inches|inch|in)\b.*\b(cm|centimet)/);
+  if (m) return { near: Math.round((Number(m[1]) * 12 + Number(m[2])) * 2.54 * 10) / 10, tol: 0.2 };
+  m = t.match(/(\d+(?:\.\d+)?)\s*bytes?\b.*\bbits?\b/);
+  if (m) return { near: Number(m[1]) * 8, tol: 0 };
+  m = t.match(/(\d+(?:\.\d+)?)\s*(?:km|kilometres?|kilometers?)\b.*\b(?:miles?|mi)\b/);
+  if (m) return { near: Math.round(Number(m[1]) * 0.621371 * 10) / 10, tol: 0.2 };
+  return null;
+}
+function wordRival(ask) {
+  const t = String(ask);
+  const m = t.match(/(\d+(?:\.\d+)?)\s+apples?\s+cost\s+\$?(\d+(?:\.\d+)?)[\s\S]*?(\d+(?:\.\d+)?)\s+(?:apples?\s+)?cost/i);
+  if (m && Number(m[1])) return { near: Math.round(Number(m[3]) / Number(m[1]) * Number(m[2]) * 100) / 100, tol: 0.02 };
+  const p = t.match(/(\d+(?:\.\d+)?)\s+percent\s+of\s+(\d+(?:\.\d+)?)/i);
+  if (p) return { near: Math.round(Number(p[1]) / 100 * Number(p[2]) * 100) / 100, tol: 0.01 };
+  const km = t.match(/(\d+(?:\.\d+)?)\s*km\b[\s\S]*?\b(\d+(?:\.\d+)?)\s*hours?/i);
+  if (km && Number(km[2])) return { near: Math.round(Number(km[1]) / Number(km[2]) * 10) / 10, tol: 0.2 };
+  const half = t.match(/have\s+(\d+(?:\.\d+)?)\b[\s\S]*\bhalf\b[\s\S]*\bfind\s+(\d+(?:\.\d+)?)/i);
+  if (half) return { near: Number(half[1]) / 2 + Number(half[2]), tol: 0.01 };
+  const es = t.match(/(\d+(?:\.\d+)?)\s+\S+\s+cuestan\s+(\d+(?:\.\d+)?)[\s\S]*?(\d+(?:\.\d+)?)/i);
+  if (es && Number(es[1])) return { near: Math.round(Number(es[3]) / Number(es[1]) * Number(es[2]) * 100) / 100, tol: 0.02 };
+  return null;
+}
+function emojiRival(ask) {
+  const m = String(ask).toLowerCase().match(/(?:emoji\s+([a-z][a-z' -]{1,40})|([a-z][a-z' -]{1,40}?)\s+emoji)/);
+  const name = (m && (m[1] || m[2]) || '').trim();
+  const hit = EMOJI.find((e) => e.n === name);
+  if (hit) return { emoji: hit.c };
+  if (/\d+\s+(?:random\s+)?emojis?/.test(String(ask).toLowerCase())) return { phrase: /(?:\p{Extended_Pictographic}.*){2}/u };
+  return null;
+}
+function codeRan(text, probe) {
+  const fenced = String(text).match(/```(?:python|py)?\s*([\s\S]*?)```/i);
+  const loose = String(text).match(/\bdef\s+[a-zA-Z_][\s\S]{0,500}/);
+  const src = (fenced && fenced[1]) || (loose && loose[0]) || '';
+  if (!src || /import|open\s*\(|exec\s*\(|eval\s*\(|__|subprocess|os\./.test(src)) return false;
+  const r = spawnSync('python3', ['-c', src + '\n' + probe], { timeout: 3000, encoding: 'utf8' });
+  return r.status === 0 && /\bok\b/.test(r.stdout || '');
+}
+async function rivalFor(domain, ask, obs) {
+  if (ask.ambiguous) return { ambiguous: true };
+  if (domain === 'emoji') return emojiRival(ask.ask);
+  if (domain === 'units') return unitRival(ask.ask);
+  if (domain === 'wordproblems' || (domain === 'calculator' && /percent|apples/i.test(ask.ask))) return wordRival(ask.ask) || (Array.isArray(ask.numbers) ? { any: ask.numbers } : null);
+  if (domain === 'timers') return { any: String(ask.expect || '').split('|').filter(Boolean) };
+  if (domain === 'maps' && ask.region) return { text: ask.region };
+  if (domain === 'definitions' && ask.word) {
+    const j = await getJson('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(ask.word) + '?redirect=true');
+    const block = j && (j.en || j.English);
+    const def = block && block[0] && block[0].definitions && block[0].definitions[0] && block[0].definitions[0].definition;
+    const words = glossWords(def).filter((w) => w !== ask.word);
+    return words.length ? { words, need: 2 } : null;
+  }
+  if (domain === 'translate') {
+    const p = translateSkill.translateOf ? translateSkill.translateOf(ask.ask) : null;
+    if (!p || !p.q) return null;
+    const to = LANG[(p.to || '').toLowerCase()] || p.to;
+    const line = to ? await googleTranslate(p.q, to) : '';
+    return line ? { text: line } : null;
+  }
+  if (domain === 'prices' && ask.spot) {
+    const j = await getJson('https://api.coinbase.com/v2/prices/' + ask.spot + '-USD/spot');
+    const n = j && j.data && Number(j.data.amount);
+    return Number.isFinite(n) ? { near: n, pct: 0.03 } : null;
+  }
+  if (domain === 'prices' && ask.fx) {
+    const j = await getJson('https://api.frankfurter.app/latest?from=' + ask.fx.from + '&to=' + ask.fx.to + '&amount=' + ask.fx.amount);
+    const n = j && j.rates && Number(j.rates[ask.fx.to]);
+    return Number.isFinite(n) ? { near: n, pct: 0.02 } : null;
+  }
+  if (domain === 'code' && obs) {
+    if (/factorial/i.test(ask.ask)) return { ok: codeRan(obs.text, 'print("ok" if factorial(5)==120 else "no")') };
+    if (/reverse/i.test(ask.ask)) return { ok: codeRan(obs.text, 'print("ok" if reverse("ab")=="ba" else "no")') };
+    if (ask.fact) return { text: ask.fact };
+  }
+  if (domain === 'images' && ask.url) return { text: ask.url.replace(/^https?:\/\//, '').slice(0, 24) };
+  return null;
+}
+
+async function truthFor(domain, ask, obs) {
   const t = {};
   if (domain === 'songs') {
     const s = songAskOf(ask.ask);
@@ -121,6 +221,14 @@ async function truthFor(domain, ask) {
   else if (domain === 'calculator') t.numbers = vatNumbers(ask.ask) || percentNumbers(ask.ask);
   else if (domain === 'news') t.topic = ask.topic || '';
   else if (domain === 'sports') { t.team = ask.team || ''; t.league = ask.league || ''; }
+  else if (domain === 'images') t.wantPicture = ask.picture !== false;
+  if (ask.ambiguous) t.ambiguous = true;
+  if (ask.slow) t.slow = true;
+  if (ask.gap) t.gap = true;
+  if (!t.ambiguous) {
+    const rival = await rivalFor(domain, ask, obs);
+    if (rival && !rival.ambiguous) t.rival = rival;
+  }
   return t;
 }
 
@@ -175,6 +283,7 @@ async function readCard(page, ask) {
       audio: audio ? { src: audio.getAttribute('src') || audio.currentSrc || audio.src, currentTime: audio.currentTime || 0 } : null,
       video: video ? { src: video.currentSrc || video.src, currentTime: video.currentTime || 0 } : null,
       frame: frame ? { src: frame.src, box: frame.getBoundingClientRect().height } : null,
+      drawn: !!(document.querySelector('canvas, svg, img')),
       links: [...document.querySelectorAll('a[href]')].map((a) => a.href).filter((h) => /^https?:\/\//.test(h)).slice(0, 24),
     };
   });
@@ -228,10 +337,15 @@ export async function runExam({ against = 'live', domains = DOMAINS, holdout = t
       for (const a of asks) {
         const label = a.holdout ? d + ' holdout ' + askId(a.ask) : d + ' ' + a.ask;
         process.stdout.write('· ' + label.slice(0, 90) + '\n');
-        const truth = await truthFor(d, a);
-        await page.goto(origin + '/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await page.setViewportSize(a.narrow ? { width: 320, height: 700 } : { width: 390, height: 844 });
+        const cdp = a.slow ? await page.context().newCDPSession(page) : null;
+        if (cdp) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 1200, downloadThroughput: 40 * 1024, uploadThroughput: 20 * 1024 }).catch(() => {});
+        await page.goto(origin + '/', { waitUntil: 'domcontentloaded', timeout: a.slow ? 45000 : 30000 });
         await page.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
+        if (a.setup) await readCard(page, a.setup);
         const obs = await readCard(page, a.ask);
+        if (cdp) await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 }).catch(() => {});
+        const truth = await truthFor(d, a, obs);
         const judged = judge(d, obs, truth);
         rows[d].push({ ...publishRow(d, { ...a, ms: obs.ms, note: obs.note }, judged, a.holdout), holdout: !!a.holdout });
       }
@@ -250,7 +364,7 @@ export async function runExam({ against = 'live', domains = DOMAINS, holdout = t
     }
   }
   const scores = Object.fromEntries(DOMAINS.map((d) => [d, domainsOut[d] && domainsOut[d].score]));
-  const run = { at: new Date().toISOString(), against, week, domains: domainsOut, lowest: lowestDomain(scores) };
+  const run = { at: new Date().toISOString(), against, week, scale: SCALE, domains: domainsOut, lowest: lowestDomain(scores) };
   if (domains.length < DOMAINS.length) run.note = 'Remeasured on this run: ' + domains.join(', ') + '. The other domains are the previous run\'s scores.';
   mkdirSync(dirname(LATEST), { recursive: true });
   const history = readJson(HISTORY, []);
@@ -279,6 +393,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   console.log('\n' + table(run));
   if (prev && prev.domains) {
     const cmp = compareRuns(prev, run);
+    if (cmp.rebaseline) console.log('rebaseline: scale ' + (prev.scale || 1) + ' → ' + run.scale + ' (a new scale is a new baseline, not a regression)');
     if (!cmp.ok) {
       console.error('regression: ' + cmp.drops.map((x) => x.domain + ' ' + x.before + ' → ' + x.after).join('; ') + ' (a drop of ' + DROP + ' or more blocks)');
       process.exit(1);

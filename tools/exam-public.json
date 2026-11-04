@@ -1,164 +1,1098 @@
 {
   "videos": [
-    {"ask": "play a video of the moon landing", "from": "shaped", "topic": "moon landing"},
-    {"ask": "watch the apollo 11 landing", "from": "shaped", "topic": "apollo landing"},
-    {"ask": "show me a video of cats", "from": "shaped", "topic": "cats"},
-    {"ask": "play a video of the ocean", "from": "shaped", "topic": "ocean"},
-    {"ask": "play a nature documentary", "from": "shaped", "topic": "nature"},
-    {"ask": "watch a documentary about trains", "from": "shaped", "topic": "trains"},
-    {"ask": "play a video of birds", "from": "shaped", "topic": "birds"},
-    {"ask": "show me a video of the eiffel tower", "from": "shaped", "topic": "eiffel tower"},
-    {"ask": "play a video about the solar system", "from": "shaped", "topic": "solar system"},
-    {"ask": "watch a video of a steam train", "from": "shaped", "topic": "steam train"},
-    {"ask": "play a video of the northern lights", "from": "shaped", "topic": "northern lights"},
-    {"ask": "show me a video about dinosaurs", "from": "shaped", "topic": "dinosaurs"},
-    {"ask": "play a video about cooking pasta", "from": "shaped", "topic": "cooking pasta"},
-    {"ask": "watch a video of charlie chaplin", "from": "shaped", "topic": "charlie chaplin"},
-    {"ask": "play a video of jazz music", "from": "shaped", "topic": "jazz"},
-    {"ask": "find a video about the moon", "from": "shaped", "topic": "moon"}
+    {
+      "ask": "play a video of the moon landing",
+      "from": "shaped",
+      "topic": "moon landing"
+    },
+    {
+      "ask": "watch the apollo 11 landing",
+      "from": "shaped",
+      "topic": "apollo landing"
+    },
+    {
+      "ask": "show me a video of cats",
+      "from": "shaped",
+      "topic": "cats"
+    },
+    {
+      "ask": "play a video of the ocean",
+      "from": "shaped",
+      "topic": "ocean"
+    },
+    {
+      "ask": "play a nature documentary",
+      "from": "shaped",
+      "topic": "nature"
+    },
+    {
+      "ask": "watch a documentary about trains",
+      "from": "shaped",
+      "topic": "trains"
+    },
+    {
+      "ask": "play a video of birds",
+      "from": "shaped",
+      "topic": "birds"
+    },
+    {
+      "ask": "show me a video of the eiffel tower",
+      "from": "shaped",
+      "topic": "eiffel tower"
+    },
+    {
+      "ask": "play a video about the solar system",
+      "from": "shaped",
+      "topic": "solar system"
+    },
+    {
+      "ask": "watch a video of a steam train",
+      "from": "shaped",
+      "topic": "steam train"
+    },
+    {
+      "ask": "play a video of the northern lights",
+      "from": "shaped",
+      "topic": "northern lights"
+    },
+    {
+      "ask": "show me a video about dinosaurs",
+      "from": "shaped",
+      "topic": "dinosaurs"
+    },
+    {
+      "ask": "play a video about cooking pasta",
+      "from": "shaped",
+      "topic": "cooking pasta"
+    },
+    {
+      "ask": "watch a video of charlie chaplin",
+      "from": "shaped",
+      "topic": "charlie chaplin"
+    },
+    {
+      "ask": "play a video of jazz music",
+      "from": "shaped",
+      "topic": "jazz"
+    },
+    {
+      "ask": "find a video about the moon",
+      "from": "shaped",
+      "topic": "moon"
+    },
+    {
+      "ask": "play the trailer",
+      "from": "shaped",
+      "topic": "trailer",
+      "ambiguous": true
+    },
+    {
+      "ask": "joue une vidéo des baleines",
+      "from": "shaped",
+      "topic": "baleine"
+    }
   ],
   "podcasts": [
-    {"ask": "play the latest episode of this american life", "from": "shaped", "show": "this american life"},
-    {"ask": "play the latest episode of radiolab", "from": "shaped", "show": "radiolab"},
-    {"ask": "play the latest episode of the daily", "from": "shaped", "show": "the daily"},
-    {"ask": "play the latest episode of serial", "from": "shaped", "show": "serial"},
-    {"ask": "play the latest episode of planet money", "from": "shaped", "show": "planet money"},
-    {"ask": "play the latest episode of hardcore history", "from": "shaped", "show": "hardcore history"},
-    {"ask": "play the latest episode of the ted radio hour", "from": "shaped", "show": "ted radio hour"},
-    {"ask": "play the latest episode of hidden brain", "from": "shaped", "show": "hidden brain"},
-    {"ask": "play the latest episode of freakonomics radio", "from": "shaped", "show": "freakonomics"},
-    {"ask": "play the latest episode of science vs", "from": "shaped", "show": "science vs"},
-    {"ask": "play the latest episode of stuff you should know", "from": "shaped", "show": "stuff you should know"},
-    {"ask": "play the latest episode of crime junkie", "from": "shaped", "show": "crime junkie"},
-    {"ask": "play the latest episode of the moth", "from": "shaped", "show": "the moth"},
-    {"ask": "play the latest episode of npr news now", "from": "shaped", "show": "npr"},
-    {"ask": "play the latest episode of my favorite murder", "from": "shaped", "show": "my favorite murder"},
-    {"ask": "play the podcast", "from": "skill example", "show": "verse out loud"}
+    {
+      "ask": "play the latest episode of this american life",
+      "from": "shaped",
+      "show": "this american life"
+    },
+    {
+      "ask": "play the latest episode of radiolab",
+      "from": "shaped",
+      "show": "radiolab"
+    },
+    {
+      "ask": "play the latest episode of the daily",
+      "from": "shaped",
+      "show": "the daily"
+    },
+    {
+      "ask": "play the latest episode of serial",
+      "from": "shaped",
+      "show": "serial"
+    },
+    {
+      "ask": "play the latest episode of planet money",
+      "from": "shaped",
+      "show": "planet money"
+    },
+    {
+      "ask": "play the latest episode of hardcore history",
+      "from": "shaped",
+      "show": "hardcore history"
+    },
+    {
+      "ask": "play the latest episode of the ted radio hour",
+      "from": "shaped",
+      "show": "ted radio hour"
+    },
+    {
+      "ask": "play the latest episode of hidden brain",
+      "from": "shaped",
+      "show": "hidden brain"
+    },
+    {
+      "ask": "play the latest episode of freakonomics radio",
+      "from": "shaped",
+      "show": "freakonomics"
+    },
+    {
+      "ask": "play the latest episode of science vs",
+      "from": "shaped",
+      "show": "science vs"
+    },
+    {
+      "ask": "play the latest episode of stuff you should know",
+      "from": "shaped",
+      "show": "stuff you should know"
+    },
+    {
+      "ask": "play the latest episode of crime junkie",
+      "from": "shaped",
+      "show": "crime junkie"
+    },
+    {
+      "ask": "play the latest episode of the moth",
+      "from": "shaped",
+      "show": "the moth"
+    },
+    {
+      "ask": "play the latest episode of npr news now",
+      "from": "shaped",
+      "show": "npr"
+    },
+    {
+      "ask": "play the latest episode of my favorite murder",
+      "from": "shaped",
+      "show": "my favorite murder"
+    },
+    {
+      "ask": "play the podcast",
+      "from": "skill example",
+      "show": "verse out loud"
+    },
+    {
+      "ask": "play the episode before that",
+      "from": "shaped",
+      "setup": "play the latest episode of radiolab",
+      "show": "radiolab"
+    },
+    {
+      "ask": "pon el último episodio de radiolab",
+      "from": "shaped",
+      "show": "radiolab"
+    }
   ],
   "songs": [
-    {"ask": "play bohemian rhapsody by queen", "from": "shaped"},
-    {"ask": "play billie jean by michael jackson", "from": "shaped"},
-    {"ask": "play imagine by john lennon", "from": "shaped"},
-    {"ask": "play smells like teen spirit by nirvana", "from": "shaped"},
-    {"ask": "play hey jude by the beatles", "from": "shaped"},
-    {"ask": "play thriller by michael jackson", "from": "shaped"},
-    {"ask": "play hotel california by eagles", "from": "shaped"},
-    {"ask": "play rolling in the deep by adele", "from": "shaped"},
-    {"ask": "play shape of you by ed sheeran", "from": "shaped"},
-    {"ask": "play blinding lights by the weeknd", "from": "shaped"},
-    {"ask": "play lose yourself by eminem", "from": "shaped"},
-    {"ask": "play bad guy by billie eilish", "from": "shaped"},
-    {"ask": "play superstition by stevie wonder", "from": "shaped"},
-    {"ask": "play take five by dave brubeck", "from": "shaped"},
-    {"ask": "play purple rain by prince", "from": "shaped"},
-    {"ask": "play dancing queen by abba", "from": "shaped"}
+    {
+      "ask": "play bohemian rhapsody by queen",
+      "from": "shaped"
+    },
+    {
+      "ask": "play billie jean by michael jackson",
+      "from": "shaped"
+    },
+    {
+      "ask": "play imagine by john lennon",
+      "from": "shaped"
+    },
+    {
+      "ask": "play smells like teen spirit by nirvana",
+      "from": "shaped"
+    },
+    {
+      "ask": "play hey jude by the beatles",
+      "from": "shaped"
+    },
+    {
+      "ask": "play thriller by michael jackson",
+      "from": "shaped"
+    },
+    {
+      "ask": "play hotel california by eagles",
+      "from": "shaped"
+    },
+    {
+      "ask": "play rolling in the deep by adele",
+      "from": "shaped"
+    },
+    {
+      "ask": "play shape of you by ed sheeran",
+      "from": "shaped"
+    },
+    {
+      "ask": "play blinding lights by the weeknd",
+      "from": "shaped"
+    },
+    {
+      "ask": "play lose yourself by eminem",
+      "from": "shaped"
+    },
+    {
+      "ask": "play bad guy by billie eilish",
+      "from": "shaped"
+    },
+    {
+      "ask": "play superstition by stevie wonder",
+      "from": "shaped"
+    },
+    {
+      "ask": "play take five by dave brubeck",
+      "from": "shaped"
+    },
+    {
+      "ask": "play purple rain by prince",
+      "from": "shaped"
+    },
+    {
+      "ask": "play dancing queen by abba",
+      "from": "shaped"
+    },
+    {
+      "ask": "play yesterday",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "play la bamba by ritchie valens",
+      "from": "shaped"
+    }
   ],
   "weather": [
-    {"ask": "weather in paris", "from": "bench", "place": "paris"},
-    {"ask": "will it rain tomorrow in london", "from": "bench", "place": "london"},
-    {"ask": "weather in tokyo this week", "from": "bench", "place": "tokyo"},
-    {"ask": "weather in seattle", "from": "bench", "place": "seattle"},
-    {"ask": "what is the weather in paris", "from": "bench", "place": "paris"},
-    {"ask": "weather in london this weekend", "from": "bench", "place": "london"},
-    {"ask": "what's the weather in miami tomorrow", "from": "bench", "place": "miami"},
-    {"ask": "whats teh weather in london", "from": "bench", "place": "london"},
-    {"ask": "wheather in new york", "from": "bench", "place": "new york"},
-    {"ask": "weather tomorrow in berlin", "from": "bench", "place": "berlin"},
-    {"ask": "weather tomorrow in chicago", "from": "bench", "place": "chicago"},
-    {"ask": "weather tomorrow in boston", "from": "bench", "place": "boston"},
-    {"ask": "humidity in miami", "from": "bench", "place": "miami"},
-    {"ask": "wind speed in chicago", "from": "bench", "place": "chicago"},
-    {"ask": "do i need an umbrella today in seattle", "from": "bench", "place": "seattle"},
-    {"ask": "weather in paris now", "from": "bench", "place": "paris"}
+    {
+      "ask": "weather in paris",
+      "from": "bench",
+      "place": "paris"
+    },
+    {
+      "ask": "will it rain tomorrow in london",
+      "from": "bench",
+      "place": "london"
+    },
+    {
+      "ask": "weather in tokyo this week",
+      "from": "bench",
+      "place": "tokyo"
+    },
+    {
+      "ask": "weather in seattle",
+      "from": "bench",
+      "place": "seattle"
+    },
+    {
+      "ask": "what is the weather in paris",
+      "from": "bench",
+      "place": "paris"
+    },
+    {
+      "ask": "weather in london this weekend",
+      "from": "bench",
+      "place": "london"
+    },
+    {
+      "ask": "what's the weather in miami tomorrow",
+      "from": "bench",
+      "place": "miami"
+    },
+    {
+      "ask": "whats teh weather in london",
+      "from": "bench",
+      "place": "london"
+    },
+    {
+      "ask": "wheather in new york",
+      "from": "bench",
+      "place": "new york"
+    },
+    {
+      "ask": "weather tomorrow in berlin",
+      "from": "bench",
+      "place": "berlin"
+    },
+    {
+      "ask": "weather tomorrow in chicago",
+      "from": "bench",
+      "place": "chicago"
+    },
+    {
+      "ask": "weather tomorrow in boston",
+      "from": "bench",
+      "place": "boston"
+    },
+    {
+      "ask": "humidity in miami",
+      "from": "bench",
+      "place": "miami"
+    },
+    {
+      "ask": "wind speed in chicago",
+      "from": "bench",
+      "place": "chicago"
+    },
+    {
+      "ask": "do i need an umbrella today in seattle",
+      "from": "bench",
+      "place": "seattle"
+    },
+    {
+      "ask": "weather in paris now",
+      "from": "bench",
+      "place": "paris"
+    },
+    {
+      "ask": "weather",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "météo à lyon",
+      "from": "shaped",
+      "place": "lyon"
+    }
   ],
   "directions": [
-    {"ask": "directions to the louvre", "from": "bench", "dest": "louvre"},
-    {"ask": "how do I get to Kyoto", "from": "skill example", "dest": "kyoto"},
-    {"ask": "directions to Penn Station", "from": "shaped", "dest": "penn station"},
-    {"ask": "route to the eiffel tower", "from": "shaped", "dest": "eiffel"},
-    {"ask": "take me to central park", "from": "shaped", "dest": "central park"},
-    {"ask": "navigate to the british museum", "from": "shaped", "dest": "british museum"},
-    {"ask": "how do I get to tokyo station", "from": "shaped", "dest": "tokyo"},
-    {"ask": "directions to times square", "from": "shaped", "dest": "times square"},
-    {"ask": "get me to the colosseum", "from": "shaped", "dest": "colosseum"},
-    {"ask": "directions to big ben", "from": "shaped", "dest": "big ben"},
-    {"ask": "how can I get to the golden gate bridge", "from": "shaped", "dest": "golden gate"},
-    {"ask": "route to the sydney opera house", "from": "shaped", "dest": "sydney opera"},
-    {"ask": "take me to the statue of liberty", "from": "shaped", "dest": "liberty"},
-    {"ask": "directions to pike place market", "from": "shaped", "dest": "pike place"},
-    {"ask": "how do I get to the acropolis", "from": "shaped", "dest": "acropolis"},
-    {"ask": "navigate to union station", "from": "shaped", "dest": "union station"}
+    {
+      "ask": "directions to the louvre",
+      "from": "bench",
+      "dest": "louvre"
+    },
+    {
+      "ask": "how do I get to Kyoto",
+      "from": "skill example",
+      "dest": "kyoto"
+    },
+    {
+      "ask": "directions to Penn Station",
+      "from": "shaped",
+      "dest": "penn station"
+    },
+    {
+      "ask": "route to the eiffel tower",
+      "from": "shaped",
+      "dest": "eiffel"
+    },
+    {
+      "ask": "take me to central park",
+      "from": "shaped",
+      "dest": "central park"
+    },
+    {
+      "ask": "navigate to the british museum",
+      "from": "shaped",
+      "dest": "british museum"
+    },
+    {
+      "ask": "how do I get to tokyo station",
+      "from": "shaped",
+      "dest": "tokyo"
+    },
+    {
+      "ask": "directions to times square",
+      "from": "shaped",
+      "dest": "times square"
+    },
+    {
+      "ask": "get me to the colosseum",
+      "from": "shaped",
+      "dest": "colosseum"
+    },
+    {
+      "ask": "directions to big ben",
+      "from": "shaped",
+      "dest": "big ben"
+    },
+    {
+      "ask": "how can I get to the golden gate bridge",
+      "from": "shaped",
+      "dest": "golden gate"
+    },
+    {
+      "ask": "route to the sydney opera house",
+      "from": "shaped",
+      "dest": "sydney opera"
+    },
+    {
+      "ask": "take me to the statue of liberty",
+      "from": "shaped",
+      "dest": "liberty"
+    },
+    {
+      "ask": "directions to pike place market",
+      "from": "shaped",
+      "dest": "pike place"
+    },
+    {
+      "ask": "how do I get to the acropolis",
+      "from": "shaped",
+      "dest": "acropolis"
+    },
+    {
+      "ask": "navigate to union station",
+      "from": "shaped",
+      "dest": "union station"
+    },
+    {
+      "ask": "directions to springfield",
+      "from": "shaped",
+      "dest": "springfield",
+      "ambiguous": true
+    },
+    {
+      "ask": "cómo llego al museo del prado",
+      "from": "shaped",
+      "dest": "prado"
+    }
   ],
   "recipes": [
-    {"ask": "recipe for pancakes", "from": "bench", "dish": "pancake"},
-    {"ask": "recipe for banana bread", "from": "bench", "dish": "banana bread"},
-    {"ask": "chicken curry recipe", "from": "bench", "dish": "chicken curry"},
-    {"ask": "how to make guacamole", "from": "skill example", "dish": "guacamole"},
-    {"ask": "how to cook rice", "from": "skill example", "dish": "rice"},
-    {"ask": "pancake recipe", "from": "shaped", "dish": "pancake"},
-    {"ask": "omelette recipe", "from": "shaped", "dish": "omelette"},
-    {"ask": "recipe for tomato pasta", "from": "shaped", "dish": "tomato pasta"},
-    {"ask": "recipe for oatmeal", "from": "shaped", "dish": "oatmeal"},
-    {"ask": "grilled cheese recipe", "from": "shaped", "dish": "grilled cheese"},
-    {"ask": "recipe for chocolate chip cookies", "from": "shaped", "dish": "chocolate"},
-    {"ask": "how to make lemonade", "from": "shaped", "dish": "lemonade"},
-    {"ask": "chicken soup recipe", "from": "shaped", "dish": "chicken soup"},
-    {"ask": "recipe for salad dressing", "from": "shaped", "dish": "dressing"},
-    {"ask": "how to bake banana bread", "from": "shaped", "dish": "banana bread"},
-    {"ask": "pasta recipe", "from": "shaped", "dish": "pasta"}
+    {
+      "ask": "recipe for pancakes",
+      "from": "bench",
+      "dish": "pancake"
+    },
+    {
+      "ask": "recipe for banana bread",
+      "from": "bench",
+      "dish": "banana bread"
+    },
+    {
+      "ask": "chicken curry recipe",
+      "from": "bench",
+      "dish": "chicken curry"
+    },
+    {
+      "ask": "how to make guacamole",
+      "from": "skill example",
+      "dish": "guacamole"
+    },
+    {
+      "ask": "how to cook rice",
+      "from": "skill example",
+      "dish": "rice"
+    },
+    {
+      "ask": "pancake recipe",
+      "from": "shaped",
+      "dish": "pancake"
+    },
+    {
+      "ask": "omelette recipe",
+      "from": "shaped",
+      "dish": "omelette"
+    },
+    {
+      "ask": "recipe for tomato pasta",
+      "from": "shaped",
+      "dish": "tomato pasta"
+    },
+    {
+      "ask": "recipe for oatmeal",
+      "from": "shaped",
+      "dish": "oatmeal"
+    },
+    {
+      "ask": "grilled cheese recipe",
+      "from": "shaped",
+      "dish": "grilled cheese"
+    },
+    {
+      "ask": "recipe for chocolate chip cookies",
+      "from": "shaped",
+      "dish": "chocolate"
+    },
+    {
+      "ask": "how to make lemonade",
+      "from": "shaped",
+      "dish": "lemonade"
+    },
+    {
+      "ask": "chicken soup recipe",
+      "from": "shaped",
+      "dish": "chicken soup"
+    },
+    {
+      "ask": "recipe for salad dressing",
+      "from": "shaped",
+      "dish": "dressing"
+    },
+    {
+      "ask": "how to bake banana bread",
+      "from": "shaped",
+      "dish": "banana bread"
+    },
+    {
+      "ask": "pasta recipe",
+      "from": "shaped",
+      "dish": "pasta"
+    },
+    {
+      "ask": "recipe",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "receta de guacamole",
+      "from": "shaped",
+      "dish": "guacamole"
+    }
   ],
   "calculator": [
-    {"ask": "what is 17% of 240", "from": "bench"},
-    {"ask": "what is 15% of 80", "from": "shaped"},
-    {"ask": "what is 20% of 50", "from": "shaped"},
-    {"ask": "what is 8% of 250", "from": "shaped"},
-    {"ask": "what is 25% of 80", "from": "shaped"},
-    {"ask": "what is 10% of 90", "from": "shaped"},
-    {"ask": "what is 5% of 60", "from": "shaped"},
-    {"ask": "what is 12% of 200", "from": "shaped"},
-    {"ask": "add vat to 100", "from": "skill example"},
-    {"ask": "remove vat from 122", "from": "skill example"},
-    {"ask": "add vat to 50", "from": "shaped"},
-    {"ask": "remove vat from 250", "from": "shaped"},
-    {"ask": "ндс 22% от 1000", "from": "skill example"},
-    {"ask": "начислить ндс на 5000", "from": "skill example"},
-    {"ask": "выделить ндс из 1000", "from": "skill example"},
-    {"ask": "add vat to 80", "from": "shaped"}
+    {
+      "ask": "what is 17% of 240",
+      "from": "bench"
+    },
+    {
+      "ask": "what is 15% of 80",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 20% of 50",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 8% of 250",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 25% of 80",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 10% of 90",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 5% of 60",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 12% of 200",
+      "from": "shaped"
+    },
+    {
+      "ask": "add vat to 100",
+      "from": "skill example"
+    },
+    {
+      "ask": "remove vat from 122",
+      "from": "skill example"
+    },
+    {
+      "ask": "add vat to 50",
+      "from": "shaped"
+    },
+    {
+      "ask": "remove vat from 250",
+      "from": "shaped"
+    },
+    {
+      "ask": "ндс 22% от 1000",
+      "from": "skill example"
+    },
+    {
+      "ask": "начислить ндс на 5000",
+      "from": "skill example"
+    },
+    {
+      "ask": "выделить ндс из 1000",
+      "from": "skill example"
+    },
+    {
+      "ask": "add vat to 80",
+      "from": "shaped"
+    },
+    {
+      "ask": "if 3 apples cost 2.40 how much do 7 cost",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 15 percent of 80",
+      "from": "shaped"
+    }
   ],
   "news": [
-    {"ask": "news today", "from": "bench"},
-    {"ask": "latest news", "from": "bench"},
-    {"ask": "breaking news", "from": "bench"},
-    {"ask": "tech news today", "from": "bench"},
-    {"ask": "technology news", "from": "bench"},
-    {"ask": "news about spacex", "from": "bench", "topic": "spacex"},
-    {"ask": "top stories today", "from": "bench"},
-    {"ask": "hacker news", "from": "bench"},
-    {"ask": "what's in the news", "from": "skill example"},
-    {"ask": "headlines", "from": "skill example"},
-    {"ask": "tech news", "from": "skill example"},
-    {"ask": "startup news", "from": "shaped"},
-    {"ask": "programming news", "from": "shaped"},
-    {"ask": "news about nasa", "from": "shaped", "topic": "nasa"},
-    {"ask": "world news", "from": "shaped"},
-    {"ask": "any news", "from": "shaped"}
+    {
+      "ask": "news today",
+      "from": "bench"
+    },
+    {
+      "ask": "latest news",
+      "from": "bench"
+    },
+    {
+      "ask": "breaking news",
+      "from": "bench"
+    },
+    {
+      "ask": "tech news today",
+      "from": "bench"
+    },
+    {
+      "ask": "technology news",
+      "from": "bench"
+    },
+    {
+      "ask": "news about spacex",
+      "from": "bench",
+      "topic": "spacex"
+    },
+    {
+      "ask": "top stories today",
+      "from": "bench"
+    },
+    {
+      "ask": "hacker news",
+      "from": "bench"
+    },
+    {
+      "ask": "what's in the news",
+      "from": "skill example"
+    },
+    {
+      "ask": "headlines",
+      "from": "skill example"
+    },
+    {
+      "ask": "tech news",
+      "from": "skill example"
+    },
+    {
+      "ask": "startup news",
+      "from": "shaped"
+    },
+    {
+      "ask": "programming news",
+      "from": "shaped"
+    },
+    {
+      "ask": "news about nasa",
+      "from": "shaped",
+      "topic": "nasa"
+    },
+    {
+      "ask": "world news",
+      "from": "shaped"
+    },
+    {
+      "ask": "any news",
+      "from": "shaped"
+    },
+    {
+      "ask": "and the science ones?",
+      "from": "shaped",
+      "setup": "business news"
+    },
+    {
+      "ask": "actualités",
+      "from": "shaped"
+    }
   ],
   "sports": [
-    {"ask": "nba scores", "from": "shaped", "league": "nba"},
-    {"ask": "nfl scores", "from": "shaped", "league": "nfl"},
-    {"ask": "mlb scores", "from": "shaped", "league": "mlb"},
-    {"ask": "nhl scores", "from": "shaped", "league": "nhl"},
-    {"ask": "premier league scores", "from": "shaped", "league": "premier"},
-    {"ask": "bundesliga table", "from": "shaped", "league": "bundesliga"},
-    {"ask": "serie a scores", "from": "shaped", "league": "serie"},
-    {"ask": "la liga scores", "from": "shaped", "league": "liga"},
-    {"ask": "champions league scores", "from": "shaped", "league": "champions"},
-    {"ask": "mls scores", "from": "shaped", "league": "mls"},
-    {"ask": "lakers score", "from": "shaped", "team": "lakers"},
-    {"ask": "celtics score", "from": "shaped", "team": "celtics"},
-    {"ask": "yankees score", "from": "shaped", "team": "yankees"},
-    {"ask": "how did the chiefs do", "from": "shaped", "team": "chiefs"},
-    {"ask": "packers score", "from": "shaped", "team": "packers"},
-    {"ask": "nba team celtics", "from": "bench", "team": "celtics", "league": "nba"}
+    {
+      "ask": "nba scores",
+      "from": "shaped",
+      "league": "nba"
+    },
+    {
+      "ask": "nfl scores",
+      "from": "shaped",
+      "league": "nfl"
+    },
+    {
+      "ask": "mlb scores",
+      "from": "shaped",
+      "league": "mlb"
+    },
+    {
+      "ask": "nhl scores",
+      "from": "shaped",
+      "league": "nhl"
+    },
+    {
+      "ask": "premier league scores",
+      "from": "shaped",
+      "league": "premier"
+    },
+    {
+      "ask": "bundesliga table",
+      "from": "shaped",
+      "league": "bundesliga"
+    },
+    {
+      "ask": "serie a scores",
+      "from": "shaped",
+      "league": "serie"
+    },
+    {
+      "ask": "la liga scores",
+      "from": "shaped",
+      "league": "liga"
+    },
+    {
+      "ask": "champions league scores",
+      "from": "shaped",
+      "league": "champions"
+    },
+    {
+      "ask": "mls scores",
+      "from": "shaped",
+      "league": "mls"
+    },
+    {
+      "ask": "lakers score",
+      "from": "shaped",
+      "team": "lakers"
+    },
+    {
+      "ask": "celtics score",
+      "from": "shaped",
+      "team": "celtics"
+    },
+    {
+      "ask": "yankees score",
+      "from": "shaped",
+      "team": "yankees"
+    },
+    {
+      "ask": "how did the chiefs do",
+      "from": "shaped",
+      "team": "chiefs"
+    },
+    {
+      "ask": "packers score",
+      "from": "shaped",
+      "team": "packers"
+    },
+    {
+      "ask": "nba team celtics",
+      "from": "bench",
+      "team": "celtics",
+      "league": "nba"
+    },
+    {
+      "ask": "scores",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "resultado del real madrid",
+      "from": "shaped",
+      "team": "madrid"
+    }
+  ],
+  "emoji": [
+    {
+      "ask": "emoji fire",
+      "from": "skill example"
+    },
+    {
+      "ask": "folded hands emoji",
+      "from": "shaped"
+    },
+    {
+      "ask": "heart emoji",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "3 emojis",
+      "from": "skill example"
+    },
+    {
+      "ask": "emoji feu",
+      "from": "shaped"
+    },
+    {
+      "ask": "emoji for thank you",
+      "from": "shaped",
+      "narrow": true
+    }
+  ],
+  "translate": [
+    {
+      "ask": "how do you say thank you in Japanese",
+      "from": "skill example"
+    },
+    {
+      "ask": "translate cat to German",
+      "from": "skill example"
+    },
+    {
+      "ask": "good morning in French",
+      "from": "skill example"
+    },
+    {
+      "ask": "translate spring",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "comment dit-on bonjour en anglais",
+      "from": "shaped"
+    },
+    {
+      "ask": "translate the board is on the table to Spanish",
+      "from": "shaped",
+      "slow": true
+    }
+  ],
+  "units": [
+    {
+      "ask": "0 celsius in fahrenheit",
+      "from": "shaped"
+    },
+    {
+      "ask": "5 feet 3 inches in cm",
+      "from": "shaped"
+    },
+    {
+      "ask": "1 byte in bits",
+      "from": "shaped"
+    },
+    {
+      "ask": "100 km in miles",
+      "from": "shaped"
+    },
+    {
+      "ask": "convert 2",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "5 milles en kilomètres",
+      "from": "shaped",
+      "narrow": true
+    }
+  ],
+  "maps": [
+    {
+      "ask": "map of Paris, Texas",
+      "from": "shaped",
+      "region": "texas",
+      "dest": "paris"
+    },
+    {
+      "ask": "map of Springfield",
+      "from": "shaped",
+      "ambiguous": true,
+      "dest": "springfield"
+    },
+    {
+      "ask": "where is Kyoto",
+      "from": "skill example",
+      "dest": "kyoto"
+    },
+    {
+      "ask": "mapa de kioto",
+      "from": "shaped",
+      "dest": "kioto"
+    },
+    {
+      "ask": "map of the louvre",
+      "from": "shaped",
+      "dest": "louvre",
+      "slow": true
+    },
+    {
+      "ask": "show me Paris on a map",
+      "from": "shaped",
+      "ambiguous": true,
+      "dest": "paris",
+      "narrow": true
+    }
+  ],
+  "timers": [
+    {
+      "ask": "set a timer for 90 seconds",
+      "from": "shaped",
+      "expect": "1:30|01:30|90"
+    },
+    {
+      "ask": "a 2 second timer",
+      "from": "skill example",
+      "expect": "0:02|00:02|2"
+    },
+    {
+      "ask": "add one minute",
+      "from": "shaped",
+      "setup": "set a timer for 90 seconds",
+      "expect": "2:30|150"
+    },
+    {
+      "ask": "timer for 5",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "temporizador de 3 minutos",
+      "from": "shaped",
+      "expect": "3:00|03:00|3"
+    },
+    {
+      "ask": "set a timer for 45 seconds",
+      "from": "shaped",
+      "expect": "0:45|00:45|45",
+      "narrow": true
+    }
+  ],
+  "images": [
+    {
+      "ask": "draw a red circle",
+      "from": "shaped",
+      "picture": true
+    },
+    {
+      "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
+      "from": "shaped",
+      "url": "upload.wikimedia.org"
+    },
+    {
+      "ask": "picture of a cat",
+      "from": "shaped"
+    },
+    {
+      "ask": "image",
+      "from": "shaped",
+      "ambiguous": true,
+      "picture": false
+    },
+    {
+      "ask": "dessine un cercle rouge",
+      "from": "shaped"
+    },
+    {
+      "ask": "make the picture bigger",
+      "from": "shaped",
+      "setup": "draw a red circle",
+      "narrow": true
+    }
+  ],
+  "prices": [
+    {
+      "ask": "bitcoin price",
+      "from": "skill example",
+      "spot": "BTC"
+    },
+    {
+      "ask": "how much is ethereum",
+      "from": "shaped",
+      "spot": "ETH"
+    },
+    {
+      "ask": "100 usd in eur",
+      "from": "shaped",
+      "fx": {
+        "from": "USD",
+        "to": "EUR",
+        "amount": 100
+      }
+    },
+    {
+      "ask": "price",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "precio del bitcoin",
+      "from": "shaped",
+      "spot": "BTC"
+    },
+    {
+      "ask": "how much is a gallon of milk",
+      "from": "shaped",
+      "slow": true
+    }
+  ],
+  "definitions": [
+    {
+      "ask": "define serendipity",
+      "from": "skill example",
+      "word": "serendipity"
+    },
+    {
+      "ask": "what does ephemeral mean",
+      "from": "skill example",
+      "word": "ephemeral"
+    },
+    {
+      "ask": "define spring",
+      "from": "shaped",
+      "ambiguous": true,
+      "word": "spring"
+    },
+    {
+      "ask": "etymology of salary",
+      "from": "skill example",
+      "word": "salary"
+    },
+    {
+      "ask": "define zorbleflux",
+      "from": "shaped",
+      "word": "zorbleflux",
+      "gap": true
+    },
+    {
+      "ask": "qué significa serendipia",
+      "from": "shaped",
+      "word": "serendipity"
+    }
+  ],
+  "wordproblems": [
+    {
+      "ask": "if 3 apples cost 2.40 how much do 7 cost",
+      "from": "shaped"
+    },
+    {
+      "ask": "a train travels 120 km in 2 hours what is its speed",
+      "from": "shaped"
+    },
+    {
+      "ask": "what is 15 percent of 80",
+      "from": "shaped"
+    },
+    {
+      "ask": "I have 8 and spend half then find 3 how many do I have",
+      "from": "shaped"
+    },
+    {
+      "ask": "si 4 lápices cuestan 6 cuánto cuestan 10",
+      "from": "shaped"
+    },
+    {
+      "ask": "how much is left",
+      "from": "shaped",
+      "setup": "if 3 apples cost 2.40 how much do 7 cost",
+      "ambiguous": true
+    }
+  ],
+  "code": [
+    {
+      "ask": "write a python function factorial of n",
+      "from": "shaped"
+    },
+    {
+      "ask": "write a python function reverse that reverses a string",
+      "from": "shaped"
+    },
+    {
+      "ask": "http status 404",
+      "from": "skill example",
+      "fact": "Not Found"
+    },
+    {
+      "ask": "code",
+      "from": "shaped",
+      "ambiguous": true
+    },
+    {
+      "ask": "escribe una función python que invierta un texto",
+      "from": "shaped"
+    },
+    {
+      "ask": "now make factorial(0) return 1",
+      "from": "shaped",
+      "setup": "write a python function factorial of n"
+    }
   ]
 }
