@@ -4,7 +4,7 @@
  * "tell me a riddle", "riddle", "another riddle".
  */
 export function isRiddle(text) {
-  return /^(?:please\s+)?(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another)\s+)?riddle(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:another\s+|(?:(?:tell|give|show)\s+(?:me\s+)?(?:a|an|another)\s+)?)?riddle(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 const RIDDLES = [

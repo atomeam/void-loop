@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1099,
+ "counted": 1108,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1760,6 +1760,13 @@
    "tests": 1
   },
   {
+   "file": "lib/vat.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/video-gen.js",
    "skills": 1,
    "direct": 1,
@@ -2075,6 +2082,13 @@
    "tests": 1
   },
   {
+   "file": "lib/pointing-arrow.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 0
+  },
+  {
    "file": "lib/rap-stage.js",
    "skills": 1,
    "direct": 1,
@@ -2243,6 +2257,20 @@
    "tests": 1
   },
   {
+   "file": "lib/vat-ask.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/visible.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
@@ -2345,7 +2373,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 30,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/router.js",
@@ -2569,7 +2597,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/wiki-look.js",
@@ -2979,6 +3007,13 @@
   },
   {
    "file": "lib/beacon.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/books-shelf.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -5261,6 +5296,10 @@
     "skills/about-skill.js",
     "skills/own-parts.js"
    ]
+  },
+  "lib/books-shelf.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/brain-ask.js": {
    "imports": [],
@@ -8637,10 +8676,10 @@
     "skills/distance.js",
     "skills/eclipse.js",
     "skills/joke.js",
-    "skills/quote.js",
     "skills/swaps.js",
     "skills/translate.js",
-    "skills/words.js"
+    "skills/words.js",
+    "skills/worldtime.js"
    ],
    "importedBy": [
     "lib/mcp.js"
@@ -10074,6 +10113,12 @@
    ],
    "reachedBy": [
     "lib/podcasts-card.js"
+   ]
+  },
+  "lib/pointing-arrow.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pointing-arrow.js"
    ]
   },
   "lib/practice.js": {
@@ -12728,6 +12773,21 @@
     "skills/v01d-fixes.js"
    ]
   },
+  "lib/vat-ask.js": {
+   "imports": [
+    "lib/vat.js"
+   ],
+   "importedBy": [
+    "skills/vat.js"
+   ]
+  },
+  "lib/vat.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/vat-ask.js",
+    "skills/vat.js"
+   ]
+  },
   "lib/verse-secrets.js": {
    "imports": [],
    "importedBy": [
@@ -12866,6 +12926,12 @@
     "functions/api/video.js",
     "skills/video-play.js",
     "skills/video.js"
+   ]
+  },
+  "lib/visible.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/wants.js"
    ]
   },
   "lib/visits.js": {
@@ -13966,6 +14032,10 @@
     "lib/mcp.js",
     "lib/team-mcp.js"
    ]
+  },
+  "skills/delivery-pack.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/dependency-health.js": {
    "imports": [],
@@ -15829,6 +15899,10 @@
    ],
    "importedBy": []
   },
+  "skills/palindrome.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/part.js": {
    "imports": [
     "lib/ask-text.js"
@@ -15922,6 +15996,12 @@
   },
   "skills/podcast.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/pointing-arrow.js": {
+   "imports": [
+    "lib/pointing-arrow.js"
+   ],
    "importedBy": []
   },
   "skills/poker-rules.js": {
@@ -16079,16 +16159,7 @@
   "skills/quote.js": {
    "imports": [],
    "importedBy": [
-    "lib/mcp-skills.js",
     "skills/proverb.js"
-   ],
-   "reachedBy": [
-    "functions/api/mcp.js",
-    "functions/api/mcp/server-card.js",
-    "functions/team/mcp.js",
-    "functions/tools.json.js",
-    "lib/mcp.js",
-    "lib/team-mcp.js"
    ]
   },
   "skills/rack.js": {
@@ -17216,6 +17287,13 @@
    ],
    "importedBy": []
   },
+  "skills/vat.js": {
+   "imports": [
+    "lib/vat-ask.js",
+    "lib/vat.js"
+   ],
+   "importedBy": []
+  },
   "skills/vector-field-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -17314,7 +17392,9 @@
    ]
   },
   "skills/wants.js": {
-   "imports": [],
+   "imports": [
+    "lib/visible.js"
+   ],
    "importedBy": []
   },
   "skills/watch.js": {
@@ -17386,11 +17466,18 @@
   "skills/worldtime.js": {
    "imports": [],
    "importedBy": [
+    "lib/mcp-skills.js",
     "lib/zones.js",
     "skills/time.js"
    ],
    "reachedBy": [
-    "lib/sun-day.js"
+    "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/sun-day.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/writing-aids.js": {

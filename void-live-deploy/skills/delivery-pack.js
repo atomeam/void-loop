@@ -7,7 +7,7 @@
  */
 export function isDeliveryPack(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
-  return /^(?:(?:package|pack|handoff|delivery)\s+(?:this\s+)?(?:idea|business|plan)|(?:create|make|generate)\s+(?:a\s+)?(?:handoff|delivery)\s+(?:pack|package|plan))(?:\s*[:\-]\s*.+)?$/i.test(t);
+  return /^(?:please\s+)?(?:package this idea\b|handoff pack\b|delivery package\b|(?:make|create|generate) a delivery pack\b)/i.test(t);
 }
 
 function extractIdea(text) {
@@ -50,7 +50,7 @@ export default {
     'make a delivery pack for the support ticket router'
   ],
   nearMisses: ['what is a package', 'ship the package', 'package.json'],
-  match(lower, text) { return isDeliveryPack(text); },
+  match(lower, text) { return isDeliveryPack(text || lower); },
   run,
   suite() {
     const ok = isDeliveryPack('package this idea: automate onboarding') &&

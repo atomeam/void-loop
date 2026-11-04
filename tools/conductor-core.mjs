@@ -12,6 +12,8 @@
 //     visitors share).
 // Nothing here reads the network or the clock; tools/conductor.mjs feeds it and acts on what it returns. Tests: tools/conductor.test.mjs.
 
+import { rankAdjust } from '../void-live-deploy/lib/visible.js';
+
 const H = 3600000;
 
 // who runs each kind of job. claims: the conductor claims the job before starting the run (the executor reads it by id and reports back);
@@ -70,7 +72,8 @@ export const TRY_COST = Object.freeze({ will: 5 });
 /** a job's worth now: its kind's weight, plus 2 a day of waiting (up to 30), minus 25 a try (TRY_COST for the will). Pure. */
 export function score(job, now) {
   const k = kindOf(job.target), w = WEIGHT[k] ?? 30, days = Math.max(0, (now - ms(job.at)) / (24 * H));
-  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note);
+  // Atom, 2026-11-03: a visitor-facing fix (a broken card, a wrong answer, a laggy render) ranks above internal work
+  return w + Math.min(30, 2 * days) - (TRY_COST[k] ?? 25) * triesOf(job.note) + rankAdjust(String(job.note || '') + ' ' + String(job.target || ''));
 }
 
 /** where a job goes: { wf, input, claims, cap } or null when nothing can run it. Pure. */

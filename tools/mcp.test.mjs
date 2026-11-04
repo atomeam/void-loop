@@ -3,7 +3,7 @@
 // meteor showers. Nothing here writes, calls a model or reaches another service. Run: node --test tools/mcp.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { rpc, TOOLS, PROTOCOL } from '../void-live-deploy/lib/mcp.js';
+import { rpc, TOOLS, PROTOCOL, blockedTool } from '../void-live-deploy/lib/mcp.js';
 import { onRequestPost, onRequestGet } from '../void-live-deploy/functions/api/mcp.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
 import { SKILL_TOOLS } from '../void-live-deploy/lib/mcp-skills.js';
@@ -150,6 +150,8 @@ const ratingOf = (n) => FAMILIES.families.flatMap((f) => f.skills.map((s) => ({ 
 
 test('mcp skills: the skill tools (up to ten) are proven, in families that answer in words, not held back, and the most evidence of what qualifies', () => {
   assert.ok(SKILL_TOOLS.length > 0 && SKILL_TOOLS.length <= TOP);
+  for (const pin of ['worldtime', 'define']) assert.ok(SKILL_TOOLS.some((s) => s.skill === pin), pin + ' is offered');
+  for (const s of SKILL_TOOLS) assert.equal(evidenceOf(ratingOf(s.skill).why).suite, true, s.skill + ' passes a self-test');
   const scores = [];
   for (const s of SKILL_TOOLS) {
     const r = ratingOf(s.skill);
@@ -159,7 +161,7 @@ test('mcp skills: the skill tools (up to ten) are proven, in families that answe
   }
   // nothing left out has more evidence than the least of those chosen
   const left = FAMILIES.families.filter((f) => OVER_MCP.includes(f.id)).flatMap((f) => f.skills)
-    .filter((s) => s.tier === 'proven' && !(s.name in HELD) && !SKILL_TOOLS.some((t) => t.skill === s.name));
+    .filter((s) => s.tier === 'proven' && evidenceOf(s.why).suite && !(s.name in HELD) && !SKILL_TOOLS.some((t) => t.skill === s.name));
   for (const s of left) assert.ok(evidenceOf(s.why).score <= Math.min(...scores), s.name + ' has more evidence than a chosen skill');
   // a skill that works out an exact sum is not offered: over MCP a model would answer in its name
   assert.ok(!OVER_MCP.includes('numbers'));
@@ -318,4 +320,13 @@ test('mcp: the Server Card (SEP-2127) at /api/mcp/server-card matches the v1 sch
   const allowed = new Set(['$schema', 'name', 'version', 'description', 'title', 'websiteUrl', 'repository', 'icons', 'remotes', '_meta']);
   for (const k of Object.keys(card)) assert.ok(allowed.has(k), 'not a Server Card field: ' + k);
   assert.ok(readFileSync(new URL('../void-live-deploy/icon-512.png', import.meta.url)).length > 0, 'the icon is a file the site serves');
+});
+
+test('mcp: no tool sends, spends or forgets, and a call that asks to is refused', async () => {
+  for (const t of TOOLS) assert.equal(blockedTool(t.name), false, t.name);
+  for (const name of ['send', 'spend', 'forget', 'skill_send', 'skill_forget']) {
+    const r = await rpc({ jsonrpc: '2.0', id: 9, method: 'tools/call', params: { name, arguments: { ask: 'send the mail' } } });
+    assert.equal(r.result, undefined);
+    assert.match(r.error.message, /does not send, spend or forget/);
+  }
 });

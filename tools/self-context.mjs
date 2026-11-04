@@ -7,6 +7,7 @@
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
 import { openItems } from './frontier.mjs';
+import { parseFacingLog, shippedVisible } from '../void-live-deploy/lib/visible.js';
 import { isPrivate, deepQuoteFree } from './private.mjs';
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -147,6 +148,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
     wishlist: existsSync(resolve(root, 'docs/wishlist.md')) ? readWishlist(readFileSync(resolve(root, 'docs/wishlist.md'), 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
+  // visible changes shipped (Atom, 2026-11-03): commits on this checkout that touch a page or a skill. The deploy rewrites self.json, so the live card shows main.
+  try {
+    const log = spawnSync('git', ['log', '--since=8 days ago', '--name-only', '--pretty=format:%cI'], { cwd: root, encoding: 'utf8', timeout: 20000 });
+    if (log.status === 0) self.visible = shippedVisible(parseFacingLog(log.stdout));
+  } catch (_) { /* the card says the count waits for a deploy */ }
   // Verse's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
   const clipsFile = resolve(root, 'domains/void.clips.json');
   if (existsSync(clipsFile)) { try { const c = JSON.parse(readFileSync(clipsFile, 'utf8')); const { TRICKS } = await import('./clips.mjs');

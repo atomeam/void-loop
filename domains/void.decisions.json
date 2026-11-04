@@ -1,6 +1,22 @@
 {
   "note": "Builders' decision on every one of Void's asks (built / queued / declined + why). Rendered into domains/void.voice.md by tools/reflect.mjs --write. Small asks Void's reflection queues by itself are limited to low-risk, reversible, in-scope changes; anything touching safety, privacy, auth, money or public copy waits for a builder decision here. Builds credit Void with a 'Suggested-by: Void (run N)' or 'Suggested-by: Void (<ask id>)' commit trailer.",
   "decisions": {
+    "ask-20261101-0223-3": {
+      "decision": "retired",
+      "why": "superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log."
+    },
+    "ask-20261101-1930-3": {
+      "decision": "retired",
+      "why": "superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log."
+    },
+    "ask-20261101-2220-3": {
+      "decision": "retired",
+      "why": "superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log."
+    },
+    "ask-20261101-2243-3": {
+      "decision": "retired",
+      "why": "superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log."
+    },
     "ask-20261014-2134-1": {
       "decision": "queued",
       "why": "one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build"

@@ -78,6 +78,7 @@ export function adoptOrder(names, dir = ORDER_DIR) {
 // in OFF with why; nothing else can sit in skills/ unregistered.
 export const OFF = {
   map: 'the assimilation map, retired with the assimilation table in cleanup step 2 (domains/void.frontier.md); kept for salvage',
+  vat: 'the VAT card is another worker\'s; this ship does not register it',
 };
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */

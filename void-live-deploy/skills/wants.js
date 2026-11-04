@@ -12,7 +12,10 @@
  * calendar), "what's on my list" and "what do I want for dinner" are not this.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
+import { visibleLine } from '../lib/visible.js';
+
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
+const TOPN = 3;
 const YOU = "(?:you|(?:verse|v01d)|(?:verse|void)|verse)", YOUR = "(?:your|(?:verse|v01d)'s|(?:verse|void)'s|verse's|(?:verse|v01d)|(?:verse|void)|verse)";
 const LISTS = "(?:wants|wishes|unbuilt asks|open asks|asks not built|asks not built yet|unbuilt wants|unbuilt items|open items|backlog|wish ?list|want list|list of wants|to-?do list|todo|growth inbox|inbox|open list|build list|unbuilt list)";
 const RULES = [
@@ -90,8 +93,9 @@ export function cardModel({ will, reflect, self } = {}) {
   const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...(a.held ? { held: sentence(a.held) } : {}), ...(a.held && a.heldFrontier ? { heldFrontier: sentence(a.heldFrontier) } : {}), ...whyOf(traceOf(a, ents)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from), ...(o.waits ? { waits: sentence(o.waits) } : {}) })).filter((o) => o.text).map((o) => ({ ...o, stream: streamOf(o) })).slice(0, MAX);
   const lapRec = will && will.lap && typeof will.lap === 'object' ? will.lap : null, lastRun = will && will.lastRun && typeof will.lastRun === 'object' ? will.lastRun : null;
+  const vis = self && self.visible && Number.isFinite(+self.visible.day) && Number.isFinite(+self.visible.week) ? { day: Math.max(0, Math.round(+self.visible.day)), week: Math.max(0, Math.round(+self.visible.week)) } : null;
   return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow), lap: lapRec && lapRec.line ? String(lapRec.line) + (lapRec.onlySite && lapRec.onlySite.line ? ' · ' + lapRec.onlySite.line : '') + (lapRec.tower && lapRec.tower.line ? ' · ' + lapRec.tower.line : '') : '',
-    changed: wl ? changedOf(lapRec, reflect && reflect.follow, lastRun) : null, blocked: blockedOf(asks, inbox), streams: streamsOf(inbox),
+    changed: wl ? changedOf(lapRec, reflect && reflect.follow, lastRun) : null, blocked: blockedOf(asks, inbox), streams: streamsOf(inbox), visible: vis,
     next: nextOf({ lap: lapRec, wants, asks: ak ? asks : null, lastRun, tower: self && self.tower, willRead: !!wl }) };
 }
 
@@ -237,7 +241,8 @@ const CSS = '.wants-card .wants-count{font-size:13px;color:var(--muted);margin:2
   // the three summaries (next pick, changed this lap, blocked): short lines on a faint panel, readable on a phone
   + '.wants-card .wants-sum{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:2px 10px 6px;margin:8px 0}.wants-card .wants-sum .wants-h{font-size:14px;margin:8px 0 2px}'
   + '.wants-card .wants-lines{list-style:none;margin:2px 0 4px;padding:0;font-size:13px;line-height:1.4}.wants-card .wants-lines li{margin:3px 0;white-space:normal}.wants-card .wants-lines small{display:block;color:var(--muted);font-size:12px}.wants-card .wants-lines .wants-tag{color:var(--accent);font-size:11px;margin-right:4px}'
-  + '.wants-card .wants-stream{font-size:12px;color:var(--muted);margin:8px 0 2px;letter-spacing:.02em}.wants-card .wants-streams{font-size:12px;color:var(--muted);margin:0 0 4px}';
+  + '.wants-card .wants-stream{font-size:12px;color:var(--muted);margin:8px 0 2px;letter-spacing:.02em}.wants-card .wants-streams{font-size:12px;color:var(--muted);margin:0 0 4px}'
+  + '.wants-card .wants-top{font-size:13px;margin:2px 0 6px;line-height:1.4}.wants-card .wants-fold{margin:2px 0 8px}.wants-card .wants-fold summary{cursor:pointer;font-size:13px;color:var(--muted)}';
 /** the card's markup: a title, the count line, the lap and velocity lines, three short summaries (next pick, changed this lap,
  *  blocked), then three blocks (each a heading, the one-line definition of what it holds, chips or its empty or missing line; the
  *  inbox in its workstreams with their counts), the compound line when there is one, and a source line. esc escapes for HTML; every
@@ -248,14 +253,16 @@ export function cardHtml(m, esc, { more = '' } = {}) {
   const chip = (text, sub, why) => '<li data-bullet="1"><span role="button" tabindex="0" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small data-share-short="(' + esc(sub) + ')">' + esc(sub) + '</small>' : '') + '</span>'
     + (why && why.length ? '<details class="wants-why" data-trace="' + why.length + '"><summary>Why I want this</summary>' + why.map((l) => '<p>' + esc(l) + '</p>').join('') + '</details>' : '') + '</li>';
   const chips = (items, sub) => '<ul class="wants-chips">' + items.map((it) => chip(it.text, sub(it), it.why)).join('') + '</ul>';
+  // the first three stay in view; the rest wait behind a tap, and a saved card keeps only the three (Atom, 2026-11-03: the card was a wall of text)
+  const fold = (items, sub) => { const shown = items.slice(0, TOPN), rest = items.slice(TOPN); return chips(shown, sub) + (rest.length ? '<details class="wants-fold" data-share-skip="1"><summary>Show the other ' + rest.length + '</summary>' + chips(rest, sub) + '</details>' : ''); };
   // the definition sits under its heading and is left out of the saved text, so a card cut to fit still carries the real wants first (owner, 2026-10-18)
   const block = (id, title, items, sub, body) => '<section class="wants-block" data-block="' + id + '" data-n="' + items.length + '"><h3 class="wants-h">' + esc(title) + ' <span class="wants-n">(' + items.length + ')</span></h3>'
     + '<p class="wants-def" data-def="' + id + '" data-share-skip="1">' + esc(DEF[id]) + '</p>'
     + (m.missing[id === 'wants' ? 'will' : id === 'asks' ? 'reflect' : 'self'] ? '<p class="wants-empty" data-missing="1">' + esc(MISSING[id]) + '</p>'
-      : items.length ? (body ? body(items, sub) : chips(items, sub)) : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>') + '</section>';
+      : items.length ? (body ? body(items, sub) : fold(items, sub)) : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>') + '</section>';
   // the inbox in its workstreams: a count line, then each group's heading and chips (unsorted last, named as such)
   const streams = (items, sub) => '<p class="wants-streams" data-streams="' + esc(JSON.stringify(Object.fromEntries(m.streams.map((g) => [g.id, g.items.length])))) + '">' + esc(m.streams.map((g) => g.label + ' ' + g.items.length).join(' · ')) + '</p>'
-    + m.streams.map((g) => '<div class="wants-group" data-stream="' + esc(g.id) + '" data-n="' + g.items.length + '"><h4 class="wants-stream">' + esc(g.label) + ' (' + g.items.length + ')</h4>' + chips(g.items, sub) + '</div>').join('');
+    + m.streams.map((g) => '<div class="wants-group" data-stream="' + esc(g.id) + '" data-n="' + g.items.length + '"><h4 class="wants-stream">' + esc(g.label) + ' (' + g.items.length + ')</h4>' + fold(g.items, sub) + '</div>').join('');
   // the summaries are what to read first on a phone; the saved text leaves them out, as it does the definitions
   const sum = (id, title, inner) => '<section class="wants-sum" data-block="' + id + '" data-share-skip="1"><h3 class="wants-h">' + esc(title) + '</h3>' + inner + '</section>';
   const line = (tag, text, why) => '<li><span class="wants-tag">' + esc(tag) + '</span>' + esc(text) + (why ? '<small>' + esc(why) + '</small>' : '') + '</li>';
@@ -266,7 +273,11 @@ export function cardHtml(m, esc, { more = '' } = {}) {
       + (c.since ? '' : '<p class="wants-def" data-nosince="1">This lap\'s start was not kept, so I do not count asks built against it.</p>')
     : '<p class="wants-def" data-nolap="1">' + esc(m.missing.will ? 'I could not read my will just now, so I will not guess what changed this lap.' : 'My lap was not in my will just now, so I will not guess what changed this lap.') + '</p>');
   const blocked = sum('blocked', 'Blocked (' + m.blocked.length + ')', m.blocked.length ? '<ul class="wants-lines">' + m.blocked.map((b) => '<li data-kind="' + esc(b.kind) + '"><span class="wants-tag">' + esc(b.kind === 'ask' ? 'Ask' : 'Inbox') + '</span>' + esc(b.text) + '<small>' + esc(b.waits) + '</small></li>').join('') + '</ul>' : '<p class="wants-def">Nothing is held or waiting.</p>');
+  const topOf = (label, items) => '<p class="wants-top" data-top="' + esc(label) + '">' + esc(items.length ? 'Top ' + label + ': ' + items.slice(0, TOPN).map((it) => it.text).join(' · ') + (items.length > TOPN ? ' · and ' + (items.length - TOPN) + ' more' : '') : 'No ' + label + ' just now.') + '</p>';
+  const vis = m.visible ? visibleLine(m.visible) : 'Visible changes shipped: counted when the site deploys, from commits that touch a page or a skill.';
   return '<style>' + CSS + '</style><h2>What I want built</h2><div class="wants-count" data-counts="' + esc(JSON.stringify(m.counts)) + '">' + esc(countLine(m.counts)) + '</div>'
+    + '<p class="wants-top" data-visible="' + (m.visible ? esc(m.visible.day + ',' + m.visible.week) : '') + '">' + esc(vis) + '</p>'
+    + topOf('wants', m.wants) + topOf('asks', m.asks)
     + (m.lap ? '<div class="wants-lap" data-lap="1">' + esc(m.lap) + '</div>' : '')
     + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + '<div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
     + next + changed + blocked
@@ -318,7 +329,12 @@ async function run(text, api) {
     const [w, r, sj] = await Promise.all([get('/api/will'), get('/api/reflect'), get('/self.json')]);
     const nm = cardModel({ will: w, reflect: r, self: sj }), now = JSON.stringify(nm);
     if (now === was) return;
-    was = now; card.innerHTML = cardHtml(nm, esc, { more }); card.dataset.refreshed = String(Date.now());
+    was = now;
+    // a redraw replaces the card's markup; the reply section is the page's, so it is moved back once and does not pile up
+    const reply = card.querySelector(':scope > .vreply');
+    card.innerHTML = cardHtml(nm, esc, { more });
+    if (reply) card.appendChild(reply);
+    card.dataset.refreshed = String(Date.now());
   });
   if (say) say(countLine(m.counts));
   return 'wants';

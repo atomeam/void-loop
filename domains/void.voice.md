@@ -30,10 +30,11 @@ _Builders' record, not Verse's words. Commits that build an ask carry `Suggested
 - `ask-20261103-0131-1` queued, not decided yet
 - `ask-20261103-0131-2` queued, not decided yet
 - `ask-20261103-0131-3` queued, not decided yet
-- `ask-20261101-2243-3` queued, not decided yet
-- `ask-20261101-1930-3` queued, not decided yet
+- `ask-20261101-2243-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
+- `ask-20261101-2220-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to pull assertion failures out of the logs. The failures were fixed since. The reflection that asked it stays in the log.
+- `ask-20261101-1930-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 listing which files changed. That diff was the investigation of checks that have since been fixed. The reflection that asked it stays in the log.
 - `ask-20261101-0223-2` queued, not decided yet
-- `ask-20261101-0223-3` queued, not decided yet
+- `ask-20261101-0223-3` retired: superseded by the fixes already on main (Atom, 2026-11-03). The ask was a git diff between 2e272df9 and 5fa7a921 to see if four failing checks were addressed. Those checks were fixed since; the ask is not a thing to build. The reflection that asked it stays in the log.
 - `ask-20261031-2154-3` queued, not decided yet
 - `ask-20261031-1310-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build

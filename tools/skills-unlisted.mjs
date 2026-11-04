@@ -11,6 +11,7 @@ import { pathToFileURL } from 'node:url';
 export const RETIRED = [
   'hosting', // lists run 6, 2026-10-28: its match was a bare regex, not a function, so the router threw on every ask that reached it (and tools/skills-check.mjs failed every skills PR); it also answered any ask with "server" or "domain" and named a rival site on its card. Off the routing order until it is rebuilt to the skill shape (name, match function, run, examples)
   'map', // older map card; `place` and `rebuild-map` answer maps now, and nothing loads this file
+  'vat', // another worker's VAT card; this ship does not register it
 ];
 
 export async function unlistedSkills(dir, retired = RETIRED) {
