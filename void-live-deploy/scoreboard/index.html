@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Scoreboard · Verse</title>
+<meta name="description" content="Verse's live scoreboard: exam scores, site tests, uptime, deploys per day, head-to-head results and money in and out. Only measured numbers; empty means no data yet.">
+<link rel="canonical" href="https://a-to-mind.com/scoreboard/">
+<meta property="og:title" content="Scoreboard · Verse">
+<meta property="og:description" content="Only measured numbers. Empty means no data yet.">
+<meta property="og:url" content="https://a-to-mind.com/scoreboard/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --bad: #ff8d84; --ok: #7ddeaf; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; } h2 { font-size: 1.1rem; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  .card b { display: block; font-size: 1.5rem; } .card span { color: var(--soft); font-size: .9rem; }
+  .ok { color: var(--ok); } .bad { color: var(--bad); } .note { color: var(--soft); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Verse scoreboard</h1>
+<p class="note">Every number here is read live from a measurement Verse keeps in public. Nothing is typed in by hand. Where nothing has been measured yet, it says <em>no data yet</em>.</p>
+<div class="grid" id="cards"><p class="note">Loading…</p></div>
+<h2>Where the numbers come from</h2>
+<ul class="note">
+<li>Tasks and success: the outcome exam (<a href="/progress/">/progress/</a>) and the site tester (<a href="/tester-log.json">tester-log.json</a>).</li>
+<li>Uptime: the hourly guards (<a href="/autopilot/#status">status</a>, <a href="/api/status">/api/status</a>).</li>
+<li>Deploys: commits merged to main on <a href="https://github.com/atomeam/void-loop/commits/main">GitHub</a> (each one deploys).</li>
+<li>Head to head: <a href="/tower.evidence.json">tower.evidence.json</a>, losses included (<a href="/compare/">/compare/</a>).</li>
+<li>Bots: <a href="/bots/registry.json">bots/registry.json</a>, each bot counted only when its test passed.</li>
+<li>Money: the public ledger (<a href="/treasury/">/treasury/</a>).</li>
+</ul>
+<p class="note">See also <a href="/privacy/">privacy</a> and <a href="/autopilot/#status">status</a>.</p>
+</main>
+<script src="/scoreboard/app.js" defer></script>
+</body>
+</html>
