@@ -12,6 +12,12 @@
       "into": "/bots/ (change-curator)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/fire-ember-mountain-cabin/src/lib": {
+      "target": "bot",
+      "into": "/bots/ (retry-backoff)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
