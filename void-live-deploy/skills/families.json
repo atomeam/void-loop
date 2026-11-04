@@ -2233,7 +2233,7 @@
     {
      "name": "media-pick",
      "tier": "proven",
-     "why": "a self-test, 5 real asks in the benchmark",
+     "why": "a self-test, 7 real asks in the benchmark",
      "last_tested": "2026-11-04",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
