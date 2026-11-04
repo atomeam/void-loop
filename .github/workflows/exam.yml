@@ -1,0 +1,68 @@
+# The outcome exam (tools/exam.mjs). After each deploy, and once a day: sixteen public asks per domain on live
+# a-to-mind.com, plus the sealed holdout when the EXAM_HOLDOUT secret is set. The run is committed as data
+# (void-live-deploy/exam/). One run that falls by 5 or more is recorded. Two runs in a row that each fall by 5
+# or more revert the deploy that just went out. A daily run records the drop and does not revert.
+name: Outcome exam
+
+on:
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_run:
+    workflows: [Verse deploy]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: outcome-exam
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  exam:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Sealed holdout, when the secret is set
+        env:
+          EXAM_HOLDOUT: ${{ secrets.EXAM_HOLDOUT }}
+        run: |
+          if [ -n "$EXAM_HOLDOUT" ]; then printf '%s\n' "$EXAM_HOLDOUT" > tools/exam-holdout.json; echo "holdout sealed file present"; else echo "no EXAM_HOLDOUT secret: public scores only, last holdout kept"; fi # void-review: ok
+      - name: Run the exam on the live site
+        id: exam
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: node tools/exam.mjs
+      - name: Keep the scores
+        if: always()
+        run: |
+          git diff --quiet -- void-live-deploy/exam/latest.json void-live-deploy/exam/history.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/exam/latest.json void-live-deploy/exam/history.json
+          git commit -m "Outcome exam: $(node -e "const j=require('./void-live-deploy/exam/latest.json');process.stdout.write(j.lowest.domain+' '+j.lowest.score)")"
+          for i in 1 2 3 4; do git push origin HEAD:main && exit 0; sleep $((2 ** i)); git pull --rebase origin main; done
+          exit 1
+      - name: Roll back the deploy that lowered a domain twice
+        if: failure() && steps.exam.outputs.revert == 'yes' && github.event_name == 'workflow_run'
+        run: |
+          SHA="${{ github.event.workflow_run.head_sha }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin main && git checkout -q -B main origin/main
+          git merge-base --is-ancestor "$SHA" HEAD || { echo "the deploy commit is not on main"; exit 0; }
+          parents=$(git rev-list --parents -n 1 "$SHA" | wc -w)
+          msg="Revert $SHA: two outcome-exam runs in a row each fell by 5 or more (exam.yml)"
+          if [ "$parents" -gt 2 ]; then git revert --no-edit -m 1 "$SHA"; else git revert --no-edit "$SHA"; fi || { git revert --abort || true; echo "::warning::the revert conflicts; a builder looks"; exit 0; }
+          git commit --amend -m "$msg"
+          git push origin HEAD:main || echo "::warning::could not push the revert"

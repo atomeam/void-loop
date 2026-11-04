@@ -8,7 +8,7 @@
 //   node tools/tower-plan.mjs --check   exit 1 when the JSON is stale or an id is not a floor (refresh.mjs and checks.mjs run this)
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = path.join(root, 'void-live-deploy');
@@ -47,7 +47,7 @@ export function problems(plan, ids) {
 export const render = (plan) => JSON.stringify({ _: 'made by tools/tower-plan.mjs from the tower-plan block in docs/NEXT.md; edit that block, not this file. The card joins each id with the gate (lib/tower.js), so nothing here is a score.', source: 'docs/NEXT.md', ...plan }, null, 1) + '\n';
 
 async function floorIds() {
-  const { tower } = await import(path.join(SITE, 'lib/tower.js'));
+  const { tower } = await import(pathToFileURL(path.join(SITE, 'lib/tower.js')).href);
   const rd = (f) => { try { return JSON.parse(fs.readFileSync(path.join(SITE, f), 'utf8')); } catch (_) { return null; } };
   const inv = rd('lap.items.json'), ev = rd('tower.evidence.json'), fr = rd('tower.frontier.json');
   return tower((inv && inv.onlySite) || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null).floors.map((f) => f.id);

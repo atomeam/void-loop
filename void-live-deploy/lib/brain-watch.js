@@ -97,7 +97,7 @@ export function writeLines(entries, at = Date.now(), plain = (x) => String(x || 
   const from = at - days * 86400e3, recent = (Array.isArray(entries) ? entries : []).filter((e) => e && typeof e.what === 'string' && Date.parse(e.at) > from && Date.parse(e.at) <= at);
   const of = (k) => recent.filter((e) => e.kind === k), q = (t) => '"' + s(t, 60) + '"', list = (xs) => xs.length > 1 ? xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1] : xs[0] || '';
   const lines = [], fixes = of('fix'), asks = [...new Set(fixes.map((e) => s(e.try, 60).trim()).filter(Boolean))].reverse();
-  if (fixes.length) lines.push('Verse learned to answer ' + fixes.length + ' more ask' + (fixes.length === 1 ? '' : 's') + (asks.length ? ', like ' + list(asks.slice(0, 3).map(q)) : '') + '.');
+  if (fixes.length) lines.push(fixes.length + ' fix' + (fixes.length === 1 ? '' : 'es') + ' landed in the ledger' + (asks.length ? ', like ' + list(asks.slice(0, 3).map(q)) : '') + '. An exam score is what shows whether an ask got better.');
   const grows = of('grow'), skills = [...new Set(grows.flatMap((e) => ((e.what.match(/ for ([a-z0-9][a-z0-9, -]*?)\.\s/i) || [])[1] || '').split(/,\s*/)).map((x) => x.trim()).filter((x) => /^[a-z0-9-]{2,30}$/.test(x)))].reverse();
   if (grows.length) lines.push('It made ' + (skills.length || grows.length) + ' skill' + ((skills.length || grows.length) === 1 ? '' : 's') + ' sturdier against asks that had failed' + (skills.length ? ', like ' + list(skills.slice(0, 4)) : '') + '.');
   const clause = (t) => String(plain(t) || '').replace(/^asked by Verse:\s*/i, '').split(/;\s|\s\(|\.\s|,\s*asked by/)[0].replace(/[.\s]+$/, '').trim().replace(/^[a-z]/, (c) => c.toUpperCase());

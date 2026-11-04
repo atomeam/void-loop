@@ -206,3 +206,22 @@ export function verseShow(j) {
 }
 /** the ask bar's text as what the page should do: a feed address, or a search. Pure. */
 export function kindOfInput(text) { const t = String(text || '').trim(); if (/^https?:\/\//i.test(t) || /^(?:feed|itpc|pcast):\/\//i.test(t)) return { feed: t.replace(/^(?:feed|itpc|pcast):\/\//i, 'https://').replace(/^http:\/\//i, 'https://') }; if (/^[\w-]+(?:\.[\w-]+)+\/\S+$/.test(t) && !/\s/.test(t)) return { feed: 'https://' + t }; return t ? { q: t.slice(0, 100) } : {}; }
+
+const SHOW_STOP = new Set(['the', 'of', 'a', 'an', 'and']);
+/** "play the latest episode of radiolab" -> { show }, or null. Verse's own show stays with the verse-podcast asks. Pure. */
+export function latestEpisodeOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:please\s+)?(?:play|listen\s+to|put\s+on|hear)\s+(?:me\s+)?(?:the\s+)?(?:latest|newest|last|new)\s+episode\s+of\s+(.{2,80})$/i);
+  if (!m) return null;
+  const show = m[1].trim();
+  if (/^(?:the\s+)?(?:verse|v01d|void|a-?to-?mind)\b/i.test(show)) return null;
+  return { show };
+}
+/** the directory row whose title holds every word of the asked show, the shortest title first, or null. Pure. */
+export function pickShow(shows, name) {
+  const words = String(name || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 1 && !SHOW_STOP.has(w));
+  if (!words.length) return null;
+  const hits = (Array.isArray(shows) ? shows : []).filter((s) => s && s.feed && s.title && words.every((w) => s.title.toLowerCase().includes(w)));
+  hits.sort((a, b) => a.title.length - b.title.length || a.title.localeCompare(b.title));
+  return hits[0] || null;
+}

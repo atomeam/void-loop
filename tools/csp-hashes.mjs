@@ -38,7 +38,8 @@ export function pathsOf(rel) {
 /** Pages in one directory share one splat rule (/fix/*, /fringe/*): Cloudflare caps _headers at 100 rules, and a family of pages
  *  otherwise costs a rule per page. The shared rule lists every inline script of every page under the directory (the union), since a
  *  second CSP on a page that lacks one of its own scripts would block it; a page still runs no inline script that is not one of its
- *  directory's own. A directory whose union would make the header longer than Cloudflare takes (2,000 characters) keeps a rule per page. */
+ *  directory's own. Two pages are enough to share (a combined page and its mode, /color/ and /color/gradient/: 2026-11-04 they took
+ *  the rules to 101 of 100). A directory whose union would make the header longer than Cloudflare takes (2,000 characters) keeps a rule per page. */
 export const VALUE_MAX = 2000;
 export function rules() {
   const per = [];
@@ -55,7 +56,7 @@ export function rules() {
   for (const [d, set] of sets) { const h = [...set].join(' '); if (h && value(h).length <= VALUE_MAX) shared.set(d, h); }
   const rule = (p, h) => p + '\n  Content-Security-Policy: ' + value(h);
   const out = [];
-  for (const [d, h] of shared) if (per.filter((x) => dirOf(x.p) === d).length >= 3) out.push(rule('/' + d + '/*', h)); else shared.delete(d);
+  for (const [d, h] of shared) if (per.filter((x) => dirOf(x.p) === d).length >= 2) out.push(rule('/' + d + '/*', h)); else shared.delete(d);
   for (const x of per) { const d = dirOf(x.p); if (d && shared.has(d)) continue; out.push(rule(x.p, x.h)); }
   return out;
 }

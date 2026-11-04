@@ -3,6 +3,7 @@
  * Contract: { name, examples, match(lower, text), run(text, api) }
  */
 import { placeTries } from '../lib/where.js';
+import { km } from './distance.js';
 function placeOf(text) {
   const t = text.trim().replace(/[?!.]+$/, '');
   const m = t.match(/^(?:show\s+(?:me\s+)?)?(?:a\s+|the\s+)?(?:street\s+)?map\s+(?:of|for)\s+(.+)$/i)
@@ -32,7 +33,64 @@ function directionsTo(text) {
 
 const label = (r) => r.name + (r.admin1 && r.admin1 !== r.name ? ', ' + r.admin1 : '') + (r.country ? ', ' + r.country : '');
 
-function draw(el, r, others, api, dir) {
+const kmText = (n) => (n >= 100 ? String(Math.round(n)) : (Math.round(n * 10) / 10).toFixed(1)) + ' km';
+/** the route a directions card says out loud: a road distance when the router answered, otherwise the straight line, otherwise the map's own name. Pure. */
+export function routeWords(road, straight) {
+  if (road && Number.isFinite(road.km) && road.km > 0 && Number.isFinite(road.min)) return kmText(road.km) + ' by road, about ' + road.min + ' min from near you.';
+  if (Number.isFinite(straight) && straight >= 0) return kmText(straight) + ' in a straight line from near you (roads are longer).';
+  return 'Route on openstreetmap.org.';
+}
+/** the Wikipedia page that is this place: the one whose title shares the most of the asked words, and the one Wikipedia ranked first on a tie. Pure. */
+export function wikiHit(pages, q) {
+  const words = String(q || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2);
+  const list = Array.isArray(pages) ? pages : Object.values(pages || {});
+  const scored = list.filter((p) => p && p.title && p.coordinates && p.coordinates[0]).map((p) => {
+    const title = String(p.title).toLowerCase();
+    return { p, hit: words.filter((w) => title.includes(w)).length, index: Number(p.index) || 99 };
+  }).filter((s) => s.hit > 0).sort((a, b) => b.hit - a.hit || a.index - b.index);
+  const best = scored[0], c = best && best.p.coordinates[0];
+  if (!c || !Number.isFinite(+c.lat) || !Number.isFinite(+c.lon)) return null;
+  return { name: best.p.title, admin1: '', country: '', latitude: +c.lat, longitude: +c.lon, population: 0 };
+}
+
+async function meteoPlaces(place) {
+  let rs = [];
+  for (const q of placeTries(place)) {
+    const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
+    rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
+    if (rs.length) break;
+  }
+  return rs;
+}
+async function wikiPlace(q) {
+  const j = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrlimit=8&prop=coordinates&format=json&origin=*&gsrsearch=' + encodeURIComponent(q), { headers: { accept: 'application/json' } }).then((r) => r.json());
+  return wikiHit(j && j.query && j.query.pages, q);
+}
+async function originOf() {
+  try {
+    const j = await fetch('/api/where').then((r) => r.json());
+    if (j && j.ok && Number.isFinite(+j.lat) && Number.isFinite(+j.lon)) return { lat: +j.lat, lon: +j.lon };
+  } catch (_) {}
+  return null;
+}
+async function roadOf(origin, r) {
+  if (!origin || !r) return null;
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 2500);
+  try {
+    const u = 'https://router.project-osrm.org/route/v1/driving/' + origin.lon + ',' + origin.lat + ';' + r.longitude + ',' + r.latitude + '?overview=false';
+    const j = await fetch(u, { signal: ctl.signal, headers: { accept: 'application/json' } }).then((x) => x.json());
+    const leg = j && j.routes && j.routes[0];
+    if (!leg || !Number.isFinite(leg.distance) || leg.distance <= 0 || !Number.isFinite(leg.duration)) return null;
+    return { km: leg.distance / 1000, min: Math.max(1, Math.round(leg.duration / 60)) };
+  } catch (_) { return null; } finally { clearTimeout(t); }
+}
+async function routeFor(origin, r) {
+  const road = await roadOf(origin, r);
+  const straight = origin ? km({ latitude: origin.lat, longitude: origin.lon }, r) : NaN;
+  return routeWords(road, straight);
+}
+
+function draw(el, r, others, api, dir, route, origin) {
   const { esc } = api;
   const zoomSpan = r.population > 1000000 ? 0.18 : r.population > 100000 ? 0.08 : 0.03;
   const bbox = [r.longitude - zoomSpan, r.latitude - zoomSpan * 0.6, r.longitude + zoomSpan, r.latitude + zoomSpan * 0.6].join(',');
@@ -42,9 +100,14 @@ function draw(el, r, others, api, dir) {
   el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(label(r).split(', ').slice(1).join(', ')) + '</div>'
     + '<iframe title="map" src="' + src + '" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
     + (alt.length ? '<div class="sub">Other places with this name: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
-    + (dir ? '<p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
+    + (dir ? '<p class="dir-route">' + esc(route || 'Route on openstreetmap.org.') + '</p><p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
     + '<div class="src">Source: <a href="' + big + '" target="_blank" rel="noopener">OpenStreetMap</a></div>';
-  el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); draw(el, alt[+a.dataset.alt], others, api, dir); }));
+  el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    const next = alt[+a.dataset.alt];
+    if (!dir) { draw(el, next, others, api, dir, '', origin); return; }
+    routeFor(origin, next).then((line) => draw(el, next, others, api, dir, line, origin)).catch(() => draw(el, next, others, api, dir, route, origin));
+  }));
 }
 
 async function run(text, api) {
@@ -60,16 +123,25 @@ async function run(text, api) {
       + '<div class="src">Source: <a href="https://www.openstreetmap.org/#map=2/20/0" target="_blank" rel="noopener">OpenStreetMap</a></div>';
     return 'place';
   }
+  let rs = [], down = false;
+  try { rs = await meteoPlaces(place); } catch (_) { down = true; }
+  if (!rs.length) {
+    try { const w = await wikiPlace(place); if (w) rs = [w]; }
+    catch (_) { down = true; }
+  }
+  if (!api._pageStill(el)) return 'place';
+  if (!rs.length) {
+    el.innerHTML = down
+      ? '<h2>' + esc(place) + '</h2><p>The map service didn\'t answer just now. Ask again in a moment.</p>'
+      : '<h2>' + esc(place) + '</h2><p>I couldn\'t find that place yet. Try a city or town name, like "map of Lisbon".</p>';
+    if (!down && api.reportMiss) api.reportMiss(text);
+    return 'none';
+  }
   try {
-    let rs = [];
-    for (const q of placeTries(place)) {
-      const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(q)).then((r) => r.json()); // void-review: ok: tried in order, stops at the first name that resolves (a fallback, not a batch)
-      rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
-      if (rs.length) break;
-    }
+    const origin = dir ? await originOf() : null;
+    const route = dir ? await routeFor(origin, rs[0]) : '';
     if (!api._pageStill(el)) return 'place';
-    if (!rs.length) { el.innerHTML = '<h2>' + esc(place) + '</h2><p>I couldn\'t find that place yet. Try a city or town name, like "map of Lisbon".</p>'; if (api.reportMiss) api.reportMiss(text); return 'none'; }
-    draw(el, rs[0], rs, api, !!dir);
+    draw(el, rs[0], rs, api, !!dir, route, origin);
     return 'place';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
