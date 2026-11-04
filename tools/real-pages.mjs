@@ -87,7 +87,7 @@ export const SPECS = {
     const st = await t.waitText('#st', /aspects ahead|surpassed/, 15000); t.ok(/\d+ of \d+ aspects ahead|surpassed/.test(st), 'the standing comes from the gate evidence: ' + st.slice(0, 60));
   },
   '/conquered/': async (t) => {
-    const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects ahead/.test(m), 'the current matchup shows its measured aspects');
+    const m = (await t.p.locator('body').innerText()); t.ok(/\d+ of \d+ aspects ahead|ahead of \S+ on \d+ of \d+ aspects/.test(m), 'the current matchup shows its measured aspects'); // the Versus card says "Verse is ahead of <site> on 11 of 15 aspects" since 728ae5635
     await t.click('.tower-floor'); const d = await t.waitText('#detail', /aspects ahead of/, 5000); t.ok(/^\d+ of \d+ aspects ahead of \S+/.test(d), 'a floor, tapped, reads its measured line: ' + d.slice(0, 60));
   },
   '/vat/': async (t) => { // 1000 with 22% VAT in it: 180,33 VAT and 819,67 net, to the kopeck; adding 20% to 5000 is 6 000,00

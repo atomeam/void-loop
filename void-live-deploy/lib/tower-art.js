@@ -7,7 +7,7 @@ import { layout } from '../skills/mini/tower.js';
 
 const W = 320, H = 260, GROUND = 228, TOP = 46;
 const ESC = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const clip = (s, n) => { const t = String(s || ''); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+const clip = (s, n) => { const t = String(s || ''); return t.length > n ? t.slice(0, n - 1) + '…' : t; }; // ellipsis-ok: a site name drawn inside the tower picture, the full name is on the card
 // the same stars every time for the same tower (a seeded walk), so a redraw does not twinkle the sky around
 const rnd = (seed) => { let x = seed >>> 0 || 1; return () => ((x = (x * 1664525 + 1013904223) >>> 0) / 4294967296); };
 
