@@ -17,9 +17,21 @@ export function tierFor(infraCents) {
   return best;
 }
 
-// Anything that leaves the site or can't be undone stops for an approval card first.
-const GATED = /\b(send|email|text|dm|message|post|tweet|publish|pay|buy|purchase|order|book|transfer|delete|remove|cancel|sign|submit)\b/i;
-export const needsYes = (ask) => GATED.test(String(ask || ''));
+// Anything that leaves the site or can't be undone stops for an approval card first. What counts is the verb given as an order (the ask's
+// first word, or after "please", "can you", "then", "I need to"...) followed by who or what it acts on, not the same word as a noun:
+// "text my mom" and "book a table" wait for a yes; "encode the text hello world in base64", "book recommendations" and "sort in order" do not
+// (2026-11-04: the base64 ask sat waiting for a yes because "text" was anywhere in it). Delete, remove and cancel wait only when what goes is
+// outside the page (an account, a subscription, files), so "remove duplicates from this list" is just done.
+const LEAD = String.raw`(?:^|[.!?;:]\s+|\b(?:please|then|and|also|now|just|can you|could you|would you|will you|go ahead and|help me|(?:i|we)(?: really)? (?:need|want|have|would like|'d like) (?:you )?to|i want you to)\s+)`;
+const SENDS = String.raw`(?:send|e-?mail|text|dm|message|post|tweet|publish|pay|buy|purchase|order|book|reserve|transfer|wire|venmo|submit|subscribe|unsubscribe|reply|sign(?= up| me| the| this| my| it| in))`;
+const ONTO = String.raw`(?:me|us|him|her|them|it|this|that|these|those|a|an|the|my|our|your|his|their|some|all|everyone|up|out|in|to|for|on|back|\$|\d)\b`;
+const ORDERED = new RegExp(LEAD + SENDS + String.raw`\s+(?:` + ONTO + String.raw`|\S+@\S+|@\w|\+?\d)`, 'i');
+const NEXT = new RegExp(LEAD + SENDS + String.raw`\s+(\S+)`, 'gi'); // "email Bob": the word after the verb is a name, as typed
+const GONE = new RegExp(LEAD + String.raw`(?:delete|remove|cancel|close|erase|wipe|terminate|deactivate)\s+(?:\S+\s+){0,3}?(?:account|subscriptions?|orders?|bookings?|reservations?|appointments?|memberships?|e-?mails?|messages?|posts?|tweets?|files?|folders?|repos?|repository|photos?|data|payments?|plan|card|profile|page|channel|server|database|branch|domain|website|site)\b`, 'i');
+export const needsYes = (ask) => {
+  const s = String(ask || '').trim();
+  return ORDERED.test(s) || GONE.test(s) || [...s.matchAll(NEXT)].some((m) => /^[A-Z][a-z]/.test(m[1]));
+};
 
 const STOP = new Set('a an the to for of and or in on me my it is be with this that what how can you please make write give some any list top best one two three four five six seven ten things thing stuff'.split(' '));
 const stem = (w) => (w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);

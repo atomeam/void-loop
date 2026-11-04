@@ -3,6 +3,16 @@ import { test } from 'node:test';
 import { tierFor, needsYes, pickBot, brief } from '../void-live-deploy/lib/agent-core.js';
 test('tier is free until a realized month is in the pot', () => { assert.equal(tierFor(0).name, 'free'); assert.equal(tierFor(499).name, 'free'); assert.equal(tierFor(500).name, 'strong'); });
 test('sends, pays and deletes wait for a yes', () => { assert.ok(needsYes('send an email to Bob')); assert.ok(needsYes('pay the bill')); assert.ok(!needsYes('plan a trip to Savannah')); });
+// the verb as an order waits for a yes; the same word as a noun, a how-to question or a draft does not (2026-11-04: "encode the text hello
+// world in base64" sat on needs_yes because "text" was in it)
+test('an order to send, pay, book or delete waits; the same word as a noun does not', () => {
+  for (const a of ['Text my mom that I am late', 'Book a table for two at 7', 'Can you email Sarah the notes?', 'Please post this on X', 'Order a large pizza',
+    'delete my account', 'Cancel my Netflix subscription', 'I need to send a message to my landlord', 'email bob@example.com the plan', 'Buy 3 shares of Apple',
+    'Transfer $50 to Jim', 'Sign me up for the newsletter', 'Reply to her email', 'dm @alex about tomorrow', 'Remove all the photos from my Google Drive']) assert.ok(needsYes(a), a);
+  for (const a of ['Encode the text hello world in base64', 'Book recommendations for summer', 'Sort these numbers in ascending order', 'What is the order of operations?',
+    'Remove duplicates from this list', 'How do I send a fax?', 'Write an email to my boss asking for Friday off', 'Summarize this text', 'Text message ideas for a birthday',
+    'Sign language basics', 'best way to book a cheap flight', 'Remove the spaces from this text', 'Email etiquette tips']) assert.ok(!needsYes(a), a);
+});
 test('picks the matching bot', () => { assert.equal(pickBot('convert 5 miles to km', [{ name: 'calculate', description: 'unit conversion', examples: ['5 miles in km'] }, { name: 'page', description: 'topics' }]).name, 'calculate'); assert.equal(pickBot('zzz', []).name, 'verse'); });
 test('one coincidental word is not a match: Verse answers itself', () => {
   const reg = [{ id: 'keyword-finder', cat: 'writing', job: 'Top three key words in a text', status: 'live' }, { id: 'word-counter', cat: 'writing', job: 'Counts words', status: 'live' }];
