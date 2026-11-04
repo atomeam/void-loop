@@ -66,3 +66,19 @@ test('the route is rate-limited, /status/ opens the panel, and the panel is on /
   assert.match(a, /\/api\/status/); assert.match(a, /PROBES/);
   assert.ok(S.PROBES.some((p) => p.path === '/api/mcp' && p.method === 'POST'));
 });
+
+test('the panel times Verse\'s pages and its APIs, every probe a cheap read, and says how many answered', () => {
+  const kinds = new Set(S.PROBES.map((p) => p.kind));
+  assert.deepEqual([...kinds].sort(), ['api', 'page']);
+  assert.ok(S.PROBES.filter((p) => p.kind === 'page').length >= 6 && S.PROBES.filter((p) => p.kind === 'api').length >= 5);
+  for (const p of S.PROBES) {
+    assert.match(p.path, /^\/[\w./-]*$/, p.name + ': a path on this site');
+    assert.ok(p.method === 'GET' || (p.method === 'POST' && p.path === '/api/mcp' && /"method":"ping"/.test(p.body)), p.name + ': a read, never a write or a model call');
+  }
+  assert.equal(new Set(S.PROBES.map((p) => p.path)).size, S.PROBES.length, 'no path timed twice');
+  assert.deepEqual(S.probeSummary([{ ok: true, ms: 100 }, { ok: true, ms: 300 }, { ok: false, ms: null }]), { total: 3, ok: 2, down: 1, median: 200, all: false });
+  assert.deepEqual(S.probeSummary([{ ok: true, ms: 50 }]), { total: 1, ok: 1, down: 0, median: 50, all: true });
+  assert.deepEqual(S.probeSummary([]), { total: 0, ok: 0, down: 0, median: null, all: false });
+  const a = readFileSync(new URL('../void-live-deploy/autopilot/app.js', import.meta.url), 'utf8');
+  assert.match(a, /probeSummary/); assert.match(a, /APIs and feeds/);
+});
