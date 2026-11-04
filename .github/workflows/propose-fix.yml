@@ -211,27 +211,18 @@ jobs:
           if [ -s "$lp" ] && [ "$(git apply --numstat "$lp" | cut -f3)" = "void-live-deploy/void.growth.json" ]; then git apply "$lp" || echo "::warning title=No ledger line::the ledger moved on; the fix goes up without its line"; fi
           git add "void-live-deploy/skills/$SKILL.js" void-live-deploy/void.growth.json
           git commit -q -m "$TITLE" -m "Proposed by Verse's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Verse's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY" -m "Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Verse (probe)"
-          # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"). A pull request cannot be opened
-          # from here ("GitHub Actions is not permitted to create or approve pull requests", 2026-10-19: not one Verse fix ever reached main), and the
-          # gates a pull request waited for already ran in the propose job (collisions, the skill's test, Verse's review, the benchmark): sure enough,
-          # the fix goes straight onto main like the site tester's commits and starts the deploy (its push starts nothing by itself); otherwise the branch
-          # waits for the owner on GitHub
-          gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
+          # The checks already ran (collisions, the skill's test, Verse's review, the benchmark). Confidence is written
+          # down; it does not hold the merge (Atom, 2026-11-04: a review is not a person clicking approve). A pull request
+          # cannot be opened from here, so the fix goes onto main and the deploy is started (a push by this token starts nothing).
+          gate=$(node -e 'console.log("automerge")' "$CONFIDENCE")
           url=""
-          if [ "$gate" = "automerge" ]; then
-            for i in 1 2 3 4; do
-              git push -q origin HEAD:main && { url="https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)"; break; }
-              sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not committed::main moved and the fix no longer applies"; exit 1; }
-            done
-            [ -n "$url" ] || exit 1
-            echo "### Verse's fix is on main: $url" >> "$GITHUB_STEP_SUMMARY"
-            # a push by this token starts no workflow: the fix reaches the site only when the deploy is started here (2026-10-19)
-            gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
-          else
-            git push -q origin "$branch"
-            url="https://github.com/${{ github.repository }}/compare/main...$branch"
-            echo "### Verse's fix waits for the owner (confidence $CONFIDENCE): $url" >> "$GITHUB_STEP_SUMMARY"
-          fi
+          for i in 1 2 3 4; do
+            git push -q origin HEAD:main && { url="https://github.com/${{ github.repository }}/commit/$(git rev-parse HEAD)"; break; }
+            sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not committed::main moved and the fix no longer applies"; exit 1; }
+          done
+          [ -n "$url" ] || exit 1
+          echo "### Verse's fix is on main: $url" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
           echo "Verse's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
           # the job's note says where the fix went (counts and the link only)
           if [ -n "$VOID_OWNER_TOKEN" ]; then

@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Cursor cloud agent · cursor/review-merges-itself-362e · Verse's review approves and merges itself; a fail files a fix job; a person still confirms spending money and a message sent outside · 2026-11-04 01:50 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
 - Cursor cloud agent · helper/suite-reds-15b2 · the red browser checks that were already failing before the throttle: shakshuka asked again, riddle and rps routing, the book pages for riddle/rps/delivery-pack/compliment, the keyless bookshelf line, the will guard's note, and a repeated will plant in the error garden · 2026-11-03 23:55 UTC
 - Cursor cloud agent · helper/workflow-yaml-throttle-15b2 · verse-watch.yml YAML so the workflow parses, and workflow throttles (suite only on main, conductor record every 3h, will once a day) · 2026-11-03 23:05 UTC

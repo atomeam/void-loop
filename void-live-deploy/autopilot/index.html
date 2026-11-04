@@ -70,6 +70,11 @@
 <main>
   <h1>Status and autopilot</h1>
   <p class="lede">Is Verse up, and what did it do on its own? Status first: uptime from its own hourly guards, speed timed by your browser, the last deploy and incidents. Then what it did on its own: no person and no Claude session. Every number here is read live from Verse's repository and its own conductor; a source that does not answer says so instead of showing a guess.</p>
+  <h2>The review decides</h2>
+  <div class="panel" id="verdict">
+    <p id="verdict-line">Reading the outcome exam.</p>
+    <p class="note">A pass merges the pull request. A fail files a fix job and comments the reason. Spending money, and a message sent to someone outside, still wait on the confirm line. <a href="/progress/">The outcome exam</a> · <a href="/code-review/">Code review</a></p>
+  </div>
 
   <h2 id="status">Status: is Verse up right now?</h2>
   <div class="panel" aria-live="polite">
@@ -115,6 +120,19 @@
   <footer>Sources: GitHub's public API for <a href="https://github.com/atomeam/void-loop">atomeam/void-loop</a> (commits on main and deploy runs), the conductor's record <code>domains/conductor.json</code> (written every hour by its own clock), <code>/api/coder</code> <code>/incidents.json</code>, <code>/api/status</code> (Verse's hourly guards) and <code>/api/selfcheck</code> (every page opened after each deploy). "On its own" means a commit whose author is one of Verse's own loops (verse-loop, github-actions), not housekeeping like regenerated files. <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module" src="./app.js"></script>
+<script>
+fetch('/progress/exam.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (j) {
+  var cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
+  var line = document.getElementById('verdict-line');
+  if (!line) return;
+  line.textContent = failed.length
+    ? 'Verdict: fix. The outcome exam regressed: ' + failed.map(function (c) { return c.ask; }).join('; ')
+    : 'Verdict: merge, when Verse\'s review and the merge gate pass. The outcome exam has no regression (' + cases.length + ' outcomes hold).';
+}).catch(function () {
+  var line = document.getElementById('verdict-line');
+  if (line) line.textContent = 'The outcome exam did not load. Verse\'s review and the merge gate still decide.';
+});
+</script>
 <script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
 </body>
 </html>

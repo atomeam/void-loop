@@ -1,0 +1,8 @@
+{
+  "note": "The outcome exam (/progress/). A case that passed here and fails now is a regression, and the pull request is not merged (tools/outcome-exam.mjs).",
+  "cases": [
+    { "id": "time-tokyo", "ask": "time in Tokyo", "ok": true },
+    { "id": "time-convert", "ask": "3pm London to Tokyo", "ok": true },
+    { "id": "not-a-clock", "ask": "what is the weather", "ok": true }
+  ]
+}

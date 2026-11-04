@@ -88,6 +88,7 @@ jobs:
           node tools/review-post.mjs void-inline.json --repo "$REPO" --pr "$PR" --sha "$(git rev-parse HEAD)"
 
       - name: Gate on bugs and risks
+        id: bugs
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
@@ -97,6 +98,7 @@ jobs:
       # no real key in any added line, in any file type (tools/secret-scan.mjs; the review above skips docs and data, where a pasted key
       # in a log or a note is likeliest). It prints the file, the line and the kind, never the value, and blocks the merge.
       - name: No secrets in the added lines
+        id: secrets
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
@@ -107,6 +109,7 @@ jobs:
       # logs and fixtures (tools/privacy-scan.mjs, kind and line only), and nothing secret in what the site ships, owner checks
       # that read env, /api rate limited (tools/runtime-guard.mjs)
       - name: No personal data, nothing secret in the built site
+        id: privacy
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
@@ -118,6 +121,7 @@ jobs:
       # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
       - name: Every skill file is still listed (only when the PR touches skills/)
+        id: skills
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
@@ -132,6 +136,7 @@ jobs:
       # every module the shared tool-page chain loads (lib/toolkit.js and its imports) stays named in the browser suite's shared list
       # (tools/shared-chain.test.mjs): #1663 added one, the list did not name it, and shard 1 went red on main after the merge. Seconds, no browser.
       - name: The shared tool-page chain matches the browser suite's list
+        id: chain
         if: ${{ inputs.report_only != true }}
         run: node --test tools/shared-chain.test.mjs || { echo "::error title=Shared tool-page chain::a module the toolkit chain loads is not in SHARED_TOOL_FILES (tools/test_void.mjs); see the test output above"; exit 1; }
 
@@ -139,9 +144,49 @@ jobs:
       # #1748 changed void.html and index.html but not void.html's second copy, and the copies check went red on main after the merge
       # (2026-10-30, repaired by 2ea27ede). The same compare runs here, so a PR with a stale copy does not merge. Seconds, no browser.
       - name: The page and its two deploy copies match
+        id: copies
         if: ${{ inputs.report_only != true }}
         run: |
           node -e "const fs=require('fs'),r=(f)=>fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n'),src=r('void.html'),stale=['void-live-deploy/index.html','void-live-deploy/void.html'].filter((f)=>r(f)!==src);if(stale.length){console.log('::error title=Page copies::'+stale.join(' and ')+' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html');process.exit(1)}console.log('void.html and both deploy copies match')"
+
+      # The review decides (Atom, 2026-11-04: a review is not a person clicking approve). A pass comments the verdict and
+      # submits an approving review. A fail comments the reason and files one fix job. Spending money and a message
+      # sent outside stay on the confirm line; this step never holds a pull request for a person.
+      - name: Verdict: merge, or a fix job
+        if: ${{ always() && inputs.report_only != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ steps.pr.outputs.number }}
+          SHA: ${{ steps.pr.outputs.sha }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          BUGS: ${{ steps.bugs.outcome }}
+          SECRETS: ${{ steps.secrets.outcome }}
+          PRIVACY: ${{ steps.privacy.outcome }}
+          SKILLS: ${{ steps.skills.outcome }}
+          CHAIN: ${{ steps.chain.outcome }}
+          COPIES: ${{ steps.copies.outcome }}
+        run: |
+          set +e
+          review=ok
+          for o in "$BUGS" "$SECRETS" "$PRIVACY" "$SKILLS" "$CHAIN" "$COPIES"; do
+            if [ "$o" = "failure" ]; then review=fail; fi
+          done
+          exam=ok
+          examwhy=$(node tools/outcome-exam.mjs --check 2>&1 | tail -n 1)
+          if [ $? -ne 0 ]; then exam=fail; fi
+          node tools/review-decide.mjs --review "$review" --gate ok --exam "$exam" --why "$examwhy" | tee verdict.txt
+          code=$?
+          action=merge; [ "$code" -ne 0 ] && action=fix
+          why=$(sed -n 's/^Verdict: [^ ]* //p' verdict.txt | head -n 1)
+          echo "$why" >> "$GITHUB_STEP_SUMMARY"
+          node tools/review-fix-job.mjs --pr "$PR" --action "$action" --why "$why"
+          if [ "$action" = "merge" ]; then
+            # GitHub may refuse an approving review from this token. The green check and the verdict comment are the decision; automerge merges.
+            body=$(jq -Rs --arg sha "$SHA" '{commit_id:$sha, event:"APPROVE", body:.}' < verdict.txt)
+            echo "$body" | gh api -X POST "repos/$REPO/pulls/$PR/reviews" --input - > /dev/null || echo "approving review was not accepted; the verdict comment stands and automerge merges a green head"
+          fi
+          exit "$code"
 
       # A review the automerge bot dispatched (after merging main into the PR) was started with the workflow's token, so its end
       # fires no workflow_run and automerge never hears it passed; the hourly schedule rarely fires, so #598 sat green for hours

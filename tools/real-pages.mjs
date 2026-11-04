@@ -147,6 +147,12 @@ export const SPECS = {
     t.ok((await t.p.locator('#perks li').count()) >= 4, 'the perks are listed');
     t.ok(/gumroad\.com\/l\/yinmj/.test(await t.p.locator('#buy').getAttribute('href')), 'Join goes to the paid Verse membership');
   },
+  '/progress/': async (t) => {
+    await t.waitText('h1', /Progress/, 8000);
+    await t.waitText('#sum', /No regression|Regressed|did not load/, 8000);
+    t.ok(/time in Tokyo/.test(await t.text('#list')), 'the Tokyo case is on the outcome exam');
+    t.ok(/confirm line/.test(await t.p.locator('main').innerText()), 'money and outside messages stay on the confirm line');
+  },
   '/code-review/': async (t) => {
     await t.fill('#code', 'function login(user, pass) { eval(user); const q = "SELECT * FROM users WHERE name = \'" + user + "\'"; }'); await t.click('#run'); await t.waitText('#out', /\S/, 15000);
     t.ok(/eval|inject|SQL/i.test(await t.text('#out')), 'the review flags eval or SQL injection');

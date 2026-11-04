@@ -1,8 +1,7 @@
 // Verse's fixes, previewed for the owner (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam").
 // The pull requests Verse's own model opened (label "made by Verse", .github/workflows/propose-fix.yml) carry its confidence and
-// the lines they change in their body; one under 0.8 is labelled "waits for owner" instead of automerge. The card
-// (skills/v01d-fixes.js) shows each open one with its confidence, where it changes, and the diff; Approve
-// (functions/api/v01d-fixes.js, owner only) swaps "waits for owner" for automerge, so it merges once Verse's review is clean. Pure.
+// the lines they change in their body. They merge themselves when the review is clean (Atom, 2026-11-04). An old
+// "waits for owner" label is cleared by automerge. The card (skills/v01d-fixes.js) shows each open one. Pure.
 export const REPO = 'atomeam/void-loop';
 // LABEL is the GitHub label's name, an identifier the workflows make (people see Verse)
 export const LABEL = 'made by Verse', WAITS = 'waits for owner', MERGES = 'automerge';
