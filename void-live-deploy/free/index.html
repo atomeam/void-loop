@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Free resources · Verse</title><meta name="description" content="Every free tier, credit, grant and open API Verse runs on, with live quota status.">
-<link rel="icon" href="/icon.svg">
+<link rel="icon" href="/icon.svg"><link rel="canonical" href="https://a-to-mind.com/free/">
+<meta property="og:title" content="Free resources · Verse"><meta property="og:description" content="Every free tier, credit, grant and open API Verse runs on, with live quota status."><meta property="og:image" content="https://a-to-mind.com/og.png"><meta property="og:url" content="https://a-to-mind.com/free/">
+<meta name="verse-handoff" content="in: none; out: none">
 <style>body{margin:0;background:#050505;color:#e8e8e8;font:15px/1.5 system-ui,sans-serif}main{max-width:980px;margin:0 auto;padding:24px 16px}h1{font-size:26px;margin:0 0 4px}p.sub{color:#9a9a9a;margin:0 0 16px}
 .rules{color:#9a9a9a;font-size:13px}h2{font-size:16px;margin:22px 0 6px;text-transform:uppercase;letter-spacing:.06em;color:#bdbdbd}
 table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:6px 8px;border-bottom:1px solid #1d1d1d;vertical-align:top}th{color:#8a8a8a;font-weight:500}
 .on{color:#6fdc8c}.off{color:#8a8a8a}.bar{height:6px;background:#1d1d1d;border-radius:3px;min-width:80px}.bar i{display:block;height:6px;background:#6fdc8c;border-radius:3px}a{color:#9cc9ff}small{color:#8a8a8a}</style></head>
 <body><main><h1>Free resources</h1><p class="sub">What Verse runs on for free, and how much of each is left today. Its router sends every job to the best one that is available and moves on when one runs out.</p>
-<p class="rules" id="rules"></p><div id="out">Loading…</div>
+<p class="rules" id="rules"></p><p><input id="find" type="search" placeholder="Find a resource (e.g. groq, image, grant)" aria-label="Find a resource" style="width:100%;max-width:420px;padding:8px;background:#111;color:#eee;border:1px solid #333;border-radius:6px"> <small id="count"></small></p><div id="out">Loading…</div>
 <p><small><a href="/resources/free.json">The registry as JSON</a> · <a href="/">Verse</a></small></p></main>
 <script type="module">
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -18,10 +20,17 @@ if (!data) { try { const r = await fetch('/resources/free.json'); const j = awai
 if (!data) out.textContent = 'The registry could not load just now.';
 else {
   document.getElementById('rules').textContent = 'Rules: ' + (data.rules || []).join(' · ');
-  const kinds = [...new Set(data.resources.map((r) => r.kind))];
-  out.innerHTML = kinds.map((k) => '<h2>' + esc(k) + '</h2><table><tr><th>Resource</th><th>Free limit</th><th>Today</th><th>Status</th></tr>' + data.resources.filter((r) => r.kind === k).map((r) => {
+  const find = document.getElementById('find');
+  const draw = () => {
+  const q = find.value.trim().toLowerCase();
+  const list = data.resources.filter((r) => !q || [r.id, r.name, r.kind, r.signup, r.note].join(' ').toLowerCase().includes(q));
+  document.getElementById('count').textContent = list.length + ' of ' + data.resources.length + ' resources, ' + data.resources.filter((r) => r.available).length + ' available now';
+  const kinds = [...new Set(list.map((r) => r.kind))];
+  out.innerHTML = (list.length ? '' : '<p>Nothing matches.</p>') + kinds.map((k) => '<h2>' + esc(k) + '</h2><table><tr><th>Resource</th><th>Free limit</th><th>Today</th><th>Status</th></tr>' + list.filter((r) => r.kind === k).map((r) => {
     const pct = r.used != null && r.dailyLimit ? Math.min(100, Math.round(100 * r.used / r.dailyLimit)) : null;
-    return '<tr><td><a href="' + esc(r.terms) + '" rel="noopener">' + esc(r.name) + '</a>' + (r.confirm ? ' <small>(limit to confirm)</small>' : '') + '<br><small>' + esc(r.signup) + '</small></td><td>' + esc(r.limit && (r.limit.n.toLocaleString() + ' ' + r.limit.unit + ' / ' + r.limit.per)) + '</td><td>' + (pct == null ? '<small>–</small>' : '<div class="bar"><i style="width:' + pct + '%"></i></div><small>' + r.used + ' of ' + r.dailyLimit + '</small>') + '</td><td class="' + (r.available ? 'on' : 'off') + '">' + (r.available ? 'available' : 'not routed') + '<br><small>' + esc(r.why) + '</small></td></tr>';
+    return '<tr class="res"><td><a href="' + esc(r.terms) + '" rel="noopener">' + esc(r.name) + '</a>' + (r.confirm ? ' <small>(limit to confirm)</small>' : '') + '<br><small>' + esc(r.signup) + '</small></td><td>' + esc(r.limit && (r.limit.n.toLocaleString() + ' ' + r.limit.unit + ' / ' + r.limit.per)) + '</td><td>' + (pct == null ? '<small>–</small>' : '<div class="bar"><i style="width:' + pct + '%"></i></div><small>' + r.used + ' of ' + r.dailyLimit + '</small>') + '</td><td class="' + (r.available ? 'on' : 'off') + '">' + (r.available ? 'available' : 'not routed') + '<br><small>' + esc(r.why) + '</small></td></tr>';
   }).join('') + '</table>').join('');
+  };
+  find.addEventListener('input', draw); draw();
 }
 </script></body></html>
