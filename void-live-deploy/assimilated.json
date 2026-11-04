@@ -10,14 +10,182 @@
   }
  },
  "counts": {
-  "sites": 263,
+  "sites": 271,
   "surpassed": 2,
   "passed": 143,
-  "assimilated": 8,
+  "assimilated": 11,
   "current": 1,
-  "tried": 109
+  "tried": 114
  },
  "sites": [
+  {
+   "site": "coloradosos.gov",
+   "url": "https://coloradosos.gov/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T18:13:07Z",
+   "page": "",
+   "lane": "",
+   "took": "Colorado Secretary of State",
+   "why": "no floor does its job (The website is a government agency portal for state-level services like elections, business filings, and notary public information. Verse does not have a page)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 8,
+    "why": "not sized yet, hardness 82, Tranco 98161"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "igfonts.io",
+   "url": "https://igfonts.io/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T18:13:03Z",
+   "page": "",
+   "lane": "",
+   "took": "Instagram Fonts Generator (𝓬𝓸𝓹𝔂 𝕒𝕟𝕕 𝓅𝒶𝓈𝓉𝑒) ― IGFonts.io",
+   "why": "no floor does its job (The website is a font generator for social media bios using Unicode characters. While Verse has an 'emoji combos' page for text art and kaomoji, it does not)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 7,
+    "why": "not sized yet, hardness 82, Tranco 168903"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "hexlet.io",
+   "url": "https://hexlet.io/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T18:12:58Z",
+   "page": "",
+   "lane": "",
+   "took": "Hexlet — Learn Programming Online: Python, JavaScript, Java",
+   "why": "no floor does its job (The website is an online programming school providing educational courses and career training. Verse does not have a page for educational platforms or online)",
+   "learned": "",
+   "ease": {
+    "score": 5.4,
+    "place": 6,
+    "why": "not sized yet, hardness 82, Tranco 228778"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "emojiall.com",
+   "url": "https://emojiall.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T18:12:50Z",
+   "page": "/emojis/",
+   "lane": "",
+   "took": "Emoji Dictionary,Copy,Image,Leaderboard...EMOJIALL.com",
+   "why": "its job is emoji, which /emojis/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.5,
+    "place": 5,
+    "why": "not sized yet, hardness 81, Tranco 47216"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "autoconvert.co.uk",
+   "url": "https://autoconvert.co.uk/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T18:12:48Z",
+   "page": "",
+   "lane": "",
+   "took": "Home | AutoConvert",
+   "why": "no floor does its job (The website is a B2B SaaS platform for automotive finance, insurance, and compliance management. Verse does not have a page for enterprise-level CRM, F&I)",
+   "learned": "",
+   "ease": {
+    "score": 5.5,
+    "place": 4,
+    "why": "not sized yet, hardness 81, Tranco 82577"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "watercalculator.org",
+   "url": "https://watercalculator.org/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T18:12:37Z",
+   "page": "/calculators/",
+   "lane": "",
+   "took": "What's Your Water Footprint: Water Footprint Calculator Home Page",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.6,
+    "place": 3,
+    "why": "not sized yet, hardness 80, Tranco 350398"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "onlinepasswordgenerator.ru",
+   "url": "https://onlinepasswordgenerator.ru/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T18:12:24Z",
+   "page": "/password/",
+   "lane": "",
+   "took": "Онлайн генератор паролей",
+   "why": "its job is password generator, which /password/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.6,
+    "place": 2,
+    "why": "not sized yet, hardness 80, Tranco 445639"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "agechecker.net",
+   "url": "https://agechecker.net/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T18:12:19Z",
+   "page": "",
+   "lane": "",
+   "took": "Secure Online Age Verification • AgeChecker.Net",
+   "why": "no floor does its job (none)",
+   "learned": "",
+   "ease": {
+    "score": 5.6,
+    "place": 1,
+    "why": "not sized yet, hardness 79, Tranco 202665"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
   {
    "site": "ehex.de",
    "url": "https://ehex.de/",
