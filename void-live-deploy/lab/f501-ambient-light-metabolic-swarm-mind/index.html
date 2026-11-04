@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#ui { position:fixed; top:10px; left:10px; z-index:100; background:rgba(0,0,20,0.7); padding:10px; border-radius:8px; }
+button, input { margin:4px; }
+canvas { display:block; background:#050510; }
+.portal { position:absolute; width:120px; height:80px; background:rgba(40,80,160,0.6); border:2px solid #6af; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:12px; pointer-events:none; transition:all 0.15s; box-shadow:0 0 20px rgba(100,180,255,0.4); }
+#status { font-size:12px; margin-top:6px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>ambient-light-metabolic-swarm-mind · Verse lab</title>
+<meta name="description" content="Device AmbientLightSensor (or simulated illuminance) supplies a continuous environmental energy flux to a Canvas2D particle swarm (WebGPU compute path reserved as">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="ambient-light-metabolic-swarm-mind · Verse lab">
+<meta property="og:description" content="Device AmbientLightSensor (or simulated illuminance) supplies a continuous environmental energy flux to a Canvas2D particle swarm (WebGPU compute path reserved as">
+<meta property="og:url" content="https://a-to-mind.com/lab/f501-ambient-light-metabolic-swarm-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f501-ambient-light-metabolic-swarm-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F501 Ambient Light Metabolic Swarm Mind</div>
+  <button id="startSensor">Request Light Sensor</button>
+  <label>Light override: <input type="range" id="lightSlider" min="0" max="1000" value="200"></label>
+  <button id="nucleate">Nucleate</button>
+  <button id="seal">Seal</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear</button>
+  <div id="status">Illuminance: -- lux | Particles: 0 | Portals: 0</div>
+</div>
+<canvas id="cv"></canvas>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">ambient-light-metabolic-swarm-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

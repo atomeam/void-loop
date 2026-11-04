@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --energy: 0.3; --hue: 200; }
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family: system-ui, sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.card {
+  position:absolute; width:140px; height:90px; padding:8px; border-radius:12px;
+  background: hsla(var(--hue), 70%, 30%, 0.85); border:1px solid hsla(var(--hue), 80%, 60%, 0.6);
+  color:#fff; font-size:12px; cursor:pointer; user-select:none;
+  transition: background 0.2s, transform 0.1s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.card.high { background: hsla(calc(var(--hue) + 60), 80%, 40%, 0.95); }
+#ui { position:fixed; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; }
+button { margin:4px; padding:6px 10px; background:#223; color:#fff; border:1px solid #445; border-radius:6px; cursor:pointer; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-echo-state-living-dom-mind · Verse lab</title>
+<meta name="description" content="A WebGPU compute shader runs a spatial Echo State Network (reservoir computing): a large grid of recurrent nodes with fixed random sparse connectivity and leaky">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-echo-state-living-dom-mind · Verse lab">
+<meta property="og:description" content="A WebGPU compute shader runs a spatial Echo State Network (reservoir computing): a large grid of recurrent nodes with fixed random sparse connectivity and leaky">
+<meta property="og:url" content="https://a-to-mind.com/lab/f497-webgpu-echo-state-living-dom-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f497-webgpu-echo-state-living-dom-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F497 Echo State Living DOM</div>
+  <button id="seal">Seal (S)</button>
+  <button id="restore">Restore (R)</button>
+  <div id="status">Reservoir: idle</div>
+</div>
+<div id="stage"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-echo-state-living-dom-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

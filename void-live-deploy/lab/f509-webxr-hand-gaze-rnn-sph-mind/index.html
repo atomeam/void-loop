@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; top:0; left:0; }
+#hud { position:absolute; top:10px; left:10px; z-index:10; background:rgba(0,0,0,0.6); padding:8px 12px; border-radius:8px; font-size:13px; max-width:280px; }
+button { margin:2px; padding:4px 8px; background:#223; color:#fff; border:1px solid #445; border-radius:4px; cursor:pointer; }
+.orb { position:absolute; width:40px; height:40px; border-radius:50%; background:radial-gradient(circle, #8af, #24a); opacity:0.85; pointer-events:auto; cursor:pointer; box-shadow:0 0 12px #4af; transition:transform 0.2s; }
+.orb:hover { transform:scale(1.15); }
+#status { font-size:11px; color:#8af; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebXR Hand-Gaze Causal RNN Orchestrating WebGPU SPH Particle Mind · Verse lab</title>
+<meta name="description" content="Slug: webxr-hand-gaze-rnn-sph-mind">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebXR Hand-Gaze Causal RNN Orchestrating WebGPU SPH Particle Mind · Verse lab">
+<meta property="og:description" content="Slug: webxr-hand-gaze-rnn-sph-mind">
+<meta property="og:url" content="https://a-to-mind.com/lab/f509-webxr-hand-gaze-rnn-sph-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f509-webxr-hand-gaze-rnn-sph-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div><b>F-509 SPH Mind</b></div>
+  <div id="status">Initializing…</div>
+  <button id="seal">Seal Genome</button>
+  <button id="transfer">Transfer (Broadcast)</button>
+  <button id="restore">Restore</button>
+  <button id="xr">Enter XR (if avail)</button>
+  <div id="fitness">Fitness: —</div>
+  <div id="params">Visc: — Press: —</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebXR Hand-Gaze Causal RNN Orchestrating WebGPU SPH Particle Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
