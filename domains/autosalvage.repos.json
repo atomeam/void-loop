@@ -1,0 +1,131 @@
+{
+  "_": "the owner's GitHub repos, read-only (gh repo list atomeam)",
+  "repos": [
+    {
+      "name": "a-to-mind.com",
+      "description": "",
+      "updatedAt": "2026-11-04T03:09:41Z",
+      "size": 13419,
+      "archived": false
+    },
+    {
+      "name": "adventure-lab",
+      "description": "",
+      "updatedAt": "2026-06-13T01:57:47Z",
+      "size": 72,
+      "archived": false
+    },
+    {
+      "name": "ALPHA",
+      "description": "Alpha — consolidated AtoMind ecosystem (backend :8080, frontend :5173, trust-first integration routing)",
+      "updatedAt": "2026-06-14T09:08:00Z",
+      "size": 1469,
+      "archived": false
+    },
+    {
+      "name": "atomarcade-bridge",
+      "description": "",
+      "updatedAt": "2026-06-14T09:19:57Z",
+      "size": 310,
+      "archived": false
+    },
+    {
+      "name": "auto-deploy-action",
+      "description": "Automated deployment for any platform with zero configuration. Supports Vercel, Netlify, Cloudflare Pages, Railway, Render.",
+      "updatedAt": "2026-06-12T06:52:51Z",
+      "size": 231,
+      "archived": false
+    },
+    {
+      "name": "autosalvage",
+      "description": "Scan, classify, and safely migrate legacy repositories",
+      "updatedAt": "2026-08-02T05:19:45Z",
+      "size": 13,
+      "archived": false
+    },
+    {
+      "name": "Broke",
+      "description": "",
+      "updatedAt": "2026-05-06T04:56:03Z",
+      "size": 0,
+      "archived": false
+    },
+    {
+      "name": "Crypto-Cryptids",
+      "description": "pokemon clone with cryptids merging crypto assets with legendary creatures",
+      "updatedAt": "2026-05-06T05:40:12Z",
+      "size": 158,
+      "archived": false
+    },
+    {
+      "name": "fire-ember-mountain-cabin",
+      "description": "",
+      "updatedAt": "2026-09-28T02:52:47Z",
+      "size": 6682,
+      "archived": false
+    },
+    {
+      "name": "glassbox",
+      "description": "Public execution ledgers for A-to-Mind Glass-Box Operator runs. Proof of work is the PR, not a marketing page.",
+      "updatedAt": "2026-09-20T22:37:01Z",
+      "size": 11,
+      "archived": false
+    },
+    {
+      "name": "hold",
+      "description": "A-to-Mind Phase 1.5 — CRA Art.14 clock, human hold-gate, AlphaGenome dry-run. Not Aether.",
+      "updatedAt": "2026-09-20T22:43:31Z",
+      "size": 56474,
+      "archived": false
+    },
+    {
+      "name": "HomeBase-",
+      "description": "HomeBase",
+      "updatedAt": "2026-10-17T11:28:10Z",
+      "size": 340,
+      "archived": false
+    },
+    {
+      "name": "infinite-briefing",
+      "description": "Infinite Briefing — satire outlet. SATIRE not a government briefing.",
+      "updatedAt": "2026-09-20T07:30:53Z",
+      "size": 2,
+      "archived": false
+    },
+    {
+      "name": "opencode_cli",
+      "description": "Skill that knows how to call opencode_cli headless ",
+      "updatedAt": "2026-08-02T05:00:31Z",
+      "size": 32,
+      "archived": false
+    },
+    {
+      "name": "promise-ledger",
+      "description": "First-party Promise Ledger checkpoints for a-to-mind.com. Baseline census only until a human approves. No notify.",
+      "updatedAt": "2026-08-29T00:36:24Z",
+      "size": 5,
+      "archived": false
+    },
+    {
+      "name": "the-void",
+      "description": "The Void — a second brain. Pages, wiki, graph, Inbox, monthly room.",
+      "updatedAt": "2026-09-12T17:06:16Z",
+      "size": 2087,
+      "archived": false
+    },
+    {
+      "name": "void-loop",
+      "description": "",
+      "updatedAt": "2026-11-04T04:54:27Z",
+      "size": 118722,
+      "archived": false
+    },
+    {
+      "name": "wix",
+      "description": "",
+      "updatedAt": "2026-06-12T05:23:59Z",
+      "size": 165,
+      "archived": false
+    }
+  ]
+}

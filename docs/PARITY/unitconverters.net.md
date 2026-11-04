@@ -11,8 +11,8 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Length, weight, volume and more | Convert | have | its live page (2026-10-28): "lculator Unit Converter Express Version Length Temperature Area Volume Weight Time From: To: Find the Units to" | void-live-deploy/convert/index.html:60 `ia-live="polite">1 m in every length unit</p>` |
-| Hundreds of units | Convert | have | its live page (2026-10-28): "a Volume Weight Time From: To: Find the Units to Convert From Unit: To Unit: e.g. kilogram e.g. lbs Common Con" | void-live-deploy/convert/index.html:66 `<ul id="units" aria-label="Every unit of this kind"><li data-unit="m" class="from"><labe` |
+| Length, weight, volume and more | Convert | have | its live page (2026-10-28): "lculator Unit Converter Express Version Length Temperature Area Volume Weight Time From: To: Find the Units to" | void-live-deploy/convert/index.html:61 `ia-live="polite">1 m in every length unit</p>` |
+| Hundreds of units | Convert | have | its live page (2026-10-28): "a Volume Weight Time From: To: Find the Units to Convert From Unit: To Unit: e.g. kilogram e.g. lbs Common Con" | void-live-deploy/convert/index.html:67 `<ul id="units" aria-label="Every unit of this kind"><li data-unit="m" class="from"><labe` |
 | Currency | Convert | missing | its live page (2026-10-28): "Energy Converter Volume - Dry Converter Currency Converter Case Converter Power Converter Force Converter Time" | no sign of it in the source of /convert/ |
 | UnitConverters.net | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | Area | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

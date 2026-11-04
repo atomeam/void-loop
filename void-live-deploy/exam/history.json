@@ -6313,5 +6313,1875 @@
       "domain": "images",
       "score": 73.9
     }
+  },
+  {
+    "at": "2026-11-04T05:16:16.527Z",
+    "against": "live",
+    "week": "2026-W45",
+    "scale": 2,
+    "domains": {
+      "videos": {
+        "score": 98.5,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the trailer",
+            "failed": [
+              "rival"
+            ],
+            "score": 87.5
+          },
+          {
+            "ask": "joue une vidéo des baleines",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "podcasts": {
+        "score": 84,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the latest episode of planet money",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the latest episode of freakonomics radio",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the latest episode of science vs",
+            "failed": [
+              "fast"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the latest episode of stuff you should know",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of crime junkie",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of the moth",
+            "failed": [
+              "audio"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "play the latest episode of npr news now",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of my favorite murder",
+            "failed": [
+              "audio",
+              "show",
+              "episode"
+            ],
+            "score": 57.1
+          },
+          {
+            "ask": "play the podcast",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the episode before that",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "pon el último episodio de radiolab",
+            "failed": [
+              "answered",
+              "skill",
+              "fast",
+              "audio",
+              "episode"
+            ],
+            "score": 28.6
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "064be875",
+              "failed": [
+                "audio"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "songs": {
+        "score": 97.2,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play yesterday",
+            "failed": [
+              "skill",
+              "audio",
+              "rival"
+            ],
+            "score": 50
+          }
+        ],
+        "holdout": {
+          "score": 95,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "3e60a559",
+              "failed": [
+                "audio"
+              ],
+              "score": 80
+            }
+          ]
+        }
+      },
+      "weather": {
+        "score": 98.1,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "weather",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "météo à lyon",
+            "failed": [
+              "skill"
+            ],
+            "score": 83.3
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "directions": {
+        "score": 97.4,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "directions to springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "cómo llego al museo del prado",
+            "failed": [
+              "skill",
+              "route"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "recipes": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "recipe",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "receta de guacamole",
+            "failed": [
+              "skill",
+              "method"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "calculator": {
+        "score": 98.9,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "if 3 apples cost 2.40 how much do 7 cost",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "news": {
+        "score": 97.8,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "and the science ones?",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "actualités",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "sports": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "scores",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "resultado del real madrid",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "ac88deeb",
+              "failed": [
+                "skill"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "emoji": {
+        "score": 85,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "heart emoji",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "emoji feu",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "emoji for thank you",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "translate": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "translate spring",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "comment dit-on bonjour en anglais",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "units": {
+        "score": 82.5,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "1 byte in bits",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "convert 2",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "5 milles en kilomètres",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "maps": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "map of Springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "mapa de kioto",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "show me Paris on a map",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "timers": {
+        "score": 80,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "set a timer for 90 seconds",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "add one minute",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "timer for 5",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "temporizador de 3 minutos",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "set a timer for 45 seconds",
+            "failed": [
+              "mobile",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "images": {
+        "score": 73.9,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "draw a red circle",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "picture of a cat",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "image",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "dessine un cercle rouge",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "make the picture bigger",
+            "failed": [
+              "skill",
+              "mobile"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "prices": {
+        "score": 83.3,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "price",
+            "failed": [
+              "fast",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "precio del bitcoin",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "how much is a gallon of milk",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "definitions": {
+        "score": 83.3,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "etymology of salary",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "define zorbleflux",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "qué significa serendipia",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "wordproblems": {
+        "score": 100,
+        "of": 6,
+        "measured": 6,
+        "fails": []
+      },
+      "code": {
+        "score": 96.7,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "http status 404",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      }
+    },
+    "lowest": {
+      "domain": "images",
+      "score": 73.9
+    }
+  },
+  {
+    "at": "2026-11-04T05:55:55.407Z",
+    "against": "live",
+    "week": "2026-W45",
+    "scale": 2,
+    "domains": {
+      "videos": {
+        "score": 98.5,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the trailer",
+            "failed": [
+              "rival"
+            ],
+            "score": 87.5
+          },
+          {
+            "ask": "joue une vidéo des baleines",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "podcasts": {
+        "score": 85.6,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the latest episode of this american life",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the latest episode of stuff you should know",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of crime junkie",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of the moth",
+            "failed": [
+              "audio"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "play the latest episode of npr news now",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of my favorite murder",
+            "failed": [
+              "audio",
+              "show",
+              "episode"
+            ],
+            "score": 57.1
+          },
+          {
+            "ask": "play the podcast",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the episode before that",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "pon el último episodio de radiolab",
+            "failed": [
+              "answered",
+              "skill",
+              "fast",
+              "audio",
+              "episode"
+            ],
+            "score": 28.6
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "064be875",
+              "failed": [
+                "audio"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "songs": {
+        "score": 97.2,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play yesterday",
+            "failed": [
+              "skill",
+              "audio",
+              "rival"
+            ],
+            "score": 50
+          }
+        ],
+        "holdout": {
+          "score": 95,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "3e60a559",
+              "failed": [
+                "audio"
+              ],
+              "score": 80
+            }
+          ]
+        }
+      },
+      "weather": {
+        "score": 96.7,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "weather",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "météo à lyon",
+            "failed": [
+              "skill",
+              "temp",
+              "close"
+            ],
+            "score": 57.1
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "directions": {
+        "score": 97.4,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "directions to springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "cómo llego al museo del prado",
+            "failed": [
+              "skill",
+              "route"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "recipes": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "recipe",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "receta de guacamole",
+            "failed": [
+              "skill",
+              "method"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "calculator": {
+        "score": 98.9,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "if 3 apples cost 2.40 how much do 7 cost",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "news": {
+        "score": 97.8,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "and the science ones?",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "actualités",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "sports": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "scores",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "resultado del real madrid",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "ac88deeb",
+              "failed": [
+                "skill"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "emoji": {
+        "score": 85,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "heart emoji",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "emoji feu",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "emoji for thank you",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "translate": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "translate spring",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "comment dit-on bonjour en anglais",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "units": {
+        "score": 82.5,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "1 byte in bits",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "convert 2",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "5 milles en kilomètres",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "maps": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "map of Springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "mapa de kioto",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "show me Paris on a map",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "timers": {
+        "score": 80,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "set a timer for 90 seconds",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "add one minute",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "timer for 5",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "temporizador de 3 minutos",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "set a timer for 45 seconds",
+            "failed": [
+              "mobile",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "images": {
+        "score": 73.9,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "draw a red circle",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "picture of a cat",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "image",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "dessine un cercle rouge",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "make the picture bigger",
+            "failed": [
+              "skill",
+              "mobile"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "prices": {
+        "score": 80,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "100 usd in eur",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "price",
+            "failed": [
+              "fast",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "precio del bitcoin",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "how much is a gallon of milk",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "definitions": {
+        "score": 83.3,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "etymology of salary",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "define zorbleflux",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "qué significa serendipia",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "wordproblems": {
+        "score": 100,
+        "of": 6,
+        "measured": 6,
+        "fails": []
+      },
+      "code": {
+        "score": 96.7,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "http status 404",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      }
+    },
+    "lowest": {
+      "domain": "images",
+      "score": 73.9
+    }
+  },
+  {
+    "at": "2026-11-04T06:25:19.574Z",
+    "against": "live",
+    "week": "2026-W45",
+    "scale": 2,
+    "domains": {
+      "videos": {
+        "score": 98.5,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the trailer",
+            "failed": [
+              "rival"
+            ],
+            "score": 87.5
+          },
+          {
+            "ask": "joue une vidéo des baleines",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "podcasts": {
+        "score": 85.6,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play the latest episode of planet money",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the latest episode of stuff you should know",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of crime junkie",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of the moth",
+            "failed": [
+              "audio"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "play the latest episode of npr news now",
+            "failed": [
+              "audio",
+              "episode"
+            ],
+            "score": 71.4
+          },
+          {
+            "ask": "play the latest episode of my favorite murder",
+            "failed": [
+              "audio",
+              "show",
+              "episode"
+            ],
+            "score": 57.1
+          },
+          {
+            "ask": "play the podcast",
+            "failed": [
+              "audio"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "play the episode before that",
+            "failed": [
+              "skill"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "pon el último episodio de radiolab",
+            "failed": [
+              "answered",
+              "skill",
+              "fast",
+              "audio",
+              "episode"
+            ],
+            "score": 28.6
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "064be875",
+              "failed": [
+                "audio"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "songs": {
+        "score": 97.2,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "play yesterday",
+            "failed": [
+              "skill",
+              "audio",
+              "rival"
+            ],
+            "score": 50
+          }
+        ],
+        "holdout": {
+          "score": 95,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "3e60a559",
+              "failed": [
+                "audio"
+              ],
+              "score": 80
+            }
+          ]
+        }
+      },
+      "weather": {
+        "score": 97.2,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "weather",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "météo à lyon",
+            "failed": [
+              "skill",
+              "temp"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "directions": {
+        "score": 97.4,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "directions to springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 85.7
+          },
+          {
+            "ask": "cómo llego al museo del prado",
+            "failed": [
+              "skill",
+              "route"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "recipes": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "recipe",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "receta de guacamole",
+            "failed": [
+              "skill",
+              "method"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "calculator": {
+        "score": 98.9,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "if 3 apples cost 2.40 how much do 7 cost",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "news": {
+        "score": 97.8,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "and the science ones?",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "actualités",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ],
+        "holdout": {
+          "score": 100,
+          "of": 4,
+          "fresh": false,
+          "fails": []
+        }
+      },
+      "sports": {
+        "score": 96.3,
+        "of": 18,
+        "measured": 18,
+        "fails": [
+          {
+            "ask": "scores",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          },
+          {
+            "ask": "resultado del real madrid",
+            "failed": [
+              "skill",
+              "board"
+            ],
+            "score": 66.7
+          }
+        ],
+        "holdout": {
+          "score": 95.8,
+          "of": 4,
+          "fresh": false,
+          "fails": [
+            {
+              "id": "ac88deeb",
+              "failed": [
+                "skill"
+              ],
+              "score": 83.3
+            }
+          ]
+        }
+      },
+      "emoji": {
+        "score": 85,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "heart emoji",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "emoji feu",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "emoji for thank you",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "translate": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "translate spring",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "comment dit-on bonjour en anglais",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "units": {
+        "score": 82.5,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "1 byte in bits",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "convert 2",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "5 milles en kilomètres",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          }
+        ]
+      },
+      "maps": {
+        "score": 89.2,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "map of Springfield",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "mapa de kioto",
+            "failed": [
+              "skill"
+            ],
+            "score": 75
+          },
+          {
+            "ask": "show me Paris on a map",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "timers": {
+        "score": 80,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "set a timer for 90 seconds",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "add one minute",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "timer for 5",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "temporizador de 3 minutos",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "set a timer for 45 seconds",
+            "failed": [
+              "mobile",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "images": {
+        "score": 73.9,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "draw a red circle",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "show this image https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/FullMoon2010.jpg/320px-FullMoon2010.jpg",
+            "failed": [
+              "rival"
+            ],
+            "score": 83.3
+          },
+          {
+            "ask": "picture of a cat",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "image",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "dessine un cercle rouge",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "make the picture bigger",
+            "failed": [
+              "skill",
+              "mobile"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "prices": {
+        "score": 80,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "100 usd in eur",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "price",
+            "failed": [
+              "fast",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "precio del bitcoin",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "how much is a gallon of milk",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ]
+      },
+      "definitions": {
+        "score": 83.3,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "etymology of salary",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          },
+          {
+            "ask": "define zorbleflux",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          },
+          {
+            "ask": "qué significa serendipia",
+            "failed": [
+              "skill",
+              "rival"
+            ],
+            "score": 60
+          }
+        ]
+      },
+      "wordproblems": {
+        "score": 100,
+        "of": 6,
+        "measured": 6,
+        "fails": []
+      },
+      "code": {
+        "score": 96.7,
+        "of": 6,
+        "measured": 6,
+        "fails": [
+          {
+            "ask": "http status 404",
+            "failed": [
+              "rival"
+            ],
+            "score": 80
+          }
+        ]
+      }
+    },
+    "lowest": {
+      "domain": "images",
+      "score": 73.9
+    }
   }
 ]

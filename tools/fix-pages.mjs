@@ -80,6 +80,7 @@ ${JSON.stringify(ld, null, 2)}
   <style>
     ${STYLE}
   </style>
+  <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
   <script src="/visit.js" defer></script>
 </head>
 <body>
