@@ -25,3 +25,21 @@ test("retry-backoff", () => {
   assert.equal(b.run("attempt 9, 200s in"), "stop: 3 minutes used, report it down");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("wiki-links", () => {
+  const b = bot("wiki-links"); assert.ok(b && BOT("wiki-links"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("plain note"), "links: none · tags: none");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("header-grader", () => {
+  const b = bot("header-grader"); assert.ok(b && BOT("header-grader"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("content-security-policy: a\nstrict-transport-security: b\nx-content-type-options: c\nreferrer-policy: d\npermissions-policy: e\ncross-origin-opener-policy: f"), "6/6 · all present");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("atari-playfield", () => {
+  const b = bot("atari-playfield"); assert.ok(b && BOT("atari-playfield"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("00 00 00"), "····················");
+  assert.ok(lineage(b), 'lineage is real');
+});

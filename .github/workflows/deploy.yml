@@ -36,12 +36,13 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # one run per PR, and one deploy of main. A new push cancels the older run. Main used to give every deploy its own
-    # group (the run id), so a burst of merges queued a deploy per head and held the runners (2026-11-04). The upload step
-    # still stops itself when a newer head is already on its way. verify.yml covers a head this deploy does not finish.
+    # one run per PR, and one deploy of main. A newer push of that same branch replaces the run that is waiting
+    # (it does the same deploy). The run that has a runner finishes: cancelling it mid-upload was a deploy that never landed.
+    # Main used to give every deploy its own group (the run id), so a burst of merges queued one per head (2026-11-04).
+    # On a pull request the new push cancels the older run, because that run's checks are the same work on an older head.
     concurrency:
       group: ${{ github.event_name == 'pull_request' && format('void-deploy-pr-{0}', github.event.pull_request.number) || 'void-deploy-main' }}
-      cancel-in-progress: true
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
@@ -310,7 +311,7 @@ jobs:
     timeout-minutes: 10
     concurrency:
       group: ${{ github.event_name == 'pull_request' && format('void-members-paid-pr-{0}', github.event.pull_request.number) || 'void-members-paid-main' }}
-      cancel-in-progress: true
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
       # The PR merged into main (github.sha), not the bare head: a branch cut before this test landed has no
       # tools/members-paid.e2e.mjs at its head, and the merge result is the code that reaches main anyway.

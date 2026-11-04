@@ -11,10 +11,13 @@ const y = norm(readFileSync(new URL('../.github/workflows/grow-clock.yml', impor
 // starts again whatever a run's ticks did. The proving pass (grow-self.yml) is started by the conductor again, at most every 2 hours: the
 // owner's 2026-10-24 words were read as "no self hardening" and taken off the clock; the owner put it right on 2026-10-26 ("never said there
 // a no self hardening i said to elaborate what that means"; "it needs to say what it improved").
-test('a conductor tick every 10 minutes for under the job timeout, then the next run starts whatever happened; the proving pass every 2 hours; one secret', () => {
-  const ticks = /n=33/.test(y) ? 33 : 0, sleep = +/sleep (\d+); fi\n\s+done/.exec(y)[1], timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
-  assert.equal(ticks, 33); assert.equal(sleep, 600);
-  assert.ok((ticks - 1) * sleep / 60 < timeout - 10, 'the loop ends before the job times out, so the chain step runs');
+test('one conductor tick per run, so a runner is not held for hours, then a dispatch can start the next; the proving pass every 2 hours; one secret', () => {
+  assert.doesNotMatch(y, /sleep 600/, 'sleeping between ticks held a runner for about five and a half hours');
+  assert.doesNotMatch(y, /seq 1 /, 'the ticks are separate runs, not a loop on one runner');
+  assert.match(y, /timeout 90 git fetch/, 'a stuck fetch used to sit until the old 345-minute job limit');
+  const timeout = +/timeout-minutes: (\d+)/.exec(y)[1];
+  assert.ok(timeout <= 20 && timeout >= 10, 'the job ends and the chain step can run');
+  assert.match(y, /cron: '\*\/10 \* \* \* \*'/);
   assert.match(y, /node tools\/conductor\.mjs tick/);
   assert.match(y, /- name: Start the next clock run\n\s+if: always\(\) && !inputs\.dry/, 'a failed tick or run never stops the clock');
   assert.match(y, /gh workflow run grow-clock\.yml/);

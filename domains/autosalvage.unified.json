@@ -18,6 +18,24 @@
       "into": "/bots/ (retry-backoff)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/the-void/src/lib": {
+      "target": "bot",
+      "into": "/bots/ (wiki-links)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com": {
+      "target": "bot",
+      "into": "/bots/ (header-grader)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/adventure-lab": {
+      "target": "bot",
+      "into": "/bots/ (atari-playfield)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

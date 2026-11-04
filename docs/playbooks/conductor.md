@@ -4,7 +4,7 @@ Owner, 2026-10-26: "look at Verse autonomy and fix it so it definitly will work 
 
 ## What starts it
 
-Nothing by hand. `.github/workflows/grow-clock.yml` runs one conductor tick every 10 minutes (`node tools/conductor.mjs tick`) for about five and a half hours, then starts its own next run whatever the ticks did. Three things restart a broken chain: the hourly schedule, `will.yml` (hourly and after every deploy: "Keep the conductor's clock running"), and a retry loop in the chain step itself. The conductor in turn restarts Verse's other clock, `void-tick.yml`, when no run of it is going or waiting.
+Nothing by hand. `.github/workflows/grow-clock.yml` runs one conductor tick (`node tools/conductor.mjs tick`) and releases the runner. The schedule is every 10 minutes, with an hourly cron if that schedule is late. A dispatch that finds the last tick already stale starts one more run; a tick that just landed does not chain. `will.yml` starts the clock when no run is going and the last one is more than 10 minutes old. The tick record is pushed to the `conductor-state` branch (a push there does not deploy); `domains/conductor.json` on main is updated when that copy is more than 3 hours old. The conductor restarts Verse's other clock, `void-tick.yml`, when no run of it is going or waiting. That clock knocks once per run too.
 
 ## What a tick does
 
@@ -44,4 +44,5 @@ The conductor claims the job (`building`, note `claimed by conductor`) and runs 
 - A broken loop shut forever deadlocks (it can never succeed again); the half-open trial run fixes that.
 - `ticks` from a hand run went into bash arithmetic, which would evaluate an expression; it is checked as digits first.
 - Never print a whole GitHub API response while debugging: filter it (`--jq`).
-- Committing `domains/conductor.json` every hour was 27 of main's 78 commits in a day (2026-11-03). The clock still ticks every 10 minutes; it writes the record every 3 hours (`i % 18`) and on the last tick.
+- Committing `domains/conductor.json` every hour was 27 of main's 78 commits in a day (2026-11-03). The clock still ticks every 10 minutes; the public record on main is written when it is more than 3 hours old. Each tick's record is on the `conductor-state` branch, which does not deploy.
+- One run that slept for 33 ticks held a runner for about five and a half hours, and a `git fetch` with no timeout could sit there until the 345-minute job limit (2026-11-04). A tick is one job of at most 20 minutes. `git fetch` and `git push` give up after 90 seconds.
