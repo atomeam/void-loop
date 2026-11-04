@@ -28,7 +28,8 @@ if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: ma
 // the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
 const changedList = changedMode ? changedFiles() : null;
 // --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
-const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && f.startsWith('.github/workflows/'));
+const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs';
+const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && gateFile(f));
 const narrowToChanged = !!(changedList && !changedList.some(reachesAll));
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
@@ -737,7 +738,15 @@ add('noise', async () => { // test traffic (probe, ping, test) never becomes a m
 // Run them: the browser checks one after another in their own lane from the start, the pure ones through the gate beside them.
 // A check that throws fails with its message; the report below is in the order the checks were added, whatever finished first.
 // --changed: the structural checks and the ones whose files, imports or names a changed file touches (tools/checks-changed.mjs); one line says what was left out
-const chosen = changedMode ? selectChanged(jobs, process.env.VOID_GATE === '1' && changedList ? changedList.filter((f) => !f.startsWith('.github/workflows/')) : changedList, { deps: readDeps() }) : null;
+const chosen = changedMode ? selectChanged(jobs, process.env.VOID_GATE === '1' && changedList ? changedList.filter((f) => !gateFile(f)) : changedList, { deps: readDeps() }) : null;
+// Structural checks run on every change, and several of them are already red on main. The gate is here to
+// catch what this pull request did. Main still runs the structural checks after the merge.
+if (process.env.VOID_GATE === '1' && chosen) {
+  const keep = chosen.run.filter((j) => chosen.why[j.name] !== 'structural');
+  const left = chosen.run.length - keep.length;
+  chosen.run = keep;
+  if (left) chosen.line += `; the gate left ${left} structural checks to main`;
+}
 if (chosen) console.log(chosen.line);
 const picked = chosen ? new Set(chosen.run) : null;
 const wanted = jobs.filter((j) => (!skipBrowser || !j.browser) && (!only.length || only.some((w) => j.name.toLowerCase().includes(w))) && (!picked || picked.has(j)));
