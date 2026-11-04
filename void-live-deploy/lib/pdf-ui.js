@@ -274,7 +274,7 @@ export function mountPdf(root, cfg) {
   // read after show(): it keeps ?tool=img2pdf, so tidying away ?img=handoff leaves the tool in the address
   if (handed) receiveImage((file) => imgPick && imgPick.add([file]), { search: location.search, pathname: location.pathname, hash: location.hash });
   // keep the libraries for offline use: fetched once while the page is idle, so the service worker has them before the first tool is pressed
-  setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.4.299/build/pdf.min.js', '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 4000);
+  setTimeout(() => { for (const u of ['/vendor/pdf-lib-1.17.1/pdf-lib.min.js', '/vendor/pdfjs-6.5.438/build/pdf.min.js', '/vendor/pdfjs-6.5.438/build/pdf.worker.min.js']) fetch(u).catch(() => {}); }, 4000);
   return { show };
 }
 export { imageKind };

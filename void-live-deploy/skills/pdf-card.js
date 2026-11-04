@@ -1,7 +1,7 @@
 /**
  * pdf-card — "ask questions about a pdf", "read this pdf", "chat with a pdf": frontier #12's first piece. Drop a PDF on the card (or
  * choose one) and ask it things; each answer is the document's own lines, with the page and line each came from. The file is read on
- * this device by the bundled pdf.js (/vendor/pdfjs-6.4.299, Apache-2.0) and goes nowhere: no upload, no model, no network beyond
+ * this device by the bundled pdf.js (/vendor/pdfjs-6.5.438, Apache-2.0) and goes nowhere: no upload, no model, no network beyond
  * this site's own copy of pdf.js, loaded on first use. A question the text does not answer gets "the document does not say".
  * The same card takes a saved web page (.html), a text or markdown file, or pasted text: each heading starts a section, and an
  * answer names its section and line (run 59; a page is never fetched for you, so no site is reached on your behalf).
@@ -9,8 +9,8 @@
  */
 import { linesOf, ask, sectionsOf, blocksOfText, outlineOf } from '../lib/pdf-qa.js';
 
-export const PDFJS = '/vendor/pdfjs-6.4.299/build/pdf.min.js';
-export const PDFJS_WORKER = '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js';
+export const PDFJS = '/vendor/pdfjs-6.5.438/build/pdf.min.js';
+export const PDFJS_WORKER = '/vendor/pdfjs-6.5.438/build/pdf.worker.min.js';
 export const MAX_BYTES = 50 * 1048576, MAX_PAGES = 500;
 
 export function pdfAsk(text) {

@@ -1,6 +1,6 @@
 /**
  * pdf-tools: the PDF tools of /pdf/ and its pages, all on the device (owner, 2026-10-26: "everything the sites have", PDF tools floor). A file is read
- * and written here in the browser by pdf-lib (MIT, vendored at /vendor/pdf-lib-1.17.1/) and pdf.js (Apache-2.0, /vendor/pdfjs-6.4.299/); nothing is
+ * and written here in the browser by pdf-lib (MIT, vendored at /vendor/pdf-lib-1.17.1/) and pdf.js (Apache-2.0, /vendor/pdfjs-6.5.438/); nothing is
  * uploaded. `engine(PDFLib)` takes the pdf-lib namespace (the global PDFLib in the browser, the vendored file in node tests), so every
  * function here is tested in node (tools/pdf-tools.test.mjs). Pages are counted 1-based in what people type and 0-based inside.
  * What it does not do, and why: no password protection or unlocking (pdf-lib cannot encrypt), no Office conversion or OCR (those need a server),
@@ -147,7 +147,7 @@ export function engine(L) {
 }
 
 // ---- browser side: pdf-lib and pdf.js are loaded when a tool is first used ----
-const LIB = '/vendor/pdf-lib-1.17.1/pdf-lib.min.js', PDFJS = '/vendor/pdfjs-6.4.299/build/pdf.min.js', PDFJS_WORKER = '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js';
+const LIB = '/vendor/pdf-lib-1.17.1/pdf-lib.min.js', PDFJS = '/vendor/pdfjs-6.5.438/build/pdf.min.js', PDFJS_WORKER = '/vendor/pdfjs-6.5.438/build/pdf.worker.min.js';
 let libP = null, jsP = null;
 /** pdf-lib's namespace, loaded once (a classic script: it sets the global PDFLib) */
 export function loadLib() {

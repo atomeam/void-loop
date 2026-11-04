@@ -524,7 +524,7 @@
     const download = (bytes, name, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes], { type })); a.download = name; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000); };
     const TYPES = { docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
     async function pdfPages(buf) { // pdf.js (bundled with the site) reads each page's text on this device
-      const m = await import('/vendor/pdfjs-6.4.299/build/pdf.min.js'); m.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js';
+      const m = await import('/vendor/pdfjs-6.5.438/build/pdf.min.js'); m.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs-6.5.438/build/pdf.worker.min.js';
       const task = m.getDocument({ data: new Uint8Array(buf), isEvalSupported: false, disableFontFace: true, useSystemFonts: false, stopAtErrors: false }), D = await docs();
       try {
         const doc = await task.promise, pages = [];

@@ -8,7 +8,7 @@ import { mountWorld } from '/local/world.js';
 
 const $ = (id) => document.getElementById(id);
 // TV plays through the full hls.js build, the one that reads the stations' closed captions (CEA-608), so Verse can follow what is said (local/watch.js)
-const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.3/hls.light.min.mjs', HLS_CAPTIONS = '/vendor/hls.js-1.7.3/hls.min.mjs';
+const KEY = 'a2m.void.local.v1', HLS = '/vendor/hls.js-1.7.4/hls.light.min.mjs', HLS_CAPTIONS = '/vendor/hls.js-1.7.4/hls.min.mjs';
 const audio = $('audio'), video = $('video');
 let place = null, from = '', tab = 'radio', radio = [], tv = [], tvIndex = null, hls = null, current = null, watchdog = 0;
 

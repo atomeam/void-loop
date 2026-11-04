@@ -43,3 +43,6 @@
 /convert/unit-converter/ /convert/ 301
 /convert/unit-converter-2 /convert/ 301
 /convert/unit-converter-2/ /convert/ 301
+# vendored libraries moved to their latest versions (2026-11-03): a page or service worker still holding the old path gets the new build
+/vendor/hls.js-1.7.3/* /vendor/hls.js-1.7.4/:splat 301
+/vendor/pdfjs-6.4.299/* /vendor/pdfjs-6.5.438/:splat 301
