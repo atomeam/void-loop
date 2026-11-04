@@ -14,6 +14,7 @@ export const LIMITS = {
   treasury: { rpm: 30, body: 2000 }, // Verse's treasury (functions/api/treasury.js): public reads, owner-only small JSON actions
   mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   a2a: { rpm: 30, body: 8000 }, // Verse as an A2A agent (functions/api/a2a.js): one text message in, ask_void's answer out
+  apibot: { rpm: 60, body: 0 }, // GET only: the free API bots' relay (functions/api/apibot.js): an API id from a closed list and one input in, that API's reply out; 30 cache misses a minute per connection in the route, good answers edge-cached ten minutes
   free: { rpm: 30, body: 0 }, // the free-resource registry and its quota status (functions/api/free.js): GET only
   answer: { rpm: 30, body: 20000 },
   agent: { rpm: 90, body: 4000 }, // Verse's agent (functions/api/agent.js): the page polls the live feed every 2 s; a task is up to 1,000 characters, 20 a day per visitor in the route

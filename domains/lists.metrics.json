@@ -443,6 +443,63 @@
      "reason": "green foundation first: a skill merge changes behavior while main is red"
     }
    ]
+  },
+  {
+   "at": "2026-11-04T21:30:00Z",
+   "run": 9,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.47,
+   "dup_basis": "7 of the 15 open asks at the start were duplicates of shipped work or of another open ask (ndscalc x2, identity probes, video-gen/baggage tests, the 814032d5 jobs, images exam, telemetry)",
+   "median_days": 0.5,
+   "median_basis": "the six red checks came from today's merges (0 days); asks closed were 0 to 4 days old",
+   "asks_open_start": 15,
+   "asks_open_end": 5,
+   "note": "red checks first, then the status family merge and the asks triage. Store queue 0 open. tower-gate #9 needs a browser and is CI-only on this box.",
+   "items": [
+    {
+     "what": "privacy guard: a sales e-mail address in a public track note became a pointer to the vendor's contact page",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "revert-target test 14 follows #2190's verify.yml concurrency (per-ref groups, no cancel; deploy cancels only on PRs)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "defences -> apibot: the guard's limits table gets the GET-only apibot row (60 a minute, no body)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "handoff tags: tower-self variant pages now carry the base page's verse-handoff tag (generator fixed, four pages regenerated, two legacy entries dropped)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "seo audit: the blank home keeps a visually hidden h1; the currency-converter row gets a whole name and its own description",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "the owner's status card test follows #2210 (blank home: the card opens when asked, the red build shows linked)",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "status and system-status are one family (status-board); system-status pings a real address instead of a made-up green",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "Verse's asks: 10 decided (5 duplicates of shipped work linked, 3 retired as answered or superseded, 2 folded into an open twin)",
+     "list": "V01D asks",
+     "status": "built"
+    }
+   ]
   }
  ]
 }

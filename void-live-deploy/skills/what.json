@@ -341,6 +341,7 @@
  "swaps": "Kitchen substitutions: \"substitute for buttermilk\", \"what can i use instead of eggs\", \"baking powder substitute\", \"out of brown sugar\"",
  "swarm": "\"swarm\", \"void agents\", \"show me the swarm\", \"watch the agents\": Verse's agents on the stage, a field of small minds that cluster near your pointer",
  "swarm-mind": "Swarms, trajectories and implicit fields: seven of Grok's drafts on Verse's field kit",
+ "system-status": "A status card for one named system, flow or address",
  "tab": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\"",
  "task-board": "\"add task call mum friday high priority 30 min\" puts tasks on one card: a Today stack (due today or earlier, overdue ones in red), all next tasks",
  "task-diagram": "\"map my tasks a -> b, b -> c, a -> d, d -> c\" reads tasks as objects and each \"->\" as an arrow (what one task unlocks)",

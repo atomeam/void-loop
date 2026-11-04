@@ -62,7 +62,7 @@ Open question 2, measured: with a general 1,024-token character build and the pr
 
 ## Concrete experiment
 
-Memory-footprint add-on (2026-11-04, no new parts): on the LLM630 kit, start each StackFlow unit one at a time and log Linux `free -m` plus the NPU memory pool's used size after each, then run ten turns with the 200-token kid-memory prefix and log the peak. Repeat with the INT4 model. Pass: whole stack peaks under 1 GB with replies still under 2 s to first word. In the same week, ask Axera's sales address (Business@axera-tech.com) and one M5Stack distributor for a 10,000-unit quote on the AX630C with 1 GB, so the bill of materials has a real chip line.
+Memory-footprint add-on (2026-11-04, no new parts): on the LLM630 kit, start each StackFlow unit one at a time and log Linux `free -m` plus the NPU memory pool's used size after each, then run ten turns with the 200-token kid-memory prefix and log the peak. Repeat with the INT4 model. Pass: whole stack peaks under 1 GB with replies still under 2 s to first word. In the same week, ask Axera's sales desk (the business address on axera-tech.com's contact page) and one M5Stack distributor for a 10,000-unit quote on the AX630C with 1 GB, so the bill of materials has a real chip line.
 
 Memory add-on to the bench below (no new parts): convert Qwen2.5-0.5B-Instruct or Qwen3-0.6B for AX630C at a 1,024-token context with Axera's ax-llm toolchain, set `kv_cache_slots` to 2, and load a character sheet plus a five-line kid memory file as the system prompt. Log first-token time on the first turn (full prefill) and on turns two to ten (prefix hit), then unplug, boot and check the greeting still uses the kid's name. Pass: first turn under 2 s, later turns under 0.6 s, memory intact.
 

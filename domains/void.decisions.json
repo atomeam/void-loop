@@ -260,6 +260,45 @@
     "ask-20261027-2205-3": {
       "decision": "declined",
       "why": "lists run 6 (2026-10-28): the free KV write limit is per Cloudflare account, so moving workers to another namespace cuts nothing; Verse's own writes are zero and guarded (tools/kv-writes.test.mjs); the non-Verse workers' writes are the owner's call, and wishlist #2 says so"
+    },
+    "ask-20261103-2357-1": {
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate: ndscalc.ru is measured as the calculator's VAT mode (a page by topic, never a new one) and was passed 10/12; the Tower moved on",
+      "commit": "68b2ddef5, 6fbae31da"
+    },
+    "ask-20261103-0218-1": {
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-1: ndscalc.ru passed (10/12), the Tower moved on",
+      "commit": "6fbae31da"
+    },
+    "ask-20261103-2357-2": {
+      "decision": "retired",
+      "why": "lists run 9 (2026-11-04): answered: the four failed jobs at 814032d5 were python-tests and browser-suite shards; python-tests is green on main since, and the browser reds left are fixed or tracked in lists run 9"
+    },
+    "ask-20261101-0223-2": {
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate: identity probes are answered from Verse's own facts, not with a question back",
+      "commit": "802a05802 (#2017)"
+    },
+    "ask-20261031-2154-3": {
+      "decision": "built",
+      "why": "lists run 9 (2026-11-04): duplicate: video-gen and baggage each have a suite in tools/checks.mjs (video-gen.test.mjs, video-gen-live.test.mjs, baggage-live.test.mjs)"
+    },
+    "ask-20261031-1310-1": {
+      "decision": "retired",
+      "why": "lists run 9 (2026-11-04): superseded: a stalled target now gives way after 3 days with no aspect gained (067ad844c), and onlineconverter.com did; the Tower took on the next site"
+    },
+    "ask-20261104-2017-2": {
+      "decision": "retired",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-2, answered: the four failed jobs at 814032d5 were python-tests and browser-suite shards; python-tests is green on main since"
+    },
+    "ask-20261104-1659-3": {
+      "decision": "queued",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261104-2017-1 (the images exam); one build answers both"
+    },
+    "ask-20261104-0746-3": {
+      "decision": "queued",
+      "why": "lists run 9 (2026-11-04): duplicate of ask-20261103-2357-3 (telemetry counts and names in sync); one build answers both"
     }
   },
   "ask-20261013-1850-1": {

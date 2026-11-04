@@ -1,0 +1,34 @@
+{
+ "updated": "2026-11-04",
+ "builds": [
+  {
+   "slug": "ai-authenticity-checker",
+   "topic": "AI check (photo or video authenticity)",
+   "source": {
+    "medium": "tv",
+    "station": "WFTV",
+    "network": "ABC",
+    "show": "",
+    "day": "2026-10-30",
+    "at": "2026-10-30T22:13:23.394Z",
+    "note": "A tool to help law enforcement verify if video evidence has been synthetically altered."
+   },
+   "score": {
+    "score": 7,
+    "why": "useful 4, earns 3"
+   },
+   "action": "improve",
+   "feature": "/photos/exif/",
+   "built": "A mode on the photo details page: drop a photo or video and see its Content Credentials (C2PA), the IPTC AI source type, Stable Diffusion and ComfyUI settings, generator and editor names and the camera or phone, with a report to download",
+   "product": {
+    "name": "MultiVerse ($49 a month)",
+    "url": "https://moonbeam846.gumroad.com/l/yinmj"
+   },
+   "test": "tools/real-pages.mjs /photos/exif/, tools/ai-check.test.mjs",
+   "shipped": "2026-11-04",
+   "job": "",
+   "mode": "/photos/exif/?mode=ai",
+   "pr": 2109
+  }
+ ]
+}

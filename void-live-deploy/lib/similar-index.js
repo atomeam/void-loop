@@ -461,6 +461,23 @@ export default {
     ]
    }
   ],
+  "status-board": [
+   {
+    "name": "status",
+    "examples": [
+     "void status",
+     "system status",
+     "is void working",
+     "status",
+     "health check",
+     "are the sources up"
+    ]
+   },
+   {
+    "name": "system-status",
+    "examples": []
+   }
+  ],
   "shop": [
    {
     "name": "store",
