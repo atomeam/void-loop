@@ -18,6 +18,12 @@
       "into": "/bots/ (retry-backoff)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/the-void/src/lib": {
+      "target": "bot",
+      "into": "/bots/ (wiki-links)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

@@ -25,3 +25,9 @@ test("retry-backoff", () => {
   assert.equal(b.run("attempt 9, 200s in"), "stop: 3 minutes used, report it down");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("wiki-links", () => {
+  const b = bot("wiki-links"); assert.ok(b && BOT("wiki-links"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("plain note"), "links: none · tags: none");
+  assert.ok(lineage(b), 'lineage is real');
+});
