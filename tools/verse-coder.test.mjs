@@ -8,7 +8,7 @@ import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, existsSync } from 
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
-import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET, KEY_NAMES } from './verse-coder.mjs';
+import { runCoder, parseAction, pathRefusal, diffFiles, weakening, checkScripts, providersFrom, stackModel, scriptedModel, keyless, windowOf, trailOf, WINDOW, budgetNote, BUDGET, KEY_NAMES, outlineOf, regionsOf, applyLines, functionLossOk, HUGE } from './verse-coder.mjs';
 import { scanDiff } from './verse-loop.mjs';
 
 const NOCTX = (() => { const e = { ...process.env }; delete e.NODE_TEST_CONTEXT; return e; })(); // a node --test inside a test reports to the outer runner unless this goes
@@ -193,6 +193,53 @@ test('replace swaps exact text with no diff to line up: once, not twice, not mis
   const c = await run(t, [call('replace', { path: 'src/add.mjs', old: 'a - b', new: 'a + b' }), call('replace', { path: 'src/new.mjs', old: '', new: 'x\n' }), call('list')], { limits: { turns: 3 } });
   assert.equal(c.outcome, 'turn-cap');
   assert.match(readFileSync(join(t.work, 'src/add.mjs'), 'utf8'), /a - b/); assert.ok(!existsSync(join(t.work, 'src/new.mjs')));
+});
+
+test('a big file is outlined, then a region, a line patch and a split: the model never has to hold the whole file', async () => {
+  const lines = ['export function head() { return 1; }'];
+  for (let i = 0; i < HUGE; i++) lines.push('const pad' + i + ' = ' + i + ';');
+  lines.push('export function tail() { return 2; }');
+  const text = lines.join('\n') + '\n';
+  const outline = outlineOf(text);
+  assert.ok(outline.lines > HUGE);
+  assert.ok(outline.marks.some((l) => l.includes('function head')) && outline.marks.some((l) => l.includes('function tail')));
+  assert.equal(outline.marks.filter((l) => l.includes('const pad')).length, 0, 'padding constants are not the outline');
+  const region = regionsOf(text, 'function tail');
+  assert.equal(region.hits.length, 1);
+  assert.match(region.hits[0], new RegExp(lines.length + '\texport function tail'));
+  assert.equal(regionsOf(text, '(').error.startsWith('bad pattern'), true);
+  // a nested repeat can hang the search on a long line: refused before it runs; plain words, classes and one repeat still search
+  for (const p of ['(a+)+$', '(x*)*y', '(a|aa)+b', '(\\w+\\s?){2,}$', 'x'.repeat(201)]) assert.match(regionsOf(text, p).error || '', /^bad pattern/, p);
+  for (const p of ['function tail', 'fun\\w+ tail', '(tail|head)', '^export ']) assert.equal(regionsOf(text, p).error, undefined, p);
+  { const t0 = Date.now(); regionsOf('a'.repeat(50000) + 'b', 'a+c'); assert.ok(Date.now() - t0 < 1000, 'a long line is tried on its first 2,000 characters'); }
+  assert.equal(applyLines('a\nb\nc\n', 2, 2, 'B').text, 'a\nB\nc\n');
+  assert.ok(functionLossOk(['it lost a function: head'], 'export function head() { return 1; }\n'));
+  assert.equal(functionLossOk(['it is shorter'], 'export function head() {}'), false);
+  const s = repo();
+  writeFileSync(join(s.work, 'src/big.mjs'), text);
+  sh(s.work, 'add', '-A'); sh(s.work, 'commit', '-q', '-m', 'big');
+  const tailLine = lines.length;
+  const r = await run(s, [
+    call('read', { path: 'src/big.mjs' }),
+    call('region', { path: 'src/big.mjs', pattern: 'function tail' }),
+    call('patch', { path: 'src/big.mjs', from: tailLine, to: tailLine, text: 'export function tail() { return 3; }' }),
+    call('split', { path: 'src/big.mjs', from: 1, to: 1, into: 'src/head.mjs', stub: "import './head.mjs';" }),
+    call('split', { path: 'src/big.mjs', from: 1, to: tailLine, into: 'src/all.mjs', stub: "import './all.mjs';" }),
+    call('edit', { diff: FIX }),
+    call('check', { name: 'add' }),
+    call('finish', { summary: 'tail patched, head split out' }),
+  ]);
+  assert.match(r.log[0].result, /Too big to read from the top/);
+  assert.match(r.log[0].result, /function tail/);
+  assert.match(r.log[1].result, new RegExp(tailLine + '\texport function tail'));
+  assert.match(r.log[2].result, new RegExp('patched src/big.mjs lines ' + tailLine + '-' + tailLine));
+  assert.match(r.log[3].result, /split src\/big.mjs lines 1-1 into src\/head.mjs/);
+  assert.match(r.log[4].result, /more than 30%/);
+  assert.equal(r.outcome, 'done', r.why + JSON.stringify(r.log.map((x) => x.result.split('\n')[0])));
+  assert.match(readFileSync(join(s.work, 'src/head.mjs'), 'utf8'), /function head/);
+  assert.match(readFileSync(join(s.work, 'src/big.mjs'), 'utf8'), /import '\.\/head\.mjs'/);
+  assert.match(readFileSync(join(s.work, 'src/big.mjs'), 'utf8'), /return 3/);
+  assert.ok(!existsSync(join(s.work, 'src/all.mjs')), 'a split that would drop most of the file is not written');
 });
 
 test('the reply parser: plain JSON, args nested, a fenced diff, junk', () => {

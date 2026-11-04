@@ -7081,5 +7081,18 @@
   {"ask": "code", "want": "skill:snippet"},
   {"ask": "clarify this business idea: a tool that turns customer emails into running automations", "want": "skill:business-clarify"},
   {"ask": "turn this idea into a system plan: weekly status reports that write themselves", "want": "skill:business-clarify"},
-  {"ask": "structure this business idea for Verse to own the heavy lifting", "want": "skill:business-clarify"}
+  {"ask": "structure this business idea for Verse to own the heavy lifting", "want": "skill:business-clarify"},
+  {"ask": "stopwatch", "want": "skill:stopwatch"},
+  {"ask": "show stopwatch", "want": "skill:stopwatch"},
+  {"ask": "give me a compliment", "want": "skill:compliment"},
+  {"ask": "compliment me", "want": "skill:compliment"},
+  {"ask": "say something nice", "want": "skill:compliment"},
+  {"ask": "split a 90 mile drive costing 36 dollars between 3 people", "want": "skill:drive-share"},
+  {"ask": "share a 40 km trip that cost 24 dollars 4 ways", "want": "skill:drive-share"},
+  {"ask": "palindrome check for a man a plan a canal panama", "want": "skill:palindrome"},
+  {"ask": "check if kayak is a palindrome", "want": "skill:palindrome"},
+  {"ask": "if 3 apples cost 2.40 how much do 7 cost", "want": "skill:sums"},
+  {"ask": "a train travels 120 km in 2 hours what is its speed", "want": "skill:sums"},
+  {"ask": "posner cueing test", "want": "skill:pointing-arrow"},
+  {"ask": "posner test", "want": "skill:pointing-arrow"}
 ]

@@ -71,8 +71,8 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 2,
-    "checked": 0,
+    "tested": 0,
+    "checked": 2,
     "proven": 26
    },
    "from": 152,
@@ -86,8 +86,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 12
+    "checked": 0,
+    "proven": 13
    },
    "from": 182,
    "to": 195
@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 1,
-    "proven": 42
+    "tested": 2,
+    "checked": 2,
+    "proven": 43
    },
    "from": 196,
    "to": 243
@@ -2708,8 +2708,8 @@
     "show stopwatch"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 1 real ask in the benchmark",
-   "flavor": "Proven 1 times over by those who asked, and kept among the time. It has not failed a reader yet.",
+   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the time. It has not failed a reader yet.",
    "glow": 100,
    "n": 136
   },
@@ -3184,8 +3184,9 @@
     "split a 90 mile drive costing 36 dollars between 3 people",
     "share a 40 km trip that cost 24 dollars 4 ways"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 163
   },
   {
@@ -3451,8 +3452,9 @@
     "if 3 apples cost 2.40 how much do 7 cost",
     "a train travels 120 km in 2 hours what is its speed"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 179
   },
   {
@@ -3726,8 +3728,9 @@
     "posner cueing test",
     "posner test"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 real ask in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the body and mind it is the one a traveller is told to ask for first. It has not failed a reader yet.",
    "glow": 100,
    "n": 195
   },
@@ -4017,8 +4020,9 @@
     "palindrome check for a man a plan a canal panama",
     "check if kayak is a palindrome"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 210
   },
   {
@@ -4116,8 +4120,10 @@
     "compliment me",
     "say something nice"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of the words and the world; set down here after it answered true 3 times. Say the words below and it answers.",
+   "glow": 100,
    "n": 216
   },
   {

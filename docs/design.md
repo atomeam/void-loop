@@ -16,7 +16,9 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 | [perplexity.ai](https://www.perplexity.ai) | Answer cards: title, one big result, sources quiet beneath | the card hierarchy: h2, display result, quiet source line |
 | [web.dev: Core Web Vitals](https://web.dev/articles/vitals) and [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | The bar for fast and accessible | the gates below |
 
-## Tokens (live in `void.html`, the "design phase 1" block)
+## Tokens (one file: `void-live-deploy/verse.css`; the home page keeps the same values inline)
+
+The shell (nav, command palette, live line, view transitions) is `verse-shell.js` and `lib/verse-shell.js`. `/tower` opens `/conquered/`. Playbook: `docs/playbooks/verse-shell.md`.
 
 **Colour.** Background `#050505` (unchanged, it is the void). Ink `--d-ink #f2f4fb`, `--d-ink-2 #c3c8d8`, `--d-ink-3 #8e94a8` (all ≥ 4.5:1 on the card glass). Light colours as rgb triplets so any alpha works: key `--d-key 158 178 255` (cool blue, the only accent), warm `--d-warm 255 170 214`, teal `--d-teal 92 232 205` (rim highlights only, never text).
 

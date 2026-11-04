@@ -25,6 +25,10 @@ permissions:
   issues: write
   actions: read # to find the last green watchdog run
 
+concurrency:
+  group: verse-watchdog
+  cancel-in-progress: false
+
 jobs:
   # The full suite no longer fits one runner's 28-minute budget (the 2026-10-28 run stopped at 397/409 with "suite budget"), so the
   # watchdog runs it the way verify.yml does: the fast tests once, the browser suite in four shards (tools/shard.mjs), the

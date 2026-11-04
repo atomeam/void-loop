@@ -139,7 +139,11 @@ ok(rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUN
   && !rules("const rows = await db.query('SELECT id FROM t');\nfor (const r of rows) {\n  total += r.n;\n}", 'javascript').some((f) => f.startsWith('query-in-loop'))
   // a handler the loop only defines runs per click, not per turn (a false alarm on the approve buttons in skills/routine.js)
   && !rules("rows.forEach((row) => {\n  const decide = async (yes) => {\n    const res = await fetch('/api/x', { method: 'POST' });\n  };\n  row.onclick = () => decide(true);\n});", 'javascript').some((f) => f.startsWith('query-in-loop'))
-  && rules("rows.forEach((row) => {\n  const decide = async (yes) => { go(); };\n  const res = await fetch('/api/x');\n});", 'javascript').some((f) => f.startsWith('query-in-loop')),
+  && rules("rows.forEach((row) => {\n  const decide = async (yes) => { go(); };\n  const res = await fetch('/api/x');\n});", 'javascript').some((f) => f.startsWith('query-in-loop'))
+  // a polling loop waits on a timer, then asks once: no items to batch (tools/agent-probe.mjs, 2026-11-04); a loop with no wait still counts
+  && !rules("for (let i = 0; i < 45; i++) {\n  await new Promise((s) => setTimeout(s, 2000));\n  const j = await (await fetch(base + '/api/agent?thread=' + t)).json();\n}", 'javascript').some((f) => f.startsWith('query-in-loop'))
+  && !rules("while (true) {\n  await sleep(1000);\n  const r = await fetch('/api/job/' + id);\n}", 'javascript').some((f) => f.startsWith('query-in-loop'))
+  && rules("for (let i = 0; i < ids.length; i++) {\n  const j = await (await fetch('/api/x/' + ids[i])).json();\n  await new Promise((s) => setTimeout(s, 10));\n}", 'javascript').some((f) => f.startsWith('query-in-loop')),
   'query-in-loop: an awaited query or fetch inside for/while/forEach is flagged; a batch of prepared statements, a query after the loop and a loop with no query are not: ' + JSON.stringify([rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n}", 'javascript'), rules("await env.DB.batch(ok.map((r) => env.DB.prepare('INSERT INTO t (id) VALUES (?)').bind(r.id)));", 'javascript')]));
 ok(rules("const sql = 'SELECT id FROM t WHERE ' + clauses.join(' AND ') + ' ORDER BY id';", 'javascript').includes('where-join-empty@1')
   && rules('const sql = `SELECT id FROM t WHERE ${where.join(" AND ")}`;', 'javascript').includes('where-join-empty@1')

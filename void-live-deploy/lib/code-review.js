@@ -5,6 +5,8 @@
 // anything is shown, logged or sent (redact, lib/automation-fix.js). The checks are tuned to say nothing rather than
 // something wrong: each one looks for a pattern that is almost always a real problem.
 import { redact, envName } from './automation-fix.js';
+// a loop turn that first waits on a timer: await new Promise((s) => setTimeout(s, n)), await sleep(n), await delay(n), await wait(n)
+const POLL_WAIT = /\bawait\s+(?:new\s+Promise\s*\([^\n]*\bsetTimeout\b|(?:sleep|delay|wait|pause)\s*\()/;
 
 // "review my code", "code review", "check this script", "what's wrong with my function", "is this query safe", "find bugs in this"
 const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex|github\\s+action|(?:ci|actions?|github)\\s+workflow|workflow\\s+(?:file|ya?ml))'; // "audit my github actions", "check this ci workflow"
@@ -708,12 +710,15 @@ const RULES = [
   ['query-in-loop', 'risk', JS, (m, r, x) => {
     // the SQL literal is read as written (the masked line hides string contents); the loop shape on the masked line
     if (!/\bawait\b[^;]*(?:\.(?:prepare|query|execute|exec|run|first|all|get)\s*\(\s*['"`]\s*(?:SELECT|INSERT|UPDATE|DELETE|WITH)\b|\bfetch\s*\()/i.test(r)) return false;
-    if (/\b(?:for(?:\s+await)?|while)\s*\([^;]*\)\s*\{[^}]*\bawait\b/.test(m)) return true; // loop and query on one line
+    if (/\b(?:for(?:\s+await)?|while)\s*\([^;]*\)\s*\{[^}]*\bawait\b/.test(m)) return !POLL_WAIT.test(m); // loop and query on one line (a poll waits first)
     const above = x.prev().split('\n').slice(-8); // the nearest loop opener above whose block is still open here
     for (let i = above.length - 1; i >= 0; i--) {
       const l = above[i]; if (!/\b(?:for(?:\s+await)?|while)\s*\(.*\)\s*\{\s*$|\.forEach\s*\(\s*(?:async\s*)?\(?[^)]*\)?\s*=>\s*\{\s*$/.test(l)) continue;
       const between = above.slice(i + 1).join('\n'), opens = (between.match(/\{/g) || []).length, closes = (between.match(/\}/g) || []).length;
       if (opens < closes) return false; // the loop's block closed before this line
+      // a polling loop waits on a timer each turn before it asks again (await new Promise((s) => setTimeout(s, 2000)), await sleep(…)):
+      // one request per wait is the point, there is no list of items to batch (2026-11-04, tools/agent-probe.mjs polls a task)
+      if (POLL_WAIT.test(between)) return false;
       // a named function the loop body only defines (a click handler: const decide = async () => { … fetch … }) runs when it is
       // called, not once per turn; it counts when its own block is still open at this line
       for (let k = i + 1; k < above.length; k++) {
