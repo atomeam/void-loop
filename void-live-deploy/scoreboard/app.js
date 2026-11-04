@@ -1,8 +1,14 @@
 // /scoreboard/: live, measured numbers only. Each card reads one public source; a source that fails or is empty shows "no data yet".
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const esc = (s) => String(s == null ? '' : s);
 const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-const NONE = '<i class="note">no data yet</i>';
-const card = (label, value, sub, cls) => '<div class="card"><span>' + esc(label) + '</span><b class="' + (cls || '') + '">' + (value == null ? NONE : esc(value)) + '</b><span>' + (sub || '') + '</span></div>';
+// built with the DOM and textContent, so no source text is ever parsed as HTML
+const card = (label, value, sub, cls) => {
+  const d = document.createElement('div'); d.className = 'card';
+  const a = document.createElement('span'); a.textContent = label;
+  const b = document.createElement('b'); b.className = value == null ? 'note' : (cls || ''); b.textContent = value == null ? 'no data yet' : String(value);
+  const c = document.createElement('span'); c.textContent = sub || '';
+  d.append(a, b, c); return d;
+};
 const pct = (a, b) => (b ? Math.round((a / b) * 1000) / 10 : null);
 
 async function main() {
@@ -56,6 +62,6 @@ async function main() {
     out.push(card('Money in (realized)', treasury.revenue.sales ? d(treasury.revenue.realized_cents) : null, treasury.revenue.sales + ' sales'));
     out.push(card('Money out', treasury.committed_cents ? d(treasury.committed_cents) : null, 'balance ' + d(treasury.balance_cents)));
   } else { out.push(card('Money in', null, '')); }
-  document.getElementById('cards').innerHTML = out.join('');
+  document.getElementById('cards').replaceChildren(...out);
 }
 main();
