@@ -17,7 +17,7 @@ export function routes() {
   const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
-const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/'];
+const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/', '/contribute/'];
 const near = (a, b, e = 0.01) => Math.abs(Number(String(a).replace(/[^0-9.eE+-]/g, '')) - b) <= e;
 
 // ---- the specs: one per route. t.* helpers are defined in run(). ----
