@@ -417,6 +417,9 @@ SPECS['/emojis/everywhere/'] = async (t) => {
   t.ok(/fire/i.test(await t.text('#ename')) && /e=%F0%9F%94%A5|e=🔥/.test(t.p.url()), 'a search for fire shows 🔥 and the link keeps it: ' + t.p.url().slice(-30));
   await t.p.waitForFunction(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length >= 6, null, { timeout: 15000 }).catch(() => {});
   t.ok((await t.p.evaluate(() => [...document.querySelectorAll('#grid img')].filter((i) => i.complete && i.naturalWidth > 0).length)) >= 6, 'six or more platform pictures loaded');
+  // a name in the link (/emoji/joy goes to ?e=joy) opens that emoji, not the default 😀
+  await t.p.goto(t.p.url().split('?')[0] + '?e=joy'); await t.waitText('#ename', /tears of joy/i, 10000);
+  t.ok(/tears of joy/i.test(await t.text('#ename')) && /e=%F0%9F%98%82|e=😂/.test(t.p.url()), 'a name in the link opens its emoji: ' + (await t.text('#ename')));
 };
 SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
