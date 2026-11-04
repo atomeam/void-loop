@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Credits · Verse</title>
+<meta name="description" content="The open-source projects, open data and free APIs Verse builds on, with each author, license and link.">
+<link rel="canonical" href="https://a-to-mind.com/credits/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Credits · Verse">
+<meta property="og:description" content="The open-source projects, open data and free APIs Verse builds on, with each author, license and link.">
+<meta property="og:url" content="https://a-to-mind.com/credits/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; background: #07060b; color: #ecebf5; font: 15px/1.45 system-ui, -apple-system, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 18px 12px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } a { color: #a9a4ff; }
+  .n { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; } .n div { background: #14121d; border-radius: 8px; padding: 8px 12px; }
+  .n b { display: block; font-size: 20px; } table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  td, th { text-align: left; padding: 5px 6px; border-bottom: 1px solid #221f2e; vertical-align: top; } .muted { color: #9a97ab; }
+</style>
+</head>
+<body>
+<main>
+<h1>Credits</h1>
+<p class="muted">Verse builds on free outside work. Each source is listed with its author, license and link; a source with no clear license is never used. Share-alike sources are only used isolated, under their own license. Generated from <a href="/salvage/">salvage</a>.</p>
+<table id="c"><tr><th>Source</th><th>Author</th><th>License</th><th>Used in</th></tr></table>
+</main>
+<script>
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+fetch('/salvage.json', { cache: 'no-store' }).then((r) => r.json()).then((s) => {
+  document.getElementById('c').innerHTML += s.credits.map((c) => '<tr><td><a href="' + esc(c.link) + '" rel="noopener">' + esc(c.name) + '</a></td><td>' + esc(c.author) + '</td><td>' + esc(c.license) + (c.isolated ? ' (isolated)' : '') + '</td><td>' + (c.used ? esc(c.used) : '<span class="muted">queued</span>') + '</td></tr>').join('');
+});
+</script>
+</body>
+</html>
