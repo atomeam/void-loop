@@ -21,18 +21,22 @@ export function tierFor(infraCents) {
 const GATED = /\b(send|email|text|dm|message|post|tweet|publish|pay|buy|purchase|order|book|transfer|delete|remove|cancel|sign|submit)\b/i;
 export const needsYes = (ask) => GATED.test(String(ask || ''));
 
-const STOP = new Set('a an the to for of and or in on me my it is be with this that what how can you please make write give'.split(' '));
-const words = (s) => String(s || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => w.length > 2 && !STOP.has(w)) || [];
-/** the bot (from /tools.json, or bots/registry.json once the factory ships it) whose words best match the ask. */
+const STOP = new Set('a an the to for of and or in on me my it is be with this that what how can you please make write give some any list top best one two three four five six seven ten things thing stuff'.split(' '));
+const stem = (w) => (w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
+const words = (s) => String(s || '').toLowerCase().match(/[a-z0-9]+/g)?.filter((w) => w.length > 2 && !STOP.has(w)).map(stem) || [];
+/** the bot (from /tools.json, or bots/registry.json once the factory ships it) whose words best match the ask. A bot takes the task only when
+ * the match is real: two of the ask's words, or half of them for a short ask. One shared word (the "three" in "list three free things to do
+ * in Savannah" against keyword-finder's "top three key words") is a coincidence, and Verse answers itself. */
 export function pickBot(ask, bots) {
   const want = new Set(words(ask));
   let best = null, score = 0;
   for (const b of bots || []) {
     if (b.status && b.status !== 'live') continue;
-    const s = words((b.name || b.id || '') + ' ' + (b.cat || '') + ' ' + (b.description || b.job || '') + ' ' + (b.examples || []).join(' ')).filter((w) => want.has(w)).length;
+    const s = new Set(words((b.name || b.id || '') + ' ' + (b.cat || '') + ' ' + (b.description || b.job || '') + ' ' + (b.examples || []).join(' ')).filter((w) => want.has(w))).size;
     if (s > score) { best = b; score = s; }
   }
-  return best ? { name: String(best.name || best.id), description: String(best.description || best.job || '').slice(0, 160) } : { name: 'verse', description: 'Verse itself' };
+  const real = best && (score >= 2 || score / Math.max(1, want.size) >= 0.5);
+  return real ? { name: String(best.name || best.id), description: String(best.description || best.job || '').slice(0, 160) } : { name: 'verse', description: 'Verse itself' };
 }
 
 /** the daily brief for one thread: what got made, what waits on a yes, what is still running. */
