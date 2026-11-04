@@ -42,7 +42,7 @@ export function pageProblems(seen) {
   if (!(s.status >= 200 && s.status < 400)) { add('status', 'answers ' + (s.status || 'nothing')); return out; }
   for (const e of (s.errors || []).slice(0, 2)) add('script', e);
   for (const f of (s.failed || []).slice(0, 3)) add('request', (f.status || 'no answer') + ' ' + f.url);
-  // a page made of a box to type in, a canvas or a picture is not empty (the front page is one prompt: "Command the Verse")
+  // a page made of a box to type in, a canvas or a picture is not empty (the front page is one prompt: "Ask anything")
   if (String(s.text || '').replace(/\s+/g, '').length < 20 && !(s.controls > 0)) add('empty', 'under 20 characters of text and nothing to type in, press or see after it loaded');
   const l = luminance(s.bg); if (l !== null && l > 0.5) add('light', 'background ' + s.bg);
   for (const u of (s.deadLinks || []).slice(0, 3)) add('link', u.status + ' ' + u.url);

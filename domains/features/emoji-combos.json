@@ -1,7 +1,7 @@
 {
  "floor": "emoji combos",
  "verse_page": "/emoji-combos/",
- "researched": "2026-11-03",
+ "researched": "2026-11-04",
  "source": "auto",
  "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
  "sites": {
@@ -56,6 +56,31 @@
      "verse_evidence": "/emoji-combos/ shows \"fancy\"; not \"font\", \"generator\""
     }
    ]
+  },
+  "emojicombos.com": {
+   "url": "https://emojicombos.com/",
+   "scanned": "2026-11-04",
+   "leader": true,
+   "pages": [
+    "https://emojicombos.com/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "Emoji Combosbeta",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/emoji-combos/ shows \"emoji\"; not \"combosbeta\""
+    },
+    {
+     "name": "🔍 search",
+     "detail": "a button on /",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/emoji-combos/ shows \"search\""
+    }
+   ]
   }
  },
  "gaps": [
@@ -68,7 +93,7 @@
  ],
  "verse_extra": [],
  "auto": {
-  "scanned": "2026-11-03",
+  "scanned": "2026-11-04",
   "queued": []
  }
 }

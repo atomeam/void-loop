@@ -14,6 +14,7 @@
 // the seen-set or the log (the repo is public); a wording learned from real traffic is committed only as a paraphrase.
 // fps here is headless software GL (CI has no GPU): a floor that only ratchets up, a regression alarm, not the real-device number.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { pass as visitorPass, TOP as VISITOR_TOP } from './visitor-pass.mjs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -233,6 +234,17 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   for (const n of JSON.parse(readFileSync(resolve(skillsDir, 'index.json'), 'utf8'))) { try { skills.push((await import(resolve(skillsDir, n + '.js'))).default); } catch (_) {} }
   const regress = new Set(suite.cases.map((c) => c.ask.toLowerCase()));
   const probes = a.includes('--no-new') ? [] : plan(inventory(skills), seen, NEW_PER_RUN, suite.games || {}, suite.priority || []).filter((p) => !regress.has(p.ask.toLowerCase()));
+  // the everyday asks, after a deploy (this job) and hourly. Posts never leave the browser. A failure is a row the conductor files.
+  let visitor = null;
+  try {
+    const v = await visitorPass({ asks: VISITOR_TOP, profiles: ['desktop'], site: process.env.VOID_SITE || 'https://a-to-mind.com' });
+    const desk = v.profiles.desktop || { rows: [], correct: 0, asks: 0 };
+    visitor = { correct: desk.correct, of: desk.asks, medianMs: desk.medianMs, failed: desk.rows.filter((r) => !r.ok).map((r) => ({ ask: r.ask, why: r.why })) };
+    console.log('visitor pass: ' + visitor.correct + '/' + visitor.of + (visitor.failed.length ? ' failed ' + visitor.failed.map((f) => f.ask).join('; ') : ' all answered'));
+    const early = existsSync(LOG) ? JSON.parse(readFileSync(LOG, 'utf8')) : [];
+    early.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), kind: 'visitor', visitor, note: 'visitor pass ' + visitor.correct + '/' + visitor.of });
+    writeFileSync(LOG, JSON.stringify(early.slice(-300), null, 1) + '\n');
+  } catch (e) { console.log('visitor pass skipped: ' + String(e && e.message || e).slice(0, 160)); }
   const results = await runVoid({ ...suite, cases: suite.cases.concat(probes) }, { shots });
   if (a.includes('--improve')) writeFileSync(SEEN, JSON.stringify(remember(seen, probes, new Date().toISOString().replace(/\.\d+Z$/, 'Z'))) + '\n');
   if (opt('--json')) writeFileSync(opt('--json'), JSON.stringify(results, null, 2));
@@ -242,7 +254,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (act.kind === 'teach') act.title = 'site-test: ' + act.note.slice(0, 120);
     if (act.suite !== suite) writeFileSync(SUITE, JSON.stringify(act.suite, null, 2) + '\n');
     const lms = results.map((r) => r.loadMs).filter(Number.isFinite).sort((a, b) => a - b);
-    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, ...(lms.length ? { ms: lms[lms.length >> 1] } : {}), kind: act.kind, ...(act.key ? { key: act.key } : {}), failed: failedOf(results), note: act.note });
+    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, ...(lms.length ? { ms: lms[lms.length >> 1] } : {}), kind: act.kind, ...(act.key ? { key: act.key } : {}), failed: failedOf(results), ...(visitor ? { visitor } : {}), note: act.note });
     writeFileSync(LOG, JSON.stringify(log.slice(-300), null, 1) + '\n');
     writeFileSync(resolve(shots, 'improvement.json'), JSON.stringify(act.kind === 'file' || act.kind === 'teach' ? { title: 'site-test: ' + act.note.slice(0, 120), key: act.key } : { kind: act.kind, note: act.note }));
     console.log('improvement: ' + act.kind + ' · ' + act.note);

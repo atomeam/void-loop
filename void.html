@@ -1181,7 +1181,7 @@
   <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
-      <input id="input" aria-label="Ask Verse" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Command the Verse" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <input id="input" aria-label="Ask Verse" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Ask anything" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
@@ -2937,7 +2937,8 @@ say('nothing selected to remove');
       const show = (r) => { line('You', r.text, 'v-you'); line('Verse', r.answer || 'I could not answer just now; I kept what you said and will read it when I next reflect.', 'v-me' + (r.correction ? ' v-corrected' : '')); };
       for (const ev of ['pointerdown', 'keydown']) box.addEventListener(ev, (e) => e.stopPropagation());
       const auth = { authorization: 'Bearer ' + owner };
-      try { const r = await fetch('/api/voice-reply', { headers: auth }); if (r.ok) { const j = await r.json(); (j.replies || []).filter((x) => x.to === to).slice(0, 6).reverse().forEach(show); } } catch (_) {}
+      // the replies already sent here are counted, not drawn again (owner, 2026-11-03: "all the cards are leaving the replies to the card on the card"); a reply sent now shows until the card closes
+      try { const r = await fetch('/api/voice-reply', { headers: auth }); if (r.ok) { const j = await r.json(), n = (j.replies || []).filter((x) => x.to === to).length; if (n) line('Verse', 'You have replied here ' + (n >= 6 ? '6 or more times' : n === 1 ? 'once' : n + ' times') + ' before; I keep what you taught me.', 'v-me v-earlier'); } } catch (_) {}
       send.addEventListener('click', async () => {
         const text = box.value.trim(); if (!text || send.disabled) return;
         send.disabled = true; send.textContent = '…';
@@ -4293,8 +4294,9 @@ say('nothing selected to remove');
         const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
         if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
         try {
-          const r = await fetch('https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount);
-          const j = await r.json();
+          // two hosts, first answer wins: one of them stalls on a slow link (a visitor's phone on a weak connection)
+          const urls = ['https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount, 'https://api.frankfurter.app/latest?from=' + from + '&to=' + to + '&amount=' + amount];
+          const j = await Promise.any(urls.map((u) => fetch(u, { signal: AbortSignal.timeout(8000) }).then((r) => { if (!r.ok) throw 0; return r.json(); })));
           if (vpageEl === el && j && j.rates && j.rates[to] != null) {
             const day = j.date ? new Date(j.date + 'T12:00:00Z') : null;
             const dayWords = day ? day.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '';
@@ -6170,7 +6172,8 @@ say('nothing selected to remove');
       if (await handleGrownAsk(text, lower0)) return;
       // a send, booking or spend the owner's key now covers is never "the same page": without the key, "send an email to jo@x.com saying hi"
       // opens the mail card (skills/rides.js, lists run 7); the same ask after "unlock" is for the confirm line (plan item 7), not that card
-      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000 && !(await gatedForOwner(text))) {
+      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000 && !(await gatedForOwner(text))
+        && !vpageEl.querySelector('.refusal') && !/I don't have a recipe for/i.test(vpageEl.innerText || '')) {
         const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
         say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
       }

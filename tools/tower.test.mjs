@@ -11,7 +11,7 @@ test('a floor is beaten only when every aspect passes with evidence', () => {
   const n = all(f); n.speed.evidence = ''; assert.equal(gate(f, n).beaten, false);
 });
 test('one queue, easiest first: conquered sites, then the one with the fewest aspects left, and a regression puts a site back', () => {
-  const ev = { [FLOORS[1].id]: all(FLOORS[1]), [FLOORS[4].id]: Object.fromEntries(aspectsOf(FLOORS[4]).slice(0, 6).map((a) => [a, { verdict: 'better', evidence: 'x' }])) };
+  const ev = { [FLOORS[1].id]: all(FLOORS[1]), [FLOORS[4].id]: Object.fromEntries(aspectsOf(FLOORS[4]).filter((a) => a !== 'accuracy').slice(0, 6).map((a) => [a, { verdict: 'better', evidence: 'x' }])) };
   let t = tower([], ev);
   assert.equal(t.floors[0].id, FLOORS[1].id); assert.equal(t.floors[0].state, 'beaten'); assert.equal(t.marker, 2);
   assert.equal(t.floors[1].id, FLOORS[4].id); assert.equal(t.floors[1].state, 'current'); // 5 aspects left beats every untouched site
@@ -58,7 +58,8 @@ test('the tower skill answers its asks and not near misses; the card is headed V
   const ev = Object.fromEntries(FLOORS.slice(0, 3).map((f) => [f.id, all(f)])), t3 = tower([], ev), h3 = sk.towerHtml(t3, (s) => String(s));
   const states = [...h3.matchAll(/data-state="(\w+)"/g)].map((x) => x[1]);
   assert.deepEqual(states, ['current', 'beaten', 'beaten', 'beaten']); assert.match(h3, /3 surpassed · easiest site left: /);
-  assert.ok(h3.indexOf(FLOORS[2].site) < h3.indexOf(FLOORS[0].site));
+  const list = h3.slice(h3.indexOf('class="tw-won"')); // the list, not the picture (lib/tower-art.js draws them bottom up)
+  assert.ok(list.indexOf(FLOORS[2].site) < list.indexOf(FLOORS[0].site));
 });
 test('the live card tells what moved between two polls', async () => {
   const sk = (await import('../void-live-deploy/skills/tower.js')).default;
@@ -164,7 +165,7 @@ test('every surpassed site is on the card, visible and copyable, with a taught-m
   const rowAt = html.indexOf('<div class="tower-floor" role="button"'), rowEnd = html.indexOf('</div>', rowAt), link = html.indexOf('<div class="tw-links"', rowEnd);
   assert.ok(rowAt > 0 && html.slice(rowAt, rowEnd).includes(esc(won.site)), 'a surpassed site is a copyable row, not a button');
   const linkTag = html.slice(link, html.indexOf('>', link)); assert.ok(!/data-share-skip/.test(linkTag), 'its links copy with the card'); assert.ok(html.slice(link).includes('/compare/?floor='));
-  assert.ok(html.includes('<b>Surpassed (1)</b>')); assert.ok(!/max-height:min\(48vh/.test(html), 'no scroll cap hides the list');
+  assert.ok(html.includes('<b>Conquered (1)</b>')); assert.ok(!/max-height:min\(48vh/.test(html), 'no scroll cap hides the list');
   // the site's own icon when the gate kept one; the drawn fighter otherwise
   const { siteFace } = await import('../void-live-deploy/skills/tower.js');
   assert.match(siteFace({ ...won, icon: 'tower.icons/tradukka.com.png' }, 24), /<img class="tw-logo" src="\/tower.icons\/tradukka.com.png"/); assert.match(siteFace(won, 24), /s2\/favicons\?sz=128&domain=tradukka\.com/); assert.doesNotMatch(siteFace(won, 24), /<svg/, 'logos only, never a drawn face');
@@ -228,7 +229,7 @@ test('the card leads with the target: hero with logo, name and weight chips, thr
   const h = towerHtml(t, esc, { enter: false });
   const at = (m) => h.indexOf(m);
   assert.ok(at('<div class="tw-hero"') < at('<div class="tw-vs') && at('<div class="tw-vs') < at('<div class="tw-stack tower-stack"') && at('<div class="tw-stack tower-stack"') < at('<div class="tw-actions"') && at('<div class="tw-actions"') < at('<div class="tw-next"'), 'the order: hero, fight, aspects, actions, up next');
-  assert.match(heroHtml(cur, esc), /Now assimilating[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
+  assert.match(heroHtml(cur, esc), /Now taking on[\s\S]*tw-hero-name/); assert.match(h, /Nothing surpassed yet/); assert.match(h, /<details class="tw-fold tw-take"/);
   assert.match(chipsHtml({ size: { bytes: 700, scripts: 0, nodes: 20, routes: 1 }, weight: 900 }, esc), /700 B<\/b> · 1 KB club[\s\S]*<b>0<\/b> scripts[\s\S]*<b>20<\/b> elements[\s\S]*<b>1<\/b> route</);
   assert.match(chipsHtml({ size: null, weight: null }, esc), /not weighed yet/);
   // the reason line says why, not what the chips and the matchup already show (owner, 2026-10-30: it repeated the counts above it)
@@ -245,8 +246,8 @@ test('the want card and the Versus card name the same site: both rank with the t
   const card = tower(...towerArgs(raw, files)), will = tower(...towerArgs(cats, files));
   assert.equal(will.floors[will.marker - 1].id, card.floors[card.marker - 1].id); assert.equal(towerLine(will), towerLine(card));
   const tgt = files.tg && files.tg.id && card.floors.find((f) => f.id === files.tg.id);
-  if (tgt && !tgt.beaten && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
-  assert.equal(towerArgs([], {}).length, 7); assert.equal(towerArgs([], { tg: {} })[6], null);
+  if (tgt && !tgt.beaten && !tgt.cleared && !tgt.held) assert.equal(card.floors[card.marker - 1].id, tgt.id, 'the target stays first until it is beaten');
+  assert.equal(towerArgs([], {}).length, 8); assert.equal(towerArgs([], {})[7], null); assert.equal(towerArgs([], { tg: {} })[6], null);
 });
 test('a held site says why in the Versus line, so all aspects ahead and none surpassed explains itself', () => {
   const t = { floors: [{ site: 'heycolor.com', n: 16, m: 16, held: 'not yet better at painting a picture' }], marker: 1, beaten: 0 };

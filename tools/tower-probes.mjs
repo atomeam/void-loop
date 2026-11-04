@@ -95,6 +95,15 @@ const FIC_TITLE = 'The gate counts a draft', FIC_TEXT = WC_TEXT + '\n\n' + "Herm
 // a rap carried whole in a /rap/ link (the music: neuralframes.com probe and journeys): written for the gate, so the page opens it with no model call
 export const RAP_LINK = "/rap/?t=pizza&s=boom+bap&m=confident&f=steady&v=first&r=Title%3A+Slice+of+the+Night%0A%5BVerse+1%5D%0AI+fold+a+slice+in+half+and+let+the+cheese+hang+low%0AThe+oven+running+hot%2C+the+street+is+full+of+snow%0APepperoni+circles+stacked+like+records+on+a+shelf%0AI+never+share+the+crust%2C+I+keep+it+for+myself%0AThe+box+is+on+my+knees%2C+the+steam+is+in+the+air%0AThe+radio+is+loud%2C+I+do+not+have+a+care%0AA+little+extra+garlic%2C+basil+on+the+side%0AI+take+a+bite+of+summer+on+a+winter+ride%0A%5BHook%5D%0APizza+in+the+night%2C+pizza+in+the+light%0AEvery+single+slice%2C+I+hold+it+tight%0APizza+on+the+go%2C+pizza+on+the+low%0AEvery+time+I+eat%2C+I+steal+the+show%0A%5BVerse+2%5D%0AThe+dough+is+spinning+round+like+vinyl+on+a+deck%0AThe+chef+is+throwing+flour+like+confetti+at+a+check%0AI+order+one+large%2C+then+I+order+one+more%0AThe+driver+knows+my+name+and+waves+from+the+door%0AMozzarella+melting+like+the+stars+across+the+sky%0AI+count+a+dozen+toppings+and+I+never+ask+why%0AThe+last+piece+on+the+plate+is+a+trophy+in+my+hand%0APizza+is+the+only+crown+that+every+kid+can+stand";
 export const PROBES = Object.freeze({
+  // ndscalc.ru (a Russian VAT calculator, Versus target from 2026-10-31): the main job is taking VAT out of a total. 1000 with 22% VAT in it,
+  // worked out here: VAT = 1000 * 22 / 122 = 180.327... -> 180.33, net 819.67, and net + VAT is the total exactly (owner, 2026-11-03: "a correct
+  // answer on its main job" before the Tower may pass a site). Verse's VAT is the calculator's VAT mode (combine-pages rule).
+  'ndscalc.ru': {
+    site: 'https://ndscalc.ru/', verse: '/calculator/?mode=vat&vat=extract&sum=1000&rate=22',
+    truth: [['VAT 180.33', /\b180[.,]33\b/], ['net 819.67', /\b819[.,]67\b/], ['total 1,000.00', /\b1[,\s\u00a0]?000[.,]00\b/]],
+    facts: [['add VAT', /\badd\b|начислить/i], ['take VAT out', /\bextract\b|take (?:it )?out|выделить/i], ['the rate', /\brate\b|ставк/i], ['20%', /\b20\s*%/], ['22%', /\b22\s*%/],
+      ['net', /\bnet\b|без НДС/i], ['gross or total', /\btotal\b|\bgross\b|с НДС/i], ['the working shown', /\bworking\b|\u00d7|\*|÷|\//], ['sum in words', /прописью|in words/i]],
+  },
   'is it': {
     site: 'https://isitchristmas.com/', verse: '/is-it/christmas',
     truth: () => [[christmas() ? 'yes on Christmas Day' : 'no on any other day', christmas() ? /\bYES\b/i : /\bNO\b/i]],

@@ -1,0 +1,47 @@
+# The pull request, merged with main, tested before it lands (owner, 2026-11-04: the code is perfect going in).
+# A build output that conflicts is regenerated. Any other conflict fails and names the files. The fast checks
+# run on that tree. The full suite still runs on main after the merge (verify.yml) and reverts what it breaks.
+name: Merge gate
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: The pull request number, when automerge starts this on a head it pushed
+        required: true
+        type: string
+
+concurrency:
+  group: merge-gate-${{ github.event.pull_request.number || inputs.pr || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write # wake automerge when the gate finishes
+
+jobs:
+  merge-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test the merge with main
+        env:
+          MERGE_GATE_BASE: origin/${{ github.event.pull_request.base.ref || 'main' }}
+        run: node tools/merge-gate.mjs
+      - name: Wake automerge
+        if: always()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: gh workflow run automerge.yml --repo "$REPO" --ref main

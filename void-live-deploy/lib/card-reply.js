@@ -106,12 +106,18 @@ export function mountReply(el, doc, { owner = '', fetchFn, card } = {}) {
   const sub = mk('div', { className: 'sub', textContent: owner ? LINES.owner : LINES.guest });
   sec.append(h, talk, box, send, sub);
   placeReply(el, sec);
-  // the owner sees what was said on this ask before (the same store Verse's reflection reads)
+  // the replies already sent on this ask are not drawn on the card again (owner, 2026-11-03: "those replies shouldn't stay on the card like
+  // that", "the card holds all the replies to it"): every Versus card opened with up to six old "You: … Verse: …" exchanges under it, so
+  // the card grew with every reply. They stay in Verse's memory (the same store its reflection reads); the card says only how many there
+  // are, in one line, and a reply sent now shows under it until the card closes. threadOf is kept for that count.
   const about = owner && fetchFn ? aboutCard(card ? card() : {}) : null;
   if (about) fetchFn('/api/voice-reply', { headers: { authorization: 'Bearer ' + owner } })
-    .then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) threadOf(j.replies, about.ask).forEach((r) => showReply(doc, talk, r)); }).catch(() => {});
+    .then((r) => (r.ok ? r.json() : null)).then((j) => { const n = j ? threadOf(j.replies, about.ask).length : 0; if (n) sub.textContent = earlierLine(n) + ' ' + sub.textContent; }).catch(() => {});
   return sec;
 }
+
+/** the one line that stands for the replies already sent on a card's ask, instead of the replies themselves. Pure. */
+export const earlierLine = (n) => (n > 0 ? 'You have replied here ' + (n >= REPLY.thread ? REPLY.thread + ' or more times' : n === 1 ? 'once' : n + ' times') + ' before; I keep what you taught me.' : '');
 
 /** keep the section last on the card, with only the product line (.vtail) after it. Moves it only when something else is after it. */
 export function placeReply(el, sec = el && el.querySelector(':scope > .vreply')) {

@@ -673,8 +673,8 @@
     "why": "not sized yet, hardness 73, Tranco 68841"
    },
    "words": "the family page's own (the model's were refused: says what the page does not do (extensive, encyclopedia, discover, their, meanings))",
-   "rows": "11/15",
-   "gated": "2026-11-03T23:42:06Z"
+   "rows": "12/15",
+   "gated": "2026-11-03T23:45:42Z"
   },
   "serverdiscounter.com": {
    "at": "2026-11-03T23:37:29Z",
@@ -1023,6 +1023,15 @@
    "at": "2026-11-03T23:42:07Z",
    "line": "Versus: took on emojigraph.org (emoji combos, /emoji-combos/emoji-dictionary/), surpassed 11 of 15 rows (also read: 7 no-family); next ndscalc.ru (the target)",
    "built": 1,
+   "queued": 0,
+   "fixed": [],
+   "pages_per_day": 1,
+   "reads_next": "unitingchurch.org.au"
+  },
+  {
+   "at": "2026-11-03T23:45:42Z",
+   "line": "Versus: took on emojigraph.org (emoji combos, /emoji-combos/emoji-dictionary/), surpassed 12 of 15 rows; next ndscalc.ru (the target)",
+   "built": 0,
    "queued": 0,
    "fixed": [],
    "pages_per_day": 1,
