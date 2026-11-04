@@ -636,3 +636,28 @@ test('work --run hands the whole job to a one-shot agent and stops a stuck one, 
   assert.equal(stuck.code, 124); assert.match(stuck.last, /stopped after 0\.02 minutes/);
   assert.ok(Date.now() - t0 < 20e3, 'it did not wait the minute out');
 });
+
+test('a member files its own #work post as a job: deduped, capped a day, never another agent\'s post, closed only with a pull request', async () => {
+  const env = world([{ id: 'j0', ask: 'a job already done', target: 'feature:old', state: 'live' }]);
+  const a = await admit(env, 'Filer'), b = await admit(env, 'Other');
+  const p = await post(env, { do: 'post', c: 'work', body: 'Make the exam page show its weakest domain first' }, a.key);
+  assert.equal(p.job, undefined, 'an agent\'s plain post is not a job by itself');
+  const f = await post(env, { do: 'file', thread: p.id }, a.key, T0 + 2000);
+  assert.equal(f.status, 201, f.say); assert.equal(f.job, 'ask-' + p.id);
+  assert.deepEqual([job(env, f.job).state, job(env, f.job).target], ['queued', 'feature:ask-' + p.id]); assert.match(job(env, f.job).note, /^filed in #work by team:Filer/);
+  assert.equal((await post(env, { do: 'file', thread: p.id }, a.key, T0 + 4000)).status, 409, 'the same post twice');
+  const twin = await post(env, { do: 'file', body: 'make the exam page show its weakest domain first!' }, a.key, T0 + 6000);
+  assert.equal(twin.status, 409); assert.equal(twin.job, f.job, 'the same ask twice is the job already there');
+  const p2 = await post(env, { do: 'post', c: 'work', body: 'someone else\'s idea' }, b.key, T0 + 8000);
+  assert.equal((await post(env, { do: 'file', thread: p2.id }, a.key, T0 + 10000)).status, 403, 'not another agent\'s post');
+  assert.equal((await post(env, { do: 'file', thread: p2.id }, OWNER, T0 + 10000)).status, 201, 'the owner files anyone\'s');
+  for (let i = 0; i < 4; i++) assert.equal((await post(env, { do: 'file', body: 'filed ask number ' + i }, a.key, T0 + 12000 + i * 2000)).status, 201);
+  assert.equal((await post(env, { do: 'file', body: 'one too many' }, a.key, T0 + 30000)).status, 201);
+  assert.equal((await post(env, { do: 'file', body: 'seven today' }, a.key, T0 + 32000)).status, 429, T.RATES.filesDay + ' a day');
+  assert.equal((await post(env, { do: 'file', thread: 1 }, null)).status >= 401, true, 'a stranger files nothing');
+  // handed out in its own thread, and it closes only with a pull request
+  const n = await post(env, { do: 'next' }, b.key, T0 + 40000);
+  const got = n.job; assert.ok(got && /^ask-\d+$/.test(got.job), JSON.stringify(n));
+  const root = env.DB.raw.prepare('SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0').get(got.job).id; assert.equal(got.thread, root, 'the filed post is the job\'s thread');
+  assert.equal((await post(env, { do: 'done', ok: true }, b.key, T0 + 42000)).status, 400, 'no link, no close');
+});

@@ -16,6 +16,7 @@
 //     channel {code, about?}            make a channel
 //     post {c, body, thread?}           a message, or a reply in a thread
 //                                       (the owner's post at the top of #work is a job on the build queue, feature:team-<id>, handed out in its thread)
+//     file {thread} | {body}            a member: its own top-level #work post as a job (ask-<id>, closed by its pull request; agents: a day cap, deduped)
 //     queue                             the owner: its #work posts that never became a job go on the build queue now
 //     react {id, emoji}                 add or take back a reaction (the closed list in lib/team.js EMOJI)
 //     here {auto?}                      an agent says it is here; when it is idle (and auto is not false) Verse hands it its next job
@@ -237,9 +238,9 @@ export async function handOut(env, a, now) {
     let took = false;
     try { took = (await env.DB.prepare("UPDATE void_queue SET state = 'building', note = ?, updated = ? WHERE id = ? AND state = 'queued'").bind(T.claimNote(j.note, a.name), new Date(now).toISOString(), j.id).run()).meta.changes === 1; } catch (_) { took = false; } // void-review: ok (one claim tried at a time on purpose: the loop stops at the first job this agent wins, at most 8 tries)
     if (!took) continue; // another agent (or the conductor) took it first
-    const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by = 'owner'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
+    const asked = await env.DB.prepare("SELECT id FROM void_team_msgs WHERE job = ? AND thread = 0 AND channel = 'work' AND by <> 'verse'").bind(j.id).first(); // void-review: ok (runs once: the return below ends the loop)
     const thread = asked ? asked.id : await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), job: j.id, now });
-    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's own post is the job's thread
+    if (asked) await write(env, { c: 'work', by: 'verse', body: T.assignText(a.name, j), thread, now }); // the owner's (or the filing member's) own post is the job's thread
     await env.DB.prepare('UPDATE void_team_agents SET job = ?, job_at = ?, thread = ? WHERE id = ?').bind(j.id, now, thread, a.id).run(); // void-review: ok (runs once: the return below ends the loop)
     return { job: j.id, kind: T.kindOf(j.target), target: j.target, ask: j.ask, brief: briefOf(j, T.kindOf(j.target)), thread };
   }
@@ -255,6 +256,35 @@ async function enqueue(env, msg, body, now, note = 'asked in #work by the owner'
   await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:team-' + msg, 'queued', note, at, at).run();
   await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, msg).run();
   return id;
+}
+// a member files its own #work post as a job (2026-11-03: agents' and bots' #work posts never became jobs, only the owner's did): ask-<id>, a
+// feature, ranked as any queued job (the owner's asks still go first) and closed only by the pull request that does it. An agent files its
+// own top-level #work posts only, at most RATES.filesDay a day and RATES.filesOpen open between all agents; the same post or the same ask
+// twice is the job already there. -> { job } or { status, say }
+async function fileJob(env, me, msg, now) {
+  const m = await env.DB.prepare("SELECT id, by, body, job FROM void_team_msgs WHERE id = ? AND channel = 'work' AND thread = 0").bind(msg).first();
+  if (!m) return { status: 404, say: 'no such post at the top of #work' };
+  if (m.by === 'verse') return { status: 403, say: 'Verse files its own posts' };
+  if (me.kind === 'agent' && m.by !== me.agent.id) return { status: 403, say: 'an agent files its own #work posts; ask its author or the owner' };
+  if (m.job) return { status: 409, job: m.job, say: 'that post is job ' + m.job + ' already' };
+  const open = await env.DB.prepare("SELECT id, ask FROM void_queue WHERE state IN ('queued', 'building')").all().catch(() => null);
+  if (!open) return { status: 503, say: 'no build queue in this workspace' };
+  const key = T.askKey(T.clean(m.body, 1000)), twin = (open.results || []).find((j) => key && T.askKey(j.ask) === key);
+  if (twin) return { status: 409, job: twin.id, say: 'the same ask is job ' + twin.id + ' already' };
+  if (me.kind === 'agent') {
+    const mine = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE id LIKE 'ask-%' AND note LIKE ? AND at > ?").bind('filed in #work by team:' + me.agent.name + ' %', new Date(now - DAY).toISOString()).first();
+    if (mine.n >= T.RATES.filesDay) return { status: 429, say: T.RATES.filesDay + ' jobs filed a day; this one waits' };
+    const all = (open.results || []).filter((j) => /^ask-\d+$/.test(j.id)).length;
+    if (all >= T.RATES.filesOpen) return { status: 429, say: T.RATES.filesOpen + ' filed jobs are open already; one has to close first' };
+  }
+  const id = 'ask-' + m.id, at = new Date(now).toISOString(), text = T.clean(m.body, 1000);
+  const ask = text.length > 200 ? text.slice(0, 160).trim() + ' … (the whole ask: #work thread ' + m.id + ')' : text;
+  const note = 'filed in #work by ' + (me.kind === 'owner' ? 'the owner' : 'team:' + me.agent.name) + ' · closes with the pull request that does it';
+  const r = await env.DB.prepare('INSERT OR IGNORE INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, ask, 'feature:' + id, 'queued', note, at, at).run();
+  if (r.meta.changes !== 1) return { status: 409, job: id, say: 'that post is job ' + id + ' already' };
+  await env.DB.prepare('UPDATE void_team_msgs SET job = ? WHERE id = ?').bind(id, m.id).run();
+  await write(env, { c: 'work', by: 'verse', body: 'On the build queue as a feature job (' + id + '). The next idle agent takes it here, in this thread; it closes with the pull request that does it.', thread: m.id, now });
+  return { job: id };
 }
 // a job goes back to the queue (given back, failed, or its agent went away); Verse says so in the job's thread
 async function giveBack(env, a, now, why, failed) {
@@ -460,6 +490,18 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       for (const m of results) { const q = await enqueue(env, m.id, m.body, now); if (!q || q === 'full') break; queued.push({ msg: m.id, job: q }); } // void-review: ok (at most 10 posts, one insert each, stops when the queue is full)
       return json({ ok: true, queued, say: queued.length ? queued.length + ' #work post' + (queued.length === 1 ? '' : 's') + ' put on the build queue' : 'every #work post of the owner is a job already' });
     }
+    case 'file': { // a member's own top-level #work post as a job: { thread: <its id> }, or { body } to post it and file it at once
+      if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
+      let msg = parseInt(p.thread, 10) || 0;
+      if (!msg) {
+        const plain = T.cleanBody(redact(String(p.body || ''))), body = T.hideSecrets(plain); if (!body) return bad(400, 'file a post: { thread: <its id> } or { body }');
+        msg = await write(env, { c: 'work', by: byOf(me), body, thread: 0, now });
+      }
+      const f = await fileJob(env, me, msg, now);
+      if (!f.job || f.status) return json({ ok: false, say: f.say, ...(f.job ? { job: f.job } : {}), thread: msg }, f.status || 400);
+      await pushLater();
+      return json({ ok: true, job: f.job, thread: msg, say: 'filed: ' + f.job + ' is on the build queue' }, 201);
+    }
     case 'channel': {
       const code = String(p.code || '').toLowerCase().trim(), why = T.codeProblem(code); if (why) return bad(400, why);
       if (a) { const lim = await rated(env, a, now); if (lim) return bad(429, lim); }
@@ -555,6 +597,6 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       const next = fresh.auto ? await handOut(env, fresh, now) : null; // keep it busy: the next job at once
       return json({ ok: true, next, say: next ? T.workSay(next) : 'no job for an agent on the queue right now' });
     }
-    default: return bad(400, 'do: join, invite, remove, channel, post, react, hook, here, next, done or rekey');
+    default: return bad(400, 'do: join, invite, remove, channel, post, file, react, hook, here, next, done or rekey');
   }
 }
