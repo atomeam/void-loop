@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 206,
+ "runsTotal": 207,
  "kinds": {
   "grow": 67,
   "file": 71,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 14
+  "visitor": 15
  },
  "runs": [
+  {
+   "at": "2026-11-04T07:49:54Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T07:22:01Z",
    "passed": 0,
@@ -274,13 +281,6 @@
    "of": 74,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
-  },
-  {
-   "at": "2026-10-19T02:33:17Z",
-   "passed": 63,
-   "of": 73,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"add task call mum friday high priority 30 min\" (skill:task-board)"
   }
  ],
  "weekly": [
@@ -355,7 +355,7 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 15,
+   "runs": 16,
    "passed": 58,
    "of": 87,
    "ms": 554
