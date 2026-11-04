@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { planOf, runBot, routeFree, freeLlm, openalexAnswer } from '../void-live-deploy/lib/answer-free.js';
+import { planOf, runBot, routeFree, freeLlm, openalexAnswer, ADAPTERS, RESEARCH } from '../void-live-deploy/lib/answer-free.js';
 import { onRequestPost } from '../void-live-deploy/functions/api/answer.js';
 
 const registryText = readFileSync(new URL('../void-live-deploy/resources/free.json', import.meta.url), 'utf8');
@@ -28,7 +28,7 @@ test('answer-free: each kind of question is planned to the right free resource',
     ['papers on sea level rise', 'api', null], ['find recent research on CRISPR off-target effects', 'api', null],
     ['who wrote hamlet', 'llm', null], ['what is 404', 'llm', null], ['write me a python script that renames files', 'llm', null], ['3 bananas to apples', 'llm', null], ['x'.repeat(200) + ' 3 miles to km', 'llm', null],
   ];
-  for (const [ask, kind, bot] of cases) { const p = planOf(ask); assert.equal(p.kind, kind, ask); if (bot) assert.equal(p.bot, bot, ask); if (kind === 'api') assert.deepEqual(p.ids, ['openalex'], ask); }
+  for (const [ask, kind, bot] of cases) { const p = planOf(ask); assert.equal(p.kind, kind, ask); if (bot) assert.equal(p.bot, bot, ask); if (kind === 'api') assert.deepEqual(p.ids, RESEARCH, ask); }
 });
 
 test('answer-free: bots answer correctly, only through their live gate, and a bad input falls through to the model', () => {
@@ -54,6 +54,21 @@ test('answer-free: a research ask goes to OpenAlex through the router, and falls
   assert.equal(await routeFree('papers on sea level rise', { env: {}, registry, adapters }), null, 'no counter: fail closed, nothing called');
   assert.equal(await routeFree('who wrote hamlet', { env, registry, adapters }), null, 'a general ask is the model\'s');
   assert.equal(openalexAnswer('x', [{ id: 'https://openalex.org/W9', display_name: 'T' }]).sources[0].url, 'https://openalex.org/W9');
+});
+
+test('answer-free: research fails over OpenAlex key -> OpenAlex keyless -> Crossref, each through its real adapter', async () => {
+  const realFetch = globalThis.fetch; const urls = [];
+  const CROSSREF = { message: { items: [{ DOI: '10.5555/abc', title: ['Coastal flooding and sea level'], issued: { 'date-parts': [[2019, 5]] }, author: [{ given: 'C.', family: 'Author' }], 'is-referenced-by-count': 42 }] } };
+  globalThis.fetch = async (u) => { urls.push(String(u)); if (/api\.openalex\.org/.test(String(u))) return new Response('{"error":"budget"}', { status: 429 }); if (/api\.crossref\.org/.test(String(u))) return new Response(JSON.stringify(CROSSREF)); return new Response('{}', { status: 404 }); };
+  try {
+    const env = { DB: fakeDb(), OPENALEX_API_KEY: 'k123' };
+    const out = await routeFree('papers on sea level rise', { env, registry });
+    assert.equal(out.source, 'free:crossref'); assert.deepEqual(out.tried.map((t) => t.id + ':' + t.why), ['openalex-key:provider quota', 'openalex:provider quota']);
+    assert.match(out.answer, /from Crossref/); assert.match(out.answer, /Coastal flooding and sea level \(2019\), C\. Author, cited 42 times \[1\]/);
+    assert.deepEqual(out.sources, [{ title: 'Coastal flooding and sea level', url: 'https://doi.org/10.5555/abc' }]);
+    assert.ok(/api_key=k123/.test(urls[0]) && !/api_key/.test(urls[1]), 'the key goes only to the keyed OpenAlex entry');
+    assert.equal(typeof ADAPTERS.crossref, 'function');
+  } finally { globalThis.fetch = realFetch; }
 });
 
 test('answer-free: LLM failover only reaches keyed free tiers, in registry order, and never Gemini', async () => {
