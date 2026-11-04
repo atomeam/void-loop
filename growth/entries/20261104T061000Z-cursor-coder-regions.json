@@ -1,0 +1,1 @@
+{"at":"2026-11-04T06:10:00Z","by":"cursor","kind":"fix","what":"Verse's coder edits a big file by outline, region, line patch and a small split, so a lap no longer spends its turn cap reading void.html from the top","show":"The coder reads a region of a big file and patches those lines","try":"node --test tools/verse-coder.test.mjs"}
