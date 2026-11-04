@@ -434,6 +434,22 @@ SPECS['/autopilot/'] = async (t) => {
   t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
   t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
 };
+// /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
+const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },
+  revenue: { sales: 1, gross_cents: 4900, fee_cents: 712, refunded_cents: 0, realized_cents: 4188 }, balance_cents: 4188, split_cents: 4188,
+  pots: { owner: 1256, reserve: 586, infrastructure: 820, tools: 586, growth: 600, bounties: 340 }, weights: { infrastructure: 0.35, tools: 0.25, growth: 0.26, bounties: 0.14 }, learned: {}, committed: 0,
+  policy: JSON.parse(fs.readFileSync(path.join(root, 'treasury/policy.json'), 'utf8')),
+  entries: [{ at: '2026-11-04T12:00:00Z', kind: 'alloc', bucket: 'owner', cents: 1256, purpose: "Atom's cut of a realized sale", status: 'allocated' }], reviews: [] };
+SPECS['/treasury/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/treasury', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(TREASURY_FIX) }));
+  await t.p.reload(); await t.waitText('#balance', /\$/, 10000);
+  t.ok((await t.text('#balance')).trim() === '$41.88', 'the balance is the realized money: ' + (await t.text('#balance')));
+  t.ok(/\$49\.00 gross/.test(await t.text('#balance-note')) && /\$7\.12 Gumroad fees/.test(await t.text('#balance-note')), 'gross and fees shown');
+  t.ok(/\$12\.56/.test(await t.text('#pots')), "Atom's cut has its pot");
+  t.ok(/30%/.test(await t.text('#policy')), "the policy says Atom's cut");
+  t.ok((await t.p.locator('#entries tr').count()) >= 1, 'every allocation is a row');
+  await t.waitText('#found', /\S/, 10000);
+};
 SPECS['/ledger/'] = async (t) => {
   await t.p.context().route((u) => u.host === 'api.github.com' && u.pathname === '/repos/test-owner/test-repo/issues', (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { etag: '"fix1"', 'x-ratelimit-remaining': '59', 'x-ratelimit-reset': String(Math.floor(Date.now() / 1000) + 3600) }, body: JSON.stringify(LEDGER_FIX) }));
   await t.p.waitForFunction(() => !document.getElementById('load').disabled, null, { timeout: 20000 }).catch(() => {}); // the default repo's first load finishes first

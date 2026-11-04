@@ -1,0 +1,351 @@
+{
+  "note": "Where Verse looks for legitimate money left on the ground (owner via the treasury brief, 2026-11-04). Legal sources only, each with its own page; nothing deceptive or against a site's terms. tools/found-money.mjs checks every page is reachable before it lists it, runs the live probes, and writes void-live-deploy/treasury/found.json. A value is only ever a number a source publishes (a prize pool, a bounty, a program's stated credit); otherwise it is null and says so. Anything that needs Atom's identity, a sign-in or a card is 'ready to claim'.",
+  "verse": {
+    "facts": "Verse (a-to-mind.com) is a public open-source repo (github.com/atomeam/void-loop), runs on Cloudflare's free tiers, sells through Gumroad, has its own X and YouTube, is a one-person US business run by Atom (Florida).",
+    "skills": [
+      "web",
+      "javascript",
+      "typescript",
+      "machine learning/ai",
+      "productivity",
+      "open ended",
+      "ar/vr",
+      "lifehacks",
+      "beginner friendly",
+      "education",
+      "design",
+      "music/art"
+    ]
+  },
+  "places": [
+    {
+      "id": "missingmoney",
+      "category": "unclaimed property",
+      "title": "MissingMoney.com: every participating US state's unclaimed property, searched under A-to-Mind and Atom's own name",
+      "url": "https://www.missingmoney.com/",
+      "needs": "Atom's legal name and address history (only he may claim his own property)",
+      "fit": "anyone can have it; a search is free"
+    },
+    {
+      "id": "fl-treasure-hunt",
+      "category": "unclaimed property",
+      "title": "Florida Treasure Hunt: Florida's own unclaimed property, under the business and Atom's name",
+      "url": "https://www.fltreasurehunt.gov/",
+      "needs": "Atom's legal name; a claim needs his ID",
+      "fit": "Atom is in Florida"
+    },
+    {
+      "id": "class-actions",
+      "category": "class-action settlements",
+      "title": "Open class-action settlements that name a service Verse or Atom uses",
+      "url": "https://topclassactions.com/category/lawsuit-settlements/open-lawsuit-settlements/",
+      "probe": "class-actions",
+      "needs": "Atom files the claim himself, only for a settlement he actually qualifies for",
+      "fit": "checked against the services Verse uses"
+    },
+    {
+      "id": "gumroad-balance",
+      "category": "payouts and balances",
+      "title": "Gumroad balance waiting to be paid out (a $100 minimum before a bank payout, so a small balance can sit unclaimed)",
+      "url": "https://gumroad.com/help/article/13-getting-paid",
+      "needs": "Atom's Gumroad login (Payouts page); or GUMROAD_ACCESS_TOKEN on the site so Verse can read sales itself",
+      "fit": "Verse sells on Gumroad"
+    },
+    {
+      "id": "gumroad-abandoned",
+      "category": "abandoned checkouts",
+      "title": "Abandoned Gumroad checkouts: Gumroad's own abandoned-cart workflow emails people who left a cart",
+      "url": "https://gumroad.com/help/article/131-using-workflows-to-send-automated-updates",
+      "needs": "Atom's Gumroad login to turn the workflow on",
+      "fit": "Verse sells on Gumroad"
+    },
+    {
+      "id": "processor-holds",
+      "category": "payouts and balances",
+      "title": "Payment-processor reserves or holds on the Gumroad account (payouts paused by disputes)",
+      "url": "https://gumroad.com/help/article/13-getting-paid",
+      "needs": "Atom's Gumroad login",
+      "fit": "Verse sells on Gumroad"
+    },
+    {
+      "id": "cloudflare-sla",
+      "category": "SLA credits",
+      "title": "Cloudflare SLA credits after an outage",
+      "url": "https://www.cloudflare.com/business-sla/",
+      "status": "checked: not eligible",
+      "why": "Cloudflare's SLA covers Business and Enterprise plans; Verse runs on the free tiers, so there is nothing to claim until it pays for a covered plan"
+    },
+    {
+      "id": "cloud-credits",
+      "category": "unused credits",
+      "title": "Unused credits or promo balances already sitting in Cloudflare and GitHub billing",
+      "url": "https://dash.cloudflare.com/?to=/:account/billing",
+      "needs": "Atom's Cloudflare and GitHub logins (Billing pages)",
+      "fit": "the accounts Verse runs on"
+    },
+    {
+      "id": "subscriptions",
+      "category": "duplicate or unused subscriptions",
+      "title": "Paid subscriptions billed twice or not used (Atom's card statements)",
+      "url": "https://consumer.ftc.gov/articles/how-avoid-and-cancel-subscriptions",
+      "needs": "Atom's card statements: Verse never reads payment accounts",
+      "fit": "Verse itself pays for nothing yet, so any find is on Atom's side"
+    },
+    {
+      "id": "aws-activate",
+      "category": "startup credit programs",
+      "title": "AWS Activate Founders: AWS credits for self-funded startups",
+      "url": "https://aws.amazon.com/startups/credits",
+      "value_cents": 100000,
+      "value_note": "AWS publishes up to $1,000 in credits for Activate Founders",
+      "needs": "Atom applies with an AWS account and company details",
+      "fit": "self-funded, no institutional funding"
+    },
+    {
+      "id": "cloudflare-startups",
+      "category": "startup credit programs",
+      "title": "Cloudflare for Startups: credits on the platform Verse already runs on",
+      "url": "https://www.cloudflare.com/forstartups/",
+      "needs": "Atom applies with the Cloudflare account and company details",
+      "fit": "Verse runs on Cloudflare; eligibility terms are on the page"
+    },
+    {
+      "id": "google-startups",
+      "category": "startup credit programs",
+      "title": "Google for Startups Cloud Program",
+      "url": "https://cloud.google.com/startup",
+      "needs": "Atom applies with a Google Cloud account",
+      "fit": "AI-first startups get a track; terms on the page"
+    },
+    {
+      "id": "microsoft-startups",
+      "category": "startup credit programs",
+      "title": "Microsoft for Startups (Azure credits)",
+      "url": "https://www.microsoft.com/en-us/startups",
+      "needs": "Atom applies with a Microsoft account",
+      "fit": "terms on the page"
+    },
+    {
+      "id": "vercel-oss",
+      "category": "startup credit programs",
+      "title": "Vercel Open Source Program (credits for public open-source projects)",
+      "url": "https://vercel.com/open-source-program",
+      "needs": "Atom applies for the public repo",
+      "fit": "the repo is public; credits help only if Verse hosts something on Vercel"
+    },
+    {
+      "id": "github-sponsors",
+      "category": "income Verse is not collecting",
+      "title": "GitHub Sponsors on the public repo: people can fund Verse directly",
+      "url": "https://github.com/sponsors",
+      "needs": "Atom joins GitHub Sponsors (identity, tax form and a bank account)",
+      "fit": "the repo is public and active"
+    },
+    {
+      "id": "youtube-partner",
+      "category": "marketplace and platform payouts",
+      "title": "YouTube Partner Program on Verse's own channel, once it is eligible",
+      "url": "https://support.google.com/youtube/answer/72851",
+      "needs": "Atom's YouTube login to see eligibility and apply",
+      "fit": "Verse has its own YouTube channel"
+    },
+    {
+      "id": "x-creator",
+      "category": "marketplace and platform payouts",
+      "title": "X creator revenue sharing on Verse's own X account, once it is eligible",
+      "url": "https://help.x.com/en/using-x/creator-revenue-sharing",
+      "needs": "the X account's login and payout setup",
+      "fit": "Verse has its own X account"
+    },
+    {
+      "id": "rd-credit",
+      "category": "tax credits",
+      "title": "Federal R&D tax credit (Form 6765), including the payroll-tax offset for qualified small businesses",
+      "url": "https://www.irs.gov/forms-pubs/about-form-6765",
+      "needs": "Atom and his tax preparer: Verse does not file taxes",
+      "fit": "building new software can qualify; the preparer decides"
+    },
+    {
+      "id": "fl-programs",
+      "category": "tax credits and rebates",
+      "title": "Florida's small-business incentives and programs",
+      "url": "https://floridajobs.org/business-growth-and-partnerships/for-employers",
+      "needs": "Atom applies for the business",
+      "fit": "Atom is in Florida"
+    },
+    {
+      "id": "nlnet",
+      "category": "grants",
+      "title": "NLnet / NGI Zero open calls: grants for open internet software",
+      "url": "https://nlnet.nl/propose/",
+      "needs": "Atom writes and submits the proposal under his name",
+      "fit": "open source required; the project must fit a call's theme"
+    },
+    {
+      "id": "mozilla",
+      "category": "grants",
+      "title": "Mozilla Foundation funding programs",
+      "url": "https://www.mozillafoundation.org/en/what-we-fund/",
+      "needs": "Atom applies",
+      "fit": "depends on the open call"
+    },
+    {
+      "id": "sovereign-tech",
+      "category": "grants",
+      "title": "Sovereign Tech Agency: funding for open digital infrastructure",
+      "url": "https://www.sovereign.tech/",
+      "needs": "Atom applies",
+      "fit": "for widely used infrastructure; Verse is not that yet, so this is a watch, not a claim"
+    },
+    {
+      "id": "algora",
+      "category": "bug bounties and code bounties",
+      "title": "Algora: paid bounties on open-source issues",
+      "url": "https://algora.io/",
+      "probe": "github-bounties",
+      "needs": "an Algora account to submit and get paid",
+      "fit": "JavaScript and TypeScript issues"
+    },
+    {
+      "id": "issuehunt",
+      "category": "bug bounties and code bounties",
+      "title": "IssueHunt: bounties on open-source issues",
+      "url": "https://issuehunt.io/",
+      "needs": "an IssueHunt account",
+      "fit": "JavaScript issues"
+    },
+    {
+      "id": "gitcoin",
+      "category": "grants",
+      "title": "Gitcoin Grants rounds for open-source projects",
+      "url": "https://www.gitcoin.co/",
+      "needs": "Atom applies with a wallet",
+      "fit": "open source required"
+    },
+    {
+      "id": "devpost",
+      "category": "hackathon prizes",
+      "title": "Online hackathons on Devpost that fit Verse's skills",
+      "url": "https://devpost.com/hackathons",
+      "probe": "devpost",
+      "needs": "Atom registers and submits as the entrant",
+      "fit": "online, open, a theme Verse already builds"
+    },
+    {
+      "id": "domain-parking",
+      "category": "domains",
+      "title": "Domain parking or sale for domains Atom holds and does not use",
+      "url": "https://www.cloudflare.com/products/registrar/",
+      "needs": "Atom's registrar login to list unused domains",
+      "fit": "a-to-mind.com is in use, so only other domains count"
+    },
+    {
+      "id": "datasets",
+      "category": "dataset licensing",
+      "title": "Licensing Verse's own public datasets (the outcome exam, the Versus tower measurements)",
+      "url": "https://datarade.ai/",
+      "needs": "Atom lists them as the seller",
+      "fit": "low confidence: the data is public already, so a buyer would pay for curation and updates"
+    }
+  ],
+  "affiliates": [
+    {
+      "domains": [
+        "amazon.com",
+        "amzn.to"
+      ],
+      "program": "Amazon Associates",
+      "url": "https://affiliate-program.amazon.com/"
+    },
+    {
+      "domains": [
+        "namecheap.com"
+      ],
+      "program": "Namecheap affiliates",
+      "url": "https://www.namecheap.com/affiliates/"
+    },
+    {
+      "domains": [
+        "digitalocean.com"
+      ],
+      "program": "DigitalOcean referral program",
+      "url": "https://www.digitalocean.com/referral-program"
+    },
+    {
+      "domains": [
+        "canva.com"
+      ],
+      "program": "Canva affiliates",
+      "url": "https://www.canva.com/affiliates/"
+    },
+    {
+      "domains": [
+        "notion.so",
+        "notion.com"
+      ],
+      "program": "Notion affiliates",
+      "url": "https://www.notion.com/affiliates"
+    },
+    {
+      "domains": [
+        "hostinger.com"
+      ],
+      "program": "Hostinger affiliates",
+      "url": "https://www.hostinger.com/affiliates"
+    },
+    {
+      "domains": [
+        "fiverr.com"
+      ],
+      "program": "Fiverr affiliates",
+      "url": "https://affiliates.fiverr.com/"
+    },
+    {
+      "domains": [
+        "udemy.com"
+      ],
+      "program": "Udemy affiliates",
+      "url": "https://www.udemy.com/affiliate/"
+    },
+    {
+      "domains": [
+        "bluehost.com"
+      ],
+      "program": "Bluehost affiliates",
+      "url": "https://www.bluehost.com/affiliates"
+    },
+    {
+      "domains": [
+        "skillshare.com"
+      ],
+      "program": "Skillshare affiliates",
+      "url": "https://www.skillshare.com/en/affiliates"
+    },
+    {
+      "domains": [
+        "bookshop.org"
+      ],
+      "program": "Bookshop.org affiliates",
+      "url": "https://bookshop.org/info/affiliates"
+    },
+    {
+      "domains": [
+        "printables.com",
+        "prusa3d.com"
+      ],
+      "program": "Prusa affiliate program",
+      "url": "https://www.prusa3d.com/page/affiliate-program/"
+    }
+  ],
+  "class_action_terms": [
+    "Cloudflare",
+    "GitHub",
+    "Google",
+    "YouTube",
+    "Gumroad",
+    "PayPal",
+    "Stripe",
+    "Twitter",
+    "X Corp"
+  ]
+}

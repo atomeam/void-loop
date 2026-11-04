@@ -1,0 +1,224 @@
+{
+  "note": "Verse's treasury policy. Verse decided it and publishes it with its reasons (owner, 2026-11-03: 'so verse is to be able to reallocate its own profits in the most efficient and helpful way, i get a cut of coarse'; asked for the cut: 'Let Verse decide'). The API (functions/api/treasury.js) reads this file; lib/treasury.js does the math. Every change gets a line in history with its reason.",
+  "decided_by": "Verse",
+  "version": 1,
+  "updated": "2026-11-04",
+  "source_of_funds": {
+    "rule": "Realized Gumroad revenue only: sale prices minus Gumroad fees, minus refunds and lost disputes. Nothing borrowed, nothing forecast, test purchases never count.",
+    "fee_source": "https://gumroad.com/help/article/66-gumroads-fees"
+  },
+  "owner_cut": {
+    "share": 0.3,
+    "min": 0.2,
+    "max": 0.5,
+    "step": 0.05,
+    "raise_when_covers": 3,
+    "why": "Atom gets 30% of every realized dollar, paid before anything else. He carries what Verse cannot pay for yet (the accounts, the domain, his time and his name), so his share is real money from the first sale, not a promise. 30% and not more because Verse is tiny: 70% compounding into what makes the next sale is what grows his 30% fastest. Verse raises it a step (5 points, up to 50%) when 30 days of realized revenue covers running costs three times over and the reserve is full, and lowers it a step (never under 20%) only if costs outrun revenue while the reserve is under half its target. Every change is posted here with the reason."
+  },
+  "reserve": {
+    "share": 0.2,
+    "share_after_target": 0.05,
+    "target_cents": 15000,
+    "why": "20% of what is left after Atom's cut is kept and never spent, until the reserve holds $150: about three months of the paid tools Verse ranks first (Workers Paid, the domain) so one bad month never takes the site down. After that only 5% keeps topping it up, and the rest goes to work. A refund comes out of the reserve first."
+  },
+  "buckets": {
+    "min_share": 0.1,
+    "max_share": 0.5,
+    "prior": {
+      "infrastructure": 0.5,
+      "tools": 0.4,
+      "growth": 0.45,
+      "bounties": 0.35
+    },
+    "why": "What is left is split across four buckets by expected return: the best candidate in each bucket (impact x confidence from the reinvest ranking), times what weekly reviews learned about that bucket's real returns, lifted by Verse's priorities engine when it ranks a bucket's work. Every bucket keeps at least 10% so nothing starves of evidence, and none takes more than 50%. Free paths are always done first; a bucket's money is spent only on an item whose free path is used up.",
+    "names": {
+      "infrastructure": "Infrastructure (hosting, domain, compute)",
+      "tools": "Tools and APIs (data, models, checkout)",
+      "growth": "Ads and growth",
+      "bounties": "Bounties for member builders"
+    }
+  },
+  "spending": {
+    "rule": "Verse holds no card and no login. A bucket that can afford its top candidate logs it as 'ready to execute' with the credential it needs; it is marked executed only when the purchase is reported, and its actual return is recorded against what was expected.",
+    "credentials": {
+      "cloudflare": "Atom's Cloudflare login (Billing), with the card already on file there",
+      "github": "Atom's GitHub billing settings",
+      "gumroad": "Atom's Gumroad login",
+      "bounty": "a payout to the builder (PayPal or GitHub Sponsors) sent from Atom's account",
+      "default": "an account Atom opens for it, and a card"
+    }
+  },
+  "review": {
+    "every": "week (Mondays)",
+    "why": "Each week Verse compares every executed spend's actual return with what it expected, moves its bucket's multiplier halfway toward that ratio, and moves unspent bucket money toward the new weights. No measurement, no learning."
+  },
+  "history": [
+    {
+      "at": "2026-11-04",
+      "change": "First policy: owner cut 30%, reserve 20% to $150 then 5%, four buckets by expected ROI (10% to 50% each).",
+      "why": "Atom asked Verse to decide his cut and how to reinvest the rest."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "workers-paid",
+      "item": "Cloudflare Workers Paid",
+      "bucket": "infrastructure",
+      "cost_cents": 500,
+      "monthly": true,
+      "impact": 0.9,
+      "confidence": 0.9,
+      "urgent": true,
+      "free_path": "stay under Workers AI's free 10k neurons/day and 1k KV writes/day (wishlist 1 and 2: gemma, edge cache)",
+      "free_done": false,
+      "account": "cloudflare",
+      "why": "the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale",
+      "expected": "no more capped answers; 10M requests and 1M KV writes a month",
+      "metric": "misses"
+    },
+    {
+      "id": "domain",
+      "item": "a-to-mind.com renewal, set aside (Cloudflare at-cost .com, about $10.50/yr)",
+      "bucket": "infrastructure",
+      "cost_cents": 1050,
+      "monthly": false,
+      "impact": 0.6,
+      "confidence": 1,
+      "urgent": false,
+      "free_path": null,
+      "free_done": false,
+      "account": "cloudflare",
+      "why": "the store and every film link live on the domain; losing it would end all revenue",
+      "expected": "the domain never lapses",
+      "metric": "sales"
+    },
+    {
+      "id": "sample-prints",
+      "item": "a small test batch of printed Forge models (V01D's 'micro-business test')",
+      "bucket": "growth",
+      "cost_cents": 1500,
+      "monthly": false,
+      "impact": 0.5,
+      "confidence": 0.4,
+      "urgent": false,
+      "free_path": "sell the files digitally first (V01D Forge Printables, live)",
+      "free_done": true,
+      "account": null,
+      "why": "V01D asked for a tiny product test; physical prints show whether people pay for the objects, not just the files",
+      "expected": "first physical-goods sale or a clear no",
+      "metric": "sales"
+    },
+    {
+      "id": "stripe",
+      "item": "Turn on Stripe for fixed-price checkout (no monthly fee; per-sale fee only)",
+      "bucket": "tools",
+      "cost_cents": 0,
+      "monthly": false,
+      "impact": 0.8,
+      "confidence": 0.7,
+      "urgent": false,
+      "free_path": null,
+      "free_done": false,
+      "account": null,
+      "why": "paid products wait as 'coming soon' without it or a Gumroad listing",
+      "expected": "fixed-price products can sell",
+      "metric": "sales"
+    },
+    {
+      "id": "business-email",
+      "item": "Business email on a-to-mind.com",
+      "bucket": "infrastructure",
+      "cost_cents": 700,
+      "monthly": true,
+      "impact": 0.4,
+      "confidence": 0.8,
+      "urgent": false,
+      "free_path": "Cloudflare Email Routing to Adam's inbox (free) plus the bot inbox",
+      "free_done": false,
+      "account": null,
+      "why": "a store and a payment processor want a reachable business address",
+      "expected": "Stripe and buyers have a real contact",
+      "metric": "sales"
+    },
+    {
+      "id": "promotion",
+      "item": "Ads-free promotion: post every V01D film as a Short, list V01D in AI directories and the MCP registry (live), share store packs",
+      "bucket": "growth",
+      "cost_cents": 0,
+      "monthly": false,
+      "impact": 0.7,
+      "confidence": 0.6,
+      "urgent": false,
+      "free_path": null,
+      "free_done": false,
+      "account": null,
+      "why": "visitors are the input to every sale; free reach comes before paid ads",
+      "expected": "more store visits per week",
+      "metric": "sales"
+    },
+    {
+      "id": "compute",
+      "item": "CI compute: keep the public repo on GitHub's free runners and trim the slowest workflows",
+      "bucket": "infrastructure",
+      "cost_cents": 0,
+      "monthly": false,
+      "impact": 0.5,
+      "confidence": 0.8,
+      "urgent": false,
+      "free_path": null,
+      "free_done": false,
+      "account": null,
+      "why": "faster checks mean faster merges",
+      "expected": "shorter time from push to green",
+      "metric": null
+    },
+    {
+      "id": "coingecko",
+      "item": "CoinGecko Basic",
+      "bucket": "tools",
+      "cost_cents": 3500,
+      "monthly": true,
+      "impact": 0.5,
+      "confidence": 0.6,
+      "urgent": false,
+      "free_path": "keyless CoinGecko behind a 2-minute edge cache (live), then the free Demo key",
+      "free_done": false,
+      "account": null,
+      "why": "crypto prices that never run dry",
+      "expected": "no empty crypto cards",
+      "metric": "misses"
+    },
+    {
+      "id": "x-api",
+      "item": "X API Basic",
+      "bucket": "tools",
+      "cost_cents": 20000,
+      "monthly": true,
+      "impact": 0.5,
+      "confidence": 0.5,
+      "urgent": false,
+      "free_path": "official embeds, Bluesky and Mastodon (live)",
+      "free_done": false,
+      "account": null,
+      "why": "X timelines and search",
+      "expected": "social card covers X",
+      "metric": "misses"
+    },
+    {
+      "id": "member-bounty",
+      "item": "A bounty for a member builder: $25 for a merged member build that ships a visible feature on a-to-mind.com",
+      "bucket": "bounties",
+      "cost_cents": 2500,
+      "monthly": false,
+      "impact": 0.6,
+      "confidence": 0.5,
+      "urgent": false,
+      "free_path": null,
+      "free_done": false,
+      "account": "bounty",
+      "why": "a member who builds for Verse multiplies what ships; paying for a merged, visible feature pays only for results",
+      "expected": "one visible feature shipped by someone other than Verse",
+      "metric": "visible"
+    }
+  ]
+}
