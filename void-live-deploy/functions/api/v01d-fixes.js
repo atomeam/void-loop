@@ -1,6 +1,6 @@
-// Approve one of Verse's fixes that waits for the owner (lib/v01d-fixes.js). Owner only; needs GITHUB_TOKEN in the Pages project.
-// POST { pr, op: 'approve' }  -> { ok, pr }   the pull request loses "waits for owner" and gets automerge, so it merges once Verse's
-//                                review is clean. Only a pull request labelled "made by Verse" can be approved here.
+// Swap an old "waits for owner" label for automerge (lib/v01d-fixes.js). Owner only; needs GITHUB_TOKEN in the Pages project.
+// This is not a merge hold: automerge clears that label itself (Atom, 2026-11-04). The endpoint does the same swap.
+// POST { pr, op: 'approve' }  -> { ok, pr }   Only a pull request labelled "made by Verse" is changed here.
 // 400 for anything else; 503 without GITHUB_TOKEN (the card then links to the pull request on GitHub); 502 when GitHub says no.
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';

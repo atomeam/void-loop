@@ -64,7 +64,7 @@ export const INTERNAL = {
   '/api/probe-asks': "Verse writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
   '/api/voice-reply': "the owner talks back to Verse on its self card and under any card; Verse answers and keeps the lesson (owner only; functions/api/voice-reply.js, lib/voice.js)",
   '/api/probe-log': "Verse's probe ledger: counts and outcomes the growth card shows, written by its probe and fix tools (POST owner only; lib/probe-log.js)",
-  '/api/v01d-fixes': "approve one of Verse's own fix pull requests that waits for the owner (owner only; skills/v01d-fixes.js, lib/v01d-fixes.js)",
+  '/api/v01d-fixes': "an old waits-for-owner label on a fix Verse opened, swapped for automerge by the owner key; automerge does the same itself, so a review does not wait here (owner only; skills/v01d-fixes.js, lib/v01d-fixes.js)",
   '/api/answer': "the page's answer model",
   '/api/translate': "the translate page's own translator: text (or a photo's text) in, the translation out (functions/api/translate.js, lib/translate-langs.js)",
   '/api/translate': "the translate page's own translator: text (or a photo's text) in, the translation out (functions/api/translate.js, lib/translate-langs.js)",

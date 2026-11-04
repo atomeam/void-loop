@@ -1,5 +1,5 @@
 // Verse's fixes for the owner (lib/v01d-fixes.js, skills/v01d-fixes.js, functions/api/v01d-fixes.js): the open pull requests Verse
-// opened, read from their labels and body; the waiting ones first; Approve swaps "waits for owner" for automerge, owner only.
+// opened, read from their labels and body; an old "waits for owner" label sorts first. automerge clears it; the card does not ask a person to approve.
 // Run: node --test tools/v01d-fixes.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -75,10 +75,10 @@ test('the card reads the risk and the draft state from the pull request', () => 
   const f = fixOf(p); assert.equal(f.risk, 'high'); assert.match(f.riskWhy, /structural line/); assert.equal(f.draft, true);
   const q = fixOf(pr(951, '0.9', ['made by Verse', 'automerge'])); assert.equal(q.risk, null); assert.equal(q.draft, false);
 });
-test('the workflow puts a fix of 0.8 or more on main and leaves one under 0.8 on its v01d/fix- branch for the owner, and says the risk in the commit and the output', () => {
-  // Actions may not open pull requests in this repo (2026-10-19), so the gate decides where the commit goes, not whether a pull request is a draft
+test('the workflow puts a passing fix on main whatever the confidence, and says the risk in the commit and the output', () => {
+  // Actions may not open pull requests in this repo (2026-10-19). Confidence is recorded; it does not hold the merge (Atom, 2026-11-04).
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   assert.match(wf, /Risk: \$RISK\./); assert.match(wf, /risk=\$\(node -p/);
-  assert.match(wf, /c >= 0\.8 \? "automerge" : "waits for owner"/); assert.match(wf, /if \[ "\$gate" = "automerge" \]; then/); assert.match(wf, /branch="v01d\/fix-/);
-  assert.doesNotMatch(wf, /gh pr create/);
+  assert.match(wf, /console\.log\("automerge"\)/); assert.match(wf, /git push -q origin HEAD:main/); assert.match(wf, /branch="v01d\/fix-/);
+  assert.doesNotMatch(wf, /waits for owner/); assert.doesNotMatch(wf, /gh pr create/);
 });

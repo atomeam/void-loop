@@ -39,6 +39,12 @@ Atom, 2026-11-04: "the code needs to be perfect going in, why does every single 
 - **Green pull requests merge themselves.** A pull request labelled `automerge`, and one the Actions app or atomeam opened on `helper/*`, `loop/*` or `lab/*`, gets GitHub auto-merge (squash). One that falls behind main is updated. An older `lab/sync-*` or `loop/*` pull request is closed when a newer one is open. Once a day, one open more than 6 hours is merged if it is green, or told the blocker if it is not.
 - **Cut wasted runs, never the pace.** A second push to the same ref cancels the run it made obsolete. A heavy check runs when the files it covers change. The schedules that ship Verse stay as often as they are.
 
+## The review decides (owner, 2026-11-04)
+
+Atom, 2026-11-04: "verse's code review has to be approved, seems like the opposite of automated."
+
+The review runs. When it passes (Verse's review, the merge gate, and no regression on the outcome exam at /progress/), it approves and merges by itself. When it fails, it files a fix job and comments with the reason. A person still confirms spending money and a message sent to someone outside, on the confirm line.
+
 ## Where things are
 
 Two builders share the work: read `domains/handoff.md` at the start of every session and update it at the start and the end (who is on what, what was finished and how, ladders and lessons).

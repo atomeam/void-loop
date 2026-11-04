@@ -7,8 +7,8 @@
 # and Verse's review as a gate. Cheapest first: the tests and the claim run before npm ci and Chromium, so a day with nothing to build
 # costs a minute. Only a draft that passes everything leaves the build job, as a patch file; the second job holds the write token,
 # checks the patch touches exactly the five files of that skill, moves its bytes into a branch (git apply, nothing run) and opens a
-# pull request labelled "made by Verse": automerge at confidence 0.8 and up, "waits for owner" under it (owner, 2026-10-18, the same
-# gate as propose-fix). Its last line is `Job: <id>`, so the job goes live when the PR merges (tools/job-link.mjs). A draft that fails
+# pull request labelled "made by Verse" and automerge. Confidence is written down and does not hold the merge (Atom, 2026-11-04).
+# Its last line is `Job: <id>`, so the job goes live when the PR merges (tools/job-link.mjs). A draft that fails
 # is undone and the job goes back to queued with the failing step in its note, for a builder.
 # Each step holds one secret at most: the claim and the report the owner token (VOID_OWNER_TOKEN), the fill the model key
 # (OPENROUTER_API_KEY), the checks none. Without VOID_OWNER_TOKEN every run is a quiet no-op.
@@ -186,24 +186,21 @@ jobs:
           git add -- "void-live-deploy/skills/$NAME.js" void-live-deploy/skills/order/*-"$NAME" "void-live-deploy/skills/index.json" "tools/$NAME.test.mjs" docs/MAP.md
           git commit -q -m "$TITLE" -m "Built by Verse from the miss board (tools/build-miss.mjs, frontier #28): people typed this ask and nothing answered. A model filled the scaffold's card in one call with the ask as data; the repo then passed it through the collision check, the overlap check, its unit test, the ask on the real page, the map check and Verse's review." -m "Verse's confidence: $CONFIDENCE. Where: void-live-deploy/skills/$NAME.js. Source, in the model's words: $SOURCE. Risk: medium (a new skill: answer text written by a model reaches visitors)." -m "Suggested-by: Verse (miss board)" -m "Job: $JOB"
           git push -q origin "$branch"
-          gh label create "made by Verse" --color 5c5cff --description "a change Verse's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
-          # the confidence gate (owner, 2026-10-18, the same as propose-fix): sure enough, it merges itself once Verse's review is clean;
-          # otherwise it waits for the owner on the "Verse's fixes" card (or here on GitHub)
-          gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
-          gh label create "waits for owner" --color d4a72c --description "Verse was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
-          draft=""; [ "$gate" = "automerge" ] || draft="--draft"
+          gh label create "made by Verse" --color 5c5cff --description "a change Verse's own model proposed and the repo's checks passed; it merges itself" --force >/dev/null 2>&1 || true
+          # Confidence is written on the pull request. It does not wait for a person (Atom, 2026-11-04).
+          gate=$(node -e 'console.log("automerge")' "$CONFIDENCE")
           body="Verse built this skill from the miss board by itself (frontier #28; tools/build-miss.mjs, .github/workflows/build-miss.yml): people typed \"$ASK\" and no skill answered. What it answers: that ask and $PHRASINGS more phrasing(s), with one plain-text card. Before it got here it passed the skill collision check, the overlap check, its own unit test, the ask typed into the real page, the map check and Verse's review as a gate. Source, in the model's words: $SOURCE.
           Verse's confidence: $CONFIDENCE.
           Where: void-live-deploy/skills/$NAME.js.
           Risk: medium (a new skill: answer text written by a model reaches visitors).
-          Labelled $gate: at confidence 0.8 and up it merges on Verse's review like any PR (owner, 2026-10-18), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"Verse's fixes\" card on the site). The ask is a visitor's words, read as data; the queue job below goes live when this merges (tools/job-link.mjs).
+          Labelled automerge: it merges when Verse's review and the merge gate pass. verify.yml takes it back if the suite goes red. The ask is a visitor's words, read as data; the queue job below goes live when this merges (tools/job-link.mjs).
 
           Job: $JOB"
-          url=$(gh pr create $draft --base main --head "$branch" --label "made by Verse" --label "$gate" --title "$TITLE" --body "$body")
+          url=$(gh pr create --base main --head "$branch" --label "made by Verse" --label "$gate" --title "$TITLE" --body "$body")
           echo "### Verse's skill is up: $url" >> "$GITHUB_STEP_SUMMARY"
           # the merge gate: Verse's review on this head, then the bot that merges labelled PRs once it is clean
-          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
-          [ "$gate" = "automerge" ] && { gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true; }
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::the next automerge run starts Verse's review"
+          gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true
           echo "Verse's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
           # the job says where its pull request is (building until the merge marks it live)
           node tools/job-link.mjs building --id "$JOB" --url "$url" || true
