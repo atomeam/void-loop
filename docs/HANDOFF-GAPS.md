@@ -80,6 +80,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /convert/unit-converter-2/ | number | number | yes | handoff-types.json |
 | /convert/unit-converter/ | number | number | yes | handoff-types.json |
 | /converter/ | image, text | image, text | yes | its tag |
+| /credits/ | - | - | no | its tag |
 | /emoji-combos/ | text | text | yes | its tag |
 | /emoji-combos/emoji-dictionary/ | text | text | yes | its tag |
 | /emojis/ | text | text | yes | handoff-types.json |
@@ -516,6 +517,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /rap/ | text | text, music, video | yes | its tag |
 | /recipes/ | text, items, number | items, text | yes | handoff-types.json |
 | /resize-image/ | image | image | yes | handoff-types.json |
+| /salvage/ | - | - | no | its tag |
 | /scoreboard/ | - | - | no | its tag |
 | /scores/ | date, text | event, table, date | yes | handoff-types.json |
 | /scores/sports/ | text | event, table | no | its tag |
