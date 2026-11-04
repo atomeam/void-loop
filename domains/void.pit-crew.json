@@ -1,17 +1,12 @@
 {
-  "at": "2026-11-03T14:42:00.941Z",
+  "at": "2026-11-04T14:53:54.569Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261101-1930-3",
-      "ask": "Perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop and list exactly which of the specified files changed.",
-      "target": "voice:ask-20261101-1930-3"
-    },
-    {
-      "id": "ask-20261101-0223-3",
-      "ask": "Instruct Copilot to perform a git diff between 2e272df9 and 5fa7a921 in atomeam/void-loop to identify if the 4 failing checks were actually addressed in the code.",
-      "target": "voice:ask-20261101-0223-3"
+      "id": "ask-20261103-2357-3",
+      "ask": "Update the telemetry reporting logic to ensure failure counts and specific error names are always perfectly synchronized.",
+      "target": "voice:ask-20261103-2357-3"
     }
   ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
