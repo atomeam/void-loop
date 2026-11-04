@@ -5,6 +5,7 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Strict-Transport-Security: max-age=63072000
   Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+  Speculation-Rules: "/speculation-rules.json"
 
 
 # the boards: Turnstile, Cloudflare's bot check on every post, loads its own script (functions/api/boards/[[path]].js); only these pages allow it
@@ -52,6 +53,17 @@
 # shared card code: re-checked like the skills, so a deploy (the evolved badge gone, owner 2026-10-18) reaches a returning browser within a minute
 /lib/*
   Cache-Control: public, max-age=60, must-revalidate
+
+# Speculation rules (sent on every page by the /* rule above): Chrome prefetches a same-origin page on hover and prerenders it on pointer down,
+# so it opens instantly. The browser reads the rules only with this type. What they leave out (the API, Functions, feeds, home) is in the file.
+/speculation-rules.json
+  Content-Type: application/speculationrules+json
+  Cache-Control: public, max-age=3600
+
+# /under-the-hood/: no-transform asks Cloudflare not to rewrite the page (no injected bot-check script, no analytics beacon). Measured on this
+# one page first: does compression survive, and does Lighthouse best practices reach 100? If both, the rule can widen (docs/MAP.md).
+/under-the-hood/*
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
 
 /manifest.webmanifest
   Content-Type: application/manifest+json
