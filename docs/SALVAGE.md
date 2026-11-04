@@ -96,3 +96,22 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 | A Pro / Human switch for how Verse plays checkers, connect four and othello (Verse's ask): Human picks a good move a person would see, with its reason, not always the best | commit 78e86af1 (`skills/playstyle.js`, `humanMove` in `checkers-rules.js`, a `style` option on the connect-four and othello move pickers, its browser section) | main already has one strength for every game (`skills/game-level.js`, easy / normal / hard, the owner's "board games can all be combined"); a second switch on three games would compete with it | how the easy and normal levels slip: a plausible human move instead of a random legal one, inside `levelPick`, for every game at once |
 | The desk-sized WebGL hardcover book: a shut cover you tap open, leaves that turn and curl with the stacks thinning and thickening, each face a painted page of `skills/guide.json` | `skills/mini/book.js`, `lib/book-face.js` (`tools/book-face.test.mjs` still runs), last mounted by `skills/guide.js` before 2026-10-16 (PR #860 to #912) | "open the book" is now the full-screen tome (`lib/tome.js`): the owner asked for the graphic style of a Skyrim book, not a small 3D object inside a card with a menu around it | the book as a thing on the stage (summon it, drag it, open it where it lies, the tome opening from it); the leaf geometry for any other book or notebook in 3D |
 | A 34-line stand-in for `skills/zorbleflux.js` that answered "what is zorbleflux" and "zorbleflux throttle 500" (the game was restored over it) | commits 9abc28be and 97c3188b (`void-live-deploy/skills/zorbleflux.js`) | Its throttle answer said stage updates were throttled to a number of milliseconds, but nothing throttled them; the game (asked 2026-10-18) had been replaced | A real throttle ask: `lib/motion-throttle.js` already slows the field while someone types elsewhere; a velocity-smoothing curve there would make the "throttle" answer true |
+
+## Free-resource arbitrage (2026-11-03): what was reused
+
+Owner: free-resource arbitrage, with the note that it had been tried many times before. `archive/repos/autosalvage` was run dry (`python cli.py --path <copy of the pieces> --dry-run`): 12 pieces scanned (3 documentation, 3 config, 6 source), 0 migrations planned, nothing changed. What each became:
+
+| Piece | Reused as |
+| --- | --- |
+| `void-live-deploy/lib/daily-cap.js` (`cap`, `peek`) | the router's per-provider usage counter (key `free:<id>`, one D1 row per UTC day), shared by every edge location; fail closed kept |
+| `void-live-deploy/lib/shortfall.js` | where a provider's quota-out is recorded (`free:<id>`, reason `quota`), the evidence ledger the will already reads |
+| `void-live-deploy/lib/models.js` | the registry names Workers AI models only by their export (`FREE_MODEL`, `ART_MODEL`...); the one-place-for-models rule holds |
+| `void-live-deploy/lib/free-pics.js` + `docs/free-pictures.md` | its rules (closed queries, licence filter, a 429 rests the source) stay the picture path; Openverse and Commons are listed in the registry as image resources it uses |
+| `domains/inputs/builds/batch-2026-09-28-router-free.json` | the tiered stack's rule (free first; paid only from earnings under a standing spend) is the router's order: only free resources are in it, nothing paid is ever routed |
+| `domains/features/ai-models.json` | the Hugging Face rows (Inference Providers credit, datasets) became registry rows `hf-inference`, `hf-datasets` |
+| `docs/reinvest.md` | "free first" and the Workers AI 10k neurons/day ceiling set the daily shares |
+| `domains/found-money.sources.json` | credit programs (AWS Activate etc.) are `program` rows: shown on /free/, never routed, Atom claims |
+| `docs/everything-app.md` (adapters, not hard-wiring) | a provider is reached only through an adapter passed to `runJob` |
+
+New: `void-live-deploy/resources/free.json` (registry), `lib/free-router.js` (route, fail over, status), `functions/api/free.js`, `/free/`, `tools/free-router.test.mjs`.
+Why earlier attempts stalled: each was one domain at a time (models only, pictures only, money only) with its own counter, and the 2026-09-28 rule ("no second fallback stack") stopped LLM failover before any key existed. This one is one registry for every kind, reuses the one shared counter, routes only what is reachable today with no new account (keyless or already bound), and a key Atom adds later switches a provider on with no code change.

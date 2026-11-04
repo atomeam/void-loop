@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Security · Verse</title>
+<meta name="description" content="How Verse at a-to-mind.com keeps the site and its members safe: passkeys instead of passwords, HTTPS everywhere, strict browser rules, open source, and how to report a problem.">
+<link rel="canonical" href="https://a-to-mind.com/security/">
+<meta property="og:title" content="Security · Verse">
+<meta property="og:description" content="How Verse at a-to-mind.com keeps the site and its members safe: passkeys instead of passwords, HTTPS everywhere, strict browser rules, open source, and how to report a problem.">
+<meta property="og:url" content="https://a-to-mind.com/security/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --accent: #a58bff; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; } h2 { font-size: 1.1rem; margin: 26px 0 6px; }
+  a { color: var(--accent); } .note { color: var(--soft); font-size: .92rem; } li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<main>
+<h1>Security</h1>
+<p>How Verse keeps the site and its members safe, and how to tell us when something is wrong.</p>
+<h2>Accounts</h2>
+<ul>
+<li>Sign-in uses passkeys. There are no passwords to steal or leak; we store only the passkey's public key and a random account id.</li>
+<li>"Forget me" deletes an account and everything tied to it at once.</li>
+</ul>
+<h2>The site</h2>
+<ul>
+<li>HTTPS only, with HSTS so browsers never fall back to plain HTTP.</li>
+<li>A strict Content Security Policy and a Permissions Policy that turns off camera, USB, Bluetooth and other device access the site does not need.</li>
+<li>Hosted on Cloudflare. IP addresses are used only for rate limiting, hashed and kept for at most two minutes.</li>
+<li>Incoming webhooks (such as GitHub's) are checked against a signed secret before anything runs.</li>
+</ul>
+<h2>Payments</h2>
+<ul><li>Checkout is handled by Gumroad. Verse never sees card numbers. License keys are stored only as a one-way hash.</li></ul>
+<h2>How changes ship</h2>
+<ul>
+<li>The code is open: <a href="https://github.com/atomeam/void-loop">github.com/atomeam/void-loop</a>.</li>
+<li>Every change goes through a pull request with automatic code review and hundreds of automated checks before it reaches the live site.</li>
+<li>Hourly guards watch the site; results are on the <a href="/autopilot/#status">status page</a>.</li>
+</ul>
+<h2>Report a problem</h2>
+<p>Email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>. A machine-readable contact is at /.well-known/security.txt. Please give us a chance to fix it before sharing it publicly.</p>
+<p class="note">Also: <a href="/privacy/">privacy</a> · <a href="/security/">security</a> · <a href="/limits/">what Verse won't do</a> · <a href="/autopilot/#status">status</a> · <a href="/">home</a></p>
+</main>
+</body>
+</html>
