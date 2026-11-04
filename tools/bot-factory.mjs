@@ -1,5 +1,6 @@
 // Verse's bot factory (owner, 2026-11-04: "get verse to build a ridiculous amount of its own bots for everything").
 //   node tools/bot-factory.mjs            gate every bot (kit.js and grown.json): run its probe, check its lineage is real, write bots/registry.json
+//   node tools/bot-factory.mjs --file-fixes  also file every bot that did not ship as a fix job on the site queue (VOID_OWNER_TOKEN)
 //   node tools/bot-factory.mjs --grow N   ask free Workers AI (CF_ACCOUNT_ID + CF_API_TOKEN) for N new bots built as pipelines of live bots,
 //                                         from the gaps (crew-filed wants, missed asks); keep only those whose probe passes, then gate
 // Counts only bots that work: a bot whose probe fails or whose lineage names nothing real is listed as failed and never shown live.
@@ -81,15 +82,32 @@ async function grow(n) {
   writeFileSync(GROWN, '[\n' + grown.map((g) => JSON.stringify(g)).join(',\n') + '\n]\n'); return added;
 }
 
-/** every family variant's checks, summed per family */
-export function familyRows() {
-  const by = {};
-  for (const b of families()) { const r = check(b), f = (by[b.family] ||= { family: b.family, cat: b.cat, total: 0, live: 0, failed: [] }); f.total++; if (r.ok) f.live++; else f.failed.push(b.id + ': ' + r.fails.join(', ')); }
+/** every family variant's checks, summed per family; a variant whose lineage names nothing real fails like a wrong answer */
+export function familyRows(list = families()) {
+  const by = {}, ids = new Set(BOTS.map((b) => b.id));
+  for (const b of list) {
+    const r = check(b), bad = (b.from || []).filter((x) => !lineageReal(x, ids)), fails = [...r.fails, ...(bad.length ? ['lineage not found: ' + bad.join(', ')] : [])];
+    const f = (by[b.family] ||= { family: b.family, cat: b.cat, total: 0, live: 0, failed: [] }); f.total++; if (!fails.length) f.live++; else f.failed.push(b.id + ': ' + fails.join(', '));
+  }
   return Object.values(by);
+}
+/** one fix job per bot that did not ship (failed probe, failed check or made-up lineage), in the queue's shape. Pure. */
+export function fixJobs(rows, fams) {
+  return [...rows.filter((r) => r.status === 'failed').map((r) => r.id + ': ' + r.why), ...fams.flatMap((f) => f.failed)]
+    .map((x) => ({ ask: 'Fix bot ' + x.slice(0, 200) + ' (it is not live until its test passes)', target: 'bot:' + x.split(':')[0] }));
+}
+/** file the fix jobs on the site queue (VOID_OWNER_TOKEN; without it they stay listed in bots/registry.json, which is the record) */
+async function fileFixes(jobs) {
+  const tok = process.env.VOID_OWNER_TOKEN || '';
+  if (!jobs.length) return console.log('fix jobs: none, every bot passed');
+  if (!tok) return console.log('fix jobs: ' + jobs.length + ' listed in bots/registry.json, not filed (no VOID_OWNER_TOKEN)');
+  const post = (j) => fetch((process.env.VOID_SITE || 'https://a-to-mind.com') + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify(j) }).then((r) => r.status, (e) => e.message);
+  const done = await Promise.all(jobs.slice(0, 25).map(post)); // all at once, awaited once
+  done.forEach((st, i) => console.log('fix job ' + jobs[i].target + ': ' + st));
 }
 function write() {
   const rows = gate(), held = rows.filter((r) => r.status === 'held').length, fams = familyRows(), live = rows.filter((r) => r.status === 'live').length + fams.reduce((t, f) => t + f.live, 0), total = rows.length + fams.reduce((t, f) => t + f.total, 0);
-  writeFileSync(REG, JSON.stringify({ about: 'Verse\'s bots. Live only when the probe passes on a real task (tools/bot-factory.mjs).', live, failed: total - live - held, held, families: fams, bots: rows }, null, 0).replace(/\},\{"id"/g, '},\n{"id"') + '\n');
+  writeFileSync(REG, JSON.stringify({ about: 'Verse\'s bots. Live only when the probe passes on a real task (tools/bot-factory.mjs).', live, failed: total - live - held, held, families: fams, fix: fixJobs(rows, fams), bots: rows }, null, 0).replace(/\},\{"id"/g, '},\n{"id"') + '\n');
   console.log('bot-factory: ' + live + ' live, ' + (total - live - held) + ' failed, ' + held + ' held (' + fams.length + ' families)');
   for (const r of rows.filter((x) => x.status === 'failed')) console.log('  failed ' + r.id + ': ' + r.why);
 }
@@ -98,4 +116,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const i = process.argv.indexOf('--grow');
   if (i > 0) console.log('grow: ' + (await grow(Math.min(20, Number(process.argv[i + 1]) || 5))) + ' new bots passed');
   write();
+  if (process.argv.includes('--file-fixes')) await fileFixes(read(REG, {}).fix || []);
 }

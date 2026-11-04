@@ -1,0 +1,29 @@
+# Live copy of docs/autosalvage.workflow.yml.
+# Runs the unifier daily so /salvage/, /credits/ and docs/SALVAGE.md stay current, and opens a helper PR with the refresh.
+name: autosalvage
+on:
+  schedule: [{ cron: '17 9 * * *' }]
+  workflow_dispatch: {}
+permissions: { contents: write, pull-requests: write }
+concurrency: { group: autosalvage, cancel-in-progress: false }
+jobs:
+  unify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node --test tools/autosalvage-unify.test.mjs
+      - run: node tools/autosalvage/unify.mjs --repos-refresh --outside-refresh --write
+        env: { GH_TOKEN: '${{ github.token }}' }
+      - name: open a helper PR when anything changed
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          git diff --quiet && exit 0
+          b=helper/autosalvage-refresh-$(date -u +%Y%m%d)
+          git config user.name verse-bot; git config user.email verse-bot@users.noreply.github.com
+          git switch -c "$b"; git add -A; git commit -m "autosalvage: daily refresh of /salvage/, /credits/ and docs/SALVAGE.md"
+          git push -u origin "$b"
+          gh pr create --fill --base main --head "$b"

@@ -12,13 +12,13 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| Search recipes by name | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:103 `p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your serv` |
-| Browse by course, cuisine and occasion | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:123 `"false" aria-controls="browse">Browse</button>` |
-| Diet and allergy filters | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:147 `filtH" style="margin:0 0 4px">Diet and allergies</h2>` |
-| Ratings and reviews | Community | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:198 `:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" ari` |
-| Save recipes | Keep | have | every site of this kind offers it | void-live-deploy/recipes/index.html:119 `lse" aria-controls="savedPane">Saved</button>` |
-| Print a recipe | Cooking | have | every site of this kind offers it | void-live-deploy/recipes/index.html:190 `utton type="button" id="print">Print</button>` |
-| Recipe videos | Cooking | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:289 `rom.append(' · ', a); } if (r.video) { const a = el('a', '', W.video); a.href = r.video; a` |
-| Post your own recipes | Community | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:213 `<h2 id="mineH" hidden>My recipes</h2>` |
-| Cooking guides and articles | Content | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:224 `S supermarket prices, a rough guide). Diets and allergies (vegetarian, vegan, gluten-free,` |
+| Search recipes by name | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:104 `p class="sub" id="sub">Search by name or by ingredient; every quantity scaled to your serv` |
+| Browse by course, cuisine and occasion | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:124 `"false" aria-controls="browse">Browse</button>` |
+| Diet and allergy filters | Find | have | every site of this kind offers it | void-live-deploy/recipes/index.html:148 `filtH" style="margin:0 0 4px">Diet and allergies</h2>` |
+| Ratings and reviews | Community | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:199 `:14px;color:var(--soft)">Your rating</span><span class="stars" id="stars" role="group" ari` |
+| Save recipes | Keep | have | every site of this kind offers it | void-live-deploy/recipes/index.html:120 `lse" aria-controls="savedPane">Saved</button>` |
+| Print a recipe | Cooking | have | every site of this kind offers it | void-live-deploy/recipes/index.html:191 `utton type="button" id="print">Print</button>` |
+| Recipe videos | Cooking | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:290 `rom.append(' · ', a); } if (r.video) { const a = el('a', '', W.video); a.href = r.video; a` |
+| Post your own recipes | Community | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:214 `<h2 id="mineH" hidden>My recipes</h2>` |
+| Cooking guides and articles | Content | have | studied by hand: food52.com offers this (https://food52.com/) | void-live-deploy/recipes/index.html:225 `S supermarket prices, a rough guide). Diets and allergies (vegetarian, vegan, gluten-free,` |
 | Its live pages could not be read (HTTP 429), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://food52.com/ | not compared yet |

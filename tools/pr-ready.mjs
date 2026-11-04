@@ -21,7 +21,9 @@ export function readiness(gh, repo, pr) {
   if (p.state !== 'open') return { state: 'stop', why: 'PR is ' + p.state };
   const sha = p.head.sha, base = { sha, draft: !!p.draft };
   if (p.mergeable_state === 'dirty') return { ...base, state: 'resolve', why: 'conflicts with main (a conflicted PR gets no checks, so main is merged in first)', branch: p.head && p.head.ref };
-  const latest = (name) => (gh(`repos/${repo}/commits/${sha}/check-runs?check_name=${name}&per_page=100`).check_runs || []).sort((a, b) => b.id - a.id)[0];
+  // one read for every check on this head (2026-11-04: three reads, one per name, were a third of the bot's API quota)
+  const all = gh(`repos/${repo}/commits/${sha}/check-runs?per_page=100`).check_runs || [];
+  const latest = (name) => all.filter((r) => r.name === name).sort((a, b) => b.id - a.id)[0];
   const runs = [latest('test-and-deploy'), latest('bench'), latest('void-review')].filter(Boolean);
   const failed = runs.find((r) => r.status === 'completed' && !OK.includes(r.conclusion) && r.conclusion !== 'cancelled');
   if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${failed.html_url}` };

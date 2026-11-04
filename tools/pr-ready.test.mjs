@@ -8,6 +8,7 @@ function fake({ checks = [run('test-and-deploy'), run('void-review')], comments 
   return (path) => {
     if (/\/pulls\/\d+$/.test(path)) return { state: 'open', merged: false, draft: false, head: { sha: SHA }, ...pr };
     const m = path.match(/check_name=([\w-]+)/); if (m) return { check_runs: checks.filter((c) => c.name === m[1]) };
+    if (/\/commits\/\w+\/check-runs\?/.test(path)) return { check_runs: checks };
     if (/issues\/\d+\/comments/.test(path)) return comments;
     if (/pulls\/\d+\/reviews/.test(path)) return reviews;
     if (/pulls\/\d+\/comments/.test(path)) return threads;

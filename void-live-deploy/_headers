@@ -5,6 +5,7 @@
   Cross-Origin-Opener-Policy: same-origin-allow-popups
   Strict-Transport-Security: max-age=63072000
   Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(self), payment=(self "https://gumroad.com"), geolocation=(self), microphone=(self), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+  Speculation-Rules: "/speculation-rules.json"
 
 
 # the boards: Turnstile, Cloudflare's bot check on every post, loads its own script (functions/api/boards/[[path]].js); only these pages allow it
@@ -53,10 +54,20 @@
 /lib/*
   Cache-Control: public, max-age=60, must-revalidate
 
-/manifest.webmanifest
-  Content-Type: application/manifest+json
+# Speculation rules (sent on every page by the /* rule above): Chrome prefetches a same-origin page on hover and prerenders it on pointer down,
+# so it opens instantly. The browser reads the rules only with this type. What they leave out (the API, Functions, feeds, home) is in the file.
+/speculation-rules.json
+  Content-Type: application/speculationrules+json
+  Cache-Control: public, max-age=3600
 
-/converter/manifest.webmanifest
+# /under-the-hood/: no-transform asks Cloudflare not to rewrite the page (no injected bot-check script, no analytics beacon). Measured on this
+# one page first: does compression survive, and does Lighthouse best practices reach 100? If both, the rule can widen (docs/MAP.md).
+/under-the-hood/*
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+
+# every web app manifest (/manifest.webmanifest, /converter/manifest.webmanifest): one rule, so the CSP page rules made at deploy
+# (tools/csp-hashes.mjs) and these stay inside Cloudflare's 100 (2026-11-04: 71 + 30 = 101 failed privacy-guard on main)
+/*.webmanifest
   Content-Type: application/manifest+json
 
 /opensearch.xml
@@ -96,15 +107,9 @@
   Content-Type: audio/mpeg
   Access-Control-Allow-Origin: *
 
-/sounds/drums/808/*
-  Content-Type: audio/wav
-  Cache-Control: public, max-age=604800
-
-/sounds/drums/kit/*
-  Content-Type: audio/wav
-  Cache-Control: public, max-age=604800
-
-/sounds/piano/*
+# every instrument sample (drums/808, drums/kit, piano, guitar, bass): one rule for the .wav files, a week in the cache. The
+# CREDITS.md beside them keeps its own type. Three rules were one each for 808, kit and piano, and guitar and bass had none.
+/sounds/*.wav
   Content-Type: audio/wav
   Cache-Control: public, max-age=604800
 

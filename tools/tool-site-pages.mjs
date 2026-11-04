@@ -114,6 +114,7 @@ export function pageOf(row, kind) {
 <meta name="twitter:image" content="https://a-to-mind.com/og/${slug(row.path)}.png">
 <style>${css}
 </style>
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
 <script src="/visit.js" defer></script>
 </head>
 <body>
