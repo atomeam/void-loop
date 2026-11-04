@@ -52,7 +52,7 @@
   #panel { position: fixed; z-index: 4; top: 0; right: 0; bottom: 0; width: var(--pw); background: var(--glass); border-left: 1px solid var(--line); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; padding: max(12px, env(safe-area-inset-top)) 14px 24px; transition: transform .28s ease; }
   #panel[hidden] { display: block; transform: translateX(105%); visibility: hidden; }
   #panelHead { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
-  #panelHead h1 { font-size: 17px; margin: 0; flex: 1; }
+  #panelHead h2 { font-size: 17px; margin: 0; flex: 1; }
   .lede { font-size: 13px; color: var(--soft); margin: 0 0 8px; }
   #card .thing { position: static !important; width: 100% !important; filter: none !important; box-shadow: none !important; border-radius: 0 !important; }
   #card .g-head { display: none; }
@@ -200,7 +200,7 @@
   <div class="more"><h2>Gains<span class="vh">: what each organ has measurably gained</span></h2><dl id="liveGains"><div><dt>None yet</dt><dd>each organ is shown once it has a score</dd></div></dl></div>
 </section>
 <main id="panel" aria-label="Verse Brain controls, organs and what it says">
-  <div id="panelHead"><h1>Verse Brain, full screen</h1></div>
+  <div id="panelHead"><h2>Verse Brain, full screen</h2></div>
   <p class="lede">The same brain as its card on the Verse stage: one workspace that twenty-three organs share. Move over the field and it predicts you; where it guessed wrong turns red and its attention moves there. Tell it words, drag what it holds, say Good, ask it why, hum to it.</p>
   <div id="card"></div>
   <details id="watchBox" open><summary>What it watches: Verse's own health</summary><p class="note">Every 15 minutes while this page or the stage is open, the brain reads the newest runs on main, the open pull requests and the open issues of Verse's public repository, what Verse's will decided to do next, whether its team is taking the jobs, and what Verse changed in the last day, which it writes in plain lines. A break pulls its attention to the skills that answer for it. <button type="button" id="lookBtn" class="undo">Look now</button></p><p class="note" id="next" hidden></p><p class="note" id="wrote" hidden></p><ul id="breaks"><li>It has not looked yet.</li></ul></details>

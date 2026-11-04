@@ -1,12 +1,11 @@
 {
- "pages": 113,
- "defects": 7,
- "notes": 100,
+ "pages": 507,
+ "defects": 167,
+ "notes": 189,
  "byKind": {
-  "h1": 3,
-  "duplicate": 2,
-  "canonical": 2
+  "duplicate": 166,
+  "broken": 1
  },
  "orphans": 8,
- "toOffers": 28
+ "toOffers": 31
 }
