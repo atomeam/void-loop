@@ -8,7 +8,8 @@ export function isSystemStatus(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '');
   return /^(?:system|automation|workflow)\s+status\b/i.test(t)
     || /^(?:show|give|get)\s+(?:me\s+)?(?:the\s+)?(?:system|automation)\s+status\b/i.test(t)
-    || /^status\s+(?:of|for)\s+(?:the\s+)?(?:system|automation|workflow)\b/i.test(t);
+    || /^status\s+(?:of|for)\b/i.test(t)
+    || /automation\s+status\b/i.test(t);
 }
 
 function extractSystem(text) {
