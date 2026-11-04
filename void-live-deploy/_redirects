@@ -25,8 +25,26 @@
 /wheel/ /random/wheel/ 301
 /random-user /random/people/ 301
 /random-user/ /random/people/ 301
-/gradient /color/gradient/ 301
-/gradient/ /color/gradient/ 301
+# the one colour page (owner, 2026-11-03: "our existing color pages should be one or function as one"): each old colour address opens its mode;
+# a gradient's #hash is kept by the browser across the 301, and the picture senders link /color/?mode=gradient&img=handoff themselves
+/color/gradient /color/?mode=gradient 301
+/color/gradient/ /color/?mode=gradient 301
+/gradient /color/?mode=gradient 301
+/gradient/ /color/?mode=gradient 301
+/colour /color/ 301
+/colour/ /color/ 301
+/colors /color/ 301
+/colors/ /color/ 301
+/color-picker /color/?mode=picker 301
+/color-picker/ /color/?mode=picker 301
+/eyedropper /color/?mode=picker 301
+/eyedropper/ /color/?mode=picker 301
+/palette /color/?mode=palette 301
+/palette/ /color/?mode=palette 301
+/contrast /color/?mode=contrast 301
+/contrast/ /color/?mode=contrast 301
+/color-blindness /color/?mode=blindness 301
+/color-blindness/ /color/?mode=blindness 301
 /base-converter /base64/bases/ 301
 /base-converter/ /base64/bases/ 301
 /password-strength /password/strength/ 301

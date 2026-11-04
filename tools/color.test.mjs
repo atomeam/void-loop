@@ -27,6 +27,9 @@ test('a colour is one swatch, a palette five, each a hex code', () => {
   const five = show('color palette');
   assert.match(five.html, /^<h2>A palette<\/h2>/);
   assert.equal(five.seen.length, 5);
+  // each opens the colour page's Random mode on its first colour, five at a time for the palette
+  assert.match(one.html, /href="\/color\/\?c=[0-9a-f]{6}&mode=random"/);
+  assert.match(five.html, /href="\/color\/\?c=[0-9a-f]{6}&mode=random&n=5"/);
   for (const c of [...one.seen, ...five.seen]) {
     assert.match(c, /^#[0-9a-f]{6}$/);
     assert.ok(five.html.includes('background:' + c) || one.html.includes('background:' + c), c);

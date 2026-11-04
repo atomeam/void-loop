@@ -1,14 +1,14 @@
 /**
  * gradient skill: "gradient generator", "css gradient", "make a gradient from red to blue" (owner, 2026-10-24: "find the site to conquer and get
  * to work now"; the tower's frontier ranked colorzilla.com). A card with the gradient the ask named (or a starting one), its CSS to copy, and a
- * link to the full editor, /gradient/ (lib/gradient.js): stops with opacity, linear, radial or conic, presets, CSS read back, from a picture.
+ * link to the full editor, the Gradient mode of /color/ (lib/gradient.js): stops with opacity, linear, radial or conic, presets, CSS read back, from a picture.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { askGradient, css, pack, rule, textContrast } from '../lib/gradient.js';
 
 function run(text, api) {
   const { showPage, esc } = api, q = askGradient(text), g = q && q.g; if (!g) return null;
-  const c = css(g), href = '/color/gradient/#' + pack(g), tc = textContrast(g);
+  const c = css(g), href = '/color/?mode=gradient#' + pack(g), tc = textContrast(g);
   showPage((el) => {
     el.dataset.cardKind = 'CSS gradient';
     el.innerHTML = '<h2>CSS gradient</h2>' // void-review: ok (escaped)

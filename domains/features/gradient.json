@@ -1,6 +1,6 @@
 {
   "floor": "gradient",
-  "verse_page": "/gradient/",
+  "verse_page": "/color/",
   "researched": "2026-10-25",
   "method": "The research container could not open the site itself (outbound fetches are refused), so the features come from web-search results of the site's own pages (listed in sources) and from how the product is publicly known to work; a feature not confirmed by a search result says so in its detail. Verse's side was read from this repository's source.",
   "sites": {

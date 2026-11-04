@@ -285,24 +285,24 @@ export const JOURNEYS = {
     await check('the paint page cut the kept picture into a new colouring sheet');
   },
   "send a gradient to the photo tools as a picture, and take a painting's colours as a gradient": async (p, check) => {
-    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
+    await p.goto(ORIGIN + '/color/?mode=gradient', { waitUntil: 'load' }); await p.waitForSelector('#gr-related a.tk-hand'); await check('the gradient page opened');
     const before = new URL(p.url()).hash;
-    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
+    await Promise.all([p.waitForURL(/\/photos\//), p.locator('#gr-related a', { hasText: 'Edit it in photo tools' }).click()]);
     await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
     const size = await p.locator('#note').textContent();
     if (!/^1200 × 675 px/.test(size)) throw new Error('the photo tools opened a picture of "' + size + '", not the 1200 × 675 gradient');
     await check('the photo tools opened the gradient as a ' + size.split(' · ')[0] + ' picture');
     await p.goto(ORIGIN + '/paint/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
-    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
-    await p.waitForFunction((was) => location.hash && location.hash !== was && !location.search, before, { timeout: 15000 });
-    const stops = await p.locator('#stops .stop').count();
+    await Promise.all([p.waitForURL(/\/color\/\?mode=gradient/), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction((was) => location.hash && location.hash !== was && !/img=/.test(location.search), before, { timeout: 15000 });
+    const stops = await p.locator('#gr-stops .stop').count();
     if (stops < 2) throw new Error('the gradient page took the painting but shows ' + stops + ' stops');
     // an unpainted sheet is all paper: the gradient has to come from the picture's own colours, not from near-white paper
     const hexes = new URL(p.url()).hash.split('-').slice(1).map((s) => s.slice(0, 6)), pale = (x) => [0, 2, 4].every((i) => parseInt(x.slice(i, i + 2), 16) > 0xe8);
     if (hexes.every(pale)) throw new Error('the gradient page read only paper white from the painting: ' + hexes.join(', '));
     await check('the gradient page read the painting into ' + stops + ' colour stops (' + new URL(p.url()).hash + ')');
     // its own links follow at once, with no hover or press first: the colour page link opens the first stop read from the painting
-    const first = new URL(p.url()).hash.split('-')[1].slice(0, 6), link = await p.locator('#related a', { hasText: 'Open its first colour' }).getAttribute('href');
+    const first = new URL(p.url()).hash.split('-')[1].slice(0, 6), link = await p.locator('#gr-related a', { hasText: 'See its colour in every model' }).getAttribute('href');
     if (link !== '/color/?c=' + first) throw new Error('the gradient page read the painting, but its colour link still opens ' + link + ', not /color/?c=' + first);
     await check('the gradient page links its first colour #' + first + ' right away');
   },
@@ -320,15 +320,15 @@ export const JOURNEYS = {
     if (!head.startsWith('%PDF-')) throw new Error('the download is not a PDF: it starts "' + head + '"');
     await check('the PDF page made a ' + head.split(' ')[1] + '-byte PDF of the painting');
     // a gradient goes the same way, as a picture of the gradient
-    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
-    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save it as a PDF' }).click()]);
+    await p.goto(ORIGIN + '/color/?mode=gradient', { waitUntil: 'load' }); await p.waitForSelector('#gr-related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#gr-related a', { hasText: 'Save it as a PDF' }).click()]);
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
   'edit a photo in the photo tools, then save the edit as a PDF, paint it by number, take its colours as a gradient, resize it and look up its main colour': async (p, check) => {
     const toPhotos = async () => {
-      await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
-      await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
+      await p.goto(ORIGIN + '/color/?mode=gradient', { waitUntil: 'load' }); await p.waitForSelector('#gr-related a.tk-hand');
+      await Promise.all([p.waitForURL(/\/photos\//), p.locator('#gr-related a', { hasText: 'Edit it in photo tools' }).click()]);
       // the send links stay off until the edit is ready, then carry their page at once, with no hover or press first
       await p.waitForFunction(() => [...document.querySelectorAll('#related a.tk-hand')].some((a) => a.textContent === 'Save your edit as a PDF' && a.getAttribute('aria-disabled') === 'false'), null, { timeout: 15000 });
     };
@@ -341,9 +341,9 @@ export const JOURNEYS = {
     await p.waitForFunction(() => document.body.innerText.includes('Your photo is now a colouring sheet'), null, { timeout: 15000 });
     await check('the paint page cut the edit into a new colouring sheet');
     await toPhotos(); const was = new URL(p.url()).hash;
-    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
-    await p.waitForFunction(() => location.hash.split('-').length > 2 && !location.search, null, { timeout: 15000 });
-    await check('the gradient page read the edit into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
+    await Promise.all([p.waitForURL(/\/color\/\?mode=gradient/), p.locator('#related a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction(() => location.hash.split('-').length > 2 && !/img=/.test(location.search), null, { timeout: 15000 });
+    await check('the gradient page read the edit into ' + (await p.locator('#gr-stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
     await toPhotos();
     await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('#related a', { hasText: 'Resize your edit' }).click()]);
     await p.waitForFunction(() => !document.getElementById('result').hidden && document.getElementById('result').dataset.bytes, null, { timeout: 15000 });
@@ -358,8 +358,8 @@ export const JOURNEYS = {
   },
   'turn a PDF page into a picture, then paint it by number, edit it in the photo tools, take its colours as a gradient and resize it': async (p, check) => {
     // a one-page PDF of the gradient, made on the PDF page itself
-    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
-    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save it as a PDF' }).click()]);
+    await p.goto(ORIGIN + '/color/?mode=gradient', { waitUntil: 'load' }); await p.waitForSelector('#gr-related a.tk-hand');
+    await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#gr-related a', { hasText: 'Save it as a PDF' }).click()]);
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await p.locator('button.go', { hasText: 'Images to PDF' }).click(); await p.waitForSelector('a.dl[download="images.pdf"]', { timeout: 20000 });
     const pdf = Buffer.from(await p.evaluate(async () => { const b = new Uint8Array(await (await fetch(document.querySelector('a.dl[download="images.pdf"]').href)).arrayBuffer()); let s = ''; for (const x of b) s += String.fromCharCode(x); return btoa(s); }), 'base64');
@@ -379,9 +379,9 @@ export const JOURNEYS = {
     await p.waitForFunction(() => [...document.querySelectorAll('#related a.tk-hand')].some((a) => a.textContent === 'Save your edit as a PDF' && a.getAttribute('aria-disabled') === 'false'), null, { timeout: 15000 });
     await check('the photo tools opened the PDF page: ' + (await p.evaluate(() => (document.body.innerText.match(/\d+ × \d+ px[^\n]*/) || [''])[0])));
     await toPicture();
-    await Promise.all([p.waitForURL(/\/gradient\//), p.locator('p.send a', { hasText: 'Take its colours as a gradient' }).click()]);
-    await p.waitForFunction(() => location.hash.split('-').length > 2 && !location.search, null, { timeout: 15000 });
-    await check('the gradient page read the PDF page into ' + (await p.locator('#stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
+    await Promise.all([p.waitForURL(/\/color\/\?mode=gradient/), p.locator('p.send a', { hasText: 'Take its colours as a gradient' }).click()]);
+    await p.waitForFunction(() => location.hash.split('-').length > 2 && !/img=/.test(location.search), null, { timeout: 15000 });
+    await check('the gradient page read the PDF page into ' + (await p.locator('#gr-stops .stop').count()) + ' colour stops (' + new URL(p.url()).hash + ')');
     await toPicture();
     await Promise.all([p.waitForURL(/\/resize-image\//), p.locator('p.send a', { hasText: 'Resize it' }).click()]);
     await p.waitForFunction(() => /\d+\s*[×x]\s*\d+/.test(document.body.innerText) && !location.search, null, { timeout: 15000 });

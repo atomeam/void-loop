@@ -13,7 +13,7 @@ export const TOPICS = Object.freeze([
   ['unit converter', /unit conver|convert units|measurement (?:unit )?conver|конвертер величин/i, '/convert/'],
   ['emoji combos', /emoji comb/i, '/emoji-combos/'],
   ['emoji', /\bemoji/i, '/emojis/'],
-  ['gradient', /gradient/i, '/color/gradient/'],
+  ['gradient', /gradient/i, '/color/?mode=gradient'],
   ['colour codes', /\bhex colou?r|colou?r (?:code|picker|name|palette)|brand colou?r/i, '/color/'],
   ['word counter', /word count|character count|счетчик (?:слов|символов)/i, '/word-count/'],
   ['stopwatch and timer', /stopwatch|countdown timer|online timer|секундомер/i, '/stopwatch/'],

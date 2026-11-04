@@ -308,7 +308,7 @@ async function run(text, api) {
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
       + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li>'
       + (d ? '<li><b>Nearest name</b> ' + esc(d.name.name) + (d.name.exact ? '' : ' (' + esc(d.name.hex) + ')') + '</li><li><b>Text on it</b> ' + (d.contrast.text === '#000000' ? 'black, ' + d.contrast.black : 'white, ' + d.contrast.white) + ':1' + (Math.max(d.contrast.black, d.contrast.white) >= 4.5 ? ' (passes AA)' : ' (large text only)') + '</li>' : '') + '</ul>'
-      + '<p><a class="cc-open" href="/color/?c=' + esc(h.slice(1)) + '">Every model, shades, tones and schemes</a></p>'; });
+      + '<p><a class="cc-open" href="/color/?c=' + esc(h.slice(1)) + '">Every model, shades, tones and schemes</a> · <a href="/color/?c=' + esc(h.slice(1)) + '&amp;mode=contrast">contrast</a> · <a href="/color/?c=' + esc(h.slice(1)) + '&amp;mode=palette">palettes</a> · <a href="/color/?c=' + esc(h.slice(1)) + '&amp;mode=gradient">gradient</a></p>'; });
   } else if (q.kind === 'letters') {
     // a, e, i, o, u are vowels (y is counted as a consonant, the usual school answer)
     const ls = Array.from(q.s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).filter((c) => /[a-z]/.test(c)), v = ls.filter((c) => 'aeiou'.includes(c)).length, n = q.which === 'vowels' ? v : ls.length - v;
@@ -348,6 +348,8 @@ async function run(text, api) {
   // the card links to the tool page that does the same thing in full (lib/card-frame.js pageOfCard; owner, 2026-10-25: "why are you not linking the cards to the pages?")
   const page = { password: '/password/', color: '/color/', count: '/word-count/' }[q.kind];
   if (el && el.dataset && page) el.dataset.page = q.kind === 'password' ? page + '?len=' + q.n : page; /* the password page opens on the same length, never the password */
+  // the colour opens the colour page on itself, hex digits only (owner, 2026-11-03: the colour pages are one page)
+  if (el && el.dataset && q.kind === 'color' && /^#[0-9a-f]{6}/.test(hex(q.c))) el.dataset.page = page + '?c=' + hex(q.c).slice(1, 7);
   // and a 3D figure of the thing (owner, 2026-10-25: "3d figure if possible"): a paint-chip fan in the colour, a padlock rated by lib/pwcheck.js
   if (el && q.kind === 'color') { const hx = (el.querySelector('ul li') || {}).textContent || ''; const m = /#[0-9a-f]{6}/i.exec(hx); if (m) bandMini(api, el, 'swatch', { hex: m[0] }, '3D paint-chip fan in ' + m[0]); }
   if (el && q.kind === 'count' && !q.chars) bandMini(api, el, 'page', { words: (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length }, '3D page of writing, ' + (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length + ' words');

@@ -60,7 +60,10 @@ test('every tool page links to its own card on the stage, and every page has a c
     assert.ok(PAGE_PATHS[p], p + ' is linked from a card (PAGE_OF)');
   }
   assert.equal(cardLinkOf('/nope/'), '');
-  assert.deepEqual(pageOfCard('', '/color/'), ['/color/', 'Colour codes']);
+  assert.deepEqual(pageOfCard('', '/color/'), ['/color/', 'Colour tool']);
+  // a colour mode opens its mode of the one colour page (owner, 2026-11-03: the colour pages are one page)
+  assert.deepEqual(pageOfCard('gradient', '/color/?mode=gradient'), ['/color/?mode=gradient', 'Colour tool']);
+  assert.deepEqual(pageOfCard('gradient', ''), ['/color/?mode=gradient', 'Gradient']);
   assert.equal(pageOfCard('', 'https://evil.example/'), null, 'only a known page is linked');
   assert.deepEqual(pageOfCard('calendar', ''), ['/calendar/', 'Calendar']);
   // the row puts the card link first
@@ -147,8 +150,8 @@ test('the gradient page\'s card opens on the gradient open there: every stop, it
   for (const g of many) { const ask = 'css gradient ' + G.css(g), back = G.askGradient(ask); assert.ok(back, ask); assert.equal(G.css(back.g), G.css(g), 'the card draws the same gradient: ' + ask); }
   const ask = 'css gradient ' + G.css(many[0]); assert.equal(await firstSkill(ask), 'gradient', 'the stage gives it to the gradient skill');
   assert.equal(G.askGradient('gradient descent'), null); assert.ok(G.askGradient('gradient from red to blue'), 'the old asks still work');
-  const src = fs.readFileSync(new URL('../void-live-deploy/color/gradient/index.html', import.meta.url), 'utf8');
-  assert.match(src, /card:\s*\(\)\s*=>\s*'css gradient '\s*\+\s*css\(g\)/, 'the gradient page gives its card the gradient open on it');
+  const src = fs.readFileSync(new URL('../void-live-deploy/color/index.html', import.meta.url), 'utf8'); // the gradient mode of the one colour page
+  assert.match(src, /card:\s*\(\)\s*=>\s*\(G\.g \? 'css gradient '\s*\+\s*gcss\(G\.g\)/, 'the gradient mode gives its card the gradient open on it');
 });
 
 test('the wheel page\'s card opens on the wheel open there: every entry and weight, in words when they read back, else in its link form', async () => {

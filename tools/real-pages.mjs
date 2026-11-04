@@ -161,9 +161,45 @@ export const SPECS = {
     await t.fill('#code', 'function login(user, pass) { eval(user); const q = "SELECT * FROM users WHERE name = \'" + user + "\'"; }'); await t.click('#run'); await t.waitText('#out', /\S/, 15000);
     t.ok(/eval|inject|SQL/i.test(await t.text('#out')), 'the review flags eval or SQL injection');
   },
+  // the one colour page (owner, 2026-11-03: "our existing color pages should be one or function as one"): one colour across eight modes, the
+  // address keeping the colour and the mode, a mode switch keeping the colour, and the old gradient address opening its mode with the link
   '/color/': async (t) => {
     await t.fill('#in', '#ff0000'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(300); t.ok(/rgb\(255, 0, 0\)/.test(await t.text('#rest')), '#ff0000 is rgb(255, 0, 0)');
     t.ok(/red/i.test(await t.text('#big')), 'it is named red');
+    t.ok(/11111111 00000000 00000000/.test(await t.text('#rest')), 'and its binary is shown');
+    t.ok((await t.p.locator('#modes a[data-mode]').count()) === 8, 'eight modes, one page');
+    const q = () => new URL(t.p.url()).searchParams;
+    // a mode switch keeps the colour, and the address says both
+    await t.click('#modes a[data-mode="contrast"]'); await t.p.waitForTimeout(300);
+    t.ok(q().get('mode') === 'contrast' && q().get('c') === 'ff0000', 'Contrast keeps the colour in the address (' + new URL(t.p.url()).search + ')');
+    await t.fill('#ct-bg', '#ffffff'); await t.p.waitForTimeout(300);
+    t.ok(/3\.99|4\.00?\b/.test(await t.text('#ct-ratio')), 'red on white is 3.99:1 (' + (await t.text('#ct-ratio')) + ')');
+    t.ok(/AA/.test(await t.text('#ct-table')) && (await t.p.locator('#ct-fix > *').count()) > 0, 'WCAG AA and AAA are judged and a passing colour is offered');
+    await t.click('#modes a[data-mode="palette"]'); await t.p.waitForTimeout(300);
+    t.ok((await t.p.locator('#pl-row > *').count()) >= 5 && /ff0000/i.test(await t.text('#pl-row')), 'Palette builds five colours around the same red');
+    await t.click('#modes a[data-mode="shades"]'); await t.p.waitForTimeout(300);
+    t.ok(/950/.test(await t.text('#sh-scale')), 'Shades gives a 50 to 950 scale');
+    await t.click('#modes a[data-mode="blindness"]'); await t.p.waitForTimeout(300);
+    t.ok(/protanopia/i.test(await t.text('#bl-grid')) && /achromatopsia/i.test(await t.text('#bl-grid')), 'Colour blindness shows the colour to eight kinds of vision');
+    await t.click('#modes a[data-mode="picker"]'); await t.p.waitForTimeout(300);
+    t.ok((await t.p.locator('#pk-sv').count()) === 1 && (await t.p.locator('#pk-file').count()) === 1, 'Picker has its square and takes a picture');
+    t.ok(q().get('c') === 'ff0000', 'the colour stayed red through every mode');
+    await t.click('#modes a[data-mode="random"]'); await t.p.waitForTimeout(300); const r0 = await t.text('#rd-grid'); await t.click('#rd-go'); await t.p.waitForTimeout(300);
+    t.ok(/#[0-9a-f]{6}/i.test(await t.text('#rd-grid')) && (await t.text('#rd-grid')) !== r0, 'Random makes new colours');
+    const drawn = q().get('c'); t.ok(drawn && drawn !== 'ff0000' && new RegExp(drawn, 'i').test(await t.text('#big')), 'and the first new one is the colour open, in the address too');
+    await t.p.goBack(); await t.p.waitForTimeout(300); t.ok(q().get('mode') === 'picker', 'Back goes to the mode before');
+    await t.p.goForward(); await t.p.waitForTimeout(300);
+    // the gradient mode: Reverse, Copy CSS and its link
+    await t.click('#modes a[data-mode="gradient"]'); await t.p.waitForTimeout(400);
+    t.ok(q().get('mode') === 'gradient' && /^#[a-z]\d/.test(new URL(t.p.url()).hash), 'Gradient keeps its whole gradient in the link (' + new URL(t.p.url()).hash.slice(0, 30) + ')');
+    await t.click('#gr-rev'); await t.p.waitForTimeout(200); t.ok(/(?:linear|radial|conic)-gradient\(/.test(await t.text('#gr-out')), 'the CSS is a gradient');
+    t.ok(new RegExp('#' + q().get('c'), 'i').test(await t.text('#gr-out')), 'the gradient is made from the colour open on the page');
+    await t.copies('#gr-copy', 'gradient('); await t.share('#gr-link', async (p) => /gradient\(/.test(await p.locator('#gr-out').innerText()));
+    // the old gradient address opens the gradient mode with its gradient (the hash crosses the redirect; a local run opens the mode itself)
+    const old = '#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100';
+    await t.p.goto(new URL(t.p.url()).origin + (/a-to-mind\.com/.test(t.p.url()) ? '/color/gradient/' : '/color/?mode=gradient') + old, { waitUntil: 'load' }); await t.p.waitForTimeout(800);
+    t.ok(/linear-gradient\(180deg,\s*#1e5799 0%,\s*#2989d8 50%,\s*#207cca 51%,\s*#7db9e8 100%\)/i.test(await t.text('#gr-out')), 'the old gradient link opens the same four stops');
+    t.ok(q().get('c') === '1e5799', 'and the colour open is its first stop');
   },
   '/convert/': async (t) => {
     await t.fill('#ask', '5 mi in km'); await t.p.keyboard.press('Enter'); await t.p.waitForTimeout(400); t.ok(/8\.04672/.test(await t.p.locator('main').innerText()), '5 miles is 8.04672 km');
@@ -278,7 +314,6 @@ export const SPECS = {
   '/generators/forum/': async (t) => { t.ok((await t.p.locator('#tTitle').count()) === 1, 'the thread form is there'); },
   '/generators/make/': async (t) => { const a = await t.text('#res'); await t.click('#regen'); await t.p.waitForTimeout(300); t.ok((await t.text('#res')) !== a, 'Regenerate rolls the table again'); await t.download('#download', /\.html$/i); await t.share('#share'); },
   '/generators/story/': async (t) => { await t.fill('#idea', 'a lighthouse keeper finds a door in the sea'); await t.click('#write'); await t.waitText('#story', /\w{20,}/, 30000); t.ok((await t.text('#story')).split(/\s+/).length > 40, 'an opening is written'); await t.download('#dl', /\.txt$/i); },
-  '/color/gradient/': async (t) => { await t.click('#rev'); await t.p.waitForTimeout(200); t.ok(/linear-gradient\(90deg/.test(await t.text('#out')), 'the CSS is a 90deg linear-gradient'); await t.copies('#copy', 'linear-gradient'); await t.share('#link'); },
   // Verse raps (2026-10-29): a topic in, a rap written for it by the free answer model (two verses and a hook, the rhymes lettered), performed by
   // Rap it yourself (beat and lights), copied, and shared with the whole rap in the link
   '/rap/': async (t) => {

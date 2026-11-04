@@ -16,7 +16,18 @@ const ALIASES = { 'character counter': '/word-count/', 'letter counter': '/word-
   'random number generator': '/random/', 'random number picker': '/random/', 'number generator': '/random/',
   'binary to decimal': '/base64/bases/', 'decimal to binary': '/base64/bases/', 'hex to decimal': '/base64/bases/', 'decimal to hex': '/base64/bases/',
   'binary to hex': '/base64/bases/', 'hex to binary': '/base64/bases/', 'binary converter': '/base64/bases/', 'number base converter': '/base64/bases/',
-  'hex to rgb': '/color/', 'rgb to hex': '/color/', 'hex color converter': '/color/', 'color code converter': '/color/', 'colour code converter': '/color/' };
+  'hex to rgb': '/color/', 'rgb to hex': '/color/', 'hex color converter': '/color/', 'color code converter': '/color/', 'colour code converter': '/color/',
+  // the colour page's modes (owner, 2026-11-03: the colour pages are one page, /color/?mode=)
+  'color picker': '/color/?mode=picker', 'colour picker': '/color/?mode=picker', 'eyedropper': '/color/?mode=picker', 'eye dropper': '/color/?mode=picker',
+  'color picker from image': '/color/?mode=picker', 'colour picker from image': '/color/?mode=picker', 'image color picker': '/color/?mode=picker', 'image colour picker': '/color/?mode=picker',
+  'palette generator': '/color/?mode=palette', 'color palette generator': '/color/?mode=palette', 'colour palette generator': '/color/?mode=palette', 'color scheme generator': '/color/?mode=palette', 'colour scheme generator': '/color/?mode=palette',
+  'random color generator': '/color/?mode=random', 'random colour generator': '/color/?mode=random', 'random hex generator': '/color/?mode=random',
+  'gradient generator': '/color/?mode=gradient', 'css gradient generator': '/color/?mode=gradient', 'gradient maker': '/color/?mode=gradient', 'gradient editor': '/color/?mode=gradient',
+  'contrast checker': '/color/?mode=contrast', 'color contrast checker': '/color/?mode=contrast', 'colour contrast checker': '/color/?mode=contrast', 'wcag contrast checker': '/color/?mode=contrast',
+  'shade generator': '/color/?mode=shades', 'tint generator': '/color/?mode=shades', 'color shades generator': '/color/?mode=shades', 'tailwind color generator': '/color/?mode=shades',
+  'color blindness simulator': '/color/?mode=blindness', 'colour blindness simulator': '/color/?mode=blindness', 'color blind simulator': '/color/?mode=blindness', 'colour blind simulator': '/color/?mode=blindness' };
+// the names those modes go by on their card
+const MODE_LABEL = { picker: 'Colour picker', palette: 'Palette generator', random: 'Random colour', gradient: 'CSS gradient', contrast: 'Contrast checker', shades: 'Shades and tints', blindness: 'Colour-blind view' };
 const TOOL_NOUN = /\s(?:counter|converter|calculator|generator|checker|picker|maker|editor|tester|finder|timer|formatter|encoder|decoder|viewer)$/;
 // pages whose own stage skill answers their name with a card that links the page (tools/skill-overlap.mjs): those asks stay there
 const OWNED = new Set(['/calculator/', '/converter/', '/convert/', '/pdf/', '/photos/', '/stl/', '/cpan/', '/team/', '/random/wheel/', '/vat/']);
@@ -32,7 +43,8 @@ export function toolAsk(text) {
   if (!alias && (!name || (!opened && !TOOL_NOUN.test(name)))) return null;
   const href = alias || toolNamed(name);
   if (!href || OWNED.has(href)) return null;
-  const label = (allTools().find(([p]) => p === href) || [href, name])[1];
+  const mode = /^\/color\/\?mode=(\w+)$/.exec(href);
+  const label = mode ? MODE_LABEL[mode[1]] : (allTools().find(([p]) => p === href) || [href, name])[1];
   return { href, label };
 }
 
@@ -50,7 +62,7 @@ function run(text, api) {
 
 export default {
   name: 'open-tool',
-  examples: ['word counter', 'open the piano', 'base converter', 'go to the metronome', 'character counter', 'time zone converter', 'random number generator', 'binary to decimal'],
+  examples: ['word counter', 'open the piano', 'base converter', 'go to the metronome', 'character counter', 'time zone converter', 'random number generator', 'binary to decimal', 'color picker', 'contrast checker'],
   nearMisses: ['gradient', 'piano', 'calculator', 'word counter for my essay hello world', 'open a bank account'],
   match(lower, text) { return !!toolAsk(text); },
   run

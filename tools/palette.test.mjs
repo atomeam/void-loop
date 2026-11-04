@@ -36,4 +36,6 @@ test('run shows five swatches with their codes, through esc', () => {
   assert.ok(el.innerHTML.startsWith('<h2>Complementary palette</h2>'));
   assert.equal((el.innerHTML.match(/<code/g) || []).length, 5);
   assert.ok(el.innerHTML.includes('#ff8800') && el.innerHTML.includes('built around #ff8800'));
+  // and it opens the colour page's Palette mode on the same base and scheme
+  assert.ok(el.innerHTML.includes('href="/color/?c=ff8800&mode=palette&scheme=complementary"'), 'links the Palette mode');
 });

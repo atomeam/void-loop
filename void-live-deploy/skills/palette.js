@@ -5,6 +5,7 @@
  * Five unrelated random colors ("color palette", "palette") stay with the color skill (asked after this one, so this one leaves them).
  */
 import { isColor } from './color.js';
+import { modeLink, schemeId } from '../lib/colour-tool.js';
 
 export const SCHEMES = {
   analogous: [0, 30, -30, 60, -60],
@@ -62,11 +63,16 @@ function run(text, api) {
   const names = Object.keys(SCHEMES), scheme = ask.scheme || names[rnd(names.length)];
   const colors = build(scheme, ask.base);
   const title = scheme.charAt(0).toUpperCase() + scheme.slice(1) + ' palette';
+  // the card opens the colour page's Palette mode on the same base and scheme (owner, 2026-11-03: the colour pages are one page); the link is
+  // modeLink's, made of hex digits and a scheme id only, so it needs no escaping
+  const open = modeLink('palette', colors[0], { scheme: schemeId(scheme) });
   showPage((p) => {
+    if (p.dataset) p.dataset.page = open;
     p.innerHTML = '<h2>' + esc(title) + '</h2>'
       + '<div style="display:flex;gap:6px;flex-wrap:wrap">' + colors.map((c) => '<div style="text-align:center"><div style="width:64px;height:64px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:' + esc(c) + '"></div><code style="font-size:12px">' + esc(c) + '</code></div>').join('') + '</div>'
       + '<div class="sub" style="margin-top:10px">' + esc(ask.base ? 'built around ' + ask.base : 'from a random base color') + ' · say “another palette”, or name one: analogous, complementary, triadic, split complementary, tetradic, monochrome, pastel</div>'
-      + '<div class="src">Worked out on this device.</div>';
+      + '<p><a class="cc-open" href="' + open + '" style="display:inline-block;padding:8px 18px;border-radius:999px;background:#6d4aff;color:#fff;text-decoration:none;font-weight:600">Open in the colour tool</a></p>'
+      + '<div class="src">Worked out on this device. The colour tool saves it, downloads it as CSS, JSON or a GIMP palette, and shows it to colour-blind eyes.</div>';
   });
   return 'palette';
 }
