@@ -75,11 +75,63 @@ export function lessonsOf(records) {
   return { lessons: list.slice(0, OUT_MAX), skipped, total: byId.size };
 }
 
+// 2026-11-03 (owner: "make it into a more functional usable brain"): the intake held no `learned` field anywhere, so the file was `[]` and the
+// recall in front of propose-fix had nothing to say. Two records Verse already writes are lessons in plain fact: each skill's newest live check
+// (findings/<skill>/*.json, written by the finding runs) and each site Versus took on (assimilated.json). They become records here, in the
+// intake's own shape, and go through the same knowledgeOf/validateKnowledge as every other lesson.
+export const FINDINGS = 'findings';
+export const SITES = 'void-live-deploy/assimilated.json';
+/** the statuses that taught something (a site "read, no page family fits it" taught only that no floor does its job) */
+export const SITE_TAUGHT = /^(assimilated|surpassed|built, then discarded|walled|could not be read)$/;
+const day = (at) => String(at || '').slice(0, 10);
+const short = (v, n = 140) => { const t = typeof v === 'string' ? v : JSON.stringify(v); return !t ? '' : t.length > n ? t.slice(0, n - 1) + '…' : t; };
+
+/** one live check as an intake record, or null. Pure. */
+export function findingRecord(f, dir = '') {
+  if (!f || typeof f !== 'object' || !f.at) return null;
+  const skill = f.skill || dir, what = f.service || f.url || '';
+  const codes = Array.isArray(f.pages) ? f.pages.map((p) => p && p.status).filter((x) => x != null) : [];
+  const ok = f.ok === true || (f.ok == null && codes.length > 0 && codes.every((c) => c >= 200 && c < 400)) || (f.ok == null && Array.isArray(f.tools) && f.tools.length > 0);
+  const bits = [];
+  if (f.ask) bits.push('asked "' + short(f.ask, 90) + '"');
+  if (codes.length) bits.push(codes.length + ' pages answered ' + [...new Set(codes)].join('/'));
+  if (Array.isArray(f.tools)) bits.push(f.tools.length + ' tools listed');
+  if (f.answer) bits.push('answer ' + short(f.answer, 110));
+  if (f.why) bits.push('why: ' + short(f.why, 60));
+  if (f.error) bits.push('error: ' + short(f.error, 80));
+  return { title: 'live check: ' + skill + (what ? ' (' + short(what, 70) + ')' : ''), from: 'page', at: f.at,
+    learned: day(f.at) + ': ' + (ok ? 'worked' : 'did not work') + (bits.length ? '; ' + bits.join('; ') : ''),
+    retain: skill + ' depends on ' + (what || 'a live service') + '; its newest live check (' + day(f.at) + ') ' + (ok ? 'worked' : 'did not work' + (f.why ? ' (' + short(f.why, 40) + ')' : '')) };
+}
+
+/** each skill's newest finding (file names are times, so the last sorted name is the newest). */
+export function readFindings(base = join(root, FINDINGS)) {
+  const out = [];
+  if (!existsSync(base)) return out;
+  for (const d of readdirSync(base).sort()) {
+    let files = []; try { files = readdirSync(join(base, d)).filter((f) => f.endsWith('.json')).sort(); } catch (_) { continue; }
+    if (!files.length) continue;
+    try { const r = findingRecord(JSON.parse(lf(readFileSync(join(base, d, files[files.length - 1]), 'utf8'))), d); if (r) out.push({ ...r, _file: FINDINGS + '/' + d, _line: 1 }); } catch (_) { /* not JSON: skipped */ }
+  }
+  return out;
+}
+
+/** each site Versus took on, as an intake record, or null when it taught nothing. Pure. */
+export function siteRecord(s) {
+  if (!s || !s.site || !SITE_TAUGHT.test(String(s.status || ''))) return null;
+  const why = [s.why, s.learned].filter(Boolean).join('; ');
+  return { title: s.site, from: 'page', at: s.at || '', learned: s.site + ' ' + s.status + (why ? ': ' + short(why, 170) : '') + (s.page ? '; Verse\'s page ' + s.page : ''),
+    retain: s.site + ' was ' + s.status + (s.page ? ' by ' + s.page : '') };
+}
+export function readSites(file = join(root, SITES)) {
+  try { return (JSON.parse(lf(readFileSync(file, 'utf8'))).sites || []).map(siteRecord).filter(Boolean).map((r, i) => ({ ...r, _file: SITES, _line: i + 1 })); } catch (_) { return []; }
+}
+
 /** the file's exact bytes. Pure. */
 export const render = (lessons) => JSON.stringify(Array.isArray(lessons) ? lessons : [], null, 2) + '\n';
 
 if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
-  const records = readIntake();
+  const records = [...readIntake(), ...readFindings(), ...readSites()];
   const { lessons, skipped, total } = lessonsOf(records);
   const text = render(lessons);
   const target = join(root, OUT);
@@ -95,5 +147,5 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
       + (total > lessons.length ? ' (' + (total - lessons.length) + ' older ones over the cap of ' + OUT_MAX + ')' : ''));
   }
   for (const s of skipped) console.log('skipped ' + s.where + ': ' + s.why);
-  if (!lessons.length) console.log('no record in ' + INTAKE + ' carries a `learned` field yet, so nothing was learned into the file');
+  if (!lessons.length) console.log('no record in ' + INTAKE + ', ' + FINDINGS + '/ or ' + SITES + ' carries a lesson yet, so nothing was learned into the file');
 }
