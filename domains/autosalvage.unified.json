@@ -24,6 +24,12 @@
       "into": "/bots/ (wiki-links)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/a-to-mind.com": {
+      "target": "bot",
+      "into": "/bots/ (header-grader)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
