@@ -74,6 +74,8 @@ test('dressHtml adds the shell on the named pages and nowhere else', () => {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   const sw = read('void-live-deploy/sw.js');
   assert.match(sw, /function dress/);
+  assert.match(sw, /\/scoreboard\//);
+  assert.match(sw, /\/contribute\//);
   assert.match(sw, /\/verse-shell\.js/);
   assert.match(read('void-live-deploy/verse-field.js'), /prefers-reduced-motion/);
   assert.match(read('void-live-deploy/verse-shell.js'), /ensureChrome/);

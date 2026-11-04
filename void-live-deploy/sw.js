@@ -56,7 +56,7 @@ self.addEventListener('activate', (e) => {
 });
 // The home page and the shell pages are open in other pull requests, so the nav is added here on the way to the
 // browser (lib/verse-shell.js dressHtml is the same edit). A page that already has the shell script is left alone.
-const DRESS = new Set(['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/']);
+const DRESS = new Set(['/', '/team/', '/bots/', '/agent/', '/conquered/', '/films/', '/treasury/', '/scoreboard/', '/security/', '/limits/', '/contribute/']);
 function dress(res, path) {
   if (!res || res.status !== 200 || !/text\/html/.test(res.headers.get('content-type') || '')) return Promise.resolve(res);
   const p = !path || path === '/' ? '/' : (path.endsWith('/') ? path : path + '/');
