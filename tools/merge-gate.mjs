@@ -46,6 +46,8 @@ function main() {
         console.log('merge-gate: regenerated through the conflict in ' + files.join(', '));
       }
     }
+    // commit the merge so the checks see this pull request's files, not every file main just brought in
+    git(['commit', '-q', '--no-edit'], dir);
     // the generators, so the checks see the tree the deploy will serve
     for (const args of [
       ['tools/skills-index.mjs', '--write'],
