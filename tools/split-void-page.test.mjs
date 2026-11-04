@@ -29,14 +29,15 @@ test('a small page splits into a stylesheet and scripts that wait for the first 
   assert.equal(splitHome(split.html), null);
 });
 
-test('the real home page paints the hero from HTML and keeps each script parseable', () => {
+test('the real home page paints the blank stage from HTML and keeps each script parseable', () => {
   const html = readFileSync(resolve(root, 'void.html'), 'utf8');
   const before = Buffer.byteLength(html);
   const split = splitHome(html);
   assert.ok(split);
   const after = Buffer.byteLength(split.html);
   assert.ok(after < before / 3, after + ' of ' + before);
-  assert.match(split.html, /id="verse-hero"/);
+  assert.doesNotMatch(split.html, /id="verse-hero"/); // blank home: no hero words, just the sky and the ask bar (owner, 2026-11-04)
+  assert.match(split.html, /id="dock"/);
   assert.match(split.html, /id="verse-critical"/);
   assert.match(split.html, /id="input"/);
   assert.doesNotMatch(split.html, /home polish/);
