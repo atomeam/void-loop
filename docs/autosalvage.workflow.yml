@@ -1,4 +1,4 @@
-# Parked: becomes .github/workflows/autosalvage.yml once a token with the workflow scope commits it.
+# Live at .github/workflows/autosalvage.yml.
 # Runs the unifier daily so /salvage/, /credits/ and docs/SALVAGE.md stay current, and opens a helper PR with the refresh.
 name: autosalvage
 on:
