@@ -40,13 +40,13 @@ const DPARSE = { iso: (s) => new Date(s + 'T00:00:00Z'), us: (s) => { const [m, 
 /** every family bot: { id, cat, family, job, from, run, checks: [[name, () => bool]] } */
 export function families() {
   const out = [];
-  for (const [dim, u] of Object.entries(UNITS)) for (const a in u) for (const b in u) if (a !== b) {
+  for (const [dim, u] of Object.entries(UNITS)) for (const a of Object.keys(u)) for (const b of Object.keys(u)) if (a !== b) {
     const f = (x) => (x * u[a]) / u[b], back = (y) => (y * u[b]) / u[a], k = KNOWN.find((x) => x[0] === dim && ((x[1] === a && x[2] === b) || (x[1] === b && x[2] === a)));
     const checks = [['round trip', () => [1, 7.5, 1234].every((x) => near(back(f(x)), x))], ['linear', () => near(f(6), 6 * f(1)) && f(0) === 0], ['matches the table through the base', () => near(f(1) * u[b], u[a])]];
     if (k) checks.push(['known answer', () => (k[1] === a ? near(f(k[3]), k[4]) : near(f(k[4]), k[3]))]);
     out.push({ id: a + '-to-' + b, cat: 'units', family: 'units/' + dim, job: 'Converts ' + a + ' to ' + b, from: ['skills/convert.js', 'bots/unit-converter'], run: (s) => +f(parseFloat(s)).toPrecision(10) + ' ' + b, checks });
   }
-  for (const a in TEMP) for (const b in TEMP) if (a !== b) {
+  for (const a of Object.keys(TEMP)) for (const b of Object.keys(TEMP)) if (a !== b) {
     const f = (x) => TEMP[b][1](TEMP[a][0](x)), g = (y) => TEMP[a][1](TEMP[b][0](y)), k = TEMP_KNOWN.find((x) => x[0] === a && x[1] === b);
     out.push({ id: 'temp-' + a + '-to-' + b, cat: 'units', family: 'units/temperature', job: 'Converts °' + a + ' to °' + b, from: ['skills/convert.js', 'bots/unit-converter'], run: (s) => +f(parseFloat(s)).toPrecision(10) + ' °' + b,
       checks: [['round trip', () => [-40, 0, 37, 1000].every((x) => near(g(f(x)), x))], ['ordered', () => f(10) > f(0)], ...(k ? [['known answer', () => near(f(k[2]), k[3])]] : [])] });
@@ -62,12 +62,12 @@ export function families() {
     out.push({ id: 'caesar-' + n + '-' + dir, cat: 'fun', family: 'ciphers', job: (dir === 'encode' ? 'Encodes' : 'Decodes') + ' a Caesar cipher with shift ' + n, from: ['bots/morse-bot', 'skills/crypto.js'], run: (s) => shift(s, k),
       checks: [['round trip', () => shift(shift('Hello, Verse 42!', k), -k) === 'Hello, Verse 42!'], ['keeps non-letters', () => shift('1 2!', k) === '1 2!'], ['known answer', () => (n === 13 ? shift('Hello', k) === 'Uryyb' : shift('a', k) === String.fromCharCode(97 + ((k + 26) % 26)))]] });
   }
-  for (const a in FMT) for (const b in FMT) if (a !== b) {
+  for (const a of Object.keys(FMT)) for (const b of Object.keys(FMT)) if (a !== b) {
     const f = (s) => show[b](parse[a](s));
     out.push({ id: a + '-to-' + b, cat: 'code', family: 'data formats', job: 'Turns ' + a + ' rows into ' + b, from: ['skills/csv-table.js', 'bots/csv-to-json'], run: f,
       checks: [['round trip', () => JSON.stringify(parse[b](f(show[a](rows2)))) === JSON.stringify(rows2)], ['lossless both ways', () => show[a](parse[b](f(show[a](rows2)))) === show[a](rows2)]] });
   }
-  for (const a in DATES) for (const b in DATES) if (a !== b) {
+  for (const a of Object.keys(DATES)) for (const b of Object.keys(DATES)) if (a !== b) {
     const f = (s) => DATES[b](DPARSE[a](s)), d = new Date(Date.UTC(2026, 10, 4));
     out.push({ id: 'date-' + a + '-to-' + b, cat: 'code', family: 'date formats', job: 'Rewrites a ' + a + ' date as ' + b, from: ['skills/date-calc.js', 'bots/unix-time'], run: f,
       checks: [['round trip', () => DATES[a](DPARSE[b](f(DATES[a](d)))) === DATES[a](d)], ['known answer', () => f(DATES[a](d)) === ({ iso: '2026-11-04', us: '11/04/2026', eu: '04.11.2026', unix: '1793750400', compact: '20261104', julian: '2461348.5' }[b])]] });
