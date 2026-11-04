@@ -10,6 +10,8 @@ domains/inputs/**/raw/
 
 # real asks people typed: kept on the machine that pulls them, never in this public repo (tools/pull_misses.py, tools/misses.mjs)
 domains/void.misses.md
+# the outcome exam's holdout asks: rotated weekly, never committed, so a builder cannot train on them (tools/exam.mjs)
+tools/exam-holdout.json
 domains/void.jobs.json
 dist/
 
