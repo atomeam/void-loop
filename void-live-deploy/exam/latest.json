@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T15:27:52.374Z",
+  "at": "2026-11-04T17:27:05.514Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,64 +32,16 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 93.7,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of radiolab",
+          "ask": "play the latest episode of hidden brain",
           "failed": [
             "audio"
           ],
           "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of hardcore history",
-          "failed": [
-            "show",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of stuff you should know",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of crime junkie",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of the moth",
-          "failed": [
-            "audio"
-          ],
-          "score": 83.3
-        },
-        {
-          "ask": "play the latest episode of npr news now",
-          "failed": [
-            "audio",
-            "episode"
-          ],
-          "score": 71.4
-        },
-        {
-          "ask": "play the latest episode of my favorite murder",
-          "failed": [
-            "audio",
-            "show",
-            "episode"
-          ],
-          "score": 57.1
         },
         {
           "ask": "play the podcast",
@@ -101,19 +53,20 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill",
-            "audio"
+            "skill"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "pon el último episodio de radiolab",
           "failed": [
+            "answered",
             "skill",
+            "fast",
             "audio",
             "episode"
           ],
-          "score": 57.1
+          "score": 28.6
         }
       ],
       "holdout": {
@@ -162,7 +115,7 @@
       }
     },
     "weather": {
-      "score": 98.1,
+      "score": 97.2,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -176,9 +129,10 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill"
+            "skill",
+            "temp"
           ],
-          "score": 83.3
+          "score": 66.7
         }
       ],
       "holdout": {
@@ -439,7 +393,7 @@
       ]
     },
     "timers": {
-      "score": 80,
+      "score": 73.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -467,9 +421,11 @@
         {
           "ask": "temporizador de 3 minutos",
           "failed": [
-            "skill"
+            "answered",
+            "skill",
+            "fast"
           ],
-          "score": 80
+          "score": 40
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -614,7 +570,7 @@
     }
   },
   "lowest": {
-    "domain": "images",
-    "score": 73.9
+    "domain": "timers",
+    "score": 73.3
   }
 }
