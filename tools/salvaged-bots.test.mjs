@@ -49,3 +49,9 @@ test("secret-sniffer", () => {
   assert.equal(b.run("hello world"), "no secrets spotted");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("journal-day", () => {
+  const b = bot("journal-day"); assert.ok(b && BOT("journal-day"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("2024-02-29"), "2024-02-29 · Thursday, February 29");
+  assert.ok(lineage(b), 'lineage is real');
+});
