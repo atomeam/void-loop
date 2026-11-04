@@ -14,8 +14,8 @@ function run(text, api) {
   const { showPage, esc } = api, ask = parseAsk(text), r = ask ? convert(ask.value, ask.from, ask.to) : { ok: false, why: 'I could not read that.' };
   showPage((el) => {
     el.dataset.cardKind = 'Converter';
-    if (!r.ok) { el.innerHTML = '<h2>Base converter</h2><p>' + esc(r.why) + '</p><p><a href="/base-converter/">Open the converter</a></p>'; return; } // void-review: ok (escaped)
-    const a = r.all, href = [2, 8, 10, 16].includes(r.from) ? '/base-converter/?b=' + r.from + '&v=' + encodeURIComponent(r.input) : '/base-converter/', four = [['Binary', a.bin], ['Octal', a.oct], ['Decimal', a.dec], ['Hex', a.hex]];
+    if (!r.ok) { el.innerHTML = '<h2>Base converter</h2><p>' + esc(r.why) + '</p><p><a href="/base64/bases/">Open the converter</a></p>'; return; } // void-review: ok (escaped)
+    const a = r.all, href = [2, 8, 10, 16].includes(r.from) ? '/base64/bases/?b=' + r.from + '&v=' + encodeURIComponent(r.input) : '/base64/bases/', four = [['Binary', a.bin], ['Octal', a.oct], ['Decimal', a.dec], ['Hex', a.hex]];
     el.innerHTML = '<h2>' + esc(r.input) + ' ' + esc(nameOf(r.from)) + ' to ' + esc(nameOf(r.to)) + '</h2>' // void-review: ok (every part escaped)
       + '<p class="bc-out" style="font:700 26px ui-monospace,monospace;word-break:break-all;margin:8px 0">' + esc(r.outGrouped) + '</p>'
       + '<table class="bc-all" style="border-collapse:collapse;font-size:14px;width:100%">' + four.map(([n, v]) => '<tr><td style="padding:3px 10px 3px 0;opacity:.7">' + n + '</td><td style="font-family:ui-monospace,monospace;word-break:break-all">' + esc(v) + '</td></tr>').join('') + '</table>'

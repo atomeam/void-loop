@@ -30,7 +30,7 @@ function run(text, api) {
       + '<p><input class="pw-in" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="' + MAX_LEN + '" aria-label="Password to check" placeholder="Password" style="font:inherit;width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit"></p>'
       + '<p><label style="font-size:13px"><input type="checkbox" class="pw-show"> show it</label></p>'
       + '<div class="pw-out" aria-live="polite"></div>'
-      + '<p><button type="button" class="pw-leak">Has it leaked?</button> <a href="/password-strength/" class="pw-full">Open the full page</a> <span class="pw-leakmsg" role="status"></span></p>'
+      + '<p><button type="button" class="pw-leak">Has it leaked?</button> <a href="/password/strength/" class="pw-full">Open the full page</a> <span class="pw-leakmsg" role="status"></span></p>'
       + '<div class="src">An estimate, made here: ordinary words and patterns are priced the way a guesser would try them. The leak check sends only the first 5 characters of a fingerprint of the password.</div>'; 
     const q = (s) => el.querySelector(s), inp = q('.pw-in'), out = q('.pw-out'), msg = q('.pw-leakmsg');
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('input,button,a')) b.addEventListener(ev, (e) => e.stopPropagation());

@@ -56,7 +56,7 @@ test('the common asks: 5 to 8 real links per page that takes a setting in the li
     const row = asksRow(p.path);
     assert.ok(row.startsWith('<nav id="asks" class="tk-row" aria-label="Common asks">') && (row.match(/<a href=/g) || []).length === p.links.length, p.path);
   }
-  assert.equal(asksRow('/wheel/'), ''); assert.equal(asksRow('/nope/'), '');
+  assert.equal(asksRow('/random/wheel/'), ''); assert.equal(asksRow('/nope/'), '');
   assert.ok(asksRow('/base64/').includes('href="/base64/?t=Hello%2C+world"'));
 });
 

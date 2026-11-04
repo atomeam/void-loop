@@ -236,7 +236,7 @@ export const JOURNEYS = {
     await check('UTC is no place, so the flights link reads as off');
   },
   'make random people, then pick one of their names at random and see the prize odds for them': async (p, check) => {
-    const open = () => p.goto(ORIGIN + '/random-user/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
+    const open = () => p.goto(ORIGIN + '/random/people/?n=5&seed=handoff', { waitUntil: 'load' }).then(() => p.waitForSelector('#related a.tk-hand'));
     await open(); const sent = (new URL(await p.locator('#related a', { hasText: 'Pick one of these names at random' }).getAttribute('href'), ORIGIN).searchParams.get('list') || '').split('\n');
     if (sent.length !== 5 || sent.some((n) => !/\S \S/.test(n))) throw new Error('the random people page sends "' + sent.join(', ') + '", not 5 full names');
     await check('the random people page made 5 people (' + sent.join(', ') + ')');
@@ -285,7 +285,7 @@ export const JOURNEYS = {
     await check('the paint page cut the kept picture into a new colouring sheet');
   },
   "send a gradient to the photo tools as a picture, and take a painting's colours as a gradient": async (p, check) => {
-    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
+    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand'); await check('the gradient page opened');
     const before = new URL(p.url()).hash;
     await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
     await p.waitForFunction(() => !document.getElementById('work').hidden && /→/.test(document.getElementById('line').textContent), null, { timeout: 15000 });
@@ -320,14 +320,14 @@ export const JOURNEYS = {
     if (!head.startsWith('%PDF-')) throw new Error('the download is not a PDF: it starts "' + head + '"');
     await check('the PDF page made a ' + head.split(' ')[1] + '-byte PDF of the painting');
     // a gradient goes the same way, as a picture of the gradient
-    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
     await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save it as a PDF' }).click()]);
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await check('the PDF page opened Images to PDF with the gradient ' + (await p.locator('ol.files li .fname').textContent()) + ' in the list');
   },
   'edit a photo in the photo tools, then save the edit as a PDF, paint it by number, take its colours as a gradient, resize it and look up its main colour': async (p, check) => {
     const toPhotos = async () => {
-      await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+      await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
       await Promise.all([p.waitForURL(/\/photos\//), p.locator('#related a', { hasText: 'Edit it in photo tools' }).click()]);
       // the send links stay off until the edit is ready, then carry their page at once, with no hover or press first
       await p.waitForFunction(() => [...document.querySelectorAll('#related a.tk-hand')].some((a) => a.textContent === 'Save your edit as a PDF' && a.getAttribute('aria-disabled') === 'false'), null, { timeout: 15000 });
@@ -358,7 +358,7 @@ export const JOURNEYS = {
   },
   'turn a PDF page into a picture, then paint it by number, edit it in the photo tools, take its colours as a gradient and resize it': async (p, check) => {
     // a one-page PDF of the gradient, made on the PDF page itself
-    await p.goto(ORIGIN + '/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
+    await p.goto(ORIGIN + '/color/gradient/', { waitUntil: 'load' }); await p.waitForSelector('#related a.tk-hand');
     await Promise.all([p.waitForURL(/\/pdf\//), p.locator('#related a', { hasText: 'Save it as a PDF' }).click()]);
     await p.waitForFunction(() => document.querySelectorAll('ol.files li').length === 1, null, { timeout: 20000 });
     await p.locator('button.go', { hasText: 'Images to PDF' }).click(); await p.waitForSelector('a.dl[download="images.pdf"]', { timeout: 20000 });

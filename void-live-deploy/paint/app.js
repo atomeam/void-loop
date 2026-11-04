@@ -332,7 +332,7 @@ $('png').onclick = () => {
   for (const [text, path] of [['Post your painting on a board', '/boards/?img=handoff'], ['Save your painting as a PDF', '/pdf/?img=handoff'], ['Take its colours as a gradient', '/gradient/?img=handoff'], ['Resize your painting', '/resize-image/?img=handoff'], ['Edit your painting in photo tools', '/photos/?img=handoff']]) { // each goes straight after the label, so the last here shows first
     const a = document.createElement('a'); a.href = path; a.textContent = text; a.className = 'tk-hand';
     a.addEventListener('click', (e) => { e.preventDefault(); if (!state.tpl || !state.painted) return;
-      sendImage(path, () => canvasBlob(path.startsWith('/gradient/') ? wholeCanvas() : paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
+      sendImage(path, () => canvasBlob(path.startsWith('/color/gradient/') ? wholeCanvas() : paintingCanvas()), { name: (state.tpl.name || state.tpl.id || 'painting') + '.png', fromPage: '/paint/' })
         .then((ok) => { if (!ok) say('Your painting could not be kept for the next page in this browser.'); }); });
     if (label) label.after(' ', a); }
 }

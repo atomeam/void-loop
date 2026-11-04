@@ -12,7 +12,7 @@ export const SITE = 'https://a-to-mind.com';
 /** the limits a result is held to: Google shows about 60 characters of a title and 155-160 of a description */
 export const LIMITS = Object.freeze({ title: [10, 70], description: [50, 170] });
 /** the pages that sell something (the store, the code review's Pro, the done-for-you automation services): a free page that leads to one is a path to a sale */
-export const OFFERS = Object.freeze(['/store/', '/code-review/', '/one-time-fix/', '/keep-it-running/', '/first-automation-setup/', '/full-stack-audit/']);
+export const OFFERS = Object.freeze(['/store/', '/code-review/', '/fix/one-time/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/']);
 
 const decode = (s) => String(s).replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;|&#x27;/g, "'").replace(/&nbsp;/g, ' ');
 const attr = (tag, name) => { const m = tag.match(new RegExp('\\s' + name + '\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\')', 'i')); return m ? decode(m[1] != null ? m[1] : m[2]) : null; };

@@ -110,11 +110,11 @@ export const PROBES = Object.freeze({
     facts: [['the answer', /\b(?:YES|NO)\b/], ['which day it is about', /christmas/i], ['how long until it', /\b\d+\s+(?:days?|sleeps?)\b/i], ['the date itself', /\b25\b.*\bdec|\bdec\w*\s+25\b/i]],
   },
   'coin flip': {
-    site: 'https://justflipacoin.com/', verse: '/flip/',
+    site: 'https://justflipacoin.com/', verse: '/random/coin/',
     // one flip has no right answer, but ten have a right SHAPE: the gate presses each page's own flip control 10 times, as a person would
     // (tower-gate.mjs answer, `presses`), and reads the page each time it settles: every flip lands on one side, a fair coin shows both
     // sides in 10 (all ten alike is 2 in 1024), and any running count the page keeps grows by exactly the flips made, heads by the heads seen
-    ask: { site: 'https://justflipacoin.com/', verse: '/flip/', presses: 10 },
+    ask: { site: 'https://justflipacoin.com/', verse: '/random/coin/', presses: 10 },
     truth: [['every flip lands on one side, heads or tails', (t) => { const f = flipsOf(t); return f.sides.length > 0 && f.sides.every(Boolean); }],
       ['both sides come up in 10 fair flips', (t) => new Set(flipsOf(t).sides.filter(Boolean)).size === 2],
       ['any count it shows adds up to the flips made', (t) => { const f = flipsOf(t); if (!f.after) return f.sides.length > 0; const b = f.before || { h: 0, t: 0 }, dh = f.after.h - b.h, dt = f.after.t - b.t;
@@ -149,19 +149,19 @@ export const PROBES = Object.freeze({
     truth: () => PROBES.colour.truth(), facts: null, // the colour floor's facts (below)
   },
   gradient: {
-    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/gradient/',
+    site: 'https://www.colorzilla.com/gradient-editor/', verse: '/color/gradient/',
     // the same gradient put to both in the address (ColorZilla's own hash: colour+position stops, top to bottom; Verse's packed link at 180deg,
     // which is "to bottom"): the CSS each writes must hold every stop's exact colour at its exact position, in order, and the direction
-    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/gradient/#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
+    ask: { site: 'https://www.colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,207cca+51,7db9e8+100', verse: '/color/gradient/#l180-1e5799ff.0-2989d8ff.50-207ccaff.51-7db9e8ff.100' },
     truth: [['the four stops, exact and in order', /linear-gradient\([^)]*#1e5799\s+0%\s*,\s*#2989d8\s+50%\s*,\s*#207cca\s+51%\s*,\s*#7db9e8\s+100%/i], ['top to bottom', /linear-gradient\(\s*(?:to bottom|180deg)\s*,\s*#1e5799/i]],
     facts: [['linear', /\blinear\b/i], ['radial', /\bradial\b/i], ['conic', /\bconic\b/i], ['opacity', /\bopacity\b/i], ['presets', /\bpresets?\b/i], ['import CSS', /\bimport\b|\bpaste\b/i],
       ['reverse', /\breverse\b/i], ['hue and saturation', /\bhue\b/i], ['SCSS', /\bscss\b/i], ['from a picture', /\b(?:image|picture)\b/i], ['text contrast', /\bcontrast\b|\bwcag\b/i], ['CSS output', /background(?:-image)?\s*:\s*(?:linear|radial|conic)-gradient/i]],
   },
   wheel: {
-    site: 'https://wheelofnames.com/', verse: '/wheel/',
+    site: 'https://wheelofnames.com/', verse: '/random/wheel/',
     // one spin of the same eight names on both (a tap at the wheel's centre): a winner is announced, and it is one of the names the wheel
     // held before the spin; after it, a way to remove the winner is offered (wheelofnames.com's dialog, Verse's button)
-    ask: { site: 'https://wheelofnames.com/', verse: '/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
+    ask: { site: 'https://wheelofnames.com/', verse: '/random/wheel/#' + Buffer.from(WHEEL_NAMES.join('\n')).toString('base64url'), spin: true },
     truth: [['announces a winner', (t) => /winner/i.test(spun(t).after)], ['the winner is one of the wheel\'s own names', (t) => { const { after, before } = spun(t), names = new Set(before.split('\n').map((l) => l.trim()).filter((l) => l && l.length <= 40));
       return after.split('\n').some((l) => { const x = l.replace(/^.*\bwinner(?:\s+is)?\s*:?\s*/i, '').replace(/[!.]+$/, '').trim(); return !!x && names.has(x); }); }]],
     askParts: { 'remove the winner': [['a way to remove the winner', (t) => /remove/i.test(spun(t).after)]] },
@@ -169,11 +169,11 @@ export const PROBES = Object.freeze({
       ['a share link', /\bshare\b|\bcopy link\b/i], ['weights', /\bweights?\b|times as likely/i], ['says it is fair', /\bfair\b/i], ['sound control', /\bsound\b|\bmute\b/i]],
   },
   'random user': {
-    site: 'https://randomuser.me/', verse: '/random-user/',
+    site: 'https://randomuser.me/', verse: '/random/people/',
     // the same request to both in the address (randomuser.me's own API, Verse's page as JSON): made-up people are accurate when they hold
     // together, which can be checked: as many as asked, from the country asked, each age right for its birthday, each email well formed,
     // and each phone in the range set aside for fiction (555-0100 to 555-0199), so a test that dials one reaches nobody
-    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random-user/?n=5&nat=us&seed=verse&fmt=json' },
+    ask: { site: 'https://randomuser.me/api/?results=5&nat=us&seed=verse', verse: '/random/people/?n=5&nat=us&seed=verse&fmt=json' },
     truth: [['five people, as asked', (t) => peopleIn(t).length === 5], ['all from the United States, as asked', everyone((p) => p.country === 'United States')],
       ['every age right for its birthday', everyone((p) => Number.isFinite(p.age) && p.age === ageOn(p.dob))], ['every email well formed', everyone((p) => /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(String(p.email)))],
       ['every phone in the range reserved for fiction', everyone((p) => /555-01\d\d$/.test(String(p.phone)))]],
@@ -224,11 +224,11 @@ export const PROBES = Object.freeze({
       ['lines of 76 characters', /\b76\b/], ['the newline form', /\bnewline\b|\bline\s?breaks?\b|\bCRLF\b|\bLF\b/i], ['encoding as you type', /\blive\b|as you type/i], ['files', /\bfiles?\b/i], ['copy', /\bcopy\b/i], ['download', /\bdownload\b/i]],
   },
   'password strength': {
-    site: 'https://www.howsecureismypassword.net/', verse: '/password-strength/',
+    site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/',
     // the page never carries a password in its address (its own rule: nothing typed goes in a link), so the gate types the question into its box
     // (`verseType`). The question: qwerty123, at the head of every leaked list. The truth any correct checker agrees on: it is very weak, cracked
     // at once from a stolen list (a rig trying 10 billion a second needs far fewer), the word qwerty and the run 123 are why, and longer is the fix
-    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password-strength/', verseType: 'qwerty123' },
+    ask: { site: 'https://www.howsecureismypassword.net/', verse: '/password/strength/', verseType: 'qwerty123' },
     truth: [['rated very weak', /\bvery weak\b/i], ['cracked instantly', /\binstantly\b/i], ['the common password qwerty named', /\bqwerty\b/i], ['the run 123 named', /\b123\b/i], ['the fix: make it longer', /\blonger\b/i]],
     // the floor's own aspects, read off the same typed answer: a time at a login and a time from a stolen list; why it is weak and how to fix it
     askParts: { 'crack time': [['a time from a stolen list, offline', /\boffline\b|stolen list/i], ['a time at a login, online', /\blogin\b|\bonline\b/i]],
@@ -618,8 +618,8 @@ export const PROBES = Object.freeze({
     ],
   },
   colorzilla: {
-    site: 'https://www.colorzilla.com/', verse: '/gradient/',
-    ask: { verse: '/gradient/' },
+    site: 'https://www.colorzilla.com/', verse: '/color/gradient/',
+    ask: { verse: '/color/gradient/' },
     truth: [
       ['linear gradients', /linear/i],
       ['radial gradients', /radial/i],
@@ -980,10 +980,10 @@ export const PROBES = Object.freeze({
       ['a JPEG', /\bjpe?g\b/i], ['a PDF', /\bpdf\b/i], ['crop or keep the whole picture', /\bcrop\b|whole picture/i], ['a signature too', /\bsignature\b/i], ['nothing uploaded', /never uploaded|nothing is uploaded|on (?:this|your) device/i], ['a share link', /\bshare\b/i]],
   },
   'base converter': {
-    site: 'https://hextobinary.com/', verse: '/base-converter/?v=ff&b=16',
+    site: 'https://hextobinary.com/', verse: '/base64/bases/?v=ff&b=16',
     // hextobinary.com's address cannot carry a number, so the gate types it into the converter's box (`type`), as a person would; Verse takes it
     // in the link. The question: a 31-digit hex number (121 bits), past what a double holds exactly (53 bits); the truth is computed with BigInt
-    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base-converter/?v=' + HUGE.toString(16) + '&b=16' },
+    ask: { site: 'https://hextobinary.com/convert/hex', type: HUGE.toString(16), verse: '/base64/bases/?v=' + HUGE.toString(16) + '&b=16' },
     truth: [['the exact binary', exact(HUGE.toString(2))], ['the exact decimal', exact(HUGE.toString(10))]],
     askParts: { 'huge numbers': [['all 121 binary digits', exact(HUGE.toString(2))], ['all 37 decimal digits', exact(HUGE.toString(10))], ['all 41 octal digits', exact(HUGE.toString(8))]] },
     facts: [['binary', /\bbinary\b/i], ['decimal', /\bdecimal\b/i], ['hexadecimal', /\bhex/i], ['octal', /\boctal\b/i]],

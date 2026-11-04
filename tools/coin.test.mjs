@@ -35,10 +35,10 @@ test('the Flip page card asks for the coin open on it, and the stage card opens 
     assert.equal(new URLSearchParams(page.slice(page.indexOf('?'))).get('q'), ask, 'the card opens the same coin');
   }
   for (const s of ['', '?q=', '?q=what+is+a+coin', '?q=bitcoin+price', '?x=flip+a+coin', '?q=' + 'flip a coin '.repeat(9), null]) assert.equal(cardAsk(s), '', String(s));
-  assert.equal(pageOfFlip("flip a coin (it's mine)"), '/flip/', 'a query the card frame would not take opens the page itself');
+  assert.equal(pageOfFlip("flip a coin (it's mine)"), '/random/coin/', 'a query the card frame would not take opens the page itself');
   const el = fake(); let shown = null, r;
   const had = 'document' in globalThis; globalThis.document = fake(); // the card draws its coins with document.createElement
   try { r = coin.run('flip 3 coins', { esc: (s) => String(s), showPage: (build) => { build(el); shown = el; return el; }, stage: { ask() {} } }); } finally { if (!had) delete globalThis.document; }
-  assert.equal(r, 'coin'); assert.equal(shown.dataset.page, '/flip/?q=flip%203%20coins');
+  assert.equal(r, 'coin'); assert.equal(shown.dataset.page, '/random/coin/?q=flip%203%20coins');
   assert.equal(coin.run('what is a coin', { esc: String, showPage: () => { throw new Error('drew'); } }), 'none');
 });
