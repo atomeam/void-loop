@@ -61,3 +61,9 @@ test("free-api-finder", () => {
   assert.equal(b.run("pokemon"), "PokeAPI, pokeapi.co");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("proposal-checker", () => {
+  const b = bot("proposal-checker"); assert.ok(b && BOT("proposal-checker"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("{\"title\":\"t\",\"citations\":[\"a\"],\"rollback\":[\"r\"],\"metric\":\"m\",\"risk\":\"low\"}"), "complete, ready for the change-curator");
+  assert.ok(lineage(b), 'lineage is real');
+});

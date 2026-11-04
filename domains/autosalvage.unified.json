@@ -54,6 +54,12 @@
       "into": "/bots/ (free-api-finder)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/ALPHA": {
+      "target": "bot",
+      "into": "/bots/ (proposal-checker)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
