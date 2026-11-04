@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>
+:root { --scale:1; --hue:200; --blur:2px; --pulse:1; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; }
+canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; }
+#probes { position:absolute; inset:0; pointer-events:none; }
+.probe {
+  position:absolute; width:92px; height:92px; border-radius:18px;
+  background:hsl(var(--hue),70%,18%); border:2px solid hsl(var(--hue),80%,55%);
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  font-size:11px; text-align:center; color:#fff; pointer-events:auto; cursor:pointer;
+  transform:translate(-50%,-50%) scale(var(--scale)); filter:blur(var(--blur));
+  opacity:var(--pulse); transition:transform .12s,filter .2s,background .3s;
+  box-shadow:0 0 18px hsl(var(--hue),80%,40%); user-select:none;
+}
+.probe:hover { border-color:#fff; }
+.probe small { opacity:.7; font-size:9px; }
+#ui {
+  position:fixed; bottom:12px; left:12px; right:12px; z-index:10;
+  display:flex; gap:8px; flex-wrap:wrap; pointer-events:auto;
+}
+button, .status {
+  background:rgba(20,20,40,.85); border:1px solid #446; color:#cef; padding:8px 12px;
+  border-radius:8px; font-size:13px; backdrop-filter:blur(4px);
+}
+button { cursor:pointer; }
+button:hover { background:#334; }
+#status { font-variant-numeric:tabular-nums; min-width:280px; }
+.toast { position:fixed; top:12px; left:50%; transform:translateX(-50%); background:#246; color:#fff; padding:6px 14px; border-radius:20px; font-size:12px; opacity:0; transition:opacity .3s; pointer-events:none; z-index:20; }
+.toast.show { opacity:1; }
+</style>
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Electrostatic N-Body + Orientation-Causal MLP DOM Probes Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a particle system under pure electrostatic (Coulomb) forces simulated in a WebGPU compute shader (previously unused kernel — not attention, not">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Electrostatic N-Body + Orientation-Causal MLP DOM Probes Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a particle system under pure electrostatic (Coulomb) forces simulated in a WebGPU compute shader (previously unused kernel — not attention, not">
+<meta property="og:url" content="https://a-to-mind.com/lab/f535-webgpu-electrostatic-orientation-mlp-probes-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f535-webgpu-electrostatic-orientation-mlp-probes-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="probes"></div>
+<div id="ui">
+  <button id="seal">Seal Genome</button>
+  <button id="reset">Reset</button>
+  <button id="orient">Enable Orientation</button>
+  <div id="status" class="status">loading…</div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Electrostatic N-Body + Orientation-Causal MLP DOM Probes Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

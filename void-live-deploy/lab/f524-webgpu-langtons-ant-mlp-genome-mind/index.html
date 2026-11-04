@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  body { margin: 0; background: #0a0a12; color: #e0e0ff; font-family: system-ui, sans-serif; overflow: hidden; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  #status { position: fixed; top: 8px; left: 8px; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 6px; font-size: 12px; z-index: 10; }
+  #seal { position: fixed; bottom: 16px; right: 16px; padding: 8px 16px; background: #334; color: #fff; border: 1px solid #668; border-radius: 6px; cursor: pointer; z-index: 10; }
+  #seal:hover { background: #446; }
+  .portal { position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(100,180,255,0.4); border: 2px solid #8cf; pointer-events: none; transition: transform 0.1s; mix-blend-mode: screen; z-index: 5; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU-ready Langton's Ant MLP Genome Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a population of Langton's ants (simple Turing-like cellular agents) whose turn rules are encoded as tiny local MLPs (or compact rule genomes).">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU-ready Langton's Ant MLP Genome Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a population of Langton's ants (simple Turing-like cellular agents) whose turn rules are encoded as tiny local MLPs (or compact rule genomes).">
+<meta property="og:url" content="https://a-to-mind.com/lab/f524-webgpu-langtons-ant-mlp-genome-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f524-webgpu-langtons-ant-mlp-genome-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="status">Langton Ants: loading…</div>
+<button id="seal">Seal Best Genome</button>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU-ready Langton's Ant MLP Genome Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

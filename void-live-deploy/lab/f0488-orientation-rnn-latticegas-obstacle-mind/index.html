@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0c0e0; font-family:system-ui; overflow:hidden; }
+#ui { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,20,0.7); padding:8px; border-radius:6px; font-size:12px; }
+canvas { display:block; background:#050510; }
+.card { position:absolute; background:rgba(40,60,100,0.6); border:1px solid #6688cc; border-radius:4px; padding:6px; font-size:11px; user-select:none; cursor:move; }
+#seal { margin-top:4px; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Orientation-RNN Lattice-Gas Obstacle Mind · Verse lab</title>
+<meta name="description" content="A discrete lattice-gas automaton (FHP-style particle collision fluid on a square grid with streaming + collision rules) simulated in pure JS (Canvas2D.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Orientation-RNN Lattice-Gas Obstacle Mind · Verse lab">
+<meta property="og:description" content="A discrete lattice-gas automaton (FHP-style particle collision fluid on a square grid with streaming + collision rules) simulated in pure JS (Canvas2D.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f0488-orientation-rnn-latticegas-obstacle-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f0488-orientation-rnn-latticegas-obstacle-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="ui">
+  <div>F0488 Orientation-RNN Lattice-Gas Obstacle Mind</div>
+  <div id="status">init</div>
+  <button id="seal" disabled>Seal Genome</button>
+  <div id="log"></div>
+</div>
+<canvas id="cv"></canvas>
+<div class="card" id="c1" style="left:20%;top:30%;width:80px;height:50px">Obstacle A</div>
+<div class="card" id="c2" style="left:55%;top:45%;width:100px;height:40px">Obstacle B</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Orientation-RNN Lattice-Gas Obstacle Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#e0e0ff; font-family:system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+.card {
+  position:absolute; width:140px; height:90px; background:#1a1a2e; border:2px solid #4af;
+  border-radius:12px; padding:8px; cursor:grab; user-select:none;
+  box-shadow:0 0 15px #4af4; transition:box-shadow 0.2s;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  font-size:13px; text-align:center;
+}
+.card.grasped { box-shadow:0 0 25px #f4a; border-color:#f4a; }
+.card:active { cursor:grabbing; }
+#links { position:absolute; top:0; left:0; pointer-events:none; }
+#ui { position:absolute; top:12px; left:12px; z-index:10; background:rgba(0,0,0,0.6); padding:10px; border-radius:8px; font-size:12px; }
+button { background:#4af; color:#000; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin:4px; }
+#status { margin-top:6px; opacity:0.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>WebGPU Attention Card Weaver Mind · Verse lab</title>
+<meta name="description" content="Novel combination: a small population of absolute-positioned Verse DOM cards treated as tokens in a multi-head self-attention mechanism whose core matrix multiplies">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="WebGPU Attention Card Weaver Mind · Verse lab">
+<meta property="og:description" content="Novel combination: a small population of absolute-positioned Verse DOM cards treated as tokens in a multi-head self-attention mechanism whose core matrix multiplies">
+<meta property="og:url" content="https://a-to-mind.com/lab/f527-webgpu-attention-card-weaver-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f527-webgpu-attention-card-weaver-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="links"></canvas>
+  <div id="ui">
+    <div>F527 Attention Card Weaver</div>
+    <button id="seal">Seal Genome</button>
+    <button id="reset">Reset Weights</button>
+    <div id="status">Initializing…</div>
+  </div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">WebGPU Attention Card Weaver Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

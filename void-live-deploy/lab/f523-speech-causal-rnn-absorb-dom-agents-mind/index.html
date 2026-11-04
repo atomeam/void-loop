@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+  :root { --bg: #0a0a12; --card: #1a1a2e; --accent: #00f0ff; --text: #e0e0ff; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #status { position: fixed; top: 0; left: 0; right: 0; background: #111; padding: 8px 12px; font-size: 13px; z-index: 100; display: flex; gap: 16px; align-items: center; }
+  #arena { position: absolute; top: 40px; left: 0; right: 0; bottom: 0; }
+  .agent { position: absolute; width: 72px; height: 48px; background: var(--card); border: 2px solid var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; user-select: none; cursor: pointer; transition: box-shadow 0.2s; }
+  .agent.high { box-shadow: 0 0 12px var(--accent); }
+  #controls { position: fixed; bottom: 12px; left: 12px; background: #111a; padding: 10px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 100; max-width: 280px; }
+  input, button { background: #222; color: var(--text); border: 1px solid #444; padding: 6px; border-radius: 4px; }
+  button { cursor: pointer; }
+  button:hover { background: #333; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>Speech Causal RNN Absorb DOM Agents Mind · Verse lab</title>
+<meta name="description" content="Novel hybrid embodiment where live speech (Web Speech API) or typed keywords serve as the sole discrete causal input to a population of local tiny RNNs (one per">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="Speech Causal RNN Absorb DOM Agents Mind · Verse lab">
+<meta property="og:description" content="Novel hybrid embodiment where live speech (Web Speech API) or typed keywords serve as the sole discrete causal input to a population of local tiny RNNs (one per">
+<meta property="og:url" content="https://a-to-mind.com/lab/f523-speech-causal-rnn-absorb-dom-agents-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f523-speech-causal-rnn-absorb-dom-agents-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="status">
+  <span id="recog">Speech: idle</span>
+  <span id="agents">Agents: 0</span>
+  <span id="seal">Last seal: none</span>
+  <span id="cmd">Cmd: [0,0,0,0]</span>
+</div>
+<div id="arena"></div>
+<div id="controls">
+  <input id="typed" placeholder="type command: swarm / scatter / focus / orbit" />
+  <button id="send">Send command</button>
+  <button id="listen">Start speech</button>
+  <button id="sealbtn">Seal best genome</button>
+  <button id="reset">Reset population</button>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">Speech Causal RNN Absorb DOM Agents Mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
