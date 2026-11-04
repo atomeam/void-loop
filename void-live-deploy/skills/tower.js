@@ -7,7 +7,7 @@
  * beaten, what Verse still loses on and what is unverified. Real data only: read from this site.
  */
 import { towerArtSvg } from '../lib/tower-art.js';
-import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine } from '../lib/tower.js?v=ladder-69';
+import { tower, towerLine, towerArgs, fatalityOf, hostOf, learnedOf, outclassLine, passedLine } from '../lib/tower.js?v=ladder-70';
 import { badgeText } from '../lib/gate-badge.js?v=ladder-55';
 // each floor's gate badge (lib/gate-badge.js): [Gate: Code], [Gate: Partner] or [Gate: License], and a regulated floor's stage
 const gateTag = (f, esc) => f.badge ? '<span class="tw-gate" title="' + esc(f.badge.why + (f.badge.stageWhy ? '; stage ' + f.badge.stage + ': ' + f.badge.stageWhy : '')) + '" style="font-size:11px;opacity:.8;margin-left:6px">' + esc(badgeText(f.badge)) + '</span>' : '';
@@ -197,6 +197,15 @@ export function nextHtml(t, esc, n = 3) {
   const rows = t.floors.filter((f) => f.state === 'ahead' && !f.defer && !f.farFuture).slice(0, n);
   return rows.length ? '<div class="tw-next" data-share-skip><b style="font-size:13px">Up next</b><ol>' + rows.map((f) => '<li data-id="' + esc(f.id) + '"><span class="tw-name">' + esc(f.site) + '</span><span>' + esc(f.weight !== null && f.size ? bytesLabel(f.size.bytes) + ' · ' : 'not weighed · ') + esc(f.n + ' of ' + f.m + (f.page ? '' : ' · no page')) + '</span></li>').join('') + '</ol></div>' : '';
 }
+/** the whole-site crawl of a site on the card (owner, 2026-11-03: "the fact we missed the site does that shows a flaw that we arent actually even
+ *  looking at the whole sites"): how many of its pages were read, its page types and features, and each feature Verse's pages lack, which keeps
+ *  the site from being passed or conquered (lib/tower.js tower(); tools/site-crawl.mjs). '' for a site not crawled yet. Pure. */
+export function crawlHtml(f, esc) {
+  const c = f && f.crawled; if (!c) return f && f.state === 'current' ? '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px;opacity:.8">Not crawled yet: only its front page has been read.</div>' : '';
+  const miss = f.missingFeatures || [];
+  return '<div class="tw-crawl" style="margin:4px 0 6px 10px;font-size:12px">Crawled ' + c.pages + ' pages of ' + esc(f.site) + ' (' + c.templates + ' kinds of page, ' + c.features + ' features)' + (c.verse_pages ? '; ' + c.verse_pages + ' of Verse\'s pages read against it' : '') + '. '
+    + (miss.length ? '<details class="tw-missing"><summary style="cursor:pointer"><b>Missing ' + miss.length + ' feature' + (miss.length === 1 ? '' : 's') + '</b> Verse has to build before it can pass</summary><ul style="margin:2px 0 4px 18px;padding:0">' + miss.map((m) => '<li>' + esc(m) + '</li>').join('') + '</ul></details>' : '<b>Verse has every feature found.</b>') + '</div>';
+}
 export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now(), bySize: bs = false, lang = pageLang() } = {}) {
   const rk = t.rank || null, ranks = (rk && rk.ranks) || {}, order = (rk && rk.order) || {}, w = words(lang), on = !!(rk && bs);
   const sizeTag = (f) => rk ? '<span class="tw-size" title="' + esc(w.rank) + '">' + esc(rankLabel(sizeOf(f.id, ranks, order), lang)) + '</span>' : '';
@@ -229,11 +238,11 @@ export function towerHtml(t, esc, { mini = false, enter = true, now = Date.now()
     // epic card picture"): a flat SVG from the same floors, one lit floor per site surpassed and the one being fought glowing on top (lib/tower-art.js)
     + (mini ? '' : '<div class="tw-art-wrap" data-share-skip style="margin:8px auto 4px;max-width:360px">' + towerArtSvg(miniFloors(t)) + '</div>')
     + (fight ? '<div class="tw-fight" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">' + esc(fight) + '</div>' : '')
-    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) : '') + '</div>'
+    + '<div class="tw-stack tower-stack">' + (on ? sizeListHtml(t, esc, lang) : '') + (on ? '' : cur ? row(cur) + crawlHtml(cur, esc) : '') + '</div>'
     + (on || !cur ? '' : actionsHtml(cur, esc)) + (on ? '' : nextHtml(t, esc))
     // the surpassed list folded (owner, 2026-11-03: the card is a compact summary; "the history of each site should be with what each site taught me"):
     // tap it for each site, its links and what it taught; the whole history, with dates, tries and ease, is /assimilated/ (tools/assimilated.mjs)
-    + (on || !passedRows.length ? '' : '<details class="tw-passed"><summary style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Passed (' + passedRows.length + ')</b> · moved on, conquering in the background</summary>' + passedRows.map((f) => '<div class="tw-passrow" style="margin:2px 0 2px 10px;font-size:13px">' + esc(passedLine(f)) + (f.behind && f.behind.length ? ' · fixing: ' + esc(f.behind.join(', ')) : '') + '</div>' + links(f)).join('') + '</details>')
+    + (on || !passedRows.length ? '' : '<details class="tw-passed"><summary style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Passed (' + passedRows.length + ')</b> · moved on, conquering in the background</summary>' + passedRows.map((f) => '<div class="tw-passrow" style="margin:2px 0 2px 10px;font-size:13px">' + esc(passedLine(f)) + (f.behind && f.behind.length ? ' · fixing: ' + esc(f.behind.join(', ')) : '') + (f.crawled ? ' · crawled ' + f.crawled.pages + ' pages' : '') + '</div>' + links(f)).join('') + '</details>')
     + (on ? '' : '<details class="tw-won"><summary class="tw-wonhead" style="margin:8px 0 2px;font-size:13px;cursor:pointer"><b>Conquered (' + won.length + ')</b> · each site and what it taught me</summary>' + (won.length ? won.map((f) => row(f) + links(f) + (learnedOf(f) ? '<div class="tw-taught" style="margin:-2px 0 8px 10px;font-size:12px;opacity:.85">' + esc(learnedOf(f)) + '</div>' : '')).join('') : empty) + '<div style="font-size:12px;margin:4px 0 0 10px"><a href="/assimilated/">The full history: every site, its dates, tries and lessons</a></div></details>')
     + takeHtml(t, esc) + lastRow
     + '<div class="src" style="opacity:.7;font-size:.85em">Sites are named in plain text only as a comparison; Verse is not affiliated with any of them. <a href="/conquered/" target="_blank" rel="noopener">Full screen</a></div></div>';
@@ -287,7 +296,7 @@ let stale = 0;
 // is ignored. No "reload" notice: the card is live, so it heals instead of asking (owner, 2026-10-26: "it doesnt refresh when reloaded ... it a live card").
 let fresh = null;
 const freshTower = async () => { try { return fresh || (fresh = await import('../lib/tower.js?fresh=' + Math.floor(Date.now() / 300000))); } catch (_) { return null; } };
-const load = async () => { const [inv, ev, fr, rk, pl, sz, tg] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
+const load = async () => { const [inv, ev, fr, rk, pl, sz, tg, ft] = await Promise.all([get('/lap.items.json'), get('/tower.evidence.json'), get('/tower.frontier.json'), get('/tower.rank.json'), get('/tower.plan.json'), get('/tower.size.json'), get('/tower.target.json'), get('/tower.features.json')]); const args = towerArgs((inv && inv.onlySite) || [], { ev, fr, rk, sz, tg, ft }); let t = tower(...args); stale = staleOf(ev, t); if (stale) { const m = await freshTower(); if (m && m.tower) { t = m.tower(...args); stale = staleOf(ev, t); } } t.rank = (rk && rk.list && rk.ranks) ? rk : null; t.plan = pl && Array.isArray(pl.next) ? pl : null; return t; };
 
 async function run(text, api) {
   if (!towerOf(text)) return 'none';

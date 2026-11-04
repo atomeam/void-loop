@@ -387,7 +387,11 @@ export function frontierPage(x) {
   return t ? { page: t.page, topic: t.topic } : {};
 }
 /** `target` is the id of the site Verse is on (tower.target.json): it stands first, and keeps standing first, until it is beaten; only then does the next smallest site take over. */
-export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null, passedIds = null) {
+// `features` is tower.features.json (tools/site-crawl.mjs; owner, 2026-11-03: "the fact we missed the site does that shows a flaw that we arent
+// actually even looking at the whole sites"): each site's whole-site crawl and the features on it Verse lacks. A site with a missing feature is
+// never conquered (it stays "Passed (missing N)") and the site being assimilated is not passed while one is missing.
+export function tower(onlySite = [], evidence = {}, frontier = null, icons = null, rank = null, size = null, target = null, passedIds = null, features = null) {
+  const crawlOf = (f) => (features && features.sites ? features.sites[hostOf(f.url) || hostOf(f.site)] || null : null);
   const kept = new Set(passedIds || []); // tower.target.json `passed`: a site the Tower passed stays passed (a later loss files a fix, never a move back)
   const cov = new Map((onlySite || []).map((r) => [r.category, r]));
   // a renamed floor (aka) still finds its coverage row and its evidence under the old id
@@ -395,7 +399,7 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   const sites = FLOORS.concat(frontierOf(frontier).map((x) => ({ id: x.host, site: x.host, url: 'https://' + x.host + '/', label: x.host, extra: [], ...frontierPage(x), rank: x.rank || null, ...(x.blocked ? { blocked: x.blocked } : {}) })));
   // each floor keeps its evidence rows (`ev`): the matchup on the card reads the measured numbers and times from them (owner, 2026-10-25:
   // "something that shows the matchup and how aware we are of what is happening")
-  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), beaten: g.beaten && !f.held, cleared: !f.held && !g.beaten && (g.cleared || kept.has(f.id)), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
+  const all = sites.map((f, i) => { const ev = under(evidence, f) || {}, g = gate(f, ev), c = cov.get(f.id) || (f.aka && cov.get(f.aka)) || {}; const icon = icons && (icons[hostOf(f.url) || hostOf(f.site)] || null); const badge = badgeOf(f); const sz = size && size.sites ? size.sites[hostOf(f.url) || hostOf(f.site)] || null : null; const r = rank ? (Number.isFinite(+((rank.order || {})[f.id])) && (rank.order || {})[f.id] !== null && (rank.order || {})[f.id] !== '' ? +rank.order[f.id] : (rank.ranks || {})[f.id] || (rank.ranks || {})[hostOf(f.url) || hostOf(f.site)] || f.rank || null) : (f.rank || null); return { ...f, order: i, ...g, rankLost: g.lost.filter((a) => !barRow(ev[a])), barred: g.aspects.filter((a) => barRow(ev[a])), ...crawlFields(crawlOf(f)), beaten: g.beaten && !f.held && !missOf(crawlOf(f)).length, cleared: !f.held && !(g.beaten && !missOf(crawlOf(f)).length) && ((g.cleared && !missOf(crawlOf(f)).length) || kept.has(f.id) || g.beaten), behind: kept.has(f.id) && !g.cleared ? g.lost.concat(g.bar.missing.filter((a) => !g.lost.includes(a))) : [], ev, icon, badge, rank: r, tier: sizeTier(r), size: sz, weight: weightOf(sz), coverage: c.status || 'missing', skills: c.skills || [] }; });
   // a site Verse is measured worse on cannot be beaten easily (owner, 2026-10-24: "then find an easier site if we cant beat it easily"): it waits
   // behind every site Verse loses on nothing, still in the queue, and comes back to the front once its losses are fixed
   // the queue ranks on measured rows only (2026-10-29): a loss against the default bar (the site turned the gate away, barRow) stays a loss on the
@@ -428,11 +432,16 @@ export function tower(onlySite = [], evidence = {}, frontier = null, icons = nul
   floors.forEach((f, i) => { f.floor = i + 1; f.state = f.beaten ? 'beaten' : f.cleared ? 'passed' : f === queue[0] ? 'current' : 'ahead'; f.pinned = !pinned(f) && !f.beaten && !f.cleared; });
   return { floors, marker: won.length + past.length + 1, beaten: won.length, passed: past.length, total: floors.length, open: true };
 }
+const missOf = (c) => (c && Array.isArray(c.missing) ? c.missing : []);
+/** a site's crawl on a floor: missingFeatures (names) and crawled ({ pages, templates, features, verse_pages, verse_features, crawled }), or {}. Pure. */
+function crawlFields(c) { return c ? { missingFeatures: missOf(c), crawled: { pages: c.pages || 0, templates: c.templates || 0, features: c.features || 0, verse_pages: c.verse_pages || 0, verse_features: c.verse_features || 0, at: c.crawled || null } } : { missingFeatures: [] }; }
+/** the missing features of a site in a few words: "missing 3: Apple Name, Also Called, A table". Pure. */
+export const missingLine = (f, max = 3) => { const m = (f && f.missingFeatures) || []; return m.length ? 'missing ' + m.length + ': ' + m.slice(0, max).join(', ') + (m.length > max ? '…' : '') : ''; };
 /** Versus in one line: the site Verse is on now and how many it has conquered. Pure. */
 // a held site says why it is not surpassed, so "16 of 16 aspects ahead, 0 surpassed" explains itself (owner's card, 2026-10-29)
 export const towerLine = (t) => { const f = t.floors[t.marker - 1]; return 'Versus: now ' + (f ? f.site + ' (Verse ahead on ' + f.n + ' of ' + f.m + ' aspects' + (f.held ? '; held: ' + f.held : '') + ')' : 'the next site the scan finds') + ', ' + t.beaten + ' surpassed' + (t.passed ? ', ' + t.passed + ' passed' : ''); };
 /** a passed site in one line: "Passed ndscalc.ru (8/12, conquering in background)". Pure. */
-export const passedLine = (f) => 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', conquering in background)';
+export const passedLine = (f) => 'Passed ' + f.site + ' (' + f.n + '/' + f.m + ', ' + (missingLine(f) || 'conquering in background') + ')';
 /** the confident headline (owner, 2026-11-03: "Outclassed ndscalc.ru, now taking on X"): the latest site passed or conquered, then the target. Pure. */
 export const outclassLine = (t, lastId = null) => {
   const done = t.floors.filter((f) => f.beaten || f.cleared), last = (lastId && done.find((f) => f.id === lastId)) || done[done.length - 1], cur = t.floors[t.marker - 1];
@@ -441,4 +450,4 @@ export const outclassLine = (t, lastId = null) => {
 /** tower()'s arguments from the published files, the same on every card that names the site Verse is on (skills/tower.js, /api/will):
  *  ev, fr, rk, sz and tg are tower.evidence.json, tower.frontier.json, tower.rank.json, tower.size.json and tower.target.json, each null
  *  when it could not be read. Without the target a card ranks by the default order and can name a different site than the Versus card. Pure. */
-export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null];
+export const towerArgs = (onlySite, { ev = null, fr = null, rk = null, sz = null, tg = null, ft = null } = {}) => [onlySite || [], (ev && ev.floors) || {}, fr, (ev && ev.icons) || null, rk && rk.list && rk.ranks ? rk : null, sz && sz.sites ? sz : null, tg && tg.id ? tg.id : null, tg && Array.isArray(tg.passed) ? tg.passed.map((r) => (r && r.id) || r).filter(Boolean) : null, ft && ft.sites ? ft : null];
