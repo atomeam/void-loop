@@ -234,6 +234,7 @@ for (const [name, file] of [
   ['routed', 'routed.test.mjs'],
   ['better', 'better.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
+  ['video-gate', 'video-gate.test.mjs'],
   ['skills', process.env.VOID_GATE === '1' ? 'skills-delta.mjs' : 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['stage-pack-h', 'stage-pack-h.test.mjs'],
