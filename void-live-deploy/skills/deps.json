@@ -14281,7 +14281,8 @@
    ],
    "importedBy": [
     "lib/mcp-skills.js",
-    "skills/country.js"
+    "skills/country.js",
+    "skills/place.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -16186,7 +16187,8 @@
   },
   "skills/place.js": {
    "imports": [
-    "lib/where.js"
+    "lib/where.js",
+    "skills/distance.js"
    ],
    "importedBy": []
   },
