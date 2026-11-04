@@ -2,13 +2,13 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 5,
+  "unified": 6,
   "live": 71,
-  "salvageable": 442,
+  "salvageable": 441,
   "history": 24,
   "skipped": 3
  },
- "remaining": 442,
+ "remaining": 441,
  "top10": [
   {
    "id": "archive/repos/the-void/src/components",
@@ -83,18 +83,6 @@
    "license": null
   },
   {
-   "id": "archive/repos/adventure-lab",
-   "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 34.3,
-   "why": "live code shares its name; check for overlap before migrating",
-   "into": null,
-   "test": null,
-   "pr": null,
-   "license": null
-  },
-  {
    "id": "archive/repos/ALPHA/apps/alpha-orchestrator",
    "kind": "archived part",
    "status": "salvageable",
@@ -124,6 +112,18 @@
    "status": "salvageable",
    "target": "bot",
    "value": 33,
+   "why": "",
+   "into": null,
+   "test": null,
+   "pr": null,
+   "license": null
+  },
+  {
+   "id": "archive/repos/a-to-mind.com/drafts/030-attested-contact-channel",
+   "kind": "archived part",
+   "status": "salvageable",
+   "target": "skill",
+   "value": 32.9,
    "why": "",
    "into": null,
    "test": null,
@@ -4225,12 +4225,12 @@
   {
    "id": "archive/repos/adventure-lab",
    "kind": "archived repo",
-   "status": "salvageable",
-   "target": "skill",
-   "value": 34.3,
-   "why": "live code shares its name; check for overlap before migrating",
-   "into": null,
-   "test": null,
+   "status": "unified",
+   "target": "bot",
+   "value": 57.2,
+   "why": "",
+   "into": "/bots/ (atari-playfield)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": null
   },

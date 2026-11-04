@@ -30,6 +30,12 @@
       "into": "/bots/ (header-grader)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/adventure-lab": {
+      "target": "bot",
+      "into": "/bots/ (atari-playfield)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
