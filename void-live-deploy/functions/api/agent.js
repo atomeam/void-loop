@@ -6,6 +6,8 @@
 // WHAT A STRANGER COULD MAKE THIS DO: spend up to 20 free model calls a day per visitor (lib/daily-cap.js), 400 a day in all, and read only their own thread.
 import { tierFor, needsYes, pickBot, brief, TIERS } from '../../lib/agent-core.js';
 import { cap } from '../../lib/daily-cap.js';
+import { ANSWER_FALLBACK } from '../../lib/models.js';
+import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex' } });
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_agent_tasks (id TEXT PRIMARY KEY, thread TEXT NOT NULL, ask TEXT NOT NULL, status TEXT NOT NULL, bot TEXT, tier TEXT, steps TEXT NOT NULL, result TEXT, created INTEGER NOT NULL, done INTEGER)';
@@ -35,6 +37,9 @@ async function infraCents(origin) {
   try { const j = await (await fetch(origin + '/api/treasury')).json(); return Number(j.pots && j.pots.infrastructure) || 0; } catch (_) { return 0; }
 }
 
+// the reply text, whichever shape the model answers in (Workers AI's { response } or the OpenAI-style choices); never a thinking block
+export const textOf = (out) => String((out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content))) || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
 export async function run(env, origin, id, ask) {
   const db = env.DB;
   try {
@@ -43,11 +48,18 @@ export async function run(env, origin, id, ask) {
     await step(db, id, 'Handed it to ' + bot.name + '.', { bot: bot.name });
     const tier = tierFor(await infraCents(origin));
     await step(db, id, 'Thinking on the ' + tier.name + ' model tier.', { tier: tier.name });
-    const out = await env.AI.run(tier.model, { messages: [
-      { role: 'system', content: 'You are Verse, a helpful agent. You are acting as the bot "' + bot.name + '" (' + bot.description + '). Do the task fully and concretely. Plain text, under 250 words. Never claim to have sent, paid, posted or deleted anything.' },
-      { role: 'user', content: ask } ], max_tokens: 700 });
-    const text = String((out && (out.response || (out.choices && out.choices[0] && out.choices[0].message && out.choices[0].message.content))) || '').trim();
-    if (text.length < 2) throw new Error('empty');
+    const messages = [
+      { role: 'system', content: 'You are Verse, a helpful agent. You are acting as the bot "' + bot.name + '"' + (bot.description ? ' (' + bot.description + ')' : '') + '. Do the task fully and concretely. Plain text, under 250 words. Never claim to have sent, paid, posted or deleted anything.' },
+      { role: 'user', content: ask } ];
+    // thinking off, like every answer path (functions/api/answer.js): with it on, Gemma 4 can spend all 700 tokens reasoning and the reply comes back empty
+    let text = '', why = '';
+    for (const model of [tier.model, ANSWER_FALLBACK]) {
+      try { text = textOf(await env.AI.run(model, { messages, max_tokens: 700, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' })); } catch (e) { why = reasonOf(e); }
+      if (text.length >= 2) break;
+      if (!why) why = 'empty';
+      if (model !== ANSWER_FALLBACK) await step(db, id, 'The ' + tier.name + ' model did not answer (' + why + '); asking the second free model.');
+    }
+    if (text.length < 2) throw new Error(why || 'empty');
     await step(db, id, 'Checked the result (' + text.split(/\s+/).length + ' words).');
     if (needsYes(ask)) {
       await step(db, id, 'This one sends, pays or deletes something, so it waits for your yes.', { status: 'needs_yes', result: text.slice(0, 4000) });
@@ -55,6 +67,7 @@ export async function run(env, origin, id, ask) {
       await step(db, id, 'Done. It is on your Made shelf.', { status: 'done', result: text.slice(0, 4000), done: Date.now() });
     }
   } catch (e) {
+    try { await recordShortfall(env, 'agent', reasonOf(e)); } catch (_) {}
     try { await step(db, id, 'Got stuck: the model did not answer. Try again in a minute.', { status: 'failed', done: Date.now() }); } catch (_) {}
   }
 }
