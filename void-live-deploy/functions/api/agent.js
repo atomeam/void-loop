@@ -5,7 +5,8 @@
 // GET ?thread=<id>                        -> the thread, live steps, the Made shelf, the daily brief and the model tier.
 // WHAT A STRANGER COULD MAKE THIS DO: 20 tasks a day per visitor (lib/daily-cap.js), 400 a day in all. A task may ask the free model,
 // its fallback, and one better bot when the first answer does not address the ask. It can read only its own thread.
-import { tierFor, needsYes, brief, TIERS, attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-core.js';
+import { tierFor, needsYes, brief, TIERS } from '../../lib/agent-core.js';
+import { attemptsFor, answerBrief, addressesAsk } from '../../lib/agent-answer.js';
 import { cap } from '../../lib/daily-cap.js';
 import { ANSWER_FALLBACK } from '../../lib/models.js';
 import { reasonOf, recordShortfall } from '../../lib/shortfall.js';
