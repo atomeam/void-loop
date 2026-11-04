@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<style>
+:root { --bg:#0a0a12; --fg:#e8e8f0; --accent:#7af; --ent:0.5; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,sans-serif; overflow:hidden; }
+#stage { position:relative; width:100vw; height:100vh; }
+#grid { display:grid; gap:4px; position:absolute; inset:40px; }
+.card { background:#1a1a28; border:1px solid #333; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; text-align:center; padding:4px; transition:transform .2s, background .3s, filter .3s; cursor:pointer; user-select:none; }
+.card:hover { filter:brightness(1.2); }
+#hud { position:absolute; top:8px; left:8px; right:8px; display:flex; gap:8px; flex-wrap:wrap; z-index:10; }
+button, input { background:#222; color:var(--fg); border:1px solid #444; padding:4px 8px; border-radius:4px; }
+#status { position:absolute; bottom:8px; left:8px; font-size:12px; opacity:.8; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-wfc-mlp-living-grid-mind · Verse lab</title>
+<meta name="description" content="A WebGPU compute shader (Canvas2D iterative fallback) performs iterative Wave Function Collapse-style constraint propagation on a discrete tile grid.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-wfc-mlp-living-grid-mind · Verse lab">
+<meta property="og:description" content="A WebGPU compute shader (Canvas2D iterative fallback) performs iterative Wave Function Collapse-style constraint propagation on a discrete tile grid.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f498-webgpu-wfc-mlp-living-grid-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f498-webgpu-wfc-mlp-living-grid-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<div id="stage">
+  <div id="hud">
+    <button id="seal">Seal (S)</button>
+    <button id="restore">Restore (R)</button>
+    <button id="reset">Reset</button>
+    <span id="info">F498 WFC-MLP Living Grid</span>
+  </div>
+  <div id="grid"></div>
+  <div id="status">Move pointer to bias · click cells to force collapse · S seal · R restore</div>
+</div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-wfc-mlp-living-grid-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>

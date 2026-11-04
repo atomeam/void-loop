@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<style>
+body { margin:0; background:#0a0a12; color:#c0c0e0; font-family:system-ui; overflow:hidden; }
+canvas { display:block; position:absolute; inset:0; }
+#ui { position:absolute; top:8px; left:8px; z-index:10; background:rgba(0,0,0,.5); padding:8px; border-radius:6px; }
+button { margin:2px; }
+.portal { position:absolute; width:80px; height:60px; border-radius:8px; background:rgba(40,40,80,.7); border:1px solid #88f; display:flex; align-items:center; justify-content:center; font-size:12px; pointer-events:none; transition:all .3s; }
+</style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="verse-handoff" content="in: none; out: none">
+<title>webgpu-amplitude-collapse-portal-mind · Verse lab</title>
+<meta name="description" content="A discrete 2D complex-amplitude field (wavefunction-like) is evolved on a Canvas2D grid (WebGPU compute path is the natural next building block.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="webgpu-amplitude-collapse-portal-mind · Verse lab">
+<meta property="og:description" content="A discrete 2D complex-amplitude field (wavefunction-like) is evolved on a Canvas2D grid (WebGPU compute path is the natural next building block.">
+<meta property="og:url" content="https://a-to-mind.com/lab/f500-webgpu-amplitude-collapse-portal-mind/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/lab/f500-webgpu-amplitude-collapse-portal-mind/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/lab/lab.css">
+<script src="/visit.js" defer></script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <button id="nuke">Nucleate</button>
+  <button id="seal">Seal</button>
+  <button id="restore">Restore</button>
+  <button id="clear">Clear</button>
+  <span id="status">ready</span>
+</div>
+<div id="portals"></div>
+<script src="app.js"></script>
+<h1 class="vl-sr">webgpu-amplitude-collapse-portal-mind</h1>
+<footer class="vl-bar"><a href="/lab/">&larr; Lab</a> <a href="/">Ask Verse anything</a></footer>
+</body>
+</html>
