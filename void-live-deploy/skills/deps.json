@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1111,
+ "counted": 1117,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1137,13 +1137,6 @@
    "tests": 2
   },
   {
-   "file": "lib/podcasts.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
    "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
@@ -1183,7 +1176,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/arcade-ghost.js",
@@ -1191,6 +1184,13 @@
    "direct": 2,
    "dependants": 2,
    "tests": 1
+  },
+  {
+   "file": "lib/convert-math.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 2
   },
   {
    "file": "lib/fx.js",
@@ -1662,6 +1662,13 @@
    "tests": 3
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3,
+   "tests": 1
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1771,7 +1778,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 2
+   "tests": 1
   },
   {
    "file": "lib/video-gen.js",
@@ -1891,13 +1898,6 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
-  },
-  {
-   "file": "lib/convert-math.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
   },
   {
    "file": "lib/council-law.js",
@@ -2033,13 +2033,6 @@
    "tests": 1
   },
   {
-   "file": "lib/hear.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 2
-  },
-  {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
@@ -2094,6 +2087,13 @@
    "direct": 1,
    "dependants": 1,
    "tests": 1
+  },
+  {
+   "file": "lib/pointing-arrow.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 0
   },
   {
    "file": "lib/rap-stage.js",
@@ -2275,7 +2275,14 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 2
+   "tests": 1
+  },
+  {
+   "file": "lib/visible.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/web4.js",
@@ -2303,7 +2310,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 86,
-   "tests": 31
+   "tests": 32
   },
   {
    "file": "lib/models.js",
@@ -2380,7 +2387,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 30,
-   "tests": 7
+   "tests": 8
   },
   {
    "file": "lib/router.js",
@@ -2565,6 +2572,13 @@
    "tests": 3
   },
   {
+   "file": "lib/mcp-run.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7,
+   "tests": 1
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -2573,13 +2587,6 @@
   },
   {
    "file": "lib/drive.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6,
-   "tests": 1
-  },
-  {
-   "file": "lib/mcp-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 6,
@@ -2936,6 +2943,13 @@
    "tests": 1
   },
   {
+   "file": "lib/status.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/team-mcp.js",
    "skills": 0,
    "direct": 0,
@@ -3112,13 +3126,6 @@
   },
   {
    "file": "lib/epub-edit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0,
-   "tests": 1
-  },
-  {
-   "file": "lib/exam.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -3438,6 +3445,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 12
+  },
+  {
+   "file": "lib/skill-compose.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 2
   },
   {
    "file": "lib/speak.js",
@@ -4275,6 +4289,12 @@
    "imports": [
     "functions/api/answer.js",
     "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/status.js": {
+   "imports": [
+    "lib/status.js"
    ],
    "importedBy": []
   },
@@ -6596,6 +6616,9 @@
    "imports": [],
    "importedBy": [
     "skills/convert.js"
+   ],
+   "reachedBy": [
+    "skills/drive-share.js"
    ]
   },
   "lib/converter-ask.js": {
@@ -7041,10 +7064,6 @@
    "importedBy": [
     "skills/event-countdown.js"
    ]
-  },
-  "lib/exam.js": {
-   "imports": [],
-   "importedBy": []
   },
   "lib/fakeuser.js": {
    "imports": [],
@@ -7910,12 +7929,6 @@
     "skills/health-habits.js"
    ]
   },
-  "lib/hear.js": {
-   "imports": [],
-   "importedBy": [
-    "skills/hear.js"
-   ]
-  },
   "lib/heat-dose.js": {
    "imports": [],
    "importedBy": [
@@ -8719,7 +8732,8 @@
   "lib/mcp-run.js": {
    "imports": [],
    "importedBy": [
-    "lib/mcp.js"
+    "lib/mcp.js",
+    "lib/skill-compose.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -8737,10 +8751,10 @@
     "skills/distance.js",
     "skills/eclipse.js",
     "skills/joke.js",
-    "skills/quote.js",
     "skills/swaps.js",
     "skills/translate.js",
-    "skills/words.js"
+    "skills/words.js",
+    "skills/worldtime.js"
    ],
    "importedBy": [
     "lib/mcp.js"
@@ -10180,11 +10194,16 @@
    "imports": [],
    "importedBy": [
     "functions/api/podcasts.js",
-    "skills/podcast-search.js",
-    "skills/podcast.js"
+    "skills/podcast-search.js"
    ],
    "reachedBy": [
     "lib/podcasts-card.js"
+   ]
+  },
+  "lib/pointing-arrow.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pointing-arrow.js"
    ]
   },
   "lib/practice.js": {
@@ -11554,6 +11573,12 @@
     "functions/api/sing.js"
    ]
   },
+  "lib/skill-compose.js": {
+   "imports": [
+    "lib/mcp-run.js"
+   ],
+   "importedBy": []
+  },
   "lib/skill-confidence.js": {
    "imports": [
     "lib/card-art.js",
@@ -12082,6 +12107,12 @@
     "skills/void-breaker.js",
     "skills/walker.js",
     "skills/whisper-network.js"
+   ]
+  },
+  "lib/status.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/status.js"
    ]
   },
   "lib/stigmergy-law.js": {
@@ -13035,6 +13066,12 @@
     "skills/video.js"
    ]
   },
+  "lib/visible.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/wants.js"
+   ]
+  },
   "lib/visits.js": {
    "imports": [],
    "importedBy": [
@@ -13738,6 +13775,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/business-clarify.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/busy-blocks.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -13754,7 +13795,8 @@
   "skills/calc.js": {
    "imports": [],
    "importedBy": [
-    "lib/calculator.js"
+    "lib/calculator.js",
+    "skills/drive-share.js"
    ]
   },
   "skills/calendar-file.js": {
@@ -13994,7 +14036,9 @@
    "imports": [
     "lib/convert-math.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/drive-share.js"
+   ]
   },
   "skills/converter.js": {
    "imports": [
@@ -14246,6 +14290,13 @@
    "imports": [
     "skills/scene3d.js",
     "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/drive-share.js": {
+   "imports": [
+    "skills/calc.js",
+    "skills/convert.js"
    ],
    "importedBy": []
   },
@@ -14962,12 +15013,6 @@
    ],
    "importedBy": []
   },
-  "skills/hear.js": {
-   "imports": [
-    "lib/hear.js"
-   ],
-   "importedBy": []
-  },
   "skills/heart.js": {
    "imports": [
     "skills/nutrition.js"
@@ -15041,6 +15086,10 @@
     "lib/stage-pack.js",
     "lib/stage-words.js"
    ],
+   "importedBy": []
+  },
+  "skills/idea-clarify.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/image.js": {
@@ -16125,8 +16174,12 @@
    ]
   },
   "skills/podcast.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/pointing-arrow.js": {
    "imports": [
-    "lib/podcasts.js"
+    "lib/pointing-arrow.js"
    ],
    "importedBy": []
   },
@@ -16285,16 +16338,7 @@
   "skills/quote.js": {
    "imports": [],
    "importedBy": [
-    "lib/mcp-skills.js",
     "skills/proverb.js"
-   ],
-   "reachedBy": [
-    "functions/api/mcp.js",
-    "functions/api/mcp/server-card.js",
-    "functions/team/mcp.js",
-    "functions/tools.json.js",
-    "lib/mcp.js",
-    "lib/team-mcp.js"
    ]
   },
   "skills/rack.js": {
@@ -17528,7 +17572,9 @@
    ]
   },
   "skills/wants.js": {
-   "imports": [],
+   "imports": [
+    "lib/visible.js"
+   ],
    "importedBy": []
   },
   "skills/watch.js": {
@@ -17601,11 +17647,18 @@
   "skills/worldtime.js": {
    "imports": [],
    "importedBy": [
+    "lib/mcp-skills.js",
     "lib/zones.js",
     "skills/time.js"
    ],
    "reachedBy": [
-    "lib/sun-day.js"
+    "functions/api/mcp.js",
+    "functions/api/mcp/server-card.js",
+    "functions/team/mcp.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/sun-day.js",
+    "lib/team-mcp.js"
    ]
   },
   "skills/writing-aids.js": {
