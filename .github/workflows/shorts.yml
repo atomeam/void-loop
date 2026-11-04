@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write # the loop log domains/shorts.loop.json, pushed on a helper/* branch (automerges)
 
 concurrency:
   group: shorts
@@ -32,11 +32,17 @@ jobs:
           npx playwright-core install --with-deps chromium
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core >/dev/null
           echo "CHROME=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
-      - name: Film, render and gate
-        id: render
-        # a failed gate turns this step red but the passes still go out below
+      - name: Judge yesterday's trials, plan today's (tools/shorts-loop.mjs)
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/shorts-loop.mjs judge | tee -a "$GITHUB_STEP_SUMMARY"; node tools/shorts-loop.mjs plan > trial.json; cat trial.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Film, render and gate the champion and the challenger
         continue-on-error: true
-        run: set -o pipefail; node tools/shorts.mjs render --no-voice --out media/shorts | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          for side in champion challenger; do
+            node -e "const t=require('./trial.json')[process.argv[1]];import('./tools/shorts.mjs').then(async m=>{const s=m.SCENES.find(x=>x.id===t.scene);const r=await m.render(s,'media/shorts',{voice:false,variant:t,filmId:t.film});console.log((r.gate.pass?'GATE PASS ':'GATE FAIL ')+t.film)})" $side | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+          for m in media/shorts/*.json; do node tools/shorts-loop.mjs record "$m"; done
       - name: Put each passed Short on /films/
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -44,7 +50,7 @@ jobs:
           set -o pipefail
           for m in media/shorts/*.json; do
             [ "$(jq -r '.gate.pass' "$m")" = "true" ] || { echo "not posted (gate failed): $m"; continue; }
-            id="$(date -u +%Y%m%d)-short-$(jq -r .id "$m")"
+            id="$(jq -r .filmId "$m")"
             node tools/film-post.mjs "${m%.json}.mp4" "$m" --id "$id" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           done
       - name: Upload passed Shorts to Verse's YouTube channel
@@ -62,3 +68,10 @@ jobs:
           name: verse-shorts
           path: media/shorts/
           retention-days: 14
+      - name: Keep the loop log
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "Verse"; git config user.email "verse@a-to-mind.com"
+          b="helper/shorts-loop-$(date -u +%Y%m%d)"; git checkout -b "$b"; git add domains/shorts.loop.json
+          git commit -m "Shorts loop: today's trial and verdicts" && git push origin "$b" || echo "no change"
