@@ -21,6 +21,8 @@ import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
 import { parsePing, readEarnings, recordMilestones } from '../../lib/earnings.js';
 import { saleToJob } from '../../lib/sale-jobs.js';
+import { fire } from '../../lib/automations-run.js';
+import { gumroadEvent } from '../../lib/automations.js';
 
 const DOWN = ['refund', 'dispute', 'cancellation', 'subscription_ended'];
 const UP_AGAIN = ['subscription_restarted', 'dispute_won'];
@@ -46,7 +48,7 @@ async function verifySale(env, p, unlock) {
   return { ok: true, subscription_id: s.subscription_id || p.subscription_id || null };
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   const key = new URL(request.url).searchParams.get('k') || '';
   if (!env.GUMROAD_PING_KEY) return reply(503, { ok: false, error: 'ping not configured' });
   if (!(await sameSecret(key, env.GUMROAD_PING_KEY))) return reply(403, { ok: false, error: 'wrong key' });
@@ -96,6 +98,10 @@ export async function onRequestPost({ request, env }) {
     // the running total (all products, net of refunds); a milestone is recorded the first time it's crossed, never again
     let crossed = [];
     try { crossed = await recordMilestones(env, await readEarnings(env)); } catch (_) {}
+    // the owner's automations with when.on 'gumroad' (lib/automations.js): once per new record, after the answer when the platform can;
+    // what sold and for how much, never who bought it (gumroadEvent). A broken rule never fails the ping (fire never throws).
+    const fired = fire(env, 'gumroad', gumroadEvent(p, { resource, effect, at: now }));
+    if (typeof waitUntil === 'function') { try { waitUntil(fired); } catch (_) {} } else await fired;
     return reply(200, { ok: true, effect, ...(service ? { service } : {}), ...(crossed.length ? { milestones: crossed } : {}) });
   } catch (_) { return reply(503, { ok: false, error: 'not recorded, Gumroad will retry' }); }
 }
