@@ -295,20 +295,20 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T05:20:17Z",
+   "subject": "real-pages: specs for /salvage/ and /credits/"
+  },
+  {
+   "at": "2026-11-04T05:10:02Z",
+   "subject": "/bots/: real-pages spec and share card (#2149)"
+  },
+  {
    "at": "2026-11-04T05:08:39Z",
    "subject": "Verse as an A2A agent: /.well-known/agent-card.json + /api/a2a (#2150)"
   },
   {
-   "at": "2026-11-04T05:03:44Z",
-   "subject": "/free/: search, canonical/og, handoff meta, real-pages spec; guard limit; linked from /treasury/"
-  },
-  {
-   "at": "2026-11-04T05:03:44Z",
-   "subject": "Free router: openapi + MAP"
-  },
-  {
-   "at": "2026-11-04T05:03:44Z",
-   "subject": "Free-resource router: one registry of free tiers/credits/grants, failover with per-provider daily shares, /free/ with live status"
+   "at": "2026-11-04T05:07:22Z",
+   "subject": "autosalvage: 'already live' needs the piece's own path in live code; stubs and copies are history"
   },
   {
    "at": "2026-11-04T05:03:37Z",
@@ -317,6 +317,10 @@
   {
    "at": "2026-11-04T04:59:36Z",
    "subject": "Bot families: 2,748 live bots, each passing independent checks; grown bots need a judge (#2146)"
+  },
+  {
+   "at": "2026-11-04T04:58:47Z",
+   "subject": "autosalvage: revive as Verse's unifier (scan, evaluate, /salvage/, /credits/, outside work with license checks)"
   },
   {
    "at": "2026-11-04T04:57:33Z",
@@ -369,10 +373,6 @@
   {
    "at": "2026-11-04T04:27:20Z",
    "subject": "Turn off the old record and clips schedules (#2136)"
-  },
-  {
-   "at": "2026-11-04T04:26:40Z",
-   "subject": "Shorts: a quiet Verse-made music bed (-22 LUFS, ducked under a voice); the gate allows a bed at -25..-19 (#2131)"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 41,
-  "week": 557
+  "day": 40,
+  "week": 556
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

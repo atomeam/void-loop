@@ -78,6 +78,13 @@ export const SPECS = {
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
   },
+  '/under-the-hood/': async (t) => { // live numbers only: each section fills from the reader's own browser or a served file
+    await t.waitText('h1', /Under the hood/, 8000);
+    const v = await t.waitText('#vitals', /time to first byte/, 8000); t.ok(/\d+ ms|\d\.\d+ s/.test(v), 'the reader\'s own time to first byte is measured: ' + v.slice(0, 60));
+    const h = await t.waitText('#hdrs', /strict-transport-security/, 10000); t.ok(/content-security-policy/.test(h) && /sent|strict/.test(h), 'the home page\'s headers are read live');
+    const c = await t.waitText('#counts', /skill modules/, 10000); t.ok(/\d{3}/.test(c), 'the skill count is read from /skills/index.json: ' + c.slice(0, 60));
+    const f = await t.waitText('#files', /llms\.txt/, 10000); t.ok(/\/llms\.txt\s*200/.test(f) && /\/agents\.txt\s*200/.test(f), 'every machine file answers 200: ' + f.slice(0, 80));
+  },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
     await t.waitText('h1', /What Verse can actually do/, 8000);
     await t.waitText('#fixed', /No regression|Regressed|did not load/, 8000);
@@ -115,6 +122,18 @@ export const SPECS = {
     const n = await t.p.locator('#rows tr').count(); t.ok(n > 1, n + ' sites listed');
     await t.p.selectOption('#show', 'surpassed'); await t.p.waitForTimeout(200);
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
+    await t.links();
+  },
+  '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
+    const n = await t.waitText('#n', /scanned/, 10000); t.ok(/\d+\s*scanned/.test(n), 'it counts what was scanned: ' + n.slice(0, 80));
+    t.ok((await t.p.locator('#top tr').count()) > 0, 'the next pieces by value are listed');
+    const all = await t.p.locator('#all tr').count(); t.ok(all > 10, all + ' pieces listed');
+    await t.links();
+  },
+  '/credits/': async (t) => { // the outside work Verse builds on, from /salvage.json: each with its author, license and link
+    await t.p.waitForFunction(() => document.querySelectorAll('#c tr').length > 1, null, { timeout: 10000 }).catch(() => {});
+    const rows = await t.p.locator('#c tr').allInnerTexts(); t.ok(rows.length > 1, (rows.length - 1) + ' credits listed');
+    t.ok(rows.slice(1).every((r) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(r)), 'every credit names its license');
     await t.links();
   },
   '/films/': async (t) => {
