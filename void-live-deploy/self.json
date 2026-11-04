@@ -295,44 +295,24 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T02:51:57Z",
-   "subject": "AI check folds into /photos/exif/ as a mode (owner: one page per category); /ai-authenticity-checker/ redirects there; watch-build folds…"
-  },
-  {
-   "at": "2026-11-04T02:50:27Z",
-   "subject": "Lab: 361 experiments live at /lab/, 17 waiting for a fix (#2074)"
-  },
-  {
-   "at": "2026-11-04T02:47:59Z",
-   "subject": "Revert 01c8c7c7fcdcc77bd2f405c38c3b91a1b8402fe0: an outcome-exam domain fell by 5 or more (exam.yml)"
-  },
-  {
-   "at": "2026-11-04T02:45:27Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
    "at": "2026-11-04T02:43:43Z",
    "subject": "Main green: CSP page rules fit Cloudflare's 100 again (two pages share a directory rule), price-lock reads the free items from the store…"
   },
   {
-   "at": "2026-11-04T02:42:50Z",
-   "subject": "tools index: the AI authenticity checker"
+   "at": "2026-11-04T02:42:15Z",
+   "subject": "Keep main's parity catalog after the refresh."
   },
   {
    "at": "2026-11-04T02:42:10Z",
    "subject": "Score Verse by visitor outcomes, and raise the lowest domains (#2097)"
   },
   {
-   "at": "2026-11-04T02:38:33Z",
-   "subject": "leave deploy-written files to the deploy"
-  },
-  {
-   "at": "2026-11-04T02:38:27Z",
+   "at": "2026-11-04T02:41:54Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-04T02:37:41Z",
-   "subject": "tv builds: watch.py queues one tv: build job an hour (tools/watch-build.mjs), idea lists retired, conductor tv kind + spec, tv-built.json…"
+   "at": "2026-11-04T02:38:40Z",
+   "subject": "List the tools the directory was missing, so the search block matches the table."
   },
   {
    "at": "2026-11-04T02:37:36Z",
@@ -343,24 +323,12 @@
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T02:34:36Z",
-   "subject": "ai-authenticity-checker: seo row, tools list, real-pages spec (AI PNG, edited JPEG, report download, store link)"
-  },
-  {
    "at": "2026-11-04T02:33:26Z",
    "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
   },
   {
-   "at": "2026-11-04T02:33:25Z",
-   "subject": "ai-authenticity-checker page: drop a photo or video, see its provenance, download the report"
-  },
-  {
-   "at": "2026-11-04T02:32:33Z",
-   "subject": "ai-check: read a photo or video's provenance (C2PA, IPTC source type, generator fields, editors, camera)"
-  },
-  {
-   "at": "2026-11-04T02:29:09Z",
-   "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product"
+   "at": "2026-11-04T02:31:49Z",
+   "subject": "Merge main and keep the lab pages off the checks that were already red."
   },
   {
    "at": "2026-11-04T02:28:12Z",
@@ -373,6 +341,38 @@
   {
    "at": "2026-11-04T02:27:31Z",
    "subject": "Make the outcome exam harder, then lift code and word problems (#2105)"
+  },
+  {
+   "at": "2026-11-04T02:27:09Z",
+   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T02:24:13Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T02:17:41Z",
+   "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T02:07:16Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T02:06:17Z",
+   "subject": "Let Verse's review approve and merge itself (#2103)"
+  },
+  {
+   "at": "2026-11-04T02:03:35Z",
+   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T01:55:03Z",
+   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
+  },
+  {
+   "at": "2026-11-04T01:55:00Z",
+   "subject": "/fix/ hub: the combined page's mode bar comes from tools/fix-pages.mjs, so a regenerate keeps it (#2104)"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 28,
-  "week": 544
+  "day": 23,
+  "week": 540
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

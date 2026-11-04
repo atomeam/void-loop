@@ -2558,18 +2558,11 @@
    "tests": 1
   },
   {
-   "file": "lib/watch-build.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 11,
-   "tests": 1
-  },
-  {
    "file": "lib/job-guide.js",
    "skills": 0,
    "direct": 0,
    "dependants": 10,
-   "tests": 3
+   "tests": 2
   },
   {
    "file": "lib/brain-dream.js",
@@ -3529,6 +3522,13 @@
    "direct": 0,
    "dependants": 0,
    "tests": 2
+  },
+  {
+   "file": "lib/watch-build.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/will-schema.js",
@@ -8113,9 +8113,7 @@
    ]
   },
   "lib/job-guide.js": {
-   "imports": [
-    "lib/watch-build.js"
-   ],
+   "imports": [],
    "importedBy": [
     "functions/api/team.js",
     "lib/team.js"
@@ -13271,21 +13269,7 @@
   },
   "lib/watch-build.js": {
    "imports": [],
-   "importedBy": [
-    "lib/job-guide.js"
-   ],
-   "reachedBy": [
-    "functions/api/approval.js",
-    "functions/api/automations.js",
-    "functions/api/automations/tick.js",
-    "functions/api/hook/[id].js",
-    "functions/api/team.js",
-    "functions/api/watch.js",
-    "functions/team/join/[code].js",
-    "functions/team/mcp.js",
-    "lib/automations-run.js",
-    "lib/team.js"
-   ]
+   "importedBy": []
   },
   "lib/watch.js": {
    "imports": [],
