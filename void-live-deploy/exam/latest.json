@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T17:27:05.514Z",
+  "at": "2026-11-04T17:57:38.149Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,17 +32,10 @@
       }
     },
     "podcasts": {
-      "score": 93.7,
+      "score": 94.4,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of hidden brain",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the podcast",
           "failed": [
@@ -115,7 +108,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.1,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -129,10 +122,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 83.3
         }
       ],
       "holdout": {
@@ -393,7 +385,7 @@
       ]
     },
     "timers": {
-      "score": 73.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -421,11 +413,9 @@
         {
           "ask": "temporizador de 3 minutos",
           "failed": [
-            "answered",
-            "skill",
-            "fast"
+            "skill"
           ],
-          "score": 40
+          "score": 80
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -489,10 +479,17 @@
       ]
     },
     "prices": {
-      "score": 83.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "100 usd in eur",
+          "failed": [
+            "rival"
+          ],
+          "score": 80
+        },
         {
           "ask": "price",
           "failed": [
@@ -570,7 +567,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 73.3
+    "domain": "images",
+    "score": 73.9
   }
 }
