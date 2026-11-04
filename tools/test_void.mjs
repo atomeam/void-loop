@@ -5325,13 +5325,11 @@ try {
     await O.ctx.route(/\/api\/v01d-fixes$/, (r) => { approvals.push({ b: JSON.parse(r.request().postData() || '{}'), auth: r.request().headers().authorization }); return r.fulfill(json({ ok: true, pr: 901 })); });
     await O.ask("Verse's fixes", 300); await until(async () => /how to get from/.test(await O.page()), 6000);
     const card = await O.page(), order = await O.p.$$eval('.vpage.on .vfix', (l) => l.map((x) => x.dataset.pr)), buttons = await O.p.$$eval('.vpage.on button[data-approve]', (l) => l.map((b) => b.dataset.approve));
-    await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Verse's review is clean/.test(await O.page()), 4000);
-    const after = await O.page();
     const S = await fresh(); await S.ask("Verse's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
-    check("Verse's fixes: the owner previews the fixes Verse opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
-      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /High-impact change: it changes a structural line/.test(card)
+    check("Verse's fixes: the owner previews the fixes Verse opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; they merge themselves and a person does not approve them; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '[]' && /2 open · they merge themselves when the review is clean/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /merges itself; a person does not approve it/.test(card) && /High-impact change: it changes a structural line/.test(card)
         && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
-        && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
+        && approvals.length === 0
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }

@@ -10,6 +10,7 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
+  pull-requests: write # a finding comments the reason and files a fix job; the check still fails
 jobs:
   critic:
     runs-on: ubuntu-latest
@@ -19,5 +20,16 @@ jobs:
         with: { fetch-depth: 0, persist-credentials: false }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - shell: bash
-        run: node tools/loop-critic.mjs "origin/${{ github.base_ref }}" | tee -a "$GITHUB_STEP_SUMMARY"; exit "${PIPESTATUS[0]}"
+      - id: critic
+        shell: bash
+        run: node tools/loop-critic.mjs "origin/${{ github.base_ref }}" | tee critic.txt | tee -a "$GITHUB_STEP_SUMMARY"; exit "${PIPESTATUS[0]}"
+      - name: A finding files a fix job
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          why=$(tr '\n' ' ' < critic.txt | head -c 180)
+          node tools/review-fix-job.mjs --pr "$PR" --action fix --why "Loop critic: ${why:-a finding on the lines visitors see}"

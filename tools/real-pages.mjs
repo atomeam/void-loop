@@ -67,8 +67,12 @@ export const SPECS = {
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
   },
-  '/progress/': async (t) => { // the outcome exam's scores (tools/exam.mjs writes /exam/latest.json): one row a domain, a number in each
-    await t.waitText('#when', /Run \d{4}-\d\d-\d\d/, 15000);
+  '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
+    await t.waitText('h1', /Progress/, 8000);
+    await t.waitText('#sum', /No regression|Regressed|did not load/, 8000);
+    t.ok(/time in Tokyo/.test(await t.text('#list')), 'the Tokyo case is on the outcome exam');
+    t.ok(/confirm line/.test(await t.p.locator('main').innerText()), 'money and outside messages stay on the confirm line');
+    await t.waitText('#when', /Run \d{4}-\d\d-\d\d|No exam run/, 15000);
     const rows = await t.p.locator('#rows tr').count();
     t.ok(rows >= 3, 'a score row for each domain: ' + rows);
     t.ok(/\d/.test(await t.text('#rows')), 'the rows carry scores');
@@ -386,6 +390,8 @@ export const SPECS = {
   '/is-it/christmas': async (t) => { t.ok(/\b(YES|NO)\b/i.test(await t.p.locator('body').innerText()), 'it answers yes or no'); },
 };
 for (const r of ['/convert/unit-converter/', '/convert/unit-converter-2/']) SPECS[r] = SPECS['/convert/'];
+SPECS['/emoji-combos/emoji-dictionary/'] = SPECS['/emoji-combos/']; // the family page, copied for the Versus floor
+SPECS['/markets/currency-converter/'] = SPECS['/markets/']; // the family page, copied for the Versus floor
 // /ledger/ reads GitHub's public API from the browser. The test answers that one host with a fixed repo (two issues, one merged pull request), so
 // the counts, the filter, the export and the shared view are exact and a busy runner's 60-an-hour GitHub limit can never decide the result
 const LEDGER_FIX = [

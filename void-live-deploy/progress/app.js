@@ -29,3 +29,20 @@ Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/hist
     return '<h3>' + esc(k) + '</h3><ul class="fails">' + list.map((f) => '<li>' + esc(f.ask) + ' <span class="note">(' + esc((f.failed || []).join(', ')) + ')</span></li>').join('') + '</ul>';
   }).join('') || '<p class="note">Nothing failed the checks that were measured.</p>';
 }).catch(() => { document.getElementById('when').textContent = 'No exam run is published yet.'; });
+fetch('/progress/exam.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
+  const cases = (j && j.cases) || [], failed = cases.filter((c) => !c.ok);
+  const sum = document.getElementById('sum');
+  if (sum) sum.textContent = failed.length ? 'Regressed: ' + failed.map((c) => c.ask).join('; ') : 'No regression. ' + cases.length + ' outcomes hold.';
+  const list = document.getElementById('list');
+  if (!list) return;
+  list.textContent = '';
+  for (const c of cases) {
+    const li = document.createElement('li');
+    const mark = document.createElement('span');
+    mark.className = c.ok ? 'ok' : 'bad';
+    mark.textContent = c.ok ? 'holds' : 'regressed';
+    li.appendChild(mark);
+    li.appendChild(document.createTextNode(' · ' + String(c.ask || '')));
+    list.appendChild(li);
+  }
+}).catch(() => { const sum = document.getElementById('sum'); if (sum) sum.textContent = 'The exam did not load.'; });
