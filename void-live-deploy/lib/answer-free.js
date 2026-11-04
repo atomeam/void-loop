@@ -16,6 +16,8 @@ import { BOTS, BOT, probe } from '../bots/kit.js';
 import { families, check } from '../bots/families.js';
 import { runJob } from './free-router.js';
 
+// research asks, in order: OpenAlex on Atom's free key, OpenAlex keyless (a tiny daily budget), then Crossref (keyless, generous)
+export const RESEARCH = ['openalex-key', 'openalex', 'crossref'];
 const NUM = '(-?\\d[\\d,]*(?:\\.\\d+)?)';
 const num = (s) => parseFloat(String(s).replace(/,/g, ''));
 // spoken unit names to bots/families.js unit keys (one dimension each; ambiguous words like "calories" or "tons" are left to the model)
@@ -67,7 +69,7 @@ export function planOf(ask) {
   if ((m = a.match(/^base64(?: encode)? ["“]?(.{1,100}?)["”]?$/i)) && !/^decode\b/i.test(m[1])) return { kind: 'bot', bot: 'base64-bot', input: m[1], say: 'Base64 of "' + m[1] + '": ' };
   if ((m = t.match(/^(?:convert )?(#[0-9a-f]{6}|#[0-9a-f]{3}) (?:to|in|as) rgb$/))) return { kind: 'bot', bot: 'hex-color', input: m[1], say: m[1] + ' = ' };
   // research: a scholarly ask goes to OpenAlex, the open catalog of papers (keyless, resources/free.json 'openalex')
-  if ((m = a.match(/^(?:find |list |search for |search )?(?:some |the )?(?:recent |latest |top |key )?(?:research |scientific |academic |scholarly )?(?:papers|studies|research|articles|journal articles|publications|literature) (?:on|about|regarding|into|for) (.{3,100})$/i))) return { kind: 'api', api: 'search', ids: ['openalex'], query: m[1].trim(), why: 'research ask' };
+  if ((m = a.match(/^(?:find |list |search for |search )?(?:some |the )?(?:recent |latest |top |key )?(?:research |scientific |academic |scholarly )?(?:papers|studies|research|articles|journal articles|publications|literature) (?:on|about|regarding|into|for) (.{3,100})$/i))) return { kind: 'api', api: 'search', ids: RESEARCH, query: m[1].trim(), why: 'research ask' };
   return { kind: 'llm', why: 'default' };
 }
 
@@ -92,23 +94,34 @@ export function runBot(plan) {
 
 // OpenAlex (https://docs.openalex.org): /works?search= with only the fields the card shows; an error status the router counts as quota or error
 const UA = { 'user-agent': 'Verse (a-to-mind.com; https://a-to-mind.com/free/)', accept: 'application/json' };
-export const ADAPTERS = {
-  openalex: async (job, r, env, fetcher = fetch) => {
-    const u = 'https://api.openalex.org/works?per-page=5&select=id,display_name,publication_year,doi,cited_by_count,authorships&search=' + encodeURIComponent(job.query);
-    const res = await fetcher(u, { headers: UA, signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined });
-    if (!res.ok) { const e = new Error('openalex ' + res.status); e.status = res.status; throw e; }
-    const works = ((await res.json()).results || []).filter((w) => w && w.display_name).slice(0, 5);
-    if (!works.length) throw new Error('openalex: nothing found');
-    return works;
-  },
+const openalex = async (job, r, env) => {
+  const keyName = String((r && r.access) || '').split(':')[1], key = keyName && env ? env[keyName] : '';
+  const u = 'https://api.openalex.org/works?per-page=5&select=id,display_name,publication_year,doi,cited_by_count,authorships&search=' + encodeURIComponent(job.query) + (key ? '&api_key=' + encodeURIComponent(key) : '');
+  const res = await fetch(u, { headers: UA, signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined });
+  if (!res.ok) { const e = new Error('openalex ' + res.status); e.status = res.status; throw e; }
+  const works = ((await res.json()).results || []).filter((w) => w && w.display_name).slice(0, 5);
+  if (!works.length) throw new Error('openalex: nothing found');
+  return works;
 };
-export function openalexAnswer(query, works) {
+// Crossref (https://api.crossref.org): /works?query= mapped to the same shape OpenAlex gives, so one answer writer serves both
+const crossref = async (job) => {
+  const u = 'https://api.crossref.org/works?rows=5&select=DOI,title,issued,author,is-referenced-by-count&query=' + encodeURIComponent(job.query);
+  const res = await fetch(u, { headers: UA, signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+  if (!res.ok) { const e = new Error('crossref ' + res.status); e.status = res.status; throw e; }
+  const items = (((await res.json()).message || {}).items || []).filter((w) => w && w.title && w.title[0] && w.DOI).slice(0, 5);
+  if (!items.length) throw new Error('crossref: nothing found');
+  return items.map((w) => ({ id: 'https://doi.org/' + w.DOI, doi: 'https://doi.org/' + w.DOI, display_name: w.title[0], publication_year: w.issued && w.issued['date-parts'] && w.issued['date-parts'][0] && w.issued['date-parts'][0][0] || null,
+    cited_by_count: w['is-referenced-by-count'] || 0, authorships: (w.author || []).map((a) => ({ author: { display_name: [a.given, a.family].filter(Boolean).join(' ') || a.name || '' } })) }));
+};
+export const ADAPTERS = { 'openalex-key': openalex, openalex, crossref };
+const CATALOG = { 'openalex-key': 'OpenAlex (the open catalog of scholarly works)', openalex: 'OpenAlex (the open catalog of scholarly works)', crossref: 'Crossref (the open registry of scholarly DOIs)' };
+export function openalexAnswer(query, works, from = 'openalex') {
   const lines = works.map((w, i) => {
     const au = (w.authorships || []).map((x) => x && x.author && x.author.display_name).filter(Boolean);
     return (i + 1) + '. ' + String(w.display_name).replace(/<[^>]+>/g, '') + (w.publication_year ? ' (' + w.publication_year + ')' : '') + (au.length ? ', ' + au[0] + (au.length > 1 ? ' et al.' : '') : '') + (w.cited_by_count ? ', cited ' + w.cited_by_count + ' times' : '') + ' [' + (i + 1) + ']';
   });
   const sources = works.map((w) => ({ title: String(w.display_name).replace(/<[^>]+>/g, '').slice(0, 200), url: /^https:\/\/doi\.org\//.test(String(w.doi || '')) ? w.doi : String(w.id || '').replace(/^https:\/\/openalex\.org\//, 'https://openalex.org/') }));
-  return { answer: 'Papers on ' + query + ', from OpenAlex (the open catalog of scholarly works):\n' + lines.join('\n'), sources };
+  return { answer: 'Papers on ' + query + ', from ' + (CATALOG[from] || CATALOG.openalex) + ':\n' + lines.join('\n'), sources };
 }
 
 /** load resources/free.json the way functions/api/free.js does (the deploy's own asset); null when it can't be read */
@@ -126,7 +139,7 @@ export async function routeFree(ask, { env = {}, registry = null, adapters = ADA
   }
   if (plan.kind === 'api' && registry) {
     const out = await runJob(only(registry, plan.ids), plan.api, { query: plan.query }, { env, adapters, now });
-    if (out.ok && out.id === 'openalex') { const o = openalexAnswer(plan.query, out.result); return { ...o, source: 'free:openalex', route: 'api', tried: out.tried, at: new Date(now).toISOString() }; }
+    if (out.ok && ADAPTERS[out.id]) { const o = openalexAnswer(plan.query, out.result, out.id); return { ...o, source: 'free:' + out.id, route: 'api', tried: out.tried, at: new Date(now).toISOString() }; }
     return null; // the API was out, failed or found nothing: the model answers, as for any other ask
   }
   return null;
@@ -141,10 +154,10 @@ export const LLM_ENDPOINTS = {
   'mistral-free': { url: 'https://api.mistral.ai/v1/chat/completions', key: 'MISTRAL_API_KEY', model: 'mistral-small-latest' },
   'github-models': { url: 'https://models.github.ai/inference/chat/completions', key: 'GITHUB_MODELS_TOKEN', model: 'openai/gpt-4.1-mini' },
 };
-export function llmAdapters(fetcher = fetch) {
+export function llmAdapters() {
   const out = {};
   for (const [id, ep] of Object.entries(LLM_ENDPOINTS)) out[id] = async (job, r, env) => {
-    const res = await fetcher(ep.url, { method: 'POST', headers: { authorization: 'Bearer ' + env[ep.key], 'content-type': 'application/json' }, body: JSON.stringify({ model: ep.model, messages: job.messages, max_tokens: 1500 }), signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined });
+    const res = await fetch(ep.url, { method: 'POST', headers: { authorization: 'Bearer ' + env[ep.key], 'content-type': 'application/json' }, body: JSON.stringify({ model: ep.model, messages: job.messages, max_tokens: 1500 }), signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined });
     if (!res.ok) { const e = new Error(id + ' ' + res.status); e.status = res.status; throw e; }
     const j = await res.json(); const text = String((j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '').trim();
     if (!text) throw new Error(id + ': empty');
