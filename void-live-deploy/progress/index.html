@@ -44,6 +44,9 @@
   </table>
   <h2>What failed</h2>
   <div id="fails"></div>
+  <h2>Fixed asks</h2>
+  <p id="fixed" class="note">Reading the fixed asks.</p>
+  <ul id="fixed-list" class="fails"></ul>
   <nav id="related" aria-label="Related pages"><!-- related --><span class="tk-label">Use with</span> <a href="/brain/">Verse Brain</a> <a href="/autopilot/">Autopilot</a> <a href="/news/">News</a> <a href="/tools/">All tools</a><!-- /related --></nav>
 </main>
 <script>
@@ -75,7 +78,12 @@ Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/hist
     if (!list.length) return '';
     return '<h3>' + esc(k) + '</h3><ul class="fails">' + list.map((f) => '<li>' + esc(f.ask) + ' <span class="note">(' + esc((f.failed || []).join(', ')) + ')</span></li>').join('') + '</ul>';
   }).join('') || '<p class="note">Nothing failed the checks that were measured.</p>';
-}).catch(() => { document.getElementById('when').textContent = 'No exam run is published yet.'; });
+}).catch(() => { document.getElementById('when').textContent = 'No domain exam is published yet.'; });
+fetch('/progress/exam.json', { cache: 'no-cache' }).then((r) => r.json()).then((j) => {
+  const cases = (j && j.cases) || [], failed = cases.filter((c) => !c.ok);
+  document.getElementById('fixed').textContent = failed.length ? 'Regressed: ' + failed.map((c) => c.ask).join('; ') : 'No regression. ' + cases.length + ' fixed asks hold. A pull request that makes one fail is not merged.';
+  document.getElementById('fixed-list').innerHTML = cases.map((c) => '<li><span class="' + (c.ok ? 'hi' : 'low') + '">' + (c.ok ? 'holds' : 'regressed') + '</span> · ' + esc(c.ask || '') + '</li>').join('');
+}).catch(() => { document.getElementById('fixed').textContent = 'The fixed asks did not load.'; });
 </script>
 </body>
 </html>

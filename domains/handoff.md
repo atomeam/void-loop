@@ -15,7 +15,6 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Cursor cloud agent · cursor/harder-exam-4178 · a harder outcome exam (scale 2): rival answers, ambiguous and follow-up asks, and emoji, translation, units, maps, timers, images, prices, definitions, word problems and code. Rebaseline, then the lowest domain. · 2026-11-04 01:45 UTC
 - Cursor cloud agent · cursor/clean-landings-362e · GitHub auto-merge actually arms, the merge is tested against main, and generated files land as one file per entry so parallel ships stop colliding · 2026-11-04 00:40 UTC
 - Cursor cloud agent · helper/suite-reds-15b2 · the red browser checks that were already failing before the throttle: shakshuka asked again, riddle and rps routing, the book pages for riddle/rps/delivery-pack/compliment, the keyless bookshelf line, the will guard's note, and a repeated will plant in the error garden · 2026-11-03 23:55 UTC
 - Cursor cloud agent · helper/workflow-yaml-throttle-15b2 · verse-watch.yml YAML so the workflow parses, and workflow throttles (suite only on main, conductor record every 3h, will once a day) · 2026-11-03 23:05 UTC
@@ -75,6 +74,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- Cursor cloud agent · cursor/harder-exam-4178 · scale 2 of the outcome exam: rival answers, ambiguous, follow-up, non-English, narrow and slow asks, plus emoji, translation, units, maps, timers, images, prices, definitions, word problems and code. Baseline lowest was code at 57.5; code and word problems then reached 100, and images is next at 73.9. The progress page keeps the fixed asks and adds the domain scores. · 2026-11-04
 - Cursor cloud agent · cursor/outcome-exam-4178 · directions 67.7 to 100, calculator 72.5 to 100, news holdout 85.8 to 100, and no other domain fell. A directions ask names the kilometres, a landmark Open-Meteo misses is found on Wikipedia, VAT is in the routing order, and business and science news open that section. https://github.com/atomeam/void-loop/pull/2097 · 2026-11-04
 - Cursor cloud agent · cursor/outcome-exam-4178 · outcome exam at /progress/: live baseline podcasts 60.4, songs 69.6, videos 100; after the change podcasts 99.1 and songs 100. A named show's newest RSS episode plays, and "play X by Y" plays the iTunes preview. The will and conductor take the lowest domain's failing public asks. Holdout scores sit beside the public ones; the holdout asks are not in the repo. https://github.com/atomeam/void-loop/pull/2097 · 2026-11-04
 - **cursor**: the pointing arrow is a core skill, world clock and word definitions lead the MCP tools at https://a-to-mind.com/api/mcp, the Nov 1 git-diff asks are retired, and the wants card leads with counts and the top 3 (https://github.com/atomeam/void-loop/pull/2090)

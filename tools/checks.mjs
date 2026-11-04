@@ -28,7 +28,8 @@ if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: ma
 // the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
 const changedList = changedMode ? changedFiles() : null;
 // --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
-const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs';
+// a site page is not the runner: under VOID_GATE it does not pull in every check (main still runs them). A workflow and the runner files already stay out.
+const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs' || /^void-live-deploy\/(?:.*\/)?index\.html$/.test(f);
 const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && gateFile(f));
 const narrowToChanged = !!(changedList && !changedList.some(reachesAll));
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
@@ -445,6 +446,8 @@ for (const [name, file] of [
   ['merges', 'merges.test.mjs'],
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],
+  ['review-decide', 'review-decide.test.mjs'],
+  ['outcome-exam', 'outcome-exam.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['baggage-live', 'baggage-live.test.mjs'],
   ['video-gen-live', 'video-gen-live.test.mjs'],

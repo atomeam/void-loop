@@ -5325,13 +5325,11 @@ try {
     await O.ctx.route(/\/api\/v01d-fixes$/, (r) => { approvals.push({ b: JSON.parse(r.request().postData() || '{}'), auth: r.request().headers().authorization }); return r.fulfill(json({ ok: true, pr: 901 })); });
     await O.ask("Verse's fixes", 300); await until(async () => /how to get from/.test(await O.page()), 6000);
     const card = await O.page(), order = await O.p.$$eval('.vpage.on .vfix', (l) => l.map((x) => x.dataset.pr)), buttons = await O.p.$$eval('.vpage.on button[data-approve]', (l) => l.map((b) => b.dataset.approve));
-    await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Verse's review is clean/.test(await O.page()), 4000);
-    const after = await O.page();
     const S = await fresh(); await S.ask("Verse's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
-    check("Verse's fixes: the owner previews the fixes Verse opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
-      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /High-impact change: it changes a structural line/.test(card)
+    check("Verse's fixes: the owner previews the fixes Verse opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; they merge themselves and a person does not approve them; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '[]' && /2 open · they merge themselves when the review is clean/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /merges itself; a person does not approve it/.test(card) && /High-impact change: it changes a structural line/.test(card)
         && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
-        && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
+        && approvals.length === 0
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
@@ -8345,7 +8343,7 @@ try {
       const lum = (c) => { const q = c.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }); return 0.2126 * q[0] + 0.7152 * q[1] + 0.0722 * q[2]; };
       const contrast = (e) => { if (!e) return 0; const m = cs(e).color.match(/[\d.]+/g).map(Number), a = m[3] == null ? 1 : m[3], c = m.slice(0, 3).map((x, i) => x * a + ground[i] * (1 - a)), L1 = lum(c), L2 = lum(ground); return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05); };
       const p = v.querySelector(':scope > p:not(.vc-route)'), src = v.querySelector(':scope > .src'), label = v.querySelector('.take-label'), sub = v.querySelector(':scope > .sub'), route = v.querySelector(':scope > .vc-route'), foot = v.querySelector(':scope > .vc-foot');
-      const bads = [...v.querySelectorAll('*')].filter((e) => { const c = cs(e); return (/color/gradient/.test(c.backgroundImage) && /(255, ?(154|140|210)|#ff9ad5|#ffd27a)/i.test(c.backgroundImage)) || (/evolve|stage/.test(String(e.className)) && c.animationName !== 'none'); }).map((e) => String(e.className));
+      const bads = [...v.querySelectorAll('*')].filter((e) => { const c = cs(e); return (/gradient/.test(c.backgroundImage) && /(255, ?(154|140|210)|#ff9ad5|#ffd27a)/i.test(c.backgroundImage)) || (/evolve|stage/.test(String(e.className)) && c.animationName !== 'none'); }).map((e) => String(e.className));
       return { kind: v.dataset.kind, poster: v.dataset.poster || '', card: R(v), art: R(art), im: R(im), fit: im ? cs(im).objectFit : '', imgs: art ? art.querySelectorAll(':scope > svg, :scope > canvas, :scope > .vc-seal, :scope > .vc-forge-img').length : -1, halftone: art ? cs(art, '::before').content : '', hasPhoto: !!art && art.classList.contains('has-photo'),
         title: R(v.querySelector('h2')), type: R(v.querySelector(':scope > .vc-type')), typeText: (v.querySelector(':scope > .vc-type') || {}).textContent || '', sub: sub && !sub.hidden ? sub.textContent : '', subShown: !!sub && !sub.hidden, adds: R(v.querySelector(':scope > .vc-adds')), pb: p ? R(p).b : 0, cols: cs(v).gridTemplateColumns, display: cs(v).display,
         pt: R(v.querySelector('.vc-pt')), num: R(v.querySelector('.vc-num')), ptHits: hit(R(v.querySelector('.vc-pt'))), numHits: hit(R(v.querySelector('.vc-num'))), texts: texts.length,

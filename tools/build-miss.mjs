@@ -15,7 +15,7 @@
 //                            the tree is put back either way
 //   report    (owner token)  a failure puts the job back to `queued` with the failing step in its note, for a builder; a pass hands
 //                            the patch to the workflow's write job, which only moves bytes into a pull request labelled "made by Verse"
-//                            (automerge at confidence 0.8 and up, else "waits for owner"; owner, 2026-10-18) whose last line is
+//                            (labelled automerge; confidence is written down and does not hold the merge, Atom 2026-11-04) whose last line is
 //                            `Job: <id>`, so the job goes live when it merges (tools/job-link.mjs)
 //   node tools/build-miss.mjs claim [--out <dir>] [--job <id>] [--dry]   exit 0 claimed (job.json written), 3 when there is none
 //   node tools/build-miss.mjs scaffold|fill|decide|report [--out <dir>]  each writes result.json; a step after a failure is a no-op

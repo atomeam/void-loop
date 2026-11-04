@@ -48,6 +48,7 @@ function main() {
     }
     // commit the merge so the checks see this pull request's files, not every file main just brought in
     const committed = git(['commit', '-q', '--no-edit'], dir);
+    if (committed.status === 0) console.log('merge-gate: committed the merge');
     // the generators, so a build output that conflicted is rewritten before we put the tree back
     for (const args of [
       ['tools/skills-index.mjs', '--write'],
@@ -61,8 +62,9 @@ function main() {
       const r = spawnSync(process.execPath, [resolve(dir, args[0]), ...args.slice(1)], { cwd: dir, encoding: 'utf8' });
       if (r.status !== 0) console.log('merge-gate: ' + args[0] + ' exited ' + r.status + ' (the check below says if that matters)');
     }
-    // the generators rewrite build outputs in the worktree. Put those back so a rewritten index.html does not make every check run.
-    if (committed.status === 0) git(['reset', '--hard', 'HEAD'], dir);
+    // the generators rewrite build outputs in the worktree. Put those back so a rewritten file does not
+    // pull a pre-existing red check into this pull request. Do it even when the merge commit was a no-op.
+    git(['reset', '--hard', 'HEAD'], dir);
     git(['clean', '-fd'], dir);
     const checks = spawnSync(process.execPath, [resolve(dir, 'tools/checks.mjs'), '--changed', '--skip-browser'], {
       cwd: dir, encoding: 'utf8', stdio: 'inherit',

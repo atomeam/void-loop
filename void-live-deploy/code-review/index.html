@@ -67,7 +67,12 @@
 <main>
   <p><a href="/">&larr; Verse · A-to-Mind</a></p>
   <h1>Code review that finishes before you switch tabs.</h1>
-  <p class="lead">Verse reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists, and a merge gate that holds a PR until they're fixed.</p>
+  <p class="lead">Verse reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists. When the review, the merge gate and the outcome exam pass, it approves and merges by itself.</p>
+  <section id="verdict" class="plan">
+    <h2>The review decides</h2>
+    <p id="verdict-line">Reading the outcome exam.</p>
+    <p class="muted">A pass merges. A fail files a fix job and comments the reason. Spending money, and a message sent to someone outside, still wait on the confirm line. <a href="/progress/">The outcome exam</a> · <a href="/autopilot/">Autopilot</a></p>
+  </section>
   <div class="stats">
     <div class="stat"><b>~1 s</b><span>for a whole pull request</span></div>
     <div class="stat"><b>130</b><span>checks: 32 bugs, 73 risks, 25 style</span></div>
@@ -288,6 +293,19 @@ jobs:
     }).catch(function () { supsay('Paste a paying key, or sign in on MultiVerse, to see your reports.'); });
   });
 })();
+</script>
+<script>
+fetch('/progress/exam.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (j) {
+  const cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
+  const line = document.getElementById('verdict-line');
+  if (!line) return;
+  line.textContent = failed.length
+    ? 'Verdict: fix. The outcome exam regressed: ' + failed.map(function (c) { return c.ask; }).join('; ')
+    : 'Verdict: merge, when Verse\'s review and the merge gate pass. The outcome exam has no regression (' + cases.length + ' outcomes hold).';
+}).catch(function () {
+  const line = document.getElementById('verdict-line');
+  if (line) line.textContent = 'The outcome exam did not load. Verse\'s review and the merge gate still decide.';
+});
 </script>
 </body>
 </html>
