@@ -36,10 +36,30 @@ export function summarize(rows, now = Date.now()) {
   return { at: new Date(now).toISOString(), windowDays: 7, overall: !known.length ? 'unknown' : known.some((g) => g.now === 'down') ? 'degraded' : 'up', guards };
 }
 
-/** the probes a visitor's own browser times on the status panel: method, path, and what a good answer is */
+/** the probes a visitor's own browser times on the status panel: what it is (a page people open or an API other code calls), method,
+ * path, and what a good answer is (2xx; a POST with a body must answer JSON-RPC with a result; `key` = the JSON answer must carry it).
+ * Every one is a cheap read: no model call, no write, nothing that costs a visitor's or Verse's quota. */
 export const PROBES = Object.freeze([
-  { name: 'Home', path: '/', method: 'GET' },
-  { name: 'Team chat', path: '/team/', method: 'GET' },
-  { name: 'Tools for AIs', path: '/tools.json', method: 'GET' },
-  { name: 'MCP endpoint', path: '/api/mcp', method: 'POST', body: '{"jsonrpc":"2.0","id":1,"method":"ping"}' },
+  { kind: 'page', name: 'Home', path: '/', method: 'GET' },
+  { kind: 'page', name: 'Calculator', path: '/calculator/', method: 'GET' },
+  { kind: 'page', name: 'Converter', path: '/convert/', method: 'GET' },
+  { kind: 'page', name: 'Colour', path: '/color/', method: 'GET' },
+  { kind: 'page', name: 'Brain', path: '/brain/', method: 'GET' },
+  { kind: 'page', name: 'Store', path: '/store/', method: 'GET' },
+  { kind: 'page', name: 'Fix an automation', path: '/fix/', method: 'GET' },
+  { kind: 'page', name: 'Team chat', path: '/team/', method: 'GET' },
+  { kind: 'api', name: 'MCP endpoint', path: '/api/mcp', method: 'POST', body: '{"jsonrpc":"2.0","id":1,"method":"ping"}' },
+  { kind: 'api', name: 'Tools for AIs', path: '/tools.json', method: 'GET', key: 'tools' },
+  { kind: 'api', name: 'Skills index', path: '/skills/index.json', method: 'GET' },
+  { kind: 'api', name: 'Self-check', path: '/api/selfcheck', method: 'GET' },
+  { kind: 'api', name: 'Status', path: '/api/status', method: 'GET', key: 'guards' },
+  { kind: 'api', name: 'Incident log', path: '/incidents.json', method: 'GET' },
+  { kind: 'api', name: 'Changelog feed', path: '/growth.atom', method: 'GET' },
 ]);
+
+/** the probes' results [{ ok, ms }] -> the line over them: how many answered, and the median time of those that did. Pure. */
+export function probeSummary(results) {
+  const r = (results || []).filter(Boolean), ok = r.filter((x) => x.ok), ms = ok.map((x) => x.ms).filter((x) => Number.isFinite(x)).sort((a, b) => a - b);
+  const median = ms.length ? (ms.length % 2 ? ms[(ms.length - 1) / 2] : Math.round((ms[ms.length / 2 - 1] + ms[ms.length / 2]) / 2)) : null;
+  return { total: r.length, ok: ok.length, down: r.length - ok.length, median, all: r.length > 0 && ok.length === r.length };
+}

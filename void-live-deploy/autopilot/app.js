@@ -2,7 +2,7 @@
 // A source that does not answer says so where its number would be; nothing here is estimated or filled in.
 import { mountRelated } from '/lib/toolkit.js';
 import { incidentsIn } from '/lib/autopilot.js';
-import { PROBES } from '/lib/status.js';
+import { PROBES, probeSummary } from '/lib/status.js';
 
 const $ = (id) => document.getElementById(id);
 const KIND = { fix: 'fixed', build: 'built', assimilate: 'assimilated', measure: 'measured', watch: 'watched', revert: 'took back', other: 'did' };
@@ -76,17 +76,25 @@ async function timeOne(p) {
     const r = await fetch(p.path, { method: p.method, cache: 'no-store', headers: p.body ? { 'content-type': 'application/json', accept: 'application/json' } : {}, body: p.body, signal: AbortSignal.timeout(8000) });
     const ms = Math.round(performance.now() - t0), ok = r.ok;
     if (p.body) { const j = await r.json().catch(() => null); return { ms, ok: ok && !!(j && j.result) }; }
+    if (p.key) { const j = await r.json().catch(() => null); return { ms, ok: ok && !!(j && j[p.key] != null) }; }
     return { ms, ok };
   } catch (_) { return { ms: null, ok: false }; }
 }
 async function liveSpeed() {
   const box = $('st-live'); const rows = await Promise.all(PROBES.map(async (p) => ({ p, r: await timeOne(p) })));
   box.textContent = '';
-  for (const { p, r } of rows) {
-    const row = el('div', 'st'), name = el('span'); name.append(el('span', 'dot ' + (r.ok ? 'up' : 'down')), p.name);
-    const path = el('span', 'note', p.method + ' ' + p.path);
-    row.append(name, el('span', r.ok ? 'ok' : 'bad', r.ok ? 'up' : 'down'), path, el('span', 'num', r.ms == null ? 'n/a' : r.ms + ' ms'));
-    box.append(row);
+  const sum = probeSummary(rows.map((x) => x.r)), head = el('div', 'chips'), chip = el('span', 'chip');
+  chip.append(el('span', 'dot ' + (sum.all ? 'up' : 'down')), el('b', null, sum.ok + ' of ' + sum.total + ' answering' + (sum.median == null ? '' : ', median ' + sum.median + ' ms')));
+  head.append(chip); box.append(head);
+  for (const [kind, title] of [['page', 'Pages'], ['api', 'APIs and feeds']]) {
+    const mine = rows.filter((x) => (x.p.kind || 'page') === kind); if (!mine.length) continue;
+    box.append(el('h3', 'st-kind', title));
+    for (const { p, r } of mine) {
+      const row = el('div', 'st'), name = el('span'); name.append(el('span', 'dot ' + (r.ok ? 'up' : 'down')), p.name);
+      const path = el('a', 'note', p.method + ' ' + p.path); path.href = p.path;
+      row.append(name, el('span', r.ok ? 'ok' : 'bad', r.ok ? 'up' : 'down'), path, el('span', 'num', r.ms == null ? 'n/a' : r.ms + ' ms'));
+      box.append(row);
+    }
   }
 }
 async function loadStatus() {
