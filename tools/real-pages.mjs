@@ -369,6 +369,9 @@ export const SPECS = {
     t.ok((await t.p.locator('#radio-list li').count()) > 0, 'Boston has real radio stations listed: ' + (await t.text('#radio-note')).slice(0, 90));
     await t.click('#tab-tv'); await t.waitText('#tv-note', /stations broadcasting|No local TV/, 20000);
     t.ok((await t.p.locator('#tv-list li').count()) > 0, 'Boston has local TV stations listed: ' + (await t.text('#tv-note')).slice(0, 90));
+    const log = await t.p.evaluate(async () => { const r = await fetch('/tv-built.json').catch(() => null); return r && r.ok ? r.json() : null; }); // built at deploy (tools/watch-build.mjs assemble)
+    if (log && log.builds && log.builds.length) { await t.p.waitForSelector('#tv-built:not([hidden]) #tv-built-list li', { timeout: 5000 }).catch(() => {}); const b = log.builds[0];
+      t.ok((await t.p.locator('#tv-built-list a[href="' + b.feature + '"]').count()) > 0 && /Heard on/.test(await t.text('#tv-built-list')), 'Built from what Verse watched lists ' + b.feature + ' with the broadcast it came from'); }
   },
   '/podcasts/': async (t) => { await t.fill('#q', 'history'); await t.click('#go'); await t.p.waitForTimeout(5000); t.ok(/history/i.test(await t.p.locator('main').innerText()) && (await t.p.locator('main img').count()) > 2, 'a podcast search lists real shows'); },
   '/random/': async (t) => { await t.fill('#min', '5'); await t.fill('#max', '5'); await t.click('#go'); await t.p.waitForTimeout(200); t.ok((await t.text('#out')).trim() === '5', 'between 5 and 5 is 5'); await t.share('#link'); },

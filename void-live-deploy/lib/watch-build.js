@@ -104,10 +104,11 @@ export function jobOf(plan) {
  *  rebuilt (then the ask alone is the spec). Pure. */
 export function tvSpec(job, plan) {
   const slug = String(job && job.target || '').replace(/^tv:/, '') || (plan && plan.slug) || 'idea';
-  const p = plan || {};
+  const m = /^(Build|Improve) (\/[^\s:]*\/?):\s*([^(]*)/.exec(String(job && job.ask || ''));
+  const p = plan || (m ? { action: m[1] === 'Improve' ? 'improve' : 'new', page: m[2], topic: m[3].trim(), product: productFor(m[3]) } : {});
   return [
     'This came from what Verse watched or heard on TV or radio. It ships as a real feature on a-to-mind.com, never as an idea list.',
-    p.action === 'improve' ? 'A page already does part of this: ' + p.page + ' (shared words: ' + (p.matched && p.matched.shared || []).join(', ') + '). Improve that page; do not add a second page.'
+    p.action === 'improve' ? 'A page already does part of this: ' + p.page + (p.matched ? ' (shared words: ' + (p.matched.shared || []).join(', ') + ')' : '') + '. Improve that page; do not add a second page.'
       : 'Check void-live-deploy/*/index.html titles first: if a page already does this job, improve it and add no new page. Otherwise build ' + (p.page || '/' + slug + '/') + ' (index.html and app.js, its logic in void-live-deploy/lib/ with a node:test file).',
     'Earn: the page links to ' + (p.product ? p.product.name + ' at ' + p.product.url : 'the Gumroad product that fits (lib/watch-build.js PRODUCTS)') + ', in one honest line that says what the buyer gets.',
     'Test: a spec for the route in tools/real-pages.mjs that uses the feature the way a person would and checks the exact answer.',
