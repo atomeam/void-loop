@@ -295,19 +295,31 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T02:43:43Z",
-   "subject": "Main green: CSP page rules fit Cloudflare's 100 again (two pages share a directory rule), price-lock reads the free items from the store…"
+   "at": "2026-11-04T02:50:27Z",
+   "subject": "Lab: 361 experiments live at /lab/, 17 waiting for a fix (#2074)"
   },
   {
-   "at": "2026-11-04T02:42:15Z",
-   "subject": "Keep main's parity catalog after the refresh."
+   "at": "2026-11-04T02:47:59Z",
+   "subject": "Revert 01c8c7c7fcdcc77bd2f405c38c3b91a1b8402fe0: an outcome-exam domain fell by 5 or more (exam.yml)"
+  },
+  {
+   "at": "2026-11-04T02:45:27Z",
+   "subject": "Site test: visitor pass 14/15"
+  },
+  {
+   "at": "2026-11-04T02:43:43Z",
+   "subject": "Main green: CSP page rules fit Cloudflare's 100 again (two pages share a directory rule), price-lock reads the free items from the store…"
   },
   {
    "at": "2026-11-04T02:42:10Z",
    "subject": "Score Verse by visitor outcomes, and raise the lowest domains (#2097)"
   },
   {
-   "at": "2026-11-04T02:41:54Z",
+   "at": "2026-11-04T02:41:06Z",
+   "subject": "Keep main's parity catalog after the refresh."
+  },
+  {
+   "at": "2026-11-04T02:40:51Z",
    "subject": "Regenerate the generated files after the merge"
   },
   {
@@ -327,8 +339,8 @@
    "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
   },
   {
-   "at": "2026-11-04T02:31:49Z",
-   "subject": "Merge main and keep the lab pages off the checks that were already red."
+   "at": "2026-11-04T02:31:25Z",
+   "subject": "Keep main's parity catalog. The refresh rewrote it, and the parity check was already red on main."
   },
   {
    "at": "2026-11-04T02:28:12Z",
@@ -347,32 +359,20 @@
    "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T02:24:13Z",
+   "at": "2026-11-04T02:27:01Z",
+   "subject": "automations: the templates' comment sits on the templates again"
+  },
+  {
+   "at": "2026-11-04T02:25:53Z",
    "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T02:25:26Z",
+   "subject": "Let the merge gate pass the checks this branch reaches."
   },
   {
    "at": "2026-11-04T02:17:41Z",
    "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:07:16Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T02:06:17Z",
-   "subject": "Let Verse's review approve and merge itself (#2103)"
-  },
-  {
-   "at": "2026-11-04T02:03:35Z",
-   "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T01:55:03Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
-  },
-  {
-   "at": "2026-11-04T01:55:00Z",
-   "subject": "/fix/ hub: the combined page's mode bar comes from tools/fix-pages.mjs, so a regenerate keeps it (#2104)"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 23,
-  "week": 540
+  "day": 25,
+  "week": 541
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
