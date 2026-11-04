@@ -12142,6 +12142,13 @@ try {
   // connected floors (owner, 2026-10-27): a floor page is not a dead end. Every floor page must link to at least four sibling Verse
   // tools, so a new floor cannot ship with only "Back to Verse". Pages that predate the rule are named once here; the list only shrinks
   // (emojis, paint and tournaments are checked in the browser above too). A page file that does not exist is skipped, never passed.
+  if (want("business-clarify: a vague business idea becomes a system plan card")) { const B = await fresh();
+    await B.ask("clarify this business idea: a tool that turns customer emails into running automations", 2000);
+    const card = await until(async () => B.p.$eval('.thing.kept-card', (e) => e.textContent).catch(() => null), 5000);
+    check('business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step',
+      !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations that take over/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
+      JSON.stringify({ card: (card || '').slice(0, 400), errors: B.errors }));
+    await B.ctx.close(); }
   if (want("connected: every floor page links to at least four sibling Verse tools")) {
     const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
     const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);
