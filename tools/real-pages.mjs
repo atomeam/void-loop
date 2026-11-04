@@ -124,6 +124,18 @@ export const SPECS = {
     const st = await t.p.locator('#rows .st').allInnerTexts(); t.ok(st.length > 0 && st.every((x) => x === 'surpassed'), 'Surpassed shows only the surpassed sites (' + st.length + ')');
     await t.links();
   },
+  '/salvage/': async (t) => { // what tools/autosalvage/unify.mjs writes to /salvage.json: the counts, the next 10 and every piece
+    const n = await t.waitText('#n', /scanned/, 10000); t.ok(/\d+\s*scanned/.test(n), 'it counts what was scanned: ' + n.slice(0, 80));
+    t.ok((await t.p.locator('#top tr').count()) > 0, 'the next pieces by value are listed');
+    const all = await t.p.locator('#all tr').count(); t.ok(all > 10, all + ' pieces listed');
+    await t.links();
+  },
+  '/credits/': async (t) => { // the outside work Verse builds on, from /salvage.json: each with its author, license and link
+    await t.p.waitForFunction(() => document.querySelectorAll('#c tr').length > 1, null, { timeout: 10000 }).catch(() => {});
+    const rows = await t.p.locator('#c tr').allInnerTexts(); t.ok(rows.length > 1, (rows.length - 1) + ' credits listed');
+    t.ok(rows.slice(1).every((r) => /MIT|Apache|BSD|CC0|CC-BY|Unlicense|ISC|GPL|ODbL/.test(r)), 'every credit names its license');
+    await t.links();
+  },
   '/films/': async (t) => {
     const n = await t.waitText('main, body', /\d+ videos, newest first/, 20000); const c = +((n.match(/(\d+) videos, newest first/) || [])[1] || 0);
     t.ok(c > 0, c + ' films listed from the feed'); await t.links();
