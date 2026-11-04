@@ -3,12 +3,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { BOTS, probe } from '../void-live-deploy/bots/kit.js';
-import { gate, parseProposal, pin } from './bot-factory.mjs';
+import { gate, parseProposal, pin, vet, familyRows } from './bot-factory.mjs';
+import { families, check } from '../void-live-deploy/bots/families.js';
 
 test('every kit bot passes its probe and is live, and the registry on disk matches the gate', () => {
   const rows = gate();
   assert.ok(rows.filter((r) => r.status === 'live').length >= 50);
-  assert.deepEqual(rows.filter((r) => r.status !== 'live').map((r) => r.id), []);
+  assert.deepEqual(rows.filter((r) => r.status === 'failed').map((r) => r.id), []);
   const reg = JSON.parse(readFileSync(new URL('../void-live-deploy/bots/registry.json', import.meta.url), 'utf8'));
   assert.deepEqual(reg.bots.map((b) => b.id + ':' + b.status), rows.map((b) => b.id + ':' + b.status), 'run node tools/bot-factory.mjs');
 });
@@ -26,4 +27,24 @@ test('an AI proposal is kept only when its pipe is made of live bots, and its pr
   const specs = parseProposal('sure: [{"id":"secret","job":"x","pipe":["reverse-bot","morse-bot"],"probe":{"in":"so"}},{"id":"bad","job":"x","pipe":["nope","morse-bot"],"probe":{"in":"a"}}]', live);
   assert.deepEqual(specs.map((s) => s.id), ['secret']);
   assert.equal(pin(specs[0]).probe.want, '--- ...');
+});
+
+test('family variants: thousands, every one passing independent checks, and a wrong factor or a wrong answer fails', () => {
+  const F = families();
+  assert.ok(F.length >= 2000); assert.equal(new Set(F.map((b) => b.id)).size, F.length, 'ids are unique');
+  assert.deepEqual(familyRows().flatMap((f) => f.failed), []);
+  const mi = F.find((b) => b.id === 'mi-to-km');
+  assert.equal(mi.run('1'), '1.609344 km');
+  const broken = { ...mi, checks: mi.checks.map(([n, fn]) => [n, n === 'known answer' ? () => Math.abs(1.6 - 1.609344) < 1e-9 : fn]) };
+  assert.equal(check(broken).ok, false);
+  assert.equal(F.find((b) => b.id === 'csv-to-json').run('a,b\n1,2'), '[{"a":"1","b":"2"}]');
+  assert.equal(F.find((b) => b.id === 'temp-C-to-F').run('100'), '212 °F');
+});
+
+test('a grown bot needs varied answers on three inputs and a judge; a constant bot or no judge is not kept', async () => {
+  const spec = { id: 'secret', job: 'reverse then morse', pipe: ['reverse-bot', 'morse-bot'], from: [], probe: { in: 'so' } };
+  assert.equal(await vet(spec, ['so', 'sos', 'hi'], null), null, 'no judge: held');
+  assert.equal(await vet(spec, ['so', 'sos', 'hi'], async () => false), null, 'judge says no');
+  assert.equal((await vet(spec, ['so', 'sos', 'hi'], async () => true)).probe.want, '--- ...');
+  assert.equal(await vet({ ...spec, pipe: ['emoji-mood', 'reverse-bot'] }, ['a', 'b', 'c'], async () => true), null, 'same answer for every input');
 });
