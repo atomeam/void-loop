@@ -2358,5 +2358,23 @@
    ]
   },
   "note": "fix: \"yo play despacito\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T21:14:51Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 3240,
+   "failed": [
+    {
+     "ask": "capital of France",
+     "why": [
+      "slow 20748 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]
