@@ -25,10 +25,12 @@ on:
     - cron: "17 11 * * *" # once a day, the stuck-pull-request sweep (STUCK=1 below)
   workflow_dispatch:
 
-# Each run gets its own group. A shared group keeps only one queued run, and a stream of
-# workflow_run events was cancelling that run before a runner ever started it, so nothing merged.
+# One group. The sweep in progress finishes: cancel-in-progress is false, so a new event does not kill it.
+# A second event waits, and a third replaces that waiting run. The sweep reads every open pull request, so a
+# waiting run that never started is not a missed merge. A group per run id queued a sweep for every event
+# (15 were waiting on 2026-11-04). That queue was the backlog. The in-progress sweep is never cancelled.
 concurrency:
-  group: void-automerge-${{ github.run_id }}
+  group: void-automerge
   cancel-in-progress: false
 
 permissions:
