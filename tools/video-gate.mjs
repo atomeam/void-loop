@@ -9,7 +9,7 @@
 //   no-bars   ffmpeg cropdetect over the whole film finds no black border (letterbox or pillarbox) wider than 8 px
 //   captions  every caption at least 64 px, inside the Shorts safe zone, on a backing box, short enough to fit its line
 //   footage   real a-to-mind.com footage: the page's answer was seen in the browser, and the picture moves (not a still card)
-//   audio     a voice at about -14 LUFS (-15.5..-12.5), or no voice and nothing louder than -24 LUFS (no music bed over silence)
+//   audio     a voice at about -14 LUFS (-15.5..-12.5) with any bed ducked under it, or no voice: silence or a quiet bed at -25..-19 LUFS
 //   hook      the first line scores 60+ on hookScore (a relatable, concrete question in a few plain words)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 export const W = 1080, H = 1920;
 // the part of a Short no YouTube, TikTok or Reels button covers: below the top bar, above the title and buttons, left of the action rail
 export const SAFE = { x0: 60, x1: W - 140, y0: Math.round(H * 0.1), y1: Math.round(H * 0.72) };
-export const CAPTION_MIN = 64, BAR_PX = 8, LUFS = { voice: -14, tol: 1.5, quietMax: -24 }, HOOK_MIN = 60;
+export const CAPTION_MIN = 64, BAR_PX = 8, LUFS = { voice: -14, tol: 1.5, bedMin: -25, bedMax: -19 }, HOOK_MIN = 60;
 
 const RELATABLE = /\b(you|your|you're|dinner|bill|tip|rent|split|song|stuck|money|pay|paycheck|late|sleep|kids?|groceries|gas|coffee|tonight|weekend|friends?|date|boss|work|recipe|cook|minutes?|hours?|cost|price|cheaper|save|owe)\b/i;
 const JARGON = /\b(ai|llm|model|experiment|verse|lab|agent|built this itself|skill|api|ledger|hypothesis)\b/i;
@@ -75,11 +75,14 @@ export function noBars(bars, edges) {
   return { ok: edges.ok && !real, detail: (real ? bars.detail : bars.ok ? bars.detail : 'dark edges, not bars (they carry picture)') + '; ' + edges.detail };
 }
 
-/** the audio check from ebur128's integrated loudness (null: no audio stream). Pure. */
+/** the audio check from ebur128's integrated loudness (null: no audio stream). A voice: about -14 LUFS (the bed ducked under it). No
+ *  voice: silence, or a quiet music bed between -25 and -19 LUFS (owner, 2026-11-03: "music is fine"); anything louder is a track
+ *  shouting over nothing, the old Shorts' fault. Pure. */
 export function audioCheck(lufs, voice) {
   if (voice) return { ok: lufs != null && Math.abs(lufs - LUFS.voice) <= LUFS.tol, detail: 'voice at ' + (lufs == null ? 'no audio' : lufs.toFixed(1) + ' LUFS') + ' (want ' + LUFS.voice + ' ±' + LUFS.tol + ')' };
-  const quiet = lufs == null || !isFinite(lufs) || lufs <= LUFS.quietMax;
-  return { ok: quiet, detail: quiet ? 'no voice and no music bed (' + (lufs == null || !isFinite(lufs) ? 'silent' : lufs.toFixed(1) + ' LUFS') + ')' : 'no voice but audio at ' + lufs.toFixed(1) + ' LUFS: a bed with nothing over it' };
+  if (lufs == null || !isFinite(lufs) || lufs < -60) return { ok: true, detail: 'silent' };
+  const ok = lufs >= LUFS.bedMin && lufs <= LUFS.bedMax;
+  return { ok, detail: (ok ? 'a quiet music bed at ' : 'music at ') + lufs.toFixed(1) + ' LUFS (a bed wants ' + LUFS.bedMin + ' to ' + LUFS.bedMax + ')' };
 }
 
 const ff = (args) => spawnSync('ffmpeg', ['-hide_banner', '-nostats', ...args], { encoding: 'utf8', maxBuffer: 64 << 20 });
