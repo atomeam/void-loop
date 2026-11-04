@@ -67,3 +67,35 @@ test("proposal-checker", () => {
   assert.equal(b.run("{\"title\":\"t\",\"citations\":[\"a\"],\"rollback\":[\"r\"],\"metric\":\"m\",\"risk\":\"low\"}"), "complete, ready for the change-curator");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("note-search", () => {
+  const b = bot("note-search"); assert.ok(b && BOT("note-search"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("crater | The base was quiet."), "not in this note: crater");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("intent-router", () => {
+  const b = bot("intent-router"); assert.ok(b && BOT("intent-router"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("clock AEV now"), "clock: opens a reporting clock");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("pwa-manifest-check", () => {
+  const b = bot("pwa-manifest-check"); assert.ok(b && BOT("pwa-manifest-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("{\"short_name\":\"A2M\",\"start_url\":\"./\",\"display\":\"standalone\",\"icons\":[{\"src\":\"i.svg\",\"sizes\":\"any\",\"type\":\"image/svg+xml\"}]}"), "installable · A2M opens ./ as standalone");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("ollama-call", () => {
+  const b = bot("ollama-call"); assert.ok(b && BOT("ollama-call"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("no model here"), "send model: question, like llama3.2: hello");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("security-txt-check", () => {
+  const b = bot("security-txt-check"); assert.ok(b && BOT("security-txt-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  const now = Date.parse('2026-11-04T00:00:00Z');
+  assert.equal(b.run("Contact: mailto:security@example.com\nContact: https://example.com/report\nExpires: 2027-06-01T00:00:00Z", now), "passes RFC 9116 · 2 contacts, expires 2027-06-01");
+  assert.equal(b.run("# only a comment\nExpires: 2029-01-01T00:00:00Z", now), "fails RFC 9116 · no Contact · Expires is more than a year out");
+  assert.ok(lineage(b), 'lineage is real');
+});

@@ -60,6 +60,36 @@
       "into": "/bots/ (proposal-checker)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "archive/repos/the-void/src/components": {
+      "target": "bot",
+      "into": "/bots/ (note-search)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/hold/apps/void": {
+      "target": "bot",
+      "into": "/bots/ (intent-router)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/021-pwa-install-and-offline-ledger": {
+      "target": "bot",
+      "into": "/bots/ (pwa-manifest-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/a-to-mind.com/drafts/028-attested-security-txt": {
+      "target": "bot",
+      "into": "/bots/ (security-txt-check)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
+    },
+    "archive/repos/atomarcade-bridge": {
+      "target": "bot",
+      "into": "/bots/ (ollama-call)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }
