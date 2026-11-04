@@ -1,0 +1,37 @@
+{
+ "at": "2026-11-04T01:45:40.399Z",
+ "sha": "486e7f46e548386b5c763ddd64e170ca22f57d52",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41752437224",
+ "suite": "browser suite on main",
+ "checks": [
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count and no boss, the card headed \"Versus\" and the score \"3 surpassed\""
+ ],
+ "touched": [
+  "STANDING.md",
+  "docs/MAP.md",
+  "docs/playbooks/README.md",
+  "docs/playbooks/visible-progress.md",
+  "domains/handoff.md",
+  "domains/void.agents.log.md",
+  "domains/void.decisions.json",
+  "domains/void.frontier.md",
+  "domains/void.voice.md",
+  "growth/entries/20261104T001213Z-cursor-3625a723.json",
+  "growth/entries/20261104T001213Z-cursor-477b4d5c.json",
+  "growth/entries/20261104T001213Z-cursor-642b1698.json",
+  "growth/entries/20261104T001213Z-cursor-a7ff25af.json",
+  "growth/entries/20261104T001213Z-cursor-c1c77a5c.json",
+  "growth/entries/20261104T001213Z-cursor-dd861e5f.json"
+ ],
+ "shards": [
+  1,
+  2,
+  4
+ ],
+ "passed": [
+  1
+ ]
+}
