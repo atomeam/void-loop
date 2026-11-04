@@ -4,7 +4,7 @@
  * "tell me a riddle", "riddle", "another riddle".
  */
 export function isRiddle(text) {
-  return /^(?:please\s+)?(?:(?:tell|give|show)\s+(?:me\s+)?)?(?:a|an|another)?\s*riddle(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:(?:tell|give|show)\s+(?:me\s+)?)?(?:a|an|another)?\s*riddle(?:\s+about\s+\w+)?(?:\s+please)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 
 const RIDDLES = [
@@ -36,7 +36,7 @@ function run(text, api) {
 
 export default {
   name: 'riddle',
-  examples: ['riddle', 'tell me a riddle', 'give me a riddle', 'another riddle'],
+  examples: ['riddle', 'tell me a riddle', 'give me a riddle', 'another riddle', 'tell me a riddle about time'],
   nearMisses: ['what is a riddle', 'riddle me this', 'solve this riddle'],
   match(lower, text) { return isRiddle(text); },
   run,
