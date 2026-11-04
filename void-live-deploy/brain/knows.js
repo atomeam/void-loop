@@ -19,7 +19,7 @@ const watch = () => {
   document.body.classList.remove('knows-on'); knows.hidden = true;
   watchBtn.textContent = 'What it knows'; watchBtn.setAttribute('aria-pressed', 'true');
   const u = new URL(location.href); if (!u.searchParams.has('t')) u.searchParams.set('view', 'watch'); u.searchParams.delete('find'); u.searchParams.delete('k'); history.replaceState(null, '', u);
-  import('/brain/app.js').then(() => import('/brain/map.js')).then(() => import('/brain/dreams.js')).catch((e) => { document.body.dataset.watchError = String(e && e.message || e).slice(0, 120); });
+  import('/brain/app.js').then(() => import('/brain/map.js')).then(() => import('/brain/dreams.js')).then(() => { document.body.dataset.ready = '1'; }).catch((e) => { document.body.dataset.watchError = String(e && e.message || e).slice(0, 120); });
 };
 watchBtn.addEventListener('click', () => { if (watching) location.assign('/brain/'); else watch(); }); // back to Knows is a fresh page: the simulation's loops end with it
 

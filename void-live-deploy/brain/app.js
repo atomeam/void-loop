@@ -24,7 +24,7 @@ card.style.left = card.style.top = ''; card.style.width = '100%';
 frame.style.borderRadius = '0'; field.insertBefore(frame, you);
 cv.tabIndex = 0; cv.setAttribute('aria-label', 'Verse Brain, the whole screen: move over it, or use the arrow keys, to let it predict you');
 const det = card.querySelector('details.vb-organs'); if (det && !narrow()) det.open = true;
-document.body.dataset.ready = '1';
+// body[data-ready] is set by brain/knows.js once app.js, map.js and dreams.js have all loaded, so the page is whole when it says ready
 
 // the bar and the numbers are docked above and below the field (2026-10-30: the numbers box and the title sat over its labels): their heights
 // are --top and --hud, so the field is every pixel they leave, and nothing on the page covers a thing the brain holds
