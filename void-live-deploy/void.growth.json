@@ -6114,5 +6114,6 @@
   {"at": "2026-11-04T06:10:00Z", "by": "cursor", "kind": "fix", "what": "Verse's coder edits a big file by outline, region, line patch and a small split, so a lap no longer spends its turn cap reading void.html from the top", "show": "The coder reads a region of a big file and patches those lines", "try": "node --test tools/verse-coder.test.mjs"},
   {"at": "2026-11-04T06:21:07Z", "by": "cursor", "kind": "grow", "what": "The served home page leaves its style and main script in their own files, so the first download is the shell", "show": "A lighter first download of the home page", "try": "ask anything"},
   {"at": "2026-11-04T08:34:37Z", "by": "verse", "kind": "fix", "what": "Verse routes \"total with 20 vat on 150\" to its vat skill (the answer is not checked) (from my probes)"},
-  {"at": "2026-11-04T09:47:51Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 6 no-family, 2 covered); next  (the target)"}
+  {"at": "2026-11-04T09:47:51Z", "by": "verse", "kind": "build", "what": "Versus: took on no site (also read: 6 no-family, 2 covered); next  (the target)"},
+  {"at": "2026-11-04T10:50:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its util skill: learn to handle \"monthly electric bill avg for 1500sqft\" (from my probes)", "try": "monthly electric bill avg for 1500sqft"}
 ]
