@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Progress: the outcome exam · Verse</title>
+<meta name="description" content="The outcome exam: a few asks whose result is fixed. A pull request that makes one fail is not merged.">
+<meta property="og:title" content="Progress: the outcome exam">
+<meta property="og:description" content="The outcome exam: a few asks whose result is fixed. A pull request that makes one fail is not merged.">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<link rel="canonical" href="https://a-to-mind.com/progress/">
+<meta name="verse-handoff" content="in: none; out: text">
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --panel: #100e1a; --ink: #ecebf5; --soft: #a3a0b3; --line: #262236; --good: #6fe3a5; --bad: #ff8a7e; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  p { color: var(--soft); }
+  li { padding: 8px 0; border-top: 1px solid var(--line); }
+  .ok { color: var(--good); } .bad { color: var(--bad); }
+  a { color: #a58bff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Progress</h1>
+  <p>The outcome exam. Each line is an ask whose result is fixed. A pull request that makes a passing one fail is not merged. Verse reviews the pull request and merges it when the review, the merge gate and this exam pass. Spending money, and a message sent to someone outside, still wait on the confirm line.</p>
+  <p id="sum">Reading the exam.</p>
+  <ul id="list"></ul>
+  <p><a href="/code-review/">Code review</a> · <a href="/autopilot/">Autopilot</a></p>
+</main>
+<script>
+fetch('/progress/exam.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (j) {
+  const cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
+  document.getElementById('sum').textContent = failed.length ? 'Regressed: ' + failed.map(function (c) { return c.ask; }).join('; ') : 'No regression. ' + cases.length + ' outcomes hold.';
+  const list = document.getElementById('list');
+  list.textContent = '';
+  cases.forEach(function (c) {
+    const li = document.createElement('li');
+    const mark = document.createElement('span');
+    mark.className = c.ok ? 'ok' : 'bad';
+    mark.textContent = c.ok ? 'holds' : 'regressed';
+    li.appendChild(mark);
+    li.appendChild(document.createTextNode(' · ' + String(c.ask || '')));
+    list.appendChild(li);
+  });
+}).catch(function () { document.getElementById('sum').textContent = 'The exam did not load.'; });
+</script>
+</body>
+</html>
