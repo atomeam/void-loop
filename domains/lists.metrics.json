@@ -500,6 +500,71 @@
      "status": "built"
     }
    ]
+  },
+  {
+   "at": "2026-11-04T23:43:00Z",
+   "run": 10,
+   "closed": 8,
+   "touched": 8,
+   "pct_blocked": 0,
+   "top_block": "none this run",
+   "dup_rate": 0.63,
+   "dup_basis": "5 of the 8 open asks at the start were duplicates of shipped work or of another ask (emojigraph lane page, 'what can you do', the 814032d5 jobs again, images exam twin, telemetry twin)",
+   "median_days": 0,
+   "median_basis": "the red suite came from today's merges and every ask closed was asked today (0 days)",
+   "asks_open_start": 8,
+   "asks_open_end": 4,
+   "note": "green suite first, then the date-math family merge, two exam asks (timers, prices) and site-test #2228. Store queue 0 open. The images exam and '100 usd in eur' (rival check) stay open.",
+   "items": [
+    {
+     "what": "main's browser suite green again: the test server answers _redirects (301'd mode pages incl. /password-strength/), the home ask bar reads 4.5:1, the paste card test follows #2126, business-clarify carries the idea itself",
+     "list": "red checks on main",
+     "status": "built"
+    },
+    {
+     "what": "time-math and date-calc are one family (date-math, rank 0025); aliases kept, tools/date-math-family.test.mjs, 0 routes moved over 6054 asks",
+     "list": "convergence (overlap pairs)",
+     "status": "built"
+    },
+    {
+     "what": "timers exam: 'add one minute' / 'add 30 seconds to the timer' grow a running timer; timer asks in Spanish, French, German, Italian, Portuguese",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-0859-2"
+    },
+    {
+     "what": "prices exam: 'precio del bitcoin' and other-language price asks name the coin; '100 usd in eur' still fails the rival check, so the ask stays queued",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-2101-3"
+    },
+    {
+     "what": "814032d5 failed jobs: python-tests + browser-suite (1)(2)(3) in Verse verify 41264790432; python-tests failed at tools/verse-loop.test.mjs:151 (coder key message regex), green on main now",
+     "list": "V01D asks",
+     "status": "built",
+     "ask": "ask-20261104-2101-2"
+    },
+    {
+     "what": "emojigraph.org lane page",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "ask": "ask-20261104-2101-1",
+     "link": "65ac2bbae"
+    },
+    {
+     "what": "a clear answer to 'what can you do'",
+     "list": "V01D asks",
+     "status": "duplicate",
+     "ask": "ask-20261104-2054-3",
+     "link": "lib/router.js self route (menu book), tools/bench.json"
+    },
+    {
+     "what": "site-test #2228 'yo play despacito': the video ask reader drops a leading yo/hey/ok, pls/plz and 'can we'/'let's'; regression in tools/words-family.test.mjs",
+     "list": "site tester (label site-test)",
+     "status": "built",
+     "issue": 2228
+    }
+   ]
   }
  ]
 }
