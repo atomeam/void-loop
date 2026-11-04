@@ -295,10 +295,6 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T02:38:40Z",
-   "subject": "List the tools the directory was missing, so the search block matches the table."
-  },
-  {
    "at": "2026-11-04T02:37:36Z",
    "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
   },
@@ -309,10 +305,6 @@
   {
    "at": "2026-11-04T02:33:26Z",
    "subject": "watch-build: what Verse watched becomes a feature, scored, matched to a page and a product (#2107)"
-  },
-  {
-   "at": "2026-11-04T02:31:25Z",
-   "subject": "Keep main's parity catalog. The refresh rewrote it, and the parity check was already red on main."
   },
   {
    "at": "2026-11-04T02:28:12Z",
@@ -331,20 +323,16 @@
    "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T02:25:53Z",
-   "subject": "Regenerate the generated files after the merge"
+   "at": "2026-11-04T02:24:00Z",
+   "subject": "Keep the merge gate on the exam change"
   },
   {
-   "at": "2026-11-04T02:25:26Z",
-   "subject": "Let the merge gate pass the checks this branch reaches."
+   "at": "2026-11-04T02:18:10Z",
+   "subject": "exam: the merge gate does not run every check for an offline-shell address"
   },
   {
    "at": "2026-11-04T02:17:41Z",
    "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-11-04T02:11:56Z",
-   "subject": "Automations: Gumroad sale, team chat message and GitHub event triggers"
   },
   {
    "at": "2026-11-04T02:07:16Z",
@@ -359,6 +347,14 @@
    "subject": "Incident: the browser suite failed on dd763ab1 (void-live-deploy/incidents.json)"
   },
   {
+   "at": "2026-11-04T02:00:00Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T01:59:21Z",
+   "subject": "exam: revert a deploy only after two runs in a row each drop by 5"
+  },
+  {
    "at": "2026-11-04T01:55:03Z",
    "subject": "Tower gate: emoji combos: emojigraph.org,sports: onefootball.com,sports: flashscore.com measured against their live sites"
   },
@@ -369,6 +365,10 @@
   {
    "at": "2026-11-04T01:50:46Z",
    "subject": "Incident: the browser suite failed on 85f588b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-11-04T01:50:29Z",
+   "subject": "/progress/ runs its script from /progress/app.js: no inline-script CSP rule, so the headers stay inside Cloudflare's 100"
   },
   {
    "at": "2026-11-04T01:50:06Z",
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 23,
-  "week": 539
+  "day": 26,
+  "week": 542
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",

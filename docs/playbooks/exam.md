@@ -14,7 +14,7 @@ Each ask is typed into live https://a-to-mind.com at phone width. A non-GET is a
 
 `node tools/exam.mjs --against local` serves this tree and proxies `/api/` to the live site, so a change can be scored before it deploys.
 
-The will (`tools/will.py`) adds the three failing public asks of the lowest domain at a weight above the frontier. The conductor (`examBoost` in `tools/conductor-core.mjs`) lifts a queued job that names that domain or that ask. A later run whose public score fell by 5 or more in any domain exits 1. On a deploy, `exam.yml` reverts that deploy. A daily run records the drop and does not revert.
+The will (`tools/will.py`) adds the three failing public asks of the lowest domain at a weight above the frontier. The conductor (`examBoost` in `tools/conductor-core.mjs`) lifts a queued job that names that domain or that ask. A later run whose public score fell by 5 or more in any domain is recorded and exits 0. A second run in a row that also falls by 5 or more exits 1. On a deploy, `exam.yml` reverts that deploy only then (`revert=yes`). A new scale is a new baseline, not a drop. A crash does not set that output, so it does not revert. A daily run records the drop and does not revert.
 
 ## How to tell it worked
 

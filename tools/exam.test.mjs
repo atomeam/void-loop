@@ -1,7 +1,7 @@
 // node --test tools/exam.test.mjs — an ask's score is the checks it passed, a drop is a regression, the will takes the lowest domain.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { judge, domainScore, lowestDomain, compareRuns, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
+import { judge, domainScore, lowestDomain, compareRuns, revertAfter, examWants, holdoutSlice, isoWeek, askId, skillName, rivalHit, SCALE } from '../void-live-deploy/lib/exam.js';
 import { examBoost, score } from './conductor-core.mjs';
 import { songAskOf } from '../void-live-deploy/lib/hear.js';
 import { vatStateOf } from '../void-live-deploy/lib/vat-ask.js';
@@ -46,6 +46,16 @@ test('the lowest domain, a tie, and a regression', () => {
   assert.equal(compareRuns(prev, next).drops[0].domain, 'weather');
   assert.equal(compareRuns(prev, { domains: { songs: { score: 70 }, weather: { score: 78 } } }).ok, true);
   assert.equal(compareRuns({ scale: 1, domains: { songs: { score: 100 } } }, { scale: SCALE, domains: { songs: { score: 40 } } }).rebaseline, true);
+});
+
+test('a deploy reverts only after two runs in a row each drop by 5 or more', () => {
+  const at = (weather, songs = 90) => ({ domains: { weather: { score: weather }, songs: { score: songs } } });
+  assert.equal(revertAfter([at(80), at(80), at(79)]).revert, false);
+  assert.equal(revertAfter([at(80), at(80), at(70)]).revert, false);
+  assert.equal(revertAfter([at(90), at(80), at(70)]).revert, true);
+  assert.equal(revertAfter([at(90), at(80), at(80)]).revert, false);
+  assert.equal(revertAfter([at(90, 90), at(80, 90), at(80, 80)]).revert, true);
+  assert.equal(revertAfter([{ scale: 1, domains: { weather: { score: 100 } } }, { scale: SCALE, domains: { weather: { score: 40 } } }, { scale: SCALE, domains: { weather: { score: 30 } } }]).revert, false);
 });
 
 test('the rival check is the other source\'s answer, and an ambiguous ask has to say so', () => {
