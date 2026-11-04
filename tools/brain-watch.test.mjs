@@ -143,7 +143,7 @@ test('it writes what Verse changed in the last day in plain lines, from the ledg
   const G = await import('../void-live-deploy/skills/growth-tree.js'), r = W.writeLines(LEDGER, NOW, G.publicWhat);
   assert.equal(r.total, 6, 'the entry older than a day is left out');
   assert.deepEqual(r.lines, [
-    'Verse learned to answer 2 more asks, like "meteor shower dates" and "quote about perseverance".',
+    '2 fixes landed in the ledger, like "meteor shower dates" and "quote about perseverance". An exam score is what shows whether an ask got better.',
     'It made 2 skills sturdier against asks that had failed, like yesno and hangman.',
     'New: Edge caching for answers: a stable answer comes from the cache.',
     'It took back 1 change that failed its checks on main.']);
@@ -158,7 +158,7 @@ test('the host reads /void.growth.json in the same look and gives what it wrote 
   const body = (j) => ({ ok: true, json: async () => j }), fresh = LEDGER.map((e) => ({ ...e, at: new Date(Date.now() - (NOW - Date.parse(e.at))).toISOString() }));
   const h = startHost({ win: null, doc: null, ticking: false, bridge: false, fetch: async (u) => (u === '/void.growth.json' ? body(fresh) : { ok: false, status: 404 }), store: { loadKept: async () => null, keep: async () => true } });
   await h.ready; const r = await h.watchNow();
-  assert.ok(r.news.some((n) => n.kind === 'wrote')); assert.equal(h.wrote().total, 6); assert.match(h.wrote().lines[0], /^Verse learned to answer 2 more asks/);
+  assert.ok(r.news.some((n) => n.kind === 'wrote')); assert.equal(h.wrote().total, 6); assert.match(h.wrote().lines[0], /^2 fixes landed in the ledger/);
   h.stop();
 });
 

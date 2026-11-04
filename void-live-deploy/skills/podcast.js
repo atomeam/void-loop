@@ -5,8 +5,10 @@
  * the incident log) and voiced with Piper, an open-source voice that runs on the CI machine (no account, no cost). The card plays the
  * newest episode (or "episode 2"), shows the whole transcript (every line whole, wrapping at any width; a line jumps the player to it),
  * and has Download, Share (this moment too), the RSS feed and the transcript file: every Verse media is free to download and repost.
- * Leaves other people's podcasts ("best podcasts about history", "start a podcast") to the skills that answer those.
+ * "play the latest episode of radiolab" plays that show's newest episode from its public RSS (the directory and the feed
+ * are /api/podcasts, Apple's free search, no key). "podcasts about history" stays a search. "start a podcast" is not this.
  */
+import { latestEpisodeOf, pickShow } from '../lib/podcasts.js';
 const WHOSE = "(?:(?:the\\s+)?(?:verse|v01d|void|your|a-?to-?mind)'?s?\\s+(?:own\\s+)?)";
 const POD = '(?:podcasts?|pod|show|episodes?)';
 const PLAY = '(?:(?:play|open|show|start|listen\\s+to|put\\s+on|hear)\\s+(?:me\\s+)?)?';
@@ -20,7 +22,7 @@ const RES = [
   /^(?:play\s+)?(?:podcast\s+|verse out loud\s+)?episode\s+(\d{1,3})$/,
 ];
 const norm = (s) => String(s || '').toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
-export const wantsPodcast = (lower) => { const t = norm(lower); return RES.some((r) => r.test(t)); };
+export const wantsPodcast = (lower) => { const t = norm(lower); return RES.some((r) => r.test(t)) || !!latestEpisodeOf(t); };
 export const episodeAsked = (lower) => { const m = norm(lower).match(/episode\s+(\d{1,3})$/); return m ? +m[1] : 0; };
 const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
 
@@ -41,7 +43,39 @@ export function cardHtml(ep, all, esc) {
     + '<div class="src" style="white-space:normal">Source: Verse\'s growth ledger, proven asks, daily readout and incident log, read aloud by tools/podcast.mjs with Piper voices. Nothing in it is made up.</div></div>';
 }
 
+const escH = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+async function playShow(text, api) {
+  const asked = latestEpisodeOf(text); if (!asked) return false;
+  const { showPage } = api;
+  const el = showPage((p) => { p.dataset.cardKind = 'Podcast'; p.innerHTML = '<h2>Podcast</h2><p class="sub">Finding the latest episode of ' + escH(asked.show) + '…</p>'; });
+  let ep = null, show = null;
+  try {
+    const found = await fetch('/api/podcasts?q=' + encodeURIComponent(asked.show)).then((r) => r.json());
+    show = pickShow(found && found.shows, asked.show);
+    if (show) {
+      const feed = await fetch('/api/podcasts?feed=' + encodeURIComponent(show.feed)).then((r) => r.json());
+      const episodes = feed && feed.show && feed.show.episodes;
+      ep = episodes && episodes.find((e) => e && /^https:\/\//.test(e.audio || '') && !e.video);
+      if (feed && feed.show && feed.show.title) show = { ...show, title: feed.show.title };
+    }
+  } catch (_) { ep = null; }
+  if (api._pageStill && !api._pageStill(el)) return true;
+  if (!show || !ep) {
+    el.innerHTML = '<h2>Podcast</h2><p>No public episode turned up for “' + escH(asked.show) + '”. The directory or the show’s feed did not answer.</p><div class="src">Looked up on <a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>, then the show’s own RSS.</div>';
+    return true;
+  }
+  el.innerHTML = '<h2>Podcast</h2>'
+    + '<p class="hear-title" style="font-size:1.1em;margin:0 0 2px;overflow-wrap:anywhere"><b>' + escH(ep.title) + '</b></p>'
+    + '<p class="hear-artist" style="margin:0 0 8px">' + escH(show.title) + (show.author ? ' · ' + escH(show.author) : '') + '</p>'
+    + '<audio class="hear-audio" controls preload="metadata" src="' + escH(ep.audio) + '" style="display:block;max-width:100%"></audio>'
+    + '<p><button type="button" class="hear-play">Play</button></p>'
+    + '<div class="src">Source: the show’s RSS, found through <a href="https://podcasts.apple.com/" target="_blank" rel="noopener">Apple’s podcast directory</a>. Verse does not rehost the episode.</div>';
+  const audio = el.querySelector('.hear-audio'), btn = el.querySelector('.hear-play');
+  if (btn && audio) btn.addEventListener('click', () => { audio.play().catch(() => {}); });
+  return true;
+}
 async function run(text, api) {
+  if (await playShow(text, api)) return 'podcast';
   const { showPage, esc } = api, want = episodeAsked(text);
   const el = showPage((p) => { p.innerHTML = '<h2>Verse Out Loud</h2><div class="sub">\u2026</div>'; });
   let all = [];
@@ -65,7 +99,7 @@ async function run(text, api) {
 
 export default {
   name: 'podcast',
-  examples: ['play the podcast', 'latest episode', 'verse podcast', 'verse out loud', "play verse's podcast", 'listen to your podcast', 'episode 1', 'podcast rss', 'does verse have a podcast'],
+  examples: ['play the podcast', 'latest episode', 'verse podcast', 'verse out loud', "play verse's podcast", 'listen to your podcast', 'episode 1', 'podcast rss', 'does verse have a podcast', 'play the latest episode of radiolab'],
   nearMisses: ['best podcasts about history', 'start a podcast', 'make me a podcast about cats', 'latest episode of the office'],
   match(lower) { return wantsPodcast(lower); },
   run,

@@ -3,7 +3,7 @@
 // directions links only for a directions ask, the whole-world map without a lookup, and a miss reported.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import place from '../void-live-deploy/skills/place.js';
+import place, { routeWords, wikiHit } from '../void-live-deploy/skills/place.js';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const KYOTO = { name: 'Kyoto', admin1: 'Kyoto', country: 'Japan', latitude: 35.02107, longitude: 135.75385, population: 1459640 };
@@ -42,8 +42,18 @@ test('run "directions to the Louvre": the route links to the place, a close zoom
     assert.ok(urls[0].includes('name=Louvre'), urls[0]); // "the" dropped
     const h = api.pages[0].innerHTML;
     assert.ok(h.includes('openstreetmap.org/directions?to=48.86%2C2.336') && h.includes('google.com/maps/dir/?api=1&destination=48.86%2C2.336'), h);
+    assert.ok(h.includes('Route on openstreetmap.org.'), h); // the route is in the words, not only in a link address
     assert.ok(h.includes('#map=15/48.86/2.336'), h); assert.ok(!h.includes('Other places'), h);
   });
+});
+
+test('a route is said in kilometres, and a landmark is the Wikipedia page that shares its name', () => {
+  assert.equal(routeWords({ km: 12.34, min: 18 }, 9), '12.3 km by road, about 18 min from near you.');
+  assert.equal(routeWords(null, 8400), '8400 km in a straight line from near you (roads are longer).');
+  assert.equal(routeWords(null, NaN), 'Route on openstreetmap.org.');
+  const pages = { a: { title: 'Baltimore Penn Station', index: 4, coordinates: [{ lat: 39.3, lon: -76.6 }] }, b: { title: 'New York Penn Station', index: 1, coordinates: [{ lat: 40.75, lon: -73.99 }] }, c: { title: 'Penn Station Access', index: 2 } };
+  assert.equal(wikiHit(pages, 'Penn Station').name, 'New York Penn Station');
+  assert.equal(wikiHit({ a: { title: 'Gustave Eiffel', index: 2 } }, 'eiffel tower'), null);
 });
 
 test('run: the world needs no lookup; a place not found is reported as a miss; a dead service says so', async () => {

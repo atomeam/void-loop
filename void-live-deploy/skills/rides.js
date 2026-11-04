@@ -35,7 +35,8 @@ export function ridesAsk(text) {
   m = t.match(/^(?:is\s+(?:there\s+)?waymo\s+(?:in|available\s+in)|does\s+waymo\s+(?:run|operate|work|go)\s+in|can\s+i\s+(?:get|take|ride)\s+a\s+waymo\s+in)\s+([a-z .'-]{2,40})$/);
   if (m) return { waymo: m[1].trim() };
   m = t.match(/^(?:order|get|i\s+want|deliver)\s+(?:me\s+)?(?:some\s+)?([a-z '&-]{2,30}?)\s+(?:delivered\s+)?(?:to|at)\s+(.{4,120})$/);
-  if (m && !/\b(?:ride|car|taxi|waymo|uber)\b/.test(m[1])) return { open: true, food: m[1].trim(), address: m[2].trim() };
+  // "get me to the colosseum" backtracks into food "me" delivered to the place. That is a directions ask, not a meal.
+  if (m && !/\b(?:ride|car|taxi|waymo|uber)\b/.test(m[1]) && !/^(?:me|to|a|an|the)$/.test(m[1].trim())) return { open: true, food: m[1].trim(), address: m[2].trim() };
   m = t.match(/^([a-z '&-]{2,30}?)\s+delivery\s+(?:to|at|near)\s+(.{4,120})$/);
   if (m) return { open: true, food: m[1].trim() === 'food' ? '' : m[1].trim(), address: m[2].trim() };
   m = t.match(/^(?:(?:get|call|book|order)\s+(?:me\s+)?)?(?:a\s+)?(?:ride|waymo|robotaxi|taxi|car)\s+to\s+(.{4,120})$/);

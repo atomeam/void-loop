@@ -17,7 +17,7 @@ const args = process.argv.slice(2), DRY = args.includes('--dry');
 const STATE = (() => { const i = args.indexOf('--state'); return i >= 0 ? args[i + 1] : 'domains/conductor.json'; })();
 // the loops watched for health: every executor, plus the loops the rest stand on (a broken one gets a heal: job)
 export const WATCH = [...new Set([...Object.values(ROUTES).map((r) => r.wf), AGENT, LAP, 'probe-asks.yml', 'tower-self.yml', 'tower-gate.yml', 'deploy.yml',
-  'grow-self.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml'])];
+  'grow-self.yml', 'will.yml', 'learn.yml', 'review-main.yml', 'traffic.yml', 'jobs-snapshot.yml', 'coins-snapshot.yml', 'void-voice.yml', 'earn-self.yml', 'exam.yml'])];
 const BUSY = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending']);
 const warnings = [];
 const warn = (m) => { warnings.push(m); console.log('::warning title=Conductor::' + m); };
@@ -75,7 +75,8 @@ async function tick() {
   // the coder's free model budget (GET /api/coder: counts only). Full: the coder is not started until room comes back; unknown: started as before
   const budget = await coderBudget();
   if (budget && budget.room === false) for (const f of [AGENT, LAP]) if (wf[f] && wf[f].exists) wf[f].noModel = { until: budget.until };
-  const p = plan({ jobs, wf, handed, now });
+  let exam = null; try { exam = JSON.parse(fs.readFileSync('void-live-deploy/exam/latest.json', 'utf8')); } catch (_) { exam = null; }
+  const p = plan({ jobs, wf, handed, now, exam });
   const done = { started: [], requeued: [], setAside: [], healed: [], probe: false };
   const act = async (label, fn) => { if (DRY) return true; try { return await fn(); } catch (e) { warn(label + ': ' + String(e.message || e).slice(0, 120)); return false; } };
   for (const r of p.requeue) if (await act('requeue ' + r.id, async () => (await queue('PATCH', { id: r.id, state: 'queued', note: r.note })).status === 200)) done.requeued.push(r.id);

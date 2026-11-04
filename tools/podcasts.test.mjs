@@ -150,3 +150,13 @@ test('Apple away: search and charts fall back to fyyd with a note naming it, the
   const page = fs.readFileSync(path.join(import.meta.dirname, '../void-live-deploy/podcasts/index.html'), 'utf8');
   assert.match(page, /function srcNote\(/); assert.doesNotMatch(page, /r\.status !== 502/);
 });
+
+test('the latest episode of a named show is that show, not Verse\'s own', () => {
+  assert.deepEqual(P.latestEpisodeOf('play the latest episode of radiolab'), { show: 'radiolab' });
+  assert.equal(P.latestEpisodeOf('play the latest episode'), null);
+  assert.equal(P.latestEpisodeOf('play the latest episode of verse'), null);
+  assert.equal(P.latestEpisodeOf('podcasts about history'), null);
+  const shows = [{ title: 'Science Friday', feed: 'https://example.org/fri.xml' }, { title: 'Science Vs', feed: 'https://example.org/vs.xml' }];
+  assert.equal(P.pickShow(shows, 'science vs').title, 'Science Vs');
+  assert.equal(P.pickShow(shows, 'radiolab'), null);
+});
