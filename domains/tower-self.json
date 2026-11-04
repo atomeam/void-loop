@@ -741,6 +741,98 @@
     "place": 8,
     "why": "not sized yet, hardness 76, Tranco 397940"
    }
+  },
+  "unitingchurch.org.au": {
+   "at": "2026-11-04T09:45:56Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a church organization page and the provided subpage is a specific web hosting login/support portal. Neither is a tool that matches the)",
+   "title": "controlhosting.net - Powered by Electricity",
+   "ease": {
+    "score": 5.8,
+    "place": 1,
+    "why": "not sized yet, hardness 76, Tranco 296786"
+   }
+  },
+  "hexler.net": {
+   "at": "2026-11-04T09:46:04Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is a company page for a developer of multimedia tools (TouchOSC, KodeLife, etc.). Verse does not have a page for a company or a product)",
+   "title": "hexler.net",
+   "ease": {
+    "score": 5.8,
+    "place": 2,
+    "why": "not sized yet, hardness 76, Tranco 221709"
+   }
+  },
+  "deadlinkchecker.com": {
+   "at": "2026-11-04T09:46:11Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides a service for checking broken links on websites, which does not match any of the existing Verse tools (which are primarily calculators)",
+   "title": "Free Broken Link Checking Tool - Dead Link Checker",
+   "ease": {
+    "score": 5.7,
+    "place": 3,
+    "why": "not sized yet, hardness 77, Tranco 318566"
+   }
+  },
+  "testandcalc.com": {
+   "at": "2026-11-04T09:46:18Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "Software and Solutions for Teaching and learning Drug Calculations, On-line Test",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.7,
+    "place": 4,
+    "why": "not sized yet, hardness 78, Tranco 465927"
+   }
+  },
+  "portchecker.co": {
+   "at": "2026-11-04T09:46:22Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (none)",
+   "title": "Port Checker - Check Open Ports Online",
+   "ease": {
+    "score": 5.7,
+    "place": 5,
+    "why": "not sized yet, hardness 78, Tranco 244512"
+   }
+  },
+  "custompricecalculator.com": {
+   "at": "2026-11-04T09:46:28Z",
+   "outcome": "covered",
+   "page": "/calculators/",
+   "topic": "formula calculators",
+   "title": "AI Custom Price Calculator for Shopify | Apippa",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "ease": {
+    "score": 5.7,
+    "place": 6,
+    "why": "not sized yet, hardness 78, Tranco 104213"
+   }
+  },
+  "regexone.com": {
+   "at": "2026-11-04T09:46:36Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website is an interactive learning platform for regular expressions, while Verse currently has no tool for teaching programming concepts or language syntax.)",
+   "title": "RegexOne - Learn Regular Expressions - Lesson 1: An Introduction, and the ABCs",
+   "ease": {
+    "score": 5.6,
+    "place": 7,
+    "why": "not sized yet, hardness 79, Tranco 405240"
+   }
+  },
+  "ehex.de": {
+   "at": "2026-11-04T09:46:42Z",
+   "outcome": "no-family",
+   "why": "no floor does its job (The website provides specialized software solutions and infrastructure for the German telematics infrastructure (eHealth). Verse does not have a page for)",
+   "title": "ehex | Die eHealth Experten",
+   "ease": {
+    "score": 5.6,
+    "place": 8,
+    "why": "not sized yet, hardness 79, Tranco 345776"
+   }
   }
  },
  "runs": [

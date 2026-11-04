@@ -10,14 +10,182 @@
   }
  },
  "counts": {
-  "sites": 255,
-  "surpassed": 4,
-  "passed": 141,
-  "assimilated": 6,
+  "sites": 263,
+  "surpassed": 2,
+  "passed": 143,
+  "assimilated": 8,
   "current": 1,
-  "tried": 103
+  "tried": 109
  },
  "sites": [
+  {
+   "site": "ehex.de",
+   "url": "https://ehex.de/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:46:42Z",
+   "page": "",
+   "lane": "",
+   "took": "ehex | Die eHealth Experten",
+   "why": "no floor does its job (The website provides specialized software solutions and infrastructure for the German telematics infrastructure (eHealth). Verse does not have a page for)",
+   "learned": "",
+   "ease": {
+    "score": 5.6,
+    "place": 8,
+    "why": "not sized yet, hardness 79, Tranco 345776"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "regexone.com",
+   "url": "https://regexone.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:46:36Z",
+   "page": "",
+   "lane": "",
+   "took": "RegexOne - Learn Regular Expressions - Lesson 1: An Introduction, and the ABCs",
+   "why": "no floor does its job (The website is an interactive learning platform for regular expressions, while Verse currently has no tool for teaching programming concepts or language syntax.)",
+   "learned": "",
+   "ease": {
+    "score": 5.6,
+    "place": 7,
+    "why": "not sized yet, hardness 79, Tranco 405240"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "custompricecalculator.com",
+   "url": "https://custompricecalculator.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T09:46:28Z",
+   "page": "/calculators/",
+   "lane": "",
+   "took": "AI Custom Price Calculator for Shopify | Apippa",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.7,
+    "place": 6,
+    "why": "not sized yet, hardness 78, Tranco 104213"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "portchecker.co",
+   "url": "https://portchecker.co/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:46:22Z",
+   "page": "",
+   "lane": "",
+   "took": "Port Checker - Check Open Ports Online",
+   "why": "no floor does its job (none)",
+   "learned": "",
+   "ease": {
+    "score": 5.7,
+    "place": 5,
+    "why": "not sized yet, hardness 78, Tranco 244512"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "testandcalc.com",
+   "url": "https://testandcalc.com/",
+   "status": "assimilated into an existing page",
+   "outcome": "covered",
+   "at": "2026-11-04T09:46:18Z",
+   "page": "/calculators/",
+   "lane": "",
+   "took": "Software and Solutions for Teaching and learning Drug Calculations, On-line Test",
+   "why": "its job is formula calculators, which /calculators/ already does: extend that page, not a new one",
+   "learned": "",
+   "ease": {
+    "score": 5.7,
+    "place": 4,
+    "why": "not sized yet, hardness 78, Tranco 465927"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "deadlinkchecker.com",
+   "url": "https://deadlinkchecker.com/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:46:11Z",
+   "page": "",
+   "lane": "",
+   "took": "Free Broken Link Checking Tool - Dead Link Checker",
+   "why": "no floor does its job (The website provides a service for checking broken links on websites, which does not match any of the existing Verse tools (which are primarily calculators)",
+   "learned": "",
+   "ease": {
+    "score": 5.7,
+    "place": 3,
+    "why": "not sized yet, hardness 77, Tranco 318566"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "hexler.net",
+   "url": "https://hexler.net/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:46:04Z",
+   "page": "",
+   "lane": "",
+   "took": "hexler.net",
+   "why": "no floor does its job (The website is a company page for a developer of multimedia tools (TouchOSC, KodeLife, etc.). Verse does not have a page for a company or a product)",
+   "learned": "",
+   "ease": {
+    "score": 5.8,
+    "place": 2,
+    "why": "not sized yet, hardness 76, Tranco 221709"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
+  {
+   "site": "unitingchurch.org.au",
+   "url": "https://unitingchurch.org.au/",
+   "status": "read, no page family fits it",
+   "outcome": "no-family",
+   "at": "2026-11-04T09:45:56Z",
+   "page": "",
+   "lane": "",
+   "took": "controlhosting.net - Powered by Electricity",
+   "why": "no floor does its job (The website is a church organization page and the provided subpage is a specific web hosting login/support portal. Neither is a tool that matches the)",
+   "learned": "",
+   "ease": {
+    "score": 5.8,
+    "place": 1,
+    "why": "not sized yet, hardness 76, Tranco 296786"
+   },
+   "first": null,
+   "sources": [
+    "domains/tower-self.json"
+   ]
+  },
   {
    "site": "ndscalc.ru",
    "url": "https://ndscalc.ru/",
@@ -234,12 +402,27 @@
     "void-live-deploy/lib/tool-sites.js",
     "void-live-deploy/lib/self-sites.js",
     "domains/tower-self.json",
-    "void-live-deploy/tower.target.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "current": true,
    "score": {
     "n": 11,
     "m": 15
+   },
+   "crawl": {
+    "pages": 57,
+    "templates": 13,
+    "features": 25,
+    "missing": [
+     "In 24 languages",
+     "A grid (18: Face smiling, Face affection, Face tongue, Face hand, Face neutral skeptical, ",
+     "Articles (a blog)",
+     "A page: Emoji Keyboard ⌨️♥️😂 Online",
+     "A page: Themes",
+     "A page: 🕹️ Concentration Emoji Game"
+    ],
+    "at": "2026-11-04"
    }
   },
   {
@@ -381,14 +564,14 @@
   {
    "site": "onlineconverter.com",
    "url": "https://onlineconverter.com/",
-   "status": "surpassed",
-   "outcome": "surpassed",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
    "at": "2026-11-03T14:54:07Z",
    "page": "/converter/",
    "lane": "",
    "took": "",
-   "why": "ahead of it on 12 of 12 aspects, measured head to head",
-   "learned": "beaten on 12 of 12 aspects: 136 ms to load against 49 ms; 10 of 10 things a full answer shows against 9 (the site lacked nothing to install)",
+   "why": "Passed onlineconverter.com (12/12, missing 2 features)",
+   "learned": "",
    "ease": null,
    "first": {
     "at": "2026-10-29T16:34:49Z",
@@ -396,11 +579,22 @@
     "file": "void-live-deploy/lib/tower.js"
    },
    "sources": [
-    "void-live-deploy/tower.evidence.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "score": {
     "n": 12,
     "m": 12
+   },
+   "crawl": {
+    "pages": 199,
+    "templates": 13,
+    "features": 36,
+    "missing": [
+     "A grid (7: Introduction, How To Use, Main Options, Other Options, Remarks, Related Video C",
+     "Calculation Results"
+    ],
+    "at": "2026-11-04"
    }
   },
   {
@@ -4287,14 +4481,14 @@
   {
    "site": "howsecureismypassword.net",
    "url": "https://howsecureismypassword.net/",
-   "status": "surpassed",
-   "outcome": "surpassed",
+   "status": "passed, conquering in background",
+   "outcome": "passed",
    "at": "2026-10-30T05:33:34Z",
    "page": "/password/strength/",
    "lane": "",
    "took": "",
-   "why": "ahead of it on 15 of 15 aspects, measured head to head",
-   "learned": "a checker is trusted only when nothing leaves the device: the password never goes in a link, the leak list is asked with five characters of a fingerprint, and the reasons and the fixes stand beside the time to crack; and the gate learned to type a question into Verse's own box when the address must not carry it",
+   "why": "Passed howsecureismypassword.net (15/15, missing 2 features)",
+   "learned": "",
    "ease": null,
    "first": {
     "at": "2026-10-24T04:24:52Z",
@@ -4302,11 +4496,22 @@
     "file": "void-live-deploy/lib/tower.js"
    },
    "sources": [
-    "void-live-deploy/tower.evidence.json"
+    "void-live-deploy/tower.target.json",
+    "void-live-deploy/tower.features.json"
    ],
    "score": {
     "n": 15,
     "m": 15
+   },
+   "crawl": {
+    "pages": 1,
+    "templates": 1,
+    "features": 3,
+    "missing": [
+     "Translations Menu",
+     "Accessibility Menu"
+    ],
+    "at": "2026-11-04"
    }
   },
   {

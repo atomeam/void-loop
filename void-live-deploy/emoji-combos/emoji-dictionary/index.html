@@ -105,10 +105,6 @@
   <div id="simhead" class="hint" hidden></div>
   <div id="similar" aria-label="Similar emoji"></div>
 
-  <h2 id="lookshead">How 😀 looks on Apple iPhone, Android and other platforms</h2>
-  <p class="hint">The emoji you tapped last, as Apple, Google, X, Facebook, Microsoft, JoyPixels, OpenMoji and more draw it, beside this device. Tap one to copy it. <a id="looksall" href="/emojis/everywhere/?e=%F0%9F%98%80">Full view with codepoint, shortcode, light or dark, and a link to share</a></p>
-  <div id="looks"></div>
-
   <h2>Make fancy text</h2>
   <p class="hint">Type once and get the same words in 16 Unicode letter styles, each ready to copy.</p>
   <div class="box"><input id="ft" type="text" autocomplete="off" aria-label="Text to make fancy" placeholder="Type your text" maxlength="200"></div>
@@ -202,20 +198,9 @@
   function pick(c) {
     if ($('collectmode').checked) collect(c); else copy(c, 'Copied ' + c);
     lastPick = c; const sim = similarEmoji(c, EMOJI);
-    showLooks(c);
     $('simhead').hidden = !sim.length; $('simhead').textContent = sim.length ? 'Similar to ' + c + ':' : ''; $('similar').replaceChildren(...sim.map(ebtn));
   }
   $('eq').addEventListener('input', renderEmoji);
-  // how the emoji looks everywhere (owner, 2026-11-03: emojigraph.org shows every platform's drawing; lib/emoji-looks.js), loaded on first use
-  let looksOf = '';
-  function showLooks(ch) {
-    if (looksOf === ch) return; looksOf = ch;
-    import('/lib/emoji-looks.js').then((m) => { if (looksOf !== ch) return; if (!document.getElementById('lk-css')) { const st = document.createElement('style'); st.id = 'lk-css'; st.textContent = m.LOOKS_CSS; document.head.appendChild(st); }
-      const nm = (EMOJI.find((x) => x.c === ch) || {}).n || '';
-      $('lookshead').textContent = 'How ' + ch + (nm ? ' ' + nm : '') + ' looks on Apple iPhone, Android and other platforms'; $('looksall').href = '/emojis/everywhere/?e=' + encodeURIComponent(ch);
-      $('looks').innerHTML = m.gridHtml(ch, { name: nm, compact: true }); m.wireGrid($('looks'), { onCopy: (v, ok) => say(ok ? 'Copied ' + ch : 'Copy did not work here: select and copy it') }); }).catch(() => {}); // void-review: ok (gridHtml escapes every value)
-  }
-  if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es.some((x) => x.isIntersecting)) { io.disconnect(); showLooks(lastPick || '😀'); } }, { rootMargin: '300px' }); io.observe($('lookshead')); } else showLooks('😀');
   for (const id of ['egrid', 'similar']) $(id).addEventListener('click', (e) => { const b = e.target.closest('button[data-c]'); if (b) pick(b.dataset.c); });
 
   // fancy text
