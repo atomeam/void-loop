@@ -7,18 +7,41 @@
 const FIELDS = ['idea', 'problem', 'systems', 'automations', 'handoff', 'next'];
 const LABELS = { idea: 'The idea', problem: 'Problem it solves', systems: 'Systems to design / build / connect', automations: 'Automations that take over the heavy lifting', handoff: 'Handoff (status, docs, running jobs)', next: 'Next delivery step' };
 
+function suggestSystems(text) {
+  const t = text.toLowerCase();
+  const systems = [];
+  if (/email|inbox|message|customer/.test(t)) systems.push('email intake and routing');
+  if (/report|status|update|weekly/.test(t)) systems.push('automated reporting pipeline');
+  if (/onboard|client|customer|signup/.test(t)) systems.push('client onboarding flow');
+  if (/automation|workflow|process/.test(t)) systems.push('workflow orchestration');
+  if (/data|analytics|dashboard/.test(t)) systems.push('data connection and monitoring');
+  if (systems.length === 0) systems.push('core flow design, data sources, running stages');
+  return systems.join(', ');
+}
+
+function suggestAutomations(text) {
+  const t = text.toLowerCase();
+  const autos = [];
+  if (/email|inbox/.test(t)) autos.push('parse incoming emails into tasks');
+  if (/report|status/.test(t)) autos.push('generate and send status reports');
+  if (/onboard/.test(t)) autos.push('run onboarding checklist and notifications');
+  if (/monitor|watch|alert/.test(t)) autos.push('monitor systems and alert on issues');
+  if (autos.length === 0) autos.push('identify repeated steps for Verse to run and monitor');
+  return autos.join('; ');
+}
+
 function structure(text) {
   const t = String(text || '').trim();
   if (!t) return { idea: '', problem: '', systems: '', automations: '', handoff: '', next: '' };
-  // simple extraction: first sentence is idea, rest split roughly
   const sentences = t.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
+  const idea = sentences[0] || t.slice(0, 160);
   return {
-    idea: sentences[0] || t.slice(0, 120),
-    problem: sentences[1] || 'Clarify the pain this removes for the business.',
-    systems: 'Design the core flow, connect data sources, build the stages that turn the idea into running work.',
-    automations: 'Identify the repeated steps Verse can run and monitor so the client does less.',
+    idea,
+    problem: sentences[1] || 'Clarify the pain this removes for the business and the client work it eliminates.',
+    systems: suggestSystems(t),
+    automations: suggestAutomations(t),
     handoff: 'Status card, docs of the system, and the running automations handed to the client.',
-    next: 'Ship the first system slice and a status handoff.',
+    next: 'Ship the first system slice and a status handoff so Verse owns the heavy lifting.',
   };
 }
 
