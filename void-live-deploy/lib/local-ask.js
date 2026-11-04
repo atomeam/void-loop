@@ -19,6 +19,8 @@ export function localAsk(text) {
   if (q) return { kind: kindOf(q[1]), place: q[3] ? q[3].trim() : '' };
   if (/^(?:what|how|why|who|when|is|are|does|do|can)\b/.test(t)) return null; // a question about radio is not an ask for stations
   if (/^(?:live\s+|local\s+)?radio$/.test(t)) return { kind: 'radio', place: '' };
+  // "play music" / "play some music": the compose skill leaves a plain "play" alone (it wants a recording). A station plays.
+  if (/^music$/.test(t)) return { kind: 'radio', place: '' };
   let m = new RegExp('^local\\s+' + KIND + '(?:\\s+(?:stations?|channels?))?(?:\\s+' + NEAR + '|\\s+(?:in|near|around|for)\\s+' + PLACE + ')?$').exec(t);
   if (m) return { kind: kindOf(m[1]), place: m[2] ? m[2].trim() : '' };
   m = new RegExp('^' + KIND + '(?:\\s+(?:stations?|channels?))?\\s+(?:' + NEAR + '|(?:in|near|around)\\s+' + PLACE + ')$').exec(t);

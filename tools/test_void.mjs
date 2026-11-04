@@ -1863,7 +1863,7 @@ try {
     await E.ctx.setOffline(false); await E.p.waitForTimeout(500);
     const back = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline') }));
     check('empty state: offline shows a calm amber halo and one plain line in the bar, locks nothing (a calculation still answers), and clears the moment the connection returns',
-      !online0.off && online0.ph === 'Command the Verse' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Command the Verse', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
+      !online0.off && online0.ph === 'Ask anything' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Ask anything', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
     // 2) the on-screen keyboard: with a mocked visual viewport 300 px shorter, the bar sits above it
     const vh = (await E.p.evaluate(() => innerHeight));
     await E.p.evaluate(() => { window.__vv.height = innerHeight - 300; window.__vv.dispatchEvent(new Event('resize')); }); await E.p.waitForTimeout(300);

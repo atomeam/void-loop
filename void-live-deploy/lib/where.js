@@ -17,13 +17,40 @@ export function savePlace(p, store = typeof localStorage !== 'undefined' ? local
   try { if (!p) store.removeItem(KEY); else if (validPlace(p)) store.setItem(KEY, JSON.stringify({ lat: p.lat, lon: p.lon, name: String(p.name || '').slice(0, 80), tz: typeof p.tz === 'string' ? p.tz.slice(0, 60) : '' })); } catch (_) {}
 }
 
-// a place by name, through Open-Meteo's geocoder; null when nothing matches
+// a US state as people type it, so "Lakeland Florida" can be asked again as "Lakeland" when the geocoder
+// knows the city and not the two words together (Open-Meteo returns nothing for "Lakeland Florida")
+const STATE_WORD = new Set('alabama alaska arizona arkansas california colorado connecticut delaware florida georgia hawaii idaho illinois indiana iowa kansas kentucky louisiana maine maryland massachusetts michigan minnesota mississippi missouri montana nebraska nevada newhampshire newjersey newmexico newyork northcarolina northdakota ohio oklahoma oregon pennsylvania rhodeisland southcarolina southdakota tennessee texas utah vermont virginia washington westvirginia wisconsin wyoming district columbia dc'.split(' '));
+const STATE_ABBR = new Set('al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy dc'.split(' '));
+/** names to ask the geocoder, the typed one first, then the city when a state was stuck on the end. Pure. */
+export function placeTries(name) {
+  const q = String(name || '').trim().replace(/\s+/g, ' ').replace(/[?.!]+$/, '').slice(0, 80);
+  if (!q) return [];
+  const out = [q];
+  const parts = q.split(' ');
+  if (parts.length >= 2) {
+    const last = parts[parts.length - 1].replace(/\./g, '').toLowerCase();
+    const tail = last.length === 2 ? last : last.replace(/\s+/g, '');
+    if ((last.length === 2 && STATE_ABBR.has(last)) || STATE_WORD.has(tail)) {
+      const city = parts.slice(0, -1).join(' ').replace(/,\s*$/, '').trim();
+      if (city.length >= 3 && !/^(?:north|south|west|east|new)$/i.test(city) && !out.includes(city)) out.push(city);
+    }
+  }
+  return out;
+}
+async function findOnce(q, fetchFn) {
+  const g = await fetchFn('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json());
+  const r = g && g.results && g.results[0];
+  return r && validPlace({ lat: r.latitude, lon: r.longitude }) ? r : null;
+}
+// a place by name, through Open-Meteo's geocoder; null when nothing matches. A state stuck on the city is tried off.
 export async function findPlace(name, fetchFn = (typeof fetch !== 'undefined' ? fetch : null)) {
-  const q = String(name || '').trim().slice(0, 80); if (!q || !fetchFn) return null;
+  if (!fetchFn) return null;
   try {
-    const g = await fetchFn('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(q)).then((r) => r.json());
-    const r = g && g.results && g.results[0];
-    return r && validPlace({ lat: r.latitude, lon: r.longitude }) ? { lat: r.latitude, lon: r.longitude, name: r.name + (r.country ? ', ' + r.country : ''), tz: typeof r.timezone === 'string' ? r.timezone : '', source: 'chosen' } : null;
+    for (const q of placeTries(name)) {
+      const r = await findOnce(q, fetchFn);
+      if (r) return { lat: r.latitude, lon: r.longitude, name: r.name + (r.country ? ', ' + r.country : ''), tz: typeof r.timezone === 'string' ? r.timezone : '', source: 'chosen' };
+    }
+    return null;
   } catch (_) { return null; }
 }
 
