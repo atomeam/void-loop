@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1147,
+ "counted": 1148,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 60,
+   "skills": 61,
    "direct": 51,
-   "dependants": 66,
+   "dependants": 67,
    "tests": 6
   },
   {
@@ -200,9 +200,9 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 11,
-   "direct": 11,
-   "dependants": 11,
+   "skills": 12,
+   "direct": 12,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -654,10 +654,24 @@
    "tests": 1
   },
   {
+   "file": "lib/date-math.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 8,
+   "tests": 1
+  },
+  {
    "file": "lib/tower-controls.js",
    "skills": 4,
    "direct": 0,
    "dependants": 8,
+   "tests": 1
+  },
+  {
+   "file": "lib/date-words.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7,
    "tests": 1
   },
   {
@@ -808,25 +822,11 @@
    "tests": 1
   },
   {
-   "file": "lib/date-math.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 7,
-   "tests": 1
-  },
-  {
    "file": "lib/local-ask.js",
    "skills": 3,
    "direct": 0,
    "dependants": 7,
    "tests": 0
-  },
-  {
-   "file": "lib/date-words.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 6,
-   "tests": 1
   },
   {
    "file": "lib/fincalc.js",
@@ -1200,6 +1200,13 @@
    "tests": 2
   },
   {
+   "file": "lib/date-ask.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
@@ -1257,6 +1264,13 @@
   },
   {
    "file": "lib/template-list.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/time-math.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2,
@@ -1907,13 +1921,6 @@
    "tests": 2
   },
   {
-   "file": "lib/date-ask.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/day-blocks.js",
    "skills": 1,
    "direct": 1,
@@ -2258,13 +2265,6 @@
   },
   {
    "file": "lib/text-tools.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/time-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -7225,6 +7225,9 @@
    ],
    "importedBy": [
     "skills/date-calc.js"
+   ],
+   "reachedBy": [
+    "skills/date-math.js"
    ]
   },
   "lib/date-math.js": {
@@ -7238,6 +7241,7 @@
    "reachedBy": [
     "lib/sun-day.js",
     "skills/date-calc.js",
+    "skills/date-math.js",
     "skills/formulas.js"
    ]
   },
@@ -7251,6 +7255,7 @@
    ],
    "reachedBy": [
     "skills/busy-blocks.js",
+    "skills/date-math.js",
     "skills/task-board.js"
    ]
   },
@@ -12291,6 +12296,7 @@
   "lib/skill-family.js": {
    "imports": [],
    "importedBy": [
+    "skills/date-math.js",
     "skills/dates.js",
     "skills/games.js",
     "skills/languages.js",
@@ -12606,6 +12612,7 @@
     "lib/stage-watch.js",
     "skills/bookmarks.js",
     "skills/copy-stack.js",
+    "skills/date-math.js",
     "skills/dim-void.js",
     "skills/dismissed-pile.js",
     "skills/list-starters.js",
@@ -13405,6 +13412,9 @@
    ],
    "importedBy": [
     "skills/time-math.js"
+   ],
+   "reachedBy": [
+    "skills/date-math.js"
    ]
   },
   "lib/tome-search.js": {
@@ -14966,12 +14976,22 @@
     "lib/date-ask.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/date-math.js"
+   ]
   },
   "skills/date-grid.js": {
    "imports": [
     "lib/stage-pack.js",
     "lib/date-math.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-math.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/time-math.js",
+    "skills/date-calc.js"
    ],
    "importedBy": []
   },
@@ -18201,7 +18221,9 @@
     "lib/date-words.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/date-math.js"
+   ]
   },
   "skills/time.js": {
    "imports": [
