@@ -1,16 +1,57 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 209,
+ "runsTotal": 211,
  "kinds": {
   "grow": 67,
-  "file": 71,
+  "file": 72,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 17
+  "visitor": 18
  },
  "runs": [
+  {
+   "at": "2026-11-04T09:19:31Z",
+   "passed": 81,
+   "of": 87,
+   "kind": "file",
+   "ms": 400,
+   "note": "fix: \"what rhymes with orange\" load 1217 ms > 1200",
+   "failed": [
+    {
+     "ask": "play voidquest",
+     "why": "fps 4 < 5"
+    },
+    {
+     "ask": "what can I buy",
+     "why": "missing text /store|buy|\\$/"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 1 < 5"
+    },
+    {
+     "ask": "what rhymes with orange",
+     "why": "load 1217 ms > 1200"
+    },
+    {
+     "ask": "closer on the figure",
+     "why": "load 1248 ms > 1200"
+    },
+    {
+     "ask": "films by Kurosawa",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-04T09:08:08Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T08:40:37Z",
    "passed": 0,
@@ -187,100 +228,6 @@
      "why": "nothing appeared"
     }
    ]
-  },
-  {
-   "at": "2026-10-22T01:56:37Z",
-   "passed": 67,
-   "of": 78,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"contéstame en español\" (skill:languages)",
-   "failed": [
-    {
-     "ask": "what are you?",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play voidquest",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "weather in boston",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play connect four",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "set a timer for 5 minutes",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "what is 17 times 23",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play reversi",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "arcade games",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    }
-   ]
-  },
-  {
-   "at": "2026-10-20T22:41:16Z",
-   "passed": 67,
-   "of": 75,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"my photos\" (skill:photos)",
-   "failed": [
-    {
-     "ask": "play voidquest",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play solarquest",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "play chess",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "weather in boston",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "set a timer for 5 minutes",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "what is 17 times 23",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "show the days until a date",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    },
-    {
-     "ask": "arcade games",
-     "why": "console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-    }
-   ]
   }
  ],
  "weekly": [
@@ -355,9 +302,9 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 18,
-   "passed": 58,
-   "of": 87,
+   "runs": 20,
+   "passed": 139,
+   "of": 174,
    "ms": 554
   }
  ],
@@ -369,16 +316,16 @@
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-17T23:49:12Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
-  "skill:automations": "2026-11-03T21:58:46Z",
+  "skill:automations": "2026-11-04T09:19:31Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-11-03T21:58:46Z",
+  "skill:book": "2026-11-04T09:19:31Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
-  "skill:define": "2026-11-03T21:58:46Z",
+  "skill:define": "2026-11-04T09:19:31Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-03T21:58:46Z",
+  "skill:cartoon": "2026-11-04T09:19:31Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",

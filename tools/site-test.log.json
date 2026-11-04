@@ -1857,5 +1857,71 @@
    ]
   },
   "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T09:08:08Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1939,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T09:19:31Z",
+  "passed": 81,
+  "of": 87,
+  "ms": 400,
+  "kind": "file",
+  "key": "what rhymes with orange | load # ms > #",
+  "failed": [
+   {
+    "ask": "play voidquest",
+    "why": "fps 4 < 5"
+   },
+   {
+    "ask": "what can I buy",
+    "why": "missing text /store|buy|\\$/"
+   },
+   {
+    "ask": "play chess",
+    "why": "fps 1 < 5"
+   },
+   {
+    "ask": "what rhymes with orange",
+    "why": "load 1217 ms > 1200"
+   },
+   {
+    "ask": "closer on the figure",
+    "why": "load 1248 ms > 1200"
+   },
+   {
+    "ask": "films by Kurosawa",
+    "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+   }
+  ],
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1939,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "nothing useful"
+     ]
+    }
+   ]
+  },
+  "note": "fix: \"what rhymes with orange\" load 1217 ms > 1200"
  }
 ]
