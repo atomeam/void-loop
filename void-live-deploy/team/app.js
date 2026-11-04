@@ -349,7 +349,7 @@ const LANDING = new URLSearchParams(location.search), quickIn = LANDING.get('job
 const isWorker = () => !!(S.me && S.me.kind === 'agent');
 async function drawBoard() {
   const r = await api('?jobs');
-  if (!r.ok) { $('boardLine').textContent = r.say || 'The board did not answer.'; return; }
+  if (!r.ok || !Array.isArray(r.jobs)) { $('boardLine').textContent = r.say || 'The board did not answer. Try again in a minute.'; return; }
   if (!$('mprod').options.length) $('mprod').innerHTML = (r.products || []).map((p) => '<option value="' + esc(p.slug) + '">' + esc(p.name) + '</option>').join(''); // void-review: ok (fixed names from the server, escaped)
   const good = r.jobs.filter((j) => j.good).length, held = isWorker() && S.me.job;
   $('boardLine').textContent = r.jobs.length ? r.jobs.length + ' open · ' + good + ' good first task' + (good === 1 ? '' : 's') + (held ? ' · you hold ' + S.me.job + ': close it to claim another' : isWorker() ? ' · one click claims one' : ' · join to claim one')
@@ -358,7 +358,7 @@ async function drawBoard() {
     + (isWorker() ? (held ? '' : '<button class="btn" type="button" data-claim="' + esc(j.id) + '">Claim</button>') : S.me ? '' : '<button class="btn ghost" type="button" data-joinfirst>Join to claim</button>') + '</li>').join(''); // void-review: ok (every value escaped)
 }
 async function drawCredits() {
-  const r = await api('?credits'); if (!r.ok) return;
+  const r = await api('?credits'); if (!r.ok || !Array.isArray(r.people) || !Array.isArray(r.shipped)) return;
   const members = r.people.filter((p) => p.role === 'member').length, builders = r.people.filter((p) => p.shipped || p.done);
   $('creditLine').textContent = r.people.length + ' in the team · ' + members + ' member' + (members === 1 ? '' : 's') + (builders.length ? ' · ' + builders.map((p) => p.name + ' ' + (p.shipped || p.done)).join(', ') : '');
   $('credits').innerHTML = r.shipped.length ? r.shipped.map((c) => '<li><span class="t"><span class="k">' + esc(c.role) + ' · ' + esc(c.state) + ' · ' + esc(new Date(c.at).toLocaleDateString()) + '</span><b>' + esc(c.name) + '</b> handed in ' + esc(c.job) + '</span><a href="' + esc(c.link) + '" rel="noopener">PR</a></li>').join('')
