@@ -48,6 +48,12 @@
       "into": "/bots/ (journal-day)",
       "test": "tools/salvaged-bots.test.mjs",
       "pr": null
+    },
+    "outside:public-apis/public-apis": {
+      "target": "bot",
+      "into": "/bots/ (free-api-finder)",
+      "test": "tools/salvaged-bots.test.mjs",
+      "pr": null
     }
   }
 }

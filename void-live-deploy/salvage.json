@@ -2,13 +2,13 @@
  "at": "2026-11-04",
  "scanned": 545,
  "counts": {
-  "unified": 8,
+  "unified": 9,
   "live": 71,
-  "salvageable": 439,
+  "salvageable": 438,
   "history": 24,
   "skipped": 3
  },
- "remaining": 439,
+ "remaining": 438,
  "top10": [
   {
    "id": "archive/repos/the-void/src/components",
@@ -137,7 +137,7 @@
    "author": "public-apis",
    "license": "MIT",
    "link": "https://github.com/public-apis/public-apis",
-   "used": null,
+   "used": "/bots/ (free-api-finder)",
    "isolated": false
   },
   {
@@ -6613,12 +6613,12 @@
   {
    "id": "outside:public-apis/public-apis",
    "kind": "outside",
-   "status": "salvageable",
-   "target": "data",
+   "status": "unified",
+   "target": "bot",
    "value": 31,
-   "why": "reuse with credit; keep the license notice",
-   "into": null,
-   "test": null,
+   "why": "A collective list of free APIs",
+   "into": "/bots/ (free-api-finder)",
+   "test": "tools/salvaged-bots.test.mjs",
    "pr": null,
    "license": "MIT"
   },
