@@ -75,7 +75,7 @@ async function film(scene, dir) {
   await page.waitForTimeout(250);
   await page.keyboard.press('Enter');
   let answerSeen = false;
-  try { await page.waitForFunction((re) => new RegExp(re).test(document.body.innerText), scene.answer.source, { timeout: 15000 }); answerSeen = true; } catch (_) {}
+  try { await page.waitForFunction((re) => new RegExp(re).test(document.body.innerText), scene.answer.source, { timeout: 15000 }); answerSeen = true; } catch (_) {} // void-review: ok: the pattern is a constant in SCENES, never user input
   const answer = now() - t0;
   await page.waitForTimeout(4200);
   const end = now() - t0;
