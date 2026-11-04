@@ -11,10 +11,12 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { builtWithOf } from '../void-live-deploy/lib/skill-compose.js';
 
 const skillsDir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 export const ORDER_DIR = resolve(skillsDir, 'order');
 export const INDEX = resolve(skillsDir, 'index.json');
+export const LINEAGE = resolve(skillsDir, 'lineage.json');
 const NAME = /^(\d+)-([a-z0-9][a-z0-9-]*)$/;
 
 /** the skill names in routing order, from the order file names (rank, then name). Pure. */
@@ -42,6 +44,32 @@ export function indexState(dir = ORDER_DIR, index = INDEX) {
   return { names, stale: !same };
 }
 export function writeIndex(dir = ORDER_DIR, index = INDEX) { const { names } = indexState(dir, index); writeFileSync(index, indexText(names)); return names; }
+
+/** { note, count, skills } from each skill file's `export const builtWith`. count is how many skills were built with skills. Pure. */
+export function lineageOf(names, read) {
+  const skills = {};
+  for (const n of names) {
+    const parts = builtWithOf(read(n) || '');
+    if (parts.length) skills[n] = parts;
+  }
+  const count = Object.keys(skills).length;
+  return { note: 'Which skills were built by calling other skills (export const builtWith in the skill file). Written by tools/skills-index.mjs beside skills/index.json. Do not edit by hand.', count, skills };
+}
+export const lineageText = (o) => JSON.stringify(o, null, 1) + '\n';
+/** write skills/lineage.json from the order's names and the skill files. */
+export function writeLineage(dir = ORDER_DIR, sdir = skillsDir, out = LINEAGE) {
+  const names = readOrder(dir);
+  const o = lineageOf(names, (n) => { try { return readFileSync(resolve(sdir, n + '.js'), 'utf8'); } catch (_) { return ''; } });
+  writeFileSync(out, lineageText(o));
+  return o;
+}
+export function lineageState(dir = ORDER_DIR, sdir = skillsDir, out = LINEAGE) {
+  const names = readOrder(dir);
+  const o = lineageOf(names, (n) => { try { return readFileSync(resolve(sdir, n + '.js'), 'utf8'); } catch (_) { return ''; } });
+  const text = lineageText(o);
+  const current = existsSync(out) ? readFileSync(out, 'utf8') : '';
+  return { text, stale: current !== text, count: o.count };
+}
 
 /** the order files as { name: rank } */
 export function ranksOf(dir = ORDER_DIR) {
@@ -79,6 +107,9 @@ export function adoptOrder(names, dir = ORDER_DIR) {
 export const OFF = {
   map: 'the assimilation map, retired with the assimilation table in cleanup step 2 (domains/void.frontier.md); kept for salvage',
   vat: 'the VAT calculator page is another worker\'s (Versus /vat/). Off the routing order until that work lists the skill itself.',
+  stopwatch: 'RETIRED: "show stopwatch" stays off the order until its asks are its own (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
+  palindrome: 'RETIRED: "is racecar a palindrome" is util\'s (tools/skills-unlisted.mjs). The order file was a leftover the index never listed.',
+  'idea-clarify': 'the shipped card is business-clarify; this file is the earlier draft and stays off the routing order',
 };
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */
@@ -121,20 +152,24 @@ export function registerNames(names, dir = ORDER_DIR) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const mode = process.argv[2] || '';
-  if (mode === '--write') { const n = writeIndex(); console.log('wrote skills/index.json: ' + n.length + ' skills'); }
+  if (mode === '--write') {
+    const n = writeIndex(); const lin = writeLineage();
+    console.log('wrote skills/index.json: ' + n.length + ' skills; lineage: ' + lin.count + ' skills built with skills');
+  }
   else if (mode === '--adopt') { // the index's own order for skills that have no order file yet, then the index rewritten from the files
     const made = adoptOrder(JSON.parse(readFileSync(INDEX, 'utf8'))).concat(registerNew()); // and every new skill file, at the end
-    const n = writeIndex();
+    const n = writeIndex(); writeLineage();
     console.log((made.length ? 'made ' + made.join(', ') + '; ' : 'every skill had its order file; ') + 'skills/index.json: ' + n.length + ' skills');
   } else {
     const { names, stale } = indexState();
+    const lineage = mode === '--check' || mode === '' ? lineageState() : { stale: false, count: 0 };
     if (mode === '--check') {
       let missing = [], loose = [];
       try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); loose = unregistered(readdirSync(skillsDir), (f) => readFileSync(resolve(skillsDir, f), 'utf8'), r); } catch (_) {}
       if (loose.length) { console.log('skills/' + loose.map((x) => x.file).join(', ') + ' is a skill with no order file: node tools/skills-index.mjs --adopt registers it (at the end of the routing order), or name it in OFF in tools/skills-index.mjs with why'); process.exit(1); }
       if (missing.length) { console.log('skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'); process.exit(1); }
-      // a stale index.json is not a pull-request failure: deploy.yml runs --write, and two branches editing the one list always conflict
-      console.log(names.length + ' skills from skills/order/' + (stale ? ' (index.json lags; the deploy rewrites it)' : ', index.json matches'));
+      // index.json and lineage.json are written at deploy. A stale copy is not a pull-request failure: two branches editing the one list always conflict.
+      console.log(names.length + ' skills from skills/order/; ' + lineage.count + ' skills built with skills' + (stale || lineage.stale ? ' (the deploy rewrites index.json and lineage.json)' : ', index.json matches'));
       process.exit(0); }
     console.log(indexText(names).trim()); console.log(stale ? 'index.json differs (run with --write)' : 'index.json matches');
   }
