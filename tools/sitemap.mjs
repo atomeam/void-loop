@@ -27,9 +27,9 @@ const KEPT = [
   ['/code-review/', 'weekly', '0.9', [D + 'code-review/index.html']],
   ['/autopilot/', 'daily', '0.7', [D + 'autopilot/index.html', D + 'autopilot/app.js']], // what Verse did on its own (2026-10-30)
   ['/llms.txt', 'weekly', '0.5', [D + 'llms.txt']],
-  ['/one-time-fix/', 'weekly', '0.8', [D + 'one-time-fix/index.html']],
+  ['/fix/one-time/', 'weekly', '0.8', [D + 'fix/one-time/index.html']],
   ['/keep-it-running/', 'weekly', '0.8', [D + 'keep-it-running/index.html']],
-  ['/full-stack-audit/', 'weekly', '0.8', [D + 'full-stack-audit/index.html']],
+  ['/fix/audit/', 'weekly', '0.8', [D + 'fix/audit/index.html']],
   ['/first-automation-setup/', 'weekly', '0.8', [D + 'first-automation-setup/index.html']],
   // pages the site links to that no other list holds: Verse's own films and podcast, the obituaries studio, the markets screener
   ['/films/', 'weekly', '0.6', [D + 'films/index.html']],

@@ -1,0 +1,37 @@
+{
+ "at": "2026-10-31T15:59:53.443Z",
+ "sha": "33023614d882ce5e4bba8b45bfd57dcb6ca8aaa3",
+ "run": "https://github.com/atomeam/void-loop/actions/runs/41215592857",
+ "suite": "browser suite on main",
+ "checks": [
+  "404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed",
+  "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+  "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph",
+  "semantic validator: \"how do i make shakshuka\" answered with a pancakes meal is refused (the card says there is no shakshuka recipe yet and offers Pancakes as another dish, no pancakes recipe shown) and reported once as a miss; a shakshuka card is shown and reports nothing",
+  "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it",
+  "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+  "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)",
+  "error garden from incidents: the failing checks are planted (a repeat is a weed), and asking again adds none"
+ ],
+ "touched": [
+  "void-live-deploy/skills/order/9102-palindrome",
+  "void-live-deploy/skills/palindrome.js",
+  "void-live-deploy/tower.evidence.json",
+  "void-live-deploy/tower.icons/colorcanon.com.png",
+  "void-live-deploy/tower.shots/color-canon.jpg"
+ ],
+ "shards": [
+  1,
+  2,
+  3
+ ],
+ "passed": [
+  1,
+  2,
+  3
+ ],
+ "closedAt": "2026-11-04T01:21:38.552Z",
+ "closedBy": "cfd93e58d9e37696b876878096215e8a0fd6eb7b",
+ "closedRun": "https://github.com/atomeam/void-loop/actions/runs/41750504908",
+ "minutes": 4882
+}

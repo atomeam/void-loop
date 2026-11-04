@@ -9,7 +9,7 @@ import { bandMini } from '../lib/card-mini.js';
 
 function run(text, api) {
   const { showPage, esc } = api, q = askWheel(text); if (!q) return null;
-  const e = q.entries, href = '/wheel/' + (e.length ? '#' + pack(e) : ''), win = e.length >= 2 ? e[pickIndex(e, fairRandom())].label : '';
+  const e = q.entries, href = '/random/wheel/' + (e.length ? '#' + pack(e) : ''), win = e.length >= 2 ? e[pickIndex(e, fairRandom())].label : '';
   const card = showPage((el) => {
     el.dataset.cardKind = 'Wheel';
     el.innerHTML = '<h2>' + (win ? 'The wheel says' : 'Spin the wheel') + '</h2>' // void-review: ok (escaped)

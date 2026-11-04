@@ -67,6 +67,9 @@
 <!-- /modulepreload -->
 </head>
 <body>
+<!-- combined page (owner, 2026-11-03: "always combine pages when possible"): one page, its modes side by side; the old addresses open their mode (_redirects) -->
+<nav class="v-modes" aria-label="Passwords modes" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px auto 4px;max-width:720px;font:600 13px/1 system-ui,sans-serif"><style>.v-modes a{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #3a3550;color:inherit;text-decoration:none;opacity:.8}.v-modes a[aria-current]{opacity:1;background:#2a2340;border-color:#6b5bb0}</style><a href="/password/" aria-current="page">Generator</a><a href="/password/strength/">Strength check</a></nav>
+
 <main>
   <h1>Password generator</h1>
   <div class="tabs" role="tablist" aria-label="What to make">
@@ -118,8 +121,8 @@
   <!-- asks -->
 <nav id="asks" class="tk-row" aria-label="Common asks"><span class="tk-label">Common asks</span><a href="/password/?len=16">16 characters</a><a href="/password/?len=12">12 characters</a><a href="/password/?len=20">20 characters</a><a href="/password/?len=32">32 characters</a><a href="/password/?len=16&amp;symbols=0">Letters and numbers only</a><a href="/password/?mode=phrase&amp;words=4">A passphrase of 4 words</a><a href="/password/?len=16&amp;n=5">5 passwords at once</a></nav>
 <!-- /asks -->
-<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password-strength/">Password strength</a> <a href="/random/">Random number</a> <a href="/random-user/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
-  <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password-strength/">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
+<nav id="related" aria-label="Related tools"><!-- related --><span class="tk-label">Use with</span> <a href="/password/strength/">Password strength</a> <a href="/random/">Random number</a> <a href="/random/people/">Made-up people</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+  <footer>Made on this device from its secure random numbers (<code>crypto.getRandomValues</code>, with rejection sampling so no character is likelier than another); no password is ever sent anywhere, stored, or put in the address (Copy link carries only the setting), and the page works offline after one visit. The strength is exact: the entropy is log2 of how many passwords the setting can make, counting "one of each class" and "no repeats" precisely, and the crack time is how long it takes to try them all at ten billion guesses a second, a stolen hash list on one modern rig. A password is as strong as that only if it is random: never reuse one. <a href="/password/strength/">Check a password you already have</a> · <a href="/">Ask Verse anything</a></footer>
 </main>
 <script type="module">
   import { mountRelated } from '/lib/toolkit.js';

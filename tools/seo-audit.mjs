@@ -28,7 +28,15 @@ export function walk(dir = root, base = '') {
     files.add(p);
     if (e.name.endsWith('.html') && !(b === '' ? false : SKIP_DIR.has(b.split('/')[1]))) { const page = e.name === 'index.html' ? b + '/' : p; if (!SKIP_PAGE.test(page)) pages.push({ page, full }); }
   } };
-  go(dir, base); return { files, pages };
+  go(dir, base);
+  // an old address _redirects sends to a page still reaches it (owner, 2026-11-03: combined pages keep their old addresses as 301s to the mode)
+  const red = path.join(dir, '_redirects');
+  if (fs.existsSync(red)) for (const line of fs.readFileSync(red, 'utf8').split('\n')) {
+    const [from, to] = line.trim().split(/\s+/); if (!from || from.startsWith('#') || !to || !to.startsWith('/') || from.includes('*')) continue;
+    const dest = to.split('?')[0], ok = files.has(dest) || files.has(dest.replace(/\/?$/, '/') + 'index.html');
+    if (ok) files.add(from.endsWith('/') ? from + 'index.html' : from);
+  }
+  return { files, pages };
 }
 /** the whole site's audit. */
 export function run() {

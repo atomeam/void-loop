@@ -41,9 +41,9 @@ test('knows.json is current and every item has a kind, an id and a title', () =>
   const counts = {}; for (const it of file.items) counts[it.k] = (counts[it.k] || 0) + 1;
   assert.deepEqual(file.counts, counts);
   assert.ok(counts.skill > 100 && counts.page > 20 && counts.site > 20, JSON.stringify(counts));
-  const b = build({ guide: { pages: [{ kind: 'skill', name: 'flip', title: 'Coin flip', examples: ['flip a coin'] }] }, what: { flip: 'heads or tails' }, pageOf: { flip: ['/flip/', 'Flip'] }, pages: [], assimilated: { sites: [] }, knowledge: [], log: ['abc1234567\t2026-11-03T00:00:00Z\tFix the coin', 'def\t2026-11-03T00:00:00Z\tConductor: tick'] });
+  const b = build({ guide: { pages: [{ kind: 'skill', name: 'flip', title: 'Coin flip', examples: ['flip a coin'] }] }, what: { flip: 'heads or tails' }, pageOf: { flip: ['/random/coin/', 'Flip'] }, pages: [], assimilated: { sites: [] }, knowledge: [], log: ['abc1234567\t2026-11-03T00:00:00Z\tFix the coin', 'def\t2026-11-03T00:00:00Z\tConductor: tick'] });
   assert.deepEqual(b.counts, { skill: 1, page: 0, site: 0, lesson: 0, did: 1 });
-  assert.equal(b.items[0].u, '/flip/'); assert.equal(b.builtWith, 0); assert.match(render(b), /\n$/);
+  assert.equal(b.items[0].u, '/random/coin/'); assert.equal(b.builtWith, 0); assert.match(render(b), /\n$/);
   const lined = build({ guide: { pages: [{ kind: 'skill', name: 'drive-share', title: 'Drive share', examples: ['split a drive'] }, { kind: 'skill', name: 'calc', title: 'Calc' }] }, what: { 'drive-share': 'split a drive' }, pageOf: {}, pages: [], assimilated: { sites: [] }, knowledge: [], log: [], lineage: { 'drive-share': ['calc', 'convert'] } });
   assert.equal(lined.builtWith, 1);
   assert.equal(lined.items.find((i) => i.id === 'drive-share').withLine, 'Built with the calculator and the unit converter.');

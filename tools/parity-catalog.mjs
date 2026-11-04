@@ -162,7 +162,7 @@ export const CATALOG = {
     ['streaming', 'Media', 'Watch games live', T('watch live|stream'), T('stream'), null, ['ESPN']],
     ...COMMON,
   ],
-  '/sports/': [
+  '/scores/sports/': [
     ['sports', 'Data', 'Many sports, leagues, teams and players', T('sport|league|team'), T('Sports with live scores'), null, 'core'],
     ['artwork', 'Data', 'Team badges and artwork', T('badge|logo|artwork'), T('badge|crest'), null, 'core'],
     ['api', 'Developers', 'A free public API', T('api'), T('openapi|/api/'), null, 'core'],
@@ -432,7 +432,7 @@ export const CATALOG = {
     ['search', 'Convert', 'Search for a unit', T('search'), T('search'), null, []],
     ...COMMON,
   ],
-  '/password-strength/': [
+  '/password/strength/': [
     ['time', 'Strength', 'How long a password would take to crack', T('crack|take'), T('crack'), null, 'core'],
     ['tips', 'Strength', 'Why it is weak and how to fix it', T('tip|weak|common'), T('common|tip'), null, 'core'],
     ['private', 'Privacy', 'Nothing is sent anywhere', T('never|stored|sent'), T('never (leaves|sent)|not sent'), null, 'core'],
@@ -489,7 +489,7 @@ export const CATALOG = {
     ['search', 'Emoji', 'Search and copy emoji', T('search|copy'), T('search|copy'), null, []],
     ...COMMON,
   ],
-  '/wheel/': [
+  '/random/wheel/': [
     ['spin', 'Wheel', 'Spin a wheel of names', T('spin|wheel'), T('spin'), null, 'core'],
     ['entries', 'Wheel', 'Edit the entries', T('entries|names'), T('entries|names'), null, 'core'],
     ['shuffle', 'Wheel', 'Shuffle and sort', T('shuffle|sort'), T('shuffle|sort'), null, ['wheelofnames.com']],
@@ -500,7 +500,7 @@ export const CATALOG = {
     ['images', 'Look', 'Images on the wheel', T('image'), T('image'), null, ['wheelofnames.com']],
     ...COMMON,
   ],
-  '/random-user/': [
+  '/random/people/': [
     ['people', 'Data', 'Made-up people with photos', T('user|photo|people'), T('photo|picture'), null, 'core'],
     ['nat', 'Data', 'Choose nationality and gender', T('nationalit|gender'), T('nat|gender'), null, 'core'],
     ['formats', 'Data', 'JSON, CSV and other formats', T('json|csv'), T('json|csv'), null, 'core'],

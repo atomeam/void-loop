@@ -740,7 +740,7 @@ try {
     const one = await until(async () => { const r = await read(); return r && /^(?:Heads|Tails)$/.test(r.word) ? r : null; }, 6000), ms = Date.now() - t0;
     await P.p.click('.vpage.on .coin'); await P.p.waitForTimeout(500); const two = await read();
     check('coin: "flip a coin" shows one coin and Heads or Tails at once (no fake wait), the coin labelled with its side, the tally counting 1 flip, and a tap on the coin flips again (2 flips); the card links to the full page, /flip/',
-      !!one && one.full === '/flip/' && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
+      !!one && one.full === '/random/coin/' && one.coins === 1 && one.label === one.word && /Heads [01] · Tails [01]/.test(one.tally) && !!two && /Heads \d · Tails \d/.test(two.tally) && two.tally.match(/\d+/g).slice(0, 2).reduce((a, b) => +a + +b, 0) === 2 && !P.errors.length, JSON.stringify({ one, two, ms, errors: P.errors }));
     await P.ask('flip 5 coins', 900); const five = await read();
     check('coin: "flip 5 coins" lays out five coins and says how many heads and tails', !!five && five.coins === 5 && /^\d heads, \d tails$/.test(five.word), JSON.stringify(five));
     await P.ctx.close();
@@ -1013,7 +1013,7 @@ try {
     await P.p.click('text=Spin them on the name wheel'); await P.p.waitForSelector('#entries', { timeout: 15000 }); await P.p.waitForTimeout(200);
     const onWheel = await P.p.evaluate(() => ({ path: location.pathname, entries: document.getElementById('entries').value, kept: JSON.parse(localStorage.getItem('verse_handoff') || 'null'), strip: !!document.querySelector('.vh-strip a[href="/prizes/"]') }));
     check('prizes: "Spin them on the name wheel" opens the wheel with the bare slice names and keeps one verse_handoff copy for the paste pill',
-      onWheel.path === '/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
+      onWheel.path === '/random/wheel/' && onWheel.entries === 'Grand prize\nGift card\nTote bag\nThanks for entering' && onWheel.kept && onWheel.kept.fromPage === '/prizes/' && onWheel.kept.type === 'list' && onWheel.kept.data.length === 4 && onWheel.strip, JSON.stringify(onWheel));
     await P.p.goto(base + 'tournaments/?roster=' + encodeURIComponent('Ann\nBob\nCat') + '&preset=gamenight'); await P.p.waitForSelector('#rostertable tbody tr', { timeout: 15000 });
     const roster = await P.p.evaluate(() => ({ head: document.getElementById('h-roster').textContent, rows: [...document.querySelectorAll('#rostertable tbody tr')].map((tr) => tr.innerText.replace(/\t/g, ' ')), pill: (document.querySelector('.vh-pill button') || {}).textContent || '', standings: document.querySelectorAll('#standings tbody tr').length }));
     check('prizes: names sent to /tournaments/ become a roster on 0 points under Game night, beside the scorer\'s own standings, with the paste pill from /prizes/',
@@ -1267,7 +1267,7 @@ try {
     const W = await fresh(); const origin = new URL(W.p.url()).origin, seen = [];
     await W.ctx.route(/api\.pwnedpasswords\.com\/range\//, (r) => { seen.push(r.request().url()); return r.fulfill({ status: 200, contentType: 'text/plain', headers: { 'access-control-allow-origin': '*' }, body: '0018A45C4D1DEF81644B54AB7F969B88D65:21\r\n00D4F6E8FA6EECAD2A3AA415EEC418D38EC:2\r\n1E4C9B93F3F0682250B6CF8331B7EE68FD8:10434004' }); });
     const pg = await W.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
-    await pg.goto(origin + '/password-strength/'); await pg.waitForSelector('#pw', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.goto(origin + '/password/strength/'); await pg.waitForSelector('#pw', { timeout: 10000 }); const loaded = reqs.length;
     await pg.fill('#pw', 'password'); await pg.waitForTimeout(300);
     const weak = await pg.evaluate(() => ({ label: document.getElementById('label').textContent, off: document.getElementById('offline').textContent, why: [...document.querySelectorAll('#why li')].map((x) => x.textContent).join('|'), type: document.getElementById('pw').type }));
     await pg.fill('#pw', 'Xk9$fTq2#Lm7@Vz4'); await pg.waitForTimeout(200); const strong = await pg.$eval('#label', (e) => e.textContent);
@@ -1300,7 +1300,7 @@ try {
   }
   if (want("base converter: the page fills all four bases from any one, exact for huge numbers, with no third party, and the ask opens a card")) {
     const B = await fresh(); const origin = new URL(B.p.url()).origin, pg = await B.ctx.newPage(), reqs = []; pg.on('request', (q) => reqs.push(q.url().replace(origin, '')));
-    await pg.goto(origin + '/base-converter/'); await pg.waitForSelector('#b10', { timeout: 10000 }); const loaded = reqs.length;
+    await pg.goto(origin + '/base64/bases/'); await pg.waitForSelector('#b10', { timeout: 10000 }); const loaded = reqs.length;
     await pg.fill('#b16', 'ff'); await pg.waitForTimeout(150); const fromHex = await pg.evaluate(() => ({ b2: b2.value, b8: b8.value, b10: b10.value, facts: document.getElementById('facts').textContent }));
     await pg.fill('#b16', 'ffffffffffffffffffff'); await pg.waitForTimeout(150); const huge = await pg.$eval('#b10', (e) => e.value);
     await pg.fill('#b2', '12'); await pg.waitForTimeout(150); const bad = await pg.evaluate(() => ({ note: document.getElementById('note').textContent, cls: document.getElementById('b2').className }));
@@ -1311,7 +1311,7 @@ try {
     const K = await fresh(); await K.ask('ff hex to binary', 900); const card = await until(async () => K.p.$eval('.vpage.on .bc-out', (e) => e.textContent).catch(() => ''), 8000);
     const rows = await K.p.$$eval('.vpage.on .bc-all td', (t) => t.map((x) => x.textContent)).catch(() => []); const link = await K.p.$eval('.vpage.on .bc-open', (a) => a.getAttribute('href')).catch(() => '');
     check('base converter: "ff hex to binary" opens a card with 1111 1111 big, all four bases, and a link that opens the page on that number',
-      card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base-converter/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
+      card === '1111 1111' && rows.join('|').includes('FF') && rows.join('|').includes('255') && link === '/base64/bases/?b=16&v=ff' && !K.errors.length, JSON.stringify({ card, rows, link, errors: K.errors }));
     await B.ctx.close(); await K.ctx.close();
   }
   // the colour page against hexcolor16.com (owner, 2026-10-24: "ok beat it"): every model it lists and more, its ramps, six harmonies, the VGA
@@ -1377,7 +1377,7 @@ try {
     const F = await fresh(); const origin = new URL(F.p.url()).origin, got = [];
     await F.ctx.route(/\/api\/tally(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true,"counts":{"all":{"heads":1,"tails":1},"today":{"heads":1,"tails":1}}}' }));
     const pg = await F.ctx.newPage(); pg.on('request', (q) => got.push(q.url().replace(origin, '')));
-    await pg.goto(origin + '/flip/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); const early = got.filter((u) => u.startsWith('/api/tally')).length; await pg.waitForTimeout(2400);
+    await pg.goto(origin + '/random/coin/'); await pg.waitForSelector('.coin-word', { timeout: 10000 }); const early = got.filter((u) => u.startsWith('/api/tally')).length; await pg.waitForTimeout(2400);
     const word = await pg.$eval('.coin-word', (e) => e.textContent), pre = await pg.$$eval('link[rel=modulepreload]', (l) => l.map((x) => x.getAttribute('href')));
     const mods = ['/skills/coin.js', '/lib/tally.js', '/lib/reactions.js', '/lib/coins.js'], tally = got.filter((u) => u.startsWith('/api/tally')).length;
     check('flip page: the coin lands (Heads or Tails), the head preloads every module it imports (coin, tally, reactions, coins) so there is no waterfall, and it asks for the everyone-count only after the page is up (none at load, one a moment later)',
@@ -7440,10 +7440,10 @@ try {
       && /Sent as S-1A2B3C4D/.test(said) && /answered/.test(mine) && /Answer: Fixed in today's deploy\./.test(mine) && !D.errors.length, JSON.stringify({ empty, sent, said, mine, errors: D.errors }));
     await D.ctx.close(); }
 
-  // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
+  // Every service has its page (/fix/one-time/ and friends, the way Code Review Pro has /code-review/): it loads,
   // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
   // links its Gumroad product.
-  if (want("Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-")) { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+  if (want("Every service has its page (/fix/one-time/ and friends, the way Code Review Pro has /code-")) { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
     const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
     const V = await fresh(); const got = [];
     await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
@@ -12143,6 +12143,13 @@ try {
   // connected floors (owner, 2026-10-27): a floor page is not a dead end. Every floor page must link to at least four sibling Verse
   // tools, so a new floor cannot ship with only "Back to Verse". Pages that predate the rule are named once here; the list only shrinks
   // (emojis, paint and tournaments are checked in the browser above too). A page file that does not exist is skipped, never passed.
+  if (want("business-clarify: a vague business idea becomes a system plan card")) { const B = await fresh();
+    await B.ask("clarify this business idea: a tool that turns customer emails into running automations", 2000);
+    const card = await until(async () => B.p.$eval('.thing.kept-card', (e) => e.textContent).catch(() => null), 5000);
+    check('business-clarify: a vague business idea becomes a system plan card with the idea, problem, systems, automations, handoff and next step',
+      !!card && /Business idea clarified/.test(card) && /The idea/.test(card) && /Problem it solves/.test(card) && /Systems to design/.test(card) && /Automations that take over/.test(card) && /Handoff/.test(card) && /Next delivery step/.test(card) && /turns customer emails/.test(card) && !B.errors.length,
+      JSON.stringify({ card: (card || '').slice(0, 400), errors: B.errors }));
+    await B.ctx.close(); }
   if (want("connected: every floor page links to at least four sibling Verse tools")) {
     const { FLOORS } = await import('../void-live-deploy/lib/tower.js');
     const legacy = new Set(['finance: companiesmarketcap.com', 'finance: finviz.com', 'photos: exifeditor.io', 'photos: exif.tools', 'photos: tinypng.com', 'photos: squoosh.app', 'photos: photopea.com', 'photos: iloveimg.com']);

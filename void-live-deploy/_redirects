@@ -13,3 +13,33 @@
 # the photo details checker by its short name
 /exif /photos/exif/ 301
 /exif/ /photos/exif/ 301
+# Verse's status page lives on /autopilot/ (combine-pages rule): the plain name opens it
+/status /autopilot/#status 301
+/status/ /autopilot/#status 301
+
+
+# combined pages (owner, 2026-11-03: "always combine pages when possible"): each old address opens its mode of the combined page
+/flip /random/coin/ 301
+/flip/ /random/coin/ 301
+/wheel /random/wheel/ 301
+/wheel/ /random/wheel/ 301
+/random-user /random/people/ 301
+/random-user/ /random/people/ 301
+/gradient /color/gradient/ 301
+/gradient/ /color/gradient/ 301
+/base-converter /base64/bases/ 301
+/base-converter/ /base64/bases/ 301
+/password-strength /password/strength/ 301
+/password-strength/ /password/strength/ 301
+/one-time-fix /fix/one-time/ 301
+/one-time-fix/ /fix/one-time/ 301
+/full-stack-audit /fix/audit/ 301
+/full-stack-audit/ /fix/audit/ 301
+/sports /scores/sports/ 301
+/sports/ /scores/sports/ 301
+/podcast /podcasts/?show=verse 301
+/podcast/ /podcasts/?show=verse 301
+/convert/unit-converter /convert/ 301
+/convert/unit-converter/ /convert/ 301
+/convert/unit-converter-2 /convert/ 301
+/convert/unit-converter-2/ /convert/ 301
