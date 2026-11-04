@@ -1,6 +1,7 @@
 // Verse's bots (owner, 2026-11-04: "get verse to build a ridiculous amount of its own bots for everything"). One line per bot:
 // its job, the skills and bots it was built from (its lineage), what it does, and a probe on a real task. tools/bot-factory.mjs
 // runs every probe and only a bot whose probe passes is live in bots/registry.json, on /bots/ and on /team/. Pure functions, no network.
+import { SALVAGED } from './salvaged.js';
 const words = (s) => String(s).trim().split(/\s+/).filter(Boolean);
 const sents = (s) => String(s).split(/(?<=[.!?])\s+/).map((x) => x.trim()).filter(Boolean);
 const nums = (s) => (String(s).match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
@@ -92,6 +93,7 @@ export const BOTS = [
   { id: 'name-generator', cat: 'fun', job: 'A band name from a word (same word, same name)', from: ['skills/generators-fill.js', 'bots/title-caser'], run: (s) => { const A = ['Neon', 'Velvet', 'Cosmic', 'Electric', 'Midnight', 'Golden'], B = ['Wolves', 'Static', 'Comets', 'Orchard', 'Machines', 'Tide']; const h = pick(s); return 'The ' + A[h % 6] + ' ' + title(words(s)[0]) + ' ' + B[(h >> 3) % 6]; }, probe: ['verse', (o) => /^The \w+ Verse \w+$/.test(o)] },
   { id: 'dice-roller', cat: 'fun', job: 'Rolls dice like 3d6 (seeded by the ask, so a probe can check it)', from: ['skills/random.js', 'skills/coin.js'], run: (s) => { const [n, d] = nums(String(s).replace('d', ' ')); let h = pick(s), t = 0; const r = []; for (let i = 0; i < n; i++) { h = (h * 1103515245 + 12345) >>> 0; r.push((h % d) + 1); } r.forEach((x) => (t += x)); return r.join('+') + '=' + t; }, probe: ['3d6', (o) => { const m = o.match(/^(\d)\+(\d)\+(\d)=(\d+)$/); return !!m && +m[1] + +m[2] + +m[3] === +m[4] && [1, 2, 3].every((i) => m[i] >= 1 && m[i] <= 6); }] },
   { id: 'reverse-bot', cat: 'fun', job: 'Writes text backwards', from: ['bots/palindrome-bot'], run: (s) => [...String(s)].reverse().join(''), probe: ['verse', 'esrev'] },
+  ...SALVAGED,
 ];
 export const BOT = (id) => BOTS.find((b) => b.id === id);
 // a probe: [input, expected string] or [input, check function]. True only when the bot ran and its answer is right.
