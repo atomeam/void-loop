@@ -17,8 +17,8 @@ export const SITE = 'https://a-to-mind.com/';
 const FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf';
 // a scene: the hook a person would stop for, what they type, the answer the page must show (checked in the browser), the caption
 export const SCENES = [
-  { id: 'split-dinner-bill', hook: 'Splitting a $84 dinner bill 3 ways?', ask: 'split a $84 dinner bill 3 ways with 20% tip', answer: /\$33\.60/, says: '$33.60 each, tip included', voice: 'Splitting an 84 dollar dinner bill three ways? 33 dollars 60 each, tip included.' },
-  { id: 'tip-on-47', hook: 'How much do you tip on $47.50?', ask: 'what is a 18% tip on $47.50', answer: /\$8\.55/, says: '18% tip = $8.55\nTotal $56.05', voice: 'How much do you tip on 47 fifty? 8 dollars 55. Total, 56 oh 5.' },
+  { id: 'split-dinner-bill', hooks: ['Who owes what on a $84 dinner bill?'], hook: 'Splitting a $84 dinner bill 3 ways?', ask: 'split a $84 dinner bill 3 ways with 20% tip', answer: /\$33\.60/, says: '$33.60 each, tip included', voice: 'Splitting an 84 dollar dinner bill three ways? 33 dollars 60 each, tip included.' },
+  { id: 'tip-on-47', hooks: ['Your bill is $47.50. What do you tip?'], hook: 'How much do you tip on $47.50?', ask: 'what is a 18% tip on $47.50', answer: /\$8\.55/, says: '18% tip = $8.55\nTotal $56.05', voice: 'How much do you tip on 47 fifty? 8 dollars 55. Total, 56 oh 5.' },
 ];
 // the music (owner, 2026-11-03: "music is fine"): a quiet bed Verse makes itself (no licence needed), a slow pad of sine chords with a
 // soft attack, low-passed, at about -22 LUFS under the captions and ducked under a voice. Each mood is a chord pair in Hz.
@@ -30,6 +30,13 @@ export function padExpr(mood = 'warm') {
   const tone = (ch) => ch.map((f) => `sin(2*PI*${f}*t)+0.3*sin(2*PI*${f * 2}*t)`).join('+');
   return `0.05*${env}*(if(lt(mod(t,4.8),2.4),${tone(a)},${tone(b)}))`;
 }
+// what one Short can vary (tools/shorts-loop.mjs tries one at a time against the best): hook wording (0 = the scene's hook, n = its
+// hooks[n-1]), typing pace (ms a key), music mood, caption style
+export const KNOBS = { hook: [0, 1], pace: [38, 24], music: ['warm', 'bright', 'calm'], style: ['ink', 'violet'] };
+export const STYLES = { ink: '0x0b0b14@0.82', violet: '0x3a1f7a@0.88' };
+export const BASE = { hook: 0, pace: 38, music: 'warm', style: 'ink' };
+/** the scene as a variant plays it. Pure. */
+export const play = (scene, v = BASE) => ({ ...scene, hook: v.hook ? (scene.hooks || [])[v.hook - 1] || scene.hook : scene.hook });
 export const CTA = 'Ask yours free\na-to-mind.com';
 
 /** wrap text to lines of at most n characters, at word boundaries. Pure. */
@@ -71,7 +78,7 @@ async function film(scene, dir) {
   const now = () => Date.now() / 1000, t0 = now();
   await page.waitForTimeout(300);
   await page.click('#input');
-  await page.keyboard.type(scene.ask, { delay: 38 });
+  await page.keyboard.type(scene.ask, { delay: scene.pace || 38 });
   await page.waitForTimeout(250);
   await page.keyboard.press('Enter');
   let answerSeen = false;
@@ -98,18 +105,20 @@ function voiceTrack(text, dir) {
 }
 
 /** render one scene to <out>/<id>.mp4 and <id>.json, then gate it */
-export async function render(scene, out, { voice = true, music } = {}) {
+export async function render(scene0, out, { voice = true, music, variant = BASE, filmId } = {}) {
+  const v = { ...BASE, ...variant }, scene = { ...play(scene0, v), pace: v.pace, style: v.style };
+  if (music === undefined) music = v.music;
   const dir = fs.mkdtempSync(path.join(out, '.take-'));
   const f = await film(scene, dir);
   const HOLD = 2.6, t = { answer: +(f.answer - f.start).toFixed(2), end: +(f.end - f.start).toFixed(2) };
   t.total = +(t.end + HOLD).toFixed(2);
   const caps = captionsOf(scene, t), esc = (s) => s.replace(/\\/g, '\\\\').replace(/:/g, '\\:').replace(/'/g, '\u2019').replace(/%/g, '\\%');
   const draws = caps.map((c, i) => { const file = path.join(dir, 'c' + i + '.txt'); fs.writeFileSync(file, c.text);
-    return `drawtext=fontfile=${FONT}:textfile=${esc(file)}:fontsize=${c.size}:fontcolor=white:line_spacing=${Math.round(c.size * 0.25)}:x=(w-text_w)/2:y=${c.y}:box=1:boxcolor=0x0b0b14@0.82:boxborderw=28:enable='between(t,${c.from},${c.to})'`; });
+    return `drawtext=fontfile=${FONT}:textfile=${esc(file)}:fontsize=${c.size}:fontcolor=white:line_spacing=${Math.round(c.size * 0.25)}:x=(w-text_w)/2:y=${c.y}:box=1:boxcolor=${STYLES[scene.style] || STYLES.ink}:boxborderw=28:enable='between(t,${c.from},${c.to})'`; });
   const vf = [`fps=30`, `scale=${W}:${H}:flags=lanczos,setsar=1`, `tpad=stop_mode=clone:stop_duration=${HOLD}`,
     `drawbox=x=0:y=0:w=iw:h=ih:color=black@0.55:t=fill:enable='gte(t,${t.end})'`, ...draws, `trim=duration=${t.total}`].join(',');
   const wav = voice ? voiceTrack(scene.voice, dir) : null;
-  const file = path.join(out, scene.id + '.mp4');
+  const file = path.join(out, (filmId || scene.id) + '.mp4');
   const args = ['-y', '-hide_banner', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', f.list];
   const mood = music === false ? null : music || 'warm';
   const bed = mood ? `aevalsrc='${padExpr(mood)}':s=48000:d=${t.total},lowpass=f=1800,afade=t=in:d=0.6,afade=t=out:st=${(t.total - 1.2).toFixed(2)}:d=1.2,aformat=channel_layouts=stereo,loudnorm=I=${BED_LUFS}:TP=-6:LRA=5` : 'anullsrc=r=48000:cl=stereo';
@@ -120,12 +129,13 @@ export async function render(scene, out, { voice = true, music } = {}) {
   args.push('-c:v', 'libx264', '-preset', 'medium', '-crf', '19', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-t', String(t.total), file);
   const r = spawnSync('ffmpeg', args, { encoding: 'utf8' });
   if (r.status !== 0) throw new Error('ffmpeg: ' + r.stderr.slice(-800));
-  const link = SITE + '?q=' + encodeURIComponent(scene.ask);
-  const meta = { id: scene.id, video: path.basename(file), hook: scene.hook, voice: !!wav, music: mood, captions: caps, timing: t,
+  // the link counts its clicks (functions/c/[clip].js) when the film's id is known: the loop's real outcome
+  const link = filmId ? SITE + 'c/' + filmId + '?p=youtube&q=' + encodeURIComponent(scene.ask) : SITE + '?q=' + encodeURIComponent(scene.ask);
+  const meta = { id: scene.id, video: path.basename(file), hook: scene.hook, voice: !!wav, music: mood, variant: v, filmId: filmId || null, captions: caps, timing: t,
     footage: { url: SITE, ask: scene.ask, answer: scene.answer.source.replace(/\\/g, ''), answerSeen: f.answerSeen },
     title: (scene.hook + ' #Shorts').slice(0, 100), description: scene.hook + ' ' + scene.says.replace(/\n/g, '. ') + '.\n\nAsk it yourself, free: ' + link + '\n\n#Shorts', tags: ['Shorts', 'money', 'life hacks', 'A-to-Mind'] };
   meta.gate = gate(file, meta);
-  fs.writeFileSync(path.join(out, scene.id + '.json'), JSON.stringify(meta, null, 2) + '\n');
+  fs.writeFileSync(path.join(out, (filmId || scene.id) + '.json'), JSON.stringify(meta, null, 2) + '\n');
   fs.rmSync(dir, { recursive: true, force: true });
   return meta;
 }
