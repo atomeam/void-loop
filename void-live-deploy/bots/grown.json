@@ -1,0 +1,9 @@
+[
+{"id":"tweet-tagger","cat":"writing","job":"Hashtags then fits it in a post","from":["bots/hashtagger","bots/tweet-trimmer"],"pipe":["hashtagger","tweet-trimmer"],"probe":{"in":"launch launch verse bots bots bots today","want":"#bots #launch #today"}},
+{"id":"headline-slug","cat":"writing","job":"Headline and its URL slug","from":["bots/headline-bot","bots/slugger"],"pipe":["headline-bot","slugger"],"probe":{"in":"bots bots verse verse factory","want":"bots-verse-factory-what-you-need-to-know"}},
+{"id":"loud-headline","cat":"fun","job":"A headline in l33t","from":["bots/headline-bot","bots/leet-speaker"],"pipe":["headline-bot","leet-speaker"],"probe":{"in":"rain rain cloud","want":"R41n Cl0ud: Wh47 Y0u N33d 70 Kn0w"}},
+{"id":"secret-morse","cat":"fun","job":"Reverses text then sends it in Morse","from":["bots/reverse-bot","bots/morse-bot"],"pipe":["reverse-bot","morse-bot"],"probe":{"in":"sos help","want":".--. .-.. . .... / ... --- ..."}},
+{"id":"summary-keywords","cat":"research","job":"Summary, then its key words as tags","from":["bots/summarizer","bots/hashtagger"],"pipe":["summarizer","hashtagger"],"probe":{"in":"Solar panels cut bills. Birds sing. Solar panels pay back in solar years with solar sun.","want":"#solar #panels #back"}},
+{"id":"frame-ratio","cat":"media","job":"9:16 crop inside a frame, then its ratio","from":["bots/fit-frame","bots/aspect-ratio"],"pipe":["fit-frame","aspect-ratio"],"probe":{"in":"3840x2160","want":"9:16"}},
+{"id":"readable-summary","cat":"writing","job":"Summary, then its reading ease","from":["bots/summarizer","bots/reading-level"],"pipe":["summarizer","reading-level"],"probe":{"in":"The cat sat. Dogs run fast. The cat sat on the mat with the cat toy.","want":"116 (easy)"}}
+]
