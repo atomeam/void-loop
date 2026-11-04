@@ -99,3 +99,33 @@ test("security-txt-check", () => {
   assert.equal(b.run("# only a comment\nExpires: 2029-01-01T00:00:00Z", now), "fails RFC 9116 · no Contact · Expires is more than a year out");
   assert.ok(lineage(b), 'lineage is real');
 });
+test("agent-transition", () => {
+  const b = bot("agent-transition"); assert.ok(b && BOT("agent-transition"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("running -> waiting"), "allowed: running -> waiting");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("deploy-command", () => {
+  const b = bot("deploy-command"); assert.ok(b && BOT("deploy-command"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("netlify my-site public"), "npx netlify-cli deploy --prod --dir public --site my-site --auth \"$NETLIFY_AUTH_TOKEN\"");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("facet-check", () => {
+  const b = bot("facet-check"); assert.ok(b && BOT("facet-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("risk=read-only"), "facet#focus=none facet#output=none facet#risk=read-only");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("contact-check", () => {
+  const b = bot("contact-check"); assert.ok(b && BOT("contact-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("noreply@example.com"), "not a channel: noreply@example.com says nobody reads it");
+  assert.ok(lineage(b), 'lineage is real');
+});
+test("permissions-policy-check", () => {
+  const b = bot("permissions-policy-check"); assert.ok(b && BOT("permissions-policy-check"), 'in the kit');
+  assert.ok(probe(b).ok, probe(b).out);
+  assert.equal(b.run("Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=(), fullscreen=(self), autoplay=(), clipboard-read=(), bluetooth=()"), "10 set · allowed: fullscreen=(self)");
+  assert.ok(lineage(b), 'lineage is real');
+});
