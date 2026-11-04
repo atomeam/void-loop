@@ -68,7 +68,8 @@ const TABLES = [
 ];
 // push (lib/team.js HOOK): an agent's https address, the secret Verse signs each push with, failures in a row, when to try next, last answer,
 // when the address was last set
-const COLUMNS = ["hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
+// crew (lib/team-crew.js): a house member Verse runs on its own clock, what it last did (public, one line) and when
+const COLUMNS = ['crew INTEGER NOT NULL DEFAULT 0', "did TEXT NOT NULL DEFAULT ''", 'did_at INTEGER NOT NULL DEFAULT 0', "hook TEXT NOT NULL DEFAULT ''", "hook_secret TEXT NOT NULL DEFAULT ''", 'hook_fails INTEGER NOT NULL DEFAULT 0', 'hook_next INTEGER NOT NULL DEFAULT 0', 'hook_ok INTEGER NOT NULL DEFAULT 0', 'hook_at INTEGER NOT NULL DEFAULT 0'];
 const ready = new WeakSet(); // once per database binding in this isolate
 async function tables(env, now) {
   if (ready.has(env.DB)) return;
@@ -196,6 +197,14 @@ async function write(env, { c, by, body, thread = 0, job = null, now }) {
   return r.id;
 }
 
+// Verse's crew (lib/team-crew-run.js): the tables made, and a message written as Verse or as a crew member, cleaned and redacted as any
+// member's post, @here turned into plain text. Only the clock reaches these (POST /api/automations/tick, the owner's token).
+export const crewReady = (env, now = Date.now()) => tables(env, now);
+export async function crewWrite(env, { c, by, body, thread = 0, job = null, now = Date.now() }) {
+  const text = T.hideSecrets(T.cleanBody(redact(String(body || '')))).replace(/@(here|everyone|channel)\b/gi, '$1');
+  if (!text) return 0;
+  return write(env, { c, by, body: text, thread: Number(thread) || 0, job, now });
+}
 // Verse itself says something in a channel of its team chat: the automations' team.post step and a watch with tell 'team'
 // (lib/automations-run.js; owner, 2026-11-03: "we make our own zapier ... lets start using all our tools"). Only the owner's rules reach
 // it (a rule is owner-only to save, and the runner checks the scope). The body is cleaned and redacted as a member's post is, with a
@@ -358,7 +367,7 @@ export async function onRequestGet({ request, env, now = Date.now(), as = null, 
     await handIdle(env, now); // before the count: the agents here take the jobs at the front of the queue
     const { results: chans } = await env.DB.prepare('SELECT code, title, about, msgs, last FROM void_team_channels ORDER BY CASE code WHEN \'work\' THEN 0 WHEN \'general\' THEN 1 ELSE 2 END, last DESC LIMIT 200').all();
     const { results: ags } = await env.DB.prepare('SELECT * FROM void_team_agents WHERE off = 0 ORDER BY joined ASC').all();
-    const members = ags.map((a) => ({ name: a.name, about: a.about, state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done }));
+    const members = ags.map((a) => ({ name: a.name, about: a.about, state: T.presence(a, now), seen: a.seen || null, since: a.job_at || null, done: a.done, ...(a.crew ? { crew: true, did: T.hideSecrets(a.did || ''), didAt: a.did_at || null } : {}) }));
     const waiting = T.rank(await queued(env), now).length;
     return json({ ok: true, channels: chans, members, waiting, kinds: T.TEAM_KINDS, emoji: T.EMOJI, limits: T.LIMITS });
   }

@@ -5,6 +5,7 @@ import * as T from '/lib/team.js';
 import { mountRelated } from '/lib/toolkit.js';
 import { connectBrain } from '/lib/brain-bridge.js';
 import { ownerLink } from '/lib/owner-link.js';
+import '/team/wants.js';
 
 const $ = (id) => document.getElementById(id);
 const OWNER_KEY = 'a2m.void.owner.v1', AGENT_KEY = 'a2m.team.key.v1', READ = 'a2m.team.read.v1', ME_KEY = 'a2m.void.me.v1';
@@ -92,7 +93,7 @@ function drawSide() {
     const cur = S.view.kind === 'channel' && S.view.c === c.code ? ' aria-current="page"' : '';
     return '<li><a href="#c=' + esc(c.code) + '"' + cur + (unread ? ' class="unread"' : '') + '># ' + esc(c.title) + (unread ? '<span class="badge">' + Math.min(99, c.msgs - (S.read[c.code] || 0)) + '</span>' : '<span class="n">' + (c.msgs || '') + '</span>') + '</a></li>';
   }).join('');
-  $('members').innerHTML = sh.members.length ? sh.members.map((m) => '<li><span class="row" title="' + esc(m.about || '') + '"><i class="dot ' + m.state + '" aria-hidden="true"></i>' + esc(m.name) + '<span class="state">' + esc(stateWord(m)) + (m.done ? ' · ' + m.done + ' done' : '') + '</span>' + (S.me && S.me.kind === 'owner' ? '<button class="relink" type="button" data-relink="' + esc(m.name) + '" title="A new join link for ' + esc(m.name) + '. Its old key and link stop working.">New link</button>' : '') + '</span></li>').join('')
+  $('members').innerHTML = sh.members.length ? sh.members.map((m) => '<li><span class="row" title="' + esc(m.about || '') + '"><i class="dot ' + m.state + '" aria-hidden="true"></i>' + esc(m.name) + '<span class="state">' + esc((m.crew ? 'crew · ' : '') + stateWord(m)) + (m.done ? ' · ' + m.done + ' done' : '') + '</span>' + (S.me && S.me.kind === 'owner' ? '<button class="relink" type="button" data-relink="' + esc(m.name) + '" title="A new join link for ' + esc(m.name) + '. Its old key and link stop working.">New link</button>' : '') + '</span>' + (m.crew && m.did ? '<span class="did">' + esc(m.did) + (m.didAt ? ' · ' + ago(m.didAt) : '') + '</span>' : '') + '</li>').join('')
     : '<li><span class="row muted">No agent has joined yet.</span></li>';
   $('newChan').hidden = !S.me; $('invite').hidden = !(S.me && S.me.kind === 'owner');
   $('actLink').toggleAttribute('aria-current', S.view.kind === 'activity');

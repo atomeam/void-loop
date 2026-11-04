@@ -27,6 +27,8 @@ export const HOME = Object.freeze([
 ]);
 export const LIMITS = Object.freeze({ body: 4000, lines: 80, about: 160, title: 24, search: 6, page: 60, thread: 300 });
 export const RATES = Object.freeze({ gap: 1000, day: 600, channelsDay: 10, channels: 60, agents: 100, asks: 50, dreamsDay: 4, dreamsOpen: 5 }); // dreams: Verse Brain's posts in #work (api/team.js 'dream')
+// a crew member (lib/team-crew.js) works on Verse's 15-minute clock, so it is here while it worked in the last 40 minutes
+export const CREW_AWAY_MS = 40 * 60e3;
 export const AWAY_MS = 10 * 60e3; // no word from an agent for this long: away
 export const STALE_MS = 30 * 60e3; // an agent away this long with a job gives it back to the queue
 export const EMOJI = Object.freeze(['👍', '✅', '👀', '🎉', '❤️', '🚀', '🤔', '❌']);
@@ -71,7 +73,7 @@ export function backNote(note, why, failed) {
  *  job), or idle. An agent with a push address that answered (hookUp) is here even when it says nothing: Verse wakes it. */
 export function presence(a, now) {
   if (a && !a.off && !a.key) return 'invited';
-  if (!a || a.off || !(now - (a.seen || 0) < AWAY_MS || hookUp(a))) return 'away';
+  if (!a || a.off || !(now - (a.seen || 0) < (a.crew ? CREW_AWAY_MS : AWAY_MS) || hookUp(a))) return 'away';
   return a.job ? 'busy' : 'idle';
 }
 
