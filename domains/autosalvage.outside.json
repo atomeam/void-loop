@@ -1,0 +1,15 @@
+{
+  "_": "Outside work autosalvage weighs (owner, 2026-11-03: salvage free outside work into Verse, crediting each). license is the SPDX id GitHub reports (node tools/autosalvage/unify.mjs --outside-refresh rewrites it); a source with no license is skipped, never guessed. gap names the Verse gap it would fill.",
+  "sources": [
+    { "id": "public-apis/public-apis", "url": "https://github.com/public-apis/public-apis", "author": "public-apis", "license": "MIT", "what": "A collective list of free APIs", "gap": "free-resource router (resources/free.json)", "target": "data" },
+    { "id": "dwyl/english-words", "url": "https://github.com/dwyl/english-words", "author": "dwyl", "license": "Unlicense", "what": "479k English words", "gap": "word games and spell bots", "target": "data" },
+    { "id": "simple-icons/simple-icons", "url": "https://github.com/simple-icons/simple-icons", "author": "simple-icons", "license": "CC0-1.0", "what": "SVG icons for popular brands", "gap": "bot and connector icons", "target": "data" },
+    { "id": "tabler/tabler-icons", "url": "https://github.com/tabler/tabler-icons", "author": "tabler", "license": "MIT", "what": "6200+ free SVG icons", "gap": "bot directory icons", "target": "data" },
+    { "id": "jsdelivr/jsdelivr", "url": "https://github.com/jsdelivr/jsdelivr", "author": "jsdelivr", "license": "MIT", "what": "Free open-source CDN for npm and GitHub", "gap": "free hosting of libraries for bots", "target": "tool" },
+    { "id": "mledoze/countries", "url": "https://github.com/mledoze/countries", "author": "mledoze", "license": "ODbL-1.0", "what": "World countries in JSON", "gap": "country facts bots", "target": "data" },
+    { "id": "unicode-org/cldr-json", "url": "https://github.com/unicode-org/cldr-json", "author": "unicode-org", "license": "NOASSERTION", "what": "Unicode CLDR locale data", "gap": "translation and locale bots", "target": "data" },
+    { "id": "open-meteo/open-meteo", "url": "https://github.com/open-meteo/open-meteo", "author": "open-meteo", "license": "AGPL-3.0", "what": "Free weather forecast API (non-commercial)", "gap": "weather bots", "target": "tool" },
+    { "id": "datasets/country-codes", "url": "https://github.com/datasets/country-codes", "author": "datasets", "license": "", "what": "Country code information", "gap": "country facts bots", "target": "data" },
+    { "id": "dariusk/corpora", "url": "https://github.com/dariusk/corpora", "author": "dariusk", "license": "", "what": "Small corpora of interesting data", "gap": "generator bots", "target": "data" }
+  ]
+}
