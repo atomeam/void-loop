@@ -1159,7 +1159,7 @@
     html,body{margin:0;background:#050505;color:#f2f4fb;font:15px/1.45 ui-sans-serif,system-ui,sans-serif}
     body{background:radial-gradient(80% 42% at 50% 108%,rgba(158,178,255,.22),transparent 60%),radial-gradient(46% 32% at 50% 36%,rgba(122,92,255,.20),transparent 70%),#050505}
     /* no hero words on the home page (owner, 2026-11-04: "supposed to be blank"): the sky and the ask bar, nothing else */
-    #away-note{display:none}
+    #away-note{opacity:0} /* the away line keeps its place and its state, it just is not shown */
     #v01d{position:fixed;inset:0;z-index:2147483000;display:grid;place-content:center;background:#050505;color:#f4f2ff;font:200 clamp(48px,13vw,112px)/1 ui-sans-serif,system-ui,sans-serif}
     #dock{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:12px 16px calc(18px + env(safe-area-inset-bottom,0px))}
     #whisper,#away-note{min-height:18px} #whisper{margin-top:8px}
