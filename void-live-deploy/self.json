@@ -1,6 +1,259 @@
 {
  "about": "Verse by A-to-Mind does whatever anyone asks: ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
- "shipped": [],
+ "shipped": [
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "share this card",
+   "from": "plan item 10, shared Voids"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "answer me in Spanish",
+   "from": "plan item 9, Verse in other languages"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "remind me at 5",
+   "from": "plan item 7, connector behind the confirm line"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "recent asks on an empty box",
+   "from": "board Next #15"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "show the magnetize step",
+   "from": "board Next, magnetize-step card"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "what's already built",
+   "from": "assimilate row 6, plan item 8"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "throw it off the screen",
+   "from": "figures-first dismiss"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "export a print file",
+   "from": "void-stage, slicer 3MF"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "summon a figure",
+   "from": "figures-first, living 3D"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "spin the figure",
+   "from": "figures-first, see the back"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "days until new year",
+   "from": "board later, date countdown"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "read it aloud",
+   "from": "plan item 4, voice"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "make my void light",
+   "from": "board later, light look"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "what did you do today",
+   "from": "plan item 8, ledger as a skill"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "dismiss this",
+   "from": "figures-first, send it away"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "a figure that sits on the chair",
+   "from": "figures-first, use what is already there"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-04",
+   "ask": "download the print file",
+   "from": "export-to-print, file stays valid offline"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-04",
+   "ask": "cartoon version of a hard subject",
+   "from": "two-part summons, funny not grim"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-04",
+   "ask": "zoom in on the figure",
+   "from": "collector detail, progressive"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-04",
+   "ask": "what can this figure do",
+   "from": "figure stays on brand"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-04",
+   "ask": "show the countdown",
+   "from": "days until a date"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "bring the clock to the front",
+   "from": "board Next #3, grouped objects / layers"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "group the clock and the note",
+   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\"…"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "label the clock kitchen",
+   "from": "board Later, text annotation / labels: tags that ride with a thing, free labels"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-10",
+   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily…",
+   "from": "map PR #344"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline…",
+   "from": "asked by the owner"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "convert-card: persistent interactive unit conversions on the stage",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "growth friction linked to Words and the world failure logs",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "rendered state signal for 3D miniature cards",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "Verse Site Tester",
+   "from": "store-publish: sdk, 4 files, $24.00; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-19",
+   "ask": "lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure…",
+   "from": "claude 2026-10-18, asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-21",
+   "ask": "Verse Remix Kit",
+   "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "fun fact skill: random interesting facts from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-22",
+   "ask": "random quote skill: inspirational quotes from a public API",
+   "from": "new idea by growth agent"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "act skill: owner asks like \"my email\" route to the act skill instead of no answer (`POST /api/answer` \"my email\" is…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "identity studio opens with a neutral example profile (no real name or email in the seed)",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-28",
+   "ask": "value-drift tracker: how Verse's own appraisals (its store prices) move over time, grouped by kind, a kind flagged to…",
+   "from": "asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "my want card names the site Versus is on, and /api/will ranks my wants by the tower target",
+   "from": "PR #1406"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards cite a source only when its text holds the claim, and give no fetched credit to a paraphrase",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "answer cards read the whole message, answer from its correction, and claim no notes or logs they did not write",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "a note about my own card gets my own voice, with Fixed and Still open lists from my records",
+   "from": "PR #1410, owner card notes 1-5"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-29",
+   "ask": "word ladder skill: transform one word to another by changing one letter at a time",
+   "from": "new idea by growth agent; already on main"
+  }
+ ],
  "open": [
   {
    "state": "open",
@@ -106,12 +359,6 @@
    "date": "",
    "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
    "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Clarify business ideas into system plans",
-   "from": "growth, 2026-11-03"
   }
  ],
  "games": [
@@ -295,92 +542,88 @@
  },
  "commits": [
   {
-   "at": "2026-11-04T00:43:46Z",
-   "subject": "Site test: visitor pass 14/15"
+   "at": "2026-10-31T01:50:21Z",
+   "subject": "Tower gate: onlineconverter.com,docs and notes: anotepad.com,docs and notes: standardnotes.com measured against their live sites"
   },
   {
-   "at": "2026-11-04T00:38:21Z",
-   "subject": "Drop the administration permission actionlint does not know."
+   "at": "2026-10-31T01:35:31Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-11-04T00:35:21Z",
-   "subject": "Arm GitHub auto-merge and stop generated files from colliding."
+   "at": "2026-10-31T01:22:00Z",
+   "subject": "Verse routes \"london to sydney flight\" to its flights skill the answer is not checked"
   },
   {
-   "at": "2026-11-04T00:32:50Z",
-   "subject": "Helper/business clarify (#2091)"
+   "at": "2026-10-31T01:21:15Z",
+   "subject": "Incident: the browser suite failed on 532b1cea (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T00:23:21Z",
-   "subject": "Visitor pass: the geocoder fallbacks are tried in order on purpose (void-review: ok)"
+   "at": "2026-10-31T01:19:32Z",
+   "subject": "Incident: the browser suite failed on 980bd134 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T00:16:44Z",
-   "subject": "Tower gate: emoji combos: emojigraph.org,image boards: uboachan.net,image boards: 2chan.net measured against their live sites"
+   "at": "2026-10-31T01:16:56Z",
+   "subject": "Incident: the browser suite failed on e9be83fe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T00:15:49Z",
-   "subject": "Tower: a stalled target gives way after 3 days with no aspect gained, and says why; the card names a page's mode (/calculator/ (VAT))…"
+   "at": "2026-10-31T01:11:59Z",
+   "subject": "Incident: the browser suite failed on d8e1c46b (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T00:15:37Z",
-   "subject": "Finding: a real MCP client called Verse's live tools (findings/mcp)"
+   "at": "2026-10-31T01:09:58Z",
+   "subject": "Conductor: the last 24 hours of Verse running itself"
   },
   {
-   "at": "2026-11-04T00:15:15Z",
-   "subject": "Verse Brain: a want's reason is said once when its evidence repeats it"
+   "at": "2026-10-31T01:09:47Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-11-04T00:14:12Z",
-   "subject": "Site test: fix: \"which games do you know\" nothing appeared"
+   "at": "2026-10-31T00:49:34Z",
+   "subject": "Growth: fold the waiting entries into the ledger (tools/growth-fold.mjs)"
   },
   {
-   "at": "2026-11-04T00:13:39Z",
-   "subject": "Verse's will: today's three wants (domains/void.will.md)"
+   "at": "2026-10-31T00:49:29Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-04T00:13:25Z",
-   "subject": "Verse's automations speak in its own team chat: team.post step and watch tell 'team'"
+   "at": "2026-10-31T00:45:29Z",
+   "subject": "Verse loop: task, Queue job mvvmgn8m (heal: grow-self.yml): Repair grow-self.y"
   },
   {
-   "at": "2026-11-04T00:11:42Z",
-   "subject": "Note the visitor pass as finished, with its pull request."
+   "at": "2026-10-31T00:44:01Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"contéstame en"
   },
   {
-   "at": "2026-11-04T00:10:53Z",
-   "subject": "void.html: the source page carries the same reply count"
+   "at": "2026-10-31T00:42:34Z",
+   "subject": "Regenerate the generated files after the merge"
   },
   {
-   "at": "2026-11-04T00:10:51Z",
-   "subject": "Record the visitor-pass fix in the growth ledger."
+   "at": "2026-10-31T00:40:58Z",
+   "subject": "narrow the page rule: /converter/ also matched app.js and would have slowed the repeat load"
   },
   {
-   "at": "2026-11-04T00:10:38Z",
-   "subject": "Fix the everyday asks a visitor actually types."
+   "at": "2026-10-31T00:36:49Z",
+   "subject": "Incident: the browser suite failed on 04e7b346 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-11-04T00:10:28Z",
-   "subject": "Verse Brain: /brain/ opens on what Verse knows, searchable (skills, pages, sites it took on, lessons, wants, what it did); the simulation…"
+   "at": "2026-10-31T00:32:12Z",
+   "subject": "docs/MAP.md names the seven things main shipped without naming, so map-coverage is green again"
   },
   {
-   "at": "2026-11-04T00:10:20Z",
-   "subject": "/assimilated/: every link is a page that is there (a removed page links to the page that does its job now, or to none), and the page has…"
+   "at": "2026-10-31T00:31:56Z",
+   "subject": "a tool page may live for a minute, so a load that repeats does not pay the round trip again"
   },
   {
-   "at": "2026-11-04T00:07:30Z",
-   "subject": "Keep unrouted skill files off the skills gate"
+   "at": "2026-10-31T00:31:33Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
   },
   {
-   "at": "2026-11-04T00:02:27Z",
-   "subject": "calculator: the VAT lines are words, not names (void-review: ok)"
+   "at": "2026-10-31T00:28:43Z",
+   "subject": "Spotter: 2 check(s) healed with no revert after 04e7b346c539ec37728cfbee24ddaa6802ab6474 (tools/flakes.json)"
   }
  ],
  "builders": {
   "finished": [
-   {
-    "name": "Visitor pass (cursor, 2026-11-04)",
-    "line": "everyday asks on the live site. A city typed with its state is found, directions between two places open the distance card, sports scores open the NFL board, play music opens local radio, and the empty bar says Ask anything. The site…"
-   },
    {
     "name": "Claude (F321 thread, 2026-10-29)",
     "line": "memory orbs (F-321, from the draft on atomeam/a-to-mind.com) is a Mind Field mode, live (PR #1414): small evolved agents push a stable fluid, density peaks become tappable DOM orbs that seal to IndexedDB (SHA-256) and Recall to the same…"
@@ -400,6 +643,10 @@
    {
     "name": "Who visits (claude, 2026-10-26)",
     "line": "no token the repo holds reads Cloudflare analytics (cf-scope run 2026-10-26: CLOUDFLARE_ANALYTICS_TOKEN is not set, CLOUDFLARE_API_TOKEN is denied), so Verse counts itself: /visit.js beacon on the stage, /api/visit (counts only…"
+   },
+   {
+    "name": "IndexNow on every deploy (claude)",
+    "line": "tools/indexnow.mjs sends the sitemap pages a main deploy changed to api.indexnow.org in one POST (deploy.yml step after the live-domain check; base = last successful deploy); playbook docs/playbooks/indexnow.md. Pushed to main."
    }
   ],
   "ladders": [
@@ -603,15 +850,15 @@
   "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  },
  "people": {
-  "line": "People this week: 55 (337 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
-  "at": "2026-11-03T12:49Z",
+  "line": "People this week: 46 (309 visits; counted by Verse itself, no cookies, our own runs and bots taken out)",
+  "at": "2026-10-30T11:26Z",
   "source": "verse"
  },
  "tower": {
-  "target": "ndscalc.ru",
-  "since": "2026-10-31",
+  "target": "onlineconverter.com",
+  "since": "2026-10-29",
   "next": [
-   "emojigraph.org",
+   "ndscalc.ru",
    "emojicombos.com",
    "thunit.com"
   ],

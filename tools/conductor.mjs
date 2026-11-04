@@ -9,6 +9,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import { plan, probeDue, growDue, willDue, lapDue, kindOf, triesOf, withTries, streakOf, ROUTES, AGENT, LAP } from './conductor-core.mjs';
 import { wantsOf } from './visitor-pass.mjs';
+import { composeAsk } from './skill-compose.mjs'; // Tower does not write skill files; this is the call a lane uses when a job is a new skill
 
 const API = process.env.VOID_API || 'https://a-to-mind.com/api/queue';
 const REPO = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
@@ -99,6 +100,14 @@ async function tick() {
   } catch (e) { if (!/ENOENT/.test(String(e && e.code || e.message))) warn('visitor: ' + String(e.message || e).slice(0, 80)); }
   for (const s of p.start) {
     const ok = await act('start ' + s.id, async () => {
+      const job = jobs.find((x) => x.id === s.id) || {};
+      const blob = [job.ask, job.note, job.target, s.kind].filter(Boolean).join(' ');
+      if (/\bskills?\b|new skill|lane: new/i.test(blob)) {
+        try {
+          const made = await composeAsk(job.ask || job.note || blob, { limit: 3 });
+          if (made.calls.length) console.log('skill builder called ' + made.calls.map((c) => c.name + (c.ok ? '' : ' (no answer)')).join(', ') + (made.parts.length ? '; built with ' + made.parts.join(', ') : ''));
+        } catch (e) { warn('compose ' + s.id + ': ' + String(e.message || e).slice(0, 100)); }
+      }
       if (s.claims) {
         const c = await queue('PATCH', { id: s.id, state: 'building', from: 'queued', by: 'conductor' });
         if (c.status !== 200) { warn(s.id + ' not claimed (' + c.status + ')'); return false; }

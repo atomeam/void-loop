@@ -18,7 +18,7 @@ export const termsOf = (q) => [...new Set(norm(q).match(/[\p{L}\p{N}][\p{L}\p{N}
 /** how well an item meets every term: 0 when any term is missing; a term in the title or id counts most. Pure. */
 export function scoreOf(item, terms) {
   if (!terms.length) return 1;
-  const head = norm(item.t) + ' ' + norm(item.id), body = norm(item.d) + ' ' + norm((item.ex || []).join(' ')) + ' ' + norm(item.st) + ' ' + norm(item.u) + ' ' + norm(item.src);
+  const head = norm(item.t) + ' ' + norm(item.id), body = norm(item.d) + ' ' + norm((item.ex || []).join(' ')) + ' ' + norm((item.with || []).join(' ')) + ' ' + norm(item.withLine) + ' ' + norm(item.st) + ' ' + norm(item.u) + ' ' + norm(item.src);
   let s = 0;
   for (const t of terms) {
     if (head.includes(t)) s += head.split(/[^\p{L}\p{N}]+/u).includes(t) ? 4 : 3;

@@ -13,3 +13,6 @@
 # the photo details checker by its short name
 /exif /photos/exif/ 301
 /exif/ /photos/exif/ 301
+# Verse's status page lives on /autopilot/ (combine-pages rule): the plain name opens it
+/status /autopilot/#status 301
+/status/ /autopilot/#status 301

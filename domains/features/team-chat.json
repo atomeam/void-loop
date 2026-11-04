@@ -1,0 +1,445 @@
+{
+ "floor": "team chat",
+ "verse_page": "/team/",
+ "researched": "2026-11-04",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "slack.com": {
+   "url": "https://slack.com/",
+   "scanned": "2026-11-04",
+   "leader": true,
+   "pages": [
+    "https://slack.com/",
+    "https://slack.com/features/channels",
+    "https://slack.com/features/huddles",
+    "https://slack.com/features/canvas",
+    "https://slack.com/features/task-list",
+    "https://slack.com/features/slackbot",
+    "https://slack.com/features/code-channels"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "All your people and AI agents working together",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"agent\", \"work\"; not \"people\", \"together\""
+    },
+    {
+     "name": "Reimagine what’s possible with AI and agents",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"what\", \"agent\"; not \"reimagine\", \"possible\""
+    },
+    {
+     "name": "KNOWLEDGE",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"knowledge\""
+    },
+    {
+     "name": "PEOPLE",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"people\""
+    },
+    {
+     "name": "PROCESS",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"process\""
+    },
+    {
+     "name": "PLATFORM",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"platform\""
+    },
+    {
+     "name": "The most innovative companies run their business in Slack",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"innovative\", \"company\", \"run\", \"their\""
+    },
+    {
+     "name": "Slack reimagines work for Anthropic at the speed of AI",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"work\"; not \"slack\", \"reimagine\", \"anthropic\""
+    },
+    {
+     "name": "Slack helps Box bring agents to every employee",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"slack\", \"help\", \"box\", \"bring\""
+    },
+    {
+     "name": "Notion builds \"Smilers\" in Slack",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"build\"; not \"notion\", \"smiler\", \"slack\""
+    },
+    {
+     "name": "Slack helps Rivian do business in the fast lane",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"slack\", \"help\", \"rivian\", \"busi\""
+    },
+    {
+     "name": "We’re in the business of growing businesses",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"busi\", \"grow\", \"businesse\""
+    },
+    {
+     "name": "Millions of people love working in Slack",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"work\"; not \"million\", \"people\", \"love\""
+    },
+    {
+     "name": "Don’t just take our word for it",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"don\", \"just\", \"take\", \"our\""
+    },
+    {
+     "name": "See all you can accomplish in Slack",
+     "detail": "a heading on /",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"see\"; not \"accomplish\", \"slack\""
+    },
+    {
+     "name": "Now everyone’s a builder",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"now\"; not \"everyone\", \"builder\""
+    },
+    {
+     "name": "Bring conversations out of the inbox and into the open",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"bring\", \"conversation\", \"out\", \"inbox\""
+    },
+    {
+     "name": "Create the most complete view of every customer",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"every\"; not \"create\", \"complete\", \"view\""
+    },
+    {
+     "name": "Summarize channels and save time with AI at your side",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"channel\"; not \"summarize\", \"save\", \"time\""
+    },
+    {
+     "name": "Work with people outside your company, right from Slack",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"work\"; not \"people\", \"outside\", \"company\""
+    },
+    {
+     "name": "Secure. Searchable. Smart",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"secure\", \"searchable\", \"smart\""
+    },
+    {
+     "name": "Stay safer than with email",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"stay\"; not \"safer\", \"than\", \"email\""
+    },
+    {
+     "name": "Tap into your company's memory",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"tap\", \"company\", \"memory\""
+    },
+    {
+     "name": "Get the TL;DR with help from AI",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"help\""
+    },
+    {
+     "name": "Everything Slack starts with a channel",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"everyth\", \"channel\"; not \"slack\", \"start\""
+    },
+    {
+     "name": "Slack Essentials: Organize Your Work and Conversations",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"work\"; not \"slack\", \"essential\", \"organize\""
+    },
+    {
+     "name": "4 Simple Slack Tips to Have a More Productive Workday",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"4\", \"simple\", \"slack\", \"tip\""
+    },
+    {
+     "name": "Bring your team together with Slack",
+     "detail": "a heading on /features/channels",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"team\"; not \"bring\", \"together\", \"slack\""
+    },
+    {
+     "name": "Gather ‘round with the flip of a switch",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"gather\", \"round\", \"flip\", \"switch\""
+    },
+    {
+     "name": "Let your notes take themselves",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"note\"; not \"let\", \"take\", \"themselve\""
+    },
+    {
+     "name": "Liven up the conversation",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"liven\", \"conversation\""
+    },
+    {
+     "name": "If it’s shared in a huddle, it’s saved in Slack",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"shar\", \"huddle\", \"saved\", \"slack\""
+    },
+    {
+     "name": "Slack for new users",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"slack\", \"user\""
+    },
+    {
+     "name": "Introducing new ways to work side by side in huddles",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"work\"; not \"introduc\", \"way\", \"side\""
+    },
+    {
+     "name": "From Huddle to Action: How to Take Effective Meeting Notes",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"huddle\", \"action\", \"how\", \"take\""
+    },
+    {
+     "name": "Solve problems aloud with huddles",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"solve\", \"problem\", \"aloud\", \"huddle\""
+    },
+    {
+     "name": "Try Slack with your team for free",
+     "detail": "a heading on /features/huddles",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"team\"; not \"try\", \"slack\""
+    },
+    {
+     "name": "Curate your way",
+     "detail": "a heading on /features/canvas",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"curate\", \"way\""
+    },
+    {
+     "name": "Workflows that make work flow faster",
+     "detail": "a heading on /features/canvas",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/team/ shows \"make\", \"work\"; not \"workflow\", \"flow\""
+    },
+    {
+     "name": "Where insight leads to action",
+     "detail": "a heading on /features/canvas",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/team/ shows none of its words; not \"where\", \"insight\", \"lead\", \"action\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "KNOWLEDGE",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "PEOPLE",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "PROCESS",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "PLATFORM",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "The most innovative companies run their business in Slack",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Slack helps Box bring agents to every employee",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Slack helps Rivian do business in the fast lane",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "We’re in the business of growing businesses",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Don’t just take our word for it",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Bring conversations out of the inbox and into the open",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Secure. Searchable. Smart",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Tap into your company's memory",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Get the TL;DR with help from AI",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "4 Simple Slack Tips to Have a More Productive Workday",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Gather ‘round with the flip of a switch",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Liven up the conversation",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "If it’s shared in a huddle, it’s saved in Slack",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Slack for new users",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "From Huddle to Action: How to Take Effective Meeting Notes",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Solve problems aloud with huddles",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Curate your way",
+   "sites": [
+    "slack.com"
+   ]
+  },
+  {
+   "name": "Where insight leads to action",
+   "sites": [
+    "slack.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-04",
+  "queued": []
+ }
+}

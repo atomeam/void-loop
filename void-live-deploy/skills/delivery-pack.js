@@ -54,7 +54,7 @@ export default {
     'make a delivery pack for the support ticket router'
   ],
   nearMisses: ['what is a package', 'ship the package', 'package.json'],
-  match(lower, text) { return isDeliveryPack(text); },
+  match(lower, text) { return isDeliveryPack(text || lower); },
   run,
   suite() {
     const ok = isDeliveryPack('package this idea: automate onboarding')

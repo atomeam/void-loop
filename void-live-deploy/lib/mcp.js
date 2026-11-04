@@ -12,6 +12,8 @@ import { quick } from './review-api.js';
 import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
 import { SKILL_TOOLS, SKILL_MODULES } from './mcp-skills.js';
+// an agent must not be able to start a send, a spend or a forget from this endpoint (Atom, 2026-11-03)
+export const blockedTool = (name) => /(?:^|_)(?:send|spend|forget)(?:_|$)/i.test(String(name || '')) || /^(?:send|spend|forget)$/i.test(String(name || ''));
 import { runSkill } from './mcp-run.js';
 import { drive } from './drive.js';
 import { auditPage } from './seo-audit.js';
@@ -265,6 +267,7 @@ export async function rpc(msg, ctx) {
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {
+    if (blockedTool(params.name)) return err(id, -32602, 'Verse does not send, spend or forget over MCP. These tools are read-only.');
     const fn = Object.prototype.hasOwnProperty.call(RUN, params.name) ? RUN[params.name] : null;
     if (!fn) return err(id, -32602, 'Unknown tool: ' + String(params.name).slice(0, 60));
     const args = params.arguments && typeof params.arguments === 'object' && !Array.isArray(params.arguments) ? params.arguments : {};

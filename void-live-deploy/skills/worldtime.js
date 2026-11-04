@@ -173,15 +173,16 @@ const ZONES = { est: ['Eastern Time', 'America/New_York'], edt: ['Eastern Time',
   cet: ['Central European Time', 'Europe/Paris'], cest: ['Central European Time', 'Europe/Paris'], eet: ['Eastern European Time', 'Europe/Athens'], ist: ['India Time', 'Asia/Kolkata'],
   jst: ['Japan Time', 'Asia/Tokyo'], aest: ['Sydney Time', 'Australia/Sydney'], aedt: ['Sydney Time', 'Australia/Sydney'], sgt: ['Singapore Time', 'Asia/Singapore'], hkt: ['Hong Kong Time', 'Asia/Hong_Kong'] };
 export function zoneOf(name) { const z = ZONES[String(name || '').trim().toLowerCase().replace(/\s+time$/, '').replace(/\./g, '')]; return z ? { name: z[0], timezone: z[1], country: '', admin1: '' } : null; }
-async function geo(name, zoneOnly) {
+async function geo(name, zoneOnly, get = fetch) {
   const z = zoneOf(name); if (z) return { r: z, choices: null };
   const base = String(name).split(',')[0].trim();
-  const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&name=' + encodeURIComponent(base)).then((r) => r.json());
+  const g = await get('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&name=' + encodeURIComponent(base)).then((r) => r.json());
   return pickPlace(g.results, name, zoneOnly);
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
+  const get = api.fetch || fetch;
   const q = parseWorldTime(text);
   if (!q) return 'none';
   const title = q.kind === 'clock' ? 'World clock' : q.kind === 'convert' ? q.time + ' ' + q.from + ' → ' + q.to : q.kind === 'sun' ? q.which[0].toUpperCase() + q.which.slice(1) + ' in ' + q.place : 'Time in ' + q.place;
@@ -201,7 +202,7 @@ async function run(text, api) {
       // no lookup for the default three; named places go through the same geocoder as everything else
       let rows = [{ name: 'Tokyo', tz: 'Asia/Tokyo' }, { name: 'London', tz: 'Europe/London' }, { name: 'New York', tz: 'America/New_York' }];
       if (q.places.length) {
-        const found = await Promise.all(q.places.map((n) => geo(n, true).then((g) => ({ n, g })).catch(() => ({ n, g: { r: null } }))));
+        const found = await Promise.all(q.places.map((n) => geo(n, true, get).then((g) => ({ n, g })).catch(() => ({ n, g: { r: null } }))));
         if (!api._pageStill(el)) return 'worldtime';
         const miss = found.filter((x) => !x.g.r && !x.g.choices).map((x) => x.n);
         rows = found.filter((x) => x.g.r || x.g.choices).map((x) => { const r = x.g.r || x.g.choices[0]; return { name: r.name, tz: r.timezone }; });
@@ -225,11 +226,12 @@ async function run(text, api) {
       draw();
       clockMini(api, el, rows.slice(0, 4).map((r) => ({ tz: r.tz, label: r.name })));
       // it keeps time while it is open, then stops
-      const tick = setInterval(() => { if (!api._pageStill(el)) return clearInterval(tick); draw(); }, 15000);
+      // the page keeps the clock moving; a headless run (the MCP tool) draws once and does not leave a timer behind
+      if (api.stage) { const tick = setInterval(() => { if (!api._pageStill(el)) return clearInterval(tick); draw(); }, 15000); }
       return 'worldtime';
     }
     if (q.kind === 'now') {
-      const { r, choices } = await geo(q.place, true);
+      const { r, choices } = await geo(q.place, true, get);
       if (!api._pageStill(el)) return 'worldtime';
       if (choices) return choose(q.place, choices);
       if (!r) return missing(q.place);
@@ -245,7 +247,7 @@ async function run(text, api) {
     if (q.kind === 'convert') {
       const nowMode = q.time === 'now';
       const hm = nowMode ? [0, 0] : parseClock(q.time);
-      const [ga, gb] = await Promise.all([geo(q.from, true), geo(q.to, true)]);
+      const [ga, gb] = await Promise.all([geo(q.from, true, get), geo(q.to, true, get)]);
       if (!api._pageStill(el)) return 'worldtime';
       if (!hm) { el.innerHTML = '<h2>' + esc(title) + '</h2><p>"' + esc(q.time) + '" isn\'t a time I can read. Try "3pm London to Tokyo".</p>'; return 'none'; }
       if (ga.choices) return choose(q.from, ga.choices);
@@ -269,11 +271,11 @@ async function run(text, api) {
       return 'worldtime';
     }
     // sunrise / sunset
-    const { r, choices } = await geo(q.place, false);
+    const { r, choices } = await geo(q.place, false, get);
     if (!api._pageStill(el)) return 'worldtime';
     if (choices) return choose(q.place, choices);
     if (!r) return missing(q.place);
-    const w = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + r.latitude + '&longitude=' + r.longitude + '&daily=sunrise,sunset&timezone=' + encodeURIComponent(r.timezone) + '&forecast_days=2').then((x) => x.json());
+    const w = await get('https://api.open-meteo.com/v1/forecast?latitude=' + r.latitude + '&longitude=' + r.longitude + '&daily=sunrise,sunset&timezone=' + encodeURIComponent(r.timezone) + '&forecast_days=2').then((x) => x.json());
     if (!api._pageStill(el)) return 'worldtime';
     const days = (w.daily && w.daily.time) || [], list = (w.daily && w.daily[q.which]) || [];
     if (!list.length) throw new Error('no sun times');
