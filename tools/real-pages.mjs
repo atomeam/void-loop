@@ -17,7 +17,7 @@ export function routes() {
   const walk = (d, rel) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { if (!e.isDirectory() || /^(node_modules|lib|skills|api|functions|assets|data|\.|_)/.test(e.name)) continue; if (rel === '/lab/') continue; /* each experiment was opened headless by tools/lab-probe.mjs before it was published: the gallery is the route */ const r = rel + e.name + '/'; if (fs.existsSync(path.join(d, e.name, 'index.html'))) out.push(r); walk(path.join(d, e.name), r); } };
   out.push('/'); walk(root, '/'); return out.sort();
 }
-const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/'];
+const ARTICLES = ['/fix/', '/privacy/', '/podcast/', '/cheat-codes/', '/keep-it-running/', '/first-automation-setup/', '/fix/audit/', '/fix/one-time/', '/boards/rules/', '/tools/', '/music/', '/books/', '/store/receipt/', '/flights/airports/', '/security/', '/limits/', '/contribute/'];
 const near = (a, b, e = 0.01) => Math.abs(Number(String(a).replace(/[^0-9.eE+-]/g, '')) - b) <= e;
 
 // ---- the specs: one per route. t.* helpers are defined in run(). ----
@@ -56,11 +56,16 @@ const phoneFit = (p, sel) => p.evaluate((s) => {
 }, sel);
 const flightsShare = async (t, check) => { await t.share('#fl-share', check); };
 export const SPECS = {
+  '/free/': async (t) => {  // the free-resource registry: every resource listed, the search narrows it
+    await t.waitText('#count', /resources/, 15000); t.ok(Number((await t.text('#count')).match(/of (\d+)/)[1]) >= 30, 'the whole registry is listed: ' + (await t.text('#count')));
+    await t.fill('#find', 'groq'); t.ok((await t.p.locator('tr.res').count()) === 1, 'a search for groq finds the one Groq row');
+  },
 
   '/bots/': async (t) => {  // Verse's bots: at least 50 live, each card runs its bot on what the visitor types
     await t.waitText('#sum', /bots live/, 15000); t.ok(Number((await t.text('#sum')).match(/\d+/)[0]) >= 50, 'at least 50 live bots: ' + (await t.text('#sum')));
     await t.fill('#roman-numerals textarea', '1999'); await t.click('#roman-numerals button'); t.ok((await t.text('#roman-numerals output')).trim() === 'MCMXCIX', 'roman-numerals runs on new input');
     await t.click('#cats [data-c="money"]'); t.ok((await t.p.locator('.bot').count()) >= 5, 'the money filter lists money bots');
+    await t.click('#cats [data-c="all"]'); await t.fill('#q', 'mi-to-km'); await t.p.waitForTimeout(400); t.ok(await t.p.locator('#mi-to-km').count() === 1, 'search finds a family bot (mi-to-km) among thousands');
   },
   '/calculators/': async (t) => {
     await t.fill('#find', 'tip'); const h = await t.waitText('#hits', /tip/i, 5000); t.ok(/tip/i.test(h), 'a search for tip finds a tip calculator');
@@ -72,6 +77,13 @@ export const SPECS = {
     await t.click('#spin'); const r = await t.waitText('#result', /\S/, 8000); t.ok(r.trim().length > 0, 'a spin lands on a slice: ' + r.slice(0, 50));
     await t.click('#sim'); const s = await t.waitText('#simsay', /\d/, 8000); t.ok(/\d/.test(s), 'the 1,000-spin check reports counts: ' + s.slice(0, 50));
     await t.share('#share');
+  },
+  '/under-the-hood/': async (t) => { // live numbers only: each section fills from the reader's own browser or a served file
+    await t.waitText('h1', /Under the hood/, 8000);
+    const v = await t.waitText('#vitals', /time to first byte/, 8000); t.ok(/\d+ ms|\d\.\d+ s/.test(v), 'the reader\'s own time to first byte is measured: ' + v.slice(0, 60));
+    const h = await t.waitText('#hdrs', /strict-transport-security/, 10000); t.ok(/content-security-policy/.test(h) && /sent|strict/.test(h), 'the home page\'s headers are read live');
+    const c = await t.waitText('#counts', /skill modules/, 10000); t.ok(/\d{3}/.test(c), 'the skill count is read from /skills/index.json: ' + c.slice(0, 60));
+    const f = await t.waitText('#files', /llms\.txt/, 10000); t.ok(/\/llms\.txt\s*200/.test(f) && /\/agents\.txt\s*200/.test(f), 'every machine file answers 200: ' + f.slice(0, 80));
   },
   '/progress/': async (t) => { // fixed cases (exam.json) and the visitor scores (tools/exam.mjs writes /exam/latest.json)
     await t.waitText('h1', /What Verse can actually do/, 8000);
@@ -461,6 +473,20 @@ SPECS['/autopilot/'] = async (t) => {
   await t.click('[data-days="7"]'); await t.waitText('#feed', /did not answer/, 8000);
   t.ok((await t.text('#t-own')) === 'n/a' && /did not answer/.test(await t.text('#feed')), 'a source that does not answer says so instead of a number');
   t.ok(/days=7/.test(t.p.url()), 'the window is in the link');
+};
+// /agent/: Verse's agent. The API is faked: one finished task with its steps, one waiting on a yes
+const AGENT_FIX = { ok: true, brief: { day: '2026-11-04', made: 1, waiting: 1, running: 0, text: 'Made 1 thing in the last day. 1 waiting on your yes.' },
+  tiers: [{ name: 'free', month_cents: 0 }, { name: 'strong', month_cents: 500 }],
+  tasks: [{ id: 'b2', ask: 'email Bob the plan', status: 'needs_yes', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'This one sends, pays or deletes something, so it waits for your yes.' }], result: 'Hi Bob' },
+    { id: 'a1', ask: 'plan a trip to Savannah', status: 'done', bot: 'page', tier: 'free', steps: [{ line: 'Got it. Queued.' }, { line: 'Done. It is on your Made shelf.' }], result: 'Day 1: Forsyth Park' }] };
+AGENT_FIX.made = [AGENT_FIX.tasks[1]];
+SPECS['/agent/'] = async (t) => {
+  await t.p.route((u) => u.pathname === '/api/agent', (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(AGENT_FIX) }));
+  await t.p.reload(); await t.waitText('#brief', /Daily brief/, 10000);
+  t.ok(/1 waiting on your yes/.test(await t.text('#brief')), 'the daily brief counts what waits');
+  t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
+  t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
+  t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },

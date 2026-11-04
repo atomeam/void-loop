@@ -22,7 +22,8 @@
   #history { text-align: center; font-size: 14px; margin-top: 10px; }
   #stamp { text-align: center; font-size: 11px; opacity: .5; margin-top: 8px; }
   a { color: inherit; }
-</style><script src="/visit.js" defer></script>
+</style><style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+<script src="/visit.js" defer></script>
 
 <!-- modulepreload: tools/preload.mjs -->
 <link rel="modulepreload" href="/lib/tower.js">
@@ -40,6 +41,7 @@
 <!-- /modulepreload -->
 </head>
 <body>
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Versus: Verse against the best sites</h1>
 <main><div id="tower">Reading Versus…</div><p id="detail" aria-live="polite"></p><div id="stamp"></div><p id="history"><a href="/assimilated/">Every site Verse has assimilated or tried, and when →</a></p></main>
 <script type="module">
   import { tower, towerArgs } from '/lib/tower.js';

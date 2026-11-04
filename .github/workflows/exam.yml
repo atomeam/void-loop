@@ -15,7 +15,7 @@ on:
 
 concurrency:
   group: outcome-exam
-  cancel-in-progress: false
+  cancel-in-progress: false # one exam runs to the end and records; a newer deploy replaces the one waiting, it does not throw away the one scoring
 
 permissions:
   contents: write

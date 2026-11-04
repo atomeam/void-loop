@@ -14,9 +14,9 @@
  "bench_at": "2026-10-30",
  "totals": {
   "experiment": 1,
-  "tested": 8,
-  "checked": 8,
-  "proven": 382
+  "tested": 4,
+  "checked": 10,
+  "proven": 384
  },
  "families": [
   {
@@ -1193,7 +1193,7 @@
     {
      "name": "stopwatch",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-11-04",
      "last_tested_by": "its tests",
      "success_rate": 1
@@ -1336,8 +1336,8 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 1,
-    "tested": 2,
-    "checked": 0,
+    "tested": 0,
+    "checked": 2,
     "proven": 26
    },
    "skills": [
@@ -1445,10 +1445,12 @@
     },
     {
      "name": "drive-share",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-04",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-04"
     },
     {
      "name": "tip",
@@ -1592,10 +1594,12 @@
     },
     {
      "name": "sums",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-04",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-04"
     },
     {
      "name": "uuid",
@@ -1626,8 +1630,8 @@
    "count": {
     "experiment": 0,
     "tested": 0,
-    "checked": 1,
-    "proven": 12
+    "checked": 0,
+    "proven": 13
    },
    "skills": [
     {
@@ -1740,11 +1744,12 @@
     },
     {
      "name": "pointing-arrow",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-04",
      "last_tested_by": "its tests",
-     "success_rate": 1
+     "success_rate": 1,
+     "promoted": "2026-11-04"
     }
    ]
   },
@@ -1754,9 +1759,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 1,
-    "proven": 42
+    "tested": 2,
+    "checked": 2,
+    "proven": 43
    },
    "sources": {
     "read": 27,
@@ -2013,10 +2018,12 @@
     },
     {
      "name": "palindrome",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-11-04",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-11-04"
     },
     {
      "name": "news",
@@ -2117,10 +2124,12 @@
     },
     {
      "name": "compliment",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-11-03",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-11-04",
      "streak": 3
     },
     {

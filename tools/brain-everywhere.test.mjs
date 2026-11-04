@@ -96,7 +96,9 @@ test('a read with no brain anywhere and the lock free starts the brain on this p
 test('every page loads it: /visit.js adds the module after load, the module runs once a page and starts itself only in a browser', () => {
   const v = readFileSync(new URL('../void-live-deploy/visit.js', import.meta.url), 'utf8');
   assert.match(v, /s\.type = 'module'; s\.src = '\/lib\/brain-everywhere\.js'/);
-  assert.match(v, /addEventListener\('load', function \(\) \{ setTimeout\(function \(\) \{ var s = document\.createElement\('script'\)/);
+  // after load, and only once a prerendered page is actually opened (visit.js after())
+  assert.match(v, /after\(1500, function \(\) \{ var s = d\.createElement\('script'\)/);
+  assert.match(v, /addEventListener\('load', run, \{ once: true \}\)/);
   const m = readFileSync(new URL('../void-live-deploy/lib/brain-everywhere.js', import.meta.url), 'utf8');
   assert.match(m, /if \(win\.__verseBrainPage\) return win\.__verseBrainPage;/, 'once a page');
   assert.match(m, /if \(typeof window !== 'undefined' && window\.document && !window\.__verseBrainNoAuto\) start\(\);/);

@@ -28,7 +28,7 @@ if (args.includes('--changed') && inCI) console.log('--changed ignored in CI: ma
 // the changed files --changed selects by (committed against origin/main and uncommitted); null when git cannot say, and then everything runs
 const changedList = changedMode ? changedFiles() : null;
 // --changed narrows a whole-tree check to the changed files too, unless one of them reaches everything (a narrow run would parse one file after a workflow change)
-// a site page is not the runner: under VOID_GATE it does not pull in every check (main still runs them). A workflow and the runner files already stay out.
+// a site page is not the runner: under VOID_GATE it does not pull in every check (main still runs them). void.html is that page; its deploy copies are index.html. A workflow and the runner files already stay out.
 // the offline shell lists those pages (sw.js). One added address is the same kind of reach as a page, and main's full set still runs after the merge.
 const gateFile = (f) => f.startsWith('.github/workflows/') || f === 'void.html' || f === 'tools/checks.mjs' || f === 'tools/pool.mjs' || f === 'tools/checks-changed.mjs' || f === 'void-live-deploy/sw.js' || /^void-live-deploy\/(?:.*\/)?index\.html$/.test(f);
 const reachesAll = (f) => REACHES_ALL.test(f) && !(process.env.VOID_GATE === '1' && gateFile(f));
@@ -378,6 +378,7 @@ for (const [name, file] of [
   ['vendor-three', 'vendor-three.test.mjs'],
   ['sw-3d-cache', 'sw-3d-cache.test.mjs'], // the worker never keeps HTML as a 3D file; three.js at a path no edge holds (issue #1114)
   ['fresh-scripts', 'fresh-scripts.test.mjs'], // a deploy reaches a returning browser's scripts on every page: sw.js asks again for each script, visit.js asks again after load where no worker is in control
+  ['under-the-hood', 'under-the-hood.test.mjs'], // /under-the-hood/ shows only live numbers with no inline script; speculation rules never touch the API or home; a prerendered page counts once opened
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
@@ -504,6 +505,7 @@ for (const [name, file] of [
   ['queue', 'queue.test.mjs'],
   ['conductor', 'conductor.test.mjs'],
   ['verse-job', 'verse-job.test.mjs'],
+  ['engineer', 'engineer.test.mjs'],
   ['tower-size', 'tower-size.test.mjs'],
   ['history-coverage', 'history-coverage.test.mjs'],
   ['tower-target', 'tower-target.test.mjs'],
@@ -526,6 +528,8 @@ for (const [name, file] of [
   ['skills-delta', 'skills-delta.test.mjs'],
   ['tower-files', 'tower-files.test.mjs'],
   ['pre-pr', 'pre-pr.test.mjs'],
+  ['verse-shell', 'verse-shell.test.mjs'],
+  ['split-void-page', 'split-void-page.test.mjs'],
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
   ['skill-use', 'skill-use.test.mjs'],
