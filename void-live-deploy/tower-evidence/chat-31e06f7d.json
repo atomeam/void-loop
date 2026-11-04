@@ -1,0 +1,69 @@
+{
+ "id": "chat",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 88,
+   "best": 337,
+   "evidence": "Verse 88 ms to the load event (median of 3, phone width) vs WhatsApp Web 337 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse 3 of 3 loads answered vs WhatsApp Web 3 of 3 loads answered",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 px sideways overflow at 390 px vs WhatsApp Web 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 unnamed controls or images vs WhatsApp Web 0 unnamed controls or images",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs WhatsApp Web 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse 4 of 4 (link-preview title, image, description; a share or copy-link control) vs WhatsApp Web 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 design defects vs WhatsApp Web 0 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), WhatsApp Web (0 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "worse",
+   "verse": 5,
+   "best": 6,
+   "evidence": "Verse 5 of 11 wider-use points (docs/WIDER-USE.md) vs WhatsApp Web 6 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T15:04:20.272Z",
+   "siteRead": true
+  }
+ }
+}

@@ -1,0 +1,142 @@
+{
+ "id": "identity",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 85,
+   "best": 166,
+   "evidence": "Verse (/identity/) 85 ms to the load event (median of 3, phone width) vs anycolorid.com 166 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/identity/) 3 of 3 loads answered vs anycolorid.com 3 of 3 loads answered",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "worse",
+   "verse": 37,
+   "best": 0,
+   "evidence": "Verse (/identity/) 37 px sideways overflow at 390 px vs anycolorid.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T15:11:12.459Z",
+   "was": "equal-and-better",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse (/identity/) 0 unnamed controls or images vs anycolorid.com 1 unnamed controls or images",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/identity/) 1 (1: the page shows itself again with the network cut) vs anycolorid.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 3,
+   "part": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 8,
+   "best": 8,
+   "evidence": "Verse (/identity/) 8 of 8 right against the worked-out answer; judged against the standard, not anycolorid.com (the site is not asked)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 8
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 9,
+   "evidence": "Verse (/identity/) 0 design defects vs anycolorid.com 9 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), anycolorid.com (4 low-contrast texts, 5 small tap targets, layout shift 0.02)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  },
+  "change history": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 3,
+   "part": true
+  },
+  "service portal": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 4,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 22,
+   "best": 0,
+   "evidence": "Verse (/identity/) 22 of 22 things a full answer shows vs anycolorid.com 0 of 22 things a full answer shows (Verse lacks: none; site lacks: profile, name, email, account ID, region, change history, on this device, JWT, claims, SSO, service portal, Official Website, Fan Club, Official Store, Community Hub, share link, export JSON, copy card, no account, works offline, no ads, back to Verse)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 22,
+   "siteRead": true
+  },
+  "profile editing": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-10-28T04:19:18.627Z",
+   "of": 4,
+   "part": true
+  },
+  "token inspection": {
+   "verdict": "worse",
+   "verse": 2,
+   "best": 3,
+   "evidence": "Verse (/identity/) 2 of 3 shown for the question (Verse lacks: a bearer token input); judged on Verse alone, the site is not asked",
+   "at": "2026-10-28T04:19:18.627Z",
+   "of": 3,
+   "part": true
+  },
+  "profile metadata": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/identity/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 4,
+   "part": true
+  },
+  "SSO claims": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/identity/) 3 of 3 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:11:12.459Z",
+   "of": 3,
+   "part": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 8,
+   "best": 3.5,
+   "evidence": "Verse (/identity/) 8 of 11 wider-use points (docs/WIDER-USE.md) vs anycolorid.com 3.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T15:11:12.459Z",
+   "siteRead": true
+  }
+ }
+}

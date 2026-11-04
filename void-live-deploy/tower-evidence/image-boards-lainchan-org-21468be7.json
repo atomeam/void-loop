@@ -1,0 +1,126 @@
+{
+ "id": "image boards: lainchan.org",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 100,
+   "best": 103,
+   "evidence": "Verse (/boards/) 100 ms to the load event (median of 3, phone width) vs lainchan.org 103 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/boards/) 3 of 3 loads answered vs lainchan.org 3 of 3 loads answered",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/boards/) 0 px sideways overflow at 390 px vs lainchan.org 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 3,
+   "evidence": "Verse (/boards/) 0 unnamed controls or images vs lainchan.org 3 unnamed controls or images",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/boards/) 1 (1: the page shows itself again with the network cut) vs lainchan.org 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse (/boards/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs lainchan.org 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 5,
+   "best": 5,
+   "evidence": "Verse (/boards/) 5 of 5 right against the worked-out answer; judged against the standard, not lainchan.org (the site is not asked)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 5
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 60,
+   "evidence": "Verse (/boards/) 0 design defects vs lainchan.org 60 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.00), lainchan.org (55 low-contrast texts, 4 small tap targets, layout shift 0.47)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  },
+  "catalog": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: a catalog)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "replies and quoting": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 1,
+   "evidence": "Verse (/boards/) 2 of 2 shown vs lainchan.org 1 of 2 shown (Verse lacks: none; site lacks: replies)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "image posts": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 1 of 1 shown (Verse lacks: none; site lacks: none)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "archive": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/boards/) 1 of 1 shown vs lainchan.org 0 of 1 shown (Verse lacks: none; site lacks: an archive)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 20,
+   "best": 3,
+   "evidence": "Verse (/boards/) 20 of 20 things a full answer shows vs lainchan.org 3 of 20 things a full answer shows (Verse lacks: none; site lacks: a board list, a catalog, an archive, greentext, tripcodes, sage, spoilers, search, a thread watcher, work-safe and 18+ boards, make your own board, Boards by topic, Front page, Board index pages, Catalog, Threads with bump and image limits, Anonymous posting, no accounts)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "of": 20,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "worse",
+   "verse": 5.5,
+   "best": 6,
+   "evidence": "Verse (/boards/) 5.5 of 11 wider-use points (docs/WIDER-USE.md) vs lainchan.org 6 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T14:51:03.716Z",
+   "siteRead": true
+  }
+ }
+}

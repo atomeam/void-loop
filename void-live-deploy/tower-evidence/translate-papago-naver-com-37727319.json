@@ -1,0 +1,117 @@
+{
+ "id": "translate: papago.naver.com",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 94,
+   "best": 531,
+   "evidence": "Verse (/translate/?q=hello&to=es) 94 ms to the load event (median of 3, phone width) vs papago.naver.com 531 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/translate/?q=hello&to=es) 3 of 3 loads answered vs papago.naver.com 3 of 3 loads answered",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 0 px sideways overflow at 390 px vs papago.naver.com 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 0 unnamed controls or images vs papago.naver.com 0 unnamed controls or images",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 (1: the page shows itself again with the network cut) vs papago.naver.com 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs papago.naver.com 0 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 right against the worked-out answer; judged against the standard, not papago.naver.com (the site is not asked)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "of": 2
+  },
+  "design polish": {
+   "verdict": "worse",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 design defects vs papago.naver.com 0 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.00), papago.naver.com (0 low-contrast texts, 0 small tap targets, layout shift 0.10)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "was": "better",
+   "siteRead": true
+  },
+  "language count": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 1 of 1 shown vs papago.naver.com 0 of 1 shown (Verse lacks: none; site lacks: 100 languages)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "of": 1,
+   "part": true,
+   "siteRead": true
+  },
+  "speech in and out": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs papago.naver.com 0 of 2 shown (Verse lacks: none; site lacks: listen, speak)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "camera text": {
+   "verdict": "better",
+   "verse": 2,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 2 of 2 shown vs papago.naver.com 0 of 2 shown (Verse lacks: none; site lacks: camera)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "of": 2,
+   "part": true,
+   "siteRead": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 14,
+   "best": 0,
+   "evidence": "Verse (/translate/?q=hello&to=es) 14 of 16 things a full answer shows vs papago.naver.com 0 of 16 things a full answer shows (Verse lacks: Swap languages, Voice input; site lacks: the language detected, 100 languages, listen, speak, camera, copy, share, a history, saved phrases, works offline, Detect language, Instant translation as you type, Swap languages, Listen (text to speech), Voice input, Website translation)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "of": 16,
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 8,
+   "best": 5,
+   "evidence": "Verse (/translate/?q=hello&to=es) 8 of 11 wider-use points (docs/WIDER-USE.md) vs papago.naver.com 5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T14:43:48.210Z",
+   "siteRead": true
+  }
+ }
+}

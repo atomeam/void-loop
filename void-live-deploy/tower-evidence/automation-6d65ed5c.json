@@ -1,0 +1,131 @@
+{
+ "id": "automation",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 117,
+   "best": 560,
+   "evidence": "Verse (/ledger/) 117 ms to the load event (median of 3, phone width) vs Zapier 560 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/ledger/) 3 of 3 loads answered vs Zapier 3 of 3 loads answered",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/ledger/) 0 px sideways overflow at 390 px vs Zapier 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/ledger/) 0 unnamed controls or images vs Zapier 0 unnamed controls or images",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 0,
+   "evidence": "Verse (/ledger/) 1 (1: the page shows itself again with the network cut) vs Zapier 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 4,
+   "best": 3,
+   "evidence": "Verse (/ledger/) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs Zapier 3 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "better",
+   "verse": 11,
+   "best": 4.5,
+   "evidence": "Verse (/ledger/) 11 of 11 wider-use points (docs/WIDER-USE.md) vs Zapier 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "accuracy": {
+   "verdict": "worse",
+   "verse": 2,
+   "best": 5,
+   "evidence": "Verse (/ledger/) 2 of 5 right against the worked-out answer (missed: pull request #1 by its title, pull request #2 by its title, the day they merged); judged against the standard, not Zapier (the site is not asked). The page showed: \"Repo activity ledger Every issue and pull request of any public GitHub project in one table: search it, filter it, export it to a spreadsheet, and share the exact view with a link. Language English De\"",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 5
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 1,
+   "best": 89,
+   "evidence": "Verse (/ledger/) 1 design defects vs Zapier 89 design defects: Verse (0 low-contrast texts, 1 small tap targets, layout shift 0.01), Zapier (12 low-contrast texts, 77 small tap targets, layout shift 0.00)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "siteRead": true
+  },
+  "repo activity log": {
+   "verdict": "worse",
+   "verse": 3,
+   "best": 4,
+   "evidence": "Verse (/ledger/) 3 of 4 shown for the question (Verse lacks: how many are shown); judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 4,
+   "part": true
+  },
+  "tables": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/ledger/) 4 of 4 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 4,
+   "part": true
+  },
+  "triggers and actions": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/ledger/) 2 of 2 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 2,
+   "part": true
+  },
+  "app integrations": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/ledger/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 1,
+   "part": true
+  },
+  "scheduled runs": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/ledger/) 1 of 1 shown for the question; judged on Verse alone, the site is not asked",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 1,
+   "part": true
+  },
+  "completeness": {
+   "verdict": "better",
+   "verse": 17,
+   "best": 1,
+   "evidence": "Verse (/ledger/) 17 of 17 things a full answer shows vs Zapier 1 of 17 things a full answer shows (Verse lacks: none; site lacks: issues tab, pull requests tab, a search, a state filter, an author filter, merged shown apart from closed, a CSV download, a JSON download, copy as CSV, a link to the exact view, no account, no token, the rate limit said plainly, an unchanged answer is free, kept on this device, opens offline)",
+   "at": "2026-11-04T15:08:38.770Z",
+   "of": 17,
+   "siteRead": true
+  }
+ }
+}

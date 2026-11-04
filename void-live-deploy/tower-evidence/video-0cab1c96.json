@@ -1,0 +1,69 @@
+{
+ "id": "video",
+ "rows": {
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 80,
+   "best": 421,
+   "evidence": "Verse 80 ms to the load event (median of 3, phone width) vs YouTube 421 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "reliability": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse 3 of 3 loads answered vs YouTube 3 of 3 loads answered",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 px sideways overflow at 390 px vs YouTube 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 unnamed controls or images vs YouTube 0 unnamed controls or images",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "offline": {
+   "verdict": "equal",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse 0 (1: the page shows itself again with the network cut) vs YouTube 0 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "sharing": {
+   "verdict": "better",
+   "verse": 3,
+   "best": 1,
+   "evidence": "Verse 3 of 4 (link-preview title, image, description; a share or copy-link control) vs YouTube 1 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "design polish": {
+   "verdict": "better",
+   "verse": 0,
+   "best": 1,
+   "evidence": "Verse 0 design defects vs YouTube 1 design defects: Verse (0 low-contrast texts, 0 small tap targets, layout shift 0.02), YouTube (1 low-contrast texts, 0 small tap targets, layout shift 0.00)",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  },
+  "wider use": {
+   "verdict": "equal",
+   "verse": 4.5,
+   "best": 4.5,
+   "evidence": "Verse 4.5 of 11 wider-use points (docs/WIDER-USE.md) vs YouTube 4.5 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T15:07:32.395Z",
+   "siteRead": true
+  }
+ }
+}

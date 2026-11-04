@@ -1,0 +1,105 @@
+{
+ "id": "finance: macrotrends.net",
+ "rows": {
+  "reliability": {
+   "verdict": "incomplete",
+   "incomplete": true,
+   "verse": 3,
+   "best": null,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 loads answered; macrotrends.net turned the gate away or did not answer, so its reliability was never measured (INCOMPLETE, not a pass); the other aspects are judged against the best score there is",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "speed": {
+   "verdict": "equal-and-better",
+   "verse": 132,
+   "best": 200,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 132 ms to the load event (median of 3, phone width) vs the bar (macrotrends.net unreachable) 200 ms to the load event (median of 3, phone width)",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "mobile": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 px sideways overflow at 390 px vs the bar (macrotrends.net unreachable) 0 px sideways overflow at 390 px",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "accessibility": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 unnamed controls or images vs the bar (macrotrends.net unreachable) 0 unnamed controls or images",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "offline": {
+   "verdict": "equal-and-better",
+   "verse": 1,
+   "best": 1,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 1 (1: the page shows itself again with the network cut) vs the bar (macrotrends.net unreachable) 1 (1: the page shows itself again with the network cut)",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "sharing": {
+   "verdict": "equal-and-better",
+   "verse": 4,
+   "best": 4,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 4 of 4 (link-preview title, image, description; a share or copy-link control) vs the bar (macrotrends.net unreachable) 4 of 4 (link-preview title, image, description; a share or copy-link control)",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "design polish": {
+   "verdict": "equal-and-better",
+   "verse": 0,
+   "best": 0,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 0 design defects vs the bar (macrotrends.net unreachable) 0 design defects",
+   "at": "2026-11-04T14:57:28.609Z"
+  },
+  "accuracy": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 right against the worked-out answer; judged against the standard",
+   "at": "2026-11-04T14:57:28.609Z",
+   "of": 3
+  },
+  "completeness": {
+   "verdict": "equal-and-better",
+   "verse": 21,
+   "best": 21,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 21 of 21 things a full answer shows vs the bar (macrotrends.net unreachable) 21 of 21 things a full answer shows (Verse lacks: none)",
+   "at": "2026-11-04T14:57:28.609Z",
+   "of": 21
+  },
+  "live quotes": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
+   "at": "2026-11-04T14:57:28.609Z",
+   "of": 3,
+   "part": true
+  },
+  "charts": {
+   "verdict": "equal-and-better",
+   "verse": 3,
+   "best": 3,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 3 of 3 shown vs the bar (macrotrends.net unreachable) 3 of 3 shown (Verse lacks: none)",
+   "at": "2026-11-04T14:57:28.609Z",
+   "of": 3,
+   "part": true
+  },
+  "watchlists": {
+   "verdict": "equal-and-better",
+   "verse": 2,
+   "best": 2,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 2 of 2 shown vs the bar (macrotrends.net unreachable) 2 of 2 shown (Verse lacks: none)",
+   "at": "2026-11-04T14:57:28.609Z",
+   "of": 2,
+   "part": true
+  },
+  "wider use": {
+   "verdict": "worse",
+   "verse": 7,
+   "best": 11,
+   "evidence": "Verse (/markets/?s=SPX&r=5y&on=2024-12-31) 7 of 11 wider-use points (docs/WIDER-USE.md) vs the bar (macrotrends.net unreachable) 11 of 11 wider-use points (docs/WIDER-USE.md)",
+   "at": "2026-11-04T14:57:28.609Z"
+  }
+ }
+}
