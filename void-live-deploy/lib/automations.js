@@ -214,7 +214,6 @@ export function watchRule(watch, tell = 'note', every = DEFAULT_EVERY) {
   return { name: ('Watch: ' + describe(watch)).slice(0, MAX_NAME), when: { on: 'schedule', every }, do: [{ action: 'watch', watch, tell }] };
 }
 
-/** three rules to start from (the card offers them; each is valid as it stands) */
 const cut = (v, n = 300) => (v == null ? '' : String(v).slice(0, n));
 /** a Gumroad Ping (lib/earnings.js parsePing) -> the event a 'gumroad' rule sees: what sold and for how much, never who bought it
  * (no email, name, address, IP or license key: event text can be posted in the team chat). Pure. */
@@ -247,6 +246,7 @@ export function githubEvent(name, delivery, b) {
   return ev;
 }
 
+/** rules to start from (the card offers them; each is valid as it stands) */
 export const TEMPLATES = [
   { name: 'Webhook to the build queue', when: { on: 'webhook' }, do: [{ action: 'queue.add', ask: 'from a webhook: {{event.ask}}', target: 'hook' }] },
   { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Verse saw this pull request labelled {{event.label.name}}.' }] },
