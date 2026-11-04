@@ -140,5 +140,9 @@
   {"check": "the book (asked by Verse): \"show the router rules\" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
   {"check": "will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not cou", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
   {"check": "skills: every skill in index.json gets its own examples and none of its near misses (389 skills)", "sha": "b1c0d9c8074d002fbf338aca9dae29207c7a6acf", "at": "2026-10-31T15:57:28Z"},
-  {"check": "suite ran to the end", "sha": "74c3b3baec07d6820d32e2c5d52674a09c9b737d", "at": "2026-11-04T05:03:37Z"}
+  {"check": "suite ran to the end", "sha": "74c3b3baec07d6820d32e2c5d52674a09c9b737d", "at": "2026-11-04T05:03:37Z"},
+  {"check": "tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no \"of N\" count a", "sha": "b6acc53b4cdc47a4b70caf01c0d590f506be5124", "at": "2026-11-04T17:30:05Z"},
+  {"check": "empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)", "sha": "b6acc53b4cdc47a4b70caf01c0d590f506be5124", "at": "2026-11-04T17:30:05Z"},
+  {"check": "the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking", "sha": "b6acc53b4cdc47a4b70caf01c0d590f506be5124", "at": "2026-11-04T17:30:05Z"},
+  {"check": "suite ran to the end", "sha": "b6acc53b4cdc47a4b70caf01c0d590f506be5124", "at": "2026-11-04T17:30:05Z"}
 ]
