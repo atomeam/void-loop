@@ -7,7 +7,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const page = readFileSync(resolve(root, 'void-live-deploy/void.html'), 'utf8');
+const page = readFileSync(resolve(root, 'void.html'), 'utf8');
 const grab = (name) => { const i = page.indexOf('    function ' + name + '('); assert.ok(i > 0, name); const j = page.indexOf('\n    }\n', i); return page.slice(i, j + 6); };
 
 function fakeVideo(src, playing) {
