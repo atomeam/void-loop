@@ -31,31 +31,47 @@
   .cols { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; } @media (max-width: 700px) { .cols { grid-template-columns: 1fr; } }
 </style>
 <style>@media (prefers-reduced-motion: no-preference){@view-transition{navigation:auto}}</style>
+
+<!-- modulepreload: tools/preload.mjs -->
+<link rel="modulepreload" href="/lib/agent-watch.js">
+<!-- /modulepreload -->
 </head>
 <body>
 <main>
 <h1>Verse, your agent</h1>
 <p class="soft">Send a task. Verse hands it to one of its own bots and keeps working while you're away. You can watch every step live. Anything that would send, pay or delete waits for your yes. Runs on free models today; the <a href="/treasury/">treasury</a> buys stronger ones only from money Verse has actually earned. Meet the bots on <a href="/team/">the team</a>.</p>
 <div class="card brief" id="brief">Loading your brief…</div>
+<p class="soft" id="away">Leave this tab open and go do something else: its title counts what waits for your yes. <button type="button" id="notify" hidden>Tell me when it needs me</button><span id="notifyNote"></span></p>
 <form id="f"><textarea id="ask" maxlength="1000" placeholder="e.g. plan a 3-day budget trip to Savannah" required></textarea><button>Send</button></form>
 <div class="cols">
   <section><h2>Your thread</h2><div id="thread" class="soft">No tasks yet.</div></section>
   <section><h2>Made</h2><div id="made" class="soft">Finished work lands here.</div><p class="soft" id="tier"></p></section>
 </div>
 </main>
-<script>
-(() => {
+<script type="module">
+import { statusesOf, newsOf, titleFor, nextReadIn } from '/lib/agent-watch.js';
+{
   const k = 'verse-agent-thread';
   let thread = localStorage.getItem(k);
   if (!thread) { thread = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(36).padStart(2, '0')).join('').slice(0, 24).replace(/[^a-z0-9]/g, 'a'); localStorage.setItem(k, thread); }
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const label = { queued: 'queued', running: 'working', done: 'done', needs_yes: 'needs your yes', failed: 'stuck', declined: 'declined' };
-  let last = '';
+  let last = '', before = null, tasks = [], timer = 0;
+  const BASE_TITLE = document.title;
+  // a browser notification only when you turned them on here, and only while the tab is hidden (on screen, the thread already shows it)
+  const canNotify = 'Notification' in window;
+  const notifyBtn = $('notify'), notifyNote = $('notifyNote');
+  const showNotifyState = () => { if (!canNotify) return; const p = Notification.permission; notifyBtn.hidden = p !== 'default'; notifyNote.textContent = p === 'granted' ? ' It will also tell you with a notification.' : p === 'denied' ? ' Notifications are blocked for this site in your browser.' : ''; };
+  showNotifyState();
+  notifyBtn.addEventListener('click', () => { Notification.requestPermission().then(showNotifyState, showNotifyState); });
+  const tell = (news) => { if (!canNotify || Notification.permission !== 'granted' || !document.hidden) return;
+    for (const n of news) { try { const note = new Notification(n.title, { body: n.body, tag: 'verse-agent-' + n.id }); note.onclick = () => { window.focus(); note.close(); }; } catch (_) { /* a browser that only notifies from a service worker: the title still counts */ } } };
   async function load() {
     try {
       const j = await (await fetch('/api/agent?thread=' + thread, { cache: 'no-store' })).json();
       if (!j.ok) return;
+      tasks = j.tasks; tell(newsOf(before, tasks)); before = statusesOf(tasks); document.title = titleFor(BASE_TITLE, tasks);
       const sig = JSON.stringify(j.tasks); if (sig === last) return; last = sig;
       $('brief').textContent = 'Daily brief, ' + j.brief.day + ': ' + j.brief.text;
       $('thread').innerHTML = j.tasks.length ? j.tasks.map((t) => '<div class="card"><b>' + esc(t.ask) + '</b><span class="st ' + t.status + '">' + label[t.status] + '</span>' +
@@ -70,8 +86,11 @@
   const post = (b) => fetch('/api/agent', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ thread, ...b }) }).then((r) => r.json());
   $('f').addEventListener('submit', async (e) => { e.preventDefault(); const ask = $('ask').value.trim(); if (!ask) return; $('ask').value = ''; const j = await post({ ask }); if (!j.ok) alert(j.say || 'try again'); load(); });
   $('thread').addEventListener('click', async (e) => { const b = e.target.closest('button[data-id]'); if (!b) return; await post({ id: b.dataset.id, decision: b.dataset.d }); load(); });
-  load(); setInterval(() => { if (!document.hidden) load(); }, 2000);
-})();
+  // every 2 s while you watch; hidden, every 10 s only while a task is still working, so a finished thread asks nothing in the background
+  const schedule = () => { clearTimeout(timer); const ms = nextReadIn(tasks, document.hidden); if (ms != null) timer = setTimeout(() => load().finally(schedule), ms); };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) load().finally(schedule); else schedule(); });
+  load().finally(schedule);
+}
 </script>
 </body>
 </html>
