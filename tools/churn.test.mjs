@@ -86,5 +86,5 @@ test('the churn cap holds back only the will\'s own wants: only the will, its wr
   const walk = (d) => { for (const n of readdirSync(d)) { if (n === 'node_modules' || n === '.git' || n === 'archive') continue; const p = d + '/' + n, st = statSync(p);
     if (st.isDirectory()) walk(p); else if (/\.(?:m?js|ya?ml|py|sh)$/.test(n) && st.size < 2e6) { const t = readFileSync(p, 'utf8'); if (/churn\.json|from ['"][./]*(?:lib\/)?churn\.js['"]/.test(t)) hits.push(p.slice(root.length)); } } };
   walk(root + '.github'); walk(root + 'tools'); walk(root + 'void-live-deploy');
-  assert.deepEqual(hits.sort(), ['tools/churn.mjs', 'tools/churn.test.mjs', 'tools/refresh.mjs', 'tools/will.py', 'void-live-deploy/functions/api/will.js', 'void-live-deploy/lib/churn.js', 'void-live-deploy/lib/will-guard.js'].sort(), 'a PR gate or another loop reading the churn list would block agents\' work');
+  assert.deepEqual(hits.sort(), ['tools/churn.mjs', 'tools/churn.test.mjs', 'tools/generated.mjs', 'tools/refresh.mjs', 'tools/will.py', 'void-live-deploy/functions/api/will.js', 'void-live-deploy/lib/churn.js', 'void-live-deploy/lib/will-guard.js'].sort(), 'a PR gate or another loop reading the churn list would block agents\' work');
 });
