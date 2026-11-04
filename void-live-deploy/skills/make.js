@@ -27,7 +27,7 @@ const TOOLS = [
   ['(?:hypothesis ledger|weak signal ledger|weak signals)', 'weak-signal-hypothesis-ledger', 'Hypothesis ledger', 'Weak signals held as hypotheses, each with its confidence and source.'],
   ['(?:(?:uap|ufo) (?:disclosure )?timeline|uap disclosure)', 'anomalous-event-timeline', 'UAP timeline', 'Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved.'],
   // the lab: the newest working draft of each fringe family, each a real experiment with its own self-test (2026-10-13)
-  ['(?:posner(?: cue| cueing)?(?: test)?|arrow (?:attention )?test|attention test|test my attention)', 'attention-7', 'The pointing arrow', 'An arrow hints where a star will appear. Sometimes it lies. How much does a hint steer you?'],
+  ['(?:arrow (?:attention )?test|attention test|test my attention)', 'attention-7', 'The pointing arrow', 'An arrow hints where a star will appear. Sometimes it lies. How much does a hint steer you?'],
   ['(?:hold the lamp|lamp timing(?: test)?|scalar timing(?: test)?)', 'interval-timing-8', 'Hold the lamp', 'Hold for as long as the lamp was lit. Longer times drift more, in proportion.'],
   ['(?:fitts(?:\'s|s)?(?: law)?(?: test)?|pointing test|how fast can i tap)', 'opt-in-gesture-6', 'How small a button', 'Tap the targets as fast as you can; Fitts\'s law predicts your time from size and distance.'],
   ['(?:(?:joint )?simon (?:effect|test|task)|joint simon|its side of the table)', 'human-machine-co-agency-8', 'Its side of the table', 'Answer only the green dots. Does sharing the task with Verse slow you on its side?'],
@@ -69,7 +69,7 @@ export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:show (?:me )?|open )?(?:the |(?:verse|void)'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
   for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
-  for (const [, id, label, sub] of TOOLS) if (label.toLowerCase().replace(/[^a-z' ]/g, '') === t.replace(/[^a-z' ]/g, '')) return { kind: 'tool', id, label, sub }; // the lab's own titles
+  for (const [, id, label, sub] of TOOLS) if (id !== 'attention-7' && label.toLowerCase().replace(/[^a-z' ]/g, '') === t.replace(/[^a-z' ]/g, '')) return { kind: 'tool', id, label, sub }; // the lab's own titles ("the pointing arrow" is the pointing-arrow skill)
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);
   if (m) for (const [re, id, label] of GAMES) {
     if (id === 'tictactoe' && !/^(?:make|build|create|give me|code)\b/.test(t)) continue;

@@ -61,7 +61,8 @@ export function factLines(facts = {}) {
   if (skills != null) out.push('I have ' + skills.toLocaleString('en') + ' skill' + (skills === 1 ? '' : 's') + ' right now. Ask for anything.');
   if (beaten != null) out.push(beaten === 0 ? "I haven't surpassed a site yet. Working on it." : "I've surpassed " + beaten.toLocaleString('en') + ' site' + (beaten === 1 ? '' : 's') + ' so far.');
   const learned = String(facts.learned || '').replace(/\s+/g, ' ').trim();
-  if (learned) out.push('The last thing I learned: ' + learned.replace(/[.]+$/, '') + '.');
+  // a ledger line is something that shipped. It is "learned" only when an exam score rose (facts.examUp); a sentence with no exam behind it does not claim learning.
+  if (learned) out.push((facts.examUp === true ? 'The last thing I learned: ' : 'The last thing that shipped: ') + learned.replace(/[.]+$/, '') + '.');
   const motto = String(facts.motto || '').trim();
   if (motto) out.push('“' + motto.replace(/[.]+$/, '') + '.”');
   const about = String(facts.about || '').trim();

@@ -23,9 +23,9 @@ export function progressHtml(rows, esc = (s) => String(s)) {
   const bmax = Math.max(1, ...rows.map((r) => r.built));
   const bars = rows.map((r, i) => `<rect x="${(x(i) - 4).toFixed(1)}" y="${(H - 5 - (r.built / bmax) * 30).toFixed(1)}" width="8" height="${((r.built / bmax) * 30).toFixed(1)}" opacity="0.35"/>`).join('');
   const last = rows[rows.length - 1];
-  return '<section data-sec="progress"><h3>My progress, week by week</h3>'
+  return '<section data-sec="progress"><h3>Ledger entries, week by week</h3>'
     + `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(`ledger entries over ${rows.length} weeks: ${last.total} in total, ${last.built} this week`)}" style="max-width:420px;fill:currentColor"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2"/>${bars}</svg>`
-    + `<p>${esc(`The line is every build and improvement in my ledger so far (${last.total}). The bars are each week's new ones: ${last.built} this week.`)}</p></section>`;
+    + `<p>${esc(`The line counts ledger lines (${last.total} so far), not an exam score. What a visitor actually gets is on /progress/. The bars are each week's new lines: ${last.built} this week.`)}</p></section>`;
 }
 
 /** miss rate and page speed per week from /tester-log.json's weekly counts (the site tester's own checks; no visitor words). Pure. */
