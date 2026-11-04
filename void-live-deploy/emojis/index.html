@@ -50,6 +50,7 @@
   .pick .pcopy, .pick .plink { margin:6px 0 0; font-size:13px; color:#b9b9c8; }
   .pick .pcopy code { color:#ecebf5; font-size:15px; }
   .pick .plink a, .bridge a { color:#cfc6ff; }
+  .pick .pgrid { grid-column:1 / -1; }
   .fmt { display:inline-flex; align-items:center; gap:8px; color:#b9b9c8; font-size:13px; }
   .fmt select { font:inherit; font-size:14px; color:#ecebf5; background:#171624; border:1px solid #2a2a35; border-radius:999px; padding:6px 10px; }
   .bridge { margin:10px 0 0; }
@@ -111,6 +112,8 @@
       </dl>
       <p class="pcopy">A tap copies <code id="pick-short"></code></p>
       <p class="plink"><a id="pick-link" href="/emojis/">Share this emoji</a></p>
+      <p class="plink"><a id="pick-looks" href="/emojis/everywhere/">How it looks on iPhone, Android, Windows and 11 more</a></p>
+      <div id="pick-grid" class="pgrid"></div>
     </div>
   </section>
 
@@ -333,6 +336,9 @@
     const u = new URL(location.href); u.search = '?pick=' + encodeURIComponent(c);
     $('pick-link').href = u.pathname + u.search;
     $('pick-link').textContent = 'Share this emoji: ' + u.pathname + u.search;
+    // how it looks everywhere (owner, 2026-11-03: a rival showed every platform's drawing; lib/emoji-looks.js): a small grid here, the full view one tap away
+    $('pick-looks').href = '/emojis/everywhere/?e=' + encodeURIComponent(c);
+    if ($('pick-grid').dataset.c !== c) import('/lib/emoji-looks.js').then((m) => { if (state.pick !== c || $('pick-grid').dataset.c === c) return; $('pick-grid').dataset.c = c; if (!document.getElementById('lk-css')) { const st = document.createElement('style'); st.id = 'lk-css'; st.textContent = m.LOOKS_CSS; document.head.appendChild(st); } $('pick-grid').innerHTML = m.gridHtml(c, { name: e.n, compact: true }); m.wireGrid($('pick-grid')); }).catch(() => {}); // void-review: ok (gridHtml escapes every value)
     handoff(c, e.n);
   }
 

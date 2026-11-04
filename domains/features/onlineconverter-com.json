@@ -1,0 +1,791 @@
+{
+ "floor": "onlineconverter.com",
+ "verse_page": "/converter/",
+ "source": "auto",
+ "sites": {},
+ "crawl": {
+  "sites": {
+   "onlineconverter.com": {
+    "floor": "onlineconverter.com",
+    "url": "https://onlineconverter.com/",
+    "robots": true,
+    "rendered": 0,
+    "sitemaps": 0,
+    "urls_found": 0,
+    "pages": 199,
+    "fetched": 200,
+    "skipped": {
+     "robots": 0,
+     "failed": 0
+    },
+    "templates": [
+     {
+      "key": "home",
+      "kind": "home",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/"
+      ],
+      "features": [
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "like:/video",
+      "kind": "list",
+      "known": 2,
+      "sampled": [
+       "https://www.onlineconverter.com/video",
+       "https://www.onlineconverter.com/audio"
+      ],
+      "title": "Video Converter, Audio Converter",
+      "features": [
+       "section choose converters according to your needs",
+       "section choose converters according to you have",
+       "section customized converters for different devices",
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "page:/image",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/image"
+      ],
+      "title": "Image Converter",
+      "features": [
+       "section choose converters according to your needs",
+       "section choose converters according to images you have",
+       "section customized converters for different devices",
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "page:/ebook",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/ebook"
+      ],
+      "title": "Ebook Converter",
+      "features": [
+       "section choose converters according to your needs",
+       "section choose converters according to ebooks you have",
+       "section customized converters for different devices",
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "page:/document",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/document"
+      ],
+      "title": "Document Converter",
+      "features": [
+       "section choose converters according to your needs",
+       "section choose converters according to documents you have",
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "page:/unit",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/unit"
+      ],
+      "title": "Unit Converter",
+      "features": [
+       "section choose converters according to your needs",
+       "control menu",
+       "action copy"
+      ]
+     },
+     {
+      "key": "like:/mp4",
+      "kind": "item",
+      "known": 84,
+      "sampled": [
+       "https://www.onlineconverter.com/mp4",
+       "https://www.onlineconverter.com/webp",
+       "https://www.onlineconverter.com/doc"
+      ],
+      "title": "MP4 Converter, 3GP Converter, AVI Converter, FLV Converter… (84 pages)",
+      "features": [
+       "section file format information",
+       "section related converters for converting files to",
+       "section related converters for converting to other files",
+       "button convert",
+       "control menu",
+       "control upload",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "like:/add-audio-to-video",
+      "kind": "item",
+      "known": 80,
+      "sampled": [
+       "https://www.onlineconverter.com/add-audio-to-video",
+       "https://www.onlineconverter.com/image-to-video",
+       "https://www.onlineconverter.com/wmv-to-mp4"
+      ],
+      "title": "Add Audio to Video, Add Background to Video, Add Image to Video, Add Text to Video… (80 pa",
+      "features": [
+       "grid grid",
+       "button convert",
+       "control upload",
+       "control menu",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "like:/android-video",
+      "kind": "item",
+      "known": 16,
+      "sampled": [
+       "https://www.onlineconverter.com/android-video",
+       "https://www.onlineconverter.com/ipad-audio",
+       "https://www.onlineconverter.com/mobile-ebook"
+      ],
+      "title": "Android Video Converter, iPad Video Converter, iPhone Video Converter, Kindle Video Conver",
+      "features": [
+       "section file format information",
+       "section related converters",
+       "button convert",
+       "control menu",
+       "control upload",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "page:/compress-image",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/compress-image"
+      ],
+      "title": "Compress Image",
+      "features": [
+       "section related converter",
+       "section other tools",
+       "button convert",
+       "control upload",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "page:/camera-raw-photo",
+      "kind": "tool",
+      "known": 1,
+      "sampled": [
+       "https://www.onlineconverter.com/camera-raw-photo"
+      ],
+      "title": "Camera Raw Photo Converter",
+      "features": [
+       "section related image",
+       "section related image converters",
+       "button convert",
+       "control menu",
+       "control upload",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "like:/compress-azw3",
+      "kind": "list",
+      "known": 2,
+      "sampled": [
+       "https://www.onlineconverter.com/compress-azw3",
+       "https://www.onlineconverter.com/compress-epub"
+      ],
+      "title": "Compress AZW3, Compress EPUB",
+      "features": [
+       "section related ebook converter",
+       "section other ebook tools",
+       "button convert",
+       "control upload",
+       "action copy",
+       "content table"
+      ]
+     },
+     {
+      "key": "like:/area",
+      "kind": "item",
+      "known": 8,
+      "sampled": [
+       "https://www.onlineconverter.com/area",
+       "https://www.onlineconverter.com/temperature",
+       "https://www.onlineconverter.com/weight"
+      ],
+      "title": "Area Converter, Currency Converter, Length/Distance Converter, Speed Converter… (8 pages)",
+      "features": [
+       "section calculation results",
+       "section related unit",
+       "button convert",
+       "control menu",
+       "action copy",
+       "content table"
+      ]
+     }
+    ],
+    "features": [
+     {
+      "key": "control menu",
+      "name": "A choice menu",
+      "kind": "control",
+      "templates": [
+       "home",
+       "like:/video",
+       "page:/image",
+       "page:/ebook",
+       "page:/document",
+       "page:/unit",
+       "like:/mp4",
+       "like:/add-audio-to-video",
+       "like:/android-video",
+       "page:/camera-raw-photo",
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "choice",
+       "menu"
+      ]
+     },
+     {
+      "key": "action copy",
+      "name": "Copy to clipboard",
+      "kind": "action",
+      "templates": [
+       "home",
+       "like:/video",
+       "page:/image",
+       "page:/ebook",
+       "page:/document",
+       "page:/unit",
+       "like:/mp4",
+       "like:/add-audio-to-video",
+       "like:/android-video",
+       "page:/compress-image",
+       "page:/camera-raw-photo",
+       "like:/compress-azw3",
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "copy"
+      ]
+     },
+     {
+      "key": "pages like:/video",
+      "name": "Pages: Video Converter, Audio Converter",
+      "kind": "page",
+      "templates": [
+       "like:/video"
+      ],
+      "verse": "has",
+      "found": [
+       "video",
+       "converter",
+       "audio"
+      ]
+     },
+     {
+      "key": "section choose converters according to your needs",
+      "name": "Choose Converters According To Your Needs",
+      "kind": "section",
+      "templates": [
+       "like:/video",
+       "page:/image",
+       "page:/ebook",
+       "page:/document",
+       "page:/unit"
+      ],
+      "verse": "has",
+      "found": [
+       "choose",
+       "converter",
+       "need"
+      ]
+     },
+     {
+      "key": "section choose converters according to you have",
+      "name": "Choose Converters According To You Have",
+      "kind": "section",
+      "templates": [
+       "like:/video"
+      ],
+      "verse": "has",
+      "found": [
+       "choose",
+       "converter"
+      ]
+     },
+     {
+      "key": "section customized converters for different devices",
+      "name": "Customized Converters For Different Devices",
+      "kind": "section",
+      "templates": [
+       "like:/video",
+       "page:/image",
+       "page:/ebook"
+      ],
+      "verse": "partial",
+      "found": [
+       "converter",
+       "device"
+      ]
+     },
+     {
+      "key": "page image converter",
+      "name": "A page: Image Converter",
+      "kind": "page",
+      "templates": [
+       "page:/image"
+      ],
+      "verse": "has",
+      "found": [
+       "image",
+       "converter"
+      ]
+     },
+     {
+      "key": "section choose converters according to images you have",
+      "name": "Choose Converters According To Images You Have",
+      "kind": "section",
+      "templates": [
+       "page:/image"
+      ],
+      "verse": "has",
+      "found": [
+       "choose",
+       "converter",
+       "image"
+      ]
+     },
+     {
+      "key": "page ebook converter",
+      "name": "A page: Ebook Converter",
+      "kind": "page",
+      "templates": [
+       "page:/ebook"
+      ],
+      "verse": "has",
+      "found": [
+       "ebook",
+       "converter"
+      ]
+     },
+     {
+      "key": "section choose converters according to ebooks you have",
+      "name": "Choose Converters According To Ebooks You Have",
+      "kind": "section",
+      "templates": [
+       "page:/ebook"
+      ],
+      "verse": "has",
+      "found": [
+       "choose",
+       "converter",
+       "ebook"
+      ]
+     },
+     {
+      "key": "page document converter",
+      "name": "A page: Document Converter",
+      "kind": "page",
+      "templates": [
+       "page:/document"
+      ],
+      "verse": "has",
+      "found": [
+       "document",
+       "converter"
+      ]
+     },
+     {
+      "key": "section choose converters according to documents you have",
+      "name": "Choose Converters According To Documents You Have",
+      "kind": "section",
+      "templates": [
+       "page:/document"
+      ],
+      "verse": "has",
+      "found": [
+       "choose",
+       "converter",
+       "document"
+      ]
+     },
+     {
+      "key": "page unit converter",
+      "name": "A page: Unit Converter",
+      "kind": "page",
+      "templates": [
+       "page:/unit"
+      ],
+      "verse": "has",
+      "found": [
+       "unit",
+       "converter"
+      ]
+     },
+     {
+      "key": "pages like:/mp4",
+      "name": "Pages: MP4 Converter, 3GP Converter, AVI Converter, FLV Converter… (84 pages)",
+      "kind": "page",
+      "templates": [
+       "like:/mp4"
+      ],
+      "verse": "has",
+      "found": [
+       "mp4",
+       "converter",
+       "3gp",
+       "avi"
+      ]
+     },
+     {
+      "key": "section file format information",
+      "name": "File Format Information",
+      "kind": "section",
+      "templates": [
+       "like:/mp4",
+       "like:/android-video"
+      ],
+      "verse": "has",
+      "found": [
+       "file",
+       "format"
+      ]
+     },
+     {
+      "key": "section related converters for converting files to",
+      "name": "Related Converters For Converting Files To",
+      "kind": "section",
+      "templates": [
+       "like:/mp4"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "converter",
+       "convert",
+       "file"
+      ]
+     },
+     {
+      "key": "section related converters for converting to other files",
+      "name": "Related Converters For Converting To Other Files",
+      "kind": "section",
+      "templates": [
+       "like:/mp4"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "converter",
+       "convert",
+       "other"
+      ]
+     },
+     {
+      "key": "button convert",
+      "name": "Convert",
+      "kind": "button",
+      "templates": [
+       "like:/mp4",
+       "like:/add-audio-to-video",
+       "like:/android-video",
+       "page:/compress-image",
+       "page:/camera-raw-photo",
+       "like:/compress-azw3",
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "convert"
+      ]
+     },
+     {
+      "key": "control upload",
+      "name": "Upload a file",
+      "kind": "control",
+      "templates": [
+       "like:/mp4",
+       "like:/add-audio-to-video",
+       "like:/android-video",
+       "page:/compress-image",
+       "page:/camera-raw-photo",
+       "like:/compress-azw3"
+      ],
+      "verse": "has",
+      "found": [
+       "upload",
+       "file"
+      ]
+     },
+     {
+      "key": "content table",
+      "name": "A table",
+      "kind": "content",
+      "templates": [
+       "like:/mp4",
+       "like:/add-audio-to-video",
+       "like:/android-video",
+       "page:/compress-image",
+       "page:/camera-raw-photo",
+       "like:/compress-azw3",
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "table"
+      ]
+     },
+     {
+      "key": "pages like:/add-audio-to-video",
+      "name": "Pages: Add Audio to Video, Add Background to Video, Add Image to Video, Add Text to Video… (80 pa",
+      "kind": "page",
+      "templates": [
+       "like:/add-audio-to-video"
+      ],
+      "verse": "has",
+      "found": [
+       "add",
+       "audio",
+       "video",
+       "background"
+      ]
+     },
+     {
+      "key": "grid grid",
+      "name": "A grid (7: Introduction, How To Use, Main Options, Other Options, Remarks, Related Video C",
+      "kind": "grid",
+      "templates": [
+       "like:/add-audio-to-video"
+      ],
+      "verse": "missing",
+      "found": []
+     },
+     {
+      "key": "pages like:/android-video",
+      "name": "Pages: Android Video Converter, iPad Video Converter, iPhone Video Converter, Kindle Video Conver",
+      "kind": "page",
+      "templates": [
+       "like:/android-video"
+      ],
+      "verse": "partial",
+      "found": [
+       "video",
+       "converter"
+      ]
+     },
+     {
+      "key": "section related converters",
+      "name": "Related Converters",
+      "kind": "section",
+      "templates": [
+       "like:/android-video"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "converter"
+      ]
+     },
+     {
+      "key": "page compress image",
+      "name": "A page: Compress Image",
+      "kind": "page",
+      "templates": [
+       "page:/compress-image"
+      ],
+      "verse": "has",
+      "found": [
+       "compress",
+       "image"
+      ]
+     },
+     {
+      "key": "section related converter",
+      "name": "Related Converter",
+      "kind": "section",
+      "templates": [
+       "page:/compress-image"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "converter"
+      ]
+     },
+     {
+      "key": "section other tools",
+      "name": "Other Tools",
+      "kind": "section",
+      "templates": [
+       "page:/compress-image"
+      ],
+      "verse": "has",
+      "found": [
+       "other"
+      ]
+     },
+     {
+      "key": "page camera raw photo converter",
+      "name": "A page: Camera Raw Photo Converter",
+      "kind": "page",
+      "templates": [
+       "page:/camera-raw-photo"
+      ],
+      "verse": "has",
+      "found": [
+       "camera",
+       "raw",
+       "photo",
+       "converter"
+      ]
+     },
+     {
+      "key": "section related image",
+      "name": "Related Image",
+      "kind": "section",
+      "templates": [
+       "page:/camera-raw-photo"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "image"
+      ]
+     },
+     {
+      "key": "section related image converters",
+      "name": "Related Image Converters",
+      "kind": "section",
+      "templates": [
+       "page:/camera-raw-photo"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "image",
+       "converter"
+      ]
+     },
+     {
+      "key": "pages like:/compress-azw3",
+      "name": "Pages: Compress AZW3, Compress EPUB",
+      "kind": "page",
+      "templates": [
+       "like:/compress-azw3"
+      ],
+      "verse": "has",
+      "found": [
+       "compress",
+       "azw3",
+       "epub"
+      ]
+     },
+     {
+      "key": "section related ebook converter",
+      "name": "Related Ebook Converter",
+      "kind": "section",
+      "templates": [
+       "like:/compress-azw3"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "ebook",
+       "converter"
+      ]
+     },
+     {
+      "key": "section other ebook tools",
+      "name": "Other Ebook Tools",
+      "kind": "section",
+      "templates": [
+       "like:/compress-azw3"
+      ],
+      "verse": "has",
+      "found": [
+       "other",
+       "ebook"
+      ]
+     },
+     {
+      "key": "pages like:/area",
+      "name": "Pages: Area Converter, Currency Converter, Length/Distance Converter, Speed Converter… (8 pages)",
+      "kind": "page",
+      "templates": [
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "area",
+       "converter",
+       "currency",
+       "length"
+      ]
+     },
+     {
+      "key": "section calculation results",
+      "name": "Calculation Results",
+      "kind": "section",
+      "templates": [
+       "like:/area"
+      ],
+      "verse": "missing",
+      "found": [
+       "result"
+      ]
+     },
+     {
+      "key": "section related unit",
+      "name": "Related Unit",
+      "kind": "section",
+      "templates": [
+       "like:/area"
+      ],
+      "verse": "has",
+      "found": [
+       "relat",
+       "unit"
+      ]
+     }
+    ],
+    "verse_page": "/converter/",
+    "verse_pages": 9,
+    "verse_urls": [
+     "/converter/",
+     "/photos/?tab=adj",
+     "/resize-image/",
+     "/pdf/?tool=compress",
+     "/convert/?k=area",
+     "/markets/?s=EURUSD",
+     "/time/",
+     "/tools/",
+     "/color/"
+    ],
+    "crawled": "2026-11-04"
+   }
+  },
+  "updated": "2026-11-04"
+ }
+}

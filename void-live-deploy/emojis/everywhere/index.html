@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How an emoji looks on Apple, Google, Microsoft and every platform · Verse</title>
+<meta name="description" content="Any emoji as Apple (iPhone), Google (Android), X, Facebook, Microsoft, JoyPixels, OpenMoji and more draw it, side by side, next to how your own device draws it. Tap a picture to copy the emoji; codepoint and shortcode shown; light or dark; a link that opens the same emoji.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Verse">
+<meta property="og:title" content="How an emoji looks everywhere · Verse">
+<meta property="og:description" content="One emoji on iPhone, Android, Windows, X, Facebook and more, side by side. Tap to copy.">
+<meta property="og:url" content="https://a-to-mind.com/emojis/everywhere/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://a-to-mind.com/emojis/everywhere/">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<style>
+  :root { color-scheme: dark; --ink:#ecebf5; --soft:#a9a9b8; --line:#2a2a35; --accent:#8b7bff; --bg:#07060b; --card:#12111c; }
+  body.light { color-scheme: light; --ink:#16151d; --soft:#55546a; --line:#d9d8e3; --bg:#fbfbfe; --card:#ffffff; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; }
+  body { background:var(--bg); color:var(--ink); font:16px/1.45 system-ui,-apple-system,sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:18px 14px 40px; }
+  a { color:#a99cff; } body.light a { color:#4b39d6; }
+  h1 { font-size:21px; margin:4px 0 2px; }
+  h2 { font-size:16px; margin:18px 0 6px; }
+  .sub { color:var(--soft); margin:0 0 12px; font-size:14px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0; }
+  button, .btn { font:inherit; font-size:14px; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:7px 14px; cursor:pointer; min-height:36px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
+  button[aria-pressed="true"] { border-color:var(--accent); }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .search { flex:1 1 240px; position:relative; }
+  .search input { width:100%; font:inherit; font-size:16px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:999px; padding:8px 14px; }
+  #sugg { list-style:none; margin:4px 0 0; padding:0; display:flex; flex-wrap:wrap; gap:6px; }
+  #sugg button { font-size:14px; }
+  .hero { display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; }
+  .hero .glyph { font-size:64px; line-height:1; }
+  .hero h2 { margin:0 0 4px; font-size:18px; text-transform:capitalize; }
+  .facts { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:6px 14px; margin:6px 0 0; }
+  .facts div { display:flex; justify-content:space-between; gap:8px; align-items:center; border-bottom:1px solid var(--line); padding:3px 0; }
+  .facts dt { color:var(--soft); font-size:12px; }
+  .facts dd { margin:0; display:flex; align-items:center; gap:6px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; }
+  .facts dd button { padding:2px 9px; min-height:28px; font-size:12px; }
+  .say { color:var(--soft); font-size:14px; min-height:1.4em; margin:6px 0; }
+  .nav { display:flex; justify-content:space-between; gap:8px; margin:10px 0; }
+  .credits { color:var(--soft); font-size:12px; margin-top:18px; }
+  .lk-light, body.light .lk-grid { --lk-bg:#ffffff; --lk-ink:#16151d; --lk-line:#d9d8e3; }
+  footer { margin-top:22px; color:var(--soft); font-size:12px; border-top:1px solid var(--line); padding-top:12px; }
+</style>
+<script src="/visit.js" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"How an emoji looks everywhere","url":"https://a-to-mind.com/emojis/everywhere/","description":"Any emoji as Apple, Google, X, Facebook, Microsoft, JoyPixels, OpenMoji, Toss and more draw it, side by side with this device; tap to copy, codepoint and shortcode, light or dark, a link that opens the same emoji.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Verse","url":"https://a-to-mind.com/"}}]}</script>
+</head>
+<body>
+<main>
+  <p class="sub"><a href="/emojis/">← Emoji wall</a> · <a href="/emoji-combos/">Emoji combos</a></p>
+  <h1>How an emoji looks on Apple, Google, Microsoft and every other platform</h1>
+  <p class="sub">The same emoji as iPhone, Android, Windows, X, Facebook and more draw it, beside how <b>this device</b> draws it. Tap any picture to copy the emoji.</p>
+
+  <div class="row">
+    <div class="search"><input id="q" type="search" placeholder="Type a name, a :shortcode: or paste an emoji" aria-label="Find an emoji by name, shortcode or the emoji itself" autocomplete="off" enterkeyhint="search"></div>
+    <button type="button" id="theme" aria-pressed="false" title="Show the pictures on light or dark">☀ Light</button>
+  </div>
+  <ul id="sugg" aria-label="Matches"></ul>
+
+  <section class="hero" aria-labelledby="ename">
+    <div class="glyph" id="glyph" aria-hidden="true">😀</div>
+    <div>
+      <h2 id="ename">grinning face</h2>
+      <dl class="facts">
+        <div><dt>Codepoint</dt><dd><span id="cp">U+1F600</span><button type="button" data-copy-from="cp" aria-label="Copy the codepoint">Copy</button></dd></div>
+        <div><dt>Shortcode</dt><dd><span id="sc">:grinning:</span><button type="button" data-copy-from="sc" aria-label="Copy the shortcode">Copy</button></dd></div>
+        <div><dt>HTML</dt><dd><span id="ent">&amp;#x1F600;</span><button type="button" data-copy-from="ent" aria-label="Copy the HTML entity">Copy</button></dd></div>
+        <div><dt>Group</dt><dd id="cat">Smileys &amp; Emotion</dd></div>
+        <div><dt>Emoji version</dt><dd id="ver">1.0</dd></div>
+      </dl>
+      <div class="row">
+        <button type="button" id="copy">Copy <span id="copyglyph">😀</span></button>
+        <button type="button" id="share">Share this view</button>
+        <a class="btn" id="stage" href="/?ask=grinning%20face%20emoji%20on%20all%20phones">On the stage</a>
+      </div>
+    </div>
+  </section>
+  <p class="say" id="say" role="status" aria-live="polite"></p>
+
+  <h2 id="gridhead">How 😀 looks on Apple iPhone, Android and other platforms</h2>
+  <div id="grid"></div>
+  <div class="nav"><button type="button" id="prev">← Previous emoji</button><button type="button" id="rand">Random</button><button type="button" id="next">Next emoji →</button></div>
+
+  <p class="credits">Pictures: Apple, Google, X and Facebook from <a href="https://github.com/iamcal/emoji-data" rel="noopener">emoji-data</a>; Microsoft <a href="https://github.com/microsoft/fluentui-emoji" rel="noopener">Fluent Emoji</a> (MIT); <a href="https://www.joypixels.com/" rel="noopener">JoyPixels</a> and EmojiOne; <a href="https://openmoji.org/" rel="noopener">OpenMoji</a> (CC BY-SA 4.0); <a href="https://toss.im/tossface" rel="noopener">Tossface</a>; <a href="https://github.com/C1710/blobmoji" rel="noopener">Blobmoji</a> (Apache 2.0); Noto Emoji from Google Fonts. Each vendor's emoji belong to it; they are shown here only to compare, served by jsDelivr and Google Fonts. Samsung, WhatsApp, HTC, LG and the old Mozilla set have no free public copy, so they are left out rather than faked; the last tile is always the one your own device draws.</p>
+  <footer>Nothing you type leaves this page; the pictures are public files, loaded only as they scroll into view. <a href="/emojis/">The emoji wall</a> · <a href="/">Verse</a></footer>
+</main>
+<script type="module">
+  import { gridHtml, wireGrid, LOOKS_CSS, VENDORS, loadData, findEmoji, recordOf, hexOf, codepointOf, charOf, shortcodeOf, copyText } from '/lib/emoji-looks.js';
+  const $ = (id) => document.getElementById(id);
+  const css = document.createElement('style'); css.textContent = LOOKS_CSS; document.head.appendChild(css);
+  const params = new URLSearchParams(location.search);
+  const seed = params.get('e') || params.get('emoji') || (params.get('u') ? charOf(params.get('u')) : '') || '';
+  const state = { c: '😀', rec: null, list: null, light: params.get('bg') === 'light' || (params.get('bg') !== 'dark' && localStorage.getItem('void-emoji-looks-bg') === 'light') };
+  const say = (t) => { $('say').textContent = t; };
+  const entOf = (c) => [...c].map((x) => '&#x' + x.codePointAt(0).toString(16).toUpperCase() + ';').join('');
+  const linkOf = () => { const u = new URL(location.pathname, location.origin); u.searchParams.set('e', state.c); if (state.light) u.searchParams.set('bg', 'light'); return u; };
+  function theme() { document.body.classList.toggle('light', state.light); $('theme').setAttribute('aria-pressed', String(state.light)); $('theme').textContent = state.light ? '☾ Dark' : '☀ Light'; }
+  function show(c, rec, push) {
+    state.c = c; state.rec = rec || null;
+    const name = (rec && rec.n) || 'this emoji';
+    $('glyph').textContent = c; $('copyglyph').textContent = c; $('ename').textContent = name;
+    $('cp').textContent = codepointOf(c); $('sc').textContent = shortcodeOf(rec) || '(none)'; $('ent').textContent = entOf(c);
+    $('cat').textContent = rec ? rec.cat + (rec.sub ? ' · ' + rec.sub.replace(/-/g, ' ') : '') : '…'; $('ver').textContent = rec && rec.v ? rec.v : '…';
+    $('gridhead').textContent = 'How ' + c + ' ' + (rec ? rec.n : '') + ' looks on ' + (VENDORS.length + 1) + ' platforms: Apple iPhone, Android, Windows and more';
+    $('grid').innerHTML = gridHtml(c, { name: rec ? rec.n : '' }); // void-review: ok (gridHtml escapes every value)
+    wireGrid($('grid'), { onCopy: (v, ok) => say(ok ? 'Copied ' + c + (v === 'device' ? '' : ' (pictured as ' + ((VENDORS.find((x) => x.id === v) || {}).name || v) + ' draws it)') : 'Copy did not work here: press and hold the emoji above to copy it') });
+    $('stage').href = '/?ask=' + encodeURIComponent((rec ? rec.n : c) + ' emoji on all phones');
+    document.title = c + ' ' + (rec ? rec.n : 'Emoji') + ' on every platform · Verse';
+    const u = linkOf(); try { history[push ? 'pushState' : 'replaceState'](null, '', u.pathname + u.search); } catch (_) {}
+  }
+  function step(d) {
+    const l = state.list || []; if (!l.length) return;
+    const i = Math.max(0, l.indexOf(recordOf(l, state.c)));
+    const r = d === 0 ? l[Math.floor(Math.random() * l.length)] : l[(i + d + l.length) % l.length]; show(r.c, r, true);
+  }
+  // first paint at once from the link (the emoji is enough to draw every tile); names and shortcodes arrive with the list
+  const first = seed && /\p{Extended_Pictographic}|\p{Regional_Indicator}|[\u0023\u002a\u0030-\u0039\u00a9\u00ae\u203c-\u3299]/u.test(seed) ? seed : '😀';
+  theme(); show(first, null, false);
+  loadData().then((list) => {
+    state.list = list;
+    if (!list.length) { say('The emoji names could not be read just now; the pictures still show.'); return; }
+    let rec = recordOf(list, first);
+    if (seed && !rec && !/\p{Extended_Pictographic}/u.test(seed)) { rec = findEmoji(list, seed); if (rec) { show(rec.c, rec, false); return; } }
+    show(first, rec, false);
+  });
+  let t = null;
+  $('q').addEventListener('input', () => { clearTimeout(t); t = setTimeout(async () => {
+    const q = $('q').value.trim(), list = state.list || (await loadData()); const ul = $('sugg'); ul.textContent = ''; if (!q) return;
+    const w = q.toLowerCase().replace(/^:|:$/g, '').replace(/[_-]+/g, ' ');
+    const best = findEmoji(list, q), more = list.filter((e) => e !== best && (e.n.includes(w) || e.sn.some((s) => s.replace(/_/g, ' ').includes(w)))).slice(0, 11);
+    for (const r of [best, ...more].filter(Boolean)) { const li = document.createElement('li'), b = document.createElement('button'); b.type = 'button'; b.textContent = r.c + ' ' + (r.n || ''); b.addEventListener('click', () => { show(r.c, recordOf(list, r.c) || r, true); ul.textContent = ''; $('q').value = ''; $('grid').scrollIntoView({ block: 'nearest' }); }); li.appendChild(b); ul.appendChild(li); }
+    if (!ul.children.length) say('No emoji called "' + q + '"');
+  }, 120); });
+  $('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') { const b = $('sugg').querySelector('button'); if (b) b.click(); } });
+  $('theme').addEventListener('click', () => { state.light = !state.light; try { localStorage.setItem('void-emoji-looks-bg', state.light ? 'light' : 'dark'); } catch (_) {} theme(); const u = linkOf(); try { history.replaceState(null, '', u.pathname + u.search); } catch (_) {} });
+  $('copy').addEventListener('click', () => copyText(state.c).then((ok) => say(ok ? 'Copied ' + state.c : 'Copy did not work here')));
+  for (const b of document.querySelectorAll('[data-copy-from]')) b.addEventListener('click', () => { const v = $(b.dataset.copyFrom).textContent; copyText(v).then((ok) => say(ok ? 'Copied ' + v : 'Copy did not work here')); });
+  $('share').addEventListener('click', async () => { const u = linkOf().href; try { if (navigator.share) { await navigator.share({ title: state.c + ' on every platform', url: u }); return; } } catch (_) {} copyText(u).then((ok) => say(ok ? 'Link copied: ' + u : u)); });
+  $('prev').addEventListener('click', () => step(-1)); $('next').addEventListener('click', () => step(1)); $('rand').addEventListener('click', () => step(0));
+  addEventListener('popstate', () => { const e = new URLSearchParams(location.search).get('e'); if (e) show(e, recordOf(state.list, e), false); });
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });</script>
+</body>
+</html>

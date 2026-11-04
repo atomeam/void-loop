@@ -55,7 +55,7 @@ export function advance(old, floors, today) {
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const old = rd('tower.target.json') || {}, ev = rd('tower.evidence.json') || {};
   const ids = (old.passed || []).map((r) => r.id);
-  const unlocked = tower((rd('lap.items.json') || {}).onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), null, ids);
+  const unlocked = tower((rd('lap.items.json') || {}).onlySite || [], ev.floors || {}, rd('tower.frontier.json'), null, rd('tower.rank.json'), rd('tower.size.json'), null, ids, rd('tower.features.json'));
   const today = new Date().toISOString().slice(0, 10), { file, why } = advance(old, unlocked.floors, today);
   if (why) console.log(why);
   if (JSON.stringify(file) !== JSON.stringify(old)) fs.writeFileSync(OUT, JSON.stringify(file, null, 1) + '\n');
