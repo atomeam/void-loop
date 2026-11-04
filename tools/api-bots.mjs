@@ -22,7 +22,8 @@ async function call(a) {
   try {
     let r, u = url;
     for (let n = 0; n < 6; n++) { // redirects followed by hand, so a hop without CORS (which a browser refuses) is seen
-      r = await fetch(u, { redirect: 'manual', headers: { origin: 'https://a-to-mind.com', 'user-agent': 'Verse bot factory (https://a-to-mind.com/bots/)' }, signal: AbortSignal.timeout(20000) });
+      r = await fetch(u, { redirect: 'manual', // void-review: ok, each hop's address comes from the hop before, so they cannot run at once
+        headers: { origin: 'https://a-to-mind.com', 'user-agent': 'Verse bot factory (https://a-to-mind.com/bots/)' }, signal: AbortSignal.timeout(20000) });
       hops.push(r.headers.get('access-control-allow-origin'));
       if (!(r.status >= 300 && r.status < 400 && r.headers.get('location'))) break;
       u = new URL(r.headers.get('location'), u).href;
@@ -38,7 +39,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const todo = APIS.filter((a) => !only || a.id === only);
   for (let i = 0; i < todo.length; i += 6) await Promise.all(todo.slice(i, i + 6).map(async (a) => { kept[a.id] = await call(a); console.log(a.id + ': ' + kept[a.id].status + ' cors=' + kept[a.id].cors + (kept[a.id].moved ? ' moved to ' + kept[a.id].moved : '')); }));
   const ids = APIS.map((a) => a.id).filter((id) => kept[id]);
-  writeFileSync(resolve(bots, 'api-fixtures.js'), '// Real calls kept by tools/api-bots.mjs, one line per free API bot (bots/api-bots.js). Regenerate, do not edit.\nexport default {\n' + ids.map((id) => JSON.stringify(id) + ': ' + JSON.stringify(kept[id])).join(',\n') + ',\n};\n');
+  writeFileSync(resolve(bots, 'api-fixtures.js'), '// Real calls kept by tools/api-bots.mjs, one line per free API bot (bots/api-bots.js). Regenerate, do not edit.\nexport default {\n' + ids.map((id) => { const line = JSON.stringify(id) + ': ' + JSON.stringify(kept[id]) + ','; return /http:\/\//.test(line) ? line + ' // void-review: ok, http:// links inside the API\'s reply are kept words, never fetched' : line; }).join('\n') + '\n};\n');
   const credits = JSON.parse(readFileSync(resolve(bots, 'credits.json'), 'utf8')).filter((c) => !c.api);
   const rows = [{ name: 'public-apis/public-apis', author: 'public-apis contributors', license: 'MIT', link: 'https://github.com/public-apis/public-apis', used: 'where Verse found most of its free API bots' }, ...apiCredits()].map((c) => ({ ...c, api: true }));
   writeFileSync(resolve(bots, 'credits.json'), '[\n' + [...credits, ...rows].map((c) => JSON.stringify(c)).join(',\n') + '\n]\n');
