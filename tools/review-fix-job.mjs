@@ -26,7 +26,7 @@ async function main() {
   const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN || '';
   if (token && pr && /^\d+$/.test(pr)) {
     try {
-      execFileSync('gh', ['api', '-X', 'POST', 'repos/' + repo + '/issues/' + pr + '/comments', '--input', '-'], { input: JSON.stringify({ body: verdictComment(action, line) }), encoding: 'utf8' });
+      execFileSync('gh', ['api', '-X', 'POST', 'repos/' + repo + '/issues/' + pr + '/comments', '--input', '-'], { input: JSON.stringify({ body: verdictComment(action, line) }), encoding: 'utf8', timeout: 20000 });
     } catch (e) { console.log('verdict comment: ' + String(e.message || e).slice(0, 200)); }
   }
   if (action !== 'fix') return;

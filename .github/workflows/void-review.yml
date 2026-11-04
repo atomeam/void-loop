@@ -175,8 +175,9 @@ jobs:
           exam=ok
           examwhy=$(node tools/outcome-exam.mjs --check 2>&1 | tail -n 1)
           if [ $? -ne 0 ]; then exam=fail; fi
-          node tools/review-decide.mjs --review "$review" --gate ok --exam "$exam" --why "$examwhy" | tee verdict.txt
+          node tools/review-decide.mjs --review "$review" --gate ok --exam "$exam" --why "$examwhy" > verdict.txt
           code=$?
+          cat verdict.txt
           action=merge; [ "$code" -ne 0 ] && action=fix
           why=$(sed -n 's/^Verdict: [^ ]* //p' verdict.txt | head -n 1)
           echo "$why" >> "$GITHUB_STEP_SUMMARY"

@@ -31,11 +31,19 @@
 </main>
 <script>
 fetch('/progress/exam.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (j) {
-  var cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
+  const cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
   document.getElementById('sum').textContent = failed.length ? 'Regressed: ' + failed.map(function (c) { return c.ask; }).join('; ') : 'No regression. ' + cases.length + ' outcomes hold.';
-  document.getElementById('list').innerHTML = cases.map(function (c) {
-    return '<li><span class="' + (c.ok ? 'ok' : 'bad') + '">' + (c.ok ? 'holds' : 'regressed') + '</span> · ' + c.ask + '</li>';
-  }).join('');
+  const list = document.getElementById('list');
+  list.textContent = '';
+  cases.forEach(function (c) {
+    const li = document.createElement('li');
+    const mark = document.createElement('span');
+    mark.className = c.ok ? 'ok' : 'bad';
+    mark.textContent = c.ok ? 'holds' : 'regressed';
+    li.appendChild(mark);
+    li.appendChild(document.createTextNode(' · ' + String(c.ask || '')));
+    list.appendChild(li);
+  });
 }).catch(function () { document.getElementById('sum').textContent = 'The exam did not load.'; });
 </script>
 </body>

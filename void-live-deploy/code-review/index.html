@@ -296,14 +296,14 @@ jobs:
 </script>
 <script>
 fetch('/progress/exam.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (j) {
-  var cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
-  var line = document.getElementById('verdict-line');
+  const cases = (j && j.cases) || [], failed = cases.filter(function (c) { return !c.ok; });
+  const line = document.getElementById('verdict-line');
   if (!line) return;
   line.textContent = failed.length
     ? 'Verdict: fix. The outcome exam regressed: ' + failed.map(function (c) { return c.ask; }).join('; ')
     : 'Verdict: merge, when Verse\'s review and the merge gate pass. The outcome exam has no regression (' + cases.length + ' outcomes hold).';
 }).catch(function () {
-  var line = document.getElementById('verdict-line');
+  const line = document.getElementById('verdict-line');
   if (line) line.textContent = 'The outcome exam did not load. Verse\'s review and the merge gate still decide.';
 });
 </script>
