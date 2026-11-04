@@ -95,6 +95,7 @@ Score: the shared type's weight (names, music, numbers, date, event, color, pale
 | /flights/routes/ | location, date | location, event | yes | handoff-types.json |
 | /flights/time/ | location, date | location, event | yes | handoff-types.json |
 | /flights/trip/ | location, date | location, event | yes | handoff-types.json |
+| /free/ | - | - | no | its tag |
 | /generators/ | names | names, text | yes | handoff-types.json |
 | /generators/chat/ | names | names, text | yes | handoff-types.json |
 | /generators/forum/ | names | names, text | yes | handoff-types.json |
