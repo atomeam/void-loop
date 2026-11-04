@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import joke from '../void-live-deploy/skills/joke.js';
-import news, { isNews, isTechNews, topicNewsOf } from '../void-live-deploy/skills/news.js';
+import news, { isNews, isTechNews, topicNewsOf, sectionNewsOf } from '../void-live-deploy/skills/news.js';
 import book, { bookOf } from '../void-live-deploy/skills/book.js';
 import show, { showOf } from '../void-live-deploy/skills/show.js';
 import sport, { sportOf, leagueOf, pickTeam } from '../void-live-deploy/skills/sport.js';
@@ -46,6 +46,7 @@ test('joke: riddles, tongue twisters and knock-knock jokes from its own lists, t
 test('news: headlines, tech news and a topic each read the right feed and name it', async () => {
   assert.ok(isNews('news today') && isNews('what\'s in the news') && !isNews('news anchor jobs'));
   assert.ok(isTechNews('tech news') && isTechNews('hacker news today')); assert.equal(topicNewsOf('news about spacex'), 'spacex');
+  assert.equal(sectionNewsOf('business news'), 'business'); assert.equal(sectionNewsOf('science news today'), 'science'); assert.equal(sectionNewsOf('tech news'), null);
   let a;
   await withFetch(() => ({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }), async (seen) => { a = page(1); assert.equal(await news.run('tech news', a), 'news'); assert.match(seen[0], /hn\.algolia\.com\/api\/v1\/search\?tags=front_page/); });
   assert.match(a.el.innerHTML, /A thing shipped.*120 points.*Source: .*Hacker News/s);
@@ -53,6 +54,8 @@ test('news: headlines, tech news and a topic each read the right feed and name i
   assert.match(a.el.innerHTML, /No Hacker News stories mention/);
   await withFetch(() => null, async () => { a = page(); assert.equal(await news.run('tech news', a), 'none'); });
   assert.match(a.el.innerHTML, /didn't answer just now/);
+  await withFetch(() => ({ stories: [{ title: 'Markets close higher', link: 'https://example.com/markets' }] }), async (seen) => { a = page(1); assert.equal(await news.run('business news', a), 'news'); assert.match(seen[0], /\/api\/news\?sec=business/); });
+  assert.match(a.el.innerHTML, /Markets close higher/);
 });
 
 test('book: an author, a title, an ISBN and books like one, from Open Library', async () => {

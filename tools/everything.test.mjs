@@ -24,6 +24,7 @@ ok(waymoWhere('phoenix').rides === 'waymo' && /DoorDash/.test(waymoWhere('phoeni
 ok(waymoWhere('boston').rides === 'no', 'boston no');
 ok(ridesAsk('order pizza to 1 main st phoenix')?.food === 'pizza' && ridesAsk('tacos delivery to 2 elm st')?.food === 'tacos', 'food order');
 ok(ridesAsk('get me a ride to the airport')?.address === 'the airport', 'ride');
+ok(!ridesAsk('get me to the colosseum') && ridesAsk('get me pizza to 1 main st phoenix')?.food === 'pizza', 'get me to a place is directions, get me pizza still orders food');
 for (const a of ['how far is the airport', 'pizza recipe', 'calories in pizza', 'uber stock price']) ok(!ridesAsk(a), 'not: ' + a);
 for (const p of Object.values(PROVIDERS)) ok(p.order === null && /^https:/.test(p.web({ food: 'pho', address: '1 Main St' })), 'adapter ' + p.id);
 ok(ofKind('food').length === 2 && ofKind('ride').length === 3, 'kinds');
