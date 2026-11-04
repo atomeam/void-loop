@@ -107,7 +107,7 @@ function playNote(pitch, x) {
     panner.pan.setValueAtTime(Math.max(-1, Math.min(1, pan)), audioCtx.currentTime);
     osc.connect(g); g.connect(panner);
     osc.start(); osc.stop(audioCtx.currentTime + 0.45);
-  } catch (e) {}
+  } catch (e) { console.warn(e); }
 }
 
 async function initMIDI() {

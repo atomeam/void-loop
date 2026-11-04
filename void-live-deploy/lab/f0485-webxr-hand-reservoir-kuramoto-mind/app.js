@@ -145,7 +145,7 @@ async function tryXR() {
     if (!ok) return;
     // In a real session we would request hands; here we note availability
     document.getElementById('status').textContent += ' | WebXR available (hand pose stub)';
-  } catch(e) {}
+  } catch (e) { console.warn(e); }
 }
 tryXR();
 
@@ -194,7 +194,7 @@ async function restore() {
       d.portals.forEach((p,i) => { if (portals[i]) { portals[i].qx=p.qx; portals[i].qy=p.qy; portals[i].genome=p.genome; } });
       document.getElementById('status').textContent = 'Restored from IndexedDB';
     };
-  } catch(e) {}
+  } catch (e) { console.warn(e); }
 }
 document.getElementById('seal').onclick = seal;
 document.getElementById('restore').onclick = restore;

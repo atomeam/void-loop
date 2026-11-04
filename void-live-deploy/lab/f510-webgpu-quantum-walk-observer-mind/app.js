@@ -127,4 +127,4 @@ document.getElementById('seal').onclick = () => {
 try {
   const s = localStorage.getItem('f510-seal');
   if (s) { const d = JSON.parse(s); amp = new Float32Array(d.amp); policy = new Float32Array(d.policy); }
-} catch(e) {}
+} catch (e) { console.warn(e); }

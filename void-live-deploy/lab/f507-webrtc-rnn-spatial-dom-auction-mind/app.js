@@ -52,7 +52,7 @@ class Agent {
     for(let i=0;i<CARDS_PER;i++){
       const el = document.createElement('div');
       el.className = 'card';
-      el.innerHTML = `<div class="label">A${id}</div><div class="fitness">f:0</div>`;
+      el.innerHTML = `<div class="label">A${id}</div><div class="fitness">f:0</div>`; // void-review: ok (built from this file's own constants and numbers, no user text)
       el.style.left = (20+Math.random()*60)+'%';
       el.style.top = (20+Math.random()*50)+'%';
       el.style.borderColor = this.color;
@@ -112,7 +112,7 @@ let active = 0;
 let motion = {ax:0,ay:0,az:0,gx:0,gy:0};
 
 function updateAgentsUI() {
-  AGENTS_EL.innerHTML = agents.map((a,i)=>`
+  AGENTS_EL.innerHTML = agents.map((a,i)=>` // void-review: ok (built from this file's own constants and numbers, no user text)
     <div>A${i} fit:${a.fitness.toFixed(1)} eng:${a.engagement.toFixed(1)}
       <button data-i="${i}">Select</button>
     </div>`).join('');
@@ -201,7 +201,7 @@ function setupChannel(ch) {
         STATUS.textContent = `Received sealed genome into A${weakest.id}`;
         saveGenome({id:weakest.id, genome:weakest.rnn.genome(), fitness:0, ts:Date.now()});
       }
-    } catch(err) {}
+    } catch (err) { console.warn(err); }
   };
 }
 document.getElementById('offerBtn').onclick = () => {

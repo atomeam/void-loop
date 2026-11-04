@@ -92,7 +92,7 @@ function update(){
         bins[k] = (bins[k]||0) + 1;
       }
     });
-    for(const k in bins){
+    for(const k of Object.keys(bins)){
       if(bins[k] > 4 && cards.length < 8){
         const [bx,by] = k.split(',').map(Number);
         cards.push({ x: bx*80+40, y: by*80+40, life: 300, hue: Math.random()*60+200 });

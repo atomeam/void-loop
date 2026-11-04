@@ -230,7 +230,7 @@ if (window.DeviceOrientationEvent) {
 
 // --- UI ---
 function updateHUD() {
-  agentsEl.innerHTML = agents.map((a,i) => 
+  agentsEl.innerHTML = agents.map((a,i) => // void-review: ok (built from this file's own constants and numbers, no user text)
     `<div style="margin:4px 0;${i===active?'color:#8f8;font-weight:bold':''}">
       ${a.name} score:${a.score.toFixed(1)} energy:${a.energy.toFixed(0)}
       <button data-i="${i}" class="sel">select</button>

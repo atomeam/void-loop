@@ -60,7 +60,7 @@ async function tryMic() {
       for (let v of data) sum += v;
       micEnergy = sum / data.length / 255;
     }, 100);
-  } catch(e) {}
+  } catch (e) { console.warn(e); }
 }
 tryMic();
 

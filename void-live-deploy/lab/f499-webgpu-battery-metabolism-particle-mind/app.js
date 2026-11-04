@@ -19,7 +19,7 @@ const cardData = [
 cardData.forEach((cd, i) => {
   const el = document.createElement('div');
   el.className = 'card';
-  el.innerHTML = `<strong>${cd.t}</strong><br>${cd.d}`;
+  el.innerHTML = `<strong>${cd.t}</strong><br>${cd.d}`; // void-review: ok (built from this file's own constants and numbers, no user text)
   el.style.left = (80 + i * 160) + 'px';
   el.style.top = (120 + (i % 2) * 140) + 'px';
   document.body.appendChild(el);

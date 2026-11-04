@@ -152,7 +152,7 @@ async function restore() {
         document.getElementById('status').textContent = 'restored';
       }
     };
-  } catch(e) {}
+  } catch (e) { console.warn(e); }
 }
 
 document.getElementById('nucleate').onclick = init;
