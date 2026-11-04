@@ -239,6 +239,7 @@
  "plan-stability": "\"is my plan stable\": a plan is a start value and a chain of numeric steps, each \"input x multiplier +-uncertainty%\" (value = value * multiplier + input)",
  "podcast": "Verse Out Loud, Verse's own weekly podcast",
  "podcast-search": "Shows for a topic, from the directory the Podcasts page uses",
+ "pointing-arrow": "Posner's cueing test, promoted from the lab",
  "poker": "Heads-up Texas Hold'em against Verse for play money: \"play poker\", \"texas hold'em\"",
  "pollen": "The pollen forecast for a place in Europe, plant by plant",
  "pong": "Verse Pong against Verse: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",

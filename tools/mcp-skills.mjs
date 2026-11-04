@@ -22,6 +22,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(root, 'void-live-deploy/lib/mcp-skills.js');
 const PAGE = resolve(root, 'void-live-deploy/code-review/index.html');
 export const TOP = 10;
+// Atom, 2026-11-03: world clock and word definitions come first, then other proven skills that pass a self-test.
+export const PINNED = ['worldtime', 'define'];
+// a tool an agent could use to send, spend or forget is never offered
+export const blockedSkill = (name) => /(?:^|_)(?:send|spend|forget)(?:_|$)/i.test(String(name || '')) || /^(?:send|spend|forget)$/i.test(String(name || ''));
 // families whose skills answer a question in words. Left out: make, games, stage and time (they put things on the person's
 // stage), self (acts on Verse itself or for its owner: actions, automations, memory, store), body (a person's own health dates
 // stay in their browser), numbers (its skills work out an exact answer on the page; over MCP the answer engine, a model, would
@@ -29,7 +33,8 @@ export const TOP = 10;
 export const OVER_MCP = ['words', 'sky'];
 const LIVE = 'live data: the answer engine has no live feed for it and would guess';
 export const HELD = {
-  weather: LIVE, worldtime: LIVE, air: LIVE, uv: LIVE, pollen: LIVE, quake: LIVE, 'aurora-tonight': LIVE, moontonight: LIVE,
+  // worldtime is not held: its own code reads Open-Meteo (lib/mcp-run.js), so the answer is not a model guessing a time
+  weather: LIVE, air: LIVE, uv: LIVE, pollen: LIVE, quake: LIVE, 'aurora-tonight': LIVE, moontonight: LIVE,
   'night-sky': LIVE, 'sky-card': LIVE, sky: LIVE, suntimes: LIVE, crypto: LIVE, news: LIVE, sport: LIVE, coral: LIVE,
   trialwatch: LIVE, releasenotes: LIVE,
   util: 'passwords and random picks must never come from a shared answer cache',
@@ -50,11 +55,14 @@ export function choose(families, live, bench, top = TOP) {
   for (const f of (families && families.families) || []) {
     if (!OVER_MCP.includes(f.id)) continue;
     for (const s of f.skills || []) {
-      if (s.tier !== 'proven' || !liveSet.has(s.name) || Object.prototype.hasOwnProperty.call(HELD, s.name)) continue;
-      out.push({ s, f, ev: evidenceOf(s.why) });
+      if (s.tier !== 'proven' || !liveSet.has(s.name) || Object.prototype.hasOwnProperty.call(HELD, s.name) || blockedSkill(s.name)) continue;
+      const ev = evidenceOf(s.why);
+      if (!ev.suite) continue; // a self-test on main, the same bar as the lab's promotion
+      out.push({ s, f, ev });
     }
   }
-  out.sort((a, b) => b.ev.score - a.ev.score || (a.s.name < b.s.name ? -1 : 1));
+  const pin = new Set(PINNED);
+  out.sort((a, b) => (pin.has(b.s.name) - pin.has(a.s.name)) || b.ev.score - a.ev.score || (a.s.name < b.s.name ? -1 : 1));
   const wants = (b, n) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
   return out.slice(0, top).map(({ s, f }) => ({
     skill: s.name, tool: 'skill_' + s.name.replace(/[^a-z0-9]/g, '_'), family: f.id, familyName: f.name,

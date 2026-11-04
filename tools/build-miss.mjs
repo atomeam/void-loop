@@ -241,6 +241,10 @@ async function main(argv) {
     const s = run(process.execPath, [join(here, 'new-skill.mjs'), job.name, '--ask', job.ask]);
     process.stdout.write(s.stdout || ''); process.stderr.write(s.stderr || '');
     if (s.status !== 0 || !existsSync(file)) fail(job, 'scaffold', (s.stdout + s.stderr).split('\n').filter((l) => /->|collision|near miss|new-skill:/.test(l)).join('; ') || 'new-skill.mjs failed');
+    else if (!/built with /.test(s.stdout || '')) {
+      const again = run(process.execPath, [join(here, 'skill-compose.mjs'), '--ask', job.ask, '--stamp', file]);
+      process.stdout.write(again.stdout || ''); process.stderr.write(again.stderr || '');
+    }
     return 0;
   }
 

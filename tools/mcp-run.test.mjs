@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { textOf, linksOf, namedFetch, runSkill, serverYou, UA } from '../void-live-deploy/lib/mcp-run.js';
+import worldtime from '../void-live-deploy/skills/worldtime.js';
 
 test('mcp-run: textOf turns a card into plain lines: headings, list items as "- ", named and numbered entities decoded, an unknown one kept, buttons and scripts dropped', () => {
   const html = '<h2>serendipity</h2><div class="sub">Noun</div><ol><li>A &ldquo;lucky&rdquo; find &amp; more</li><li>Two&#39;s &#x2014; dash</li></ol>'
@@ -62,4 +63,13 @@ test('mcp-run: a time "ahead of you" on a card is ahead of UTC on the server, th
   assert.equal(serverYou('what you asked for'), 'what you asked for');
   const r = await runSkill(skill((t, api) => { api.showPage((p) => { p.innerHTML = '<p>Tokyo (9 h ahead of you)</p>'; }); return 't'; }), 'time in tokyo');
   assert.equal(r.text, 'Tokyo (9 h ahead of UTC)');
+});
+
+test('mcp-run: world clock runs the skill\'s own code and names Tokyo, London and New York', async () => {
+  const r = await runSkill(worldtime, 'world clock');
+  assert.equal(r.ok, true);
+  assert.match(r.text, /World clock/);
+  assert.match(r.text, /Tokyo/);
+  assert.match(r.text, /London/);
+  assert.match(r.text, /New York/);
 });

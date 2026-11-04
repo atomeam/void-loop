@@ -4,6 +4,7 @@
 // committed one. tools/merge-main.mjs settles a conflict in one by regenerating it.
 export const BUILD_OUTPUTS = [
   'void-live-deploy/skills/index.json',
+  'void-live-deploy/skills/lineage.json',
   'void-live-deploy/skills/deps.json',
   'void-live-deploy/skills/families.json',
   'void-live-deploy/skills/guide.json',

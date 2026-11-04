@@ -350,6 +350,32 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("better:", e, file=sys.stderr)
 
+    # a want about a skill is drafted by calling skills Verse already has (lib/skill-compose.js). One ask a run;
+    # a failure is printed and the list still goes out.
+    try:
+        import subprocess
+        hit = next((c for c in cands if re.search(r"\bskills?\b", c.get("title") or "")), None)
+        if hit:
+            raw = subprocess.run(["node", str(ROOT / "tools" / "skill-compose.mjs"), "--ask", hit["title"][:180], "--json"], capture_output=True, text=True, timeout=25).stdout
+            made = json.loads(raw or "{}")
+            if made.get("parts"):
+                hit["why"] = ((hit.get("why") or "") + " built with " + ", ".join(made["parts"]))[:240]
+                print("skill-compose:", hit["title"][:80], "->", ", ".join(made["parts"]), file=sys.stderr)
+    except Exception as e:
+        print("skill-compose:", e, file=sys.stderr)
+
+    # Visible progress (Atom, 2026-11-03): what a visitor can see ranks above laps, gates, incident logs and regenerated files.
+    try:
+        import subprocess
+        payload = json.dumps([{"title": c.get("title", ""), "why": c.get("why", ""), "kind": c.get("kind", ""), "weight": c.get("weight", 0)} for c in cands])
+        raw = subprocess.run(["node", str(ROOT / "tools" / "visible-rank.mjs")], input=payload, capture_output=True, text=True, timeout=30)
+        adj = json.loads(raw.stdout or "[]")
+        if isinstance(adj, list) and len(adj) == len(cands):
+            for c, w in zip(cands, adj):
+                c["weight"] = int(w)
+    except Exception as e:
+        print("visible:", e, file=sys.stderr)
+
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):

@@ -176,6 +176,18 @@ test('an ask with its own why shows that why, not the shared reflection text (ow
   assert.deepEqual(TRACE({ ask: 'Add author pages' }, [e]), ['Prompted by: my daily reflection.', 'What I noticed: Shared thoughts', 'What I said should change: Shared better']);
 });
 
+test('the card is a summary: counts, the top 3, and the rest behind a tap (Atom, 2026-11-03)', () => {
+  const asks = [1, 2, 3, 4, 5].map((n) => ({ ask: 'Ask number ' + n, at: '2026-11-0' + n + 'T00:00:00Z', kind: 'daily' }));
+  const m = cardModel({ will: { wants: [{ i_want: 'Fix the broken card.', because: 'it draws nothing' }] }, reflect: { asks }, self: { open: [], visible: { day: 2, week: 9 } } });
+  const html = cardHtml(m, (s) => String(s));
+  assert.match(html, /1 want · 5 asks not built · 0 inbox items/);
+  assert.match(html, /Visible changes shipped: 2 today, 9 this week/);
+  assert.match(html, /Top wants: Fix the broken card\./);
+  assert.match(html, /Top asks: Ask number 1 · Ask number 2 · Ask number 3 · and 2 more/);
+  assert.match(html, /Show the other 2/);
+  assert.equal((html.match(/data-copy="Ask number/g) || []).length, 5, 'every ask is still a chip, the extra ones folded');
+});
+
 test('a held ask says what it waits for on the card', () => {
   const m = cardModel({ reflect: { asks: [{ ask: 'Absorb every repository', at: '2026-10-29T04:00:00Z', kind: 'daily', held: 'sycophanthex.com' }] } });
   assert.equal(m.asks[0].held, 'sycophanthex.com');
