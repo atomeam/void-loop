@@ -33,6 +33,7 @@ import { probeFor, keywordsOf } from './tower-probes.mjs';
 import { secretsIn } from './secret-scan.mjs';
 import { pageOf as seoPageOf } from '../void-live-deploy/lib/seo.js';
 import { rankingOf, offLimits, versusAllowed } from './versus-ranking.mjs';
+import { declOf, legacy as handoffLegacy } from './handoff-scan.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'), SITE_DIR = path.join(root, 'void-live-deploy');
 export const STATE = path.join(root, 'domains', 'tower-self.json'), ROWS = path.join(SITE_DIR, 'lib', 'self-sites.js'), SW = path.join(SITE_DIR, 'sw.js');
@@ -162,11 +163,14 @@ const setMeta = (html, key, value) => { const re = new RegExp('(<meta\\s+(?:name
 export const MARK = '<!-- written by tools/tower-self.mjs from lib/self-sites.js and its family page; edit the row, not this file -->';
 /** a self-built page: the family's page with the row's title, link-preview words, headline and intro; the family page's search blocks are left out
  *  (tools/seo-pages.mjs writes this page's own). Pure. */
-export function variantHtml(base, row) {
+export function variantHtml(base, row, handoff = null) {
   let h = String(base).replace(SEO_BLOCKS, '').replace(/\n?<!-- written by tools\/tower-self\.mjs[^\n]*-->/, '');
   h = h.replace(/<title>[^<]*<\/title>/i, '<title>' + escH(row.name) + ' · Verse</title>');
   for (const [k, v] of [['description', row.does], ['og:title', row.name + ' · Verse'], ['og:description', row.does], ['og:url', ORIGIN + row.path], ['twitter:title', row.name + ' · Verse'], ['twitter:description', row.does]]) h = setMeta(h, k, v);
   h = h.replace(/<h1([^>]*)>[\s\S]*?<\/h1>(\s*<p class="intro"[^>]*>[\s\S]*?<\/p>)?/i, (_, attrs) => '<h1' + attrs + '>' + escH(row.h1) + '</h1>\n  <p class="intro">' + escH(row.intro) + '</p>');
+  // the family page's hand-off (what it takes and gives) goes with its code: a base on the legacy list has no tag of its own,
+  // so the variant carries one (tools/handoff-scan.test.mjs: a new page ships with the tag; /markets/currency-converter/, 2026-11-04)
+  if (handoff && declOf(h) == null) h = h.replace(/<\/title>/i, '</title>\n<meta name="verse-handoff" content="' + escH(handoff) + '">');
   return h.replace(/^(<!doctype html>)/i, '$1\n' + MARK);
 }
 /** sw.js with a page added to its offline list (TOOLS), or the same text when it is there already. Pure. */
@@ -283,7 +287,7 @@ async function build(planFile, outFile, maxBuilt) {
 // ---- apply: the decision onto the tree ----
 export function writePages(rows = SELF_SITES) {
   const done = [];
-  for (const r of rows) { const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), want = variantHtml(base, r); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+  for (const r of rows) { const base = baseHtmlOf(r.base); if (!base) continue; const file = path.join(SITE_DIR, r.path, 'index.html'), want = variantHtml(base, r, declOf(base) || handoffLegacy()[r.base] || null); const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
     if (have !== null && have.replace(SEO_BLOCKS, '') === want.replace(SEO_BLOCKS, '')) continue; fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, want); done.push(r.path); }
   return done;
 }
