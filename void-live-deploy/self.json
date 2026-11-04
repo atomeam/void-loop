@@ -295,6 +295,14 @@
  },
  "commits": [
   {
+   "at": "2026-11-04T02:38:01Z",
+   "subject": "Regenerate the generated files after the merge"
+  },
+  {
+   "at": "2026-11-04T02:37:36Z",
+   "subject": "/status/: time 15 of Verse's pages and APIs from the visitor's browser, grouped, with how many answered and the median (#2108)"
+  },
+  {
    "at": "2026-11-04T02:37:35Z",
    "subject": "team: Verse's crew (8 server-side bots on the 15-min clock) and Verse's own evidence-grounded wants queue, live on /team/ and /brain/"
   },
@@ -365,14 +373,6 @@
   {
    "at": "2026-11-04T01:37:08Z",
    "subject": "Combine overlapping pages into modes; old addresses 301 to their mode (#2100)"
-  },
-  {
-   "at": "2026-11-04T01:36:05Z",
-   "subject": "Site test: visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T01:34:18Z",
-   "subject": "Let an automerge run actually start (#2101)"
   }
  ],
  "builders": {
@@ -554,8 +554,8 @@
   }
  ],
  "visible": {
-  "day": 21,
-  "week": 537
+  "day": 22,
+  "week": 538
  },
  "clips": {
   "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
