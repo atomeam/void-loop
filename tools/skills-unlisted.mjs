@@ -16,7 +16,6 @@ export const RETIRED = [
   'stopwatch', // "show stopwatch" is already taken by open-tool; this file stays off the order until its asks are its own
   'idea-clarify', // #2091 shipped it beside business-clarify, which answers the same "clarify this business idea" asks; it stays off the order so the two never fight
   'palindrome', // "is racecar a palindrome" is already taken by util; this file stays off the order until its asks are its own
-  'idea-clarify', // the shipped card is business-clarify (order 9500); this file is the earlier draft and stays off the routing order
 ];
 
 export async function unlistedSkills(dir, retired = RETIRED) {
