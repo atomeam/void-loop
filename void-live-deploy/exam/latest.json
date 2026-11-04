@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T20:03:51.785Z",
+  "at": "2026-11-04T20:32:11.910Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -37,12 +37,11 @@
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of this american life",
           "failed": [
-            "show",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -94,9 +93,10 @@
         {
           "ask": "play the episode before that",
           "failed": [
-            "skill"
+            "skill",
+            "audio"
           ],
-          "score": 85.7
+          "score": 71.4
         },
         {
           "ask": "pon el último episodio de radiolab",
@@ -528,18 +528,10 @@
       ]
     },
     "prices": {
-      "score": 73.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "how much is ethereum",
-          "failed": [
-            "fast",
-            "rival"
-          ],
-          "score": 60
-        },
         {
           "ask": "100 usd in eur",
           "failed": [
@@ -624,7 +616,7 @@
     }
   },
   "lowest": {
-    "domain": "prices",
-    "score": 73.3
+    "domain": "images",
+    "score": 73.9
   }
 }
