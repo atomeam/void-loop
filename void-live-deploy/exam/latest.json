@@ -1,5 +1,5 @@
 {
-  "at": "2026-11-04T07:52:46.490Z",
+  "at": "2026-11-04T08:19:31.717Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
@@ -32,24 +32,10 @@
       }
     },
     "podcasts": {
-      "score": 86.4,
+      "score": 88,
       "of": 18,
       "measured": 18,
       "fails": [
-        {
-          "ask": "play the latest episode of serial",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
-        {
-          "ask": "play the latest episode of the ted radio hour",
-          "failed": [
-            "audio"
-          ],
-          "score": 85.7
-        },
         {
           "ask": "play the latest episode of stuff you should know",
           "failed": [
@@ -379,17 +365,16 @@
       ]
     },
     "units": {
-      "score": 82.5,
+      "score": 85.8,
       "of": 6,
       "measured": 6,
       "fails": [
         {
           "ask": "1 byte in bits",
           "failed": [
-            "skill",
-            "rival"
+            "skill"
           ],
-          "score": 60
+          "score": 80
         },
         {
           "ask": "convert 2",
@@ -437,7 +422,7 @@
       ]
     },
     "timers": {
-      "score": 80,
+      "score": 73.3,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -465,9 +450,11 @@
         {
           "ask": "temporizador de 3 minutos",
           "failed": [
-            "skill"
+            "answered",
+            "skill",
+            "fast"
           ],
-          "score": 80
+          "score": 40
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -531,17 +518,10 @@
       ]
     },
     "prices": {
-      "score": 80,
+      "score": 83.3,
       "of": 6,
       "measured": 6,
       "fails": [
-        {
-          "ask": "100 usd in eur",
-          "failed": [
-            "rival"
-          ],
-          "score": 80
-        },
         {
           "ask": "price",
           "failed": [
@@ -619,7 +599,7 @@
     }
   },
   "lowest": {
-    "domain": "images",
-    "score": 73.9
+    "domain": "timers",
+    "score": 73.3
   }
 }
