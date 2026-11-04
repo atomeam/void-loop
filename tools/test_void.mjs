@@ -1524,13 +1524,13 @@ try {
     // the card is headed Versus (owner, 2026-10-25: "the tower rename is easy its versus"), and "the tower" still opens it
     // the target from tower.target.json is pinned, so its score line says "now assimilating"; with no target it says "easiest site left" (skills/tower.js towerHtml, #1568)
     check('tower: the target (tower.target.json) on top with its aspects (4 won), the three conquered under it struck through, no site above or after it, no "of N" count and no boss, the card headed "Versus" and the score "3 surpassed"',
-      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now assimilating: ' : 'easiest site left: ') + tgt.site
+      JSON.stringify(v.order) === JSON.stringify(['current', 'beaten', 'beaten', 'beaten']) && v.current === tgt.site && v.won === 4 && v.items >= 9 && /line-through/.test(v.struck || '') && v.name === 'Versus' && !/The tower|3D tower/.test(v.text || '') && v.head === '3 surpassed · ' + (tgt.pinned ? 'now taking on: ' : 'easiest site left: ') + tgt.site
         && !/FINAL BOSS|YOU ARE HERE|LOCKED| of \d+ floors| to go/.test(v.text || '') && !P.errors.length,
       JSON.stringify({ v, errors: P.errors }));
     // the saved and copied card (lib/card-share.js) says the fight in words: the aspect list lives in the floor's button, which it leaves out
     const saved = await P.p.$eval('.vpage.on', async (c) => { const { readCard } = await import('/lib/card-share.js'); return readCard(c); }).catch((e) => ({ err: String(e) }));
     check('tower: a saved or copied tower card says the fight (Verse is ahead of the target on 4 of N aspects, what is still to beat, what is conquered) and no announcement twice',
-      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\. Still to pass: ').test(saved.b || '') && /Surpassed: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
+      new RegExp('Verse is ahead of ' + tgt.site.replace(/\./g, '\\.') + ' on 4 of \\d+ aspects\\.').test(saved.b || '') && /Conquered: /.test(saved.b || '') && ((saved.b || '').match(/Now: /g) || []).length <= 1, JSON.stringify(saved).slice(0, 600));
     await P.ctx.close();
   }
   // every entry names its own Verse page (owner, 2026-10-26: "every site needs a page for side by side"): a giant floor too, and side by side opens that page

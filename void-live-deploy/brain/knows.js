@@ -33,6 +33,7 @@ function row(it) {
   if (it.st) head.append(el('span', 'k-st', it.st)); if (it.tier) head.append(el('span', 'k-st', it.tier));
   li.append(head);
   if (it.d) li.append(el('p', 'k-d', it.d));
+  if (it.withLine) li.append(el('p', 'k-with', it.withLine));
   const foot = [];
   if (it.k === 'skill' && it.ex && it.ex.length) foot.push(['Try', '/?q=' + encodeURIComponent(it.ex[0]), '“' + it.ex[0] + '”']);
   if (it.k === 'site' && it.u) foot.push(['Page', it.u, it.u]);
@@ -79,7 +80,9 @@ else {
   const will = fetch('/api/will').then((r) => (r.ok ? r.json() : null)).catch(() => null);
   file.then((j) => {
     if (!j) { $('#kNote').textContent = 'What it knows could not be read just now; the search comes back on a reload.'; return; }
-    items = [...items.filter((x) => x.k === 'want'), ...(j.items || [])]; draw();
+    items = [...items.filter((x) => x.k === 'want'), ...(j.items || [])];
+    if (j.builtWith) $('#kNote').textContent = j.builtWith + (j.builtWith === 1 ? ' skill built with skills' : ' skills built with skills');
+    draw();
   });
   will.then((w) => { const ws = wantsOf(w); if (ws.length) { items = [...ws, ...items.filter((x) => x.k !== 'want')]; draw(); } $('#kWill').textContent = w && w.at ? 'Wants chosen ' + new Date(w.at).toLocaleString() : ''; });
 }

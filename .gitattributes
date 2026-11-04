@@ -1,6 +1,10 @@
 # Intake records are hash-chained and verbatim: keep their bytes exactly (no CRLF conversion on Windows checkouts).
 domains/inputs/** -text
 domains/void.agents.log.md merge=union
+# One file per growth entry. A union merge keeps both sides when two branches ever edit the same entry.
+growth/entries/*.json merge=union
+void-live-deploy/incidents/entries/*.json merge=union
+void-live-deploy/tower-evidence/*.json merge=union
 drafts/fringe/** -text
 void-live-deploy/fringe/** -text
 .github/workflows/*.yml text eol=lf

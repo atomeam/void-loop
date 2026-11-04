@@ -24,6 +24,8 @@ export function tipOf(text) {
   const raw = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   let t = raw.toLowerCase();
   if (/\b(mortgage|loan\s+payment|gas\s+cost|fuel\s+for|mpg|interest\s+rate|tip\s+of\s+the\s+(?:day|ice)|taxi\s+tip\s+culture|what\s+is\s+a\s+tip)\b/.test(t)) return null;
+  // a drive with a distance is the drive-share skill (built from the calculator and the converter), not a bill
+  if (/\b(?:miles?|mi|kilometers?|kilometres?|kms?|km)\b/.test(t) && !/\b(?:tip|gratuity)\b/.test(t)) return null;
 
   // tools pack 3 (owner, 2026-10-18, item 43): "45 with 8% tax and 20% tip", "tip and tax on 45 at 8% tax". The tax rate is cut out of the
   // text first so its percent is never read as the tip. Tax on its own needs "add / plus / with / including" in front of it.

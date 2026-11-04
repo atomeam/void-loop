@@ -1551,5 +1551,41 @@
    }
   ],
   "note": "fix: \"which games do you know\" nothing appeared"
+ },
+ {
+  "at": "2026-11-04T00:28:38Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 2068,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 11891 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
+ },
+ {
+  "at": "2026-11-04T00:56:32Z",
+  "kind": "visitor",
+  "visitor": {
+   "correct": 14,
+   "of": 15,
+   "medianMs": 1569,
+   "failed": [
+    {
+     "ask": "what can you do",
+     "why": [
+      "slow 12344 ms"
+     ]
+    }
+   ]
+  },
+  "note": "visitor pass 14/15"
  }
 ]

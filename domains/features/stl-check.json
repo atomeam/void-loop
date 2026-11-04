@@ -1,0 +1,463 @@
+{
+ "floor": "stl check",
+ "verse_page": "/stl/",
+ "researched": "2026-11-04",
+ "source": "auto",
+ "method": "tools/feature-scan.mjs: each site's own pages read at phone width; features by the model or the page's headings, lists, buttons and pricing rows; Verse's page matched by key words (a builder should confirm on the live site)",
+ "sites": {
+  "iamrapid.com": {
+   "url": "https://iamrapid.com/tools/repair-3d-file/",
+   "scanned": "2026-11-04",
+   "leader": true,
+   "pages": [
+    "https://iamrapid.com/tools/repair-3d-file/",
+    "https://iamrapid.com/how-it-works/",
+    "https://iamrapid.com/pricing/",
+    "https://iamrapid.com/guides/IamRapid-3d-Printing-Guide/",
+    "https://iamrapid.com/guides/Design-for-Additive-Manufacturing-An-Extensive-Guide/",
+    "https://iamrapid.com/guides/Guide-to-Post-Processing-Techniques-for-Additive-Manufacturing/",
+    "https://iamrapid.com/knowledge-hub/3d-printing-cost-guide/"
+   ],
+   "method": "heuristic",
+   "features": [
+    {
+     "name": "STL File Repair Online",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/stl/ shows \"stl\", \"file\"; not \"repair\""
+    },
+    {
+     "name": "Repair STL files online — free, in your browser",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"stl\", \"file\"; not \"repair\", \"browser\""
+    },
+    {
+     "name": "How to make an STL file printable",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/stl/ shows \"make\", \"stl\", \"file\"; not \"how\""
+    },
+    {
+     "name": "Common STL errors this tool fixes",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"common\", \"stl\"; not \"error\", \"fixe\""
+    },
+    {
+     "name": "3D printing mesh terms, explained",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\", \"mesh\"; not \"term\", \"explain\""
+    },
+    {
+     "name": "How the STL repair tool works",
+     "detail": "a heading on /tools/repair-3d-file/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"stl\"; not \"how\", \"repair\", \"work\""
+    },
+    {
+     "name": "Instant Quotation, Seamlessly Delivered",
+     "detail": "a heading on /how-it-works/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"instant\", \"quotation\", \"seamlessly\", \"deliver\""
+    },
+    {
+     "name": "Transparent and Competitive Pricing",
+     "detail": "a heading on /how-it-works/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"transparent\", \"competitive\", \"pric\""
+    },
+    {
+     "name": "Item Details",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"item\", \"detail\""
+    },
+    {
+     "name": "Item Price",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"item\", \"price\""
+    },
+    {
+     "name": "Formula",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "has",
+     "verse_evidence": "/stl/ shows \"formula\""
+    },
+    {
+     "name": "Scenario 1(FDM)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"1\", \"fdm\""
+    },
+    {
+     "name": "Scenario 2(FDM)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"2\", \"fdm\""
+    },
+    {
+     "name": "Insights",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"insight\""
+    },
+    {
+     "name": "Scenario 2 (SLA)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"2\", \"sla\""
+    },
+    {
+     "name": "Scenario 1 (Support Removal and Sanding)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"1\", \"support\", \"removal\""
+    },
+    {
+     "name": "Scenario 2 (Polishing and Curing)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"2\", \"polish\", \"curing\""
+    },
+    {
+     "name": "Scenario 1 (FDM - PLA Material)",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"scenario\", \"1\", \"fdm\", \"pla\""
+    },
+    {
+     "name": "Basic production",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"basic\", \"production\""
+    },
+    {
+     "name": "Best For",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"best\""
+    },
+    {
+     "name": "Batch production",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"batch\", \"production\""
+    },
+    {
+     "name": "Mass production",
+     "detail": "a heading on /pricing/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"mass\", \"production\""
+    },
+    {
+     "name": "Understanding 3D printing and Rapid prototyping",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"understand\", \"rapid\", \"prototyp\""
+    },
+    {
+     "name": "Understanding 3D printing and Additive Manufacturing",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"understand\", \"additive\", \"manufactur\""
+    },
+    {
+     "name": "The Invention of 3D printing : A Brief History",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"invention\", \"brief\", \"history\""
+    },
+    {
+     "name": "1980s: The Birth of 3D Printing",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"1980\", \"birth\""
+    },
+    {
+     "name": "1990s: Expanding Technologies and its Commercialisation",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"1990\", \"expand\", \"technology\", \"commercialisation\""
+    },
+    {
+     "name": "2000s: Advancements",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"2000\", \"advancement\""
+    },
+    {
+     "name": "2020s: Continued Growth and Innovation",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"2020\", \"continu\", \"growth\", \"innovation\""
+    },
+    {
+     "name": "How 3D printing works : A step by step guide",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"how\", \"work\", \"step\""
+    },
+    {
+     "name": "Additive vs Traditional manufacturing",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"additive\", \"traditional\", \"manufactur\""
+    },
+    {
+     "name": "Traditional Manufacturing is of two types",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"two\"; not \"traditional\", \"manufactur\", \"type\""
+    },
+    {
+     "name": "Different type of 3D printing processes",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"different\", \"type\", \"processe\""
+    },
+    {
+     "name": "Overview of 3D printing processes",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "partial",
+     "verse_evidence": "/stl/ shows \"print\"; not \"overview\", \"processe\""
+    },
+    {
+     "name": "Material Extrusion (e.g., FDM)",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"material\", \"extrusion\", \"fdm\""
+    },
+    {
+     "name": "VAT Photopolymerisation (e.g., SLA)",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"vat\", \"photopolymerisation\", \"sla\""
+    },
+    {
+     "name": "Powder Bed Fusion (e.g., SLS)",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"powder\", \"bed\", \"fusion\", \"sls\""
+    },
+    {
+     "name": "Binder Jetting",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"binder\", \"jett\""
+    },
+    {
+     "name": "Material Jetting",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"material\", \"jett\""
+    },
+    {
+     "name": "Electron Beam Melting (EBM)",
+     "detail": "a heading on /guides/IamRapid-3d-Printing-Guide/",
+     "paid": false,
+     "verse": "missing",
+     "verse_evidence": "/stl/ shows none of its words; not \"electron\", \"beam\", \"melt\", \"ebm\""
+    }
+   ]
+  }
+ },
+ "gaps": [
+  {
+   "name": "Instant Quotation, Seamlessly Delivered",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Transparent and Competitive Pricing",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Item Details",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Item Price",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 1(FDM)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 2(FDM)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Insights",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 2 (SLA)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 1 (Support Removal and Sanding)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 2 (Polishing and Curing)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Scenario 1 (FDM - PLA Material)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Basic production",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Best For",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Batch production",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Mass production",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "1990s: Expanding Technologies and its Commercialisation",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "2000s: Advancements",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "2020s: Continued Growth and Innovation",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Additive vs Traditional manufacturing",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Material Extrusion (e.g., FDM)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "VAT Photopolymerisation (e.g., SLA)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Powder Bed Fusion (e.g., SLS)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Binder Jetting",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Material Jetting",
+   "sites": [
+    "iamrapid.com"
+   ]
+  },
+  {
+   "name": "Electron Beam Melting (EBM)",
+   "sites": [
+    "iamrapid.com"
+   ]
+  }
+ ],
+ "verse_extra": [],
+ "auto": {
+  "scanned": "2026-11-04",
+  "queued": []
+ }
+}

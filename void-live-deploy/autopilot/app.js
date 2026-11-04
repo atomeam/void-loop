@@ -1,7 +1,8 @@
-// a-to-mind.com/autopilot/: what Verse did on its own, read live (functions/api/autopilot.js, /api/coder, /incidents.json).
+// a-to-mind.com/autopilot/ (and /status/): Verse's status first (lib/status.js, /api/status), then what Verse did on its own, read live (functions/api/autopilot.js, /api/coder, /incidents.json).
 // A source that does not answer says so where its number would be; nothing here is estimated or filled in.
 import { mountRelated } from '/lib/toolkit.js';
 import { incidentsIn } from '/lib/autopilot.js';
+import { PROBES } from '/lib/status.js';
 
 const $ = (id) => document.getElementById(id);
 const KIND = { fix: 'fixed', build: 'built', assimilate: 'assimilated', measure: 'measured', watch: 'watched', revert: 'took back', other: 'did' };
@@ -53,6 +54,66 @@ function feed(d) {
   if (own.length > 60) ul.append(line('more', 'note', fmt(own.length - 60) + ' more in the window: every one is in main\'s history on GitHub.'));
 }
 
+// ---- Status (/status/ opens this): Verse's own hourly guards (/api/status), the pages opened after each deploy (/api/selfcheck), the last
+// deploy (the autopilot snapshot's time), incidents, and a few pages timed by this browser now. Nothing is estimated: no answer says so.
+const STATE = { up: 'up', down: 'down', unknown: 'no answer' };
+function guardRow(g) {
+  const row = el('div', 'st'), name = el('span'), dot = el('span', 'dot ' + g.now);
+  name.append(dot, g.name); name.title = g.what;
+  const now = el('span', g.now === 'down' ? 'bad' : g.now === 'up' ? 'ok' : 'note', STATE[g.now] || g.now);
+  if (g.lastAt) now.title = 'checked ' + ago(g.lastAt);
+  const hist = el('span', 'hist'); hist.setAttribute('role', 'img');
+  hist.setAttribute('aria-label', g.name + ', last ' + g.history.length + ' checks: ' + g.history.map((x) => (x === 'u' ? 'up' : x === 'd' ? 'down' : 'no answer')).join(', '));
+  for (let i = 0; i < 24 - g.history.length; i++) hist.append(el('i'));
+  for (const x of g.history) hist.append(el('i', x === 'u' ? 'u' : x === 'd' ? 'd' : ''));
+  const up = el('span', 'num', g.uptime == null ? 'n/a' : g.uptime + '%'); up.title = g.up + ' up, ' + g.down + ' down of ' + g.checks + ' checks (7 days)';
+  row.append(name, now, hist, up);
+  return row;
+}
+async function timeOne(p) {
+  const t0 = performance.now();
+  try {
+    const r = await fetch(p.path, { method: p.method, cache: 'no-store', headers: p.body ? { 'content-type': 'application/json', accept: 'application/json' } : {}, body: p.body, signal: AbortSignal.timeout(8000) });
+    const ms = Math.round(performance.now() - t0), ok = r.ok;
+    if (p.body) { const j = await r.json().catch(() => null); return { ms, ok: ok && !!(j && j.result) }; }
+    return { ms, ok };
+  } catch (_) { return { ms: null, ok: false }; }
+}
+async function liveSpeed() {
+  const box = $('st-live'); const rows = await Promise.all(PROBES.map(async (p) => ({ p, r: await timeOne(p) })));
+  box.textContent = '';
+  for (const { p, r } of rows) {
+    const row = el('div', 'st'), name = el('span'); name.append(el('span', 'dot ' + (r.ok ? 'up' : 'down')), p.name);
+    const path = el('span', 'note', p.method + ' ' + p.path);
+    row.append(name, el('span', r.ok ? 'ok' : 'bad', r.ok ? 'up' : 'down'), path, el('span', 'num', r.ms == null ? 'n/a' : r.ms + ' ms'));
+    box.append(row);
+  }
+}
+async function loadStatus() {
+  const [st, sc, ap, inc] = await Promise.allSettled([get('/api/status'), get('/api/selfcheck'), get('/api/autopilot?days=1'), get('/incidents.json')]);
+  const head = $('st-head'); head.textContent = '';
+  const s = st.status === 'fulfilled' ? st.value : null;
+  if (s) {
+    const o = el('span', 'chip'); o.append(el('span', 'dot ' + (s.overall === 'up' ? 'up' : s.overall === 'degraded' ? 'down' : '')), el('b', null, s.overall === 'up' ? 'All guards up' : s.overall === 'degraded' ? 'Something is down' : 'No guard has answered yet')); head.append(o);
+    $('st-guards').replaceChildren(...s.guards.map(guardRow));
+  } else { head.append(el('span', 'err', 'Verse\'s guards did not answer just now.')); }
+  const a = ap.status === 'fulfilled' ? ap.value : null, dep = a && (a.snapshotAt || a.keysAt);
+  if (dep) { const c = el('span', 'chip'); c.append('Last deploy ', el('b', null, ago(dep))); c.title = new Date(dep).toLocaleString(); head.append(c); }
+  const r = sc.status === 'fulfilled' && sc.value && sc.value.report;
+  if (r) { const c = el('span', 'chip'); c.append(el('b', null, fmt(r.fine) + ' of ' + fmt(r.checked)), ' pages fine after it'); c.title = 'every page in the sitemap opened in headless Chrome after the deploy ' + ago(r.at); head.append(c); }
+  const ul = $('st-inc'); ul.textContent = '';
+  const list = inc.status === 'fulfilled' && Array.isArray(inc.value.incidents) ? inc.value.incidents.slice(0, 3) : null;
+  if (!list) ul.append(line('n/a', 'err', 'The incident log did not answer just now.'));
+  else if (!list.length) ul.append(line('none', 'note', 'No red suite on main in the log.'));
+  else for (const i of list) {
+    const li = document.createElement('li'), body = el('span'), lk = document.createElement('a'); lk.href = i.run; lk.rel = 'noopener';
+    lk.textContent = (i.suite || 'a suite on main') + ': ' + (Array.isArray(i.checks) ? i.checks.length : 0) + ' check' + ((i.checks || []).length === 1 ? '' : 's') + ' red' + (i.healed ? ', healed' : '');
+    body.append(lk, el('span', 'when', when(i.at) + ' · ' + String(i.sha || '').slice(0, 7)));
+    li.append(el('span', 'kind ' + (i.healed ? 'fix' : 'revert'), i.healed ? 'healed' : 'red'), body); ul.append(li);
+  }
+  liveSpeed();
+}
+
 async function load() {
   for (const b of document.querySelectorAll('[data-days]')) b.setAttribute('aria-pressed', String(Number(b.dataset.days) === days));
   $('t-own').nextElementSibling.textContent = 'changes Verse landed on its own (' + (days === 1 ? '24 h' : '7 days') + ')';
@@ -97,4 +158,5 @@ mountRelated($('related'), '/autopilot/', [
   { label: 'Verse Brain', href: () => '/brain/' },
   { label: 'Team chat: give Verse work', href: () => '/team/' },
 ]);
+loadStatus();
 load();

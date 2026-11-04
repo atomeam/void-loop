@@ -29,7 +29,7 @@
   th, td { text-align: left; vertical-align: top; padding: 8px 6px; border-bottom: 1px solid #2c2938; }
   th { font-size: 12px; color: #a3a0b3; font-weight: 600; }
   .st { white-space: nowrap; font-weight: 600; }
-  .st.surpassed { color: #64d19f; } .st.assimilated { color: #a58bff; } .st.tried { color: #a3a0b3; }
+  .st.surpassed { color: #64d19f; } .st.passed { color: #8fd0ff; } .st.assimilated { color: #a58bff; } .st.tried { color: #a3a0b3; }
   td small { display: block; color: #a3a0b3; }
   @media (max-width: 640px) { thead { display: none; } tr { display: block; border-bottom: 1px solid #2c2938; padding: 6px 0; } td { display: block; border: 0; padding: 2px 4px; } }
 </style><script src="/visit.js" defer></script>
@@ -43,7 +43,7 @@
     <input id="find" type="search" placeholder="Find a site, page or family" aria-label="Find a site, page or family">
     <select id="show" aria-label="Show">
       <option value="">Every site</option>
-      <option value="surpassed">Surpassed</option>
+      <option value="surpassed">Conquered (100%)</option><option value="passed">Passed (conquering in background)</option>
       <option value="assimilated">Assimilated</option>
       <option value="tried">Tried, not taken</option>
     </select>
@@ -58,7 +58,7 @@
 </main>
 <script type="module">
   const $ = (id) => document.getElementById(id), esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  const kind = (r) => (r.outcome === 'surpassed' ? 'surpassed' : /^(assimilated|built|page built)$/.test(r.outcome) ? 'assimilated' : 'tried');
+  const kind = (r) => (r.outcome === 'surpassed' ? 'surpassed' : r.outcome === 'passed' ? 'passed' : /^(assimilated|built|page built)$/.test(r.outcome) ? 'assimilated' : 'tried');
   const day = (at) => (at ? String(at).slice(0, 10) : '');
   const safePage = (p) => (/^\/[\w\-./?=&%]*$/.test(p || '') ? p : '');
   let data = null;
@@ -76,7 +76,7 @@
         + '<td>' + (r.ease ? esc(r.ease.score) + (r.ease.place ? ' (pick ' + esc(r.ease.place) + ')' : '') + '<small>' + esc(r.ease.why) + '</small>' : '<small>' + (r.sources.includes('domains/tower-self.json') ? 'not recorded then' : '') + '</small>') + '</td>'
         + '<td>' + rec + '</td></tr>';
     }).join('') || '<tr><td colspan="6">No site matches.</td></tr>';
-    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' surpassed, ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus itself after every run.' + (data.target ? ' Now assimilating: ' + data.target.site + (data.target.page ? ' into ' + data.target.page : '') + (data.target.score ? ', ' + data.target.score.n + ' of ' + data.target.score.m : '') + ' (the same target as the Versus card).' : '');
+    const c = data.counts; $('lead').textContent = c.sites + ' sites: ' + c.surpassed + ' conquered (all aspects), ' + (c.passed || 0) + ' passed (ahead on everything measured, conquering in background), ' + c.assimilated + ' assimilated into a Verse page, ' + c.tried + ' tried and not taken. Newest first, written by Versus itself after every run.' + (data.target ? ' Now assimilating: ' + data.target.site + (data.target.page ? ' into ' + data.target.page : '') + (data.target.score ? ', ' + data.target.score.n + ' of ' + data.target.score.m : '') + ' (the same target as the Versus card).' : '');
   }
   async function load() {
     try { const r = await fetch('/assimilated.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status); data = await r.json(); $('foot').textContent = data.note; draw(); }
