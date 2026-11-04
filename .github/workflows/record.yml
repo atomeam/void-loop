@@ -1,3 +1,4 @@
+# Replaced by .github/workflows/shorts.yml. The daily schedule and the run after each deploy are off. A hand run still films the old way.
 # Verse films its own experiments (owner, 2026-10-14: "Verse should use my Youtube channel to make its own Videos"). Step 1 of the
 # broadcast loop: tools/record.mjs opens a lab experiment in a real browser, runs it, and films it with the run's own words from
 # the fringe ledger as a caption. Each film is then posted as a GitHub Release (an MP4 and a text file with its title, description
@@ -6,14 +7,6 @@
 name: Verse records itself
 
 on:
-  schedule:
-    - cron: '41 15 * * *' # daily: three films
-  # and whenever Verse ships something (owner, 2026-10-15: "let Verse make films whenever it wants or does anything"): after each
-  # deploy of main, one film of an experiment never filmed before, or none (a deploy never re-films an old one)
-  workflow_run:
-    workflows: ['Verse deploy']
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
     inputs:
       id:
@@ -34,7 +27,6 @@ concurrency:
 
 jobs:
   record:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 25 # several films a run
     steps:

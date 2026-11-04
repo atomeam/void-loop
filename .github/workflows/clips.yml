@@ -1,3 +1,4 @@
+# Replaced by .github/workflows/shorts.yml. The daily schedule is off. A hand run still makes the old batch.
 # Verse's daily ad batch (owner, 2026-10-15: "strengthen that to be a powerhouse ad plus ad revenue monster"; "plus promotes itself").
 # tools/clips.mjs plans the day (3 moments, picked by deep-link performance in domains/void.clips.json), films the live site in
 # headless Chrome, renders 9:16 Shorts with its tricks library in ffmpeg (no Workers AI), and writes manifest.json with each clip's
@@ -5,8 +6,6 @@
 name: Verse clips
 
 on:
-  schedule:
-    - cron: '17 14 * * *' # daily, about 10 AM ET
   workflow_dispatch:
 
 permissions:
