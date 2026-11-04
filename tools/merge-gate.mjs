@@ -28,6 +28,8 @@ function main() {
   if (add.status !== 0) { console.error('merge-gate: ' + (add.stderr || add.stdout)); process.exit(2); }
   try {
     const base = process.env.MERGE_GATE_BASE || 'origin/main';
+    git(['config', 'user.email', 'merge-gate@users.noreply.github.com'], dir);
+    git(['config', 'user.name', 'merge-gate'], dir);
     const merged = git(['merge', '--no-commit', '--no-ff', base], dir);
     if (merged.status !== 0) {
       const files = String(git(['diff', '--name-only', '--diff-filter=U'], dir).stdout || '').split('\n').map((s) => s.trim()).filter(Boolean);
