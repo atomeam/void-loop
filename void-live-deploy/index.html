@@ -5636,12 +5636,14 @@ say('nothing selected to remove');
     const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|verse|a-to-mind)(?: cost)?)$/; // the name is Verse (owner, 2026-10-14)
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
-      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
-      const svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
-      if (!svc) return;
+      let svc = learnedSkills.flatMap((sk) => (sk && sk.family ? sk.members || [] : [sk])).find((sk) => sk && sk.name === 'services'); // services sits in the shop family (skills/shop.js)
+      if (!svc) {
+        try { const m = await import('/skills/services.js'); svc = m.default || m; } catch (_) { return; } // a price question owes the services card even before the skill index arrives
+      }
+      if (!svc || typeof svc.run !== 'function') return;
       try {
         const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
-        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
+        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + (svc.name || 'services') });
       } catch (_) {}
     }
     // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Verse's own answer (or fix). Never on self/menu/identity asks; at most one line.
