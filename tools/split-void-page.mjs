@@ -15,7 +15,7 @@ const OPEN = { css: '  <style>\n', js: '  <script>\n' };
 
 const BLOCKS = [
   { file: 'void-home.css', start: '  <style>\n    /* home polish:', end: '\n  </style>', kind: 'css', tag: '  <link rel="stylesheet" href="/void-home.css">\n' },
-  { file: 'void-boot.js', start: '  <script>\n    // Private learning log', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-boot.js"></script>\n' },
+  { file: 'void-boot.js', start: '  <script>\n    // Private learning log', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-boot.js" defer></script>\n' },
   { file: 'void-sky.js', start: '  <script>\n  // ---- The sky:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-sky.js" defer></script>\n' },
   { file: 'void-presence.js', start: '  <script>\n  // ---- Presence:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-presence.js" defer></script>\n' },
   { file: 'void-synapses.js', start: '  <script>\n  // ---- Synapses:', end: '\n  </script>', kind: 'js', tag: '  <script src="/void-synapses.js" defer></script>\n' },

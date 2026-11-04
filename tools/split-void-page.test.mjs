@@ -16,7 +16,7 @@ test('a small page splits into a stylesheet, a boot script and deferred sections
   assert.ok(split);
   assert.match(split.html, /href="\/void-home\.css"/);
   assert.match(split.html, /rel="preload" href="\/void-boot\.js"/);
-  assert.match(split.html, /src="\/void-boot\.js"/);
+  assert.match(split.html, /src="\/void-boot\.js" defer/);
   assert.match(split.html, /src="\/void-sky\.js" defer/);
   assert.match(split.html, /src="\/void-presence\.js" defer/);
   assert.match(split.html, /src="\/void-synapses\.js" defer/);
@@ -34,7 +34,7 @@ test('the real home page loses the main script and the style, and each script st
   const after = Buffer.byteLength(split.html);
   assert.ok(after < before / 3, after + ' of ' + before);
   assert.match(split.html, /id="input"/);
-  assert.match(split.html, /src="\/void-boot\.js"/);
+  assert.match(split.html, /src="\/void-boot\.js" defer/);
   assert.equal(split.files['void-boot.js'].includes('const LOOP_KEY'), true);
   assert.equal(split.files['void-sky.js'].includes('sky-rules.js'), true);
   const dir = mkdtempSync(join(tmpdir(), 'void-split-'));
