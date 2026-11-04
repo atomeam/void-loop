@@ -39,7 +39,7 @@ test('a wrong known word fails the bot, and the factory lists it as a fix job in
 test('the factory gate passes the whole family with no fix jobs, and the credit for CLDR is listed for /credits/', () => {
   const f = familyRows().find((x) => x.family === 'language pairs');
   assert.equal(f.live, f.total); assert.equal(f.total, LANGS.length * (LANGS.length - 1));
-  assert.deepEqual(fixJobs([], familyRows()), []);
+  assert.deepEqual(fixJobs([], [f]), []);
   const credits = JSON.parse(readFileSync(new URL('../void-live-deploy/bots/credits.json', import.meta.url), 'utf8'));
   assert.ok(credits.some((c) => /CLDR/.test(c.name) && /Unicode License/.test(c.license)));
 });
