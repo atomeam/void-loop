@@ -22,7 +22,7 @@ const JOBS = [
 ];
 const WANTS = [
   { key: 'page-x', job: 'want-page-x', lane: 'page', title: 'Get /x/ answering again', label: '/x/ answers', baseline: 0, cite: '[{"what":"probe","url":"https://a-to-mind.com/x/"}]' },
-  { key: 'exam-images', job: 'want-exam-images', lane: 'exam', title: 'Raise images', label: 'images exam score', baseline: 60, cite: '[{"what":"exam","url":"https://a-to-mind.com/exam/latest.json"}]' },
+  { key: 'exam-images', job: 'want-exam-images', lane: 'exam', title: 'Raise images', label: 'images exam score', baseline: 73.9, cite: '[{"what":"exam","url":"https://a-to-mind.com/exam/latest.json"}]' },
 ];
 
 test('impact ÷ effort × confidence: breakage and evidence first, a retried job falls, each score says why', () => {
