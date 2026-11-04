@@ -12,15 +12,15 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| A quote page for any stock | Quotes | have | every site of this kind offers it | void-live-deploy/markets/index.html:91 `e="submit" class="go" id="go">Get quote</button><span class="note" id="fnote" role="status` |
-| Price charts with ranges | Charts | have | every site of this kind offers it | void-live-deploy/markets/index.html:113 `ta-r="5y" aria-pressed="false">5Y</button><button type="button" data-r="max" aria-pressed=` |
-| Indices, currencies and crypto | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:95 `<div id="strip" aria-label="Indices, crypto and currencies">` |
-| Top gainers and losers | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:157 `<h2 id="mvH">Top movers</h2>` |
-| A watchlist | Personal | have | every site of this kind offers it | void-live-deploy/markets/index.html:129 `="watch" aria-pressed="false">Add to watchlist</button>` |
-| A portfolio with gains and losses | Personal | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:166 `financials, news, options or portfolios here, and nothing here trades. Not financial advi` |
-| Market news | News | have | every site of this kind offers it | void-live-deploy/markets/index.html:147 `"repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-p` |
-| Financial statements | Data | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:166 `is down. There are no company financials, news, options or portfolios here, and nothing he` |
-| A stock screener | Data | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:104 `ket caps</a><a href="/markets/screener/">Screener</a></nav>` |
+| A quote page for any stock | Quotes | have | every site of this kind offers it | void-live-deploy/markets/index.html:92 `e="submit" class="go" id="go">Get quote</button><span class="note" id="fnote" role="status` |
+| Price charts with ranges | Charts | have | every site of this kind offers it | void-live-deploy/markets/index.html:114 `ta-r="5y" aria-pressed="false">5Y</button><button type="button" data-r="max" aria-pressed=` |
+| Indices, currencies and crypto | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:96 `<div id="strip" aria-label="Indices, crypto and currencies">` |
+| Top gainers and losers | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:158 `<h2 id="mvH">Top movers</h2>` |
+| A watchlist | Personal | have | every site of this kind offers it | void-live-deploy/markets/index.html:130 `="watch" aria-pressed="false">Add to watchlist</button>` |
+| A portfolio with gains and losses | Personal | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:167 `financials, news, options or portfolios here, and nothing here trades. Not financial advi` |
+| Market news | News | have | every site of this kind offers it | void-live-deploy/markets/index.html:148 `"repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-p` |
+| Financial statements | Data | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:167 `is down. There are no company financials, news, options or portfolios here, and nothing he` |
+| A stock screener | Data | have | studied by hand: investing.com offers this (https://www.investing.com/) | void-live-deploy/markets/index.html:105 `ket caps</a><a href="/markets/screener/">Screener</a></nav>` |
 | Technical indicators and drawing | Charts | missing | studied by hand: investing.com offers this (https://www.investing.com/) | no sign of it in the source of /markets/ |
 | Earnings and economic calendars | Data | missing | studied by hand: investing.com offers this (https://www.investing.com/) | no sign of it in the source of /markets/ |
 | Price alerts | Personal | missing | studied by hand: investing.com offers this (https://www.investing.com/) | no sign of it in the source of /markets/ |

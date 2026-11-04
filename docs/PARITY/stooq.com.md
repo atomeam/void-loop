@@ -12,11 +12,11 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
 | As much content as the original (the counts are not compared yet) | Content | unreviewed | every site of this kind offers it | not studied yet |
-| A quote page for any stock | Quotes | have | every site of this kind offers it | void-live-deploy/markets/index.html:91 `e="submit" class="go" id="go">Get quote</button><span class="note" id="fnote" role="status` |
-| Price charts with ranges | Charts | have | every site of this kind offers it | void-live-deploy/markets/index.html:113 `ta-r="5y" aria-pressed="false">5Y</button><button type="button" data-r="max" aria-pressed=` |
-| Indices, currencies and crypto | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:95 `<div id="strip" aria-label="Indices, crypto and currencies">` |
-| Top gainers and losers | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:157 `<h2 id="mvH">Top movers</h2>` |
-| A watchlist | Personal | have | every site of this kind offers it | void-live-deploy/markets/index.html:129 `="watch" aria-pressed="false">Add to watchlist</button>` |
-| Market news | News | have | every site of this kind offers it | void-live-deploy/markets/index.html:147 `"repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-p` |
+| A quote page for any stock | Quotes | have | every site of this kind offers it | void-live-deploy/markets/index.html:92 `e="submit" class="go" id="go">Get quote</button><span class="note" id="fnote" role="status` |
+| Price charts with ranges | Charts | have | every site of this kind offers it | void-live-deploy/markets/index.html:114 `ta-r="5y" aria-pressed="false">5Y</button><button type="button" data-r="max" aria-pressed=` |
+| Indices, currencies and crypto | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:96 `<div id="strip" aria-label="Indices, crypto and currencies">` |
+| Top gainers and losers | Markets | have | every site of this kind offers it | void-live-deploy/markets/index.html:158 `<h2 id="mvH">Top movers</h2>` |
+| A watchlist | Personal | have | every site of this kind offers it | void-live-deploy/markets/index.html:130 `="watch" aria-pressed="false">Add to watchlist</button>` |
+| Market news | News | have | every site of this kind offers it | void-live-deploy/markets/index.html:148 `"repWrap" aria-pressed="true">Market wrap</button><button type="button" id="repWhy" aria-p` |
 | Historical prices to download | Data | missing | studied by hand: stooq.com offers this (https://stooq.com/) | no sign of it in the source of /markets/ |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://stooq.com/ | not compared yet |

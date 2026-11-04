@@ -3,12 +3,12 @@
  "scanned": 545,
  "counts": {
   "unified": 1,
-  "live": 69,
-  "salvageable": 448,
+  "live": 71,
+  "salvageable": 446,
   "history": 24,
   "skipped": 3
  },
- "remaining": 448,
+ "remaining": 446,
  "top10": [
   {
    "id": "archive/repos/a-to-mind.com",
@@ -4969,10 +4969,10 @@
   {
    "id": "archive/victus",
    "kind": "archive",
-   "status": "salvageable",
-   "target": "tool",
-   "value": 20.5,
-   "why": "live code shares its name; check for overlap before migrating",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
    "into": null,
    "test": null,
    "pr": null,
@@ -6349,10 +6349,10 @@
   {
    "id": "shelf:archive/victus/",
    "kind": "shelf row",
-   "status": "salvageable",
-   "target": "page",
-   "value": 4.5,
-   "why": "live code shares its name; check for overlap before migrating",
+   "status": "live",
+   "target": null,
+   "value": 0,
+   "why": "Verse's live code reads this path",
    "into": null,
    "test": null,
    "pr": null,
