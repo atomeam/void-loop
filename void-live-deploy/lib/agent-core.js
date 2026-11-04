@@ -28,10 +28,11 @@ export function pickBot(ask, bots) {
   const want = new Set(words(ask));
   let best = null, score = 0;
   for (const b of bots || []) {
-    const s = words((b.name || '') + ' ' + (b.description || '') + ' ' + (b.examples || []).join(' ')).filter((w) => want.has(w)).length;
+    if (b.status && b.status !== 'live') continue;
+    const s = words((b.name || b.id || '') + ' ' + (b.cat || '') + ' ' + (b.description || b.job || '') + ' ' + (b.examples || []).join(' ')).filter((w) => want.has(w)).length;
     if (s > score) { best = b; score = s; }
   }
-  return best ? { name: String(best.name), description: String(best.description || '').slice(0, 160) } : { name: 'verse', description: 'Verse itself' };
+  return best ? { name: String(best.name || best.id), description: String(best.description || best.job || '').slice(0, 160) } : { name: 'verse', description: 'Verse itself' };
 }
 
 /** the daily brief for one thread: what got made, what waits on a yes, what is still running. */
