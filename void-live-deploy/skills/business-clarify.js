@@ -46,7 +46,7 @@ export default {
     'clarify this business idea: a tool that turns customer emails into running automations',
     'turn this idea into a system plan: weekly status reports that write themselves',
     'structure this business idea for Verse to own the heavy lifting',
-    'make this idea something we can hand off: client onboarding that runs itself'
+    'make this idea a system plan: client onboarding that runs itself'
   ],
   nearMisses: [
     'write a proposal for this request',
