@@ -26,6 +26,8 @@ import { scanDiff, DEFAULT_CHECKS } from './verse-loop.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const LIMITS = { turns: 30, tokens: 250000, out: 6000, finishTries: 3 };
+/** a file longer than this is not sent from line 1: the model gets an outline and asks for a region (void.html is about 690 KB). */
+export const HUGE = 400;
 export const EXIT = { done: 0, nothing: 3, 'no-model': 4, 'turn-cap': 5, 'token-cap': 5, 'model-down': 6, error: 1 };
 
 // ---- the free model stack ----
@@ -226,17 +228,75 @@ export function trailOf(transcript, n = 12) {
   return t.map((x) => [x.tool, x.path].filter(Boolean).join(' ') + (/^(refused|the diff|no such|no tool|no match|FAIL)/.test(String(x.result || '')) ? ': ' + String(x.result).split('\n')[0].slice(0, 60) : '')).join(', ');
 }
 
+const MARK = /^(?:export\s+)?(?:async\s+)?function\s+\w+|^(?:export\s+)?class\s+\w+|^\s*<(?:h[12]|script|main)\b|^#{1,3} \S/;
+/** structural lines of a big file: functions, classes, headings, script tags. Pure. */
+export function outlineOf(text, limit = 60) {
+  const lines = String(text || '').split('\n'), marks = [];
+  for (let i = 0; i < lines.length && marks.length < limit; i++) if (MARK.test(lines[i])) marks.push((i + 1) + '\t' + lines[i].slice(0, 140));
+  return { lines: lines.length, chars: String(text || '').length, marks };
+}
+/** matching windows with line numbers, skipping ahead past each window so a noisy pattern does not fill the turn. Pure. */
+// a search pattern the model wrote: a regex on purpose, so it is not escaped. What can hang the run is a nested repeat ((a+)+, (x*)*,
+// (a|aa)+) on a long line, so those are refused and each line is tried on its first 2,000 characters.
+export const NESTED_REPEAT = /\((?:[^()\\]|\\.)*(?:[+*]|\{\d+,\d*\}|\|)(?:[^()\\]|\\.)*\)\s*(?:[+*]|\{\d+,\d*\})/;
+export function regionsOf(text, pattern, { pad = 4, max = 6 } = {}) {
+  const src = String(pattern == null ? '' : pattern);
+  if (src.length > 200) return { error: 'bad pattern: longer than 200 characters; search for a shorter piece' };
+  if (NESTED_REPEAT.test(src)) return { error: 'bad pattern: a repeat inside a repeated group (like (a+)+) can hang the search; use a plain word or one repeat' };
+  let re; try { re = new RegExp(src, 'i'); } catch (e) { return { error: 'bad pattern: ' + e.message }; } // void-review: ok (the model's search is a regex by design; nested repeats and long patterns are refused above, lines are capped below)
+  const lines = String(text || '').split('\n'), hits = [];
+  for (let i = 0; i < lines.length && hits.length < max; i++) {
+    if (!re.test(lines[i].slice(0, 2000))) continue;
+    const a = Math.max(0, i - pad), b = Math.min(lines.length, i + pad + 1);
+    hits.push((a + 1) + '-' + b + '\n' + lines.slice(a, b).map((l, k) => (a + k + 1) + '\t' + l).join('\n'));
+    i = b - 1;
+  }
+  return { hits, lines: lines.length };
+}
+/** replace lines `from`..`to` (1-based, inclusive) with `next`. Pure. */
+export function applyLines(text, from, to, next) {
+  const ls = String(text || '').split('\n');
+  const a = Math.floor(+from), b = Math.floor(+to);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || a < 1 || b < a || a > ls.length) return { error: 'from and to must be line numbers inside the file (from ' + a + ', to ' + b + ', file has ' + ls.length + ' lines)' };
+  const end = Math.min(ls.length, b);
+  const repl = String(next == null ? '' : next).replace(/\n$/, '').split('\n');
+  return { text: ls.slice(0, a - 1).concat(repl, ls.slice(end)).join('\n'), from: a, to: end };
+}
+const hasWord = (text, word) => {
+  const s = String(text || ''); let i = 0;
+  while ((i = s.indexOf(word, i)) >= 0) {
+    const before = i === 0 || !/[\w$]/.test(s[i - 1]);
+    const after = i + word.length >= s.length || !/[\w$]/.test(s[i + word.length]);
+    if (before && after) return true;
+    i += 1;
+  }
+  return false;
+};
+/** true when every patch-guard "lost function" reason names a function that the moved text still holds. Pure. */
+export function functionLossOk(reasons, moved) {
+  const lost = [];
+  for (const r of reasons || []) {
+    const m = /^it lost (?:a function|\d+ functions): (.+)$/.exec(r);
+    if (!m) return false;
+    lost.push(...m[1].replace(/, \.\.\.$/, '').split(',').map((s) => s.trim()).filter(Boolean));
+  }
+  return lost.length > 0 && lost.every((n) => hasWord(moved, n));
+}
+
 const SYSTEM = (checks, target) => `You are Verse's coding agent, working in a git repository through tools. You change code so the task is done and every check stays green.
 Answer every turn with exactly one JSON object and nothing else (an edit may put its diff in a \`\`\`diff block right after the JSON instead):
 {"tool":"list","path":"tools"}                       list a directory
-{"tool":"read","path":"tools/x.mjs","from":1,"to":200} read lines of a file
+{"tool":"read","path":"tools/x.mjs","from":1,"to":200} read lines of a file (a file over ${HUGE} lines returns an outline unless from/to are set)
+{"tool":"region","path":"f","pattern":"regex"}       the few lines around each match, with line numbers (use this on a big file)
 {"tool":"search","pattern":"regex","path":"."}       ripgrep the repo
+{"tool":"patch","path":"f","from":10,"to":12,"text":"new lines"} replace that line range (best on a big file)
 {"tool":"replace","path":"f","old":"exact text","new":"new text"} swap text that is in the file exactly once (best for most changes; "old":"" makes a new file)
+{"tool":"split","path":"f","from":10,"to":40,"into":"f-part.js","stub":"import './f-part.js';"} move that line range into a new file and leave one stub line
 {"tool":"edit","diff":"--- a/f\\n+++ b/f\\n@@ ... @@\\n..."} apply a unified diff (paths relative to the repo; a new file is --- /dev/null)
 {"tool":"check","name":"<check>"}                    run one check; or {"tool":"check","test":"path/to/x.test.mjs"} for one node test file
 {"tool":"finish","summary":"what changed and why"}   when the task is done
 Checks you can run: ${checks.map((c) => c.name).join(', ') || '(none)'}.${target ? '\nThe red check to make green: ' + target + '.' : ''}
-Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, workflows, secrets or anything outside the repo. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.`;
+Rules: fix the code, never the test: an edit that removes assertions or test cases, skips a test or exits early is refused. Never touch .env files, workflows, secrets or anything outside the repo. On a big file, use region or outline, then patch or split a small range: do not read the file from the top. Keep changes small and in the style around them. Read before you edit, and run the check before you finish. Verse's review runs on your diff when you finish, and a bug or risk it finds sends you back.`;
 
 /**
  * One run. model(messages) -> { text, tokens? } | { error }. Returns { outcome, why, turns, tokens, files, log }.
@@ -262,7 +322,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
   const changedFiles = () => touched().filter((p) => readOr(join(root, p)) !== original.get(p));
 
   // what every write passes after it lands: a test or check never weakened, patch-guard on code; '' when it stays, else why it was put back
-  const guarded_ = (before) => {
+  const guarded_ = (before, moved = '') => {
     const undo = () => { for (const [f, c] of before) { const abs = join(root, f); if (c == null) { try { unlinkSync(abs); } catch (_) { /* gone */ } } else writeFileSync(abs, c); } };
     for (const f of before.keys()) {
       if (!original.has(f)) original.set(f, before.get(f));
@@ -273,7 +333,8 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       }
       if (now != null && /\.(m?js|cjs|html?|json)$/.test(f)) {
         const g = guardPatch({ before: was || '', after: now, kind: kindOf(f.split('.').pop()) });
-        if (!g.ok) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
+        // a split moves functions into the new file: lost from this file, still in `moved`
+        if (!g.ok && !(moved && g.reasons.every((r) => r.startsWith('it lost ')) && functionLossOk(g.reasons, moved))) { undo(); return 'refused by patch-guard on ' + f + ': ' + g.reasons.join('; '); }
       }
     }
     lastEdit = turns;
@@ -287,11 +348,54 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       const rows = readdirSync(abs, { withFileTypes: true }).filter((d) => d.name !== '.git' && d.name !== 'node_modules').map((d) => d.name + (d.isDirectory() ? '/' : '')).sort();
       return head(rows.slice(0, 400).join('\n') + (rows.length > 400 ? '\n[' + (rows.length - 400) + ' more]' : ''));
     },
-    read({ path, from = 1, to }) {
+    read({ path, from, to }) {
       const why = pathRefusal(path, root); if (why) return 'refused: ' + why;
       const text = readOr(resolve(root, path)); if (text == null) return 'no such file: ' + path;
-      const ls = text.split('\n'), a = Math.max(1, +from || 1), b = Math.min(ls.length, +to || a + 299);
+      const ls = text.split('\n');
+      if (from == null && to == null && ls.length > HUGE) {
+        const o = outlineOf(text);
+        return o.lines + ' lines, ' + o.chars + ' characters. Too big to read from the top: use region with a pattern, or read with from and to.\n' + o.marks.join('\n');
+      }
+      const a = Math.max(1, +from || 1), b = Math.min(ls.length, to == null ? a + 299 : +to);
       return head(ls.slice(a - 1, b).map((l, i) => (a + i) + '\t' + l).join('\n'), 16000) + (b < ls.length ? '\n[' + ls.length + ' lines; read on with "from":' + (b + 1) + ']' : '');
+    },
+    region({ path, pattern }) {
+      const why = pathRefusal(path, root); if (why) return 'refused: ' + why;
+      if (!pattern) return 'region needs a pattern';
+      const text = readOr(resolve(root, path)); if (text == null) return 'no such file: ' + path;
+      const r = regionsOf(text, String(pattern));
+      if (r.error) return r.error;
+      if (!r.hits.length) return 'no match in ' + path + ' (' + r.lines + ' lines). Try another pattern.';
+      return head(r.hits.join('\n\n') + (r.hits.length >= 6 ? '\n[more matches omitted: narrow the pattern]' : ''));
+    },
+    patch({ path, from, to, text }) {
+      const why = pathRefusal(path, root, { write: true }); if (why) return 'refused: ' + why;
+      const abs = join(root, path), was = readOr(abs);
+      if (was == null) return 'no such file: ' + path;
+      const r = applyLines(was, from, to, text);
+      if (r.error) return r.error;
+      const before = new Map([[path, was]]);
+      writeFileSync(abs, r.text.endsWith('\n') || was.endsWith('\n') ? r.text.replace(/\n?$/, '\n') : r.text);
+      return guarded_(before) || 'patched ' + path + ' lines ' + r.from + '-' + r.to;
+    },
+    split({ path, from, to, into, stub }) {
+      const why = pathRefusal(path, root, { write: true }); if (why) return 'refused: ' + why;
+      const whyInto = pathRefusal(into, root, { write: true }); if (whyInto) return 'refused: ' + whyInto;
+      if (typeof stub !== 'string' || !stub.trim() || stub.includes('\n')) return 'split needs "stub": the one line that replaces the range (a real import or script src, not a placeholder)';
+      const abs = join(root, path), was = readOr(abs);
+      if (was == null) return 'no such file: ' + path;
+      if (existsSync(join(root, into))) return into + ' already exists: pick a new path';
+      const ls = was.split('\n'), a = Math.floor(+from), b = Math.min(ls.length, Math.floor(+to));
+      if (!Number.isFinite(a) || a < 1 || b < a) return 'split needs from and to inside the file';
+      const extracted = ls.slice(a - 1, b).join('\n') + '\n';
+      if (was.length >= 200 && (was.length - extracted.length) < was.length * 0.7) return 'refused: that range is more than 30% of ' + path + '. Split a smaller region so the file keeps the rest.';
+      const r = applyLines(was, a, b, stub);
+      if (r.error) return r.error;
+      const before = new Map([[path, was], [into, null]]);
+      mkdirSync(dirname(join(root, into)), { recursive: true });
+      writeFileSync(join(root, into), extracted);
+      writeFileSync(abs, r.text.endsWith('\n') ? r.text : r.text + '\n');
+      return guarded_(before, extracted) || 'split ' + path + ' lines ' + a + '-' + b + ' into ' + into;
     },
     search({ pattern, path = '.' }) {
       if (!pattern) return 'search needs a pattern';
@@ -394,7 +498,7 @@ export async function runCoder({ root, prompt, checks = DEFAULT_CHECKS, target =
       result = f.feedback;
     } else if (tools[act.tool]) {
       try { result = tools[act.tool](act); } catch (e) { result = act.tool + ' failed: ' + String((e && e.message) || e); }
-    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, search, replace, edit, check, finish';
+    } else result = 'no tool named ' + JSON.stringify(act.tool) + ': list, read, region, search, patch, replace, split, edit, check, finish';
     transcript.push({ turn: turns, tool: act.tool || '?', path: act.path || act.name || act.test || '', result: String(result).slice(0, 200) });
     log('  turn ' + turns + ': ' + (act.tool || 'bad reply') + ' ' + (act.path || act.name || act.test || '') + ' -> ' + String(result).split('\n')[0].slice(0, 120));
     messages.push({ role: 'assistant', content: text }, { role: 'user', content: String(result) + budgetNote({ turns, tokens, limits: L, edited: changedFiles().length > 0 }) });

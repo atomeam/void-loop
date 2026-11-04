@@ -11,6 +11,6 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| Search flights by place and date | Find | have | every site of this kind offers it | void-live-deploy/flights/distance/index.html:63 `<h1>Flight distance calculator</h1>` |
-| Distance and flight time | Data | have | studied by hand: airmilescalculator.com offers this (https://www.airmilescalculator.com/) | void-live-deploy/flights/distance/index.html:63 `<h1>Flight distance calculator</h1>` |
+| Search flights by place and date | Find | have | every site of this kind offers it | void-live-deploy/flights/distance/index.html:64 `<h1>Flight distance calculator</h1>` |
+| Distance and flight time | Data | have | studied by hand: airmilescalculator.com offers this (https://www.airmilescalculator.com/) | void-live-deploy/flights/distance/index.html:64 `<h1>Flight distance calculator</h1>` |
 | Its live pages could not be read (HTTP 403), so its own menus and settings are not studied yet | Unreviewed | unreviewed | the live scan of https://www.airmilescalculator.com/ | not compared yet |

@@ -2,7 +2,6 @@
 // with the browser already used for tests. Run by hand when a row's words change:  node tools/og-tool-sites.mjs     (CHROME_PATH or /opt/pw-browsers/...)
 import fs from 'node:fs';
 import path from 'node:path';
-import { chromium } from 'playwright-core';
 import { shrinkFile } from './shrink-images.mjs';
 import { SITE_PAGES } from '../void-live-deploy/lib/tool-sites.js';
 import { TOOL_INFO } from '../void-live-deploy/lib/pdf-ui.js';
@@ -28,6 +27,7 @@ const html = (r) => `<html><body style="margin:0;width:1200px;height:630px;backg
 <div style="position:absolute;right:64px;bottom:36px;font-size:26px;color:#a58bff;font-weight:700">a-to-mind.com</div></body></html>`;
 const exe = process.env.CHROME_PATH || ['/opt/pw-browsers/chromium', '/opt/pw-browsers/chromium-1194/chrome-linux/chrome', '/usr/bin/google-chrome'].find((x) => fs.existsSync(x));
 if (process.argv[1] && path.resolve(process.argv[1]) === new URL(import.meta.url).pathname) {
+  const { chromium } = await import('playwright-core'); // only the drawing run needs a browser; the tests import fitLine
   const b = await chromium.launch({ executablePath: exe, args: ['--no-sandbox'] }), p = await b.newPage({ viewport: { width: 1200, height: 630 } });
   fs.mkdirSync(root, { recursive: true });
   // a page Verse built from its family's page (lib/self-sites.js) keeps that page's picture

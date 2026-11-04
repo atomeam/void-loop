@@ -11,10 +11,10 @@ Written by `node tools/parity.mjs --write` from the feature rows in `tools/parit
 
 | Feature | Area | Verse | Evidence on the original | Evidence in Verse |
 | --- | --- | --- | --- | --- |
-| All about a colour: codes and conversions | Colour | have | every site of this kind offers it | void-live-deploy/color/gradient/index.html:93 `/ rgba</option><option value="hsl">hsl / hsla</option></select><label><input type="checkbo` |
+| All about a colour: codes and conversions | Colour | have | every site of this kind offers it | void-live-deploy/color/gradient/index.html:94 `/ rgba</option><option value="hsl">hsl / hsla</option></select><label><input type="checkbo` |
 | Shades, tints and harmonies | Colour | have | every site of this kind offers it | void-live-deploy/lib/colour.js:131 `export function tintsAndShades(rgb, n = 9) {` |
 | A colour picker | Colour | have | every site of this kind offers it | void-live-deploy/lib/colour.js:174 `if (/^(?:colou?r\s+(?:picker/codes?/chart/tool/palette\s+generator/schemes?)/hex\s+colou` |
-| Palettes | Colour | have | every site of this kind offers it | void-live-deploy/color/gradient/index.html:105 `ort { mountRelated, along, setPalette } from '/lib/toolkit.js';` |
+| Palettes | Colour | have | every site of this kind offers it | void-live-deploy/color/gradient/index.html:106 `ort { mountRelated, along, setPalette } from '/lib/toolkit.js';` |
 | ColorZilla | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | ColorZilla for Firefox and Chrome | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |
 | ColorZilla for Chrome and Firefox | Unreviewed | unreviewed | a menu item, button or box on its live page (2026-10-28) | not compared yet |

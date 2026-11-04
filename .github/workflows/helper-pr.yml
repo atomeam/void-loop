@@ -24,7 +24,7 @@ permissions:
 jobs:
   open:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 20 # room to wait out a rate limit (below)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,9 +38,22 @@ jobs:
           REPO: ${{ github.repository }}
           BRANCH: ${{ github.ref_name }}
         run: |
+          # The repository's GITHUB_TOKEN quota is shared by every workflow (2026-11-04: it ran out and this job failed on every push
+          # with "API rate limit exceeded for installation"). A rate limit here is a wait, not a failure: wait for the reset (read from
+          # GET /rate_limit, which costs nothing) and try again, up to 15 minutes. Any other error fails as before.
+          ghr() {
+            for try in 1 2 3 4 5 6; do
+              if out=$(gh "$@" 2>&1); then printf '%s\n' "$out"; return 0; fi
+              if ! printf '%s' "$out" | grep -qiE 'rate limit exceeded|secondary rate limit'; then printf '%s\n' "$out" >&2; return 1; fi
+              reset=$(gh api rate_limit --jq .resources.core.reset 2>/dev/null || echo 0); now=$(date +%s)
+              wait=$(( reset > now ? reset - now + 5 : 30 * try )); [ "$wait" -gt 150 ] && wait=150
+              echo "::notice::rate-limited (try $try); waiting ${wait}s for the quota"; sleep "$wait"
+            done
+            printf '%s\n' "$out" >&2; return 1
+          }
           ahead=$(git rev-list --count "origin/main..origin/$BRANCH")
           if [ "$ahead" -eq 0 ]; then echo "nothing main lacks on $BRANCH"; exit 0; fi
-          open=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq 'length')
+          open=$(ghr api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq 'length')
           if [ "$open" -gt 0 ]; then echo "$BRANCH already has an open PR"; exit 0; fi
           git checkout -q --detach "origin/$BRANCH"
           if git diff --name-only origin/main...HEAD | grep -q '^void-live-deploy/skills/'; then
@@ -69,6 +82,7 @@ jobs:
           fi
           title=$(git log -1 --format=%s "origin/$BRANCH")
           body="A helper pushed $BRANCH ($ahead commits that main lacks) and opened no PR, so Verse helper PR opened it (.github/workflows/helper-pr.yml). It merges by itself once Verse's review is clean."
-          gh pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge
-          gh workflow run automerge.yml --repo "$REPO" --ref main
+          url=$(ghr pr create --repo "$REPO" --base main --head "$BRANCH" --title "$title" --body "$body" --label automerge)
+          num="${url##*/}" # gh pr create prints the new PR's URL
+          ghr workflow run automerge.yml --repo "$REPO" --ref main -f pr="$num"
           echo "### PR opened for $BRANCH" >> "$GITHUB_STEP_SUMMARY"
