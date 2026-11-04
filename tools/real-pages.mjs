@@ -491,6 +491,7 @@ SPECS['/agent/'] = async (t) => {
   t.ok(/Done\. It is on your Made shelf/.test(await t.text('#thread')), 'the live feed lists the steps');
   t.ok((await t.p.locator('#thread button[data-d="yes"]').count()) === 1, 'the send waits on an approval card');
   t.ok(/Forsyth Park/.test(await t.text('#made')), 'finished work is on the Made shelf');
+  t.ok(/^\(1\) /.test(await t.p.title()), 'the tab title counts what waits for a yes, so a tab in the background shows it: ' + (await t.p.title()));
 };
 // /treasury/: Verse's public ledger. The API is faked with one realized sale split by the policy, so the page's numbers are exact
 const TREASURY_FIX = { as_of: '2026-11-04T12:00:00Z', source: { only: 'realized Gumroad revenue', gumroad_api: 'off (no GUMROAD_ACCESS_TOKEN)', fee_source: 'https://gumroad.com/help/article/66-gumroads-fees' },
