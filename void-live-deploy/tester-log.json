@@ -1,16 +1,23 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 83,
- "runsTotal": 204,
+ "runsTotal": 205,
  "kinds": {
   "grow": 67,
   "file": 71,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 12
+  "visitor": 13
  },
  "runs": [
+  {
+   "at": "2026-11-04T06:45:46Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T06:16:39Z",
    "passed": 0,
@@ -274,13 +281,6 @@
    "of": 72,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"film meatdata for ikiru\" (skill:film-metadata)"
-  },
-  {
-   "at": "2026-10-19T00:40:40Z",
-   "passed": 70,
-   "of": 71,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
   }
  ],
  "weekly": [
@@ -355,7 +355,7 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 13,
+   "runs": 14,
    "passed": 58,
    "of": 87,
    "ms": 554
