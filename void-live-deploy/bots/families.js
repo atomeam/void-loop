@@ -2,6 +2,7 @@
 // every number-base pair, every Caesar shift, every data-format pair, every date-format pair). Each bot gets independent checks, never its
 // own first answer: a round trip (A to B and back gives the input), a property (linear, ordered or lossless) and, where one exists, a known
 // answer from a published constant. tools/bot-factory.mjs runs every check; a variant that fails any one is not live.
+import { langPairs } from './lang-pairs.js';
 const near = (a, b) => Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
 const rnd = (seed) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 // factors to one base unit per dimension (SI or exact legal definitions)
@@ -72,6 +73,7 @@ export function families() {
     out.push({ id: 'date-' + a + '-to-' + b, cat: 'code', family: 'date formats', job: 'Rewrites a ' + a + ' date as ' + b, from: ['skills/date-calc.js', 'bots/unix-time'], run: f,
       checks: [['round trip', () => DATES[a](DPARSE[b](f(DATES[a](d)))) === DATES[a](d)], ['known answer', () => f(DATES[a](d)) === ({ iso: '2026-11-04', us: '11/04/2026', eu: '04.11.2026', unix: '1793750400', compact: '20261104', julian: '2461348.5' }[b])]] });
   }
+  out.push(...langPairs());
   return out;
 }
 /** run one family bot's checks */
