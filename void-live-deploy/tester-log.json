@@ -1,16 +1,49 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 84,
- "runsTotal": 225,
+ "runsTotal": 227,
  "kinds": {
   "grow": 68,
-  "file": 74,
+  "file": 75,
   "teach": 7,
   "tighten": 7,
   "none": 40,
-  "visitor": 29
+  "visitor": 30
  },
  "runs": [
+  {
+   "at": "2026-11-04T21:01:44Z",
+   "passed": 84,
+   "of": 88,
+   "kind": "file",
+   "ms": 331,
+   "note": "fix: \"yo play despacito\" nothing appeared",
+   "failed": [
+    {
+     "ask": "what can I buy",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "play chess",
+     "why": "fps 3 < 5"
+    },
+    {
+     "ask": "flip this card",
+     "why": "console: Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+     "ask": "yo play despacito",
+     "why": "nothing appeared"
+    }
+   ]
+  },
+  {
+   "at": "2026-11-04T20:51:37Z",
+   "passed": 0,
+   "of": 0,
+   "kind": "visitor",
+   "note": "visitor pass 14/15"
+  },
   {
    "at": "2026-11-04T20:34:49Z",
    "passed": 78,
@@ -268,20 +301,6 @@
    "of": 0,
    "kind": "visitor",
    "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T07:49:54Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
-  },
-  {
-   "at": "2026-11-04T07:22:01Z",
-   "passed": 0,
-   "of": 0,
-   "kind": "visitor",
-   "note": "visitor pass 14/15"
   }
  ],
  "weekly": [
@@ -356,9 +375,9 @@
   },
   {
    "from": "2026-10-28",
-   "runs": 34,
-   "passed": 378,
-   "of": 437,
+   "runs": 36,
+   "passed": 462,
+   "of": 525,
    "ms": 384
   }
  ],
@@ -370,16 +389,16 @@
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-17T23:49:12Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
-  "skill:automations": "2026-11-04T20:34:49Z",
+  "skill:automations": "2026-11-04T21:01:44Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
-  "skill:book": "2026-11-04T20:34:49Z",
+  "skill:book": "2026-11-04T21:01:44Z",
   "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
-  "skill:define": "2026-11-04T20:34:49Z",
+  "skill:define": "2026-11-04T21:01:44Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-19T02:18:29Z",
-  "skill:cartoon": "2026-11-04T20:34:49Z",
+  "skill:cartoon": "2026-11-04T21:01:44Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
