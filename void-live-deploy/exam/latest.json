@@ -1,14 +1,21 @@
 {
-  "at": "2026-11-04T09:18:21.201Z",
+  "at": "2026-11-04T09:50:16.456Z",
   "against": "live",
   "week": "2026-W45",
   "scale": 2,
   "domains": {
     "videos": {
-      "score": 98.5,
+      "score": 97.7,
       "of": 18,
       "measured": 18,
       "fails": [
+        {
+          "ask": "play a video about cooking pasta",
+          "failed": [
+            "topic"
+          ],
+          "score": 85.7
+        },
         {
           "ask": "play the trailer",
           "failed": [
@@ -32,17 +39,16 @@
       }
     },
     "podcasts": {
-      "score": 84.8,
+      "score": 85.6,
       "of": 18,
       "measured": 18,
       "fails": [
         {
-          "ask": "play the latest episode of hardcore history",
+          "ask": "play the latest episode of the daily",
           "failed": [
-            "show",
-            "episode"
+            "audio"
           ],
-          "score": 71.4
+          "score": 85.7
         },
         {
           "ask": "play the latest episode of stuff you should know",
@@ -156,7 +162,7 @@
       }
     },
     "weather": {
-      "score": 97.2,
+      "score": 98.3,
       "of": 18,
       "measured": 18,
       "fails": [
@@ -170,10 +176,9 @@
         {
           "ask": "météo à lyon",
           "failed": [
-            "skill",
-            "temp"
+            "skill"
           ],
-          "score": 66.7
+          "score": 85.7
         }
       ],
       "holdout": {
@@ -434,7 +439,7 @@
       ]
     },
     "timers": {
-      "score": 73.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
@@ -462,11 +467,9 @@
         {
           "ask": "temporizador de 3 minutos",
           "failed": [
-            "answered",
-            "skill",
-            "fast"
+            "skill"
           ],
-          "score": 40
+          "score": 80
         },
         {
           "ask": "set a timer for 45 seconds",
@@ -530,10 +533,17 @@
       ]
     },
     "prices": {
-      "score": 83.3,
+      "score": 80,
       "of": 6,
       "measured": 6,
       "fails": [
+        {
+          "ask": "100 usd in eur",
+          "failed": [
+            "rival"
+          ],
+          "score": 80
+        },
         {
           "ask": "price",
           "failed": [
@@ -611,7 +621,7 @@
     }
   },
   "lowest": {
-    "domain": "timers",
-    "score": 73.3
+    "domain": "images",
+    "score": 73.9
   }
 }
