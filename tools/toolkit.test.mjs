@@ -14,7 +14,7 @@ test('every tool page is linked to at least one other, only to tools that exist,
     assert.match(html, /<nav id="related"/, p); assert.match(html, /mountRelated\([^,]+, '(?:\/[a-z0-9-]+)+\/'/, p);
   }
   for (const p of Object.keys(TOOLS)) assert.ok(RELATED[p], p + ' has related tools');
-  assert.deepEqual(relatedOf('/random-user/')[0], { href: '/wheel/', label: 'Wheel of names' }); assert.deepEqual(relatedOf('/nope/'), []);
+  assert.deepEqual(relatedOf('/random/people/')[0], { href: '/random/wheel/', label: 'Wheel of names' }); assert.deepEqual(relatedOf('/nope/'), []);
 });
 test('colours: hex in any short form, and the text that reads on it', () => {
   assert.equal(hexOf('#F53'), '#ff5533'); assert.equal(hexOf('6d4aff'), '#6d4aff'); assert.equal(hexOf('red'), null); assert.equal(hexOf('#12345'), null);
@@ -31,9 +31,9 @@ test('the accent is kept on this device and put on the page; a bad colour is ref
 
 test('the ask bar routes an ask to the tool that does it, with the ask in the link, and anything else to the stage', () => {
   const to = (a) => routeAsk(a);
-  assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/flip/'); assert.equal(to('weather in boston'), '/weather/?q=boston');
+  assert.equal(to('100 c to f'), '/convert/?q=100%20c%20to%20f'); assert.equal(to('flip a coin'), '/random/coin/'); assert.equal(to('weather in boston'), '/weather/?q=boston');
   assert.equal(to('time in tokyo'), '/time/?q=tokyo'); assert.equal(to('is it christmas?'), '/is-it/christmas'); assert.equal(to('a password of 20'), '/password/?len=20');
-  assert.equal(to('how strong is Tr0ub4dor&3'), '/password-strength/', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
+  assert.equal(to('how strong is Tr0ub4dor&3'), '/password/strength/', 'the typed password stays out of the address'); assert.equal(to('decode aGVsbG8='), '/base64/?mode=decode&t=aGVsbG8%3D'); assert.equal(to('encode hello'), '/base64/?t=hello');
   assert.equal(to('255 in hex'), '/base-converter/?v=255&b=16'); assert.equal(to('#ff5733'), '/color/?c=ff5733'); assert.equal(to('17% of 240'), '/calculator/?q=17%25%20of%20240');
   assert.equal(to('5 min timer'), '/stopwatch/?t=5%20min'); assert.equal(to('3 fake people'), '/random-user/?n=3'); assert.equal(to('count the words in a b c'), '/word-count/?t=a%20b%20c');
   assert.equal(to('who is the mayor of boston'), '/?q=who%20is%20the%20mayor%20of%20boston'); assert.equal(to('  '), '');
@@ -67,7 +67,7 @@ test('every tool page links to its own card on the stage, and every page has a c
   const { mountRelated } = await import('../void-live-deploy/lib/toolkit.js');
   const made = []; const mk = (tag) => { const n = { tag, children: [], className: '', href: '', textContent: '', style: {}, append(...c) { this.children.push(...c); }, prepend(...c) { this.children.unshift(...c); }, setAttribute() {}, addEventListener() {}, replaceChildren(...c) { this.children = c; } }; made.push(n); return n; };
   const host = mk('nav'); host.ownerDocument = { createElement: mk, defaultView: {} };
-  mountRelated(host, '/flip/');
+  mountRelated(host, '/random/coin/');
   const row = host.children.find((c) => c.className === 'tk-row'), links = row.children.filter((c) => c.tag === 'a');
   assert.equal(links[0].className, 'tk-card'); assert.equal(links[0].href, '/?q=flip%20a%20coin');
 });
@@ -123,7 +123,7 @@ test('a hand-off link reads its place before any press, follows the page as it c
   place = 'Rome'; for (const fn of x.on.pointerenter) fn(); assert.equal(x.href, '/time/?c=Rome', 'pointed at');
 });
 test('a hand-off that writes something (the wheel\'s palette) writes it on a press only, never on a hover or a page change, and no page writes in href', async () => {
-  let wrote = 0, ok = true; const { xs: [x], fire } = await fakeHands([{ label: 'Paint the wheel', href: () => '/wheel/', go: () => { wrote++; return ok; } }]);
+  let wrote = 0, ok = true; const { xs: [x], fire } = await fakeHands([{ label: 'Paint the wheel', href: () => '/random/wheel/', go: () => { wrote++; return ok; } }]);
   for (const fn of x.on.pointerenter) fn(); fire('input'); fire('click'); assert.equal(wrote, 0, 'aimed three times, nothing written');
   let stopped = false; x.on.click[0]({ preventDefault() { stopped = true; } }); assert.equal(wrote, 1); assert.equal(stopped, false, 'written, then the link is followed');
   ok = false; stopped = false; x.on.click[0]({ preventDefault() { stopped = true; } }); assert.ok(stopped, 'a write that fails keeps the person here');
@@ -227,7 +227,7 @@ test('a made or typed password is never in an address, a hash or history: the st
   };
   for (const pw of [...P.generateMany({ length: 24 }, 5), 'Tr0ub4dor&3', 'a b#p=c&d']) {
     const { a, b, sent } = pair(); let got = null;
-    assert.equal(H.handOver(a, pw), true); assert.equal(b.url, '/password-strength/', 'the tab opens on the plain page'); assert.ok(!b.url.includes(pw) && !b.url.includes(encodeURIComponent(pw)) && !b.url.includes('#'), 'no password and no hash in the address it opens');
+    assert.equal(H.handOver(a, pw), true); assert.equal(b.url, '/password/strength/', 'the tab opens on the plain page'); assert.ok(!b.url.includes(pw) && !b.url.includes(encodeURIComponent(pw)) && !b.url.includes('#'), 'no password and no hash in the address it opens');
     assert.equal(H.receive(b, (v) => { got = v; }), true); assert.equal(got, pw, 'the strength page gets the password');
     assert.ok(sent.every((m) => m.target === ORIGIN), 'every message names this origin, never *');
     assert.equal(a.heard(), 0, 'the opener stops listening and drops it'); assert.equal(b.heard(), 0, 'the strength page stops listening');
@@ -241,7 +241,7 @@ test('a made or typed password is never in an address, a hash or history: the st
     H.receive(b, () => {}, 5); b.postMessage = (data) => b.emit({ data, origin: ORIGIN, source: a }); a.emit({ data: { kind: 'a2m-pw-handover', want: true }, origin: ORIGIN, source: b }); }
   { const a = win(ORIGIN); a.open = () => null; assert.equal(H.handOver(a, 'x1'), false, 'a blocked tab carries nothing'); assert.equal(a.heard(), 0); }
   // the ask bar sends a typed password to the plain page
-  for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password-strength/'); }
+  for (const ask of ['how strong is Tr0ub4dor&3', 'check password hunter2hunter2', 'how secure is a b c']) { const u = routeAsk(ask); assert.equal(u, '/password/strength/'); }
   // the pages: no link the password page builds carries a password, and the strength page reads none from the address
   const page = fs.readFileSync(new URL('../void-live-deploy/password/index.html', import.meta.url), 'utf8'), strength = fs.readFileSync(new URL('../void-live-deploy/password/strength/index.html', import.meta.url), 'utf8');
   assert.ok(!page.includes('#p=') && !/encodeURIComponent\((?:pw|made)/.test(page), 'the password page builds no address with a password in it');
