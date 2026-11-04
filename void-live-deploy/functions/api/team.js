@@ -48,6 +48,8 @@ import { redact } from '../../lib/automation-fix.js';
 import * as T from '../../lib/team.js';
 import { briefOf } from '../../lib/job-guide.js';
 import * as Dream from '../../lib/brain-dream.js';
+import { fire } from '../../lib/automations-run.js';
+import { teamEvent } from '../../lib/automations.js';
 
 const json = (o, status = 200) => Response.json(o, { status, headers: { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow' } });
 const bad = (status, say) => json({ ok: false, say }, status);
@@ -479,6 +481,10 @@ export async function onRequestPost({ request, env, now = Date.now(), as = null,
       else if (queued) await write(env, { c, by: 'verse', body: 'On the build queue as a feature job. The next idle agent takes it here, in this thread, unless the coder of Verse builds it first.', thread: id, now });
       if (queued && queued !== 'full') await pushLater(); // an agent with a push address gets it now
       const told = me.kind === 'agent' && me.agent.job && await unstall(env, me.agent, now + 1); // in its job thread or anywhere else
+      // the owner's automations with when.on 'team' (lib/automations.js): after the answer when the platform can. Only a person's or an
+      // agent's post fires them, never Verse's own (verseSays, the replies above), so a rule that speaks here cannot loop
+      const fired = fire(env, 'team', teamEvent({ id, c, by: byOf(me), body, thread, at: now }));
+      if (waitUntil) later({ waitUntil }, fired); else await fired;
       return json({ ok: true, id, ...(queued && queued !== 'full' ? { job: queued } : {}), ...(told ? { say: T.noWaitSay(me.agent.job) } : hid ? { say: T.HID_SAY } : {}) }, 201);
     }
     case 'dream': { // Verse Brain's dream (tools/brain-dream.mjs, lib/brain-dream.js): a fix, job or idea it made from what it watched, posted by Verse

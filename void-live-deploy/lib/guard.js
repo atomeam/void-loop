@@ -50,6 +50,7 @@ export const LIMITS = {
   publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)
   members: { rpm: 20, body: 8000 }, // paid Verse: a member's idea (functions/api/members.js; its own daily limit is in lib/members.js)
   gumroad: { rpm: 120, body: 50000 },
+  'github-events': { rpm: 120, body: 1000000 }, // GitHub's webhooks (functions/api/github-events.js): server to server, HMAC-signed, a push or PR body can be hundreds of KB; trimmed before any rule sees it
   team: { rpm: 240, body: 16000 }, // the team chat (functions/api/team.js): a page polls a channel every few seconds; every write needs the owner or an agent key the owner made, with per-agent rates in the route
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
   rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
@@ -104,7 +105,7 @@ export const LIMITS = {
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused
-export const NO_ORIGIN_CHECK = ['gumroad']; // server-to-server: Gumroad's ping
+export const NO_ORIGIN_CHECK = ['gumroad', 'github-events']; // server-to-server: Gumroad's ping, GitHub's webhooks (both checked by their own secret)
 export const OWNER_WRITES = ['films']; // routes whose large writes only the owner sends: anyone else is refused before a byte of the body is read
 
 const enc = new TextEncoder();
