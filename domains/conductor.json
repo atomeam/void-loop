@@ -1,9 +1,9 @@
 {
  "about": "What the conductor (tools/conductor.mjs, every 10 minutes from grow-clock.yml) did: the last 24 hours of ticks, loops it found broken, and the jobs it handed to executors that claim for themselves. Counts and job ids only.",
- "updated": "2026-11-04T19:20:15.290Z",
+ "updated": "2026-11-04T19:33:29.602Z",
  "last24h": {
   "ticks": 101,
-  "started": 101,
+  "started": 102,
   "requeued": 1,
   "setAside": 0,
   "probes": 11,
@@ -163,7 +163,8 @@
   "mw21bwrs": 1793806902102,
   "mw2ck4xf": 1793811592976,
   "mw2ck5w0": 1793816230727,
-  "mw2ck6u8": 1793820015290
+  "mw2ck6u8": 1793820015290,
+  "mw2ck7mq": 1793820809602
  },
  "visitorAt": "2026-11-04T18:52:20Z",
  "visitorFiled": [
@@ -249,24 +250,6 @@
   "probe:eth-price-usd"
  ],
  "ticks": [
-  {
-   "at": "2026-11-03T19:27:31.553Z",
-   "open": 138,
-   "started": [],
-   "requeued": 0,
-   "setAside": 0,
-   "healed": [
-    "propose-fix.yml",
-    "grow-self.yml"
-   ],
-   "probe": false,
-   "grow": false,
-   "will": true,
-   "lap": false,
-   "revived": [],
-   "held": 137,
-   "warnings": 0
-  },
   {
    "at": "2026-11-03T19:37:58.155Z",
    "open": 138,
@@ -2537,6 +2520,30 @@
     "void-tick.yml"
    ],
    "held": 171,
+   "warnings": 0
+  },
+  {
+   "at": "2026-11-04T19:33:29.602Z",
+   "open": 175,
+   "started": [
+    {
+     "id": "mw2ck7mq",
+     "kind": "probe",
+     "wf": "propose-fix.yml",
+     "score": 40
+    }
+   ],
+   "requeued": 0,
+   "setAside": 0,
+   "healed": [],
+   "probe": false,
+   "grow": false,
+   "will": false,
+   "lap": false,
+   "revived": [
+    "void-tick.yml"
+   ],
+   "held": 172,
    "warnings": 0
   }
  ]
