@@ -350,6 +350,23 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("better:", e, file=sys.stderr)
 
+    # 11. the outcome exam (owner, 2026-11-03: improve what a visitor gets, starting at the lowest domain). The failing
+    #     public asks only; the holdout text is not in this file. Weight sits above the frontier so the lowest domain is
+    #     the want, and the conductor lifts a job that names it again (examBoost in tools/conductor-core.mjs).
+    try:
+        ex = json.loads((ROOT / "void-live-deploy" / "exam" / "latest.json").read_text(encoding="utf-8"))
+        low = ex.get("lowest") or {}
+        dom, sc = str(low.get("domain") or ""), float(low.get("score") or 0)
+        fails = (((ex.get("domains") or {}).get(dom) or {}).get("fails") or [])[:3]
+        for a in fails:
+            ask = str(a.get("ask") or "")
+            if len(ask) < 4:
+                continue
+            why = f"the {dom} exam scored {sc:g}, the lowest; this ask failed {', '.join(a.get('failed') or [])}"
+            cands.append({"kind": "fix the exam", "title": f'fix the {dom} exam: "{ask[:80]}"'[:160], "why": why[:240], "weight": 120 + int((100 - sc) / 5), "source": f"exam:{dom}"})
+    except Exception as e:
+        print("exam:", e, file=sys.stderr)
+
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):

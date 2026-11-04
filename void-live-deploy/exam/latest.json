@@ -1,0 +1,421 @@
+{
+  "at": "2026-11-04T01:12:24.089Z",
+  "against": "local",
+  "week": "2026-W45",
+  "domains": {
+    "videos": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 100,
+        "of": 4,
+        "fresh": true,
+        "fails": []
+      }
+    },
+    "podcasts": {
+      "score": 99.1,
+      "of": 16,
+      "measured": 16,
+      "fails": [
+        {
+          "ask": "play the podcast",
+          "failed": [
+            "audio"
+          ],
+          "score": 85.7
+        }
+      ],
+      "holdout": {
+        "score": 95.8,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "064be875",
+            "failed": [
+              "audio"
+            ],
+            "score": 83.3
+          }
+        ]
+      }
+    },
+    "songs": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 95,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "3e60a559",
+            "failed": [
+              "audio"
+            ],
+            "score": 80
+          }
+        ]
+      }
+    },
+    "weather": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 100,
+        "of": 4,
+        "fresh": true,
+        "fails": []
+      }
+    },
+    "directions": {
+      "score": 67.7,
+      "of": 16,
+      "measured": 16,
+      "fails": [
+        {
+          "ask": "directions to the louvre",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how do I get to Kyoto",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "directions to Penn Station",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "route to the eiffel tower",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "take me to central park",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "navigate to the british museum",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "how do I get to tokyo station",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "directions to times square",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "get me to the colosseum",
+          "failed": [
+            "skill",
+            "route"
+          ],
+          "score": 66.7
+        },
+        {
+          "ask": "directions to big ben",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "how can I get to the golden gate bridge",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "route to the sydney opera house",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "take me to the statue of liberty",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "directions to pike place market",
+          "failed": [
+            "answered",
+            "fast",
+            "route"
+          ],
+          "score": 50
+        },
+        {
+          "ask": "how do I get to the acropolis",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        },
+        {
+          "ask": "navigate to union station",
+          "failed": [
+            "route"
+          ],
+          "score": 83.3
+        }
+      ],
+      "holdout": {
+        "score": 75,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "d4852c7f",
+            "failed": [
+              "answered",
+              "fast",
+              "route"
+            ],
+            "score": 50
+          },
+          {
+            "id": "c762d722",
+            "failed": [
+              "route"
+            ],
+            "score": 83.3
+          },
+          {
+            "id": "127e8656",
+            "failed": [
+              "route"
+            ],
+            "score": 83.3
+          },
+          {
+            "id": "3543cf2c",
+            "failed": [
+              "route"
+            ],
+            "score": 83.3
+          }
+        ]
+      }
+    },
+    "recipes": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 100,
+        "of": 4,
+        "fresh": true,
+        "fails": []
+      }
+    },
+    "calculator": {
+      "score": 72.5,
+      "of": 16,
+      "measured": 16,
+      "fails": [
+        {
+          "ask": "add vat to 100",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "remove vat from 122",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "add vat to 50",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "remove vat from 250",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
+        },
+        {
+          "ask": "ндс 22% от 1000",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "number"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "начислить ндс на 5000",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "number"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "выделить ндс из 1000",
+          "failed": [
+            "answered",
+            "skill",
+            "fast",
+            "number"
+          ],
+          "score": 20
+        },
+        {
+          "ask": "add vat to 80",
+          "failed": [
+            "skill",
+            "number"
+          ],
+          "score": 60
+        }
+      ],
+      "holdout": {
+        "score": 80,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "5c5439a4",
+            "failed": [
+              "skill",
+              "number"
+            ],
+            "score": 60
+          },
+          {
+            "id": "0e630447",
+            "failed": [
+              "skill",
+              "number"
+            ],
+            "score": 60
+          }
+        ]
+      }
+    },
+    "news": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 85.8,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "f336a7bd",
+            "failed": [
+              "skill"
+            ],
+            "score": 83.3
+          },
+          {
+            "id": "57d695aa",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          },
+          {
+            "id": "93f0b9dc",
+            "failed": [
+              "skill"
+            ],
+            "score": 80
+          }
+        ]
+      }
+    },
+    "sports": {
+      "score": 100,
+      "of": 16,
+      "measured": 16,
+      "fails": [],
+      "holdout": {
+        "score": 95.8,
+        "of": 4,
+        "fresh": true,
+        "fails": [
+          {
+            "id": "ac88deeb",
+            "failed": [
+              "skill"
+            ],
+            "score": 83.3
+          }
+        ]
+      }
+    }
+  },
+  "lowest": {
+    "domain": "directions",
+    "score": 67.7
+  },
+  "note": "Remeasured on this run: podcasts, songs. The other domains are the previous run's scores."
+}

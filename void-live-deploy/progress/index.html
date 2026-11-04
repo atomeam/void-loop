@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="verse-handoff" content="in: text; out: text">
+<title>What Verse can actually do · Verse</title>
+<meta name="description" content="Verse's outcome exam: a score per domain from real asks on the live site. A song counts when audio plays and the title matches. Ledger counts are not a score.">
+<link rel="canonical" href="https://a-to-mind.com/progress/">
+<meta property="og:title" content="What Verse can actually do · Verse">
+<meta property="og:description" content="Scores from an exam a visitor would pass or fail. The lowest domain is what Verse works on next.">
+<meta property="og:url" content="https://a-to-mind.com/progress/">
+<meta property="og:image" content="https://a-to-mind.com/og.png">
+<script src="/visit.js" defer></script>
+<style>
+  :root { color-scheme: dark; --bg: #07060d; --ink: #eceaf6; --soft: #a7a3bb; --line: #2c2938; --accent: #a58bff; --bad: #ff8d84; --ok: #7ddeaf; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  a { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--soft); font-weight: 600; font-size: 13px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .low { color: var(--bad); }
+  .hi { color: var(--ok); }
+  .fails { color: var(--soft); font-size: 14px; margin: 0; }
+  .fails li { margin: 4px 0; }
+  svg { width: 100%; height: 72px; }
+  .note { color: var(--soft); font-size: 14px; }
+  nav { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 22px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>What Verse can actually do</h1>
+  <p class="note">Each score is the share of objective checks a real ask passed on a phone-width page: the right skill, a result in 12 seconds, and the thing the ask named. A song counts when an audio file plays and the title and artist match iTunes. A holdout set, rotated each week and not published, is scored beside the public one. Counts of skills, pull requests and lesson sentences are not a score.</p>
+  <p id="when" class="note">Loading the latest run…</p>
+  <div id="chart"></div>
+  <table>
+    <thead><tr><th>Domain</th><th>Public</th><th>Holdout</th><th>Measured</th><th>Failing asks</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <h2>What failed</h2>
+  <div id="fails"></div>
+  <nav id="related" aria-label="Related pages"><!-- related --><span class="tk-label">Use with</span> <a href="/brain/">Verse Brain</a> <a href="/autopilot/">Autopilot</a> <a href="/news/">News</a> <a href="/tools/">All tools</a><!-- /related --></nav>
+</main>
+<script>
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const cls = (n) => n == null ? '' : n >= 70 ? 'hi' : n < 40 ? 'low' : '';
+function chart(history) {
+  const runs = (history || []).slice(-16);
+  if (runs.length < 2) return '';
+  const W = 640, H = 88, names = ['podcasts', 'songs', 'videos'];
+  const x = (i) => (i / (runs.length - 1)) * (W - 8) + 4, y = (v) => H - 10 - (Math.max(0, v) / 100) * (H - 18);
+  const line = (name) => runs.map((r, i) => x(i).toFixed(1) + ',' + y((r.domains && r.domains[name] && r.domains[name].score) || 0).toFixed(1)).join(' ');
+  const strokes = ['#ff8d84', '#ffbe5a', '#7ddeaf'];
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="podcast, song and video scores over ' + runs.length + ' runs">'
+    + names.map((n, i) => '<polyline points="' + line(n) + '" fill="none" stroke="' + strokes[i] + '" stroke-width="2"/>').join('')
+    + '</svg><p class="note">Podcasts, songs, then videos, oldest run on the left. A line moves only when that domain’s exam moves.</p>';
+}
+function row(name, d) {
+  const h = d && d.holdout, hs = h ? (h.score == null ? '—' : h.score + (h.fresh === false ? '*' : '')) : '—';
+  return '<tr><th>' + esc(name) + '</th><td class="num ' + cls(d && d.score) + '">' + esc(d && d.score != null ? d.score : '—') + '</td><td class="num">' + esc(hs) + '</td><td class="num">' + esc(d ? (d.measured + '/' + d.of) : '—') + '</td><td class="num">' + esc(d && d.fails ? d.fails.length : '—') + '</td></tr>';
+}
+Promise.all([fetch('/exam/latest.json').then((r) => r.json()), fetch('/exam/history.json').then((r) => r.json()).catch(() => [])]).then(([latest, history]) => {
+  const when = document.getElementById('when');
+  when.textContent = 'Run ' + (latest.at || '').replace('T', ' ').slice(0, 16) + ' UTC against ' + (latest.against || 'live') + '. Lowest: ' + (latest.lowest ? latest.lowest.domain + ' at ' + latest.lowest.score : '—') + '. A star on a holdout score means it was not remeasured this run.';
+  document.getElementById('chart').innerHTML = chart(history);
+  const body = document.getElementById('rows'), fails = document.getElementById('fails');
+  body.innerHTML = Object.entries(latest.domains || {}).map(([k, v]) => row(k, v)).join('');
+  fails.innerHTML = Object.entries(latest.domains || {}).map(([k, v]) => {
+    const list = (v.fails || []).slice(0, 8);
+    if (!list.length) return '';
+    return '<h3>' + esc(k) + '</h3><ul class="fails">' + list.map((f) => '<li>' + esc(f.ask) + ' <span class="note">(' + esc((f.failed || []).join(', ')) + ')</span></li>').join('') + '</ul>';
+  }).join('') || '<p class="note">Nothing failed the checks that were measured.</p>';
+}).catch(() => { document.getElementById('when').textContent = 'No exam run is published yet.'; });
+</script>
+</body>
+</html>

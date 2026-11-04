@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 1108,
+ "counted": 1111,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -185,6 +185,13 @@
    "tests": 1
   },
   {
+   "file": "lib/where.js",
+   "skills": 13,
+   "direct": 11,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
    "file": "lib/self-sites.js",
    "skills": 12,
    "direct": 0,
@@ -284,13 +291,6 @@
   },
   {
    "file": "lib/skyfacts.js",
-   "skills": 9,
-   "direct": 8,
-   "dependants": 16,
-   "tests": 1
-  },
-  {
-   "file": "lib/where.js",
    "skills": 9,
    "direct": 8,
    "dependants": 16,
@@ -1137,6 +1137,13 @@
    "tests": 2
   },
   {
+   "file": "lib/podcasts.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 4,
+   "tests": 1
+  },
+  {
    "file": "lib/field-fluid-orbs.js",
    "skills": 2,
    "direct": 1,
@@ -1176,7 +1183,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 2
+   "tests": 3
   },
   {
    "file": "lib/arcade-ghost.js",
@@ -1519,7 +1526,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 5,
-   "tests": 5
+   "tests": 6
   },
   {
    "file": "lib/video-mux.js",
@@ -1655,13 +1662,6 @@
    "tests": 3
   },
   {
-   "file": "lib/podcasts.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 3,
-   "tests": 1
-  },
-  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -1771,7 +1771,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/video-gen.js",
@@ -2033,6 +2033,13 @@
    "tests": 1
   },
   {
+   "file": "lib/hear.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 2
+  },
+  {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
@@ -2268,7 +2275,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/web4.js",
@@ -3105,6 +3112,13 @@
   },
   {
    "file": "lib/epub-edit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/exam.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -7028,6 +7042,10 @@
     "skills/event-countdown.js"
    ]
   },
+  "lib/exam.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/fakeuser.js": {
    "imports": [],
    "importedBy": [
@@ -7890,6 +7908,12 @@
    "imports": [],
    "importedBy": [
     "skills/health-habits.js"
+   ]
+  },
+  "lib/hear.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/hear.js"
    ]
   },
   "lib/heat-dose.js": {
@@ -10156,7 +10180,8 @@
    "imports": [],
    "importedBy": [
     "functions/api/podcasts.js",
-    "skills/podcast-search.js"
+    "skills/podcast-search.js",
+    "skills/podcast.js"
    ],
    "reachedBy": [
     "lib/podcasts-card.js"
@@ -13314,12 +13339,15 @@
    "importedBy": [
     "skills/aurora-tonight.js",
     "skills/constellation.js",
+    "skills/distance.js",
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/place.js",
     "skills/quake.js",
     "skills/sky.js",
-    "skills/suntimes.js"
+    "skills/suntimes.js",
+    "skills/weather.js"
    ],
    "reachedBy": [
     "functions/api/mcp.js",
@@ -13329,6 +13357,7 @@
     "lib/mcp-skills.js",
     "lib/mcp.js",
     "lib/team-mcp.js",
+    "skills/country.js",
     "skills/time.js"
    ]
   },
@@ -14178,7 +14207,9 @@
    "importedBy": []
   },
   "skills/distance.js": {
-   "imports": [],
+   "imports": [
+    "lib/where.js"
+   ],
    "importedBy": [
     "lib/mcp-skills.js",
     "skills/country.js"
@@ -14928,6 +14959,12 @@
    "imports": [
     "lib/stage-pack.js",
     "lib/health-habits.js"
+   ],
+   "importedBy": []
+  },
+  "skills/hear.js": {
+   "imports": [
+    "lib/hear.js"
    ],
    "importedBy": []
   },
@@ -16068,7 +16105,9 @@
    "importedBy": []
   },
   "skills/place.js": {
-   "imports": [],
+   "imports": [
+    "lib/where.js"
+   ],
    "importedBy": []
   },
   "skills/plan-stability.js": {
@@ -16086,7 +16125,9 @@
    ]
   },
   "skills/podcast.js": {
-   "imports": [],
+   "imports": [
+    "lib/podcasts.js"
+   ],
    "importedBy": []
   },
   "skills/poker-rules.js": {
@@ -17499,6 +17540,7 @@
   },
   "skills/weather.js": {
    "imports": [
+    "lib/where.js",
     "skills/live.js"
    ],
    "importedBy": [
